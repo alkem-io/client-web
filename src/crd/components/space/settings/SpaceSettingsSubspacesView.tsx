@@ -85,15 +85,8 @@ export function SpaceSettingsSubspacesView({
     <div className={cn('space-y-8', className)}>
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          {t('subspaces.pageHeader.title', { defaultValue: 'Subspaces' })}
-        </h2>
-        <p className="text-muted-foreground mt-2">
-          {t('subspaces.pageHeader.subtitle', {
-            defaultValue:
-              'Edit the Subspaces in this Space. Configure default templates and view all existing subspaces.',
-          })}
-        </p>
+        <h2 className="text-page-title">{t('subspaces.pageHeader.title')}</h2>
+        <p className="text-muted-foreground mt-2">{t('subspaces.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
@@ -102,19 +95,14 @@ export function SpaceSettingsSubspacesView({
       <div className="bg-muted/30 border border-border rounded-xl p-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
           <div className="space-y-2 flex-1">
-            <h3 className="font-semibold text-lg flex items-center gap-2">
+            <h3 className="text-subsection-title flex items-center gap-2">
               <LayoutTemplate className="size-5 text-primary" />
-              {t('subspaces.defaultTemplate.title', { defaultValue: 'Default Subspace Template' })}
+              {t('subspaces.defaultTemplate.title')}
             </h3>
-            <p className="text-muted-foreground text-sm">
-              {t('subspaces.defaultTemplate.description', {
-                defaultValue:
-                  'Choose the default settings that will apply when creating a new Subspace within this Space.',
-              })}
-            </p>
+            <p className="text-muted-foreground text-sm">{t('subspaces.defaultTemplate.description')}</p>
           </div>
           <Button type="button" onClick={onChangeDefaultTemplate}>
-            {t('subspaces.defaultTemplate.change', { defaultValue: 'Change Default Template' })}
+            {t('subspaces.defaultTemplate.change')}
           </Button>
         </div>
       </div>
@@ -124,8 +112,8 @@ export function SpaceSettingsSubspacesView({
       {/* Subspaces List */}
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            {t('subspaces.listTitle', { defaultValue: 'Subspaces' })}
+          <h3 className="text-subsection-title flex items-center gap-2">
+            {t('subspaces.listTitle')}
             <Badge variant="secondary" className="rounded-full">
               {filtered.length}
             </Badge>
@@ -135,7 +123,7 @@ export function SpaceSettingsSubspacesView({
             <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
-                placeholder={t('subspaces.search', { defaultValue: 'Search subspaces...' })}
+                placeholder={t('subspaces.search')}
                 className="pl-9 h-9"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -146,23 +134,21 @@ export function SpaceSettingsSubspacesView({
               <DropdownMenuTrigger asChild={true}>
                 <Button variant="outline" size="sm" className="h-9 gap-2">
                   <Filter className="size-4" />
-                  {t('subspaces.filterLabel', { defaultValue: 'Filter:' })}{' '}
+                  {t('subspaces.filterLabel')}{' '}
                   {filter === 'all'
-                    ? t('subspaces.filter.all', { defaultValue: 'All' })
+                    ? t('subspaces.filter.all')
                     : filter === 'active'
-                      ? t('subspaces.filter.active', { defaultValue: 'Active' })
-                      : t('subspaces.filter.archived', { defaultValue: 'Archived' })}
+                      ? t('subspaces.filter.active')
+                      : t('subspaces.filter.archived')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setFilter('all')}>
-                  {t('subspaces.filter.all', { defaultValue: 'All' })}
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilter('all')}>{t('subspaces.filter.all')}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilter('active')}>
-                  {t('subspaces.filter.activeOnly', { defaultValue: 'Active Only' })}
+                  {t('subspaces.filter.activeOnly')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilter('archived')}>
-                  {t('subspaces.filter.archivedOnly', { defaultValue: 'Archived Only' })}
+                  {t('subspaces.filter.archivedOnly')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -173,7 +159,7 @@ export function SpaceSettingsSubspacesView({
                 size="icon"
                 className="h-8 w-8 rounded-sm"
                 onClick={() => setViewMode('grid')}
-                aria-label={t('subspaces.viewMode.grid', { defaultValue: 'Grid view' })}
+                aria-label={t('subspaces.viewMode.grid')}
                 aria-pressed={viewMode === 'grid'}
               >
                 <Grid className="size-4" />
@@ -183,7 +169,7 @@ export function SpaceSettingsSubspacesView({
                 size="icon"
                 className="h-8 w-8 rounded-sm"
                 onClick={() => setViewMode('list')}
-                aria-label={t('subspaces.viewMode.list', { defaultValue: 'List view' })}
+                aria-label={t('subspaces.viewMode.list')}
                 aria-pressed={viewMode === 'list'}
               >
                 <ListIcon className="size-4" />
@@ -193,7 +179,7 @@ export function SpaceSettingsSubspacesView({
             {canCreate && (
               <Button size="sm" className="h-9 gap-2" onClick={onCreate}>
                 <Plus className="size-4" />
-                {t('subspaces.create', { defaultValue: 'Create Subspace' })}
+                {t('subspaces.create')}
               </Button>
             )}
           </div>
@@ -206,12 +192,8 @@ export function SpaceSettingsSubspacesView({
             <div className="size-12 bg-muted rounded-full flex items-center justify-center mb-4">
               <Search className="size-6 opacity-50" />
             </div>
-            <h3 className="font-medium text-lg text-foreground">
-              {t('subspaces.noResults', { defaultValue: 'No subspaces found' })}
-            </h3>
-            <p className="text-sm mt-1">
-              {t('subspaces.noResultsHint', { defaultValue: 'Try adjusting your search or filters.' })}
-            </p>
+            <h3 className="font-medium text-lg text-foreground">{t('subspaces.noResults')}</h3>
+            <p className="text-sm mt-1">{t('subspaces.noResultsHint')}</p>
           </div>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -385,7 +367,7 @@ function SubspaceKebab({
           variant="ghost"
           size="icon"
           className={triggerClassName ?? 'h-8 w-8'}
-          aria-label={t('subspaces.actions', { defaultValue: 'Subspace actions' })}
+          aria-label={t('subspaces.actions')}
         >
           <MoreVertical aria-hidden="true" className="size-4" />
         </Button>
@@ -395,19 +377,19 @@ function SubspaceKebab({
           {subspace.isPinned ? (
             <>
               <PinOff aria-hidden="true" className="size-4 mr-2" />
-              {t('subspaces.kebab.unpin', { defaultValue: 'Unpin' })}
+              {t('subspaces.kebab.unpin')}
             </>
           ) : (
             <>
               <Pin aria-hidden="true" className="size-4 mr-2" />
-              {t('subspaces.kebab.pin', { defaultValue: 'Pin' })}
+              {t('subspaces.kebab.pin')}
             </>
           )}
         </DropdownMenuItem>
         {canSaveAsTemplate && (
           <DropdownMenuItem onClick={() => onKebabAction(subspace.id, 'saveAsTemplate')}>
             <Save aria-hidden="true" className="size-4 mr-2" />
-            {t('subspaces.kebab.saveAsTemplate', { defaultValue: 'Save as Template' })}
+            {t('subspaces.kebab.saveAsTemplate')}
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
@@ -416,7 +398,7 @@ function SubspaceKebab({
           onClick={() => onKebabAction(subspace.id, 'delete')}
         >
           <Trash2 aria-hidden="true" className="size-4 mr-2" />
-          {t('subspaces.kebab.delete', { defaultValue: 'Delete' })}
+          {t('subspaces.kebab.delete')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

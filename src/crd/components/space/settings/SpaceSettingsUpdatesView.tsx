@@ -112,18 +112,14 @@ export function SpaceSettingsUpdatesView({
         <div>
           <h2 className="text-section-title tracking-tight flex items-center gap-2">
             <Megaphone aria-hidden="true" className="size-5" />
-            {t('updates.pageHeader.title', { defaultValue: 'Updates from the Leads' })}
+            {t('updates.pageHeader.title')}
           </h2>
-          <p className="text-body text-muted-foreground mt-2">
-            {t('updates.pageHeader.subtitle', {
-              defaultValue: 'Post announcements, milestones, and progress updates visible to all space members.',
-            })}
-          </p>
+          <p className="text-body text-muted-foreground mt-2">{t('updates.pageHeader.subtitle')}</p>
         </div>
         {canEdit && !composerOpen && (
           <Button type="button" size="sm" className="gap-2" onClick={() => setComposerOpen(true)}>
             <Plus aria-hidden="true" className="size-4" />
-            {t('updates.composer.new', { defaultValue: 'New Update' })}
+            {t('updates.composer.new')}
           </Button>
         )}
       </div>
@@ -133,12 +129,8 @@ export function SpaceSettingsUpdatesView({
       {/* Composer (collapsed by default, opens on New Update click) */}
       {canEdit && composerOpen && (
         <section className="rounded-lg border bg-muted p-5 flex flex-col gap-4">
-          <h3 className="text-card-title">{t('updates.composer.title', { defaultValue: 'New update' })}</h3>
-          <MarkdownEditor
-            value={draft}
-            onChange={onDraftChange}
-            placeholder={t('updates.composer.placeholder', { defaultValue: 'Write your update…' })}
-          />
+          <h3 className="text-card-title">{t('updates.composer.title')}</h3>
+          <MarkdownEditor value={draft} onChange={onDraftChange} placeholder={t('updates.composer.placeholder')} />
           <div className="flex items-center gap-3">
             <Button
               type="button"
@@ -151,17 +143,17 @@ export function SpaceSettingsUpdatesView({
               {submitting ? (
                 <>
                   <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                  {t('updates.composer.submitting', { defaultValue: 'Publishing…' })}
+                  {t('updates.composer.submitting')}
                 </>
               ) : (
                 <>
                   <Send aria-hidden="true" className="size-4" />
-                  {t('updates.composer.publish', { defaultValue: 'Publish' })}
+                  {t('updates.composer.publish')}
                 </>
               )}
             </Button>
             <Button type="button" variant="outline" size="sm" onClick={handleCancelComposer} disabled={submitting}>
-              {t('updates.composer.cancel', { defaultValue: 'Cancel' })}
+              {t('updates.composer.cancel')}
             </Button>
           </div>
         </section>
@@ -171,15 +163,13 @@ export function SpaceSettingsUpdatesView({
       <section className="flex flex-col gap-4">
         {loading && messages.length === 0 ? (
           <output
-            aria-label={t('updates.loading', { defaultValue: 'Loading updates' })}
+            aria-label={t('updates.loading')}
             className="flex items-center justify-center py-10 text-muted-foreground"
           >
             <Loader2 aria-hidden="true" className="size-5 animate-spin" />
           </output>
         ) : messages.length === 0 ? (
-          <p className="text-center text-body text-muted-foreground py-12">
-            {t('updates.empty', { defaultValue: 'No updates yet.' })}
-          </p>
+          <p className="text-center text-body text-muted-foreground py-12">{t('updates.empty')}</p>
         ) : (
           messages.map(message => (
             <article
@@ -206,8 +196,7 @@ export function SpaceSettingsUpdatesView({
                         </a>
                       ) : (
                         <span className="text-body-emphasis text-foreground">
-                          {message.author?.displayName ??
-                            t('updates.unknownAuthor', { defaultValue: 'Unknown author' })}
+                          {message.author?.displayName ?? t('updates.unknownAuthor')}
                         </span>
                       )}
                       {message.author?.roleLabel && (
@@ -225,12 +214,7 @@ export function SpaceSettingsUpdatesView({
                 {canRemove && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild={true}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        aria-label={t('updates.message.actions', { defaultValue: 'Update actions' })}
-                      >
+                      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('updates.message.actions')}>
                         <MoreHorizontal aria-hidden="true" className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -240,7 +224,7 @@ export function SpaceSettingsUpdatesView({
                         onClick={() => onRequestRemove(message.id)}
                       >
                         <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                        {t('updates.message.delete', { defaultValue: 'Delete' })}
+                        {t('updates.message.delete')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -258,8 +242,9 @@ export function SpaceSettingsUpdatesView({
 }
 
 function initialsFromName(name: string | null | undefined): string {
-  if (!name) return '??';
-  const parts = name.trim().split(/\s+/);
+  const trimmed = name?.trim() ?? '';
+  if (!trimmed) return '??';
+  const parts = trimmed.split(/\s+/);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return parts[0].slice(0, 2).toUpperCase();
 }

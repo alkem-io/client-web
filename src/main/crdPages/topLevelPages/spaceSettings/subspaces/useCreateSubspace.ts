@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
@@ -90,25 +90,30 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
       name: tmpl.profile.displayName,
     })) ?? [];
 
-  const validationSchema = useMemo(
-    () =>
-      yup.object().shape({
-        displayName: yup
-          .string()
-          .trim()
-          .min(3, 'Must be at least 3 characters')
-          .max(SMALL_TEXT_LENGTH, `Must be ${SMALL_TEXT_LENGTH} characters or fewer`)
-          .required('Name is required'),
-        tagline: yup.string().max(SMALL_TEXT_LENGTH, `Must be ${SMALL_TEXT_LENGTH} characters or fewer`).notRequired(),
-        description: yup
-          .string()
-          .max(MARKDOWN_TEXT_LENGTH, `Must be ${MARKDOWN_TEXT_LENGTH} characters or fewer`)
-          .notRequired(),
-        tags: yup.array().of(yup.string().min(2)).notRequired(),
-        spaceTemplateId: yup.string().notRequired(),
-      }),
-    []
-  );
+  // Messages are keys resolved via t() in `validate()` so yup never carries
+  // user-visible English literals.
+  const validationSchema = yup.object().shape({
+    displayName: yup.string().trim().min(3, 'min3').max(SMALL_TEXT_LENGTH, 'maxSmall').required('required'),
+    tagline: yup.string().max(SMALL_TEXT_LENGTH, 'maxSmall').notRequired(),
+    description: yup.string().max(MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
+    tags: yup.array().of(yup.string().min(2)).notRequired(),
+    spaceTemplateId: yup.string().notRequired(),
+  });
+
+  const translateValidationMessage = (code: string): string => {
+    switch (code) {
+      case 'min3':
+        return t('subspaces.createDialog.validation.min3');
+      case 'maxSmall':
+        return t('subspaces.createDialog.validation.maxSmall', { count: SMALL_TEXT_LENGTH });
+      case 'maxMarkdown':
+        return t('subspaces.createDialog.validation.maxMarkdown', { count: MARKDOWN_TEXT_LENGTH });
+      case 'required':
+        return t('subspaces.createDialog.validation.required');
+      default:
+        return code;
+    }
+  };
 
   const validate = (): CreateSubspaceFieldErrors => {
     try {
@@ -119,7 +124,7 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
       if (err instanceof yup.ValidationError) {
         for (const inner of err.inner) {
           if (inner.path && !next[inner.path as keyof CreateSubspaceFormValues]) {
-            next[inner.path as keyof CreateSubspaceFormValues] = inner.message;
+            next[inner.path as keyof CreateSubspaceFormValues] = translateValidationMessage(inner.message);
           }
         }
       }
@@ -141,12 +146,8 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
     } else {
       const message =
         result.reason === 'tooSmall'
-          ? t('subspaces.createDialog.visuals.tooSmall', {
-              defaultValue: 'Image is too small. Minimum {{width}} × {{height}} px required.',
-              width: constraints.minWidth,
-              height: constraints.minHeight,
-            })
-          : t('subspaces.createDialog.visuals.loadFailed', { defaultValue: 'Failed to read image file.' });
+          ? t('subspaces.createDialog.visuals.tooSmall', { width: constraints.minWidth, height: constraints.minHeight })
+          : t('subspaces.createDialog.visuals.loadFailed');
       setValues(prev => ({ ...prev, [key]: null }));
       setErrors(prev => ({ ...prev, [key]: message }));
     }

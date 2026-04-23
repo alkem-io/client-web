@@ -64,10 +64,10 @@ export function LayoutPoolColumn({
             <InlineEditText
               value={column.title}
               onChange={next => onRenameColumn(column.id, { title: next })}
-              ariaLabel={t('layout.column.titleAriaLabel', { defaultValue: 'Column title' })}
-              editAriaLabel={t('layout.column.editTitle', { defaultValue: 'Edit column title' })}
-              placeholder={t('layout.column.titlePlaceholder', { defaultValue: 'Column title' })}
-              className="min-w-0 flex-1 text-base font-semibold"
+              ariaLabel={t('layout.column.titleAriaLabel')}
+              editAriaLabel={t('layout.column.editTitle')}
+              placeholder={t('layout.column.titlePlaceholder')}
+              className="min-w-0 flex-1 text-card-title"
             />
             <ColumnOverflowMenu
               column={column}
@@ -84,7 +84,7 @@ export function LayoutPoolColumn({
           <SortableContext items={calloutIds} strategy={verticalListSortingStrategy}>
             {column.callouts.length === 0 && (
               <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
-                {t('layout.column.empty', { defaultValue: 'No callouts in this column yet.' })}
+                {t('layout.column.empty')}
               </div>
             )}
             {column.callouts.map((callout: LayoutCallout) => (
@@ -130,13 +130,7 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflo
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild={true}>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={t('layout.column.menu', { defaultValue: 'Column actions' })}
-          className="shrink-0"
-        >
+        <Button type="button" variant="ghost" size="icon" aria-label={t('layout.column.menu')} className="shrink-0">
           <MoreVertical aria-hidden="true" className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -145,34 +139,28 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflo
           {column.isCurrentPhase ? (
             <span className="inline-flex items-center gap-1">
               <Check aria-hidden="true" className="size-3" />
-              {t('layout.column.activePhase.current', { defaultValue: 'Active phase (current)' })}
+              {t('layout.column.activePhase.current')}
             </span>
           ) : (
-            t('layout.column.activePhase.set', { defaultValue: 'Mark as active phase' })
+            t('layout.column.activePhase.set')
           )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onEditDetails}>
           <Pencil aria-hidden="true" className="mr-2 size-3.5" />
-          {t('layout.column.editDetails.menuLabel', { defaultValue: 'Edit Details' })}
+          {t('layout.column.editDetails.menuLabel')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            {t('layout.column.defaultPostTemplate.label', { defaultValue: 'Default post template' })}
-          </DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t('layout.column.defaultPostTemplate.label')}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuLabel>
-              {t('layout.column.defaultPostTemplate.header', { defaultValue: 'Pick a template' })}
-            </DropdownMenuLabel>
+            <DropdownMenuLabel>{t('layout.column.defaultPostTemplate.header')}</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => actions.onSetAsDefaultPostTemplate(column.id, null)}>
-              {t('layout.column.defaultPostTemplate.clear', { defaultValue: 'Clear default' })}
+              {t('layout.column.defaultPostTemplate.clear')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {actions.availablePostTemplates.length === 0 && (
-              <DropdownMenuItem disabled={true}>
-                {t('layout.column.defaultPostTemplate.none', { defaultValue: 'No templates available' })}
-              </DropdownMenuItem>
+              <DropdownMenuItem disabled={true}>{t('layout.column.defaultPostTemplate.none')}</DropdownMenuItem>
             )}
             {actions.availablePostTemplates.map(tpl => (
               <DropdownMenuItem key={tpl.id} onClick={() => actions.onSetAsDefaultPostTemplate(column.id, tpl.id)}>
@@ -228,45 +216,41 @@ function EditDetailsDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Pencil aria-hidden="true" className="size-4" />
-            {t('layout.column.editDetails.dialogTitle', { defaultValue: 'Edit Details: Flow Phase' })}
+            {t('layout.column.editDetails.dialogTitle')}
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-muted-foreground">
-              {t('layout.column.editDetails.titleLabel', { defaultValue: 'Title' })}
+            <span className="text-body-emphasis text-muted-foreground">
+              {t('layout.column.editDetails.titleLabel')}
             </span>
             <InlineEditText
               value={title}
               onChange={setTitle}
-              ariaLabel={t('layout.column.editDetails.titleLabel', { defaultValue: 'Title' })}
-              editAriaLabel={t('layout.column.editDetails.editTitle', { defaultValue: 'Edit title' })}
-              placeholder={t('layout.column.titlePlaceholder', { defaultValue: 'Column title' })}
-              className="text-lg font-semibold"
+              ariaLabel={t('layout.column.editDetails.titleLabel')}
+              editAriaLabel={t('layout.column.editDetails.editTitle')}
+              placeholder={t('layout.column.titlePlaceholder')}
+              className="text-subsection-title"
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium">
-              {t('layout.column.editDetails.descriptionLabel', { defaultValue: 'Description' })}
-            </span>
+            <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
             <MarkdownEditor
               value={description}
               onChange={setDescription}
-              placeholder={t('layout.column.editDetails.descriptionPlaceholder', { defaultValue: 'Description' })}
+              placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
             />
           </div>
         </div>
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            {t('layout.column.editDetails.cancel', { defaultValue: 'Cancel' })}
+            {t('layout.column.editDetails.cancel')}
           </Button>
           <Button type="button" onClick={handleSave} disabled={saving}>
-            {saving
-              ? t('layout.column.editDetails.saving', { defaultValue: 'Saving…' })
-              : t('layout.column.editDetails.save', { defaultValue: 'Save' })}
+            {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
           </Button>
         </DialogFooter>
       </DialogContent>

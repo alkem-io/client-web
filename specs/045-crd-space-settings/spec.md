@@ -149,6 +149,30 @@ All mutations fire immediately on action confirmation (there is no tab-wide Save
 
 ---
 
+### User Story 3b - Updates tab (Priority: P1)
+
+A space admin opens the Updates tab to broadcast a message to the community and to curate the historical feed. The tab is a CRD restyle of the existing MUI community-updates admin surface and introduces **no new backend capabilities**.
+
+**Sections (parity with the current MUI community-updates admin surface)**:
+
+- **Compose area** — a markdown textarea + Send button. The textarea is disabled while the send mutation is in flight. Empty / whitespace-only drafts cannot be sent.
+- **Message list** — every update ever posted to the community's updates room, ordered newest-first. Each message shows the author's avatar + display name, the timestamp, the message body rendered as markdown, and a per-row kebab with a single **Remove** entry. Removal is destructive and preceded by a CRD confirmation dialog.
+
+All mutations fire immediately on action confirmation (there is no tab-wide Save / Reset bar). The tab binds to the community's existing updates room — the same `useCommunityUpdatesQuery`, `useSendMessageToRoomMutation`, and `useRemoveMessageOnRoomMutation` the MUI admin uses today.
+
+**Independent Test**: Open Updates. Type a message and click Send — the new message appears at the top of the list. Open the kebab on any message, choose Remove, confirm — the message disappears. Refresh the page — the list is identical.
+
+**Acceptance Scenarios**:
+
+1. **Given** the admin opens the Updates tab, **When** it renders, **Then** the compose area is at the top, the message list follows in newest-first order, and each row shows author / timestamp / body / kebab.
+2. **Given** the admin types in the compose area and clicks Send, **When** the mutation succeeds, **Then** the new message appears at the top of the list and the compose area is cleared.
+3. **Given** the admin clicks Send with an empty or whitespace-only draft, **When** the click is processed, **Then** no mutation fires and no message is appended.
+4. **Given** a send is in flight, **When** it is in flight, **Then** the Send button and the compose textarea are disabled and `aria-busy` is set on the button.
+5. **Given** the admin opens a message's kebab and chooses Remove, **When** they confirm the CRD confirmation dialog, **Then** `removeMessageOnRoom` fires and the message is removed from the list.
+6. **Given** the admin opens a message's kebab and chooses Remove, **When** they cancel the dialog, **Then** no mutation fires.
+
+---
+
 ### User Story 4 - Subspaces tab (Priority: P1)
 
 A space admin opens the Subspaces tab to browse and manage the space's child subspaces. The tab preserves every capability the current MUI Subspaces page offers and adds a few prototype-driven filters and view options.
@@ -294,7 +318,7 @@ Everything on this tab is either read-only display or routes through pre-existin
 ### Functional Requirements
 
 - **FR-001**: Space Settings MUST present the same CRD space hero (banner, name, tagline, member avatars) as the CRD Space Page when CRD is enabled.
-- **FR-002**: Space Settings MUST present a horizontal tab strip below the hero with these tabs in this order: **About, Layout, Community, Subspaces, Templates, Storage, Settings, Account**, and MUST indicate the active tab visually.
+- **FR-002**: Space Settings MUST present a horizontal tab strip below the hero with these tabs in this order: **About, Layout, Community, Updates, Subspaces, Templates, Storage, Settings, Account**, and MUST indicate the active tab visually.
 - **FR-003**: Each tab MUST be deep-linkable — the active tab MUST be reflected in the URL, and opening a direct URL MUST land on the corresponding tab.
 - **FR-004**: The tab strip MUST collapse to a horizontally scrollable row on narrow viewports without losing any tab.
 - **FR-005** (About): The About tab MUST allow admins to view and edit every field the current MUI Space Admin About page exposes and nothing more — specifically: **name** (`profile.displayName`), **tagline** (`profile.tagline`), **Space Branding** (the three visuals: avatar `profile.avatar`, page banner `profile.banner` 1536×256, card banner `profile.cardBanner` 416×256, each uploaded via the existing `useUploadVisualMutation` + crop flow), **location** (`profile.location.country` + `profile.location.city`), **What** (`profile.description`, markdown), **Why** (`about.why`, markdown), **Who** (`about.who`, markdown), **tags** (`profile.tagset[0].tags`), and **references** (full CRUD — create via `useCreateReferenceOnProfileMutation`, delete via `useDeleteReferenceMutation`, title / URL / description patch via the main `useUpdateSpaceMutation`). A live Preview card MUST update on every edit. The Preview card MUST be rendered via the reusable `src/crd/components/space/SpaceCard.tsx` primitive (shared with the future CRD Explore Spaces page). Fields are rendered as flat CRD cards except the three Space Branding visuals, which are grouped in a single "Space Branding" region matching the prototype. **No phantom fields** — every CRD input binds to a real field in the existing `UpdateSpaceInput` / upload / reference mutations (no email, no pronouns — those are user-profile-only fields that do not exist on Space).
@@ -313,6 +337,8 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **FR-014** (Community): The Community tab MUST provide a **Virtual Contributors** collapsible section (collapsed by default). When expanded, it MUST render its own table (~5 rows visible) with the same row template as the users table, scoped to virtual contributor accounts, exposing the existing add / edit / delete / active-toggle affordances.
 - **FR-015** (Community): The Community tab MUST provide an Application Form card (edit application questions) and a Community Guidelines card (edit guidelines; save-as-template via existing `createTemplate`). Both are collapsible. These editors live **exclusively** on the Community tab — they MUST NOT appear on the Settings tab. The Settings tab is reserved for space-wide preferences (visibility, membership policy, allowed actions, trust-host-org); any member-facing / community-lifecycle forms belong on Community.
 - **FR-016** (Subspaces): The Subspaces tab MUST retain the current MUI per-subspace kebab menu exactly: **Pin / Unpin** (alphabetical sort mode only), **Save as Template**, **Delete**. "Edit Details" and "Archive" are explicitly OUT of scope in this iteration.
+- **FR-016a** (Updates): The Updates tab MUST render a compose area (markdown textarea + Send button) at the top and a newest-first list of every message posted to the community's updates room below. The tab MUST bind to the existing `useCommunityUpdatesQuery`, `useSendMessageToRoomMutation`, and `useRemoveMessageOnRoomMutation` — no new queries or mutations are introduced.
+- **FR-016b** (Updates): Each message row MUST show author avatar, author display name, timestamp, and the message body rendered as markdown, plus a per-row kebab exposing a single **Remove** entry. Remove MUST be preceded by a CRD confirmation dialog. Empty / whitespace-only drafts MUST NOT fire the Send mutation. While a Send mutation is in flight, the Send button and textarea MUST be disabled and `aria-busy` MUST be set on the button.
 - **FR-017** (Subspaces): The Subspaces tab MUST retain the current Default Subspace Template selector (with innovation flow / callouts preview) and the existing Create Subspace entry point.
 - **FR-018** (Subspaces): The Subspaces tab MUST add — on top of the retained MUI features — a **search** input, a **filter** dropdown with values All / Active / Archived (using existing `SpaceVisibility.Archived` enum), and a **Grid / List** view toggle. Clicking a subspace title MUST navigate to the subspace (existing behavior). The prototype's kebab "View" entry is dropped.
 - **FR-019** (Templates): The Templates tab MUST list five collapsible categories — **Space**, **Collaboration Tool**, **Whiteboard**, **Post**, **Community Guidelines** — each with an Add New dropdown offering "Create a new template" and "Select from the platform library", mirroring current MUI entry points.

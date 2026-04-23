@@ -1,5 +1,5 @@
 import { Pencil } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Input } from '@/crd/primitives/input';
 import { Textarea } from '@/crd/primitives/textarea';
@@ -74,7 +74,7 @@ export function InlineEditText({
     []
   );
 
-  const commit = useCallback(() => {
+  const commit = () => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = undefined;
@@ -84,49 +84,42 @@ export function InlineEditText({
       onChange(trimmed);
     }
     setIsEditing(false);
-  }, [draft, onChange, value]);
+  };
 
-  const revert = useCallback(() => {
+  const revert = () => {
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = undefined;
     }
     setDraft(value);
     setIsEditing(false);
-  }, [value]);
+  };
 
-  const scheduleIdleCommit = useCallback(() => {
+  const scheduleIdleCommit = () => {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     idleTimerRef.current = setTimeout(() => {
       commit();
     }, IDLE_DEBOUNCE_MS);
-  }, [commit]);
+  };
 
-  const handleChange = useCallback(
-    (next: string) => {
-      setDraft(next);
-      scheduleIdleCommit();
-    },
-    [scheduleIdleCommit]
-  );
+  const handleChange = (next: string) => {
+    setDraft(next);
+    scheduleIdleCommit();
+  };
 
-  const onKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (event.key === 'Escape') {
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      revert();
+      return;
+    }
+    if (event.key === 'Enter' && !event.shiftKey) {
+      if (!multiline || !event.shiftKey) {
         event.preventDefault();
-        revert();
-        return;
+        commit();
       }
-      // Enter commits single-line. Multi-line uses Shift+Enter for newline; Enter alone commits.
-      if (event.key === 'Enter' && !event.shiftKey) {
-        if (!multiline || !event.shiftKey) {
-          event.preventDefault();
-          commit();
-        }
-      }
-    },
-    [commit, multiline, revert]
-  );
+    }
+  };
 
   if (!isEditing) {
     return (

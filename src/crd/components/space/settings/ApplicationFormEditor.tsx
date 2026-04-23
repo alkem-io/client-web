@@ -53,48 +53,40 @@ export function ApplicationFormEditor({
     <div className={cn('space-y-6', className)}>
       {/* Introduction / Description */}
       <div className="space-y-1">
-        <span className="text-sm font-medium">
-          {t('settings.applicationForm.introductionLabel', { defaultValue: 'Introduction' })}
-        </span>
+        <span className="text-body-emphasis">{t('settings.applicationForm.introductionLabel')}</span>
         <MarkdownEditor value={description} onChange={onDescriptionChange} />
       </div>
 
       {/* Questions */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">
-            {t('settings.applicationForm.questionsLabel', { defaultValue: 'Questions' })}
-          </span>
+          <span className="text-body-emphasis">{t('settings.applicationForm.questionsLabel')}</span>
           <Button type="button" variant="outline" size="sm" onClick={onQuestionAdd} disabled={loading}>
             <Plus aria-hidden="true" className="size-3.5 mr-1.5" />
-            {t('settings.applicationForm.addQuestion', { defaultValue: 'Add question' })}
+            {t('settings.applicationForm.addQuestion')}
           </Button>
         </div>
 
         {questions.length === 0 && (
-          <p className="text-sm text-muted-foreground py-4 text-center">
-            {t('settings.applicationForm.noQuestions', { defaultValue: 'No questions added yet.' })}
-          </p>
+          <p className="text-sm text-muted-foreground py-4 text-center">{t('settings.applicationForm.noQuestions')}</p>
         )}
 
         {questions.map((q, index) => (
           <div key={q.sortOrder} className="flex items-center gap-2 rounded-lg border p-3 bg-muted/10">
-            <span className="size-7 rounded-full bg-primary/10 text-primary text-sm font-semibold flex items-center justify-center shrink-0">
+            <span className="size-7 rounded-full bg-primary/10 text-primary text-card-title flex items-center justify-center shrink-0">
               {index + 1}
             </span>
             <div className="flex-1 min-w-0">
               <Input
                 value={q.question}
                 onChange={e => onQuestionChange(index, e.target.value)}
-                placeholder={t('settings.applicationForm.questionPlaceholder', { defaultValue: 'Enter question…' })}
+                placeholder={t('settings.applicationForm.questionPlaceholder')}
                 className={cn('h-8 text-sm', !q.question.trim() && 'border-destructive')}
                 aria-invalid={!q.question.trim()}
                 disabled={loading}
               />
               {!q.question.trim() && (
-                <p className="text-xs text-destructive mt-1">
-                  {t('settings.applicationForm.questionRequired', { defaultValue: 'Question text is required' })}
-                </p>
+                <p className="text-xs text-destructive mt-1">{t('settings.applicationForm.questionRequired')}</p>
               )}
             </div>
             <div className="flex items-center gap-1 shrink-0">
@@ -102,7 +94,7 @@ export function ApplicationFormEditor({
                 htmlFor={`q-required-${index}`}
                 className="text-xs text-muted-foreground cursor-pointer whitespace-nowrap"
               >
-                {t('settings.applicationForm.required', { defaultValue: 'Required' })}
+                {t('settings.applicationForm.required')}
               </Label>
               <Checkbox
                 id={`q-required-${index}`}
@@ -119,7 +111,7 @@ export function ApplicationFormEditor({
                 className="size-7"
                 onClick={() => onQuestionMoveUp(index)}
                 disabled={loading || index === 0}
-                aria-label={t('settings.applicationForm.moveUp', { defaultValue: 'Move up' })}
+                aria-label={t('settings.applicationForm.moveUp')}
               >
                 <ArrowUp aria-hidden="true" className="size-3.5" />
               </Button>
@@ -130,7 +122,7 @@ export function ApplicationFormEditor({
                 className="size-7"
                 onClick={() => onQuestionMoveDown(index)}
                 disabled={loading || index === questions.length - 1}
-                aria-label={t('settings.applicationForm.moveDown', { defaultValue: 'Move down' })}
+                aria-label={t('settings.applicationForm.moveDown')}
               >
                 <ArrowDown aria-hidden="true" className="size-3.5" />
               </Button>
@@ -141,7 +133,7 @@ export function ApplicationFormEditor({
                 className="size-7"
                 onClick={() => setPendingDeleteIndex(index)}
                 disabled={loading}
-                aria-label={t('settings.applicationForm.deleteQuestion', { defaultValue: 'Delete question' })}
+                aria-label={t('settings.applicationForm.deleteQuestion')}
               >
                 <Trash2 aria-hidden="true" className="size-3.5 text-destructive" />
               </Button>
@@ -153,7 +145,7 @@ export function ApplicationFormEditor({
       {/* Save button */}
       <div className="flex justify-end">
         <Button type="button" onClick={onSave} disabled={!canSave}>
-          {t('settings.applicationForm.save', { defaultValue: 'Save' })}
+          {t('settings.applicationForm.save')}
         </Button>
       </div>
 
@@ -164,12 +156,10 @@ export function ApplicationFormEditor({
           if (!open) setPendingDeleteIndex(null);
         }}
         variant="destructive"
-        title={t('settings.applicationForm.deleteConfirm.title', { defaultValue: 'Delete question' })}
-        description={t('settings.applicationForm.deleteConfirm.description', {
-          defaultValue: 'Are you sure you want to remove this question?',
-        })}
-        confirmLabel={t('settings.applicationForm.deleteConfirm.confirm', { defaultValue: 'Delete' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('settings.applicationForm.deleteConfirm.title')}
+        description={t('settings.applicationForm.deleteConfirm.description')}
+        confirmLabel={t('settings.applicationForm.deleteConfirm.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={() => {
           if (pendingDeleteIndex !== null) {
             onQuestionDelete(pendingDeleteIndex);

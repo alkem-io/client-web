@@ -80,9 +80,7 @@ export function PendingMembershipsTable({
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       <div className="flex items-center gap-2">
-        <h3 className="text-subsection-title">
-          {t('community.pendingMemberships.title', { defaultValue: 'Pending Memberships' })}
-        </h3>
+        <h3 className="text-subsection-title">{t('community.pendingMemberships.title')}</h3>
         <Badge variant="secondary" className="rounded-full">
           {items.length}
         </Badge>
@@ -91,23 +89,19 @@ export function PendingMembershipsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[280px]">
-                {t('community.pendingMemberships.name', { defaultValue: 'Name' })}
-              </TableHead>
-              <TableHead>{t('community.pendingMemberships.email', { defaultValue: 'Email' })}</TableHead>
-              <TableHead>{t('community.pendingMemberships.date', { defaultValue: 'Date' })}</TableHead>
-              <TableHead>{t('community.pendingMemberships.status.column', { defaultValue: 'Status' })}</TableHead>
-              <TableHead>{t('community.pendingMemberships.type', { defaultValue: 'Type' })}</TableHead>
-              <TableHead className="w-[160px] text-right">
-                {t('community.pendingMemberships.actions', { defaultValue: 'Actions' })}
-              </TableHead>
+              <TableHead className="w-[280px]">{t('community.pendingMemberships.name')}</TableHead>
+              <TableHead>{t('community.pendingMemberships.email')}</TableHead>
+              <TableHead>{t('community.pendingMemberships.date')}</TableHead>
+              <TableHead>{t('community.pendingMemberships.status.column')}</TableHead>
+              <TableHead>{t('community.pendingMemberships.type')}</TableHead>
+              <TableHead className="w-[160px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
-                  {t('community.pendingMemberships.empty', { defaultValue: 'No pending memberships.' })}
+                  {t('community.pendingMemberships.empty')}
                 </TableCell>
               </TableRow>
             )}
@@ -145,7 +139,7 @@ export function PendingMembershipsTable({
                       className="size-8 text-primary border-primary/30 hover:bg-primary/10 disabled:opacity-40"
                       disabled={!row.canApprove}
                       onClick={() => onApprove(row.id)}
-                      aria-label={t('community.pendingMemberships.approve', { defaultValue: 'Approve' })}
+                      aria-label={t('community.pendingMemberships.approve')}
                     >
                       <Check aria-hidden="true" className="size-4" />
                     </Button>
@@ -156,7 +150,7 @@ export function PendingMembershipsTable({
                       className="size-8 text-destructive border-destructive/30 hover:bg-destructive/10 disabled:opacity-40"
                       disabled={!row.canReject}
                       onClick={() => onReject(row.id)}
-                      aria-label={t('community.pendingMemberships.reject', { defaultValue: 'Reject' })}
+                      aria-label={t('community.pendingMemberships.reject')}
                     >
                       <X aria-hidden="true" className="size-4" />
                     </Button>
@@ -167,7 +161,7 @@ export function PendingMembershipsTable({
                       className="size-8 disabled:opacity-40"
                       disabled={!row.canDelete}
                       onClick={() => onDelete(row.id)}
-                      aria-label={t('community.pendingMemberships.delete', { defaultValue: 'Delete' })}
+                      aria-label={t('community.pendingMemberships.delete')}
                     >
                       <Trash2 aria-hidden="true" className="size-4 text-destructive" />
                     </Button>

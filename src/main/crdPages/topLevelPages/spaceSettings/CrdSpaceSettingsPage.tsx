@@ -340,12 +340,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) updatesTab.onCancelRemove();
         }}
         variant="destructive"
-        title={t('updates.deleteDialog.title', { defaultValue: 'Delete update' })}
-        description={t('updates.deleteDialog.description', {
-          defaultValue: 'Are you sure you want to delete this update? This cannot be undone.',
-        })}
-        confirmLabel={t('updates.deleteDialog.confirm', { defaultValue: 'Delete' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('updates.deleteDialog.title')}
+        description={t('updates.deleteDialog.description')}
+        confirmLabel={t('updates.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={() => void updatesTab.onConfirmRemove()}
         onCancel={updatesTab.onCancelRemove}
       />
@@ -454,13 +452,12 @@ export default function CrdSpaceSettingsPage() {
         config={about.pendingCrop?.config ?? {}}
         onSave={({ file, altText }) => about.onCropComplete(file, altText)}
         onCancel={about.onCropCancel}
-        saveLabel={t('about.branding.cropDialog.save', { defaultValue: 'Save' })}
-        cancelLabel={t('about.branding.cropDialog.cancel', { defaultValue: 'Cancel' })}
-        title={t('about.branding.cropDialog.title', { defaultValue: 'Crop Image' })}
-        altTextLabel={t('about.branding.cropDialog.altText', { defaultValue: 'Description' })}
-        altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder', {
-          defaultValue: 'Describe this image…',
-        })}
+        saveLabel={t('about.branding.cropDialog.save')}
+        savingLabel={t('about.branding.cropDialog.saving')}
+        cancelLabel={t('about.branding.cropDialog.cancel')}
+        title={t('about.branding.cropDialog.title')}
+        altTextLabel={t('about.branding.cropDialog.altText')}
+        altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder')}
       />
 
       <ConfirmationDialog
@@ -469,13 +466,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) subspacesTab.cancelDelete();
         }}
         variant="destructive"
-        title={t('subspaces.deleteDialog.title', { defaultValue: 'Delete subspace' })}
-        description={t('subspaces.deleteDialog.description', {
-          defaultValue: 'Are you sure you want to delete "{{name}}"? This action cannot be undone.',
-          name: subspacesTab.pendingDelete?.name ?? '',
-        })}
-        confirmLabel={t('subspaces.deleteDialog.confirm', { defaultValue: 'Delete' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('subspaces.deleteDialog.title')}
+        description={t('subspaces.deleteDialog.description', { name: subspacesTab.pendingDelete?.name ?? '' })}
+        confirmLabel={t('subspaces.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={subspacesTab.confirmDelete}
         onCancel={subspacesTab.cancelDelete}
       />
@@ -483,18 +477,16 @@ export default function CrdSpaceSettingsPage() {
       <ConfirmationDialog
         open={templatesTab.pendingDelete !== null}
         onOpenChange={open => {
-          if (!open) templatesTab.cancelDelete();
+          if (!open && !templatesTab.deleting) templatesTab.cancelDelete();
         }}
         variant="destructive"
-        title={t('templates.deleteDialog.title', { defaultValue: 'Delete template' })}
-        description={t('templates.deleteDialog.description', {
-          defaultValue: 'Are you sure you want to delete "{{name}}"? This action cannot be undone.',
-          name: templatesTab.pendingDelete?.name ?? '',
-        })}
-        confirmLabel={t('templates.deleteDialog.confirm', { defaultValue: 'Delete' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('templates.deleteDialog.title')}
+        description={t('templates.deleteDialog.description', { name: templatesTab.pendingDelete?.name ?? '' })}
+        confirmLabel={t('templates.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={templatesTab.confirmDelete}
         onCancel={templatesTab.cancelDelete}
+        loading={templatesTab.deleting}
       />
 
       <ConfirmationDialog
@@ -506,28 +498,18 @@ export default function CrdSpaceSettingsPage() {
         title={(() => {
           switch (community.pendingRemoval?.kind) {
             case 'user':
-              return t('community.confirmRemove.user.title', { defaultValue: 'Remove member' });
+              return t('community.confirmRemove.user.title');
             case 'organization':
-              return t('community.confirmRemove.organization.title', {
-                defaultValue: 'Remove organization',
-              });
+              return t('community.confirmRemove.organization.title');
             case 'virtualContributor':
-              return t('community.confirmRemove.virtualContributor.title', {
-                defaultValue: 'Remove virtual contributor',
-              });
+              return t('community.confirmRemove.virtualContributor.title');
             case 'applicationReject':
-              return t('community.confirmRemove.applicationReject.title', {
-                defaultValue: 'Reject application',
-              });
+              return t('community.confirmRemove.applicationReject.title');
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.title', {
-                  defaultValue: 'Remove application',
-                });
+                return t('community.confirmRemove.applicationDelete.title');
               }
-              return t('community.confirmRemove.invitation.title', {
-                defaultValue: 'Revoke invitation',
-              });
+              return t('community.confirmRemove.invitation.title');
             default:
               return '';
           }
@@ -536,42 +518,24 @@ export default function CrdSpaceSettingsPage() {
           const name = community.pendingRemoval?.name ?? '';
           switch (community.pendingRemoval?.kind) {
             case 'user':
-              return t('community.confirmRemove.user.description', {
-                defaultValue: 'Remove {{name}} from this space? They will lose access immediately.',
-                name,
-              });
+              return t('community.confirmRemove.user.description', { name });
             case 'organization':
-              return t('community.confirmRemove.organization.description', {
-                defaultValue: 'Remove {{name}} from this space?',
-                name,
-              });
+              return t('community.confirmRemove.organization.description', { name });
             case 'virtualContributor':
-              return t('community.confirmRemove.virtualContributor.description', {
-                defaultValue: 'Remove {{name}} from this space?',
-                name,
-              });
+              return t('community.confirmRemove.virtualContributor.description', { name });
             case 'applicationReject':
-              return t('community.confirmRemove.applicationReject.description', {
-                defaultValue: "Reject {{name}}'s application to join this space?",
-                name,
-              });
+              return t('community.confirmRemove.applicationReject.description', { name });
             case 'pendingDelete':
               if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.description', {
-                  defaultValue: "Remove {{name}}'s application from the list?",
-                  name,
-                });
+                return t('community.confirmRemove.applicationDelete.description', { name });
               }
-              return t('community.confirmRemove.invitation.description', {
-                defaultValue: 'Revoke the pending invitation for {{name}}?',
-                name,
-              });
+              return t('community.confirmRemove.invitation.description', { name });
             default:
               return '';
           }
         })()}
-        confirmLabel={t('community.confirmRemove.confirm', { defaultValue: 'Confirm' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        confirmLabel={t('community.confirmRemove.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={() => void community.confirmRemoval()}
         onCancel={community.cancelRemoval}
       />
@@ -581,21 +545,15 @@ export default function CrdSpaceSettingsPage() {
         onOpenChange={open => {
           if (!open) addOrgDialog.closeDialog();
         }}
-        title={t('community.organizations.addDialog.title', { defaultValue: 'Add Organization' })}
-        description={t('community.organizations.addDialog.description', {
-          defaultValue: 'Pick an organization whose members can join this space without approval.',
-        })}
-        searchPlaceholder={t('community.organizations.addDialog.search', {
-          defaultValue: 'Search organizations…',
-        })}
+        title={t('community.organizations.addDialog.title')}
+        description={t('community.organizations.addDialog.description')}
+        searchPlaceholder={t('community.organizations.addDialog.search')}
         candidates={addOrgDialog.candidates}
         loading={addOrgDialog.loading}
         search={addOrgDialog.search}
         addedIds={addOrgDialog.addedIds}
         addingId={addOrgDialog.addingId}
-        emptyLabel={t('community.organizations.addDialog.empty', {
-          defaultValue: 'No organizations match your search.',
-        })}
+        emptyLabel={t('community.organizations.addDialog.empty')}
         onSearchChange={addOrgDialog.onSearchChange}
         onAdd={id => void addOrgDialog.onAdd(id)}
       />
@@ -605,21 +563,15 @@ export default function CrdSpaceSettingsPage() {
         onOpenChange={open => {
           if (!open) addVCDialog.closeDialog();
         }}
-        title={t('community.virtualContributors.addDialog.title', { defaultValue: 'Add Virtual Contributor' })}
-        description={t('community.virtualContributors.addDialog.description', {
-          defaultValue: 'Pick a virtual contributor from this account to add to the space.',
-        })}
-        searchPlaceholder={t('community.virtualContributors.addDialog.search', {
-          defaultValue: 'Search virtual contributors…',
-        })}
+        title={t('community.virtualContributors.addDialog.title')}
+        description={t('community.virtualContributors.addDialog.description')}
+        searchPlaceholder={t('community.virtualContributors.addDialog.search')}
         candidates={addVCDialog.candidates}
         loading={addVCDialog.loading}
         search={addVCDialog.search}
         addedIds={addVCDialog.addedIds}
         addingId={addVCDialog.addingId}
-        emptyLabel={t('community.virtualContributors.addDialog.empty', {
-          defaultValue: 'No virtual contributors available on this account.',
-        })}
+        emptyLabel={t('community.virtualContributors.addDialog.empty')}
         onSearchChange={addVCDialog.onSearchChange}
         onAdd={id => void addVCDialog.onAdd(id)}
       />
@@ -629,24 +581,15 @@ export default function CrdSpaceSettingsPage() {
         onOpenChange={open => {
           if (!open) addVCExternalDialog.closeDialog();
         }}
-        title={t('community.virtualContributors.addExternalDialog.title', {
-          defaultValue: 'Invite External Virtual Contributor',
-        })}
-        description={t('community.virtualContributors.addExternalDialog.description', {
-          defaultValue:
-            'Invite a virtual contributor from the Alkemio library. The owner will have to accept the invitation.',
-        })}
-        searchPlaceholder={t('community.virtualContributors.addExternalDialog.search', {
-          defaultValue: 'Search the library…',
-        })}
+        title={t('community.virtualContributors.addExternalDialog.title')}
+        description={t('community.virtualContributors.addExternalDialog.description')}
+        searchPlaceholder={t('community.virtualContributors.addExternalDialog.search')}
         candidates={addVCExternalDialog.candidates}
         loading={addVCExternalDialog.loading}
         search={addVCExternalDialog.search}
         addedIds={addVCExternalDialog.addedIds}
         addingId={addVCExternalDialog.addingId}
-        emptyLabel={t('community.virtualContributors.addExternalDialog.empty', {
-          defaultValue: 'No library virtual contributors match your search.',
-        })}
+        emptyLabel={t('community.virtualContributors.addExternalDialog.empty')}
         onSearchChange={addVCExternalDialog.onSearchChange}
         onAdd={id => void addVCExternalDialog.onAdd(id)}
       />
@@ -673,13 +616,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) storageTab.cancelDelete();
         }}
         variant="destructive"
-        title={t('storage.deleteDialog.title', { defaultValue: 'Delete document' })}
-        description={t('storage.deleteDialog.description', {
-          defaultValue: 'Are you sure you want to delete "{{name}}"? This action cannot be undone.',
-          name: storageTab.pendingDelete?.name ?? '',
-        })}
-        confirmLabel={t('storage.deleteDialog.confirm', { defaultValue: 'Delete' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('storage.deleteDialog.title')}
+        description={t('storage.deleteDialog.description', { name: storageTab.pendingDelete?.name ?? '' })}
+        confirmLabel={t('storage.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={storageTab.confirmDelete}
         onCancel={storageTab.cancelDelete}
       />
@@ -690,12 +630,10 @@ export default function CrdSpaceSettingsPage() {
           if (!open) accountTab.cancelDeleteSpace();
         }}
         variant="destructive"
-        title={t('account.dangerZone.deleteDialog.title', { defaultValue: 'Delete Space' })}
-        description={t('account.dangerZone.deleteDialog.description', {
-          defaultValue: 'This will permanently delete this space and all its content. This action cannot be undone.',
-        })}
-        confirmLabel={t('account.dangerZone.deleteDialog.confirm', { defaultValue: 'Delete Space' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('account.dangerZone.deleteDialog.title')}
+        description={t('account.dangerZone.deleteDialog.description')}
+        confirmLabel={t('account.dangerZone.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
       />
@@ -706,17 +644,12 @@ export default function CrdSpaceSettingsPage() {
           if (!open) about.onCancelRemoveReference();
         }}
         variant="destructive"
-        title={t('about.references.deleteDialog.title', { defaultValue: 'Remove reference' })}
+        title={t('about.references.deleteDialog.title')}
         description={t('about.references.deleteDialog.description', {
-          defaultValue: 'Are you sure you want to remove "{{name}}"? This cannot be undone once you Save.',
-          name:
-            about.pendingReferenceDelete?.title ||
-            t('about.references.deleteDialog.untitled', {
-              defaultValue: 'this reference',
-            }),
+          name: about.pendingReferenceDelete?.title || t('about.references.deleteDialog.untitled'),
         })}
-        confirmLabel={t('about.references.deleteDialog.confirm', { defaultValue: 'Remove' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        confirmLabel={t('about.references.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={about.onConfirmRemoveReference}
         onCancel={about.onCancelRemoveReference}
       />
@@ -725,12 +658,10 @@ export default function CrdSpaceSettingsPage() {
         open={layoutDiscardOpen}
         onOpenChange={setLayoutDiscardOpen}
         variant="destructive"
-        title={t('layout.discardChangesDialog.title', { defaultValue: 'Discard changes?' })}
-        description={t('layout.discardChangesDialog.description', {
-          defaultValue: 'Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.',
-        })}
-        confirmLabel={t('layout.discardChangesDialog.confirm', { defaultValue: 'Discard Changes' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('layout.discardChangesDialog.title')}
+        description={t('layout.discardChangesDialog.description')}
+        confirmLabel={t('layout.discardChangesDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={handleLayoutDiscardConfirm}
         onCancel={() => setLayoutDiscardOpen(false)}
       />
@@ -741,13 +672,11 @@ export default function CrdSpaceSettingsPage() {
           if (!open) handleConfirmSwitchCancel();
         }}
         variant="discard"
-        title={t('dirtyGuard.tabSwitch.title', { defaultValue: 'Unsaved changes' })}
-        description={t('dirtyGuard.tabSwitch.description', {
-          defaultValue: 'You have unsaved changes on this tab. Save them, discard them, or stay on this tab?',
-        })}
-        saveLabel={t('dirtyGuard.save', { defaultValue: 'Save' })}
-        discardLabel={t('dirtyGuard.discard', { defaultValue: 'Discard & leave' })}
-        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        title={t('dirtyGuard.tabSwitch.title')}
+        description={t('dirtyGuard.tabSwitch.description')}
+        saveLabel={t('dirtyGuard.save')}
+        discardLabel={t('dirtyGuard.discard')}
+        cancelLabel={t('dirtyGuard.cancel')}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}

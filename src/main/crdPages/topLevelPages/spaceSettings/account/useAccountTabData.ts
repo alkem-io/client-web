@@ -14,7 +14,7 @@ export type UseAccountTabDataResult = {
   canDeleteSpace: boolean;
   loading: boolean;
   onDeleteSpace: () => void;
-  onCopyUrl: () => Promise<void>;
+  onCopyUrl: () => Promise<boolean>;
   pendingDeleteSpace: boolean;
   confirmDeleteSpace: () => void;
   cancelDeleteSpace: () => void;
@@ -57,9 +57,14 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
     setPendingDeleteSpace(false);
   };
 
-  const onCopyUrl = async () => {
-    if (!url) return;
-    await navigator.clipboard.writeText(url);
+  const onCopyUrl = async (): Promise<boolean> => {
+    if (!url) return false;
+    try {
+      await navigator.clipboard.writeText(url);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return {

@@ -69,7 +69,7 @@ export function TemplateEditDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden [&>*]:min-w-0">
         <DialogHeader>
-          <DialogTitle>{t('templates.edit.title', { defaultValue: 'Edit template' })}</DialogTitle>
+          <DialogTitle>{t('templates.edit.title')}</DialogTitle>
         </DialogHeader>
 
         {loading ? (
@@ -78,12 +78,7 @@ export function TemplateEditDialog({
           </div>
         ) : (
           <div className="flex flex-col gap-4 py-2">
-            <Field
-              id="template-edit-name"
-              label={t('templates.edit.name', { defaultValue: 'Name' })}
-              required={true}
-              error={errors.displayName}
-            >
+            <Field id="template-edit-name" label={t('templates.edit.name')} required={true} error={errors.displayName}>
               <Input
                 id="template-edit-name"
                 value={values.displayName}
@@ -94,40 +89,28 @@ export function TemplateEditDialog({
               />
             </Field>
 
-            <Field
-              id="template-edit-description"
-              label={t('templates.edit.description', { defaultValue: 'Description' })}
-            >
+            <Field id="template-edit-description" label={t('templates.edit.description')}>
               <MarkdownEditor
                 value={values.description}
                 onChange={next => onChange({ description: next })}
-                placeholder={t('templates.edit.descriptionPlaceholder', {
-                  defaultValue: 'Describe this template…',
-                })}
+                placeholder={t('templates.edit.descriptionPlaceholder')}
               />
             </Field>
 
-            <Field id="template-edit-tags" label={t('templates.edit.tags', { defaultValue: 'Tags' })}>
+            <Field id="template-edit-tags" label={t('templates.edit.tags')}>
               <TagsInput
                 value={values.tags}
                 onChange={next => onChange({ tags: next })}
-                placeholder={t('templates.edit.tagsPlaceholder', {
-                  defaultValue: 'Add a tag and press Enter',
-                })}
+                placeholder={t('templates.edit.tagsPlaceholder')}
               />
             </Field>
 
             {isPostTemplate && (
-              <Field
-                id="template-edit-postDefault"
-                label={t('templates.edit.postDefault', { defaultValue: 'Default post description' })}
-              >
+              <Field id="template-edit-postDefault" label={t('templates.edit.postDefault')}>
                 <MarkdownEditor
                   value={values.postDefaultDescription ?? ''}
                   onChange={next => onChange({ postDefaultDescription: next })}
-                  placeholder={t('templates.edit.postDefaultPlaceholder', {
-                    defaultValue: 'Shown pre-filled when members create a post from this template…',
-                  })}
+                  placeholder={t('templates.edit.postDefaultPlaceholder')}
                 />
               </Field>
             )}
@@ -142,16 +125,16 @@ export function TemplateEditDialog({
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={submitting}>
-            {t('templates.edit.cancel', { defaultValue: 'Cancel' })}
+            {t('templates.edit.cancel')}
           </Button>
           <Button type="button" onClick={onSubmit} disabled={!canSubmit} aria-busy={submitting}>
             {submitting ? (
               <>
                 <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                {t('templates.edit.saving', { defaultValue: 'Saving…' })}
+                {t('templates.edit.saving')}
               </>
             ) : (
-              t('templates.edit.save', { defaultValue: 'Save' })
+              t('templates.edit.save')
             )}
           </Button>
         </DialogFooter>

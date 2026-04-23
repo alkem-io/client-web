@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import Resizer from 'react-image-file-resizer';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -27,11 +27,12 @@ type ImageCropDialogProps = {
   config: ImageCropConfig;
   onSave: (data: { file: File; altText: string }) => void;
   onCancel: () => void;
-  saveLabel?: string;
-  cancelLabel?: string;
-  altTextLabel?: string;
-  altTextPlaceholder?: string;
-  title?: string;
+  saveLabel: string;
+  savingLabel: string;
+  cancelLabel: string;
+  altTextLabel: string;
+  altTextPlaceholder: string;
+  title: string;
   description?: string;
 };
 
@@ -52,11 +53,12 @@ export function ImageCropDialog({
   config,
   onSave,
   onCancel,
-  saveLabel = 'Save',
-  cancelLabel = 'Cancel',
-  altTextLabel = 'Description',
-  altTextPlaceholder = 'Describe this image…',
-  title = 'Crop Image',
+  saveLabel,
+  savingLabel,
+  cancelLabel,
+  altTextLabel,
+  altTextPlaceholder,
+  title,
   description,
 }: ImageCropDialogProps) {
   const [crop, setCrop] = useState<Crop>();
@@ -81,7 +83,7 @@ export function ImageCropDialog({
     }
   }
 
-  const handleSave = useCallback(async () => {
+  const handleSave = async () => {
     if (!imgRef.current || !completedCrop) return;
     setSaving(true);
     try {
@@ -95,7 +97,7 @@ export function ImageCropDialog({
     } finally {
       setSaving(false);
     }
-  }, [altText, completedCrop, config, file, onSave]);
+  };
 
   return (
     <Dialog
@@ -165,8 +167,8 @@ export function ImageCropDialog({
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {cancelLabel}
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || !completedCrop}>
-            {saving ? 'Saving…' : saveLabel}
+          <Button type="button" onClick={handleSave} disabled={saving || !completedCrop} aria-busy={saving}>
+            {saving ? savingLabel : saveLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

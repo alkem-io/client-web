@@ -49,31 +49,25 @@ export function SpaceSettingsStorageView({
   return (
     <div className={cn('flex flex-col gap-6', className)}>
       <div>
-        <h2 className="text-lg font-semibold">{t('storage.pageHeader.title', { defaultValue: 'Storage' })}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t('storage.pageHeader.subtitle', {
-            defaultValue: 'Browse and manage documents stored in this space.',
-          })}
-        </p>
+        <h2 className="text-page-title">{t('storage.pageHeader.title')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('storage.pageHeader.subtitle')}</p>
       </div>
 
       {loading ? (
         <StorageSkeletons />
       ) : rows.length === 0 ? (
         <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-          {t('storage.empty', { defaultValue: 'No documents stored yet.' })}
+          {t('storage.empty')}
         </div>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t('storage.columns.name', { defaultValue: 'Name' })}</TableHead>
-              <TableHead className="w-[100px]">{t('storage.columns.size', { defaultValue: 'Size' })}</TableHead>
-              <TableHead className="w-[150px]">
-                {t('storage.columns.uploader', { defaultValue: 'Uploaded by' })}
-              </TableHead>
-              <TableHead className="w-[150px]">{t('storage.columns.date', { defaultValue: 'Date' })}</TableHead>
-              <TableHead className="w-[80px]">{t('storage.columns.actions', { defaultValue: 'Actions' })}</TableHead>
+              <TableHead>{t('storage.columns.name')}</TableHead>
+              <TableHead className="w-[100px]">{t('storage.columns.size')}</TableHead>
+              <TableHead className="w-[150px]">{t('storage.columns.uploader')}</TableHead>
+              <TableHead className="w-[150px]">{t('storage.columns.date')}</TableHead>
+              <TableHead className="w-[80px]">{t('storage.columns.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -130,7 +124,7 @@ function StorageRow({
         <TableCell>
           <button
             type="button"
-            className="flex items-center gap-1.5 text-sm font-medium hover:underline"
+            className="flex items-center gap-1.5 text-body-emphasis hover:underline"
             style={{ paddingLeft: `${depth * 20}px` }}
             onClick={onToggle}
           >
@@ -179,7 +173,7 @@ function StorageRow({
             href={node.openHref}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={t('storage.openInNewTab', { defaultValue: 'Open in new tab' })}
+            aria-label={t('storage.openInNewTab')}
             className="inline-flex items-center justify-center size-7 rounded-md hover:bg-muted transition-colors"
           >
             <ExternalLink aria-hidden="true" className="size-3.5" />
@@ -191,7 +185,7 @@ function StorageRow({
               size="icon"
               className="size-7"
               onClick={() => onDelete(node.id, node.name)}
-              aria-label={t('storage.delete', { defaultValue: 'Delete document' })}
+              aria-label={t('storage.delete')}
             >
               <Trash2 aria-hidden="true" className="size-3.5 text-destructive" />
             </Button>

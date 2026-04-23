@@ -1,3 +1,4 @@
+import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import {
@@ -147,6 +148,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
               variant === 'destructive' && 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
             )}
           >
+            {loading && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
             {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>

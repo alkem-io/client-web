@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 /**
@@ -76,15 +75,12 @@ export function useSpaceSettingsTab(): {
 
   const activeTab = parseSpaceSettingsTab(pathname);
 
-  const setActiveTab = useCallback(
-    (next: SpaceSettingsTabId) => {
-      const target = buildSpaceSettingsTabPath(pathname, next);
-      if (target !== pathname) {
-        navigate(target);
-      }
-    },
-    [navigate, pathname]
-  );
+  const setActiveTab = (next: SpaceSettingsTabId) => {
+    const target = buildSpaceSettingsTabPath(pathname, next);
+    if (target !== pathname) {
+      navigate(target);
+    }
+  };
 
   return { activeTab, setActiveTab };
 }

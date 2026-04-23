@@ -66,19 +66,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   return (
     <div className={cn('flex flex-col gap-0', className)}>
       <div className="mb-6">
-        <h2 className="text-lg font-semibold">{t('about.pageHeader.title', { defaultValue: 'About' })}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t('about.pageHeader.subtitle', {
-            defaultValue: "Define your space's purpose, motivation, and target audience.",
-          })}
-        </p>
+        <h2 className="text-page-title">{t('about.pageHeader.title')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('about.pageHeader.subtitle')}</p>
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:gap-8">
         <div className="flex flex-col min-w-0">
           {/* Space Name */}
           <FieldSection>
-            <FieldLabel>{t('about.name.title', { defaultValue: 'Space Name' })}</FieldLabel>
+            <FieldLabel>{t('about.name.title')}</FieldLabel>
             <InlineEditText
               value={name}
               onChange={next => onChange({ name: next })}
@@ -88,7 +84,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2 text-base"
             />
             <FieldFooter
-              hint={t('about.name.description', { defaultValue: 'The public name of your space.' })}
+              hint={t('about.name.description')}
               dirty={!!dirtyByField.name}
               status={saveStatusByField.name ?? { kind: 'idle' }}
               onSave={() => onSaveSection('name')}
@@ -100,7 +96,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Tagline */}
           <FieldSection>
-            <FieldLabel>{t('about.tagline.title', { defaultValue: 'Tagline' })}</FieldLabel>
+            <FieldLabel>{t('about.tagline.title')}</FieldLabel>
             <InlineEditText
               value={tagline}
               onChange={next => onChange({ tagline: next })}
@@ -110,9 +106,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2 text-base"
             />
             <FieldFooter
-              hint={t('about.tagline.description', {
-                defaultValue: 'A short subtitle shown next to the space name.',
-              })}
+              hint={t('about.tagline.description')}
               dirty={!!dirtyByField.tagline}
               status={saveStatusByField.tagline ?? { kind: 'idle' }}
               onSave={() => onSaveSection('tagline')}
@@ -124,24 +118,16 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Space Branding */}
           <div className="py-6">
-            <h3 className="text-base font-semibold">{t('about.branding.title', { defaultValue: 'Space Branding' })}</h3>
+            <h3 className="text-card-title">{t('about.branding.title')}</h3>
 
             <div className="mt-4">
-              <FieldLabel>
-                {t('about.branding.pageBanner.title', { defaultValue: 'Page Banner (1536 × 256px)' })}
-              </FieldLabel>
+              <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
               <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspect="aspect-[6/1]" t={t} />
-              <FieldHint>
-                {t('about.branding.pageBanner.hint', {
-                  defaultValue: 'Shown at the top of the Space and in Subspaces.',
-                })}
-              </FieldHint>
+              <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
             </div>
 
             <div className="mt-6">
-              <FieldLabel>
-                {t('about.branding.cardBanner.title', { defaultValue: 'Card Banner (416 × 256px)' })}
-              </FieldLabel>
+              <FieldLabel>{t('about.branding.cardBanner.title')}</FieldLabel>
               <BannerUpload
                 visual={cardBanner}
                 onUpload={onUploadCardBanner}
@@ -149,9 +135,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 widthClass="max-w-[260px]"
                 t={t}
               />
-              <FieldHint>
-                {t('about.branding.cardBanner.hint', { defaultValue: 'Shown in search results and Space overviews.' })}
-              </FieldHint>
+              <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
             </div>
           </div>
 
@@ -159,7 +143,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* What */}
           <FieldSection>
-            <FieldLabel>{t('about.what.title', { defaultValue: 'What' })}</FieldLabel>
+            <FieldLabel>{t('about.what.title')}</FieldLabel>
             <MarkdownEditor
               value={what}
               onChange={next => onChange({ what: next })}
@@ -167,9 +151,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2"
             />
             <FieldFooter
-              hint={t('about.what.description', {
-                defaultValue: "A clear description of the space's focus or subject matter.",
-              })}
+              hint={t('about.what.description')}
               dirty={!!dirtyByField.what}
               status={saveStatusByField.what ?? { kind: 'idle' }}
               onSave={() => onSaveSection('what')}
@@ -181,7 +163,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Why */}
           <FieldSection>
-            <FieldLabel>{t('about.why.title', { defaultValue: 'Why' })}</FieldLabel>
+            <FieldLabel>{t('about.why.title')}</FieldLabel>
             <MarkdownEditor
               value={why}
               onChange={next => onChange({ why: next })}
@@ -189,7 +171,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2"
             />
             <FieldFooter
-              hint={t('about.why.description', { defaultValue: 'Explain the motivation or value of this space.' })}
+              hint={t('about.why.description')}
               dirty={!!dirtyByField.why}
               status={saveStatusByField.why ?? { kind: 'idle' }}
               onSave={() => onSaveSection('why')}
@@ -201,7 +183,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Who */}
           <FieldSection>
-            <FieldLabel>{t('about.who.title', { defaultValue: 'Who' })}</FieldLabel>
+            <FieldLabel>{t('about.who.title')}</FieldLabel>
             <MarkdownEditor
               value={who}
               onChange={next => onChange({ who: next })}
@@ -209,7 +191,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2"
             />
             <FieldFooter
-              hint={t('about.who.description', { defaultValue: 'Describe the target audience or ideal members.' })}
+              hint={t('about.who.description')}
               dirty={!!dirtyByField.who}
               status={saveStatusByField.who ?? { kind: 'idle' }}
               onSave={() => onSaveSection('who')}
@@ -221,7 +203,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Location */}
           <FieldSection>
-            <FieldLabel>{t('about.location.title', { defaultValue: 'Location' })}</FieldLabel>
+            <FieldLabel>{t('about.location.title')}</FieldLabel>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
               <InlineEditText
                 value={city}
@@ -239,7 +221,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               />
             </div>
             <FieldFooter
-              hint={t('about.location.description', { defaultValue: 'The city and country of this space.' })}
+              hint={t('about.location.description')}
               dirty={!!dirtyByField.location}
               status={saveStatusByField.location ?? { kind: 'idle' }}
               onSave={() => onSaveSection('location')}
@@ -251,7 +233,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* Tags */}
           <FieldSection>
-            <FieldLabel>{t('about.tags.title', { defaultValue: 'Tags' })}</FieldLabel>
+            <FieldLabel>{t('about.tags.title')}</FieldLabel>
             <TagsInput
               value={tags}
               onChange={next => onChange({ tags: next })}
@@ -259,7 +241,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               className="mt-2"
             />
             <FieldFooter
-              hint={t('about.tags.description', { defaultValue: 'Tags help members discover your space.' })}
+              hint={t('about.tags.description')}
               dirty={!!dirtyByField.tags}
               status={saveStatusByField.tags ?? { kind: 'idle' }}
               onSave={() => onSaveSection('tags')}
@@ -272,17 +254,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           {/* References */}
           <FieldSection>
             <div className="flex items-center justify-between">
-              <FieldLabel>{t('about.references.title', { defaultValue: 'References & Links' })}</FieldLabel>
+              <FieldLabel>{t('about.references.title')}</FieldLabel>
               <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
                 <Plus aria-hidden="true" className="mr-1.5 size-3.5" />
-                {t('about.references.add', { defaultValue: 'Add' })}
+                {t('about.references.add')}
               </Button>
             </div>
             <div className="flex flex-col gap-3 mt-3">
               {references.length === 0 && (
-                <p className="text-sm text-muted-foreground italic">
-                  {t('about.references.empty', { defaultValue: 'No references added yet.' })}
-                </p>
+                <p className="text-sm text-muted-foreground italic">{t('about.references.empty')}</p>
               )}
               {references.map(ref => (
                 <ReferenceRow
@@ -294,7 +274,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               ))}
             </div>
             <FieldFooter
-              hint={t('about.references.description', { defaultValue: 'External links shown on this space page.' })}
+              hint={t('about.references.description')}
               dirty={!!dirtyByField.references}
               status={saveStatusByField.references ?? { kind: 'idle' }}
               onSave={() => onSaveSection('references')}
@@ -306,16 +286,14 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         {/* Preview */}
         <div className="hidden min-w-0 lg:block">
           <div className="sticky top-6">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">PREVIEW</p>
+            <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
             <SpaceCard space={previewCardToSpaceCardData(previewCard)} />
             {/* Live Preview info */}
             <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
               <span className="mt-0.5 text-muted-foreground">ⓘ</span>
               <div>
-                <p className="text-sm font-semibold text-foreground">Live Preview</p>
-                <p className="text-sm text-muted-foreground mt-1 leading-normal">
-                  This preview shows how your space card will appear in the &quot;Explore Spaces&quot; directory.
-                </p>
+                <p className="text-card-title text-foreground">{t('about.preview.livePreview.title')}</p>
+                <p className="text-body text-muted-foreground mt-1">{t('about.preview.livePreview.description')}</p>
               </div>
             </div>
           </div>
@@ -345,11 +323,11 @@ function FieldSection({ children }: { children: React.ReactNode }) {
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-sm font-semibold">{children}</h3>;
+  return <h3 className="text-card-title">{children}</h3>;
 }
 
 function FieldHint({ children }: { children: React.ReactNode }) {
-  return <p className="mt-1.5 text-xs text-muted-foreground">{children}</p>;
+  return <p className="mt-1.5 text-caption text-muted-foreground">{children}</p>;
 }
 
 type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
@@ -390,7 +368,7 @@ function InlineSaveButton({
     return (
       <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
         <Loader2 aria-hidden="true" className="size-3 animate-spin" />
-        {t('about.inlineSave.saving', { defaultValue: 'Saving…' })}
+        {t('about.inlineSave.saving')}
       </span>
     );
   }
@@ -398,14 +376,14 @@ function InlineSaveButton({
     return (
       <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
         <Check aria-hidden="true" className="size-3" />
-        {t('about.inlineSave.saved', { defaultValue: 'Saved' })}
+        {t('about.inlineSave.saved')}
       </span>
     );
   }
   if (status.kind === 'error') {
     return (
-      <button type="button" onClick={onSave} className="text-xs font-semibold text-destructive hover:underline">
-        {t('about.inlineSave.retry', { defaultValue: 'Retry' })}
+      <button type="button" onClick={onSave} className="text-caption font-semibold text-destructive hover:underline">
+        {t('about.inlineSave.retry')}
       </button>
     );
   }
@@ -414,9 +392,9 @@ function InlineSaveButton({
     <button
       type="button"
       onClick={onSave}
-      className="text-xs font-semibold text-foreground px-2 py-0.5 rounded hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="text-caption font-semibold text-foreground px-2 py-0.5 rounded hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {t('about.inlineSave.save', { defaultValue: 'Save' })}
+      {t('about.inlineSave.save')}
     </button>
   );
 }
@@ -449,7 +427,7 @@ function BannerUpload({
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
-              {t('about.branding.changeBanner', { defaultValue: 'Change Banner' })}
+              {t('about.branding.changeBanner')}
             </Button>
           </div>
         </>
@@ -460,7 +438,7 @@ function BannerUpload({
           className="flex h-full w-full items-center justify-center border border-dashed rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
         >
           <ImageIcon aria-hidden="true" className="mr-2 size-4" />
-          <span className="text-sm">Upload</span>
+          <span className="text-sm">{t('about.branding.upload')}</span>
         </button>
       )}
       <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />

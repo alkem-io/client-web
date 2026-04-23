@@ -1,4 +1,4 @@
-import { useCallback, useTransition } from 'react';
+import { useTransition } from 'react';
 import {
   useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
   useSetDefaultCalloutTemplateOnInnovationFlowStateMutation,
@@ -33,63 +33,52 @@ export function useColumnMenu({
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [, startTransition] = useTransition();
 
-  const onChangeActivePhase = useCallback(
-    (columnId: LayoutColumnId) => {
-      if (!innovationFlowId) return;
-      startTransition(() => {
-        void updateCurrentState({
-          variables: { innovationFlowId, currentStateId: columnId },
-        });
+  const onChangeActivePhase = (columnId: LayoutColumnId) => {
+    if (!innovationFlowId) return;
+    startTransition(() => {
+      void updateCurrentState({
+        variables: { innovationFlowId, currentStateId: columnId },
       });
-    },
-    [innovationFlowId, updateCurrentState]
-  );
+    });
+  };
 
-  const onSetAsDefaultPostTemplate = useCallback(
-    (columnId: LayoutColumnId, templateId: string | null) => {
-      startTransition(() => {
-        if (templateId) {
-          void setDefaultTemplate({ variables: { flowStateId: columnId, templateId } });
-        } else {
-          void removeDefaultTemplate({ variables: { flowStateId: columnId } });
-        }
-      });
-    },
-    [removeDefaultTemplate, setDefaultTemplate]
-  );
-
-  const onSaveColumnDetails = useCallback(
-    async (columnId: LayoutColumnId, title: string, description: string) => {
-      // 1) Rename the innovation flow state.
-      await updateFlowState({
-        variables: {
-          innovationFlowStateId: columnId,
-          displayName: title,
-          description,
-        },
-      });
-
-      // 2) Cascade: if the title changed, retag every callout that was tagged with the old name.
-      const oldName = columnNames.find(c => c.id === columnId)?.title;
-      if (oldName && oldName !== title) {
-        const affectedCallouts = callouts.filter(c => c.currentStateName === oldName);
-        for (const callout of affectedCallouts) {
-          // eslint-disable-next-line no-await-in-loop
-          await updateCalloutFlowState({
-            variables: {
-              calloutId: callout.id,
-              flowStateTagsetId: callout.flowStateTagsetId,
-              value: title,
-            },
-          });
-        }
+  const onSetAsDefaultPostTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
+    startTransition(() => {
+      if (templateId) {
+        void setDefaultTemplate({ variables: { flowStateId: columnId, templateId } });
+      } else {
+        void removeDefaultTemplate({ variables: { flowStateId: columnId } });
       }
+    });
+  };
 
-      // 3) Update local state so the UI reflects the change immediately.
-      onColumnSaved?.(columnId, title, description);
-    },
-    [callouts, columnNames, onColumnSaved, updateCalloutFlowState, updateFlowState]
-  );
+  const onSaveColumnDetails = async (columnId: LayoutColumnId, title: string, description: string) => {
+    await updateFlowState({
+      variables: {
+        innovationFlowStateId: columnId,
+        displayName: title,
+        description,
+      },
+    });
+
+    // Cascade: if the title changed, retag every callout that was tagged with the old name.
+    const oldName = columnNames.find(c => c.id === columnId)?.title;
+    if (oldName && oldName !== title) {
+      const affectedCallouts = callouts.filter(c => c.currentStateName === oldName);
+      for (const callout of affectedCallouts) {
+        // eslint-disable-next-line no-await-in-loop
+        await updateCalloutFlowState({
+          variables: {
+            calloutId: callout.id,
+            flowStateTagsetId: callout.flowStateTagsetId,
+            value: title,
+          },
+        });
+      }
+    }
+
+    onColumnSaved?.(columnId, title, description);
+  };
 
   return {
     onChangeActivePhase,

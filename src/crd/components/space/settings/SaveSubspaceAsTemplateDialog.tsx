@@ -1,5 +1,5 @@
 import { FileText, Image as ImageIcon, Info, Layers, Link2, ListChecks, Loader2, Save, StickyNote } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -132,24 +132,17 @@ export function SaveSubspaceAsTemplateDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden [&>*]:min-w-0">
         <DialogHeader>
-          <DialogTitle>
-            {t('subspaces.saveAsTemplate.title', { defaultValue: 'Create new Space Template' })}
-          </DialogTitle>
+          <DialogTitle>{t('subspaces.saveAsTemplate.title')}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-2">
           {/* Profile section */}
           <section className="flex flex-col gap-4">
             <div className="flex items-center gap-1.5">
-              <h3 className="text-subsection-title">
-                {t('subspaces.saveAsTemplate.profile.title', { defaultValue: 'Template description' })}
-              </h3>
+              <h3 className="text-subsection-title">{t('subspaces.saveAsTemplate.profile.title')}</h3>
               <span
                 className="inline-flex size-4 items-center justify-center rounded-full bg-muted text-muted-foreground"
-                title={t('subspaces.saveAsTemplate.profile.help', {
-                  defaultValue:
-                    'This description will be visible to anyone browsing templates. It is not part of the template content itself.',
-                })}
+                title={t('subspaces.saveAsTemplate.profile.help')}
               >
                 <Info aria-hidden="true" className="size-3" />
               </span>
@@ -157,7 +150,7 @@ export function SaveSubspaceAsTemplateDialog({
 
             <Field
               id="save-template-name"
-              label={t('subspaces.saveAsTemplate.fields.displayName', { defaultValue: 'Template title' })}
+              label={t('subspaces.saveAsTemplate.fields.displayName')}
               required={true}
               error={errors.displayName}
             >
@@ -165,36 +158,26 @@ export function SaveSubspaceAsTemplateDialog({
                 id="save-template-name"
                 value={values.displayName}
                 onChange={e => onChange({ displayName: e.target.value })}
-                placeholder={t('subspaces.saveAsTemplate.fields.displayName', { defaultValue: 'Template title' })}
+                placeholder={t('subspaces.saveAsTemplate.fields.displayName')}
                 disabled={submitting}
                 aria-invalid={!!errors.displayName}
                 className={errors.displayName ? 'border-destructive focus-visible:ring-destructive' : ''}
               />
             </Field>
 
-            <Field
-              id="save-template-description"
-              label={t('subspaces.saveAsTemplate.fields.description', { defaultValue: 'Template description' })}
-            >
+            <Field id="save-template-description" label={t('subspaces.saveAsTemplate.fields.description')}>
               <MarkdownEditor
                 value={values.description}
                 onChange={next => onChange({ description: next })}
-                placeholder={t('subspaces.saveAsTemplate.fields.description', {
-                  defaultValue: 'Template description',
-                })}
+                placeholder={t('subspaces.saveAsTemplate.fields.description')}
               />
             </Field>
 
-            <Field
-              id="save-template-tags"
-              label={t('subspaces.saveAsTemplate.fields.tags', { defaultValue: 'Template tags' })}
-            >
+            <Field id="save-template-tags" label={t('subspaces.saveAsTemplate.fields.tags')}>
               <TagsInput
                 value={values.tags}
                 onChange={next => onChange({ tags: next })}
-                placeholder={t('subspaces.saveAsTemplate.fields.tagsPlaceholder', {
-                  defaultValue: 'Add a tag and press Enter',
-                })}
+                placeholder={t('subspaces.saveAsTemplate.fields.tagsPlaceholder')}
               />
             </Field>
           </section>
@@ -204,41 +187,29 @@ export function SaveSubspaceAsTemplateDialog({
           {/* Space Template section — content source + preview */}
           <section className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-subsection-title">
-                {t('subspaces.saveAsTemplate.spaceTemplate.title', { defaultValue: 'Space Template' })}
-              </h3>
+              <h3 className="text-subsection-title">{t('subspaces.saveAsTemplate.spaceTemplate.title')}</h3>
               {!urlLoader.open && (
                 <Button type="button" variant="outline" size="sm" onClick={onOpenUrlLoader} disabled={submitting}>
-                  {t('subspaces.saveAsTemplate.urlLoader.open', {
-                    defaultValue: 'Update collaboration from another space',
-                  })}
+                  {t('subspaces.saveAsTemplate.urlLoader.open')}
                 </Button>
               )}
             </div>
 
             {showContentSourceBanner && (
               <p className="text-caption text-muted-foreground">
-                {t('subspaces.saveAsTemplate.spaceTemplate.activeSource', {
-                  defaultValue: 'Capturing content from: {{name}}',
-                  name: activeSpaceName,
-                })}
+                {t('subspaces.saveAsTemplate.spaceTemplate.activeSource', { name: activeSpaceName })}
               </p>
             )}
 
             {urlLoader.open && (
               <div className="rounded-md border bg-muted p-4 flex flex-col gap-3">
                 <p className="text-caption text-muted-foreground">
-                  {t('subspaces.saveAsTemplate.urlLoader.description', {
-                    defaultValue:
-                      'Paste the URL of a space or subspace to use its collaboration content as the basis of this template.',
-                  })}
+                  {t('subspaces.saveAsTemplate.urlLoader.description')}
                 </p>
                 <Input
                   value={urlLoader.url}
                   onChange={e => onUrlChange(e.target.value)}
-                  placeholder={t('subspaces.saveAsTemplate.urlLoader.placeholder', {
-                    defaultValue: 'https://…',
-                  })}
+                  placeholder={t('subspaces.saveAsTemplate.urlLoader.placeholder')}
                   disabled={urlLoader.resolving || submitting}
                   aria-invalid={!!urlLoader.error}
                   className={urlLoader.error ? 'border-destructive focus-visible:ring-destructive' : ''}
@@ -252,7 +223,7 @@ export function SaveSubspaceAsTemplateDialog({
                     onClick={onCloseUrlLoader}
                     disabled={urlLoader.resolving || submitting}
                   >
-                    {t('subspaces.saveAsTemplate.urlLoader.cancel', { defaultValue: 'Cancel' })}
+                    {t('subspaces.saveAsTemplate.urlLoader.cancel')}
                   </Button>
                   <Button
                     type="button"
@@ -264,10 +235,10 @@ export function SaveSubspaceAsTemplateDialog({
                     {urlLoader.resolving ? (
                       <>
                         <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                        {t('subspaces.saveAsTemplate.urlLoader.resolving', { defaultValue: 'Checking…' })}
+                        {t('subspaces.saveAsTemplate.urlLoader.resolving')}
                       </>
                     ) : (
-                      t('subspaces.saveAsTemplate.urlLoader.use', { defaultValue: 'Use this space' })
+                      t('subspaces.saveAsTemplate.urlLoader.use')
                     )}
                   </Button>
                 </div>
@@ -282,7 +253,7 @@ export function SaveSubspaceAsTemplateDialog({
             ) : preview.states.length > 0 ? (
               <div className="flex flex-col gap-3">
                 <span className="text-label uppercase text-muted-foreground">
-                  {t('subspaces.saveAsTemplate.preview.states', { defaultValue: 'Phases' })}
+                  {t('subspaces.saveAsTemplate.preview.states')}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {preview.states.map(state => {
@@ -331,9 +302,7 @@ export function SaveSubspaceAsTemplateDialog({
                             <MarkdownContent content={callout.description} />
                           ) : (
                             <p className="text-caption text-muted-foreground italic">
-                              {t('subspaces.saveAsTemplate.preview.noCalloutDescription', {
-                                defaultValue: 'No description',
-                              })}
+                              {t('subspaces.saveAsTemplate.preview.noCalloutDescription')}
                             </p>
                           )}
                         </AccordionContent>
@@ -342,9 +311,7 @@ export function SaveSubspaceAsTemplateDialog({
                   </Accordion>
                 ) : (
                   <p className="text-caption text-muted-foreground italic">
-                    {t('subspaces.saveAsTemplate.preview.noCalloutsInState', {
-                      defaultValue: 'No callouts in this phase.',
-                    })}
+                    {t('subspaces.saveAsTemplate.preview.noCalloutsInState')}
                   </p>
                 )}
               </div>
@@ -353,9 +320,7 @@ export function SaveSubspaceAsTemplateDialog({
             {preview.subspaces.length > 0 && (
               <div className="flex flex-col gap-1.5">
                 <span className="text-label uppercase text-muted-foreground">
-                  {t('subspaces.saveAsTemplate.preview.subspaces', {
-                    defaultValue: 'Includes these subspaces',
-                  })}
+                  {t('subspaces.saveAsTemplate.preview.subspaces')}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {preview.subspaces.map(subspace => (
@@ -369,11 +334,7 @@ export function SaveSubspaceAsTemplateDialog({
 
             <div className="flex items-start gap-2 text-caption text-muted-foreground">
               <Info aria-hidden="true" className="size-4 shrink-0 mt-0.5" />
-              <p>
-                {t('subspaces.saveAsTemplate.preview.info', {
-                  defaultValue: 'Always included: About information & Settings',
-                })}
-              </p>
+              <p>{t('subspaces.saveAsTemplate.preview.info')}</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -384,9 +345,7 @@ export function SaveSubspaceAsTemplateDialog({
                 disabled={submitting}
               />
               <Label htmlFor="save-template-recursive" className="text-body font-normal cursor-pointer">
-                {t('subspaces.saveAsTemplate.recursive', {
-                  defaultValue: 'Also include subspaces of the selected space in the template',
-                })}
+                {t('subspaces.saveAsTemplate.recursive')}
               </Label>
             </div>
           </section>
@@ -394,18 +353,18 @@ export function SaveSubspaceAsTemplateDialog({
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={submitting}>
-            {t('subspaces.saveAsTemplate.cancel', { defaultValue: 'Cancel' })}
+            {t('subspaces.saveAsTemplate.cancel')}
           </Button>
           <Button type="button" onClick={onSubmit} disabled={!canSubmit} aria-busy={submitting}>
             {submitting ? (
               <>
                 <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                {t('subspaces.saveAsTemplate.saving', { defaultValue: 'Creating…' })}
+                {t('subspaces.saveAsTemplate.saving')}
               </>
             ) : (
               <>
                 <Save aria-hidden="true" className="mr-1.5 size-4" />
-                {t('subspaces.saveAsTemplate.save', { defaultValue: 'Create' })}
+                {t('subspaces.saveAsTemplate.save')}
               </>
             )}
           </Button>
@@ -426,7 +385,7 @@ function Field({
   label: string;
   required?: boolean;
   error?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1.5">

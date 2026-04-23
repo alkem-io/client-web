@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { SpaceSettingsTabId } from './useSpaceSettingsTab';
 
 /**
@@ -41,8 +41,8 @@ export function useDirtyTabGuard(): DirtyTabGuard {
   const [pendingSwitch, setPendingSwitch] = useState<SpaceSettingsTabId | null>(null);
   const pendingSwitchResolver = useRef<((allow: boolean) => void) | null>(null);
 
-  const markDirty = useCallback(() => setIsDirty(true), []);
-  const clearDirty = useCallback(() => setIsDirty(false), []);
+  const markDirty = () => setIsDirty(true);
+  const clearDirty = () => setIsDirty(false);
 
   useEffect(() => {
     if (!isDirty) {
@@ -56,25 +56,22 @@ export function useDirtyTabGuard(): DirtyTabGuard {
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty]);
 
-  const requestSwitch = useCallback(
-    (next: SpaceSettingsTabId) =>
-      new Promise<boolean>(resolve => {
-        if (!isDirty) {
-          resolve(true);
-          return;
-        }
-        setPendingSwitch(next);
-        pendingSwitchResolver.current = resolve;
-      }),
-    [isDirty]
-  );
+  const requestSwitch = (next: SpaceSettingsTabId) =>
+    new Promise<boolean>(resolve => {
+      if (!isDirty) {
+        resolve(true);
+        return;
+      }
+      setPendingSwitch(next);
+      pendingSwitchResolver.current = resolve;
+    });
 
-  const resolvePendingSwitch = useCallback((allow: boolean) => {
+  const resolvePendingSwitch = (allow: boolean) => {
     const resolver = pendingSwitchResolver.current;
     pendingSwitchResolver.current = null;
     setPendingSwitch(null);
     resolver?.(allow);
-  }, []);
+  };
 
   return {
     isDirty,

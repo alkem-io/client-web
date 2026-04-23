@@ -146,9 +146,7 @@ export function useSaveSubspaceAsTemplate({
     const name = values.displayName.trim();
     if (name.length < 3) {
       setErrors({
-        displayName: t('subspaces.saveAsTemplate.errors.nameTooShort', {
-          defaultValue: 'Template name must be at least 3 characters',
-        }),
+        displayName: t('subspaces.saveAsTemplate.errors.nameTooShort'),
       });
       return;
     }
@@ -190,11 +188,7 @@ export function useSaveSubspaceAsTemplate({
     setUrlError(undefined);
     const trimmed = url.trim();
     if (!trimmed) {
-      setUrlError(
-        t('subspaces.saveAsTemplate.urlLoader.errors.required', {
-          defaultValue: 'Paste the URL of the space you want to copy as a template.',
-        })
-      );
+      setUrlError(t('subspaces.saveAsTemplate.urlLoader.errors.required'));
       return;
     }
     setResolving(true);
@@ -205,16 +199,12 @@ export function useSaveSubspaceAsTemplate({
         return;
       }
       if (data?.urlResolver.type !== UrlType.Space) {
-        setUrlError(
-          t('subspaces.saveAsTemplate.urlLoader.errors.invalidUrl', {
-            defaultValue: 'This URL does not point to a space.',
-          })
-        );
+        setUrlError(t('subspaces.saveAsTemplate.urlLoader.errors.invalidUrl'));
         return;
       }
       const resolvedSpaceId = data.urlResolver.space?.id;
       if (!resolvedSpaceId) {
-        setUrlError(t('subspaces.saveAsTemplate.urlLoader.errors.notFound', { defaultValue: 'Space not found.' }));
+        setUrlError(t('subspaces.saveAsTemplate.urlLoader.errors.notFound'));
         return;
       }
       // Fetch the space's content to verify the user has Update privilege on
@@ -228,11 +218,7 @@ export function useSaveSubspaceAsTemplate({
       }
       const privileges = contentData?.lookup.space?.authorization?.myPrivileges ?? [];
       if (!privileges.includes(AuthorizationPrivilege.Update)) {
-        setUrlError(
-          t('subspaces.saveAsTemplate.urlLoader.errors.noRights', {
-            defaultValue: 'You need admin rights on the space you want to copy as a template.',
-          })
-        );
+        setUrlError(t('subspaces.saveAsTemplate.urlLoader.errors.noRights'));
         return;
       }
       setActiveSpaceId(resolvedSpaceId);

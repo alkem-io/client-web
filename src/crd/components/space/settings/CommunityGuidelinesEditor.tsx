@@ -36,27 +36,19 @@ export function CommunityGuidelinesEditor({
 
   return (
     <div className="flex flex-col gap-4">
-      <MarkdownEditor
-        value={value}
-        onChange={onChange}
-        placeholder={t('community.guidelines.placeholder', {
-          defaultValue: 'Describe your space’s code of conduct…',
-        })}
-      />
+      <MarkdownEditor value={value} onChange={onChange} placeholder={t('community.guidelines.placeholder')} />
       <div className="flex items-center justify-between gap-3">
-        <p className="text-caption text-muted-foreground">
-          {t('community.guidelines.hint', { defaultValue: 'Displayed to new members upon joining.' })}
-        </p>
+        <p className="text-caption text-muted-foreground">{t('community.guidelines.hint')}</p>
         <Button type="button" size="sm" onClick={onSave} disabled={!canSave} aria-busy={submitting}>
           {submitting ? (
             <>
               <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-              {t('community.guidelines.saving', { defaultValue: 'Saving…' })}
+              {t('community.guidelines.saving')}
             </>
           ) : (
             <>
               <Save aria-hidden="true" className="mr-1.5 size-4" />
-              {t('community.guidelines.save', { defaultValue: 'Save Guidelines' })}
+              {t('community.guidelines.save')}
             </>
           )}
         </Button>

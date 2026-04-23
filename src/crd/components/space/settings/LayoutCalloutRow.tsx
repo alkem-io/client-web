@@ -59,7 +59,7 @@ export function LayoutCalloutRow({
     >
       <button
         type="button"
-        aria-label={t('layout.row.drag', { defaultValue: 'Drag to reorder' })}
+        aria-label={t('layout.row.drag')}
         className="mt-1 cursor-grab touch-none rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
         {...attributes}
         {...listeners}
@@ -74,19 +74,13 @@ export function LayoutCalloutRow({
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild={true}>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={t('layout.row.menu', { defaultValue: 'Callout actions' })}
-            className="shrink-0"
-          >
+          <Button type="button" variant="ghost" size="icon" aria-label={t('layout.row.menu')} className="shrink-0">
             <MoreVertical aria-hidden="true" className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>{t('layout.row.moveTo', { defaultValue: 'Move to' })}</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>{t('layout.row.moveTo')}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {otherColumns.map(col => (
                 <DropdownMenuItem key={col.id} onClick={() => onMoveToColumn(callout.id, col.id)}>
@@ -94,15 +88,11 @@ export function LayoutCalloutRow({
                 </DropdownMenuItem>
               ))}
               {otherColumns.length === 0 && (
-                <DropdownMenuItem disabled={true}>
-                  {t('layout.row.noOtherColumns', { defaultValue: 'No other columns' })}
-                </DropdownMenuItem>
+                <DropdownMenuItem disabled={true}>{t('layout.row.noOtherColumns')}</DropdownMenuItem>
               )}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuItem onClick={() => onViewPost(callout.id)}>
-            {t('layout.row.viewPost', { defaultValue: 'View Post' })}
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onViewPost(callout.id)}>{t('layout.row.viewPost')}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

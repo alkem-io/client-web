@@ -79,10 +79,8 @@ export function AddCommunityMemberDialog({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('community.addDialog.name', { defaultValue: 'Name' })}</TableHead>
-                  <TableHead className="w-[110px] text-right">
-                    {t('community.addDialog.action', { defaultValue: 'Action' })}
-                  </TableHead>
+                  <TableHead>{t('community.addDialog.name')}</TableHead>
+                  <TableHead className="w-[110px] text-right">{t('community.addDialog.action')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -95,8 +93,7 @@ export function AddCommunityMemberDialog({
                 ) : candidates.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={2} className="py-6 text-center text-muted-foreground text-caption">
-                      {emptyLabel ??
-                        t('community.addDialog.empty', { defaultValue: 'No candidates match your search.' })}
+                      {emptyLabel ?? t('community.addDialog.empty')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -125,7 +122,7 @@ export function AddCommunityMemberDialog({
                           {isAdded ? (
                             <span className="inline-flex items-center gap-1 text-caption text-emerald-600">
                               <Check aria-hidden="true" className="size-3" />
-                              {t('community.addDialog.added', { defaultValue: 'Added' })}
+                              {t('community.addDialog.added')}
                             </span>
                           ) : (
                             <Button
@@ -135,17 +132,14 @@ export function AddCommunityMemberDialog({
                               onClick={() => onAdd(c.id)}
                               disabled={isAdding}
                               aria-busy={isAdding}
-                              aria-label={t('community.addDialog.addAriaLabel', {
-                                defaultValue: 'Add {{name}}',
-                                name: c.displayName,
-                              })}
+                              aria-label={t('community.addDialog.addAriaLabel', { name: c.displayName })}
                             >
                               {isAdding ? (
                                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
                               ) : (
                                 <>
                                   <Plus aria-hidden="true" className="mr-1.5 size-4" />
-                                  {t('community.addDialog.add', { defaultValue: 'Add' })}
+                                  {t('community.addDialog.add')}
                                 </>
                               )}
                             </Button>

@@ -58,7 +58,7 @@ export function TemplatePreviewDialog({
       <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden [&>*]:min-w-0">
         <DialogHeader>
           <DialogTitle>
-            {t('templates.preview.title', { defaultValue: 'Preview' })}
+            {t('templates.preview.title')}
             {template ? ` — ${template.name}` : null}
           </DialogTitle>
         </DialogHeader>
@@ -96,38 +96,34 @@ export function TemplatePreviewDialog({
 
             {/* Right column — name / description / body */}
             <div className="flex flex-col gap-4">
-              <Section label={t('templates.preview.name', { defaultValue: 'Name' })}>
+              <Section label={t('templates.preview.name')}>
                 <p className="text-base font-medium">{template.name}</p>
               </Section>
 
               {template.tagline ? (
-                <Section label={t('templates.preview.tagline', { defaultValue: 'Tagline' })}>
+                <Section label={t('templates.preview.tagline')}>
                   <p className="text-sm">{template.tagline}</p>
                 </Section>
               ) : null}
 
-              <Section label={t('templates.preview.description', { defaultValue: 'Description' })}>
+              <Section label={t('templates.preview.description')}>
                 {template.description ? (
                   <pre className="whitespace-pre-wrap text-sm text-foreground font-sans">{template.description}</pre>
                 ) : (
-                  <p className="text-sm italic text-muted-foreground">
-                    {t('templates.preview.noDescription', { defaultValue: 'No description provided.' })}
-                  </p>
+                  <p className="text-sm italic text-muted-foreground">{t('templates.preview.noDescription')}</p>
                 )}
               </Section>
 
               {template.bodyMarkdown !== undefined && (
                 <>
                   <Separator />
-                  <Section label={template.bodyLabel ?? t('templates.preview.body', { defaultValue: 'Content' })}>
+                  <Section label={template.bodyLabel ?? t('templates.preview.body')}>
                     {template.bodyMarkdown.trim() ? (
                       <pre className="whitespace-pre-wrap text-sm text-foreground font-sans">
                         {template.bodyMarkdown}
                       </pre>
                     ) : (
-                      <p className="text-sm italic text-muted-foreground">
-                        {t('templates.preview.noBody', { defaultValue: 'No content.' })}
-                      </p>
+                      <p className="text-sm italic text-muted-foreground">{t('templates.preview.noBody')}</p>
                     )}
                   </Section>
                 </>
@@ -138,19 +134,19 @@ export function TemplatePreviewDialog({
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={duplicating}>
-            {t('templates.preview.close', { defaultValue: 'Close' })}
+            {t('templates.preview.close')}
           </Button>
           {canDuplicate && (
             <Button type="button" variant="outline" onClick={onDuplicate} disabled={duplicating || !template}>
               {duplicating ? (
                 <>
                   <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                  {t('templates.preview.duplicating', { defaultValue: 'Duplicating…' })}
+                  {t('templates.preview.duplicating')}
                 </>
               ) : (
                 <>
                   <Copy aria-hidden="true" className="mr-1.5 size-4" />
-                  {t('templates.preview.duplicate', { defaultValue: 'Duplicate' })}
+                  {t('templates.preview.duplicate')}
                 </>
               )}
             </Button>
@@ -158,7 +154,7 @@ export function TemplatePreviewDialog({
           {canEdit && (
             <Button type="button" onClick={onEdit} disabled={duplicating || !template}>
               <Pencil aria-hidden="true" className="mr-1.5 size-4" />
-              {t('templates.preview.edit', { defaultValue: 'Edit' })}
+              {t('templates.preview.edit')}
             </Button>
           )}
         </DialogFooter>
@@ -170,7 +166,7 @@ export function TemplatePreviewDialog({
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-label uppercase text-muted-foreground">{label}</p>
       {children}
     </div>
   );

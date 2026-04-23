@@ -43,7 +43,7 @@ export type SpaceSettingsAccountViewProps = {
   canDeleteSpace: boolean;
   loading?: boolean;
   onDeleteSpace: () => void;
-  onCopyUrl: () => void | Promise<void>;
+  onCopyUrl: () => Promise<boolean> | boolean;
   className?: string;
 };
 
@@ -70,15 +70,8 @@ export function SpaceSettingsAccountView({
     <div className={cn('flex flex-col gap-6', className)}>
       {/* Page header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          {t('account.pageHeader.title', { defaultValue: 'Account' })}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-2">
-          {t('account.pageHeader.subtitle', {
-            defaultValue:
-              'Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.',
-          })}
-        </p>
+        <h2 className="text-page-title">{t('account.pageHeader.title')}</h2>
+        <p className="text-sm text-muted-foreground mt-2">{t('account.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
@@ -86,17 +79,13 @@ export function SpaceSettingsAccountView({
       {/* URL */}
       <div className="grid gap-2">
         <Label htmlFor="space-url" className="text-base">
-          {t('account.url.title', { defaultValue: 'URL' })}
+          {t('account.url.title')}
         </Label>
         <div className="flex items-center gap-2 max-w-xl">
           <Input id="space-url" value={url} readOnly={true} className="bg-muted/20 font-mono text-sm flex-1" />
           <CopyUrlButton onCopyUrl={onCopyUrl} />
         </div>
-        <p className="text-sm text-muted-foreground italic">
-          {t('account.url.hint', {
-            defaultValue: 'The unique URL for this space. Contact Alkemio to change this.',
-          })}
-        </p>
+        <p className="text-sm text-muted-foreground italic">{t('account.url.hint')}</p>
       </div>
 
       {/* License */}
@@ -106,22 +95,18 @@ export function SpaceSettingsAccountView({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CreditCard aria-hidden="true" className="size-5 text-primary" />
-                <CardTitle className="text-lg">{t('account.plan.title', { defaultValue: 'License' })}</CardTitle>
+                <CardTitle className="text-lg">{t('account.plan.title')}</CardTitle>
               </div>
               <Badge variant="secondary" className="px-3 py-1 font-semibold text-primary bg-primary/10">
                 {plan.name}
               </Badge>
             </div>
-            <CardDescription>
-              {t('account.plan.description', { defaultValue: 'Your current space subscription details' })}
-            </CardDescription>
+            <CardDescription>{t('account.plan.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {plan.features.length > 0 && (
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t('account.plan.featuresHeading', { defaultValue: 'Included Features' })}
-                </p>
+                <p className="text-body-emphasis text-muted-foreground">{t('account.plan.featuresHeading')}</p>
                 <ul className="space-y-2 text-sm">
                   {plan.features.map(f => (
                     <li key={f} className="flex items-center gap-2">
@@ -133,12 +118,7 @@ export function SpaceSettingsAccountView({
               </div>
             )}
             {plan.daysLeft !== null && (
-              <p className="text-xs text-muted-foreground">
-                {t('account.plan.daysLeft', {
-                  defaultValue: '{{count}} days remaining',
-                  count: plan.daysLeft,
-                })}
-              </p>
+              <p className="text-xs text-muted-foreground">{t('account.plan.daysLeft', { count: plan.daysLeft })}</p>
             )}
           </CardContent>
           {changeLicenseHref && (
@@ -150,7 +130,7 @@ export function SpaceSettingsAccountView({
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
                 >
-                  {t('account.plan.changeLicense', { defaultValue: 'Change License' })}
+                  {t('account.plan.changeLicense')}
                   <ExternalLink aria-hidden="true" className="size-3" />
                 </a>
               </Button>
@@ -163,18 +143,14 @@ export function SpaceSettingsAccountView({
       <div className="grid gap-2 p-4 border rounded-lg bg-card">
         <Label className="text-base flex items-center gap-2">
           <Activity aria-hidden="true" className="size-4 text-primary" />
-          {t('account.visibility.title', { defaultValue: 'Visibility Status' })}
+          {t('account.visibility.title')}
         </Label>
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          <p className="text-sm">{t('account.visibility.prefix', { defaultValue: 'This Space is currently in' })}</p>
+          <p className="text-sm">{t('account.visibility.prefix')}</p>
           <Badge className="bg-primary/15 text-primary hover:bg-primary/25 border-primary/20">{visibility}</Badge>
-          <p className="text-sm">{t('account.visibility.suffix', { defaultValue: 'mode' })}</p>
+          <p className="text-sm">{t('account.visibility.suffix')}</p>
         </div>
-        <p className="text-xs text-muted-foreground italic pt-1">
-          {t('account.visibility.contact', {
-            defaultValue: 'For status changes, contact the Alkemio team.',
-          })}
-        </p>
+        <p className="text-xs text-muted-foreground italic pt-1">{t('account.visibility.contact')}</p>
       </div>
 
       {/* Host */}
@@ -183,13 +159,9 @@ export function SpaceSettingsAccountView({
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
               <Shield aria-hidden="true" className="size-5 text-primary" />
-              <CardTitle className="text-lg">{t('account.host.title', { defaultValue: 'Host Information' })}</CardTitle>
+              <CardTitle className="text-lg">{t('account.host.title')}</CardTitle>
             </div>
-            <CardDescription>
-              {t('account.host.description', {
-                defaultValue: 'The host is the person or organization that owns this space.',
-              })}
-            </CardDescription>
+            <CardDescription>{t('account.host.description')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
@@ -217,14 +189,10 @@ export function SpaceSettingsAccountView({
 
       {/* Support / Contact */}
       <div className="flex flex-col items-center justify-center p-6 rounded-lg bg-muted/30 border border-dashed text-center gap-4">
-        <p className="text-sm text-muted-foreground">
-          {t('account.support.message', {
-            defaultValue: 'If you want to change any of these settings, please contact the Alkemio team.',
-          })}
-        </p>
+        <p className="text-sm text-muted-foreground">{t('account.support.message')}</p>
         <Button variant="default" className="gap-2" asChild={true}>
           <a href={contactSupportHref} target="_blank" rel="noopener noreferrer">
-            {t('account.support.contact', { defaultValue: 'Contact Alkemio Support' })}
+            {t('account.support.contact')}
             <ExternalLink aria-hidden="true" className="size-4" />
           </a>
         </Button>
@@ -233,18 +201,14 @@ export function SpaceSettingsAccountView({
       {/* Danger Zone */}
       {canDeleteSpace && (
         <div className="rounded-xl border border-destructive/50 p-4">
-          <h3 className="text-sm font-semibold text-destructive flex items-center gap-2">
+          <h3 className="text-card-title text-destructive flex items-center gap-2">
             <AlertTriangle aria-hidden="true" className="size-4" />
-            {t('account.dangerZone.title', { defaultValue: 'Danger Zone' })}
+            {t('account.dangerZone.title')}
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t('account.dangerZone.description', {
-              defaultValue: 'Permanently delete this space and all its content.',
-            })}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">{t('account.dangerZone.description')}</p>
           <Button type="button" variant="destructive" size="sm" className="mt-3" onClick={onDeleteSpace}>
             <Trash2 aria-hidden="true" className="mr-1.5 size-3.5" />
-            {t('account.dangerZone.delete', { defaultValue: 'Delete this Space' })}
+            {t('account.dangerZone.delete')}
           </Button>
         </div>
       )}
@@ -252,12 +216,13 @@ export function SpaceSettingsAccountView({
   );
 }
 
-function CopyUrlButton({ onCopyUrl }: { onCopyUrl: () => void | Promise<void> }) {
+function CopyUrlButton({ onCopyUrl }: { onCopyUrl: () => Promise<boolean> | boolean }) {
   const { t } = useTranslation('crd-spaceSettings');
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await onCopyUrl();
+    const success = await onCopyUrl();
+    if (!success) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -269,11 +234,7 @@ function CopyUrlButton({ onCopyUrl }: { onCopyUrl: () => void | Promise<void> })
       size="icon"
       onClick={handleCopy}
       className="shrink-0"
-      aria-label={
-        copied
-          ? t('account.url.copied', { defaultValue: 'URL copied' })
-          : t('account.url.copy', { defaultValue: 'Copy URL' })
-      }
+      aria-label={copied ? t('account.url.copied') : t('account.url.copy')}
     >
       {copied ? (
         <Check aria-hidden="true" className="size-4 text-emerald-600" />

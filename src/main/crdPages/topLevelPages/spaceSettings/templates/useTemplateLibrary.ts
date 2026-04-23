@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateTemplateFromContentSpaceMutation,
   useCreateTemplateMutation,
@@ -56,6 +57,7 @@ export function useTemplateLibrary({
   templatesSetId: string | undefined;
   accountId: string | undefined;
 }): UseTemplateLibraryResult {
+  const { t } = useTranslation('crd-spaceSettings');
   const [category, setCategory] = useState<TemplateCategory | null>(null);
   const [platformLoaded, setPlatformLoaded] = useState(false);
   const [importingCategory, setImportingCategory] = useState<TemplateCategory | null>(null);
@@ -65,6 +67,9 @@ export function useTemplateLibrary({
   const skipAll = !open;
 
   const { data: spaceData, loading: spaceLoading } = useImportTemplateDialogQuery({
+    // Platform/innovation-pack template sets are mutable externally (templates
+    // can be added/removed by other admins). Refetch on every dialog open so
+    // the library reflects current inventory instead of a stale cached list.
     fetchPolicy: 'network-only',
     variables: {
       templatesSetId: templatesSetId ?? '',
@@ -209,13 +214,13 @@ export function useTemplateLibrary({
   const sections: TemplateLibrarySection[] = [
     {
       key: 'space',
-      heading: 'This space',
+      heading: t('templates.library.sections.thisSpace'),
       templates: spaceSectionTemplates,
       loading: spaceLoading,
     },
     {
       key: 'account',
-      heading: 'My innovation packs',
+      heading: t('templates.library.sections.myInnovationPacks'),
       templates: accountSectionTemplates,
       loading: accountLoading,
     },
@@ -223,11 +228,26 @@ export function useTemplateLibrary({
   if (platformLoaded) {
     sections.push({
       key: 'platform',
-      heading: 'Platform library',
+      heading: t('templates.library.sections.platformLibrary'),
       templates: platformSectionTemplates,
       loading: platformLoading,
     });
   }
+
+  const labelForCategory = (c: TemplateCategory): string => {
+    switch (c) {
+      case 'space':
+        return t('templates.categories.space');
+      case 'collaborationTool':
+        return t('templates.categories.collaborationTool');
+      case 'whiteboard':
+        return t('templates.categories.whiteboard');
+      case 'post':
+        return t('templates.categories.post');
+      case 'communityGuidelines':
+        return t('templates.categories.communityGuidelines');
+    }
+  };
 
   return {
     open,
@@ -244,19 +264,4 @@ export function useTemplateLibrary({
     openForCategory,
     close,
   };
-}
-
-function labelForCategory(c: TemplateCategory): string {
-  switch (c) {
-    case 'space':
-      return 'Space';
-    case 'collaborationTool':
-      return 'Collaboration tool';
-    case 'whiteboard':
-      return 'Whiteboard';
-    case 'post':
-      return 'Post';
-    case 'communityGuidelines':
-      return 'Community guidelines';
-  }
 }

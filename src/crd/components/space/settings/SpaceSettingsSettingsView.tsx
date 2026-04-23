@@ -100,14 +100,8 @@ export function SpaceSettingsSettingsView({
   return (
     <div className={cn('space-y-6 max-w-4xl mx-auto', className)}>
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          {t('settings.pageHeader.title', { defaultValue: 'Settings' })}
-        </h2>
-        <p className="text-muted-foreground mt-2">
-          {t('settings.pageHeader.subtitle', {
-            defaultValue: "Configure your space's visibility, membership policies, and allowed member actions.",
-          })}
-        </p>
+        <h2 className="text-page-title">{t('settings.pageHeader.title')}</h2>
+        <p className="text-muted-foreground mt-2">{t('settings.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
@@ -121,11 +115,9 @@ export function SpaceSettingsSettingsView({
         <AccordionItem value="visibility" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold">
-                {t('settings.visibility.title', { defaultValue: 'Visibility' })}
-              </h3>
+              <h3 className="text-subsection-title">{t('settings.visibility.title')}</h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.visibility.description', { defaultValue: 'Control who can see and access this space' })}
+                {t('settings.visibility.description')}
               </p>
             </div>
           </AccordionTrigger>
@@ -151,13 +143,10 @@ export function SpaceSettingsSettingsView({
                 <div className="space-y-1">
                   <span className="text-base font-medium flex items-center gap-2">
                     <Globe className="size-4 text-primary" />
-                    {t('settings.visibility.public', { defaultValue: 'Public' })}
+                    {t('settings.visibility.public')}
                   </span>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.visibility.publicDescription', {
-                      defaultValue:
-                        'This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.',
-                    })}
+                    {t('settings.visibility.publicDescription')}
                   </p>
                 </div>
               </label>
@@ -176,22 +165,15 @@ export function SpaceSettingsSettingsView({
                 <div className="space-y-1">
                   <span className="text-base font-medium flex items-center gap-2">
                     <Lock className="size-4 text-muted-foreground" />
-                    {t('settings.visibility.private', { defaultValue: 'Private' })}
+                    {t('settings.visibility.private')}
                   </span>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.visibility.privateDescription', {
-                      defaultValue:
-                        'This Space is visible to everyone on the platform, but the content is only visible to members.',
-                    })}
+                    {t('settings.visibility.privateDescription')}
                   </p>
                 </div>
               </label>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-4 italic">
-              {t('settings.visibility.hint', {
-                defaultValue: "Consider your space's purpose and audience when choosing visibility.",
-              })}
-            </p>
+            <p className="text-xs text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
           </AccordionContent>
         </AccordionItem>
 
@@ -199,11 +181,9 @@ export function SpaceSettingsSettingsView({
         <AccordionItem value="membership" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold">
-                {t('settings.membership.title', { defaultValue: 'Membership' })}
-              </h3>
+              <h3 className="text-subsection-title">{t('settings.membership.title')}</h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.membership.description', { defaultValue: 'Choose how users join your space' })}
+                {t('settings.membership.description')}
               </p>
             </div>
           </AccordionTrigger>
@@ -229,17 +209,12 @@ export function SpaceSettingsSettingsView({
                 <div className="space-y-1">
                   <span className="text-base font-medium flex items-center gap-2">
                     <UserPlus className="size-4 text-primary" />
-                    {t('settings.membership.open', { defaultValue: 'No Application Required' })}
+                    {t('settings.membership.open')}
                   </span>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.openDescription', {
-                      defaultValue:
-                        'All Space members can directly join, without you having to review their applications.',
-                    })}
+                    {t('settings.membership.openDescription')}
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">
-                    {t('settings.membership.openHint', { defaultValue: 'Best for public, open collaboration spaces' })}
-                  </p>
+                  <p className="text-xs text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
                 </div>
               </label>
               <label
@@ -257,18 +232,13 @@ export function SpaceSettingsSettingsView({
                 <div className="space-y-1">
                   <span className="text-base font-medium flex items-center gap-2">
                     <Edit3 className="size-4 text-primary" />
-                    {t('settings.membership.application', { defaultValue: 'Application Required' })}
+                    {t('settings.membership.application')}
                   </span>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.applicationDescription', {
-                      defaultValue:
-                        'If people want to become a member, they have to fill in the application form. You receive their applications (see community tab here) and you can accept them or reject them.',
-                    })}
+                    {t('settings.membership.applicationDescription')}
                   </p>
                   <p className="text-xs text-muted-foreground italic mt-1">
-                    {t('settings.membership.applicationHint', {
-                      defaultValue: 'Best for curated spaces with specific requirements',
-                    })}
+                    {t('settings.membership.applicationHint')}
                   </p>
                 </div>
               </label>
@@ -287,19 +257,12 @@ export function SpaceSettingsSettingsView({
                 <div className="space-y-1">
                   <span className="text-base font-medium flex items-center gap-2">
                     <Mail className="size-4 text-primary" />
-                    {t('settings.membership.invitation', { defaultValue: 'Invitation Only' })}
+                    {t('settings.membership.invitation')}
                   </span>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.invitationDescription', {
-                      defaultValue:
-                        "Users can only become a member after you've invited them. There is no 'apply' or 'join' button for others to click.",
-                    })}
+                    {t('settings.membership.invitationDescription')}
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">
-                    {t('settings.membership.invitationHint', {
-                      defaultValue: 'Best for private, restricted collaboration teams',
-                    })}
-                  </p>
+                  <p className="text-xs text-muted-foreground italic mt-1">{t('settings.membership.invitationHint')}</p>
                 </div>
               </label>
             </RadioGroup>
@@ -310,14 +273,11 @@ export function SpaceSettingsSettingsView({
                 <Separator className="my-4" />
                 <div className="flex items-center justify-between space-x-4">
                   <div className="space-y-1">
-                    <Label htmlFor="host-org-trust" className="text-sm font-medium">
-                      {t('settings.membership.trustedApplicants', { defaultValue: 'Trusted Applicants' })}
+                    <Label htmlFor="host-org-trust" className="text-body-emphasis">
+                      {t('settings.membership.trustedApplicants')}
                     </Label>
                     <p className="text-xs text-muted-foreground max-w-md">
-                      {t('settings.membership.hostOrgTrust', {
-                        defaultValue: 'Allow members of {{host}} to join this Space without an application.',
-                        host: providerDisplayName,
-                      })}
+                      {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
                     </p>
                   </div>
                   {updatingKeys.has('membership:hostTrust') ? (
@@ -339,13 +299,9 @@ export function SpaceSettingsSettingsView({
         <AccordionItem value="actions" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold">
-                {t('settings.allowedActions.title', { defaultValue: 'Allowed Actions' })}
-              </h3>
+              <h3 className="text-subsection-title">{t('settings.allowedActions.title')}</h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.allowedActions.description', {
-                  defaultValue: 'Choose which actions members can perform in this space',
-                })}
+                {t('settings.allowedActions.description')}
               </p>
             </div>
           </AccordionTrigger>
@@ -370,7 +326,7 @@ export function SpaceSettingsSettingsView({
                       </div>
                       <div className="space-y-0.5">
                         <Label htmlFor={`action-${action.key}`} className="text-base font-medium cursor-pointer">
-                          {t(`settings.allowedActions.${action.key}`, { defaultValue: meta.label })}
+                          {t(`settings.allowedActions.${action.key}`)}
                         </Label>
                         <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
                           {meta.description}

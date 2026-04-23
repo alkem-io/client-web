@@ -64,11 +64,8 @@ export function TemplateLibraryDialog({
   const { t } = useTranslation('crd-spaceSettings');
 
   const title = templateTypeLabel
-    ? t('templateLibrary.titleForType', {
-        defaultValue: 'Select a {{type}} template',
-        type: templateTypeLabel,
-      })
-    : t('templateLibrary.title', { defaultValue: 'Select a template' });
+    ? t('templateLibrary.titleForType', { type: templateTypeLabel })
+    : t('templateLibrary.title');
 
   const handleOpenChange = (next: boolean) => {
     if (!next && loadingSelect) return;
@@ -106,7 +103,7 @@ export function TemplateLibraryDialog({
               className="inline-flex items-center gap-2 self-start text-sm text-primary hover:underline cursor-pointer"
             >
               <Search aria-hidden="true" className="size-4" />
-              {t('templateLibrary.loadPlatform', { defaultValue: 'Load platform library templates' })}
+              {t('templateLibrary.loadPlatform')}
             </button>
           )}
         </div>
@@ -115,7 +112,7 @@ export function TemplateLibraryDialog({
 
         <DialogFooter className="p-4">
           <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={loadingSelect}>
-            {t('templateLibrary.cancel', { defaultValue: 'Cancel' })}
+            {t('templateLibrary.cancel')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -144,7 +141,7 @@ function LibrarySection({
     <div className="flex flex-col gap-3">
       {showSeparatorBefore && <Separator />}
       <div className="flex items-center gap-2">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{section.heading}</h3>
+        <h3 className="text-label uppercase text-muted-foreground">{section.heading}</h3>
         {section.loading && <Loader2 aria-hidden="true" className="size-3.5 animate-spin text-muted-foreground" />}
       </div>
       {hasTemplates ? (
@@ -159,9 +156,7 @@ function LibrarySection({
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground italic">
-          {t('templateLibrary.emptySection', { defaultValue: 'No templates in this section.' })}
-        </p>
+        <p className="text-sm text-muted-foreground italic">{t('templateLibrary.emptySection')}</p>
       )}
     </div>
   );
@@ -187,10 +182,7 @@ function LibraryCard({
         'hover:shadow-md hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
-      aria-label={t('templateLibrary.selectAria', {
-        defaultValue: 'Select template {{name}}',
-        name: template.name,
-      })}
+      aria-label={t('templateLibrary.selectAria', { name: template.name })}
     >
       <div className="relative aspect-video overflow-hidden bg-muted">
         {template.thumbnailUrl ? (

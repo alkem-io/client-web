@@ -69,17 +69,11 @@ export function ChangeDefaultSubspaceTemplateDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md md:max-w-lg overflow-x-hidden [&>*]:min-w-0">
         <DialogHeader>
-          <DialogTitle>
-            {t('subspaces.defaultTemplate.dialog.title', { defaultValue: 'Change Default Subspace Template' })}
-          </DialogTitle>
+          <DialogTitle>{t('subspaces.defaultTemplate.dialog.title')}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 py-2 text-sm">
-          <p>
-            {t('subspaces.defaultTemplate.dialog.intro', {
-              defaultValue: 'Customize the default Template for newly created Subspaces.',
-            })}
-          </p>
+          <p>{t('subspaces.defaultTemplate.dialog.intro')}</p>
           <p>
             <Trans
               t={t}
@@ -97,12 +91,12 @@ export function ChangeDefaultSubspaceTemplateDialog({
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="subspace-default-template-select" className={invalid ? 'text-destructive' : undefined}>
-              {t('subspaces.defaultTemplate.dialog.fieldLabel', { defaultValue: 'Category' })}
+              {t('subspaces.defaultTemplate.dialog.fieldLabel')}
             </Label>
             {loading ? (
               <div className="flex h-9 items-center rounded-md border px-3 text-muted-foreground text-sm gap-2">
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                {t('subspaces.defaultTemplate.dialog.loading', { defaultValue: 'Loading templates…' })}
+                {t('subspaces.defaultTemplate.dialog.loading')}
               </div>
             ) : (
               <Select
@@ -117,18 +111,12 @@ export function ChangeDefaultSubspaceTemplateDialog({
                   className={invalid ? 'border-destructive focus-visible:ring-destructive' : ''}
                   aria-invalid={invalid}
                 >
-                  <SelectValue
-                    placeholder={t('subspaces.defaultTemplate.dialog.placeholder', {
-                      defaultValue: 'Select a template',
-                    })}
-                  />
+                  <SelectValue placeholder={t('subspaces.defaultTemplate.dialog.placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {templates.length === 0 && (
                     <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                      {t('subspaces.defaultTemplate.dialog.empty', {
-                        defaultValue: 'No subspace templates available.',
-                      })}
+                      {t('subspaces.defaultTemplate.dialog.empty')}
                     </div>
                   )}
                   {templates.map(tmpl => (
@@ -139,17 +127,13 @@ export function ChangeDefaultSubspaceTemplateDialog({
                 </SelectContent>
               </Select>
             )}
-            {invalid && (
-              <p className="text-xs text-destructive">
-                {t('subspaces.defaultTemplate.dialog.required', { defaultValue: 'This field is required!' })}
-              </p>
-            )}
+            {invalid && <p className="text-xs text-destructive">{t('subspaces.defaultTemplate.dialog.required')}</p>}
           </div>
         </div>
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={saving}>
-            {t('subspaces.defaultTemplate.dialog.cancel', { defaultValue: 'Cancel' })}
+            {t('subspaces.defaultTemplate.dialog.cancel')}
           </Button>
           <Button
             type="button"
@@ -163,10 +147,10 @@ export function ChangeDefaultSubspaceTemplateDialog({
             {saving ? (
               <>
                 <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                {t('subspaces.defaultTemplate.dialog.saving', { defaultValue: 'Saving…' })}
+                {t('subspaces.defaultTemplate.dialog.saving')}
               </>
             ) : (
-              t('subspaces.defaultTemplate.dialog.save', { defaultValue: 'Save' })
+              t('subspaces.defaultTemplate.dialog.save')
             )}
           </Button>
         </DialogFooter>

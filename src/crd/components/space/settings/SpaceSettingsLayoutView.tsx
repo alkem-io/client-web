@@ -142,12 +142,8 @@ export function SpaceSettingsLayoutView({
     <div className={cn('flex flex-col gap-6', className)}>
       {/* Page header */}
       <div>
-        <h2 className="text-lg font-semibold">{t('layout.pageHeader.title', { defaultValue: 'Layout' })}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t('layout.pageHeader.subtitle', {
-            defaultValue: "Customize your Space's navigation tabs. Rename, reorder, and manage post assignments.",
-          })}
-        </p>
+        <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
       </div>
 
       {/* Columns + Save bar inside a bordered container */}
@@ -191,28 +187,21 @@ export function SpaceSettingsLayoutView({
           state={saveBar}
           onSave={onSave}
           onDiscard={onDiscardChanges}
-          saveLabel={t('saveBar.save', { defaultValue: 'Save Changes' })}
-          discardLabel={t('saveBar.discard', { defaultValue: 'Discard Changes' })}
-          savingLabel={t('saveBar.saving', { defaultValue: 'Saving…' })}
+          saveLabel={t('saveBar.save')}
+          discardLabel={t('saveBar.discard')}
+          savingLabel={t('saveBar.saving')}
         />
       </div>
 
       {/* Post description display toggle — below columns, saves immediately (not buffered) */}
-      <SpaceSettingsCard title={t('layout.postDescriptionDisplay.title', { defaultValue: 'Post description display' })}>
+      <SpaceSettingsCard title={t('layout.postDescriptionDisplay.title')}>
         <div className="flex items-start gap-3">
           <Switch
             checked={postDescriptionDisplay === 'collapsed'}
             onCheckedChange={checked => onPostDescriptionDisplayChange(checked ? 'collapsed' : 'expanded')}
-            aria-label={t('layout.postDescriptionDisplay.switchLabel', {
-              defaultValue: 'Collapse post descriptions by default',
-            })}
+            aria-label={t('layout.postDescriptionDisplay.switchLabel')}
           />
-          <p className="text-sm text-muted-foreground">
-            {t('layout.postDescriptionDisplay.description', {
-              defaultValue:
-                'Collapse post descriptions by default. When enabled, descriptions show a "Read more" link instead of the full text.',
-            })}
-          </p>
+          <p className="text-sm text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
         </div>
       </SpaceSettingsCard>
     </div>

@@ -131,14 +131,8 @@ export function SpaceSettingsCommunityView({
   return (
     <div className={cn('flex flex-col gap-8', className)}>
       <div>
-        <h2 className="text-section-title tracking-tight">
-          {t('community.pageHeader.title', { defaultValue: 'Community' })}
-        </h2>
-        <p className="text-body text-muted-foreground mt-2">
-          {t('community.pageHeader.subtitle', {
-            defaultValue: 'Manage your space members, review applications, and configure community settings.',
-          })}
-        </p>
+        <h2 className="text-section-title tracking-tight">{t('community.pageHeader.title')}</h2>
+        <p className="text-body text-muted-foreground mt-2">{t('community.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
@@ -156,7 +150,7 @@ export function SpaceSettingsCommunityView({
       <div className="flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h3 className="text-subsection-title flex items-center gap-2">
-            {t('community.members.title', { defaultValue: 'Space Members' })}
+            {t('community.members.title')}
             <Badge variant="secondary" className="rounded-full">
               {filtered.length}
             </Badge>
@@ -168,8 +162,8 @@ export function SpaceSettingsCommunityView({
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
               />
               <Input
-                aria-label={t('community.members.search', { defaultValue: 'Search members…' })}
-                placeholder={t('community.members.search', { defaultValue: 'Search members…' })}
+                aria-label={t('community.members.search')}
+                placeholder={t('community.members.search')}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
                 className="h-9 w-[220px] pl-9 text-sm"
@@ -178,7 +172,7 @@ export function SpaceSettingsCommunityView({
             {permissions.canAddUsers && (
               <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
                 <UserPlus aria-hidden="true" className="size-4" />
-                {t('community.members.invite', { defaultValue: 'Invite' })}
+                {t('community.members.invite')}
               </Button>
             )}
           </div>
@@ -187,19 +181,17 @@ export function SpaceSettingsCommunityView({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[320px]">{t('community.members.name', { defaultValue: 'Name' })}</TableHead>
-                <TableHead>{t('community.members.role', { defaultValue: 'Role' })}</TableHead>
-                <TableHead>{t('community.members.joined', { defaultValue: 'Joined' })}</TableHead>
-                <TableHead className="w-[140px] text-right">
-                  {t('community.members.actions', { defaultValue: 'Actions' })}
-                </TableHead>
+                <TableHead className="w-[320px]">{t('community.members.name')}</TableHead>
+                <TableHead>{t('community.members.roleColumn')}</TableHead>
+                <TableHead>{t('community.members.joined')}</TableHead>
+                <TableHead className="w-[140px] text-right">{t('community.members.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginated.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    {t('community.members.empty', { defaultValue: 'No members found.' })}
+                    {t('community.members.empty')}
                   </TableCell>
                 </TableRow>
               )}
@@ -239,7 +231,7 @@ export function SpaceSettingsCommunityView({
                           variant="ghost"
                           size="icon"
                           className="size-8"
-                          aria-label={t('community.members.actions', { defaultValue: 'Actions' })}
+                          aria-label={t('community.members.actions')}
                         >
                           <MoreHorizontal aria-hidden="true" className="size-4" />
                         </Button>
@@ -247,7 +239,7 @@ export function SpaceSettingsCommunityView({
                       <DropdownMenuContent align="end">
                         {m.url && (
                           <DropdownMenuItem asChild={true}>
-                            <a href={m.url}>{t('community.members.viewProfile', { defaultValue: 'View Profile' })}</a>
+                            <a href={m.url}>{t('community.members.viewProfile')}</a>
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
@@ -256,7 +248,7 @@ export function SpaceSettingsCommunityView({
                           onClick={() => onUserRemove(m.id)}
                         >
                           <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                          {t('community.members.remove', { defaultValue: 'Remove from Space' })}
+                          {t('community.members.remove')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -270,12 +262,7 @@ export function SpaceSettingsCommunityView({
         {filtered.length > MEMBERS_PAGE_SIZE && (
           <div className="flex items-center justify-between py-2">
             <p className="text-caption text-muted-foreground">
-              {t('community.members.pagination.showing', {
-                defaultValue: 'Showing {{from}} to {{to}} of {{total}} members',
-                from: pageStart + 1,
-                to: pageEnd,
-                total: filtered.length,
-              })}
+              {t('community.members.pagination.showing', { from: pageStart + 1, to: pageEnd, total: filtered.length })}
             </p>
             <div className="flex items-center gap-2">
               <Button
@@ -285,16 +272,12 @@ export function SpaceSettingsCommunityView({
                 className="size-8"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={safePage === 1}
-                aria-label={t('community.members.pagination.previous', { defaultValue: 'Previous page' })}
+                aria-label={t('community.members.pagination.previous')}
               >
                 <ChevronLeft aria-hidden="true" className="size-4" />
               </Button>
               <span className="text-caption text-body-emphasis">
-                {t('community.members.pagination.page', {
-                  defaultValue: 'Page {{page}} of {{total}}',
-                  page: safePage,
-                  total: totalPages,
-                })}
+                {t('community.members.pagination.page', { page: safePage, total: totalPages })}
               </span>
               <Button
                 type="button"
@@ -303,7 +286,7 @@ export function SpaceSettingsCommunityView({
                 className="size-8"
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={safePage === totalPages}
-                aria-label={t('community.members.pagination.next', { defaultValue: 'Next page' })}
+                aria-label={t('community.members.pagination.next')}
               >
                 <ChevronRight aria-hidden="true" className="size-4" />
               </Button>
@@ -317,10 +300,8 @@ export function SpaceSettingsCommunityView({
       {applicationFormSlot && (
         <SectionCard
           icon={FileText}
-          title={t('community.applicationForm.title', { defaultValue: 'Application Form' })}
-          description={t('community.applicationForm.description', {
-            defaultValue: 'Customize the questions users must answer when applying to join this space.',
-          })}
+          title={t('community.applicationForm.title')}
+          description={t('community.applicationForm.description')}
         >
           {applicationFormSlot}
         </SectionCard>
@@ -329,10 +310,8 @@ export function SpaceSettingsCommunityView({
       {communityGuidelinesSlot && (
         <SectionCard
           icon={Shield}
-          title={t('community.guidelines.title', { defaultValue: 'Community Guidelines' })}
-          description={t('community.guidelines.description', {
-            defaultValue: 'Establish rules and expectations for member behavior.',
-          })}
+          title={t('community.guidelines.title')}
+          description={t('community.guidelines.description')}
         >
           {communityGuidelinesSlot}
         </SectionCard>
@@ -340,30 +319,24 @@ export function SpaceSettingsCommunityView({
 
       <SectionCard
         icon={Building}
-        title={t('community.organizations.title', { defaultValue: 'Member Organizations' })}
-        description={t('community.organizations.description', {
-          defaultValue: 'Allow members from specific organizations to join automatically.',
-        })}
+        title={t('community.organizations.title')}
+        description={t('community.organizations.description')}
         count={organizations.length}
       >
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[320px]">
-                  {t('community.organizations.name', { defaultValue: 'Name' })}
-                </TableHead>
-                <TableHead>{t('community.organizations.role', { defaultValue: 'Role' })}</TableHead>
-                <TableHead className="w-[100px] text-right">
-                  {t('community.organizations.actions', { defaultValue: 'Actions' })}
-                </TableHead>
+                <TableHead className="w-[320px]">{t('community.organizations.name')}</TableHead>
+                <TableHead>{t('community.organizations.role')}</TableHead>
+                <TableHead className="w-[100px] text-right">{t('community.organizations.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {organizations.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
-                    {t('community.organizations.empty', { defaultValue: 'No organizations yet.' })}
+                    {t('community.organizations.empty')}
                   </TableCell>
                 </TableRow>
               )}
@@ -388,9 +361,7 @@ export function SpaceSettingsCommunityView({
                   </TableCell>
                   <TableCell>
                     <span className="text-body-emphasis text-foreground">
-                      {org.isLead
-                        ? t('community.members.role.lead', { defaultValue: 'Lead' })
-                        : t('community.members.role.member', { defaultValue: 'Member' })}
+                      {org.isLead ? t('community.members.role.lead') : t('community.members.role.member')}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
@@ -399,7 +370,7 @@ export function SpaceSettingsCommunityView({
                       variant="ghost"
                       size="icon"
                       onClick={() => onOrgRemove(org.id)}
-                      aria-label={t('community.organizations.remove', { defaultValue: 'Remove organization' })}
+                      aria-label={t('community.organizations.remove')}
                       className="size-8"
                     >
                       <Trash2 aria-hidden="true" className="size-4 text-destructive" />
@@ -414,42 +385,32 @@ export function SpaceSettingsCommunityView({
           <div className="mt-4">
             <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
               <Plus aria-hidden="true" className="size-4" />
-              {t('community.organizations.add', { defaultValue: 'Add Organization' })}
+              {t('community.organizations.add')}
             </Button>
-            <p className="mt-2 text-caption text-muted-foreground">
-              {t('community.organizations.hint', {
-                defaultValue: 'Users from these organizations can join without admin approval.',
-              })}
-            </p>
+            <p className="mt-2 text-caption text-muted-foreground">{t('community.organizations.hint')}</p>
           </div>
         )}
       </SectionCard>
 
       <SectionCard
         icon={Bot}
-        title={t('community.virtualContributors.title', { defaultValue: 'Virtual Contributors' })}
-        description={t('community.virtualContributors.description', {
-          defaultValue: 'Manage AI agents and bots participating in this space.',
-        })}
+        title={t('community.virtualContributors.title')}
+        description={t('community.virtualContributors.description')}
         count={virtualContributors.length}
       >
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[320px]">
-                  {t('community.virtualContributors.name', { defaultValue: 'Name' })}
-                </TableHead>
-                <TableHead className="w-[100px] text-right">
-                  {t('community.virtualContributors.actions', { defaultValue: 'Actions' })}
-                </TableHead>
+                <TableHead className="w-[320px]">{t('community.virtualContributors.name')}</TableHead>
+                <TableHead className="w-[100px] text-right">{t('community.virtualContributors.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {virtualContributors.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
-                    {t('community.virtualContributors.empty', { defaultValue: 'No virtual contributors yet.' })}
+                    {t('community.virtualContributors.empty')}
                   </TableCell>
                 </TableRow>
               )}
@@ -475,9 +436,7 @@ export function SpaceSettingsCommunityView({
                       variant="ghost"
                       size="icon"
                       onClick={() => onVCRemove(vc.id)}
-                      aria-label={t('community.virtualContributors.remove', {
-                        defaultValue: 'Remove virtual contributor',
-                      })}
+                      aria-label={t('community.virtualContributors.remove')}
                       className="size-8"
                     >
                       <Trash2 aria-hidden="true" className="size-4 text-destructive" />
@@ -492,14 +451,12 @@ export function SpaceSettingsCommunityView({
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
               <Plus aria-hidden="true" className="size-4" />
-              {t('community.virtualContributors.add', { defaultValue: 'Add Virtual Contributor' })}
+              {t('community.virtualContributors.add')}
             </Button>
             {onVCAddExternal && (
               <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
                 <Plus aria-hidden="true" className="size-4" />
-                {t('community.virtualContributors.addExternal', {
-                  defaultValue: 'Invite External Virtual Contributor',
-                })}
+                {t('community.virtualContributors.addExternal')}
               </Button>
             )}
           </div>

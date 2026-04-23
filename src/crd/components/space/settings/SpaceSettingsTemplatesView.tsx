@@ -137,14 +137,8 @@ export function SpaceSettingsTemplatesView({
     <div className={cn('space-y-8', className)}>
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          {t('templates.pageHeader.title', { defaultValue: 'Templates' })}
-        </h2>
-        <p className="text-muted-foreground mt-2">
-          {t('templates.pageHeader.subtitle', {
-            defaultValue: 'Select and manage the templates available to your space members.',
-          })}
-        </p>
+        <h2 className="text-page-title">{t('templates.pageHeader.title')}</h2>
+        <p className="text-muted-foreground mt-2">{t('templates.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
@@ -154,7 +148,7 @@ export function SpaceSettingsTemplatesView({
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
-            placeholder={t('templates.search', { defaultValue: 'Search templates...' })}
+            placeholder={t('templates.search')}
             className="pl-9"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
@@ -185,16 +179,14 @@ export function SpaceSettingsTemplatesView({
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base">
-                          {t(`templates.categories.${section.category}`, { defaultValue: section.title })}
-                        </h3>
+                        <h3 className="font-semibold text-base">{t(`templates.categories.${section.category}`)}</h3>
                         <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-[1.5rem] flex justify-center">
                           {allTemplates.length}
                         </Badge>
                         {duplicatingCategory === section.category && (
                           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Loader2 aria-hidden="true" className="size-3 animate-spin" />
-                            {t('templates.duplicating', { defaultValue: 'Creating new template…' })}
+                            {t('templates.duplicating')}
                           </span>
                         )}
                       </div>
@@ -212,20 +204,18 @@ export function SpaceSettingsTemplatesView({
                   <DropdownMenuTrigger asChild={true}>
                     <Button size="sm" variant="outline" className="gap-2 hidden sm:flex">
                       <Plus className="size-4" />
-                      {t('templates.addNew', { defaultValue: 'Add New' })}
+                      {t('templates.addNew')}
                       <ChevronDown className="size-3 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem onClick={() => onCreateTemplate(section.category)}>
                       <Plus className="size-4 mr-2" />
-                      {t('templates.createNew', { defaultValue: 'Create a new template' })}
+                      {t('templates.createNew')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onImportTemplate(section.category)}>
                       <LayoutTemplate className="size-4 mr-2" />
-                      {t('templates.selectFromLibrary', {
-                        defaultValue: 'Select a template from the platform library',
-                      })}
+                      {t('templates.selectFromLibrary')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -240,13 +230,11 @@ export function SpaceSettingsTemplatesView({
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem onClick={() => onCreateTemplate(section.category)}>
                       <Plus className="size-4 mr-2" />
-                      {t('templates.createNew', { defaultValue: 'Create a new template' })}
+                      {t('templates.createNew')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onImportTemplate(section.category)}>
                       <LayoutTemplate className="size-4 mr-2" />
-                      {t('templates.selectFromLibrary', {
-                        defaultValue: 'Select a template from the platform library',
-                      })}
+                      {t('templates.selectFromLibrary')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -257,14 +245,8 @@ export function SpaceSettingsTemplatesView({
                   {templates.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground border-2 border-dashed rounded-lg">
                       <SectionIcon className="size-10 mb-3 opacity-20" />
-                      <p className="font-medium">
-                        {t('templates.noTemplates', { defaultValue: 'No templates found' })}
-                      </p>
-                      <p className="text-sm">
-                        {t('templates.noTemplatesHint', {
-                          defaultValue: 'Try searching for a different term or create a new template.',
-                        })}
-                      </p>
+                      <p className="font-medium">{t('templates.noTemplates')}</p>
+                      <p className="text-sm">{t('templates.noTemplatesHint')}</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -303,13 +285,13 @@ function TemplateCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-            {t('templates.noPreview', { defaultValue: 'No preview' })}
+            {t('templates.noPreview')}
           </div>
         )}
         <div className="absolute top-2 right-2 flex gap-2">
           {template.isCustom && (
             <Badge variant="default" className="bg-primary shadow-sm">
-              {t('templates.custom', { defaultValue: 'Custom' })}
+              {t('templates.custom')}
             </Badge>
           )}
         </div>
@@ -324,29 +306,24 @@ function TemplateCard({
         <div className="mt-auto flex items-center justify-end pt-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild={true}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                aria-label={t('templates.actions', { defaultValue: 'Template actions' })}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('templates.actions')}>
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onAction(template.id, 'preview')}>
                 <Eye className="size-4 mr-2" />
-                {t('templates.kebab.preview', { defaultValue: 'Preview' })}
+                {t('templates.kebab.preview')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onAction(template.id, 'duplicate')}>
                 <Copy className="size-4 mr-2" />
-                {t('templates.kebab.duplicate', { defaultValue: 'Duplicate as Custom' })}
+                {t('templates.kebab.duplicate')}
               </DropdownMenuItem>
               {template.isCustom && (
                 <>
                   <DropdownMenuItem onClick={() => onAction(template.id, 'edit')}>
                     <Pencil className="size-4 mr-2" />
-                    {t('templates.kebab.edit', { defaultValue: 'Edit' })}
+                    {t('templates.kebab.edit')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -354,7 +331,7 @@ function TemplateCard({
                     onClick={() => onAction(template.id, 'delete')}
                   >
                     <Trash2 className="size-4 mr-2" />
-                    {t('templates.kebab.delete', { defaultValue: 'Delete' })}
+                    {t('templates.kebab.delete')}
                   </DropdownMenuItem>
                 </>
               )}

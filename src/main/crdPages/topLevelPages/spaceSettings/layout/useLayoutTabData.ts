@@ -163,14 +163,6 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     setColumns(prev => {
       const targetCol = prev.find(c => c.id === target);
       if (!targetCol) return prev;
-      return prev; // delegated through onReorder for a clean code path below.
-    });
-    // Delegate — append at end of destination column.
-    setColumns(prev => {
-      const targetCol = prev.find(c => c.id === target);
-      if (!targetCol) return prev;
-      const nextIndex = targetCol.callouts.length;
-      // Can't just call onReorder because setState is batched — inline the logic.
       const next = prev.map(c => ({ ...c, callouts: [...c.callouts] }));
       let removed: LayoutPoolColumn['callouts'][number] | null = null;
       for (const col of next) {
@@ -183,7 +175,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
       if (!removed) return prev;
       const mutTarget = next.find(c => c.id === target);
       if (!mutTarget) return prev;
-      mutTarget.callouts.splice(nextIndex, 0, removed);
+      mutTarget.callouts.push(removed);
       return next;
     });
   };

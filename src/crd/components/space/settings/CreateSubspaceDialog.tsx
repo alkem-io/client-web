@@ -88,22 +88,16 @@ export function CreateSubspaceDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] overflow-y-auto overflow-x-hidden [&>*]:min-w-0">
         <DialogHeader>
-          <DialogTitle>{t('subspaces.createDialog.dialog.title', { defaultValue: 'Create new Subspace' })}</DialogTitle>
-          <DialogDescription>
-            {t('subspaces.createDialog.dialog.subtitle', {
-              defaultValue: 'Set up a new workspace within this space.',
-            })}
-          </DialogDescription>
+          <DialogTitle>{t('subspaces.createDialog.dialog.title')}</DialogTitle>
+          <DialogDescription>{t('subspaces.createDialog.dialog.subtitle')}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 py-2">
           {/* Template */}
           <FieldShell
             id="subspace-template"
-            label={t('subspaces.createDialog.template.label', { defaultValue: 'Template' })}
-            hint={t('subspaces.createDialog.template.hint', {
-              defaultValue: 'Optional — pick a subspace template to pre-fill content.',
-            })}
+            label={t('subspaces.createDialog.template.label')}
+            hint={t('subspaces.createDialog.template.hint')}
           >
             <Select
               value={values.spaceTemplateId || 'none'}
@@ -114,17 +108,13 @@ export function CreateSubspaceDialog({
                 <SelectValue
                   placeholder={
                     templatesLoading
-                      ? t('subspaces.createDialog.template.loading', { defaultValue: 'Loading templates…' })
-                      : t('subspaces.createDialog.template.placeholder', {
-                          defaultValue: 'Select a template (optional)',
-                        })
+                      ? t('subspaces.createDialog.template.loading')
+                      : t('subspaces.createDialog.template.placeholder')
                   }
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">
-                  {t('subspaces.createDialog.template.none', { defaultValue: 'No template' })}
-                </SelectItem>
+                <SelectItem value="none">{t('subspaces.createDialog.template.none')}</SelectItem>
                 {templates.map(tmpl => (
                   <SelectItem key={tmpl.id} value={tmpl.id}>
                     {tmpl.name}
@@ -137,20 +127,16 @@ export function CreateSubspaceDialog({
           {/* Display Name */}
           <FieldShell
             id="subspace-displayName"
-            label={t('subspaces.createDialog.displayName.label', { defaultValue: 'Name' })}
+            label={t('subspaces.createDialog.displayName.label')}
             required={true}
-            hint={t('subspaces.createDialog.displayName.hint', {
-              defaultValue: 'The name of your subspace, visible to members.',
-            })}
+            hint={t('subspaces.createDialog.displayName.hint')}
             error={errors.displayName}
           >
             <Input
               id="subspace-displayName"
               value={values.displayName}
               onChange={e => onChange({ displayName: e.target.value })}
-              placeholder={t('subspaces.createDialog.displayName.placeholder', {
-                defaultValue: 'e.g. Q1 Marketing Campaign',
-              })}
+              placeholder={t('subspaces.createDialog.displayName.placeholder')}
               disabled={submitting}
               aria-invalid={!!errors.displayName}
               className={errors.displayName ? 'border-destructive focus-visible:ring-destructive' : ''}
@@ -160,17 +146,15 @@ export function CreateSubspaceDialog({
           {/* Tagline */}
           <FieldShell
             id="subspace-tagline"
-            label={t('subspaces.createDialog.tagline.label', { defaultValue: 'Tagline' })}
-            hint={t('subspaces.createDialog.tagline.hint', {
-              defaultValue: 'A short subtitle describing the subspace.',
-            })}
+            label={t('subspaces.createDialog.tagline.label')}
+            hint={t('subspaces.createDialog.tagline.hint')}
             error={errors.tagline}
           >
             <Input
               id="subspace-tagline"
               value={values.tagline}
               onChange={e => onChange({ tagline: e.target.value })}
-              placeholder={t('subspaces.createDialog.tagline.placeholder', { defaultValue: 'A short tagline…' })}
+              placeholder={t('subspaces.createDialog.tagline.placeholder')}
               disabled={submitting}
               aria-invalid={!!errors.tagline}
               className={errors.tagline ? 'border-destructive focus-visible:ring-destructive' : ''}
@@ -180,33 +164,27 @@ export function CreateSubspaceDialog({
           {/* Description */}
           <FieldShell
             id="subspace-description"
-            label={t('subspaces.createDialog.description.label', { defaultValue: 'Description' })}
-            hint={t('subspaces.createDialog.description.hint', {
-              defaultValue: 'Explain what this subspace is about. Markdown supported.',
-            })}
+            label={t('subspaces.createDialog.description.label')}
+            hint={t('subspaces.createDialog.description.hint')}
             error={errors.description}
           >
             <MarkdownEditor
               value={values.description}
               onChange={next => onChange({ description: next })}
-              placeholder={t('subspaces.createDialog.description.placeholder', {
-                defaultValue: 'What is this subspace about?',
-              })}
+              placeholder={t('subspaces.createDialog.description.placeholder')}
             />
           </FieldShell>
 
           {/* Tags */}
           <FieldShell
             id="subspace-tags"
-            label={t('subspaces.createDialog.tags.label', { defaultValue: 'Tags' })}
-            hint={t('subspaces.createDialog.tags.hint', { defaultValue: 'Tags help members find this subspace.' })}
+            label={t('subspaces.createDialog.tags.label')}
+            hint={t('subspaces.createDialog.tags.hint')}
           >
             <TagsInput
               value={values.tags}
               onChange={next => onChange({ tags: next })}
-              placeholder={t('subspaces.createDialog.tags.placeholder', {
-                defaultValue: 'Add a tag and press Enter',
-              })}
+              placeholder={t('subspaces.createDialog.tags.placeholder')}
             />
           </FieldShell>
 
@@ -214,22 +192,22 @@ export function CreateSubspaceDialog({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FileField
               id="subspace-avatar"
-              label={t('subspaces.createDialog.avatar.label', { defaultValue: 'Avatar' })}
+              label={t('subspaces.createDialog.avatar.label')}
               file={values.avatarFile}
               onChange={file => onChange({ avatarFile: file })}
               disabled={submitting}
-              placeholderText={t('subspaces.createDialog.avatar.upload', { defaultValue: 'Upload avatar' })}
+              placeholderText={t('subspaces.createDialog.avatar.upload')}
               constraints={avatarConstraints}
               error={errors.avatarFile}
               aspectClassName="aspect-square"
             />
             <FileField
               id="subspace-cardBanner"
-              label={t('subspaces.createDialog.cardBanner.label', { defaultValue: 'Card banner' })}
+              label={t('subspaces.createDialog.cardBanner.label')}
               file={values.cardBannerFile}
               onChange={file => onChange({ cardBannerFile: file })}
               disabled={submitting}
-              placeholderText={t('subspaces.createDialog.cardBanner.upload', { defaultValue: 'Upload card banner' })}
+              placeholderText={t('subspaces.createDialog.cardBanner.upload')}
               constraints={cardBannerConstraints}
               error={errors.cardBannerFile}
               aspectClassName="aspect-video"
@@ -239,16 +217,16 @@ export function CreateSubspaceDialog({
 
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={submitting}>
-            {t('subspaces.createDialog.cancel', { defaultValue: 'Cancel' })}
+            {t('subspaces.createDialog.cancel')}
           </Button>
           <Button type="button" onClick={onSubmit} disabled={!canSubmit} aria-busy={submitting}>
             {submitting ? (
               <>
                 <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
-                {t('subspaces.createDialog.creating', { defaultValue: 'Creating…' })}
+                {t('subspaces.createDialog.creating')}
               </>
             ) : (
-              t('subspaces.createDialog.submit', { defaultValue: 'Create Subspace' })
+              t('subspaces.createDialog.submit')
             )}
           </Button>
         </DialogFooter>
@@ -335,7 +313,7 @@ function FileField({
               onClick={() => onChange(null)}
               disabled={disabled}
               className="absolute top-1.5 right-1.5 rounded-full bg-background/80 p-1 text-foreground shadow hover:bg-background"
-              aria-label={t('subspaces.createDialog.visuals.remove', { defaultValue: 'Remove image' })}
+              aria-label={t('subspaces.createDialog.visuals.remove')}
             >
               <X aria-hidden="true" className="size-4" />
             </button>
@@ -370,7 +348,6 @@ function FileField({
       ) : constraints ? (
         <p className="text-xs text-muted-foreground">
           {t('subspaces.createDialog.visuals.resolutionHint', {
-            defaultValue: 'Recommended: {{width}} × {{height}} px',
             width: constraints.maxWidth,
             height: constraints.maxHeight,
           })}
