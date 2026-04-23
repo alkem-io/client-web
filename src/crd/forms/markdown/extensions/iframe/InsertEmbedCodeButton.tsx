@@ -12,7 +12,9 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import MarkdownInputToolbarButton, { type MarkdownInputToolbarButtonProps } from '../MarkdownInputToolbarButton';
+import MarkdownInputToolbarButton, {
+  type MarkdownInputToolbarButtonProps,
+} from '../../../../../core/ui/forms/MarkdownInputControls/MarkdownInputToolbarButton';
 
 interface InsertEmbedCodeButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;

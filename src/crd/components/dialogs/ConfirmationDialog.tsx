@@ -45,7 +45,8 @@ export function ConfirmationDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      {/* The z-[90] is necessary to ensure the dialog appears above some other dialogs like memos or whiteboards that have z-[60]. */}
+      <AlertDialogContent className="z-[90]">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

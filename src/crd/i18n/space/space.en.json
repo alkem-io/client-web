@@ -29,6 +29,9 @@
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
     "postIndex": "Post Index",
+    "searchPlaceholder": "Search...",
+    "searchLabel": "Search posts",
+    "noResults": "No matches",
     "readMore": "Read more",
     "addEvent": "Add event",
     "eventDateRelative": {
@@ -141,6 +144,7 @@
     "expand": "Show more",
     "collapse": "Show less",
     "openWhiteboard": "Open Whiteboard",
+    "openMemo": "Open Memo",
     "comments": "{{count}} Comments",
     "commentsZero": "0 Comments",
     "post": "Post",
@@ -162,7 +166,11 @@
     "addResponse": "Add Response",
     "createWhiteboard": "Create new whiteboard",
     "defaultWhiteboardName": "New Whiteboard",
-    "whiteboardNameLabel": "Whiteboard title"
+    "whiteboardNameLabel": "Whiteboard title",
+    "addMemo": "Add memo",
+    "createMemo": "Create new memo",
+    "defaultMemoName": "New Memo",
+    "memoNameLabel": "Memo title"
   },
   "contribution": {
     "edit": "Edit",
@@ -341,12 +349,76 @@
     "reactionCount_one": "1 reaction",
     "contributions": "Contributions"
   },
+  "memo": {
+    "close": "Close",
+    "stubDialog": {
+      "message": "Memo editor coming soon — showing plain-text preview."
+    },
+    "displayName": {
+      "inputLabel": "Title",
+      "edit": "Edit memo title",
+      "save": "Save memo title",
+      "cancel": "Cancel edit"
+    },
+    "footer": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "membersOnline_one": "1 member online",
+      "membersOnline_other": "{{count}} members online",
+      "connectedUsersLabel": "Connected users",
+      "moreConnectedUsers_one": "{{count}} more connected user",
+      "moreConnectedUsers_other": "{{count}} more connected users",
+      "guestWarning": "You are editing as a guest",
+      "delete": "Delete memo",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "notSynced": "Synchronizing… reopen the memo to resume editing.",
+        "unauthenticated": "Sign in to edit this memo.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner to change the share settings.",
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
+      }
+    },
+    "errors": {
+      "loading": "Loading memo…",
+      "loadFailed": "Unable to load memo"
+    },
+    "deleteConfirm": {
+      "title": "Delete memo",
+      "body": "Are you sure you want to delete this memo? This action cannot be undone.",
+      "confirm": "Delete"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Open image",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "previous": "Previous image",
+    "next": "Next image",
+    "goToImage": "Go to image {{index}}",
+    "thumbnailsLabel": "Image thumbnails",
+    "download": "Download image",
+    "fullscreen": "Enter fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "emptyState": {
+      "title": "No images yet",
+      "action": "Add images"
+    },
+    "altTextLabel": "Alt text",
+    "deleteImage": "Delete image",
+    "dismissError": "Dismiss error",
+    "uploading": "Uploading…",
+    "downloadError": "Could not download the image.",
+    "validation": {
+      "type": "Unsupported file type",
+      "tooSmall": "Image is too small",
+      "tooLarge": "Image is too large"
+    }
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
     "showLess": "Show less",
-    "sortNewest": "Newest first",
-    "sortOldest": "Oldest first",
     "reply": "Reply",
     "delete": "Delete",
     "deleted": "This comment was deleted",

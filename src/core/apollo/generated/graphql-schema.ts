@@ -15920,7 +15920,14 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               __typename?: 'CalloutFraming';
               id: string;
               type: CalloutFramingType;
-              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              };
             };
             settings: {
               __typename?: 'CalloutSettings';
@@ -15964,7 +15971,14 @@ export type CalloutFragment = {
     __typename?: 'CalloutFraming';
     id: string;
     type: CalloutFramingType;
-    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
   };
   settings: {
     __typename?: 'CalloutSettings';

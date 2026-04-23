@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
+import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
@@ -33,6 +34,10 @@ type CalloutFormValues = {
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
   // Tracks whether the whiteboard has been edited at least once (vs. still the empty template)
   whiteboardConfigured: boolean;
+  // Media-gallery framing — only submitted when framingType is MediaGallery.
+  // Entries with `file` set are new visuals to upload post-save; entries with `id`
+  // are existing ones (edit path). Shape matches `useUploadMediaGalleryVisuals`.
+  mediaGalleryVisuals: MediaGalleryFieldVisual[];
   notifyMembers: boolean;
 };
 
@@ -59,6 +64,7 @@ const initialValues: CalloutFormValues = {
   whiteboardPreviewImages: [],
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardConfigured: false,
+  mediaGalleryVisuals: [],
   notifyMembers: false,
 };
 

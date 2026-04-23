@@ -3,9 +3,12 @@ import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDe
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
+  if (framingType === CalloutFramingType.Memo) return 'memo';
+  if (framingType === CalloutFramingType.MediaGallery) return 'mediaGallery';
   return 'text';
 }
 
@@ -51,6 +54,14 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
         ? callout.framing.whiteboard?.profile.preview?.uri
+        : undefined,
+    framingMemoMarkdown: callout.framing.type === CalloutFramingType.Memo ? callout.framing.memo?.markdown : undefined,
+    framingMediaGallery:
+      callout.framing.type === CalloutFramingType.MediaGallery
+        ? (() => {
+            const mapped = mapMediaGalleryToViewProps(callout.framing.mediaGallery);
+            return { thumbnails: mapped.feedThumbnails, totalCount: mapped.totalCount };
+          })()
         : undefined,
   };
 }
