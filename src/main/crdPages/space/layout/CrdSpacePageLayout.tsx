@@ -1,6 +1,5 @@
 import {
   Bookmark,
-  ChevronRight,
   HardDrive,
   History,
   Info,
@@ -18,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
@@ -39,6 +39,7 @@ import {
 } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
@@ -61,6 +62,30 @@ export default function CrdSpacePageLayout() {
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
+
+  // Must be derived before any early returns so `useSetBreadcrumbs` is called
+  // on every render. During loading the space fields are empty strings and
+  // the trail is `[]`; it updates once Apollo populates the context.
+  const isOnSettings = pathname.includes('/settings');
+  const spaceDisplayName = space.about.profile.displayName;
+  const spaceUrl = space.about.profile.url ?? '';
+  const settingsTabSegment = isOnSettings ? (pathname.split('/settings/')[1]?.split('/')[0] ?? 'about') : '';
+  const settingsTabLabel = settingsTabSegment
+    ? settingsTabSegment.charAt(0).toUpperCase() + settingsTabSegment.slice(1)
+    : '';
+
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    isLevelZero && isOnSettings && spaceDisplayName
+      ? [
+          { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+          {
+            label: t('crd-space:breadcrumbs.settings', { defaultValue: 'Settings' }),
+            href: `${spaceUrl}/settings`,
+          },
+          ...(settingsTabLabel ? [{ label: settingsTabLabel }] : []),
+        ]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
@@ -120,17 +145,6 @@ export default function CrdSpacePageLayout() {
 
   const sidebarSlot = <div id="crd-space-sidebar" />;
 
-  // Hide space navigation tabs (Home/Community/Subspaces/Knowledge) on the
-  // Settings sub-routes — settings has its own tab strip (About/Layout/…).
-  const isOnSettings = pathname.includes('/settings');
-
-  // Extract the active settings tab name for the breadcrumb (e.g., "about" → "About").
-  const settingsTabSegment = isOnSettings ? (pathname.split('/settings/')[1]?.split('/')[0] ?? 'about') : '';
-  const settingsTabLabel = settingsTabSegment
-    ? settingsTabSegment.charAt(0).toUpperCase() + settingsTabSegment.slice(1)
-    : '';
-  const spaceHref = space.about.profile.url ?? '';
-
   const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
     { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
     { id: 'layout', label: t('crd-spaceSettings:tabs.layout', { defaultValue: 'Layout' }), icon: LayoutGrid },
@@ -149,26 +163,6 @@ export default function CrdSpacePageLayout() {
         <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
       )}
       <SpaceShell
-        breadcrumbs={
-          isOnSettings ? (
-            <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
-              <Layers aria-hidden="true" className="size-4 mr-1" />
-              <a href={spaceHref} className="text-muted-foreground hover:text-foreground hover:underline">
-                {space.about.profile.displayName}
-              </a>
-              <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
-              <a href={`${spaceHref}/settings`} className="text-muted-foreground hover:text-foreground hover:underline">
-                {t('crd-space:breadcrumbs.settings', { defaultValue: 'Settings' })}
-              </a>
-              {settingsTabLabel && (
-                <>
-                  <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
-                  <span className="text-foreground font-medium">{settingsTabLabel}</span>
-                </>
-              )}
-            </nav>
-          ) : undefined
-        }
         header={
           isOnSettings ? (
             <SpaceSettingsHeader
