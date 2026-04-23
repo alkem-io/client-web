@@ -146,6 +146,8 @@
     "openWhiteboard": "Whiteboard openen",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
+    "expandComments": "Reacties uitvouwen",
+    "collapseComments": "Reacties inklappen",
     "post": "Bericht",
     "whiteboard": "Whiteboard",
     "collection": "Collectie",

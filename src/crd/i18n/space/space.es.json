@@ -146,6 +146,8 @@
     "openWhiteboard": "Abrir pizarra",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
+    "expandComments": "Expandir comentarios",
+    "collapseComments": "Contraer comentarios",
     "post": "Publicación",
     "whiteboard": "Pizarra",
     "collection": "Colección",

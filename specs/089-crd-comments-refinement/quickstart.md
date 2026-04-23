@@ -99,6 +99,24 @@ Complete the following checks on both **desktop** (≥768px viewport) and **mobi
 | D3 | Deleted parent comment with surviving replies: a "Deleted" placeholder is shown with replies indented beneath it. | Spec Edge Cases |
 | D4 | Mobile viewport (narrow window, e.g., 390×844): timeline event modal comments area still respects the bounded height; event body stays visible. | Spec Edge Cases |
 
+### E. US5 — Inline collapsible comments on list-view callouts (branch 090)
+
+Prerequisite: on a space with a callouts feed (home, knowledge base space feed, or any space feed view) that has multiple callouts, at least one of which has ≥6 comments.
+
+| # | Check | Maps to |
+|---|-------|---------|
+| E1 | Every callout card footer shows `<chevron-down> <message-icon> N Comments` (or `0 Comments`). No footer opens the detail dialog. | FR-012, US5 AS1 |
+| E2 | Clicking the footer row (chevron or label) expands the footer inline. The chevron rotates 180°, the input appears above the thread, and the thread list appears below. No dialog opens. | US5 AS2, FR-014 |
+| E3 | With an expanded thread that has 6+ comments, the thread region scrolls internally at ~400px max height. The next callout in the feed shifts down by at most that bounded height — not the full thread length. | FR-013, US5 AS3, SC-008 |
+| E4 | Post a new comment from the inline input. It appears at the top of the inline thread (newest-first), the count in the footer label increments, and no page-level scroll jump occurs. | US5 AS5, FR-014 |
+| E5 | Reply to a top-level comment. The reply appears nested one level. React on a comment with an emoji — the reaction pill updates. Delete your own comment — it's removed (or shown as "Deleted" if it had replies). All flows match the dialog/timeline behavior exactly. | US5 AS5 |
+| E6 | Expand two different callouts in the same feed. Each maintains its own independent scroll position and input draft. Collapsing one does not affect the other. | US5 AS6, FR-016 |
+| E7 | Collapse an expanded footer. Re-expand it. Previously typed (unsent) input text is preserved; the thread state is intact. | US5 AS7 |
+| E8 | Click the callout title → the detail dialog opens. Click the expand icon in the callout header → the detail dialog opens. The dialog still works identically to before. | R8 |
+| E9 | Keyboard operability: Tab to the footer trigger. `Enter` or `Space` toggles. `Escape` does NOT collapse (correct — Collapsible is not modal). Screen-reader announces `aria-expanded="true"` / `false"` on toggle. | SC-009 |
+| E10 | Open DevTools → Network → filter by WS/subscription. On initial feed load (no expansions), confirm no comments subscription request fires. Expand one callout → a single subscription opens. Collapse it → subscription remains open (sticky). Navigate away and back → feed starts clean. | SC-010, R7 |
+| E11 | Disable CRD (`localStorage.removeItem('alkemio-crd-enabled'); location.reload();`). The same feed renders the legacy MUI callout list — no chevron, no inline expansion, unchanged behavior. | US5 AS8, FR-015 |
+
 ---
 
 ## 5. Automated checks

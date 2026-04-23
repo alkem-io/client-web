@@ -146,6 +146,8 @@
     "openWhiteboard": "Ouvrir le tableau blanc",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
+    "expandComments": "Afficher les commentaires",
+    "collapseComments": "Masquer les commentaires",
     "post": "Publication",
     "whiteboard": "Tableau blanc",
     "collection": "Collection",

@@ -146,6 +146,8 @@
     "openWhiteboard": "Отвори дъска",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
+    "expandComments": "Разгъни коментарите",
+    "collapseComments": "Сгъни коментарите",
     "post": "Публикация",
     "whiteboard": "Дъска",
     "collection": "Колекция",
