@@ -1032,6 +1032,9 @@
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
     },
+    "collaboraDocument": {
+      "clickToSee": "Click to see the full $t(common.collaboraDocument)"
+    },
     "calloutsList": {
       "title": "Index",
       "filter": {
@@ -3382,16 +3385,7 @@
             "title": "...or look for your $t(common.community) below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": [
-            "Innovation",
-            "Energy",
-            "Inclusive",
-            "3D",
-            "Community",
-            "Transition",
-            "SSI",
-            "Privacy"
-          ]
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
         },
         "newMemberships": {
           "title": "My Invitations",
@@ -4395,42 +4389,27 @@
       {
         "key": "energy-transition",
         "name": "Energy Transition",
-        "tags": [
-          "Energy Transition",
-          "Energietransitie"
-        ]
+        "tags": ["Energy Transition", "Energietransitie"]
       },
       {
         "key": "inclusive-society",
         "name": "Inclusive Society",
-        "tags": [
-          "Inclusive Society",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
       },
       {
         "key": "public-services",
         "name": "Public Services",
-        "tags": [
-          "Public Services",
-          "Publieke Diensten"
-        ]
+        "tags": ["Public Services", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": [
-          "Innovation",
-          "Innovatie"
-        ]
+        "tags": ["Innovation", "Innovatie"]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalization of Society",
-        "tags": [
-          "Digitalization of Society",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalization of Society", "Digitalisering"]
       }
     ]
   },
@@ -4517,10 +4496,7 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": [
-          "Up to 10 $t(common.members)",
-          "Various tools, including standard $t(common.whiteboards)"
-        ],
+        "features": ["Up to 10 $t(common.members)", "Various tools, including standard $t(common.whiteboards)"],
         "disclaimer": "Free $t(common.spaces) are limited to 1 $t(common.space) per user",
         "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
       },

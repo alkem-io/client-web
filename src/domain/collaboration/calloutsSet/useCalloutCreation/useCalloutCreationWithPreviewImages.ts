@@ -1,5 +1,6 @@
 import {
   CalloutFramingType,
+  type CollaboraDocumentType,
   type CreateCalloutMutation,
   type CreateReferenceInput,
   type CreateTagsetInput,
@@ -27,6 +28,10 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     memo?: MemoFieldSubmittedValues;
     poll?: PollFormFieldSubmittedValues;
+    collaboraDocument?: {
+      displayName: string;
+      documentType: CollaboraDocumentType;
+    };
     tags?: string[];
   };
 }
