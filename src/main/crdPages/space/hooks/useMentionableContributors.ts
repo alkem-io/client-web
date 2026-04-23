@@ -62,10 +62,10 @@ export function useMentionableContributors(): CrdMentionSearch {
     const suggestions: CrdMentionSuggestion[] = [];
 
     data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
-      if (!vc.profile) return;
+      if (!vc.profile?.url) return;
       if (!vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) return;
       suggestions.push({
-        id: vc.profile.url ?? '',
+        id: vc.profile.url,
         displayName: vc.profile.displayName,
         avatarUrl: vc.profile.avatar?.uri,
         virtualContributor: true,
@@ -73,9 +73,9 @@ export function useMentionableContributors(): CrdMentionSearch {
     });
 
     data?.usersPaginated.users.forEach(user => {
-      if (!user.profile) return;
+      if (!user.profile?.url) return;
       suggestions.push({
-        id: user.profile.url ?? '',
+        id: user.profile.url,
         displayName: user.profile.displayName,
         avatarUrl: user.profile.avatar?.uri,
         city: user.profile.location?.city,
