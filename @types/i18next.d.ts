@@ -9,6 +9,7 @@ import type crdDashboardTranslation from '@/crd/i18n/dashboard/dashboard.en.json
 import type crdSpaceTranslation from '@/crd/i18n/space/space.en.json';
 import type crdSearchTranslation from '@/crd/i18n/search/search.en.json';
 import type crdMarkdownTranslation from '@/crd/i18n/markdown/markdown.en.json';
+import type crdSpaceSettingsTranslation from '@/crd/i18n/spaceSettings/spaceSettings.en.json';
 import type crdWhiteboardTranslation from '@/crd/i18n/whiteboard/whiteboard.en.json';
 
 declare module 'i18next' {
@@ -24,6 +25,7 @@ declare module 'i18next' {
       'crd-space': typeof crdSpaceTranslation;
       'crd-search': typeof crdSearchTranslation;
       'crd-markdown': typeof crdMarkdownTranslation;
+      'crd-spaceSettings': typeof crdSpaceSettingsTranslation;
       'crd-whiteboard': typeof crdWhiteboardTranslation;
     };
   }

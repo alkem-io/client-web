@@ -1,0 +1,755 @@
+{
+  "tabs": {
+    "about": "Acerca de",
+    "layout": "Diseño",
+    "community": "Comunidad",
+    "subspaces": "Subespacios",
+    "templates": "Plantillas",
+    "updates": "Actualizaciones",
+    "storage": "Almacenamiento",
+    "settings": "Ajustes",
+    "account": "Cuenta"
+  },
+  "dirtyGuard": {
+    "save": "Guardar",
+    "discard": "Discard & leave",
+    "cancel": "Cancelar",
+    "tabSwitch": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes on this tab. Guardar them, discard them, or stay on this tab?"
+    },
+    "navAway": {
+      "title": "Unsaved changes",
+      "description": "Leaving this page will discard your unsaved changes."
+    }
+  },
+  "saveBar": {
+    "save": "Guardar cambios",
+    "discard": "Descartar cambios",
+    "saving": "Guardando…"
+  },
+  "layout": {
+    "pageHeader": {
+      "title": "Diseño",
+      "subtitle": "Customize your Space's navigation tabs. Rename, reorder, and manage post assignments."
+    },
+    "discardChangesDialog": {
+      "title": "Descartar cambios?",
+      "description": "Your unsaved Diseño changes will be reverted to the last saved state. This cannot be undone.",
+      "confirm": "Descartar cambios"
+    },
+    "postDescriptionDisplay": {
+      "title": "Post description display",
+      "switchLabel": "Collapse post descriptions by default",
+      "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+    },
+    "column": {
+      "titleAriaLabel": "Column title",
+      "descriptionAriaLabel": "Column description",
+      "editTitle": "Editar column title",
+      "editDescription": "Editar column description",
+      "confirm": "Confirm",
+      "cancel": "Cancelar",
+      "titlePlaceholder": "Column title",
+      "descriptionPlaceholder": "Describe this column…",
+      "menu": "Acciones de columna",
+      "empty": "No callouts in this column yet.",
+      "activePhase": {
+        "set": "Mark as active phase",
+        "current": "Fase activa (current)"
+      },
+      "defaultPostTemplate": {
+        "label": "Plantilla predeterminada",
+        "header": "Pick a template",
+        "clear": "Clear default",
+        "none": "No templates available"
+      },
+      "editDetails": {
+        "menuLabel": "Editar Details",
+        "dialogTitle": "Editar Details: Flow Phase",
+        "titleLabel": "Título",
+        "editTitle": "Editar title",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Descripción",
+        "cancel": "Cancelar",
+        "saving": "Guardando…",
+        "save": "Guardar"
+      }
+    },
+    "row": {
+      "drag": "Arrastra para reordenar",
+      "menu": "Acciones del callout",
+      "moveTo": "Mover a",
+      "viewPost": "Ver publicación",
+      "noOtherColumns": "No hay otras columnas"
+    }
+  },
+  "community": {
+    "pageHeader": {
+      "title": "Comunidad",
+      "subtitle": "Manage members, organizations, and virtual contributors in this space."
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "invitations": {
+      "title": "Pending Invitations",
+      "revoke": "Revocar invitación",
+      "platformInvite": "Platform invite"
+    },
+    "pendingMemberships": {
+      "title": "Pending Miembroships",
+      "name": "Nombre",
+      "email": "Correo",
+      "date": "Date",
+      "type": "Type",
+      "actions": "Acciones",
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": "Eliminar",
+      "empty": "No pending memberships.",
+      "status": {
+        "column": "Estado",
+        "applicationReceived": "Application received",
+        "applicationApproved": "Application approved",
+        "applicationRejected": "Application rejected",
+        "invited": "Invitard",
+        "invitationAccepted": "Invitation accepted",
+        "invitationRejected": "Invitation rejected",
+        "invitedExternal": "Invitard (external)"
+      },
+      "contributorType": {
+        "user": "User",
+        "organization": "Organization",
+        "virtualContributor": "Virtual contributor"
+      }
+    },
+    "members": {
+      "title": "Miembros del espacio",
+      "search": "Buscar members…",
+      "invite": "Invitar",
+      "name": "Nombre",
+      "email": "Correo",
+      "role": {
+        "lead": "Líder",
+        "member": "Miembro"
+      },
+      "actions": "Acciones",
+      "empty": "No members found.",
+      "remove": "Quitar member",
+      "joined": "Se unió",
+      "viewProfile": "View Profile",
+      "pagination": {
+        "showing": "Showing {{from}} to {{to}} of {{total}} members",
+        "previous": "Previous page",
+        "page": "Page {{page}} of {{total}}",
+        "next": "Next page"
+      },
+      "roleColumn": "Rol"
+    },
+    "organizations": {
+      "title": "Miembro Organizaciones",
+      "name": "Nombre",
+      "role": "Rol",
+      "actions": "Acciones",
+      "empty": "No organizations.",
+      "remove": "Quitar organization",
+      "description": "Todosow members from specific organizations to join automatically.",
+      "add": "Añadir Organization",
+      "hint": "Users from these organizations can join without admin approval.",
+      "addDialog": {
+        "title": "Añadir Organization",
+        "description": "Pick an organization whose members can join this space without approval.",
+        "search": "Buscar organizations…",
+        "empty": "No organizations match your search."
+      }
+    },
+    "virtualContributors": {
+      "title": "Colaboradores virtuales",
+      "name": "Nombre",
+      "actions": "Acciones",
+      "empty": "No virtual contributors.",
+      "remove": "Quitar virtual contributor",
+      "description": "Manage AI agents and bots participating in this space.",
+      "add": "Añadir Virtual Contributor",
+      "addExternal": "Invitar External Virtual Contributor",
+      "addDialog": {
+        "title": "Añadir Virtual Contributor",
+        "description": "Pick a virtual contributor from this account to add to the space.",
+        "search": "Buscar virtual contributors…",
+        "empty": "No virtual contributors available on this account."
+      },
+      "addExternalDialog": {
+        "title": "Invitar External Virtual Contributor",
+        "description": "Invitar a virtual contributor from the Alkemio library. The owner will have to accept the invitation.",
+        "search": "Buscar the library…",
+        "empty": "No library virtual contributors match your search."
+      }
+    },
+    "applicationForm": {
+      "title": "Formulario de solicitud",
+      "description": "Customize the questions users must answer when applying to join this space."
+    },
+    "guidelines": {
+      "title": "Normas de la comunidad",
+      "description": "Establish rules and expectations for member behavior.",
+      "hint": "Displayed to new members upon joining.",
+      "placeholder": "Describe your space's code of conduct…",
+      "save": "Guardar Guidelines",
+      "saving": "Guardando…"
+    },
+    "confirmRemove": {
+      "confirm": "Confirm",
+      "user": {
+        "title": "Quitar member",
+        "description": "Quitar {{name}} from this space? They will lose access immediately."
+      },
+      "organization": {
+        "title": "Quitar organization",
+        "description": "Quitar {{name}} from this space?"
+      },
+      "virtualContributor": {
+        "title": "Quitar virtual contributor",
+        "description": "Quitar {{name}} from this space?"
+      },
+      "invitation": {
+        "title": "Revocar invitación",
+        "description": "Revoke the pending invitation for {{name}}?"
+      },
+      "applicationReject": {
+        "title": "Rechazar solicitud",
+        "description": "Reject {{name}}'s application to join this space?"
+      },
+      "applicationDelete": {
+        "title": "Retirar solicitud",
+        "description": "Quitar {{name}}'s application from the list?"
+      }
+    },
+    "addDialog": {
+      "name": "Nombre",
+      "action": "Action",
+      "empty": "No candidates match your search.",
+      "added": "Añadired",
+      "addAriaLabel": "Añadir {{name}}",
+      "add": "Añadir"
+    },
+    "invite": {
+      "email": {
+        "errors": {
+          "empty": "Enter an email address.",
+          "invalid": "Enter a valid email address.",
+          "failed": "Could not send the invitation."
+        },
+        "title": "Invitar by email",
+        "placeholder": "person@example.com",
+        "send": "Enviar",
+        "sent": "Invitation sent to {{email}}"
+      },
+      "title": "Invitar Miembros",
+      "description": "Invitar an existing Alkemio member by picking from the list, or invite someone new by email.",
+      "users": {
+        "title": "Invitar existing members",
+        "search": "Buscar Alkemio members…",
+        "empty": "No candidates match your search.",
+        "invited": "Invitard",
+        "invite": "Invitar"
+      }
+    }
+  },
+  "subspaces": {
+    "pageHeader": {
+      "title": "Subespacios",
+      "subtitle": "Editar the Subespacios in this Space. Configure default templates and view all existing subspaces."
+    },
+    "defaultTemplate": {
+      "title": "Default Subspace Template",
+      "description": "Choose the default settings that will apply when creating a new Subspace within this Space.",
+      "change": "Change Default Template",
+      "dialog": {
+        "title": "Change Default Subspace Template",
+        "intro": "Customize the default Template for newly created Subespacios.",
+        "description": "Below you can choose between the Plantillas collected in the Space Template Library. If you're looking to create new Plantillas or explore additional Plantillas, <library>click here</library> to access this library.",
+        "fieldLabel": "Category",
+        "placeholder": "Select a template",
+        "loading": "Cargando templates…",
+        "empty": "No subspace templates available.",
+        "required": "This field is required!",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando…"
+      }
+    },
+    "listTitle": "Subespacios",
+    "search": "Buscar subspaces...",
+    "create": "Create Subspace",
+    "filterLabel": "Filtrar:",
+    "filter": {
+      "all": "Todos",
+      "active": "Activo",
+      "archived": "Archivado",
+      "activeOnly": "Activo Only",
+      "archivedOnly": "Archivado Only"
+    },
+    "viewMode": {
+      "list": "List view",
+      "grid": "Grid view"
+    },
+    "noResults": "No subspaces found",
+    "noResultsHint": "Try adjusting your search or filters.",
+    "actions": "Subspace actions",
+    "kebab": {
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "saveAsTemplate": "Guardar as Template",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar subespacio",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Eliminar"
+    },
+    "saveAsTemplate": {
+      "title": "Create new Space Template",
+      "profile": {
+        "title": "Template description",
+        "help": "This description will be visible to anyone browsing templates. It is not part of the template content itself."
+      },
+      "fields": {
+        "displayName": "Template title",
+        "description": "Template description",
+        "tags": "Template tags",
+        "tagsPlaceholder": "Añadir a tag and press Enter"
+      },
+      "spaceTemplate": {
+        "title": "Space Template",
+        "activeSource": "Capturing content from: {{name}}"
+      },
+      "urlLoader": {
+        "open": "Update collaboration from another space",
+        "description": "Paste the URL of a space or subspace to use its collaboration content as the basis of this template.",
+        "placeholder": "https://…",
+        "use": "Use this space",
+        "cancel": "Cancelar",
+        "resolving": "Checking…",
+        "errors": {
+          "required": "Paste the URL of the space you want to copy as a template.",
+          "invalidUrl": "This URL does not point to a space.",
+          "notFound": "Space not found.",
+          "noRights": "You need admin rights on the space you want to copy as a template."
+        }
+      },
+      "recursive": "Also include subspaces of the selected space in the template",
+      "preview": {
+        "info": "Always included: Acerca de information & Ajustes",
+        "states": "Phases",
+        "callouts": "Callouts",
+        "noCalloutsInState": "No callouts in this phase.",
+        "noCalloutDescription": "No description",
+        "subspaces": "Includes these subspaces"
+      },
+      "errors": {
+        "nameTooShort": "Template name must be at least 3 characters"
+      },
+      "cancel": "Cancelar",
+      "save": "Create",
+      "saving": "Creating…"
+    },
+    "createDialog": {
+      "dialog": {
+        "title": "Create new Subspace",
+        "subtitle": "Set up a new workspace within this space."
+      },
+      "template": {
+        "label": "Template",
+        "hint": "Optional — pick a subspace template to pre-fill content.",
+        "loading": "Cargando templates…",
+        "placeholder": "Select a template (optional)",
+        "none": "No template"
+      },
+      "displayName": {
+        "label": "Nombre",
+        "hint": "The name of your subspace, visible to members.",
+        "placeholder": "e.g. Q1 Marketing Campaign"
+      },
+      "tagline": {
+        "label": "Lema",
+        "hint": "A short subtitle describing the subspace.",
+        "placeholder": "A short tagline…"
+      },
+      "description": {
+        "label": "Descripción",
+        "hint": "Explain what this subspace is about. Markdown supported.",
+        "placeholder": "What is this subspace about?"
+      },
+      "tags": {
+        "label": "Etiquetas",
+        "hint": "Etiquetas help members find this subspace.",
+        "placeholder": "Añadir a tag and press Enter"
+      },
+      "avatar": {
+        "label": "Avatar",
+        "upload": "Subir avatar"
+      },
+      "cardBanner": {
+        "label": "Card banner",
+        "upload": "Subir card banner"
+      },
+      "visuals": {
+        "remove": "Quitar image",
+        "resolutionHint": "Recommended: {{width}} × {{height}} px",
+        "tooSmall": "Image is too small. Minimum {{width}} × {{height}} px required.",
+        "loadFailed": "Failed to read image file."
+      },
+      "cancel": "Cancelar",
+      "submit": "Create Subspace",
+      "creating": "Creating…",
+      "validation": {
+        "min3": "Must be at least 3 characters",
+        "maxSmall": "Must be {{count}} characters or fewer",
+        "maxMarkdown": "Must be {{count}} characters or fewer",
+        "required": "Nombre is required"
+      }
+    }
+  },
+  "updates": {
+    "pageHeader": {
+      "title": "Actualizaciones from the Líders",
+      "subtitle": "Post announcements, milestones, and progress updates visible to all space members."
+    },
+    "composer": {
+      "new": "Nueva actualización",
+      "title": "New update",
+      "placeholder": "Write your update…",
+      "publish": "Publicar",
+      "submitting": "Publicando…",
+      "cancel": "Cancelar"
+    },
+    "empty": "No updates yet.",
+    "unknownAuthor": "Unknown author",
+    "message": {
+      "actions": "Update actions",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar update",
+      "description": "Are you sure you want to delete this update? This cannot be undone.",
+      "confirm": "Eliminar"
+    },
+    "loading": "Cargando updates"
+  },
+  "templateLibrary": {
+    "title": "Select a template",
+    "titleForType": "Select a {{type}} template",
+    "cancel": "Cancelar",
+    "loadPlatform": "Load platform library templates",
+    "emptySection": "No templates in this section.",
+    "selectAria": "Select template {{name}}",
+    "sections": {
+      "space": "This space",
+      "account": "My innovation packs",
+      "platform": "Platform library"
+    }
+  },
+  "templates": {
+    "pageHeader": {
+      "title": "Plantillas",
+      "subtitle": "Manage templates for spaces, collaboration tools, whiteboards, posts, and community guidelines."
+    },
+    "search": "Buscar templates...",
+    "addNew": "Añadir New",
+    "createNew": "Create a new template",
+    "selectFromLibrary": "Select a template from the platform library",
+    "noTemplates": "No templates found",
+    "noTemplatesHint": "Try searching for a different term or create a new template.",
+    "duplicating": "Creating new template…",
+    "noPreview": "No preview",
+    "custom": "Custom",
+    "actions": "Template actions",
+    "categories": {
+      "space": "Space",
+      "collaborationTool": "Collaboration tool",
+      "whiteboard": "Whiteboard",
+      "post": "Post",
+      "communityGuidelines": "Comunidad guidelines"
+    },
+    "kebab": {
+      "preview": "Vista previa",
+      "duplicate": "Duplicate",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "preview": {
+      "title": "Vista previa",
+      "name": "Nombre",
+      "tagline": "Lema",
+      "description": "Descripción",
+      "body": "Content",
+      "noDescription": "No description provided.",
+      "noBody": "No content.",
+      "close": "Cerrar",
+      "edit": "Editar",
+      "duplicate": "Duplicate",
+      "duplicating": "Duplicating…"
+    },
+    "edit": {
+      "title": "Editar template",
+      "name": "Nombre",
+      "tagline": "Lema",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe this template…",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Añadir a tag and press Enter",
+      "postDefault": "Default post description",
+      "postDefaultPlaceholder": "Shown pre-filled when members create a post from this template…",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando…"
+    },
+    "deleteDialog": {
+      "title": "Eliminar plantilla",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Eliminar"
+    },
+    "library": {
+      "sections": {
+        "thisSpace": "This space",
+        "myInnovationPacks": "My innovation packs",
+        "platformLibrary": "Platform library"
+      },
+      "validation": {}
+    }
+  },
+  "settings": {
+    "pageHeader": {
+      "title": "Ajustes",
+      "subtitle": "Configure your space's visibility, membership policies, and allowed member actions."
+    },
+    "visibility": {
+      "title": "Visibility",
+      "description": "Control who can see and access this space",
+      "public": "Público",
+      "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
+      "private": "Privado",
+      "privateDescription": "This Space is visible to everyone on the platform, but the content is only visible to members.",
+      "hint": "Consider your space's purpose and audience when choosing visibility."
+    },
+    "membership": {
+      "title": "Miembroship",
+      "description": "Choose how users join your space",
+      "open": "No Application Required",
+      "openDescription": "Todos Space members can directly join, without you having to review their applications.",
+      "openHint": "Best for public, open collaboration spaces",
+      "application": "Application Required",
+      "applicationDescription": "If people want to become a member, they have to fill in the application form. You receive their applications (see community tab here) and you can accept them or reject them.",
+      "applicationHint": "Best for curated spaces with specific requirements",
+      "invitation": "Invitation Only",
+      "invitationDescription": "Users can only become a member after you've invited them. There is no 'apply' or 'join' button for others to click.",
+      "invitationHint": "Best for private, restricted collaboration teams",
+      "trustedApplicants": "Trusted Applicants",
+      "hostOrgTrust": "Todosow members of {{host}} to join this Space without an application."
+    },
+    "applicationForm": {
+      "title": "Formulario de solicitud",
+      "description": "This section allows you to modify the questions for users applying to the Space. Please note that these questions will only be shown when the membership options (in the block above) are set to \"Applications required\".",
+      "introductionLabel": "Introduction",
+      "questionsLabel": "Questions",
+      "addQuestion": "Añadir question",
+      "noQuestions": "No questions added yet.",
+      "questionPlaceholder": "Enter question…",
+      "required": "Required",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "questionRequired": "Question text is required",
+      "deleteQuestion": "Eliminar question",
+      "deleteConfirm": {
+        "title": "Eliminar question",
+        "description": "Are you sure you want to remove this question?",
+        "confirm": "Eliminar"
+      },
+      "save": "Guardar"
+    },
+    "allowedActions": {
+      "title": "Todosowed Acciones",
+      "description": "Choose which actions members can perform in this space",
+      "subspaceAdminInvitations": "Space Invitations",
+      "memberCreatePosts": "Create Posts",
+      "videoCalls": "Video Calls",
+      "guestContributions": "Guest Contributions",
+      "memberCreateSubspaces": "Create Subespacios",
+      "subspaceEvents": "Subspace Events",
+      "alkemioSupportAccess": "Alkemio Support",
+      "trustHostOrganization": "Trust Anfitrión Organization"
+    }
+  },
+  "storage": {
+    "pageHeader": {
+      "title": "Almacenamiento",
+      "subtitle": "Browse and manage documents stored in this space."
+    },
+    "empty": "No documents stored yet.",
+    "columns": {
+      "name": "Nombre",
+      "size": "Size",
+      "uploader": "Subired by",
+      "date": "Date",
+      "actions": "Acciones"
+    },
+    "openInNewTab": "Open in new tab",
+    "delete": "Eliminar document",
+    "deleteDialog": {
+      "title": "Eliminar document",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Eliminar"
+    }
+  },
+  "account": {
+    "pageHeader": {
+      "title": "Cuenta",
+      "subtitle": "Here you find all your Spaces, Colaboradores virtuales, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team."
+    },
+    "url": {
+      "title": "URL",
+      "hint": "The unique URL for this space. Contact Alkemio to change this.",
+      "copy": "Copy URL",
+      "copied": "URL copied"
+    },
+    "visibility": {
+      "title": "Visibility Estado",
+      "prefix": "This Space is currently in",
+      "suffix": "mode",
+      "contact": "For status changes, contact the Alkemio team."
+    },
+    "host": {
+      "title": "Anfitrión Information",
+      "description": "The host is the person or organization that owns this space."
+    },
+    "plan": {
+      "title": "License",
+      "description": "Your current space subscription details",
+      "featuresHeading": "Included Features",
+      "daysLeft": "{{count}} days remaining",
+      "changeLicense": "Change License"
+    },
+    "support": {
+      "title": "Support",
+      "message": "If you want to change any of these settings, please contact the Alkemio team.",
+      "contact": "Contact Alkemio Support"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Permanently delete this space and all its content.",
+      "delete": "Eliminar this Space",
+      "deleteDialog": {
+        "title": "Eliminar Space",
+        "description": "This will permanently delete this space and all its content. This action cannot be undone.",
+        "confirm": "Eliminar Space"
+      }
+    }
+  },
+  "about": {
+    "name": {
+      "title": "Space Nombre",
+      "description": "The public name of your space.",
+      "ariaLabel": "Space name"
+    },
+    "tagline": {
+      "title": "Lema",
+      "description": "A short subtitle shown next to the space name.",
+      "ariaLabel": "Lema"
+    },
+    "branding": {
+      "title": "Space Branding",
+      "description": "Subir an avatar, a page banner (1536×256), and a card banner (416×256).",
+      "noImage": "No image",
+      "upload": "Subir",
+      "avatar": {
+        "title": "Avatar",
+        "hint": "The space logo."
+      },
+      "pageBanner": {
+        "title": "Page Banner (1536 × 256px)",
+        "hint": "Shown at the top of the Space page."
+      },
+      "cardBanner": {
+        "title": "Card Banner (416 × 256px)",
+        "hint": "Shown in search results and space cards."
+      },
+      "cropDialog": {
+        "save": "Guardar",
+        "saving": "Guardando…",
+        "cancel": "Cancelar",
+        "title": "Crop Image",
+        "altText": "Descripción",
+        "altTextPlaceholder": "Describe this image…"
+      },
+      "changeBanner": "Change Banner"
+    },
+    "location": {
+      "title": "Ubicación",
+      "description": "The city and country of this space.",
+      "city": "Ciudad",
+      "country": "País (ISO code)"
+    },
+    "what": {
+      "title": "What",
+      "description": "Describe what this space is about.",
+      "placeholder": "What's this space about…"
+    },
+    "why": {
+      "title": "Why",
+      "description": "Explain the motivation or value of this space.",
+      "placeholder": "Why does this space exist…"
+    },
+    "who": {
+      "title": "Who",
+      "description": "Describe the target audience or ideal members.",
+      "placeholder": "Who is this space for…"
+    },
+    "tags": {
+      "title": "Etiquetas",
+      "description": "Etiquetas help members discover your space.",
+      "placeholder": "Añadir a tag and press Enter"
+    },
+    "references": {
+      "title": "References & Links",
+      "description": "External links shown on this space page.",
+      "empty": "No references added yet.",
+      "add": "Añadir",
+      "row": {
+        "title": "Reference title",
+        "titlePlaceholder": "Título",
+        "uri": "Reference URL",
+        "uriPlaceholder": "https://…",
+        "description": "Reference description",
+        "descriptionPlaceholder": "Descripción (optional)",
+        "remove": "Quitar reference"
+      },
+      "deleteDialog": {
+        "title": "Quitar reference",
+        "description": "Are you sure you want to remove \"{{name}}\"? This cannot be undone once you Guardar.",
+        "untitled": "this reference",
+        "confirm": "Quitar"
+      }
+    },
+    "preview": {
+      "title": "PREVIEW",
+      "label": "PREVIEW",
+      "livePreview": {
+        "title": "Live Vista previa",
+        "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory."
+      }
+    },
+    "inlineSave": {
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardard",
+      "retry": "Retry"
+    },
+    "pageHeader": {
+      "title": "Acerca de",
+      "subtitle": "Define your space's purpose, motivation, and target audience."
+    }
+  }
+}

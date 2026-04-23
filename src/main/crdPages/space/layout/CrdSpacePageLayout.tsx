@@ -1,32 +1,58 @@
-import { History, Settings, Share2 } from 'lucide-react';
+import {
+  Bookmark,
+  ChevronRight,
+  HardDrive,
+  History,
+  Info,
+  Layers,
+  LayoutGrid,
+  Megaphone,
+  Settings,
+  Settings as SettingsIcon,
+  Share2,
+  UserCircle,
+  Users,
+} from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
+import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
+import {
+  type SpaceSettingsTabDescriptor,
+  SpaceSettingsTabStrip,
+} from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import {
+  type SpaceSettingsTabId,
+  useSpaceSettingsTab,
+} from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
-  const { t } = useTranslation('crd-space');
+  const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [_shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
@@ -94,31 +120,93 @@ export default function CrdSpacePageLayout() {
 
   const sidebarSlot = <div id="crd-space-sidebar" />;
 
+  // Hide space navigation tabs (Home/Community/Subspaces/Knowledge) on the
+  // Settings sub-routes — settings has its own tab strip (About/Layout/…).
+  const isOnSettings = pathname.includes('/settings');
+
+  // Extract the active settings tab name for the breadcrumb (e.g., "about" → "About").
+  const settingsTabSegment = isOnSettings ? (pathname.split('/settings/')[1]?.split('/')[0] ?? 'about') : '';
+  const settingsTabLabel = settingsTabSegment
+    ? settingsTabSegment.charAt(0).toUpperCase() + settingsTabSegment.slice(1)
+    : '';
+  const spaceHref = space.about.profile.url ?? '';
+
+  const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
+    { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
+    { id: 'layout', label: t('crd-spaceSettings:tabs.layout', { defaultValue: 'Layout' }), icon: LayoutGrid },
+    { id: 'community', label: t('crd-spaceSettings:tabs.community', { defaultValue: 'Community' }), icon: Users },
+    { id: 'updates', label: t('crd-spaceSettings:tabs.updates', { defaultValue: 'Updates' }), icon: Megaphone },
+    { id: 'subspaces', label: t('crd-spaceSettings:tabs.subspaces', { defaultValue: 'Subspaces' }), icon: Layers },
+    { id: 'templates', label: t('crd-spaceSettings:tabs.templates', { defaultValue: 'Templates' }), icon: Bookmark },
+    { id: 'storage', label: t('crd-spaceSettings:tabs.storage', { defaultValue: 'Storage' }), icon: HardDrive },
+    { id: 'settings', label: t('crd-spaceSettings:tabs.settings', { defaultValue: 'Settings' }), icon: SettingsIcon },
+    { id: 'account', label: t('crd-spaceSettings:tabs.account', { defaultValue: 'Account' }), icon: UserCircle },
+  ];
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       {visibilityData.status !== 'active' && (
         <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
       )}
       <SpaceShell
-        header={
-          <SpaceHeader
-            title={space.about.profile.displayName}
-            tagline={space.about.profile.tagline ?? undefined}
-            bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
-            memberAvatars={memberAvatars}
-            memberCount={memberAvatars.length}
-            actions={headerActions}
-          />
+        breadcrumbs={
+          isOnSettings ? (
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
+              <Layers aria-hidden="true" className="size-4 mr-1" />
+              <a href={spaceHref} className="text-muted-foreground hover:text-foreground hover:underline">
+                {space.about.profile.displayName}
+              </a>
+              <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
+              <a href={`${spaceHref}/settings`} className="text-muted-foreground hover:text-foreground hover:underline">
+                {t('crd-space:breadcrumbs.settings', { defaultValue: 'Settings' })}
+              </a>
+              {settingsTabLabel && (
+                <>
+                  <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
+                  <span className="text-foreground font-medium">{settingsTabLabel}</span>
+                </>
+              )}
+            </nav>
+          ) : undefined
         }
-        sidebar={sidebarSlot}
+        header={
+          isOnSettings ? (
+            <SpaceSettingsHeader
+              title={space.about.profile.displayName}
+              tagline={space.about.profile.tagline ?? null}
+              avatarUrl={space.about.profile.avatar?.uri ?? null}
+              initials={(space.about.profile.displayName ?? '').slice(0, 2).toUpperCase()}
+              avatarColor={pickColorFromId(spaceId ?? space.about.profile.displayName)}
+              tabs={
+                <SpaceSettingsTabStrip
+                  activeTab={activeSettingsTab}
+                  onTabChange={setActiveSettingsTab}
+                  tabs={settingsTabs}
+                />
+              }
+            />
+          ) : (
+            <SpaceHeader
+              title={space.about.profile.displayName}
+              tagline={space.about.profile.tagline ?? undefined}
+              bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
+              memberAvatars={memberAvatars}
+              memberCount={memberAvatars.length}
+              actions={headerActions}
+            />
+          )
+        }
+        sidebar={isOnSettings ? undefined : sidebarSlot}
         tabs={
-          <SpaceNavigationTabs
-            tabs={tabItems}
-            activeIndex={activeTabIndex}
-            onTabChange={handleTabChange}
-            isSmallScreen={isSmallScreen}
-            mobileActions={mobileActions}
-          />
+          isOnSettings ? undefined : (
+            <SpaceNavigationTabs
+              tabs={tabItems}
+              activeIndex={activeTabIndex}
+              onTabChange={handleTabChange}
+              isSmallScreen={isSmallScreen}
+              mobileActions={mobileActions}
+            />
+          )
         }
       >
         <Suspense fallback={<LoadingSpinner />}>
