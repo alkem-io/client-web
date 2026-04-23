@@ -30,6 +30,7 @@ import {
   MapPin,
   Mail,
   BookOpen,
+  ExternalLink,
 } from "lucide-react";
 
 /* ─── Types ──────────────────────────────────────────────── */
@@ -44,6 +45,7 @@ interface SpaceLead {
 interface SpaceReference {
   title: string;
   url: string;
+  description?: string;
 }
 
 interface SpaceHost {
@@ -97,8 +99,19 @@ Strive to provide thoughtful and well-researched contributions. Cite sources whe
   },
   references: [
     {
-      title: "New reference",
-      url: "asdflasdf",
+      title: "EU Renewable Energy Directive",
+      url: "https://energy.ec.europa.eu/topics/renewable-energy",
+      description: "Official EU framework and targets for renewable energy deployment across member states.",
+    },
+    {
+      title: "Municipal Climate Action Toolkit",
+      url: "https://www.c40.org/climate-action-toolkit",
+      description: "Practical tools and case studies for cities implementing climate transition strategies.",
+    },
+    {
+      title: "2030 Transition Roadmap (PDF)",
+      url: "https://docs.greenfield.gov/transition-roadmap-2030.pdf",
+      description: "The approved roadmap document with phased milestones and budget allocations.",
     },
   ],
 };
@@ -456,9 +469,13 @@ export function AboutThisSpaceDialog({
                   </div>
                   <div className="space-y-3">
                     {SPACE_DATA.references.map((ref, i) => (
-                      <div key={i} className="flex items-start gap-3">
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 p-3 rounded-lg transition-colors hover:bg-[color-mix(in_srgb,var(--muted)_50%,transparent)]"
+                        style={{ border: "1px solid var(--border)" }}
+                      >
                         <div
-                          className="shrink-0 flex items-center justify-center rounded-full"
+                          className="shrink-0 flex items-center justify-center rounded-lg mt-0.5"
                           style={{
                             width: 36,
                             height: 36,
@@ -471,24 +488,42 @@ export function AboutThisSpaceDialog({
                             style={{ color: "var(--primary)" }}
                           />
                         </div>
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p
                             style={{
                               fontSize: "var(--text-sm)",
-                              fontWeight: 500,
+                              fontWeight: 600,
                               color: "var(--foreground)",
                             }}
                           >
                             {ref.title}
                           </p>
-                          <p
+                          {ref.description && (
+                            <p
+                              className="mt-0.5 line-clamp-2"
+                              style={{
+                                fontSize: "12px",
+                                color: "var(--muted-foreground)",
+                                lineHeight: "1.5",
+                              }}
+                            >
+                              {ref.description}
+                            </p>
+                          )}
+                          <a
+                            href={ref.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 mt-1 hover:underline"
                             style={{
-                              fontSize: "12px",
-                              color: "var(--muted-foreground)",
+                              fontSize: "11px",
+                              color: "var(--primary)",
                             }}
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            {ref.url}
-                          </p>
+                            <ExternalLink className="w-3 h-3" />
+                            {ref.url.replace(/^https?:\/\//, "").split("/")[0]}
+                          </a>
                         </div>
                       </div>
                     ))}
