@@ -21,10 +21,10 @@ export type CallToActionProps = {
  */
 export function mapLinkToCallToActionProps(link: LinkDetails | undefined): CallToActionProps | undefined {
   if (!link) return undefined;
-  const uri = link.uri?.trim();
+  const uri = link.uri.trim();
   if (!uri) return undefined;
 
-  const displayName = link.profile?.displayName?.trim() || uri;
+  const displayName = link.profile.displayName.trim() || uri;
 
   try {
     const parsed = new URL(uri);

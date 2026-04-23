@@ -401,7 +401,8 @@
   },
   "callToAction": {
     "externalLinkDisclaimer": "Dieser Link öffnet eine externe Seite in einem neuen Tab.",
-    "linkAriaLabel": "{{displayName}} (öffnet {{uri}})",
+    "linkAriaLabel": "{{displayName}} (öffnet {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (öffnet {{url}} in einem neuen Tab)",
     "validation": {
       "invalidUrl": "Ungültige URL"
     }

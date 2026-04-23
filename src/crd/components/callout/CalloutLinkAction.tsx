@@ -44,11 +44,14 @@ export function CalloutLinkAction({ url, displayName, isExternal, isValid, class
             href={url}
             target={isExternal ? '_blank' : undefined}
             rel={isExternal ? 'noopener noreferrer' : undefined}
-            aria-label={t('callToAction.linkAriaLabel', { displayName, uri: url })}
+            aria-label={t(isExternal ? 'callToAction.linkAriaLabelExternal' : 'callToAction.linkAriaLabel', {
+              displayName,
+              url,
+            })}
             onClick={stopBubble}
           >
             <span className="truncate">{displayName}</span>
-            {isExternal && <ExternalLink className="w-4 h-4" aria-hidden="true" />}
+            {isExternal && <ExternalLink className="size-4" aria-hidden="true" />}
           </a>
         </Button>
       </TooltipTrigger>

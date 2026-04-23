@@ -401,7 +401,8 @@
   },
   "callToAction": {
     "externalLinkDisclaimer": "Este enlace abre un sitio externo en una pestaña nueva.",
-    "linkAriaLabel": "{{displayName}} (abre {{uri}})",
+    "linkAriaLabel": "{{displayName}} (abre {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (abre {{url}} en una pestaña nueva)",
     "validation": {
       "invalidUrl": "URL no válida"
     }

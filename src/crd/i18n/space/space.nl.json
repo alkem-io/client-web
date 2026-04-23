@@ -401,7 +401,8 @@
   },
   "callToAction": {
     "externalLinkDisclaimer": "Deze link opent een externe site in een nieuw tabblad.",
-    "linkAriaLabel": "{{displayName}} (opent {{uri}})",
+    "linkAriaLabel": "{{displayName}} (opent {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opent {{url}} in een nieuw tabblad)",
     "validation": {
       "invalidUrl": "Ongeldige URL"
     }

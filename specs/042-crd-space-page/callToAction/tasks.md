@@ -42,7 +42,7 @@ Each story is independently testable: US1 renders in the CRD standalone preview 
 
 ## Phase 3: User Story 1 — Feed-level CTA button (P1)
 
-**Goal**: Media-gallery-framed callouts render a full-width primary-filled CTA button in `PostCard` with tooltip, `ExternalLink` icon when applicable, and correct `target`/`rel` attributes. Clicking the button navigates; clicking the rest of the card opens the detail dialog.
+**Goal**: CTA-framing callouts render a full-width primary-filled CTA button in `PostCard` with tooltip, `ExternalLink` icon when applicable, and correct `target`/`rel` attributes. Clicking the button navigates; clicking the rest of the card opens the detail dialog.
 
 **Independent test**: In the CRD standalone app (or a Vitest render test), render `PostCard` with `type='callToAction'` and `framingCallToAction: { uri: 'https://example.com', displayName: 'Visit example', isExternal: true, isValid: true }`. Verify:
 - A full-width primary-filled button renders labelled "Visit example" + `ExternalLink` icon.

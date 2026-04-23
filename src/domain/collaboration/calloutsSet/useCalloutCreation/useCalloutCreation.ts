@@ -12,6 +12,7 @@ import type {
   CreateTagsetInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
+import type { LinkFramingFieldSubmittedValues } from '../../callout/CalloutFramings/LinkFramingFieldSubmittedValues';
 import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
@@ -31,12 +32,7 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
-    link?: {
-      uri: string;
-      profile: {
-        displayName: string;
-      };
-    };
+    link?: LinkFramingFieldSubmittedValues;
     mediaGallery?: {
       nameID?: string;
       visuals: {

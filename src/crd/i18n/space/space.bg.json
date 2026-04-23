@@ -401,7 +401,8 @@
   },
   "callToAction": {
     "externalLinkDisclaimer": "Тази връзка отваря външен сайт в нов раздел.",
-    "linkAriaLabel": "{{displayName}} (отваря {{uri}})",
+    "linkAriaLabel": "{{displayName}} (отваря {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (отваря {{url}} в нов раздел)",
     "validation": {
       "invalidUrl": "Невалиден URL адрес"
     }

@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import type { Editor } from '@tiptap/react';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -46,9 +46,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       collaborationId: memoId,
     });
 
-  const handleEditorReady = useCallback((editor: Editor) => {
+  const handleEditorReady = (editor: Editor) => {
     editorRef.current = editor;
-  }, []);
+  };
 
   const [updateMemoDisplayName, { loading: savingDisplayName }] = useUpdateMemoDisplayNameMutation();
   const [editingDisplayName, setEditingDisplayName] = useState(false);
@@ -89,15 +89,18 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       const html = editorRef.current.getHTML();
       // Fire-and-forget: write to cache as soon as conversion completes.
       // The dialog unmounts on close so we can't rely on timeouts; this runs
-      // outside React lifecycle as a plain promise.
-      void htmlToMarkdown(html).then(markdown => {
-        client.cache.modify({
-          id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-          fields: {
-            markdown: () => markdown,
-          },
-        });
-      });
+      // outside React lifecycle as a plain promise. Swallow failures — the
+      // connector's delayed server refetch is the safety net.
+      void htmlToMarkdown(html)
+        .then(markdown => {
+          client.cache.modify({
+            id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+            fields: {
+              markdown: () => markdown,
+            },
+          });
+        })
+        .catch(() => {});
     }
     onClose();
   };

@@ -392,7 +392,8 @@
   },
   "callToAction": {
     "externalLinkDisclaimer": "This link opens an external site in a new tab.",
-    "linkAriaLabel": "{{displayName}} (opens {{uri}})",
+    "linkAriaLabel": "{{displayName}} (opens {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opens {{url}} in a new tab)",
     "validation": {
       "invalidUrl": "Invalid URL"
     }
