@@ -8,6 +8,7 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
@@ -64,6 +65,7 @@ function LazyCalloutItemContent({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
+  const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
   const { t } = useTranslation('crd-space');
   const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
 
@@ -84,6 +86,7 @@ function LazyCalloutItemContent({
   };
 
   const contributionsEnabled = callout.settings.contribution.enabled;
+  const collaboraDocumentId = callout.framing.collaboraDocument?.id;
 
   return (
     <>
@@ -96,6 +99,7 @@ function LazyCalloutItemContent({
         onCommentsClick={() => openDialog()}
         onSettingsClick={onSettingsClick}
         onExpandClick={onExpandClick}
+        onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
         contributionsPreview={
           contributionsEnabled ? (
             <ContributionsPreviewConnector
@@ -116,6 +120,15 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
       />
+
+      {collaboraDocumentId && (
+        <CollaboraFramingEditorOverlay
+          open={collaboraEditorOpen}
+          collaboraDocumentId={collaboraDocumentId}
+          title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
+          onClose={() => setCollaboraEditorOpen(false)}
+        />
+      )}
     </>
   );
 }

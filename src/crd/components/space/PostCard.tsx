@@ -1,6 +1,10 @@
 import { FileText, Images, Maximize2, MessageSquare, MoreHorizontal, Presentation, StickyNote } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  CalloutCollaboraPreview,
+  type CollaboraDocumentPreviewType,
+} from '@/crd/components/callout/CalloutCollaboraPreview';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import {
   MediaGalleryFeedGrid,
@@ -13,7 +17,7 @@ import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery';
+export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'document';
 
 export type PostCardData = {
   id: string;
@@ -38,6 +42,8 @@ export type PostCardData = {
    * reorders / deletions even when image URLs change.
    */
   framingMediaGallery?: { thumbnails: MediaGalleryFeedThumbnail[]; totalCount: number };
+  /** Framing-level Collabora document type (document framing only) — drives the icon + label in the feed preview */
+  framingDocumentType?: CollaboraDocumentPreviewType;
   commentCount?: number;
 };
 
@@ -49,6 +55,9 @@ type PostCardProps = {
   onCommentsClick?: () => void;
   onSettingsClick?: () => void;
   onExpandClick?: () => void;
+  /** Opens the Collabora editor directly from the feed preview (document framing only).
+   *  Distinct from `onClick`, which opens the callout dialog via the title link. */
+  onOpenFramingDocument?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
@@ -61,6 +70,7 @@ const typeIcons: Record<PostType, typeof FileText> = {
   whiteboard: Presentation,
   memo: StickyNote,
   mediaGallery: Images,
+  document: FileText,
 };
 
 const typeLabels = {
@@ -68,6 +78,7 @@ const typeLabels = {
   whiteboard: 'callout.whiteboard',
   memo: 'callout.memo',
   mediaGallery: 'callout.mediaGallery',
+  document: 'callout.document',
 } as const;
 
 export function PostCard({
@@ -77,6 +88,7 @@ export function PostCard({
   onCommentsClick,
   onSettingsClick,
   onExpandClick,
+  onOpenFramingDocument,
   contributionsPreview,
   children,
   className,
@@ -209,6 +221,15 @@ export function PostCard({
             thumbnails={post.framingMediaGallery.thumbnails}
             totalCount={post.framingMediaGallery.totalCount}
             onOpenAt={onClick}
+          />
+        )}
+
+        {/* Collabora document framing preview — compact variant for the feed */}
+        {post.type === 'document' && post.framingDocumentType && (
+          <CalloutCollaboraPreview
+            documentType={post.framingDocumentType}
+            onOpen={onOpenFramingDocument ?? onClick ?? (() => {})}
+            size="compact"
           />
         )}
 

@@ -8,6 +8,9 @@ export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentatio
 type CalloutCollaboraPreviewProps = {
   documentType: CollaboraDocumentPreviewType;
   onOpen: () => void;
+  /** `default` = aspect-video (used inside the callout detail dialog);
+   *  `compact` = shorter fixed height for the space feed card. */
+  size?: 'default' | 'compact';
   className?: string;
 };
 
@@ -23,15 +26,27 @@ const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
   presentation: 'callout.documentPresentation',
 };
 
-export function CalloutCollaboraPreview({ documentType, onOpen, className }: CalloutCollaboraPreviewProps) {
+export function CalloutCollaboraPreview({
+  documentType,
+  onOpen,
+  size = 'default',
+  className,
+}: CalloutCollaboraPreviewProps) {
   const { t } = useTranslation('crd-space');
   const Icon = iconByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.documentText');
+  const compact = size === 'compact';
 
   return (
-    <div className={cn('rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video', className)}>
+    <div
+      className={cn(
+        'rounded-lg overflow-hidden border border-border bg-muted/30 relative',
+        compact ? 'h-28' : 'aspect-video',
+        className
+      )}
+    >
       <div className="w-full h-full flex items-center justify-center bg-muted">
-        <Icon className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+        <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', 'text-muted-foreground/50')} aria-hidden="true" />
       </div>
       <div className="absolute top-3 right-3">
         <span className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-caption text-foreground shadow-sm">

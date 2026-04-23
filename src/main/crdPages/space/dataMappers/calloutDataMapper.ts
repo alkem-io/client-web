@@ -1,4 +1,9 @@
-import { type CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  type CalloutContributionType,
+  CalloutFramingType,
+  CollaboraDocumentType,
+} from '@/core/apollo/generated/graphql-schema';
+import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -9,7 +14,15 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
   if (framingType === CalloutFramingType.Memo) return 'memo';
   if (framingType === CalloutFramingType.MediaGallery) return 'mediaGallery';
+  if (framingType === CalloutFramingType.CollaboraDocument) return 'document';
   return 'text';
+}
+
+function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): CollaboraDocumentPreviewType | undefined {
+  if (type === CollaboraDocumentType.Spreadsheet) return 'spreadsheet';
+  if (type === CollaboraDocumentType.Presentation) return 'presentation';
+  if (type === CollaboraDocumentType.TextDocument) return 'text';
+  return undefined;
 }
 
 /**
@@ -62,6 +75,10 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
             const mapped = mapMediaGalleryToViewProps(callout.framing.mediaGallery);
             return { thumbnails: mapped.feedThumbnails, totalCount: mapped.totalCount };
           })()
+        : undefined,
+    framingDocumentType:
+      callout.framing.type === CalloutFramingType.CollaboraDocument
+        ? mapCollaboraDocumentTypeToPreviewType(callout.framing.collaboraDocument?.documentType)
         : undefined,
   };
 }
