@@ -49,7 +49,10 @@ export function LayoutCalloutRow({
       style={style}
       className={cn(
         'group/row flex items-start gap-2 rounded-md border bg-card px-2 py-2 transition-colors hover:bg-accent/40',
-        isDragging && 'opacity-50 shadow-lg',
+        // While dragging, collapse the original row into a thin placeholder — the
+        // DragOverlay carries the real visual, and this leaves a clear gap that
+        // shifts alongside sibling reorder so the drop target is obvious.
+        isDragging && 'pointer-events-none opacity-30',
         className
       )}
       data-callout-id={callout.id}
@@ -102,6 +105,32 @@ export function LayoutCalloutRow({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+    </div>
+  );
+}
+
+type LayoutCalloutRowPreviewProps = {
+  callout: LayoutCallout;
+  showDescription: boolean;
+};
+
+/**
+ * Non-interactive visual clone of a callout row, rendered inside the DndContext
+ * DragOverlay so the item visibly follows the cursor during drag.
+ */
+export function LayoutCalloutRowPreview({ callout, showDescription }: LayoutCalloutRowPreviewProps) {
+  return (
+    <div className="flex cursor-grabbing items-start gap-2 rounded-md border bg-card px-2 py-2 shadow-lg ring-1 ring-ring/40">
+      <span className="mt-1 p-0.5 text-muted-foreground">
+        <GripVertical aria-hidden="true" className="size-4" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-body-emphasis">{callout.title}</div>
+        {showDescription && callout.description ? (
+          <p className="mt-0.5 line-clamp-3 text-caption text-muted-foreground">{callout.description}</p>
+        ) : null}
+      </div>
+      <span aria-hidden="true" className="size-9 shrink-0" />
     </div>
   );
 }
