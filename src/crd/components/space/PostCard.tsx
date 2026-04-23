@@ -3,6 +3,7 @@ import {
   FileText,
   Images,
   Maximize2,
+  Megaphone,
   MessageSquare,
   MoreHorizontal,
   Presentation,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import {
   MediaGalleryFeedGrid,
@@ -23,7 +25,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery';
+export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'callToAction';
 
 export type PostCardData = {
   id: string;
@@ -48,6 +50,8 @@ export type PostCardData = {
    * reorders / deletions even when image URLs change.
    */
   framingMediaGallery?: { thumbnails: MediaGalleryFeedThumbnail[]; totalCount: number };
+  /** Framing-level call-to-action link (Link framing only). `isValid` is false for non-http(s) or malformed URIs. */
+  framingCallToAction?: { uri: string; displayName: string; isExternal: boolean; isValid: boolean };
   commentCount?: number;
 };
 
@@ -94,6 +98,7 @@ const typeIcons: Record<PostType, typeof FileText> = {
   whiteboard: Presentation,
   memo: StickyNote,
   mediaGallery: Images,
+  callToAction: Megaphone,
 };
 
 const typeLabels = {
@@ -101,6 +106,7 @@ const typeLabels = {
   whiteboard: 'callout.whiteboard',
   memo: 'callout.memo',
   mediaGallery: 'callout.mediaGallery',
+  callToAction: 'callout.callToAction',
 } as const;
 
 export function PostCard({
@@ -256,6 +262,17 @@ export function PostCard({
             thumbnails={post.framingMediaGallery.thumbnails}
             totalCount={post.framingMediaGallery.totalCount}
             onOpenAt={onClick}
+          />
+        )}
+
+        {/* Call-to-action framing preview — full-width link button */}
+        {post.type === 'callToAction' && post.framingCallToAction && (
+          <CalloutLinkAction
+            url={post.framingCallToAction.uri}
+            displayName={post.framingCallToAction.displayName}
+            isExternal={post.framingCallToAction.isExternal}
+            isValid={post.framingCallToAction.isValid}
+            className="mt-4"
           />
         )}
 

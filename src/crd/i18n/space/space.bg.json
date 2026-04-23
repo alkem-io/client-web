@@ -144,6 +144,7 @@
     "expand": "Покажи повече",
     "collapse": "Покажи по-малко",
     "openWhiteboard": "Отвори дъска",
+    "openMemo": "Отвори бележка",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
     "expandComments": "Разгъни коментарите",
@@ -154,6 +155,7 @@
     "callForWhiteboards": "Покана за дъски",
     "poll": "Анкета",
     "link": "Връзка",
+    "callToAction": "Призив за действие",
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
     "moreWhiteboards": "+{{count}} още",
@@ -167,7 +169,11 @@
     "addResponse": "Добави отговор",
     "createWhiteboard": "Създаване на нова бяла дъска",
     "defaultWhiteboardName": "Нова бяла дъска",
-    "whiteboardNameLabel": "Заглавие на бялата дъска"
+    "whiteboardNameLabel": "Заглавие на бялата дъска",
+    "addMemo": "Добави бележка",
+    "createMemo": "Създай нова бележка",
+    "defaultMemoName": "Нова бележка",
+    "memoNameLabel": "Заглавие на бележка"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -218,6 +224,11 @@
     "search": "Търсене на подпространства...",
     "showMore": "Покажи още {{count}}",
     "showLess": "Покажи по-малко",
+    "filter": {
+      "all": "Всички",
+      "active": "Активни",
+      "archived": "Архивирани"
+    },
     "empty": {
       "title": "Няма намерени подпространства",
       "description": "Няма подпространства, съответстващи на текущото търсене или филтър.",
@@ -234,8 +245,8 @@
     "leadUsers": "Водещи потребители",
     "leadOrganizations": "Водещи организации",
     "guidelines": "Насоки на общността",
-    "references": "Референции",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Референции",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -367,6 +378,9 @@
       "disconnected": "Прекъсната връзка",
       "membersOnline_one": "1 член онлайн",
       "membersOnline_other": "{{count}} члена онлайн",
+      "connectedUsersLabel": "Свързани потребители",
+      "moreConnectedUsers_one": "Още {{count}} свързан потребител",
+      "moreConnectedUsers_other": "Още {{count}} свързани потребители",
       "guestWarning": "Редактирате като гост",
       "delete": "Изтриване на бележка",
       "readonlyReason": {
@@ -380,6 +394,19 @@
     "errors": {
       "loading": "Зареждане на бележка…",
       "loadFailed": "Неуспешно зареждане на бележка"
+    },
+    "deleteConfirm": {
+      "title": "Изтриване на бележка",
+      "body": "Сигурни ли сте, че искате да изтриете тази бележка? Това действие не може да бъде отменено.",
+      "confirm": "Изтрий"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Тази връзка отваря външен сайт в нов раздел.",
+    "linkAriaLabel": "{{displayName}} (отваря {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (отваря {{url}} в нов раздел)",
+    "validation": {
+      "invalidUrl": "Невалиден URL адрес"
     }
   },
   "mediaGallery": {
@@ -499,6 +526,7 @@
     "feedRegion": "Поток със съдържание на пространството",
     "membersGrid": "Решетка с членове на общността",
     "subspacesGrid": "Решетка с подпространства",
+    "statusFilter": "Филтрирай подпространствата по статус",
     "visibilityNotice": "Известие за видимост на пространството",
     "mobileTabBar": "Навигация с табове",
     "moreActionsDrawer": "Допълнителни действия",
