@@ -167,7 +167,16 @@
     "addMemo": "Add memo",
     "createMemo": "Create new memo",
     "defaultMemoName": "New Memo",
-    "memoNameLabel": "Memo title"
+    "memoNameLabel": "Memo title",
+    "document": "Document",
+    "documentText": "Word Document",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentation",
+    "openDocument": "Open Document",
+    "addDocument": "Add document",
+    "defaultDocumentName": "New Document",
+    "documentTypeLabel": "Document type",
+    "createNew": "Create new"
   },
   "contribution": {
     "edit": "Edit",

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
@@ -38,6 +38,8 @@ type CalloutFormValues = {
   // Entries with `file` set are new visuals to upload post-save; entries with `id`
   // are existing ones (edit path). Shape matches `useUploadMediaGalleryVisuals`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
+  // Collabora document framing — only submitted when framingType is CollaboraDocument
+  collaboraDocumentType: CollaboraDocumentType;
   notifyMembers: boolean;
 };
 
@@ -65,6 +67,7 @@ const initialValues: CalloutFormValues = {
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
+  collaboraDocumentType: CollaboraDocumentType.TextDocument,
   notifyMembers: false,
 };
 

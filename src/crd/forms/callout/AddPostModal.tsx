@@ -1,4 +1,4 @@
-import { ChevronRight, Hash, Image, Megaphone, Presentation, Settings, StickyNote, X } from 'lucide-react';
+import { ChevronRight, FileText, Hash, Image, Megaphone, Presentation, Settings, StickyNote, X } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -69,6 +69,12 @@ export function AddPostModal({
       label: t('callout.memo'),
       icon: StickyNote,
       color: 'text-chart-2 bg-chart-2/10 hover:bg-chart-2/20 border-chart-2/20',
+    },
+    {
+      id: 'document',
+      label: t('callout.document'),
+      icon: FileText,
+      color: 'text-chart-4 bg-chart-4/10 hover:bg-chart-4/20 border-chart-4/20',
     },
     {
       id: 'cta',

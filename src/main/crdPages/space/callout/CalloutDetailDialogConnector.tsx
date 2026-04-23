@@ -11,6 +11,8 @@ import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../da
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CollaboraFramingConnector } from './CollaboraFramingConnector';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -105,6 +107,7 @@ export function CalloutDetailDialogConnector({
   );
   const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -168,6 +171,14 @@ export function CalloutDetailDialogConnector({
     <MediaGalleryFramingConnector callout={callout} />
   ) : undefined;
 
+  const hasCollaboraFraming =
+    callout.framing.type === CalloutFramingType.CollaboraDocument && !!callout.framing.collaboraDocument;
+  const collaboraFramingSlot = hasCollaboraFraming ? (
+    <CollaboraFramingConnector callout={callout} onOpen={() => setFramingCollaboraOpen(true)} />
+  ) : undefined;
+  const framingCollaboraDocument = callout.framing.collaboraDocument;
+  const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
+
   const handleContributionClick = (contributionId: string, clickedMemoId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -214,6 +225,15 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  const framingCollaboraOverlay = framingCollaboraDocument ? (
+    <CollaboraFramingEditorOverlay
+      open={framingCollaboraOpen}
+      collaboraDocumentId={framingCollaboraDocument.id}
+      title={framingCollaboraTitle}
+      onClose={() => setFramingCollaboraOpen(false)}
+    />
+  ) : null;
+
   if (!callout.comments?.id) {
     return (
       <>
@@ -226,6 +246,7 @@ export function CalloutDetailDialogConnector({
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          collaboraFramingSlot={collaboraFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
@@ -233,6 +254,7 @@ export function CalloutDetailDialogConnector({
         {whiteboardOverlay}
         {memoOverlay}
         {framingMemoOverlay}
+        {framingCollaboraOverlay}
       </>
     );
   }
@@ -257,12 +279,14 @@ export function CalloutDetailDialogConnector({
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            collaboraFramingSlot={collaboraFramingSlot}
           />
         )}
       </CalloutCommentsConnector>
       {whiteboardOverlay}
       {memoOverlay}
       {framingMemoOverlay}
+      {framingCollaboraOverlay}
     </>
   );
 }

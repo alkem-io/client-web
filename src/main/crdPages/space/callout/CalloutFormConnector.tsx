@@ -4,12 +4,17 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  type CollaboraDocumentType,
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { CalloutContributionSettings } from '@/crd/forms/callout/CalloutContributionSettings';
 import { CalloutVisibilitySelector } from '@/crd/forms/callout/CalloutVisibilitySelector';
+import {
+  CollaboraDocumentTypePicker,
+  type CollaboraDocumentTypeValue,
+} from '@/crd/forms/callout/CollaboraDocumentTypePicker';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import type { CalloutCreationTypeWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -38,6 +43,7 @@ const ATTACHMENT_TO_FRAMING_TYPE: Record<string, CalloutFramingType> = {
   cta: CalloutFramingType.Link,
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
+  document: CalloutFramingType.CollaboraDocument,
 };
 
 export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFindTemplate }: CalloutFormConnectorProps) {
@@ -101,6 +107,15 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
             : PollResultsVisibility.Visible,
           resultsDetail: values.pollShowVoterAvatars ? PollResultsDetail.Full : PollResultsDetail.Count,
         },
+      };
+    }
+
+    // Collabora document framing — the server needs displayName + documentType
+    // at creation time so it can provision the correct underlying document.
+    if (framingType === CalloutFramingType.CollaboraDocument) {
+      callout.framing.collaboraDocument = {
+        displayName: values.title.trim() || t('callout.defaultDocumentName'),
+        documentType: values.collaboraDocumentType,
       };
     }
 
@@ -215,6 +230,14 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
       }
       activeAttachment={activeAttachment}
       onAttachmentChange={setActiveAttachment}
+      attachmentEditorSlot={
+        activeAttachment === 'document' ? (
+          <CollaboraDocumentTypePicker
+            value={values.collaboraDocumentType as CollaboraDocumentTypeValue}
+            onChange={v => setField('collaboraDocumentType', v as CollaboraDocumentType)}
+          />
+        ) : undefined
+      }
       settingsSlot={
         <>
           <CalloutContributionSettings
