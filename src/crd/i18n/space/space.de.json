@@ -29,6 +29,9 @@
     "virtualContributors": "Virtuelle Mitwirkende",
     "communityGuidelines": "Gemeinschaftsrichtlinien",
     "postIndex": "Beitragsverzeichnis",
+    "searchPlaceholder": "Suchen...",
+    "searchLabel": "Beiträge durchsuchen",
+    "noResults": "Keine Treffer",
     "readMore": "Mehr lesen",
     "addEvent": "Ereignis hinzufügen",
     "eventDateRelative": {
