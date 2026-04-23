@@ -3,28 +3,28 @@ import { cn } from '@/crd/lib/utils';
 
 type SpaceShellProps = {
   header: ReactNode;
-  sidebar: ReactNode;
-  tabs: ReactNode;
+  sidebar?: ReactNode;
+  tabs?: ReactNode;
   breadcrumbs?: ReactNode;
   children: ReactNode;
   className?: string;
 };
 
 export function SpaceShell({ header, sidebar, tabs, breadcrumbs, children, className }: SpaceShellProps) {
+  const hasSidebar = !!sidebar;
+  const hasTabs = !!tabs;
+
   return (
     <div className={cn('flex flex-col bg-background', className)}>
+      {breadcrumbs && <div className="w-full px-6 md:px-8 py-2 text-caption text-muted-foreground">{breadcrumbs}</div>}
       {header}
 
-      <div className="w-full px-6 md:px-8 py-8">
-        {breadcrumbs && <div className="mb-4">{breadcrumbs}</div>}
-
+      <div className={cn('w-full px-6 md:px-8 pb-8', hasTabs ? 'pt-8' : 'pt-0')}>
         <div className="grid grid-cols-12 gap-6 items-start">
-          {/* Sidebar — hidden on mobile, starts at col 2 on lg */}
-          <div className="hidden lg:block lg:col-start-2 col-span-2">{sidebar}</div>
+          {hasSidebar && <div className="hidden lg:block lg:col-start-2 col-span-2">{sidebar}</div>}
 
-          {/* Content area — full width on mobile, 8 cols on lg */}
-          <div className="col-span-12 lg:col-span-8 min-w-0">
-            <div className="mb-6">{tabs}</div>
+          <div className={cn('col-span-12 min-w-0', hasSidebar ? 'lg:col-span-8' : 'lg:col-start-2 lg:col-span-10')}>
+            {hasTabs && <div className="mb-6">{tabs}</div>}
             {children}
           </div>
         </div>

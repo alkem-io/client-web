@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentEmojiPicker } from '@/crd/components/comment/CommentEmojiPicker';
 import { cn } from '@/crd/lib/utils';
 import { Separator } from '@/crd/primitives/separator';
+import { isEditorReady } from './isEditorReady';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarLinkDialog } from './ToolbarLinkDialog';
 
@@ -47,7 +48,7 @@ export function MarkdownToolbar({ editor, className, collaborative = false }: Ma
     };
   }, [editor]);
 
-  if (!editor) return null;
+  if (!isEditorReady(editor)) return null;
 
   const isInTable = editor.isActive('table');
 
