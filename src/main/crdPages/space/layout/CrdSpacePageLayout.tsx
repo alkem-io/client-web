@@ -69,20 +69,16 @@ export default function CrdSpacePageLayout() {
   const isOnSettings = pathname.includes('/settings');
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
-  const settingsTabSegment = isOnSettings ? (pathname.split('/settings/')[1]?.split('/')[0] ?? 'about') : '';
-  const settingsTabLabel = settingsTabSegment
-    ? settingsTabSegment.charAt(0).toUpperCase() + settingsTabSegment.slice(1)
-    : '';
 
   const breadcrumbItems: BreadcrumbTrailItem[] =
     isLevelZero && isOnSettings && spaceDisplayName
       ? [
           { label: spaceDisplayName, href: spaceUrl, icon: Layers },
           {
-            label: t('crd-space:breadcrumbs.settings', { defaultValue: 'Settings' }),
+            label: t('crd-spaceSettings:tabs.settings'),
             href: `${spaceUrl}/settings`,
           },
-          ...(settingsTabLabel ? [{ label: settingsTabLabel }] : []),
+          { label: t(`crd-spaceSettings:tabs.${activeSettingsTab}`) },
         ]
       : [];
   useSetBreadcrumbs(breadcrumbItems);

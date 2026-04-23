@@ -34,7 +34,14 @@ function BreadcrumbLink({
   const Comp = asChild ? Slot : 'a';
 
   return (
-    <Comp data-slot="breadcrumb-link" className={cn('hover:text-foreground transition-colors', className)} {...props} />
+    <Comp
+      data-slot="breadcrumb-link"
+      className={cn(
+        'hover:text-foreground transition-colors outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:rounded-sm',
+        className
+      )}
+      {...props}
+    />
   );
 }
 
@@ -63,17 +70,19 @@ function BreadcrumbSeparator({ children, className, ...props }: React.ComponentP
   );
 }
 
-function BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
+type BreadcrumbEllipsisProps = React.ComponentProps<'span'> & {
+  srLabel: string;
+};
+
+function BreadcrumbEllipsis({ className, srLabel, ...props }: BreadcrumbEllipsisProps) {
   return (
     <span
       data-slot="breadcrumb-ellipsis"
-      role="presentation"
-      aria-hidden="true"
       className={cn('flex size-9 items-center justify-center', className)}
       {...props}
     >
-      <MoreHorizontal className="size-4" />
-      <span className="sr-only">More</span>
+      <MoreHorizontal aria-hidden="true" className="size-4" />
+      <span className="sr-only">{srLabel}</span>
     </span>
   );
 }

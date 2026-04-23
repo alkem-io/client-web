@@ -45,8 +45,16 @@ export function useSetBreadcrumbs(items: BreadcrumbTrailItem[]) {
   if (!ctx) throw new Error('useSetBreadcrumbs must be used within BreadcrumbsProvider');
   const { setItems } = ctx;
 
+  // Publish on items change. The provider's shallow-equality guard makes this
+  // a no-op when content is unchanged, even if the array identity differs.
   useEffect(() => {
     setItems(items);
-    return () => setItems([]);
   }, [items, setItems]);
+
+  // Clear only on unmount. Kept separate so a re-render doesn't cycle state
+  // through [items → [] → items] (which would happen if cleanup and publish
+  // lived in the same effect).
+  useEffect(() => {
+    return () => setItems([]);
+  }, [setItems]);
 }

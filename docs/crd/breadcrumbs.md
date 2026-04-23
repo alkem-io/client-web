@@ -8,7 +8,7 @@ This decouples the nav from content: the Header stays presentational and just ac
 
 ## Data flow
 
-```
+```text
 Page (e.g. CrdSpacePageLayout)
    │  useSetBreadcrumbs([{ label, href?, icon? }, …])
    ▼
@@ -39,23 +39,28 @@ Rendered next to the logo, hidden below `md`
 Call `useSetBreadcrumbs` once in your page/layout component. The hook publishes the trail on mount and clears it on unmount.
 
 ```tsx
+import { useTranslation } from 'react-i18next';
+import { Layers } from 'lucide-react';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
-import { Layers } from 'lucide-react';
 
 export default function MyPage() {
+  const { t } = useTranslation('crd-spaceSettings');
   const { space } = useSpace();
+  const spaceUrl = space.about.profile.url;
 
   const items: BreadcrumbTrailItem[] = [
-    { label: space.about.profile.displayName, href: space.about.profile.url, icon: Layers },
-    { label: 'Settings', href: `${space.about.profile.url}/settings` },
-    { label: 'About' },
+    { label: space.about.profile.displayName, href: spaceUrl, icon: Layers },
+    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+    { label: t('tabs.about') },
   ];
   useSetBreadcrumbs(items);
 
   return <MyPageContent />;
 }
 ```
+
+Business data (space name) comes from domain props; generic segments use `t()` with keys from the feature's i18n namespace. Never pass a string literal as `defaultValue` to `t()` — add the key to all language files instead.
 
 ### Item shape
 
