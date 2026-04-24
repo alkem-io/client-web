@@ -142,14 +142,14 @@
 - [X] T051 [P] Create `src/crd/forms/callout/LinkFramingFields.tsx` — URL + display name inputs with validation
 - [X] T052 [P] Create `src/crd/forms/callout/PollOptionsEditor.tsx` — poll title + 2-10 option fields + min/max settings
 - [X] T053 [P] Create `src/crd/forms/callout/CalloutContributionSettings.tsx` — allowed type selector + comments toggle
-- [X] T054 [P] Create `src/crd/forms/callout/CalloutVisibilitySelector.tsx` — Draft/Published toggle + notification checkbox
+- [X] T054 [P] Create `src/crd/forms/callout/CalloutVisibilitySelector.tsx` — Draft/Published toggle + notification checkbox _(superseded by `callout-dialog/` subspec T050 + T090 — file slated for deletion; visibility now lives in footer + `CalloutVisibilityChangeDialog`)_
 - [X] T055 Create `src/crd/forms/callout/AddPostModal.tsx` — post composition modal matching prototype: title input, markdown editor slot, attachment buttons, collapsible settings, Save Draft / Post footer; accepts per-field props + `framingEditorSlot: ReactNode` + `onSubmit`, `onSaveDraft`, `onFindTemplate`; uses Dialog primitive
 - [X] T056 Create `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` — Formik context for create/edit; maps form values to GraphQL mutations
 - [X] T057 Create `src/main/crdPages/space/callout/CalloutFormConnector.tsx` — renders AddPostModal inside Formik context; binds fields; renders FramingEditorConnector as editor slot
 - [X] T058 Create `src/main/crdPages/space/callout/FramingEditorConnector.tsx` — renders Tiptap (Memo), FormikWhiteboardPreview (Whiteboard), LinkFramingFields (Link), media uploader (MediaGallery), PollOptionsEditor (Poll)
 - [X] T059 Create `src/main/crdPages/space/callout/CalloutEditConnector.tsx` — pre-fills form with existing data; locks framing type + contribution type
 - [X] T060 [P] Create `src/crd/components/callout/CalloutContextMenu.tsx` — Radix DropdownMenu: Edit, Publish/Unpublish, Delete, Sort, Save as Template, Move (Up/Down/Top/Bottom), Share; permission-gated; keyboard accessible
-- [X] T061 Create `src/main/crdPages/space/callout/CalloutManagementConnector.tsx` — wires context menu actions to mutations and MUI dialogs
+- [X] T061 Create `src/main/crdPages/space/callout/CalloutManagementConnector.tsx` — wires context menu actions to mutations and MUI dialogs _(superseded — file was added then removed; replaced by `CalloutSettingsConnector.tsx` in `callout-dialog/` subspec T062)_
 - [X] T062 Wire CalloutContextMenu into PostCard via CalloutListConnector — settings icon triggers menu; each action wired to CalloutManagementConnector
 
 **Checkpoint**: Full callout lifecycle: create (all types), edit, publish/unpublish, delete, reorder. Form validation and permission gating work.
@@ -183,7 +183,7 @@
 
 ## Phase 11: US11 — Callout Templates (Priority: P3)
 
-- [X] T076 Create `src/main/crdPages/space/callout/TemplateImportConnector.tsx` — "Find Template" opens MUI dialog; maps selection to Formik; overwrite confirmation; default template auto-loading
+- [X] T076 Create `src/main/crdPages/space/callout/TemplateImportConnector.tsx` — "Find Template" opens MUI dialog; maps selection to Formik; overwrite confirmation; default template auto-loading _(currently a `null` stub — rewritten by `callout-dialog/` subspec T080–T081; moves off Formik per subspec D1)_
 - [X] T077 Wire TemplateImportConnector into CalloutFormConnector; wire "Save as Template" in CalloutManagementConnector
 
 ---

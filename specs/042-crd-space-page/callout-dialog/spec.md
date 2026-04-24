@@ -1,6 +1,6 @@
 # CRD Callout Dialog — Full Create / Edit / Lifecycle Migration
 
-**Feature Branch**: `042-crd-space-page` (new sub-branch TBD)
+**Feature Branch**: `042-crd-space-page-callout-dialog`
 **Parent**: [../spec.md](../spec.md)
 **Status**: Draft
 
@@ -28,24 +28,33 @@ The current CRD callout form (`src/crd/forms/callout/AddPostModal.tsx` + `src/ma
 
 One subspec, one branch, one PR sequence. Scope: **full callout lifecycle parity with MUI**, driven by a single `AddPostModal` used for create and edit, plus a `CalloutContextMenu` wired into both the feed card and the detail dialog's header. Port the follow-up dialogs (visibility change, sort contributions, save-as-template, delete-confirm) to CRD. Keep two MUI portal dependencies that aren't worth porting right now: `ShareDialog` and `ImportTemplatesDialog` (find-template).
 
+### Supersedes in parent 042
+
+The parent `specs/042-crd-space-page/tasks.md` marks three tasks as `[X]` completed that this subspec replaces outright. The parent tasks are accurate for the original scope but are no longer load-bearing once this subspec lands:
+
+- **Parent T061** `CalloutManagementConnector.tsx` — was added and later deleted; no longer in the tree. This subspec introduces `CalloutSettingsConnector.tsx` (plan.md → *New integration layer*) to fulfill the same role with the expanded context-menu surface.
+- **Parent T076** `TemplateImportConnector.tsx` — exists as a 25-line stub returning `null`. Rewritten here (tasks T080–T081).
+- **Parent T054** `CalloutVisibilitySelector.tsx` — was the inline draft/published selector. Removed by this subspec (tasks T050 + T090); visibility is now owned by the footer buttons + context-menu visibility dialog (FR-70..FR-72, FR-102).
+
 ### Goals
 
 1. A user can **create** a callout with any supported framing (`None`, `Whiteboard`, `Memo`, `Link`, `MediaGallery`, `Poll`) and any allowed contribution configuration (`None | Post | Memo | Whiteboard | Link`, with per-actor settings and contribution defaults), and see it appear in the feed.
 2. A user can **edit** an existing callout. Framing type and contribution `allowedTypes` are locked (except switching framing to `None` to drop the framing, with a confirmation). Framing content, contribution actors, contribution comments, framing comments, contribution defaults, tags, references, and poll options are editable. Poll option changes save via the dedicated add / remove / update / reorder mutations.
-3. A user can **publish / unpublish / delete / share / sort contributions / move (up, down, top, bottom) / save as template** a callout from a `CalloutContextMenu` exposed in two places: the 3-dots on the feed `PostCard`, and the more-options button in `CalloutDetailDialog`'s sticky header.
+3. A user can **publish / unpublish / delete / share / sort contributions / move (up, down, top, bottom) / save as template** a callout from a `CalloutContextMenu` exposed in two places: the 3-dots on the feed `PostCard`, and the `CalloutDetailDialog` sticky-header actions cluster.
 4. **Closing the dialog when the form is dirty** prompts a confirmation; closing a clean (empty or unchanged) form closes immediately.
 5. All user-visible strings live in the `crd-space` namespace; no raw Tailwind typography combos (tokens only); all interactive elements are keyboard- and screen-reader-accessible per WCAG 2.1 AA.
 6. **No Formik**. Form state uses `useState` + `yup.validateSync` + a manual error map, following `useCreateSubspace.ts` precedent.
-7. Ported/shared dialogs are CRD-styled (shadcn + Tailwind). Only `ShareDialog` and `ImportTemplatesDialog` remain MUI portals.
+7. Ported/shared dialogs are CRD-styled (shadcn + Tailwind). Three dialogs remain MUI portals (rendered outside `.crd-root`): `ShareDialog`, `ImportTemplatesDialog`, `CreateTemplateDialog` (Save as Template).
 
 ### Prototype reference
 
-Primary: `prototype/src/app/components/space/AddPostModal.tsx` (723 lines, PR #9574). The prototype expresses the new layout — four zones in the scrollable body (Title + description, ADD-TO-POST chip strip with inline editors, RESPONSES chip strip with per-type panels, MORE OPTIONS with tags / comments toggle / references), plus a nested RESPONSE-DEFAULTS dialog. The prototype does not show the notify-members checkbox; we add one in the footer.
+Primary: `prototype/src/app/components/space/AddPostModal.tsx` (723 lines, PR #9574). The prototype expresses the new layout — four zones in the scrollable body (Title + description, ADD-TO-POST chip strip with inline editors, RESPONSES chip strip with per-type panels, MORE OPTIONS with tags / comments toggle / references), plus a nested RESPONSE-DEFAULTS dialog. The prototype does not show the notify-members switch; we add one in the footer.
 
 ### Non-goals
 
-- Porting `ShareDialog` (MUI). Used as-is via portal.
-- Porting `ImportTemplatesDialog` (MUI, Formik-heavy). Used as-is via portal.
+- Porting `ShareDialog` (MUI). Used as-is via portal outside `.crd-root`. Follows the parent spec's accepted MUI-coexistence exception: MUI dialogs are imported via `@/domain/...`, never from `@mui/*` directly, and render outside the CRD root so the CSS isolation contract holds.
+- Porting `ImportTemplatesDialog` (MUI, Formik-heavy). Used as-is via portal outside `.crd-root`, same rationale.
+- Porting `CreateTemplateDialog` (Save as Template). Wired as-is via portal outside `.crd-root`, same rationale.
 - Collaborative memo / whiteboard editing in the callout dialog. On **create** the framing uses single-user mode (markdown for memo, `CrdSingleUserWhiteboardDialog` for whiteboard). On **edit** the framing opens the multi-user collaborative dialog (`CrdMemoDialog`, `CrdWhiteboardDialog`) — that wiring is already done by this repo's existing memo/whiteboard subspecs and is only referenced here.
 - Contribution creation flows (add post / add memo / add whiteboard / add link from inside a live callout). Already wired in `MemoContributionAddConnector`, `WhiteboardContributionAddConnector`, and peers. This subspec only configures the **allowed types, actors, and defaults** for contributions; it does not create them.
 - `Document` framing and `Document` contribution type. Chip renders as a disabled placeholder with a "coming soon" tooltip; no mutation wiring.
@@ -60,7 +69,7 @@ A user opens the create dialog from a tab header, types a title and description,
 1. **Given** the user clicks "Create" on a tab, **When** the dialog opens, **Then** it shows an empty title field focused, an empty description editor, the six framing chips all unselected, no response type selected, and empty tags / references / more options.
 2. **Given** the user enters a title, **When** the title is non-empty after trim, **Then** the Publish and Save Draft buttons become enabled; until then, both are disabled.
 3. **Given** the user clicks Publish with a valid title, **When** the mutation resolves, **Then** the dialog closes, form state resets, and the new callout appears at the top of the feed with `visibility = Published`.
-4. **Given** Publish is clicked and `notifyMembers` is checked in the footer, **When** the mutation runs, **Then** `sendNotification: true` is included in the create input.
+4. **Given** Publish is clicked and `notifyMembers` is toggled on in the footer, **When** the mutation runs, **Then** `sendNotification: true` is included in the create input.
 
 ### US2 — Create a memo-framed callout (Priority P0)
 
@@ -97,7 +106,7 @@ A user picks **Call to Action**. Inline fields appear: Button Label (display nam
 
 ### US6 — Create a media-gallery-framed callout (Priority P1)
 
-Handled by the existing media gallery subspec; in this subspec we just ensure the `image` chip and `MediaGalleryFormFieldConnector` stay wired. On publish, the media-gallery id returned by the create mutation drives the post-save upload of each file.
+Handled by the existing media gallery subspec (`specs/042-crd-space-page/mediaGallery/`); in this subspec we just ensure the `image` chip and `MediaGalleryFormFieldConnector` stay wired. On publish, the media-gallery id returned by the create mutation drives the post-save upload of each file.
 
 ### US7 — Configure allowed response type with per-actor settings and defaults (Priority P0)
 
@@ -157,10 +166,11 @@ A user clicks **Edit** in the callout context menu. The same `AddPostModal` open
 
 - The framing chips are locked (visually inactive, aria-disabled) — the user may change the currently-active framing to "None" only, via a confirmation ("Delete framing?"), which sets `framing.type = None` on save. No other framing switches are possible.
 - The response type chips are locked with the same rules — only switching to "None" is allowed (with confirmation). Per-actor switches, comments switches, and defaults are all editable.
-- Framing content **is** editable: memo body, whiteboard (opens `CrdWhiteboardDialog` collaborative), link fields, media-gallery visuals, poll question + options.
+- **The pre-populate-links editor (`LinksPrePopulateRows`) is hidden in edit mode.** Existing link contributions are managed via the callout detail dialog, not the edit form.
+- Framing content **is** editable: memo body (via **Open memo** → `CrdMemoDialog` collaborative), whiteboard (via **Edit whiteboard** → `CrdWhiteboardDialog` collaborative), link fields, media-gallery visuals, poll question + options.
 - Poll options save incrementally via `addPollOption`, `removePollOption`, `updatePollOption`, `reorderPollOptions` (ported from the MUI `savePollOptionChanges` diff routine).
 - Media-gallery uploads / deletes on save use the existing `useUploadMediaGalleryVisuals` path with `existingVisualIds` + `originalSortOrders` to detect reorder / delete.
-- The footer shows a single **Save** button (plus the notify-members checkbox when applicable); Save Draft is not surfaced in edit — visibility changes are done from the context menu (Publish / Unpublish).
+- The footer shows a single **Save** button (plus the notify-members switch when applicable); Save Draft is not surfaced in edit — visibility changes are done from the context menu (Publish / Unpublish).
 
 **Acceptance**:
 1. **Given** a user clicks Edit on a published callout, **When** the dialog opens, **Then** title / description / tags / references / framing content / contribution settings / contribution defaults all reflect the server state.
@@ -168,15 +178,16 @@ A user clicks **Edit** in the callout context menu. The same `AddPostModal` open
 3. **Given** the user attempts to pick a different framing chip (e.g. Whiteboard while the callout is Poll), **When** they click the chip, **Then** nothing happens (aria-disabled).
 4. **Given** the user clicks the active framing chip (to deselect = switch to None), **When** they confirm the "Delete framing?" dialog, **Then** on save `framing.type = None` and the existing framing entity is dropped server-side.
 5. **Given** the user edits a poll option, adds a new one, and deletes another, **When** Save runs, **Then** the three corresponding poll-option mutations are called in order (add-new → remove → update → reorder).
+6. **Given** the active response type is "Links & Files", **When** the edit dialog opens, **Then** the `LinksPrePopulateRows` editor is not rendered; actor switches remain editable. The Links panel has no contribution-level "Enable comments" switch (Posts only, per US7 + FR-32); the framing-level "Allow Comments" toggle in MORE OPTIONS (FR-09) is unaffected and remains editable regardless of response type.
 
 ### US13 — Publish / Unpublish from the context menu (Priority P1)
 
-A user clicks the 3-dots on a `PostCard`, then **Publish** (or **Unpublish** if already published). A CRD visibility-change dialog confirms with a "Notify members" checkbox (only for publishing). On confirm, the visibility mutation runs with the chosen `sendNotification` value.
+A user clicks the 3-dots on a `PostCard`, then **Publish** (or **Unpublish** if already published). A CRD visibility-change dialog confirms with a "Notify members" switch (only for publishing). On confirm, the visibility mutation runs with the chosen `sendNotification` value.
 
 **Acceptance**:
-1. **Given** a draft callout, **When** the user clicks Publish in the menu, **Then** a CRD dialog opens with title "Publish callout", body copy explaining the effect, and a "Notify members" checkbox (default off).
-2. **Given** the user checks "Notify members" and confirms, **When** the mutation runs, **Then** `updateCalloutVisibility({ calloutID, visibility: Published, sendNotification: true })`.
-3. **Given** a published callout, **When** Unpublish is chosen, **Then** the dialog shows "Unpublish callout"; the notify-members checkbox is not rendered.
+1. **Given** a draft callout, **When** the user clicks Publish in the menu, **Then** a CRD dialog opens with title "Publish callout", body copy explaining the effect, and a "Notify members" switch (default off).
+2. **Given** the user turns "Notify members" on and confirms, **When** the mutation runs, **Then** `updateCalloutVisibility({ calloutID, visibility: Published, sendNotification: true })`.
+3. **Given** a published callout, **When** Unpublish is chosen, **Then** the dialog shows "Unpublish callout"; the notify-members switch is not rendered.
 
 ### US14 — Delete from the context menu (Priority P1)
 
@@ -184,7 +195,7 @@ A user clicks **Delete**. A CRD `ConfirmationDialog` confirms ("Delete callout? 
 
 ### US15 — Sort contributions (Priority P2)
 
-A user clicks **Sort contributions** (visible only when the callout has a live contribution set). A CRD `CalloutContributionsSortDialog` opens with a `@dnd-kit` list of the contributions. On confirm, `updateCalloutsSortOrder` (or the equivalent contribution-sort mutation — to be verified during implementation) persists the order.
+A user clicks **Sort contributions** (visible only when the callout has a live contribution set). A CRD `CalloutContributionsSortDialog` opens with a `@dnd-kit` list of the contributions fetched via `useCalloutContributionsSortOrderQuery`. On confirm, `useUpdateContributionsSortOrderMutation` persists the order. Source of truth: `src/domain/collaboration/calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog.tsx`.
 
 ### US16 — Move callout up / down / top / bottom (Priority P2)
 
@@ -196,7 +207,7 @@ A user clicks **Share**. The existing MUI `ShareDialog` opens via portal (outsid
 
 ### US18 — Save as Template (Priority P2)
 
-A user clicks **Save as Template**. A CRD `SaveAsTemplateDialog` opens (ported from MUI `CreateTemplateDialog`) — **if feasible**. If porting exceeds the budget, this menu item is hidden for now and a follow-up issue tracks the port.
+A user clicks **Save as Template**. The existing MUI `CreateTemplateDialog` is wired as a sibling of `AddPostModal` (rendered outside `.crd-root`, same pattern as `ShareDialog` and `ImportTemplatesDialog`). It is consumed unchanged via `@/domain/templates/...`. No CRD port is created in this sub-spec. If runtime integration turns out to be blocked (e.g. the dialog needs context providers the CRD route does not mount), the menu item is hidden behind a local constant and a follow-up issue tracks resolution.
 
 ### US19 — Find Template on create (Priority P2)
 
@@ -209,21 +220,22 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 - **FR-01** The dialog renders as a centered Radix `Dialog` with `max-w-5xl`, `max-h-[90vh]`, scrollable body, sticky header and footer (already true).
 - **FR-02** Header shows the dialog title (`Create post` or `Edit post`), a **Find Template** button (create mode only), and a close button.
 - **FR-03** Title input is borderless, large (`text-section-title md:text-page-title`), auto-focused on open.
-- **FR-04** Description uses the CRD `MarkdownEditor`.
+- **FR-04** Description uses the CRD `MarkdownEditor` (from the `../markdown-editor/` sub-spec).
 - **FR-05** Below the description, a Zone 1b: ADD-TO-POST chip strip with 6 chips — Whiteboard, Memo, Document (disabled placeholder), Call to Action, Image, Poll. Single-select semantics.
 - **FR-06** Below the chip strip, the active framing's inline editor card renders.
 - **FR-07** Zone 2: RESPONSES. Always visible. Label "RESPONSES" + chip strip — Links & Files, Posts, Memos, Whiteboards, Documents (disabled placeholder). Single-select semantics.
 - **FR-08** Below the response chip strip, the active response type's per-type panel renders — actor switches + optional "Enable comments" + Set Default Response button (except Links, which shows the pre-populate-links editor).
 - **FR-09** Zone 3: MORE OPTIONS (collapsible). Contains Tags input, "Allow Comments" toggle (framing-level), References editor.
-- **FR-10** Footer shows (left-aligned) nothing, (right-aligned) a "Notify members" checkbox (visible only in create mode and only when the form is publish-ready), then **Save Draft** and **Publish** buttons in create mode; in edit mode, **Cancel** and **Save**. The notify checkbox is visible but inert when Save Draft is the active intent.
+- **FR-10** Footer shows (left-aligned) nothing, (right-aligned) a "Notify members" switch (CRD `Switch` primitive, visible only in create mode and only when the form is publish-ready — see FR-72), then **Save Draft** and **Publish** buttons in create mode; in edit mode, **Cancel** and **Save**.
 - **FR-11** Framing chip strip is horizontally scrollable on narrow viewports.
 
 ### Framing editors
 
 - **FR-20** Whiteboard framing: inline card with icon + "New Whiteboard" + status text + Configure/Edit button. Clicking opens `CrdSingleUserWhiteboardDialog` (create) or `CrdWhiteboardDialog` (edit).
-- **FR-21** Memo framing: inline card with icon + "Memo" + CRD `MarkdownEditor` field. Empty placeholder "Write your memo…".
+- **FR-21** Memo framing (create mode): inline card with icon + "Memo" + CRD `MarkdownEditor` field. Empty placeholder "Write your memo…".
+- **FR-21a** Memo framing (edit mode): inline card with icon + "Memo" + read-only memo preview + **Open memo** button that launches `CrdMemoDialog` (collaborative). Memo content is persisted by the dialog; the main form does not track memo content on edit. Symmetric to the whiteboard edit behaviour in FR-115.
 - **FR-22** Document framing: chip present but disabled with tooltip "Coming soon".
-- **FR-23** Call-to-Action framing: inline card with two inputs (Button Label, Target URL). URL validated against `^https?://`.
+- **FR-23** Call to Action framing: inline card with two inputs (Button Label, Target URL). URL validated against `^https?://`.
 - **FR-24** Image framing: inline dropzone + thumbnail grid (existing `MediaGalleryFormFieldConnector`). Behaviour unchanged.
 - **FR-25** Poll framing: inline card with question input, 2..N option rows, **+ Add option**, and a gear button opening `PollSettingsDialog`.
 
@@ -249,20 +261,20 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 
 ### References section
 
-- **FR-50** References editor in "More options": rows of (title, url, description). Delete row (except when 1 row remains). **Add another reference** button.
+- **FR-50** References editor in "More options": starts with zero rows. An **Add another reference** button inserts a new empty row of (title, url, description). Each row has a delete affordance; deleting the last row returns the editor to the empty state.
 - **FR-51** Empty rows are dropped on submit.
 - **FR-52** URL is not validated at form level — the server accepts arbitrary strings in the reference field.
 
 ### Tags
 
 - **FR-60** Comma-separated string input with Hash icon prefix.
-- **FR-61** On submit, `tags = raw.split(',').map(t => t.trim()).filter(Boolean)`, wrapped into `tagsets: [{ name: 'default', tags }]`.
+- **FR-61** On submit, `tags = raw.split(',').map(t => t.trim()).filter(Boolean)`, wrapped into `tagsets: [{ name: 'default', tags }]`. The default tagset is always sent (with `tags: []` when empty) to match the MUI mutation shape.
 
 ### Visibility, notify, and actions
 
 - **FR-70** Create mode: **Save Draft** = `visibility: Draft, sendNotification: false`. **Publish** = `visibility: Published, sendNotification: notifyMembersChecked`.
 - **FR-71** Edit mode: **Save** preserves current visibility; there is no "Publish" / "Save Draft" branch. Visibility changes happen through the context menu.
-- **FR-72** "Notify members" checkbox is visible only in create mode, only when the form has a non-empty title (so Publish is enabled).
+- **FR-72** "Notify members" switch is visible only in create mode, only when the form has a non-empty title (so Publish is enabled).
 - **FR-73** Save Draft / Publish / Save buttons show an `aria-busy` spinner during the mutation; the rest of the form is disabled.
 
 ### Validation (yup, standalone)
@@ -281,26 +293,26 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 - **FR-90** Dirty = any form value diverges from its initial state (for create, initial = empty defaults; for edit, initial = server-mapped values).
 - **FR-91** Closing a dirty form triggers a CRD `ConfirmationDialog` (Discard your changes? / Keep editing / Yes, close).
 - **FR-92** Closing a clean form closes immediately.
-- **FR-93** `browserbeforeunload` listener while the form is dirty (matches the MUI-style safety net; same pattern as `useDirtyTabGuard.ts`).
+- **FR-93** Browser `beforeunload` listener while the form is dirty (matches the MUI-style safety net; same pattern as `useDirtyTabGuard.ts`). The listener is registered in the integration layer (`CalloutFormConnector` / a dedicated hook), not inside the CRD `AddPostModal`, so the CRD component stays free of browser-API side effects.
 
 ### Context menu & lifecycle
 
-- **FR-100** `CalloutContextMenu` is rendered in two places: (i) the 3-dots on the feed `PostCard`, driven by `onSettingsClick`; and (ii) the more-options button in the sticky header of `CalloutDetailDialog`.
+- **FR-100** `CalloutContextMenu` is rendered in two places: (i) the 3-dots on the feed `PostCard`, driven by `onSettingsClick`; and (ii) the `CalloutDetailDialog` sticky-header actions cluster.
 - **FR-101** Menu items are gated on permissions and visibility:
   - Edit — visible when `authorization.myPrivileges` contains `Update`.
   - Publish — visible when the callout is draft and the user can `Update`.
   - Unpublish — visible when the callout is published and the user can `Update`.
   - Share — always visible.
   - Sort contributions — visible when the callout is a contribution collection and has ≥ 2 contributions.
-  - Save as Template — visible when `canSaveAsTemplate` evaluates to true (user has template-create privilege on the space) **and** the CRD save-as-template dialog is implemented. Hidden otherwise.
+  - Save as Template — visible when `canSaveAsTemplate` evaluates to true (user has template-create privilege on the space). The menu action opens the MUI `CreateTemplateDialog` via portal (see FR-107). Hidden if `CRD_SAVE_AS_TEMPLATE_ENABLED = false` (fallback kill-switch — see D12 in plan).
   - Move Up / Down / To Top / To Bottom — visible when the user can `Update` and the callout has a neighbour in the relevant direction.
   - Delete — visible when the user can `Delete` or the equivalent privilege.
-- **FR-102** Publish / Unpublish open a CRD `CalloutVisibilityChangeDialog` (ported). It shows the action title, the effect description, and — when publishing — a "Notify members" checkbox. Confirming runs `updateCalloutVisibility` (reused from `useCalloutManager`).
+- **FR-102** Publish / Unpublish open a CRD `CalloutVisibilityChangeDialog` (ported). It shows the action title, the effect description, and — when publishing — a "Notify members" switch. Confirming runs `updateCalloutVisibility` (reused from `useCalloutManager`).
 - **FR-103** Delete opens a CRD `ConfirmationDialog`. Confirming runs `deleteCallout` (reused from `useCalloutManager`).
 - **FR-104** Sort contributions opens a CRD `CalloutContributionsSortDialog` (ported). Confirming runs the contribution-order mutation.
 - **FR-105** Move actions call `useUpdateCalloutsSortOrderMutation`, with the sort-order array computed by the list connector (neighbours + callout id).
-- **FR-106** Share opens the MUI `ShareDialog` via portal, unchanged.
-- **FR-107** Save as Template opens the CRD `SaveAsTemplateDialog` (ported from MUI `CreateTemplateDialog`) if implemented; otherwise the menu item is not rendered.
+- **FR-106** Share opens the MUI `ShareDialog` via portal, unchanged, rendered outside `.crd-root`.
+- **FR-107** Save as Template opens the MUI `CreateTemplateDialog` via portal, rendered outside `.crd-root` (imported from `@/domain/templates/...`, not from `@mui/*` directly). No CRD port. If `CRD_SAVE_AS_TEMPLATE_ENABLED = false`, the menu item is not rendered.
 
 ### Edit-mode specifics
 

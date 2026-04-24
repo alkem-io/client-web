@@ -1,6 +1,6 @@
 # Implementation Plan: CRD Callout Dialog — Create / Edit / Lifecycle
 
-**Branch**: `042-crd-space-page-<next>` | **Parent**: [../plan.md](../plan.md) | **Spec**: [./spec.md](./spec.md)
+**Branch**: `042-crd-space-page-callout-dialog` | **Parent**: [../plan.md](../plan.md) | **Spec**: [./spec.md](./spec.md)
 
 ## Summary
 
@@ -8,8 +8,8 @@ Replace the current thin `AddPostModal` + stub `CalloutEditConnector` + dead `Ca
 
 - A single `AddPostModal` serves both **create** and **edit**, wired by a single `CalloutFormConnector` that branches on `mode`.
 - Form state is **plain `useState` + yup** (no Formik), mirroring `useCreateSubspace.ts`.
-- `CalloutContextMenu` is wired into both `PostCard` (feed 3-dots) and `CalloutDetailDialog` (sticky-header more-options), with all actions reachable: edit, publish / unpublish, delete, sort contributions, move up / down / top / bottom, share, save as template.
-- Sub-dialogs that live outside the main form are ported to CRD: visibility change, delete confirm, sort contributions, save as template (best-effort), framing-to-None confirm, response defaults, discard-changes confirm. Two remain MUI portals: `ShareDialog` and `ImportTemplatesDialog`.
+- `CalloutContextMenu` is wired into both `PostCard` (feed 3-dots) and `CalloutDetailDialog` (sticky-header actions cluster), with all actions reachable: edit, publish / unpublish, delete, sort contributions, move up / down / top / bottom, share, save as template.
+- Sub-dialogs that live outside the main form are ported to CRD: visibility change, delete confirm, sort contributions, framing-to-None confirm, response defaults, discard-changes confirm. Three remain MUI portals (outside `.crd-root`): `ShareDialog`, `ImportTemplatesDialog`, `CreateTemplateDialog` (Save as Template).
 - Poll-option incremental diffing (`addPollOption` / `removePollOption` / `updatePollOption` / `reorderPollOptions`) is ported from MUI into a shared hook.
 - Media-gallery reorder / delete / add on edit reuses the existing `useUploadMediaGalleryVisuals` with `existingVisualIds` / `originalSortOrders`.
 - Memo framing inline editor = CRD `MarkdownEditor`. Whiteboard framing on create = `CrdSingleUserWhiteboardDialog`; on edit = `CrdWhiteboardDialog` (collaborative).
@@ -47,7 +47,6 @@ Three-layer split follows the parent plan:
 | `forms/callout/DocumentFramingPlaceholder.tsx` | Coming-soon panel shown when Document chip would be active (unreachable until the chip is enabled). |
 | `components/callout/CalloutVisibilityChangeDialog.tsx` | CRD Radix `AlertDialog`. Props: `open`, `onOpenChange`, `action: 'publish' \| 'unpublish'`, `loading`, `notifyMembers?`, `onNotifyMembersChange?`, `onConfirm`. |
 | `components/callout/CalloutContributionsSortDialog.tsx` | CRD Radix `Dialog` with `@dnd-kit` sortable list. Props: `open`, `onOpenChange`, `contributions: { id; title; icon? }[]`, `onConfirm(sortedIds: string[])`, `loading?`. |
-| `components/callout/SaveAsTemplateDialog.tsx` | CRD port of MUI `CreateTemplateDialog`. Best-effort — if it requires too much domain plumbing we drop the menu item and file a follow-up. |
 | `components/dialogs/DiscardChangesDialog.tsx` | Thin wrapper over existing `ConfirmationDialog` with hard-coded copy for discard-on-close. |
 | `components/dialogs/DeleteCalloutDialog.tsx` | Thin wrapper over existing `ConfirmationDialog` with delete copy. |
 | `components/dialogs/DeleteFramingDialog.tsx` | Thin wrapper over existing `ConfirmationDialog` for framing-to-None. |
@@ -56,18 +55,17 @@ Three-layer split follows the parent plan:
 
 | Path | Change |
 |---|---|
-| `forms/callout/AddPostModal.tsx` | Major rewrite. Accepts `mode: 'create' \| 'edit'`, richer slots, integrates `FramingChipStrip` / `ResponseTypeChipStrip` / `ResponsePanel` / `ReferencesEditor`. Keeps "Find Template" button in the header (create mode). Footer gains the notify-members checkbox + Save Draft / Publish (create) or Save (edit). |
+| `forms/callout/AddPostModal.tsx` | Major rewrite. Accepts `mode: 'create' \| 'edit'`, richer slots, integrates `FramingChipStrip` / `ResponseTypeChipStrip` / `ResponsePanel` / `ReferencesEditor`. Keeps "Find Template" button in the header (create mode). Footer gains the notify-members switch (D16) + Save Draft / Publish (create) or Save (edit). |
 | `components/space/PostCard.tsx` | Replace the current stub `onSettingsClick` with a `settingsSlot?: ReactNode` prop that the integration layer fills with `CalloutContextMenu`. The 3-dots trigger remains the card's existing icon button — its click opens the dropdown. |
-| `components/callout/CalloutDetailDialog.tsx` | Add a `settingsSlot?: ReactNode` to the sticky-header control cluster, rendered to the right of the close button. |
+| `components/callout/CalloutDetailDialog.tsx` | Add a `settingsSlot?: ReactNode` to the sticky-header actions cluster, rendered to the right of the close button. |
 | `components/callout/CalloutContextMenu.tsx` | Unchanged. Already has the right prop shape; the integration connector wires callbacks. |
 
 ### New integration layer (`src/main/crdPages/space/callout/`)
 
 | Path | Role |
 |---|---|
-| `CalloutSettingsConnector.tsx` | Hosts `CalloutContextMenu` + opens the edit dialog, `CalloutVisibilityChangeDialog`, `CalloutContributionsSortDialog`, `DeleteCalloutDialog`, MUI `ShareDialog`, and optionally `SaveAsTemplateDialog`. Reuses `useCalloutManager` for visibility / delete. Accepts neighbour callback props for move actions. |
+| `CalloutSettingsConnector.tsx` | Hosts `CalloutContextMenu` + opens the edit dialog, `CalloutVisibilityChangeDialog`, `CalloutContributionsSortDialog`, `DeleteCalloutDialog`, and three MUI portal dialogs outside `.crd-root`: `ShareDialog`, `ImportTemplatesDialog` (Find Template), and `CreateTemplateDialog` (Save as Template, gated by `CRD_SAVE_AS_TEMPLATE_ENABLED`). Reuses `useCalloutManager` for visibility / delete. Accepts neighbour callback props for move actions. |
 | `ResponseDefaultsConnector.tsx` | Wraps `ResponseDefaultsDialog`. Fetches content templates (`useSpaceContentTemplatesOnSpaceQuery`), provides the template-picker slot, and wires a `CrdSingleUserWhiteboardDialog` for the whiteboard default. |
-| `CalloutFormLinkPrePopulateConnector.tsx` | (optional helper) Maps pre-populated link rows → `CreateCalloutContributionInput[]` at submit time. Could be inlined in `CalloutFormConnector` if small. |
 
 ### Modified integration layer
 
@@ -135,6 +133,8 @@ The UI exposes two independent switches. The `ActorSwitches` component enforces:
 
 The defaults dialog holds its own transient state (`draftValues`) initialized from the parent form's current `contributionDefaults`. Save commits `draftValues` back to the parent via `onChange`; Cancel discards. The whiteboard default is itself edited by `CrdSingleUserWhiteboardDialog`, so the defaults dialog's whiteboard slot is a simple "Edit whiteboard" button that opens a third Radix dialog (acceptable: MUI today has the same depth).
 
+*Terminology*: the user-facing label is **Response Defaults** (matches the dialog title and the `responseDefaults.*` i18n section). The internal form-state field and the server input both keep the name `contributionDefaults` (matches the GraphQL input shape). Both names refer to the same concept.
+
 ### D6 — Edit locking for framing and response-type chips
 
 In edit mode, both chip strips are "one-way": you cannot select a different chip than the active one, and clicking the active chip triggers a confirmation dialog to switch to None. This is enforced in the CRD chip-strip component via `lockedTo?: ChipId`. Clicking a locked chip is a no-op; clicking the active chip fires `onDeselect`, which the connector wraps with the framing-to-None confirmation.
@@ -171,19 +171,19 @@ const isBottom = index === callouts.length - 1;
 const move = (direction) => updateCalloutsSortOrder(newOrderIds);
 ```
 
-and passes down `onMoveUp` / `onMoveDown` / `onMoveToTop` / `onMoveToBottom` (each returning `undefined` when at the edge, so `CalloutContextMenu`'s conditional rendering naturally hides the item).
+and passes down `onMoveUp` / `onMoveDown` / `onMoveToTop` / `onMoveToBottom` (each returning `undefined` when at the edge, so `CalloutContextMenu`'s conditional rendering naturally hides the item). On mutation failure, the hook surfaces a localized toast via `useNotification` and leaves the local list order unchanged (no optimistic rollback needed since we refetch on success).
 
 ### D10 — Visibility change as a CRD dialog, not MUI portal
 
-We port `CalloutVisibilityChangeDialog` to CRD because (i) it's small — just a title + body + checkbox + confirm/cancel — and (ii) it's the only place the user sets "Notify members" outside of the create footer. Using Radix `AlertDialog` gives us focus trap + keyboard + overlay scoped under `.crd-root`.
+We port `CalloutVisibilityChangeDialog` to CRD because (i) it's small — just a title + body + Switch + confirm/cancel — and (ii) it's the only place the user sets "Notify members" outside of the create footer. Using Radix `AlertDialog` gives us focus trap + keyboard + overlay scoped under `.crd-root`.
 
 ### D11 — Sort dialog ported, not reused
 
-MUI's `CalloutContributionsSortDialog` is 171 lines and uses MUI primitives; porting to CRD is straightforward with `@dnd-kit` (already in deps and already used by `PollOptionsEditor` / `MediaGalleryField`). The port gives us consistent visuals with the rest of the flow.
+MUI's `CalloutContributionsSortDialog` is 171 lines and uses MUI primitives; porting to CRD is straightforward with `@dnd-kit` (already in deps and already used by `PollOptionsEditor` / `MediaGalleryField`). The port gives us consistent visuals with the rest of the flow. The underlying data layer stays identical to MUI: fetch with `useCalloutContributionsSortOrderQuery` and persist with `useUpdateContributionsSortOrderMutation` (confirmed by reading `src/domain/collaboration/calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog.tsx`).
 
-### D12 — Save-as-template: best-effort port, fallback to hide
+### D12 — Save-as-template: wire the MUI dialog, fallback to hide
 
-MUI's `CreateTemplateDialog` uses `CreateEditTemplateDialog` which is Formik-driven and pulls in the full template form. First attempt: wrap the template-create mutation directly with a minimal CRD dialog (Name + Description + Visibility + "Save"). If that doesn't meet the existing server contract, hide the menu item behind a `CRD_SAVE_AS_TEMPLATE_ENABLED = false` local constant and file a follow-up issue.
+We do **not** port `CreateTemplateDialog`. It is wired as a sibling portal outside `.crd-root`, mirroring how `ShareDialog` and `ImportTemplatesDialog` are consumed. Import path is `@/domain/templates/...` (not `@mui/*` directly), so the `src/main/crdPages` letter-of-rule holds; CSS isolation holds because the dialog renders in its own portal outside `.crd-root`. A local `CRD_SAVE_AS_TEMPLATE_ENABLED` constant remains available as a kill-switch: if at runtime the dialog fails to integrate (missing context providers, incompatible props), flip it to `false` and open a follow-up issue — the menu item then disappears cleanly.
 
 ### D13 — Memo framing uses the CRD `MarkdownEditor` inline (single-user), not a dialog
 
@@ -195,13 +195,15 @@ MUI's `CreateTemplateDialog` uses `CreateEditTemplateDialog` which is Formik-dri
 
 ### D15 — "Beforeunload" guard
 
-While the dialog is open and dirty, a `beforeunload` handler registers (mirror `useDirtyTabGuard.ts`). Cleaned up in the effect's teardown.
+While the dialog is open and dirty, a `beforeunload` handler registers (mirror `useDirtyTabGuard.ts`). Cleaned up in the effect's teardown. The handler lives in the integration layer — inside `CalloutFormConnector` (or an extracted `useBeforeUnloadGuard(dirty)` hook co-located with it) — never inside `AddPostModal`, to keep the CRD component free of browser-API side effects (CRD Golden Rule #2).
 
 ### D16 — Notify members placement
 
-Footer. A `<label>` with a CRD `Checkbox` (or native checkbox for minimum dependencies — currently the CRD dialog uses native `<input type="checkbox" />`). Visible only when:
+Footer. A CRD `Switch` primitive (from `@/crd/primitives/switch`) paired with a visible `<label>` via `aria-labelledby`, consistent with FR-132 (all toggles in this form use `Switch`, not checkbox). Visible only when:
 - `mode === 'create'` and the form is publish-ready (non-empty title).
 - In edit mode, the notify-members option is only surfaced in the visibility-change dialog (never in the form footer).
+
+The same `Switch` primitive is used inside `CalloutVisibilityChangeDialog` for the publish-path notify toggle (D10).
 
 ### D17 — Prefill on edit
 
@@ -213,7 +215,7 @@ Create: none selected. Edit: set from `callout.settings.contribution.allowedType
 
 ### D19 — Pre-populate links are CreateCalloutContributionInput[]
 
-Only at create time. On edit, the pre-populate editor is hidden (or shown as a read-only summary + "Manage contributions" link — confirm during UI review). The connector maps non-empty rows:
+Only at create time. On edit, `LinksPrePopulateRows` is **not rendered** — existing link contributions are managed through the callout detail dialog, not the edit form. The actor switches and "Enable comments" for the Links & Files response type remain editable in edit mode. The connector maps non-empty rows:
 
 ```ts
 contributions: prePopulateLinks
@@ -230,11 +232,11 @@ Inside `useCrdCalloutForm`, yup schemas use short codes (`required`, `maxSmall`,
 
 ### D21 — Discard-changes confirmation dialog lives inside `AddPostModal`
 
-The modal owns its close UX. It receives `dirty` from the connector (or computes it locally from an `initialValues` prop). Close attempts go through a `handleCloseAttempt()` that either closes or opens `DiscardChangesDialog`.
+The modal owns its close UX visually only. It receives `dirty: boolean` as a prop from the connector (the connector reads it from `useCrdCalloutForm`, where `isDirty = !isEqual(values, initialValues)` is computed per render — see D14). `AddPostModal` never imports `lodash`, never reads `initialValues`, never compares values. Close attempts go through a `handleCloseAttempt()` that either closes (when `dirty === false`) or opens `DiscardChangesDialog` (when `dirty === true`).
 
 ### D22 — Find Template flow reuses MUI `ImportTemplatesDialog`
 
-Rendered as a sibling of `AddPostModal`, outside `.crd-root`. The CRD dialog stays open (z-index lower). When the user selects a template and the MUI dialog closes, the handler fires `prefill(...)` on the form hook. When the form is already non-empty, a `ConfirmOverwriteDialog` (reuse `ConfirmationDialog`) gates the prefill.
+Rendered as a sibling of `AddPostModal`, outside `.crd-root`. The CRD dialog stays open (z-index lower). When the user selects a template and the MUI dialog closes, the handler fires `prefill(...)` on the form hook. When the form is **dirty** (same `dirty` flag from D14/D21 — any field diverges from initial state), a `ConfirmOverwriteDialog` (reuse `ConfirmationDialog`) gates the prefill. Using `dirty` rather than a title-only check ensures users who entered framing or response data without a title are still warned.
 
 ## Data Flow
 
@@ -295,7 +297,7 @@ User clicks PostCard 3-dots
 | P2 | US7, US8, US9, US10 | Responses zone (chip strip, actor switches, per-type panels), pre-populate links, references editor, tags wrapping into tagsets, response-defaults dialog (incl. template picker + whiteboard default). | High |
 | P3 | US12 | Edit mode: prefill, chip-strip locking, framing-to-None confirmation, poll-option diff, media-gallery diff, save mutation wiring. | High |
 | P4 | US13, US14, US15, US16, US17 | `CalloutSettingsConnector` + `CalloutContextMenu` wired in `PostCard` + `CalloutDetailDialog`. `CalloutVisibilityChangeDialog`, `DeleteCalloutDialog`, `CalloutContributionsSortDialog` (CRD ports). Move actions via `useCrdCalloutMoveActions`. Share via MUI portal. | Medium |
-| P5 | US18, US19 | Find-Template (MUI portal + prefill). Save-as-Template (CRD port, best-effort). | Medium |
+| P5 | US18, US19 | Find-Template (MUI `ImportTemplatesDialog` portal + prefill). Save-as-Template (MUI `CreateTemplateDialog` portal + kill-switch constant). | Medium |
 | P6 | — | i18n pass across 6 languages. Cleanup: remove dead `TemplateImportConnector` stub, unused fields in `useCrdCalloutForm`. | Small |
 
 ## Risks & Mitigations
