@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { PostCard, PostProps } from "./PostCard";
 import { AddPostModal } from "@/app/components/space/AddPostModal";
 import { PostDetailDialog } from "@/app/components/dialogs/PostDetailDialog";
+import { DocumentDetailDialog } from "@/app/components/dialogs/DocumentDetailDialog";
 
 // Whiteboard Preview Images (using Unsplash to avoid module loading errors)
 const wb1 = "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1080";
@@ -14,6 +15,8 @@ const wb4 = "https://images.unsplash.com/photo-1596496050844-3613acf57a8e?auto=f
 export function SpaceFeed() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PostProps | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<{ title: string; docType: 'word' | 'spreadsheet' | 'presentation'; size: string; lastEdited?: string } | null>(null);
+  const [selectedDocAuthor, setSelectedDocAuthor] = useState<{ name: string; avatarUrl?: string; role: string } | undefined>(undefined);
 
   const posts: PostProps[] = [
     {
@@ -159,7 +162,8 @@ export function SpaceFeed() {
             key={post.id} 
             post={{
               ...post, 
-              onClick: () => setSelectedPost(post)
+              onClick: () => setSelectedPost(post),
+              onDocumentClick: (doc) => { setSelectedDocument(doc); setSelectedDocAuthor(post.author); }
             }} 
           />
         ))}
@@ -179,6 +183,12 @@ export function SpaceFeed() {
         open={!!selectedPost} 
         onOpenChange={(open) => !open && setSelectedPost(null)}
         post={selectedPost}
+      />
+      <DocumentDetailDialog
+        open={!!selectedDocument}
+        onOpenChange={(open) => !open && setSelectedDocument(null)}
+        document={selectedDocument}
+        author={selectedDocAuthor}
       />
     </div>
   );

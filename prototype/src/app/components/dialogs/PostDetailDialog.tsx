@@ -1,6 +1,7 @@
 import { 
   X, Share2, MoreHorizontal, MessageSquare, ThumbsUp, Heart, Smile, 
-  FileText, Link as LinkIcon, PenTool, Layout, Send, ChevronRight, Presentation, LayoutGrid
+  FileText, Link as LinkIcon, PenTool, Layout, Send, ChevronRight, Presentation, LayoutGrid,
+  FileSpreadsheet, FileImage, Download, ExternalLink
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogClose, DialogDescription } from "@/app/components/ui/dialog";
 import { Button } from "@/app/components/ui/button";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ResponseDetailDialog } from "@/app/components/dialogs/ResponseDetailDialog";
+import { DocumentDetailDialog } from "@/app/components/dialogs/DocumentDetailDialog";
 import { PostProps } from "@/app/components/space/PostCard";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 
@@ -25,6 +27,8 @@ interface PostDetailDialogProps {
 export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogProps) {
   const [commentText, setCommentText] = useState("");
   const [selectedResponseId, setSelectedResponseId] = useState<string | null>(null);
+  const [activeDocIndex, setActiveDocIndex] = useState(0);
+  const [selectedDocument, setSelectedDocument] = useState<{ title: string; docType: 'word' | 'spreadsheet' | 'presentation'; size: string; lastEdited?: string } | null>(null);
 
   if (!post) return null;
 
@@ -94,10 +98,12 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
           <div className="max-w-5xl mx-auto w-full pb-20">
             
             {/* 2. Post Content Section */}
-            <div className="px-6 py-8 md:px-10 md:py-10 space-y-6">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-                {post.title}
-              </h1>
+            <div className={cn("px-6 md:px-10 space-y-4", post.type === "document" ? "py-5" : "py-8 md:py-10 space-y-6")}>
+              {post.type !== "document" && (
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+                  {post.title}
+                </h1>
+              )}
               
               <div className="flex items-center gap-3">
                 <Avatar className="w-10 h-10 border border-border">
@@ -112,28 +118,139 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
 
               <div className="prose prose-slate max-w-none dark:prose-invert text-foreground/90 leading-relaxed">
                 <p>{post.snippet}</p>
-                {/* Simulated extra content for the detail view if snippet is short */}
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                
-                {post.contentPreview?.imageUrl && (
-                    <img 
-                    src={post.contentPreview.imageUrl} 
-                    alt="Post content" 
-                    className="rounded-xl w-full max-h-[400px] object-cover my-6 shadow-sm"
-                    />
-                )}
+                {/* Generic content only for non-document posts */}
+                {post.type !== "document" && (
+                  <>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                    
+                    {post.contentPreview?.imageUrl && (
+                        <img 
+                        src={post.contentPreview.imageUrl} 
+                        alt="Post content" 
+                        className="rounded-xl w-full max-h-[400px] object-cover my-6 shadow-sm"
+                        />
+                    )}
 
-                <h3 className="text-xl font-bold mt-6 mb-4">Key Discussion Points</h3>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Impact on local community</li>
-                  <li>Resource allocation requirements</li>
-                  <li>Timeline for implementation</li>
-                  <li>Success metrics and KPIs</li>
-                </ul>
+                    <h3 className="text-xl font-bold mt-6 mb-4">Key Discussion Points</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Impact on local community</li>
+                      <li>Resource allocation requirements</li>
+                      <li>Timeline for implementation</li>
+                      <li>Success metrics and KPIs</li>
+                    </ul>
+                  </>
+                )}
               </div>
+
+              {/* Document Preview — click opens L3 Collabora editor */}
+              {post.type === "document" && post.contentPreview?.documents && (() => {
+                const docs = post.contentPreview.documents;
+                const activeDoc = docs[activeDocIndex] || docs[0];
+                const hasMultiple = docs.length > 1;
+
+                const getDocIcon = (docType: 'word' | 'spreadsheet' | 'presentation') => {
+                  switch (docType) {
+                    case 'word': return <FileText className="w-4 h-4 text-blue-600" />;
+                    case 'spreadsheet': return <FileSpreadsheet className="w-4 h-4 text-green-600" />;
+                    case 'presentation': return <FileImage className="w-4 h-4 text-orange-500" />;
+                  }
+                };
+
+                const getDocPreview = (doc: typeof activeDoc) => {
+                  switch (doc.docType) {
+                    case 'word':
+                      return (
+                        <div className="bg-white dark:bg-zinc-900 px-10 py-8 min-h-[280px] relative">
+                          <div className="space-y-2.5 text-[11px] text-foreground/70 leading-[1.7]">
+                            <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 text-center">Municipality of Greenfield</p>
+                            <h1 className="text-[14px] font-bold text-foreground text-center mb-0.5">2030 Renewable Transition Policy Proposal</h1>
+                            <p className="text-[10px] text-muted-foreground text-center mb-4">Draft v3.2 — April 2026</p>
+                            <div className="w-8 h-px bg-border mx-auto mb-3" />
+                            <h2 className="text-[11px] font-bold text-foreground mt-3">1. Executive Summary</h2>
+                            <p>This policy proposal outlines a comprehensive framework for achieving 100% renewable energy across all municipal operations by 2030.</p>
+                            <h2 className="text-[11px] font-bold text-foreground mt-3">2. Current State Assessment</h2>
+                            <p>As of Q1 2026, the municipality derives 42% of its energy from renewable sources, primarily wind (28%) and solar (14%).</p>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent pointer-events-none" />
+                        </div>
+                      );
+                    case 'spreadsheet':
+                      return (
+                        <div className="bg-white dark:bg-zinc-900 overflow-hidden min-h-[200px]">
+                          <table className="w-full text-xs border-collapse">
+                            <thead>
+                              <tr className="bg-muted/50">
+                                <th className="border border-border/40 px-3 py-1.5 text-left font-semibold text-muted-foreground">District</th>
+                                <th className="border border-border/40 px-3 py-1.5 text-right font-semibold text-muted-foreground">Budget (€M)</th>
+                                <th className="border border-border/40 px-3 py-1.5 text-right font-semibold text-muted-foreground">Timeline</th>
+                                <th className="border border-border/40 px-3 py-1.5 text-right font-semibold text-muted-foreground">Risk</th>
+                                <th className="border border-border/40 px-3 py-1.5 text-right font-semibold text-muted-foreground">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {[
+                                { district: 'North District', budget: '12.4', timeline: 'Q3 2027', risk: 'Medium', status: 'Planning' },
+                                { district: 'Central Grid', budget: '28.1', timeline: 'Q1 2028', risk: 'High', status: 'Assessment' },
+                                { district: 'South Campus', budget: '8.7', timeline: 'Q4 2027', risk: 'Low', status: 'Approved' },
+                              ].map((row, i) => (
+                                <tr key={i} className={i % 2 === 0 ? "bg-background" : "bg-muted/10"}>
+                                  <td className="border border-border/40 px-3 py-1.5 font-medium">{row.district}</td>
+                                  <td className="border border-border/40 px-3 py-1.5 text-right tabular-nums">{row.budget}</td>
+                                  <td className="border border-border/40 px-3 py-1.5 text-right">{row.timeline}</td>
+                                  <td className="border border-border/40 px-3 py-1.5 text-right">{row.risk}</td>
+                                  <td className="border border-border/40 px-3 py-1.5 text-right text-muted-foreground">{row.status}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    case 'presentation':
+                      return (
+                        <div className="aspect-[16/9] bg-gradient-to-br from-primary/90 to-primary/60 flex flex-col items-center justify-center text-white p-8">
+                          <p className="text-xs uppercase tracking-widest opacity-70 mb-3">April 2026 Stakeholder Update</p>
+                          <h2 className="text-xl font-bold text-center mb-2">2030 Renewable Transition</h2>
+                          <p className="text-sm opacity-80 text-center max-w-xs">Progress Report & Revised Timeline</p>
+                        </div>
+                      );
+                  }
+                };
+
+                return (
+                  <div className="mt-6 space-y-3">
+                    {/* Document cards — each is a clickable preview */}
+                    {docs.map((doc, idx) => (
+                      <div key={idx} className="rounded-xl border border-border overflow-hidden shadow-sm group cursor-pointer hover:shadow-md transition-all"
+                        onClick={() => setSelectedDocument(doc)}
+                      >
+                        {/* Document info header */}
+                        <div className="flex items-center justify-between px-4 py-2.5 bg-muted/20 border-b border-border">
+                          <div className="flex items-center gap-2 min-w-0">
+                            {getDocIcon(doc.docType)}
+                            <span className="text-sm font-medium truncate">{doc.title}</span>
+                            <span className="text-[10px] text-muted-foreground shrink-0">({doc.size})</span>
+                            {doc.lastEdited && (
+                              <span className="text-[10px] text-muted-foreground/60 shrink-0">· {doc.lastEdited}</span>
+                            )}
+                          </div>
+                        </div>
+                        {/* Preview with overlay */}
+                        <div className="relative">
+                          <div className="max-h-[280px] overflow-hidden">
+                            {getDocPreview(doc)}
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/5 group-hover:bg-primary/15 transition-colors">
+                            <Button variant="secondary" className="shadow-sm">Open Document</Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
 
               {/* 5. Post Metadata / Reactions */}
               <div className="flex items-center gap-4 py-4 border-y border-border mt-8">
@@ -313,6 +430,12 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
       open={!!selectedResponseId} 
       onOpenChange={(open) => !open && setSelectedResponseId(null)}
       responseId={selectedResponseId}
+    />
+    <DocumentDetailDialog
+      open={!!selectedDocument}
+      onOpenChange={(open) => !open && setSelectedDocument(null)}
+      document={selectedDocument}
+      author={post?.author}
     />
     </>
   );

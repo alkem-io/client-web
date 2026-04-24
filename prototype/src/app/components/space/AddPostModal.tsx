@@ -267,7 +267,6 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 { id: 'links', label: 'Links & Files', icon: Link2 },
                 { id: 'posts', label: 'Posts', icon: FileText },
                 { id: 'memos', label: 'Memos', icon: PenLine },
-                { id: 'documents', label: 'Documents', icon: FileSpreadsheet },
                 { id: 'whiteboards', label: 'Whiteboards', icon: Presentation },
               ].map((type) => (
                 <button
@@ -436,29 +435,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
               </div>
             )}
 
-            {collectionType === 'documents' && (
-              <div className="mt-2 px-4 pb-4 pt-5 border rounded-xl bg-muted/30 space-y-4 animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2">
-                        <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Members can add</Label>
-                      </div>
-                      <Switch checked={membersCanAdd} onCheckedChange={setMembersCanAdd} />
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2">
-                        <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Admins can add</Label>
-                      </div>
-                      <Switch checked={adminsCanAdd} onCheckedChange={setAdminsCanAdd} />
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="h-8 shrink-0" onClick={() => setDefaultsDialogOpen(true)}>Set Default Response</Button>
-                </div>
-              </div>
-            )}
+
           </div>
 
           <Separator />
@@ -579,7 +556,6 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
             <DialogTitle className="text-sm font-medium">
               {collectionType === 'posts' && 'Post defaults'}
               {collectionType === 'memos' && 'Memo defaults'}
-              {collectionType === 'documents' && 'Document defaults'}
               {collectionType === 'whiteboards' && 'Whiteboard defaults'}
             </DialogTitle>
             <DialogClose className="rounded-full p-1.5 hover:bg-muted transition-colors">
@@ -676,38 +652,6 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                   <Button variant="default" size="sm" className="absolute bottom-3 right-3 h-7 text-xs gap-1.5">
                     <Pencil className="w-3 h-3" /> Edit
                   </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Document type & template */}
-            {collectionType === 'documents' && (
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-sm">Default document type</Label>
-                  <div className="flex gap-2">
-                    {[
-                      { label: 'Word Document', icon: '\uD83D\uDCC4' },
-                      { label: 'Spreadsheet', icon: '\uD83D\uDCCA' },
-                      { label: 'Presentation', icon: '\uD83D\uDCD1' },
-                    ].map((doc) => (
-                      <button
-                        key={doc.label}
-                        className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-lg border bg-background hover:bg-muted transition-colors"
-                      >
-                        <span className="text-xl">{doc.icon}</span>
-                        <span className="text-xs text-muted-foreground">{doc.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-sm">Default template</Label>
-                  <div className="border-2 border-dashed rounded-lg bg-background p-5 text-center cursor-pointer hover:bg-muted/50 transition-colors">
-                    <Upload className="w-5 h-5 text-muted-foreground/50 mx-auto mb-1.5" />
-                    <p className="text-xs text-muted-foreground">Upload a template file</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-1">.docx, .xlsx, .pptx</p>
-                  </div>
                 </div>
               </div>
             )}
