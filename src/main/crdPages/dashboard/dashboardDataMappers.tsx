@@ -1,5 +1,7 @@
 import type { TFunction } from 'i18next';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { ReactNode } from 'react';
+import { ActivityEventType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -22,12 +24,25 @@ export type ActivityItemData = {
   avatarUrl?: string;
   avatarInitials: string;
   userName: string;
-  actionText: string;
+  actionText: ReactNode;
+  actionTextPlain: string;
   targetName: string;
   targetHref?: string;
   timestamp: string;
   rawDate?: string;
 };
+
+/**
+ * Activity types whose `description` field from the backend is raw user-authored markdown
+ * (the comment/message body). Legacy MUI renders these via `WrapperMarkdown plain={true}`;
+ * CRD renders them via `InlineMarkdown`. All other activity types have a short plain-text
+ * description (often a display name) and render as-is.
+ */
+const MARKDOWN_DESCRIPTION_ACTIVITY_TYPES: ReadonlySet<string> = new Set([
+  ActivityEventType.CalloutPostComment,
+  ActivityEventType.DiscussionComment,
+  ActivityEventType.UpdateSent,
+]);
 
 export type ActivityFilterOption = {
   value: string;
@@ -163,13 +178,17 @@ export const mapActivityToFeedItems = (activities: ActivityEntry[], t: TFunction
     const displayName = activity.triggeredBy?.profile?.displayName ?? '';
     const rawDate =
       activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? '');
+    const description = activity.description ?? '';
+    const isMarkdownDescription = activity.type ? MARKDOWN_DESCRIPTION_ACTIVITY_TYPES.has(activity.type) : false;
 
     return {
       id: activity.id,
       avatarUrl: activity.triggeredBy?.profile?.avatar?.uri,
       avatarInitials: displayName ? getInitials(displayName) : '?',
       userName: displayName,
-      actionText: activity.description ?? '',
+      actionText:
+        isMarkdownDescription && description ? <InlineMarkdown content={description} clampLines={2} /> : description,
+      actionTextPlain: description,
       targetName: extractActivityTargetName(activity),
       targetHref: extractActivityUrl(activity),
       timestamp: activity.createdDate ? formatTimeElapsed(activity.createdDate, t) : '',
