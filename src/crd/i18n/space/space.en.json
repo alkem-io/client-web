@@ -175,7 +175,7 @@
     "defaultMemoName": "New Memo",
     "memoNameLabel": "Memo title",
     "document": "Document",
-    "documentText": "Word Document",
+    "documentText": "Text Document",
     "documentSpreadsheet": "Spreadsheet",
     "documentPresentation": "Presentation",
     "openDocument": "Open Document",
