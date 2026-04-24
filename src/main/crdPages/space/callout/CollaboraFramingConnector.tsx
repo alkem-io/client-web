@@ -1,19 +1,10 @@
-import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
-import {
-  CalloutCollaboraPreview,
-  type CollaboraDocumentPreviewType,
-} from '@/crd/components/callout/CalloutCollaboraPreview';
+import { CalloutCollaboraPreview } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 
 type CollaboraFramingConnectorProps = {
   callout: CalloutDetailsModelExtended;
   onOpen: () => void;
-};
-
-const documentTypeMap: Record<CollaboraDocumentType, CollaboraDocumentPreviewType> = {
-  [CollaboraDocumentType.TextDocument]: 'text',
-  [CollaboraDocumentType.Spreadsheet]: 'spreadsheet',
-  [CollaboraDocumentType.Presentation]: 'presentation',
 };
 
 /**
@@ -27,7 +18,7 @@ export function CollaboraFramingConnector({ callout, onOpen }: CollaboraFramingC
   const collaboraDocument = callout.framing.collaboraDocument;
   if (!collaboraDocument) return null;
 
-  const documentType = documentTypeMap[collaboraDocument.documentType as CollaboraDocumentType] ?? 'text';
-
-  return <CalloutCollaboraPreview documentType={documentType} onOpen={onOpen} />;
+  return (
+    <CalloutCollaboraPreview documentType={toCollaboraPreviewType(collaboraDocument.documentType)} onOpen={onOpen} />
+  );
 }

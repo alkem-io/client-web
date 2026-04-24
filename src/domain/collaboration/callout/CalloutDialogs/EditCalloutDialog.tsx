@@ -2,7 +2,11 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { compact } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useCalloutContentQuery,
+  useUpdateCalloutContentMutation,
+  useUpdateCollaboraDocumentMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutContributionType,
   CalloutFramingType,
@@ -165,6 +169,14 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   };
 
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
+  const [updateCollaboraDocument] = useUpdateCollaboraDocumentMutation();
+
+  // UpdateCalloutFramingInput has no collaboraDocument field, so a title change can only reach
+  // the document via a separate updateCollaboraDocument mutation. We capture the id + original
+  // title here to diff at save time.
+  const collaboraDocumentId = data?.lookup.callout?.framing.collaboraDocument?.id;
+  const originalCalloutTitle = data?.lookup.callout?.framing.profile?.displayName;
+
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
   const { addOption, updateOption, removeOption, reorderOptions } = usePollOptionManagement({
@@ -323,6 +335,22 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {
         previewVisualId: result.data.updateCallout.framing.whiteboard?.profile.preview.id,
+      });
+    }
+
+    if (
+      formData.framing.type === CalloutFramingType.CollaboraDocument &&
+      collaboraDocumentId &&
+      formData.framing.profile.displayName &&
+      formData.framing.profile.displayName !== originalCalloutTitle
+    ) {
+      await updateCollaboraDocument({
+        variables: {
+          updateData: {
+            ID: collaboraDocumentId,
+            displayName: formData.framing.profile.displayName,
+          },
+        },
       });
     }
 

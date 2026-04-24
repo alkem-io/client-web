@@ -10,14 +10,14 @@ Add `COLLABORA_DOCUMENT` as a new callout contribution type in the React client,
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, Node >= 22.0.0
-**Primary Dependencies**: MUI (existing callout components), Apollo Client, react-i18next, lucide-react (for icons if MUI lacks appropriate ones)
-**Storage**: N/A (all persistence is server-side via GraphQL)
+**Primary Dependencies**: MUI (callout internals: card / create button / contribution dialog), CRD / shadcn + Tailwind (editor-footer presentation only), Apollo Client, react-i18next, lucide-react
+**Storage**: N/A (all persistence is server-side via GraphQL; save status is observed via Collabora's postMessage API)
 **Testing**: Vitest with jsdom
 **Target Platform**: Web (SPA served by Vite)
 **Project Type**: Web application (single repo, client-only changes)
-**Performance Goals**: Editor dialog loads within 5s (SC-002), create-to-edit flow under 10s (SC-001)
-**Constraints**: Must follow existing MUI callout patterns; no CRD components; iframe CSP must be configured at deployment level
-**Scale/Scope**: ~15 new/modified files, follows existing contribution type pattern exactly
+**Performance Goals**: Editor dialog loads within 5s (SC-002), create-to-edit flow under 10s (SC-001), save indicator settles within autosave latency (SC-007)
+**Constraints**: Callout-contribution internals follow MUI patterns for consistency with existing whiteboard/memo/post code; the editor footer is a single CRD component reused across both MUI and CRD paths via `.crd-root` scoping (see migration-guide.md "Don't Over-Migrate"); iframe CSP must be configured at deployment level
+**Scale/Scope**: ~20 new/modified files across `src/domain/collaboration/calloutContributions/collaboraDocument/`, `src/main/crdPages/space/callout/`, `src/crd/components/collabora/`, and `src/crd/i18n/space/`
 
 ## Constitution Check
 
@@ -30,10 +30,15 @@ Add `COLLABORA_DOCUMENT` as a new callout contribution type in the React client,
 | III. GraphQL Contract Fidelity | PASS | All operations use generated hooks from codegen. New `.graphql` files will be committed with generated outputs. No raw `useQuery`. |
 | IV. State & Side-Effect Isolation | PASS | Token refresh timer is an isolated effect in the editor dialog. No global state changes. Apollo cache handles data. |
 | V. Experience Quality & Safeguards | PASS | Iframe gets `title` attribute for accessibility. Error states render user-friendly messages. Type-specific icons provide visual differentiation. |
-| Architecture Std 2 (Styling) | PASS | Uses MUI (existing callout design system). CRD migration is out of scope per clarification. |
-| Architecture Std 3 (i18n) | PASS | All new strings added to English translation file via `react-i18next`. |
+| Architecture Std 2 (Styling) | PASS | Callout-contribution internals use MUI per original decision. The editor footer (added in the 2026-04-24 parity round) is a single CRD component reused across MUI and CRD paths; the MUI path wraps it in a `.crd-root` scope so Tailwind preflight applies. CRD hard rules (`src/crd/CLAUDE.md`) are respected in `CollaboraCollabFooter.tsx`: zero `@mui/*` imports, plain-TS props, callback-only event handlers, `useTranslation('crd-space')`. |
+| Architecture Std 3 (i18n) | PASS | Callout-contribution strings in `src/core/i18n/en/translation.en.json` (Crowdin). Footer strings in `src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json` (manual per CRD CLAUDE.md §i18n). |
 | Architecture Std 5 (No barrel exports) | PASS | All imports use explicit file paths. |
-| Architecture Std 6 (SOLID) | PASS | SRP: separate Card, Dialog, Preview, CreateButton. DIP: components consume hooks, not direct queries. |
+| Architecture Std 6 (SOLID) | PASS | SRP: separate Card, Dialog, Preview, CreateButton, Footer, postMessage hook, footer mapper. DIP: components consume hooks, not direct queries. The `useCollaboraPostMessage` hook and `collaboraFooterMapper` are pure functions tested in isolation; the CRD footer component is pure presentational with zero data-layer knowledge. |
+
+**Business-logic vs UI separation.** The gap-closure round preserves the three-layer split from the migration guide:
+- **CRD layer** (`src/crd/components/collabora/CollaboraCollabFooter.tsx`): presentational only. No Apollo, no domain types, no routing, no auth. All data flows in via props; all events flow out via callbacks.
+- **Integration layer** (`src/main/crdPages/space/callout/CollaboraFramingEditorOverlay.tsx`): calls auth + notification hooks, wires the domain hook/mapper to CRD props, renders the CRD footer.
+- **Domain layer** (`src/domain/collaboration/calloutContributions/collaboraDocument/` — editor, postMessage hook, footer mapper, GraphQL operations): knows about Apollo enums (`CommunityMembershipStatus`, `ContentUpdatePolicy`) and the Collabora iframe contract. Never imports MUI from the hook or mapper; the MUI framing dialog is the sole file that mixes MUI + CRD, and only via a `.crd-root` boundary.
 
 No violations. Gate passes.
 
@@ -55,6 +60,7 @@ specs/085-collabora-callout/
 ### Source Code (repository root)
 
 ```text
+# Original MUI implementation (Phases 1–9)
 src/domain/collaboration/calloutContributions/collaboraDocument/
 ├── graphql/
 │   ├── CreateCollaboraDocumentOnCallout.graphql
@@ -65,18 +71,32 @@ src/domain/collaboration/calloutContributions/collaboraDocument/
 ├── CreateContributionButtonCollaboraDocument.tsx
 ├── CalloutContributionDialogCollaboraDocument.tsx
 ├── CalloutContributionPreviewCollaboraDocument.tsx
-├── CollaboraDocumentEditor.tsx          # Iframe wrapper + token refresh logic
+├── CollaboraDocumentEditor.tsx          # Iframe wrapper (accepts optional iframeRef for footer)
 └── collaboraDocumentIcons.ts            # Type-to-icon mapping for SPREADSHEET/PRESENTATION/TEXT_DOCUMENT
 
-# Modified existing files:
-src/domain/collaboration/callout/CalloutView/CalloutView.tsx
-src/domain/collaboration/callout/icons/calloutIcons.ts
-src/domain/collaboration/callout/CalloutForm/CalloutFormContributionSettings.tsx
-src/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions.tsx
-src/domain/collaboration/calloutContributions/useCalloutContributions/CalloutContributions.graphql
-src/domain/collaboration/calloutContributions/calloutContributionPreview/CalloutContributionPreview.tsx
-src/domain/collaboration/calloutContributions/calloutContributionPreview/CalloutContributionPreview.graphql
-src/core/i18n/en/translation.en.json
+# P1 parity round (Phase 10, ticket #9575)
+src/domain/collaboration/calloutContributions/collaboraDocument/
+├── useCollaboraPostMessage.ts           # DOM-only hook parsing Collabora's postMessage API
+├── collaboraFooterMapper.ts             # Pure mapper: privilege + state → CollaboraCollabFooter props
+└── collaboraFooterMapper.spec.ts        # 7 unit tests covering the readonly-reason decision tree
+
+src/crd/components/collabora/
+└── CollaboraCollabFooter.tsx            # Pure presentational footer (save / presence / readonly reason / delete)
+
+src/crd/i18n/space/
+├── space.en.json                        # +`collabora.footer.*` + `collabora.editor.error.*`
+└── space.{nl,es,bg,de,fr}.json          # Same keys, manually translated per CRD CLAUDE.md
+
+src/main/crdPages/space/callout/
+├── CollaboraFramingEditorOverlay.tsx    # CRD framing editor overlay (primary when CRD toggle ON)
+├── CollaboraFramingConnector.tsx        # Level-1 preview wrapper
+├── collaboraDocumentTypeMap.ts          # Shared enum → preview-type util (used by 3 sites)
+├── CalloutDetailDialogConnector.tsx     # Passes documentType to overlay
+└── LazyCalloutItem.tsx                  # Passes documentType to overlay
+
+# Modified existing files (parity round):
+src/domain/collaboration/callout/CalloutDialogs/EditCalloutDialog.tsx  # Side-update of doc name on title change
+src/domain/collaboration/callout/CalloutFramings/CalloutFramingCollaboraDocument.tsx  # MUI dialog + CRD footer
 ```
 
-**Structure Decision**: New files go under `src/domain/collaboration/calloutContributions/collaboraDocument/`, following the exact directory pattern of `whiteboard/`, `post/`, `memo/`, and `link/` siblings.
+**Structure Decision**: MUI contribution files stay under `src/domain/collaboration/calloutContributions/collaboraDocument/` following the whiteboard/memo/post pattern. The CRD footer lives under `src/crd/components/collabora/` per the design-system folder structure (`src/crd/CLAUDE.md` §Folder Structure). The postMessage hook and footer mapper live in the domain folder alongside the editor they serve — they're pure utilities that happen to be UI-only, but they import GraphQL enums (`CommunityMembershipStatus`, `ContentUpdatePolicy`) so they cannot live inside `src/crd/`.

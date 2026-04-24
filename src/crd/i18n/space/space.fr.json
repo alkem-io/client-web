@@ -386,6 +386,36 @@
       "loadFailed": "Impossible de charger le mémo"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Erreur Collabora : {{message}}",
+        "sessionClosed": "La session de collaboration a été fermée."
+      }
+    },
+    "footer": {
+      "connected": "Connecté",
+      "connecting": "Connexion…",
+      "disconnected": "Déconnecté",
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "unsaved": "Modifications non enregistrées",
+      "error": "Erreur d'enregistrement",
+      "membersOnline_one": "1 membre en ligne",
+      "membersOnline_other": "{{count}} membres en ligne",
+      "connectedUsersLabel": "Utilisateurs connectés",
+      "moreConnectedUsers_one": "{{count}} utilisateur connecté supplémentaire",
+      "moreConnectedUsers_other": "{{count}} utilisateurs connectés supplémentaires",
+      "guestWarning": "Vous modifiez en tant qu'invité",
+      "delete": "Supprimer le document",
+      "readonlyReason": {
+        "connecting": "Connexion au service de collaboration…",
+        "unauthenticated": "Connectez-vous pour modifier ce document.",
+        "contentUpdatePolicy": "Vous n'avez pas l'autorisation de modifier ce document. Demandez au propriétaire de changer les paramètres de partage.",
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce document. Rejoignez l'espace pour contribuer."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Ouvrir l'image",
     "more_one": "+{{count}} de plus",

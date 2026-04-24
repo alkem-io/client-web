@@ -13,6 +13,13 @@
 - Q: Should new Collabora components use MUI (existing callout pattern) or CRD (shadcn/ui + Tailwind)? → A: MUI, following the existing callout component patterns for consistency.
 - Q: How should the client handle WOPI access token expiry during long editing sessions? → A: Silent auto-refresh — re-fetch editor URL and reload iframe automatically before TTL expires.
 
+### Session 2026-04-24 (P1 parity gap closure per ticket #9575)
+
+- Q: How should the client surface Collabora's internal save state to the user (ticket AC: "Save often, and show an error or warning to save work")? → A: Listen to Collabora Online's postMessage API (`App_LoadingStatus`, `Doc_ModifiedStatus`, `App_Saved`, `Action_Save_Resp`, `Views_List`, `Error`) and render a footer under the editor matching the `MemoCollabFooter` pattern (save status + presence avatars + readonly reason).
+- Q: Should the footer show a "Connected / Disconnected" indicator? → A: No — pulling the network still leaves the iframe reporting "connected", so the chip is misleading. The underlying `connectionStatus` is kept for the readonly-reason branch only.
+- Q: Where should the footer live, given the CRD-vs-MUI split? → A: Build it once as a CRD component (`CollaboraCollabFooter`). The CRD framing overlay renders it directly; the MUI framing dialog wraps the same component in a `.crd-root` scope so Tailwind preflight applies. No duplication across design systems.
+- Q: How should "Post Title can be OfficeDocs name" be enforced on edit? → A: `UpdateCalloutFramingInput` has no `collaboraDocument` field, so when a user changes the callout title in `EditCalloutDialog`, issue a side `updateCollaboraDocument` mutation after the main save.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - View Collabora Documents in a Callout (Priority: P1)
@@ -96,6 +103,25 @@ A space member with write permissions can rename a Collabora document. The renam
 
 ---
 
+### User Story 7 - Parity with Multi-User Memo / Whiteboard (Priority: P1)
+
+A space member opens a Collabora document and sees a status footer identical in role to the memo/whiteboard footer: their own save state (`Saved` / `Saving…` / `Unsaved changes` / `Error saving`), avatars of other connected editors, and — if they lack edit rights — a readonly reason. Saved changes are reflected within a few seconds; network loss or an unexpected Collabora error surfaces as a toast. If the member renames the callout via the standard edit dialog, the Collabora document's name follows automatically so the post title and document name stay in sync. The document type icon appears next to the title in the editor dialog header, matching the visual pattern of other collaborative content types.
+
+**Why this priority**: Ticket #9575 requires that "business logic will match the logic for multi-user memos and multi-user whiteboards" and "Save often, show an error or warning to save work, if not in sync or not saving". Without these, users have no feedback on whether their work is persisted, and the callout title can silently drift from the document name.
+
+**Independent Test**: Open a Collabora document; make an edit; observe `Saving…` → `Saved` transition. Open the same document in a second browser; observe both users' avatars in the footer. Rename the callout via the edit dialog; observe the document name updating in the Collabora header on next open.
+
+**Acceptance Scenarios**:
+
+1. **Given** the Collabora editor is open, **When** the user types, **Then** the footer shows `Unsaved changes` and transitions to `Saved` after the iframe's autosave completes (driven by `Doc_ModifiedStatus: false` / `Action_Save_Resp: { success: true }` / `App_Saved`).
+2. **Given** two users have the same document open, **When** the second user joins, **Then** both users see the other's avatar in the footer (sourced from Collabora's `Views_List` postMessage).
+3. **Given** the user is not authenticated, **When** the editor loads, **Then** the footer shows the `"Sign in to edit this document"` readonly reason.
+4. **Given** the callout framing is a Collabora document, **When** an authorized user renames it via `EditCalloutDialog`, **Then** the app issues a separate `updateCollaboraDocument` mutation after the main framing update so the document name matches the new callout title.
+5. **Given** Collabora emits an `Error` or `Session_Closed` postMessage, **When** it reaches the client, **Then** a toast is shown (`Collabora error: {message}` / `The collaboration session was closed`) using the app's `useNotification` hook.
+6. **Given** the Collabora editor dialog is open (either via CRD or MUI), **When** the header is rendered, **Then** the document type icon (text / spreadsheet / presentation) appears next to the callout title.
+
+---
+
 ### User Story 6 - Create a COLLABORA_DOCUMENT Callout (Priority: P2)
 
 A space admin creates a new callout and selects "Collabora Document" as the callout type. This creates a callout that accepts collaborative document contributions. The callout creation flow follows the same pattern as existing callout types (Post, Whiteboard, Link, Memo).
@@ -135,6 +161,10 @@ A space admin creates a new callout and selects "Collabora Document" as the call
 - **FR-010**: The client MUST handle error states gracefully — display user-friendly messages when the WOPI service is unavailable, the document is not found, or the Collabora editor fails to load.
 - **FR-011**: The client MUST support all three document types with appropriate visual differentiation: spreadsheet (table/grid icon), presentation (slides icon), text document (document icon).
 - **FR-012**: The client MUST use the `accessTokenTTL` from the editor URL response to schedule a silent auto-refresh — re-fetching the editor URL and reloading the iframe before the token expires, without user intervention.
+- **FR-013**: The client MUST expose save, presence, and readonly state under the editor via a footer (`CollaboraCollabFooter`) driven by Collabora Online's postMessage API. Save status derives from `Doc_ModifiedStatus` / `Action_Save_Resp` / `App_Saved`; presence from `Views_List`; runtime errors from `Error` / `Session_Closed`. Network transport status is intentionally not displayed (Collabora does not surface it reliably to the host).
+- **FR-014**: The client MUST render the footer component as a single CRD component usable from both the CRD framing overlay (`src/main/crdPages/…`) and the MUI framing dialog (wrapped in a `.crd-root` scope). No MUI duplicate of the footer is introduced.
+- **FR-015**: When the user renames a callout whose framing is a Collabora document (via `EditCalloutDialog`), the client MUST issue a `updateCollaboraDocument` mutation after the main `updateCalloutContent` call to keep the document `displayName` equal to the new callout title. This compensates for `UpdateCalloutFramingInput` lacking a `collaboraDocument` field.
+- **FR-016**: The Collabora editor dialog (both CRD and MUI) MUST render the document type icon before the title in its header, and MUST fill the full viewport height (overriding the app theme's `MuiDialog.paper maxHeight` cap).
 
 ### Key Entities
 
@@ -153,6 +183,8 @@ A space admin creates a new callout and selects "Collabora Document" as the call
 - **SC-004**: All document operations (create, view, edit, delete, rename) respect space-level authorization — unauthorized actions are hidden from the UI, not just blocked on the server.
 - **SC-005**: When backend services (WOPI, Collabora) are unavailable, users see clear, actionable error messages instead of broken UI or silent failures.
 - **SC-006**: The Collabora document callout type is fully integrated into existing callout management workflows — creation, configuration, and display follow the same patterns as other callout types.
+- **SC-007**: After any edit, the footer reports `Saved` within the time it takes Collabora Online's autosave to complete (typically 1–3 seconds) — the save indicator never sticks at `Unsaved changes` once Collabora has acknowledged the save.
+- **SC-008**: Renaming a Collabora-framed callout via the edit dialog produces a single atomic-looking change from the user's perspective: the callout title and the document name update together, not in two separate visible steps.
 
 ## Assumptions
 
@@ -164,4 +196,5 @@ A space admin creates a new callout and selects "Collabora Document" as the call
 - The iframe-based Collabora editor handles its own autosave, collaboration, and document rendering. The client's responsibility is limited to embedding the iframe and managing the session lifecycle (token TTL).
 - Authorization checks for create/edit/delete follow the existing callout contribution authorization pattern already used for whiteboards and posts.
 - The visual design for document cards and the editor dialog will follow the existing patterns established by whiteboard contributions (card grid + dialog with embedded editor).
-- New Collabora components will use MUI (the existing design system for callout components), not CRD. CRD migration of callout components will happen separately as a batch.
+- Callout-contribution internals (card, create button, contribution dialog) use MUI per the original 2026-04-14 decision. The editor footer is a CRD component (added in the 2026-04-24 parity round) and is rendered from both design systems via a `.crd-root` scope in the MUI path. This is the only cross-design-system touchpoint; all other CRD-layer rules (`src/crd/CLAUDE.md`) are respected — no GraphQL types or business logic in CRD, all data flows in as props, all behavior flows in via callbacks.
+- Collabora's postMessage API (https://sdk.collaboraonline.com/docs/postmessage_api.html) is the authoritative source for save state and presence. The client does not parse the iframe's DOM or poll the server — it only reacts to `MessageId`-typed events posted from the iframe's `contentWindow`.

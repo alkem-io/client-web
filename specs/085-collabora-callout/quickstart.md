@@ -82,6 +82,44 @@ pnpm vitest run
 # 6. Rename and delete the document
 ```
 
+### Parity-round manual checks (ticket #9575, Phase 10)
+
+Test both paths — the CRD toggle is off by default in deployed envs, so the MUI framing dialog is the production-default path.
+
+**Toggle CRD on**: in the browser console, run `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload();`
+
+**Save state feedback (FR-013, SC-007)**:
+1. Open a Collabora-framed callout's editor.
+2. Type a character. Footer should briefly show `Unsaved changes` then `Saved` once Collabora autosaves (typically 1–3s).
+3. Repeat several times — the indicator must never stick on `Unsaved changes`.
+
+**Multi-user presence (AC 2 for US7)**:
+1. Open the same document in a second browser profile or incognito window.
+2. Footer on both clients should show the other user's avatar (sourced from Collabora's `Views_List` postMessage).
+
+**Readonly reason (AC 3 for US7)**:
+1. Log out (or open in an incognito window without signing in).
+2. Open a public document; the footer should show `Sign in to edit this document`.
+
+**Title sync (FR-015, SC-008)**:
+1. Open a Collabora-framed callout and note its title.
+2. Edit the callout via the settings/edit flow; change the title; save.
+3. Reopen the editor — the Collabora header (inside the iframe) should display the new title.
+
+**Type icon + fullscreen dialog (FR-016)**:
+1. Open the Collabora editor in both CRD and MUI paths.
+2. Header must show the document-type icon (`FileText` / `Sheet` / `Presentation`) before the title.
+3. Dialog must cover the full viewport (no gap above/below). Specifically check the MUI path — the app-theme's `.MuiDialog-paper maxHeight` cap is overridden only for this dialog.
+
+**Runtime error toasts (FR-013)**:
+1. With the editor open, block the Collabora host in DevTools or kill its container.
+2. On the next Collabora-emitted `Error` / `Session_Closed` postMessage, a toast should appear (`Collabora error: {message}` / `The collaboration session was closed`).
+
+**CRD rules audit (quick sanity)**:
+- `rg '@mui/' src/crd/components/collabora src/main/crdPages/space/callout` → must return nothing.
+- `rg '@apollo/client\|/generated/' src/crd/components/collabora` → must return nothing.
+- The only file that intentionally mixes MUI + CRD is `src/domain/collaboration/callout/CalloutFramings/CalloutFramingCollaboraDocument.tsx`, and only via a `.crd-root` scope around the footer.
+
 ## Key Files Reference
 
 | Purpose | File |
@@ -93,5 +131,17 @@ pnpm vitest run
 | Icon mapping | `src/domain/collaboration/callout/icons/calloutIcons.ts` |
 | Callout creation form | `src/domain/collaboration/callout/CalloutForm/CalloutFormContributionSettings.tsx` |
 | Contribution preview | `src/domain/collaboration/calloutContributions/calloutContributionPreview/CalloutContributionPreview.tsx` |
-| English translations | `src/core/i18n/en/translation.en.json` |
+| English translations (callout contribution) | `src/core/i18n/en/translation.en.json` |
 | Server GraphQL contract | alkem-io/server#5970 `specs/086-collabora-integration/contracts/graphql-schema-changes.md` |
+| **Phase 10 — Parity round** | |
+| CRD footer (pure presentational) | `src/crd/components/collabora/CollaboraCollabFooter.tsx` |
+| Collabora postMessage hook | `src/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage.ts` |
+| Footer mapper (pure function) | `src/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper.ts` |
+| Mapper unit tests | `src/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper.spec.ts` |
+| Shared enum → preview-type helper | `src/main/crdPages/space/callout/collaboraDocumentTypeMap.ts` |
+| CRD framing editor overlay | `src/main/crdPages/space/callout/CollaboraFramingEditorOverlay.tsx` |
+| MUI framing dialog (hosts CRD footer via `.crd-root`) | `src/domain/collaboration/callout/CalloutFramings/CalloutFramingCollaboraDocument.tsx` |
+| Title-sync side-mutation | `src/domain/collaboration/callout/CalloutDialogs/EditCalloutDialog.tsx` |
+| Footer i18n (CRD, manual translations for 6 locales) | `src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json` |
+| Migration-guide reference | `docs/crd/migration-guide.md` |
+| Collabora postMessage API | https://sdk.collaboraonline.com/docs/postmessage_api.html |

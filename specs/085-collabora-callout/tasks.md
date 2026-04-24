@@ -145,6 +145,32 @@
 
 ---
 
+## Phase 10: User Story 7 — Parity with Multi-User Memo / Whiteboard (Priority: P1)
+
+**Purpose**: Close the remaining client-side gaps from ticket #9575: save-state feedback, multi-user presence, runtime-error surfacing, post-title ↔ document-name sync, and the editor-header icon. All tasks done on 2026-04-24.
+
+**Independent Test**: Open a Collabora document. Type; observe `Saving…` → `Saved` in the footer. Open as a second user; observe both avatars in the footer. Rename the callout via the edit dialog; reopen — the Collabora header now shows the new name. Kill network; observe an error toast (from `onError`) when Collabora posts its error event. The editor header shows the document-type icon (text / spreadsheet / presentation) before the title.
+
+### Implementation for User Story 7
+
+- [x] T028 [US7] Add optional `iframeRef?: Ref<HTMLIFrameElement>` prop to `src/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor.tsx` and attach it to the iframe. Backward-compatible — existing callers unaffected.
+- [x] T029 [P] [US7] Create `src/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage.ts` — DOM-only hook with `window.addEventListener('message', …)` that (a) filters by `event.source === iframe.contentWindow`, (b) parses `MessageId` / `Values` shape, (c) reduces `App_LoadingStatus` / `Doc_ModifiedStatus` / `App_Saved` / `Action_Save_Resp` / `Views_List` / `Error` / `Session_Closed` events into `{ connectionStatus, saveStatus, connectedUsers, lastError }`. Exposes `onError` and `onSessionClosed` callbacks for toast wiring. Exports `CollaboraConnectionStatus` type (domain-owned since neither CRD footer nor external consumers need it directly).
+- [x] T030 [P] [US7] Create `src/crd/components/collabora/CollaboraCollabFooter.tsx` — pure presentational CRD component. Props: `saveStatus`, `memberCount`, `connectedUsers`, `isGuest`, `readonlyReason`, `onDelete`. Uses `lucide-react` icons (`Check` / `CircleDashed` / `AlertCircle` / `CloudOff` for save state; `Trash2`, `Users`, `Globe`), semantic typography tokens (`text-caption`, `text-badge`), `cn()` from `@/crd/lib/utils`, and `useTranslation('crd-space')`. Deliberately omits connection-status chip — Collabora does not reliably propagate network state. Zero `@mui/*` imports; zero GraphQL / Apollo / auth / routing imports; all behavior via callback props. Exports `CollaboraSaveStatus`, `CollaboraReadonlyReason`, `CollaboraConnectedUser` types.
+- [x] T031 [US7] Create `src/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper.ts` — pure function mirroring `mapMemoFooterProps`. Takes `{ connectionStatus, saveStatus, connectedUsers, isAuthenticated, hasEditPrivilege, isContribution, hasDeletePrivileges, onDelete, contentUpdatePolicy, myMembershipStatus }`. Returns `CollaboraFooterMappedProps` with `readonlyReason` derived from: connectionStatus ≠ connected → `'connecting'`; !isAuthenticated → `'unauthenticated'`; has edit privilege → `null`; contentUpdatePolicy === Contributors && !Member → `'noMembership'`; else → `'contentUpdatePolicy'`. `onDelete` surfaced only for contributions with delete privileges.
+- [x] T032 [P] [US7] Create `src/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper.spec.ts` — 7 unit tests covering the readonly-reason decision tree: connected/authenticated/with privilege; connecting; unauthenticated; noMembership; contentUpdatePolicy fallback; onDelete only for contributions with privilege; memberCount/isGuest derivation.
+- [x] T033 [US7] Add i18n keys to `src/crd/i18n/space/space.en.json` and mirror to `.nl.json`, `.es.json`, `.bg.json`, `.de.json`, `.fr.json` (per CRD CLAUDE.md — these are not Crowdin-managed): `collabora.footer.{saved,saving,unsaved,error,membersOnline_one,membersOnline_other,connectedUsersLabel,moreConnectedUsers_one,moreConnectedUsers_other,guestWarning,delete}`, `collabora.footer.readonlyReason.{connecting,unauthenticated,contentUpdatePolicy,noMembership}`, `collabora.editor.error.{runtime,sessionClosed}`.
+- [x] T034 [US7] Create `src/main/crdPages/space/callout/collaboraDocumentTypeMap.ts` with `toCollaboraPreviewType(documentType)` — single source of truth for the `CollaboraDocumentType` enum → `'text' | 'spreadsheet' | 'presentation'` mapping. Consumed by `CollaboraFramingConnector`, `CalloutDetailDialogConnector`, and `LazyCalloutItem`.
+- [x] T035 [US7] Refactor `src/main/crdPages/space/callout/CollaboraFramingEditorOverlay.tsx`: add `documentType: CollaboraDocumentPreviewType` prop; render matching `lucide-react` icon (`FileText` / `Sheet` / `Presentation`) before the title in the header; create `iframeRef = useRef<HTMLIFrameElement>(null)` and pass to `CollaboraDocumentEditor`; call `useCollaboraPostMessage(iframeRef, { onError, onSessionClosed })` wiring toasts via `useNotification`; call `useAuthenticationContext()` for `isAuthenticated`; map to footer props via `mapCollaboraFooterProps`; render `<CollaboraCollabFooter {...footerProps} />` beneath the editor body.
+- [x] T036 [US7] Update `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` and `src/main/crdPages/space/callout/LazyCalloutItem.tsx` to pass `documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}` to `<CollaboraFramingEditorOverlay>`.
+- [x] T037 [US7] Wire the same footer + postMessage hook into the MUI framing dialog `src/domain/collaboration/callout/CalloutFramings/CalloutFramingCollaboraDocument.tsx`: replace the bare close button with `DialogHeader` showing the document-type icon + callout title; override `PaperProps.sx.maxHeight: 'none'` and set `height: '100vh'` to defeat the app theme's `.MuiDialog-paper` height cap (which leaves gaps at top/bottom in fullscreen mode); wrap `<CollaboraCollabFooter />` in a `<div className="crd-root">` so Tailwind preflight applies inside the MUI Dialog; use a second `useTranslation('crd-space')` for the toast keys alongside the default-namespace `t`.
+- [x] T038 [US7] Update `src/domain/collaboration/callout/CalloutDialogs/EditCalloutDialog.tsx`: import `useUpdateCollaboraDocumentMutation`; capture `collaboraDocumentId = data?.lookup.callout?.framing.collaboraDocument?.id` and `originalCalloutTitle = data?.lookup.callout?.framing.profile?.displayName`; after `updateCalloutContent` succeeds, if `formData.framing.type === CalloutFramingType.CollaboraDocument` and the title changed and the id exists, call `updateCollaboraDocument({ updateData: { ID: collaboraDocumentId, displayName: newTitle } })`. This compensates for `UpdateCalloutFramingInput` lacking a `collaboraDocument` field.
+- [x] T039 [US7] Fix the `Doc_ModifiedStatus` reducer branch in `useCollaboraPostMessage.ts` — when `Values.Modified === false`, transition `saveStatus` to `'saved'` (the original version preserved `prev.saveStatus`, so once flipped to `unsaved` it never cleared). Preserve `'error'` state across the transition so a save failure doesn't get silently overwritten by the next `Modified: false` emission.
+- [x] T040 [US7] `pnpm lint` + `pnpm vitest run` — confirm all 612 tests pass (605 existing + 7 new mapper tests) and biome/tsc are clean.
+
+**Checkpoint**: Ticket #9575 client-side parity ACs met: save status, presence, readonly reason, runtime errors, title sync, type icon, fullscreen dialog. Outstanding ACs are server-side (license entitlement, upload-from-local, upload format conversion) and explicitly deferred per ticket.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -158,6 +184,7 @@
 - **US4 Delete (Phase 7)**: Depends on Phase 4 (dialog exists)
 - **US5 Rename (Phase 8)**: Depends on Phase 4 (dialog/preview exists)
 - **Polish (Phase 9)**: Depends on all desired user stories being complete
+- **US7 Parity (Phase 10)**: Depends on the MVP (Phases 3–5) being complete. T029 / T030 / T032 are parallel (separate files); T031 depends on T030 (for type exports); T033 depends on T030 (keys referenced in the component); T035 depends on T028–T031+T033+T034; T036 depends on T034+T035; T037 depends on T030+T031+T033; T038 is independent of the footer work
 
 ### User Story Dependencies
 
@@ -181,6 +208,7 @@
 - T015, T016 can run in parallel (separate components)
 - T014 (US1) and T015/T016 (US2) can run in parallel after Phase 2
 - US6 (T020) can run in parallel with US1/US2/US3
+- In Phase 10: T029 (postMessage hook) / T030 (CRD footer) / T032 (mapper tests) can run in parallel; T038 (title-sync in EditCalloutDialog) is independent of the footer work
 
 ---
 

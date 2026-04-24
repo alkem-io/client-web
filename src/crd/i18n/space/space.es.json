@@ -386,6 +386,36 @@
       "loadFailed": "No se pudo cargar la nota"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Error de Collabora: {{message}}",
+        "sessionClosed": "La sesión de colaboración se cerró."
+      }
+    },
+    "footer": {
+      "connected": "Conectado",
+      "connecting": "Conectando…",
+      "disconnected": "Desconectado",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "unsaved": "Cambios sin guardar",
+      "error": "Error al guardar",
+      "membersOnline_one": "1 miembro en línea",
+      "membersOnline_other": "{{count}} miembros en línea",
+      "connectedUsersLabel": "Usuarios conectados",
+      "moreConnectedUsers_one": "{{count}} usuario conectado más",
+      "moreConnectedUsers_other": "{{count}} usuarios conectados más",
+      "guestWarning": "Estás editando como invitado",
+      "delete": "Eliminar documento",
+      "readonlyReason": {
+        "connecting": "Conectando con el servicio de colaboración…",
+        "unauthenticated": "Inicia sesión para editar este documento.",
+        "contentUpdatePolicy": "No tienes permiso para editar este documento. Pide al propietario que cambie los ajustes de uso compartido.",
+        "noMembership": "Solo los miembros de este espacio pueden editar este documento. Únete al espacio para contribuir."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Abrir imagen",
     "more_one": "+{{count}} más",

@@ -386,6 +386,36 @@
       "loadFailed": "Неуспешно зареждане на бележка"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Грешка в Collabora: {{message}}",
+        "sessionClosed": "Сесията за съвместна работа беше прекратена."
+      }
+    },
+    "footer": {
+      "connected": "Свързано",
+      "connecting": "Свързване…",
+      "disconnected": "Прекъснато",
+      "saved": "Запазено",
+      "saving": "Запазване…",
+      "unsaved": "Незапазени промени",
+      "error": "Грешка при запазване",
+      "membersOnline_one": "1 онлайн член",
+      "membersOnline_other": "{{count}} онлайн членове",
+      "connectedUsersLabel": "Свързани потребители",
+      "moreConnectedUsers_one": "още {{count}} свързан потребител",
+      "moreConnectedUsers_other": "още {{count}} свързани потребители",
+      "guestWarning": "Редактирате като гост",
+      "delete": "Изтриване на документа",
+      "readonlyReason": {
+        "connecting": "Свързване с услугата за съвместна работа…",
+        "unauthenticated": "Влезте, за да редактирате този документ.",
+        "contentUpdatePolicy": "Нямате права да редактирате този документ. Помолете собственика да промени настройките за споделяне.",
+        "noMembership": "Само членовете на това пространство могат да редактират този документ. Присъединете се, за да допринасяте."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Отвори изображение",
     "more_one": "+{{count}} още",

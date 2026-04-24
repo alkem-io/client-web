@@ -10,6 +10,7 @@ import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -126,6 +127,7 @@ function LazyCalloutItemContent({
           open={collaboraEditorOpen}
           collaboraDocumentId={collaboraDocumentId}
           title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
+          documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}
           onClose={() => setCollaboraEditorOpen(false)}
         />
       )}

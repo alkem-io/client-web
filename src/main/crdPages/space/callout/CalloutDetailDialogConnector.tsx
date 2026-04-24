@@ -14,6 +14,7 @@ import { CalloutPollConnector } from './CalloutPollConnector';
 import { CollaboraFramingConnector } from './CollaboraFramingConnector';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { MemoContributionConnector } from './MemoContributionConnector';
@@ -230,6 +231,7 @@ export function CalloutDetailDialogConnector({
       open={framingCollaboraOpen}
       collaboraDocumentId={framingCollaboraDocument.id}
       title={framingCollaboraTitle}
+      documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
       onClose={() => setFramingCollaboraOpen(false)}
     />
   ) : null;

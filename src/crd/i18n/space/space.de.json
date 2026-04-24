@@ -386,6 +386,36 @@
       "loadFailed": "Notiz konnte nicht geladen werden"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Collabora-Fehler: {{message}}",
+        "sessionClosed": "Die Zusammenarbeitssitzung wurde geschlossen."
+      }
+    },
+    "footer": {
+      "connected": "Verbunden",
+      "connecting": "Verbinden…",
+      "disconnected": "Getrennt",
+      "saved": "Gespeichert",
+      "saving": "Wird gespeichert…",
+      "unsaved": "Ungespeicherte Änderungen",
+      "error": "Fehler beim Speichern",
+      "membersOnline_one": "1 Mitglied online",
+      "membersOnline_other": "{{count}} Mitglieder online",
+      "connectedUsersLabel": "Verbundene Benutzer",
+      "moreConnectedUsers_one": "{{count}} weiterer verbundener Benutzer",
+      "moreConnectedUsers_other": "{{count}} weitere verbundene Benutzer",
+      "guestWarning": "Du bearbeitest als Gast",
+      "delete": "Dokument löschen",
+      "readonlyReason": {
+        "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
+        "unauthenticated": "Melde dich an, um dieses Dokument zu bearbeiten.",
+        "contentUpdatePolicy": "Du hast keine Berechtigung, dieses Dokument zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
+        "noMembership": "Nur Mitglieder dieses Space können dieses Dokument bearbeiten. Tritt bei, um mitzuwirken."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Bild öffnen",
     "more_one": "+{{count}} weiteres",

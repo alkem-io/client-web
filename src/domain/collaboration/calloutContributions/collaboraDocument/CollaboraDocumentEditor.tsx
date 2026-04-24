@@ -1,15 +1,20 @@
 import { useApolloClient } from '@apollo/client';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { type Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
 import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
 
 interface CollaboraDocumentEditorProps {
   collaboraDocumentId: string;
+  /**
+   * Optional ref attached to the underlying iframe so callers can listen to the
+   * Collabora postMessage API for save-state + presence signals.
+   */
+  iframeRef?: Ref<HTMLIFrameElement>;
 }
 
-const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEditorProps) => {
+const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDocumentEditorProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
   const [editorUrl, setEditorUrl] = useState<string>();
@@ -93,6 +98,7 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEdito
 
   return (
     <iframe
+      ref={iframeRef}
       src={editorUrl}
       title={t('collaboraDocument.editor.title')}
       style={{ width: '100%', flex: 1, border: 'none', minHeight: 0 }}
