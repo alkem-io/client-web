@@ -1,241 +1,473 @@
-import { useState } from 'react';
+/**
+ * CalloutFormConnector — create / edit callout form integration layer.
+ *
+ * Owns the data + side-effect glue between the presentational `AddPostModal` (CRD) and
+ * the GraphQL mutations. In `mode="create"` it wires `useCalloutCreation`; in `mode="edit"`
+ * it fetches via `useCalloutContentQuery`, prefills the form through `mapCalloutDetailsToFormValues`,
+ * and dispatches `useUpdateCalloutContentMutation` with poll-option diffing + media-gallery diff.
+ *
+ * Composes these sibling connectors:
+ *   - `FramingEditorConnector`    — framing-specific editors (text/whiteboard/link/poll/memo/media)
+ *   - `ResponseDefaultsConnector` — response-type defaults dialog (Posts / Memos / Whiteboards)
+ *   - `TemplateImportConnector`   — "Find template" MUI dialog (rendered outside `.crd-root`)
+ *
+ * The form state lives in `useCrdCalloutForm`; `calloutFormMapper` builds the create/update
+ * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
+ */
+import { Hash } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CalloutContributionType,
-  CalloutFramingType,
-  CalloutVisibility,
-  PollResultsDetail,
-  PollResultsVisibility,
-} from '@/core/apollo/generated/graphql-schema';
+import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
-import { CalloutContributionSettings } from '@/crd/forms/callout/CalloutContributionSettings';
-import { CalloutVisibilitySelector } from '@/crd/forms/callout/CalloutVisibilitySelector';
+import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
+import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
+import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
+import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
-import type { CalloutCreationTypeWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { Label } from '@/crd/primitives/label';
+import { Switch } from '@/crd/primitives/switch';
+import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
+import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
+import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import {
+  diffPollOptions,
+  isAddedSentinel,
+  type PollOptionBefore,
+  parseAddedSentinel,
+} from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
+import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
+import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
+import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
+import { TemplateImportConnector } from './TemplateImportConnector';
 
 type CalloutFormConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  mode?: 'create' | 'edit';
+  calloutId?: string;
   calloutsSetId?: string;
+  /** Space id used by `ResponseDefaultsConnector` to fetch content templates. */
+  spaceId?: string;
   onFindTemplate?: () => void;
 };
 
-const CONTRIBUTION_TYPE_MAP: Record<string, CalloutContributionType> = {
-  post: CalloutContributionType.Post,
-  memo: CalloutContributionType.Memo,
-  whiteboard: CalloutContributionType.Whiteboard,
-  link: CalloutContributionType.Link,
-};
-
-const ATTACHMENT_TO_FRAMING_TYPE: Record<string, CalloutFramingType> = {
-  none: CalloutFramingType.None,
-  whiteboard: CalloutFramingType.Whiteboard,
-  memo: CalloutFramingType.Memo,
-  cta: CalloutFramingType.Link,
-  image: CalloutFramingType.MediaGallery,
-  poll: CalloutFramingType.Poll,
-};
-
-export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFindTemplate }: CalloutFormConnectorProps) {
+export function CalloutFormConnector({
+  open,
+  onOpenChange,
+  mode = 'create',
+  calloutId,
+  calloutsSetId,
+  spaceId,
+  onFindTemplate,
+}: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const { values, errors, setField, validate, reset } = useCrdCalloutForm();
-  const [activeAttachment, setActiveAttachment] = useState('none');
+  const form = useCrdCalloutForm();
+  const { values, errors, setField, validate, reset, prefill, dirty } = form;
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const [importTemplateOpen, setImportTemplateOpen] = useState(false);
 
-  const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  useBeforeUnloadGuard(open && dirty);
+
+  const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
+  const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+  const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
+  const notify = useNotification();
 
-  const mapFormToCallout = (visibility: CalloutVisibility): CalloutCreationTypeWithPreviewImages => {
-    const framingType = ATTACHMENT_TO_FRAMING_TYPE[activeAttachment] ?? CalloutFramingType.None;
+  // --- Edit mode: fetch + prefill ----------------------------------------
+  const { data: editData, loading: loadingCallout } = useCalloutContentQuery({
+    // biome-ignore lint/style/noNonNullAssertion: skip guards the nullable id
+    variables: { calloutId: calloutId! },
+    skip: mode !== 'edit' || !calloutId || !open,
+    fetchPolicy: 'network-only',
+  });
 
-    const callout: CalloutCreationTypeWithPreviewImages = {
-      framing: {
-        type: framingType,
-        profile: {
-          displayName: values.title.trim(),
-          description: values.description || undefined,
-        },
-        tags: values.tags
-          ? values.tags
-              .split(',')
-              .map(tag => tag.trim())
-              .filter(Boolean)
-          : undefined,
-      },
-      settings: {
-        visibility,
-        framing: {
-          commentsEnabled: values.commentsEnabled,
-        },
-        contribution: {
-          allowedTypes: values.allowedContributionTypes.map(t => CONTRIBUTION_TYPE_MAP[t]).filter(Boolean),
-        },
-      },
-      sendNotification: values.notifyMembers && visibility === CalloutVisibility.Published,
-    };
+  // Track original poll options + media-gallery snapshot for diffing on save.
+  const originalPollOptions: PollOptionBefore[] =
+    editData?.lookup.callout?.framing.poll?.options
+      .slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(o => ({ id: o.id, text: o.text })) ?? [];
+  const originalVisualIds = editData?.lookup.callout?.framing.mediaGallery?.visuals.map(v => v.id) ?? [];
+  const originalSortOrders = Object.fromEntries(
+    editData?.lookup.callout?.framing.mediaGallery?.visuals.map(v => [v.id, v.sortOrder ?? 0]) ?? []
+  );
 
-    // Whiteboard framing — include content + preview images generated by the single-user editor
-    if (framingType === CalloutFramingType.Whiteboard) {
-      callout.framing.whiteboard = {
-        content: values.whiteboardContent,
-        profile: { displayName: values.title.trim() || t('callout.whiteboard') },
-        previewSettings: values.whiteboardPreviewSettings,
-        previewImages: values.whiteboardPreviewImages,
-      };
+  // Prefill guard: only run once per data payload per open dialog session.
+  const prefilledCalloutIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (mode !== 'edit' || !open) {
+      prefilledCalloutIdRef.current = null;
+      return;
     }
-
-    // Poll framing
-    if (framingType === CalloutFramingType.Poll && values.pollQuestion) {
-      callout.framing.poll = {
-        title: values.pollQuestion,
-        options: values.pollOptions.filter(o => o.text.trim()).map(o => o.text.trim()),
-        settings: {
-          allowContributorsAddOptions: values.pollAllowCustomOptions,
-          minResponses: 1,
-          maxResponses: values.pollAllowMultiple ? 0 : 1,
-          resultsVisibility: values.pollHideResultsUntilVoted
-            ? PollResultsVisibility.Hidden
-            : PollResultsVisibility.Visible,
-          resultsDetail: values.pollShowVoterAvatars ? PollResultsDetail.Full : PollResultsDetail.Count,
-        },
-      };
+    const callout = editData?.lookup.callout;
+    if (callout && prefilledCalloutIdRef.current !== callout.id) {
+      prefill(mapCalloutDetailsToFormValues(editData));
+      prefilledCalloutIdRef.current = callout.id;
     }
+  }, [mode, open, editData, prefill]);
 
-    // Link (Call to Action) framing — writes to the canonical `framing.link` field
-    // that the server persists and the read side consumes via `callout.framing.link`.
-    // (Earlier drafts wrote this to `framing.profile.referencesData`, which is
-    // unrelated to CTA and dropped by the server.)
-    if (framingType === CalloutFramingType.Link && values.linkUrl) {
-      callout.framing.link = {
-        uri: values.linkUrl.trim(),
-        profile: { displayName: values.linkDisplayName.trim() || values.linkUrl.trim() },
-      };
-    }
+  // Reset the guard so reopening the dialog re-runs prefill on the next data.
+  useEffect(() => {
+    if (!open) prefilledCalloutIdRef.current = null;
+  }, [open]);
 
-    return callout;
-  };
-
-  // Media-gallery visuals must be uploaded AFTER the callout is saved: the create
-  // mutation creates the underlying MediaGallery row server-side when the framing
-  // type is MediaGallery and returns its id in the response. Mirrors the MUI
-  // CreateCalloutDialog flow (see useCalloutCreationWithPreviewImages for the
-  // matching whiteboard/memo preview-image handling).
-  const uploadPendingMediaGallery = async (
-    framingType: CalloutFramingType,
-    result: Awaited<ReturnType<typeof handleCreateCallout>>
-  ) => {
-    if (framingType !== CalloutFramingType.MediaGallery) return;
-    if (!result) return;
-    const mediaGalleryId = result.framing.mediaGallery?.id;
-    if (!mediaGalleryId || values.mediaGalleryVisuals.length === 0) return;
-    await uploadMediaGalleryVisuals({
-      mediaGalleryId,
-      visuals: values.mediaGalleryVisuals,
-    });
-  };
+  // --- Create path -------------------------------------------------------
+  const submitting = creating || updating || mediaGalleryUploading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
-    if (!validate()) return;
-    const callout = mapFormToCallout(visibility);
-    const result = await handleCreateCallout(callout);
-    // If the create mutation failed, keep the form open with its values so the user
-    // can retry without re-entering everything. The mutation surfaces its own error.
-    if (!result) return;
-    // Regardless of upload outcome, the callout exists on the server — closing the
-    // form after upload (even on rejection) prevents creating a duplicate callout
-    // on a second submit. Any upload failure is still surfaced via the hook's error.
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) return;
+
+    const { input, whiteboardPreviewImages } = mapFormToCalloutCreationInput(values, {
+      visibility,
+      whiteboardFallbackDisplayName: t('callout.whiteboard'),
+    });
+
+    let result: Awaited<ReturnType<typeof handleCreateCallout>>;
     try {
-      await uploadPendingMediaGallery(callout.framing.type, result);
+      result = await handleCreateCallout(input);
+    } catch (err) {
+      logError(new Error('Callout creation mutation failed', { cause: err as Error }));
+      return;
+    }
+    if (!result) return;
+
+    try {
+      if (input.framing.type === CalloutFramingType.Whiteboard && whiteboardPreviewImages) {
+        const whiteboard = result.framing.whiteboard;
+        if (whiteboard?.profile) {
+          await uploadWhiteboardVisuals(
+            whiteboardPreviewImages,
+            {
+              cardVisualId: whiteboard.profile.visual?.id,
+              previewVisualId: whiteboard.profile.preview?.id,
+            },
+            result.nameID
+          );
+        }
+      }
+
+      if (input.framing.type === CalloutFramingType.MediaGallery) {
+        const mediaGalleryId = result.framing.mediaGallery?.id;
+        if (mediaGalleryId && values.mediaGalleryVisuals.length > 0) {
+          await uploadMediaGalleryVisuals({
+            mediaGalleryId,
+            visuals: values.mediaGalleryVisuals,
+            reuploadVisuals: true,
+          });
+        }
+      }
+    } catch (err) {
+      logError(new Error('Callout post-create visual upload failed', { cause: err as Error }));
+      notify(t('callout.uploadAfterCreateFailed'), 'error');
     } finally {
       reset();
       onOpenChange(false);
     }
   };
 
-  const handleSubmit = () => createAndUpload(CalloutVisibility.Published);
+  // --- Edit path ---------------------------------------------------------
+  const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
+  const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
+
+  const runPollOptionDiff = async () => {
+    if (!pollId) return;
+    const diff = diffPollOptions(originalPollOptions, values.pollOptions);
+    if (!diff.toAdd.length && !diff.toRemove.length && !diff.toUpdate.length && !diff.orderedIds.length) {
+      return;
+    }
+
+    // 1. Adds (before removes — never drop below the server's min).
+    const addedIdsByIndex = new Map<number, string>();
+    const knownIds = new Set(originalPollOptions.map(o => o.id));
+    for (const add of diff.toAdd) {
+      const res = await pollMgmt.addOption(add.text);
+      const addedPoll = res.data?.addPollOption;
+      if (addedPoll) {
+        const newOpt = addedPoll.options.find(o => !knownIds.has(o.id));
+        if (newOpt) {
+          addedIdsByIndex.set(add.index, newOpt.id);
+          knownIds.add(newOpt.id);
+        }
+      }
+    }
+    // 2. Removes.
+    for (const id of diff.toRemove) await pollMgmt.removeOption(id);
+    // 3. Updates.
+    for (const upd of diff.toUpdate) await pollMgmt.updateOption(upd.id, upd.text);
+    // 4. Reorder — substitute sentinels with their resolved server ids.
+    if (diff.orderedIds.length > 1) {
+      const resolved = diff.orderedIds
+        .map(id => {
+          if (!isAddedSentinel(id)) return id;
+          const idx = parseAddedSentinel(id);
+          return idx !== undefined ? addedIdsByIndex.get(idx) : undefined;
+        })
+        .filter((v): v is string => Boolean(v));
+      if (resolved.length > 1) await pollMgmt.reorderOptions(resolved);
+    }
+  };
+
+  const saveEdit = async () => {
+    if (!calloutId) return;
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) return;
+
+    const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(values, { calloutId });
+
+    let result: Awaited<ReturnType<typeof updateCalloutContent>>;
+    try {
+      result = await updateCalloutContent({
+        variables: { calloutData: input },
+        refetchQueries: ['CalloutsSetTags'],
+      });
+    } catch (err) {
+      logError(new Error('Callout update mutation failed', { cause: err as Error }));
+      return;
+    }
+    const updated = result.data?.updateCallout;
+    if (!updated) return;
+
+    // Media gallery diff — mirrors MUI EditCalloutDialog lines 305-316.
+    const mediaGalleryId = updated.framing.mediaGallery?.id;
+    if (mediaGalleryId && values.mediaGalleryVisuals.length > 0) {
+      try {
+        await uploadMediaGalleryVisuals({
+          mediaGalleryId,
+          visuals: values.mediaGalleryVisuals,
+          existingVisualIds: originalVisualIds,
+          originalSortOrders,
+        });
+      } catch (err) {
+        logError(new Error('Callout media-gallery upload failed', { cause: err as Error }));
+        notify(t('callout.uploadAfterCreateFailed'), 'error');
+      }
+    }
+
+    // Whiteboard preview upload if the content was edited inline.
+    if (whiteboardPreviewImages && updated.framing.whiteboard?.profile) {
+      await uploadWhiteboardVisuals(whiteboardPreviewImages, {
+        previewVisualId: updated.framing.whiteboard.profile.preview?.id,
+      });
+    }
+
+    // Poll option diff — leave the dialog open on failure so the user can
+    // retry; everything else has already been persisted.
+    try {
+      await runPollOptionDiff();
+    } catch (err) {
+      logError(new Error('Poll option save failed', { cause: err as Error }));
+      notify(t('callout.pollOptionsSaveFailed'), 'error');
+      return;
+    }
+
+    reset();
+    onOpenChange(false);
+  };
+
+  const handlePublish = () => createAndUpload(CalloutVisibility.Published);
   const handleSaveDraft = () => createAndUpload(CalloutVisibility.Draft);
+  const handleSaveEdit = () => saveEdit();
+
+  const requestClose = (nextOpen: boolean) => {
+    if (nextOpen) {
+      onOpenChange(true);
+      return;
+    }
+    if (dirty && !submitting) {
+      setDiscardOpen(true);
+      return;
+    }
+    reset();
+    onOpenChange(false);
+  };
+
+  const handleDiscardConfirm = () => {
+    setDiscardOpen(false);
+    reset();
+    onOpenChange(false);
+  };
+
+  // Find Template — default behaviour opens the built-in connector; a parent
+  // can still override via the `onFindTemplate` prop.
+  const handleFindTemplate = onFindTemplate ?? (() => setImportTemplateOpen(true));
+
+  const canSubmit = values.title.trim().length > 0;
+  const notifySwitch =
+    mode === 'create' && canSubmit ? (
+      <div className="flex items-center gap-2">
+        <Switch
+          id="add-post-notify-members"
+          checked={values.notifyMembers}
+          onCheckedChange={v => setField('notifyMembers', v)}
+          disabled={submitting}
+        />
+        <Label htmlFor="add-post-notify-members" className="text-body text-muted-foreground">
+          {t('forms.notifyMembers')}
+        </Label>
+      </div>
+    ) : null;
+
+  const responseTypeSupportsDefaults =
+    values.responseType === 'post' || values.responseType === 'memo' || values.responseType === 'whiteboard';
 
   return (
-    <AddPostModal
-      open={open}
-      onOpenChange={onOpenChange}
-      title={{
-        value: values.title,
-        onChange: v => setField('title', v),
-        error: errors.title,
-      }}
-      descriptionSlot={
-        <MarkdownEditor
-          value={values.description}
-          onChange={v => setField('description', v)}
-          placeholder={t('forms.descriptionPlaceholder')}
-        />
-      }
-      tags={{
-        value: values.tags,
-        onChange: v => setField('tags', v),
-      }}
-      framingEditorSlot={
-        <FramingEditorConnector
-          framingType={activeAttachment}
-          linkUrl={values.linkUrl}
-          onLinkUrlChange={v => setField('linkUrl', v)}
-          linkUrlError={errors.linkUrl}
-          linkDisplayName={values.linkDisplayName}
-          onLinkDisplayNameChange={v => setField('linkDisplayName', v)}
-          linkDisplayNameError={errors.linkDisplayName}
-          pollQuestion={values.pollQuestion}
-          onPollQuestionChange={v => setField('pollQuestion', v)}
-          pollQuestionError={errors.pollQuestion}
-          pollOptions={values.pollOptions}
-          onPollOptionsChange={v => setField('pollOptions', v)}
-          pollAllowMultiple={values.pollAllowMultiple}
-          onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
-          pollAllowCustomOptions={values.pollAllowCustomOptions}
-          onPollAllowCustomOptionsChange={v => setField('pollAllowCustomOptions', v)}
-          pollHideResultsUntilVoted={values.pollHideResultsUntilVoted}
-          onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
-          pollShowVoterAvatars={values.pollShowVoterAvatars}
-          onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
-          whiteboardContent={values.whiteboardContent}
-          whiteboardPreviewSettings={values.whiteboardPreviewSettings}
-          whiteboardConfigured={values.whiteboardConfigured}
-          whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
-          onWhiteboardChange={(content, previewImages, previewSettings) => {
-            setField('whiteboardContent', content);
-            setField('whiteboardPreviewImages', previewImages ?? []);
-            setField('whiteboardPreviewSettings', previewSettings);
-            setField('whiteboardConfigured', true);
-          }}
-          mediaGalleryVisuals={values.mediaGalleryVisuals}
-          onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
-        />
-      }
-      activeAttachment={activeAttachment}
-      onAttachmentChange={setActiveAttachment}
-      settingsSlot={
-        <>
-          <CalloutContributionSettings
-            allowedTypes={values.allowedContributionTypes}
-            onAllowedTypesChange={types => setField('allowedContributionTypes', types)}
-            commentsEnabled={values.commentsEnabled}
-            onCommentsEnabledChange={v => setField('commentsEnabled', v)}
+    <>
+      <AddPostModal
+        open={open}
+        onOpenChange={requestClose}
+        mode={mode}
+        dirty={dirty}
+        submitting={submitting || loadingCallout}
+        canSubmit={canSubmit}
+        title={{
+          value: values.title,
+          onChange: v => setField('title', v),
+          error: errors.title,
+        }}
+        descriptionSlot={
+          <MarkdownEditor
+            value={values.description}
+            onChange={v => setField('description', v)}
+            placeholder={t('forms.descriptionPlaceholder')}
           />
-          <CalloutVisibilitySelector
-            value={values.visibility}
-            onChange={v => setField('visibility', v)}
-            notifyMembers={values.notifyMembers}
-            onNotifyMembersChange={v => setField('notifyMembers', v)}
-          />
-        </>
-      }
-      onSubmit={handleSubmit}
-      onSaveDraft={handleSaveDraft}
-      onFindTemplate={onFindTemplate}
-      loading={loading || mediaGalleryUploading}
-    />
+        }
+        framingZoneSlot={
+          <div className="space-y-4">
+            <FramingChipStrip
+              value={values.framingChip}
+              onChange={chip => setField('framingChip', chip)}
+              locked={mode === 'edit'}
+            />
+            <FramingEditorConnector
+              mode={mode}
+              editMemoId={values.editMeta?.memoId}
+              framingType={values.framingChip}
+              linkUrl={values.linkUrl}
+              onLinkUrlChange={v => setField('linkUrl', v)}
+              linkUrlError={errors.linkUrl}
+              linkDisplayName={values.linkDisplayName}
+              onLinkDisplayNameChange={v => setField('linkDisplayName', v)}
+              linkDisplayNameError={errors.linkDisplayName}
+              pollQuestion={values.pollQuestion}
+              onPollQuestionChange={v => setField('pollQuestion', v)}
+              pollQuestionError={errors.pollQuestion}
+              pollOptions={values.pollOptions}
+              onPollOptionsChange={v => setField('pollOptions', v)}
+              pollAllowMultiple={values.pollAllowMultiple}
+              onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
+              pollAllowCustomOptions={values.pollAllowCustomOptions}
+              onPollAllowCustomOptionsChange={v => setField('pollAllowCustomOptions', v)}
+              pollHideResultsUntilVoted={values.pollHideResultsUntilVoted}
+              onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
+              pollShowVoterAvatars={values.pollShowVoterAvatars}
+              onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+              whiteboardContent={values.whiteboardContent}
+              whiteboardPreviewSettings={values.whiteboardPreviewSettings}
+              whiteboardConfigured={values.whiteboardConfigured}
+              whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+              onWhiteboardChange={(content, previewImages, previewSettings) => {
+                setField('whiteboardContent', content);
+                setField('whiteboardPreviewImages', previewImages ?? []);
+                setField('whiteboardPreviewSettings', previewSettings);
+                setField('whiteboardConfigured', true);
+              }}
+              memoMarkdown={values.memoMarkdown}
+              onMemoMarkdownChange={v => setField('memoMarkdown', v)}
+              mediaGalleryVisuals={values.mediaGalleryVisuals}
+              onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
+            />
+          </div>
+        }
+        responsesZoneSlot={
+          <div className="space-y-4">
+            <ResponseTypeChipStrip
+              value={values.responseType}
+              onChange={type => setField('responseType', type)}
+              locked={mode === 'edit'}
+            />
+            <ResponsePanel
+              type={values.responseType}
+              allowedActors={values.allowedActors}
+              onAllowedActorsChange={v => setField('allowedActors', v)}
+              contributionCommentsEnabled={values.contributionCommentsEnabled}
+              onContributionCommentsEnabledChange={v => setField('contributionCommentsEnabled', v)}
+              prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
+              onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
+              prePopulateLinkErrors={errors as Record<string, string | undefined>}
+              onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
+              disabled={submitting}
+            />
+          </div>
+        }
+        moreOptionsSlot={
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="add-post-tags" className="text-caption text-muted-foreground">
+                {t('forms.tagsLabel')}
+              </Label>
+              <div className="relative">
+                <Hash
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <input
+                  id="add-post-tags"
+                  type="text"
+                  value={values.tags}
+                  onChange={e => setField('tags', e.target.value)}
+                  placeholder={t('forms.tagsPlaceholder')}
+                  disabled={submitting}
+                  className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                />
+              </div>
+            </div>
+            <AllowCommentsField
+              value={values.framingCommentsEnabled}
+              onChange={v => setField('framingCommentsEnabled', v)}
+              disabled={submitting}
+            />
+            <ReferencesEditor
+              rows={values.referenceRows}
+              onChange={v => setField('referenceRows', v)}
+              errors={errors as Record<string, string | undefined>}
+              disabled={submitting}
+            />
+          </div>
+        }
+        notifySwitchSlot={notifySwitch}
+        onSubmit={mode === 'create' ? handlePublish : handleSaveEdit}
+        onSaveDraft={mode === 'create' ? handleSaveDraft : undefined}
+        onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
+      />
+      <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
+      <ResponseDefaultsConnector
+        open={defaultsOpen}
+        onOpenChange={setDefaultsOpen}
+        type={values.responseType}
+        spaceId={spaceId}
+        values={values.contributionDefaults}
+        onSave={next => setField('contributionDefaults', next)}
+      />
+      {mode === 'create' && (
+        <TemplateImportConnector
+          open={importTemplateOpen}
+          onOpenChange={setImportTemplateOpen}
+          isFormDirty={dirty}
+          onTemplateSelected={values => prefill(values)}
+        />
+      )}
+    </>
   );
 }

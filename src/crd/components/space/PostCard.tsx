@@ -1,13 +1,4 @@
-import {
-  FileText,
-  Images,
-  Maximize2,
-  Megaphone,
-  MessageSquare,
-  MoreHorizontal,
-  Presentation,
-  StickyNote,
-} from 'lucide-react';
+import { FileText, Images, Maximize2, Megaphone, MessageSquare, Presentation, StickyNote } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
@@ -59,7 +50,12 @@ type PostCardProps = {
   href?: string;
   onClick?: () => void;
   onCommentsClick?: () => void;
-  onSettingsClick?: () => void;
+  /**
+   * 3-dots settings area rendered in the card header. The consumer provides a full
+   * menu component (e.g. `CalloutContextMenu`) that brings its own `DropdownMenuTrigger`
+   * button — this card never renders a standalone settings button (plan D8 / T060).
+   */
+  settingsSlot?: ReactNode;
   onExpandClick?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
@@ -89,7 +85,7 @@ export function PostCard({
   href,
   onClick,
   onCommentsClick,
-  onSettingsClick,
+  settingsSlot,
   onExpandClick,
   contributionsPreview,
   children,
@@ -151,20 +147,7 @@ export function PostCard({
               <Maximize2 className="w-4 h-4" aria-hidden="true" />
             </Button>
           )}
-          {onSettingsClick && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={e => {
-                e.stopPropagation();
-                onSettingsClick();
-              }}
-              aria-label={t('mobile.settings')}
-            >
-              <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
-            </Button>
-          )}
+          {settingsSlot}
         </div>
       </CardHeader>
 

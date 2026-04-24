@@ -1,4 +1,10 @@
 {
+  "common": {
+    "Callout": "Aviso",
+    "callout": "aviso",
+    "Callouts": "Avisos",
+    "callouts": "avisos"
+  },
   "banner": {
     "homeSpace": "Espacio principal",
     "homeSpaceSettings": "Configuración del espacio principal"
@@ -156,6 +162,7 @@
     "callToAction": "Llamada a la acción",
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
+    "document": "Documento",
     "moreWhiteboards": "+{{count}} más",
     "moreContributions": "+{{count}} más",
     "vote": "Votar",
@@ -171,7 +178,9 @@
     "addMemo": "Añadir memo",
     "createMemo": "Crear nuevo memo",
     "defaultMemoName": "Nuevo memo",
-    "memoNameLabel": "Título del memo"
+    "memoNameLabel": "Título del memo",
+    "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
+    "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo."
   },
   "contribution": {
     "edit": "Editar",
@@ -187,7 +196,12 @@
     "configure": "Configurar",
     "edit": "Editar",
     "memo": "Nota",
-    "richTextEditor": "Editor de texto enriquecido"
+    "richTextEditor": "Editor de texto enriquecido",
+    "comingSoon": "Próximamente",
+    "memoPlaceholder": "Escribe tu nota…",
+    "memoOpenHint": "El contenido de la nota se edita en su propio diálogo.",
+    "openMemo": "Abrir nota",
+    "openWhiteboard": "Abrir pizarra"
   },
   "members": {
     "title": "Comunidad",
@@ -310,7 +324,36 @@
     "moveUp": "Mover arriba",
     "moveDown": "Mover abajo",
     "moveToBottom": "Mover al final",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "moveFailed": "No se pudo reordenar. Vuelve a intentarlo."
+  },
+  "visibilityChange": {
+    "publishTitle": "¿Publicar este aviso?",
+    "publishDescription": "El aviso será visible para cada miembro del espacio.",
+    "publishConfirm": "Publicar",
+    "unpublishTitle": "¿Mover este aviso a borrador?",
+    "unpublishDescription": "El aviso dejará de ser visible para los miembros del espacio.",
+    "unpublishConfirm": "Mover a borrador",
+    "notifyMembers": "Notificar a los miembros del espacio"
+  },
+  "sortContributions": {
+    "title": "Ordenar contribuciones",
+    "description": "Arrastra para reordenar. El nuevo orden se aplica al guardar.",
+    "empty": "Este aviso aún no tiene contribuciones para ordenar.",
+    "confirm": "Guardar orden",
+    "dragHandle": "Arrastra para reordenar",
+    "saveFailed": "No se pudo guardar el nuevo orden. Vuelve a intentarlo."
+  },
+  "deleteCallout": {
+    "title": "¿Eliminar este aviso?",
+    "description": "“{{title}}” se eliminará de forma permanente, junto con sus contribuciones y comentarios. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar"
+  },
+  "findTemplate": {
+    "overwriteTitle": "¿Reemplazar el contenido actual?",
+    "overwriteDescription": "Cargar esta plantilla reemplazará los campos que ya hayas rellenado. Esta acción no se puede deshacer.",
+    "overwriteConfirm": "Cargar plantilla",
+    "saveAsTemplateTitle": "Guardar como plantilla"
   },
   "dates": {
     "today": "Hoy",
@@ -323,7 +366,14 @@
     "urlRequired": "La URL es obligatoria",
     "urlInvalid": "La URL debe comenzar con http:// o https://",
     "displayNameRequired": "El nombre para mostrar es obligatorio",
-    "questionRequired": "La pregunta es obligatoria"
+    "questionRequired": "La pregunta es obligatoria",
+    "required": "Este campo es obligatorio",
+    "maxSmall": "No debe superar {{count}} caracteres",
+    "maxMarkdown": "No debe superar {{count}} caracteres",
+    "minPollOptions": "Se requieren al menos {{count}} opciones",
+    "pollOptionRequired": "El texto de la opción es obligatorio",
+    "referenceTitleRequired": "El título es obligatorio cuando se proporciona una URL",
+    "linkRowTitleRequired": "El título es obligatorio cuando se proporciona una URL"
   },
   "forms": {
     "titleLabel": "Título",
@@ -331,13 +381,18 @@
     "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "Escribe algo...",
     "tagsLabel": "Etiquetas",
-    "framingType": "Tipo de contenido",
+    "tagsPlaceholder": "Etiquetas separadas por comas",
+    "framingType": "Añadir a la publicación",
     "visibility": "Visibilidad",
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
     "notifyMembers": "Notificar a los miembros del espacio",
     "saveDraft": "Guardar borrador",
+    "save": "Guardar",
     "publish": "Publicar",
+    "createPost": "Crear publicación",
+    "editPost": "Editar publicación",
+    "moreOptions": "Más opciones",
     "findTemplate": "Buscar plantilla",
     "contributionTypes": "Contribuciones permitidas",
     "commentsEnabled": "Habilitar comentarios",
@@ -347,7 +402,71 @@
     "pollQuestion": "Pregunta",
     "pollOption": "Opción {{number}}",
     "addOption": "Añadir opción",
-    "removeOption": "Eliminar opción"
+    "removeOption": "Eliminar opción",
+    "allowComments": "Permitir comentarios",
+    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso."
+  },
+  "contributionSettings": {
+    "heading": "Respuestas",
+    "types": {
+      "link": "Enlaces y archivos",
+      "post": "Publicaciones",
+      "memo": "Notas",
+      "whiteboard": "Pizarras",
+      "document": "Documentos"
+    },
+    "actors": {
+      "members": "Los miembros pueden añadir",
+      "admins": "Los administradores pueden añadir"
+    },
+    "commentsEnabled": "Activar comentarios",
+    "setDefaults": "Configurar valores por defecto",
+    "prePopulate": {
+      "heading": "Precargar colección",
+      "description": "Añade enlaces que aparecerán en cuanto se cree este aviso.",
+      "empty": "Todavía no hay enlaces precargados.",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Título del enlace",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Descripción opcional",
+      "addRow": "Añadir otro enlace",
+      "removeRow": "Eliminar enlace"
+    }
+  },
+  "references": {
+    "heading": "Referencias",
+    "empty": "Todavía no hay referencias.",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Título de la referencia",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://",
+    "descriptionLabel": "Descripción",
+    "descriptionPlaceholder": "Descripción opcional",
+    "addRow": "Añadir otra referencia",
+    "removeRow": "Eliminar referencia"
+  },
+  "responseDefaults": {
+    "srDescription": "Configura los valores por defecto para las nuevas contribuciones de este aviso.",
+    "title": {
+      "post": "Valores por defecto de publicaciones",
+      "memo": "Valores por defecto de notas",
+      "whiteboard": "Valores por defecto de pizarras",
+      "document": "Valores por defecto de documentos",
+      "generic": "Valores por defecto"
+    },
+    "defaultTitle": "Título por defecto",
+    "defaultTitlePlaceholder": "Establece un título por defecto para las contribuciones",
+    "defaultDescription": "Descripción por defecto",
+    "defaultDescriptionPlaceholder": "Guía mostrada al iniciar una nueva contribución",
+    "defaultWhiteboard": "Pizarra por defecto",
+    "configureWhiteboard": "Configurar pizarra",
+    "editWhiteboard": "Editar pizarra",
+    "template": "Plantilla",
+    "templatePlaceholder": "Elige una plantilla…",
+    "templateLoading": "Cargando plantillas…",
+    "save": "Guardar"
   },
   "calloutDialog": {
     "close": "Cerrar diálogo",
@@ -455,7 +574,19 @@
   },
   "dialogs": {
     "cancel": "Cancelar",
-    "create": "Crear"
+    "create": "Crear",
+    "discardChanges": {
+      "title": "¿Descartar tus cambios?",
+      "description": "Tienes cambios sin guardar. Si cierras este diálogo se perderán.",
+      "confirm": "Sí, cerrar",
+      "cancel": "Seguir editando"
+    },
+    "deleteFraming": {
+      "title": "¿Eliminar el contenido de encuadre?",
+      "description": "El contenido de encuadre de esta llamada se eliminará. Esta acción no se puede deshacer.",
+      "confirm": "Eliminar",
+      "cancel": "Conservar"
+    }
   },
   "poll": {
     "status": {

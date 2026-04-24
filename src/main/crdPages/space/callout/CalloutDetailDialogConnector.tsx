@@ -7,10 +7,12 @@ import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
 import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
@@ -30,6 +32,8 @@ type CalloutDetailDialogConnectorProps = {
   initialContributionId?: string;
   /** For memo contributions only: the underlying memo id (the contribution wrapper id goes into `initialContributionId`). */
   initialMemoId?: string;
+  /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
+  moveActions?: CalloutMoveActions;
 };
 
 function ContributionsSlot({
@@ -92,6 +96,7 @@ export function CalloutDetailDialogConnector({
   callout,
   initialContributionId,
   initialMemoId,
+  moveActions,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
   const contributionType = getCalloutContributionType(callout);
@@ -216,6 +221,8 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  const settingsSlot = <CalloutSettingsConnector callout={callout} moveActions={moveActions} />;
+
   if (!callout.comments?.id) {
     return (
       <>
@@ -232,6 +239,7 @@ export function CalloutDetailDialogConnector({
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
+          settingsSlot={settingsSlot}
         />
         {whiteboardOverlay}
         {memoOverlay}
@@ -261,6 +269,7 @@ export function CalloutDetailDialogConnector({
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
+            settingsSlot={settingsSlot}
           />
         )}
       </CalloutCommentsConnector>

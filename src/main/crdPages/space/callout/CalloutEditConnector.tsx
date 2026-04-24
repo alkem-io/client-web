@@ -8,19 +8,18 @@ type CalloutEditConnectorProps = {
 };
 
 /**
- * Pre-fills the form with existing callout data and locks framing type + contribution type.
- * This is a thin wrapper around CalloutFormConnector that loads the callout
- * and pre-fills the form values.
+ * Thin wrapper that renders `CalloutFormConnector` in edit mode. Pre-fetching
+ * the callout and mapping it to form values is handled inside
+ * `CalloutFormConnector` itself (wired in P3 — spec T041).
  */
-export function CalloutEditConnector({
-  open,
-  onOpenChange,
-  calloutId: _calloutId,
-  calloutsSetId,
-}: CalloutEditConnectorProps) {
-  // In the full implementation, this would:
-  // 1. Fetch callout details by ID
-  // 2. Map to form values
-  // 3. Pass to CalloutFormConnector with locked fields
-  return <CalloutFormConnector open={open} onOpenChange={onOpenChange} calloutsSetId={calloutsSetId} />;
+export function CalloutEditConnector({ open, onOpenChange, calloutId, calloutsSetId }: CalloutEditConnectorProps) {
+  return (
+    <CalloutFormConnector
+      open={open}
+      onOpenChange={onOpenChange}
+      mode="edit"
+      calloutId={calloutId}
+      calloutsSetId={calloutsSetId}
+    />
+  );
 }

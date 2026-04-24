@@ -6,23 +6,26 @@ import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
   calloutsSetId: string | undefined;
+  /** Ordered list of all callout ids in the feed — drives move actions (plan T063/T066). */
+  orderedCalloutIds?: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 };
 
 export function LazyCalloutItem({
   calloutId,
   calloutsSetId,
+  orderedCalloutIds = [],
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
   const { ref, inView, callout, loading } = useCalloutInView({
@@ -35,8 +38,9 @@ export function LazyCalloutItem({
       {inView && !loading && callout ? (
         <LazyCalloutItemContent
           callout={callout}
+          calloutsSetId={calloutsSetId}
+          orderedCalloutIds={orderedCalloutIds}
           onClick={onClick}
-          onSettingsClick={onSettingsClick}
           onExpandClick={onExpandClick}
         />
       ) : (
@@ -52,13 +56,15 @@ export function LazyCalloutItem({
  */
 function LazyCalloutItemContent({
   callout,
+  calloutsSetId,
+  orderedCalloutIds,
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: {
   callout: CalloutDetailsModelExtended;
+  calloutsSetId: string | undefined;
+  orderedCalloutIds: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -67,6 +73,12 @@ function LazyCalloutItemContent({
   const { t } = useTranslation('crd-space');
 
   const postData = mapCalloutDetailsToPostCard(callout, t);
+
+  const moveActions = useCrdCalloutMoveActions({
+    calloutsSetId,
+    orderedCalloutIds,
+    calloutId: callout.id,
+  });
 
   const openDialog = (contributionId?: string, memoId?: string) => {
     setInitialContributionId(contributionId);
@@ -93,7 +105,7 @@ function LazyCalloutItemContent({
           onClick?.();
         }}
         onCommentsClick={() => openDialog()}
-        onSettingsClick={onSettingsClick}
+        settingsSlot={<CalloutSettingsConnector callout={callout} moveActions={moveActions} />}
         onExpandClick={onExpandClick}
         contributionsPreview={
           contributionsEnabled ? (
@@ -112,6 +124,7 @@ function LazyCalloutItemContent({
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         callout={callout}
+        moveActions={moveActions}
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
       />

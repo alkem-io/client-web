@@ -1,4 +1,4 @@
-import { MoreHorizontal, Share2, Smile, X } from 'lucide-react';
+import { Share2, Smile, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -45,6 +45,12 @@ type CalloutDetailDialogProps = {
   callToActionFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
+  /**
+   * 3-dots settings slot in the sticky-header cluster. Consumer injects a
+   * full menu component (e.g. `CalloutContextMenu`) with its own trigger
+   * button (plan D8 / T061).
+   */
+  settingsSlot?: ReactNode;
 };
 
 export function CalloutDetailDialog({
@@ -63,6 +69,7 @@ export function CalloutDetailDialog({
   callToActionFramingSlot,
   onReactionsClick,
   onShareClick,
+  settingsSlot,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -94,17 +101,11 @@ export function CalloutDetailDialog({
               size="icon"
               className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
               aria-label={t('calloutDialog.share')}
+              onClick={onShareClick}
             >
               <Share2 className="w-5 h-5" aria-hidden="true" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
-              aria-label={t('calloutDialog.more')}
-            >
-              <MoreHorizontal className="w-5 h-5" aria-hidden="true" />
-            </Button>
+            {settingsSlot}
             <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
             <DialogClose asChild={true}>
               <Button
