@@ -3,6 +3,7 @@ import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
+import { rehypeSanitizeStyles } from '@/crd/lib/rehypeSanitizeStyles';
 import { cn } from '@/crd/lib/utils';
 
 const sanitizeSchema = {
@@ -68,10 +69,7 @@ export function InlineMarkdown({ content, clampLines = 2, className }: InlineMar
     >
       <Markdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          [rehypeRaw, { passThrough: [] }],
-          [rehypeSanitize, sanitizeSchema],
-        ]}
+        rehypePlugins={[[rehypeRaw, { passThrough: [] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]}
       >
         {content}
       </Markdown>

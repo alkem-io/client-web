@@ -89,7 +89,14 @@ export function ActivityItem({
 
   if (titleHref) {
     return (
-      <a href={titleHref} className={cn(sharedClassName, 'no-underline text-inherit')} aria-label={ariaLabel}>
+      <a
+        href={titleHref}
+        className={cn(
+          sharedClassName,
+          'no-underline text-inherit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+        )}
+        aria-label={ariaLabel}
+      >
         {content}
       </a>
     );

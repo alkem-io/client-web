@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ActivityEventType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
@@ -149,29 +150,6 @@ type ActivityEntry = {
 const ICON_CLASS = 'size-2.5';
 
 /**
- * English defaults for per-activity-type accessible labels used on the icon badge
- * and in the row's `aria-label`. Screen readers announce these so the row is
- * intelligible without relying on visual context.
- *
- * TODO: Wire through a `crd-dashboard` i18n key (e.g. `activityIconLabel.<TYPE>`)
- * when the dashboard namespace is extended — use these as `defaultValue` fallbacks.
- */
-const ACTIVITY_ICON_LABELS: Record<string, string> = {
-  [ActivityEventType.CalloutPublished]: 'New callout',
-  [ActivityEventType.CalloutPostCreated]: 'New post',
-  [ActivityEventType.CalloutPostComment]: 'New comment',
-  [ActivityEventType.DiscussionComment]: 'New comment',
-  [ActivityEventType.CalloutWhiteboardCreated]: 'New whiteboard',
-  [ActivityEventType.CalloutWhiteboardContentModified]: 'Whiteboard updated',
-  [ActivityEventType.CalloutMemoCreated]: 'New memo',
-  [ActivityEventType.CalloutLinkCreated]: 'New link',
-  [ActivityEventType.MemberJoined]: 'New member',
-  [ActivityEventType.SubspaceCreated]: 'New subspace',
-  [ActivityEventType.CalendarEventCreated]: 'New event',
-  [ActivityEventType.UpdateSent]: 'New update',
-};
-
-/**
  * Per-activity-type visual & content mapping. Mirrors the legacy per-view layer
  * (`src/domain/collaboration/activity/ActivityLog/views/*`): picks the badge icon,
  * primary title content (entity name or markdown), parent context, and click target.
@@ -179,6 +157,8 @@ const ACTIVITY_ICON_LABELS: Record<string, string> = {
  * For comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`)
  * the title is user-authored markdown — rendered via `InlineMarkdown` so markdown/HTML
  * displays formatted instead of escaped (CRD markdown-preview rule, `src/crd/CLAUDE.md` §9).
+ * `titlePlain` is always plain-text (markdown stripped via `markdownToPlainText`) so
+ * screen readers don't announce markup syntax.
  */
 type ResolvedActivity = {
   icon: ReactNode;
@@ -191,7 +171,15 @@ type ResolvedActivity = {
 
 function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivity {
   const typeKey = activity.type ?? '';
-  const iconLabel = ACTIVITY_ICON_LABELS[typeKey] ?? typeKey;
+  // Icon labels live in the crd-dashboard namespace (manually managed in src/crd/i18n/dashboard/,
+  // not Crowdin). The caller's `useTranslation('crd-dashboard')` ensures the namespace is loaded
+  // so passing `{ ns: 'crd-dashboard' }` here works even though `t` came from the default namespace.
+  const iconLabel = typeKey
+    ? (t(`activity.iconLabel.${typeKey}` as never, {
+        ns: 'crd-dashboard',
+        defaultValue: typeKey,
+      }) as string)
+    : '';
 
   const spaceContext = activity.spaceDisplayName;
   const calloutContext = activity.callout?.framing?.profile?.displayName;
@@ -225,7 +213,7 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
         title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
-        titlePlain: markdown,
+        titlePlain: markdownToPlainText(markdown),
         // Legacy shows the post displayName for post-comment context.
         contextName: activity.post?.profile?.displayName,
         href: activity.post?.profile?.url,
@@ -237,7 +225,7 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
         title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
-        titlePlain: markdown,
+        titlePlain: markdownToPlainText(markdown),
         contextName: calloutContext,
         href: activity.callout?.framing?.profile?.url,
       };
@@ -318,20 +306,22 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
         icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
         title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
-        titlePlain: markdown,
+        titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
         href: activity.space?.about?.profile?.url,
       };
     }
     default: {
-      // Unknown/future activity type — best-effort fallback using whatever fields are present.
-      const name = activity.description ?? '';
+      // Unknown/future activity type — best-effort fallback. Render description through
+      // InlineMarkdown to stay markdown-safe (CLAUDE.md §9) in case a new backend type
+      // carries markdown/HTML, and strip it for the plain-text a11y fallback.
+      const markdown = activity.description ?? '';
       return {
         icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
-        iconLabel: typeKey,
-        title: name,
-        titlePlain: name,
+        iconLabel,
+        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
+        titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         href: activity.callout?.framing?.profile?.url,
       };
