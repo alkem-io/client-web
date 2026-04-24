@@ -2,7 +2,7 @@
 
 ## Problem
 
-Media gallery is one of Alkemio's five callout framing types (whiteboard, memo, poll, media gallery, call to action). Unlike whiteboard/memo, **it has no contribution type** — the gallery is owned entirely by the callout framing, and members never "contribute" their own media. What members *can* do is view the images in a lightbox carousel, also can add items (images) to the media gallery.
+Media gallery is one of Alkemio's five callout framing types (whiteboard, memo, poll, media gallery, call to action). Unlike whiteboard/memo, **it has no contribution type** — the gallery is owned entirely by the callout framing. Members never "contribute" their own media: read-only users can view the images in the inline carousel, and users with `Update` privilege on the callout (editors) can add, reorder, and delete images through the callout edit form. Regular members without `Update` cannot add media.
 
 Today media gallery is fully MUI: the framing preview (`CalloutFramingMediaGallery`), the lightbox carousel (`MediaGallery` built on `react-image-gallery`), and the form field used to upload/reorder/delete visuals (`CalloutFramingMediaGalleryField`, built on `@dnd-kit`). On the CRD side:
 
@@ -34,7 +34,7 @@ Key facts verified in the MUI layer:
 
 ### Scope
 
-- **Framing-only, no contributions.** Unlike whiteboard/memo, there is no "Add Media" contribution flow, no contribution cards, and no "+N more" overlay rules. A callout's media gallery is a fixed set owned by the callout editor(s).
+- **Framing-only, no contributions.** Unlike whiteboard/memo, there is no "Add Media" contribution flow and no contribution cards. A callout's media gallery is a fixed set owned by the callout editor(s). The `+N more` tile in the feed preview (see Visual treatments) is a framing-level overflow indicator, not a contribution affordance.
 - **Full read path** in CRD: `PostCard` feed preview, detail-dialog preview, keyboard-navigable lightbox with download + fullscreen.
 - **Full edit path** in CRD: upload (multi-file), `@dnd-kit` reorder, per-item delete, validation against platform constraints, HEIC passthrough.
 
@@ -55,7 +55,7 @@ The Hocuspocus/collaboration boundary from memos does not apply here — media g
 - **Controls**:
   - Prev / Next buttons (left + right arrow icons) overlaid on the sides; `aria-disabled` at the ends when loop is off.
   - A pagination row below the image: dots for small galleries (≤7), a compact "current / total" counter for larger galleries, or a thumbnail strip (TBD during implementation — see plan §M3).
-  - Alt-text caption strip below the image when set.
+  - Alt text is applied to the `<img>` via the `alt` attribute so screen readers announce it. No separate visible caption strip below the image (parity with MUI — MUI's carousel also does not render a visible caption).
   - A small "download current image" icon button in the top-right corner of the carousel.
   - An optional fullscreen-toggle button in the top-right that expands the current image into a browser-fullscreen viewport (same image carousel, no separate component — just `requestFullscreen` on the carousel root). Hidden when `document.fullscreenEnabled` is false.
 - **Keyboard** (while the carousel root or any of its controls has focus): `←`/`→` navigate, `Home`/`End` jump to first/last, `F` toggles fullscreen, `Esc` closes the surrounding callout dialog (default Radix behaviour).
@@ -77,13 +77,13 @@ MediaGalleryField
 └── alt-text prompt (when a file is being added)
 ```
 
-Props:
-- `visuals: { id: string; uri: string; alternativeText?: string; sortOrder: number }[]` — current list.
-- `onUpload(file: File, alternativeText: string): Promise<void>` — integration supplies the upload flow.
-- `onDelete(visualId: string): Promise<void>` — integration supplies the delete flow.
-- `onReorder(nextOrder: string[]): Promise<void>` — integration supplies the persistence.
+Props (uncontrolled-array pattern — the field owns no mutations itself, it emits the full next array whenever the user adds/deletes/reorders, and the consumer persists after the callout is saved):
+- `visuals: MediaGalleryFieldVisual[]` where `MediaGalleryFieldVisual = { id?: string; file?: File; uri?: string; altText?: string; sortOrder?: number; clientKey?: string }` — current list of saved + unsaved entries. `id` absent + `file` present = pending upload; `id` present = persisted visual; `clientKey` is generated client-side so React keys stay stable before upload.
+- `onVisualsChange(next: MediaGalleryFieldVisual[]): void` — fired on add (selected files), delete, or reorder. The consumer stores the array in the callout-form state and executes add/delete/reorder mutations after the callout save succeeds.
 - `constraints?: { allowedMimeTypes?: string[]; minWidth?: number; minHeight?: number; maxWidth?: number; maxHeight?: number }` — optional client-side validation.
 - `disabled?: boolean`, `uploading?: boolean`.
+
+The earlier draft of this spec listed separate `onUpload` / `onDelete` / `onReorder` callbacks; that contract was rejected during implementation because all three need to wait for the callout-save mutation to return a `mediaGalleryId` before they can run. The array-based contract keeps the field inert (no mutations) until save, at which point the consumer replays the diff against the server.
 
 `@dnd-kit` is allowed inside `src/crd/forms/` because it's framework-agnostic, Tailwind-friendly, and already a project dep (used by MUI). Independence of the demo app is preserved — the form field with dnd-kit is fully renderable in the CRD standalone preview with mock `onUpload`/`onDelete`/`onReorder`.
 
@@ -121,10 +121,15 @@ Updates to existing integration:
 
 - **Video support.** The `VisualType.MediaGalleryVideo` enum exists but no UI uses it today. Parity with current MUI only.
 - **Per-item alt-text edit after upload.** Matches MUI.
-- **Captions / titles per image** beyond `alternativeText`.
+- **Captions / titles per image** beyond `alternativeText` on the `<img>` element.
 - **Reorder via keyboard** beyond `@dnd-kit`'s built-in keyboard sensor (which we'll enable for a11y parity).
 - **Server-side image optimisation / transformation** — unchanged.
 - **Any schema / backend changes.**
+
+### Known a11y deferrals (follow-up)
+
+- **Carousel region accessible name.** The WAI-ARIA Carousel pattern recommends `aria-label` / `aria-labelledby` on the `role="region"` carousel root. The current `src/crd/primitives/carousel.tsx` does not accept it as a prop. Tracked for a follow-up a11y sweep — requires making `aria-label` required on the primitive and updating every consumer.
+- **Tablist semantics on the thumbnail strip.** If the thumbnail strip is enabled (plan §M3), it currently declares `role="tablist"` / `role="tab"` without matching `tabpanel` + keyboard pattern. The follow-up a11y sweep will convert it to a `<ul role="list">` of `<button>` items.
 
 ## Open questions
 

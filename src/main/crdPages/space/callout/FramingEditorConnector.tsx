@@ -59,9 +59,10 @@ type FramingEditorConnectorProps = {
     previewImages: WhiteboardPreviewImage[] | undefined,
     previewSettings: WhiteboardPreviewSettings
   ) => void;
-  // Media-gallery framing
-  mediaGalleryVisuals?: MediaGalleryFieldVisual[];
-  onMediaGalleryVisualsChange?: (next: MediaGalleryFieldVisual[]) => void;
+  // Media-gallery framing — required because a missing handler silently drops
+  // user-selected files when `framingType === 'image'`.
+  mediaGalleryVisuals: MediaGalleryFieldVisual[];
+  onMediaGalleryVisualsChange: (next: MediaGalleryFieldVisual[]) => void;
 };
 
 export function FramingEditorConnector({
@@ -181,10 +182,7 @@ export function FramingEditorConnector({
 
     case 'image':
       return (
-        <MediaGalleryFormFieldConnector
-          visuals={mediaGalleryVisuals ?? []}
-          onVisualsChange={onMediaGalleryVisualsChange ?? (() => {})}
-        />
+        <MediaGalleryFormFieldConnector visuals={mediaGalleryVisuals} onVisualsChange={onMediaGalleryVisualsChange} />
       );
 
     case 'cta':

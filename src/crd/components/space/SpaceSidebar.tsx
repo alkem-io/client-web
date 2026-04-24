@@ -38,6 +38,8 @@ type KnowledgeEntry = {
   id: string;
   title: string;
   type: 'text' | 'collection';
+  description?: string;
+  tags?: string[];
 };
 
 type SpaceSidebarProps = {
@@ -129,13 +131,15 @@ export function SpaceSidebar({
             <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
           )}
 
-          <EventsSection
-            events={events}
-            onShowCalendar={onShowCalendar}
-            onAddEvent={onAddEvent}
-            onEventClick={onEventClick}
-            locale={locale}
-          />
+          {variant === 'home' && (
+            <EventsSection
+              events={events}
+              onShowCalendar={onShowCalendar}
+              onAddEvent={onAddEvent}
+              onEventClick={onEventClick}
+              locale={locale}
+            />
+          )}
         </>
       )}
 

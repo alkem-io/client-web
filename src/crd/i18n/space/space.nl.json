@@ -29,6 +29,9 @@
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
+    "searchPlaceholder": "Zoeken...",
+    "searchLabel": "Berichten zoeken",
+    "noResults": "Geen resultaten",
     "readMore": "Lees meer",
     "addEvent": "Evenement toevoegen",
     "eventDateRelative": {
@@ -141,6 +144,7 @@
     "expand": "Meer tonen",
     "collapse": "Minder tonen",
     "openWhiteboard": "Whiteboard openen",
+    "openMemo": "Memo openen",
     "openDocument": "Document openen",
     "document": "Document",
     "documentText": "Word-document",
@@ -152,12 +156,15 @@
     "createNew": "Nieuw maken",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
+    "expandComments": "Reacties uitvouwen",
+    "collapseComments": "Reacties inklappen",
     "post": "Bericht",
     "whiteboard": "Whiteboard",
     "collection": "Collectie",
     "callForWhiteboards": "Oproep voor whiteboards",
     "poll": "Peiling",
     "link": "Link",
+    "callToAction": "Oproep tot actie",
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
@@ -171,7 +178,11 @@
     "addResponse": "Reactie toevoegen",
     "createWhiteboard": "Nieuw whiteboard maken",
     "defaultWhiteboardName": "Nieuw whiteboard",
-    "whiteboardNameLabel": "Whiteboardtitel"
+    "whiteboardNameLabel": "Whiteboardtitel",
+    "addMemo": "Memo toevoegen",
+    "createMemo": "Nieuw memo aanmaken",
+    "defaultMemoName": "Nieuwe memo",
+    "memoNameLabel": "Memotitel"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -222,6 +233,11 @@
     "search": "Subspaces zoeken...",
     "showMore": "Toon {{count}} meer",
     "showLess": "Minder tonen",
+    "filter": {
+      "all": "Alle",
+      "active": "Actief",
+      "archived": "Gearchiveerd"
+    },
     "empty": {
       "title": "Geen subspaces gevonden",
       "description": "Geen subspaces komen overeen met je huidige zoekopdracht of filter.",
@@ -257,9 +273,18 @@
     "signIn": "Sign in to apply",
     "signInHelper": "You'll be redirected to sign in to Alkemio first.",
     "context": {
-      "L0": { "why": "Why are we here?", "who": "Who is involved?" },
-      "L1": { "why": "Why this subspace?", "who": "Who is involved?" },
-      "L2": { "why": "Why this subspace?", "who": "Who is involved?" }
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
     }
   },
   "apply": {
@@ -362,6 +387,9 @@
       "disconnected": "Verbinding verbroken",
       "membersOnline_one": "1 lid online",
       "membersOnline_other": "{{count}} leden online",
+      "connectedUsersLabel": "Verbonden gebruikers",
+      "moreConnectedUsers_one": "{{count}} extra verbonden gebruiker",
+      "moreConnectedUsers_other": "{{count}} extra verbonden gebruikers",
       "guestWarning": "Je bewerkt als gast",
       "delete": "Memo verwijderen",
       "readonlyReason": {
@@ -375,6 +403,19 @@
     "errors": {
       "loading": "Memo laden…",
       "loadFailed": "Kan memo niet laden"
+    },
+    "deleteConfirm": {
+      "title": "Memo verwijderen",
+      "body": "Weet je zeker dat je dit memo wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Deze link opent een externe site in een nieuw tabblad.",
+    "linkAriaLabel": "{{displayName}} (opent {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opent {{url}} in een nieuw tabblad)",
+    "validation": {
+      "invalidUrl": "Ongeldige URL"
     }
   },
   "collabora": {
@@ -441,6 +482,8 @@
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
     "addComment": "Voeg een opmerking toe...",
+    "mention": "Iemand noemen",
+    "mentionVirtualContributor": "AI",
     "send": "Verzenden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
@@ -522,6 +565,7 @@
     "feedRegion": "Inhoudsfeed van de space",
     "membersGrid": "Ledenraster van de community",
     "subspacesGrid": "Subspace-raster",
+    "statusFilter": "Subruimtes filteren op status",
     "visibilityNotice": "Zichtbaarheidsmelding van de space",
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",

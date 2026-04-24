@@ -1,0 +1,755 @@
+{
+  "tabs": {
+    "about": "Относно",
+    "layout": "Оформление",
+    "community": "Общност",
+    "subspaces": "Подпространства",
+    "templates": "Шаблони",
+    "updates": "Обновления",
+    "storage": "Съхранение",
+    "settings": "Настройки",
+    "account": "Акаунт"
+  },
+  "dirtyGuard": {
+    "save": "Запиши",
+    "discard": "Discard & leave",
+    "cancel": "Отказ",
+    "tabSwitch": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes on this tab. Запиши them, discard them, or stay on this tab?"
+    },
+    "navAway": {
+      "title": "Unsaved changes",
+      "description": "Leaving this page will discard your unsaved changes."
+    }
+  },
+  "saveBar": {
+    "save": "Запиши промените",
+    "discard": "Отхвърли промените",
+    "saving": "Записване…"
+  },
+  "layout": {
+    "pageHeader": {
+      "title": "Оформление",
+      "subtitle": "Customize your Space's navigation tabs. Rename, reorder, and manage post assignments."
+    },
+    "discardChangesDialog": {
+      "title": "Отхвърли промените?",
+      "description": "Your unsaved Оформление changes will be reverted to the last saved state. This cannot be undone.",
+      "confirm": "Отхвърли промените"
+    },
+    "postDescriptionDisplay": {
+      "title": "Post description display",
+      "switchLabel": "Collapse post descriptions by default",
+      "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+    },
+    "column": {
+      "titleAriaLabel": "Column title",
+      "descriptionAriaLabel": "Column description",
+      "editTitle": "Редактирай column title",
+      "editDescription": "Редактирай column description",
+      "confirm": "Confirm",
+      "cancel": "Отказ",
+      "titlePlaceholder": "Column title",
+      "descriptionPlaceholder": "Describe this column…",
+      "menu": "Действия на колоната",
+      "empty": "No callouts in this column yet.",
+      "activePhase": {
+        "set": "Mark as active phase",
+        "current": "Активна фаза (current)"
+      },
+      "defaultPostTemplate": {
+        "label": "Шаблон по подразбиране",
+        "header": "Pick a template",
+        "clear": "Clear default",
+        "none": "No templates available"
+      },
+      "editDetails": {
+        "menuLabel": "Редактирай Details",
+        "dialogTitle": "Редактирай Details: Flow Phase",
+        "titleLabel": "Заглавие",
+        "editTitle": "Редактирай title",
+        "descriptionLabel": "Описание",
+        "descriptionPlaceholder": "Описание",
+        "cancel": "Отказ",
+        "saving": "Записване…",
+        "save": "Запиши"
+      }
+    },
+    "row": {
+      "drag": "Плъзни за пренареждане",
+      "menu": "Действия за callout",
+      "moveTo": "Премести в",
+      "viewPost": "Виж публикацията",
+      "noOtherColumns": "Няма други колони"
+    }
+  },
+  "community": {
+    "pageHeader": {
+      "title": "Общност",
+      "subtitle": "Manage members, organizations, and virtual contributors in this space."
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "invitations": {
+      "title": "Pending Invitations",
+      "revoke": "Оттегли поканата",
+      "platformInvite": "Platform invite"
+    },
+    "pendingMemberships": {
+      "title": "Pending Членships",
+      "name": "Име",
+      "email": "Имейл",
+      "date": "Date",
+      "type": "Type",
+      "actions": "Действия",
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": "Изтрий",
+      "empty": "No pending memberships.",
+      "status": {
+        "column": "Статус",
+        "applicationReceived": "Application received",
+        "applicationApproved": "Application approved",
+        "applicationRejected": "Application rejected",
+        "invited": "Поканиd",
+        "invitationAccepted": "Invitation accepted",
+        "invitationRejected": "Invitation rejected",
+        "invitedExternal": "Поканиd (external)"
+      },
+      "contributorType": {
+        "user": "User",
+        "organization": "Organization",
+        "virtualContributor": "Virtual contributor"
+      }
+    },
+    "members": {
+      "title": "Членове на пространството",
+      "search": "Търсене members…",
+      "invite": "Покани",
+      "name": "Име",
+      "email": "Имейл",
+      "role": {
+        "lead": "Ръководител",
+        "member": "Член"
+      },
+      "actions": "Действия",
+      "empty": "No members found.",
+      "remove": "Премахни member",
+      "joined": "Присъединил се",
+      "viewProfile": "View Profile",
+      "pagination": {
+        "showing": "Showing {{from}} to {{to}} of {{total}} members",
+        "previous": "Previous page",
+        "page": "Page {{page}} of {{total}}",
+        "next": "Next page"
+      },
+      "roleColumn": "Роля"
+    },
+    "organizations": {
+      "title": "Член Организации",
+      "name": "Име",
+      "role": "Роля",
+      "actions": "Действия",
+      "empty": "No organizations.",
+      "remove": "Премахни organization",
+      "description": "Всичкиow members from specific organizations to join automatically.",
+      "add": "Добави Organization",
+      "hint": "Users from these organizations can join without admin approval.",
+      "addDialog": {
+        "title": "Добави Organization",
+        "description": "Pick an organization whose members can join this space without approval.",
+        "search": "Търсене organizations…",
+        "empty": "No organizations match your search."
+      }
+    },
+    "virtualContributors": {
+      "title": "Виртуални сътрудници",
+      "name": "Име",
+      "actions": "Действия",
+      "empty": "No virtual contributors.",
+      "remove": "Премахни virtual contributor",
+      "description": "Manage AI agents and bots participating in this space.",
+      "add": "Добави Virtual Contributor",
+      "addExternal": "Покани External Virtual Contributor",
+      "addDialog": {
+        "title": "Добави Virtual Contributor",
+        "description": "Pick a virtual contributor from this account to add to the space.",
+        "search": "Търсене virtual contributors…",
+        "empty": "No virtual contributors available on this account."
+      },
+      "addExternalDialog": {
+        "title": "Покани External Virtual Contributor",
+        "description": "Покани a virtual contributor from the Alkemio library. The owner will have to accept the invitation.",
+        "search": "Търсене the library…",
+        "empty": "No library virtual contributors match your search."
+      }
+    },
+    "applicationForm": {
+      "title": "Формуляр за кандидатстване",
+      "description": "Customize the questions users must answer when applying to join this space."
+    },
+    "guidelines": {
+      "title": "Правила на общността",
+      "description": "Establish rules and expectations for member behavior.",
+      "hint": "Displayed to new members upon joining.",
+      "placeholder": "Describe your space's code of conduct…",
+      "save": "Запиши Guidelines",
+      "saving": "Записване…"
+    },
+    "confirmRemove": {
+      "confirm": "Confirm",
+      "user": {
+        "title": "Премахни member",
+        "description": "Премахни {{name}} from this space? They will lose access immediately."
+      },
+      "organization": {
+        "title": "Премахни organization",
+        "description": "Премахни {{name}} from this space?"
+      },
+      "virtualContributor": {
+        "title": "Премахни virtual contributor",
+        "description": "Премахни {{name}} from this space?"
+      },
+      "invitation": {
+        "title": "Оттегли поканата",
+        "description": "Revoke the pending invitation for {{name}}?"
+      },
+      "applicationReject": {
+        "title": "Отхвърли кандидатурата",
+        "description": "Reject {{name}}'s application to join this space?"
+      },
+      "applicationDelete": {
+        "title": "Премахни кандидатурата",
+        "description": "Премахни {{name}}'s application from the list?"
+      }
+    },
+    "addDialog": {
+      "name": "Име",
+      "action": "Action",
+      "empty": "No candidates match your search.",
+      "added": "Добавиed",
+      "addAriaLabel": "Добави {{name}}",
+      "add": "Добави"
+    },
+    "invite": {
+      "email": {
+        "errors": {
+          "empty": "Enter an email address.",
+          "invalid": "Enter a valid email address.",
+          "failed": "Could not send the invitation."
+        },
+        "title": "Покани by email",
+        "placeholder": "person@example.com",
+        "send": "Изпрати",
+        "sent": "Invitation sent to {{email}}"
+      },
+      "title": "Покани Членs",
+      "description": "Покани an existing Alkemio member by picking from the list, or invite someone new by email.",
+      "users": {
+        "title": "Покани existing members",
+        "search": "Търсене Alkemio members…",
+        "empty": "No candidates match your search.",
+        "invited": "Поканиd",
+        "invite": "Покани"
+      }
+    }
+  },
+  "subspaces": {
+    "pageHeader": {
+      "title": "Подпространства",
+      "subtitle": "Редактирай the Подпространства in this Space. Configure default templates and view all existing subspaces."
+    },
+    "defaultTemplate": {
+      "title": "Default Subspace Template",
+      "description": "Choose the default settings that will apply when creating a new Subspace within this Space.",
+      "change": "Change Default Template",
+      "dialog": {
+        "title": "Change Default Subspace Template",
+        "intro": "Customize the default Template for newly created Подпространства.",
+        "description": "Below you can choose between the Шаблони collected in the Space Template Library. If you're looking to create new Шаблони or explore additional Шаблони, <library>click here</library> to access this library.",
+        "fieldLabel": "Category",
+        "placeholder": "Select a template",
+        "loading": "Зареждане templates…",
+        "empty": "No subspace templates available.",
+        "required": "This field is required!",
+        "cancel": "Отказ",
+        "save": "Запиши",
+        "saving": "Записване…"
+      }
+    },
+    "listTitle": "Подпространства",
+    "search": "Търсене subspaces...",
+    "create": "Create Subspace",
+    "filterLabel": "Филтър:",
+    "filter": {
+      "all": "Всички",
+      "active": "Активни",
+      "archived": "Архивирани",
+      "activeOnly": "Активни Only",
+      "archivedOnly": "Архивирани Only"
+    },
+    "viewMode": {
+      "list": "List view",
+      "grid": "Grid view"
+    },
+    "noResults": "No subspaces found",
+    "noResultsHint": "Try adjusting your search or filters.",
+    "actions": "Subspace actions",
+    "kebab": {
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "saveAsTemplate": "Запиши as Template",
+      "delete": "Изтрий"
+    },
+    "deleteDialog": {
+      "title": "Изтрий подпространство",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Изтрий"
+    },
+    "saveAsTemplate": {
+      "title": "Create new Space Template",
+      "profile": {
+        "title": "Template description",
+        "help": "This description will be visible to anyone browsing templates. It is not part of the template content itself."
+      },
+      "fields": {
+        "displayName": "Template title",
+        "description": "Template description",
+        "tags": "Template tags",
+        "tagsPlaceholder": "Добави a tag and press Enter"
+      },
+      "spaceTemplate": {
+        "title": "Space Template",
+        "activeSource": "Capturing content from: {{name}}"
+      },
+      "urlLoader": {
+        "open": "Update collaboration from another space",
+        "description": "Paste the URL of a space or subspace to use its collaboration content as the basis of this template.",
+        "placeholder": "https://…",
+        "use": "Use this space",
+        "cancel": "Отказ",
+        "resolving": "Checking…",
+        "errors": {
+          "required": "Paste the URL of the space you want to copy as a template.",
+          "invalidUrl": "This URL does not point to a space.",
+          "notFound": "Space not found.",
+          "noRights": "You need admin rights on the space you want to copy as a template."
+        }
+      },
+      "recursive": "Also include subspaces of the selected space in the template",
+      "preview": {
+        "info": "Always included: Относно information & Настройки",
+        "states": "Phases",
+        "callouts": "Callouts",
+        "noCalloutsInState": "No callouts in this phase.",
+        "noCalloutDescription": "No description",
+        "subspaces": "Includes these subspaces"
+      },
+      "errors": {
+        "nameTooShort": "Template name must be at least 3 characters"
+      },
+      "cancel": "Отказ",
+      "save": "Create",
+      "saving": "Creating…"
+    },
+    "createDialog": {
+      "dialog": {
+        "title": "Create new Subspace",
+        "subtitle": "Set up a new workspace within this space."
+      },
+      "template": {
+        "label": "Template",
+        "hint": "Optional — pick a subspace template to pre-fill content.",
+        "loading": "Зареждане templates…",
+        "placeholder": "Select a template (optional)",
+        "none": "No template"
+      },
+      "displayName": {
+        "label": "Име",
+        "hint": "The name of your subspace, visible to members.",
+        "placeholder": "e.g. Q1 Marketing Campaign"
+      },
+      "tagline": {
+        "label": "Подзаглавие",
+        "hint": "A short subtitle describing the subspace.",
+        "placeholder": "A short tagline…"
+      },
+      "description": {
+        "label": "Описание",
+        "hint": "Explain what this subspace is about. Markdown supported.",
+        "placeholder": "What is this subspace about?"
+      },
+      "tags": {
+        "label": "Етикети",
+        "hint": "Етикети help members find this subspace.",
+        "placeholder": "Добави a tag and press Enter"
+      },
+      "avatar": {
+        "label": "Avatar",
+        "upload": "Качи avatar"
+      },
+      "cardBanner": {
+        "label": "Card banner",
+        "upload": "Качи card banner"
+      },
+      "visuals": {
+        "remove": "Премахни image",
+        "resolutionHint": "Recommended: {{width}} × {{height}} px",
+        "tooSmall": "Image is too small. Minimum {{width}} × {{height}} px required.",
+        "loadFailed": "Failed to read image file."
+      },
+      "cancel": "Отказ",
+      "submit": "Create Subspace",
+      "creating": "Creating…",
+      "validation": {
+        "min3": "Must be at least 3 characters",
+        "maxSmall": "Must be {{count}} characters or fewer",
+        "maxMarkdown": "Must be {{count}} characters or fewer",
+        "required": "Име is required"
+      }
+    }
+  },
+  "updates": {
+    "pageHeader": {
+      "title": "Обновления from the Ръководителs",
+      "subtitle": "Post announcements, milestones, and progress updates visible to all space members."
+    },
+    "composer": {
+      "new": "Ново обновление",
+      "title": "New update",
+      "placeholder": "Write your update…",
+      "publish": "Публикувай",
+      "submitting": "Публикуване…",
+      "cancel": "Отказ"
+    },
+    "empty": "No updates yet.",
+    "unknownAuthor": "Unknown author",
+    "message": {
+      "actions": "Update actions",
+      "delete": "Изтрий"
+    },
+    "deleteDialog": {
+      "title": "Изтрий update",
+      "description": "Are you sure you want to delete this update? This cannot be undone.",
+      "confirm": "Изтрий"
+    },
+    "loading": "Зареждане updates"
+  },
+  "templateLibrary": {
+    "title": "Select a template",
+    "titleForType": "Select a {{type}} template",
+    "cancel": "Отказ",
+    "loadPlatform": "Load platform library templates",
+    "emptySection": "No templates in this section.",
+    "selectAria": "Select template {{name}}",
+    "sections": {
+      "space": "This space",
+      "account": "My innovation packs",
+      "platform": "Platform library"
+    }
+  },
+  "templates": {
+    "pageHeader": {
+      "title": "Шаблони",
+      "subtitle": "Manage templates for spaces, collaboration tools, whiteboards, posts, and community guidelines."
+    },
+    "search": "Търсене templates...",
+    "addNew": "Добави New",
+    "createNew": "Create a new template",
+    "selectFromLibrary": "Select a template from the platform library",
+    "noTemplates": "No templates found",
+    "noTemplatesHint": "Try searching for a different term or create a new template.",
+    "duplicating": "Creating new template…",
+    "noPreview": "No preview",
+    "custom": "Custom",
+    "actions": "Template actions",
+    "categories": {
+      "space": "Space",
+      "collaborationTool": "Collaboration tool",
+      "whiteboard": "Whiteboard",
+      "post": "Post",
+      "communityGuidelines": "Общност guidelines"
+    },
+    "kebab": {
+      "preview": "Преглед",
+      "duplicate": "Duplicate",
+      "edit": "Редактирай",
+      "delete": "Изтрий"
+    },
+    "preview": {
+      "title": "Преглед",
+      "name": "Име",
+      "tagline": "Подзаглавие",
+      "description": "Описание",
+      "body": "Content",
+      "noDescription": "No description provided.",
+      "noBody": "No content.",
+      "close": "Затвори",
+      "edit": "Редактирай",
+      "duplicate": "Duplicate",
+      "duplicating": "Duplicating…"
+    },
+    "edit": {
+      "title": "Редактирай template",
+      "name": "Име",
+      "tagline": "Подзаглавие",
+      "description": "Описание",
+      "descriptionPlaceholder": "Describe this template…",
+      "tags": "Етикети",
+      "tagsPlaceholder": "Добави a tag and press Enter",
+      "postDefault": "Default post description",
+      "postDefaultPlaceholder": "Shown pre-filled when members create a post from this template…",
+      "cancel": "Отказ",
+      "save": "Запиши",
+      "saving": "Записване…"
+    },
+    "deleteDialog": {
+      "title": "Изтрий шаблон",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Изтрий"
+    },
+    "library": {
+      "sections": {
+        "thisSpace": "This space",
+        "myInnovationPacks": "My innovation packs",
+        "platformLibrary": "Platform library"
+      },
+      "validation": {}
+    }
+  },
+  "settings": {
+    "pageHeader": {
+      "title": "Настройки",
+      "subtitle": "Configure your space's visibility, membership policies, and allowed member actions."
+    },
+    "visibility": {
+      "title": "Visibility",
+      "description": "Control who can see and access this space",
+      "public": "Публично",
+      "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
+      "private": "Частно",
+      "privateDescription": "This Space is visible to everyone on the platform, but the content is only visible to members.",
+      "hint": "Consider your space's purpose and audience when choosing visibility."
+    },
+    "membership": {
+      "title": "Членship",
+      "description": "Choose how users join your space",
+      "open": "No Application Required",
+      "openDescription": "Всички Space members can directly join, without you having to review their applications.",
+      "openHint": "Best for public, open collaboration spaces",
+      "application": "Application Required",
+      "applicationDescription": "If people want to become a member, they have to fill in the application form. You receive their applications (see community tab here) and you can accept them or reject them.",
+      "applicationHint": "Best for curated spaces with specific requirements",
+      "invitation": "Invitation Only",
+      "invitationDescription": "Users can only become a member after you've invited them. There is no 'apply' or 'join' button for others to click.",
+      "invitationHint": "Best for private, restricted collaboration teams",
+      "trustedApplicants": "Trusted Applicants",
+      "hostOrgTrust": "Всичкиow members of {{host}} to join this Space without an application."
+    },
+    "applicationForm": {
+      "title": "Формуляр за кандидатстване",
+      "description": "This section allows you to modify the questions for users applying to the Space. Please note that these questions will only be shown when the membership options (in the block above) are set to \"Applications required\".",
+      "introductionLabel": "Introduction",
+      "questionsLabel": "Questions",
+      "addQuestion": "Добави question",
+      "noQuestions": "No questions added yet.",
+      "questionPlaceholder": "Enter question…",
+      "required": "Required",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "questionRequired": "Question text is required",
+      "deleteQuestion": "Изтрий question",
+      "deleteConfirm": {
+        "title": "Изтрий question",
+        "description": "Are you sure you want to remove this question?",
+        "confirm": "Изтрий"
+      },
+      "save": "Запиши"
+    },
+    "allowedActions": {
+      "title": "Всичкиowed Действия",
+      "description": "Choose which actions members can perform in this space",
+      "subspaceAdminInvitations": "Space Invitations",
+      "memberCreatePosts": "Create Posts",
+      "videoCalls": "Video Calls",
+      "guestContributions": "Guest Contributions",
+      "memberCreateSubspaces": "Create Подпространства",
+      "subspaceEvents": "Subspace Events",
+      "alkemioSupportAccess": "Alkemio Support",
+      "trustHostOrganization": "Trust Домакин Organization"
+    }
+  },
+  "storage": {
+    "pageHeader": {
+      "title": "Съхранение",
+      "subtitle": "Browse and manage documents stored in this space."
+    },
+    "empty": "No documents stored yet.",
+    "columns": {
+      "name": "Име",
+      "size": "Size",
+      "uploader": "Качиed by",
+      "date": "Date",
+      "actions": "Действия"
+    },
+    "openInNewTab": "Open in new tab",
+    "delete": "Изтрий document",
+    "deleteDialog": {
+      "title": "Изтрий document",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Изтрий"
+    }
+  },
+  "account": {
+    "pageHeader": {
+      "title": "Акаунт",
+      "subtitle": "Here you find all your Spaces, Виртуални сътрудници, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team."
+    },
+    "url": {
+      "title": "URL",
+      "hint": "The unique URL for this space. Contact Alkemio to change this.",
+      "copy": "Copy URL",
+      "copied": "URL copied"
+    },
+    "visibility": {
+      "title": "Visibility Статус",
+      "prefix": "This Space is currently in",
+      "suffix": "mode",
+      "contact": "For status changes, contact the Alkemio team."
+    },
+    "host": {
+      "title": "Домакин Information",
+      "description": "The host is the person or organization that owns this space."
+    },
+    "plan": {
+      "title": "License",
+      "description": "Your current space subscription details",
+      "featuresHeading": "Included Features",
+      "daysLeft": "{{count}} days remaining",
+      "changeLicense": "Change License"
+    },
+    "support": {
+      "title": "Support",
+      "message": "If you want to change any of these settings, please contact the Alkemio team.",
+      "contact": "Contact Alkemio Support"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Permanently delete this space and all its content.",
+      "delete": "Изтрий this Space",
+      "deleteDialog": {
+        "title": "Изтрий Space",
+        "description": "This will permanently delete this space and all its content. This action cannot be undone.",
+        "confirm": "Изтрий Space"
+      }
+    }
+  },
+  "about": {
+    "name": {
+      "title": "Space Име",
+      "description": "The public name of your space.",
+      "ariaLabel": "Space name"
+    },
+    "tagline": {
+      "title": "Подзаглавие",
+      "description": "A short subtitle shown next to the space name.",
+      "ariaLabel": "Подзаглавие"
+    },
+    "branding": {
+      "title": "Space Branding",
+      "description": "Качи an avatar, a page banner (1536×256), and a card banner (416×256).",
+      "noImage": "No image",
+      "upload": "Качи",
+      "avatar": {
+        "title": "Avatar",
+        "hint": "The space logo."
+      },
+      "pageBanner": {
+        "title": "Page Banner (1536 × 256px)",
+        "hint": "Shown at the top of the Space page."
+      },
+      "cardBanner": {
+        "title": "Card Banner (416 × 256px)",
+        "hint": "Shown in search results and space cards."
+      },
+      "cropDialog": {
+        "save": "Запиши",
+        "saving": "Записване…",
+        "cancel": "Отказ",
+        "title": "Crop Image",
+        "altText": "Описание",
+        "altTextPlaceholder": "Describe this image…"
+      },
+      "changeBanner": "Change Banner"
+    },
+    "location": {
+      "title": "Местоположение",
+      "description": "The city and country of this space.",
+      "city": "Град",
+      "country": "Държава (ISO code)"
+    },
+    "what": {
+      "title": "What",
+      "description": "Describe what this space is about.",
+      "placeholder": "What's this space about…"
+    },
+    "why": {
+      "title": "Why",
+      "description": "Explain the motivation or value of this space.",
+      "placeholder": "Why does this space exist…"
+    },
+    "who": {
+      "title": "Who",
+      "description": "Describe the target audience or ideal members.",
+      "placeholder": "Who is this space for…"
+    },
+    "tags": {
+      "title": "Етикети",
+      "description": "Етикети help members discover your space.",
+      "placeholder": "Добави a tag and press Enter"
+    },
+    "references": {
+      "title": "References & Links",
+      "description": "External links shown on this space page.",
+      "empty": "No references added yet.",
+      "add": "Добави",
+      "row": {
+        "title": "Reference title",
+        "titlePlaceholder": "Заглавие",
+        "uri": "Reference URL",
+        "uriPlaceholder": "https://…",
+        "description": "Reference description",
+        "descriptionPlaceholder": "Описание (optional)",
+        "remove": "Премахни reference"
+      },
+      "deleteDialog": {
+        "title": "Премахни reference",
+        "description": "Are you sure you want to remove \"{{name}}\"? This cannot be undone once you Запиши.",
+        "untitled": "this reference",
+        "confirm": "Премахни"
+      }
+    },
+    "preview": {
+      "title": "PREVIEW",
+      "label": "PREVIEW",
+      "livePreview": {
+        "title": "Live Преглед",
+        "description": "This preview shows how your space card will appear in the \"Explore Spaces\" directory."
+      }
+    },
+    "inlineSave": {
+      "save": "Запиши",
+      "saving": "Записване…",
+      "saved": "Запишиd",
+      "retry": "Retry"
+    },
+    "pageHeader": {
+      "title": "Относно",
+      "subtitle": "Define your space's purpose, motivation, and target audience."
+    }
+  }
+}

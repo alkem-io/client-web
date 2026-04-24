@@ -29,6 +29,9 @@
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
     "postIndex": "Post Index",
+    "searchPlaceholder": "Search...",
+    "searchLabel": "Search posts",
+    "noResults": "No matches",
     "readMore": "Read more",
     "addEvent": "Add event",
     "eventDateRelative": {
@@ -144,12 +147,15 @@
     "openMemo": "Open Memo",
     "comments": "{{count}} Comments",
     "commentsZero": "0 Comments",
+    "expandComments": "Expand comments",
+    "collapseComments": "Collapse comments",
     "post": "Post",
     "whiteboard": "Whiteboard",
     "collection": "Collection",
     "callForWhiteboards": "Call for Whiteboards",
     "poll": "Poll",
     "link": "Link",
+    "callToAction": "Call to Action",
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} more",
@@ -425,6 +431,14 @@
       }
     }
   },
+  "callToAction": {
+    "externalLinkDisclaimer": "This link opens an external site in a new tab.",
+    "linkAriaLabel": "{{displayName}} (opens {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opens {{url}} in a new tab)",
+    "validation": {
+      "invalidUrl": "Invalid URL"
+    }
+  },
   "mediaGallery": {
     "openImage": "Open image",
     "more_one": "+{{count}} more",
@@ -459,6 +473,8 @@
     "delete": "Delete",
     "deleted": "This comment was deleted",
     "addComment": "Add a comment...",
+    "mention": "Mention someone",
+    "mentionVirtualContributor": "AI",
     "send": "Send",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

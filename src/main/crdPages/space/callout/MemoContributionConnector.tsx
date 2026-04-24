@@ -37,12 +37,14 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
     });
   };
 
-  // Mirrors MUI CalloutContributionDialogMemo: refresh markdown in the parent connector
-  // (which stays mounted after close) so the delayed refetch actually fires.
-  // Hocuspocus's final autosave lags up to ~2s, so we fetch immediately AND after 2.5s.
+  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
+  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
+  // once Hocuspocus has persisted (~2s lag).
   const handleClose = () => {
     if (!isDeletingRef.current) {
-      void fetchMarkdown({ variables: { id: memoId } });
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
       refreshTimeoutRef.current = setTimeout(() => {
         void fetchMarkdown({ variables: { id: memoId } });
         refreshTimeoutRef.current = null;

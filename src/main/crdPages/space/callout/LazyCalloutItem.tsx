@@ -6,6 +6,7 @@ import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
@@ -67,10 +68,10 @@ function LazyCalloutItemContent({
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
 
-  const postData = mapCalloutDetailsToPostCard(callout, formatDate);
+  const postData = mapCalloutDetailsToPostCard(callout, t);
 
   const openDialog = (contributionId?: string, memoId?: string) => {
     setInitialContributionId(contributionId);
@@ -89,30 +90,66 @@ function LazyCalloutItemContent({
   const contributionsEnabled = callout.settings.contribution.enabled;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
 
+  const contributionsPreview = contributionsEnabled ? (
+    <ContributionsPreviewConnector
+      callout={callout}
+      onShowAll={() => openDialog()}
+      onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+    />
+  ) : undefined;
+
+  const pollPreview =
+    callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
+
+  // Without a comments room we can't wire the inline thread — fall back to the
+  // dialog-only flow. The dialog itself handles its own "no room" rendering.
+  const commentsRoomId = callout.comments?.id;
+  const hasCommentsRoom = Boolean(commentsRoomId) && callout.comments !== undefined;
+
   return (
     <>
-      <PostCard
-        post={postData}
-        onClick={() => {
-          openDialog();
-          onClick?.();
-        }}
-        onCommentsClick={() => openDialog()}
-        onSettingsClick={onSettingsClick}
-        onExpandClick={onExpandClick}
-        onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
-        contributionsPreview={
-          contributionsEnabled ? (
-            <ContributionsPreviewConnector
-              callout={callout}
-              onShowAll={() => openDialog()}
-              onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
-            />
-          ) : undefined
-        }
-      >
-        {callout.framing.type === CalloutFramingType.Poll && <CalloutPollConnector callout={callout} />}
-      </PostCard>
+      {hasCommentsRoom && commentsRoomId ? (
+        <CalloutCommentsConnector
+          roomId={commentsRoomId}
+          calloutId={callout.id}
+          roomData={callout.comments}
+          skipSubscription={!commentsExpanded}
+        >
+          {({ thread, commentInput }) => (
+            <PostCard
+              post={postData}
+              onClick={() => {
+                openDialog();
+                onClick?.();
+              }}
+              onSettingsClick={onSettingsClick}
+              onExpandClick={onExpandClick}
+              onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
+              commentsSlot={thread}
+              commentInputSlot={commentInput}
+              onCommentsExpandedChange={setCommentsExpanded}
+              contributionsPreview={contributionsPreview}
+            >
+              {pollPreview}
+            </PostCard>
+          )}
+        </CalloutCommentsConnector>
+      ) : (
+        <PostCard
+          post={postData}
+          onClick={() => {
+            openDialog();
+            onClick?.();
+          }}
+          onCommentsClick={() => openDialog()}
+          onSettingsClick={onSettingsClick}
+          onExpandClick={onExpandClick}
+          onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
+          contributionsPreview={contributionsPreview}
+        >
+          {pollPreview}
+        </PostCard>
+      )}
 
       <CalloutDetailDialogConnector
         open={dialogOpen}

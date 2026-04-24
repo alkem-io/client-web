@@ -29,6 +29,9 @@
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
     "postIndex": "Índice de publicaciones",
+    "searchPlaceholder": "Buscar...",
+    "searchLabel": "Buscar publicaciones",
+    "noResults": "Sin resultados",
     "readMore": "Leer más",
     "addEvent": "Añadir evento",
     "eventDateRelative": {
@@ -141,6 +144,7 @@
     "expand": "Mostrar más",
     "collapse": "Mostrar menos",
     "openWhiteboard": "Abrir pizarra",
+    "openMemo": "Abrir memo",
     "openDocument": "Abrir documento",
     "document": "Documento",
     "documentText": "Documento de Word",
@@ -152,12 +156,15 @@
     "createNew": "Crear nuevo",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
+    "expandComments": "Expandir comentarios",
+    "collapseComments": "Contraer comentarios",
     "post": "Publicación",
     "whiteboard": "Pizarra",
     "collection": "Colección",
     "callForWhiteboards": "Convocatoria de pizarras",
     "poll": "Encuesta",
     "link": "Enlace",
+    "callToAction": "Llamada a la acción",
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
     "moreWhiteboards": "+{{count}} más",
@@ -171,7 +178,11 @@
     "addResponse": "Añadir respuesta",
     "createWhiteboard": "Crear nueva pizarra",
     "defaultWhiteboardName": "Nueva pizarra",
-    "whiteboardNameLabel": "Título de la pizarra"
+    "whiteboardNameLabel": "Título de la pizarra",
+    "addMemo": "Añadir memo",
+    "createMemo": "Crear nuevo memo",
+    "defaultMemoName": "Nuevo memo",
+    "memoNameLabel": "Título del memo"
   },
   "contribution": {
     "edit": "Editar",
@@ -222,6 +233,11 @@
     "search": "Buscar subespacios...",
     "showMore": "Mostrar {{count}} más",
     "showLess": "Mostrar menos",
+    "filter": {
+      "all": "Todos",
+      "active": "Activos",
+      "archived": "Archivados"
+    },
     "empty": {
       "title": "No se encontraron subespacios",
       "description": "Ningún subespacio coincide con tu búsqueda o filtro actual.",
@@ -238,8 +254,8 @@
     "leadUsers": "Usuarios líderes",
     "leadOrganizations": "Organizaciones líderes",
     "guidelines": "Directrices de la comunidad",
-    "references": "Referencias",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Referencias",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -371,6 +387,9 @@
       "disconnected": "Desconectado",
       "membersOnline_one": "1 miembro en línea",
       "membersOnline_other": "{{count}} miembros en línea",
+      "connectedUsersLabel": "Usuarios conectados",
+      "moreConnectedUsers_one": "{{count}} usuario conectado más",
+      "moreConnectedUsers_other": "{{count}} usuarios conectados más",
       "guestWarning": "Estás editando como invitado",
       "delete": "Eliminar nota",
       "readonlyReason": {
@@ -384,6 +403,19 @@
     "errors": {
       "loading": "Cargando nota…",
       "loadFailed": "No se pudo cargar la nota"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar memo",
+      "body": "¿Estás seguro de que quieres eliminar este memo? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Este enlace abre un sitio externo en una pestaña nueva.",
+    "linkAriaLabel": "{{displayName}} (abre {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (abre {{url}} en una pestaña nueva)",
+    "validation": {
+      "invalidUrl": "URL no válida"
     }
   },
   "collabora": {
@@ -450,6 +482,8 @@
     "delete": "Eliminar",
     "deleted": "Este comentario fue eliminado",
     "addComment": "Añade un comentario...",
+    "mention": "Mencionar a alguien",
+    "mentionVirtualContributor": "IA",
     "send": "Enviar",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
@@ -531,6 +565,7 @@
     "feedRegion": "Feed de contenido del espacio",
     "membersGrid": "Cuadrícula de miembros de la comunidad",
     "subspacesGrid": "Cuadrícula de subespacios",
+    "statusFilter": "Filtrar subespacios por estado",
     "visibilityNotice": "Aviso de visibilidad del espacio",
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",

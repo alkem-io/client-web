@@ -119,14 +119,15 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
       };
     }
 
-    // Link framing
+    // Link (Call to Action) framing — writes to the canonical `framing.link` field
+    // that the server persists and the read side consumes via `callout.framing.link`.
+    // (Earlier drafts wrote this to `framing.profile.referencesData`, which is
+    // unrelated to CTA and dropped by the server.)
     if (framingType === CalloutFramingType.Link && values.linkUrl) {
-      callout.framing.profile.referencesData = [
-        {
-          uri: values.linkUrl.trim(),
-          name: values.linkDisplayName.trim() || values.linkUrl.trim(),
-        },
-      ];
+      callout.framing.link = {
+        uri: values.linkUrl.trim(),
+        profile: { displayName: values.linkDisplayName.trim() || values.linkUrl.trim() },
+      };
     }
 
     return callout;

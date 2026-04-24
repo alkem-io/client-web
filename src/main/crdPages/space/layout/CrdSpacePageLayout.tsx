@@ -1,32 +1,59 @@
-import { History, Settings, Share2 } from 'lucide-react';
+import {
+  Bookmark,
+  HardDrive,
+  History,
+  Info,
+  Layers,
+  LayoutGrid,
+  Megaphone,
+  Settings,
+  Settings as SettingsIcon,
+  Share2,
+  UserCircle,
+  Users,
+} from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
+import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
+import {
+  type SpaceSettingsTabDescriptor,
+  SpaceSettingsTabStrip,
+} from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import {
+  type SpaceSettingsTabId,
+  useSpaceSettingsTab,
+} from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
-  const { t } = useTranslation('crd-space');
+  const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [_shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
@@ -35,6 +62,26 @@ export default function CrdSpacePageLayout() {
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
+
+  // Must be derived before any early returns so `useSetBreadcrumbs` is called
+  // on every render. During loading the space fields are empty strings and
+  // the trail is `[]`; it updates once Apollo populates the context.
+  const isOnSettings = pathname.includes('/settings');
+  const spaceDisplayName = space.about.profile.displayName;
+  const spaceUrl = space.about.profile.url ?? '';
+
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    isLevelZero && isOnSettings && spaceDisplayName
+      ? [
+          { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+          {
+            label: t('crd-spaceSettings:tabs.settings'),
+            href: `${spaceUrl}/settings`,
+          },
+          { label: t(`crd-spaceSettings:tabs.${activeSettingsTab}`) },
+        ]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
@@ -94,6 +141,18 @@ export default function CrdSpacePageLayout() {
 
   const sidebarSlot = <div id="crd-space-sidebar" />;
 
+  const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
+    { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
+    { id: 'layout', label: t('crd-spaceSettings:tabs.layout', { defaultValue: 'Layout' }), icon: LayoutGrid },
+    { id: 'community', label: t('crd-spaceSettings:tabs.community', { defaultValue: 'Community' }), icon: Users },
+    { id: 'updates', label: t('crd-spaceSettings:tabs.updates', { defaultValue: 'Updates' }), icon: Megaphone },
+    { id: 'subspaces', label: t('crd-spaceSettings:tabs.subspaces', { defaultValue: 'Subspaces' }), icon: Layers },
+    { id: 'templates', label: t('crd-spaceSettings:tabs.templates', { defaultValue: 'Templates' }), icon: Bookmark },
+    { id: 'storage', label: t('crd-spaceSettings:tabs.storage', { defaultValue: 'Storage' }), icon: HardDrive },
+    { id: 'settings', label: t('crd-spaceSettings:tabs.settings', { defaultValue: 'Settings' }), icon: SettingsIcon },
+    { id: 'account', label: t('crd-spaceSettings:tabs.account', { defaultValue: 'Account' }), icon: UserCircle },
+  ];
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       {visibilityData.status !== 'active' && (
@@ -101,24 +160,43 @@ export default function CrdSpacePageLayout() {
       )}
       <SpaceShell
         header={
-          <SpaceHeader
-            title={space.about.profile.displayName}
-            tagline={space.about.profile.tagline ?? undefined}
-            bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
-            memberAvatars={memberAvatars}
-            memberCount={memberAvatars.length}
-            actions={headerActions}
-          />
+          isOnSettings ? (
+            <SpaceSettingsHeader
+              title={space.about.profile.displayName}
+              tagline={space.about.profile.tagline ?? null}
+              avatarUrl={space.about.profile.avatar?.uri ?? null}
+              initials={(space.about.profile.displayName ?? '').slice(0, 2).toUpperCase()}
+              avatarColor={pickColorFromId(spaceId ?? space.about.profile.displayName)}
+              tabs={
+                <SpaceSettingsTabStrip
+                  activeTab={activeSettingsTab}
+                  onTabChange={setActiveSettingsTab}
+                  tabs={settingsTabs}
+                />
+              }
+            />
+          ) : (
+            <SpaceHeader
+              title={space.about.profile.displayName}
+              tagline={space.about.profile.tagline ?? undefined}
+              bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
+              memberAvatars={memberAvatars}
+              memberCount={memberAvatars.length}
+              actions={headerActions}
+            />
+          )
         }
-        sidebar={sidebarSlot}
+        sidebar={isOnSettings ? undefined : sidebarSlot}
         tabs={
-          <SpaceNavigationTabs
-            tabs={tabItems}
-            activeIndex={activeTabIndex}
-            onTabChange={handleTabChange}
-            isSmallScreen={isSmallScreen}
-            mobileActions={mobileActions}
-          />
+          isOnSettings ? undefined : (
+            <SpaceNavigationTabs
+              tabs={tabItems}
+              activeIndex={activeTabIndex}
+              onTabChange={handleTabChange}
+              isSmallScreen={isSmallScreen}
+              mobileActions={mobileActions}
+            />
+          )
         }
       >
         <Suspense fallback={<LoadingSpinner />}>

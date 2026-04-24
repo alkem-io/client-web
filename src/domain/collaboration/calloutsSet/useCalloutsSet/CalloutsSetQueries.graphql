@@ -33,6 +33,11 @@ fragment Callout on Callout {
       id
       url
       displayName
+      description
+      tagset {
+        id
+        tags
+      }
     }
     type
   }

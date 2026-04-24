@@ -72,6 +72,27 @@ A member wants to reply to a top-level comment to add context to that specific d
 
 ---
 
+### User Story 5 - Read and post comments inline on list-view callouts (Priority: P1)
+
+A community member browsing a space feed (home page, knowledge base, space feed) sees a stack of callouts. Each callout shows a footer with "N comments". Today, the only way to read or post those comments is to open the full callout detail dialog — interrupting the browsing flow. The member wants a lightweight way to peek into the discussion, read a few recent comments, and reply without leaving the feed.
+
+**Why this priority**: Comments are the primary mode of engagement on list-view callouts. The full dialog is the right surface for deep reading, editing, and managing contributions, but for the "quick glance + quick reply" flow (by far the common case) the dialog is heavier than needed. Inline expansion keeps the feed as the member's anchor and mirrors the pattern used by most modern community UIs.
+
+**Independent Test**: Enable CRD, navigate to a space feed with at least two callouts, each with ≥1 comment. Confirm each footer shows a chevron + "N comments"; expanding one reveals the input and the thread beneath it without opening a dialog, bounded to a readable height, and leaves the other callouts in place.
+
+**Acceptance Scenarios**:
+
+1. **Given** a callout in a list view with N comments, **When** the footer renders, **Then** it shows a chevron-down icon immediately followed by the comment count label, and the icon acts as the visual affordance for expansion.
+2. **Given** the member clicks anywhere on the footer row, **When** the toggle fires, **Then** the callout footer expands inline to reveal the comment input (above) and the thread (below) within the same card, without opening the detail dialog.
+3. **Given** the inline comments area is expanded, **When** the thread has more content than fits, **Then** the list scrolls internally within the footer region and does not push subsequent callouts down the page.
+4. **Given** the footer is expanded, **When** the member clicks the chevron (or anywhere on the trigger row) again, **Then** the footer collapses back to its compact state and the chevron returns to pointing down.
+5. **Given** the footer is expanded, **When** the member posts, replies to, reacts to, or deletes a comment, **Then** the action succeeds exactly as it would inside the callout detail dialog.
+6. **Given** the member has multiple callouts expanded simultaneously, **When** they interact with one, **Then** each callout maintains its own expand/collapse state and its own scroll position independently.
+7. **Given** the member collapses a previously expanded footer and re-expands it later, **When** the footer renders again, **Then** any unsent input text they had typed and the current thread state are preserved.
+8. **Given** CRD is toggled off, **When** the member visits the same space feed, **Then** the legacy (MUI) callout list renders unchanged — no chevron, no inline expansion.
+
+---
+
 ### Edge Cases
 
 - **Empty thread**: The input and count ("Comments (0)") are visible; an "empty" message is shown in the list area.
@@ -96,6 +117,12 @@ A member wants to reply to a top-level comment to add context to that specific d
 - **FR-009**: Members without permission to post comments MUST see the thread but not the input field (unchanged behavior).
 - **FR-010**: Existing comment functionality — posting, replying, reacting, deleting — MUST continue to work after the refinement.
 - **FR-011**: Input placement and sort order MUST be consistent between the timeline event modal and the callout discussion modal.
+- **FR-012**: Every CRD list-view callout (rendered via `PostCard` under `LazyCalloutItem`) MUST show a chevron-down affordance immediately preceding the "N comments" label; the chevron MUST rotate 180° while the footer is expanded and return on collapse.
+- **FR-013**: The inline comments region, when expanded, MUST render the comment input above the thread and bound the thread to a fixed max-height with an internal scrollbar so that subsequent callouts in the feed do not shift by more than the bounded footer height.
+- **FR-014**: The inline comments region MUST support the full set of comment actions — post, reply (single level), react, delete — with behavior identical to the callout detail dialog and the timeline event modal.
+- **FR-015**: The inline comments affordance MUST be limited to the CRD list-view path. The legacy MUI callout list, the CRD callout detail dialog, and the CRD timeline event modal MUST NOT change.
+- **FR-016**: Each callout in a feed MUST maintain its own independent expand/collapse state; toggling one MUST NOT affect any other callout.
+- **FR-017**: The inline comments subscription MUST be gated so that callouts the member has never expanded do NOT open a live subscription. Once expanded at least once, the subscription MAY remain active for that card to preserve state across subsequent collapses and re-expansions.
 
 ### Key Entities
 
@@ -114,6 +141,9 @@ A member wants to reply to a top-level comment to add context to that specific d
 - **SC-005**: Zero replies display a Reply action; 100% of top-level comments (for which the member has reply permission) display the Reply action.
 - **SC-006**: Zero regressions in post/reply/react/delete flows compared to the prior CRD behavior, verified by running the existing test suite and completing each flow manually on both surfaces.
 - **SC-007**: Input-placement behavior is identical between the timeline event detail modal and the callout discussion modal (both place the input at the top of the thread).
+- **SC-008**: On a list-view feed with 5+ callouts, expanding the comments footer on any callout shifts later callouts in the feed by no more than the bounded footer height (~400px by default), regardless of how many comments the thread contains.
+- **SC-009**: The inline comments trigger is fully operable by keyboard: `Tab` reaches it, `Enter` or `Space` toggles it, `aria-expanded` reflects the current state for assistive technology, and the visible "N comments" label remains constant across state changes.
+- **SC-010**: No live comment subscription is opened for a list-view callout until the member expands its inline footer at least once, verified by absence of the corresponding subscription request in the network inspector on initial page load.
 
 ## Assumptions
 

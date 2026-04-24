@@ -29,6 +29,9 @@
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
     "postIndex": "Index des publications",
+    "searchPlaceholder": "Rechercher...",
+    "searchLabel": "Rechercher des publications",
+    "noResults": "Aucun résultat",
     "readMore": "Lire la suite",
     "addEvent": "Ajouter un événement",
     "eventDateRelative": {
@@ -141,6 +144,7 @@
     "expand": "Afficher plus",
     "collapse": "Afficher moins",
     "openWhiteboard": "Ouvrir le tableau blanc",
+    "openMemo": "Ouvrir le mémo",
     "openDocument": "Ouvrir le document",
     "document": "Document",
     "documentText": "Document Word",
@@ -152,12 +156,15 @@
     "createNew": "Créer nouveau",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
+    "expandComments": "Afficher les commentaires",
+    "collapseComments": "Masquer les commentaires",
     "post": "Publication",
     "whiteboard": "Tableau blanc",
     "collection": "Collection",
     "callForWhiteboards": "Appel à tableaux blancs",
     "poll": "Sondage",
     "link": "Lien",
+    "callToAction": "Appel à l'action",
     "mediaGallery": "Galerie multimédia",
     "memo": "Mémo",
     "moreWhiteboards": "+{{count}} de plus",
@@ -171,7 +178,11 @@
     "addResponse": "Ajouter une réponse",
     "createWhiteboard": "Créer un nouveau tableau blanc",
     "defaultWhiteboardName": "Nouveau tableau blanc",
-    "whiteboardNameLabel": "Titre du tableau blanc"
+    "whiteboardNameLabel": "Titre du tableau blanc",
+    "addMemo": "Ajouter un mémo",
+    "createMemo": "Créer un nouveau mémo",
+    "defaultMemoName": "Nouveau mémo",
+    "memoNameLabel": "Titre du mémo"
   },
   "contribution": {
     "edit": "Modifier",
@@ -222,6 +233,11 @@
     "search": "Rechercher des sous-espaces...",
     "showMore": "Afficher {{count}} de plus",
     "showLess": "Afficher moins",
+    "filter": {
+      "all": "Tous",
+      "active": "Actifs",
+      "archived": "Archivés"
+    },
     "empty": {
       "title": "Aucun sous-espace trouvé",
       "description": "Aucun sous-espace ne correspond à votre recherche ou filtre actuel.",
@@ -238,8 +254,8 @@
     "leadUsers": "Utilisateurs responsables",
     "leadOrganizations": "Organisations responsables",
     "guidelines": "Directives de la communauté",
-    "references": "Références",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Références",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -371,6 +387,9 @@
       "disconnected": "Déconnecté",
       "membersOnline_one": "1 membre en ligne",
       "membersOnline_other": "{{count}} membres en ligne",
+      "connectedUsersLabel": "Utilisateurs connectés",
+      "moreConnectedUsers_one": "{{count}} utilisateur connecté de plus",
+      "moreConnectedUsers_other": "{{count}} utilisateurs connectés de plus",
       "guestWarning": "Vous éditez en tant qu'invité",
       "delete": "Supprimer le mémo",
       "readonlyReason": {
@@ -384,6 +403,19 @@
     "errors": {
       "loading": "Chargement du mémo…",
       "loadFailed": "Impossible de charger le mémo"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer le mémo",
+      "body": "Êtes-vous sûr de vouloir supprimer ce mémo ? Cette action est irréversible.",
+      "confirm": "Supprimer"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Ce lien ouvre un site externe dans un nouvel onglet.",
+    "linkAriaLabel": "{{displayName}} (ouvre {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (ouvre {{url}} dans un nouvel onglet)",
+    "validation": {
+      "invalidUrl": "URL non valide"
     }
   },
   "collabora": {
@@ -450,6 +482,8 @@
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
     "addComment": "Ajouter un commentaire...",
+    "mention": "Mentionner quelqu'un",
+    "mentionVirtualContributor": "IA",
     "send": "Envoyer",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
@@ -531,6 +565,7 @@
     "feedRegion": "Flux de contenu de l'espace",
     "membersGrid": "Grille des membres de la communauté",
     "subspacesGrid": "Grille des sous-espaces",
+    "statusFilter": "Filtrer les sous-espaces par statut",
     "visibilityNotice": "Avis de visibilité de l'espace",
     "mobileTabBar": "Navigation par onglets",
     "moreActionsDrawer": "Actions supplémentaires",

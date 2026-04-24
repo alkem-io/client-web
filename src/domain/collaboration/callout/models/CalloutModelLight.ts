@@ -13,6 +13,9 @@ export interface CalloutModelLight {
       displayName: string;
       description?: string;
       url?: string;
+      tagset?: {
+        tags: string[];
+      };
     };
     type: CalloutFramingType;
     whiteboard?: {

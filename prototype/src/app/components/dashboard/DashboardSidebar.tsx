@@ -4,7 +4,6 @@ import {
   Mail,
   Lightbulb,
   Bot,
-  LayoutTemplate,
   Tag,
   Eye,
 } from "lucide-react";
@@ -37,7 +36,7 @@ export function DashboardSidebar() {
     },
     { icon: Rocket, label: "Create my own Space", onClick: () => setShowCreateSpace(true) },
     { icon: Lightbulb, label: "Tips & Tricks", href: "#" },
-    { icon: LayoutTemplate, label: "Template Library", href: "/templates" },
+    { icon: Lightbulb, label: "Template Library", href: "/templates" },
     { icon: Tag, label: "My Account", href: "/user/alex-rivera/settings/account" },
   ];
 

@@ -689,6 +689,11 @@ export const CalloutFragmentDoc = gql`
       id
       url
       displayName
+      description
+      tagset {
+        id
+        tags
+      }
     }
     type
   }

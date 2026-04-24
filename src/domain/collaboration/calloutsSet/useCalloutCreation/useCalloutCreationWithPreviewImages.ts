@@ -5,6 +5,7 @@ import {
   type CreateReferenceInput,
   type CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
+import type { LinkFramingFieldSubmittedValues } from '../../callout/CalloutFramings/LinkFramingFieldSubmittedValues';
 import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
 import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
@@ -27,6 +28,7 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     type: CalloutFramingType;
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     memo?: MemoFieldSubmittedValues;
+    link?: LinkFramingFieldSubmittedValues;
     poll?: PollFormFieldSubmittedValues;
     collaboraDocument?: {
       displayName: string;

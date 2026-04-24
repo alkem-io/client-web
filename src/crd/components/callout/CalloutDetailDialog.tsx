@@ -43,6 +43,8 @@ type CalloutDetailDialogProps = {
   mediaGalleryFramingSlot?: ReactNode;
   /** Collabora document framing preview rendered below description (e.g. CalloutCollaboraPreview) */
   collaboraFramingSlot?: ReactNode;
+  /** Call-to-action link button rendered below description (e.g. CalloutLinkAction) */
+  callToActionFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
 };
@@ -61,6 +63,7 @@ export function CalloutDetailDialog({
   memoFramingSlot,
   mediaGalleryFramingSlot,
   collaboraFramingSlot,
+  callToActionFramingSlot,
   onReactionsClick,
   onShareClick,
 }: CalloutDetailDialogProps) {
@@ -150,6 +153,7 @@ export function CalloutDetailDialog({
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
               {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
               {collaboraFramingSlot && <div className="pt-2">{collaboraFramingSlot}</div>}
+              {callToActionFramingSlot && <div className="pt-2">{callToActionFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 

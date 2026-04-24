@@ -1,7 +1,11 @@
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CommentItem } from './CommentItem';
-import type { CommentData, CommentsContainerData } from './types';
+import type { CommentData, CommentsContainerData, CrdMentionSearch } from './types';
+
+type CommentThreadProps = CommentsContainerData & {
+  mentionSearch?: CrdMentionSearch;
+};
 
 /**
  * Thread list component: comment count header + comment items + reply indentation.
@@ -17,7 +21,8 @@ export function CommentThread({
   onDelete,
   onAddReaction,
   onRemoveReaction,
-}: CommentsContainerData) {
+  mentionSearch,
+}: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
 
   const topLevel = comments.filter(comment => !comment.parentId);
@@ -69,6 +74,7 @@ export function CommentThread({
               <CommentItem
                 comment={comment}
                 currentUser={currentUser}
+                mentionSearch={mentionSearch}
                 onReply={onReply}
                 onDelete={onDelete}
                 onAddReaction={onAddReaction}
@@ -80,6 +86,7 @@ export function CommentThread({
                   key={reply.id}
                   comment={reply}
                   currentUser={currentUser}
+                  mentionSearch={mentionSearch}
                   isReply={true}
                   onReply={onReply}
                   onDelete={onDelete}
