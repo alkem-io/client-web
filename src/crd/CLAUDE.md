@@ -224,7 +224,7 @@ Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders
 **Where this shows up:**
 
 - Notification items (`NotificationItem`): `title`, `description`, `comment` fields. `CrdNotificationItemData` typed as `ReactNode` so the consumer can pre-render `<Trans>` / `<InlineMarkdown>`. See `src/main/ui/layout/notificationDataMapper.tsx`.
-- Activity feed items (`ActivityItem`): `actionText` is typed `ReactNode`. Comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`) have markdown descriptions — wrap in `InlineMarkdown`. See `src/main/crdPages/dashboard/dashboardDataMappers.tsx` → `MARKDOWN_DESCRIPTION_ACTIVITY_TYPES`.
+- Activity feed items (`ActivityItem`): `title` is typed `ReactNode`. Comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`) have markdown `description`/`message` — wrap in `InlineMarkdown`. All other types pass the entity display-name as a plain string. See `src/main/crdPages/dashboard/dashboardDataMappers.tsx` → `resolveActivity`.
 - Any new component receiving text from the backend that could contain formatting.
 
 **Checklist when adding a new text-rendering component:**
@@ -232,7 +232,7 @@ Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders
 - [ ] Is the string user-generated or translated? If user-generated → assume markdown → use `InlineMarkdown` or `MarkdownContent`.
 - [ ] Does the translation key contain `<...>` tags? If yes → use `<Trans components={...} />`, not bare `t()`.
 - [ ] Are you about to render a block-producing component (`<div>` from `InlineMarkdown`) inside `<p>`? If yes → change the wrapper to `<div>` to avoid invalid HTML.
-- [ ] Provide a plain-text equivalent for `aria-label` and other accessibility attributes when the rendered content is not pure text (see `ActivityItemData.actionTextPlain`).
+- [ ] Provide a plain-text equivalent for `aria-label` and other accessibility attributes when the rendered content is not pure text (see `ActivityItemData.titlePlain`).
 
 **Reference:** the legacy MUI stack uses `<Trans>` + `WrapperMarkdown plain={true}` for exactly these cases (see `src/main/inAppNotifications/views/InAppNotificationBaseView.tsx` and `src/domain/collaboration/activity/ActivityLog/views/ActivitySubjectMarkdown.tsx`). CRD's `InlineMarkdown` is the equivalent of `WrapperMarkdown plain={true}`.
 
