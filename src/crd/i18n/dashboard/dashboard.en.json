@@ -40,7 +40,21 @@
       }
     },
     "showMore": "Show more",
-    "noActivity": "No recent activity"
+    "noActivity": "No recent activity",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "New post",
+      "CALLOUT_POST_CREATED": "New post",
+      "CALLOUT_POST_COMMENT": "New comment",
+      "DISCUSSION_COMMENT": "New comment",
+      "CALLOUT_WHITEBOARD_CREATED": "New whiteboard",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Whiteboard updated",
+      "CALLOUT_MEMO_CREATED": "New memo",
+      "CALLOUT_LINK_CREATED": "New link",
+      "MEMBER_JOINED": "New member",
+      "SUBSPACE_CREATED": "New subspace",
+      "CALENDAR_EVENT_CREATED": "New event",
+      "UPDATE_SENT": "New update"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Tips & Tricks",

@@ -5,14 +5,30 @@
  * main 'translation' namespace at `components.inAppNotifications.type.<TYPE>` in
  * src/core/i18n/en/translation.en.json. They are shared with the MUI InAppNotificationsDialog.
  * TODO: Move to 'crd-notifications' namespace once the MUI dialog is removed.
+ *
+ * Rich-text rendering:
+ * - subject/description templates contain HTML tags (`<b>`, `<br />`, `<i>`, `<pre>`) that
+ *   must render as real React elements — rendering them as plain strings would display
+ *   the literal markup to the user. We wrap them in `<Trans>` with a `components` map.
+ * - comment/message payloads are user-generated markdown. We wrap them in `InlineMarkdown`
+ *   so they render formatted instead of as escaped text.
  */
 import type { TFunction } from 'i18next';
+import { Trans } from 'react-i18next';
 import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
+
+const TRANS_COMPONENTS = {
+  b: <strong />,
+  br: <br />,
+  pre: <pre />,
+  i: <em />,
+};
 
 /**
  * Builds the interpolation values for notification i18n keys.
@@ -99,12 +115,13 @@ export function mapNotificationToItemData(
 ): CrdNotificationItemData {
   const values = buildTranslationValues(notification, t);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
+  const subjectKey = `${typeKey}.subject`;
+  const descriptionKey = `${typeKey}.description`;
 
-  // Keys are built dynamically so we need to bypass i18next's strict return type
-  const translate = (key: string) => t(key, '', values as Record<string, string>) as string;
+  const rawDescription = t(descriptionKey, '', values as Record<string, string>) as string;
 
   const { payload } = notification;
-  const comment =
+  const rawComment =
     payload.comment ??
     payload.messageDetails?.message ??
     payload.userMessage ??
@@ -113,9 +130,13 @@ export function mapNotificationToItemData(
 
   return {
     id: notification.id,
-    title: translate(`${typeKey}.subject`),
-    description: translate(`${typeKey}.description`),
-    comment,
+    // biome-ignore lint/suspicious/noExplicitAny: i18n key is built dynamically from notification type
+    title: <Trans i18nKey={subjectKey as any} values={values} components={TRANS_COMPONENTS} />,
+    description: rawDescription ? (
+      // biome-ignore lint/suspicious/noExplicitAny: i18n key is built dynamically from notification type
+      <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
+    ) : undefined,
+    comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} /> : undefined,
     avatarUrl: notification.triggeredBy.profile.visual?.uri,
     avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),

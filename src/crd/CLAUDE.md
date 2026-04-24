@@ -212,6 +212,30 @@ const startOfToday = dayjs().startOf('day');
 
 **Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/spec.md` for the full specification.
 
+### 9. Never Render Markdown / HTML-Tagged Strings As Plain Text
+
+Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders **must** be rendered through a markdown/rich-text renderer — never as `{someString}` inside a `<p>` or `<span>`. Doing so displays the raw markup to the user (bold asterisks, literal `<b>` tags, escaped entities), which is the bug this rule exists to prevent.
+
+**Two kinds of strings to watch for:**
+
+1. **User-generated content** — comment bodies, message text, post snippets, descriptions. These arrive from the backend as markdown. Render with `MarkdownContent` for full-width rich rendering, or `InlineMarkdown` for truncated previews (notification/activity items, list snippets).
+2. **Translation strings with HTML tags** — many i18n keys under `components.inAppNotifications.*` and `innovationHub.*` contain `<b>`, `<br />`, `<i>`, `<pre>`, `<strong>` tags (e.g. `"In <b>{{spaceName}}</b>, of which you are a $t(common.member)."`). Render via `<Trans i18nKey={...} components={{ b: <strong />, br: <br />, i: <em />, pre: <pre /> }} />` — never via `t(...)` dropped into a JSX expression.
+
+**Where this shows up:**
+
+- Notification items (`NotificationItem`): `title`, `description`, `comment` fields. `CrdNotificationItemData` typed as `ReactNode` so the consumer can pre-render `<Trans>` / `<InlineMarkdown>`. See `src/main/ui/layout/notificationDataMapper.tsx`.
+- Activity feed items (`ActivityItem`): `title` is typed `ReactNode`. Comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`) have markdown `description`/`message` — wrap in `InlineMarkdown`. All other types pass the entity display-name as a plain string. See `src/main/crdPages/dashboard/dashboardDataMappers.tsx` → `resolveActivity`.
+- Any new component receiving text from the backend that could contain formatting.
+
+**Checklist when adding a new text-rendering component:**
+
+- [ ] Is the string user-generated or translated? If user-generated → assume markdown → use `InlineMarkdown` or `MarkdownContent`.
+- [ ] Does the translation key contain `<...>` tags? If yes → use `<Trans components={...} />`, not bare `t()`.
+- [ ] Are you about to render a block-producing component (`<div>` from `InlineMarkdown`) inside `<p>`? If yes → change the wrapper to `<div>` to avoid invalid HTML.
+- [ ] Provide a plain-text equivalent for `aria-label` and other accessibility attributes when the rendered content is not pure text (see `ActivityItemData.titlePlain`).
+
+**Reference:** the legacy MUI stack uses `<Trans>` + `WrapperMarkdown plain={true}` for exactly these cases (see `src/main/inAppNotifications/views/InAppNotificationBaseView.tsx` and `src/domain/collaboration/activity/ActivityLog/views/ActivitySubjectMarkdown.tsx`). CRD's `InlineMarkdown` is the equivalent of `WrapperMarkdown plain={true}`.
+
 ---
 
 ## Accessibility (WCAG 2.1 AA)
