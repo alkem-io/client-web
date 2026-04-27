@@ -20,6 +20,8 @@ import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { MemoContributionConnector } from './MemoContributionConnector';
 import { MemoFramingConnector } from './MemoFramingConnector';
+import { PostContributionAddConnector } from './PostContributionAddConnector';
+import { PostContributionConnector } from './PostContributionConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -29,10 +31,12 @@ type CalloutDetailDialogConnectorProps = {
   onOpenChange: (open: boolean) => void;
   callout: CalloutDetailsModelExtended;
   /** If set, the matching contribution dialog opens immediately on top of the callout dialog.
-   *  Routed to whiteboard or memo overlay based on `callout.settings.contribution.type`. */
+   *  Routed to whiteboard / memo / post overlay based on `callout.settings.contribution.type`. */
   initialContributionId?: string;
   /** For memo contributions only: the underlying memo id (the contribution wrapper id goes into `initialContributionId`). */
   initialMemoId?: string;
+  /** For post contributions only: the underlying post id (the contribution wrapper id goes into `initialContributionId`). */
+  initialPostId?: string;
   /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
   moveActions?: CalloutMoveActions;
 };
@@ -45,7 +49,7 @@ function ContributionsSlot({
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
-  onContributionClick?: (id: string, memoId?: string) => void;
+  onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
 }) {
   const contributionType = getCalloutContributionType(callout);
@@ -70,11 +74,24 @@ function ContributionsSlot({
 
   const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
 
+  const defaults = callout.contributionDefaults;
   const trailingSlot = canCreateContribution ? (
     contributionType === CalloutContributionType.Whiteboard ? (
-      <WhiteboardContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+      <WhiteboardContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultContent={defaults?.whiteboardContent}
+        onCreated={onContributionCreated}
+      />
     ) : contributionType === CalloutContributionType.Memo ? (
       <MemoContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+    ) : contributionType === CalloutContributionType.Post ? (
+      <PostContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultDescription={defaults?.postDescription}
+        onCreated={onContributionCreated}
+      />
     ) : null
   ) : null;
 
@@ -97,19 +114,25 @@ export function CalloutDetailDialogConnector({
   callout,
   initialContributionId,
   initialMemoId,
+  initialPostId,
   moveActions,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
+  const initialIsPost = contributionType === CalloutContributionType.Post;
 
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
-    initialIsMemo ? undefined : initialContributionId
+    initialIsMemo || initialIsPost ? undefined : initialContributionId
   );
   const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
     initialIsMemo ? initialContributionId : undefined
   );
   const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
+  const [postContributionId, setPostContributionId] = useState<string | undefined>(
+    initialIsPost ? initialContributionId : undefined
+  );
+  const [postId, setPostId] = useState<string | undefined>(initialPostId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
@@ -151,10 +174,13 @@ export function CalloutDetailDialogConnector({
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(initialContributionId);
       setMemoId(initialMemoId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(initialContributionId);
+      setPostId(initialPostId);
     } else {
       setWhiteboardContributionId(initialContributionId);
     }
-  }, [initialContributionId, initialMemoId, contributionType]);
+  }, [initialContributionId, initialMemoId, initialPostId, contributionType]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -177,10 +203,13 @@ export function CalloutDetailDialogConnector({
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
 
-  const handleContributionClick = (contributionId: string, clickedMemoId?: string) => {
+  const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
-      setMemoId(clickedMemoId);
+      setMemoId(clickedEntityId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(contributionId);
+      setPostId(clickedEntityId);
     } else {
       setWhiteboardContributionId(contributionId);
     }
@@ -209,6 +238,20 @@ export function CalloutDetailDialogConnector({
         onClose={() => {
           setMemoContributionId(undefined);
           setMemoId(undefined);
+        }}
+      />
+    ) : null;
+
+  const postOverlay =
+    postContributionId && postId ? (
+      <PostContributionConnector
+        open={true}
+        calloutId={callout.id}
+        contributionId={postContributionId}
+        postId={postId}
+        onClose={() => {
+          setPostContributionId(undefined);
+          setPostId(undefined);
         }}
       />
     ) : null;
@@ -251,6 +294,7 @@ export function CalloutDetailDialogConnector({
         />
         {whiteboardOverlay}
         {memoOverlay}
+        {postOverlay}
         {framingMemoOverlay}
         {shareDialog}
       </>
@@ -285,6 +329,7 @@ export function CalloutDetailDialogConnector({
       </CalloutCommentsConnector>
       {whiteboardOverlay}
       {memoOverlay}
+      {postOverlay}
       {framingMemoOverlay}
       {shareDialog}
     </>
