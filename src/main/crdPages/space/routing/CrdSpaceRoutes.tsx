@@ -15,7 +15,7 @@ const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('../about/CrdS
 const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
 );
-const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
+const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/subspace/routing/CrdSubspaceRoutes'));
 const SpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('@/domain/space/pages/SpaceCalloutPage'));
 
 export default function CrdSpaceRoutes() {

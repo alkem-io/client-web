@@ -11,6 +11,7 @@ import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { CalloutContributionSettings } from '@/crd/forms/callout/CalloutContributionSettings';
 import { CalloutVisibilitySelector } from '@/crd/forms/callout/CalloutVisibilitySelector';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import type { CalloutCreationTypeWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
@@ -21,6 +22,13 @@ type CalloutFormConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   calloutsSetId?: string;
+  /**
+   * Display name of the innovation-flow state to attach the new callout to. When set,
+   * the callout is classified into that flow state so it appears under the active phase
+   * tab. When undefined the callout is created without a phase classification (legacy /
+   * single-phase callouts sets).
+   */
+  activeFlowStateName?: string;
   onFindTemplate?: () => void;
 };
 
@@ -40,7 +48,13 @@ const ATTACHMENT_TO_FRAMING_TYPE: Record<string, CalloutFramingType> = {
   poll: CalloutFramingType.Poll,
 };
 
-export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFindTemplate }: CalloutFormConnectorProps) {
+export function CalloutFormConnector({
+  open,
+  onOpenChange,
+  calloutsSetId,
+  activeFlowStateName,
+  onFindTemplate,
+}: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
   const { values, errors, setField, validate, reset } = useCrdCalloutForm();
   const [activeAttachment, setActiveAttachment] = useState('none');
@@ -50,8 +64,10 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
 
   const mapFormToCallout = (visibility: CalloutVisibility): CalloutCreationTypeWithPreviewImages => {
     const framingType = ATTACHMENT_TO_FRAMING_TYPE[activeAttachment] ?? CalloutFramingType.None;
+    const flowStateTagsets = buildFlowStateClassificationTagsets(activeFlowStateName);
 
     const callout: CalloutCreationTypeWithPreviewImages = {
+      ...(flowStateTagsets ? { classification: { tagsets: flowStateTagsets } } : {}),
       framing: {
         type: framingType,
         profile: {

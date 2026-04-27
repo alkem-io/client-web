@@ -1,0 +1,70 @@
+{
+  "badge": {
+    "subspace": "SubEspacio",
+    "subSubspace": "SubSubEspacio"
+  },
+  "actions": {
+    "activity": "Actividad reciente",
+    "videoCall": "Iniciar videollamada",
+    "share": "Compartir",
+    "settings": "Ajustes"
+  },
+  "members": {
+    "viewCommunity": "Ver miembros de la comunidad",
+    "memberCount_one": "{{count}} miembro",
+    "memberCount_other": "{{count}} miembros"
+  },
+  "flow": {
+    "editFlow": "Editar flujo de innovación",
+    "addPost": "Añadir publicación",
+    "emptyState": "Aún no hay fases configuradas para este subespacio.",
+    "phaseTab": "Cambiar a la fase {{name}}",
+    "connectorAlt": "Siguiente fase"
+  },
+  "sidebar": {
+    "about": "Acerca de este SubEspacio",
+    "lead": "Líder",
+    "leads": "Líderes",
+    "quickActions": {
+      "heading": "Acciones rápidas",
+      "community": "Comunidad",
+      "events": "Eventos",
+      "activity": "Actividad reciente",
+      "index": "Índice de publicaciones",
+      "subspaces": "SubEspacios"
+    },
+    "virtualContributor": {
+      "heading": "Contribuyente virtual",
+      "open": "Abrir"
+    }
+  },
+  "community": {
+    "dialogTitle": "Comunidad",
+    "dialogDescription": "Personas y organizaciones que participan en este subespacio."
+  },
+  "events": {
+    "dialogTitle": "Eventos"
+  },
+  "activity": {
+    "dialogTitle": "Actividad reciente"
+  },
+  "index": {
+    "dialogTitle": "Índice de publicaciones",
+    "empty": "Aún no hay publicaciones."
+  },
+  "subspaces": {
+    "dialogTitle": "SubEspacios",
+    "empty": "Este subespacio no tiene subespacios anidados."
+  },
+  "breadcrumbs": {
+    "home": "Inicio"
+  },
+  "a11y": {
+    "subspaceBanner": "Banner del SubEspacio {{name}}",
+    "parentLink": "Ir al espacio principal {{name}}",
+    "flowTabs": "Fases del flujo de innovación",
+    "sidebarNavigation": "Barra lateral del SubEspacio",
+    "communityDialog": "Diálogo de miembros de la comunidad",
+    "close": "Cerrar"
+  }
+}

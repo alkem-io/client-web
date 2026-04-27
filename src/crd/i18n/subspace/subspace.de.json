@@ -1,0 +1,70 @@
+{
+  "badge": {
+    "subspace": "SubSpace",
+    "subSubspace": "SubSubSpace"
+  },
+  "actions": {
+    "activity": "Letzte Aktivität",
+    "videoCall": "Videoanruf starten",
+    "share": "Teilen",
+    "settings": "Einstellungen"
+  },
+  "members": {
+    "viewCommunity": "Community-Mitglieder anzeigen",
+    "memberCount_one": "{{count}} Mitglied",
+    "memberCount_other": "{{count}} Mitglieder"
+  },
+  "flow": {
+    "editFlow": "Innovationsfluss bearbeiten",
+    "addPost": "Beitrag hinzufügen",
+    "emptyState": "Für diesen SubSpace sind noch keine Phasen konfiguriert.",
+    "phaseTab": "Zu Phase {{name}} wechseln",
+    "connectorAlt": "Nächste Phase"
+  },
+  "sidebar": {
+    "about": "Über diesen SubSpace",
+    "lead": "Lead",
+    "leads": "Leads",
+    "quickActions": {
+      "heading": "Schnellaktionen",
+      "community": "Community",
+      "events": "Termine",
+      "activity": "Letzte Aktivität",
+      "index": "Beitragsindex",
+      "subspaces": "SubSpaces"
+    },
+    "virtualContributor": {
+      "heading": "Virtueller Mitwirkender",
+      "open": "Öffnen"
+    }
+  },
+  "community": {
+    "dialogTitle": "Community",
+    "dialogDescription": "Personen und Organisationen, die in diesem SubSpace mitwirken."
+  },
+  "events": {
+    "dialogTitle": "Termine"
+  },
+  "activity": {
+    "dialogTitle": "Letzte Aktivität"
+  },
+  "index": {
+    "dialogTitle": "Beitragsindex",
+    "empty": "Noch keine Beiträge."
+  },
+  "subspaces": {
+    "dialogTitle": "SubSpaces",
+    "empty": "Dieser SubSpace enthält keine verschachtelten SubSpaces."
+  },
+  "breadcrumbs": {
+    "home": "Startseite"
+  },
+  "a11y": {
+    "subspaceBanner": "SubSpace-Banner für {{name}}",
+    "parentLink": "Zum übergeordneten Space {{name}}",
+    "flowTabs": "Innovationsfluss-Phasen",
+    "sidebarNavigation": "SubSpace-Seitenleiste",
+    "communityDialog": "Dialog für Community-Mitglieder",
+    "close": "Schließen"
+  }
+}
