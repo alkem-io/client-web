@@ -1,10 +1,14 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -17,6 +21,7 @@ type CrdSpaceCustomTabPageProps = {
 };
 
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
+  const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const navigate = useNavigate();
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
@@ -85,6 +90,18 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         )}
 
       <div className="space-y-6">
+        <TabStateHeader
+          description={tabDescription}
+          action={
+            canCreateCallout && (
+              <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('feed.addPost')}
+              </Button>
+            )
+          }
+        />
+
         {(allTags.length > 0 || tagsFilter.length > 0) && (
           <CalloutTagCloud
             tags={allTags}
@@ -96,13 +113,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           />
         )}
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateOpen(true)}
-          loading={loading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
       </div>
 
       {canCreateCallout && (

@@ -73,7 +73,7 @@ export default function CrdSpaceSubspacesPage() {
           action={
             canCreate &&
             handleCreateClick && (
-              <Button className="gap-2" onClick={handleCreateClick}>
+              <Button size="sm" className="gap-2" onClick={handleCreateClick}>
                 <Plus className="w-4 h-4" aria-hidden="true" />
                 {t('subspaces.createSubspace')}
               </Button>

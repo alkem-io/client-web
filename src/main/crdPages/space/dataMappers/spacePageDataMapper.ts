@@ -1,4 +1,7 @@
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { getInitials } from '@/crd/lib/getInitials';
+
+export { getInitials };
 
 type MemberAvatar = {
   id: string;
@@ -75,14 +78,4 @@ export function mapMemberAvatars(
       url: user.profile.avatar?.uri,
       initials: getInitials(user.profile.displayName),
     }));
-}
-
-export function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map(part => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 }

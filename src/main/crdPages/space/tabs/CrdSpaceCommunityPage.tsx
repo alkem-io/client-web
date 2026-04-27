@@ -84,7 +84,7 @@ export default function CrdSpaceCommunityPage() {
           action={
             canInvite &&
             handleInvite && (
-              <Button className="gap-2" onClick={handleInvite}>
+              <Button size="sm" className="gap-2" onClick={handleInvite}>
                 <UserPlus className="w-4 h-4" aria-hidden="true" />
                 {t('crd-space:members.inviteMember')}
               </Button>
