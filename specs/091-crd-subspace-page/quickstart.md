@@ -97,7 +97,8 @@ Run through this list before requesting review. Each step maps to one or more ac
 - [ ] Top of the sidebar renders the shared **InfoBlock** (blue panel) — same widget on L0 and L1 (plan D14):
   - [ ] Body shows `profile.description` rendered as markdown, in pure white text at body size; no "Challenge Statement" title at the top.
   - [ ] Lead users (and lead organizations on L0) are listed inline at the bottom of the panel, separated from the description by a thin white divider. Lead orgs use square avatars.
-  - [ ] Hovering the panel reveals a `<Pencil>` icon in the top-right corner. Clicking anywhere in the panel navigates to `${profileUrl}/settings/about` (L0) or opens the existing `SpaceAboutDialog` populated for the subspace (L1). There is no separate "About this Subspace" outline button below the info block (removed during polish — plan D14).
+  - [ ] Hovering the panel reveals a `<Pencil>` icon in the top-right corner. Clicking anywhere in the panel navigates to `${profileUrl}/settings/about` (the edit surface) on **both** L0 and L1 (plan D17).
+  - [ ] An "About this Space" / "About this Subspace" outline button is rendered immediately below the InfoBlock — on the L0 **home** tab and on every L1 / L2 sidebar. Clicking it opens the read-only `SpaceAboutDialog` populated with the entity's full public details (plan D17). The other L0 tabs (Community, Subspaces, Knowledge) do not render this button.
   - [ ] On L0, the InfoBlock + leads appears on **every tab** (Dashboard, Community, Subspaces, Knowledge), not only on Community (plan D15).
 - [ ] Quick Actions: Community, Events, Recent Activity, Index, Subspaces. Each opens its corresponding dialog.
 - [ ] Events dialog uses the same component as the L0 timeline (no separate per-subspace events UI).
@@ -172,6 +173,8 @@ Run through this list before requesting review. Each step maps to one or more ac
 | Shared per-tab description+action strip (post-polish) | `src/crd/components/space/TabStateHeader.tsx` |
 | Community dialog shell | `src/crd/components/space/SubspaceCommunityDialog.tsx` |
 | Shared community dialog connector (post-polish) | `src/main/crdPages/space/dialogs/CrdSpaceCommunityDialogConnector.tsx` (moved from `subspace/dialogs/`) |
+| L0 about dialog connector (post-polish, plan D17) | `src/main/crdPages/space/dialogs/CrdSpaceAboutDialogConnector.tsx` (mounted by `CrdSpaceDashboardPage`) |
+| L1 about dialog connector | `src/main/crdPages/subspace/dialogs/CrdSubspaceAboutDialogConnector.tsx` |
 | L1 layout | `src/main/crdPages/subspace/layout/CrdSubspacePageLayout.tsx` |
 | L1 routing | `src/main/crdPages/subspace/routing/CrdSubspaceRoutes.tsx` |
 | L1 callouts page | `src/main/crdPages/subspace/tabs/CrdSubspaceCalloutsPage.tsx` |

@@ -117,10 +117,12 @@ The L0 and L1 sidebars both render a single `<InfoBlock>` at the top of the side
 type InfoBlockProps = {
   description: string;                  // markdown — sourced from profile.description (L0 + L1)
   leads?: LeadItem[];                   // rendered inline below the description with a thin white separator
-  onEditClick?: () => void;             // hover pencil + whole-block click; consumer decides destination
+  onEditClick?: () => void;             // hover pencil + whole-block click; ALWAYS navigates to settings/about (plan D17)
   className?: string;
 };
 ```
+
+The InfoBlock has only one click target (the edit pencil). The read-only About dialog is reached via a **separate** outline button rendered immediately below the InfoBlock by the parent sidebar component — see `SpaceSidebarProps.onAboutClick` and `SubspaceSidebarProps.onAboutClick` (plan D17).
 
 ### `SubspaceLeadData` (legacy alias)
 Existed in earlier drafts as a separate L1-only lead shape. **Now structurally equivalent to `LeadItem`** and the SubspaceSidebar's data mapper produces `LeadItem[]` directly. The L1 hook continues to expose `leads` in `SubspaceSidebarData` (below) using the shared shape.
@@ -157,7 +159,7 @@ type SubspaceQuickActionId =
 ```
 
 ### `SubspaceSidebarData`
-Aggregated by `useCrdSubspace` and consumed by `SubspaceSidebar`. **Updated during polish (plan D14)**: the `whyMarkdown` and `tagline` fields are gone — the description is now sourced from `subspace.about.profile.description` and rendered through the shared `InfoBlock`. There is no longer a standalone "About this Subspace" `aboutHref` field; clicking the InfoBlock pencil opens the about dialog directly via the layout-owned callback.
+Aggregated by `useCrdSubspace` and consumed by `SubspaceSidebar`. **Updated during polish (plan D14)**: the `whyMarkdown` and `tagline` fields are gone — the description is now sourced from `subspace.about.profile.description` and rendered through the shared `InfoBlock`. The standalone "About this Subspace" outline button below the InfoBlock was briefly removed but later **restored** (plan D17) — clicking it opens the read-only `SpaceAboutDialog`. The InfoBlock pencil now navigates to `${subspaceUrl}/settings/about` (the edit surface) — never to the dialog. Both destinations are wired by `CrdSubspacePageLayout` via two distinct sidebar props (`onEditClick`, `onAboutClick`); neither is a URL-shaped data-model field.
 
 ```typescript
 type SubspaceSidebarData = {
@@ -176,7 +178,7 @@ type SubspaceSidebarData = {
 
 > **Removed from this shape (post-polish)**:
 > - `whyMarkdown` / `tagline` — replaced by the single `description` field.
-> - `aboutHref` — the InfoBlock's `onEditClick` callback is wired directly by `CrdSubspacePageLayout` to open the about dialog. There is no URL-shaped indirection.
+> - `aboutHref` — the read-only About dialog is reached via the layout-owned `onAboutClick` callback (button below the InfoBlock); the edit surface is reached via `onEditClick` (InfoBlock pencil) which navigates to `${subspaceUrl}/settings/about`. Both are layout concerns, not data-model concerns. (Plan D17.)
 > - `quickActions: SubspaceQuickAction[]` — the L1 layout uses a static `QUICK_ACTIONS` table inside `SubspaceSidebar.tsx` for the icons + ids, with labels translated via `t('crd-subspace:sidebar.quickActions.*')`. The data mapper does not produce a quick-actions array.
 
 ---

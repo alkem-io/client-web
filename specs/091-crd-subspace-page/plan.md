@@ -9,7 +9,7 @@ Migrate the L1 SubSpace page (and, by extension, L2 sub-of-sub) from MUI to the 
 
 The architecture follows the three-layer pattern established by 039/042 (CRD presentational → integration layer → route toggle) and the recipe in `docs/crd/migration-guide.md`. Visual design is taken from `prototype/src/app/pages/SubspacePage.tsx` plus 10 corrections from issue [#9568](https://github.com/alkem-io/client-web/issues/9568).
 
-**Polish-phase additions (post-MVP refinements applied during code review and design refinement passes — see Design Decisions D14–D16):** the L0 and L1 sidebars now share a single `InfoBlock` widget that renders `profile.description` + leads inline + an edit-pencil hover affordance; a new shared `useCrdSpaceLeads` hook surfaces lead data on every L0 tab (not only Community); the per-L0-tab description-and-action strip was extracted into a shared `TabStateHeader` component; the community dialog connector was relocated to a layer-neutral location (`src/main/crdPages/space/dialogs/`) so both layouts can consume it without crossing the L0↔L1 boundary.
+**Polish-phase additions (post-MVP refinements applied during code review and design refinement passes — see Design Decisions D14–D17):** the L0 and L1 sidebars now share a single `InfoBlock` widget that renders `profile.description` + leads inline + an edit-pencil hover affordance (D14); a new shared `useCrdSpaceLeads` hook surfaces lead data on every L0 tab (D15); the per-L0-tab description-and-action strip was extracted into a shared `TabStateHeader` component (D16); the community dialog connector was relocated to a layer-neutral location (`src/main/crdPages/space/dialogs/`) so both layouts can consume it without crossing the L0↔L1 boundary (D6); and the read/edit entry points on the sidebar were re-separated so the InfoBlock pencil opens the settings/about edit page while a restored "About this Space / Subspace" outline button below the InfoBlock opens the read-only About dialog (D17).
 
 ## Technical Context
 
@@ -66,11 +66,11 @@ src/crd/
 ├── components/space/
 │   ├── SubspaceHeader.tsx              # NEW — banner with parent-image bg, layered avatar, badge, member stack, action icons
 │   ├── SubspaceFlowTabs.tsx            # NEW — sticky pill-tabs with always-on double-arrow connectors, no count badges; slots for edit-flow icon and Add Post button
-│   ├── SubspaceSidebar.tsx             # NEW — fixed right sidebar: shared InfoBlock at top (description + leads + edit pencil — see D14), Quick Actions, Virtual Contributor card. The standalone "About this Subspace" button below the info card was removed during polish (see D14)
+│   ├── SubspaceSidebar.tsx             # NEW — fixed right sidebar: shared InfoBlock at top (description + leads + edit pencil — see D14), an "About this Subspace" outline button immediately below the InfoBlock (opens the read-only about dialog — see D17), Quick Actions, Virtual Contributor card
 │   ├── SubspaceCommunityDialog.tsx     # NEW — Dialog wrapping the existing SpaceMembers component (consumed by both L0 and L1 banners)
 │   ├── TabStateHeader.tsx              # NEW (polish) — shared description-on-left + action-on-right strip used by every L0 tab page (Dashboard / Community / Subspaces / Knowledge) — see D16
 │   ├── sidebar/
-│   │   └── InfoBlock.tsx               # NEW (polish) — shared blue-panel widget used by both SpaceSidebar (L0) and SubspaceSidebar (L1). Renders profile.description (markdown) + leads inline + hover edit-pencil. Replaces the previously-separate L1 info-card-with-leads-and-About-button. See D14. Also exports the shared `LeadItem` type
+│   │   └── InfoBlock.tsx               # NEW (polish) — shared blue-panel widget used by both SpaceSidebar (L0) and SubspaceSidebar (L1). Renders profile.description (markdown) + leads inline + hover edit-pencil that navigates to settings/about (see D14, refined in D17). Also exports the shared `LeadItem` type
 │   └── (SpaceHeader.tsx, SpaceMembers.tsx, etc. — existing, unchanged)
 └── i18n/
     └── subspace/                        # NEW namespace `crd-subspace`
@@ -103,7 +103,8 @@ src/main/crdPages/space/                 # MODIFIED + NEW files
 ├── layout/
 │   └── CrdSpacePageLayout.tsx          # MODIFIED — pass onMemberClick; mount shared community dialog connector (CrdSpaceCommunityDialogConnector — moved here during polish, see D6). The `if (!isLevelZero)` bailout at line ~133 STAYS (load-bearing — see D3). (True `memberCount` deferred — research R1.)
 ├── dialogs/
-│   └── CrdSpaceCommunityDialogConnector.tsx      # MOVED here during polish from `subspace/dialogs/` and renamed (was `CrdSubspaceCommunityDialogConnector`). Generic in `roleSetId`, consumed by both L0 and L1 layouts. See D6
+│   ├── CrdSpaceCommunityDialogConnector.tsx      # MOVED here during polish from `subspace/dialogs/` and renamed (was `CrdSubspaceCommunityDialogConnector`). Generic in `roleSetId`, consumed by both L0 and L1 layouts. See D6
+│   └── CrdSpaceAboutDialogConnector.tsx          # NEW (polish) — L0-scoped connector that wraps `SpaceAboutDialog`. Reads via `useSpace()` + `useSpaceAboutDetailsQuery`, mounted by `CrdSpaceDashboardPage` for the home-tab "About this Space" outline button. See D17
 ├── dataMappers/
 │   └── spacePageDataMapper.ts          # MODIFIED — adds `mapSidebarLeads(leadUsers, leadOrganizations?)` helper that produces the shared `LeadItem[]` shape consumed by InfoBlock. `mapMemberAvatars` keeps its existing `MemberAvatar[]` shape (the `{ avatars, totalCount }` extension was deferred with research R1)
 ├── hooks/
@@ -182,11 +183,11 @@ The L1 sidebar originally had its own custom info card (whyMarkdown / tagline + 
 
 - The space's `profile.description` (markdown — sourced from `space.about.profile.description` for L0 and `subspace.about.profile.description` for L1; the previously-used `subspace.about.why` and `tagline` are no longer the primary description source). MarkdownContent is forced to a single typographic surface with white text and headings downgraded to body size, matching the prototype's plain-text appearance while still rendering markdown formatting.
 - An inline lead block (white-on-blue, with a subtle `border-t border-white/15` separator) listing every lead user (`type: 'person'`) and lead organization (`type: 'org'`) with avatar, name, and optional location. Lead organizations use square avatars to mirror the platform-wide treatment.
-- An optional hover edit affordance: a `<Pencil>` icon revealed on hover/focus in the top-right corner. The whole panel is clickable via an absolutely-positioned overlay button (HTML5-valid: the overlay button contains only phrasing content; the markdown lives outside it). Click invokes `onEditClick`, which the consumer wires to navigate to the appropriate destination — `${profileUrl}/settings/about` for L0, the existing about dialog for L1.
+- An optional hover edit affordance: a `<Pencil>` icon revealed on hover/focus in the top-right corner. The whole panel is clickable via an absolutely-positioned overlay button (HTML5-valid: the overlay button contains only phrasing content; the markdown lives outside it). Click invokes `onEditClick`, which the consumer always wires to navigate to `${profileUrl}/settings/about` (the edit surface) — see D17 for why the read-only About dialog is reached via a separate button rather than the pencil.
 
-The shared `LeadItem` type is exported from `InfoBlock.tsx`; the previously-separate `src/crd/components/space/sidebar/LeadBlock.tsx` was deleted (orphaned after the unification). The L1 SubspaceSidebar lost its own info-card markup and its standalone "About this Subspace" outline button — clicking the InfoBlock pencil now serves as the single edit entry point.
+The shared `LeadItem` type is exported from `InfoBlock.tsx`; the previously-separate `src/crd/components/space/sidebar/LeadBlock.tsx` was deleted (orphaned after the unification). The L1 SubspaceSidebar lost its own info-card markup; the "About this Subspace" outline button was briefly removed during the InfoBlock unification but later **restored as a separate read-only entry point** — see D17.
 
-**Why this matters for spec fidelity**: FR-015, FR-016, and FR-017 originally separated the description card, the leads card, and the "About this Subspace" button into three distinct widgets. The unified InfoBlock satisfies the same functional intent (description + leads + edit/about access) with one widget shared by L0 and L1, which is closer to the prototype's design and substantially simpler to maintain.
+**Why this matters for spec fidelity**: FR-015 and FR-016 originally separated the description card and the leads card into two distinct widgets; the unified InfoBlock satisfies the same functional intent in one widget shared by L0 and L1, closer to the prototype's design and substantially simpler to maintain. FR-017's read-vs-edit split is preserved by keeping the About button (read) and the InfoBlock pencil (edit) as two distinct affordances — see D17.
 
 ### D15: L0 leads on every tab via `useCrdSpaceLeads` (polish refinement)
 The L0 sidebar's leads are visible on **every tab** (Dashboard, Community, Subspaces, Knowledge), not only on the Community tab. The Community tab already had access to lead data via `useRoleSetManager` (used for the members grid). The other three tabs did not — `SpaceContext` only loads the lightweight `SpaceAboutLight` fragment, which excludes `leadUsers` and `leadOrganizations`. A new shared hook `src/main/crdPages/space/hooks/useCrdSpaceLeads.ts` calls `useSpaceAboutDetailsQuery` (the canonical fragment that does include leads with full profile + location), maps the result via `mapSidebarLeads`, and returns `LeadItem[]`. Apollo dedupes against any other consumer of the same query, so the cost is at most one round-trip per L0 page mount.
@@ -195,6 +196,20 @@ The Community tab keeps its existing lead computation in `useCrdSpaceCommunity` 
 
 ### D16: Shared `TabStateHeader` (polish refinement)
 The flow-state description on each L0 tab and its primary action button (Add Post / Invite Member / Create Subspace) appear in the same banner-style strip across all four L0 tabs. Rather than replicating the markup per tab, a small CRD presentational component `src/crd/components/space/TabStateHeader.tsx` accepts `description` (markdown) and `action` (a `ReactNode` slot for the button) and lays them out as text-on-left, action-on-right. All four L0 tab pages render this component with their respective action button at `size="sm"`. No business logic in the component — pure layout.
+
+### D17: Pencil → settings, About button → dialog (polish refinement)
+After D14 collapsed the L1 sidebar into a single InfoBlock with a hover pencil that opened the read-only About dialog, the read and edit entry points were **re-separated** into two distinct affordances:
+
+- **InfoBlock pencil** (hover overlay) → navigates to `${profileUrl}/settings/about`. Edit surface, both L0 and L1.
+- **"About this Space" / "About this Subspace" outline button** (rendered immediately below the InfoBlock) → opens the read-only `SpaceAboutDialog` populated with the entity's full public details. Read surface, both L0 and L1.
+
+This means the previously-removed "About this Subspace" button is **back** for L1, and an equivalent "About this Space" button is rendered on the L0 home tab. The button is intentionally **not** rendered on the other L0 tab variants (Community / Subspaces / Knowledge) to avoid redundancy with their primary actions. The two L1 levels (subspace and sub-subspace) both render the button.
+
+Component prop shape changed accordingly: `SubspaceSidebar` and `SpaceSidebar` each now take **two** distinct callbacks — `onEditClick` (pencil → settings) and `onAboutClick` (button → dialog). The InfoBlock continues to take a single `onEditClick`. Layouts wire the two handlers to their respective destinations.
+
+To open the L0 about dialog, a new connector was added at `src/main/crdPages/space/dialogs/CrdSpaceAboutDialogConnector.tsx` (mirrors the existing `CrdSubspaceAboutDialogConnector`). It reads via `useSpace()` + `useSpaceAboutDetailsQuery` and is mounted by `CrdSpaceDashboardPage` (the home tab is the only L0 variant that renders the About button). The L1 layout already had a connector (`CrdSubspaceAboutDialogConnector`) and continues to use it.
+
+**Why**: a hover pencil suggests *edit* by convention. Sending a member to the read-only dialog when they expect to edit (or vice versa) was confusing; the two separate affordances make the destination obvious from the trigger and restore the original intent of FR-017 (both read and edit are reachable, but via distinct controls).
 
 ## Phased Implementation
 
