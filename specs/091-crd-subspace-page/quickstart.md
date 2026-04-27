@@ -21,7 +21,7 @@ This guide explains how to develop, run, and verify the new L1 SubSpace page loc
 pnpm install
 ```
 
-If the new `CommunityMemberCount.graphql` document is added during the branch, regenerate types (requires the backend running on `localhost:4000`):
+No new `.graphql` documents in this branch. (The proposed `CommunityMemberCount.graphql` was deferred — see research R1.) Regenerate types only if you change another GraphQL document; requires the backend running on `localhost:4000`:
 
 ```bash
 pnpm codegen
@@ -80,7 +80,7 @@ Run through this list before requesting review. Each step maps to one or more ac
 ### 1. SubSpace renders end-to-end (US1)
 - [ ] Open `/<space>/challenges/<subspace>` with the toggle ON.
 - [ ] Banner shows the **parent's** banner image, layered avatar (parent behind, subspace in front), SUBSPACE badge top-right, action icons top-right (only those entitled), member-avatar stack bottom-right.
-- [ ] The "+N" overflow chip on the avatar stack reflects the **true** community count (verify against an L0 space whose community size you know).
+- [ ] The avatar stack shows lead-user avatars only — no `+N` overflow chip (true total count was deferred — see research R1).
 - [ ] Title and tagline render below the banner.
 - [ ] Breadcrumbs: home → parent space name → subspace name.
 - [ ] Innovation flow phase tabs render above the content column with a **double-arrow connector between every adjacent pair**, no gaps.
@@ -109,10 +109,10 @@ Run through this list before requesting review. Each step maps to one or more ac
 - [ ] If parent membership is required, the CTA explicitly indicates that path.
 - [ ] As a signed-out visitor, public details render and the CTA prompts sign-in.
 
-### 5. L0 banner refinements (US3, FR-026 / FR-027)
-- [ ] Visit any L0 space. The banner avatar stack's "+N" chip equals the real total community member count, not the lead count.
+### 5. L0 banner refinements (US3, FR-027)
 - [ ] Click the avatar stack on the L0 banner — the community dialog opens (the same dialog the SubSpace banner uses).
 - [ ] Click the avatar stack on the L1 banner — the same dialog opens, scoped to the subspace's community.
+- [ ] Both banners show lead-user avatars only (no `+N` overflow chip — FR-026 deferred per research R1).
 
 ### 6. Visibility states (US2, FR-024)
 - [ ] Open an archived / demo / inactive subspace. The visibility notice appears at the top of the page; the rest of the page still renders.
@@ -173,10 +173,8 @@ Run through this list before requesting review. Each step maps to one or more ac
 | Dialog connectors | `src/main/crdPages/subspace/dialogs/Crd*DialogConnector.tsx` |
 | Data mapper | `src/main/crdPages/subspace/dataMappers/subspacePageDataMapper.ts` |
 | Hooks | `src/main/crdPages/subspace/hooks/useCrdSubspace.ts`, `useCrdSubspaceFlow.ts` |
-| L0 banner refinement | `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` (drop bailout, wire member click) |
-| L0 mapper extension | `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` (true total count) |
+| L0 banner refinement | `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` (wire `onMemberClick` to community dialog) |
 | L0 routing | `src/main/crdPages/space/routing/CrdSpaceRoutes.tsx` (nest subspace route) |
-| Member-count GraphQL | `src/domain/space/community/CommunityMemberCount.graphql` |
 | i18n | `src/crd/i18n/subspace/subspace.{en,nl,es,bg,de,fr}.json` + `src/core/i18n/config.ts` registration |
 | Settings URL helper | `src/main/routing/urlBuilders.ts` (new `buildSubspaceSettingsUrl`) |
 

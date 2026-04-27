@@ -43,10 +43,9 @@ type MemberAvatar = {
   initials: string;                     // first 2 letters of displayName
 };
 
-type BannerCommunityData = {
-  avatars: MemberAvatar[];              // sample (e.g. up to 5 lead users with avatars)
-  totalCount: number;                   // true total community member count from CommunityMemberCount.graphql
-};
+// Note: the `BannerCommunityData = { avatars, totalCount }` shape originally proposed here
+// is dropped — see tasks.md T004. Banner shows lead-user avatars only (no `+N` overflow chip).
+// `useCrdSubspace` exposes a flat `bannerAvatars: MemberAvatar[]` instead.
 ```
 
 ### `SubspaceHeaderActionsData`
@@ -273,8 +272,7 @@ No state machines needed.
 
 - `subspaceInitials` and `parentInitials` always have ≥1 character (mapper takes `displayName.slice(0,2).toUpperCase()`; for empty displayNames the mapper returns `'??'`).
 - `subspaceColor` and `parentColor` are always defined; `pickColorFromId` is total over all string ids.
-- `bannerCommunity.avatars` length is bounded to ≤5 (sample size is enforced by the mapper, not the component).
-- `bannerCommunity.totalCount` may be 0 → the avatar stack is hidden by the component (FR-028).
+- `bannerAvatars` length is bounded to ≤5 by the component (`SubspaceHeader` slices the prop). May be empty → the avatar stack is hidden (FR-028).
 - `flowTabs.phases` may be empty → the component renders the empty-state message (FR-008 edge case + clarification Q4).
 - `flowTabs.activePhaseId` is always one of `phases[].id` when `phases` is non-empty (resolver guarantees this).
 

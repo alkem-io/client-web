@@ -1,0 +1,75 @@
+{
+  "badge": {
+    "subspace": "SubSpace",
+    "subSubspace": "SubSubSpace"
+  },
+  "actions": {
+    "activity": "Recente activiteit",
+    "videoCall": "Videogesprek starten",
+    "share": "Delen",
+    "settings": "Instellingen"
+  },
+  "members": {
+    "viewCommunity": "Communityleden bekijken",
+    "memberCount_one": "{{count}} lid",
+    "memberCount_other": "{{count}} leden"
+  },
+  "flow": {
+    "editFlow": "Innovatieflow bewerken",
+    "addPost": "Bericht toevoegen",
+    "emptyState": "Er zijn nog geen fasen geconfigureerd voor deze subspace.",
+    "phaseTab": "Schakel naar fase {{name}}",
+    "connectorAlt": "Volgende fase"
+  },
+  "sidebar": {
+    "about": "Over deze SubSpace",
+    "lead": "Trekker",
+    "leads": "Trekkers",
+    "quickActions": {
+      "heading": "Snelle acties",
+      "community": "Community",
+      "events": "Evenementen",
+      "activity": "Recente activiteit",
+      "index": "Berichtenindex",
+      "subspaces": "Subspaces"
+    },
+    "virtualContributor": {
+      "heading": "Virtuele bijdrager",
+      "open": "Openen"
+    },
+    "updates": {
+      "heading": "Updates van de trekker",
+      "placeholder": "Binnenkort beschikbaar",
+      "description": "Updates van de trekker verschijnen hier zodra de functie live is."
+    }
+  },
+  "community": {
+    "dialogTitle": "Community",
+    "dialogDescription": "Mensen en organisaties die deelnemen aan deze subspace."
+  },
+  "events": {
+    "dialogTitle": "Evenementen"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
+  },
+  "index": {
+    "dialogTitle": "Berichtenindex",
+    "empty": "Nog geen berichten."
+  },
+  "subspaces": {
+    "dialogTitle": "Subspaces",
+    "empty": "Deze subspace heeft geen geneste subspaces."
+  },
+  "breadcrumbs": {
+    "home": "Home"
+  },
+  "a11y": {
+    "subspaceBanner": "SubSpace-banner voor {{name}}",
+    "parentLink": "Ga naar bovenliggende space {{name}}",
+    "flowTabs": "Innovatieflowfasen",
+    "sidebarNavigation": "SubSpace-zijbalk",
+    "communityDialog": "Communityleden-dialoog",
+    "close": "Sluiten"
+  }
+}

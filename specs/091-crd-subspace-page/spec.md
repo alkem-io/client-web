@@ -54,18 +54,19 @@ A platform user who is not yet a member of a subspace opens a public subspace's 
 
 ---
 
-### User Story 3 — L0 Space banner shows the real community size and is interactive (Priority: P3)
+### User Story 3 — L0 Space banner avatar stack is interactive (Priority: P3)
 
-A user on a top-level Space sees a stack of member avatars on the banner. The "+N" overflow chip reflects the **actual** total community size, not the count of lead users. Clicking the avatar stack opens a community dialog listing the members.
+A user on a top-level Space sees a stack of lead-user avatars on the banner. Clicking the avatar stack opens a community dialog listing the members.
 
-**Why this priority**: The current behaviour is a known correctness bug — the count silently lies (it shows the number of leads, not members), and the avatar stack looks clickable but does nothing. It is small in scope and shares all of its plumbing with User Story 1, so it ships in the same feature.
+**Why this priority**: The avatar stack currently looks clickable but does nothing — wiring it to the community dialog is small in scope and shares all of its plumbing with User Story 1, so it ships in the same feature.
 
-**Independent Test**: Open any L0 space with a known community size larger than its lead count and confirm the displayed total matches the real community size; click the avatar stack and confirm the community dialog opens.
+**Note on the original "+N" count fix**: The banner originally lied about community size (`+N` showed lead count, not member count). The proposed fix (true total via a new `CommunityMemberCount.graphql`) was deferred — see research R1. Both L0 and L1 banners now show lead-user avatars only, with no `+N` overflow chip.
+
+**Independent Test**: Open any L0 space, click the avatar stack, confirm the community dialog opens.
 
 **Acceptance Scenarios**:
 
-1. **Given** an L0 space has 50 community members and 3 leads, **When** the user views the banner, **Then** the "+N" overflow on the avatar stack is computed against 50, not 3.
-2. **Given** the user clicks the avatar stack on an L0 banner, **When** the click is handled, **Then** the community dialog opens (the same dialog used by the SubSpace page).
+1. **Given** the user clicks the avatar stack on an L0 banner, **When** the click is handled, **Then** the community dialog opens (the same dialog used by the SubSpace page).
 
 ---
 
@@ -152,9 +153,9 @@ A user changes the platform language to one of the 6 supported languages (Englis
 
 #### Banner community avatar stack (User Stories 1 and 3)
 
-- **FR-026**: The banner avatar stack on both L0 and L1 pages MUST display a sample of community member avatars and the **true total community member count** (not the count of lead users).
+- **FR-026**: ~~The banner avatar stack on both L0 and L1 pages MUST display a sample of community member avatars and the **true total community member count** (not the count of lead users).~~ **DEFERRED** — see research R1. Both banners currently show lead-user avatars only, no `+N` overflow chip. The "true total" portion is tracked as a follow-up.
 - **FR-027**: Clicking the banner avatar stack MUST open the community dialog (the same dialog used by both L0 and L1 pages). The dialog MUST present the members using the same listing pattern (search, pagination/virtualisation, ordering) already used by the L0 Community tab — no separate scaling strategy is introduced for the dialog.
-- **FR-028**: When the community has zero members, the avatar stack MUST be hidden rather than rendering an empty group.
+- **FR-028**: When there are no lead-user avatars to display, the avatar stack MUST be hidden rather than rendering an empty group.
 - **FR-029**: The system MUST remove the dashboard-style KPI section that was previously shown in the community context — neither L0 nor the new L1 community dialog renders it.
 
 #### Coexistence with the legacy experience
@@ -180,7 +181,7 @@ A user changes the platform language to one of the 6 supported languages (Englis
 
 - **SubSpace**: A focused collaboration area nested within a parent Space. Identified by a slug under the parent's URL. Has an identity (name, tagline, optional avatar), a banner inherited from its parent, an innovation flow with one or more phases, a content feed of posts/callouts organised by phase, a community with members and one or more leads, public visibility and lifecycle state (active / archived / demo / inactive), and a permission scope determining who can read, post, edit the flow, and apply.
 - **Innovation Flow Phase**: A named stage in the subspace's process flow. Used to group and filter the subspace's content feed. Phases are ordered.
-- **Community**: The set of users that have joined the subspace. Surfaced on the banner as an avatar sample and a true total count, and in the Community dialog as a full list.
+- **Community**: The set of users that have joined the subspace. Surfaced on the banner as a lead-user avatar sample (no total count — see FR-026) and in the Community dialog as a full list.
 - **Lead**: A designated lead user of the subspace. Surfaced on the sidebar info card.
 - **Parent Space**: The top-level (L0) Space (or, for L2, the L1 SubSpace) that contains this subspace. Provides the banner image and is shown in breadcrumbs.
 

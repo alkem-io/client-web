@@ -6,48 +6,15 @@ This document resolves the open technical questions surfaced by `plan.md` and th
 
 ---
 
-## R1 — True community member count
+## R1 — True community member count — **DEFERRED**
 
-### Question
-The L0 banner currently displays `memberAvatars.length` as the "+N" overflow count, where `memberAvatars` is computed from `space.about.membership.leadUsers`. This means the count is the lead-user count (typically 1–3), not the actual community size. The fix needs a real total. Does the GraphQL schema expose one?
+### Status
+**Dropped from this branch.** The `CommunityMemberCount.graphql` document and the `useCommunityMemberCountQuery` hook were proposed and prototyped, then removed. The L0 and L1 banners now display the lead-user avatar stack only — no `+N` overflow chip. If the true total is needed later, a follow-up spec should:
 
-### Investigation
-- Searched `src/core/apollo/generated/graphql-schema.ts` for `memberCount`, `memberUsersCount`, `totalMembers`, `membersCount` near `Community`, `RoleSet`, and `SpaceAboutMembership`. No scalar count field exists on any of those types.
-- The `RoleSet` type exposes `usersInRole(role: CommunityRoleType!): [User!]!` which returns the full member list.
-- `src/domain/platformAdmin/management/transfer/spaceConversion/SpaceConversion.graphql` already uses this pattern: `memberUsers: usersInRole(role: MEMBER) { id }`.
+- Add `RoleSet.memberCount: Int!` to the backend schema (preferred — avoids over-fetching), OR
+- Add a frontend-only query that selects only user `id`s (the original approach), and have the integration mapper compute `totalCount = memberUsers.length`.
 
-### Decision
-Add a new GraphQL document at `src/domain/space/community/CommunityMemberCount.graphql`:
-
-```graphql
-query CommunityMemberCount($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      about {
-        membership {
-          roleSetID
-          memberUsers: roleSet { usersInRole(role: MEMBER) { id } }
-        }
-      }
-    }
-  }
-}
-```
-
-Run `pnpm codegen`. The integration mapper computes `totalCount = memberUsers.length`. The query fetches only `id` (no avatar URI, no profile), so the wire payload is small.
-
-### Rationale
-- **Frontend-only**: no backend change required, ships with this branch.
-- **Cheap**: each user object is one UUID; even a community of 10,000 fits comfortably in a single response.
-- **Cached**: Apollo caches the result keyed on `spaceId`, so the dialog opening pre-warms the count.
-
-### Alternatives considered
-| Alternative | Rejected because |
-|---|---|
-| Add `RoleSet.memberCount: Int!` to the schema | Right long-term fix but requires backend coordination outside this branch. Tracked as a follow-up. |
-| Reuse the existing `useRoleSetManager` hook (returns full member list) on every page load | Over-fetches: returns full profiles + avatar URIs even when only the count is needed for the banner. |
-| Compute the count inside the existing `useApplicationButtonQuery` | That query is scoped to permissions, not membership. Adding a member count there would mix concerns. |
+The original investigation (no scalar count field exists today; `RoleSet.usersInRole(role: CommunityRoleType!): [User!]!` is the only reachable list) still stands and is the starting point for the follow-up.
 
 ---
 

@@ -38,7 +38,7 @@ The architecture follows the three-layer pattern established by 039/042 (CRD pre
 | Arch 4 | Build determinism | PASS | No Vite config changes. |
 | Arch 5 | Import transparency | PASS | No barrel exports introduced; explicit file paths throughout. |
 | Arch 6 | SOLID / DRY | PASS | The community dialog connector is shared between L0 and L1 (DRY). `mapMemberAvatars` is extended once, not duplicated. The flow-tab component is a fresh component (not a forced extension of `SpaceNavigationTabs`) because the prototype's pill+arrow design is structurally different — keeping them separate honours SRP. |
-| Eng 5 | Root cause analysis | PASS | The L0 community count bug is fixed at the root (mapper returns true total) rather than papered over. The L1 empty-shell bug is fixed by mounting the proper layout, not by making the bailout "less broken". |
+| Eng 5 | Root cause analysis | PASS | The L1 empty-shell bug is fixed by mounting the proper layout, not by making the bailout "less broken". (The L0 community-count bug fix proposed here was deferred — see research R1.) |
 
 ## Project Structure
 
@@ -97,9 +97,9 @@ src/main/crdPages/subspace/              # NEW directory mirroring src/main/crdP
 
 src/main/crdPages/space/                 # MODIFIED files
 ├── layout/
-│   └── CrdSpacePageLayout.tsx          # MODIFIED — pass onMemberClick + true memberCount; render shared community dialog. The `if (!isLevelZero)` bailout at line ~133 STAYS (load-bearing — see D3)
+│   └── CrdSpacePageLayout.tsx          # MODIFIED — pass onMemberClick; render shared community dialog. The `if (!isLevelZero)` bailout at line ~133 STAYS (load-bearing — see D3). (True `memberCount` deferred — research R1.)
 ├── dataMappers/
-│   └── spacePageDataMapper.ts          # MODIFIED — extend mapMemberAvatars to return { avatars, totalCount }
+│   └── spacePageDataMapper.ts          # UNCHANGED — `mapMemberAvatars` keeps its `MemberAvatar[]` shape (the `{ avatars, totalCount }` extension was deferred with research R1)
 └── routing/
     └── CrdSpaceRoutes.tsx              # MODIFIED — swap the lazy import at line 18 from `SubspaceRoutes` (legacy MUI) to `CrdSubspaceRoutes` (new); the route nesting at lines 95–104 already exists and is reused as-is
 
@@ -110,9 +110,7 @@ src/core/i18n/
 src/main/routing/
 └── urlBuilders.ts                       # MODIFIED — add buildSubspaceSettingsUrl(subspaceUrl) thin helper (returns ${url}/settings)
 
-src/domain/space/                        # GraphQL — one new document
-└── community/
-    └── CommunityMemberCount.graphql    # NEW — selects `space.about.membership` + `roleSet.usersInRole(role: MEMBER) { id }`; consumed by the data mapper to compute the true count
+# (No new GraphQL documents in this branch — `CommunityMemberCount.graphql` was deferred; see research R1.)
 ```
 
 **Structure Decision**: A separate `src/main/crdPages/subspace/` directory is the cleanest split. It mirrors the legacy MUI separation (`SpacePageLayout` ≠ `SubspacePageLayout`), keeps the L0 layout focused on L0 (no level-branching inside the layout body), and follows the precedent set by 042 for `src/main/crdPages/space/`. The L1 routes are already nested inside `CrdSpaceRoutes.tsx:95-104` (with `SubspaceContextProvider` wrapping) and currently delegate to the legacy MUI `SubspaceRoutes`; the only cross-layer change is swapping that lazy import for the new `CrdSubspaceRoutes`. The `!isLevelZero` bailout in `CrdSpacePageLayout.tsx:133` stays — it is the mechanism that prevents the L0 banner from wrapping the L1 outlet.
@@ -122,7 +120,6 @@ src/domain/space/                        # GraphQL — one new document
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | Arch #2: Tailwind alongside MUI | Inherited from the page-by-page migration strategy. Both design systems coexist while pages are migrated incrementally. | Removing MUI requires every page to be migrated simultaneously; not feasible. |
-| One new GraphQL document for community member count | The `RoleSet` type exposes member lists but no scalar count field today. We add the smallest possible document (selecting only `id`) and count its length in the mapper. | (a) Schema change adding `RoleSet.memberCount: Int!` is the right long-term fix but requires backend coordination outside this branch. (b) Reusing an existing query that returns full user objects would over-fetch when we only need a count. The new document is the minimal-impact option. |
 
 ## Design Decisions
 
@@ -144,8 +141,8 @@ Per FR-010, the data mapper does not pass `count` to `SubspaceFlowTabs`. The com
 ### D6: Shared community dialog connector
 `CrdSubspaceCommunityDialogConnector` is consumed by both `CrdSpacePageLayout` (L0 banner) and `CrdSubspacePageLayout` (L1 banner). Internally it instantiates `useRoleSetManager(roleSetId)` and renders `<SubspaceCommunityDialog open onOpenChange><SpaceMembers ... /></SubspaceCommunityDialog>`. The `SpaceMembers` component is reused unchanged (existing search + filter + client-side pagination logic per Phase 0 R4).
 
-### D7: True community count via `roleSet.usersInRole(role: MEMBER) { id }`
-A new GraphQL document `CommunityMemberCount.graphql` selects only the user `id` array and the mapper returns `members.length`. This avoids over-fetching, requires no backend change, and is generated via `pnpm codegen`. The mapper extends `mapMemberAvatars` to return `{ avatars: MemberAvatar[]; totalCount: number }` and both L0 and L1 callers use the same shape.
+### D7: True community count — **DEFERRED**
+The original plan added `CommunityMemberCount.graphql` and extended `mapMemberAvatars` to return `{ avatars, totalCount }`. Both were dropped. The banner avatar stack now shows lead-user avatars only, with no `+N` overflow chip. See research R1 for the path forward if this is revived.
 
 ### D8: Parent banner via the existing `useSpaceAboutDetailsQuery`
 The parent's banner image is loaded by calling `useSpaceAboutDetailsQuery({ spaceId: parentSpaceId, skip: !parentSpaceId })` from `useCrdSubspace`. SubspaceContext does not load the parent. We accept the second query as the simplest path; it is cached by Apollo so a return visit costs nothing. (See research R3 for alternatives considered.)
@@ -178,7 +175,7 @@ A `<section>` with an `<h3>` "Updates from the Lead" heading + a small "Coming s
 | P1 | US1 (integration) | `src/main/crdPages/subspace/` skeleton: layout, routing, callouts tab page, data mapper, `useCrdSubspace`, `useCrdSubspaceFlow`. Drop the `!isLevelZero` bailout. Nest the route inside `CrdSpaceRoutes`. | Medium |
 | P2 | US1 (dialogs) | Five dialog connectors (Community, Events, Activity, Index, Subspaces) wired to existing components/hooks. | Medium |
 | P3 | US2 | Apply / join CTA wiring via existing `useApplicationButton`; visibility notice; About-this-Subspace button → `SpaceAboutDialog`. | Small |
-| P4 | US3 | L0 banner refinements: extend `mapMemberAvatars`, pass true `memberCount` + `onMemberClick` from `CrdSpacePageLayout`, mount the shared community dialog. New `CommunityMemberCount.graphql` + `pnpm codegen`. | Small |
+| P4 | US3 | L0 banner refinements: pass `onMemberClick` from `CrdSpacePageLayout` and mount the shared community dialog. (True `memberCount` + `CommunityMemberCount.graphql` deferred — see research R1.) | Small |
 | P5 | US4, US5 | Polish: verify connectors render correctly, accessibility audit, all 6 language files, semantic typography pass, mobile breakpoints. | Medium |
 
 Tasks for each phase are generated by `/speckit.tasks`.
