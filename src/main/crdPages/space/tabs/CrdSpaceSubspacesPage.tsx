@@ -1,9 +1,13 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
@@ -13,10 +17,14 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 
 export default function CrdSpaceSubspacesPage() {
+  const { t } = useTranslation('crd-space');
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
+  const navigate = useNavigate();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const {
     callouts,
     calloutsSetId,
@@ -41,7 +49,6 @@ export default function CrdSpaceSubspacesPage() {
   const sidebarSubspaces = subspaces.map(s => ({
     name: s.name,
     initials: getInitials(s.name),
-    color: pickColorFromId(s.id),
     href: s.href,
   }));
 
@@ -58,14 +65,29 @@ export default function CrdSpaceSubspacesPage() {
         createPortal(
           <SpaceSidebar
             variant="subspaces"
-            description={tabDescription || space.about.profile.description || ''}
+            description={space.about.profile.description || ''}
+            leads={sidebarLeads}
+            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             subspaces={sidebarSubspaces}
           />,
           sidebarContainer
         )}
 
       <div className="space-y-8">
-        <SpaceSubspacesList subspaces={subspaces} canCreate={canCreate} onCreateClick={handleCreateClick} />
+        <TabStateHeader
+          description={tabDescription}
+          action={
+            canCreate &&
+            handleCreateClick && (
+              <Button size="sm" className="gap-2" onClick={handleCreateClick}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('subspaces.createSubspace')}
+              </Button>
+            )
+          }
+        />
+
+        <SpaceSubspacesList subspaces={subspaces} />
 
         <CalloutListConnector
           callouts={callouts}

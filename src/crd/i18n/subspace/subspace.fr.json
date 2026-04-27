@@ -1,0 +1,70 @@
+{
+  "badge": {
+    "subspace": "SousEspace",
+    "subSubspace": "SousSousEspace"
+  },
+  "actions": {
+    "activity": "Activité récente",
+    "videoCall": "Démarrer un appel vidéo",
+    "share": "Partager",
+    "settings": "Paramètres"
+  },
+  "members": {
+    "viewCommunity": "Voir les membres de la communauté",
+    "memberCount_one": "{{count}} membre",
+    "memberCount_other": "{{count}} membres"
+  },
+  "flow": {
+    "editFlow": "Modifier le flux d'innovation",
+    "addPost": "Ajouter une publication",
+    "emptyState": "Aucune phase n'est encore configurée pour ce sous-espace.",
+    "phaseTab": "Passer à la phase {{name}}",
+    "connectorAlt": "Phase suivante"
+  },
+  "sidebar": {
+    "about": "À propos de ce SousEspace",
+    "lead": "Responsable",
+    "leads": "Responsables",
+    "quickActions": {
+      "heading": "Actions rapides",
+      "community": "Communauté",
+      "events": "Événements",
+      "activity": "Activité récente",
+      "index": "Index des publications",
+      "subspaces": "SousEspaces"
+    },
+    "virtualContributor": {
+      "heading": "Contributeur virtuel",
+      "open": "Ouvrir"
+    }
+  },
+  "community": {
+    "dialogTitle": "Communauté",
+    "dialogDescription": "Personnes et organisations participant à ce sous-espace."
+  },
+  "events": {
+    "dialogTitle": "Événements"
+  },
+  "activity": {
+    "dialogTitle": "Activité récente"
+  },
+  "index": {
+    "dialogTitle": "Index des publications",
+    "empty": "Aucune publication pour le moment."
+  },
+  "subspaces": {
+    "dialogTitle": "SousEspaces",
+    "empty": "Ce sous-espace ne contient pas de sous-espaces imbriqués."
+  },
+  "breadcrumbs": {
+    "home": "Accueil"
+  },
+  "a11y": {
+    "subspaceBanner": "Bannière du SousEspace pour {{name}}",
+    "parentLink": "Aller à l'espace parent {{name}}",
+    "flowTabs": "Phases du flux d'innovation",
+    "sidebarNavigation": "Barre latérale du SousEspace",
+    "communityDialog": "Dialogue des membres de la communauté",
+    "close": "Fermer"
+  }
+}
