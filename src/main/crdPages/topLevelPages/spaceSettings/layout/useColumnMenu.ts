@@ -66,7 +66,6 @@ export function useColumnMenu({
     if (oldName && oldName !== title) {
       const affectedCallouts = callouts.filter(c => c.currentStateName === oldName);
       for (const callout of affectedCallouts) {
-        // eslint-disable-next-line no-await-in-loop
         await updateCalloutFlowState({
           variables: {
             calloutId: callout.id,
