@@ -5,10 +5,7 @@ import {
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import {
-  DefaultWhiteboardPreviewSettings,
-  type WhiteboardPreviewSettings,
-} from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
@@ -91,9 +88,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
     whiteboardPreviewImages: [],
-    whiteboardPreviewSettings:
-      (framing.whiteboard?.previewSettings as WhiteboardPreviewSettings | undefined) ??
-      DefaultWhiteboardPreviewSettings,
+    whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     whiteboardConfigured: framing.type === CalloutFramingType.Whiteboard,
     mediaGalleryVisuals:
       framing.mediaGallery?.visuals.map(v => ({

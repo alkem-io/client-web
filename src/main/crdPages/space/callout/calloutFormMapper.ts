@@ -15,6 +15,7 @@ import type {
   AllowedActors,
   CalloutFormValues,
   FramingChip,
+  ReferenceRow,
   ResponseType,
 } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
@@ -306,9 +307,12 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   const hasResponseType = responseType !== undefined;
 
   const references: UpdateReferenceInput[] = values.referenceRows
-    .filter(row => row.id && row.title.trim() && row.url.trim())
+    .filter(
+      (row): row is ReferenceRow & { id: string } =>
+        Boolean(row.id) && row.title.trim().length > 0 && row.url.trim().length > 0
+    )
     .map(row => ({
-      ID: row.id as string,
+      ID: row.id,
       name: row.title.trim(),
       uri: row.url.trim(),
       description: row.description.trim(),
