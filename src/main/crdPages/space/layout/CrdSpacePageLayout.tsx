@@ -41,6 +41,7 @@ import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuil
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
@@ -53,6 +54,7 @@ export default function CrdSpacePageLayout() {
   const { pathname } = useLocation();
   const [_shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
@@ -182,6 +184,7 @@ export default function CrdSpacePageLayout() {
               bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
               memberAvatars={memberAvatars}
               memberCount={memberAvatars.length}
+              onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}
             />
           )
@@ -203,6 +206,13 @@ export default function CrdSpacePageLayout() {
           <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
         </Suspense>
       </SpaceShell>
+
+      {/* Community dialog — opened from banner avatar stack (shared with L1) */}
+      <CrdSpaceCommunityDialogConnector
+        open={communityOpen}
+        onOpenChange={setCommunityOpen}
+        roleSetId={space.about.membership?.roleSetID || undefined}
+      />
     </StorageConfigContextProvider>
   );
 }

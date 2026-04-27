@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 
@@ -21,14 +20,11 @@ export function useCrdSubspaceFlow(
 
   const activePhaseId = validUrlPhase ?? validCurrentState ?? phases[0]?.id;
 
-  const setActivePhaseId = useCallback(
-    (id: string) => {
-      const next = new URLSearchParams(searchParams);
-      next.set(PHASE_PARAM, id);
-      setSearchParams(next, { replace: true });
-    },
-    [searchParams, setSearchParams]
-  );
+  const setActivePhaseId = (id: string) => {
+    const next = new URLSearchParams(searchParams);
+    next.set(PHASE_PARAM, id);
+    setSearchParams(next, { replace: true });
+  };
 
   return { activePhaseId, setActivePhaseId };
 }

@@ -3,9 +3,9 @@ import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SubspaceCommunityDialog } from '@/crd/components/space/SubspaceCommunityDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { mapRoleSetToMemberCards } from '../../space/dataMappers/communityDataMapper';
+import { mapRoleSetToMemberCards } from '../dataMappers/communityDataMapper';
 
-type CrdSubspaceCommunityDialogConnectorProps = {
+type CrdSpaceCommunityDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   roleSetId: string | undefined;
@@ -14,13 +14,13 @@ type CrdSubspaceCommunityDialogConnectorProps = {
   description?: string;
 };
 
-export function CrdSubspaceCommunityDialogConnector({
+export function CrdSpaceCommunityDialogConnector({
   open,
   onOpenChange,
   roleSetId,
   title,
   description,
-}: CrdSubspaceCommunityDialogConnectorProps) {
+}: CrdSpaceCommunityDialogConnectorProps) {
   const { t } = useTranslation('crd-subspace');
 
   const { users, organizations, loading } = useRoleSetManager({

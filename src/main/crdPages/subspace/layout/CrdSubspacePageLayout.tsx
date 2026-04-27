@@ -7,9 +7,9 @@ import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNot
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
-import { CrdSubspaceCommunityDialogConnector } from '../dialogs/CrdSubspaceCommunityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
@@ -18,7 +18,6 @@ import { useCrdSubspace } from '../hooks/useCrdSubspace';
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
-  const [communityFromBanner, setCommunityFromBanner] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
 
   // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
@@ -44,18 +43,6 @@ export default function CrdSubspacePageLayout() {
     return null;
   }
 
-  const communityOpen = communityFromBanner || activeDialog === 'community';
-
-  const handleCommunityChange = (open: boolean) => {
-    if (open) {
-      // Banner click — keep activeDialog separate so closing one doesn't toggle the other.
-      setCommunityFromBanner(true);
-    } else {
-      setCommunityFromBanner(false);
-      if (activeDialog === 'community') setActiveDialog(null);
-    }
-  };
-
   const handleQuickAction = (id: SubspaceQuickActionId) => {
     setActiveDialog(id);
   };
@@ -76,7 +63,7 @@ export default function CrdSubspacePageLayout() {
             onActivityClick: () => setActiveDialog('activity'),
           }}
           memberAvatars={data.bannerAvatars}
-          onMemberClick={() => handleCommunityChange(true)}
+          onMemberClick={() => setActiveDialog('community')}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 py-8">
@@ -118,9 +105,9 @@ export default function CrdSubspacePageLayout() {
       </div>
 
       {/* Community dialog — opened from banner avatar stack OR sidebar Quick Action */}
-      <CrdSubspaceCommunityDialogConnector
-        open={communityOpen}
-        onOpenChange={handleCommunityChange}
+      <CrdSpaceCommunityDialogConnector
+        open={activeDialog === 'community'}
+        onOpenChange={open => setActiveDialog(open ? 'community' : null)}
         roleSetId={data.roleSetId}
       />
 
