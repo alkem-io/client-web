@@ -24,6 +24,7 @@ const ACTIONS: SubspaceHeaderActionsData = {
   showSettings: true,
   shareUrl: '/preview/share',
   settingsHref: '/preview/settings',
+  videoCallUrl: 'https://meet.jit.si/preview-call',
 };
 
 const MEMBER_AVATARS = MOCK_MEMBERS.slice(0, 5).map(m => ({

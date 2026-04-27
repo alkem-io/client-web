@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
@@ -41,6 +42,14 @@ export default function CrdSubspaceCalloutsPage() {
         />
       </div>
 
+      {/* Active phase description — secondary title between tabs and feed (mirrors the prototype). */}
+      {activePhase?.description && (
+        <MarkdownContent
+          content={activePhase.description}
+          className="text-body text-muted-foreground [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p:last-child]:mb-0"
+        />
+      )}
+
       {phases.length > 0 && (
         <CalloutListConnector
           callouts={callouts ?? []}
@@ -51,7 +60,12 @@ export default function CrdSubspaceCalloutsPage() {
       )}
 
       {canAddPost && calloutsSetId && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={activePhase?.label}
+        />
       )}
     </div>
   );

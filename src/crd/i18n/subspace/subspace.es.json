@@ -36,11 +36,6 @@
     "virtualContributor": {
       "heading": "Contribuyente virtual",
       "open": "Abrir"
-    },
-    "updates": {
-      "heading": "Novedades del líder",
-      "placeholder": "Próximamente",
-      "description": "Las novedades del líder aparecerán aquí cuando la función esté disponible."
     }
   },
   "community": {

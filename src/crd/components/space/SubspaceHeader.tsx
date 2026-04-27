@@ -18,6 +18,7 @@ export type SubspaceHeaderActionsData = {
   showSettings: boolean;
   shareUrl?: string;
   settingsHref?: string;
+  videoCallUrl?: string;
   onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
@@ -110,17 +111,30 @@ export function SubspaceHeader({
                     <Activity className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
-                {actions.showVideoCall && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
-                    onClick={actions.onVideoCallClick}
-                    aria-label={t('actions.videoCall')}
-                  >
-                    <Video className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
+                {actions.showVideoCall &&
+                  (actions.videoCallUrl ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      aria-label={t('actions.videoCall')}
+                      asChild={true}
+                    >
+                      <a href={actions.videoCallUrl} target="_blank" rel="noopener noreferrer">
+                        <Video className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      onClick={actions.onVideoCallClick}
+                      aria-label={t('actions.videoCall')}
+                    >
+                      <Video className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  ))}
                 {actions.showShare &&
                   (actions.shareUrl ? (
                     <Button
@@ -175,9 +189,9 @@ export function SubspaceHeader({
           {badgeText}
         </Badge>
 
-        {/* Member avatar stack — bottom-right */}
+        {/* Member avatar stack — bottom-right, aligned with the action-icon row above (ends at col 11) */}
         {showAvatarStack && (
-          <div className="absolute bottom-6 right-6 md:right-8">
+          <div className="absolute bottom-6 left-0 right-0 px-6 md:px-8">
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex justify-end">
                 <button

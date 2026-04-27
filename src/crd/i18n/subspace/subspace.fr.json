@@ -36,11 +36,6 @@
     "virtualContributor": {
       "heading": "Contributeur virtuel",
       "open": "Ouvrir"
-    },
-    "updates": {
-      "heading": "Actualités du responsable",
-      "placeholder": "Bientôt disponible",
-      "description": "Les actualités du responsable s'afficheront ici lorsque la fonctionnalité sera disponible."
     }
   },
   "community": {

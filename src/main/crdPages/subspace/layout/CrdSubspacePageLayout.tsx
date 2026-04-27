@@ -21,10 +21,18 @@ export default function CrdSubspacePageLayout() {
   const [communityFromBanner, setCommunityFromBanner] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
 
-  // Breadcrumbs are derived even before data loads so the slot stays stable.
+  // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
+  // parent — collapse to a single hop. At L2 the L0 hop is distinct, so we render
+  // L0 → L1 → L2.
+  const includeL0Crumb =
+    !!data.levelZeroSpaceName && !!data.levelZeroSpaceId && data.levelZeroSpaceId !== data.parentSpaceId;
   useSetBreadcrumbs(
     data.parentSpaceName && data.subspaceName
-      ? [{ label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers }, { label: data.subspaceName }]
+      ? [
+          ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName!, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
+          { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
+          { label: data.subspaceName },
+        ]
       : []
   );
 
@@ -63,15 +71,27 @@ export default function CrdSubspacePageLayout() {
       <div className="flex flex-col bg-background min-h-screen">
         <SubspaceHeader
           {...data.banner}
-          actions={data.bannerActions}
+          actions={{
+            ...data.bannerActions,
+            onActivityClick: () => setActiveDialog('activity'),
+          }}
           memberAvatars={data.bannerAvatars}
           onMemberClick={() => handleCommunityChange(true)}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 py-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Main content — left side, cols 2-9 */}
-            <div className="col-span-12 lg:col-start-2 lg:col-span-8 min-w-0 space-y-6">
+            {/* Left sidebar — cols 2-3, one col gap from left edge */}
+            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">
+              <SubspaceSidebar
+                {...data.sidebar}
+                onAboutClick={() => setAboutOpen(true)}
+                onQuickActionClick={handleQuickAction}
+              />
+            </div>
+
+            {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
+            <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
               {showApplyCta && (
                 <SpaceAboutApplyButton
                   isAuthenticated={data.applicationButtonProps.isAuthenticated}
@@ -92,15 +112,6 @@ export default function CrdSubspacePageLayout() {
               <Suspense fallback={<LoadingSpinner />}>
                 <Outlet context={{ data }} />
               </Suspense>
-            </div>
-
-            {/* Right sidebar — cols 10-11, one col gap from right edge */}
-            <div className="hidden lg:block lg:col-start-10 col-span-2 sticky top-24 self-start">
-              <SubspaceSidebar
-                {...data.sidebar}
-                onAboutClick={() => setAboutOpen(true)}
-                onQuickActionClick={handleQuickAction}
-              />
             </div>
           </div>
         </main>

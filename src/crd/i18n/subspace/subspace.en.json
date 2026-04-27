@@ -36,11 +36,6 @@
     "virtualContributor": {
       "heading": "Virtual Contributor",
       "open": "Open"
-    },
-    "updates": {
-      "heading": "Updates from the Lead",
-      "placeholder": "Coming soon",
-      "description": "Lead updates will appear here once the feature ships."
     }
   },
   "community": {

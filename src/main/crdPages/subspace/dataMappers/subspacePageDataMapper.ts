@@ -74,15 +74,20 @@ export function mapSubspaceBanner({
 export type SubspaceHeaderActionsSource = {
   shareUrl: string | undefined;
   canUpdate: boolean;
+  videoCallEnabled: boolean;
+  videoCallUrl: string | undefined;
 };
 
 export function mapSubspaceHeaderActions({
   shareUrl,
   canUpdate,
+  videoCallEnabled,
+  videoCallUrl,
 }: SubspaceHeaderActionsSource): SubspaceHeaderActionsData {
   return {
     showActivity: true,
-    showVideoCall: false,
+    showVideoCall: videoCallEnabled && !!videoCallUrl,
+    videoCallUrl,
     showShare: true,
     showSettings: canUpdate,
     shareUrl,
@@ -97,13 +102,18 @@ export function mapSubspaceHeaderActions({
 type InnovationFlowStateLike = {
   id?: string;
   displayName?: string | null;
+  description?: string | null;
 };
 
 export function mapInnovationFlowPhases(states: InnovationFlowStateLike[] | undefined): SubspaceFlowPhase[] {
   if (!states) return [];
   return states
     .filter((state): state is InnovationFlowStateLike & { id: string } => !!state.id)
-    .map(state => ({ id: state.id, label: state.displayName ?? '' }));
+    .map(state => ({
+      id: state.id,
+      label: state.displayName ?? '',
+      description: state.description ?? undefined,
+    }));
 }
 
 // ---------------------------------------------------------------------------

@@ -73,11 +73,13 @@ export function SubspaceSidebar({
       {/* Info card — blue panel, no Challenge Statement title */}
       <div className="p-5 rounded-lg bg-primary text-primary-foreground">
         {whyMarkdown ? (
-          <div className="text-body opacity-95 [&_p]:leading-relaxed">
-            <MarkdownContent content={whyMarkdown} />
-          </div>
+          // Override MarkdownContent's default muted body colour so text reads as white on the blue panel (WCAG AA).
+          <MarkdownContent
+            content={whyMarkdown}
+            className="text-primary-foreground [&_p]:text-primary-foreground [&_p]:leading-relaxed [&_li]:text-primary-foreground [&_strong]:text-primary-foreground [&_em]:text-primary-foreground [&_a]:text-primary-foreground [&_a]:underline"
+          />
         ) : tagline ? (
-          <p className="text-body opacity-95 leading-relaxed">{tagline}</p>
+          <p className="text-body leading-relaxed">{tagline}</p>
         ) : null}
 
         {leads.length > 0 && (
@@ -178,17 +180,6 @@ export function SubspaceSidebar({
           </a>
         </section>
       )}
-
-      {/*
-        Updates from the Lead — placeholder section.
-        Spec: 091-crd-subspace-page (FR-022). Data source not yet defined; cross-investigation
-        of L0 + L1 needed before implementation. Tracked as follow-up.
-      */}
-      <section className="p-4 rounded-lg bg-card border border-border border-dashed">
-        <p className="text-label uppercase text-muted-foreground mb-1">{t('sidebar.updates.heading')}</p>
-        <p className="text-body-emphasis text-foreground">{t('sidebar.updates.placeholder')}</p>
-        <p className="text-caption text-muted-foreground mt-1">{t('sidebar.updates.description')}</p>
-      </section>
     </aside>
   );
 }

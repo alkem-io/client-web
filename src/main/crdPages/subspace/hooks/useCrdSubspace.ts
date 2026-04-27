@@ -8,6 +8,8 @@ import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceH
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   mapMemberAvatars,
   mapSpaceVisibility,
@@ -32,6 +34,10 @@ export type CrdSubspacePageData = {
   parentSpaceId: string | undefined;
   parentSpaceUrl: string | undefined;
   parentSpaceName: string | undefined;
+  /** L0 in the chain — only distinct from parent when viewing an L2 (else identical to parent). */
+  levelZeroSpaceId: string | undefined;
+  levelZeroSpaceUrl: string | undefined;
+  levelZeroSpaceName: string | undefined;
   roleSetId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
@@ -62,7 +68,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const { subspace, parentSpaceId, permissions, loading: subspaceContextLoading } = useSubSpace();
 
   const subspaceId = subspace.id;
+  const subspaceNameId = subspace.nameId;
   const roleSetId = subspace.about.membership?.roleSetID || undefined;
+
+  // Video call enablement & URL for the banner action icon (FR: show video icon when enabled).
+  const { isVideoCallEnabled, videoCallUrl } = useVideoCall(subspaceId, subspaceNameId);
 
   // Subspace-specific page query (collaboration + calloutsSet IDs, templatesManager).
   const { data: subspacePageData, loading: subspacePageLoading } = useSubspacePageQuery({
@@ -93,6 +103,16 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const parentSpace = parentAboutData?.lookup.space;
   const parentProfile = parentSpace?.about.profile;
 
+  // L0 (top-level) ancestor — only fetched when viewing an L2 (where L0 differs from
+  // the immediate parent). Needed to render the full L0 → L1 → L2 breadcrumb chain.
+  const { levelZeroSpaceId } = useUrlResolver();
+  const needL0Lookup = !!levelZeroSpaceId && levelZeroSpaceId !== parentSpaceId;
+  const { data: levelZeroAboutData, loading: levelZeroAboutLoading } = useSpaceAboutDetailsQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !needL0Lookup,
+  });
+  const levelZeroProfile = needL0Lookup ? levelZeroAboutData?.lookup.space?.about.profile : parentProfile;
+
   // Apply / Join CTA — useApplicationButton handles parent-membership requirement
   // when parentSpaceId is supplied (per research R8).
   const { applicationButtonProps, loading: applicationLoading } = useApplicationButton({
@@ -115,6 +135,8 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const bannerActions = mapSubspaceHeaderActions({
     shareUrl: subspaceUrl || undefined,
     canUpdate: permissions.canUpdate,
+    videoCallEnabled: isVideoCallEnabled,
+    videoCallUrl: videoCallUrl || undefined,
   });
 
   const bannerAvatars = mapMemberAvatars(subspace.about.membership?.leadUsers);
@@ -131,7 +153,8 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const visibility = mapSpaceVisibility(undefined);
 
   return {
-    loading: subspaceContextLoading || subspacePageLoading || flowLoading || parentAboutLoading,
+    loading:
+      subspaceContextLoading || subspacePageLoading || flowLoading || parentAboutLoading || levelZeroAboutLoading,
     notFound: !subspaceContextLoading && !subspaceId,
 
     subspaceId,
@@ -140,6 +163,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
     parentSpaceId,
     parentSpaceUrl: parentProfile?.url ?? undefined,
     parentSpaceName: parentProfile?.displayName ?? undefined,
+    levelZeroSpaceId,
+    levelZeroSpaceUrl: levelZeroProfile?.url ?? undefined,
+    levelZeroSpaceName: levelZeroProfile?.displayName ?? undefined,
     roleSetId,
     collaborationId,
     calloutsSetId,

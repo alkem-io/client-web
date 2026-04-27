@@ -6,6 +6,7 @@ import { Button } from '@/crd/primitives/button';
 export type SubspaceFlowPhase = {
   id: string;
   label: string;
+  description?: string;
 };
 
 export type SubspaceFlowTabsProps = {
