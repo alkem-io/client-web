@@ -95,55 +95,89 @@ type SubspaceFlowTabsData = {
 
 ## Right Sidebar
 
-### `SubspaceSidebarData`
-Aggregated by the integration layer; consumed by `SubspaceSidebar`.
+### `LeadItem` (shared between L0 and L1)
+Defined in `src/crd/components/space/sidebar/InfoBlock.tsx` and consumed by both the L0 and L1 sidebars via the shared `InfoBlock` widget (plan D14).
 
 ```typescript
-type SubspaceLeadData = {
+type LeadItem = {
+  id: string;
   name: string;
   avatarUrl?: string;
   initials: string;
-  href: string;                         // user.profile.url
-  location?: string;                    // user.profile.location.{city, country}
+  location?: string;                    // user/org `profile.location.{city, country}`
+  href?: string;                        // profile.url; absent for read-only rows
+  type: 'person' | 'org';               // 'org' renders a square avatar
 };
+```
 
+### `InfoBlockProps` (shared CRD widget)
+The L0 and L1 sidebars both render a single `<InfoBlock>` at the top of the sidebar (plan D14). The widget is purely presentational: description in, leads in, edit callback in. The integration layer maps source data to this shape.
+
+```typescript
+type InfoBlockProps = {
+  description: string;                  // markdown — sourced from profile.description (L0 + L1)
+  leads?: LeadItem[];                   // rendered inline below the description with a thin white separator
+  onEditClick?: () => void;             // hover pencil + whole-block click; consumer decides destination
+  className?: string;
+};
+```
+
+### `SubspaceLeadData` (legacy alias)
+Existed in earlier drafts as a separate L1-only lead shape. **Now structurally equivalent to `LeadItem`** and the SubspaceSidebar's data mapper produces `LeadItem[]` directly. The L1 hook continues to expose `leads` in `SubspaceSidebarData` (below) using the shared shape.
+
+```typescript
+// Identical to LeadItem above. Retained for backward compatibility in the integration layer.
+type SubspaceLeadData = LeadItem;
+```
+
+### `SubspaceVirtualContributorData`
+Unchanged — the Virtual Contributor card sits below the InfoBlock and is unrelated to the unification.
+
+```typescript
 type SubspaceVirtualContributorData = {
+  id: string;
   name: string;
   avatarUrl?: string;
   description?: string;
+  initials: string;
   href: string;
 };
+```
 
+### `SubspaceQuickActionId` / Quick Action labels
+Unchanged.
+
+```typescript
 type SubspaceQuickActionId =
   | 'community'
   | 'events'
   | 'activity'
   | 'index'
   | 'subspaces';
+```
 
-type SubspaceQuickAction = {
-  id: SubspaceQuickActionId;
-  label: string;                        // translated by the consumer (CRD layer reads from t())
-};
+### `SubspaceSidebarData`
+Aggregated by `useCrdSubspace` and consumed by `SubspaceSidebar`. **Updated during polish (plan D14)**: the `whyMarkdown` and `tagline` fields are gone — the description is now sourced from `subspace.about.profile.description` and rendered through the shared `InfoBlock`. There is no longer a standalone "About this Subspace" `aboutHref` field; clicking the InfoBlock pencil opens the about dialog directly via the layout-owned callback.
 
+```typescript
 type SubspaceSidebarData = {
-  /** Info card body. The "Challenge Statement" header is intentionally omitted (FR-016). */
-  whyMarkdown?: string;                 // subspace.about.why
-  tagline?: string;                     // fallback when whyMarkdown is empty
+  /** Sourced from subspace.about.profile.description (markdown). Replaces the previously
+   *  separate `whyMarkdown`/`tagline` fields. Rendered through the shared InfoBlock. */
+  description: string;
 
-  /** Lead block — singular or plural heading derived from leads.length */
-  leads: SubspaceLeadData[];
+  /** Lead users + lead organizations, mapped to the shared LeadItem shape. Rendered inline
+   *  inside the InfoBlock (FR-015). */
+  leads: LeadItem[];
 
-  /** "About this Subspace" button rendered outside the info card (FR-017). */
-  aboutHref: string;                    // typically subspace.about.profile.url + '/about', opens SpaceAboutDialog
-
-  /** Quick Actions list (FR-018). The L1 layout owns the dialog state and reacts to onActionClick(id). */
-  quickActions: SubspaceQuickAction[];
-
-  /** Virtual Contributor section (FR-021). null when none associated → section is hidden. */
+  /** Virtual Contributor section (FR-021). undefined when none associated → section is hidden. */
   virtualContributor?: SubspaceVirtualContributorData;
 };
 ```
+
+> **Removed from this shape (post-polish)**:
+> - `whyMarkdown` / `tagline` — replaced by the single `description` field.
+> - `aboutHref` — the InfoBlock's `onEditClick` callback is wired directly by `CrdSubspacePageLayout` to open the about dialog. There is no URL-shaped indirection.
+> - `quickActions: SubspaceQuickAction[]` — the L1 layout uses a static `QUICK_ACTIONS` table inside `SubspaceSidebar.tsx` for the icons + ids, with labels translated via `t('crd-subspace:sidebar.quickActions.*')`. The data mapper does not produce a quick-actions array.
 
 ---
 
@@ -228,28 +262,49 @@ type CrdSubspacePageData = {
 
   banner: SubspaceBannerData;
   bannerActions: SubspaceHeaderActionsData;
-  bannerCommunity: BannerCommunityData; // shared shape with L0
+  bannerAvatars: MemberAvatar[];        // flat lead-user avatars (no `+N`/totalCount — research R1)
 
-  flowTabs: SubspaceFlowTabsData;
+  /** Innovation flow (consumed by SubspaceFlowTabs + the callouts page) */
+  phases: SubspaceFlowPhase[];
+  currentPhaseId: string | undefined;
+  canEditFlow: boolean;
+  canAddPost: boolean;
 
-  sidebar: SubspaceSidebarData;
+  sidebar: SubspaceSidebarData;         // description + leads + optional VC (post-polish shape)
 
   visibility: SubspaceVisibilityData;
-  apply: ApplicationButtonProps;        // from useApplicationButton
+  applicationButtonProps: ApplicationButtonProps; // pass-through from useApplicationButton
+  applicationLoading: boolean;
 
-  /** Used by CrdSubspaceCommunityDialogConnector + breadcrumbs */
+  /** Identity — used by the shared community-dialog connector and breadcrumbs */
   subspaceId: string;
   subspaceName: string;
+  subspaceUrl: string;
   parentSpaceId: string | undefined;
   parentSpaceUrl: string | undefined;
   parentSpaceName: string | undefined;
+  /** L0 ancestor — distinct from parent only when viewing an L2 (otherwise identical) */
+  levelZeroSpaceId: string | undefined;
+  levelZeroSpaceUrl: string | undefined;
+  levelZeroSpaceName: string | undefined;
+  roleSetId: string | undefined;
+  collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
 
   /** Permissions surfaced on the page */
   canRead: boolean;
   canUpdate: boolean;
-  canCreateCallout: boolean;
 };
 ```
+
+### `useCrdSpaceLeads` (L0 sidebar leads — polish addition)
+The L0 sidebar's leads are loaded by a new shared hook because `SpaceContext` only fetches the lightweight `SpaceAboutLight` fragment (which omits `leadUsers` / `leadOrganizations`). The hook lives at `src/main/crdPages/space/hooks/useCrdSpaceLeads.ts` and is invoked by the Dashboard, Subspaces, and Knowledge L0 tab pages (the Community tab already exposes leads via its own `useCrdSpaceCommunity` hook). Plan D15.
+
+```typescript
+function useCrdSpaceLeads(spaceId: string | undefined): LeadItem[];
+```
+
+Internally calls `useSpaceAboutDetailsQuery({ spaceId, skip: !spaceId })`, then `mapSidebarLeads(leadUsers, leadOrganizations)`. Apollo dedupes against the same query when used by other consumers (e.g. the L1 layout for the parent banner).
 
 ---
 
@@ -282,8 +337,9 @@ No state machines needed.
 
 | New shape | Reuses / Extends | From |
 |---|---|---|
-| `BannerCommunityData` | Replaces today's `MemberAvatar[]` return of `mapMemberAvatars` | `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` |
+| `LeadItem` (post-polish) | Single shared lead shape used by both L0 and L1 sidebars; replaces the previously-distinct `SubspaceLeadData` and `SidebarLeadData`. Mapped by `mapSidebarLeads(leadUsers, leadOrganizations?)`. | `src/crd/components/space/sidebar/InfoBlock.tsx` (type) + `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` (mapper) |
+| `InfoBlockProps` (post-polish) | Shared sidebar widget consumed by both `SpaceSidebar` (L0) and `SubspaceSidebar` (L1). Replaces three previously-separate widgets (info card + LeadBlock + standalone About button). | `src/crd/components/space/sidebar/InfoBlock.tsx` |
+| `MemberAvatar[]` (banner) | Returned by `mapMemberAvatars`. The earlier proposed `BannerCommunityData = { avatars, totalCount }` was deferred — see research R1. | `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` |
 | `SubspaceVisibilityData` | Identical to `SpaceVisibilityData`, reuses `mapSpaceVisibility` | `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` |
-| `SubspaceLeadData` | Same fields as `SpaceLeadData` (lead block on L0) | `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` |
 | `MemberCardData` (consumed by community dialog) | Already defined for `SpaceMembers` | `src/crd/components/space/SpaceMembers.tsx` |
 | `ApplicationButtonProps` | Existing domain shape, no remapping | `src/domain/access/ApplicationsAndInvitations/useApplicationButton.ts` |

@@ -9,6 +9,8 @@ Migrate the L1 SubSpace page (and, by extension, L2 sub-of-sub) from MUI to the 
 
 The architecture follows the three-layer pattern established by 039/042 (CRD presentational → integration layer → route toggle) and the recipe in `docs/crd/migration-guide.md`. Visual design is taken from `prototype/src/app/pages/SubspacePage.tsx` plus 10 corrections from issue [#9568](https://github.com/alkem-io/client-web/issues/9568).
 
+**Polish-phase additions (post-MVP refinements applied during code review and design refinement passes — see Design Decisions D14–D16):** the L0 and L1 sidebars now share a single `InfoBlock` widget that renders `profile.description` + leads inline + an edit-pencil hover affordance; a new shared `useCrdSpaceLeads` hook surfaces lead data on every L0 tab (not only Community); the per-L0-tab description-and-action strip was extracted into a shared `TabStateHeader` component; the community dialog connector was relocated to a layer-neutral location (`src/main/crdPages/space/dialogs/`) so both layouts can consume it without crossing the L0↔L1 boundary.
+
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned)
@@ -19,7 +21,7 @@ The architecture follows the three-layer pattern established by 039/042 (CRD pre
 **Project Type**: Web SPA — existing monorepo with established CRD layer
 **Performance Goals**: Equal or better than the legacy MUI L1 page; no additional GraphQL round-trips beyond what the legacy page already performs (parent-banner lookup is the one new query — see research R3)
 **Constraints**: Zero MUI/Emotion in `src/crd/`; WCAG 2.1 AA; React Compiler-compatible (no manual memoization); `.crd-root` CSS scoping; legacy MUI L1 page remains as the default until the toggle is removed
-**Scale/Scope**: ~4 new CRD components (SubspaceHeader, SubspaceFlowTabs, SubspaceSidebar, SubspaceCommunityDialog), ~8 integration files, 1 new i18n namespace (`crd-subspace`), 6 language files, 5 dialog connectors that wrap existing components
+**Scale/Scope**: ~6 new CRD components (SubspaceHeader, SubspaceFlowTabs, SubspaceSidebar, SubspaceCommunityDialog, plus the shared sidebar `InfoBlock` widget and `TabStateHeader` introduced during polish — see D14 / D16), ~9 integration files, 1 new i18n namespace (`crd-subspace`), 6 language files, 5 dialog connectors that wrap existing components
 
 ## Constitution Check
 
@@ -64,8 +66,11 @@ src/crd/
 ├── components/space/
 │   ├── SubspaceHeader.tsx              # NEW — banner with parent-image bg, layered avatar, badge, member stack, action icons
 │   ├── SubspaceFlowTabs.tsx            # NEW — sticky pill-tabs with always-on double-arrow connectors, no count badges; slots for edit-flow icon and Add Post button
-│   ├── SubspaceSidebar.tsx             # NEW — fixed right sidebar: info card (no "Challenge Statement" title), About-this-Subspace button (outside card), Quick Actions, Virtual Contributor card, Updates placeholder
+│   ├── SubspaceSidebar.tsx             # NEW — fixed right sidebar: shared InfoBlock at top (description + leads + edit pencil — see D14), Quick Actions, Virtual Contributor card. The standalone "About this Subspace" button below the info card was removed during polish (see D14)
 │   ├── SubspaceCommunityDialog.tsx     # NEW — Dialog wrapping the existing SpaceMembers component (consumed by both L0 and L1 banners)
+│   ├── TabStateHeader.tsx              # NEW (polish) — shared description-on-left + action-on-right strip used by every L0 tab page (Dashboard / Community / Subspaces / Knowledge) — see D16
+│   ├── sidebar/
+│   │   └── InfoBlock.tsx               # NEW (polish) — shared blue-panel widget used by both SpaceSidebar (L0) and SubspaceSidebar (L1). Renders profile.description (markdown) + leads inline + hover edit-pencil. Replaces the previously-separate L1 info-card-with-leads-and-About-button. See D14. Also exports the shared `LeadItem` type
 │   └── (SpaceHeader.tsx, SpaceMembers.tsx, etc. — existing, unchanged)
 └── i18n/
     └── subspace/                        # NEW namespace `crd-subspace`
@@ -84,7 +89,6 @@ src/main/crdPages/subspace/              # NEW directory mirroring src/main/crdP
 ├── tabs/
 │   └── CrdSubspaceCalloutsPage.tsx     # Default tab — flow tabs + filtered SpaceFeed
 ├── dialogs/
-│   ├── CrdSubspaceCommunityDialogConnector.tsx   # Wraps SubspaceCommunityDialog with useRoleSetManager — REUSED by L0
 │   ├── CrdSubspaceEventsDialogConnector.tsx      # Wraps existing TimelineDialog/EventsCalendarView with subspace-scoped event data
 │   ├── CrdSubspaceActivityDialogConnector.tsx    # Wraps existing ActivityFeed with subspace-scoped useLatestContributionsQuery
 │   ├── CrdSubspaceIndexDialogConnector.tsx       # Composes a Dialog + flat list of subspace callouts (reuses CalloutListConnector primitives)
@@ -95,11 +99,15 @@ src/main/crdPages/subspace/              # NEW directory mirroring src/main/crdP
     ├── useCrdSubspace.ts               # Orchestrates queries (subspace, parent banner, application button), permissions, parent data
     └── useCrdSubspaceFlow.ts           # Resolves active phase id from URL ?phase=... → currentState.id → first state
 
-src/main/crdPages/space/                 # MODIFIED files
+src/main/crdPages/space/                 # MODIFIED + NEW files
 ├── layout/
-│   └── CrdSpacePageLayout.tsx          # MODIFIED — pass onMemberClick; render shared community dialog. The `if (!isLevelZero)` bailout at line ~133 STAYS (load-bearing — see D3). (True `memberCount` deferred — research R1.)
+│   └── CrdSpacePageLayout.tsx          # MODIFIED — pass onMemberClick; mount shared community dialog connector (CrdSpaceCommunityDialogConnector — moved here during polish, see D6). The `if (!isLevelZero)` bailout at line ~133 STAYS (load-bearing — see D3). (True `memberCount` deferred — research R1.)
+├── dialogs/
+│   └── CrdSpaceCommunityDialogConnector.tsx      # MOVED here during polish from `subspace/dialogs/` and renamed (was `CrdSubspaceCommunityDialogConnector`). Generic in `roleSetId`, consumed by both L0 and L1 layouts. See D6
 ├── dataMappers/
-│   └── spacePageDataMapper.ts          # UNCHANGED — `mapMemberAvatars` keeps its `MemberAvatar[]` shape (the `{ avatars, totalCount }` extension was deferred with research R1)
+│   └── spacePageDataMapper.ts          # MODIFIED — adds `mapSidebarLeads(leadUsers, leadOrganizations?)` helper that produces the shared `LeadItem[]` shape consumed by InfoBlock. `mapMemberAvatars` keeps its existing `MemberAvatar[]` shape (the `{ avatars, totalCount }` extension was deferred with research R1)
+├── hooks/
+│   └── useCrdSpaceLeads.ts             # NEW (polish) — fetches lead users + lead organizations via `useSpaceAboutDetailsQuery` for the L0 sidebar InfoBlock. Exists because `SpaceContext` only loads the lightweight `SpaceAboutLight` fragment, which omits leads. See D15
 └── routing/
     └── CrdSpaceRoutes.tsx              # MODIFIED — swap the lazy import at line 18 from `SubspaceRoutes` (legacy MUI) to `CrdSubspaceRoutes` (new); the route nesting at lines 95–104 already exists and is reused as-is
 
@@ -139,7 +147,9 @@ Per FR-009, the connector is unconditional — rendered between every adjacent p
 Per FR-010, the data mapper does not pass `count` to `SubspaceFlowTabs`. The component's `phases` prop type does not include a `count` field, making it structurally impossible to regress.
 
 ### D6: Shared community dialog connector
-`CrdSubspaceCommunityDialogConnector` is consumed by both `CrdSpacePageLayout` (L0 banner) and `CrdSubspacePageLayout` (L1 banner). Internally it instantiates `useRoleSetManager(roleSetId)` and renders `<SubspaceCommunityDialog open onOpenChange><SpaceMembers ... /></SubspaceCommunityDialog>`. The `SpaceMembers` component is reused unchanged (existing search + filter + client-side pagination logic per Phase 0 R4).
+The community dialog connector is consumed by both `CrdSpacePageLayout` (L0 banner) and `CrdSubspacePageLayout` (L1 banner). Internally it instantiates `useRoleSetManager(roleSetId)` and renders `<SubspaceCommunityDialog open onOpenChange><SpaceMembers ... /></SubspaceCommunityDialog>`. The `SpaceMembers` component is reused unchanged (existing search + filter + client-side pagination logic per Phase 0 R4).
+
+**Polish refinement** — During polish the connector was moved from `src/main/crdPages/subspace/dialogs/CrdSubspaceCommunityDialogConnector.tsx` to a neutral location at `src/main/crdPages/space/dialogs/CrdSpaceCommunityDialogConnector.tsx` and renamed `CrdSpaceCommunityDialogConnector`. Importing into the L0 layout from the `subspace/` directory would have created an L0→L1 dependency that violated the layered structure; the move puts the shared connector in the same layer as its other L0 consumer.
 
 ### D7: True community count — **DEFERRED**
 The original plan added `CommunityMemberCount.graphql` and extended `mapMemberAvatars` to return `{ avatars, totalCount }`. Both were dropped. The banner avatar stack now shows lead-user avatars only, with no `+N` overflow chip. See research R1 for the path forward if this is revived.
@@ -166,6 +176,25 @@ New namespace registered in `src/core/i18n/config.ts` under `crdNamespaceImports
 
 ### D13: "Updates from the Lead" placeholder
 A `<section>` with an `<h3>` "Updates from the Lead" heading + a small "Coming soon" helper text + a comment in the JSX referencing this spec and a follow-up issue. No data wiring. Per FR-022 and the spec's deferred-follow-up note.
+
+### D14: Shared sidebar `InfoBlock` widget (polish refinement)
+The L1 sidebar originally had its own custom info card (whyMarkdown / tagline + leads listed inline) plus a separate `<LeadBlock>` widget rendered by L0's community variant in a white container, plus a separate "About this Subspace" outline button rendered below the L1 info card. During polish all three were collapsed into a **single shared widget**: `src/crd/components/space/sidebar/InfoBlock.tsx`. It renders inside a blue `bg-primary` panel and contains:
+
+- The space's `profile.description` (markdown — sourced from `space.about.profile.description` for L0 and `subspace.about.profile.description` for L1; the previously-used `subspace.about.why` and `tagline` are no longer the primary description source). MarkdownContent is forced to a single typographic surface with white text and headings downgraded to body size, matching the prototype's plain-text appearance while still rendering markdown formatting.
+- An inline lead block (white-on-blue, with a subtle `border-t border-white/15` separator) listing every lead user (`type: 'person'`) and lead organization (`type: 'org'`) with avatar, name, and optional location. Lead organizations use square avatars to mirror the platform-wide treatment.
+- An optional hover edit affordance: a `<Pencil>` icon revealed on hover/focus in the top-right corner. The whole panel is clickable via an absolutely-positioned overlay button (HTML5-valid: the overlay button contains only phrasing content; the markdown lives outside it). Click invokes `onEditClick`, which the consumer wires to navigate to the appropriate destination — `${profileUrl}/settings/about` for L0, the existing about dialog for L1.
+
+The shared `LeadItem` type is exported from `InfoBlock.tsx`; the previously-separate `src/crd/components/space/sidebar/LeadBlock.tsx` was deleted (orphaned after the unification). The L1 SubspaceSidebar lost its own info-card markup and its standalone "About this Subspace" outline button — clicking the InfoBlock pencil now serves as the single edit entry point.
+
+**Why this matters for spec fidelity**: FR-015, FR-016, and FR-017 originally separated the description card, the leads card, and the "About this Subspace" button into three distinct widgets. The unified InfoBlock satisfies the same functional intent (description + leads + edit/about access) with one widget shared by L0 and L1, which is closer to the prototype's design and substantially simpler to maintain.
+
+### D15: L0 leads on every tab via `useCrdSpaceLeads` (polish refinement)
+The L0 sidebar's leads are visible on **every tab** (Dashboard, Community, Subspaces, Knowledge), not only on the Community tab. The Community tab already had access to lead data via `useRoleSetManager` (used for the members grid). The other three tabs did not — `SpaceContext` only loads the lightweight `SpaceAboutLight` fragment, which excludes `leadUsers` and `leadOrganizations`. A new shared hook `src/main/crdPages/space/hooks/useCrdSpaceLeads.ts` calls `useSpaceAboutDetailsQuery` (the canonical fragment that does include leads with full profile + location), maps the result via `mapSidebarLeads`, and returns `LeadItem[]`. Apollo dedupes against any other consumer of the same query, so the cost is at most one round-trip per L0 page mount.
+
+The Community tab keeps its existing lead computation in `useCrdSpaceCommunity` (which is already producing leads as a side benefit of the role-set fetch); only the three non-Community tabs call the new hook. This preserves DRY where the lead data is already loaded and avoids a redundant fetch on the Community tab.
+
+### D16: Shared `TabStateHeader` (polish refinement)
+The flow-state description on each L0 tab and its primary action button (Add Post / Invite Member / Create Subspace) appear in the same banner-style strip across all four L0 tabs. Rather than replicating the markup per tab, a small CRD presentational component `src/crd/components/space/TabStateHeader.tsx` accepts `description` (markdown) and `action` (a `ReactNode` slot for the button) and lays them out as text-on-left, action-on-right. All four L0 tab pages render this component with their respective action button at `size="sm"`. No business logic in the component — pure layout.
 
 ## Phased Implementation
 

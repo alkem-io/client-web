@@ -94,9 +94,11 @@ Run through this list before requesting review. Each step maps to one or more ac
 
 ### 3. Right sidebar (US1, FR-014–FR-022)
 - [ ] Sidebar is on the **right**, one column gap from the right edge (matches the L0 layout).
-- [ ] Info card body shows the subspace's why/tagline; **no "Challenge Statement" title** at the top of the card.
-- [ ] Lead block lists the subspace's lead user(s).
-- [ ] **About this Subspace** button is rendered **outside and below** the info card. Clicking opens the existing `SpaceAboutDialog` populated for the subspace.
+- [ ] Top of the sidebar renders the shared **InfoBlock** (blue panel) — same widget on L0 and L1 (plan D14):
+  - [ ] Body shows `profile.description` rendered as markdown, in pure white text at body size; no "Challenge Statement" title at the top.
+  - [ ] Lead users (and lead organizations on L0) are listed inline at the bottom of the panel, separated from the description by a thin white divider. Lead orgs use square avatars.
+  - [ ] Hovering the panel reveals a `<Pencil>` icon in the top-right corner. Clicking anywhere in the panel navigates to `${profileUrl}/settings/about` (L0) or opens the existing `SpaceAboutDialog` populated for the subspace (L1). There is no separate "About this Subspace" outline button below the info block (removed during polish — plan D14).
+  - [ ] On L0, the InfoBlock + leads appears on **every tab** (Dashboard, Community, Subspaces, Knowledge), not only on Community (plan D15).
 - [ ] Quick Actions: Community, Events, Recent Activity, Index, Subspaces. Each opens its corresponding dialog.
 - [ ] Events dialog uses the same component as the L0 timeline (no separate per-subspace events UI).
 - [ ] Recent Activity dialog reuses the home-page activity component, scoped to the subspace.
@@ -165,17 +167,22 @@ Run through this list before requesting review. Each step maps to one or more ac
 |---|---|
 | Banner component | `src/crd/components/space/SubspaceHeader.tsx` |
 | Flow tabs component | `src/crd/components/space/SubspaceFlowTabs.tsx` |
-| Sidebar component | `src/crd/components/space/SubspaceSidebar.tsx` |
+| L1 sidebar component | `src/crd/components/space/SubspaceSidebar.tsx` |
+| Shared sidebar info widget (post-polish) | `src/crd/components/space/sidebar/InfoBlock.tsx` (also exports the shared `LeadItem` type) |
+| Shared per-tab description+action strip (post-polish) | `src/crd/components/space/TabStateHeader.tsx` |
 | Community dialog shell | `src/crd/components/space/SubspaceCommunityDialog.tsx` |
+| Shared community dialog connector (post-polish) | `src/main/crdPages/space/dialogs/CrdSpaceCommunityDialogConnector.tsx` (moved from `subspace/dialogs/`) |
 | L1 layout | `src/main/crdPages/subspace/layout/CrdSubspacePageLayout.tsx` |
 | L1 routing | `src/main/crdPages/subspace/routing/CrdSubspaceRoutes.tsx` |
 | L1 callouts page | `src/main/crdPages/subspace/tabs/CrdSubspaceCalloutsPage.tsx` |
-| Dialog connectors | `src/main/crdPages/subspace/dialogs/Crd*DialogConnector.tsx` |
-| Data mapper | `src/main/crdPages/subspace/dataMappers/subspacePageDataMapper.ts` |
-| Hooks | `src/main/crdPages/subspace/hooks/useCrdSubspace.ts`, `useCrdSubspaceFlow.ts` |
-| L0 banner refinement | `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` (wire `onMemberClick` to community dialog) |
-| L0 routing | `src/main/crdPages/space/routing/CrdSpaceRoutes.tsx` (nest subspace route) |
+| L1 dialog connectors (Events / Activity / Index / Subspaces) | `src/main/crdPages/subspace/dialogs/Crd*DialogConnector.tsx` |
+| L1 data mapper | `src/main/crdPages/subspace/dataMappers/subspacePageDataMapper.ts` |
+| L1 hooks | `src/main/crdPages/subspace/hooks/useCrdSubspace.ts`, `useCrdSubspaceFlow.ts` |
+| L0 leads (post-polish) | `src/main/crdPages/space/hooks/useCrdSpaceLeads.ts` |
+| L0 sidebar leads mapper (post-polish) | `mapSidebarLeads` in `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` |
+| L0 layout | `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` (wires `onMemberClick`, mounts shared community dialog connector) |
+| L0 routing | `src/main/crdPages/space/routing/CrdSpaceRoutes.tsx` (subspace route nesting) |
 | i18n | `src/crd/i18n/subspace/subspace.{en,nl,es,bg,de,fr}.json` + `src/core/i18n/config.ts` registration |
-| Settings URL helper | `src/main/routing/urlBuilders.ts` (new `buildSubspaceSettingsUrl`) |
+| Settings URL helper | `src/main/routing/urlBuilders.ts` (`buildSubspaceSettingsUrl`) |
 
 Refer to `plan.md` for design rationale and `research.md` for the resolution of each open question.
