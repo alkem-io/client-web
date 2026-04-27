@@ -1,12 +1,20 @@
-import type { FrontendApi, RecoveryFlow, RegistrationFlow, SettingsFlow, VerificationFlow } from '@ory/kratos-client';
+import type {
+  FrontendApi,
+  LoginFlow,
+  RecoveryFlow,
+  RegistrationFlow,
+  SettingsFlow,
+  VerificationFlow,
+} from '@ory/kratos-client';
 import type { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useKratosClient } from './useKratosClient';
 
-type FlowTypes = RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
+type FlowTypes = LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
 
 export enum FlowTypeName {
+  Login = 'Login',
   Registration = 'Registration',
   Settings = 'Settings',
   Verification = 'Verification',
@@ -14,6 +22,7 @@ export enum FlowTypeName {
 }
 
 type ReturnFlowType = {
+  [FlowTypeName.Login]: LoginFlow;
   [FlowTypeName.Registration]: RegistrationFlow;
   [FlowTypeName.Settings]: SettingsFlow;
   [FlowTypeName.Verification]: VerificationFlow;
@@ -75,6 +84,8 @@ const useKratosFlow = <Name extends FlowTypeName>(
 
   const initializeFlow = (client: FrontendApi) => {
     switch (flowTypeName as FlowTypeName) {
+      case FlowTypeName.Login:
+        return client.createBrowserLoginFlow();
       case FlowTypeName.Registration:
         return client.createBrowserRegistrationFlow();
       case FlowTypeName.Recovery:
@@ -88,6 +99,8 @@ const useKratosFlow = <Name extends FlowTypeName>(
 
   const getFlow = (client: FrontendApi, flowId: string) => {
     switch (flowTypeName as FlowTypeName) {
+      case FlowTypeName.Login:
+        return client.getLoginFlow({ id: flowId });
       case FlowTypeName.Registration:
         return client.getRegistrationFlow({ id: flowId });
       case FlowTypeName.Recovery:
