@@ -1,8 +1,9 @@
-import { Activity, Bot, CalendarDays, Layers, List, Users } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Info, Layers, List, Users } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Button } from '@/crd/primitives/button';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 
 export type SubspaceLeadData = {
@@ -33,6 +34,9 @@ export type SubspaceSidebarData = {
 };
 
 export type SubspaceSidebarProps = SubspaceSidebarData & {
+  /** Pencil overlay on the InfoBlock — opens the settings/about page (edit mode). */
+  onEditClick: () => void;
+  /** "About this Subspace" button — opens the read-only about dialog. */
   onAboutClick: () => void;
   onQuickActionClick: (id: SubspaceQuickActionId) => void;
   className?: string;
@@ -52,6 +56,7 @@ export function SubspaceSidebar({
   description,
   leads,
   virtualContributor,
+  onEditClick,
   onAboutClick,
   onQuickActionClick,
   className,
@@ -77,7 +82,16 @@ export function SubspaceSidebar({
 
   return (
     <aside className={cn('flex flex-col gap-6', className)} aria-label={t('a11y.sidebarNavigation')}>
-      <InfoBlock description={description} leads={leadItems} onEditClick={onAboutClick} />
+      <InfoBlock description={description} leads={leadItems} onEditClick={onEditClick} />
+
+      <Button
+        variant="outline"
+        className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
+        onClick={onAboutClick}
+      >
+        <Info className="w-4 h-4" aria-hidden="true" />
+        {t('sidebar.about')}
+      </Button>
 
       <nav aria-label={t('sidebar.quickActions.heading')}>
         <p className="text-label uppercase mb-3 px-1 text-muted-foreground">{t('sidebar.quickActions.heading')}</p>

@@ -67,7 +67,7 @@ export default function CrdSpaceSubspacesPage() {
             variant="subspaces"
             description={space.about.profile.description || ''}
             leads={sidebarLeads}
-            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             subspaces={sidebarSubspaces}
           />,
           sidebarContainer

@@ -10,6 +10,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
@@ -30,6 +31,7 @@ export default function CrdSpaceDashboardPage() {
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [createOpen, setCreateOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const openCalendar = () => {
     setCalendarOpen(true);
@@ -62,7 +64,8 @@ export default function CrdSpaceDashboardPage() {
             variant="home"
             description={space.about.profile.description || ''}
             leads={sidebarLeads}
-            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+            onAboutClick={() => setAboutOpen(true)}
             subspaces={subspaces}
             events={sidebarEvents}
             onShowCalendar={openCalendar}
@@ -95,6 +98,8 @@ export default function CrdSpaceDashboardPage() {
       )}
 
       <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
+
+      <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
     </>
   );
 }

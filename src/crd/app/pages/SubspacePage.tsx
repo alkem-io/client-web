@@ -102,6 +102,7 @@ export function SubspacePage() {
                 description: 'AI assistant trained on design thinking and collaboration frameworks.',
                 href: '/preview/vc/design-advisor',
               }}
+              onEditClick={() => console.log('Navigate to settings/about')}
               onAboutClick={() => console.log('Open About dialog')}
               onQuickActionClick={handleQuickAction}
             />

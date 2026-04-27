@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns';
-import { Mail, UserPlus } from 'lucide-react';
+import { Info, Mail, UserPlus } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -43,7 +43,9 @@ type KnowledgeEntry = {
 type SpaceSidebarProps = {
   variant: 'home' | 'community' | 'subspaces' | 'knowledge';
   description: string;
-  // Home & Knowledge
+  /** Pencil overlay on the InfoBlock — opens the settings/about page (edit mode). */
+  onEditClick?: () => void;
+  /** "About this Space" button on the home tab — opens the read-only about dialog. */
   onAboutClick?: () => void;
   subspaces?: SubspaceItem[];
   subspacesHref?: string;
@@ -77,6 +79,7 @@ type SpaceSidebarProps = {
 export function SpaceSidebar({
   variant,
   description,
+  onEditClick,
   onAboutClick,
   subspaces = [],
   subspacesHref,
@@ -105,7 +108,18 @@ export function SpaceSidebar({
   return (
     <nav className={cn('space-y-6 w-full', className)} aria-label={t('a11y.sidebarNavigation')}>
       {/* Info Block — shared across all variants */}
-      <InfoBlock description={description} leads={leads} onEditClick={onAboutClick} />
+      <InfoBlock description={description} leads={leads} onEditClick={onEditClick} />
+
+      {variant === 'home' && onAboutClick && (
+        <Button
+          variant="outline"
+          className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
+          onClick={onAboutClick}
+        >
+          <Info className="w-4 h-4" aria-hidden="true" />
+          {t('sidebar.aboutSpace')}
+        </Button>
+      )}
 
       {/* Variant-specific content */}
       {(variant === 'home' || variant === 'knowledge') && (

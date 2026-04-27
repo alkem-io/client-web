@@ -1,6 +1,6 @@
 import { Layers } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -17,6 +17,7 @@ import { useCrdSubspace } from '../hooks/useCrdSubspace';
 
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
+  const navigate = useNavigate();
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
 
@@ -72,6 +73,7 @@ export default function CrdSubspacePageLayout() {
             <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">
               <SubspaceSidebar
                 {...data.sidebar}
+                onEditClick={() => navigate(`${data.subspaceUrl}/settings/about`)}
                 onAboutClick={() => setAboutOpen(true)}
                 onQuickActionClick={handleQuickAction}
               />
