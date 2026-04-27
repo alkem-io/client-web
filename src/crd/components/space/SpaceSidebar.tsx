@@ -1,14 +1,13 @@
 import type { Locale } from 'date-fns';
-import { Info, Mail, UserPlus } from 'lucide-react';
+import { Mail, UserPlus } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
-import { InfoBlock } from './sidebar/InfoBlock';
+import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 import { KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
-import { LeadBlock, type LeadItem } from './sidebar/LeadBlock';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection';
 
@@ -106,22 +105,11 @@ export function SpaceSidebar({
   return (
     <nav className={cn('space-y-6 w-full', className)} aria-label={t('a11y.sidebarNavigation')}>
       {/* Info Block — shared across all variants */}
-      <InfoBlock description={description} onReadMore={onAboutClick} />
+      <InfoBlock description={description} leads={leads} onEditClick={onAboutClick} />
 
       {/* Variant-specific content */}
       {(variant === 'home' || variant === 'knowledge') && (
         <>
-          {onAboutClick && (
-            <Button
-              variant="outline"
-              className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
-              onClick={onAboutClick}
-            >
-              <Info className="w-4 h-4" aria-hidden="true" />
-              {t('sidebar.aboutSpace')}
-            </Button>
-          )}
-
           {variant === 'home' && subspaces.length > 0 && (
             <SubspacesSection subspaces={subspaces} showAllHref={subspacesHref} onSubspaceClick={onSubspaceClick} />
           )}
@@ -144,8 +132,6 @@ export function SpaceSidebar({
 
       {variant === 'community' && (
         <>
-          {leads.length > 0 && <LeadBlock leads={leads} />}
-
           {(canContactLeads || (canInvite && onInvite)) && (
             <div className="flex gap-2">
               {canContactLeads && onContactLead && (

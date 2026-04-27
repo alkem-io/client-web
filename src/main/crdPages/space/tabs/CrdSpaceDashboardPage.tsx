@@ -6,13 +6,13 @@ import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
@@ -27,6 +27,7 @@ export default function CrdSpaceDashboardPage() {
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
   const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const locale = useCrdSpaceLocale();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const [createOpen, setCreateOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -59,8 +60,9 @@ export default function CrdSpaceDashboardPage() {
         createPortal(
           <SpaceSidebar
             variant="home"
-            description={tabDescription || space.about.profile.description || ''}
-            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
+            description={space.about.profile.description || ''}
+            leads={sidebarLeads}
+            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             subspaces={subspaces}
             events={sidebarEvents}
             onShowCalendar={openCalendar}

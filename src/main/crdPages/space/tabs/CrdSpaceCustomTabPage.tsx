@@ -10,11 +10,11 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -24,6 +24,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const navigate = useNavigate();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -81,8 +82,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         createPortal(
           <SpaceSidebar
             variant="knowledge"
-            description={tabDescription || space.about.profile.description || ''}
-            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
+            description={space.about.profile.description || ''}
+            leads={sidebarLeads}
+            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             knowledgeEntries={sidebarItems}
             onKnowledgeEntryClick={handleScrollToCallout}
           />,

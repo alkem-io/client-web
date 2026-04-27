@@ -178,21 +178,18 @@ export function mapSubspaceVirtualContributor(
 }
 
 export type SubspaceSidebarSource = {
-  whyMarkdown?: string | null;
-  tagline?: string | null;
+  description?: string | null;
   leadUsers: LeadUserLike[] | undefined;
   virtualContributor?: VirtualContributorLike;
 };
 
 export function mapSubspaceSidebar({
-  whyMarkdown,
-  tagline,
+  description,
   leadUsers,
   virtualContributor,
 }: SubspaceSidebarSource): SubspaceSidebarData {
   return {
-    whyMarkdown: whyMarkdown ?? undefined,
-    tagline: tagline ?? undefined,
+    description: description ?? '',
     leads: mapSubspaceLeads(leadUsers),
     virtualContributor: mapSubspaceVirtualContributor(virtualContributor),
   };

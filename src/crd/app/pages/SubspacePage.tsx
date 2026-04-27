@@ -84,8 +84,7 @@ export function SubspacePage() {
 
           <div className="hidden lg:block lg:col-span-2 sticky top-24 self-start">
             <SubspaceSidebar
-              whyMarkdown="**Why this subspace?** We need to align municipal stakeholders behind a common decarbonisation roadmap."
-              tagline="Municipal energy transition coordination."
+              description="**Why this subspace?** We need to align municipal stakeholders behind a common decarbonisation roadmap."
               leads={[
                 {
                   id: 'lead-1',

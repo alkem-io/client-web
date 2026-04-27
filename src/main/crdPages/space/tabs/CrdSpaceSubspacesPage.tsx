@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
@@ -16,11 +17,14 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
+  const navigate = useNavigate();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const {
     callouts,
     calloutsSetId,
@@ -61,7 +65,9 @@ export default function CrdSpaceSubspacesPage() {
         createPortal(
           <SpaceSidebar
             variant="subspaces"
-            description={tabDescription || space.about.profile.description || ''}
+            description={space.about.profile.description || ''}
+            leads={sidebarLeads}
+            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             subspaces={sidebarSubspaces}
           />,
           sidebarContainer

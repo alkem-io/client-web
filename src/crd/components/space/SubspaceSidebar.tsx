@@ -1,10 +1,9 @@
-import { Activity, Bot, CalendarDays, Layers, List, MapPin, Users } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Layers, List, Users } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Button } from '@/crd/primitives/button';
+import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 
 export type SubspaceLeadData = {
   id: string;
@@ -27,8 +26,7 @@ export type SubspaceVirtualContributorData = {
 export type SubspaceQuickActionId = 'community' | 'events' | 'activity' | 'index' | 'subspaces';
 
 export type SubspaceSidebarData = {
-  whyMarkdown?: string;
-  tagline?: string;
+  description: string;
   leads: SubspaceLeadData[];
   virtualContributor?: SubspaceVirtualContributorData;
 };
@@ -50,8 +48,7 @@ const QUICK_ACTIONS: QuickActionDef[] = [
 ];
 
 export function SubspaceSidebar({
-  whyMarkdown,
-  tagline,
+  description,
   leads,
   virtualContributor,
   onAboutClick,
@@ -59,7 +56,6 @@ export function SubspaceSidebar({
   className,
 }: SubspaceSidebarProps) {
   const { t } = useTranslation('crd-subspace');
-  const leadHeading = leads.length > 1 ? t('sidebar.leads') : t('sidebar.lead');
   const quickActionLabels: Record<SubspaceQuickActionId, string> = {
     community: t('sidebar.quickActions.community'),
     events: t('sidebar.quickActions.events'),
@@ -68,61 +64,20 @@ export function SubspaceSidebar({
     subspaces: t('sidebar.quickActions.subspaces'),
   };
 
+  const leadItems: LeadItem[] = leads.map(lead => ({
+    id: lead.id,
+    name: lead.name,
+    avatarUrl: lead.avatarUrl,
+    initials: lead.initials,
+    location: lead.location,
+    href: lead.href,
+    type: 'person',
+  }));
+
   return (
     <aside className={cn('flex flex-col gap-6', className)} aria-label={t('a11y.sidebarNavigation')}>
-      {/* Info card — blue panel, no Challenge Statement title */}
-      <div className="p-5 rounded-lg bg-primary text-primary-foreground">
-        {whyMarkdown ? (
-          // Override MarkdownContent's default muted body colour so text reads as white on the blue panel (WCAG AA).
-          <MarkdownContent
-            content={whyMarkdown}
-            className="text-primary-foreground [&_p]:text-primary-foreground [&_p]:leading-relaxed [&_li]:text-primary-foreground [&_strong]:text-primary-foreground [&_em]:text-primary-foreground [&_a]:text-primary-foreground [&_a]:underline"
-          />
-        ) : tagline ? (
-          <p className="text-body leading-relaxed">{tagline}</p>
-        ) : null}
+      <InfoBlock description={description} leads={leadItems} onEditClick={onAboutClick} />
 
-        {leads.length > 0 && (
-          <div className="pt-3 mt-3 border-t border-white/15">
-            <p className="text-label uppercase opacity-60 mb-2">{leadHeading}</p>
-            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-            <ul role="list" className="flex flex-col gap-2">
-              {leads.map(lead => (
-                <li key={lead.id}>
-                  <a
-                    href={lead.href}
-                    className="flex items-center gap-3 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                  >
-                    <Avatar className="w-8 h-8 border-2 border-white/25">
-                      {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
-                      <AvatarFallback className="bg-white/15 text-white text-badge font-bold">
-                        {lead.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="text-body-emphasis truncate">{lead.name}</p>
-                      {lead.location && (
-                        <p className="flex items-center gap-1 text-caption opacity-70">
-                          <MapPin className="w-3 h-3" aria-hidden="true" />
-                          {lead.location}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* About this Subspace — outside and below the info card */}
-      <Button variant="outline" className="w-full justify-center" onClick={onAboutClick}>
-        {t('sidebar.about')}
-      </Button>
-
-      {/* Quick Actions */}
       <nav aria-label={t('sidebar.quickActions.heading')}>
         <p className="text-label uppercase mb-3 px-1 text-muted-foreground">{t('sidebar.quickActions.heading')}</p>
         {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
@@ -144,7 +99,6 @@ export function SubspaceSidebar({
         </ul>
       </nav>
 
-      {/* Virtual Contributor — hidden when none */}
       {virtualContributor && (
         <section className="p-4 rounded-lg bg-card border border-border">
           <div className="flex items-center gap-1.5 mb-3">

@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import type { LeadItem } from '@/crd/components/space/sidebar/LeadBlock';
+import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -22,6 +23,7 @@ import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['translation', 'crd-space']);
   const { space } = useSpace();
+  const navigate = useNavigate();
   const {
     callouts,
     calloutsSetId,
@@ -66,7 +68,8 @@ export default function CrdSpaceCommunityPage() {
         createPortal(
           <SpaceSidebar
             variant="community"
-            description={tabDescription || space.about.profile.description || ''}
+            description={space.about.profile.description || ''}
+            onAboutClick={() => navigate(`${space.about.profile.url}/settings/about`)}
             leads={sidebarLeads}
             canContactLeads={canContactLeads}
             onContactLead={handleContactLead}
