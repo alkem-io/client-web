@@ -478,19 +478,16 @@ export const MOCK_SIDEBAR = {
     {
       name: 'Renewable Energy',
       initials: 'RE',
-      color: 'var(--chart-1)',
       href: '/space/green-energy/challenges/renewable-energy',
     },
     {
       name: 'Urban Planning',
       initials: 'UP',
-      color: 'var(--chart-2)',
       href: '/space/green-energy/challenges/urban-planning',
     },
     {
       name: 'Transportation',
       initials: 'TR',
-      color: 'var(--chart-3)',
       href: '/space/green-energy/challenges/transportation',
     },
   ],

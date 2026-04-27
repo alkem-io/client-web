@@ -32,6 +32,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
@@ -66,6 +67,13 @@ type CalloutFormConnectorProps = {
    * so we rely on the callout the list/detail layer already loaded.
    */
   editCallout?: CalloutDetailsModelExtended;
+  /**
+   * Display name of the innovation-flow state to attach the new callout to. When set,
+   * the callout is classified into that flow state so it appears under the active phase
+   * tab. When undefined the callout is created without a phase classification (legacy /
+   * single-phase callouts sets). Create mode only.
+   */
+  activeFlowStateName?: string;
   onFindTemplate?: () => void;
 };
 
@@ -77,6 +85,7 @@ export function CalloutFormConnector({
   calloutsSetId,
   spaceId,
   editCallout,
+  activeFlowStateName,
   onFindTemplate,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -143,6 +152,13 @@ export function CalloutFormConnector({
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
     });
+
+    // Flow-state classification: tag the new callout with the active phase so it
+    // appears under the right tab. No-op when called from a non-flow-state page.
+    const flowStateTagsets = buildFlowStateClassificationTagsets(activeFlowStateName);
+    if (flowStateTagsets) {
+      input.classification = { tagsets: flowStateTagsets };
+    }
 
     let result: Awaited<ReturnType<typeof handleCreateCallout>>;
     try {

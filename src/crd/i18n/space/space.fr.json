@@ -39,6 +39,7 @@
     "searchLabel": "Rechercher des publications",
     "noResults": "Aucun résultat",
     "readMore": "Lire la suite",
+    "editDescription": "Modifier la description",
     "addEvent": "Ajouter un événement",
     "eventDateRelative": {
       "today": "Aujourd'hui",
