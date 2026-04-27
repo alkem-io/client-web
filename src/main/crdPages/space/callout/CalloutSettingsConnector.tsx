@@ -14,7 +14,6 @@ import { CalloutVisibilityChangeDialog } from '@/crd/components/callout/CalloutV
 import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
-import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import { useSpace } from '@/domain/space/context/useSpace';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
@@ -29,11 +28,18 @@ type CalloutSettingsConnectorProps = {
   callout: CalloutDetailsModelExtended;
   /** Move-action prop bag (plan D9). Hooked up by the list / detail connector. */
   moveActions?: CalloutMoveActions;
+  /**
+   * Open the Share dialog. Mounted by the parent (LazyCalloutItem /
+   * CalloutDetailDialogConnector) so multiple Share triggers — the 3-dots
+   * menu, the detail dialog header icon, the reactions bar — can share a
+   * single dialog instance. When omitted, the Share menu item is hidden.
+   */
+  onShare?: () => void;
 };
 
 /**
  * Hosts the 3-dots menu for a single callout, plus the lifecycle dialogs it
- * triggers: visibility change, delete, sort contributions, share (plan T062).
+ * triggers: visibility change, delete, sort contributions (plan T062).
  * Rendered inside `LazyCalloutItem` (feed 3-dots) and
  * `CalloutDetailDialogConnector` (sticky-header 3-dots).
  *
@@ -42,11 +48,12 @@ type CalloutSettingsConnectorProps = {
  * (`changeCalloutVisibility`, `deleteCallout`) + the callouts sort-order
  * mutation exposed via `moveActions`.
  *
- * Share is the MUI `ShareDialog` rendered as a portal sibling outside
- * `.crd-root`. Save-as-Template is hidden behind `CRD_SAVE_AS_TEMPLATE_ENABLED`
- * until its MUI portal is wired (plan D12 / T082).
+ * Share is owned by the parent connector via `onShare` (so the detail dialog's
+ * header / reactions-bar Share buttons share state with the menu's Share item).
+ * Save-as-Template is hidden behind `CRD_SAVE_AS_TEMPLATE_ENABLED` until its
+ * MUI portal is wired (plan D12 / T082).
  */
-export function CalloutSettingsConnector({ callout, moveActions }: CalloutSettingsConnectorProps) {
+export function CalloutSettingsConnector({ callout, moveActions, onShare }: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const {
@@ -56,7 +63,6 @@ export function CalloutSettingsConnector({ callout, moveActions }: CalloutSettin
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
   const [saveAsTemplateOpen, setSaveAsTemplateOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
@@ -155,7 +161,7 @@ export function CalloutSettingsConnector({ callout, moveActions }: CalloutSettin
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
         onSortContributions={perms.showSortContributions ? () => setSortOpen(true) : undefined}
         onSaveAsTemplate={perms.showSaveAsTemplate ? () => setSaveAsTemplateOpen(true) : undefined}
-        onShare={perms.showShare ? () => setShareOpen(true) : undefined}
+        onShare={perms.showShare && onShare ? onShare : undefined}
         onMoveTop={moveActions?.onMoveToTop}
         onMoveUp={moveActions?.onMoveUp}
         onMoveDown={moveActions?.onMoveDown}
@@ -194,15 +200,6 @@ export function CalloutSettingsConnector({ callout, moveActions }: CalloutSettin
         loading={sortLoading || updatingSort}
         onConfirm={handleSortConfirm}
       />
-
-      {shareOpen && (
-        <ShareDialog
-          open={shareOpen}
-          onClose={() => setShareOpen(false)}
-          url={callout.framing.profile.url}
-          entityTypeName="callout"
-        />
-      )}
 
       {saveAsTemplateOpen && (
         <CreateTemplateDialog

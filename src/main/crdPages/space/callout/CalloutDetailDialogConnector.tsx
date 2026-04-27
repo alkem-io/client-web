@@ -13,6 +13,7 @@ import { type ContributionCardData, mapAnyContributionToCardData } from '../data
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
@@ -110,6 +111,7 @@ export function CalloutDetailDialogConnector({
   );
   const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -221,7 +223,12 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
-  const settingsSlot = <CalloutSettingsConnector callout={callout} moveActions={moveActions} />;
+  const handleShareClick = () => setShareOpen(true);
+  const settingsSlot = (
+    <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
+  );
+
+  const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
 
   if (!callout.comments?.id) {
     return (
@@ -240,10 +247,12 @@ export function CalloutDetailDialogConnector({
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
           settingsSlot={settingsSlot}
+          onShareClick={handleShareClick}
         />
         {whiteboardOverlay}
         {memoOverlay}
         {framingMemoOverlay}
+        {shareDialog}
       </>
     );
   }
@@ -270,12 +279,14 @@ export function CalloutDetailDialogConnector({
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
             settingsSlot={settingsSlot}
+            onShareClick={handleShareClick}
           />
         )}
       </CalloutCommentsConnector>
       {whiteboardOverlay}
       {memoOverlay}
       {framingMemoOverlay}
+      {shareDialog}
     </>
   );
 }

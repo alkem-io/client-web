@@ -11,6 +11,7 @@ import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
@@ -72,6 +73,7 @@ function LazyCalloutItemContent({
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { t } = useTranslation('crd-space');
 
   const postData = mapCalloutDetailsToPostCard(callout, t);
@@ -130,7 +132,13 @@ function LazyCalloutItemContent({
                 openDialog();
                 onClick?.();
               }}
-              settingsSlot={<CalloutSettingsConnector callout={callout} moveActions={moveActions} />}
+              settingsSlot={
+                <CalloutSettingsConnector
+                  callout={callout}
+                  moveActions={moveActions}
+                  onShare={() => setShareOpen(true)}
+                />
+              }
               onExpandClick={onExpandClick}
               commentsSlot={thread}
               commentInputSlot={commentInput}
@@ -149,7 +157,9 @@ function LazyCalloutItemContent({
             onClick?.();
           }}
           onCommentsClick={() => openDialog()}
-          settingsSlot={<CalloutSettingsConnector callout={callout} moveActions={moveActions} />}
+          settingsSlot={
+            <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
+          }
           onExpandClick={onExpandClick}
           contributionsPreview={contributionsPreview}
         >
@@ -165,6 +175,8 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
       />
+
+      <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />
     </>
   );
 }

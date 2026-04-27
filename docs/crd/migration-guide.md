@@ -283,6 +283,31 @@ Full specification: `specs/042-crd-space-page/typography/spec.md`
 
 **Notifications**: Handled globally in `root.tsx` via `NotificationsGate`, which renders either the CRD `NotificationsPanel` or the MUI `InAppNotificationsDialog` based on the CRD toggle. Both are lazy-loaded — only one is ever fetched. The bell icon click (from either CRD Header or MUI AppBar) sets `InAppNotificationsContext.setIsOpen(true)` and the correct dialog opens on any page. The CRD component doesn't know about the toggle — it just calls a callback prop.
 
+### Share Dialog
+
+CRD has a fully-ported Share dialog at `src/crd/components/common/ShareDialog.tsx`. It replaces the MUI `src/domain/shared/components/ShareDialog/ShareDialog.tsx` for CRD-rendered entities (callouts, etc.). Two consumption patterns:
+
+**Self-contained (icon button + dialog)** — `src/crd/components/common/ShareButton.tsx` renders a 32 px ghost icon button that owns its own open state. Used by `CrdWhiteboardView`, `CrdPublicWhiteboardPage`. Just pass `url`:
+
+```typescript
+<ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl} />
+```
+
+**Controlled** — `<ShareDialog>` directly, when the trigger lives elsewhere (a context menu, a header button, multiple buttons sharing one dialog). The parent owns `open` state:
+
+```typescript
+const [shareOpen, setShareOpen] = useState(false);
+<ShareDialog open={shareOpen} onOpenChange={setShareOpen} url={url} />
+```
+
+**Share on Alkemio sub-flow.** The dialog supports view-switching: when you pass a `shareOnAlkemioSlot?: ReactNode`, an outlined "Share on Alkemio" button appears below the URL row. Clicking it switches the dialog body to the slot (and the header gains a Back arrow). The slot is the consumer's place to mount a form that calls `useShareLinkWithUserMutation`. CRD ships `src/crd/forms/UserSelector.tsx` (a multi-select user picker built from `Avatar` + `Input`, no Formik / `cmdk` / popover) for the picker UI; the form integration lives in the consumer layer (e.g. `src/main/crdPages/space/callout/CalloutShareOnAlkemioForm.tsx`).
+
+For a callout-like entity with multiple Share triggers (3-dots menu + dialog header + reactions bar), lift the `shareOpen` state to a parent and pass `() => setShareOpen(true)` down to each trigger so they share one dialog instance. Don't mount one dialog per trigger.
+
+The 7+ MUI `ShareDialog` callsites that still live inside MUI pages (`MemoDialog`, `CalendarEventDetail`, `DiscussionView`, `CommunityUpdatesDialog`, etc.) keep using the MUI version — they switch to CRD when their host page migrates. Don't touch them ahead of their host page.
+
+i18n keys live in `src/crd/i18n/common/common.<lang>.json` under `share.*` and `share.alkemio.*`.
+
 ### Data Hooks Are Shared
 
 The GraphQL data layer doesn't change. Existing hooks from MUI pages can be reused directly. Only the view layer is replaced.
