@@ -41,7 +41,7 @@ export type SubspaceBannerProps = Pick<
   | 'parentInitials'
   | 'parentColor'
   | 'parentBannerUrl'
-  | 'badgeLabel'
+  | 'badgeKind'
 >;
 
 export function mapSubspaceBanner({
@@ -63,7 +63,7 @@ export function mapSubspaceBanner({
     parentInitials: getInitials(parentName) || '??',
     parentColor: pickColorFromId(parentSpaceId ?? parentName),
     parentBannerUrl: parentProfile?.banner?.uri ?? undefined,
-    badgeLabel: level === SpaceLevel.L2 ? 'SubSubSpace' : 'SubSpace',
+    badgeKind: level === SpaceLevel.L2 ? 'subSubspace' : 'subspace',
   };
 }
 
@@ -158,6 +158,7 @@ export function mapSubspaceLeads(leadUsers: LeadUserLike[] | undefined): Subspac
         initials: getInitials(name) || '??',
         href: user.profile.url ?? '',
         location: cityCountry || undefined,
+        type: 'person',
       };
     });
 }

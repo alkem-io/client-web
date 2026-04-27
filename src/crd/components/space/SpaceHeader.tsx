@@ -1,5 +1,6 @@
 import { FileText, Home, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -47,6 +48,8 @@ export function SpaceHeader({
   const { t } = useTranslation('crd-space');
   const displayedAvatars = memberAvatars.slice(0, 5);
   const showAvatarStack = displayedAvatars.length > 0;
+  const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
+  const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
     <div className={cn('flex flex-col bg-background', className)}>
@@ -89,7 +92,7 @@ export function SpaceHeader({
                   </Button>
                 )}
                 {actions.showVideoCall &&
-                  (actions.videoCallUrl ? (
+                  (safeVideoCallUrl ? (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -97,7 +100,7 @@ export function SpaceHeader({
                       aria-label={t('mobile.videoCall')}
                       asChild={true}
                     >
-                      <a href={actions.videoCallUrl} target="_blank" rel="noopener noreferrer">
+                      <a href={safeVideoCallUrl} target="_blank" rel="noopener noreferrer">
                         <Video className="h-4 w-4" aria-hidden="true" />
                       </a>
                     </Button>
@@ -124,7 +127,7 @@ export function SpaceHeader({
                   </Button>
                 )}
                 {actions.showSettings &&
-                  (actions.settingsHref ? (
+                  (safeSettingsHref ? (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -132,7 +135,7 @@ export function SpaceHeader({
                       aria-label={t('mobile.settings')}
                       asChild={true}
                     >
-                      <a href={actions.settingsHref}>
+                      <a href={safeSettingsHref}>
                         <Settings className="h-4 w-4" aria-hidden="true" />
                       </a>
                     </Button>

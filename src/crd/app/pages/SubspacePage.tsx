@@ -56,7 +56,7 @@ export function SubspacePage() {
         parentName="Green Energy Space"
         parentInitials="GE"
         parentColor={pickColorFromId(PARENT_ID)}
-        badgeLabel="SubSpace"
+        badgeKind="subspace"
         actions={ACTIONS}
         memberAvatars={MEMBER_AVATARS}
         onMemberClick={() => setCommunityOpen(true)}
@@ -92,6 +92,7 @@ export function SubspacePage() {
                   initials: 'DK',
                   href: '/preview/user/david-kim',
                   location: 'Berlin, DE',
+                  type: 'person',
                 },
               ]}
               virtualContributor={{

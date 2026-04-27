@@ -1,5 +1,6 @@
 import { Activity, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -38,8 +39,8 @@ export type SubspaceHeaderProps = {
   parentColor: string;
   parentBannerUrl?: string;
 
-  /** Level badge */
-  badgeLabel: 'SubSpace' | 'SubSubSpace';
+  /** Level badge — discriminator key, the component resolves the localized label internally */
+  badgeKind: 'subspace' | 'subSubspace';
 
   /** Banner action icons */
   actions: SubspaceHeaderActionsData;
@@ -61,7 +62,7 @@ export function SubspaceHeader({
   parentInitials,
   parentColor,
   parentBannerUrl,
-  badgeLabel,
+  badgeKind,
   actions,
   memberAvatars,
   onMemberClick,
@@ -70,8 +71,11 @@ export function SubspaceHeader({
   const { t } = useTranslation('crd-subspace');
   const displayedAvatars = memberAvatars.slice(0, 5);
   const showAvatarStack = displayedAvatars.length > 0;
+  const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
+  const safeShareUrl = safeHttpUrl(actions.shareUrl);
+  const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
-  const badgeText = badgeLabel === 'SubSubSpace' ? t('badge.subSubspace') : t('badge.subspace');
+  const badgeText = badgeKind === 'subSubspace' ? t('badge.subSubspace') : t('badge.subspace');
 
   return (
     <div className={cn('flex flex-col bg-background', className)}>
@@ -112,7 +116,7 @@ export function SubspaceHeader({
                   </Button>
                 )}
                 {actions.showVideoCall &&
-                  (actions.videoCallUrl ? (
+                  (safeVideoCallUrl ? (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -120,7 +124,7 @@ export function SubspaceHeader({
                       aria-label={t('actions.videoCall')}
                       asChild={true}
                     >
-                      <a href={actions.videoCallUrl} target="_blank" rel="noopener noreferrer">
+                      <a href={safeVideoCallUrl} target="_blank" rel="noopener noreferrer">
                         <Video className="h-4 w-4" aria-hidden="true" />
                       </a>
                     </Button>
@@ -136,7 +140,7 @@ export function SubspaceHeader({
                     </Button>
                   ))}
                 {actions.showShare &&
-                  (actions.shareUrl ? (
+                  (safeShareUrl ? (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -144,7 +148,7 @@ export function SubspaceHeader({
                       aria-label={t('actions.share')}
                       asChild={true}
                     >
-                      <a href={actions.shareUrl}>
+                      <a href={safeShareUrl}>
                         <Share2 className="h-4 w-4" aria-hidden="true" />
                       </a>
                     </Button>
@@ -159,7 +163,7 @@ export function SubspaceHeader({
                       <Share2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   ))}
-                {actions.showSettings && actions.settingsHref && (
+                {actions.showSettings && safeSettingsHref && (
                   <Button
                     variant="ghost"
                     size="icon"
@@ -167,7 +171,7 @@ export function SubspaceHeader({
                     aria-label={t('actions.settings')}
                     asChild={true}
                   >
-                    <a href={actions.settingsHref}>
+                    <a href={safeSettingsHref}>
                       <Settings className="h-4 w-4" aria-hidden="true" />
                     </a>
                   </Button>

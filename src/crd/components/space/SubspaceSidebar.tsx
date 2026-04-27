@@ -12,6 +12,7 @@ export type SubspaceLeadData = {
   initials: string;
   href: string;
   location?: string;
+  type: LeadItem['type'];
 };
 
 export type SubspaceVirtualContributorData = {
@@ -71,7 +72,7 @@ export function SubspaceSidebar({
     initials: lead.initials,
     location: lead.location,
     href: lead.href,
-    type: 'person',
+    type: lead.type,
   }));
 
   return (

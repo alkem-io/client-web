@@ -100,7 +100,7 @@ export function SubspaceFlowTabs({
                   aria-current={isActive ? 'page' : undefined}
                   aria-label={t('flow.phaseTab', { name: phase.label })}
                   className={cn(
-                    'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-control',
+                    'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-control rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isActive
                       ? 'border-primary text-primary font-semibold'
                       : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'

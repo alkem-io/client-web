@@ -7,6 +7,7 @@ import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs'
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -66,6 +67,8 @@ export type CrdSubspacePageData = {
 
 export function useCrdSubspace(): CrdSubspacePageData {
   const { subspace, parentSpaceId, permissions, loading: subspaceContextLoading } = useSubSpace();
+  // L0 visibility flows down to subspaces — they share the level-zero space's status.
+  const { visibility } = useSpace();
 
   const subspaceId = subspace.id;
   const subspaceNameId = subspace.nameId;
@@ -149,7 +152,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     virtualContributor: undefined,
   });
 
-  const visibility = mapSpaceVisibility(undefined);
+  const visibilityData = mapSpaceVisibility(visibility);
 
   return {
     loading:
@@ -173,7 +176,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     bannerActions,
     bannerAvatars,
     sidebar,
-    visibility,
+    visibility: visibilityData,
 
     phases,
     currentPhaseId,

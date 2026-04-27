@@ -14,7 +14,7 @@ export default function CrdSubspaceRoutes() {
   return (
     <Routes>
       {/* L1 — /space/:spaceNameId/challenges/:subspaceNameId */}
-      <Route path="/" element={<CrdSubspacePageLayout />}>
+      <Route element={<CrdSubspacePageLayout />}>
         <Route index={true} element={<CrdSubspaceCalloutsPage />} />
         <Route
           path={EntityPageSection.About}
