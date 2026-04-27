@@ -31,6 +31,7 @@ import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import {
@@ -48,6 +49,7 @@ export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
+  const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -114,7 +116,8 @@ export default function CrdSpacePageLayout() {
 
   const headerActions = {
     showDocuments: true,
-    showVideoCall: false, // Wired to entitlements in future
+    showVideoCall: isVideoCallEnabled && !!videoCallUrl,
+    videoCallUrl: videoCallUrl || undefined,
     showShare: true,
     showSettings,
     settingsHref,
@@ -183,7 +186,6 @@ export default function CrdSpacePageLayout() {
               tagline={space.about.profile.tagline ?? undefined}
               bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
               memberAvatars={memberAvatars}
-              memberCount={memberAvatars.length}
               onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}
             />

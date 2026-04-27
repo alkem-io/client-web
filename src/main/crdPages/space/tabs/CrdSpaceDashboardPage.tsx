@@ -1,9 +1,11 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
@@ -46,7 +48,6 @@ export default function CrdSpaceDashboardPage() {
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
       initials: getInitials(child.displayName),
-      color: pickColorFromId(child.id),
       href: child.url,
     })) ?? [];
 
@@ -72,14 +73,20 @@ export default function CrdSpaceDashboardPage() {
 
       <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
 
-      <CalloutListConnector
-        title={t('feed.activity')}
-        callouts={callouts}
-        calloutsSetId={calloutsSetId}
-        canCreate={canCreateCallout}
-        onCreateClick={() => setCreateOpen(true)}
-        loading={loading}
+      <TabStateHeader
+        description={tabDescription}
+        action={
+          canCreateCallout && (
+            <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              {t('feed.addPost')}
+            </Button>
+          )
+        }
+        className="mb-6"
       />
+
+      <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
 
       {canCreateCallout && (
         <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />

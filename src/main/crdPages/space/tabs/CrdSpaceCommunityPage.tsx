@@ -1,3 +1,4 @@
+import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -5,6 +6,8 @@ import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/LeadBlock';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import {
   DirectMessageDialog,
   type MessageReceiverChipData,
@@ -17,7 +20,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 
 export default function CrdSpaceCommunityPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'crd-space']);
   const { space } = useSpace();
   const {
     callouts,
@@ -29,8 +32,6 @@ export default function CrdSpaceCommunityPage() {
     virtualContributors,
     hasVcEntitlement,
     members,
-    usersCount,
-    organizationsCount,
     canInvite,
     communityId,
     loading,
@@ -78,13 +79,20 @@ export default function CrdSpaceCommunityPage() {
         )}
 
       <div className="space-y-8">
-        <SpaceMembers
-          members={members}
-          usersCount={usersCount}
-          organizationsCount={organizationsCount}
-          canInvite={canInvite}
-          onInvite={handleInvite}
+        <TabStateHeader
+          description={tabDescription}
+          action={
+            canInvite &&
+            handleInvite && (
+              <Button className="gap-2" onClick={handleInvite}>
+                <UserPlus className="w-4 h-4" aria-hidden="true" />
+                {t('crd-space:members.inviteMember')}
+              </Button>
+            )
+          }
         />
+
+        <SpaceMembers members={members} />
 
         <CalloutListConnector
           callouts={callouts}

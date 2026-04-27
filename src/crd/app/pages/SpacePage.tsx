@@ -139,7 +139,6 @@ export function SpacePage() {
             bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
             isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
             memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
-            memberCount={MOCK_SPACE_BANNER.memberCount}
             actions={{
               showDocuments: true,
               showVideoCall: false,
@@ -313,7 +312,7 @@ export function SpacePage() {
 
         {activeTab === 2 && (
           <div className="space-y-8">
-            <SpaceSubspacesList subspaces={MOCK_SUBSPACES} canCreate={true} onCreateClick={() => {}} />
+            <SpaceSubspacesList subspaces={MOCK_SUBSPACES} />
             <SpaceFeed posts={MOCK_POSTS.slice(2)} />
           </div>
         )}

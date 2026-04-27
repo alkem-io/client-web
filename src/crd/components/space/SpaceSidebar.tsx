@@ -15,7 +15,6 @@ import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection
 type SubspaceItem = {
   name: string;
   initials: string;
-  color: string;
   href: string;
 };
 

@@ -18,6 +18,7 @@ type SpaceHeaderActions = {
   onDocumentsClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
+  videoCallUrl?: string;
   settingsHref?: string;
   onSettingsClick?: () => void;
 };
@@ -28,7 +29,6 @@ type SpaceHeaderProps = {
   bannerUrl?: string;
   isHomeSpace?: boolean;
   memberAvatars: MemberAvatar[];
-  memberCount: number;
   actions: SpaceHeaderActions;
   onMemberClick?: () => void;
   className?: string;
@@ -40,14 +40,13 @@ export function SpaceHeader({
   bannerUrl,
   isHomeSpace,
   memberAvatars,
-  memberCount,
   actions,
   onMemberClick,
   className,
 }: SpaceHeaderProps) {
   const { t } = useTranslation('crd-space');
   const displayedAvatars = memberAvatars.slice(0, 5);
-  const extraCount = memberCount - displayedAvatars.length;
+  const showAvatarStack = displayedAvatars.length > 0;
 
   return (
     <div className={cn('flex flex-col bg-background', className)}>
@@ -89,17 +88,30 @@ export function SpaceHeader({
                     <FileText className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
-                {actions.showVideoCall && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
-                    onClick={actions.onVideoCallClick}
-                    aria-label={t('mobile.videoCall')}
-                  >
-                    <Video className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
+                {actions.showVideoCall &&
+                  (actions.videoCallUrl ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      aria-label={t('mobile.videoCall')}
+                      asChild={true}
+                    >
+                      <a href={actions.videoCallUrl} target="_blank" rel="noopener noreferrer">
+                        <Video className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      onClick={actions.onVideoCallClick}
+                      aria-label={t('mobile.videoCall')}
+                    >
+                      <Video className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  ))}
                 {actions.showShare && (
                   <Button
                     variant="ghost"
@@ -140,7 +152,7 @@ export function SpaceHeader({
           </div>
         </div>
 
-        {/* Bottom: Title + tagline + member avatars */}
+        {/* Bottom: title + tagline (left) + member avatars (right) */}
         <div className="relative h-full flex flex-col justify-end w-full px-6 md:px-8 pb-6">
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-start-2 lg:col-span-10">
@@ -163,42 +175,33 @@ export function SpaceHeader({
                   {tagline && <p className="max-w-xl text-body text-primary-foreground/90">{tagline}</p>}
                 </div>
 
-                {/* Member avatars */}
-                <button
-                  type="button"
-                  className="flex items-center gap-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={onMemberClick}
-                  aria-label={t('members.title')}
-                >
-                  <div className="flex -space-x-2">
-                    {displayedAvatars.map(avatar => (
-                      <Avatar
-                        key={avatar.id}
-                        className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
-                      >
-                        {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}
-                        <AvatarFallback
-                          style={{
-                            background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
-                          }}
-                          className="text-caption text-primary-foreground"
+                {showAvatarStack && (
+                  <button
+                    type="button"
+                    className="flex items-center gap-4 cursor-pointer transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
+                    onClick={onMemberClick}
+                    aria-label={t('members.title')}
+                  >
+                    <div className="flex -space-x-2">
+                      {displayedAvatars.map(avatar => (
+                        <Avatar
+                          key={avatar.id}
+                          className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
                         >
-                          {avatar.initials}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                    {extraCount > 0 && (
-                      <div
-                        className="flex items-center justify-center w-10 h-10 rounded-full backdrop-blur-sm text-caption font-medium border-2 border-background text-primary-foreground"
-                        style={{
-                          background: 'color-mix(in srgb, var(--primary-foreground) 20%, transparent)',
-                        }}
-                      >
-                        +{extraCount}
-                      </div>
-                    )}
-                  </div>
-                </button>
+                          {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}
+                          <AvatarFallback
+                            style={{
+                              background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
+                            }}
+                            className="text-caption text-primary-foreground"
+                          >
+                            {avatar.initials}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                    </div>
+                  </button>
+                )}
               </div>
             </div>
           </div>

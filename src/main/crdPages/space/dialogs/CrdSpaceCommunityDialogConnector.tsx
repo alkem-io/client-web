@@ -43,11 +43,8 @@ export function CrdSpaceCommunityDialogConnector({
     >
       <SpaceMembers
         members={members}
-        usersCount={users.length}
-        organizationsCount={organizations.length}
         pageSize={9}
         // Loading state is briefly visible — SpaceMembers shows its empty state otherwise.
-        // No `loading` prop on SpaceMembers; rely on the dialog being open + members updating.
         title={title ?? t('community.dialogTitle')}
         subtitle={loading ? '' : undefined}
       />
