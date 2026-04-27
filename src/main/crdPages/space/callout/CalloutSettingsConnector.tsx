@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
@@ -78,20 +78,17 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   });
   const [updateContributionsSortOrder, { loading: updatingSort }] = useUpdateContributionsSortOrderMutation();
 
-  const sortableContributions = useMemo(() => {
-    const list = sortData?.lookup.callout?.contributions ?? [];
-    return [...list]
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map(c => ({
-        id: c.id,
-        title:
-          c.post?.profile.displayName ??
-          c.link?.profile.displayName ??
-          c.whiteboard?.profile.displayName ??
-          c.memo?.profile.displayName ??
-          '',
-      }));
-  }, [sortData]);
+  const sortableContributions = [...(sortData?.lookup.callout?.contributions ?? [])]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(c => ({
+      id: c.id,
+      title:
+        c.post?.profile.displayName ??
+        c.link?.profile.displayName ??
+        c.whiteboard?.profile.displayName ??
+        c.memo?.profile.displayName ??
+        '',
+    }));
 
   const perms = deriveCalloutMenuVisibility({
     myPrivileges: callout.authorization?.myPrivileges,

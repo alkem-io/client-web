@@ -1,5 +1,5 @@
 import { Send } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShareLinkWithUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -42,10 +42,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAl
   const notify = useNotification();
   const { userModel: currentUser } = useCurrentUserContext();
 
-  const initialMessage = useMemo(
-    () => t('share.alkemio.defaultMessage', { entity: entityLabel, url }),
-    [t, entityLabel, url]
-  );
+  const initialMessage = t('share.alkemio.defaultMessage', { entity: entityLabel, url });
 
   const [selectedUsers, setSelectedUsers] = useState<ShareUser[]>([]);
   const [message, setMessage] = useState(initialMessage);

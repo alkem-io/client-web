@@ -70,7 +70,8 @@ export function ShareDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-md', className)} closeLabel={t('close')}>
+      {/* z-[70] keeps the share dialog above whiteboard / memo editors (z-[60]) and below confirms (z-[90]). */}
+      <DialogContent className={cn('sm:max-w-md z-[70]', className)} overlayClassName="z-[70]" closeLabel={t('close')}>
         <DialogHeader>
           <div className="flex items-center gap-2">
             {isAlkemioView && (
