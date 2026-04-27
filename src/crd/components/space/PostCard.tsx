@@ -52,6 +52,13 @@ export type PostCardData = {
   /** Framing-level call-to-action link (Link framing only). `isValid` is false for non-http(s) or malformed URIs. */
   framingCallToAction?: { uri: string; displayName: string; isExternal: boolean; isValid: boolean };
   commentCount?: number;
+  /**
+   * Mirrors `callout.settings.framing.commentsEnabled`. When `false`:
+   *  - the comments footer is hidden entirely if there are no existing messages
+   *  - existing messages stay visible (read-only) when there are some — input gating is the consumer's call (`commentInputSlot`).
+   * Default `true` (legacy callsites stay unchanged).
+   */
+  commentsEnabled?: boolean;
 };
 
 type PostCardProps = {
@@ -273,47 +280,51 @@ export function PostCard({
 
       {children && <div className="px-6 pb-4">{children}</div>}
 
-      {hasCollapsibleComments ? (
-        <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
-          <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
-            <CollapsibleTrigger asChild={true}>
-              <button
-                type="button"
-                className="group/comments flex w-full items-center gap-2 px-6 py-3 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
-              >
-                <ChevronDown
-                  className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
-                  aria-hidden="true"
-                />
-                <MessageSquare className="size-4" aria-hidden="true" />
-                <span>{commentLabel}</span>
-              </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 pb-4">
-              <div className="flex flex-col gap-3">
-                {commentInputSlot}
-                <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </CardFooter>
-      ) : (
-        <CardFooter className="!py-3 flex items-center gap-4 border-t bg-muted/5 px-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
-            onClick={event => {
-              event.stopPropagation();
-              onCommentsClick?.();
-            }}
-          >
-            <MessageSquare className="w-4 h-4" aria-hidden="true" />
-            <span className="text-caption">{commentLabel}</span>
-          </Button>
-        </CardFooter>
-      )}
+      {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
+          mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
+          consumer-gated `commentInputSlot`) even after the admin disables further commenting. */}
+      {(post.commentsEnabled !== false || (post.commentCount ?? 0) > 0) &&
+        (hasCollapsibleComments ? (
+          <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
+            <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
+              <CollapsibleTrigger asChild={true}>
+                <button
+                  type="button"
+                  className="group/comments flex w-full items-center gap-2 px-6 py-3 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
+                >
+                  <ChevronDown
+                    className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
+                    aria-hidden="true"
+                  />
+                  <MessageSquare className="size-4" aria-hidden="true" />
+                  <span>{commentLabel}</span>
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="px-6 pb-4">
+                <div className="flex flex-col gap-3">
+                  {commentInputSlot}
+                  <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </CardFooter>
+        ) : (
+          <CardFooter className="!py-3 flex items-center gap-4 border-t bg-muted/5 px-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
+              onClick={event => {
+                event.stopPropagation();
+                onCommentsClick?.();
+              }}
+            >
+              <MessageSquare className="w-4 h-4" aria-hidden="true" />
+              <span className="text-caption">{commentLabel}</span>
+            </Button>
+          </CardFooter>
+        ))}
     </Card>
   );
 }

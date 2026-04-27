@@ -51,6 +51,13 @@ type CalloutDetailDialogProps = {
    * button (plan D8 / T061).
    */
   settingsSlot?: ReactNode;
+  /**
+   * Mirrors `callout.settings.framing.commentsEnabled`. When `false` AND there are no existing
+   * messages (`callout.commentCount === 0`), the discussion section is hidden entirely. When
+   * `false` but messages exist, the thread renders read-only — consumer simply omits
+   * `commentInputSlot`. Default `true`.
+   */
+  commentsEnabled?: boolean;
 };
 
 export function CalloutDetailDialog({
@@ -70,8 +77,10 @@ export function CalloutDetailDialog({
   onReactionsClick,
   onShareClick,
   settingsSlot,
+  commentsEnabled,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
+  const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -187,19 +196,23 @@ export function CalloutDetailDialog({
               </div>
             )}
 
-            {/* Discussion section */}
-            <div className="pt-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
-                {callout.commentCount !== undefined && (
-                  <Badge variant="secondary" className="rounded-full px-2">
-                    {callout.commentCount}
-                  </Badge>
-                )}
+            {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
+                (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the
+                consumer omits `commentInputSlot` in that case). */}
+            {showDiscussion && (
+              <div className="pt-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
+                  {callout.commentCount !== undefined && (
+                    <Badge variant="secondary" className="rounded-full px-2">
+                      {callout.commentCount}
+                    </Badge>
+                  )}
+                </div>
+                {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
+                {commentsSlot}
               </div>
-              {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
-              {commentsSlot}
-            </div>
+            )}
           </div>
         </div>
       </DialogContent>

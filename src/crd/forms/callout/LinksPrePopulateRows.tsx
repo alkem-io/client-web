@@ -1,8 +1,8 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { LinkRow } from '@/crd/forms/callout/types';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
-import type { LinkRow } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type LinksPrePopulateRowsProps = {
   rows: LinkRow[];

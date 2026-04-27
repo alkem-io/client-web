@@ -5,6 +5,14 @@ import * as yup from 'yup';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
+import type {
+  AllowedActors,
+  ContributionDefaults,
+  FramingChip,
+  LinkRow,
+  ReferenceRow,
+  ResponseType,
+} from '@/crd/forms/callout/types';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -13,43 +21,10 @@ import {
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 
-/**
- * Framing chip id. Maps to CalloutFramingType at submit time via the
- * calloutFormMapper. `'document'` is a disabled placeholder chip.
- */
-export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
-
-/**
- * Response-type chip id. Maps to the server enum `CalloutContributionType`
- * (single value, not an array) at submit time via the calloutFormMapper.
- * `'document'` is a disabled placeholder chip.
- */
-export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
-
-export type AllowedActors = {
-  members: boolean;
-  admins: boolean;
-};
-
-export type ReferenceRow = {
-  /** Server id, set only when the row comes from an existing reference (edit mode). Rows added by the user during editing keep `id: undefined`. */
-  id?: string;
-  title: string;
-  url: string;
-  description: string;
-};
-
-export type LinkRow = {
-  title: string;
-  url: string;
-  description: string;
-};
-
-export type ContributionDefaults = {
-  defaultDisplayName: string;
-  postDescription: string;
-  whiteboardContent: string;
-};
+// Re-export the form-shape types so existing `@/main/*` consumers can keep
+// importing them from this hook. New code should import directly from
+// `@/crd/forms/callout/types`.
+export type { AllowedActors, ContributionDefaults, FramingChip, LinkRow, ReferenceRow, ResponseType };
 
 export type CalloutFormValues = {
   title: string;

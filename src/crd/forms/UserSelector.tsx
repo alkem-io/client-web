@@ -73,7 +73,7 @@ export function UserSelector({
           value={searchQuery}
           onChange={e => onSearchChange(e.target.value)}
           placeholder={placeholder}
-          aria-label={searchAriaLabel ?? placeholder}
+          aria-label={searchAriaLabel ?? placeholder ?? 'Search users'}
           className="pl-9"
           autoComplete="off"
         />
@@ -132,7 +132,7 @@ export function UserSelector({
                   type="button"
                   onClick={() => onRemove(user.id)}
                   className="rounded-full p-0.5 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                  aria-label={removeAriaLabel ? removeAriaLabel(user.displayName) : undefined}
+                  aria-label={removeAriaLabel ? removeAriaLabel(user.displayName) : user.displayName}
                 >
                   <X className="size-3" aria-hidden="true" />
                 </button>

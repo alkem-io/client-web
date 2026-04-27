@@ -17,7 +17,11 @@
 import { Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useCalloutContentQuery,
+  useCreateReferenceOnProfileMutation,
+  useUpdateCalloutContentMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -99,6 +103,7 @@ export function CalloutFormConnector({
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -249,6 +254,36 @@ export function CalloutFormConnector({
     if (!calloutId) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
+
+    // New references added in edit mode have no server id yet, so they can't
+    // travel through `UpdateReferenceInput` (which requires `ID`). Persist them
+    // via the dedicated `createReferenceOnProfile` mutation against the framing
+    // profile before the bulk update; existing rows still flow through the
+    // update payload below.
+    const framingProfileId = editData?.lookup.callout?.framing.profile.id;
+    const newReferenceRows = values.referenceRows.filter(
+      row => !row.id && row.title.trim().length > 0 && row.url.trim().length > 0
+    );
+    if (framingProfileId && newReferenceRows.length > 0) {
+      try {
+        for (const row of newReferenceRows) {
+          await createReferenceOnProfile({
+            variables: {
+              input: {
+                profileID: framingProfileId,
+                name: row.title.trim(),
+                uri: row.url.trim(),
+                description: row.description.trim() || undefined,
+              },
+            },
+          });
+        }
+      } catch (err) {
+        logError(new Error('Callout reference creation failed', { cause: err as Error }));
+        notify(t('callout.referencesSaveFailed'), 'error');
+        return;
+      }
+    }
 
     const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(values, { calloutId });
 

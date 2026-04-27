@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import type { AllowedActors } from '@/crd/forms/callout/types';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
-import type { AllowedActors } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type ActorSwitchesProps = {
   value: AllowedActors;

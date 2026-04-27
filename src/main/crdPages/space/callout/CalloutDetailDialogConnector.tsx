@@ -273,6 +273,11 @@ export function CalloutDetailDialogConnector({
 
   const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
 
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages readable. The dialog itself hides the discussion section entirely
+  // when commentsEnabled is false AND there are no existing messages.
+  const commentsEnabled = callout.settings.framing.commentsEnabled;
+
   if (!callout.comments?.id) {
     return (
       <>
@@ -281,6 +286,7 @@ export function CalloutDetailDialogConnector({
           onOpenChange={onOpenChange}
           callout={mapCalloutDetailsToDialogData(callout, t)}
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
+          commentsEnabled={commentsEnabled}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
@@ -313,7 +319,8 @@ export function CalloutDetailDialogConnector({
               commentCount,
             }}
             commentsSlot={thread}
-            commentInputSlot={commentInput}
+            commentInputSlot={commentsEnabled ? commentInput : null}
+            commentsEnabled={commentsEnabled}
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
             contributionsCount={callout.contributions.length}

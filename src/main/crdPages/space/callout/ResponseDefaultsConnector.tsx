@@ -49,10 +49,13 @@ export function ResponseDefaultsConnector({
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
-  const [whiteboardDraft, setWhiteboardDraft] = useState<string>(values.whiteboardContent || EmptyWhiteboardString);
   const [whiteboardPreviewSettings, setWhiteboardPreviewSettings] = useState<WhiteboardPreviewSettings>(
     DefaultWhiteboardPreviewSettings
   );
+  // Read whiteboard content straight from `values` so template-applied content
+  // (which lands via `onSave` → parent `values.whiteboardContent`) is always
+  // visible to the editor, instead of being shadowed by stale local state.
+  const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
 
   const needsTemplates = (type === 'post' || type === 'whiteboard') && Boolean(spaceId) && open;
   const { data: templatesData, loading: templatesLoading } = useSpaceContentTemplatesOnSpaceQuery({
@@ -134,7 +137,6 @@ export function ResponseDefaultsConnector({
             actions={{
               onCancel: () => setWhiteboardEditorOpen(false),
               onUpdate: async (wb, _previewImages) => {
-                setWhiteboardDraft(wb.content);
                 setWhiteboardPreviewSettings(wb.previewSettings);
                 onSave({ ...values, whiteboardContent: wb.content });
                 setWhiteboardEditorOpen(false);

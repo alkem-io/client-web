@@ -22,26 +22,31 @@ export function ContributionCreateConnector({ calloutId, allowedTypes, onCreated
   const [createPost] = useCreatePostOnCalloutMutation();
 
   const handleSubmit = async () => {
-    if (activeForm === 'post' && calloutId && title.trim()) {
-      await createPost({
-        variables: {
-          calloutId,
-          post: {
-            profileData: {
-              displayName: title.trim(),
-              description,
-            },
-            tags: tags
-              .split(',')
-              .map(tag => tag.trim())
-              .filter(Boolean),
+    // Only the post branch is wired today; memo / whiteboard / link land via
+    // their own sub-specs. Bail without resetting/closing the form when the
+    // submit can't actually run, so the user keeps their input and can fix
+    // missing fields rather than seeing a phantom "success".
+    if (activeForm !== 'post') return;
+    if (!calloutId || !title.trim()) return;
+
+    await createPost({
+      variables: {
+        calloutId,
+        post: {
+          profileData: {
+            displayName: title.trim(),
+            description,
           },
+          tags: tags
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean),
         },
-        refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-        awaitRefetchQueries: true,
-      });
-    }
-    // Other types (memo / whiteboard / link) — wired by their own sub-specs.
+      },
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      awaitRefetchQueries: true,
+    });
+
     setActiveForm(null);
     resetForm();
     onCreated?.();

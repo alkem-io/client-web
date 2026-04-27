@@ -1,8 +1,8 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { ReferenceRow } from '@/crd/forms/callout/types';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
-import type { ReferenceRow } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type ReferencesEditorProps = {
   rows: ReferenceRow[];

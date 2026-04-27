@@ -115,6 +115,10 @@ function LazyCalloutItemContent({
   // dialog-only flow. The dialog itself handles its own "no room" rendering.
   const commentsRoomId = callout.comments?.id;
   const hasCommentsRoom = Boolean(commentsRoomId) && callout.comments !== undefined;
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages visible (read-only). PostCard hides the footer entirely when
+  // commentsEnabled === false AND no messages exist.
+  const commentsEnabled = callout.settings.framing.commentsEnabled;
 
   return (
     <>
@@ -141,7 +145,7 @@ function LazyCalloutItemContent({
               }
               onExpandClick={onExpandClick}
               commentsSlot={thread}
-              commentInputSlot={commentInput}
+              commentInputSlot={commentsEnabled ? commentInput : null}
               onCommentsExpandedChange={setCommentsExpanded}
               contributionsPreview={contributionsPreview}
             >

@@ -1,10 +1,10 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
-import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type ResponseDefaultsDialogProps = {
   open: boolean;

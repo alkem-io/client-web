@@ -1,5 +1,5 @@
 import { Loader2, Trash2 } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValidationError } from 'yup';
 import {
@@ -117,9 +117,19 @@ export function CrdPostContributionDialog({
     }
   }, [open, mode, fallbackName, fallbackDescription]);
 
-  // Prefill from server data in edit mode.
+  // Prefill from server data in edit mode. Apollo can hand back a fresh
+  // reference for `data.lookup.post` whenever the cache is touched (refetch,
+  // sibling mutation, normalized-field invalidation), so guard against
+  // re-prefilling and clobbering in-flight user edits — only seed once per
+  // post id per open dialog session.
+  const prefilledPostIdRef = useRef<string | null>(null);
   useEffect(() => {
-    if (mode !== 'edit' || !post || !open) return;
+    if (!open) {
+      prefilledPostIdRef.current = null;
+      return;
+    }
+    if (mode !== 'edit' || !post) return;
+    if (prefilledPostIdRef.current === post.id) return;
     setValues({
       displayName: post.profile.displayName,
       description: post.profile.description ?? '',
@@ -128,6 +138,7 @@ export function CrdPostContributionDialog({
     });
     setIsDirty(false);
     setErrors({});
+    prefilledPostIdRef.current = post.id;
   }, [mode, post, open]);
 
   const updateField = <K extends keyof PostContributionFormValues>(field: K, value: PostContributionFormValues[K]) => {

@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorSwitches } from '@/crd/forms/callout/ActorSwitches';
 import { LinksPrePopulateRows } from '@/crd/forms/callout/LinksPrePopulateRows';
+import type { AllowedActors, LinkRow, ResponseType } from '@/crd/forms/callout/types';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
-import type { AllowedActors, LinkRow, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type ResponsePanelProps = {
   type: ResponseType;

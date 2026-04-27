@@ -1,5 +1,5 @@
 import { ArrowLeft, Check, Copy, Share2 } from 'lucide-react';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -10,9 +10,9 @@ const COPIED_FEEDBACK_MS = 2000;
 
 function toAbsoluteUrl(url: string): string {
   try {
-    return new URL(url).toString();
+    return new URL(url, window.location.origin).toString();
   } catch {
-    return `${window.location.protocol}//${window.location.host}${url}`;
+    return url;
   }
 }
 
@@ -43,14 +43,27 @@ export function ShareDialog({
   const { t } = useTranslation('crd-common');
   const [copied, setCopied] = useState(false);
   const [view, setView] = useState<'default' | 'alkemio'>('default');
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCopyTimeout = () => {
+    if (copyTimeoutRef.current !== null) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
+  };
 
   // Reset view on open/close so the dialog always reopens to the URL view.
   useEffect(() => {
     if (!open) {
       setView('default');
       setCopied(false);
+      clearCopyTimeout();
     }
   }, [open]);
+
+  // Clear the copy-feedback timer when the dialog unmounts so it can't fire
+  // setState after unmount or stack on top of a previous unfired timer.
+  useEffect(() => clearCopyTimeout, []);
 
   if (!url) return null;
 
@@ -60,7 +73,11 @@ export function ShareDialog({
     try {
       await navigator.clipboard.writeText(fullUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS);
+      clearCopyTimeout();
+      copyTimeoutRef.current = setTimeout(() => {
+        copyTimeoutRef.current = null;
+        setCopied(false);
+      }, COPIED_FEEDBACK_MS);
     } catch {
       // Clipboard API not available or denied — fail silently, user can select the input manually.
     }

@@ -200,7 +200,8 @@
     "postUnsavedCloseConfirm": "Discard changes",
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
-    "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog."
+    "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
   },
   "contribution": {
     "edit": "Edit",
