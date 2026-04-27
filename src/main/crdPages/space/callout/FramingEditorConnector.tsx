@@ -11,6 +11,8 @@ import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
@@ -21,7 +23,10 @@ import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
+import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
+
+type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
 
@@ -35,6 +40,10 @@ type FramingEditorConnectorProps = {
   mode?: 'create' | 'edit';
   /** Server id of the existing memo, used by `CrdMemoDialog` on edit. */
   editMemoId?: string;
+  /** Server-loaded whiteboard, used by `CrdWhiteboardView` on edit (T048). */
+  editWhiteboard?: EditWhiteboard;
+  /** Share URL for the callout's whiteboard panel — passed through to `CrdWhiteboardView`. */
+  editWhiteboardShareUrl?: string;
   framingType: string;
   // Link fields
   linkUrl: string;
@@ -84,6 +93,8 @@ type FramingEditorConnectorProps = {
 export function FramingEditorConnector({
   mode = 'create',
   editMemoId,
+  editWhiteboard,
+  editWhiteboardShareUrl,
   framingType,
   linkUrl,
   onLinkUrlChange,
@@ -125,6 +136,56 @@ export function FramingEditorConnector({
 
   switch (framingType) {
     case 'whiteboard': {
+      // Edit mode (T048): the form does NOT track whiteboard content. The
+      // "Open" button launches the collaborative `CrdWhiteboardView` against
+      // the actual server whiteboard; that dialog persists changes via its
+      // own mutations. The callout-update mutation never includes
+      // `whiteboardContent` (see `mapFormToCalloutUpdateInput`).
+      if (mode === 'edit' && editWhiteboard) {
+        const guestShareUrl = buildGuestShareUrl(editWhiteboard.id ?? editWhiteboard.nameID ?? undefined);
+        return (
+          <>
+            <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
+              <div className="flex items-center gap-3">
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
+                    color: 'var(--primary)',
+                  }}
+                >
+                  <Presentation className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-body-emphasis">{t('callout.whiteboard')}</p>
+                  <p className="text-caption text-muted-foreground">{t('framing.openWhiteboardHint')}</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
+                {t('framing.openWhiteboard')}
+              </Button>
+            </div>
+            {whiteboardEditorOpen && (
+              <CrdWhiteboardView
+                whiteboardId={editWhiteboard.id}
+                whiteboard={editWhiteboard}
+                authorization={editWhiteboard.authorization}
+                whiteboardShareUrl={editWhiteboardShareUrl ?? ''}
+                guestShareUrl={guestShareUrl}
+                readOnlyDisplayName={true}
+                displayName={whiteboardTitle || editWhiteboard.profile.displayName}
+                preventWhiteboardDeletion={true}
+                loadingWhiteboards={false}
+                backToWhiteboards={() => setWhiteboardEditorOpen(false)}
+              />
+            )}
+          </>
+        );
+      }
+
+      // Create mode: single-user editor — the callout doesn't exist yet, so
+      // there's nothing to collaborate on. Content lands in the form and is
+      // sent inline with the callout-create mutation.
       const templateWhiteboard: WhiteboardWithContent = {
         id: WHITEBOARD_FRAMING_TEMPLATE_ID,
         nameID: WHITEBOARD_FRAMING_TEMPLATE_ID,
@@ -155,11 +216,7 @@ export function FramingEditorConnector({
               </div>
             </div>
             <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
-              {mode === 'edit'
-                ? t('framing.openWhiteboard')
-                : whiteboardConfigured
-                  ? t('framing.edit')
-                  : t('framing.configure')}
+              {whiteboardConfigured ? t('framing.edit') : t('framing.configure')}
             </Button>
           </div>
           <Suspense fallback={<Loading />}>
@@ -176,7 +233,6 @@ export function FramingEditorConnector({
                 show: whiteboardEditorOpen,
                 canEdit: true,
                 canDelete: false,
-                fullscreen: true,
                 allowFilesAttached: true,
                 dialogTitle: whiteboardTitle || t('callout.whiteboard'),
               }}

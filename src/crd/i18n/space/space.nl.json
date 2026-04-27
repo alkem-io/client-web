@@ -203,7 +203,8 @@
     "memoPlaceholder": "Schrijf je memo…",
     "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
     "openMemo": "Memo openen",
-    "openWhiteboard": "Whiteboard openen"
+    "openWhiteboard": "Whiteboard openen",
+    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt."
   },
   "members": {
     "title": "Community",

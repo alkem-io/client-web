@@ -9,7 +9,6 @@ import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
@@ -49,10 +48,13 @@ const findTags = (tagsets: CalloutData['framing']['profile']['tagsets']): string
  *
  * Decisions baked in:
  * - On edit, `memoMarkdown` stays empty (plan T048a / FR-21a — memo content is
- *   edited through `CrdMemoDialog`, not the form).
- * - On edit, `whiteboardContent` stays at `EmptyWhiteboardString` (plan T048 —
- *   whiteboard content is edited through `CrdWhiteboardDialog`). We still copy
- *   the preview settings so the edit dialog re-opens with the same crop.
+ *   edited through `CrdMemoDialog`, not the form). `mapFormToCalloutUpdateInput`
+ *   never sends `memoContent` on update.
+ * - On edit, `whiteboardContent` is omitted from the prefill (T048 — whiteboard
+ *   content is edited through `CrdWhiteboardView`, not the form).
+ *   `mapFormToCalloutUpdateInput` never sends `whiteboardContent` on update.
+ *   The whiteboard preview settings are still copied so the launched dialog
+ *   re-opens with the same crop.
  * - On edit, `prePopulateLinkRows` is always empty — existing link
  *   contributions are managed via the detail dialog (plan D19).
  * - `notifyMembers` is always `false` on edit; notifications are offered only
@@ -88,7 +90,6 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
-    whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings:
       (framing.whiteboard?.previewSettings as WhiteboardPreviewSettings | undefined) ??

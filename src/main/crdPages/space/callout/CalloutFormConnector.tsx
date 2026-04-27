@@ -31,6 +31,7 @@ import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
@@ -57,6 +58,14 @@ type CalloutFormConnectorProps = {
   calloutsSetId?: string;
   /** Space id used by `ResponseDefaultsConnector` to fetch content templates. */
   spaceId?: string;
+  /**
+   * Edit-mode only: the rich callout from the parent. Threaded through to
+   * `FramingEditorConnector` so the whiteboard "Open" button (T048) can launch
+   * the collaborative `CrdWhiteboardView` against the actual server whiteboard.
+   * `useCalloutContentQuery` doesn't return the full `WhiteboardDetails` shape,
+   * so we rely on the callout the list/detail layer already loaded.
+   */
+  editCallout?: CalloutDetailsModelExtended;
   onFindTemplate?: () => void;
 };
 
@@ -67,6 +76,7 @@ export function CalloutFormConnector({
   calloutId,
   calloutsSetId,
   spaceId,
+  editCallout,
   onFindTemplate,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -353,6 +363,8 @@ export function CalloutFormConnector({
             <FramingEditorConnector
               mode={mode}
               editMemoId={values.editMeta?.memoId}
+              editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
+              editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
               framingType={values.framingChip}
               linkUrl={values.linkUrl}
               onLinkUrlChange={v => setField('linkUrl', v)}

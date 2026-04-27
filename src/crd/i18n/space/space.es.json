@@ -203,7 +203,8 @@
     "memoPlaceholder": "Escribe tu nota…",
     "memoOpenHint": "El contenido de la nota se edita en su propio diálogo.",
     "openMemo": "Abrir nota",
-    "openWhiteboard": "Abrir pizarra"
+    "openWhiteboard": "Abrir pizarra",
+    "openWhiteboardHint": "El contenido de la pizarra se edita en su propio diálogo."
   },
   "members": {
     "title": "Comunidad",

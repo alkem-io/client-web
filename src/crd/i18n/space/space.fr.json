@@ -203,7 +203,8 @@
     "memoPlaceholder": "Rédigez votre mémo…",
     "memoOpenHint": "Le contenu du mémo se modifie dans sa propre fenêtre.",
     "openMemo": "Ouvrir le mémo",
-    "openWhiteboard": "Ouvrir le tableau blanc"
+    "openWhiteboard": "Ouvrir le tableau blanc",
+    "openWhiteboardHint": "Le contenu du tableau blanc se modifie dans sa propre fenêtre."
   },
   "members": {
     "title": "Communauté",

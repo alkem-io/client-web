@@ -78,11 +78,11 @@ export function ResponseDefaultsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription className="sr-only">{t('responseDefaults.srDescription')}</DialogDescription>
 
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           {(type === 'post' || type === 'whiteboard') && templateSlot}
 
           {type !== 'document' && (

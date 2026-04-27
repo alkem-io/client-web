@@ -1,4 +1,4 @@
-import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Vote } from 'lucide-react';
+import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Vote, X } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -9,48 +9,16 @@ type Chip = {
   id: FramingChipId;
   labelKey: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  activeClass: string;
   disabled?: boolean;
 };
 
 const CHIPS: Chip[] = [
-  {
-    id: 'whiteboard',
-    labelKey: 'callout.whiteboard',
-    icon: Presentation,
-    activeClass: 'text-primary bg-primary/10 hover:bg-primary/20 border-primary/20',
-  },
-  {
-    id: 'memo',
-    labelKey: 'callout.memo',
-    icon: StickyNote,
-    activeClass: 'text-chart-2 bg-chart-2/10 hover:bg-chart-2/20 border-chart-2/20',
-  },
-  {
-    id: 'document',
-    labelKey: 'callout.document',
-    icon: FileText,
-    activeClass: '',
-    disabled: true,
-  },
-  {
-    id: 'cta',
-    labelKey: 'callout.callToAction',
-    icon: Megaphone,
-    activeClass: 'text-chart-3 bg-chart-3/10 hover:bg-chart-3/20 border-chart-3/20',
-  },
-  {
-    id: 'image',
-    labelKey: 'callout.mediaGallery',
-    icon: ImageIcon,
-    activeClass: 'text-chart-1 bg-chart-1/10 hover:bg-chart-1/20 border-chart-1/20',
-  },
-  {
-    id: 'poll',
-    labelKey: 'callout.poll',
-    icon: Vote,
-    activeClass: 'text-chart-4 bg-chart-4/10 hover:bg-chart-4/20 border-chart-4/20',
-  },
+  { id: 'whiteboard', labelKey: 'callout.whiteboard', icon: Presentation },
+  { id: 'memo', labelKey: 'callout.memo', icon: StickyNote },
+  { id: 'document', labelKey: 'callout.document', icon: FileText, disabled: true },
+  { id: 'cta', labelKey: 'callout.callToAction', icon: Megaphone },
+  { id: 'image', labelKey: 'callout.mediaGallery', icon: ImageIcon },
+  { id: 'poll', labelKey: 'callout.poll', icon: Vote },
 ];
 
 export type FramingChipStripProps = {
@@ -105,16 +73,17 @@ export function FramingChipStrip({ value, onChange, locked = false, className }:
               title={chip.disabled ? t('framing.comingSoon') : undefined}
               onClick={() => handleClick(chip)}
               className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-lg border text-body-emphasis transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
-                  ? cn(chip.activeClass, 'ring-1 ring-offset-1')
-                  : 'bg-background border-border text-foreground hover:bg-muted',
+                  ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                  : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                 chip.disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
                 locked && !active && !chip.disabled && 'opacity-60 cursor-not-allowed'
               )}
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />
               <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
+              {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
           );
         })}

@@ -203,7 +203,8 @@
     "memoPlaceholder": "Write your memo…",
     "memoOpenHint": "Memo content is edited in its own dialog.",
     "openMemo": "Open memo",
-    "openWhiteboard": "Open whiteboard"
+    "openWhiteboard": "Open whiteboard",
+    "openWhiteboardHint": "Whiteboard content is edited in its own dialog."
   },
   "members": {
     "title": "Community",

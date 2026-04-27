@@ -174,6 +174,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
           onOpenChange={setEditOpen}
           calloutId={callout.id}
           calloutsSetId={callout.calloutsSetId}
+          editCallout={callout}
         />
       )}
 

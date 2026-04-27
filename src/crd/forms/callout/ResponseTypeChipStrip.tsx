@@ -1,4 +1,4 @@
-import { FileText, Image as ImageIcon, Link as LinkIcon, MessageSquare, Presentation, StickyNote } from 'lucide-react';
+import { FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -9,47 +9,16 @@ type Chip = {
   id: ResponseTypeChipId;
   labelKey: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  activeClass: string;
   disabled?: boolean;
 };
 
 const CHIPS: Chip[] = [
-  {
-    id: 'link',
-    labelKey: 'contributionSettings.types.link',
-    icon: LinkIcon,
-    activeClass: 'text-chart-3 bg-chart-3/10 hover:bg-chart-3/20 border-chart-3/20',
-  },
-  {
-    id: 'post',
-    labelKey: 'contributionSettings.types.post',
-    icon: MessageSquare,
-    activeClass: 'text-primary bg-primary/10 hover:bg-primary/20 border-primary/20',
-  },
-  {
-    id: 'memo',
-    labelKey: 'contributionSettings.types.memo',
-    icon: StickyNote,
-    activeClass: 'text-chart-2 bg-chart-2/10 hover:bg-chart-2/20 border-chart-2/20',
-  },
-  {
-    id: 'whiteboard',
-    labelKey: 'contributionSettings.types.whiteboard',
-    icon: Presentation,
-    activeClass: 'text-chart-1 bg-chart-1/10 hover:bg-chart-1/20 border-chart-1/20',
-  },
-  {
-    id: 'document',
-    labelKey: 'contributionSettings.types.document',
-    icon: FileText,
-    activeClass: '',
-    disabled: true,
-  },
+  { id: 'link', labelKey: 'contributionSettings.types.link', icon: LinkIcon },
+  { id: 'post', labelKey: 'contributionSettings.types.post', icon: MessageSquare },
+  { id: 'memo', labelKey: 'contributionSettings.types.memo', icon: StickyNote },
+  { id: 'whiteboard', labelKey: 'contributionSettings.types.whiteboard', icon: Presentation },
+  { id: 'document', labelKey: 'contributionSettings.types.document', icon: FileText, disabled: true },
 ];
-
-// Unused right now but kept for parity with the framing strip — Image chip
-// might be added later when per-image contribution becomes a type.
-void ImageIcon;
 
 export type ResponseTypeChipStripProps = {
   /** Currently-selected response-type id, or `'none'` if nothing is selected. */
@@ -103,16 +72,17 @@ export function ResponseTypeChipStrip({ value, onChange, locked = false, classNa
               title={chip.disabled ? t('framing.comingSoon') : undefined}
               onClick={() => handleClick(chip)}
               className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-lg border text-body-emphasis transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
-                  ? cn(chip.activeClass, 'ring-1 ring-offset-1')
-                  : 'bg-background border-border text-foreground hover:bg-muted',
+                  ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                  : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                 chip.disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
                 locked && !active && !chip.disabled && 'opacity-60 cursor-not-allowed'
               )}
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />
               <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
+              {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
           );
         })}

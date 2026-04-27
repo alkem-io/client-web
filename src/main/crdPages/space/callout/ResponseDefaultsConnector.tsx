@@ -144,7 +144,6 @@ export function ResponseDefaultsConnector({
               show: whiteboardEditorOpen,
               canEdit: true,
               canDelete: false,
-              fullscreen: true,
               allowFilesAttached: true,
               dialogTitle: values.defaultDisplayName || t('responseDefaults.defaultWhiteboard'),
             }}

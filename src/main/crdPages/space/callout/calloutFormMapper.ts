@@ -335,14 +335,13 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
     },
   };
 
-  if (framingType === CalloutFramingType.Whiteboard && values.whiteboardContent) {
-    framing.whiteboardContent = values.whiteboardContent;
-    framing.whiteboardPreviewSettings = values.whiteboardPreviewSettings;
-  }
-
-  if (framingType === CalloutFramingType.Memo && values.memoMarkdown.trim()) {
-    framing.memoContent = values.memoMarkdown;
-  }
+  // Whiteboard and memo content are NOT sent on update (T048 / T048a). Both
+  // framings are edited through their dedicated collaborative dialogs
+  // (`CrdWhiteboardView` / `CrdMemoDialog`), which persist via their own
+  // mutations. Re-sending content from this form would either be rejected by
+  // the server or overwrite live edits made in the collaborative dialog.
+  // Preview settings are handled by the whiteboard dialog's preview-settings
+  // flow (`useUpdateWhiteboardPreviewSettings`), not by this update payload.
 
   if (framingType === CalloutFramingType.Link) {
     const linkId = values.editMeta?.framingLinkId;

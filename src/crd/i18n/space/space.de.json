@@ -203,7 +203,8 @@
     "memoPlaceholder": "Schreiben Sie Ihre Notiz…",
     "memoOpenHint": "Der Memo-Inhalt wird in einem eigenen Dialog bearbeitet.",
     "openMemo": "Memo öffnen",
-    "openWhiteboard": "Whiteboard öffnen"
+    "openWhiteboard": "Whiteboard öffnen",
+    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet."
   },
   "members": {
     "title": "Community",
