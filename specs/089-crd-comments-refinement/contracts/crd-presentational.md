@@ -207,16 +207,113 @@ The hook's return shape — `{ thread, commentInput, commentCount }` — is **un
 
 ---
 
-## 7. i18n keys (REMOVED)
+## 7. i18n keys
 
 **Files**: `src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json`
 
-| Key | Status |
-|-----|--------|
-| `comments.sortNewest` | **REMOVE** — no remaining references after `CommentThread` rewrite. |
-| `comments.sortOldest` | **REMOVE** — same. |
+| Key | Status | Notes |
+|-----|--------|-------|
+| `comments.sortNewest` | **REMOVED** (US3) | No remaining references after `CommentThread` rewrite. |
+| `comments.sortOldest` | **REMOVED** (US3) | Same. |
+| `callout.expandComments` | **ADDED** (US5) | State-aware aria-label for the `Collapsible` trigger while the footer is collapsed. |
+| `callout.collapseComments` | **ADDED** (US5) | State-aware aria-label while the footer is expanded. |
 
 Per the CRD CLAUDE.md, CRD translations are managed manually (not Crowdin); the English source and all 5 localized files are edited directly in the same PR.
+
+---
+
+## 8. PostCard collapsible footer contract (US5)
+
+**File**: `src/crd/components/space/PostCard.tsx`
+
+### Props (additions; all optional)
+
+```ts
+type PostCardProps = {
+  // … existing props unchanged …
+
+  /** Full comment thread rendered inside the expanded footer. When supplied
+   *  the footer switches to a <Collapsible> layout with chevron trigger.
+   *  When absent, the original single-button footer is rendered (backward
+   *  compatible for the standalone preview app and any future dialog-only
+   *  caller). */
+  commentsSlot?: ReactNode;
+
+  /** Comment input rendered above the thread inside the expanded footer.
+   *  Consumer passes `null` when the viewer cannot post (read-only surface). */
+  commentInputSlot?: ReactNode | null;
+
+  /** Fires on every open/close of the inline comments footer. The integration
+   *  layer uses this to gate the live subscription (see
+   *  CalloutCommentsConnector.skipSubscription). */
+  onCommentsExpandedChange?: (expanded: boolean) => void;
+};
+```
+
+### Behavior
+
+- `hasCollapsibleComments = commentsSlot !== undefined`. Gate on "slot present", not on any boolean prop — that keeps the branching crisp and prevents the standalone preview app from paying for an unneeded collapsible.
+- When `hasCollapsibleComments`: render the footer as a `<Collapsible>` wrapping a trigger button (whole-row clickable) and a `<CollapsibleContent>` region. Trigger: `<chevron-down> <message-square> {count label}`. Content: `commentInputSlot` above, `commentsSlot` inside a `max-h-[400px] overflow-y-auto pr-2` wrapper.
+- Chevron rotation: `group-data-[state=open]/comments:rotate-180` on the icon, `group/comments` on the trigger button. Fully declarative — no extra React state for the animation.
+- Internal state: `useState(false)` for `isCommentsOpen`, updated through `handleCommentsOpenChange(open)` which also notifies `onCommentsExpandedChange?.(open)`. This is visual-only state, allowed per `src/crd/CLAUDE.md`.
+- `onCommentsClick` is ignored when `hasCollapsibleComments` is true. The prop is kept on the type for the backward-compatible branch (standalone preview, dialog-only callers).
+
+### Accessibility
+
+- Whole trigger row is a single `<button type="button">`; click anywhere on it toggles.
+- `aria-expanded` is emitted by Radix Collapsible on the trigger — no manual wiring required.
+- `aria-label` is state-aware, using `callout.expandComments` / `callout.collapseComments`. The visible "N comments" text stays constant so the count remains the primary semantic; screen readers announce state changes via `aria-expanded`, not via text changes.
+- Keyboard: `Tab` reaches the trigger, `Enter` or `Space` toggles. `Escape` does NOT collapse (Collapsible is not a modal — correct behavior).
+
+---
+
+## 9. CalloutCommentsConnector contract (US5)
+
+**File**: `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx`
+
+### Prop addition
+
+```ts
+type CalloutCommentsConnectorProps = {
+  // … existing props unchanged …
+
+  /** Override the default subscription gate. When omitted, the subscription
+   *  starts once the connector scrolls into view (`!inView`) — the dialog
+   *  path relies on this. The list-view path passes `!commentsExpanded` so
+   *  the live subscription only starts after the user has expanded the
+   *  inline footer at least once and stays active afterwards (sticky). */
+  skipSubscription?: boolean;
+};
+```
+
+### Behavior
+
+- `useCrdRoomComments` is called with `skipSubscription: skipSubscription ?? !inView`. Dialog callers omit the prop → unchanged behavior. List-view callers pass `!commentsExpanded` → subscription only opens after first expand.
+- `useInView` gate on the contribution Apollo query is unchanged. Off-screen cards still pay zero query cost.
+
+### Consumer wiring (LazyCalloutItem.tsx)
+
+```tsx
+const [commentsExpanded, setCommentsExpanded] = useState(false);
+
+<CalloutCommentsConnector
+  roomId={callout.comments.id}
+  calloutId={callout.id}
+  roomData={callout.comments}
+  skipSubscription={!commentsExpanded}
+>
+  {({ thread, commentInput }) => (
+    <PostCard
+      // … other props …
+      commentsSlot={thread}
+      commentInputSlot={commentInput}
+      onCommentsExpandedChange={setCommentsExpanded}
+    />
+  )}
+</CalloutCommentsConnector>
+```
+
+A fallback branch handles `callout.comments?.id === undefined` by rendering `PostCard` without the slots and with the original `onCommentsClick={() => openDialog()}` binding — the dialog itself handles the no-room case separately.
 
 ---
 
@@ -224,6 +321,10 @@ Per the CRD CLAUDE.md, CRD translations are managed manually (not Crowdin); the 
 
 This feature is pre-release (the CRD toggle is off by default in production). Breaking the `CommentsContainerData` type is acceptable — there is exactly one call site. No migration shim, no deprecation window needed.
 
+The US5 additions are strictly additive (all new props are optional). The standalone preview app's `PostCard` use in `src/crd/app/pages/SpacePage.tsx` does not pass `commentsSlot` and therefore keeps the original footer — no change required there.
+
 ## Accessibility contract
 
-Unchanged. The bounded-height scroll region is a native browser scroll container and remains keyboard-operable (Tab to focus within, arrow-keys on elements, Space/Page-Down to scroll when focus is on the list). The existing `aria-label` on the loading state (`output` element in `CommentThread`) and `aria-label` on icon-only buttons in `CommentInput` are untouched.
+Unchanged for US1–US4. The bounded-height scroll region is a native browser scroll container and remains keyboard-operable (Tab to focus within, arrow-keys on elements, Space/Page-Down to scroll when focus is on the list). The existing `aria-label` on the loading state (`output` element in `CommentThread`) and `aria-label` on icon-only buttons in `CommentInput` are untouched.
+
+**US5 additions.** The Collapsible trigger is a single `<button>` with state-aware `aria-label`, auto-managed `aria-expanded` (Radix), and visible `focus-visible:ring-2`. The icon-only chevron is marked `aria-hidden="true"`. The trigger is reachable via keyboard Tab and toggles on `Enter` / `Space` per HTML button semantics.

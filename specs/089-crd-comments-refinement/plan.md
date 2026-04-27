@@ -1,13 +1,19 @@
 # Implementation Plan: CRD Comments Refinement (Parity with Legacy Experience)
 
-**Branch**: `089-crd-comments-refinement` | **Date**: 2026-04-21 | **Spec**: [spec.md](./spec.md)
+**Branches**:
+- `089-crd-comments-refinement` (merged) — Stories US1–US4: input-on-top, newest-first, one-level replies, timeline modal bounded height.
+- `090-crd-callout-inline-comments` (current) — Story US5: inline collapsible comments on list-view callouts.
+
+**Date**: 2026-04-21 (initial) / 2026-04-23 (US5 addendum) | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/089-crd-comments-refinement/spec.md`
 
 ## Summary
 
 Close four behavioral gaps between the CRD comments surface and the legacy MUI `CommentsComponent` that community members depend on today. (1) Move the comment input above the thread on both the timeline event modal and the callout discussion modal. (2) Hard-code newest-first ordering for top-level comments and remove the user-facing sort toggle. (3) Hide the Reply action on reply items so the UI stops advertising a capability the data model silently discards. (4) Bound the comments list inside the timeline event modal so long threads don't push the event body off-screen.
 
-No domain, GraphQL, routing, or dependency changes. All edits are in `src/crd/components/comment/`, two CRD page shells (`EventDetailView`, `CalloutDetailDialog`), one integration hook (`useCrdRoomComments`), and the six `crd-space` locale files (removing two unused keys).
+**US5 addendum (branch 090).** Add an inline, collapsible comment thread to the footer of CRD list-view callouts (`PostCard` rendered from `LazyCalloutItem`). A chevron-toggle trigger next to the existing "N comments" label expands the footer in place, revealing the comment input above and the thread below, bounded by a max-height with internal scroll. The callout detail dialog, the timeline event modal, and the legacy MUI list view are untouched.
+
+No domain, GraphQL, routing, or dependency changes. All edits are in `src/crd/components/comment/`, two CRD page shells (`EventDetailView`, `CalloutDetailDialog`), one integration hook (`useCrdRoomComments`), the six `crd-space` locale files (two keys removed in US1–US4; two keys added in US5), plus three additional files for US5: `src/crd/components/space/PostCard.tsx`, `src/main/crdPages/space/callout/LazyCalloutItem.tsx`, and `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` (new optional `skipSubscription` prop).
 
 ## Technical Context
 
@@ -95,7 +101,24 @@ src/
     └── CommentsComponent.tsx                                     # UNCHANGED — parity reference
 ```
 
-**Structure Decision**: Single Web SPA, three-layer CRD architecture retained. Zero new files. Twelve modified files (3 CRD comment leaves, 2 CRD composites, 1 integration hook, 6 CRD locale files). No domain, routing, or Apollo changes.
+**Structure Decision**: Single Web SPA, three-layer CRD architecture retained. Zero new files. Twelve modified files in US1–US4 (3 CRD comment leaves, 2 CRD composites, 1 integration hook, 6 CRD locale files). US5 adds three more modified files (`PostCard.tsx`, `LazyCalloutItem.tsx`, `CalloutCommentsConnector.tsx`) and reuses the same 6 locale files (net: 2 keys added). No domain, routing, or Apollo changes.
+
+### US5 additions (branch 090)
+
+```text
+src/
+├── crd/
+│   ├── components/space/
+│   │   └── PostCard.tsx                                            # MODIFY — add `commentsSlot`, `commentInputSlot`, `onCommentsExpandedChange` optional props; render <Collapsible> footer when commentsSlot is present
+│   └── i18n/space/
+│       └── space.{en,nl,es,bg,de,fr}.json                          # MODIFY — add `callout.expandComments` + `callout.collapseComments` keys (state-aware aria-label)
+│
+└── main/crdPages/space/callout/
+    ├── LazyCalloutItem.tsx                                         # MODIFY — wrap PostCard in CalloutCommentsConnector; lift expanded state; pass thread + input as slots; keep dialog reachable via title/expand button
+    └── CalloutCommentsConnector.tsx                                # MODIFY — accept optional `skipSubscription` prop; default to `!inView` (current dialog behavior preserved when omitted)
+```
+
+Primitives reused without change: `src/crd/primitives/collapsible.tsx` (Radix Collapsible wrapper, already present). No new primitives introduced.
 
 ## Complexity Tracking
 
@@ -112,6 +135,9 @@ No `NEEDS CLARIFICATION` items. Two design choices were resolved via user input 
 - **R3 — Why hide the Reply button on replies rather than disable it?** The Reply action on a reply creates a message whose `threadID` is another reply, which the data mapper groups under a parent-id that never appears in the top-level list. Such messages are silently omitted from the rendered tree. Hiding the affordance is the correct root-cause fix; disabling would still confuse users.
 - **R4 — Keep newest-first as the sole order?** Yes. The legacy MUI `CommentsComponent` has no UI toggle; newest-first matches the legacy default and user mental model. Replies stay oldest-first (chronological) within each parent so conversations read naturally.
 - **R5 — Why remove `canComment` + `onAddComment` rather than leave them deprecated?** They are zero-caller props that the component never consumed (the consumer renders `CommentInput` separately). Leaving them would be ISP noise and invite miswiring. Removing them is a minor, source-breaking change at the one call site in `useCrdRoomComments`.
+- **R6 — (US5) `Collapsible` vs. `Accordion` for the inline footer?** `Collapsible`. The footer has one independent section per card (not a family with "only-one-open" semantics), the chevron must live inline with the existing "N comments" label (Accordion's built-in trigger styling would have to be overridden), and Collapsible is the lower-abstraction primitive — it composes cleanly with the existing `CardFooter` JSX without fighting it.
+- **R7 — (US5) Always-mount the comments connector vs. lazy-mount on first expand?** Always-mount with `skipSubscription={!commentsExpanded}`. Chevron must be visible from first paint (FR-012), which forbids deferred-mount patterns where the slot is undefined until after first expand. `useInView` already gates the contribution query, so off-screen callouts pay nothing; on-screen callouts pay one cheap query + a passive subscription only after the user has expanded. This matches the cost profile of the dialog path while preserving input drafts and subscription state across collapse/re-expand.
+- **R8 — (US5) Does the dialog remain reachable from the footer?** No. The footer's sole behavior is expand/collapse the inline thread. The detail dialog is still reachable from the callout title (main click target) and the expand button in the header. Comments are a sub-flow of the callout card; pulling them inline turns the dialog back into what it should be — the full-context detail view rather than the default comment surface.
 
 ## Phase 1: Design & Contracts
 

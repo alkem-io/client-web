@@ -1,5 +1,20 @@
 import type { TFunction } from 'i18next';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalendarDays,
+  FileText,
+  LayoutGrid,
+  Link2,
+  Megaphone,
+  MessageSquare,
+  Mic,
+  Presentation,
+  StickyNote,
+  User,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
+import { ActivityEventType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -22,9 +37,12 @@ export type ActivityItemData = {
   avatarUrl?: string;
   avatarInitials: string;
   userName: string;
-  actionText: string;
-  targetName: string;
-  targetHref?: string;
+  activityIcon: ReactNode;
+  activityIconLabel: string;
+  title: ReactNode;
+  titlePlain?: string;
+  titleHref?: string;
+  contextName?: string;
   timestamp: string;
   rawDate?: string;
 };
@@ -112,10 +130,13 @@ type ActivityEntry = {
       avatar?: { uri: string };
     };
   };
+  /** Present on comment-type entries (CalloutPostComment, DiscussionComment) as raw markdown. */
   description?: string;
+  /** Present on UpdateSent as raw markdown. */
+  message?: string;
   spaceDisplayName?: string;
   createdDate?: string | Date;
-  // Type-specific fields for URL extraction
+  space?: { about?: { profile?: { url?: string } } };
   post?: { profile: { url?: string; displayName: string } };
   callout?: { framing: { profile: { url?: string; displayName: string } } };
   whiteboard?: { profile: { url?: string; displayName: string } };
@@ -126,36 +147,186 @@ type ActivityEntry = {
   memo?: { profile: { url?: string; displayName: string } };
 };
 
-function extractActivityUrl(activity: ActivityEntry): string | undefined {
-  // Post-related activities link to the post
-  if (activity.post?.profile?.url) return activity.post.profile.url;
-  // Whiteboard activities link to the whiteboard
-  if (activity.whiteboard?.profile?.url) return activity.whiteboard.profile.url;
-  // Subspace created links to the subspace
-  if (activity.subspace?.about?.profile?.url) return activity.subspace.about.profile.url;
-  // Calendar event links to the event
-  if (activity.calendarEvent?.profile?.url) return activity.calendarEvent.profile.url;
-  // Member joined links to the actor
-  if (activity.actor?.profile?.url) return activity.actor.profile.url;
-  // Link created links to the link
-  if (activity.link?.profile?.url) return activity.link.profile.url;
-  // Memo created links to the memo
-  if (activity.memo?.profile?.url) return activity.memo.profile.url;
-  // Callout published links to the callout
-  if (activity.callout?.framing?.profile?.url) return activity.callout.framing.profile.url;
-  return undefined;
-}
+const ICON_CLASS = 'size-2.5';
 
-function extractActivityTargetName(activity: ActivityEntry): string {
-  if (activity.post?.profile?.displayName) return activity.post.profile.displayName;
-  if (activity.whiteboard?.profile?.displayName) return activity.whiteboard.profile.displayName;
-  if (activity.subspace?.about?.profile?.displayName) return activity.subspace.about.profile.displayName;
-  if (activity.calendarEvent?.profile?.displayName) return activity.calendarEvent.profile.displayName;
-  if (activity.actor?.profile?.displayName) return activity.actor.profile.displayName;
-  if (activity.link?.profile?.displayName) return activity.link.profile.displayName;
-  if (activity.memo?.profile?.displayName) return activity.memo.profile.displayName;
-  if (activity.callout?.framing?.profile?.displayName) return activity.callout.framing.profile.displayName;
-  return activity.spaceDisplayName ?? '';
+/**
+ * Per-activity-type visual & content mapping. Mirrors the legacy per-view layer
+ * (`src/domain/collaboration/activity/ActivityLog/views/*`): picks the badge icon,
+ * primary title content (entity name or markdown), parent context, and click target.
+ *
+ * For comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`)
+ * the title is user-authored markdown — rendered via `InlineMarkdown` so markdown/HTML
+ * displays formatted instead of escaped (CRD markdown-preview rule, `src/crd/CLAUDE.md` §9).
+ * `titlePlain` is always plain-text (markdown stripped via `markdownToPlainText`) so
+ * screen readers don't announce markup syntax.
+ */
+type ResolvedActivity = {
+  icon: ReactNode;
+  iconLabel: string;
+  title: ReactNode;
+  titlePlain: string;
+  contextName?: string;
+  href?: string;
+};
+
+function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivity {
+  const typeKey = activity.type ?? '';
+  // Icon labels live in the crd-dashboard namespace (manually managed in src/crd/i18n/dashboard/,
+  // not Crowdin). The caller's `useTranslation('crd-dashboard')` ensures the namespace is loaded
+  // so passing `{ ns: 'crd-dashboard' }` here works even though `t` came from the default namespace.
+  const iconLabel = typeKey
+    ? (t(`activity.iconLabel.${typeKey}` as never, {
+        ns: 'crd-dashboard',
+        defaultValue: typeKey,
+      }) as string)
+    : '';
+
+  const spaceContext = activity.spaceDisplayName;
+  const calloutContext = activity.callout?.framing?.profile?.displayName;
+
+  switch (activity.type) {
+    case ActivityEventType.CalloutPublished: {
+      const name = activity.callout?.framing?.profile?.displayName ?? '';
+      return {
+        icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutPostCreated: {
+      const name = activity.post?.profile?.displayName ?? '';
+      return {
+        icon: <FileText aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.post?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutPostComment: {
+      const markdown = activity.description ?? '';
+      return {
+        icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
+        titlePlain: markdownToPlainText(markdown),
+        // Legacy shows the post displayName for post-comment context.
+        contextName: activity.post?.profile?.displayName,
+        href: activity.post?.profile?.url,
+      };
+    }
+    case ActivityEventType.DiscussionComment: {
+      const markdown = activity.description ?? '';
+      return {
+        icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
+        titlePlain: markdownToPlainText(markdown),
+        contextName: calloutContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutWhiteboardCreated:
+    case ActivityEventType.CalloutWhiteboardContentModified: {
+      const name = activity.whiteboard?.profile?.displayName ?? '';
+      return {
+        icon: <Presentation aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.whiteboard?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutMemoCreated: {
+      const name = activity.memo?.profile?.displayName ?? '';
+      return {
+        icon: <StickyNote aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.memo?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutLinkCreated: {
+      const name = activity.link?.profile?.displayName ?? '';
+      return {
+        icon: <Link2 aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        // Legacy links the whole row to the parent callout (links have no profile URL of their own).
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.MemberJoined: {
+      const name = activity.actor?.profile?.displayName ?? '';
+      // Legacy title is "{{subject}} joined" — the only type with a built-in verb.
+      const titleText = t('components.activityLogView.description.MEMBER_JOINED', { subject: name }) as string;
+      return {
+        icon: <User aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: titleText,
+        titlePlain: titleText,
+        contextName: spaceContext,
+        href: activity.actor?.profile?.url,
+      };
+    }
+    case ActivityEventType.SubspaceCreated: {
+      const name = activity.subspace?.about?.profile?.displayName ?? '';
+      return {
+        icon: <LayoutGrid aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.subspace?.about?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalendarEventCreated: {
+      const name = activity.calendarEvent?.profile?.displayName ?? '';
+      return {
+        icon: <CalendarDays aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.calendarEvent?.profile?.url,
+      };
+    }
+    case ActivityEventType.UpdateSent: {
+      const markdown = activity.message ?? activity.description ?? '';
+      return {
+        icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
+        titlePlain: markdownToPlainText(markdown),
+        contextName: spaceContext,
+        // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
+        href: activity.space?.about?.profile?.url,
+      };
+    }
+    default: {
+      // Unknown/future activity type — best-effort fallback. Render description through
+      // InlineMarkdown to stay markdown-safe (CLAUDE.md §9) in case a new backend type
+      // carries markdown/HTML, and strip it for the plain-text a11y fallback.
+      const markdown = activity.description ?? '';
+      return {
+        icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} /> : '',
+        titlePlain: markdownToPlainText(markdown),
+        contextName: spaceContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+  }
 }
 
 export const mapActivityToFeedItems = (activities: ActivityEntry[], t: TFunction): ActivityItemData[] => {
@@ -163,15 +334,19 @@ export const mapActivityToFeedItems = (activities: ActivityEntry[], t: TFunction
     const displayName = activity.triggeredBy?.profile?.displayName ?? '';
     const rawDate =
       activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? '');
+    const resolved = resolveActivity(activity, t);
 
     return {
       id: activity.id,
       avatarUrl: activity.triggeredBy?.profile?.avatar?.uri,
       avatarInitials: displayName ? getInitials(displayName) : '?',
       userName: displayName,
-      actionText: activity.description ?? '',
-      targetName: extractActivityTargetName(activity),
-      targetHref: extractActivityUrl(activity),
+      activityIcon: resolved.icon,
+      activityIconLabel: resolved.iconLabel,
+      title: resolved.title,
+      titlePlain: resolved.titlePlain,
+      titleHref: resolved.href,
+      contextName: resolved.contextName,
       timestamp: activity.createdDate ? formatTimeElapsed(activity.createdDate, t) : '',
       rawDate,
     };

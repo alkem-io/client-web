@@ -40,7 +40,21 @@
       }
     },
     "showMore": "Meer tonen",
-    "noActivity": "Geen recente activiteit"
+    "noActivity": "Geen recente activiteit",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "Nieuwe post",
+      "CALLOUT_POST_CREATED": "Nieuwe post",
+      "CALLOUT_POST_COMMENT": "Nieuwe reactie",
+      "DISCUSSION_COMMENT": "Nieuwe reactie",
+      "CALLOUT_WHITEBOARD_CREATED": "Nieuw whiteboard",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Whiteboard bijgewerkt",
+      "CALLOUT_MEMO_CREATED": "Nieuwe memo",
+      "CALLOUT_LINK_CREATED": "Nieuwe link",
+      "MEMBER_JOINED": "Nieuw lid",
+      "SUBSPACE_CREATED": "Nieuwe subspace",
+      "CALENDAR_EVENT_CREATED": "Nieuwe gebeurtenis",
+      "UPDATE_SENT": "Nieuwe update"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Tips & Trucs",

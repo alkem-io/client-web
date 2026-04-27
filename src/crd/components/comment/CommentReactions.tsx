@@ -16,17 +16,19 @@ const MAX_VISIBLE_REACTIONS = 5;
 export function CommentReactions({ reactions, onAdd, onRemove }: CommentReactionsProps) {
   const { t } = useTranslation('crd-space');
 
+  if (reactions.length === 0) return null;
+
   const visibleReactions = reactions.slice(0, MAX_VISIBLE_REACTIONS);
   const hiddenReactions = reactions.slice(MAX_VISIBLE_REACTIONS);
 
   return (
-    <div className="group/reactions flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1.5">
       {visibleReactions.map(reaction => (
         <button
           key={reaction.emoji}
           type="button"
           className={[
-            'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-caption transition-colors',
+            'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-caption transition-colors',
             reaction.hasReacted
               ? 'border-primary/50 bg-primary/10 text-primary'
               : 'border-border bg-background text-muted-foreground hover:bg-muted',
@@ -44,7 +46,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverTrigger asChild={true}>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-border px-2 py-1 text-caption text-muted-foreground hover:bg-muted"
+              className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-caption text-muted-foreground hover:bg-muted"
               aria-label={t('comments.reactions.overflow', { count: hiddenReactions.length })}
             >
               {t('comments.reactions.overflow', { count: hiddenReactions.length })}
@@ -76,10 +78,10 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
             type="button"
             variant="ghost"
             size="icon"
-            className="h-7 w-7 opacity-0 transition-opacity group-hover/reactions:opacity-100"
+            className="h-6 w-6 rounded-full border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
             aria-label={t('comments.reactions.add')}
           >
-            <Smile className="h-4 w-4" aria-hidden="true" />
+            <Smile className="h-3.5 w-3.5" aria-hidden="true" />
           </Button>
         }
       />

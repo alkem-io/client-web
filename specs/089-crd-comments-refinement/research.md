@@ -104,6 +104,63 @@ No unresolved `NEEDS CLARIFICATION` items. The spec was clear on user intent; fi
 
 ---
 
+## R6 — (US5) Primitive choice: Collapsible vs. Accordion
+
+**Decision**: Use `@/crd/primitives/collapsible.tsx` (Radix Collapsible) for the inline footer toggle.
+
+**Rationale**:
+- Each callout's footer is a single independent section; there is no "only one open at a time" relationship between callouts in a feed. Accordion's design assumes a family of sections with grouped behavior — wrong shape for this feature.
+- The chevron must sit inline next to the existing "N comments" label so the count stays the primary semantic. Accordion's built-in trigger has its own styling (chevron auto-rotation baked in, padding assumptions, typography) that would be fighting the existing `CardFooter` layout.
+- Collapsible is the lower-abstraction primitive. It composes with `asChild` into an existing `<button>` cleanly, letting the chevron and count render side-by-side inside one interactive element with no wrapper divs.
+
+**Alternatives considered**:
+- *Accordion*: rejected for the reasons above.
+- *Hand-rolled toggle with `useState`*: would reimplement focus handling, `aria-expanded`, and state transitions that Radix already provides correctly. No benefit.
+
+**Source**:
+- `src/crd/primitives/collapsible.tsx` — existing Radix wrapper (unmodified by this work).
+- `src/crd/components/space/PostCard.tsx` — integration site for US5 (lines 221–236 of the pre-US5 file).
+
+---
+
+## R7 — (US5) Always-mount the connector vs. lazy-mount on first expand
+
+**Decision**: Always mount `CalloutCommentsConnector` for each callout in the list view. Gate the live subscription via a new optional `skipSubscription` prop that forwards to `useCrdRoomComments`. The list-view caller passes `!commentsExpanded`; the dialog caller omits the prop (keeping the default `!inView` behavior).
+
+**Rationale**:
+- **Chevron visibility from first paint (FR-012).** If we deferred mounting the connector, the slot would be undefined on first render — meaning the footer would fall back to the dialog-only button (no chevron). The chevron is the affordance for the feature; hiding it until the user has already found some other way to expand defeats the purpose.
+- **`useInView` already defers off-screen cost.** `CalloutCommentsConnector` wraps its contribution query in `useInView({ triggerOnce: true, delay: 200 })`. Cards below the fold don't issue queries until they scroll in. On a 20-callout feed with 3 visible, we pay at most 3 comments queries up front, not 20.
+- **Subscription is the expensive part, and it's gated.** `useSubscribeOnRoomEvents` opens a GraphQL subscription that stays open for the card's lifetime. With `skipSubscription={!commentsExpanded}` the subscription only opens after first expand, and stays open afterwards (sticky). A member browsing a feed without expanding any footer pays zero subscription cost.
+- **Draft + mutation state survives collapse.** Radix `<CollapsibleContent>` hides via CSS rather than unmounting, so `<CommentInput>` keeps its typed text when the user collapses and re-expands, and in-flight mutations don't abort.
+
+**Alternatives considered**:
+- *Lazy-sticky mount (boolean `commentsMounted`, once-true-always-true)*: defers the connector entirely until first expand, avoiding the one-query cost per on-screen card for members who never engage with comments. Rejected because it forces a fallback footer path without a chevron until first expansion — a UX regression that outweighs the marginal query saving (which `useInView` already addresses for the off-screen case).
+- *Always-subscribed*: simplest but opens N subscriptions for an N-callout feed on page load. Rejected — that's a clear resource-usage regression.
+
+**Source**:
+- `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx:28,44-48` — `useInView` + the existing `skipSubscription` parameter the connector already forwards to `useCrdRoomComments`.
+- `src/main/crdPages/space/hooks/useCrdRoomComments.tsx:15-25,49` — hook accepts `skipSubscription` and threads it to `useSubscribeOnRoomEvents`.
+
+---
+
+## R8 — (US5) Does the inline footer replace the dialog for comments?
+
+**Decision**: Yes — for the footer-comments sub-flow. The callout title and the header expand button still open the detail dialog; the comments footer no longer triggers dialog open. `onCommentsClick` is removed from the list-view call site.
+
+**Rationale**:
+- The dialog is the full-context detail view: callout framing, contributions, polls, media. Comments are one element within it. Using the footer as a shortcut to "open dialog, scroll to comments" always conflated the comment flow with the detail-view flow.
+- Inline expansion is now fully functional (post/reply/react/delete), so there is no capability reason to keep the footer pointing at the dialog. Keeping both paths would confuse members: click chevron = expand inline, but click "N comments" text = open dialog. That's two behaviors on one row.
+- The dialog remains reachable via unambiguous entry points (title link, expand icon). Members who want the full context still get there in one click.
+
+**Alternatives considered**:
+- *Chevron expands inline, label opens dialog*: creates a split-behavior footer (two click targets in one row). Hard to discover, hard to explain, and most members expect the whole row to be one affordance.
+- *Inline expand + keep dialog open from footer*: removes the split but the behaviors would compete — opening the dialog when the footer is already expanded is jarring.
+
+**Source**:
+- `src/main/crdPages/space/callout/LazyCalloutItem.tsx:96` (pre-US5) — previous `onCommentsClick={() => openDialog()}` binding, removed in US5.
+
+---
+
 ## Summary of decisions
 
 | ID | Decision | Files affected |
@@ -113,5 +170,8 @@ No unresolved `NEEDS CLARIFICATION` items. The spec was clear on user intent; fi
 | R3 | Hide Reply button on replies | `CommentItem.tsx` |
 | R4 | Newest-first only; remove toggle | `CommentThread.tsx`, 6× `space.*.json` |
 | R5 | Trim `CommentsContainerData` | `types.ts`, `useCrdRoomComments.tsx` |
+| R6 | Collapsible primitive (not Accordion) for inline footer | `PostCard.tsx` |
+| R7 | Always-mounted connector with `skipSubscription` gate | `PostCard.tsx`, `LazyCalloutItem.tsx`, `CalloutCommentsConnector.tsx` |
+| R8 | Remove `onCommentsClick → openDialog` from list view; dialog still reachable via title/expand | `LazyCalloutItem.tsx` |
 
 No unresolved questions remain.

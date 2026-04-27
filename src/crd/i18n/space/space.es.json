@@ -153,6 +153,8 @@
     "openMemo": "Abrir memo",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
+    "expandComments": "Expandir comentarios",
+    "collapseComments": "Contraer comentarios",
     "post": "Publicación",
     "whiteboard": "Pizarra",
     "collection": "Colección",
@@ -560,6 +562,8 @@
     "delete": "Eliminar",
     "deleted": "Este comentario fue eliminado",
     "addComment": "Añade un comentario...",
+    "mention": "Mencionar a alguien",
+    "mentionVirtualContributor": "IA",
     "send": "Enviar",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

@@ -153,6 +153,8 @@
     "openMemo": "Ouvrir le mémo",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
+    "expandComments": "Afficher les commentaires",
+    "collapseComments": "Masquer les commentaires",
     "post": "Publication",
     "whiteboard": "Tableau blanc",
     "collection": "Collection",
@@ -560,6 +562,8 @@
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
     "addComment": "Ajouter un commentaire...",
+    "mention": "Mentionner quelqu'un",
+    "mentionVirtualContributor": "IA",
     "send": "Envoyer",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

@@ -153,6 +153,8 @@
     "openMemo": "Memo öffnen",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
+    "expandComments": "Kommentare ausklappen",
+    "collapseComments": "Kommentare einklappen",
     "post": "Beitrag",
     "whiteboard": "Whiteboard",
     "collection": "Sammlung",
@@ -560,6 +562,8 @@
     "delete": "Löschen",
     "deleted": "Dieser Kommentar wurde gelöscht",
     "addComment": "Kommentar hinzufügen...",
+    "mention": "Jemanden erwähnen",
+    "mentionVirtualContributor": "KI",
     "send": "Senden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
