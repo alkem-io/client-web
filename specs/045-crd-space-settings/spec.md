@@ -14,6 +14,17 @@
 - Q: Who can see the Account tab (plan, entitlements)? → A: Visibility mirrors the current MUI Space Admin Account page exactly. No new role gates.
 - Q: What is the keyboard alternative to drag-and-drop on the Layout tab? → A: Each movable item's drag handle is focusable. Space/Enter activates grab mode, Arrow Up/Down reorders within the column, Arrow Left/Right moves across columns, Enter drops, Escape cancels. Announced via ARIA live region.
 
+### Session 2026-04-27 — subspace (L1 / L2) settings extension
+
+- Q: Should the CRD Space Settings page also serve subspace (L1) and sub-subspace (L2) admins, or only top-level (L0) spaces? → A: **All three levels**. The settings page is reused for L0 / L1 / L2 with **level-aware tab visibility** mirroring the legacy MUI configuration in `SpaceAdminRouteL0.tsx` / `SpaceAdminRouteL1.tsx` / `SpaceAdminRouteL2.tsx`. The same CRD components, data hooks, and route gate (`NonSpaceAdminRedirect`) are used at every level.
+- Q: Tab visibility per level? → A: **L0** — all 9 tabs (about, layout, community, updates, subspaces, templates, storage, settings, account). **L1** — hide templates, storage, account. **L2** — hide templates, storage, account, AND subspaces (sub-subspaces cannot have L3 children).
+- Q: ID resolution at L1 / L2? → A: At L1 / L2, `roleSetId` / `communityId` / `guidelinesId` / page URL MUST come from `SubspaceContext` (via `useSubSpace()`), NOT from `SpaceContext` (which is hardcoded to the L0 root). A new `useSettingsScope()` helper resolves the correct IDs based on `useUrlResolver().spaceLevel`.
+- Q: Member-lead toggle at L1 / L2? → A: **Add it.** Promote / demote of community members and organizations to / from Lead is currently missing in CRD settings (read-only `roleLabel`). Build the capability generically, but **gate the dropdown items to L1 / L2 only** in this PR. L0 visibility is deferred until a future "hide-state" treatment lands.
+- Q: Phase (innovation-flow state) add / delete at L1 / L2? → A: **Add them.** The Layout tab currently allows rename + reorder columns only; phase Add / Delete exists in legacy MUI's `InnovationFlowSettingsDialog`. Wire them via the existing `useInnovationFlowSettings.actions.{createState,deleteState}` for atomic create + sortOrder behaviour. **Gate Add Phase + Delete phase to L1 / L2 only** in this PR (same L0-deferred rationale as the lead toggle).
+- Q: Per-tab inner gating that mirrors legacy MUI's `MemberActionsSettings`? → A: **Community tab**: hide "Save as guidelines template" and the Virtual Contributors block at L1 / L2. **Settings tab**: gate four toggles by level — `subspaceAdminInvitations` (L0+L1), `memberCreateSubspaces` (L0+L1), `inheritMembershipRights` (L1+L2), `subspaceEvents` (L0+L1). **Subspaces tab**: hide "Default Subspace Template" card at L1 (template-management is L0-only). **Layout tab**: phase Add / Delete visible only at L1 / L2.
+- Q: Authorization gate at L1 / L2? → A: Wrap each subspace settings route in `NonSpaceAdminRedirect`, sourcing the subspace id from `SubspaceContext`. Same redirect pattern legacy MUI uses (`SpaceAdminRouteL1.tsx:75`).
+- Q: Breadcrumbs on L1 / L2 settings? → A: When on `/settings`, the subspace name MUST become a link to the subspace home, and the trail MUST append a "Settings" hop (linking to `<subspace>/settings`) plus the active settings tab label. This mirrors the L0 settings breadcrumb shape.
+
 ### Session 2026-04-15 — second round
 
 - Q: Are all 8 tabs equally important? → A: Yes — all 8 are P1 and receive separate, equally structured user stories.
@@ -356,6 +367,26 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **FR-031**: The CRD Space Settings area MUST reuse the existing space admin queries and mutations — no backend or GraphQL schema changes are introduced by this feature.
 - **FR-032**: Every interactive element MUST meet WCAG 2.1 AA for keyboard navigation, visible focus, labels, and ARIA semantics (tablist / tab / tabpanel on the tab strip, labeled form controls, ARIA live regions for save feedback, Layout grab-mode, and async action results).
 
+#### Subspace (L1 / L2) settings — added retroactively in 2026-04-27
+
+- **FR-033** (level-aware reuse): The same CRD Space Settings page MUST serve L0 / L1 / L2 spaces. The route is mounted at `<spaceUrl>/settings` for L0, `<spaceUrl>/challenges/:subspaceNameId/settings` for L1, and `<spaceUrl>/challenges/:subspaceNameId/opportunities/:subsubspaceNameId/settings` for L2 — wired via two separate `<Route element={<CrdSubspacePageLayout />}>` blocks (L1 and L2) inside `CrdSubspaceRoutes.tsx`, each containing a `settings/*` child route gated by `NonSpaceAdminRedirect`.
+- **FR-034** (level-aware ID resolution): A new `useSettingsScope()` helper MUST resolve `id`, `level` (`'L0' | 'L1' | 'L2'` string union — never the GraphQL `SpaceLevel` enum, per `src/crd/CLAUDE.md` Rule 4), `url`, `roleSetId`, `communityId`, `guidelinesId`, and `accountId` from the correct context per level. At L0 it reads `useSpace()`; at L1 / L2 it reads `useSubSpace()` (the `SubspaceContextProvider` is mounted by `CrdSpaceRoutes.tsx` for the `challenges/*` subtree). All settings tabs MUST source their backend IDs from `useSettingsScope()` — never from `useSpace()` directly — so subspace mutations target the subspace's own community / role-set / guidelines, not the L0 root.
+- **FR-035** (tab visibility per level): The visible-tab list MUST mirror the legacy MUI configuration:
+  - **L0**: all 9 tabs (about, layout, community, updates, subspaces, templates, storage, settings, account).
+  - **L1**: hide `templates`, `storage`, `account`.
+  - **L2**: additionally hide `subspaces` (a sub-subspace cannot have L3 children).
+  A new `getVisibleSettingsTabs(level)` helper is the single source of truth; `useSpaceSettingsTab` MUST clamp the active tab to a member of the visible list (URL hits to a hidden tab redirect to `'about'` via `replace: true`, mirroring MUI's index `Navigate to="about"` pattern). The tab strip filters its descriptors to the visible set.
+- **FR-036** (per-tab inner gating): Per-tab inner conditionals MUST mirror legacy MUI's `MemberActionsSettings.tsx`. CRD presentational views accept a `level: 'L0' | 'L1' | 'L2'` prop and gate their inner sections accordingly:
+  - **Community**: hide the "Save as guidelines template" action and the Virtual Contributors block when `level !== 'L0'` (matches MUI's `communityGuidelinesTemplatesEnabled = false` and `virtualContributorsBlockEnabled = false`).
+  - **Settings**: gate four allowed-action toggles — `subspaceAdminInvitations` and `memberCreateSubspaces` and `subspaceEvents` are visible at L0 + L1 only; `inheritMembershipRights` is visible at L1 + L2 only.
+  - **Subspaces**: hide the "Default Subspace Template" / "Save as template" card when `level !== 'L0'` (template-management is L0-only). The page passes `onChangeDefaultTemplate` only at L0.
+  - **Layout**: hide "Add Phase" button and "Delete phase" kebab entry when `level === 'L0'` (per FR-038 / FR-039).
+- **FR-037** (member-lead toggle — L1 / L2): The Community tab MUST expose promote-to-Lead / demote-from-Lead actions on each member and organization row's dropdown menu. The dropdown items MUST be visible only when `level !== 'L0'` and the row is not an Admin (Admin role stays read-only). Each row's `disabled` state is composed from aggregate policy (`useCommunityPolicyChecker`) + the row's `isLead`: disabled when `(!canAddLead && !row.isLead) || (!canRemoveLead && row.isLead)`. Mutations fire immediately via the existing `useCommunityAdmin().onUserLeadChange` / `onOrganizationLeadChange` (no buffering). L0 visibility for this control is deferred to a future "hide-state" iteration.
+- **FR-038** (phase add — L1 / L2): The Layout tab MUST expose an "Add Phase" button next to the page header. The button MUST be visible only when `level !== 'L0'` and the column count is below `maximumNumberOfStates`. Clicking opens an `AddPhaseDialog` (display name + optional description). The handler MUST call `useInnovationFlowSettings.actions.createState` so the create + sortOrder + refetch sequence stays atomic — wrapping the raw `createInnovationFlowState` mutation directly is forbidden (skips the sortOrder step + refetch).
+- **FR-039** (phase delete — L1 / L2): Each Layout column header's three-dot kebab MUST expose a "Delete phase" entry, gated to `level !== 'L0'` and visible only when the column count is above `minimumNumberOfStates`. The handler MUST call `useInnovationFlowSettings.actions.deleteState` and confirm via the existing `ConfirmationDialog` (delete variant). After a successful create or delete, the Layout snapshot MUST be reseeded (`snapshotRef.current = null`) so the buffered Save Changes bar resets to clean — pending column-rename buffers are discarded (mirrors MUI's "structural changes commit immediately and reset the editor" behavior).
+- **FR-040** (authorization gate at L1 / L2): Each subspace settings route MUST be wrapped in `NonSpaceAdminRedirect` sourcing the subspace id from `SubspaceContext`. Non-admin users MUST be redirected to the subspace home, matching the legacy MUI parity (`SpaceAdminRouteL1.tsx:75`).
+- **FR-041** (breadcrumbs at L1 / L2 settings): On `/settings` at L1 or L2, the breadcrumb trail MUST be: `[L0 (if distinct from parent)] → [parent space] → [subspace, link to subspace home] → [Settings, link to subspace settings] → [active settings tab label, no link]`. The subspace name becomes a link only when `isOnSettings` is true; otherwise it remains a leaf, matching the existing non-settings behaviour. The L0 hop is included only when `levelZeroSpaceId !== parentSpaceId` (L2 case). The trail MUST be set unconditionally before any early loading return so `useSetBreadcrumbs` is invoked on every render (mirrors the L0 `CrdSpacePageLayout` pattern).
+
 ### Key Entities
 
 - **Space**: The space being administered. Provides the identity fields rendered in the hero and edited on the About tab, plus every tab's data source.
@@ -381,6 +412,7 @@ Everything on this tab is either read-only display or routes through pre-existin
 - Platform-level (Global Administration) screens.
 - Subspaces: "Edit Details" and "Archive" kebab entries are deferred pending designer review.
 - Subspaces: reordering / drag-sort is NOT in scope (not present in the current UI as the user perceives it).
+- L0 visibility for the member-lead toggle (FR-037) and the Layout phase Add / Delete actions (FR-038 / FR-039) is **deferred** until a future "hide-state" feature lands. Both capabilities are built generically but gated to L1 / L2 in this iteration.
 
 ## Success Criteria
 
@@ -397,6 +429,8 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **SC-007**: Keyboard-only users can reach and operate every control on every tab — including the Layout grab-mode equivalent — without a mouse.
 - **SC-008**: The CRD space hero rendered in Space Settings is visually and behaviorally identical to the hero on the CRD Space Page (spec 042), verified by side-by-side screenshots with zero divergences.
 - **SC-009**: The Layout per-column overflow menu ("Active phase", "Default post template") reaches parity with the current MUI per-step menu — verified by a side-by-side action inventory and unit tests that exercise each mutation end-to-end per column.
+- **SC-010**: Subspace settings parity — verified by visiting the L1 settings URL (`<space>/challenges/<sub>/settings`) and the L2 settings URL (`<space>/challenges/<sub>/opportunities/<subsub>/settings`) with CRD enabled and confirming, via a side-by-side action inventory against legacy MUI, that the visible tab list, the per-tab inner sections, and the destructive / mutating actions exactly match `SpaceAdminRouteL1.tsx` and `SpaceAdminRouteL2.tsx` — minus any explicitly L0-deferred capability listed in Out of Scope.
+- **SC-011**: At L1 / L2 the settings mutations target the **subspace's** community / role-set / guidelines, not the L0 root. Verified end-to-end via Apollo devtools by editing a community guideline at L1 and confirming the mutation variables match the subspace's `guidelinesId` (not the L0 space's `guidelinesId`).
 
 ## Assumptions
 

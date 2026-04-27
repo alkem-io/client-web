@@ -74,6 +74,22 @@
         "cancel": "Annuleren",
         "saving": "Opslaan…",
         "save": "Opslaan"
+      },
+      "deletePhase": "Fase verwijderen"
+    },
+    "addPhase": {
+      "button": "Fase toevoegen",
+      "dialog": {
+        "title": "Nieuwe fase toevoegen",
+        "description": "Maak een nieuwe innovatie-flow fase aan. Je kunt deze later hernoemen of verwijderen.",
+        "nameLabel": "Naam fase",
+        "namePlaceholder": "bv. Ontdekking",
+        "descriptionLabel": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Wat gebeurt er in deze fase?",
+        "duplicate": "Er bestaat al een fase met deze naam.",
+        "errorGeneric": "Kon de fase niet aanmaken. Probeer het opnieuw.",
+        "cancel": "Annuleren",
+        "confirm": "Fase toevoegen"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "E-mail",
       "role": {
         "lead": "Leider",
-        "member": "Lid"
+        "member": "Lid",
+        "promoteToLead": "Maak leider",
+        "demoteFromLead": "Leiderrol verwijderen"
       },
       "actions": "Acties",
       "empty": "No members found.",
@@ -578,6 +596,7 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Subruimtes",
+      "inheritMembershipRights": "Lidmaatschapsrechten overerven",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"

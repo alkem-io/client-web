@@ -67,25 +67,15 @@ export default function CrdSpacePageLayout() {
     skip: !isLevelZero || !permissions.canRead,
   });
 
-  // Must be derived before any early returns so `useSetBreadcrumbs` is called
-  // on every render. During loading the space fields are empty strings and
-  // the trail is `[]`; it updates once Apollo populates the context.
+  // L1/L2 settings breadcrumbs are owned by `CrdSubspacePageLayout`. This
+  // parent layout only sets breadcrumbs at L0 — and only when on settings —
+  // by mounting `<L0SettingsBreadcrumbs>` inside the JSX. If we instead called
+  // `useSetBreadcrumbs([])` unconditionally here, it would overwrite the
+  // subspace layout's trail on every re-render (e.g., tab switch), making
+  // the trail vanish.
   const isOnSettings = pathname.includes('/settings');
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
-
-  const breadcrumbItems: BreadcrumbTrailItem[] =
-    isLevelZero && isOnSettings && spaceDisplayName
-      ? [
-          { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-          {
-            label: t('crd-spaceSettings:tabs.settings'),
-            href: `${spaceUrl}/settings`,
-          },
-          { label: t(`crd-spaceSettings:tabs.${activeSettingsTab}`) },
-        ]
-      : [];
-  useSetBreadcrumbs(breadcrumbItems);
 
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
@@ -209,6 +199,17 @@ export default function CrdSpacePageLayout() {
         </Suspense>
       </SpaceShell>
 
+      {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
+          this parent layout doesn't clobber the subspace layout's trail at
+          L1 / L2 (`pathname` includes `/settings` at those levels too). */}
+      {isLevelZero && isOnSettings && spaceDisplayName && (
+        <L0SettingsBreadcrumbs
+          spaceDisplayName={spaceDisplayName}
+          spaceUrl={spaceUrl}
+          activeSettingsTab={activeSettingsTab}
+        />
+      )}
+
       {/* Community dialog — opened from banner avatar stack (shared with L1) */}
       <CrdSpaceCommunityDialogConnector
         open={communityOpen}
@@ -217,4 +218,23 @@ export default function CrdSpacePageLayout() {
       />
     </StorageConfigContextProvider>
   );
+}
+
+function L0SettingsBreadcrumbs({
+  spaceDisplayName,
+  spaceUrl,
+  activeSettingsTab,
+}: {
+  spaceDisplayName: string;
+  spaceUrl: string;
+  activeSettingsTab: SpaceSettingsTabId;
+}) {
+  const { t } = useTranslation('crd-spaceSettings');
+  const items: BreadcrumbTrailItem[] = [
+    { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+    { label: t(`tabs.${activeSettingsTab}`) },
+  ];
+  useSetBreadcrumbs(items);
+  return null;
 }

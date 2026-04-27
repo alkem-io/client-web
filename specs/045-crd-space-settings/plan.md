@@ -5,7 +5,11 @@
 
 ## Summary
 
-Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD design system (shadcn/ui + Tailwind), following the same parallel-design-system pattern used by 039 (spaces), 041 (dashboard), 042 (space page), and 043 (search). The CRD Space Settings page reuses the existing `SpaceHeader` hero (from spec 042), places a horizontal icon tab strip below, and renders 8 tabs in this order: **About, Layout, Community, Subspaces, Templates, Storage, Settings, Account**. Every tab is P1 and ships together. Apollo queries and mutations are completely untouched — data mappers in `src/main/crdPages/topLevelPages/spaceSettings/` bridge the generated hooks to presentational CRD component props. Per-tab save semantics:
+Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD design system (shadcn/ui + Tailwind), following the same parallel-design-system pattern used by 039 (spaces), 041 (dashboard), 042 (space page), and 043 (search). The CRD Space Settings page reuses the existing `SpaceHeader` hero (from spec 042), places a horizontal icon tab strip below, and renders 8 tabs in this order: **About, Layout, Community, Subspaces, Templates, Storage, Settings, Account**. Every tab is P1 and ships together. Apollo queries and mutations are completely untouched — data mappers in `src/main/crdPages/topLevelPages/spaceSettings/` bridge the generated hooks to presentational CRD component props.
+
+**Subspace (L1 / L2) extension — added retroactively in 2026-04-27.** The same CRD Space Settings page is reused for L1 (subspace) and L2 (sub-subspace) admins via two additional `settings/*` route blocks inside `CrdSubspaceRoutes.tsx`, each gated by `NonSpaceAdminRedirect`. A new `useSettingsScope()` helper resolves backend IDs (`roleSetId`, `communityId`, `guidelinesId`, `accountId`) from `SubspaceContext` at L1 / L2 (the L0 `SpaceContext` is hardcoded to the root and would otherwise silently target the L0 community). A new `useVisibleSettingsTabs()` helper drives level-aware tab visibility — L1 hides templates / storage / account; L2 additionally hides subspaces. CRD presentational views accept a `level: 'L0' | 'L1' | 'L2'` prop (string union, never the GraphQL enum, per `src/crd/CLAUDE.md` Rule 4) and gate per-tab inner sections (Community VC / guidelines-template, Settings allowed-action toggles, Subspaces default-template card) accordingly. The L1 / L2 work also closes two missing-feature gaps in CRD: the **member-lead toggle** on the Community tab (promote / demote member or organization to / from Lead) and **phase Add / Delete** on the Layout tab — both built generically but gated to L1 / L2 in this PR pending a future L0 hide-state treatment. Phase Add / Delete delegate to `useInnovationFlowSettings.actions.{createState,deleteState}` for atomic create + sortOrder + refetch behaviour. After a structural change the Layout snapshot is reseeded so the Save Changes bar resets cleanly. L1 / L2 breadcrumbs append a Settings hop + active tab label when on `/settings`.
+
+Per-tab save semantics:
 
 - **About** — per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.
 - **Layout** — local dirty buffer with a sticky Save Changes / Reset action bar. Reset reverts to the last backend-known state. Zero mutations before Save is clicked.
@@ -22,8 +26,8 @@ Layout specifics: items are **callouts/posts** (never "pages"); they can only be
 **Target Platform**: Web SPA (Vite dev server on localhost:3001)
 **Project Type**: Web application (frontend only — no backend changes)
 **Performance Goals**: Layout Save Changes round-trip under 60s; About per-field autosave (last keystroke → "Saved!" indicator) under 3s (both SC-001); tab switch under 200ms; Layout drag response under 100ms
-**Constraints**: Zero MUI / Emotion imports in `src/crd/` and `src/main/crdPages/`; parity with MUI Space Admin for every action (SC-004); all 8 tabs must ship together
-**Scale/Scope**: 1 settings shell, 8 tabs (each its own P1 user story), ~30 new CRD components, 8 data mappers, 1 new i18n namespace (`crd-spaceSettings`), ~25 existing Apollo mutations/queries reused
+**Constraints**: Zero MUI / Emotion imports in `src/crd/` and `src/main/crdPages/`; parity with MUI Space Admin for every action (SC-004); all 8 tabs must ship together; CRD components MUST NOT import the GraphQL `SpaceLevel` enum — every level prop is a `'L0' | 'L1' | 'L2'` string union per `src/crd/CLAUDE.md` Rule 4
+**Scale/Scope**: 1 settings shell, 8 tabs (each its own P1 user story), 3 levels (L0 / L1 / L2) sharing the same shell, ~30 new CRD components, 8 data mappers, 2 new shared helpers (`useSettingsScope`, `useVisibleSettingsTabs`), 1 new dialog (`AddPhaseDialog`), 1 new i18n namespace (`crd-spaceSettings`), ~25 existing Apollo mutations/queries reused (including `useInnovationFlowSettings`, `useCommunityAdmin`, `useCommunityPolicyChecker` for L1 / L2 capabilities)
 
 ## Constitution Check
 
@@ -93,27 +97,35 @@ src/
 │   │           ├── SpaceSettingsCard.tsx         # Title + description + body primitive
 │   │           ├── SpaceSettingsSaveBar.tsx      # Sticky Save Changes / Reset — Layout tab only
 │   │           ├── SpaceSettingsAboutView.tsx
-│   │           ├── SpaceSettingsLayoutView.tsx
-│   │           ├── LayoutPoolColumn.tsx
+│   │           ├── SpaceSettingsLayoutView.tsx   # `level` prop; renders Add Phase button + AddPhaseDialog at L1/L2
+│   │           ├── LayoutPoolColumn.tsx          # Adds "Delete phase" entry in column kebab at L1/L2
 │   │           ├── LayoutCalloutRow.tsx
-│   │           ├── SpaceSettingsCommunityView.tsx
+│   │           ├── AddPhaseDialog.tsx            # NEW — L1/L2 only; modal for creating an innovation-flow state
+│   │           ├── SpaceSettingsCommunityView.tsx # `level` prop; promote/demote-Lead dropdown items at L1/L2; hides VC + guidelines-template at non-L0
 │   │           ├── CommunityUsersTable.tsx       # Main users table
 │   │           ├── CommunityOrgsTable.tsx        # Inside Organizations collapsible
 │   │           ├── CommunityVirtualContributorsTable.tsx  # Inside VC collapsible
-│   │           ├── SpaceSettingsSubspacesView.tsx
+│   │           ├── SpaceSettingsSubspacesView.tsx # `onChangeDefaultTemplate` optional — passed only at L0
 │   │           ├── SpaceSettingsTemplatesView.tsx
 │   │           ├── SpaceSettingsStorageView.tsx
-│   │           ├── SpaceSettingsSettingsView.tsx
+│   │           ├── SpaceSettingsSettingsView.tsx # `level` prop; gates 4 allowed-action toggles by level (FR-036)
 │   │           └── SpaceSettingsAccountView.tsx
 │   └── i18n/
 │       └── spaceSettings/                        # NEW
 │           └── spaceSettings.en.json
 ├── main/
 │   └── crdPages/
+│       ├── subspace/                             # EXISTING — extended for L1/L2 settings
+│       │   ├── routing/
+│       │   │   └── CrdSubspaceRoutes.tsx         # MODIFIED — adds settings/* routes inside BOTH the L1 layout block and the L2 layout block, each wrapped in NonSpaceAdminRedirect
+│       │   └── layout/
+│       │       └── CrdSubspacePageLayout.tsx     # MODIFIED — switches to SpaceSettingsHeader+TabStrip when on /settings; appends Settings hop + active tab to breadcrumbs (FR-041)
 │       └── topLevelPages/
-│           └── spaceSettings/                    # NEW — integration layer
-│               ├── CrdSpaceSettingsPage.tsx      # Route entry
-│               ├── useSpaceSettingsTab.ts        # URL <-> active tab sync
+│           └── spaceSettings/                    # NEW — integration layer (shared across L0/L1/L2)
+│               ├── CrdSpaceSettingsPage.tsx      # Route entry — uses useSettingsScope + getVisibleSettingsTabs to drive level-aware behaviour
+│               ├── useSpaceSettingsTab.ts        # URL <-> active tab sync; clamps to visible tabs and redirects hidden tabs to 'about'
+│               ├── useSettingsScope.ts           # NEW — level-aware ID resolution (L0 → useSpace; L1/L2 → useSubSpace); returns 'L0' | 'L1' | 'L2' string union per CRD Rule 4
+│               ├── useVisibleSettingsTabs.ts     # NEW — getVisibleSettingsTabs(level) + useSettingsTabDescriptors(level)
 │               ├── useDirtyTabGuard.ts           # Blocks tab switch + page nav while Layout is dirty; also flushes About's pending debounced autosaves on tab switch
 │               ├── about/
 │               │   ├── useAboutTabData.ts        # Form buffer + mutations
@@ -143,7 +155,9 @@ src/
 └── domain/spaceAdmin/                            # UNCHANGED — existing MUI implementation stays for toggle-off
 ```
 
-**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, per-column menu wiring, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. Every tab has its own mapper pair (`use<Tab>TabData.ts` + `<tab>Mapper.ts`). Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
+**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, per-column menu wiring, level-aware ID resolution, level-aware tab visibility, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. Every tab has its own mapper pair (`use<Tab>TabData.ts` + `<tab>Mapper.ts`). Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
+
+**Subspace (L1 / L2) integration**: the same `CrdSpaceSettingsPage` is mounted by both the L0 layout (`CrdSpacePageLayout`) and the L1 / L2 layout (`CrdSubspacePageLayout`). `CrdSubspaceRoutes.tsx` defines two separate `<Route element={<CrdSubspacePageLayout />}>` blocks (L1 and L2) — the settings route MUST be added inside **both**, before the catch-all that delegates to legacy. Each settings route is wrapped in a small `CrdSubspaceSettingsRoute` component that calls `useSubSpace()` to read the subspace id and feeds it into `NonSpaceAdminRedirect` (parity with `SpaceAdminRouteL1.tsx:75`). The `CrdSubspacePageLayout` swaps to a settings-header branch when `pathname.includes('/settings')` — rendering `SpaceSettingsHeader` + `SpaceSettingsTabStrip` instead of `SubspaceHeader`, and appending the Settings hop + active tab label to the breadcrumbs (FR-041).
 
 **CRD asset reuse (per `src/crd/CLAUDE.md`)**: the plan explicitly reuses existing CRD assets instead of creating parallels:
 - `src/crd/components/dialogs/ConfirmationDialog.tsx` — extended in place, not duplicated, to cover both delete and discard variants (FR-026, FR-027).

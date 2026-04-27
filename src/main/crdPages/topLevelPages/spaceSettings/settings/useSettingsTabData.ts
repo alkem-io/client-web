@@ -185,6 +185,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
           videoCalls: 'allowMembersToVideoCall',
           guestContributions: 'allowGuestContributions',
           memberCreateSubspaces: 'allowMembersToCreateSubspaces',
+          inheritMembershipRights: 'inheritMembershipRights',
           subspaceEvents: 'allowEventsFromSubspaces',
         };
         const backendKey = collaborationKeyMap[key];

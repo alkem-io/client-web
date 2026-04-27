@@ -9,6 +9,47 @@ No new backend entities are introduced. This document defines the **view-model s
 
 ## Shared view-model types
 
+### `SettingsScopeLevel` (added 2026-04-27)
+
+```
+type SettingsScopeLevel = 'L0' | 'L1' | 'L2';
+```
+
+Plain string union — never the GraphQL `SpaceLevel` enum, per `src/crd/CLAUDE.md` Rule 4. Converted at the page boundary inside `useSettingsScope`. Threaded as a `level` prop into every CRD view that gates inner sections (Community, Settings, Subspaces, Layout).
+
+### `SettingsScope` (added 2026-04-27)
+
+Returned by `useSettingsScope()` in `src/main/crdPages/topLevelPages/spaceSettings/useSettingsScope.ts`. The single source of truth for the IDs every tab needs.
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | `string` | Space id at L0; subspace id at L1 / L2 |
+| `level` | `SettingsScopeLevel` | Derived from `useUrlResolver().spaceLevel` |
+| `url` | `string` | The space's profile URL |
+| `roleSetId` | `string \| undefined` | From `useSubSpace` at L1 / L2; from `useSpace` at L0 |
+| `communityId` | `string \| undefined` | Same |
+| `guidelinesId` | `string \| undefined` | Same |
+| `accountId` | `string \| undefined` | Populated only at L0 — Templates / Account tabs are hidden at L1 / L2 |
+| `loading` | `boolean` | True while either context is still resolving |
+
+### `SpaceSettingsTabId` (added 2026-04-27)
+
+```
+type SpaceSettingsTabId =
+  | 'about' | 'layout' | 'community' | 'updates'
+  | 'subspaces' | 'templates' | 'storage' | 'settings' | 'account';
+
+const SPACE_SETTINGS_TAB_IDS: readonly SpaceSettingsTabId[] = [...] // declared in useSpaceSettingsTab.ts
+```
+
+The visible-tab list per level is derived by `getVisibleSettingsTabs(level)`:
+
+- **L0**: all 9 tabs.
+- **L1**: hide `templates`, `storage`, `account` (`HIDDEN_AT_L1`).
+- **L2**: hide `templates`, `storage`, `account`, `subspaces` (`HIDDEN_AT_L2`).
+
+`useSpaceSettingsTab(visibleTabs?)` clamps the active tab to a member of the visible list and redirects hidden URL hits to `'about'` via `replace: true`.
+
 ### `SpaceHeroProps`
 
 Reused verbatim from spec 042 (`src/crd/components/space/SpaceHeader.tsx`).
@@ -163,6 +204,7 @@ type LayoutColumnId = string;
 
 | Field | Type | Notes |
 |---|---|---|
+| `level` | `SettingsScopeLevel` | Added 2026-04-27. Gates Add Phase + Delete phase visibility (FR-038 / FR-039). |
 | `columns` | `LayoutPoolColumn[]` | Dynamic count and order — driven by backend `innovationFlow.states` |
 | `postDescriptionDisplay` | `'collapsed' \| 'expanded'` | `calloutDescriptionDisplayMode` value, part of the dirty buffer |
 | `saveBar` | `SaveBarState` | — |
@@ -173,7 +215,11 @@ type LayoutColumnId = string;
 | `onReset` | `() => void` | Reverts buffer to last backend snapshot |
 | `onMoveToColumn` | `(calloutId: string, target: LayoutColumnId) => void` | Visible kebab — Move to submenu; buffered |
 | `onViewPost` | `(calloutId: string) => void` | Visible kebab — navigates (blocked by discard-confirm when buffer dirty) |
-| `columnMenuActions` | `ColumnMenuActions` | **Per-column** menu (top-right three-dot). Fires immediately (not buffered). |
+| `columnMenuActions` | `ColumnMenuActions` | **Per-column** menu (top-right three-dot). Fires immediately (not buffered). Includes optional `onDeletePhase` (Decision 21). |
+| `onCreatePhase` | `((input: { displayName: string; description?: string }) => Promise<void>) \| undefined` | Added 2026-04-27. Passed only at L1 / L2. Page passes `level !== 'L0' ? layout.onCreateState : undefined`. Delegates to `useInnovationFlowSettings.actions.createState` for atomic create+sortOrder+refetch (Decision 21). |
+| `minimumNumberOfStates` | `number` | Added 2026-04-27. Used to disable Delete phase when at minimum. |
+| `maximumNumberOfStates` | `number` | Added 2026-04-27. Used to disable / hide Add Phase when at maximum. |
+| `isStructureMutating` | `boolean` | Added 2026-04-27. True while a create / delete state mutation is in flight; disables Save Changes bar to prevent double-fire. |
 
 ### `ColumnMenuActions`
 
@@ -182,10 +228,11 @@ type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId) => void;
   onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
   availablePostTemplates: { id: string; label: string }[];
+  onDeletePhase?: (columnId: LayoutColumnId) => Promise<void>; // Added 2026-04-27 — L1/L2 only; visible only when columnCount > minimumNumberOfStates
 };
 ```
 
-`onChangeActivePhase(columnId)` marks `columnId` as the innovation flow's current state. `onSetAsDefaultPostTemplate(columnId, templateId)` sets (or clears) the default callout template for that state. Consumed by `LayoutPoolColumn.tsx` (the column header's top-right three-dot button), NOT by `LayoutCalloutRow.tsx`.
+`onChangeActivePhase(columnId)` marks `columnId` as the innovation flow's current state. `onSetAsDefaultPostTemplate(columnId, templateId)` sets (or clears) the default callout template for that state. `onDeletePhase(columnId)` (added 2026-04-27) deletes the state, gated by `level !== 'L0'` and `columns.length > minimumNumberOfStates`; delegates to `useInnovationFlowSettings.actions.deleteState` (Decision 21) — confirms via existing `ConfirmationDialog`. Consumed by `LayoutPoolColumn.tsx` (the column header's top-right three-dot button), NOT by `LayoutCalloutRow.tsx`.
 
 ---
 
@@ -201,16 +248,30 @@ type ColumnMenuActions = {
 | `secondaryText` | `string \| null` | Email (users) / domain (orgs) / status (VCs) |
 | `avatarUrl` | `string \| null` | — |
 | `role` | `'host' \| 'admin' \| 'lead' \| 'member' \| 'virtualContributor'` | — |
+| `isLead` | `boolean` | Added 2026-04-27. Drives the row's promote/demote dropdown disabled state per Decision 20. |
+| `isAdmin` | `boolean` | Added 2026-04-27. When true, the lead-toggle dropdown items MUST be hidden (Admin role stays read-only). |
 | `status` | `'active' \| 'pending' \| 'invited' \| 'inactive'` | — |
 | `joinedAt` | `string \| null` | ISO-8601 |
+
+### `LeadPolicy` (added 2026-04-27)
+
+```
+type LeadPolicy = { canAddLead: boolean; canRemoveLead: boolean };
+```
+
+Aggregate flags from `useCommunityPolicyChecker`. The view computes per-row `disabled` as `(!canAddLead && !row.isLead) || (!canRemoveLead && row.isLead)` (Decision 20).
 
 ### `CommunityViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
+| `level` | `SettingsScopeLevel` | Added 2026-04-27. Gates promote/demote-Lead dropdown items (visible only when `level !== 'L0'`); hides VC block + "Save as guidelines template" at non-L0 (FR-036). |
+| `leadPolicy` | `LeadPolicy` | Added 2026-04-27. Aggregate flags driving the lead-toggle disabled state (Decision 20). |
+| `onUserLeadChange` | `(userId: string, isLead: boolean) => void` | Added 2026-04-27. Delegates to `useCommunityAdmin().onUserLeadChange`. Immediate (no buffer). |
+| `onOrgLeadChange` | `(orgId: string, isLead: boolean) => void` | Added 2026-04-27. Delegates to `useCommunityAdmin().onOrganizationLeadChange`. Immediate. |
 | `users` | `{ rows: MemberRow[]; totalCount: number; pageSize: 10; page: number }` | Main top table, paginated |
 | `organizations` | `{ rows: MemberRow[]; totalCount: number; pageSize: 5; page: number; collapsed: boolean }` | Inside collapsible; 5 rows visible |
-| `virtualContributors` | `{ rows: MemberRow[]; totalCount: number; pageSize: 5; page: number; collapsed: boolean }` | Inside collapsible; 5 rows visible |
+| `virtualContributors` | `{ rows: MemberRow[]; totalCount: number; pageSize: 5; page: number; collapsed: boolean }` | Inside collapsible; 5 rows visible. Card hidden when `level !== 'L0'`. |
 | `invitationPolicy` | `'open' \| 'invite-only' \| 'application'` | Mirror of Settings value for display only |
 | `applicationForm` | `ApplicationQuestion[]` | — |
 | `communityGuidelines` | `string` (markdown) | — |
@@ -267,7 +328,8 @@ No `SaveBarState` on Community — every action commits on confirm.
 | `onFilterChange` | `(next: 'all' \| 'active' \| 'archived') => void` | — |
 | `onViewModeChange` | `(next: 'grid' \| 'list') => void` | — |
 | `onCreate` | `() => void` | Opens existing subspace-creation flow (may be wrapped in a CRD dialog) |
-| `onChangeDefaultTemplate` | `() => void` | Opens template-pick dialog |
+| `onChangeDefaultTemplate` | `(() => void) \| undefined` | Updated 2026-04-27. **Optional** — passed only at L0. When `undefined`, the entire "Default Subspace Template" card MUST NOT render (template management is L0-only per FR-036). |
+| `canSaveAsTemplate` | `boolean` | Added 2026-04-27. The page wires `subspacesTab.canSaveAsTemplate && level === 'L0'` so the kebab "Save as Template" entry is hidden at L1. |
 | `onKebabAction` | `(id: string, action: 'pinToggle' \| 'saveAsTemplate' \| 'delete') => void` | Only three actions — no Edit Details, no Archive, no View |
 
 No `SaveBarState`. Every action commits on confirm.
@@ -362,16 +424,19 @@ Each toggle is `{ key: AllowedActionKey; enabled: boolean }` where `AllowedActio
 
 ```
 type AllowedActionKey =
-  | 'subspaceAdminInvitations'
+  | 'subspaceAdminInvitations'        // Visible at L0 + L1 (hidden at L2 per FR-036)
   | 'memberCreatePosts'
   | 'videoCalls'
   | 'guestContributions'
-  | 'memberCreateSubspaces'
-  | 'subspaceEvents'
+  | 'memberCreateSubspaces'           // Visible at L0 + L1 (hidden at L2)
+  | 'subspaceEvents'                  // Visible at L0 + L1 (hidden at L2)
   | 'alkemioSupportAccess'
   | 'trustHostOrganization'
-  | 'inheritMemberRightsFromParent';
+  | 'inheritMemberRightsFromParent'   // Renamed `inheritMembershipRights` in implementation; visible at L1 + L2 only (hidden at L0 per FR-036)
+  | 'inheritMembershipRights';        // Added 2026-04-27 — implementation key for FR-036; alias of inheritMemberRightsFromParent
 ```
+
+**Level-aware filtering** (added 2026-04-27): `SpaceSettingsSettingsView` accepts a `level: SettingsScopeLevel` prop and filters its rendered toggles via three `Set<AllowedActionKey>` constants — `ACTIONS_VISIBLE_AT_L0`, `ACTIONS_VISIBLE_AT_L1`, `ACTIONS_VISIBLE_AT_L2`. The page does NOT filter the `allowedActions` payload — the view does the filtering — so the data hook stays level-agnostic.
 
 ### `ApplicableOrganization`
 
@@ -381,10 +446,11 @@ type AllowedActionKey =
 
 | Field | Type | Notes |
 |---|---|---|
+| `level` | `SettingsScopeLevel` | Added 2026-04-27. Drives the level-aware filtering of `allowedActions` (FR-036). |
 | `privacy` | `SpacePrivacy` | — |
 | `membershipPolicy` | `MembershipPolicy` | — |
 | `applicableOrganizations` | `ApplicableOrganization[]` | — |
-| `allowedActions` | `AllowedActionToggle[]` | Every current MUI toggle |
+| `allowedActions` | `AllowedActionToggle[]` | Every current MUI toggle. The view filters by `level` before rendering. |
 | `onPrivacyChange` | `(next: SpacePrivacy) => void` | Immediate commit |
 | `onMembershipPolicyChange` | `(next: MembershipPolicy) => void` | Immediate commit |
 | `onAddOrganization` | `() => void` | Opens existing org-picker |
@@ -436,3 +502,36 @@ type DirtyTabState = {
 ```
 
 Produced by `useDirtyTabGuard`. Consumed only by `CrdSpaceSettingsPage`.
+
+---
+
+## Subspace breadcrumbs (added 2026-04-27)
+
+`CrdSubspacePageLayout` calls `useSetBreadcrumbs` unconditionally before any early loading return so the trail is set on every render. The trail shape:
+
+```ts
+const baseTrail =
+  data.parentSpaceName && data.subspaceName
+    ? [
+        ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
+        { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
+        {
+          label: data.subspaceName,
+          ...(isOnSettings ? { href: data.subspaceUrl, icon: Layers } : {}),
+        },
+      ]
+    : [];
+const settingsTrail = isOnSettings
+  ? [
+      { label: t('tabs.settings'), href: `${data.subspaceUrl}/settings` },
+      { label: t(`tabs.${activeSettingsTab}`) },
+    ]
+  : [];
+useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
+```
+
+- The L0 hop is included only when `levelZeroSpaceId !== parentSpaceId` (true at L2; false at L1 because L1's parent IS the L0 space).
+- The subspace hop becomes a link only when `isOnSettings` is true; otherwise it is a leaf (matches the existing non-settings behaviour).
+- The active-tab hop reuses the existing `crd-spaceSettings:tabs.<id>` translation keys from the tab strip — no new i18n keys.
+
+The `BreadcrumbsProvider` is mounted by `CrdLayoutWrapper` and wraps the entire route tree; `CrdSubspacePageLayout` consumes it via `useSetBreadcrumbs` from `@/main/ui/breadcrumbs/BreadcrumbsContext`.

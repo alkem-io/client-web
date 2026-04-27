@@ -11,12 +11,15 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceSettingsCard } from '@/crd/components/space/settings/SpaceSettingsCard';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
 import { Switch } from '@/crd/primitives/switch';
+import { AddPhaseDialog } from './AddPhaseDialog';
 import { LayoutCalloutRowPreview } from './LayoutCalloutRow';
 import { LayoutPoolColumn } from './LayoutPoolColumn';
 import type {
@@ -30,6 +33,12 @@ import type {
 } from './SpaceSettingsLayoutView.types';
 
 export type SpaceSettingsLayoutViewProps = {
+  /**
+   * Space hierarchy level. Drives phase add/delete visibility:
+   * - L0: hidden (managed via dedicated dialog elsewhere; kept restricted for now).
+   * - L1/L2: shown — admins can add or remove phases up to the flow's min/max limits.
+   */
+  level: 'L0' | 'L1' | 'L2';
   columns: LayoutPoolColumnData[];
   postDescriptionDisplay: LayoutPostDescriptionDisplay;
   saveBar: LayoutSaveBarState;
@@ -41,6 +50,13 @@ export type SpaceSettingsLayoutViewProps = {
   onSave: () => void;
   onDiscardChanges: () => void;
   columnMenuActions: ColumnMenuActions;
+  /** Phase add — only invoked when `level !== 'L0'` and `columns.length < maximumNumberOfStates`. */
+  onCreatePhase?: (input: { displayName: string; description: string }) => Promise<void>;
+  /** Min/max state limits from the innovation-flow settings. Drives Add/Delete button enablement. */
+  minimumNumberOfStates?: number;
+  maximumNumberOfStates?: number;
+  /** True while a structural mutation is in flight — disables Add Phase. */
+  isStructureMutating?: boolean;
   className?: string;
 };
 
@@ -57,6 +73,7 @@ export type SpaceSettingsLayoutViewProps = {
  *  - Save Changes / Discard Changes action bar at the bottom-right.
  */
 export function SpaceSettingsLayoutView({
+  level,
   columns,
   postDescriptionDisplay,
   saveBar,
@@ -68,6 +85,10 @@ export function SpaceSettingsLayoutView({
   onSave,
   onDiscardChanges,
   columnMenuActions,
+  onCreatePhase,
+  minimumNumberOfStates = 0,
+  maximumNumberOfStates = Number.POSITIVE_INFINITY,
+  isStructureMutating = false,
   className,
 }: SpaceSettingsLayoutViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -76,6 +97,9 @@ export function SpaceSettingsLayoutView({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
   const [activeCallout, setActiveCallout] = useState<LayoutCallout | null>(null);
+  const [addPhaseOpen, setAddPhaseOpen] = useState(false);
+  const canManagePhases = level !== 'L0' && !!onCreatePhase;
+  const canAddPhase = canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating;
 
   const findColumnIdForCallout = (calloutId: string): LayoutColumnId | null => {
     for (const col of columns) {
@@ -141,9 +165,24 @@ export function SpaceSettingsLayoutView({
   return (
     <div className={cn('flex flex-col gap-6', className)}>
       {/* Page header */}
-      <div>
-        <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
+        </div>
+        {canManagePhases && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-2 shrink-0"
+            disabled={!canAddPhase}
+            onClick={() => setAddPhaseOpen(true)}
+          >
+            <Plus aria-hidden="true" className="size-4" />
+            {t('layout.addPhase.button')}
+          </Button>
+        )}
       </div>
 
       {/* Columns + Save bar inside a bordered container */}
@@ -204,6 +243,15 @@ export function SpaceSettingsLayoutView({
           <p className="text-sm text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
         </div>
       </SpaceSettingsCard>
+
+      {canManagePhases && onCreatePhase && (
+        <AddPhaseDialog
+          open={addPhaseOpen}
+          onOpenChange={setAddPhaseOpen}
+          onSubmit={onCreatePhase}
+          existingPhaseNames={columns.map(c => c.title)}
+        />
+      )}
     </div>
   );
 }

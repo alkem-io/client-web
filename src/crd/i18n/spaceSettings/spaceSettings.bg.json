@@ -74,6 +74,22 @@
         "cancel": "Отказ",
         "saving": "Записване…",
         "save": "Запиши"
+      },
+      "deletePhase": "Изтрий фаза"
+    },
+    "addPhase": {
+      "button": "Добави фаза",
+      "dialog": {
+        "title": "Добави нова фаза",
+        "description": "Създай нова фаза на иновационния поток. Можеш да я преименуваш или премахнеш по-късно.",
+        "nameLabel": "Име на фазата",
+        "namePlaceholder": "напр. Откриване",
+        "descriptionLabel": "Описание (по избор)",
+        "descriptionPlaceholder": "Какво се случва в тази фаза?",
+        "duplicate": "Вече съществува фаза с това име.",
+        "errorGeneric": "Фазата не може да бъде създадена. Опитай отново.",
+        "cancel": "Отказ",
+        "confirm": "Добави фаза"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "Имейл",
       "role": {
         "lead": "Ръководител",
-        "member": "Член"
+        "member": "Член",
+        "promoteToLead": "Направи ръководител",
+        "demoteFromLead": "Премахни като ръководител"
       },
       "actions": "Действия",
       "empty": "No members found.",
@@ -578,6 +596,7 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Подпространства",
+      "inheritMembershipRights": "Наследяване на правата на членство",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Домакин Organization"

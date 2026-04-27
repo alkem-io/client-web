@@ -15,6 +15,7 @@ import type {
   LayoutReorderTarget,
   LayoutSaveBarState,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 import { mapCollaborationToLayoutColumns } from './layoutMapper';
 
 export type {
@@ -40,6 +41,18 @@ export type UseLayoutTabDataResult = {
   /** Underlying ids — useful for the view's useColumnMenu consumer. */
   innovationFlowId: string;
   calloutsSetId: string;
+  /**
+   * Phase add/delete (immediate-save) — adds a new flow state at the end (or
+   * after `afterStateId` if provided) and resets the rename buffer so the
+   * snapshot reseeds from the refetched query.
+   */
+  onCreateState: (input: { displayName: string; description: string; afterStateId?: string }) => Promise<void>;
+  onDeleteState: (stateId: string) => Promise<void>;
+  /** Min/max state count from the innovation-flow settings; drives Add/Delete enablement. */
+  minimumNumberOfStates: number;
+  maximumNumberOfStates: number;
+  /** True while a structural mutation (create/delete state) is in flight. */
+  isStructureMutating: boolean;
 };
 
 type Snapshot = {
@@ -101,11 +114,19 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
   const snapshotRef = useRef<Snapshot | null>(null);
   const [saveBar, setSaveBar] = useState<LayoutSaveBarState>({ kind: 'clean' });
   const [, startTransition] = useTransition();
+  const [isStructureMutating, setIsStructureMutating] = useState(false);
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
+
+  // Borrow only the structural action handlers from the legacy hook —
+  // they handle the create+sortOrder atomicity and refetches.
+  const innovationFlowSettings = useInnovationFlowSettings({
+    collaborationId,
+    skip: !collaborationId,
+  });
 
   // Seed the buffer once, from the first successful query pair.
   useEffect(() => {
@@ -334,6 +355,59 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     }
   };
 
+  // Structural actions — fire immediately, then reset the rename buffer so the
+  // seed effect re-seeds from the refetched query.
+  const resetSnapshotForReseed = () => {
+    snapshotRef.current = null;
+    setIsDirty(false);
+    setSaveBar({ kind: 'clean' });
+  };
+
+  const onCreateState = async ({
+    displayName,
+    description,
+    afterStateId,
+  }: {
+    displayName: string;
+    description: string;
+    afterStateId?: string;
+  }): Promise<void> => {
+    setIsStructureMutating(true);
+    try {
+      await innovationFlowSettings.actions.createState(
+        { displayName, description, sortOrder: 0, settings: { allowNewCallouts: true } },
+        afterStateId
+      );
+      resetSnapshotForReseed();
+    } finally {
+      setIsStructureMutating(false);
+    }
+  };
+
+  const onDeleteState = async (stateId: string): Promise<void> => {
+    setIsStructureMutating(true);
+    try {
+      // The backend rejects deleting the currently-active state. If the user
+      // targets the active phase, advance the active state to the next
+      // surviving state (by sort order) first, then delete.
+      const flow = innovationFlowSettings.data.innovationFlow;
+      if (flow?.currentState?.id === stateId) {
+        const nextActive = (flow.states ?? [])
+          .filter(s => s.id !== stateId)
+          .sort((a, b) => a.sortOrder - b.sortOrder)[0];
+        if (nextActive) {
+          await innovationFlowSettings.actions.updateInnovationFlowCurrentState(nextActive.id);
+        }
+      }
+      await innovationFlowSettings.actions.deleteState(stateId);
+      resetSnapshotForReseed();
+    } finally {
+      setIsStructureMutating(false);
+    }
+  };
+
+  const flowSettings = innovationFlowSettings.data.innovationFlow?.settings;
+
   return {
     columns,
     postDescriptionDisplay,
@@ -350,6 +424,11 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     markColumnSaved,
     innovationFlowId: flowData?.lookup.collaboration?.innovationFlow.id ?? '',
     calloutsSetId: flowData?.lookup.collaboration?.calloutsSet.id ?? '',
+    onCreateState,
+    onDeleteState,
+    minimumNumberOfStates: flowSettings?.minimumNumberOfStates ?? 0,
+    maximumNumberOfStates: flowSettings?.maximumNumberOfStates ?? Number.POSITIVE_INFINITY,
+    isStructureMutating,
   };
 }
 

@@ -1,4 +1,5 @@
 import type { SaveBarState } from './shell';
+import type { SettingsScopeLevel } from './tab-community';
 
 /**
  * Innovation-flow state UUID. Columns on the Layout board are DYNAMIC — count
@@ -43,9 +44,22 @@ export type ColumnMenuActions = {
   /** Set (or clear, if `templateId` is null) the default post template for `columnId`. */
   onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
   availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /**
+   * Added 2026-04-27. L1/L2 only — the page wires this only when `level !== 'L0'`
+   * AND `columns.length > minimumNumberOfStates`. Delegates to
+   * `useInnovationFlowSettings.actions.deleteState` (atomic delete + refetch).
+   * Confirmed via existing `ConfirmationDialog`.
+   */
+  onDeletePhase?: (columnId: LayoutColumnId) => Promise<void>;
 };
 
 export type LayoutViewProps = {
+  /**
+   * Added 2026-04-27. Gates Add Phase + Delete phase visibility (FR-038 / FR-039).
+   * The view filters its own affordances by level — the data hook stays level-agnostic.
+   */
+  level: SettingsScopeLevel;
+
   /** Dynamic count and order — driven by backend `innovationFlow.states`. */
   columns: LayoutPoolColumn[];
   postDescriptionDisplay: 'collapsed' | 'expanded';
@@ -70,4 +84,20 @@ export type LayoutViewProps = {
 
   /** Per-column overflow menu (immediate, not buffered). */
   columnMenuActions: ColumnMenuActions;
+
+  /**
+   * Added 2026-04-27. L1/L2 only — the page passes this only when `level !== 'L0'`.
+   * Delegates to `useInnovationFlowSettings.actions.createState` (atomic create+sortOrder+refetch).
+   */
+  onCreatePhase?: (input: { displayName: string; description?: string }) => Promise<void>;
+  /** Added 2026-04-27. Used to disable / hide Add Phase when at maximum. */
+  maximumNumberOfStates: number;
+  /** Added 2026-04-27. Used to disable / hide Delete phase when at minimum. */
+  minimumNumberOfStates: number;
+  /**
+   * Added 2026-04-27. True while a create / delete state mutation is in flight.
+   * Disables the Save Changes bar to prevent double-fire while the structural
+   * change is being committed.
+   */
+  isStructureMutating: boolean;
 };

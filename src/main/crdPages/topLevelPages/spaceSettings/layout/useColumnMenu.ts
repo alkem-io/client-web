@@ -17,6 +17,15 @@ export type UseColumnMenuOptions = {
   columnNames: ReadonlyArray<{ id: string; title: string }>;
   /** Called after a successful save to update the local buffer/snapshot. */
   onColumnSaved?: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Phase-delete handler from the layout data hook. Provided only at L1/L2;
+   * passed through to `ColumnMenuActions.onDeletePhase` when defined and the
+   * removal would not violate the flow's min-states limit.
+   */
+  onDeleteState?: (stateId: string) => Promise<void>;
+  /** Current column count and min-states, used to compute whether delete is allowed. */
+  columnCount?: number;
+  minimumNumberOfStates?: number;
 };
 
 export function useColumnMenu({
@@ -25,6 +34,9 @@ export function useColumnMenu({
   callouts,
   columnNames,
   onColumnSaved,
+  onDeleteState,
+  columnCount,
+  minimumNumberOfStates,
 }: UseColumnMenuOptions): ColumnMenuActions {
   const [updateCurrentState] = useUpdateInnovationFlowCurrentStateMutation();
   const [setDefaultTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
@@ -80,10 +92,19 @@ export function useColumnMenu({
     onColumnSaved?.(columnId, title, description);
   };
 
+  const canDelete =
+    !!onDeleteState &&
+    typeof columnCount === 'number' &&
+    typeof minimumNumberOfStates === 'number' &&
+    columnCount > minimumNumberOfStates;
+
+  const onDeletePhase = canDelete && onDeleteState ? (columnId: LayoutColumnId) => onDeleteState(columnId) : undefined;
+
   return {
     onChangeActivePhase,
     onSetAsDefaultPostTemplate,
     onSaveColumnDetails,
     availablePostTemplates,
+    onDeletePhase,
   };
 }

@@ -51,6 +51,7 @@ export function mapAllowedActions(
     { key: 'videoCalls', enabled: collab?.allowMembersToVideoCall ?? false },
     { key: 'guestContributions', enabled: collab?.allowGuestContributions ?? false },
     { key: 'memberCreateSubspaces', enabled: collab?.allowMembersToCreateSubspaces ?? false },
+    { key: 'inheritMembershipRights', enabled: collab?.inheritMembershipRights ?? false },
     { key: 'subspaceEvents', enabled: collab?.allowEventsFromSubspaces ?? false },
     { key: 'alkemioSupportAccess', enabled: privacy?.allowPlatformSupportAsAdmin ?? false },
   ];

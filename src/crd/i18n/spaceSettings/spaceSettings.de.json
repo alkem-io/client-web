@@ -74,6 +74,22 @@
         "cancel": "Abbrechen",
         "saving": "Speichern…",
         "save": "Speichern"
+      },
+      "deletePhase": "Phase löschen"
+    },
+    "addPhase": {
+      "button": "Phase hinzufügen",
+      "dialog": {
+        "title": "Neue Phase hinzufügen",
+        "description": "Erstelle eine neue Innovationsfluss-Phase. Du kannst sie später umbenennen oder entfernen.",
+        "nameLabel": "Phasenname",
+        "namePlaceholder": "z. B. Entdeckung",
+        "descriptionLabel": "Beschreibung (optional)",
+        "descriptionPlaceholder": "Was passiert in dieser Phase?",
+        "duplicate": "Eine Phase mit diesem Namen existiert bereits.",
+        "errorGeneric": "Phase konnte nicht erstellt werden. Bitte versuche es erneut.",
+        "cancel": "Abbrechen",
+        "confirm": "Phase hinzufügen"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "E-Mail",
       "role": {
         "lead": "Leiter",
-        "member": "Mitglied"
+        "member": "Mitglied",
+        "promoteToLead": "Zum Leiter machen",
+        "demoteFromLead": "Als Leiter entfernen"
       },
       "actions": "Aktionen",
       "empty": "No members found.",
@@ -578,6 +596,7 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Unterbereiche",
+      "inheritMembershipRights": "Mitgliedschaftsrechte erben",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"

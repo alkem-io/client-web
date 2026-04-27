@@ -16,9 +16,42 @@ export type AllowedActionKey =
   | 'videoCalls'
   | 'guestContributions'
   | 'memberCreateSubspaces'
+  | 'inheritMembershipRights'
   | 'subspaceEvents'
   | 'alkemioSupportAccess'
   | 'trustHostOrganization';
+
+const ACTIONS_VISIBLE_AT_L0 = new Set<AllowedActionKey>([
+  'subspaceAdminInvitations',
+  'memberCreatePosts',
+  'videoCalls',
+  'guestContributions',
+  'memberCreateSubspaces',
+  'subspaceEvents',
+  'alkemioSupportAccess',
+]);
+
+const ACTIONS_VISIBLE_AT_L1 = new Set<AllowedActionKey>([
+  'subspaceAdminInvitations',
+  'memberCreatePosts',
+  'videoCalls',
+  'guestContributions',
+  'memberCreateSubspaces',
+  'inheritMembershipRights',
+]);
+
+const ACTIONS_VISIBLE_AT_L2 = new Set<AllowedActionKey>([
+  'memberCreatePosts',
+  'videoCalls',
+  'guestContributions',
+  'inheritMembershipRights',
+]);
+
+function isActionVisibleAtLevel(level: 'L0' | 'L1' | 'L2', key: AllowedActionKey): boolean {
+  if (level === 'L1') return ACTIONS_VISIBLE_AT_L1.has(key);
+  if (level === 'L2') return ACTIONS_VISIBLE_AT_L2.has(key);
+  return ACTIONS_VISIBLE_AT_L0.has(key);
+}
 
 export type AllowedActionToggle = {
   key: AllowedActionKey;
@@ -26,6 +59,13 @@ export type AllowedActionToggle = {
 };
 
 export type SpaceSettingsSettingsViewProps = {
+  /**
+   * Space hierarchy level. Drives which member-action toggles are visible:
+   * - L0: hides "Inherit Membership Rights" (only meaningful inside subspaces).
+   * - L2: hides "Subspace Admin Invitations", "Create Subspaces", "Subspace Events"
+   *   (a sub-subspace cannot have child subspaces).
+   */
+  level: 'L0' | 'L1' | 'L2';
   privacy: SpacePrivacy;
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
@@ -62,6 +102,11 @@ const ACTION_META: Record<AllowedActionKey, { label: string; description: string
     description: 'Allow members to create Subspaces in this Space.',
     icon: Layout,
   },
+  inheritMembershipRights: {
+    label: 'Inherit Membership Rights',
+    description: 'Members of the parent Space automatically gain access to this Subspace.',
+    icon: UserPlus,
+  },
   subspaceEvents: {
     label: 'Subspace Events',
     description: 'Allow events from Subspaces to be visible here.',
@@ -80,6 +125,7 @@ const ACTION_META: Record<AllowedActionKey, { label: string; description: string
 };
 
 export function SpaceSettingsSettingsView({
+  level,
   privacy,
   membershipPolicy,
   allowedActions,
@@ -96,6 +142,7 @@ export function SpaceSettingsSettingsView({
   const hasPrefix = (prefix: string) => [...updatingKeys].some(k => k.startsWith(prefix));
   const privacyBusy = hasPrefix('privacy:');
   const membershipBusy = hasPrefix('membership:');
+  const visibleActions = allowedActions.filter(action => isActionVisibleAtLevel(level, action.key));
 
   return (
     <div className={cn('space-y-6 max-w-4xl mx-auto', className)}>
@@ -307,7 +354,7 @@ export function SpaceSettingsSettingsView({
           </AccordionTrigger>
           <AccordionContent className="pb-6 pt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {allowedActions.map(action => {
+              {visibleActions.map(action => {
                 const meta = ACTION_META[action.key];
                 if (!meta) return null;
                 const ActionIcon = meta.icon;
