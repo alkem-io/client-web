@@ -304,8 +304,6 @@ const [shareOpen, setShareOpen] = useState(false);
 
 For a callout-like entity with multiple Share triggers (3-dots menu + dialog header + reactions bar), lift the `shareOpen` state to a parent and pass `() => setShareOpen(true)` down to each trigger so they share one dialog instance. Don't mount one dialog per trigger.
 
-The 7+ MUI `ShareDialog` callsites that still live inside MUI pages (`MemoDialog`, `CalendarEventDetail`, `DiscussionView`, `CommunityUpdatesDialog`, etc.) keep using the MUI version — they switch to CRD when their host page migrates. Don't touch them ahead of their host page.
-
 i18n keys live in `src/crd/i18n/common/common.<lang>.json` under `share.*` and `share.alkemio.*`.
 
 ### Data Hooks Are Shared

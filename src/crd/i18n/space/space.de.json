@@ -406,6 +406,7 @@
   "forms": {
     "titleLabel": "Titel",
     "titlePlaceholder": "Geben Sie Ihrem Beitrag einen Titel...",
+    "insertEmoji": "Emoji einfügen",
     "descriptionLabel": "Beschreibung",
     "descriptionPlaceholder": "Schreiben Sie etwas...",
     "tagsLabel": "Schlagwörter",

@@ -406,6 +406,7 @@
   "forms": {
     "titleLabel": "Titre",
     "titlePlaceholder": "Donnez un titre à votre publication...",
+    "insertEmoji": "Insérer un emoji",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Écrivez quelque chose...",
     "tagsLabel": "Étiquettes",

@@ -69,6 +69,7 @@
         "dialogTitle": "Editar Details: Flow Phase",
         "titleLabel": "Título",
         "editTitle": "Editar title",
+        "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción",
         "cancel": "Cancelar",

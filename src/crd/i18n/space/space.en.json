@@ -397,6 +397,7 @@
   "forms": {
     "titleLabel": "Title",
     "titlePlaceholder": "Give your $t(common.callout) a title...",
+    "insertEmoji": "Insert emoji",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
