@@ -30,6 +30,7 @@ export default function CrdSpaceSubspacesPage() {
     calloutsSetId,
     canCreateCallout,
     tabDescription,
+    flowStateForNewCallouts,
     loading: calloutsLoading,
   } = useCrdCalloutList({
     tabPosition: 2,
@@ -99,6 +100,7 @@ export default function CrdSpaceSubspacesPage() {
           open={createCalloutOpen}
           onOpenChange={setCreateCalloutOpen}
           calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
         />
       )}
 

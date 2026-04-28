@@ -28,11 +28,18 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
-  const { callouts, calloutsSetId, classificationTagsets, canCreateCallout, tabDescription, loading } =
-    useCrdCalloutList({
-      tabPosition: sectionIndex,
-      tagsFilter: tagsFilter.length > 0 ? tagsFilter : undefined,
-    });
+  const {
+    callouts,
+    calloutsSetId,
+    classificationTagsets,
+    canCreateCallout,
+    tabDescription,
+    flowStateForNewCallouts,
+    loading,
+  } = useCrdCalloutList({
+    tabPosition: sectionIndex,
+    tagsFilter: tagsFilter.length > 0 ? tagsFilter : undefined,
+  });
 
   // Fetch tags via the same GraphQL query the MUI version uses
   const { data: tagsData } = useCalloutsSetTagsQuery({
@@ -115,7 +122,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </div>
 
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
     </>
   );
