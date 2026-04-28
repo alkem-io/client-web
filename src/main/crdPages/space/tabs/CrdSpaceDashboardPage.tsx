@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
@@ -15,6 +14,7 @@ import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
@@ -54,27 +54,23 @@ export default function CrdSpaceDashboardPage() {
       href: child.url,
     })) ?? [];
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="home"
-            description={space.about.profile.description || ''}
-            leads={sidebarLeads}
-            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-            onAboutClick={() => setAboutOpen(true)}
-            subspaces={subspaces}
-            events={sidebarEvents}
-            onShowCalendar={openCalendar}
-            onAddEvent={canCreateEvents ? openCreateEvent : undefined}
-            onEventClick={openEventDetail}
-            locale={locale}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="home"
+          description={space.about.profile.description || ''}
+          leads={sidebarLeads}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onAboutClick={() => setAboutOpen(true)}
+          subspaces={subspaces}
+          events={sidebarEvents}
+          onShowCalendar={openCalendar}
+          onAddEvent={canCreateEvents ? openCreateEvent : undefined}
+          onEventClick={openEventDetail}
+          locale={locale}
+        />
+      </SpaceSidebarPortal>
 
       <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
 
