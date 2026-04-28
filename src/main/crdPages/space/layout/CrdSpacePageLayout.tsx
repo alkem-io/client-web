@@ -1,18 +1,16 @@
 import {
   Bookmark,
   HardDrive,
-  History,
   Info,
   Layers,
   LayoutGrid,
   Megaphone,
-  Settings,
   Settings as SettingsIcon,
-  Share2,
   UserCircle,
   Users,
+  X,
 } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -30,6 +28,7 @@ import {
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { cn } from '@/crd/lib/utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -57,6 +56,7 @@ export default function CrdSpacePageLayout() {
   const [_shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [communityOpen, setCommunityOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
@@ -116,15 +116,6 @@ export default function CrdSpacePageLayout() {
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };
 
-  // Mobile actions for the "More" drawer
-  const mobileActions = [
-    { label: t('mobile.activity'), icon: <History className="w-4 h-4" />, onClick: () => setActivityDialogOpen(true) },
-    { label: t('mobile.share'), icon: <Share2 className="w-4 h-4" />, onClick: () => setShareDialogOpen(true) },
-    ...(showSettings && settingsHref
-      ? [{ label: t('mobile.settings'), icon: <Settings className="w-4 h-4" />, onClick: () => navigate(settingsHref) }]
-      : []),
-  ];
-
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
@@ -134,7 +125,7 @@ export default function CrdSpacePageLayout() {
     );
   }
 
-  const sidebarSlot = <div id="crd-space-sidebar" />;
+  const sidebarSlot = <div id="crd-space-sidebar-desktop" />;
 
   const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
     { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
@@ -189,7 +180,7 @@ export default function CrdSpacePageLayout() {
               activeIndex={activeTabIndex}
               onTabChange={handleTabChange}
               isSmallScreen={isSmallScreen}
-              mobileActions={mobileActions}
+              onMenuClick={() => setMobileMenuOpen(true)}
             />
           )
         }
@@ -198,6 +189,15 @@ export default function CrdSpacePageLayout() {
           <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
         </Suspense>
       </SpaceShell>
+
+      {!isOnSettings && (
+        <SpaceMobileSidebarDrawer
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          title={t('crd-space:mobile.menu')}
+          closeLabel={t('crd-space:a11y.close')}
+        />
+      )}
 
       {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
           this parent layout doesn't clobber the subspace layout's trail at
@@ -237,4 +237,72 @@ function L0SettingsBreadcrumbs({
   ];
   useSetBreadcrumbs(items);
   return null;
+}
+
+/**
+ * Mobile sidebar drawer. Always mounted in the DOM so the portal target
+ * (`#crd-space-sidebar-mobile`) is reliably available for tab pages to portal
+ * into; visibility is driven entirely by CSS transforms. Closes on backdrop
+ * click and on the Escape key.
+ */
+function SpaceMobileSidebarDrawer({
+  open,
+  onClose,
+  title,
+  closeLabel,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  closeLabel: string;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  return (
+    <div className="lg:hidden">
+      <button
+        type="button"
+        className={cn(
+          'fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 ease-out',
+          open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={onClose}
+        aria-label={closeLabel}
+        tabIndex={open ? 0 : -1}
+      />
+      <aside
+        role="dialog"
+        aria-modal={open}
+        aria-label={title}
+        aria-hidden={!open}
+        className={cn(
+          'fixed left-0 top-0 bottom-0 z-50 w-3/4 max-w-sm bg-background border-r border-border shadow-lg overflow-y-auto transition-transform duration-300 ease-out',
+          open ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <h2 className="text-subsection-title font-semibold">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={closeLabel}
+            tabIndex={open ? 0 : -1}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        </div>
+        <div className="p-4">
+          <div id="crd-space-sidebar-mobile" />
+        </div>
+      </aside>
+    </div>
+  );
 }

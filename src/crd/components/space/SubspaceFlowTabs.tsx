@@ -1,8 +1,11 @@
-import { ChevronsRight, Layout, Plus } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { ChevronsRight, Layout, Menu, Plus } from 'lucide-react';
+import { type ReactNode, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/crd/primitives/sheet';
 
 export type SubspaceFlowPhase = {
   id: string;
@@ -19,6 +22,13 @@ export type SubspaceFlowTabsProps = {
   editFlowHref?: string;
   onEditFlowClick?: () => void;
   onAddPostClick?: () => void;
+  /** Controlled drawer open state for the mobile hamburger menu. */
+  mobileMenuOpen?: boolean;
+  onMobileMenuOpenChange?: (open: boolean) => void;
+  /** Drawer body — sidebar items, edit-flow link, etc. Composed by the consumer. */
+  mobileMenuContent?: ReactNode;
+  /** Drawer header label. Defaults to the `flow.menu` translation. */
+  mobileMenuTitle?: string;
   className?: string;
 };
 
@@ -41,9 +51,14 @@ export function SubspaceFlowTabs({
   editFlowHref,
   onEditFlowClick,
   onAddPostClick,
+  mobileMenuOpen,
+  onMobileMenuOpenChange,
+  mobileMenuContent,
+  mobileMenuTitle,
   className,
 }: SubspaceFlowTabsProps) {
   const { t } = useTranslation('crd-subspace');
+  const isMobile = useMediaQuery('(max-width: 639px)');
   const activeTabRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
@@ -60,6 +75,82 @@ export function SubspaceFlowTabs({
       >
         <p className="text-body text-muted-foreground">{t('flow.emptyState')}</p>
       </div>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <>
+        {createPortal(
+          <>
+            <nav
+              className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border"
+              aria-label={t('a11y.bottomBar')}
+            >
+              <div className="flex items-center h-14">
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className={cn(TAB_LIST_CLASSES, 'flex-1 min-w-0 px-3')}>
+                  {phases.map(phase => {
+                    const isActive = phase.id === activePhaseId;
+                    return (
+                      <li
+                        key={phase.id}
+                        ref={isActive ? activeTabRef : undefined}
+                        className="inline-flex items-center shrink-0"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => onPhaseChange(phase.id)}
+                          aria-current={isActive ? 'page' : undefined}
+                          aria-label={t('flow.phaseTab', { name: phase.label })}
+                          className={cn(
+                            'whitespace-nowrap py-2 px-1 transition-colors text-control rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                            isActive ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                          )}
+                        >
+                          {phase.label}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="w-px h-6 bg-border" aria-hidden="true" />
+                <button
+                  type="button"
+                  onClick={() => onMobileMenuOpenChange?.(true)}
+                  className="shrink-0 px-4 h-full flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+                  aria-label={t('a11y.openMenu')}
+                  aria-haspopup="dialog"
+                  aria-expanded={mobileMenuOpen ?? false}
+                >
+                  <Menu className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </div>
+            </nav>
+            {canAddPost && (
+              <Button
+                size="icon"
+                className="fixed bottom-20 right-4 z-30 rounded-full size-14 shadow-lg"
+                onClick={onAddPostClick}
+                aria-label={t('flow.addPost')}
+              >
+                <Plus className="w-6 h-6" aria-hidden="true" />
+              </Button>
+            )}
+          </>,
+          document.body
+        )}
+
+        <Sheet open={mobileMenuOpen ?? false} onOpenChange={onMobileMenuOpenChange}>
+          <SheetContent side="left" closeLabel={t('a11y.close')}>
+            <SheetHeader>
+              <SheetTitle>{mobileMenuTitle ?? t('flow.menu')}</SheetTitle>
+            </SheetHeader>
+            <div className="px-4 pb-6 overflow-y-auto">{mobileMenuContent}</div>
+          </SheetContent>
+        </Sheet>
+      </>
     );
   }
 

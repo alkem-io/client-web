@@ -19,7 +19,8 @@
     "addPost": "Add Post",
     "emptyState": "No phases configured yet for this subspace.",
     "phaseTab": "Switch to phase {{name}}",
-    "connectorAlt": "Next phase"
+    "connectorAlt": "Next phase",
+    "menu": "Menu"
   },
   "sidebar": {
     "about": "About this Subspace",
@@ -65,6 +66,8 @@
     "flowTabs": "Innovation flow phases",
     "sidebarNavigation": "SubSpace sidebar",
     "communityDialog": "Community members dialog",
-    "close": "Close"
+    "close": "Close",
+    "openMenu": "Open menu",
+    "bottomBar": "Phase navigation"
   }
 }

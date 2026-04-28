@@ -3,19 +3,19 @@ import { useOutletContext } from 'react-router-dom';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
-import type { CrdSubspacePageData } from '../hooks/useCrdSubspace';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
-
-type SubspaceOutletContext = { data: CrdSubspacePageData };
+import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
-  const { data } = useOutletContext<SubspaceOutletContext>();
+  const { data, mobileMenu } = useOutletContext<SubspaceOutletContext>();
   const { phases, currentPhaseId, calloutsSetId, canEditFlow, canAddPost, subspaceUrl } = data;
   const [createOpen, setCreateOpen] = useState(false);
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
+  const isSmallScreen = useMediaQuery('(max-width: 639px)');
 
   const activePhase = phases.find(p => p.id === activePhaseId);
   const classificationTagsets = activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [];
@@ -28,19 +28,28 @@ export default function CrdSubspaceCalloutsPage() {
 
   const editFlowHref = subspaceUrl ? `${subspaceUrl}/settings/layout` : undefined;
 
+  const flowTabs = (
+    <SubspaceFlowTabs
+      phases={phases}
+      activePhaseId={activePhaseId}
+      onPhaseChange={setActivePhaseId}
+      canEditFlow={canEditFlow}
+      canAddPost={canAddPost && phases.length > 0}
+      editFlowHref={editFlowHref}
+      onAddPostClick={() => setCreateOpen(true)}
+      mobileMenuOpen={mobileMenu.open}
+      onMobileMenuOpenChange={mobileMenu.onOpenChange}
+      mobileMenuContent={mobileMenu.content}
+    />
+  );
+
   return (
     <div className="space-y-6">
-      <div className="sticky top-16 z-10 pt-4 pb-3 bg-background/95 backdrop-blur-sm">
-        <SubspaceFlowTabs
-          phases={phases}
-          activePhaseId={activePhaseId}
-          onPhaseChange={setActivePhaseId}
-          canEditFlow={canEditFlow}
-          canAddPost={canAddPost && phases.length > 0}
-          editFlowHref={editFlowHref}
-          onAddPostClick={() => setCreateOpen(true)}
-        />
-      </div>
+      {isSmallScreen ? (
+        flowTabs
+      ) : (
+        <div className="sticky top-16 z-10 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
+      )}
 
       {/* Active phase description — secondary title between tabs and feed (mirrors the prototype). */}
       {activePhase?.description && (
@@ -58,6 +67,9 @@ export default function CrdSubspaceCalloutsPage() {
           loading={calloutsLoading}
         />
       )}
+
+      {/* Mobile bottom-bar clearance: ensures the last callout isn't hidden behind the fixed bar / FAB. */}
+      <div className="h-36 sm:hidden" aria-hidden="true" />
 
       {canAddPost && calloutsSetId && (
         <CalloutFormConnector

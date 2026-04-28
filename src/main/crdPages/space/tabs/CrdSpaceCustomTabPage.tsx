@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
@@ -15,6 +14,7 @@ import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -74,22 +74,18 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="knowledge"
-            description={space.about.profile.description || ''}
-            leads={sidebarLeads}
-            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-            knowledgeEntries={sidebarItems}
-            onKnowledgeEntryClick={handleScrollToCallout}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="knowledge"
+          description={space.about.profile.description || ''}
+          leads={sidebarLeads}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          knowledgeEntries={sidebarItems}
+          onKnowledgeEntryClick={handleScrollToCallout}
+        />
+      </SpaceSidebarPortal>
 
       <div className="space-y-6">
         <TabStateHeader

@@ -1,6 +1,5 @@
 import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -19,6 +18,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['translation', 'crd-space']);
@@ -60,26 +60,22 @@ export default function CrdSpaceCommunityPage() {
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="community"
-            description={space.about.profile.description || ''}
-            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-            leads={sidebarLeads}
-            canContactLeads={canContactLeads}
-            onContactLead={handleContactLead}
-            canInvite={canInvite}
-            onInvite={handleInvite}
-            virtualContributors={virtualContributors}
-            showVirtualContributors={hasVcEntitlement}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="community"
+          description={space.about.profile.description || ''}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          leads={sidebarLeads}
+          canContactLeads={canContactLeads}
+          onContactLead={handleContactLead}
+          canInvite={canInvite}
+          onInvite={handleInvite}
+          virtualContributors={virtualContributors}
+          showVirtualContributors={hasVcEntitlement}
+        />
+      </SpaceSidebarPortal>
 
       <div className="space-y-8">
         <TabStateHeader

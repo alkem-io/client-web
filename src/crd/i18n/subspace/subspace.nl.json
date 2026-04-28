@@ -19,7 +19,8 @@
     "addPost": "Bericht toevoegen",
     "emptyState": "Er zijn nog geen fasen geconfigureerd voor deze subspace.",
     "phaseTab": "Schakel naar fase {{name}}",
-    "connectorAlt": "Volgende fase"
+    "connectorAlt": "Volgende fase",
+    "menu": "Menu"
   },
   "sidebar": {
     "about": "Over deze SubSpace",
@@ -65,6 +66,8 @@
     "flowTabs": "Innovatieflowfasen",
     "sidebarNavigation": "SubSpace-zijbalk",
     "communityDialog": "Communityleden-dialoog",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "openMenu": "Menu openen",
+    "bottomBar": "Fasenavigatie"
   }
 }
