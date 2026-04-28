@@ -59,11 +59,13 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
   - Add row → `MemberSettingsSubject` mappers for both users and organizations (use the row models already produced for `SpaceSettingsCommunityView`). For users, source `firstName` from the underlying GraphQL response if available; fall back to `displayName` otherwise.
   - Keep all existing exports working — no breaking changes to other callers in this same file.
 
-- [ ] T010 Extend `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
+- [X] T010 Extend `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
   - Add `useState<ActiveMemberSettings>({ open: false })` for `activeMemberSettings`.
   - Add `useState<ActiveRemoveConfirmation>({ open: false })` for `activeRemoveConfirmation`.
   - Wire `viewerId` from `useCommunityTabData` into the page's render scope.
   - Do NOT mount the dialogs yet — that happens in stories US1/US3.
+
+  **Implementation note**: rather than two `Active*` state objects, the page uses a single `activeMemberSubject: MemberSettingsSubject | null` plus a `removeOriginatedFromDialog: boolean` flag, and reuses the existing `community.pendingRemoval` state for the confirmation surface (no duplicate `ActiveRemoveConfirmation` slot).
 
 **Checkpoint**: Foundation ready — user-story implementation can now begin.
 
@@ -77,7 +79,7 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Create `src/crd/components/space/settings/MemberSettingsDialog.tsx` rendering the full dialog body (chip → Role section → Authorization section → Remove section → footer) per `contracts/crd-components.md` § 1. Sections render conditionally on prop presence:
+- [X] T011 [P] [US1] Create `src/crd/components/space/settings/MemberSettingsDialog.tsx` rendering the full dialog body (chip → Role section → Authorization section → Remove section → footer) per `contracts/crd-components.md` § 1. Sections render conditionally on prop presence:
   - Authorization section renders only when `subject.type === 'user'` AND `onAdminChange` is provided.
   - Remove section renders only when `onRemoveMember` is provided AND `hideRemoveSection !== true`.
   - In US1 the consumer only passes `onLeadChange`; the dialog renders Role section + footer only.
@@ -89,7 +91,7 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
   - Trash icon imported from `lucide-react` for the (yet-disabled) Remove link rendering — its aria-hidden flag is set even though the link is hidden in US1.
   - Strictly no MUI / Emotion / Apollo / domain / router imports (per CRD CLAUDE.md).
 
-- [ ] T012 [US1] Modify `src/crd/components/space/settings/SpaceSettingsCommunityView.tsx`:
+- [X] T012 [US1] Modify `src/crd/components/space/settings/SpaceSettingsCommunityView.tsx`:
   - Replace the existing user-row dropdown's **Promote/demote lead** `DropdownMenuItem` with a **Change Role** item that calls a new `onMemberChangeRole(subject)` prop. (The legacy lead-action item is deleted, not kept alongside.)
   - Replace the existing user-row dropdown's **Remove** `DropdownMenuItem` with a **Remove from Space** item that calls a new `onUserRemoveRequest(subject)` prop. (Wiring of this callback lands in US5; for US1 it is acceptable that clicking it opens nothing — the prop is plumbed but the consumer leaves it undefined or no-op until US3/US5 mount the AlertDialog.)
   - Keep the **View Profile** `<a href>` item unchanged.
@@ -97,13 +99,13 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
   - Add the two new props to `SpaceSettingsCommunityViewProps`: `onMemberChangeRole: (subject: MemberSettingsSubject) => void` and `onUserRemoveRequest: (subject: MemberSettingsSubject) => void`. The legacy `onUserLeadChange` and `onUserRemove` props are **removed** from the type.
   - Preserve all existing other behavior (search, sort, pagination, columns, role label).
 
-- [ ] T013 [US1] Modify `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts` to expose:
+- [X] T013 [US1] Modify `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts` to expose:
   - `onMemberChangeRole(subject)` → calls a setter passed in from `CrdSpaceSettingsPage` to set `activeMemberSettings = { open: true, subject }`. (The cleanest pattern is to expose the setter from the hook to the page rather than the other way around — pick the variant that matches the existing data flow in this file.)
   - `onUserRemoveRequest(subject)` plumbed similarly (still no-op visually until US5 wires the AlertDialog).
   - The legacy `onUserLeadChange` integration callback is removed from the hook's return surface (lead changes now flow through `MemberSettingsDialog.onLeadChange`).
   - Keep `userLeadPolicy` exposure unchanged — it's still consumed.
 
-- [ ] T014 [US1] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx` to:
+- [X] T014 [US1] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx` to:
   - Pass `onMemberChangeRole` and `onUserRemoveRequest` into `SpaceSettingsCommunityView`.
   - Mount `<MemberSettingsDialog />` as a sibling of the community view, controlled by `activeMemberSettings`.
   - Wire its props for users: `subject`, `leadPolicy = { canAddLead: leadPolicy.canAddLeadUser, canRemoveLead: leadPolicy.canRemoveLeadUser }`, `onLeadChange = community.userAdmin.onLeadChange`, `onOpenChange = (open) => setActiveMemberSettings(open ? prev : { open: false })`.
@@ -121,11 +123,11 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
+- [X] T015 [US2] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
   - When mounting `<MemberSettingsDialog />` for a user subject, additionally pass `onAdminChange = community.userAdmin.onAdminChange` (now exposed by `useCommunityTabData` per T009).
   - For organization subjects (added in US4) `onAdminChange` MUST remain `undefined` so the Authorization section is suppressed.
 
-- [ ] T016 [US2] Sanity-check that `MemberSettingsDialog`'s Save handler (already implemented in T011) issues both `onLeadChange` and `onAdminChange` independently when their respective values differ from `subject.isLead`/`subject.isAdmin`. No code change expected if T011 followed the contract; if not, add the two-call diff path now.
+- [X] T016 [US2] Sanity-check that `MemberSettingsDialog`'s Save handler (already implemented in T011) issues both `onLeadChange` and `onAdminChange` independently when their respective values differ from `subject.isLead`/`subject.isAdmin`. No code change expected if T011 followed the contract; if not, add the two-call diff path now.
 
 **Checkpoint**: User Story 2 fully functional. Admins can toggle admin rights and combine them with lead changes in a single Save. Organizations remain admin-section-free.
 
@@ -141,18 +143,17 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 > **Revision after foundational discovery**: The existing `src/crd/components/dialogs/ConfirmationDialog.tsx` (already used at `CrdSpaceSettingsPage.tsx:505` for community removal via the `pendingRemoval` state) already provides the AlertDialog-based destructive prompt. Tasks below reuse it instead of building a new `RemoveMemberAlertDialog` component. The contract document still describes the conceptual `RemoveMemberAlertDialog`; in practice it's the existing `ConfirmationDialog` instance, gated on `community.pendingRemoval`. Spec FR-008/FR-009/FR-Story-3 are still satisfied because both Remove paths (dropdown and in-dialog) flow through `community.onUserRemove` / `community.onOrgRemove` → `pendingRemoval` → existing `ConfirmationDialog`.
 
-- [ ] T017 [US3] Update `src/crd/i18n/spaceSettings/spaceSettings.{en,nl,es,bg,de,fr}.json` — extend the existing `community.confirmRemove.user.description` and `community.confirmRemove.organization.description` keys with the cascade-removal warning matching FR-009: "Remove {{name}} from this community? They will also be removed from all underlying subspaces they may be a member of through this community. Their contributions will remain in place. This action cannot be undone." Replace the placeholder English copy ("They will lose access immediately."). Mirror the same updated copy across all six locale files.
+- [X] T017 [US3] Update `src/crd/i18n/spaceSettings/spaceSettings.{en,nl,es,bg,de,fr}.json` — extend the existing `community.confirmRemove.user.description` and `community.confirmRemove.organization.description` keys with the cascade-removal warning matching FR-009. Updated to: title "Are you sure you want to remove this member?" / "...this organization?" and description "By clicking Confirm, {{name}} will be removed from this community and all underlying subspaces they may be a member of. Their contributions will remain in place. This action cannot be undone." Mirrored across all six locale files.
 
-- [ ] T018 [US3] Modify `src/crd/components/space/settings/MemberSettingsDialog.tsx` (T011 produced the dialog with the Remove section's link conditionally rendered based on `onRemoveMember` and `hideRemoveSection`):
-  - The in-dialog Remove link calls `onRemoveMember(subject.id)` — that prop, wired by the integration in T019, sets the existing `pendingRemoval` state which the existing `ConfirmationDialog` consumes.
-  - The Member settings dialog itself does NOT mount its own AlertDialog. The page-level `ConfirmationDialog` overlays the Member settings dialog at z-90 (existing pattern).
-  - While `saveInFlight === true`, the Remove link is disabled. No additional `removalInFlight` prop is needed because the existing `ConfirmationDialog` owns its own busy state and tab order.
+- [X] T018 [US3] `src/crd/components/space/settings/MemberSettingsDialog.tsx`:
+  - In-dialog Remove link calls `onRemoveMember(subject.id)` — wired by integration to the existing `pendingRemoval` state.
+  - Dialog does NOT mount its own AlertDialog; integration's existing `ConfirmationDialog` (z-90) overlays.
+  - While `saveInFlight === true`, the Remove link is disabled.
 
-- [ ] T019 [US3] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
-  - Add a `removeOriginatedFromDialog: boolean` flag in `useState`.
-  - Pass `onRemoveMember={(id) => { setRemoveOriginatedFromDialog(true); community.onUserRemove(id); }}` to `MemberSettingsDialog` for user subjects (and `community.onOrgRemove` for orgs in US4). The Member settings dialog stays open underneath the confirmation prompt — the existing `ConfirmationDialog` is z-90 and overlays correctly.
-  - Wrap the existing `<ConfirmationDialog>`'s `onConfirm` (line 552) with a function that awaits `community.confirmRemoval()` then, if `removeOriginatedFromDialog === true`, closes `activeMemberSettings` and clears the flag. Also clear the flag in the `onCancel` and `onOpenChange(false)` paths so a follow-up dropdown-triggered Remove doesn't accidentally close the dialog (which isn't open in that case anyway, but defensive).
-  - Pass `hideRemoveSection={viewerId === activeMemberSettings.subject.id}` to `MemberSettingsDialog` to enforce FR-016.
+- [X] T019 [US3] `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
+  - `removeOriginatedFromDialog: boolean` flag added.
+  - `onRemoveMember` prop on `MemberSettingsDialog` set to `undefined` when `community.viewerId === activeMemberSubject.id` (FR-016) — this hides the Remove section. Otherwise it sets the flag and routes to `community.onUserRemove` / `community.onOrgRemove` based on subject type.
+  - Existing `ConfirmationDialog` `onConfirm` wrapped to await `community.confirmRemoval()` and, if `removeOriginatedFromDialog === true`, also clear `activeMemberSubject`. Flag cleared in `onCancel` and `onOpenChange(false)` paths.
 
 **Checkpoint**: User Story 3 fully functional. The in-dialog Remove path runs through the AlertDialog with confirmation. Self-removal is blocked. Mutation failure flow is identical to the existing toast pattern (no new code).
 
@@ -166,17 +167,17 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 ### Implementation for User Story 4
 
-- [ ] T020 [US4] Modify `src/crd/components/space/settings/SpaceSettingsCommunityView.tsx`:
+- [X] T020 [US4] Modify `src/crd/components/space/settings/SpaceSettingsCommunityView.tsx`:
   - Replicate the user-row dropdown changes for organization rows: replace the inline lead-toggle and immediate-Remove items with `Change Role` (calls `onOrgChangeRole(subject)`) and `Remove from Space` (calls `onOrgRemoveRequest(subject)`).
   - Keep View Profile.
   - Final org-row dropdown order matches the user-row dropdown.
   - Add the two new props to the view's type (`onOrgChangeRole`, `onOrgRemoveRequest`); remove the legacy `onOrgLeadChange` and `onOrgRemove` props.
 
-- [ ] T021 [US4] Modify `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts`:
+- [X] T021 [US4] Modify `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts`:
   - Expose `onOrgChangeRole(subject)` and `onOrgRemoveRequest(subject)` (parallel to the user equivalents from T013).
   - Remove the legacy `onOrgLeadChange` from the return surface — org lead changes now flow through `MemberSettingsDialog.onLeadChange`.
 
-- [ ] T022 [US4] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
+- [X] T022 [US4] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
   - Pass the new org callbacks into `SpaceSettingsCommunityView`.
   - When `activeMemberSettings.subject.type === 'organization'`:
     - Pass `leadPolicy = { canAddLead: leadPolicy.canAddLeadOrganization, canRemoveLead: leadPolicy.canRemoveLeadOrganization }`.
@@ -196,20 +197,11 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 ### Implementation for User Story 5
 
-- [ ] T023 [US5] Modify `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`:
-  - Wire `onUserRemoveRequest(subject)` to set `activeRemoveConfirmation = { open: true, subject, source: 'dropdown' }`.
-  - Wire `onOrgRemoveRequest(subject)` similarly.
-  - The AlertDialog already mounted from US3 reads from this same state — no second AlertDialog instance is created. On success with `source === 'dropdown'`, only the AlertDialog closes (the Member settings dialog was never opened).
+- [X] T023 [US5] `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx` — implementation reuses the existing `community.onUserRemove(id)` / `community.onOrgRemove(id)` integration callbacks for the dropdown's Remove from Space item. Both dropdown and in-dialog Remove paths converge on the same `community.pendingRemoval` state and the same `ConfirmationDialog`. The page tracks `removeOriginatedFromDialog` so the in-dialog path also closes the Member settings dialog on confirm-success; the dropdown path does not (Member settings dialog was never opened).
 
-- [ ] T024 [US5] Read both `SpaceSettingsCommunityView.tsx` (Members table and Organizations table sections) and confirm:
-  - Both dropdowns contain exactly: View Profile → Change Role → DropdownMenuSeparator → Remove from Space (red).
-  - No leftover "Promote/demote lead" item.
-  - No leftover immediate-Remove item that bypasses confirmation.
-  - The `Trash2` icon on the destructive item has `aria-hidden="true"`.
-  - The destructive class is `text-destructive focus:text-destructive` (matches other CRD destructive items).
-  - If any item is missing or extra, fix it now.
+- [X] T024 [US5] Verified `SpaceSettingsCommunityView.tsx`: both dropdowns now contain exactly View Profile → Change Role → separator → Remove from Space (red). `grep` for `promoteToLead|demoteFromLead|onUserLeadChange|onOrgLeadChange` in the file returns 0 matches. Trash icon has `aria-hidden="true"`. Destructive class `text-destructive focus:text-destructive` preserved.
 
-- [ ] T025 [US5] Run the prototype-comparison check: open `prototype/src/app/components/space/SpaceSettingsCommunity.tsx` lines 534-562 and verify the live CRD dropdown matches the prototype's order, copy, and destructive styling. Adjust labels via the `community.members.dropdown.*` keys (T003-T008) if the wording diverges.
+- [X] T025 [US5] Prototype comparison: dropdown order matches `prototype/src/app/components/space/SpaceSettingsCommunity.tsx:534-562` (View Profile, Change Role, separator, Remove from Space — destructive). Copy matches via `community.members.dropdown.*` and `community.organizations.dropdown.*` keys.
 
 **Checkpoint**: User Story 5 fully functional. All four feature acceptance scenarios for the dropdown / dual-Remove-path pattern pass. The CRD Community tab is at parity with the legacy MUI dialog functionality and matches the prototype's row affordance shape.
 
@@ -219,31 +211,30 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 
 **Purpose**: Quality gates that touch every story.
 
-- [ ] T026 [P] Run `pnpm lint` and fix any TypeScript / Biome / ESLint issues in the new and modified files (`src/crd/components/space/settings/*`, `src/main/crdPages/topLevelPages/spaceSettings/*`, `src/crd/i18n/spaceSettings/*`).
+- [X] T026 [P] `pnpm tsc --noEmit` clean. `pnpm exec biome ci <changed files>` clean (auto-format pass applied). `pnpm exec eslint <changed files>` clean. Note: the project-wide `pnpm lint` currently fails due to a pre-existing tooling issue — a parallel git worktree at `.claude/worktrees/auth-error-page` (branch `095-crd-auth-error-page`) contains its own `biome.json`, which biome v2 rejects as a nested root config. This is unrelated to feature 094 and was present before my changes; resolution belongs to whoever owns that worktree (either `git worktree remove` it or add `.claude/` to biome ignores in a separate PR).
 
-- [ ] T027 [P] Run `pnpm vitest run` and confirm the existing test suite continues to pass (no regressions). Per spec, no new tests are required, but no existing test may break.
+- [X] T027 [P] `pnpm vitest run` — 142 test files, 1456 tests passed, 6 skipped, 0 failed. No regressions.
 
-- [ ] T028 [P] Run `pnpm build` and confirm a clean production build (no new warnings beyond the existing chunk-size advisory).
+- [X] T028 [P] `pnpm build` — built in 1m 26s. No new warnings beyond the existing chunk-size advisory.
 
-- [ ] T029 [P] Audit zero new MUI/Emotion imports introduced anywhere in `src/crd/components/space/settings/` or `src/main/crdPages/topLevelPages/spaceSettings/`:
+- [X] T029 [P] MUI/Emotion import audit:
 
   ```bash
-  git diff origin/develop...HEAD -- 'src/crd/components/space/settings/*' 'src/main/crdPages/topLevelPages/spaceSettings/*' \
-    | grep -E "^\+.*from\s+['\"](@mui|@emotion)" \
-    && echo "FAIL: new MUI/Emotion import detected" || echo "PASS: clean of MUI/Emotion"
+  git diff develop -- 'src/crd' 'src/main/crdPages' | grep -E "^\+.*from\s+['\"](@mui|@emotion)"
+  # → 0 matches. PASS.
   ```
 
-- [ ] T030 Run the full quickstart manual test matrix (`quickstart.md` steps A-P) on a local environment with both backend and frontend running. Capture any deviation from expected behavior in the PR description.
+- [ ] T030 Run the full quickstart manual test matrix (`quickstart.md` steps A-P) on a local environment with both backend and frontend running. Capture any deviation from expected behavior in the PR description. *Requires browser session — pending interactive validation by the user.*
 
-- [ ] T031 Accessibility verification (FR-018, FR-019, SC-006): keyboard-only walk-through of the dialog (Tab order, Esc, Enter on AlertDialog Confirm), VoiceOver / NVDA announces the dialog title, the helper text, and the destructive action correctly. Trash icon is aria-hidden; focus returns to the trigger row's `⋮` button after dialog close.
+- [ ] T031 Accessibility verification (FR-018, FR-019, SC-006): keyboard-only walk-through of the dialog (Tab order, Esc, Enter on AlertDialog Confirm), VoiceOver / NVDA announces the dialog title, the helper text, and the destructive action correctly. Trash icon is aria-hidden; focus returns to the trigger row's `⋮` button after dialog close. *Requires assistive technology — pending interactive validation.*
 
-- [ ] T032 Mobile viewport check (FR-020, SC-009): set Chrome DevTools to 360 × 640 (iPhone SE), verify no horizontal scroll inside the dialog, all checkboxes meet ≥ 44 px touch targets, the Close (X) is reachable, and the AlertDialog is fully visible with both buttons reachable.
+- [ ] T032 Mobile viewport check (FR-020, SC-009): set Chrome DevTools to 360 × 640 (iPhone SE), verify no horizontal scroll inside the dialog, all checkboxes meet ≥ 44 px touch targets, the Close (X) is reachable, and the AlertDialog is fully visible with both buttons reachable. *Pending interactive validation.*
 
-- [ ] T033 i18n verification (FR-017, SC-007): cycle the language selector through `en`, `nl`, `es`, `bg`, `de`, `fr`. For each, open the Member settings dialog and the AlertDialog, confirm every translated string renders with the locale's value (English placeholders acceptable for non-EN), and the browser console shows no missing-key warnings.
+- [ ] T033 i18n verification (FR-017, SC-007): cycle the language selector through `en`, `nl`, `es`, `bg`, `de`, `fr`. For each, open the Member settings dialog and the AlertDialog, confirm every translated string renders with the locale's value (English placeholders acceptable for non-EN), and the browser console shows no missing-key warnings. *Pending interactive validation.*
 
-- [ ] T034 CRD-toggle off regression check (FR-002, FR-022, SC-002, SC-008): with `localStorage.removeItem('alkemio-crd-enabled')` and a reload, navigate to the Space settings community page and verify the legacy MUI page renders unchanged. Open the MUI Member settings dialog (edit-pencil affordance) and confirm it still works (toggle lead, toggle admin, remove with confirmation). Toggle CRD on and reload — CRD page returns with no stale rendering.
+- [ ] T034 CRD-toggle off regression check (FR-002, FR-022, SC-002, SC-008): with `localStorage.removeItem('alkemio-crd-enabled')` and a reload, navigate to the Space settings community page and verify the legacy MUI page renders unchanged. Open the MUI Member settings dialog (edit-pencil affordance) and confirm it still works (toggle lead, toggle admin, remove with confirmation). Toggle CRD on and reload — CRD page returns with no stale rendering. *Pending interactive validation.*
 
-- [ ] T035 Update the PR description with: a screenshot of the new CRD dialog open on a user row, a screenshot of the AlertDialog with the cascade warning, a screenshot of the Organizations dropdown showing the new shape, a "no MUI/Emotion imports added" line referencing the audit from T029, and a checklist confirming T030-T034 all pass.
+- [ ] T035 Update the PR description with: a screenshot of the new CRD dialog open on a user row, a screenshot of the AlertDialog with the cascade warning, a screenshot of the Organizations dropdown showing the new shape, a "no MUI/Emotion imports added" line referencing the audit from T029, and a checklist confirming T030-T034 all pass. *Pending PR creation by user.*
 
 ---
 
