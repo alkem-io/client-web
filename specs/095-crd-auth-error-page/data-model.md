@@ -1,0 +1,120 @@
+# Phase 1 Data Model: CRD — Unauthorized / Forbidden Error Page
+
+**Feature**: 095-crd-auth-error-page
+**Date**: 2026-04-28
+
+This feature persists nothing and adds no GraphQL operations. The "data model" here is the in-memory, render-time data flow between the integration layer and the CRD presentational component. It is captured for clarity and to inform task decomposition; nothing in this document is a runtime entity, table, or cache key.
+
+---
+
+## Entities
+
+### 1. `CrdForbiddenPageProps` (presentational contract)
+
+The minimal prop interface for the CRD `CrdForbiddenPage` component.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `title` | `string` | yes | The page headline (rendered as `<h1>`). Sourced from `crd-error:forbidden.title` by the integration layer. |
+| `description` | `string` | yes | Plain-language explanation of the restricted state. Sourced from `crd-error:forbidden.description`. |
+| `goHomeLabel` | `string` | yes | Label for the primary action button. Sourced from `crd-error:forbidden.actions.goHome`. |
+| `goBackLabel` | `string` | yes | Label for the secondary action button (only shown when `showGoBack` is true). Sourced from `crd-error:forbidden.actions.goBack`. |
+| `onGoHome` | `() => void` | yes | Click handler for the primary action. The CRD component invokes it; it does not construct a URL. |
+| `onGoBack` | `() => void` | no | Click handler for the secondary action. May be `undefined` when there is no in-app history; if present, the button is rendered. |
+| `showGoBack` | `boolean` | no | Explicit visibility flag for the secondary action. When `true`, the button is rendered (and `onGoBack` MUST be defined). When `false` or omitted, the button is hidden. |
+
+**Validation rules**:
+- The component MUST NOT read `i18n` itself — all visible text comes from props.
+- The component MUST NOT call `useNavigate`, `useLocation`, or any router hook.
+- The component MUST NOT read auth state, Apollo cache, domain context, or any business-logic module.
+- If `showGoBack === true` and `onGoBack === undefined`, the component renders the button as disabled with no click effect (defensive default; should not occur in practice because the integration layer pairs them).
+
+**Why a flat string-prop shape (not a "view model object")**:
+- Per Constitution principle V (DIP) and the CRD architectural rules, presentational components depend only on prop abstractions. A flat shape keeps the dependency surface minimal and the component easy to render in Storybook / Vitest in isolation.
+- The MUI `Error403` is similarly flat (it just calls `t()` and renders) — keeping the CRD shape simple is a stylistic match.
+
+---
+
+### 2. `ForbiddenRenderContext` (integration-layer in-memory state)
+
+The render-time bundle the integration layer assembles when the CRD forbidden page needs to render. Lives only inside `CrdAwareErrorComponent` and `CrdRestrictedRoute` while React renders; never persisted, never escapes the function call.
+
+| Field | Type | Required | Source |
+|---|---|---|---|
+| `pathname` | `string` | yes (boundary path only) | From `errorState.pathname` captured by the boundary at error time. The `/restricted` handler does not consult this field — the route is always CRD when mounted. |
+| `isCrdRoute` | `boolean` | yes (boundary path only) | Derived: `isCrdRoute(pathname)`. The `/restricted` handler does not consult this. |
+| `crdEnabled` | `boolean` | yes (boundary path only) | Derived: `useCrdEnabled()`. The `/restricted` handler does not consult this at render time — the toggle decision happens at route declaration in `TopLevelRoutes.tsx`. |
+| `isNotAuthorized` | `boolean` | yes (boundary path only) | From `errorState.isNotAuthorized`. Other classifications (`isNotFound`, generic errors) MUST fall through to the MUI fallback. |
+| `shouldRenderCrd` | `boolean` | yes (boundary path only) | Derived: `crdEnabled && isCrdRoute && isNotAuthorized === true`. The single decision bit on the boundary path. |
+| `showGoBack` | `boolean` | yes | Derived from the `hasInAppHistory()` helper in `src/main/crdPages/error/hasInAppHistory.ts` (which wraps `typeof window !== 'undefined' && window.history.length > 1` per Constitution IV's wrapper requirement for browser-API usage). |
+| `originParam` | `string \| null` | only on `/restricted` | From `useQueryParams().get('origin')`. Used for the Sentry log only — never for action wiring. |
+
+**Validation rules**:
+- The integration layer MUST compute `shouldRenderCrd` exactly as `crdEnabled && isCrdRoute && isNotAuthorized === true`. Any other formula breaks either (a) the spec's edge case "Forbidden state on a route that is NOT a CRD route, while CRD toggle is ON" (the `isCrdRoute` filter) or (b) the explicit out-of-scope statement that CRD-styled 404 is not delivered by this feature (the `isNotAuthorized` filter).
+- `originParam` MUST NOT be passed to the CRD presentational component; it is integration-layer-only state for the Sentry breadcrumb.
+- The integration layer MUST NOT read auth state to decide whether to render the page (the page is auth-agnostic per FR-021). It reads auth state only via the upstream throw-path code (`useRestrictedRedirect`), which we do not modify.
+
+---
+
+### 3. `ForbiddenRenderDecision` (the routing branch)
+
+A ternary decision: render CRD forbidden, render MUI fallback, or pass through. Captured here as a state-machine-style table because it is the most testable / reviewable part of the integration. The decision uses three inputs from the boundary state and runtime: `crdEnabled` (the CRD toggle), `isCrdRoute(pathname)` (the predicate), and `isNotAuthorized` (the boundary's classification of the thrown error). NotFound and other error classes (`isNotFound === true`, generic errors) are explicitly excluded from the CRD branch — CRD-styled NotFound is out of scope per the spec.
+
+| `crdEnabled` | `isCrdRoute(pathname)` | `isNotAuthorized` | Render |
+|:---:|:---:|:---:|---|
+| `false` | (any) | (any) | **MUI**: `<TopLevelLayout><Error40X {...errorState} /></TopLevelLayout>` |
+| `true` | `false` | (any) | **MUI**: same as above (CRD chrome would be jarring on a non-CRD route, per the spec's edge case) |
+| `true` | `true` | `false` or `undefined` | **MUI**: same as above. Covers `isNotFound === true` (CRD 404 is out of scope) and any other state branch. |
+| `true` | `true` | `true` | **CRD**: `<CrdLayoutWrapper><CrdForbiddenPage … /></CrdLayoutWrapper>` |
+
+The `/restricted` route handler (`CrdRestrictedRoute`) uses a simpler decision: it is mounted by `TopLevelRoutes.tsx` only when `crdEnabled === true` (the toggle decision happens at route-declaration time), and it always renders the CRD page for any visitor (auth-agnostic per Clarification Q4). It does not consult `isCrdRoute` (the route is always CRD when mounted) and does not consult `isNotAuthorized` (no error has been thrown — the user navigated to `/restricted` directly).
+
+---
+
+### 4. i18n key map (`crd-error` namespace)
+
+The exhaustive set of keys this feature adds. Per Clarification Q5, no other keys are added preemptively.
+
+| Key | English value | Notes |
+|---|---|---|
+| `forbidden.title` | "Access Restricted" | Reuses existing `pages.unauthorized.header` value verbatim. ALSO used as the document title argument to `usePageTitle`, which already appends " \| Alkemio" automatically — so this single key serves both as the `<h1>` text and as the tab title prefix (no separate `documentTitle` key needed). |
+| `forbidden.description` | "The page you're trying to access is not available for you." | Reuses existing `pages.unauthorized.subheader` value verbatim. |
+| `forbidden.actions.goHome` | "Go to Home" | New string; concise, follows MUI tone. |
+| `forbidden.actions.goBack` | "Go back" | New string. |
+
+**Final key set (4 keys)**:
+- `forbidden.title`
+- `forbidden.description`
+- `forbidden.actions.goHome`
+- `forbidden.actions.goBack`
+
+All four MUST exist in en/nl/es/bg/de/fr at merge time. The icon is rendered with `aria-hidden="true"` (FR-028 default) and therefore needs no i18n key.
+
+---
+
+## State transitions
+
+There are no persisted entities and therefore no formal state transitions in the data-model sense. Two render-time control flows worth naming:
+
+1. **Boundary throw-path** (User Story 1):
+   - `useRestrictedRedirect` (or `UrlResolverProvider`) throws `NotAuthorizedError` (with no `redirectUrl` because the user is authenticated) →
+   - `Error40XBoundary.getDerivedStateFromError` updates state with `isNotAuthorized: true`, `pathname` from `window.location.pathname` →
+   - `Error40XBoundary.render` invokes `errorComponent(state)` →
+   - `CrdAwareErrorComponent` reads `state.pathname` + `useCrdEnabled()`, decides CRD vs MUI →
+   - On CRD: `<CrdLayoutWrapper><CrdForbiddenPage … /></CrdLayoutWrapper>` mounts.
+
+2. **`/restricted` route-handler path** (User Story 2):
+   - User navigates to `/restricted?origin=…` →
+   - The route's `element` is `<CrdRestrictedRoute />` (when CRD is on) or `<Restricted />` (when off) — chosen at the route declaration in `TopLevelRoutes.tsx` based on `useCrdEnabled()` →
+   - `CrdRestrictedRoute` fires `logInfo` once per `origin` change (via `useEffect`) and renders `<CrdLayoutWrapper><CrdForbiddenPage … /></CrdLayoutWrapper>`.
+
+In both flows, "Go to Home" calls `navigate(`/${TopLevelRoutePath.Home}`)`; "Go back" calls `navigate(-1)` and is hidden when `window.history.length <= 1`. The boundary's `getDerivedStateFromProps` resets `state.hasError` on the next pathname change, so navigating away clears the forbidden render automatically.
+
+---
+
+## Cross-references
+
+- Spec: [spec.md](./spec.md) — FR-001 through FR-032 ground these contracts.
+- Research: [research.md](./research.md) — Decisions 1–5 cover the implementation rationale.
+- Contract: [contracts/forbidden-page-props.md](./contracts/forbidden-page-props.md) — TypeScript-level contract at the integration ↔ CRD boundary.
+- Quickstart: [quickstart.md](./quickstart.md) — manual test recipes for both stories and the toggle-off regression.
