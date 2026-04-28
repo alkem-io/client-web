@@ -116,54 +116,45 @@ function MobileTabBar({
   }, [activeIndex]);
 
   return (
-    <>
-      {/* Fixed bottom bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
-        aria-label={t('a11y.mobileTabBar')}
-      >
-        <div className="flex items-stretch h-14">
-          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-          <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
-            {tabs.map(tab => {
-              const active = tab.index === activeIndex;
-              return (
-                <li
-                  key={tab.index}
-                  ref={active ? activeTabRef : undefined}
-                  className="inline-flex items-center shrink-0"
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
+      aria-label={t('a11y.mobileTabBar')}
+    >
+      <div className="flex items-stretch h-14">
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+        <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
+          {tabs.map(tab => {
+            const active = tab.index === activeIndex;
+            return (
+              <li key={tab.index} ref={active ? activeTabRef : undefined} className="inline-flex items-center shrink-0">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => onTabChange(tab.index)}
+                  className={cn(
+                    'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                  )}
                 >
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => onTabChange(tab.index)}
-                    className={cn(
-                      'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                      active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
-          <button
-            type="button"
-            onClick={onMenuClick}
-            className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-            aria-label={t('mobile.menu')}
-            aria-haspopup="dialog"
-          >
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </div>
-      </nav>
-      {/* Spacer to prevent content from being hidden behind the fixed bar */}
-      <div className="h-14 lg:hidden" />
-    </>
+                  {tab.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          aria-label={t('mobile.menu')}
+          aria-haspopup="dialog"
+        >
+          <Menu className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </div>
+    </nav>
   );
 }
