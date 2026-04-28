@@ -9,7 +9,7 @@
 
 ### Session 2026-04-15
 
-- Q: When CRD is enabled but not every tab has been migrated yet, what should a not-yet-migrated tab show? → A: All 8 tabs ship together in a single release — no progressive rollout and no mixed-shell fallback.
+- Q: When CRD is enabled but not every tab has been migrated yet, what should a not-yet-migrated tab show? → A: All 9 tabs ship together in a single release — no progressive rollout and no mixed-shell fallback.
 - Q: What happens when the admin switches to another tab while the current tab has unsaved changes? → A: The tab switch is blocked by a CRD confirmation dialog. Only one tab is ever dirty at a time.
 - Q: Who can see the Account tab (plan, entitlements)? → A: Visibility mirrors the current MUI Space Admin Account page exactly. No new role gates.
 - Q: What is the keyboard alternative to drag-and-drop on the Layout tab? → A: Each movable item's drag handle is focusable. Space/Enter activates grab mode, Arrow Up/Down reorders within the column, Arrow Left/Right moves across columns, Enter drops, Escape cancels. Announced via ARIA live region.
@@ -27,8 +27,8 @@
 
 ### Session 2026-04-15 — second round
 
-- Q: Are all 8 tabs equally important? → A: Yes — all 8 are P1 and receive separate, equally structured user stories.
-- Q: Tab order and labels in the strip? → A: About → Layout → Community → Subspaces → Templates → Storage → Settings → Account, each with the icon shown in the prototype header screenshot.
+- Q: Are all 9 tabs equally important? → A: Yes — all 9 are P1 and receive separate, equally structured user stories.
+- Q: Tab order and labels in the strip? → A: About → Layout → Community → Updates → Subspaces → Templates → Storage → Settings → Account, each with the icon shown in the prototype header screenshot.
 - Q: What are the movable items on the Layout tab? → A: **Callouts / posts** created by users — never "pages". Items can only be moved between columns; they cannot be created, deleted, or added from the Layout tab.
 - Q: How does the Layout tab save? → A: Local dirty buffer with a Save Changes / Reset bar. "Reset" reverts to the last backend-known state and clears all local unsaved changes. "Save Changes" commits the buffer. Individual drags do not auto-save.
 - Q: Post title and description editing on Layout? → A: **Post titles and descriptions are NOT editable from Settings → Layout.** Only the **column** (the space's innovation-flow step / space-level tab — Home / Community / Subspaces / Knowledge) has an inline-editable title and description. Individual callouts are moved / viewed / removed-from-tab only; to edit a post's own title or description the admin opens the post itself from where it lives.
@@ -50,11 +50,11 @@
 
 ## User Scenarios & Testing
 
-**All eight tabs are P1 and ship together in a single release (FR-018 / FR-050).** The priority label exists only for traceability; the user stories below are equally important and each is independently testable within its own tab.
+**All nine tabs are P1 and ship together in a single release (FR-018 / FR-050).** The priority label exists only for traceability; the user stories below are equally important and each is independently testable within its own tab.
 
 ### User Story 1 - About tab (Priority: P1)
 
-A space admin opens Space Settings on the About tab (the default landing tab) and sees the CRD space hero at the top of the page — the same hero shown on the public Space page (banner, name, tagline, member avatars). Below the hero, a horizontal icon tab strip lists all 8 tabs in this order: **About, Layout, Community, Subspaces, Templates, Storage, Settings, Account**. The About tab is the only one marked active.
+A space admin opens Space Settings on the About tab (the default landing tab) and sees the CRD space hero at the top of the page — the same hero shown on the public Space page (banner, name, tagline, member avatars). Below the hero, a horizontal icon tab strip lists all 9 tabs in this order: **About, Layout, Community, Updates, Subspaces, Templates, Storage, Settings, Account**. The About tab is the only one marked active.
 
 The About tab body presents every field the current MUI Space Admin About page exposes, each rendered in its own CRD card. The full set of About fields is: **name** (`profile.displayName`), **tagline** (`profile.tagline`), **Space Branding** section containing **avatar** (`profile.avatar`), **page banner** (`profile.banner`, 1536×256), and **card banner** (`profile.cardBanner`, 416×256) — same three visuals the current MUI page edits via its upload + crop flow — **location** (`profile.location.country` + `profile.location.city`), **What** (`profile.description`, markdown, renamed in CRD), **Why** (`about.why`, markdown), **Who** (`about.who`, markdown), **tags** (`profile.tagset[0].tags`), **references & links** (`profile.references` — full CRUD with **title + URL + description** per reference, matching current MUI). A live **Preview card** on the right shows how the space will appear as a space card in Explore Spaces and updates as the admin edits. The Preview MUST use the **same reusable CRD space-card component that the Explore Spaces page will use** (banner image, space avatar overlaid on the banner, public/private badge, name, tagline/description, tags, LEADS avatars, member count with icon — matching the design shown in the prototype). That component is built once in this feature and re-used later when the CRD Explore Spaces page adopts it; About is the first consumer. Space Branding groups the three visuals in a single header-prefaced region (matching the prototype's "Space Branding" card); all other fields render as flat individual cards. **No field is invented: every About control in CRD binds to a real field in the existing `UpdateSpaceInput` patch or to an existing upload / reference mutation.**
 
@@ -363,7 +363,7 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **FR-027**: Every destructive action (delete subspace, delete template, delete document, remove member / organization / VC, delete space) MUST be preceded by a CRD confirmation dialog with a clearly distinguishable destructive confirm button. Cancel / Escape MUST cancel.
 - **FR-028**: Data loading states MUST be represented with skeleton placeholders inside the affected cards / tables. Data load errors MUST be represented by inline error banners inside the affected card — NOT full-page errors.
 - **FR-029**: All form controls, tables, dialogs, and dropdowns used inside Space Settings MUST be CRD components. The CRD presentation layer MUST NOT depend on any MUI or Emotion primitives.
-- **FR-030**: The CRD Space Settings area MUST be gated behind the existing `alkemio-crd-enabled` localStorage toggle. All 8 tabs MUST ship together in a single release — the CRD Space Settings page MUST NOT be enabled until every tab is fully migrated.
+- **FR-030**: The CRD Space Settings area MUST be gated behind the existing `alkemio-crd-enabled` localStorage toggle. All 9 tabs MUST ship together in a single release — the CRD Space Settings page MUST NOT be enabled until every tab is fully migrated.
 - **FR-031**: The CRD Space Settings area MUST reuse the existing space admin queries and mutations — no backend or GraphQL schema changes are introduced by this feature.
 - **FR-032**: Every interactive element MUST meet WCAG 2.1 AA for keyboard navigation, visible focus, labels, and ARIA semantics (tablist / tab / tabpanel on the tab strip, labeled form controls, ARIA live regions for save feedback, Layout grab-mode, and async action results).
 
@@ -425,7 +425,7 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **SC-003**: For every destructive action across all tabs, 100% of deletions require an explicit confirmation step; zero deletions can be triggered by a single click.
 - **SC-004**: The CRD Space Settings page reaches feature parity with the current MUI Space Settings for all actions currently exposed, measured by a side-by-side action inventory with 0 missing actions (except explicitly deferred items noted in Out of Scope).
 - **SC-005**: An admin cannot lose edits on any tab. On Layout (dirty buffer) switching tabs / navigating / closing is blocked by a confirm dialog. On About (autosave) any pending debounced save is flushed immediately on tab switch / navigation so no edit is ever lost silently.
-- **SC-006**: Toggling the `alkemio-crd-enabled` flag off restores the current MUI Space Settings with no visible regressions; toggling it on restores the CRD experience. Verified across all 8 tabs.
+- **SC-006**: Toggling the `alkemio-crd-enabled` flag off restores the current MUI Space Settings with no visible regressions; toggling it on restores the CRD experience. Verified across all 9 tabs.
 - **SC-007**: Keyboard-only users can reach and operate every control on every tab — including the Layout grab-mode equivalent — without a mouse.
 - **SC-008**: The CRD space hero rendered in Space Settings is visually and behaviorally identical to the hero on the CRD Space Page (spec 042), verified by side-by-side screenshots with zero divergences.
 - **SC-009**: The Layout per-column overflow menu ("Active phase", "Default post template") reaches parity with the current MUI per-step menu — verified by a side-by-side action inventory and unit tests that exercise each mutation end-to-end per column.

@@ -376,7 +376,7 @@ export function SpaceSettingsSettingsView({
                           {t(`settings.allowedActions.${action.key}`)}
                         </Label>
                         <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
-                          {meta.description}
+                          {t(`settings.allowedActions.${action.key}Description`, { defaultValue: meta.description })}
                         </p>
                       </div>
                     </div>

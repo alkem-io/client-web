@@ -256,10 +256,15 @@ type ColumnMenuActions = {
 ### `LeadPolicy` (added 2026-04-27)
 
 ```
-type LeadPolicy = { canAddLead: boolean; canRemoveLead: boolean };
+type LeadPolicy = {
+  canAddLeadUser: boolean;
+  canRemoveLeadUser: boolean;
+  canAddLeadOrganization: boolean;
+  canRemoveLeadOrganization: boolean;
+};
 ```
 
-Aggregate flags from `useCommunityPolicyChecker`. The view computes per-row `disabled` as `(!canAddLead && !row.isLead) || (!canRemoveLead && row.isLead)` (Decision 20).
+Aggregate flags from `useCommunityPolicyChecker`. Users and organizations are gated independently — the policy returns separate add/remove flags per role-set entity type. The view composes the matching pair with each row's `isLead` to derive the per-row `disabled` state, e.g. for a user row: `(!canAddLeadUser && !row.isLead) || (!canRemoveLeadUser && row.isLead)` (Decision 20).
 
 ### `CommunityViewProps`
 

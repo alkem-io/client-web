@@ -37,12 +37,18 @@ export type MemberRow = {
 
 /**
  * Aggregate flags from `useCommunityPolicyChecker` (added 2026-04-27).
- * The view composes these with each row's `isLead` to derive the per-row
- * disabled state: `(!canAddLead && !row.isLead) || (!canRemoveLead && row.isLead)`.
+ *
+ * Users and organizations are gated independently — the policy returns
+ * separate add/remove flags per role-set entity type. The view composes the
+ * matching pair with each row's `isLead` to derive the per-row disabled
+ * state, e.g. for a user row:
+ * `(!canAddLeadUser && !row.isLead) || (!canRemoveLeadUser && row.isLead)`.
  */
 export type LeadPolicy = {
-  canAddLead: boolean;
-  canRemoveLead: boolean;
+  canAddLeadUser: boolean;
+  canRemoveLeadUser: boolean;
+  canAddLeadOrganization: boolean;
+  canRemoveLeadOrganization: boolean;
 };
 
 export type MemberTableFilter = {

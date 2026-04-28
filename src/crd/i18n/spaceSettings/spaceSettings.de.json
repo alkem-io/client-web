@@ -597,6 +597,7 @@
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Unterbereiche",
       "inheritMembershipRights": "Mitgliedschaftsrechte erben",
+      "inheritMembershipRightsDescription": "Mitglieder des übergeordneten Space erhalten automatisch Zugriff auf diesen Subspace.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"

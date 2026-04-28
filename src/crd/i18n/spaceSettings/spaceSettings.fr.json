@@ -597,6 +597,7 @@
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Sous-espaces",
       "inheritMembershipRights": "Hériter des droits d'adhésion",
+      "inheritMembershipRightsDescription": "Les membres du Space parent obtiennent automatiquement l'accès à ce Subspace.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Hôte Organization"

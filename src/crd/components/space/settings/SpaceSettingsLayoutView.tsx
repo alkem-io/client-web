@@ -52,8 +52,7 @@ export type SpaceSettingsLayoutViewProps = {
   columnMenuActions: ColumnMenuActions;
   /** Phase add — only invoked when `level !== 'L0'` and `columns.length < maximumNumberOfStates`. */
   onCreatePhase?: (input: { displayName: string; description: string }) => Promise<void>;
-  /** Min/max state limits from the innovation-flow settings. Drives Add/Delete button enablement. */
-  minimumNumberOfStates?: number;
+  /** Maximum allowed states from innovation-flow settings. Caps the Add Phase button. */
   maximumNumberOfStates?: number;
   /** True while a structural mutation is in flight — disables Add Phase. */
   isStructureMutating?: boolean;
@@ -86,7 +85,6 @@ export function SpaceSettingsLayoutView({
   onDiscardChanges,
   columnMenuActions,
   onCreatePhase,
-  minimumNumberOfStates = 0,
   maximumNumberOfStates = Number.POSITIVE_INFINITY,
   isStructureMutating = false,
   className,
@@ -223,7 +221,10 @@ export function SpaceSettingsLayoutView({
         </DndContext>
 
         <SpaceSettingsSaveBar
-          state={saveBar}
+          // Lock both Save and Reset while a structural mutation (phase
+          // create/delete) is in flight: the snapshot is being reseeded and
+          // a Save click in that window would race against the refetch.
+          state={isStructureMutating ? { kind: 'saving' } : saveBar}
           onSave={onSave}
           onDiscard={onDiscardChanges}
           saveLabel={t('saveBar.save')}

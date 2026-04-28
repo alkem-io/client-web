@@ -4,14 +4,19 @@ export type SpacePrivacy = 'public' | 'private';
 export type MembershipPolicy = 'open' | 'application' | 'invitation';
 
 /**
- * Every allowed-action key the current MUI Settings page exposes — retained
- * in full (FR-022). No new keys introduced for L0 behaviour.
+ * Every allowed-action key the Settings page can render in the toggle list.
  *
- * Level-aware visibility (added 2026-04-27, FR-036) — the view filters by `level`:
- *  - `subspaceAdminInvitations`, `memberCreateSubspaces`, `subspaceEvents` → L0 + L1 only.
- *  - `inheritMembershipRights` → L1 + L2 only.
- *  - All others (`memberCreatePosts`, `videoCalls`, `guestContributions`,
- *    `alkemioSupportAccess`, `trustHostOrganization`) → all levels.
+ * Level-aware visibility (FR-036, parity with MUI `MemberActionsSettings.tsx`)
+ * — the view filters `allowedActions` by `level`:
+ *
+ *  - `subspaceAdminInvitations`, `memberCreateSubspaces` → L0 + L1
+ *  - `subspaceEvents`, `alkemioSupportAccess` → L0 only
+ *  - `inheritMembershipRights` → L1 + L2
+ *  - `memberCreatePosts`, `videoCalls`, `guestContributions` → all levels
+ *
+ * Note: `trustHostOrganization` is NOT toggled through `allowedActions`. It is
+ * rendered as a separate row driven by `hostOrganizationTrusted` /
+ * `onHostOrgTrustChange` and is not gated by level.
  */
 export type AllowedActionKey =
   | 'subspaceAdminInvitations'
@@ -21,10 +26,8 @@ export type AllowedActionKey =
   | 'memberCreateSubspaces'
   | 'subspaceEvents'
   | 'alkemioSupportAccess'
-  | 'trustHostOrganization'
-  | 'inheritMemberRightsFromParent'
-  /** Added 2026-04-27 — implementation key for the L1/L2 inherit-member-rights toggle. */
-  | 'inheritMembershipRights';
+  | 'inheritMembershipRights'
+  | 'trustHostOrganization';
 
 export type AllowedActionToggle = {
   key: AllowedActionKey;

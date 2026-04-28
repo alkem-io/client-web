@@ -103,7 +103,7 @@ export function SpaceSettingsSubspacesView({
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div className="space-y-2 flex-1">
                 <h3 className="text-subsection-title flex items-center gap-2">
-                  <LayoutTemplate className="size-5 text-primary" />
+                  <LayoutTemplate aria-hidden="true" className="size-5 text-primary" />
                   {t('subspaces.defaultTemplate.title')}
                 </h3>
                 <p className="text-muted-foreground text-sm">{t('subspaces.defaultTemplate.description')}</p>

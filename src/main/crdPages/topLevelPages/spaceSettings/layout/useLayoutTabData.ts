@@ -388,13 +388,16 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     setIsStructureMutating(true);
     try {
       // The backend rejects deleting the currently-active state. If the user
-      // targets the active phase, advance the active state to the next
-      // surviving state (by sort order) first, then delete.
+      // targets the active phase, advance the active state to the *adjacent*
+      // surviving state first, then delete: prefer the next state by sortOrder
+      // (so phase progression continues forward), and fall back to the
+      // previous state when the active phase being deleted is the last one.
       const flow = innovationFlowSettings.data.innovationFlow;
       if (flow?.currentState?.id === stateId) {
-        const nextActive = (flow.states ?? [])
-          .filter(s => s.id !== stateId)
-          .sort((a, b) => a.sortOrder - b.sortOrder)[0];
+        const deleted = (flow.states ?? []).find(s => s.id === stateId);
+        const remaining = (flow.states ?? []).filter(s => s.id !== stateId).sort((a, b) => a.sortOrder - b.sortOrder);
+        const nextActive =
+          remaining.find(s => s.sortOrder > (deleted?.sortOrder ?? -1)) ?? remaining[remaining.length - 1];
         if (nextActive) {
           await innovationFlowSettings.actions.updateInnovationFlowCurrentState(nextActive.id);
         }

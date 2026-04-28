@@ -597,6 +597,7 @@
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Subruimtes",
       "inheritMembershipRights": "Lidmaatschapsrechten overerven",
+      "inheritMembershipRightsDescription": "Leden van de bovenliggende Space krijgen automatisch toegang tot deze Subspace.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"

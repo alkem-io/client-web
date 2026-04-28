@@ -261,29 +261,37 @@ export function SpaceSettingsCommunityView({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        {m.url && (
-                          <DropdownMenuItem asChild={true}>
-                            <a href={m.url}>{t('community.members.viewProfile')}</a>
-                          </DropdownMenuItem>
-                        )}
-                        {level !== 'L0' && !m.isAdmin && onUserLeadChange && (
-                          <DropdownMenuItem
-                            disabled={m.isLead ? !leadPolicy.canRemoveLeadUser : !leadPolicy.canAddLeadUser}
-                            onClick={() => onUserLeadChange(m.id, !m.isLead)}
-                          >
-                            {m.isLead
-                              ? t('community.members.role.demoteFromLead')
-                              : t('community.members.role.promoteToLead')}
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          onClick={() => onUserRemove(m.id)}
-                        >
-                          <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                          {t('community.members.remove')}
-                        </DropdownMenuItem>
+                        {(() => {
+                          const hasViewProfile = !!m.url;
+                          const showLeadAction = level !== 'L0' && !m.isAdmin && !!onUserLeadChange;
+                          return (
+                            <>
+                              {hasViewProfile && (
+                                <DropdownMenuItem asChild={true}>
+                                  <a href={m.url}>{t('community.members.viewProfile')}</a>
+                                </DropdownMenuItem>
+                              )}
+                              {showLeadAction && (
+                                <DropdownMenuItem
+                                  disabled={m.isLead ? !leadPolicy.canRemoveLeadUser : !leadPolicy.canAddLeadUser}
+                                  onClick={() => onUserLeadChange?.(m.id, !m.isLead)}
+                                >
+                                  {m.isLead
+                                    ? t('community.members.role.demoteFromLead')
+                                    : t('community.members.role.promoteToLead')}
+                                </DropdownMenuItem>
+                              )}
+                              {(hasViewProfile || showLeadAction) && <DropdownMenuSeparator />}
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => onUserRemove(m.id)}
+                              >
+                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                {t('community.members.remove')}
+                              </DropdownMenuItem>
+                            </>
+                          );
+                        })()}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

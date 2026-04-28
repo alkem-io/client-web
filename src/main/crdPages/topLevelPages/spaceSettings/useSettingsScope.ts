@@ -31,9 +31,26 @@ const toScopeLevel = (level: SpaceLevel | undefined): SettingsScopeLevel => {
  * would silently target the wrong community.
  */
 export function useSettingsScope(): SettingsScope {
-  const { spaceLevel } = useUrlResolver();
+  const { spaceLevel, loading: resolverLoading } = useUrlResolver();
   const { space, loading: spaceLoading } = useSpace();
   const { subspace, loading: subspaceLoading } = useSubSpace();
+
+  // While the URL resolver is still loading, `spaceLevel` is undefined; falling
+  // back to L0 here would expose root-space ids on L1/L2 routes and let the
+  // settings page boot its tab hooks against the wrong community/role-set
+  // until the resolver settles. Hold off until we know the level.
+  if (resolverLoading || spaceLevel === undefined) {
+    return {
+      id: '',
+      level: 'L0',
+      url: '',
+      roleSetId: '',
+      communityId: '',
+      guidelinesId: '',
+      accountId: undefined,
+      loading: true,
+    };
+  }
 
   const level = toScopeLevel(spaceLevel);
 

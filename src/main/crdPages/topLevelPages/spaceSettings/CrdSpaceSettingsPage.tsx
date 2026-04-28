@@ -210,7 +210,6 @@ export default function CrdSpaceSettingsPage() {
                 onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}
                 onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
-                minimumNumberOfStates={layout.minimumNumberOfStates}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
               />

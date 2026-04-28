@@ -597,6 +597,7 @@
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Подпространства",
       "inheritMembershipRights": "Наследяване на правата на членство",
+      "inheritMembershipRightsDescription": "Членовете на родителското пространство автоматично получават достъп до това подпространство.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Домакин Organization"

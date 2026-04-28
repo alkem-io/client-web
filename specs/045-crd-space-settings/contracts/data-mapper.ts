@@ -66,18 +66,27 @@ export type UseAccountTabData = (spaceId: string) => UseImmediateTabDataResult<A
  * Per-**column** (innovation-flow step) overflow menu wiring (Layout tab).
  * Rendered in the top-right of each column header (FR-010). Not deferred.
  *
- * Updated 2026-04-27 — accepts options to pass through `onDeleteState` /
- * `columnCount` / `minimumNumberOfStates`. Computes `actions.onDeletePhase`
- * only when `columnCount > minimumNumberOfStates`. The page wires
- * `onDeleteState` only at L1 / L2 (FR-039).
+ * Returns `ColumnMenuActions` directly. Internally owns the rename-cascade
+ * mutations, the active-phase setter, the default-post-template setter, and
+ * (when `onDeleteState` is provided + `columnCount > minimumNumberOfStates`)
+ * the `onDeletePhase` handler. The page wires `onDeleteState` only at L1 / L2
+ * (FR-039).
  */
-export type UseColumnMenu = (spaceId: string, options?: {
-  onDeleteState?: (columnId: string) => Promise<void>;
+export type UseColumnMenu = (options: {
+  innovationFlowId: string;
+  availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /** All callouts with their current flowState tag + tagset ID — needed for the rename cascade. */
+  callouts: ReadonlyArray<{ id: string; flowStateTagsetId: string; currentStateName: string }>;
+  /** Map column ID → current title — needed to find the old name during rename. */
+  columnNames: ReadonlyArray<{ id: string; title: string }>;
+  /** Called after a successful save to update the buffer/snapshot in the layout hook. */
+  onColumnSaved?: (columnId: string, title: string, description: string) => void;
+  /** Phase-delete handler — provided only at L1/L2. */
+  onDeleteState?: (stateId: string) => Promise<void>;
+  /** Current column count and min-states, used to gate `onDeletePhase` exposure. */
   columnCount?: number;
   minimumNumberOfStates?: number;
-}) => {
-  actions: ColumnMenuActions;
-};
+}) => ColumnMenuActions;
 
 /**
  * Dirty-state guard — single instance per settings page.
