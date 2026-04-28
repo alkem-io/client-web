@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
@@ -18,6 +17,7 @@ import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
@@ -57,21 +57,17 @@ export default function CrdSpaceSubspacesPage() {
   const canCreate = permissions.canCreateSubspaces;
   const handleCreateClick = canCreate ? () => setIsCreateDialogOpen(true) : undefined;
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="subspaces"
-            description={space.about.profile.description || ''}
-            leads={sidebarLeads}
-            onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-            subspaces={sidebarSubspaces}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="subspaces"
+          description={space.about.profile.description || ''}
+          leads={sidebarLeads}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          subspaces={sidebarSubspaces}
+        />
+      </SpaceSidebarPortal>
 
       <div className="space-y-8">
         <TabStateHeader

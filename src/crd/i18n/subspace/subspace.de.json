@@ -19,7 +19,8 @@
     "addPost": "Beitrag hinzufügen",
     "emptyState": "Für diesen SubSpace sind noch keine Phasen konfiguriert.",
     "phaseTab": "Zu Phase {{name}} wechseln",
-    "connectorAlt": "Nächste Phase"
+    "connectorAlt": "Nächste Phase",
+    "menu": "Menü"
   },
   "sidebar": {
     "about": "Über diesen SubSpace",
@@ -65,6 +66,8 @@
     "flowTabs": "Innovationsfluss-Phasen",
     "sidebarNavigation": "SubSpace-Seitenleiste",
     "communityDialog": "Dialog für Community-Mitglieder",
-    "close": "Schließen"
+    "close": "Schließen",
+    "openMenu": "Menü öffnen",
+    "bottomBar": "Phasennavigation"
   }
 }

@@ -1,5 +1,5 @@
-import { Layers } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Layers, Layout as LayoutIcon } from 'lucide-react';
+import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -25,14 +25,33 @@ import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDial
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
 
+export type SubspaceMobileMenu = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  content: ReactNode;
+};
+
+export type SubspaceOutletContext = {
+  data: ReturnType<typeof useCrdSubspace>;
+  mobileMenu: SubspaceMobileMenu;
+};
+
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { spaceLevel } = useUrlResolver();
-  const { t } = useTranslation('crd-spaceSettings');
+  const { t } = useTranslation(['crd-spaceSettings', 'crd-subspace']);
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Sidebar links are portaled in via `mobileMenuContent`, so following one
+  // doesn't go through any handler in this layout. Watch pathname instead and
+  // auto-close the mobile drawer on every navigation.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const isOnSettings = pathname.includes('/settings');
   const settingsLevel: 'L1' | 'L2' = spaceLevel === SpaceLevel.L2 ? 'L2' : 'L1';
@@ -71,7 +90,47 @@ export default function CrdSubspacePageLayout() {
   }
 
   const handleQuickAction = (id: SubspaceQuickActionId) => {
+    setMobileMenuOpen(false);
     setActiveDialog(id);
+  };
+
+  const editFlowHref = data.subspaceUrl ? `${data.subspaceUrl}/settings/layout` : undefined;
+
+  const subspaceSidebar = (
+    <SubspaceSidebar
+      {...data.sidebar}
+      onEditClick={() => {
+        setMobileMenuOpen(false);
+        navigate(`${data.subspaceUrl}/settings/about`);
+      }}
+      onAboutClick={() => {
+        setMobileMenuOpen(false);
+        setAboutOpen(true);
+      }}
+      onQuickActionClick={handleQuickAction}
+    />
+  );
+
+  const mobileMenuContent = (
+    <div className="flex flex-col gap-4">
+      {subspaceSidebar}
+      {data.canEditFlow && editFlowHref && (
+        <a
+          href={editFlowHref}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-md text-control font-medium text-foreground border-t border-border pt-4 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <LayoutIcon className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          {t('crd-subspace:flow.editFlow')}
+        </a>
+      )}
+    </div>
+  );
+
+  const mobileMenu: SubspaceMobileMenu = {
+    open: mobileMenuOpen,
+    onOpenChange: setMobileMenuOpen,
+    content: mobileMenuContent,
   };
 
   const showApplyCta = !data.applicationButtonProps.isMember && !data.applicationLoading;
@@ -131,14 +190,7 @@ export default function CrdSubspacePageLayout() {
         <main className="flex-1 w-full px-6 md:px-8 py-8">
           <div className="grid grid-cols-12 gap-6 items-start">
             {/* Left sidebar — cols 2-3, one col gap from left edge */}
-            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">
-              <SubspaceSidebar
-                {...data.sidebar}
-                onEditClick={() => navigate(`${data.subspaceUrl}/settings/about`)}
-                onAboutClick={() => setAboutOpen(true)}
-                onQuickActionClick={handleQuickAction}
-              />
-            </div>
+            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>
 
             {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
             <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
@@ -160,7 +212,7 @@ export default function CrdSubspacePageLayout() {
               )}
 
               <Suspense fallback={<LoadingSpinner />}>
-                <Outlet context={{ data }} />
+                <Outlet context={{ data, mobileMenu }} />
               </Suspense>
             </div>
           </div>
