@@ -175,6 +175,7 @@ export default function CrdSpaceSettingsPage() {
               (about.values && about.previewCard ? (
                 <SpaceSettingsAboutView
                   {...about.values}
+                  level={level}
                   previewCard={about.previewCard}
                   countries={COUNTRIES}
                   dirtyByField={about.dirtyByField}

@@ -19,7 +19,8 @@
     "addPost": "Añadir publicación",
     "emptyState": "Aún no hay fases configuradas para este subespacio.",
     "phaseTab": "Cambiar a la fase {{name}}",
-    "connectorAlt": "Siguiente fase"
+    "connectorAlt": "Siguiente fase",
+    "menu": "Menú"
   },
   "sidebar": {
     "about": "Acerca de este SubEspacio",
@@ -65,6 +66,8 @@
     "flowTabs": "Fases del flujo de innovación",
     "sidebarNavigation": "Barra lateral del SubEspacio",
     "communityDialog": "Diálogo de miembros de la comunidad",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "openMenu": "Abrir menú",
+    "bottomBar": "Navegación de fases"
   }
 }

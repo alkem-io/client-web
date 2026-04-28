@@ -1,24 +1,22 @@
 import {
   Bookmark,
   HardDrive,
-  History,
   Info,
   Layers,
   LayoutGrid,
   Megaphone,
-  Settings,
   Settings as SettingsIcon,
-  Share2,
   UserCircle,
   Users,
 } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
@@ -59,7 +57,15 @@ export default function CrdSpacePageLayout() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [communityOpen, setCommunityOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
+
+  // Sidebar links are portaled in (see SpaceSidebarPortal), so following one
+  // doesn't go through any handler in this layout that could close the drawer.
+  // Watch pathname instead and auto-close the mobile drawer on every navigation.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
@@ -118,15 +124,6 @@ export default function CrdSpacePageLayout() {
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };
 
-  // Mobile actions for the "More" drawer
-  const mobileActions = [
-    { label: t('mobile.activity'), icon: <History className="w-4 h-4" />, onClick: () => setActivityDialogOpen(true) },
-    { label: t('mobile.share'), icon: <Share2 className="w-4 h-4" />, onClick: () => setShareDialogOpen(true) },
-    ...(showSettings && settingsHref
-      ? [{ label: t('mobile.settings'), icon: <Settings className="w-4 h-4" />, onClick: () => navigate(settingsHref) }]
-      : []),
-  ];
-
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
@@ -136,7 +133,7 @@ export default function CrdSpacePageLayout() {
     );
   }
 
-  const sidebarSlot = <div id="crd-space-sidebar" />;
+  const sidebarSlot = <div id="crd-space-sidebar-desktop" />;
 
   const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
     { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
@@ -191,7 +188,7 @@ export default function CrdSpacePageLayout() {
               activeIndex={activeTabIndex}
               onTabChange={handleTabChange}
               isSmallScreen={isSmallScreen}
-              mobileActions={mobileActions}
+              onMenuClick={() => setMobileMenuOpen(true)}
             />
           )
         }
@@ -200,6 +197,17 @@ export default function CrdSpacePageLayout() {
           <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
         </Suspense>
       </SpaceShell>
+
+      {!isOnSettings && (
+        <MobileSidebarDrawer
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          title={t('crd-space:mobile.menu')}
+          closeLabel={t('crd-space:a11y.close')}
+        >
+          <div id="crd-space-sidebar-mobile" />
+        </MobileSidebarDrawer>
+      )}
 
       {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
           this parent layout doesn't clobber the subspace layout's trail at
