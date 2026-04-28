@@ -1,8 +1,7 @@
 import { Building2, FileText, Globe, MessageSquare, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import { useSearchQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSearchQuery, useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SearchCategory, type SearchQuery, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { OrgResultCard } from '@/crd/components/search/OrgResultCard';
@@ -18,6 +17,7 @@ import type { SearchFilterOption } from '@/crd/components/search/SearchResultSec
 
 import { UserResultCard } from '@/crd/components/search/UserResultCard';
 import { SpaceCard } from '@/crd/components/space/SpaceCard';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSearch } from '../../search/SearchContext';
 import type { SearchResultMetaType } from '../../search/searchTypes';
 import {
@@ -56,15 +56,11 @@ function toResultType(query?: SearchQuery) {
   };
 }
 
-function extractSpaceNameIdFromPath(pathname: string): string | undefined {
-  const match = pathname.match(/^\/space\/([^/]+)/);
-  return match?.[1];
-}
+type ActiveScope = 'space' | 'all';
 
 export function CrdSearchOverlay() {
   const { t } = useTranslation('crd-search');
   const { isOpen, closeSearch, initialQuery, clearInitialQuery } = useSearch();
-  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const [searchTags, setSearchTags] = useState<string[]>([]);
@@ -90,16 +86,27 @@ export function CrdSearchOverlay() {
   const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
   const [canContributorLoadMore, setCanContributorLoadMore] = useState(true);
 
-  // Detect space from current route pathname
-  const spaceNameId = extractSpaceNameIdFromPath(pathname);
-
-  const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
-    variables: { spaceNameId: spaceNameId ?? '' },
-    skip: !spaceNameId,
+  // Detect the level-zero (top-level) Space from the URL resolver context. The
+  // UrlResolverProvider only wraps Space routes; on non-Space routes useUrlResolver()
+  // returns the default empty context (loading: true permanently). We therefore
+  // derive "is loading" only from whether we have a levelZeroSpaceId AND the
+  // displayName lookup for it is still in flight — never from the resolver's own
+  // loading flag, which is unreliable when the provider isn't mounted.
+  const { levelZeroSpaceId } = useUrlResolver();
+  const { data: spaceAboutData, loading: spaceQueryLoading } = useSpaceAboutBaseQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !levelZeroSpaceId,
   });
-  const spaceId = spaceIdData?.lookupByName.space?.id;
+  const spaceDisplayName = spaceAboutData?.lookup.space?.about.profile.displayName ?? '';
+  const spaceContextLoading = Boolean(levelZeroSpaceId) && spaceQueryLoading;
 
-  // spaceId is used for scoping the search query — no UI for scope switching
+  // Active scope drives both the UI selector and the search query's space filter.
+  const [activeScope, setActiveScope] = useState<ActiveScope>(levelZeroSpaceId ? 'space' : 'all');
+  const handleScopeChange = (next: 'all' | string) => setActiveScope(next === 'all' ? 'all' : 'space');
+
+  // The level-zero Space id is applied as the search filter only when the active
+  // scope is the current Space; passing undefined produces a platform-wide search.
+  const searchInSpaceFilter = activeScope === 'space' ? levelZeroSpaceId : undefined;
 
   // Direct search query — local state only, no URL navigation
   const {
@@ -111,7 +118,7 @@ export function CrdSearchOverlay() {
       searchData: {
         tagsetNames,
         terms: searchTags,
-        searchInSpaceFilter: spaceId,
+        searchInSpaceFilter,
         filters: [
           {
             category: SearchCategory.Spaces,
@@ -147,7 +154,7 @@ export function CrdSearchOverlay() {
       },
     },
     fetchPolicy: 'no-cache',
-    skip: searchTags.length === 0 || resolvingSpace,
+    skip: searchTags.length === 0 || spaceContextLoading,
   });
 
   // Track canLoadMore flags from initial query results
@@ -200,8 +207,9 @@ export function CrdSearchOverlay() {
       setCanFramingLoadMore(true);
       setCanContributionLoadMore(true);
       setCanContributorLoadMore(true);
+      setActiveScope(levelZeroSpaceId ? 'space' : 'all');
     }
-  }, [isOpen]);
+  }, [isOpen, levelZeroSpaceId]);
 
   // Map results
   const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults } = toResultType(
@@ -332,7 +340,7 @@ export function CrdSearchOverlay() {
         searchData: {
           tagsetNames,
           terms: searchTags,
-          searchInSpaceFilter: spaceId,
+          searchInSpaceFilter,
           filters: [{ category: resultsType, size: SEARCH_RESULTS_COUNT, types, cursor }],
         },
       },
@@ -576,9 +584,19 @@ export function CrdSearchOverlay() {
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
   ];
 
-  // Scope is determined by the current route pathname. The overlay does not render
-  // a scope dropdown because changing scope would require navigation, which the
-  // overlay should not do. If inside a space, search is automatically scoped.
+  // Scope dropdown is shown only when a Space context is fully resolved. When
+  // inside a Space, the dropdown defaults to that Space and lets the user widen
+  // to platform-wide search; outside a Space, no dropdown is shown.
+  const scope =
+    levelZeroSpaceId && !spaceContextLoading
+      ? {
+          currentSpaceName: spaceDisplayName,
+          activeScope: activeScope === 'space' ? spaceDisplayName : ('all' as const),
+        }
+      : undefined;
+
+  // Recovery action — only when inside a Space and currently scoped to it.
+  const onSearchAll = levelZeroSpaceId && activeScope === 'space' ? () => setActiveScope('all') : undefined;
 
   return (
     <SearchOverlay
@@ -591,6 +609,9 @@ export function CrdSearchOverlay() {
       onTagAdd={handleTagAdd}
       onTagRemove={handleTagRemove}
       maxTags={MAX_TAGS}
+      scope={scope}
+      onScopeChange={scope ? handleScopeChange : undefined}
+      onSearchAll={onSearchAll}
       categories={categories}
       allSidebarCategories={allSidebarCategories}
       disclaimer={t('search.disclaimer')}

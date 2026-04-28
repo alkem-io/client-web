@@ -5,11 +5,12 @@
     "emptyDescription": "Suche in Spaces, Beiträgen, Antworten, Benutzern und Organisationen.",
     "noResultsTitle": "Keine Ergebnisse gefunden für {{terms}}",
     "noResultsSuggestion": "Versuche andere Suchbegriffe oder erweitere deine Suche.",
-    "searchAllSpaces": "In allen Spaces suchen",
+    "searchAllSpaces": "Stattdessen die gesamte Plattform durchsuchen",
     "loading": "Suche\u2026",
     "disclaimer": "Diese Ergebnisse spiegeln möglicherweise nicht den aktuellen Stand der Plattform wider. Suchergebnisse werden regelmäßig aktualisiert.",
     "loadMore": "Mehr laden",
-    "scopeAll": "Alle Spaces",
+    "scopeAll": "Gesamte Plattform",
+    "scopeTriggerLabel": "Suchen in: {{option}}",
     "categories": {
       "spaces": "Spaces",
       "posts": "Beiträge",
@@ -47,7 +48,8 @@
       "platformSearch": "Plattformsuche",
       "filterBy": "{{category}} filtern",
       "resultsFound": "{{count}} Ergebnisse gefunden",
-      "noResultsFound": "Keine Ergebnisse gefunden"
+      "noResultsFound": "Keine Ergebnisse gefunden",
+      "scopeTrigger": "Suchbereich ändern. Aktuelle Suche in: {{option}}"
     }
   }
 }
