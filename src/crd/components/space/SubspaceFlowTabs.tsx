@@ -1,4 +1,5 @@
 import { ChevronsRight, Layout, Plus } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -28,6 +29,9 @@ function FlowArrow() {
 const TAB_LIST_CLASSES =
   'flex items-center gap-3 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none]';
 
+const TAB_LIST_FADE_CLASSES =
+  '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]';
+
 export function SubspaceFlowTabs({
   phases,
   activePhaseId,
@@ -40,6 +44,11 @@ export function SubspaceFlowTabs({
   className,
 }: SubspaceFlowTabsProps) {
   const { t } = useTranslation('crd-subspace');
+  const activeTabRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [activePhaseId]);
 
   if (phases.length === 0) {
     return (
@@ -55,7 +64,7 @@ export function SubspaceFlowTabs({
   }
 
   return (
-    <div className={cn('flex items-center justify-between gap-4', className)}>
+    <div className={cn('flex items-center gap-4', className)}>
       {canEditFlow &&
         (editFlowHref ? (
           <Button
@@ -84,11 +93,11 @@ export function SubspaceFlowTabs({
       <nav className="flex-1 min-w-0" aria-label={t('a11y.flowTabs')}>
         {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
         {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-        <ul role="list" className={TAB_LIST_CLASSES}>
+        <ul role="list" className={cn(TAB_LIST_CLASSES, canAddPost && TAB_LIST_FADE_CLASSES)}>
           {phases.map((phase, index) => {
             const isActive = phase.id === activePhaseId;
             return (
-              <li key={phase.id} className="inline-flex items-start shrink-0">
+              <li key={phase.id} ref={isActive ? activeTabRef : undefined} className="inline-flex items-start shrink-0">
                 {index > 0 && (
                   <span className="mr-3" aria-hidden="true">
                     <FlowArrow />
