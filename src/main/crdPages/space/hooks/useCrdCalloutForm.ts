@@ -99,7 +99,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   responseType: 'none',
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
-  contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+  contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: EmptyWhiteboardString },
   prePopulateLinkRows: [],
   referenceRows: [],
   notifyMembers: false,

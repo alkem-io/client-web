@@ -182,17 +182,19 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
 
-  // Contribution defaults — spec FR-40..46, D5.
+  // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
+  // filter: only send `postDescription` for post/memo responses, only send
+  // `whiteboardContent` for whiteboard responses. Sending whiteboardContent on
+  // a post callout (or vice-versa) trips backend DTO validation.
   if (hasResponseType) {
     const defaults = values.contributionDefaults;
-    const hasAny =
-      defaults.defaultDisplayName.trim() || defaults.postDescription.trim() || defaults.whiteboardContent.trim();
-    if (hasAny) {
-      callout.contributionDefaults = {
-        defaultDisplayName: defaults.defaultDisplayName.trim() || undefined,
-        postDescription: defaults.postDescription.trim() || undefined,
-        whiteboardContent: defaults.whiteboardContent.trim() || undefined,
-      };
+    const isWhiteboardResponse = values.responseType === 'whiteboard';
+    const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
+    const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
+    const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
+    const whiteboardContent = isWhiteboardResponse ? defaults.whiteboardContent : undefined;
+    if (defaultDisplayName || postDescription || whiteboardContent) {
+      callout.contributionDefaults = { defaultDisplayName, postDescription, whiteboardContent };
     }
   }
 
