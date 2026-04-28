@@ -83,11 +83,13 @@ export type SpaceSettingsCommunityViewProps = {
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
-  onUserRemove: (id: string) => void;
+  /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
+  onUserRemove?: (id: string) => void;
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
   onMemberChangeRole?: (member: CommunityMember) => void;
   onOrgAdd: () => void;
-  onOrgRemove: (id: string) => void;
+  /** Show the destructive "Remove from Space" dropdown item on organization rows. Omit to hide. */
+  onOrgRemove?: (id: string) => void;
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
   onVCAdd: () => void;
@@ -258,6 +260,7 @@ export function SpaceSettingsCommunityView({
                         {(() => {
                           const hasViewProfile = !!m.url;
                           const showChangeRole = !!onMemberChangeRole;
+                          const showRemove = !!onUserRemove;
                           const hasManageActions = showChangeRole;
                           return (
                             <>
@@ -271,14 +274,16 @@ export function SpaceSettingsCommunityView({
                                   {t('community.members.dropdown.changeRole')}
                                 </DropdownMenuItem>
                               )}
-                              {(hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() => onUserRemove(m.id)}
-                              >
-                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                {t('community.members.dropdown.removeFromSpace')}
-                              </DropdownMenuItem>
+                              {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
+                              {showRemove && (
+                                <DropdownMenuItem
+                                  className="text-destructive focus:text-destructive"
+                                  onClick={() => onUserRemove?.(m.id)}
+                                >
+                                  <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                  {t('community.members.dropdown.removeFromSpace')}
+                                </DropdownMenuItem>
+                              )}
                             </>
                           );
                         })()}
@@ -413,6 +418,7 @@ export function SpaceSettingsCommunityView({
                         {(() => {
                           const hasViewProfile = !!org.url;
                           const showChangeRole = !!onOrgChangeRole;
+                          const showRemove = !!onOrgRemove;
                           const hasManageActions = showChangeRole;
                           return (
                             <>
@@ -426,14 +432,16 @@ export function SpaceSettingsCommunityView({
                                   {t('community.organizations.dropdown.changeRole')}
                                 </DropdownMenuItem>
                               )}
-                              {(hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() => onOrgRemove(org.id)}
-                              >
-                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                {t('community.organizations.dropdown.removeFromSpace')}
-                              </DropdownMenuItem>
+                              {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
+                              {showRemove && (
+                                <DropdownMenuItem
+                                  className="text-destructive focus:text-destructive"
+                                  onClick={() => onOrgRemove?.(org.id)}
+                                >
+                                  <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                  {t('community.organizations.dropdown.removeFromSpace')}
+                                </DropdownMenuItem>
+                              )}
                             </>
                           );
                         })()}

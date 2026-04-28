@@ -7,7 +7,7 @@ description: "Tasks for CRD Member Settings Dialog (feature 094)"
 **Input**: Design documents from `/specs/094-crd-member-settings-dialog/`
 **Prerequisites**: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/crd-components.md ✅, quickstart.md ✅
 
-**Tests**: Not requested by the spec — no test tasks generated. Validation runs through the manual test matrix in `quickstart.md` plus the existing Vitest suite (which must continue to pass).
+**Tests**: No automated tests are required by the spec — no test tasks generated. Instead, the manual validation tasks **T030–T035** (under Phase 8) MUST be performed: T030 walks the full `quickstart.md` matrix; T031 covers accessibility; T032 covers mobile viewport; T033 covers i18n across all six locales; T034 covers the CRD-toggle-off regression; T035 covers PR-description evidence. The existing Vitest suite must also continue to pass with no regressions.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

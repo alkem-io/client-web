@@ -33,7 +33,7 @@ The matrix below maps each spec acceptance scenario to a manual test step. All t
 
 ### A. Entry point (FR-015 / Story 5)
 
-1. Navigate to `https://localhost:3001/<spaceNameId>/settings/community`.
+1. Navigate to `http://localhost:3001/<spaceNameId>/settings/community`.
 2. On the **Members** table, click the `⋮` on any row.
 3. Verify the dropdown contains, in order: **View Profile**, **Change Role**, then a separator, then **Remove from Space** (red).
 4. Repeat on the **Organizations** sub-table.

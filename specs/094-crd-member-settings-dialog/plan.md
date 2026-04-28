@@ -17,7 +17,7 @@ Bring the CRD Space settings → Community tab to feature-parity with the legacy
 **Project Type**: Web SPA — existing monorepo with established CRD layer
 **Performance Goals**: Dialog open + Save persists single role flag in <10 s end-to-end on typical broadband (SC-003); per-row dropdown render cost flat with row count (Radix lazy-mounts dropdown content)
 **Constraints**: Zero MUI/Emotion in `src/crd/`; no GraphQL/domain/auth/router imports in `src/crd/`; integration layer (`src/main/crdPages/topLevelPages/spaceSettings/`) reuses existing `useCommunityAdmin`, `useUserContext`, `useCommunityPolicyChecker`; WCAG 2.1 AA; React Compiler compatible (no manual `useMemo`/`useCallback`/`React.memo`); `.crd-root` CSS scoping; props-only / event-handler-as-prop in CRD layer
-**Scale/Scope**: 2 new CRD components, 1 modified CRD component, 6 i18n locale files extended, 1 modified integration container (new dialog state, new `onAdminChange` wiring), 1 modified data-mapper hook (`useCommunityTabData.ts`)
+**Scale/Scope**: 1 new CRD component (`MemberSettingsDialog`), 1 new CRD types file (`memberSettingsTypes.ts`), 1 modified CRD component (`SpaceSettingsCommunityView`), 6 i18n locale files extended, 1 modified integration container (new dialog state, new `onAdminChange` wiring; reuses existing page-level `ConfirmationDialog` for the destructive confirmation), 1 modified data-mapper hook (`useCommunityTabData.ts`)
 
 ## Constitution Check
 
@@ -25,7 +25,7 @@ Bring the CRD Space settings → Community tab to feature-parity with the legacy
 
 | # | Principle | Status | Notes |
 |---|-----------|--------|-------|
-| I | Domain-Driven Frontend Boundaries | PASS | The two new CRD components are presentational only; all role/remove mutations are issued by the existing `useCommunityAdmin` orchestrator under `src/domain/spaceAdmin/`. The integration container in `src/main/crdPages/...spaceSettings/` is the only place that crosses the boundary, exactly as the existing CRD pattern prescribes. |
+| I | Domain-Driven Frontend Boundaries | PASS | The new CRD component (`MemberSettingsDialog`) is presentational only; all role/remove mutations are issued by the existing `useCommunityAdmin` orchestrator under `src/domain/spaceAdmin/`. The integration container in `src/main/crdPages/...spaceSettings/` is the only place that crosses the boundary, exactly as the existing CRD pattern prescribes. |
 | II | React 19 Concurrent UX Discipline | PASS | No legacy lifecycle patterns; no manual memoization (React Compiler handles it); dialog state is plain `useState` for visual flags only; awaited Promises drive busy state without blocking render. |
 | III | GraphQL Contract Fidelity | PASS | Reuses existing generated hooks (`useAssignRoleToUserMutation`, `useRemoveRoleFromUserMutation`, `useAssignRoleToOrganizationMutation`, `useRemoveRoleFromOrganizationMutation`) via `useCommunityAdmin`. Component prop types are plain TypeScript — no GraphQL types leak into UI contracts. No schema changes. |
 | IV | State & Side-Effect Isolation | PASS | CRD components hold visual-only state (open/close, in-flight). All side effects (mutations, toasts, Apollo cache writes) live in the existing integration / domain hooks. No direct DOM manipulation. |
@@ -67,10 +67,9 @@ src/
 │   ├── components/
 │   │   └── space/
 │   │       └── settings/
-│   │           ├── MemberSettingsDialog.tsx           # NEW — Radix Dialog wrapping role/admin checkboxes + in-dialog Remove link + footer
-│   │           ├── RemoveMemberAlertDialog.tsx        # NEW — Radix AlertDialog destructive-confirmation prompt
+│   │           ├── MemberSettingsDialog.tsx           # NEW — Radix Dialog wrapping role/admin checkboxes + in-dialog Remove link + footer. Calls `onRemoveMember(id)` outward; the destructive confirmation is rendered by the existing page-level `ConfirmationDialog` (see Decision #4).
 │   │           ├── SpaceSettingsCommunityView.tsx     # MODIFY — replace per-row dropdown contents (View Profile / Change Role / Remove from Space); drop inline lead-toggle and immediate-Remove items; rename onUser/OrgRemove props
-│   │           └── types.ts                            # NEW (or extend existing types co-location) — MemberSettingsSubject, MemberSettingsLeadPolicy, MemberSettingsCallbacks
+│   │           └── memberSettingsTypes.ts             # NEW — MemberSettingsSubject (discriminated user/organization). `MemberSettingsLeadGate` lives inside MemberSettingsDialog.tsx itself; no separate `MemberSettingsCallbacks` type — the dialog accepts the three callbacks directly.
 │   └── i18n/spaceSettings/
 │       ├── spaceSettings.en.json                      # MODIFY — add community.memberSettings.* + community.members.dropdown.*
 │       ├── spaceSettings.nl.json                      # MODIFY — mirror EN keys (English values until translated)
@@ -80,7 +79,7 @@ src/
 │       └── spaceSettings.fr.json                      # MODIFY — mirror EN keys
 │
 ├── main/crdPages/topLevelPages/spaceSettings/         # Integration layer
-│   ├── CrdSpaceSettingsPage.tsx                       # MODIFY — own activeMemberSettings + activeRemoveConfirmation state; mount MemberSettingsDialog + RemoveMemberAlertDialog as siblings; wire callbacks
+│   ├── CrdSpaceSettingsPage.tsx                       # MODIFY — own activeMemberSubject + removeOriginatedFromDialog flag; mount MemberSettingsDialog as a sibling; reuse the existing page-level community ConfirmationDialog (already wired to `community.pendingRemoval`) for the destructive confirmation; wire callbacks
 │   └── community/
 │       └── useCommunityTabData.ts                     # MODIFY — expose onAdminChange (wraps useAssignRoleToUserMutation / useRemoveRoleFromUserMutation with RoleName.Admin); expose viewerId (from useUserContext); construct MemberSettingsSubject for both rows; deprecate the inline onUser/OrgLeadChange callbacks (lead changes now run from the dialog's onLeadChange path)
 │
@@ -102,8 +101,8 @@ src/
 
 | New / Modified CRD Component | Replaces (or extends) MUI Component | Notes |
 |---|---|---|
-| `MemberSettingsDialog.tsx` (new) | `src/domain/spaceAdmin/SpaceAdminCommunity/dialogs/CommunityMemberSettingsDialog.tsx` | Same dialog body shape (chip → role section → authorization section → remove section → footer); uses Radix `Dialog`, shadcn `Checkbox`, lucide `Trash2`. The MUI `<Trans>` interpolation pattern is reused for the lead/admin labels and the maxLeadsWarning. |
-| `RemoveMemberAlertDialog.tsx` (new) | `src/core/ui/dialogs/ConfirmationDialog.tsx` (used by the MUI dialog for removal confirmation) | Uses Radix `AlertDialog` for stricter destructive-action semantics. Mounted once at integration level and consumed from both Remove paths (dropdown + in-dialog). |
+| `MemberSettingsDialog.tsx` (new) | `src/domain/spaceAdmin/SpaceAdminCommunity/dialogs/CommunityMemberSettingsDialog.tsx` | Same dialog body shape (chip → role section → authorization section → remove section → footer); uses Radix `Dialog`, shadcn `Checkbox`, lucide `Trash2`. The MUI `<Trans>` interpolation pattern is reused for the lead/admin labels and the maxLeadsWarning. The in-dialog Remove link calls `onRemoveMember(id)` outward — the destructive confirmation is rendered by the consumer's existing `ConfirmationDialog` (see next row). |
+| Existing CRD `ConfirmationDialog` (reused — no new component) | `src/core/ui/dialogs/ConfirmationDialog.tsx` (used by the MUI dialog for removal confirmation) | Built on Radix `AlertDialog` (`src/crd/components/dialogs/ConfirmationDialog.tsx`). Already mounted on `CrdSpaceSettingsPage.tsx` and consumed by `community.pendingRemoval` for community removals. Both Remove paths (dropdown's "Remove from Space" item and the in-dialog Remove link) flow through `community.onUserRemove` / `onOrgRemove` → `pendingRemoval` → existing `ConfirmationDialog`. No new `RemoveMemberAlertDialog` component is created. See research.md Decision #4. |
 | `SpaceSettingsCommunityView.tsx` (modify) | `src/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers.tsx` + `CommunityOrganizations.tsx` (row-level affordance) | Replaces the legacy edit-pencil column with a `⋮` dropdown matching the prototype. Drops the previous inline lead-toggle item and the immediate-Remove item. |
 | `useCommunityTabData.ts` (modify) | `src/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin.ts` (orchestrator stays put) | Extends the integration hook to expose `onAdminChange` and `viewerId`, and to project row models into `MemberSettingsSubject`. |
 
@@ -119,8 +118,8 @@ The three items deferred from `/speckit.clarify` were resolved:
 
 Two additional decisions made and documented:
 
-4. **Confirmation primitive** → use the existing `src/crd/primitives/alert-dialog.tsx`. The earlier "interim second-Dialog" assumption from the spec is no longer needed and is removed from the implementation.
-5. **Component scope** → 2 new CRD components, 1 modified CRD component, 1 modified integration container, 1 modified integration data-mapper hook, 6 modified locale files. Zero new primitives.
+4. **Confirmation primitive** → reuse the existing `src/crd/components/dialogs/ConfirmationDialog.tsx` (which is itself built on `src/crd/primitives/alert-dialog.tsx`). The CRD Space Settings page already mounts it for community removals via the `pendingRemoval` state. Both the row dropdown's "Remove from Space" item and the in-dialog Remove link route through `community.onUserRemove` / `onOrgRemove` → `pendingRemoval` → existing `ConfirmationDialog`. **No new `RemoveMemberAlertDialog` component is created**; the earlier "interim second-Dialog" assumption from the spec is removed entirely. The integration layer adds a single `removeOriginatedFromDialog` flag so a successful in-dialog Remove also closes the Member settings dialog. Risk/mitigation: reusing the shared `ConfirmationDialog` means its copy and styling apply to ALL community-removal confirmations (user, organization, virtual contributor, application reject, pending delete) — the i18n keys at `community.confirmRemove.*` were updated to include the cascade-removal warning required by FR-009; no consumer of those keys other than this page existed at the time of the change.
+5. **Component scope** → 1 new CRD component (`MemberSettingsDialog`), 1 new types file (`memberSettingsTypes.ts`), 1 modified CRD component (`SpaceSettingsCommunityView`), 1 modified integration container (`CrdSpaceSettingsPage.tsx`), 1 modified integration data-mapper hook (`useCommunityTabData.ts`), 6 modified locale files. Zero new primitives.
 
 ## Phase 1: Design & Contracts
 

@@ -184,7 +184,7 @@
         "removeMember": "Remove member"
       },
       "remove": {
-        "link": "Click here to remove this user from this community. Be careful, this action cannot be undone."
+        "link": "Click here to remove this member from this community. Be careful, this action cannot be undone."
       },
       "footer": {
         "save": "Save",

@@ -15,38 +15,43 @@ This document specifies the public surface of every CRD component introduced or 
 ### Props in
 
 ```ts
-import type { ReactNode } from 'react';
 import type {
   MemberSettingsSubject,
-  MemberSettingsLeadPolicy,
-  MemberSettingsCallbacks,
-} from './types';
+} from '@/crd/components/space/settings/memberSettingsTypes';
+
+type MemberSettingsLeadGate = {
+  canAddLead: boolean;
+  canRemoveLead: boolean;
+};
 
 type MemberSettingsDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   subject: MemberSettingsSubject;
-  leadPolicy: MemberSettingsLeadPolicy;
+  leadGate: MemberSettingsLeadGate;
 
-  // Callbacks (omit those the viewer cannot invoke)
-  onLeadChange: MemberSettingsCallbacks['onLeadChange'];
-  onAdminChange?: MemberSettingsCallbacks['onAdminChange'];
-  onRemoveMember?: MemberSettingsCallbacks['onRemoveMember'];
-
-  // Visibility flags
-  /** Hide the entire Remove section regardless of `onRemoveMember`. Used when viewer == subject (FR-016). */
-  hideRemoveSection?: boolean;
-
-  className?: string;
+  // Callbacks (the consumer omits those the viewer cannot invoke; the dialog hides
+  // the corresponding section automatically when the callback is `undefined`).
+  onLeadChange: (id: string, isLead: boolean) => Promise<unknown>;
+  onAdminChange?: (id: string, isAdmin: boolean) => Promise<unknown>;
+  /** Outward removal trigger. The dialog calls this when the in-dialog Remove
+   *  link is clicked; the consumer is responsible for opening the destructive
+   *  confirmation surface and running the actual mutation. The dialog stays
+   *  open underneath the confirmation prompt. */
+  onRemoveMember?: (id: string) => void;
 };
 ```
 
+The dialog has **no `hideRemoveSection` prop** and **no `className` prop** in the shipped API. To suppress the Remove section, the consumer omits `onRemoveMember` (e.g., when `viewerId === subject.id`, per FR-016). Visual sizing is hard-coded internally to the standard `sm:max-w-2xl` width with `max-h-[90vh] overflow-y-auto`.
+
+`MemberSettingsLeadGate` is exported by the component module itself; the broader `MemberSettingsSubject` lives in `memberSettingsTypes.ts`. There is no `MemberSettingsLeadPolicy` or `MemberSettingsCallbacks` type — the integration layer derives the per-subject `leadGate` from the role-set policy and passes the three callbacks directly.
+
 ### Events out
 
-- `onOpenChange(false)` fires on X click, Esc key press, outside-click, Cancel button click, successful Save, or successful Remove.
+- `onOpenChange(false)` fires on X click, Esc key press, outside-click, Cancel button click, or after a successful Save. (Successful Remove is owned by the consumer's confirmation surface, which closes the dialog via `onOpenChange(false)` itself.)
 - `onLeadChange(id, isLead)` fires from inside the Save handler when the local lead state diverges from `subject.isLead`.
 - `onAdminChange(id, isAdmin)` fires from inside the Save handler when the local admin state diverges from `subject.isAdmin` (user-only).
-- `onRemoveMember(id)` fires from the AlertDialog Confirm button when the in-dialog Remove flow is confirmed.
+- `onRemoveMember(id)` fires when the user clicks the in-dialog Remove link. The consumer opens the existing community confirmation surface (`pendingRemoval` + page-level `ConfirmationDialog`); the dialog does NOT mount its own confirmation prompt.
 
 ### Rendering invariants
 

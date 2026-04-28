@@ -1,5 +1,5 @@
 import { Loader2, Trash2 } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -60,14 +60,20 @@ export function MemberSettingsDialog({
   const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
   const [saveInFlight, setSaveInFlight] = useState(false);
 
-  // Re-seed local state every time the dialog opens for a different subject so
-  // the checkboxes always reflect the row currently being edited.
+  // Re-seed local state ONLY when the dialog opens or the user switches to a
+  // different row. Reading `subject.isLead` / `initialIsAdmin` through refs
+  // keeps them out of the effect deps; otherwise an Apollo refetch updating
+  // the underlying row data would clobber the user's pending checkbox edits.
+  const subjectIsLeadRef = useRef(subject.isLead);
+  subjectIsLeadRef.current = subject.isLead;
+  const initialIsAdminRef = useRef(initialIsAdmin);
+  initialIsAdminRef.current = initialIsAdmin;
   useEffect(() => {
     if (!open) return;
-    setIsLead(subject.isLead);
-    setIsAdmin(initialIsAdmin);
+    setIsLead(subjectIsLeadRef.current);
+    setIsAdmin(initialIsAdminRef.current);
     setSaveInFlight(false);
-  }, [open, subject.id, subject.isLead, initialIsAdmin]);
+  }, [open, subject.id]);
 
   const showAuthorizationSection = subject.type === 'user' && !!onAdminChange;
   const showRemoveSection = !!onRemoveMember;
