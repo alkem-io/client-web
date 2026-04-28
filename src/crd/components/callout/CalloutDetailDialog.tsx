@@ -1,4 +1,4 @@
-import { MoreHorizontal, Share2, Smile, X } from 'lucide-react';
+import { Share2, Smile, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -45,6 +45,19 @@ type CalloutDetailDialogProps = {
   callToActionFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
+  /**
+   * 3-dots settings slot in the sticky-header cluster. Consumer injects a
+   * full menu component (e.g. `CalloutContextMenu`) with its own trigger
+   * button (plan D8 / T061).
+   */
+  settingsSlot?: ReactNode;
+  /**
+   * Mirrors `callout.settings.framing.commentsEnabled`. When `false` AND there are no existing
+   * messages (`callout.commentCount === 0`), the discussion section is hidden entirely. When
+   * `false` but messages exist, the thread renders read-only — consumer simply omits
+   * `commentInputSlot`. Default `true`.
+   */
+  commentsEnabled?: boolean;
 };
 
 export function CalloutDetailDialog({
@@ -63,8 +76,11 @@ export function CalloutDetailDialog({
   callToActionFramingSlot,
   onReactionsClick,
   onShareClick,
+  settingsSlot,
+  commentsEnabled,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
+  const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,17 +110,11 @@ export function CalloutDetailDialog({
               size="icon"
               className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
               aria-label={t('calloutDialog.share')}
+              onClick={onShareClick}
             >
               <Share2 className="w-5 h-5" aria-hidden="true" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
-              aria-label={t('calloutDialog.more')}
-            >
-              <MoreHorizontal className="w-5 h-5" aria-hidden="true" />
-            </Button>
+            {settingsSlot}
             <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
             <DialogClose asChild={true}>
               <Button
@@ -186,19 +196,23 @@ export function CalloutDetailDialog({
               </div>
             )}
 
-            {/* Discussion section */}
-            <div className="pt-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
-                {callout.commentCount !== undefined && (
-                  <Badge variant="secondary" className="rounded-full px-2">
-                    {callout.commentCount}
-                  </Badge>
-                )}
+            {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
+                (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the
+                consumer omits `commentInputSlot` in that case). */}
+            {showDiscussion && (
+              <div className="pt-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
+                  {callout.commentCount !== undefined && (
+                    <Badge variant="secondary" className="rounded-full px-2">
+                      {callout.commentCount}
+                    </Badge>
+                  )}
+                </div>
+                {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
+                {commentsSlot}
               </div>
-              {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
-              {commentsSlot}
-            </div>
+            )}
           </div>
         </div>
       </DialogContent>

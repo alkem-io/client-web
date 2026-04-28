@@ -62,6 +62,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
       ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
         ? callout.framing.whiteboard?.profile.preview?.uri

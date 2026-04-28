@@ -277,7 +277,6 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
         return prior && (prior.title !== col.title || prior.description !== col.description);
       });
       for (const col of renames) {
-        // eslint-disable-next-line no-await-in-loop
         await updateInnovationFlowState({
           variables: {
             innovationFlowStateId: col.id,
@@ -320,7 +319,6 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
         }
       }
       for (const move of calloutMoves) {
-        // eslint-disable-next-line no-await-in-loop
         await updateCalloutFlowState({ variables: move });
       }
 
@@ -334,7 +332,6 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
             prior.callouts.length !== col.callouts.length ||
             prior.callouts.some((c, i) => c.id !== col.callouts[i]?.id);
           if (orderChanged) {
-            // eslint-disable-next-line no-await-in-loop
             await updateCalloutsSortOrder({
               variables: { calloutsSetID: calloutsSetId, calloutIds: col.callouts.map(c => c.id) },
             });

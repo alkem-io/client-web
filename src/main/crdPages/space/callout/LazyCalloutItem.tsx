@@ -6,24 +6,28 @@ import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
   calloutsSetId: string | undefined;
+  /** Ordered list of all callout ids in the feed — drives move actions (plan T063/T066). */
+  orderedCalloutIds?: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 };
 
 export function LazyCalloutItem({
   calloutId,
   calloutsSetId,
+  orderedCalloutIds = [],
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
   const { ref, inView, callout, loading } = useCalloutInView({
@@ -36,8 +40,9 @@ export function LazyCalloutItem({
       {inView && !loading && callout ? (
         <LazyCalloutItemContent
           callout={callout}
+          calloutsSetId={calloutsSetId}
+          orderedCalloutIds={orderedCalloutIds}
           onClick={onClick}
-          onSettingsClick={onSettingsClick}
           onExpandClick={onExpandClick}
         />
       ) : (
@@ -53,22 +58,31 @@ export function LazyCalloutItem({
  */
 function LazyCalloutItemContent({
   callout,
+  calloutsSetId,
+  orderedCalloutIds,
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: {
   callout: CalloutDetailsModelExtended;
+  calloutsSetId: string | undefined;
+  orderedCalloutIds: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { t } = useTranslation('crd-space');
 
   const postData = mapCalloutDetailsToPostCard(callout, t);
+
+  const moveActions = useCrdCalloutMoveActions({
+    calloutsSetId,
+    orderedCalloutIds,
+    calloutId: callout.id,
+  });
 
   const openDialog = (contributionId?: string, memoId?: string) => {
     setInitialContributionId(contributionId);
@@ -101,6 +115,10 @@ function LazyCalloutItemContent({
   // dialog-only flow. The dialog itself handles its own "no room" rendering.
   const commentsRoomId = callout.comments?.id;
   const hasCommentsRoom = Boolean(commentsRoomId) && callout.comments !== undefined;
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages visible (read-only). PostCard hides the footer entirely when
+  // commentsEnabled === false AND no messages exist.
+  const commentsEnabled = callout.settings.framing.commentsEnabled;
 
   return (
     <>
@@ -118,10 +136,16 @@ function LazyCalloutItemContent({
                 openDialog();
                 onClick?.();
               }}
-              onSettingsClick={onSettingsClick}
+              settingsSlot={
+                <CalloutSettingsConnector
+                  callout={callout}
+                  moveActions={moveActions}
+                  onShare={() => setShareOpen(true)}
+                />
+              }
               onExpandClick={onExpandClick}
               commentsSlot={thread}
-              commentInputSlot={commentInput}
+              commentInputSlot={commentsEnabled ? commentInput : null}
               onCommentsExpandedChange={setCommentsExpanded}
               contributionsPreview={contributionsPreview}
             >
@@ -137,7 +161,9 @@ function LazyCalloutItemContent({
             onClick?.();
           }}
           onCommentsClick={() => openDialog()}
-          onSettingsClick={onSettingsClick}
+          settingsSlot={
+            <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
+          }
           onExpandClick={onExpandClick}
           contributionsPreview={contributionsPreview}
         >
@@ -149,9 +175,12 @@ function LazyCalloutItemContent({
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         callout={callout}
+        moveActions={moveActions}
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
       />
+
+      <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />
     </>
   );
 }
