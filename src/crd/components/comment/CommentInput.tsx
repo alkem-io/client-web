@@ -2,11 +2,11 @@ import { AtSign, Send, Smile } from 'lucide-react';
 import { type CSSProperties, type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type SuggestionDataItem } from 'react-mentions';
+import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
-import { CommentEmojiPicker } from './CommentEmojiPicker';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
 import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
@@ -248,7 +248,7 @@ export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000
             >
               <AtSign className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
             </Button>
-            <CommentEmojiPicker
+            <EmojiPicker
               onSelect={insertAtCursor}
               trigger={
                 <Button

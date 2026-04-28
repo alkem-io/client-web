@@ -1,6 +1,7 @@
 import { ChevronRight, Settings, X } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
@@ -66,6 +67,7 @@ export function AddPostModal({
 }: AddPostModalProps) {
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const isCreate = mode === 'create';
   const headerTitle = isCreate ? t('forms.createPost') : t('forms.editPost');
@@ -105,21 +107,31 @@ export function AddPostModal({
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Title */}
           <div className="space-y-2">
-            <input
-              type="text"
-              placeholder={t('forms.titlePlaceholder')}
-              value={title.value}
-              onChange={e => title.onChange(e.target.value)}
-              disabled={submitting}
-              autoFocus={true}
-              className={cn(
-                'w-full text-section-title md:text-page-title border-none px-0 bg-transparent focus:outline-none placeholder:text-muted-foreground/60 disabled:opacity-60',
-                title.error && 'text-destructive'
-              )}
-              aria-label={t('forms.titleLabel')}
-              aria-invalid={!!title.error}
-              aria-describedby={title.error ? 'add-post-title-error' : undefined}
-            />
+            <div className="flex items-center gap-2">
+              <input
+                ref={titleInputRef}
+                type="text"
+                placeholder={t('forms.titlePlaceholder')}
+                value={title.value}
+                onChange={e => title.onChange(e.target.value)}
+                disabled={submitting}
+                autoFocus={true}
+                className={cn(
+                  'flex-1 min-w-0 text-section-title md:text-page-title border-none px-0 bg-transparent focus:outline-none placeholder:text-muted-foreground/60 disabled:opacity-60',
+                  title.error && 'text-destructive'
+                )}
+                aria-label={t('forms.titleLabel')}
+                aria-invalid={!!title.error}
+                aria-describedby={title.error ? 'add-post-title-error' : undefined}
+              />
+              <EmojiInsertButton
+                inputRef={titleInputRef}
+                value={title.value}
+                onChange={title.onChange}
+                ariaLabel={t('forms.insertEmoji')}
+                disabled={submitting}
+              />
+            </div>
             {title.error && (
               <p id="add-post-title-error" className="text-caption text-destructive" aria-live="polite">
                 {title.error}

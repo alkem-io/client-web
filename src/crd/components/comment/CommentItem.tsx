@@ -1,11 +1,11 @@
 import { Smile } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
-import { CommentEmojiPicker } from './CommentEmojiPicker';
 import { CommentInput } from './CommentInput';
 import { CommentReactions } from './CommentReactions';
 import type { CommentAuthor, CommentData, CrdMentionSearch } from './types';
@@ -79,7 +79,7 @@ export function CommentItem({
 
             {!comment.isDeleted && (
               <div className="absolute -top-3 right-2 flex items-center rounded-md border border-border bg-background opacity-100 shadow-sm transition-opacity focus-within:opacity-100 md:opacity-0 md:group-hover/comment:opacity-100">
-                <CommentEmojiPicker
+                <EmojiPicker
                   onSelect={handleAddReaction}
                   trigger={
                     <Button

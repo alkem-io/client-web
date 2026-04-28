@@ -405,6 +405,7 @@
   "forms": {
     "titleLabel": "Titel",
     "titlePlaceholder": "Geef je bericht een titel...",
+    "insertEmoji": "Emoji invoegen",
     "descriptionLabel": "Beschrijving",
     "descriptionPlaceholder": "Schrijf iets...",
     "tagsLabel": "Tags",

@@ -405,6 +405,7 @@
   "forms": {
     "titleLabel": "Заглавие",
     "titlePlaceholder": "Дайте заглавие на публикацията си...",
+    "insertEmoji": "Вмъкване на емоджи",
     "descriptionLabel": "Описание",
     "descriptionPlaceholder": "Напишете нещо...",
     "tagsLabel": "Етикети",
