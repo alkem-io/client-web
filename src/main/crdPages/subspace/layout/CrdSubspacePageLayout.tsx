@@ -1,11 +1,21 @@
 import { Layers } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
+import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
+import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
+import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
+import {
+  getVisibleSettingsTabs,
+  useSettingsTabDescriptors,
+} from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
@@ -18,23 +28,39 @@ import { useCrdSubspace } from '../hooks/useCrdSubspace';
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { spaceLevel } = useUrlResolver();
+  const { t } = useTranslation('crd-spaceSettings');
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
 
+  const isOnSettings = pathname.includes('/settings');
+  const settingsLevel: 'L1' | 'L2' = spaceLevel === SpaceLevel.L2 ? 'L2' : 'L1';
+  const visibleSettingsTabs = getVisibleSettingsTabs(settingsLevel);
+  const settingsTabDescriptors = useSettingsTabDescriptors(settingsLevel);
+  const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab(visibleSettingsTabs);
+
   // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
   // parent — collapse to a single hop. At L2 the L0 hop is distinct, so we render
-  // L0 → L1 → L2.
+  // L0 → L1 → L2. On `/settings` we additionally append a Settings hop and the
+  // active tab label, mirroring the L0 settings breadcrumb shape.
   const includeL0Crumb =
     !!data.levelZeroSpaceName && !!data.levelZeroSpaceId && data.levelZeroSpaceId !== data.parentSpaceId;
-  useSetBreadcrumbs(
+  const baseTrail =
     data.parentSpaceName && data.subspaceName
       ? [
           ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName!, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
           { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
-          { label: data.subspaceName },
+          {
+            label: data.subspaceName,
+            ...(isOnSettings ? { href: data.subspaceUrl, icon: Layers } : {}),
+          },
         ]
-      : []
-  );
+      : [];
+  const settingsTrail = isOnSettings
+    ? [{ label: t('tabs.settings'), href: `${data.subspaceUrl}/settings` }, { label: t(`tabs.${activeSettingsTab}`) }]
+    : [];
+  useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
 
   if (data.loading) {
     return <LoadingSpinner />;
@@ -49,6 +75,41 @@ export default function CrdSubspacePageLayout() {
   };
 
   const showApplyCta = !data.applicationButtonProps.isMember && !data.applicationLoading;
+
+  if (isOnSettings) {
+    return (
+      <>
+        {data.visibility.status !== 'active' && (
+          <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
+        )}
+        <div className="flex flex-col bg-background min-h-screen">
+          <SpaceSettingsHeader
+            title={data.banner.title}
+            tagline={data.banner.tagline ?? null}
+            avatarUrl={data.banner.subspaceAvatarUrl ?? null}
+            initials={data.banner.subspaceInitials}
+            avatarColor={data.banner.subspaceColor}
+            tabs={
+              <SpaceSettingsTabStrip
+                activeTab={activeSettingsTab}
+                onTabChange={setActiveSettingsTab}
+                tabs={settingsTabDescriptors}
+              />
+            }
+          />
+          <main className="flex-1 w-full px-6 md:px-8 py-8">
+            <div className="grid grid-cols-12 gap-6 items-start">
+              <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Outlet context={{ data }} />
+                </Suspense>
+              </div>
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

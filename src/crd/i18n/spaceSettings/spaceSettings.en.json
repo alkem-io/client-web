@@ -74,6 +74,22 @@
         "cancel": "Cancel",
         "saving": "Saving…",
         "save": "Save"
+      },
+      "deletePhase": "Delete phase"
+    },
+    "addPhase": {
+      "button": "Add phase",
+      "dialog": {
+        "title": "Add a new phase",
+        "description": "Create a new innovation flow phase. You can rename or remove it later.",
+        "nameLabel": "Phase name",
+        "namePlaceholder": "e.g. Discovery",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "What happens in this phase?",
+        "duplicate": "A phase with this name already exists.",
+        "errorGeneric": "Could not create the phase. Please try again.",
+        "cancel": "Cancel",
+        "confirm": "Add phase"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "Email",
       "role": {
         "lead": "Lead",
-        "member": "Member"
+        "member": "Member",
+        "promoteToLead": "Make Lead",
+        "demoteFromLead": "Remove as Lead"
       },
       "actions": "Actions",
       "empty": "No members found.",
@@ -578,6 +596,8 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Subspaces",
+      "inheritMembershipRights": "Inherit Membership Rights",
+      "inheritMembershipRightsDescription": "Members of the parent Space automatically gain access to this Subspace.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"

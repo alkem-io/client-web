@@ -32,6 +32,8 @@ export type TabId =
   | 'about'
   | 'layout'
   | 'community'
+  /** Added in implementation (2026-04-15) — second-round clarification 1; not in earlier draft. */
+  | 'updates'
   | 'subspaces'
   | 'templates'
   | 'storage'
@@ -42,12 +44,27 @@ export const TAB_ORDER: readonly TabId[] = [
   'about',
   'layout',
   'community',
+  'updates',
   'subspaces',
   'templates',
   'storage',
   'settings',
   'account',
 ] as const;
+
+/**
+ * Added 2026-04-27. Visible-tab list per level — mirrors the legacy MUI
+ * configuration in `SpaceAdminRouteL{0,1,2}.tsx` (FR-035).
+ *
+ *  - L0: all 9 tabs.
+ *  - L1: hide templates, storage, account.
+ *  - L2: hide templates, storage, account, subspaces.
+ *
+ * Implementation lives in
+ * `src/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs.ts`.
+ */
+export type SettingsScopeLevel = 'L0' | 'L1' | 'L2';
+export type GetVisibleSettingsTabs = (level: SettingsScopeLevel) => readonly TabId[];
 
 /**
  * SaveBarState — used ONLY by the Layout tab.

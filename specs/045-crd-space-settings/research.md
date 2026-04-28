@@ -304,6 +304,152 @@ Explicitly excluded in this iteration:
 
 ---
 
+## Decision 17 — Subspace (L1 / L2) reuse of the same settings page (added 2026-04-27)
+
+**Decision**: The CRD Space Settings area is reused for L1 and L2 admins by mounting the **same** `CrdSpaceSettingsPage` from a new `CrdSubspaceSettingsRoute` wrapper inside `src/main/crdPages/subspace/routing/CrdSubspaceRoutes.tsx`. `CrdSubspaceRoutes.tsx` already defines two separate `<Route element={<CrdSubspacePageLayout />}>` blocks (one for L1 — `/space/:spaceNameId/challenges/:subspaceNameId`, one for L2 — `opportunities/:subsubspaceNameId`); the settings route is added inside **both**. Each settings route is wrapped in `<NonSpaceAdminRedirect spaceId={subspace?.id}>` (sourced from `useSubSpace()`), matching the legacy MUI parity at `src/domain/spaceAdmin/routing/SpaceAdminRouteL1.tsx:75`.
+
+The `CrdSubspacePageLayout.tsx` switches to a settings-header branch when `pathname.includes('/settings')` — rendering `SpaceSettingsHeader` + `SpaceSettingsTabStrip` (the same primitives the L0 path uses) inside the layout's main grid. The `<Outlet>` underneath mounts `CrdSpaceSettingsPage`. Below the early-return for the loading state, `useSetBreadcrumbs` is called unconditionally so the breadcrumb trail is set on every render — the trail appends a Settings hop + active tab label when `isOnSettings` is true (FR-041).
+
+**Rationale**: The legacy MUI `SpaceAdminRouteL{0,1,2}.tsx` files all render the same admin shell with level-aware tab configuration; CRD follows the same pattern but extracts the "level-aware" parts into `useSettingsScope` + `useVisibleSettingsTabs` (Decisions 18 + 19) so a single `CrdSpaceSettingsPage` can serve all three levels.
+
+**Alternatives considered**:
+- Three separate page components (one per level): rejected — duplicates the entire 8-tab body for two CSS / data differences.
+- Adding the settings routes to a single, shared L0/L1/L2 routes file: rejected — `CrdSubspaceRoutes.tsx` already separates the L1 and L2 layouts because their breadcrumbs, sidebars, and dialogs differ; collapsing them would regress non-settings paths.
+
+---
+
+## Decision 18 — Level-aware ID resolution via `useSettingsScope` (added 2026-04-27)
+
+**Decision**: A new helper `src/main/crdPages/topLevelPages/spaceSettings/useSettingsScope.ts` resolves the correct backend IDs per level. `SpaceContext.tsx` is hardcoded to the L0 root (`spaceId = levelZeroSpaceId`, `level: SpaceLevel.L0`) — the page MUST NOT call `useSpace()` directly at L1 / L2 or every mutation will silently target the L0 community.
+
+The helper:
+
+```ts
+export type SettingsScopeLevel = 'L0' | 'L1' | 'L2';
+
+export type SettingsScope = {
+  id: string;
+  level: SettingsScopeLevel;
+  url: string;
+  roleSetId: string | undefined;
+  communityId: string | undefined;
+  guidelinesId: string | undefined;
+  accountId: string | undefined; // populated only at L0; Templates / Account tabs are hidden at L1 / L2
+  loading: boolean;
+};
+
+export function useSettingsScope(): SettingsScope {
+  const { spaceLevel } = useUrlResolver();
+  const space = useSpace();
+  const subspace = useSubSpace();
+  const level: SettingsScopeLevel = spaceLevel === SpaceLevel.L0 ? 'L0' : spaceLevel === SpaceLevel.L1 ? 'L1' : 'L2';
+  if (level === 'L0') return { id: space.space.id, level, url: space.space.about.profile.url ?? '', ... };
+  return { id: subspace.subspace.id, level, url: subspace.subspace.about.profile.url, ... };
+}
+```
+
+The page also converts `SpaceLevel` enum values to the `'L0' | 'L1' | 'L2'` string union at the boundary — CRD components are forbidden from importing GraphQL-generated types per `src/crd/CLAUDE.md` Rule 4 (precedent: `src/crd/components/community/PreApplicationDialog.tsx:15`).
+
+**Rationale**: Without `useSettingsScope`, the L1 / L2 settings would silently edit the L0 root's community / role-set / guidelines — a correctness regression. The Plan agent explicitly flagged this as a critical pre-implementation blocker.
+
+**Alternatives considered**:
+- Reading `SubspaceContext` directly inside each tab data hook: rejected — couples every hook to a level-aware context lookup; centralizes drift risk.
+- Always passing IDs as page-level props: rejected — `CrdSpaceSettingsPage` is a route entry, not a child of a page that already knows the IDs.
+
+---
+
+## Decision 19 — Level-aware tab visibility via `useVisibleSettingsTabs` (added 2026-04-27)
+
+**Decision**: A new helper `src/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs.ts` exports `getVisibleSettingsTabs(level)` (pure) and `useSettingsTabDescriptors(level)` (translated labels + icons). The visible-tab list mirrors the legacy MUI configuration in `SpaceAdminRouteL{0,1,2}.tsx`:
+
+| Tab | L0 | L1 | L2 |
+|---|---|---|---|
+| about | ✓ | ✓ | ✓ |
+| layout | ✓ | ✓ | ✓ |
+| community | ✓ | ✓ | ✓ |
+| updates | ✓ | ✓ | ✓ |
+| subspaces | ✓ | ✓ | ✗ |
+| templates | ✓ | ✗ | ✗ |
+| storage | ✓ | ✗ | ✗ |
+| settings | ✓ | ✓ | ✓ |
+| account | ✓ | ✗ | ✗ |
+
+`useSpaceSettingsTab` accepts `visibleTabs?: readonly SpaceSettingsTabId[]`. When the URL points to a hidden tab, the hook redirects to `'about'` via `replace: true` (matches MUI's index `Navigate to="about"` pattern). `SpaceSettingsTabStrip` filters its descriptors to the visible set. `CrdSpaceSettingsPage` uses an `isTabVisible(id)` helper to skip rendering hidden tabs entirely AND to short-circuit data hooks for hidden tabs by passing `''` for the spaceId arg (each tab's hook already guards on empty id).
+
+**Per-tab inner gating** (FR-036) is handled by passing `level` as a plain string-union prop into each affected CRD view — `SpaceSettingsCommunityView`, `SpaceSettingsSettingsView`, `SpaceSettingsSubspacesView`, `SpaceSettingsLayoutView`. The view filters its own internal sections by level (Settings uses `Set<AllowedActionKey>` per level; Community uses inline `level !== 'L0'` checks; Subspaces makes `onChangeDefaultTemplate` optional and the page passes it only at L0).
+
+**Rationale**: A single declarative source of truth for the per-level tab list keeps the page, tab strip, and URL-clamping logic in sync. Pure functions are unit-testable.
+
+**Alternatives considered**:
+- Hard-coded tab lists in three different layout components: rejected — duplicates the level matrix three times.
+- Backend-driven visibility: rejected — adds a query / network round-trip for static UI configuration.
+
+---
+
+## Decision 20 — Member-lead toggle (Community tab, L1 / L2) (added 2026-04-27)
+
+**Decision**: Promote / demote members and organizations to / from Lead is added as dropdown items on each row in the Community tab. The dropdown items are visible only when `level !== 'L0'` and `!row.isAdmin` (Admin role stays read-only). The disabled state composes aggregate policy with per-row `isLead`:
+
+```ts
+const disabled = (!leadPolicy.canAddLead && !row.isLead) || (!leadPolicy.canRemoveLead && row.isLead);
+```
+
+**Why aggregate, not per-user**: `useCommunityPolicyChecker` returns aggregate flags (`canAddLeadUser` / `canRemoveLeadUser`) — NOT per-user — because the underlying authorization model is "can this admin promote any non-lead member, given the current count vs lead-min/max". The view derives the per-row disabled state by composing the aggregate flag with the row's `isLead`, mirroring MUI's `CommunityMemberSettingsDialog.tsx:89`.
+
+**Wiring**:
+- Data hook (`useCommunityTabData.ts`) exposes `members[].isLead` / `members[].isAdmin`, `organizations[].isLead`, `leadPolicy: { canAddLead, canRemoveLead }`, and `onUserLeadChange(userId, isLead)` / `onOrgLeadChange(orgId, isLead)` — both delegating to `useCommunityAdmin().onUserLeadChange` / `onOrganizationLeadChange` (existing — line 158).
+- Mutations fire immediately (no buffer; consistent with the existing Settings tab pattern).
+
+**L0 deferral**: User instruction. L0 visibility is gated to a future "hide-state" iteration; the capability ships generically and would only need a prop change to enable.
+
+**Rationale**: User explicitly listed this as a missing capability in CRD that exists in MUI. Building it generically with a level gate keeps the L0 release-quality treatment open.
+
+**Alternatives considered**:
+- Per-user policy lookup: rejected — `useCommunityPolicyChecker` does not return per-user data, and computing it per row would require N more queries.
+- Inline approve/reject buttons (no dropdown): rejected — the row already uses a dropdown for other actions; an extra inline icon is visual clutter.
+
+---
+
+## Decision 21 — Phase Add / Delete (Layout tab, L1 / L2) (added 2026-04-27)
+
+**Decision**: The Layout tab gains an **"Add Phase"** button next to the page header and a **"Delete phase"** entry in each column kebab. Both are visible only when `level !== 'L0'`. Add is gated by `columns.length < maximumNumberOfStates`; Delete is gated by `columns.length > minimumNumberOfStates` (defense-in-depth — the underlying mutation also enforces these bounds).
+
+**Why use `useInnovationFlowSettings` action handlers, not raw mutations**: Wrapping the raw `createInnovationFlowState` mutation directly would skip the **create + sortOrder atomic step** and the refetches (see `useInnovationFlowSettings.tsx:237` for `createState`, line 294 for `deleteState`, line 315 for `editState`). The data hook (`useLayoutTabData.ts`) internally calls `useInnovationFlowSettings({ collaborationId, skip: !collaborationId })` and re-exports `actions.createState` / `actions.deleteState` as `onCreateState` / `onDeleteState` so the atomic create + sortOrder + refetch sequence stays intact.
+
+**Snapshot reseed (correctness fix)**: The Layout tab seeds `snapshotRef.current` from the initial query and short-circuits the seed effect via `if (snapshotRef.current !== null) return;`. After a phase create / delete, the refetched `flowData` would update but the snapshot would stay stale, causing buffered renames to validate against the old column list. The fix: after `onCreateState` / `onDeleteState` resolves, set `snapshotRef.current = null` and let the seed effect re-run. This loses any pending column-rename buffer — acceptable, mirrors MUI's "structural changes commit immediately and reset the editor" behavior. While the create / delete mutation is in-flight, `isStructureMutating` is set so the Save Changes bar is disabled (prevents double-fire).
+
+**UI**: A small `AddPhaseDialog` (display name + optional description, with duplicate-name check) at `src/crd/components/space/settings/AddPhaseDialog.tsx`. Delete confirms via the existing `ConfirmationDialog`.
+
+**L0 deferral**: Same rationale as Decision 20 — built generically, gated to L1 / L2 in this PR.
+
+**Rationale**: User listed phase Add / Delete as missing in CRD vs MUI. Reusing `useInnovationFlowSettings` keeps the create+sortOrder+refetch sequence atomic and identical to MUI behavior.
+
+**Alternatives considered**:
+- Wrapping raw mutations directly in `useLayoutTabData`: rejected — duplicates the create+sortOrder+refetch dance and risks drift.
+- Buffering phase Add / Delete with the rename / move buffer: rejected — structural changes can't safely co-exist in a buffer with operations that reference column IDs that may not exist yet (Add) or are about to vanish (Delete).
+
+---
+
+## Decision 22 — L1 / L2 breadcrumb shape (added 2026-04-27)
+
+**Decision**: When on `/settings` at L1 or L2, `CrdSubspacePageLayout` MUST extend the breadcrumb trail with a Settings hop + active tab label. The full trail:
+
+```
+[L0 (when distinct from parent)] → [parent space] → [subspace, link to subspace home] → [Settings, link to subspace settings] → [active settings tab label, no link]
+```
+
+The L0 hop is included only when `levelZeroSpaceId !== parentSpaceId` (true at L2). The subspace hop becomes a link only when `isOnSettings` is true; otherwise it remains a leaf (matches the existing non-settings behaviour). The trail is set unconditionally before any early loading return so `useSetBreadcrumbs` is invoked on every render (mirrors the L0 `CrdSpacePageLayout` pattern at line 70 — "Must be derived before any early returns so `useSetBreadcrumbs` is called on every render").
+
+The active tab label is resolved via `t('crd-spaceSettings:tabs.<activeTab>')`, sharing the same translation keys the tab strip uses — no new i18n keys required.
+
+**Rationale**: Mirrors the L0 settings breadcrumb shape (FR-041 / `CrdSpacePageLayout.tsx:77-88`). The user explicitly asked for breadcrumb parity at L1 / L2.
+
+**Alternatives considered**:
+- Leaving the subspace as a leaf without the Settings hop: rejected — admins lose the "click subspace name to leave settings" path.
+- Always including the L0 hop at L1: rejected — at L1 the L0 space is the parent, so the trail would be `L0 → L0 → subspace`.
+
+---
+
 ## Decision 16 — Post description display toggle placement
 
 **Decision**: The `calloutDescriptionDisplayMode` setting (Collapsed / Expanded) currently lives on the MUI Settings page under Collaboration. In CRD Space Settings it moves to the **Layout** tab because it controls how callouts render on the public Space page. Reuse the existing `updateSpaceSettings` mutation. The toggle value is included in the Layout dirty buffer and committed with Save Changes.

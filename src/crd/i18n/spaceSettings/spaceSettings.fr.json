@@ -74,6 +74,22 @@
         "cancel": "Annuler",
         "saving": "Enregistrement…",
         "save": "Enregistrer"
+      },
+      "deletePhase": "Supprimer la phase"
+    },
+    "addPhase": {
+      "button": "Ajouter une phase",
+      "dialog": {
+        "title": "Ajouter une nouvelle phase",
+        "description": "Crée une nouvelle phase de flux d'innovation. Tu pourras la renommer ou la supprimer plus tard.",
+        "nameLabel": "Nom de la phase",
+        "namePlaceholder": "p. ex. Découverte",
+        "descriptionLabel": "Description (facultatif)",
+        "descriptionPlaceholder": "Que se passe-t-il dans cette phase ?",
+        "duplicate": "Une phase portant ce nom existe déjà.",
+        "errorGeneric": "Impossible de créer la phase. Réessaie.",
+        "cancel": "Annuler",
+        "confirm": "Ajouter la phase"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "E-mail",
       "role": {
         "lead": "Responsable",
-        "member": "Membre"
+        "member": "Membre",
+        "promoteToLead": "Désigner comme responsable",
+        "demoteFromLead": "Retirer du rôle de responsable"
       },
       "actions": "Actions",
       "empty": "No members found.",
@@ -578,6 +596,8 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Sous-espaces",
+      "inheritMembershipRights": "Hériter des droits d'adhésion",
+      "inheritMembershipRightsDescription": "Les membres du Space parent obtiennent automatiquement l'accès à ce Subspace.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Hôte Organization"

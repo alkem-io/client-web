@@ -17,7 +17,7 @@ import type { TemplatesViewProps } from './tab-templates';
 import type { StorageViewProps } from './tab-storage';
 import type { SettingsViewProps } from './tab-settings';
 import type { AccountViewProps } from './tab-account';
-import type { TabId } from './shell';
+import type { SettingsScopeLevel, TabId } from './shell';
 
 /**
  * Result shape for tabs that have a tab-wide save bar (About, Layout).
@@ -65,10 +65,28 @@ export type UseAccountTabData = (spaceId: string) => UseImmediateTabDataResult<A
 /**
  * Per-**column** (innovation-flow step) overflow menu wiring (Layout tab).
  * Rendered in the top-right of each column header (FR-010). Not deferred.
+ *
+ * Returns `ColumnMenuActions` directly. Internally owns the rename-cascade
+ * mutations, the active-phase setter, the default-post-template setter, and
+ * (when `onDeleteState` is provided + `columnCount > minimumNumberOfStates`)
+ * the `onDeletePhase` handler. The page wires `onDeleteState` only at L1 / L2
+ * (FR-039).
  */
-export type UseColumnMenu = (spaceId: string) => {
-  actions: ColumnMenuActions;
-};
+export type UseColumnMenu = (options: {
+  innovationFlowId: string;
+  availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /** All callouts with their current flowState tag + tagset ID — needed for the rename cascade. */
+  callouts: ReadonlyArray<{ id: string; flowStateTagsetId: string; currentStateName: string }>;
+  /** Map column ID → current title — needed to find the old name during rename. */
+  columnNames: ReadonlyArray<{ id: string; title: string }>;
+  /** Called after a successful save to update the buffer/snapshot in the layout hook. */
+  onColumnSaved?: (columnId: string, title: string, description: string) => void;
+  /** Phase-delete handler — provided only at L1/L2. */
+  onDeleteState?: (stateId: string) => Promise<void>;
+  /** Current column count and min-states, used to gate `onDeletePhase` exposure. */
+  columnCount?: number;
+  minimumNumberOfStates?: number;
+}) => ColumnMenuActions;
 
 /**
  * Dirty-state guard — single instance per settings page.
@@ -83,3 +101,41 @@ export type UseDirtyTabGuard = () => {
   clearDirty: () => void;
   confirmSwitch: (next: TabId) => Promise<boolean>;
 };
+
+/**
+ * Added 2026-04-27. Level-aware ID resolution. Implementation reads
+ * `useUrlResolver` + `useSpace` (L0) or `useSubSpace` (L1 / L2) and returns
+ * the scope every settings tab uses. The page MUST source IDs from this hook
+ * — never from `useSpace()` directly — or L1 / L2 mutations will silently
+ * target the L0 root (FR-034).
+ */
+export type SettingsScope = {
+  id: string;
+  level: SettingsScopeLevel;
+  url: string;
+  roleSetId: string | undefined;
+  communityId: string | undefined;
+  guidelinesId: string | undefined;
+  /** Populated only at L0 — Templates / Account tabs are hidden at L1 / L2. */
+  accountId: string | undefined;
+  loading: boolean;
+};
+export type UseSettingsScope = () => SettingsScope;
+
+/**
+ * Added 2026-04-27. Level-aware tab visibility. Pure function used by the page
+ * AND by `CrdSubspacePageLayout`'s settings-header branch.
+ */
+export type GetVisibleSettingsTabs = (level: SettingsScopeLevel) => readonly TabId[];
+
+/**
+ * Added 2026-04-27. Returns the translated tab descriptors filtered to the
+ * visible set for the given level. Implementation calls `useTranslation('crd-spaceSettings')`
+ * and reads `t('tabs.<id>')` for each visible tab.
+ */
+export type UseSettingsTabDescriptors = (level: SettingsScopeLevel) => ReadonlyArray<{
+  id: TabId;
+  label: string;
+  /** Lucide icon component reference; presentation-only. */
+  icon: unknown;
+}>;

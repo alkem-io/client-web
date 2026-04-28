@@ -43,6 +43,16 @@ export type SubspacesViewProps = {
   onFilterChange: (next: SubspaceFilter) => void;
   onViewModeChange: (next: SubspaceViewMode) => void;
   onCreate: () => void;
-  onChangeDefaultTemplate: () => void;
+  /**
+   * Updated 2026-04-27. Optional — passed only at L0. When `undefined`, the
+   * "Default Subspace Template" card MUST NOT render (template management is
+   * L0-only per FR-036).
+   */
+  onChangeDefaultTemplate?: () => void;
+  /**
+   * Added 2026-04-27. The page wires `subspacesTab.canSaveAsTemplate && level === 'L0'`
+   * so the kebab "Save as Template" entry is hidden at L1.
+   */
+  canSaveAsTemplate: boolean;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
 };

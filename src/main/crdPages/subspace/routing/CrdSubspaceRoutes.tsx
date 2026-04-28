@@ -3,12 +3,32 @@ import { Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import NonSpaceAdminRedirect from '@/domain/spaceAdmin/routing/NonSpaceAdminRedirect';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import CrdSubspacePageLayout from '../layout/CrdSubspacePageLayout';
 import CrdSubspaceCalloutsPage from '../tabs/CrdSubspaceCalloutsPage';
 
 const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/about/CrdSpaceAboutPage'));
+const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
+);
 const LegacySubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
+
+/**
+ * Wraps the subspace settings page with the same admin-redirect gate the
+ * legacy MUI L1/L2 routes use, sourcing the subspace id from `SubspaceContext`.
+ */
+function CrdSubspaceSettingsRoute() {
+  const { subspace } = useSubSpace();
+  return (
+    <NonSpaceAdminRedirect spaceId={subspace?.id || undefined}>
+      <Suspense fallback={<LoadingSpinner />}>
+        <CrdSpaceSettingsPage />
+      </Suspense>
+    </NonSpaceAdminRedirect>
+  );
+}
 
 export default function CrdSubspaceRoutes() {
   return (
@@ -24,6 +44,7 @@ export default function CrdSubspaceRoutes() {
             </Suspense>
           }
         />
+        <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
       </Route>
 
       {/*
@@ -41,9 +62,10 @@ export default function CrdSubspaceRoutes() {
             </Suspense>
           }
         />
+        <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
       </Route>
 
-      {/* Fall-through: legacy MUI subspace routes (settings, calendar, callout details). */}
+      {/* Fall-through: legacy MUI subspace routes (calendar, callout details). */}
       <Route
         path="*"
         element={

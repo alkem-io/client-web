@@ -74,6 +74,22 @@
         "cancel": "Cancelar",
         "saving": "Guardando…",
         "save": "Guardar"
+      },
+      "deletePhase": "Eliminar fase"
+    },
+    "addPhase": {
+      "button": "Añadir fase",
+      "dialog": {
+        "title": "Añadir una nueva fase",
+        "description": "Crea una nueva fase de flujo de innovación. Podrás renombrarla o eliminarla más tarde.",
+        "nameLabel": "Nombre de la fase",
+        "namePlaceholder": "p. ej. Descubrimiento",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿Qué ocurre en esta fase?",
+        "duplicate": "Ya existe una fase con este nombre.",
+        "errorGeneric": "No se pudo crear la fase. Inténtalo de nuevo.",
+        "cancel": "Cancelar",
+        "confirm": "Añadir fase"
       }
     },
     "row": {
@@ -134,7 +150,9 @@
       "email": "Correo",
       "role": {
         "lead": "Líder",
-        "member": "Miembro"
+        "member": "Miembro",
+        "promoteToLead": "Hacer líder",
+        "demoteFromLead": "Quitar como líder"
       },
       "actions": "Acciones",
       "empty": "No members found.",
@@ -578,6 +596,8 @@
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
       "memberCreateSubspaces": "Create Subespacios",
+      "inheritMembershipRights": "Heredar derechos de miembro",
+      "inheritMembershipRightsDescription": "Los miembros del Espacio padre obtienen acceso automáticamente a este Subespacio.",
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Anfitrión Organization"

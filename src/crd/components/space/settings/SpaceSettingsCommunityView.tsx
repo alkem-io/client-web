@@ -41,6 +41,10 @@ export type CommunityMember = {
   url?: string;
   /** Plain-text role: `Host`, `Admin`, `Lead`, `Member`. */
   roleLabel: string;
+  /** Whether this member currently holds the Lead role (drives the lead toggle). */
+  isLead: boolean;
+  /** Whether this member is a space admin — admin rows hide the lead toggle (admin role is managed separately). */
+  isAdmin: boolean;
   /** ISO or already-formatted date string shown in the Joined column. Empty → "—". */
   joinedDate: string;
 };
@@ -61,6 +65,13 @@ export type CommunityVC = {
 };
 
 export type SpaceSettingsCommunityViewProps = {
+  /**
+   * Space hierarchy level. Drives:
+   * - Virtual Contributors block visibility (L0 only — matches MUI's
+   *   `virtualContributorsBlockEnabled`).
+   * - Lead-toggle visibility on member/organization rows (L1/L2 only).
+   */
+  level: 'L0' | 'L1' | 'L2';
   members: CommunityMember[];
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
@@ -72,9 +83,18 @@ export type SpaceSettingsCommunityViewProps = {
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /** Aggregate lead-role policy gates from the role-set policy. */
+  leadPolicy: {
+    canAddLeadUser: boolean;
+    canRemoveLeadUser: boolean;
+    canAddLeadOrganization: boolean;
+    canRemoveLeadOrganization: boolean;
+  };
   onUserRemove: (id: string) => void;
+  onUserLeadChange?: (id: string, isLead: boolean) => void;
   onOrgAdd: () => void;
   onOrgRemove: (id: string) => void;
+  onOrgLeadChange?: (id: string, isLead: boolean) => void;
   onVCAdd: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
@@ -88,6 +108,7 @@ export type SpaceSettingsCommunityViewProps = {
 const MEMBERS_PAGE_SIZE = 10;
 
 export function SpaceSettingsCommunityView({
+  level,
   members,
   pendingMemberships,
   organizations,
@@ -95,9 +116,12 @@ export function SpaceSettingsCommunityView({
   applicationFormSlot,
   communityGuidelinesSlot,
   permissions,
+  leadPolicy,
   onUserRemove,
+  onUserLeadChange,
   onOrgAdd,
   onOrgRemove,
+  onOrgLeadChange,
   onVCAdd,
   onVCAddExternal,
   onVCRemove,
@@ -237,19 +261,37 @@ export function SpaceSettingsCommunityView({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        {m.url && (
-                          <DropdownMenuItem asChild={true}>
-                            <a href={m.url}>{t('community.members.viewProfile')}</a>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          onClick={() => onUserRemove(m.id)}
-                        >
-                          <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                          {t('community.members.remove')}
-                        </DropdownMenuItem>
+                        {(() => {
+                          const hasViewProfile = !!m.url;
+                          const showLeadAction = level !== 'L0' && !m.isAdmin && !!onUserLeadChange;
+                          return (
+                            <>
+                              {hasViewProfile && (
+                                <DropdownMenuItem asChild={true}>
+                                  <a href={m.url}>{t('community.members.viewProfile')}</a>
+                                </DropdownMenuItem>
+                              )}
+                              {showLeadAction && (
+                                <DropdownMenuItem
+                                  disabled={m.isLead ? !leadPolicy.canRemoveLeadUser : !leadPolicy.canAddLeadUser}
+                                  onClick={() => onUserLeadChange?.(m.id, !m.isLead)}
+                                >
+                                  {m.isLead
+                                    ? t('community.members.role.demoteFromLead')
+                                    : t('community.members.role.promoteToLead')}
+                                </DropdownMenuItem>
+                              )}
+                              {(hasViewProfile || showLeadAction) && <DropdownMenuSeparator />}
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => onUserRemove(m.id)}
+                              >
+                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                {t('community.members.remove')}
+                              </DropdownMenuItem>
+                            </>
+                          );
+                        })()}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -365,16 +407,41 @@ export function SpaceSettingsCommunityView({
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onOrgRemove(org.id)}
-                      aria-label={t('community.organizations.remove')}
-                      className="size-8"
-                    >
-                      <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild={true}>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-8"
+                          aria-label={t('community.organizations.actions')}
+                        >
+                          <MoreHorizontal aria-hidden="true" className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {level !== 'L0' && onOrgLeadChange && (
+                          <DropdownMenuItem
+                            disabled={
+                              org.isLead ? !leadPolicy.canRemoveLeadOrganization : !leadPolicy.canAddLeadOrganization
+                            }
+                            onClick={() => onOrgLeadChange(org.id, !org.isLead)}
+                          >
+                            {org.isLead
+                              ? t('community.members.role.demoteFromLead')
+                              : t('community.members.role.promoteToLead')}
+                          </DropdownMenuItem>
+                        )}
+                        {level !== 'L0' && onOrgLeadChange && <DropdownMenuSeparator />}
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => onOrgRemove(org.id)}
+                        >
+                          <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                          {t('community.organizations.remove')}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
@@ -392,76 +459,78 @@ export function SpaceSettingsCommunityView({
         )}
       </SectionCard>
 
-      <SectionCard
-        icon={Bot}
-        title={t('community.virtualContributors.title')}
-        description={t('community.virtualContributors.description')}
-        count={virtualContributors.length}
-      >
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[320px]">{t('community.virtualContributors.name')}</TableHead>
-                <TableHead className="w-[100px] text-right">{t('community.virtualContributors.actions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {virtualContributors.length === 0 && (
+      {level === 'L0' && (
+        <SectionCard
+          icon={Bot}
+          title={t('community.virtualContributors.title')}
+          description={t('community.virtualContributors.description')}
+          count={virtualContributors.length}
+        >
+          <div className="rounded-lg border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
-                    {t('community.virtualContributors.empty')}
-                  </TableCell>
+                  <TableHead className="w-[320px]">{t('community.virtualContributors.name')}</TableHead>
+                  <TableHead className="w-[100px] text-right">{t('community.virtualContributors.actions')}</TableHead>
                 </TableRow>
-              )}
-              {virtualContributors.map((vc, index) => (
-                <TableRow key={vc.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
-                  <TableCell>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="size-8 rounded-md flex items-center justify-center bg-primary/10 text-primary shrink-0">
-                        <Bot aria-hidden="true" className="size-4" />
+              </TableHeader>
+              <TableBody>
+                {virtualContributors.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
+                      {t('community.virtualContributors.empty')}
+                    </TableCell>
+                  </TableRow>
+                )}
+                {virtualContributors.map((vc, index) => (
+                  <TableRow key={vc.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                    <TableCell>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="size-8 rounded-md flex items-center justify-center bg-primary/10 text-primary shrink-0">
+                          <Bot aria-hidden="true" className="size-4" />
+                        </div>
+                        {vc.url ? (
+                          <a href={vc.url} className="block text-body-emphasis truncate hover:underline">
+                            {vc.displayName}
+                          </a>
+                        ) : (
+                          <span className="block text-body-emphasis truncate">{vc.displayName}</span>
+                        )}
                       </div>
-                      {vc.url ? (
-                        <a href={vc.url} className="block text-body-emphasis truncate hover:underline">
-                          {vc.displayName}
-                        </a>
-                      ) : (
-                        <span className="block text-body-emphasis truncate">{vc.displayName}</span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onVCRemove(vc.id)}
-                      aria-label={t('community.virtualContributors.remove')}
-                      className="size-8"
-                    >
-                      <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        {permissions.canAddVirtualContributors && (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
-              <Plus aria-hidden="true" className="size-4" />
-              {t('community.virtualContributors.add')}
-            </Button>
-            {onVCAddExternal && (
-              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
-                <Plus aria-hidden="true" className="size-4" />
-                {t('community.virtualContributors.addExternal')}
-              </Button>
-            )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onVCRemove(vc.id)}
+                        aria-label={t('community.virtualContributors.remove')}
+                        className="size-8"
+                      >
+                        <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        )}
-      </SectionCard>
+          {permissions.canAddVirtualContributors && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
+                <Plus aria-hidden="true" className="size-4" />
+                {t('community.virtualContributors.add')}
+              </Button>
+              {onVCAddExternal && (
+                <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
+                  <Plus aria-hidden="true" className="size-4" />
+                  {t('community.virtualContributors.addExternal')}
+                </Button>
+              )}
+            </div>
+          )}
+        </SectionCard>
+      )}
     </div>
   );
 }

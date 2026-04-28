@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, MoreVertical, Pencil } from 'lucide-react';
+import { Check, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
@@ -169,6 +169,18 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflo
             ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        {actions.onDeletePhase && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => void actions.onDeletePhase?.(column.id)}
+            >
+              <Trash2 aria-hidden="true" className="mr-2 size-3.5" />
+              {t('layout.column.deletePhase')}
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

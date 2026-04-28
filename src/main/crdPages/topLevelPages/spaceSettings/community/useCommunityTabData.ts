@@ -18,6 +18,7 @@ import {
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useCommunityPolicyChecker from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityPolicyChecker';
 
 export type CommunityPendingRemoval =
   | { kind: 'user'; id: string; name: string }
@@ -42,8 +43,21 @@ export type UseCommunityTabDataResult = {
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
+  /**
+   * Aggregate lead-role policy: derived from `leadRoleDefinition.{user,organization}Policy`
+   * and the current count of leads. Per-user disabled state is `(!canAddLead && !row.isLead) ||
+   * (!canRemoveLead && row.isLead)` — mirrors the legacy `CommunityMemberSettingsDialog`.
+   */
+  leadPolicy: {
+    canAddLeadUser: boolean;
+    canRemoveLeadUser: boolean;
+    canAddLeadOrganization: boolean;
+    canRemoveLeadOrganization: boolean;
+  };
   onUserRemove: (id: string) => void;
+  onUserLeadChange: (id: string, isLead: boolean) => Promise<unknown>;
   onOrgRemove: (id: string) => void;
+  onOrgLeadChange: (id: string, isLead: boolean) => Promise<unknown>;
   onVCRemove: (id: string) => void;
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
@@ -106,9 +120,28 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       avatarUrl: u.profile?.avatar?.uri,
       url: u.profile?.url,
       roleLabel,
+      isLead: u.isLead,
+      isAdmin: u.isAdmin,
       joinedDate: '',
     };
   });
+
+  const userLeadPolicy = useCommunityPolicyChecker(
+    community.membershipAdmin.memberRoleDefinition,
+    community.membershipAdmin.leadRoleDefinition,
+    community.userAdmin.members
+  );
+  const orgLeadPolicy = useCommunityPolicyChecker(
+    community.membershipAdmin.memberRoleDefinition,
+    community.membershipAdmin.leadRoleDefinition,
+    community.organizationAdmin.members
+  );
+  const leadPolicy = {
+    canAddLeadUser: userLeadPolicy.canAddLeadUser,
+    canRemoveLeadUser: userLeadPolicy.canRemoveLeadUser,
+    canAddLeadOrganization: orgLeadPolicy.canAddLeadOrganization,
+    canRemoveLeadOrganization: orgLeadPolicy.canRemoveLeadOrganization,
+  };
 
   const applicationMemberships: PendingMembership[] = community.membershipAdmin.applications
     .map<PendingMembership | null>(app => {
@@ -263,14 +296,20 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     }
   };
 
+  const onUserLeadChange = (id: string, isLead: boolean) => community.userAdmin.onLeadChange(id, isLead);
+  const onOrgLeadChange = (id: string, isLead: boolean) => community.organizationAdmin.onLeadChange(id, isLead);
+
   return {
     members,
     pendingMemberships,
     organizations,
     virtualContributors,
     permissions: community.permissions,
+    leadPolicy,
     onUserRemove,
+    onUserLeadChange,
     onOrgRemove,
+    onOrgLeadChange,
     onVCRemove,
     onPendingApprove,
     onPendingReject,
