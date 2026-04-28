@@ -17,6 +17,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
+import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -39,6 +40,7 @@ import {
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
@@ -52,7 +54,7 @@ export default function CrdSpacePageLayout() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [_shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [communityOpen, setCommunityOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -223,6 +225,24 @@ export default function CrdSpacePageLayout() {
         open={communityOpen}
         onOpenChange={setCommunityOpen}
         roleSetId={space.about.membership?.roleSetID || undefined}
+      />
+
+      {/* Share dialog — opened from header share icon and the mobile "More" drawer.
+          `entityLabel` is lowercased so the default message reads "...this space
+          interesting" mid-sentence (mirrors the callout flow's "post"). */}
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        url={spaceUrl}
+        shareOnAlkemioSlot={
+          spaceUrl ? (
+            <CalloutShareOnAlkemioForm
+              key={spaceUrl}
+              url={spaceUrl}
+              entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
+            />
+          ) : undefined
+        }
       />
     </StorageConfigContextProvider>
   );
