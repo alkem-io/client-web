@@ -24,7 +24,7 @@ Two passes, one branch, one PR sequence. Scope: **full Share parity with MUI for
 
 ### Pass 1 — Dialog shell + clipboard (drop the MUI portal)
 
-Build a controlled CRD `ShareDialog` (URL + clipboard copy with Check feedback) and refactor the existing CRD `ShareButton` to compose it. Wire it into `CalloutSettingsConnector` to replace the MUI `ShareDialog` portal. The 7 other MUI `ShareDialog` callsites (memo, calendar, discussion, callout block, dashboard updates section, etc.) stay on MUI — they live inside MUI pages where the visual inconsistency does not arise.
+Build a controlled CRD `ShareDialog` (URL + clipboard copy with Check feedback) and refactor the existing CRD `ShareButton` to compose it. Wire it into `CalloutSettingsConnector` to replace the MUI `ShareDialog` portal. The remaining MUI `ShareDialog` callsites (memo, calendar, discussion, callout block, dashboard updates section, etc.) stay on MUI — they live inside MUI pages where the visual inconsistency does not arise.
 
 ### Pass 2 — Share on Alkemio sub-flow
 
@@ -149,7 +149,7 @@ The pre-existing CRD `ShareButton` (`src/crd/components/common/ShareButton.tsx`)
 
 ## Out of scope (explicitly deferred)
 
-- **The 7 other MUI `ShareDialog` callsites** — `MemoDialog`, `CalendarEventDetail`, `DiscussionView`, `CalloutSettingsUI` (MUI callout block), `CalloutContributionPreview`, `WhiteboardView` (MUI whiteboard management), `CommunityUpdatesDialog`, `DashboardUpdatesSection`, and `PublicWhiteboardPage` (the MUI public whiteboard, distinct from the CRD `CrdPublicWhiteboardPage`). These render inside MUI pages where the visual inconsistency does not arise. They will switch to the CRD `ShareDialog` when their hosting pages migrate to CRD.
+- **The remaining MUI `ShareDialog` callsites** — `MemoDialog`, `CalendarEventDetail`, `DiscussionView`, `CalloutSettingsUI` (MUI callout block), `CalloutContributionPreview`, `WhiteboardView` (MUI whiteboard management), `CommunityUpdatesDialog`, `DashboardUpdatesSection`, and `PublicWhiteboardPage` (the MUI public whiteboard, distinct from the CRD `CrdPublicWhiteboardPage`). These render inside MUI pages where the visual inconsistency does not arise. They will switch to the CRD `ShareDialog` when their hosting pages migrate to CRD.
 - **A reusable CRD `UserSelector` for non-Share contexts.** This sub-spec extracts the selector into `src/crd/forms/UserSelector.tsx` so it is available to future consumers (e.g., invitation flows), but does not migrate any existing user-picker callsite. That is a separate sub-spec.
 - **Search debounce / pagination.** The query runs on every keystroke (matches MUI). Adding a debounce or "Load more" is a follow-up if the search becomes a hot spot.
 - **Sharing to external platforms** (email, social). The MUI dialog had a `MUI button group` shape that supports adding external platforms; the CRD design ports only the two existing handlers (clipboard, Alkemio). A future external-share platform would slot in next to the Alkemio button.

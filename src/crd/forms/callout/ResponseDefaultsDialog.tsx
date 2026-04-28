@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -51,10 +51,19 @@ export function ResponseDefaultsDialog({
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<ContributionDefaults>(values);
 
-  // Reset draft whenever the dialog opens with new parent values.
+  // Seed the draft only on the closed → open transition. A parent re-render
+  // that hands a new `values` reference (unrelated form mutation, identity
+  // change) would otherwise clobber the user's in-flight draft. The ref keeps
+  // `values` out of the effect deps without disabling exhaustive-deps.
+  const valuesRef = useRef(values);
+  valuesRef.current = values;
+  const wasOpenRef = useRef(false);
   useEffect(() => {
-    if (open) setDraft(values);
-  }, [open, values]);
+    if (open && !wasOpenRef.current) {
+      setDraft(valuesRef.current);
+    }
+    wasOpenRef.current = open;
+  }, [open]);
 
   const title = (() => {
     switch (type) {

@@ -356,7 +356,8 @@
     "unpublishTitle": "Deze $t(common.callout) als concept zetten?",
     "unpublishDescription": "De $t(common.callout) is niet langer zichtbaar voor leden van de space.",
     "unpublishConfirm": "Naar concept",
-    "notifyMembers": "Leden van de space waarschuwen"
+    "notifyMembers": "Leden van de space waarschuwen",
+    "saveFailed": "De zichtbaarheid kon niet worden gewijzigd. Probeer het opnieuw."
   },
   "sortContributions": {
     "title": "Bijdragen sorteren",
@@ -369,7 +370,11 @@
   "deleteCallout": {
     "title": "Deze $t(common.callout) verwijderen?",
     "description": "“{{title}}” wordt definitief verwijderd, samen met de bijdragen en reacties. Deze actie kan niet ongedaan worden gemaakt.",
-    "confirm": "Verwijderen"
+    "confirm": "Verwijderen",
+    "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Het sjabloon kon niet worden opgeslagen. Probeer het opnieuw."
   },
   "findTemplate": {
     "overwriteTitle": "Huidige inhoud vervangen?",

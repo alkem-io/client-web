@@ -356,7 +356,8 @@
     "unpublishTitle": "¿Mover este aviso a borrador?",
     "unpublishDescription": "El aviso dejará de ser visible para los miembros del espacio.",
     "unpublishConfirm": "Mover a borrador",
-    "notifyMembers": "Notificar a los miembros del espacio"
+    "notifyMembers": "Notificar a los miembros del espacio",
+    "saveFailed": "No se pudo cambiar la visibilidad. Vuelve a intentarlo."
   },
   "sortContributions": {
     "title": "Ordenar contribuciones",
@@ -369,7 +370,11 @@
   "deleteCallout": {
     "title": "¿Eliminar este aviso?",
     "description": "“{{title}}” se eliminará de forma permanente, junto con sus contribuciones y comentarios. Esta acción no se puede deshacer.",
-    "confirm": "Eliminar"
+    "confirm": "Eliminar",
+    "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "No se pudo guardar la plantilla. Vuelve a intentarlo."
   },
   "findTemplate": {
     "overwriteTitle": "¿Reemplazar el contenido actual?",

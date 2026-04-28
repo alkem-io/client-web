@@ -356,7 +356,8 @@
     "unpublishTitle": "Remettre ce $t(common.callout) en brouillon ?",
     "unpublishDescription": "Le $t(common.callout) ne sera plus visible pour les membres de l'espace.",
     "unpublishConfirm": "Remettre en brouillon",
-    "notifyMembers": "Avertir les membres de l'espace"
+    "notifyMembers": "Avertir les membres de l'espace",
+    "saveFailed": "Impossible de modifier la visibilité. Veuillez réessayer."
   },
   "sortContributions": {
     "title": "Trier les contributions",
@@ -369,7 +370,11 @@
   "deleteCallout": {
     "title": "Supprimer ce $t(common.callout) ?",
     "description": "« {{title}} » sera définitivement supprimé, ainsi que ses contributions et commentaires. Cette action est irréversible.",
-    "confirm": "Supprimer"
+    "confirm": "Supprimer",
+    "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Impossible d'enregistrer le modèle. Veuillez réessayer."
   },
   "findTemplate": {
     "overwriteTitle": "Remplacer le contenu actuel ?",

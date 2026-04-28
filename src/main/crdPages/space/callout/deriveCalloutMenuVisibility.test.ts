@@ -5,7 +5,7 @@ import { type CalloutMenuPermissionsInput, deriveCalloutMenuVisibility } from '.
 const baseInput: CalloutMenuPermissionsInput = {
   myPrivileges: [AuthorizationPrivilege.Read],
   visibility: CalloutVisibility.Published,
-  calloutsSetMyPrivileges: [AuthorizationPrivilege.Read],
+  canMoveSet: false,
   contributionsEnabled: false,
   contributionsCount: 0,
   canBeSavedAsTemplate: false,
@@ -16,7 +16,7 @@ const baseInput: CalloutMenuPermissionsInput = {
 const withUpdate = (input: Partial<CalloutMenuPermissionsInput> = {}): CalloutMenuPermissionsInput => ({
   ...baseInput,
   myPrivileges: [AuthorizationPrivilege.Read, AuthorizationPrivilege.Update],
-  calloutsSetMyPrivileges: [AuthorizationPrivilege.Read, AuthorizationPrivilege.Update],
+  canMoveSet: true,
   ...input,
 });
 
@@ -104,17 +104,16 @@ describe('deriveCalloutMenuVisibility', () => {
     const perms = deriveCalloutMenuVisibility(
       withUpdate({
         hasMoveNeighbours: true,
-        calloutsSetMyPrivileges: [AuthorizationPrivilege.Read],
+        canMoveSet: false,
       })
     );
     expect(perms.movable).toBe(false);
   });
 
-  it('undefined privileges arrays are treated as "no privileges"', () => {
+  it('undefined myPrivileges treated as "no privileges"', () => {
     const perms = deriveCalloutMenuVisibility({
       ...baseInput,
       myPrivileges: undefined,
-      calloutsSetMyPrivileges: undefined,
     });
     expect(perms.showEdit).toBe(false);
     expect(perms.movable).toBe(false);

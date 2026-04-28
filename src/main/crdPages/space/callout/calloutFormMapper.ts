@@ -79,10 +79,14 @@ export const allowedActorsFromServer = (value: CalloutAllowedActors | undefined)
  * are dropped, whitespace trimmed. See spec D3 / FR-61.
  */
 export const tagsStringToArray = (raw: string): string[] =>
-  raw
-    .split(',')
-    .map(t => t.trim())
-    .filter(Boolean);
+  Array.from(
+    new Set(
+      raw
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean)
+    )
+  );
 
 export type MapFormOptions = {
   visibility: CalloutVisibility;

@@ -356,7 +356,8 @@
     "unpublishTitle": "Diesen $t(common.callout) in den Entwurf zurücksetzen?",
     "unpublishDescription": "Der $t(common.Callout) ist dann für Space-Mitglieder nicht mehr sichtbar.",
     "unpublishConfirm": "In Entwurf verschieben",
-    "notifyMembers": "Space-Mitglieder benachrichtigen"
+    "notifyMembers": "Space-Mitglieder benachrichtigen",
+    "saveFailed": "Die Sichtbarkeit konnte nicht geändert werden. Bitte erneut versuchen."
   },
   "sortContributions": {
     "title": "Beiträge sortieren",
@@ -369,7 +370,11 @@
   "deleteCallout": {
     "title": "Diesen $t(common.Callout) löschen?",
     "description": "„{{title}}“ wird dauerhaft gelöscht, zusammen mit seinen Beiträgen und Kommentaren. Diese Aktion kann nicht rückgängig gemacht werden.",
-    "confirm": "Löschen"
+    "confirm": "Löschen",
+    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
   },
   "findTemplate": {
     "overwriteTitle": "Aktuellen Inhalt ersetzen?",

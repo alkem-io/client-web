@@ -93,12 +93,12 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   const perms = deriveCalloutMenuVisibility({
     myPrivileges: callout.authorization?.myPrivileges,
     visibility: callout.settings.visibility,
-    // Set-level privileges aren't on `callout.authorization` — we can't gate
-    // move actions by set privileges here. The parent (LazyCalloutItem /
-    // CalloutListConnector) is the authoritative source for "movable" since
-    // it knows the ordered list; if `moveActions` is undefined or the callout
-    // is alone, moves are hidden.
-    calloutsSetMyPrivileges: callout.authorization?.myPrivileges,
+    // Set-level Update is not exposed on `callout.authorization`; the parent
+    // list connector (LazyCalloutItem / CalloutListConnector) only hands down
+    // `moveActions` when the user has it, so its presence is the authoritative
+    // signal. `hasMoveNeighbours` then narrows further to "is there a sibling
+    // to swap with?".
+    canMoveSet: !!moveActions,
     contributionsEnabled: callout.settings.contribution.enabled,
     contributionsCount: callout.contributions.length,
     canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
@@ -115,6 +115,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
       setVisibilityAction(null);
     } catch (err) {
       logError(new Error('Callout visibility change failed', { cause: err as Error }));
+      notify(t('visibilityChange.saveFailed'), 'error');
     } finally {
       setMutating(false);
     }
@@ -127,6 +128,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
       setDeleteOpen(false);
     } catch (err) {
       logError(new Error('Callout delete failed', { cause: err as Error }));
+      notify(t('deleteCallout.saveFailed'), 'error');
     } finally {
       setMutating(false);
     }
@@ -211,6 +213,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
               setSaveAsTemplateOpen(false);
             } catch (err) {
               logError(new Error('Save as template failed', { cause: err as Error }));
+              notify(t('saveAsTemplate.saveFailed'), 'error');
             }
           }}
           getDefaultValues={async () => {

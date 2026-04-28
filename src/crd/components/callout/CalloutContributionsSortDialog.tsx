@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { GripVertical, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -58,10 +58,19 @@ export function CalloutContributionsSortDialog({
   const { t } = useTranslation('crd-space');
   const [items, setItems] = useState<SortableContribution[]>(contributions);
 
-  // Re-seed when the source data changes (dialog reopen / refetch).
+  // Re-seed only on the closed → open transition. A parent re-render that
+  // hands a new `contributions` reference (e.g. unrelated cache update) would
+  // otherwise wipe an in-progress drag reorder. The ref keeps `contributions`
+  // out of the effect deps without disabling the exhaustive-deps lint rule.
+  const contributionsRef = useRef(contributions);
+  contributionsRef.current = contributions;
+  const wasOpenRef = useRef(false);
   useEffect(() => {
-    setItems(contributions);
-  }, [contributions]);
+    if (open && !wasOpenRef.current) {
+      setItems(contributionsRef.current);
+    }
+    wasOpenRef.current = open;
+  }, [open]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

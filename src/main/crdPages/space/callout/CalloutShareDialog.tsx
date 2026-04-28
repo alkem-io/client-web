@@ -25,7 +25,10 @@ export function CalloutShareDialog({ open, onOpenChange, callout }: CalloutShare
       open={open}
       onOpenChange={onOpenChange}
       url={url}
-      shareOnAlkemioSlot={<CalloutShareOnAlkemioForm url={url} entityLabel={t('common.callout')} />}
+      // Key by `url` so the form remounts (and seeds `message` from the new
+      // default) if a different callout is ever shown through the same dialog
+      // instance — local message/selectedUsers state would otherwise go stale.
+      shareOnAlkemioSlot={<CalloutShareOnAlkemioForm key={url} url={url} entityLabel={t('common.callout')} />}
     />
   );
 }

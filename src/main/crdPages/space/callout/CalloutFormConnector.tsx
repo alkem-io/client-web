@@ -128,6 +128,8 @@ export function CalloutFormConnector({
   );
 
   // Prefill guard: only run once per data payload per open dialog session.
+  // The same effect resets the guard whenever the dialog closes or leaves edit
+  // mode, so reopening picks up fresh data.
   const prefilledCalloutIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (mode !== 'edit' || !open) {
@@ -140,11 +142,6 @@ export function CalloutFormConnector({
       prefilledCalloutIdRef.current = callout.id;
     }
   }, [mode, open, editData, prefill]);
-
-  // Reset the guard so reopening the dialog re-runs prefill on the next data.
-  useEffect(() => {
-    if (!open) prefilledCalloutIdRef.current = null;
-  }, [open]);
 
   // --- Create path -------------------------------------------------------
   const submitting = creating || updating || mediaGalleryUploading;

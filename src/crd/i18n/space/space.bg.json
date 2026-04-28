@@ -356,7 +356,8 @@
     "unpublishTitle": "Да върна ли този $t(common.callout) в чернова?",
     "unpublishDescription": "$t(common.Callout)-ът вече няма да е видим за членовете на пространството.",
     "unpublishConfirm": "Към чернова",
-    "notifyMembers": "Уведоми членовете на пространството"
+    "notifyMembers": "Уведоми членовете на пространството",
+    "saveFailed": "Видимостта не можа да бъде променена. Опитайте отново."
   },
   "sortContributions": {
     "title": "Сортирай приносите",
@@ -369,7 +370,11 @@
   "deleteCallout": {
     "title": "Да изтрия ли този $t(common.callout)?",
     "description": "“{{title}}” ще бъде изтрит окончателно, заедно с приносите и коментарите. Това действие не може да бъде отменено.",
-    "confirm": "Изтрий"
+    "confirm": "Изтрий",
+    "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Шаблонът не можа да бъде запазен. Опитайте отново."
   },
   "findTemplate": {
     "overwriteTitle": "Да заменя ли текущото съдържание?",

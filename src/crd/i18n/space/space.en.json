@@ -347,7 +347,8 @@
     "unpublishTitle": "Move this $t(common.callout) to draft?",
     "unpublishDescription": "The $t(common.callout) will no longer be visible to space members.",
     "unpublishConfirm": "Move to draft",
-    "notifyMembers": "Notify space members"
+    "notifyMembers": "Notify space members",
+    "saveFailed": "Could not change the visibility. Please try again."
   },
   "sortContributions": {
     "title": "Sort contributions",
@@ -360,7 +361,11 @@
   "deleteCallout": {
     "title": "Delete this $t(common.callout)?",
     "description": "“{{title}}” will be deleted permanently, along with its contributions and comments. This action cannot be undone.",
-    "confirm": "Delete"
+    "confirm": "Delete",
+    "saveFailed": "Could not delete the $t(common.callout). Please try again."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Could not save the template. Please try again."
   },
   "findTemplate": {
     "overwriteTitle": "Replace your current content?",

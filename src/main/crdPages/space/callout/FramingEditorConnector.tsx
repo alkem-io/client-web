@@ -141,8 +141,15 @@ export function FramingEditorConnector({
       // the actual server whiteboard; that dialog persists changes via its
       // own mutations. The callout-update mutation never includes
       // `whiteboardContent` (see `mapFormToCalloutUpdateInput`).
-      if (mode === 'edit' && editWhiteboard) {
-        const guestShareUrl = buildGuestShareUrl(editWhiteboard.id ?? editWhiteboard.nameID ?? undefined);
+      if (mode === 'edit') {
+        // Render a placeholder until the whiteboard payload arrives. Falling
+        // through to the create-mode single-user editor here would give the
+        // user a UI that silently discards edits — the update mapper omits
+        // whiteboardContent on purpose.
+        if (!editWhiteboard) {
+          return <Loading />;
+        }
+        const guestShareUrl = buildGuestShareUrl(editWhiteboard.id);
         return (
           <>
             <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
@@ -243,7 +250,14 @@ export function FramingEditorConnector({
     }
 
     case 'memo':
-      if (mode === 'edit' && editMemoId) {
+      if (mode === 'edit') {
+        // Same reasoning as the whiteboard branch above: in edit mode without
+        // a memo id we can't open `CrdMemoDialog`, and falling through to the
+        // create-mode `MemoFramingEditor` would be a write-loss trap because
+        // the update mapper omits memoContent.
+        if (!editMemoId) {
+          return <Loading />;
+        }
         return (
           <>
             <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">

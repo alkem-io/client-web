@@ -35,7 +35,7 @@ export function useCrdCalloutMoveActions({
 }: UseCrdCalloutMoveActionsParams): CalloutMoveActions {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
-  const [updateSortOrder] = useUpdateCalloutsSortOrderMutation();
+  const [updateSortOrder, { loading: submitting }] = useUpdateCalloutsSortOrderMutation();
 
   const index = orderedCalloutIds.indexOf(calloutId);
   const isTop = index <= 0;
@@ -43,6 +43,12 @@ export function useCrdCalloutMoveActions({
 
   const submit = async (nextIds: string[]) => {
     if (!calloutsSetId) return;
+    // A previous move is still in flight: each handler computes `nextIds` from
+    // the snapshot captured at render time, so a rapid double-click would
+    // otherwise submit a stale ordering. Drop the second click — the user
+    // will see the parent re-render with the new order before the next move
+    // is acceptable.
+    if (submitting) return;
     try {
       await updateSortOrder({
         variables: { calloutsSetID: calloutsSetId, calloutIds: nextIds },

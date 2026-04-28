@@ -3,7 +3,13 @@ import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generat
 export type CalloutMenuPermissionsInput = {
   myPrivileges: AuthorizationPrivilege[] | undefined;
   visibility: CalloutVisibility;
-  calloutsSetMyPrivileges: AuthorizationPrivilege[] | undefined;
+  /**
+   * Whether the current user can reorder callouts within the parent set.
+   * The set-level `Update` privilege is not part of `callout.authorization`,
+   * so the consumer (the parent list connector) is the authoritative source —
+   * typically expressed as `Boolean(moveActions)`.
+   */
+  canMoveSet: boolean;
   contributionsEnabled: boolean;
   contributionsCount: number;
   canBeSavedAsTemplate: boolean;
@@ -46,7 +52,6 @@ export type CalloutMenuPermissions = {
 export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput): CalloutMenuPermissions => {
   const editable = input.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const isDraft = input.visibility === CalloutVisibility.Draft;
-  const canMoveSet = input.calloutsSetMyPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return {
     editable,
@@ -58,6 +63,6 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
     showShare: true,
     showSortContributions: editable && input.contributionsEnabled && input.contributionsCount >= 2,
     showSaveAsTemplate: editable && input.canBeSavedAsTemplate && input.saveAsTemplateFeatureEnabled,
-    movable: canMoveSet && input.hasMoveNeighbours,
+    movable: input.canMoveSet && input.hasMoveNeighbours,
   };
 };
