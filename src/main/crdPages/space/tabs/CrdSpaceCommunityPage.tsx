@@ -29,6 +29,7 @@ export default function CrdSpaceCommunityPage() {
     calloutsSetId,
     canCreateCallout,
     tabDescription,
+    flowStateForNewCallouts,
     leadUsers,
     leadOrganizations,
     virtualContributors,
@@ -103,7 +104,12 @@ export default function CrdSpaceCommunityPage() {
       </div>
 
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
 
       {canInvite && (

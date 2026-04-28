@@ -23,8 +23,15 @@ export default function CrdSpaceDashboardPage() {
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const navigate = useNavigate();
-  const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
-    useCrdSpaceDashboard();
+  const {
+    callouts,
+    calloutsSetId,
+    canCreateCallout,
+    tabDescription,
+    dashboardNavigation,
+    flowStateForNewCallouts,
+    loading,
+  } = useCrdSpaceDashboard();
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
   const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const locale = useCrdSpaceLocale();
@@ -90,7 +97,12 @@ export default function CrdSpaceDashboardPage() {
       <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
 
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
 
       <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
