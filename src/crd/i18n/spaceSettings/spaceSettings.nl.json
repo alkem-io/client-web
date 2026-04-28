@@ -69,6 +69,7 @@
         "dialogTitle": "Bewerken Details: Flow Phase",
         "titleLabel": "Titel",
         "editTitle": "Bewerken title",
+        "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",
         "descriptionPlaceholder": "Beschrijving",
         "cancel": "Annuleren",

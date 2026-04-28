@@ -1,8 +1,9 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Check, MoreVertical, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
@@ -20,6 +21,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
+import { Input } from '@/crd/primitives/input';
 import { LayoutCalloutRow } from './LayoutCalloutRow';
 import type {
   ColumnMenuActions,
@@ -207,6 +209,7 @@ function EditDetailsDialog({
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [saving, setSaving] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
     setSaving(true);
@@ -237,14 +240,24 @@ function EditDetailsDialog({
             <span className="text-body-emphasis text-muted-foreground">
               {t('layout.column.editDetails.titleLabel')}
             </span>
-            <InlineEditText
-              value={title}
-              onChange={setTitle}
-              ariaLabel={t('layout.column.editDetails.titleLabel')}
-              editAriaLabel={t('layout.column.editDetails.editTitle')}
-              placeholder={t('layout.column.titlePlaceholder')}
-              className="text-subsection-title"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                ref={titleInputRef}
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder={t('layout.column.titlePlaceholder')}
+                aria-label={t('layout.column.editDetails.titleLabel')}
+                disabled={saving}
+                className="flex-1 text-subsection-title"
+              />
+              <EmojiInsertButton
+                inputRef={titleInputRef}
+                value={title}
+                onChange={setTitle}
+                ariaLabel={t('layout.column.editDetails.insertEmoji')}
+                disabled={saving}
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
