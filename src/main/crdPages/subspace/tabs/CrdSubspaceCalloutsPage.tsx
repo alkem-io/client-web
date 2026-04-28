@@ -68,8 +68,9 @@ export default function CrdSubspaceCalloutsPage() {
         />
       )}
 
-      {/* Mobile bottom-bar clearance: ensures the last callout isn't hidden behind the fixed bar / FAB. */}
-      <div className="h-36 sm:hidden" aria-hidden="true" />
+      {/* Mobile bottom-bar clearance: only render when the fixed bar / FAB is actually shown
+          (i.e. when there are phases — otherwise SubspaceFlowTabs renders the empty state). */}
+      {phases.length > 0 && <div className="h-36 sm:hidden" aria-hidden="true" />}
 
       {canAddPost && calloutsSetId && (
         <CalloutFormConnector

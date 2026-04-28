@@ -450,7 +450,9 @@ function BannerUpload({
       {visual.uri ? (
         <>
           <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+          {/* Touch devices have no hover, so the change action is always visible on mobile;
+              on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
               {t('about.branding.changeBanner')}

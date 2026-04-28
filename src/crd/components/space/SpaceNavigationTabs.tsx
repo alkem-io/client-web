@@ -144,16 +144,20 @@ function MobileTabBar({
             );
           })}
         </ul>
-        <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
-        <button
-          type="button"
-          onClick={onMenuClick}
-          className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-          aria-label={t('mobile.menu')}
-          aria-haspopup="dialog"
-        >
-          <Menu className="h-5 w-5" aria-hidden="true" />
-        </button>
+        {onMenuClick && (
+          <>
+            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              aria-label={t('mobile.menu')}
+              aria-haspopup="dialog"
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );

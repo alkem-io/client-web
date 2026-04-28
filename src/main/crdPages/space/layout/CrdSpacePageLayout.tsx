@@ -9,7 +9,7 @@ import {
   UserCircle,
   Users,
 } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -57,6 +57,13 @@ export default function CrdSpacePageLayout() {
   const [communityOpen, setCommunityOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
+
+  // Sidebar links are portaled in (see SpaceSidebarPortal), so following one
+  // doesn't go through any handler in this layout that could close the drawer.
+  // Watch pathname instead and auto-close the mobile drawer on every navigation.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);

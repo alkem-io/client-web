@@ -1,5 +1,5 @@
 import { Layers, Layout as LayoutIcon } from 'lucide-react';
-import { type ReactNode, Suspense, useState } from 'react';
+import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -45,6 +45,13 @@ export default function CrdSubspacePageLayout() {
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Sidebar links are portaled in via `mobileMenuContent`, so following one
+  // doesn't go through any handler in this layout. Watch pathname instead and
+  // auto-close the mobile drawer on every navigation.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const isOnSettings = pathname.includes('/settings');
   const settingsLevel: 'L1' | 'L2' = spaceLevel === SpaceLevel.L2 ? 'L2' : 'L1';
@@ -92,8 +99,14 @@ export default function CrdSubspacePageLayout() {
   const subspaceSidebar = (
     <SubspaceSidebar
       {...data.sidebar}
-      onEditClick={() => navigate(`${data.subspaceUrl}/settings/about`)}
-      onAboutClick={() => setAboutOpen(true)}
+      onEditClick={() => {
+        setMobileMenuOpen(false);
+        navigate(`${data.subspaceUrl}/settings/about`);
+      }}
+      onAboutClick={() => {
+        setMobileMenuOpen(false);
+        setAboutOpen(true);
+      }}
       onQuickActionClick={handleQuickAction}
     />
   );
