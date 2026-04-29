@@ -182,17 +182,21 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
 
-  // Contribution defaults — spec FR-40..46, D5.
+  // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
+  // filter: only send `postDescription` for post/memo responses, only send
+  // `whiteboardContent` for whiteboard responses. Sending whiteboardContent on
+  // a post callout (or vice-versa) trips backend DTO validation. An empty
+  // form value means "user did not configure a default" — omit it.
   if (hasResponseType) {
     const defaults = values.contributionDefaults;
-    const hasAny =
-      defaults.defaultDisplayName.trim() || defaults.postDescription.trim() || defaults.whiteboardContent.trim();
-    if (hasAny) {
-      callout.contributionDefaults = {
-        defaultDisplayName: defaults.defaultDisplayName.trim() || undefined,
-        postDescription: defaults.postDescription.trim() || undefined,
-        whiteboardContent: defaults.whiteboardContent.trim() || undefined,
-      };
+    const isWhiteboardResponse = values.responseType === 'whiteboard';
+    const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
+    const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
+    const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
+    const whiteboardContent =
+      isWhiteboardResponse && defaults.whiteboardContent ? defaults.whiteboardContent : undefined;
+    if (defaultDisplayName || postDescription || whiteboardContent) {
+      callout.contributionDefaults = { defaultDisplayName, postDescription, whiteboardContent };
     }
   }
 
@@ -384,6 +388,7 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 
+  const whiteboardDefault = values.contributionDefaults.whiteboardContent;
   const contributionDefaultsInput: UpdateCalloutEntityInput['contributionDefaults'] | undefined = hasResponseType
     ? {
         defaultDisplayName: values.contributionDefaults.defaultDisplayName.trim() || undefined,
@@ -391,10 +396,7 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
           values.responseType === 'post' || values.responseType === 'memo'
             ? values.contributionDefaults.postDescription.trim() || undefined
             : undefined,
-        whiteboardContent:
-          values.responseType === 'whiteboard'
-            ? values.contributionDefaults.whiteboardContent.trim() || undefined
-            : undefined,
+        whiteboardContent: values.responseType === 'whiteboard' && whiteboardDefault ? whiteboardDefault : undefined,
       }
     : undefined;
 
