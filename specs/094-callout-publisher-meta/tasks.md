@@ -49,7 +49,7 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 ## Phase 3: User Story 1 — Reader sees who published a callout (Priority: P1) 🎯 MVP
 
-**Goal**: On every callout-meta surface (MUI dialog header, three CRD presentations, CRD search-result card), display the publisher's name when the callout has been published — falling back to the creator when the publisher is absent (and to the localised `Unknown` label only as the last resort, in search-result cards specifically).
+**Goal**: On every callout-meta surface (MUI callout-dialog header, three CRD presentations, CRD search-result card), display the publisher's name when the callout has been published — falling back to the creator when the publisher is absent (and to the localised `Unknown` label only as the last resort, in search-result cards specifically).
 
 **Independent Test**: Open a published callout where the publisher and creator are different users. In CRD: confirm the summary card and the detail dialog show the publisher. In MUI: confirm the callout dialog header shows the publisher. In CRD search: search for the callout and confirm the result card shows the publisher (no longer `Unknown`). All four observations must show the same publisher name.
 
@@ -85,11 +85,12 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 - [ ] T013 Run `pnpm lint` from the repo root. Must pass with zero new warnings or errors. This validates the type contract from the GraphQL fragments through the model, hook, and all five presentation call sites.
 - [ ] T014 Run `pnpm vitest run` from the repo root. Full suite must remain green (~595 tests). No new tests are expected to be added.
-- [ ] T015 [P] Browser verification of `quickstart.md` **Scenario 1** (published callout, 4 surfaces). Confirm CRD summary card, CRD detail dialog, MUI dialog header, and CRD search result all show the same publisher and publish date.
+- [ ] T015 [P] Browser verification of `quickstart.md` **Scenario 1** (published callout, 4 surfaces). Confirm CRD summary card, CRD detail dialog, MUI callout-dialog header, and CRD search result all show the same publisher and publish date.
 - [ ] T016 [P] Browser verification of `quickstart.md` **Scenario 2** (draft callout fallback). Confirm both UIs show the creator's name and the creation date — no blank date in MUI, no missing fields anywhere.
 - [ ] T017 [P] Browser verification of `quickstart.md` **Scenario 3** (CRD search-result cards). Confirm a published callout shows the publisher (no longer `Unknown`); a draft callout shows the creator; a callout with neither still falls back to the localised `Unknown` label.
 - [ ] T018 [P] Browser verification of `quickstart.md` **Scenario 4** (out-of-scope surfaces unchanged). Confirm post / whiteboard / memo contribution cards, comments, calendar event meta, and non-callout search results all behave identically to pre-change.
 - [ ] T019 Capture PR screenshots per `quickstart.md` definition-of-done: (a) published callout in CRD, (b) published callout in MUI, (c) draft callout in either UI showing the new fallback date, (d) CRD search result for a callout showing the publisher (no `Unknown`).
+- [ ] T020 Add the accessibility-evidence statement to the PR description (per Constitution Engineering Workflow §4): confirm `<Authorship>` markup, the avatar `aria-label` (`avatar-of {{user}}`), and keyboard tab order are unchanged from pre-feature, and state explicitly that no JSX, ARIA, or semantic-element edits were made — only data-binding expressions changed.
 
 ---
 
@@ -101,7 +102,7 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 - **Foundational (Phase 2)**: T002 + T003 can run in parallel. T004 depends on both. T005 depends on T004. T006 depends on T005. **BLOCKS all US1 and US2 work.**
 - **US1 (Phase 3)**: All of T007 / T008 / T009 can run in parallel — they touch three different files.
 - **US2 (Phase 4)**: All of T010 / T011 / T012 can run in parallel — three different files. However, each US2 task lands in the same file as its US1 counterpart (T010↔T007, T011↔T008, T012↔T009), so each US2 task must wait for its US1 counterpart to land first to avoid line-conflicting edits.
-- **Polish (Phase 5)**: T013 + T014 must wait for both US1 and US2. T015–T018 can run in parallel after T013 + T014 succeed. T019 follows the verification scenarios.
+- **Polish (Phase 5)**: T013 + T014 must wait for both US1 and US2. T015–T018 can run in parallel after T013 + T014 succeed. T019 follows the verification scenarios. T020 is paired with T019 (both PR-description authoring tasks) and can run alongside it.
 
 ### User Story Dependencies
 
@@ -169,7 +170,7 @@ T012 — Switch CRD search date in searchDataMapper.ts
 5. T007 + T008 + T009 — three small edits, one file each (≈ ten minutes).
 6. T010 + T011 + T012 — three more small edits (≈ ten minutes).
 7. T013 + T014 — static checks (≈ two minutes).
-8. T015 – T019 — browser verification + screenshots (≈ fifteen minutes).
+8. T015 – T020 — browser verification, screenshots, and PR-description authoring (≈ fifteen minutes).
 
 Total realistic effort: ≈ 45–60 minutes including codegen and PR screenshots.
 

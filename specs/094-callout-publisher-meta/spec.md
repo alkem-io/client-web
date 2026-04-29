@@ -10,8 +10,7 @@
 ### Session 2026-04-29
 
 - Q: When publisher and publish-date are not both present or both absent (partial data), how should each field resolve? → A: Independent fallback — name resolves as `publisher ?? creator`; date resolves as `publishDate ?? createdDate`. Each field falls back on its own.
-- Q: Are CRD callout search-result cards in scope? → A: Out of scope, fix separately. Today they hard-code `Unknown` / empty date; this is a pre-existing gap and will be tracked as its own follow-up rather than bundled here.
-- Revision (same session, post-planning): user reversed the previous answer. CRD callout search-result cards are now **in scope**. They MUST follow the same `publishedBy ?? createdBy` (name) and `publishedDate ?? createdDate` (date) rule and only fall back to the `Unknown` label when both publisher and creator are absent. Rationale: the original brief was "all callout/post meta" and leaving search showing `Unknown` contradicts that intent.
+- Q: Are CRD callout search-result cards in scope? → A: **In scope.** They MUST follow the same `publishedBy ?? createdBy` (name) and `publishedDate ?? createdDate` (date) rule and only fall back to the localised `Unknown` label when both publisher and creator are absent. *(Revised on review: the answer was originally "out of scope, fix separately" because the search-result author is hard-coded to `Unknown` today. The revision brings it back into scope so this feature satisfies the original "all callout/post meta" brief in one change rather than leaving a contradicting surface for a separate ticket.)*
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -63,7 +62,7 @@ A space admin is reviewing draft callouts that have not yet been published. Draf
 
 - **FR-001**: Callout meta MUST display the publisher's name when a publisher exists, and the publish date when a publish date exists.
 - **FR-002**: The two fields MUST fall back independently: when the publisher is absent the name MUST fall back to the creator; when the publish date is absent the date MUST fall back to the creation date. A callout with neither — i.e. a draft — therefore shows creator + creation date for both.
-- **FR-003**: The rule in FR-001/FR-002 MUST be applied consistently in every callout-meta surface, including: callout detail header, callout summary cards in space tabs, callout detail dialog, and CRD callout search-result cards. For search-result cards specifically, the existing `Unknown` label MUST remain only as a last-resort fallback for callouts with neither a publisher nor a creator (matching the behaviour already used for whiteboard, memo, and post search results).
+- **FR-003**: The rule in FR-001/FR-002 MUST be applied consistently in every callout-meta surface, including: the MUI callout-dialog header, the CRD callout summary cards in space tabs, the CRD callout detail dialog, and the CRD callout search-result cards. For search-result cards specifically, the existing `Unknown` label MUST remain only as a last-resort fallback for callouts with neither a publisher nor a creator (matching the behaviour already used for whiteboard, memo, and post search results).
 - **FR-004**: The rule MUST behave identically in both the legacy interface and the new CRD interface.
 - **FR-005**: The visual presentation of the meta line (avatar, name, separator, formatted date) MUST be unchanged from current behaviour — only the underlying person and date being displayed change.
 - **FR-006**: Post, whiteboard, and memo contribution cards inside a callout MUST remain unchanged: they continue to show the contribution's creator and creation date.
@@ -79,7 +78,7 @@ A space admin is reviewing draft callouts that have not yet been published. Draf
 
 ### Measurable Outcomes
 
-- **SC-001**: 100% of callout-meta surfaces in both UIs (callout detail header, callout summary cards, callout detail dialog, and CRD callout search-result cards) show the publisher and publish date when the callout has been published.
+- **SC-001**: 100% of callout-meta surfaces in both UIs (the MUI callout-dialog header, the CRD callout summary cards, the CRD callout detail dialog, and the CRD callout search-result cards) show the publisher and publish date when the callout has been published.
 - **SC-002**: 100% of draft callouts show the creator and creation date as a fallback in both UIs (no blank or partially populated meta lines).
 - **SC-003**: For a sample of callouts where the publisher differs from the creator, a reader can correctly identify the publisher from the meta in under 5 seconds without opening the callout's settings or history.
 - **SC-004**: No regression in any other meta line: post / whiteboard / memo contribution cards, comments, messages, and calendar events display the same name and date they displayed before this change.

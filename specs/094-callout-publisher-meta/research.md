@@ -27,7 +27,7 @@ No `[NEEDS CLARIFICATION]` markers remain in the spec. Q1 (independent fallback)
   Both edits use the same nested `User` shape (`{ id profile { id displayName avatar: visual(type: AVATAR) { id uri } } }`) so Apollo normalizes a single User entity per id regardless of which fragment fetched it.
 - **Rationale**:
   - The two fragments live in different domain locations and serve different consumers (space-tab callout list / detail vs. global search overlay). Each must be self-sufficient — there is no cross-fragment composition that would let one selection cover both.
-  - The main fragment is already consumed by both list and detail paths (via `useCalloutsSet` and `useCalloutDetails`), so its single edit reaches the MUI dialog header and the three CRD mappers.
+  - The main fragment is already consumed by both list and detail paths (via `useCalloutsSet` and `useCalloutDetails`), so its single edit reaches the MUI callout-dialog header and the three CRD mappers.
   - The search fragment edit is what unlocks fixing the `Unknown` / empty rendering — without selecting the fields, no mapping change can populate them.
   - Mirroring `createdBy`'s nested shape exactly keeps cache normalization clean and lets the `??` fallback be type-safe without casts.
   - Constitution Principle III requires fragment changes to ship with regenerated `apollo-hooks.ts` in the same PR; both edits are picked up by a single `pnpm codegen` run.

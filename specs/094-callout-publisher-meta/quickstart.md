@@ -31,7 +31,7 @@ End-to-end implementation + verification path. Estimated effort: ~30 min includi
 5. **Propagate through the details hook**
    `src/domain/collaboration/callout/useCalloutDetails/useCalloutDetails.ts` (around line 72) — duplicate the `publishedDate` `Date`-coercion pattern for `createdDate`; pass `publishedBy` through unchanged.
 
-6. **Switch the MUI binding**
+6. **Switch the MUI callout-dialog header binding**
    `src/domain/collaboration/callout/calloutBlock/CalloutHeader.tsx:53`:
    ```tsx
    <Authorship
@@ -86,14 +86,14 @@ End-to-end implementation + verification path. Estimated effort: ~30 min includi
 1. Browser → open a space containing such a callout.
 2. **CRD ON**: confirm the callout summary card on the space tab shows the **publisher's** name and the **publish date** (no longer the creator).
 3. Click into the callout → CRD detail dialog header — same publisher + publish date.
-4. **CRD OFF**: re-open the callout. MUI dialog header (`<Authorship>`) — same publisher + publish date.
+4. **CRD OFF**: re-open the callout. MUI callout-dialog header (`<Authorship>`) — same publisher + publish date.
 5. **Pass criterion**: every meta line shows the same publisher and publish date across both UIs and across summary + detail surfaces.
 
 ### Scenario 2 — Draft callout (FR-002, US2 P2)
 
 1. As a space admin, open a draft callout (one with no publisher set).
 2. **CRD ON**: callout meta shows the **creator's name and creation date** (not blank).
-3. **CRD OFF**: MUI header now also shows the creation date (current behaviour today: blank — this is the latent fix called out in the plan).
+3. **CRD OFF**: MUI callout-dialog header now also shows the creation date (current behaviour today: blank — this is the latent fix called out in the plan).
 4. **Pass criterion**: meta is fully populated in both UIs; no blank avatar slot, no missing date.
 
 ### Scenario 3 — CRD search-result cards now show publisher / creator (FR-003 revised, SC-001)
@@ -125,6 +125,7 @@ If the test environment has any callout where `publishedBy` is null but `publish
 - [ ] Generated Apollo files committed alongside the source edits.
 - [ ] All five verification scenarios pass in a manual browser session.
 - [ ] PR description includes screenshots of (a) published callout in CRD, (b) published callout in MUI, (c) draft callout in either UI showing the new fallback date, (d) CRD search result for a callout showing publisher (no longer `Unknown`).
+- [ ] **Accessibility evidence in PR description** (per Constitution Engineering Workflow §4): confirm the rendered markup, the `aria-label` on the avatar (`avatar-of {{user}}`), and keyboard tab order for `<Authorship>` (MUI) and the CRD callout / search result cards are unchanged from pre-feature. State explicitly that no JSX, ARIA, or semantic-element edits were made — only data-binding expressions changed — so WCAG 2.1 AA compliance is preserved by construction.
 - [ ] No edits to files listed as out of scope (`PostCard.tsx` for contributions, `ContributionPostCard.tsx`, `contributionDataMapper.ts`, `MessageView.tsx`, `EventDetailView.tsx`, calendar i18n files, common/callout `createdBy` translation keys).
 
 ## Rollback

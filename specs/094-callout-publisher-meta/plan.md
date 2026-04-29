@@ -5,7 +5,7 @@
 
 ## Summary
 
-Switch the author + date metadata that appears on callout surfaces — the legacy MUI dialog header (`CalloutHeader`), the three CRD presentation paths produced by `calloutDataMapper.ts` (`PostCard`, `CalloutDetailDialog`), and the CRD callout search-result mapping in `searchDataMapper.ts` — from `(createdBy, publishedDate)` (or `Unknown` / empty in search) to `(publishedBy ?? createdBy, publishedDate ?? createdDate)`. The two fields fall back independently per the Q1 clarification. Backend already exposes `publishedBy` and `publishedDate` on the `Callout` type, so the data-layer changes are: (a) extend the existing Callout fragment in `CalloutsSetQueries.graphql` to query `publishedBy` and `createdDate`, (b) extend the `SearchResultCallout` fragment in `SearchQueries.graphql` to query the same four fields (none are currently selected for search), (c) propagate the two new fields through the `CalloutModelExtension` view model and the `useCalloutDetails` hook, then (d) update the five presentation call sites (one MUI, three CRD mappers, one CRD search mapper). No visual change. Out of scope: post/whiteboard/memo contribution cards (no `publishedBy` in schema), comments/calendar/messages (different domain).
+Switch the author + date metadata that appears on callout surfaces — the MUI callout-dialog header (`CalloutHeader`), the three CRD presentation paths produced by `calloutDataMapper.ts` (`PostCard`, `CalloutDetailDialog`), and the CRD callout search-result mapping in `searchDataMapper.ts` — from `(createdBy, publishedDate)` (or `Unknown` / empty in search) to `(publishedBy ?? createdBy, publishedDate ?? createdDate)`. The two fields fall back independently per the Q1 clarification. Backend already exposes `publishedBy` and `publishedDate` on the `Callout` type, so the data-layer changes are: (a) extend the existing Callout fragment in `CalloutsSetQueries.graphql` to query `publishedBy` and `createdDate`, (b) extend the `SearchResultCallout` fragment in `SearchQueries.graphql` to query the same four fields (none are currently selected for search), (c) propagate the two new fields through the `CalloutModelExtension` view model and the `useCalloutDetails` hook, then (d) update the five presentation call sites (one MUI, three CRD mappers, one CRD search mapper). No visual change. Out of scope: post/whiteboard/memo contribution cards (no `publishedBy` in schema), comments/calendar/messages (different domain).
 
 ## Technical Context
 
@@ -63,7 +63,7 @@ src/
 ├── domain/
 │   └── collaboration/
 │       ├── callout/
-│       │   ├── calloutBlock/CalloutHeader.tsx          # MUI binding switch (FR-001..004)
+│       │   ├── calloutBlock/CalloutHeader.tsx          # MUI callout-dialog header binding switch (FR-001..004)
 │       │   ├── models/CalloutModelLight.ts             # extend CalloutModelExtension
 │       │   └── useCalloutDetails/useCalloutDetails.ts  # propagate publishedBy + createdDate
 │       └── calloutsSet/
