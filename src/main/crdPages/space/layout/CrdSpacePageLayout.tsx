@@ -12,7 +12,7 @@ import {
 import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -31,7 +31,6 @@ import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import {
   type SpaceSettingsTabId,
@@ -173,7 +172,8 @@ export default function CrdSpacePageLayout() {
             <SpaceHeader
               title={space.about.profile.displayName}
               tagline={space.about.profile.tagline ?? undefined}
-              bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
+              bannerUrl={space.about.profile.banner?.uri}
+              color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
               memberAvatars={memberAvatars}
               onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}

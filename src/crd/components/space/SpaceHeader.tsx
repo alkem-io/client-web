@@ -1,5 +1,6 @@
 import { FileText, Home, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -28,6 +29,8 @@ type SpaceHeaderProps = {
   title: string;
   tagline?: string;
   bannerUrl?: string;
+  /** Deterministic accent colour shown as a gradient when `bannerUrl` is missing. */
+  color?: string;
   isHomeSpace?: boolean;
   memberAvatars: MemberAvatar[];
   actions: SpaceHeaderActions;
@@ -39,6 +42,7 @@ export function SpaceHeader({
   title,
   tagline,
   bannerUrl,
+  color,
   isHomeSpace,
   memberAvatars,
   actions,
@@ -58,13 +62,14 @@ export function SpaceHeader({
         role="img"
         aria-label={t('a11y.spaceBanner', { name: title })}
       >
-        {/* Background image */}
+        {/* Background image — falls back to the deterministic colour gradient
+            when no banner image is provided, matching SpaceCard / SubspaceHeader. */}
         <div
           className={cn(
             'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105',
-            !bannerUrl && 'bg-muted'
+            !bannerUrl && !color && 'bg-muted'
           )}
-          style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : undefined}
+          style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined}
         />
         {/* Gradient overlay */}
         <div
