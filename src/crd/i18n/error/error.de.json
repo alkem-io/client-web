@@ -1,0 +1,10 @@
+{
+  "forbidden": {
+    "title": "Zugriff eingeschränkt",
+    "description": "Die Seite, die Sie aufrufen möchten, ist für Sie nicht verfügbar.",
+    "actions": {
+      "goHome": "Zur Startseite",
+      "goBack": "Zurück"
+    }
+  }
+}

@@ -52,3 +52,7 @@
   - **F1**: T013 and T017 import lists now include `usePageTitle`, `useTranslation`, and the helper.
 - The spec / plan / tasks set is internally consistent and ready for `/speckit.implement`.
 - `/speckit.clarify` can be skipped on a future re-run unless a new question surfaces during implementation.
+- **Self-review pass on 2026-04-29** (post-implementation):
+  - **T1 (missing tests)** — added `AncestorRedirectDispatcher.test.tsx` (5 tests), `CrdRedirectToAncestorDialog.test.tsx` (9 tests), and `useSpaceSettingsAccessGuard.test.tsx` (9 tests). Total test count: 765 → 788 passing (+23 net new), 3 pre-existing skips.
+  - **T6 (visual mismatch)** — `AncestorRedirectDispatcher` now also takes `isNotAuthorized` and only renders the CRD dialog when ALL three conditions hold (toggle on + CRD route + isNotAuthorized=true). Prevents the CRD dialog from rendering on top of the MUI 404 page on a CRD route. The boundary forwards `this.state.isNotAuthorized` accordingly.
+  - **T9 (doc-drift sweep)** — added FR-033 through FR-039 to `spec.md` covering the privilege gate (FR-033 to FR-035) and the CRD redirect dialog (FR-036 to FR-039). Added a "Session 2026-04-29 — implementation-driven additions" Clarifications block. Updated `plan.md` source-tree to list the new files. Added §5 (`SpaceSettingsAccessGuardInput`) and §6 (`AncestorRedirectDispatchDecision`) to `data-model.md`. Added §8–§12 to `contracts/forbidden-page-props.md`.

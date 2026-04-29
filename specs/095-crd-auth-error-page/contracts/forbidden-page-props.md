@@ -255,9 +255,145 @@ English values are listed in the plan's i18n key block. Other languages are tran
 
 ---
 
+## 8. `CrdRedirectDialog` (presentational — CRD redirect-to-ancestor dialog)
+
+**Module**: `src/crd/components/error/CrdRedirectDialog.tsx`
+**Exported symbol**: `CrdRedirectDialog` (named export)
+
+```ts
+import type { ReactNode } from 'react';
+
+export type CrdRedirectDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Dialog header title (rendered next to the Lock icon). */
+  title: string;
+  /** Dialog body — typically a `<Trans>` element from the integration layer. */
+  message: ReactNode;
+  /** Pre-formatted countdown string (e.g. "Redirecting in 8 seconds…"). */
+  countdownLabel?: string;
+  /** Inline cancel link label inside the countdown text (e.g. "[Click to cancel]"). */
+  cancelCountdownLabel?: string;
+  /** Primary "Go Now" button label. */
+  goNowLabel: string;
+  /** When true, the countdown text is hidden (the user pressed cancel). */
+  cancelled: boolean;
+  onCancelCountdown: () => void;
+  onGoNow: () => void;
+  /**
+   * Optional rendered ancestor card (rendered between the message and the
+   * footer). The integration layer fills this when the ancestor is a Space —
+   * the dialog itself does not know what an ancestor is.
+   */
+  ancestorSlot?: ReactNode;
+};
+
+export function CrdRedirectDialog(props: CrdRedirectDialogProps): JSX.Element;
+```
+
+**Constraints**:
+- Forbidden imports — same list as §1 (`@mui/*`, `@/core/apollo/*`, `@/domain/*`, `@/core/auth/*`, `react-router-dom`, `formik`, etc.).
+- MUST NOT call `useTranslation`, `useNavigate`, or any data hook. All copy and handlers come from props.
+- Renders the shadcn `Dialog` primitive from `@/crd/primitives/dialog` plus a `Lock` icon from `lucide-react` (`aria-hidden="true"`).
+- The cancel link is a real `<button>` (not a `<span>` with a click handler) for keyboard / a11y.
+
+---
+
+## 9. `CrdRedirectToAncestorDialog` (integration — wraps the CRD presentational dialog)
+
+**Module**: `src/main/crdPages/error/CrdRedirectToAncestorDialog.tsx`
+**Exported symbol**: `CrdRedirectToAncestorDialog`
+
+```ts
+import type { ClosestAncestor } from '@/core/40XErrorHandler/40XErrors';
+
+type CrdRedirectToAncestorDialogProps = {
+  closestAncestor: ClosestAncestor;
+};
+
+export function CrdRedirectToAncestorDialog(props: CrdRedirectToAncestorDialogProps): JSX.Element;
+```
+
+**Behavior**:
+1. Manages local state: `closed: boolean`, `secondsLeft: number = 10`, `cancelled: boolean`. Resets all three when `closestAncestor.url` changes (matches the MUI dialog's reopen-on-change behavior).
+2. Runs a `setInterval` that decrements `secondsLeft` once per second; at 0, calls `navigate(closestAncestor.url)`. The interval is cleaned up when `closed` or `cancelled` becomes true.
+3. Renders the inline space card via `useSpaceCardQuery({ variables: { spaceId: closestAncestor.space.id }, skip: type !== Space })`. Loading shows a `Skeleton`; loaded shows an `<a>` with the space banner / avatar + display name.
+4. Reuses i18n keys from the existing main namespace: `components.urlResolver.redirectDialog.title` / `.message` / `.countdown` / `.cancelCountdown` / `.goNow`. No new keys are introduced.
+5. Composes the CRD presentational dialog with all wired props.
+
+**Constraints**:
+- Lives in `src/main/crdPages/error/` (the integration glue layer). MAY import from `@/core/apollo/*`, `@/core/routing/*`, `@/crd/*`, `react-router-dom`, `react-i18next`.
+- The inline space card slot logic is local to this file (`AncestorSpaceCardSlot`) and uses `Avatar` / `Skeleton` from `@/crd/primitives/*` plus the `useSpaceCardQuery` from generated Apollo hooks.
+
+---
+
+## 10. `AncestorRedirectDispatcher` (integration — selects CRD vs MUI dialog)
+
+**Module**: `src/main/crdPages/error/AncestorRedirectDispatcher.tsx`
+**Exported symbol**: `AncestorRedirectDispatcher`
+
+```ts
+import type { ClosestAncestor } from '@/core/40XErrorHandler/40XErrors';
+
+type AncestorRedirectDispatcherProps = {
+  closestAncestor: ClosestAncestor;
+  /** From `Error40XBoundary.state.isNotAuthorized` — see FR-039. */
+  isNotAuthorized?: boolean;
+};
+
+export function AncestorRedirectDispatcher(props: AncestorRedirectDispatcherProps): JSX.Element;
+```
+
+**Behavior**: per the truth table in `data-model.md` §6 — renders CRD when all three conditions hold (`crdEnabled && isCrdRoute(pathname) && isNotAuthorized === true`), MUI otherwise. The MUI fallback is the existing `RedirectToAncestorDialog` from `src/core/40XErrorHandler/`.
+
+---
+
+## 11. `useSpaceSettingsAccessGuard` (integration — page-level privilege gate for Space Settings)
+
+**Module**: `src/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsAccessGuard.ts`
+**Exported symbol**: `useSpaceSettingsAccessGuard`
+
+```ts
+export function useSpaceSettingsAccessGuard(spaceId: string, scopeLoading: boolean): void;
+```
+
+**Behavior**: per the data-model §5 inputs. Internally:
+- Runs `useSpacePrivilegesQuery({ variables: { spaceId }, skip: !spaceId })` — a lightweight query that returns just `space.authorization.myPrivileges`.
+- Calls `useRestrictedRedirect({ data, error, skip: scopeLoading || !spaceId }, data => data.lookup.space?.authorization?.myPrivileges, { requiredPrivilege: AuthorizationPrivilege.Update })`.
+- The standard `useRestrictedRedirect` flow handles all three branches: anonymous → silent redirect to sign-in with returnUrl; authenticated non-admin → throw `NotAuthorizedError` (no redirect URL) → boundary renders CRD forbidden page; admin → no throw.
+
+**Consumer**: called once at the top of `CrdSpaceSettingsPage.tsx`, immediately after `useSettingsScope()`, **before** any tab data hooks fire.
+
+---
+
+## 12. Boundary one-line swap
+
+**Module**: `src/core/40XErrorHandler/ErrorBoundary.tsx`
+
+The class-component logic is preserved verbatim. Only the dialog import + render are swapped:
+
+```diff
+- import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
++ import { AncestorRedirectDispatcher } from '@/main/crdPages/error/AncestorRedirectDispatcher';
+
+  // … inside render():
+- {this.state.closestAncestor && <RedirectToAncestorDialog closestAncestor={this.state.closestAncestor} />}
++ {this.state.closestAncestor && (
++   <AncestorRedirectDispatcher
++     closestAncestor={this.state.closestAncestor}
++     isNotAuthorized={this.state.isNotAuthorized}
++   />
++ )}
+```
+
+The boundary's `getDerivedStateFromError`, `getDerivedStateFromProps`, `redirectUrl` branch, and pathname-reset behavior are unchanged.
+
+---
+
 ## Out of contract
 
-- No GraphQL document, fragment, or schema change.
-- No new browser API wrappers.
-- No changes to `Error40XBoundary`, `Error40X`, `Error403`, `Error404`, `Restricted`, `useRestrictedRedirect`, `NonAdminRedirect`, or any of their imports.
+- No GraphQL schema change. The `useSpacePrivilegesQuery` hook used by `useSpaceSettingsAccessGuard` already exists in `src/core/apollo/generated/apollo-hooks.ts` from prior work — it is not introduced here. The `useSpaceCardQuery` reused by `CrdRedirectToAncestorDialog` is also pre-existing (it was used by the MUI `RedirectToAncestorDialog`).
+- No new GraphQL fragment, mutation, or document.
+- No new browser API wrappers beyond `hasInAppHistory` (already documented in §4).
+- No changes to `Error40XBoundary`'s class logic, `Error40X`, `Error403`, `Error404`, `Restricted`, `useRestrictedRedirect`, `NonAdminRedirect`, or `RedirectToAncestorDialog` (the MUI one). The MUI redirect dialog file remains in the codebase as the toggle-off fallback consumed by `AncestorRedirectDispatcher`.
 - No new global state, no new context provider.

@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { CrdRestrictedRoute } from '@/main/crdPages/error/CrdRestrictedRoute';
 import { useCrdEnabled } from '../crdPages/useCrdEnabled';
 import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
@@ -184,7 +185,7 @@ export const TopLevelRoutes = () => {
           path={`/${TopLevelRoutePath.Restricted}`}
           element={
             <WithApmTransaction path={`/${TopLevelRoutePath.Restricted}`}>
-              <Restricted />
+              {crdEnabled ? <CrdRestrictedRoute /> : <Restricted />}
             </WithApmTransaction>
           }
         />

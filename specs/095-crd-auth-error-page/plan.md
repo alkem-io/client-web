@@ -95,8 +95,11 @@ Files touched by this feature, mapped to the project's existing layout:
 ```text
 # Presentational layer — design system (no business logic)
 src/crd/components/error/
-└── CrdForbiddenPage.tsx              # NEW — pure shadcn/ui + Tailwind page; props: title, description,
-                                      #   onGoHome, onGoBack?, showGoBack?
+├── CrdForbiddenPage.tsx              # NEW — pure shadcn/ui + Tailwind page; props: title, description,
+│                                     #   onGoHome, onGoBack?, showGoBack?
+└── CrdRedirectDialog.tsx             # NEW — pure shadcn/ui Dialog + Lock icon; props: open, onOpenChange,
+                                      #   title, message, countdownLabel, cancelCountdownLabel, goNowLabel,
+                                      #   cancelled, onCancelCountdown, onGoNow, ancestorSlot? (ReactNode)
 
 # i18n — manually maintained per CRD rules (NOT Crowdin)
 src/crd/i18n/error/
@@ -112,13 +115,28 @@ src/core/i18n/config.ts               # MODIFIED — add `crd-error` entry (6 la
 
 # Integration layer — ALL business logic lives here
 src/main/crdPages/error/
-├── isCrdRoute.ts                     # NEW — `(pathname: string) => boolean`; single source of truth
-├── isCrdRoute.test.ts                # NEW — Vitest unit test
-├── CrdAwareErrorComponent.tsx        # NEW — boundary errorComponent: decides CRD vs MUI rendering
-├── CrdAwareErrorComponent.test.tsx   # NEW — Vitest unit test
-├── CrdRestrictedRoute.tsx            # NEW — CRD-aware /restricted route handler (logs origin to Sentry,
-│                                     #   renders CRD page in CRD chrome OR delegates to existing Restricted)
-└── CrdRestrictedRoute.test.tsx       # NEW — Vitest unit test
+├── isCrdRoute.ts                              # NEW — `(pathname: string) => boolean`; single source of truth
+├── isCrdRoute.test.ts                         # NEW — Vitest unit test
+├── hasInAppHistory.ts                         # NEW — wrapper around `window.history.length > 1` per Constitution IV
+├── hasInAppHistory.test.ts                    # NEW — Vitest unit test
+├── CrdAwareErrorComponent.tsx                 # NEW — boundary errorComponent: decides CRD vs MUI rendering
+├── CrdAwareErrorComponent.test.tsx            # NEW — Vitest unit test
+├── CrdRestrictedRoute.tsx                     # NEW — CRD-aware /restricted route handler (logs origin to Sentry,
+│                                              #   renders CRD page in CRD chrome OR delegates to existing Restricted)
+├── CrdRestrictedRoute.test.tsx                # NEW — Vitest unit test
+├── CrdRedirectToAncestorDialog.tsx            # NEW — CRD redirect dialog integration (timer, useSpaceCardQuery,
+│                                              #   navigate, ancestor space-card slot)
+├── CrdRedirectToAncestorDialog.test.tsx       # NEW — Vitest unit test (timer + cancel + navigation paths)
+├── AncestorRedirectDispatcher.tsx             # NEW — chooses CRD vs MUI redirect dialog based on toggle +
+│                                              #   isCrdRoute(pathname) + isNotAuthorized
+└── AncestorRedirectDispatcher.test.tsx        # NEW — Vitest unit test (5 truth-table cases)
+
+# Page-level privilege guard for CRD Space Settings
+src/main/crdPages/topLevelPages/spaceSettings/
+├── useSpaceSettingsAccessGuard.ts             # NEW — runs useSpacePrivilegesQuery + useRestrictedRedirect
+│                                              #   with requiredPrivilege: AuthorizationPrivilege.Update
+├── useSpaceSettingsAccessGuard.test.tsx       # NEW — Vitest unit test (skip semantics + privilege reader)
+└── CrdSpaceSettingsPage.tsx                   # MODIFIED — call useSpaceSettingsAccessGuard at the top
 
 # Layout shell — small additive refactor
 src/main/ui/layout/CrdLayoutWrapper.tsx   # MODIFIED — accept optional `children` prop; default to <Outlet />
@@ -130,6 +148,14 @@ src/root.tsx                          # MODIFIED — replace inline arrow with <
 # Routing — toggle /restricted between MUI and CRD handlers
 src/main/routing/TopLevelRoutes.tsx   # MODIFIED — at the /restricted route, render either <Restricted />
                                       #   (toggle off) or <CrdRestrictedRoute /> (toggle on)
+
+# Boundary — one-line dispatcher swap for the redirect-to-ancestor dialog
+src/core/40XErrorHandler/ErrorBoundary.tsx  # MODIFIED — swap MUI RedirectToAncestorDialog import for
+                                            #   AncestorRedirectDispatcher; pass this.state.isNotAuthorized
+                                            #   to the dispatcher. Class-component logic unchanged.
+
+# i18next type augmentation
+@types/i18next.d.ts                   # MODIFIED — register `crd-error` namespace in CustomTypeOptions
 
 # UNCHANGED — verified above
 src/core/40XErrorHandler/ErrorBoundary.tsx   # The boundary itself; contract preserved

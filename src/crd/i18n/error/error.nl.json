@@ -1,0 +1,10 @@
+{
+  "forbidden": {
+    "title": "Beperkte toegang",
+    "description": "De pagina die je probeert te openen, is niet beschikbaar voor jou.",
+    "actions": {
+      "goHome": "Naar startpagina",
+      "goBack": "Terug"
+    }
+  }
+}

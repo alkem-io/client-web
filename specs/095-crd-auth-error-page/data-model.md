@@ -112,9 +112,46 @@ In both flows, "Go to Home" calls `navigate(`/${TopLevelRoutePath.Home}`)`; "Go 
 
 ---
 
+---
+
+## 5. `SpaceSettingsAccessGuardInput` (privilege gate)
+
+The inputs to `useSpaceSettingsAccessGuard(spaceId, scopeLoading)` — the page-level guard wrapping `CrdSpaceSettingsPage`. Per FR-033 / FR-034.
+
+| Field | Type | Source |
+|---|---|---|
+| `spaceId` | `string` | From `useSettingsScope().id`. Empty while the URL resolver is still loading. |
+| `scopeLoading` | `boolean` | From `useSettingsScope().loading`. The guard skips the `useRestrictedRedirect` check while either this is true or `spaceId` is empty. |
+
+**Validation rules**:
+
+- The guard MUST `skip` the privileges query when `spaceId` is empty (no entity to check).
+- The guard MUST `skip` the redirect logic when either `scopeLoading === true` or `!spaceId` — these mean the data hasn't settled yet, so any throw would be premature.
+- The privilege reader MUST be `data => data.lookup.space?.authorization?.myPrivileges`. If `space` is null (rare — e.g. a non-existent space ID), the reader returns `undefined` and the standard `useRestrictedRedirect` semantics apply.
+- The required privilege MUST be `AuthorizationPrivilege.Update` — Space Settings is admin-gated. Other CRD pages with member-only or admin-only views will use their own equivalent guards with their own appropriate privileges (out of scope here per FR-035).
+
+---
+
+## 6. `AncestorRedirectDispatchDecision` (CRD redirect dialog routing branch)
+
+The runtime decision in `AncestorRedirectDispatcher` between rendering the CRD redirect dialog and the legacy MUI one. Per FR-036 / FR-037.
+
+| `crdEnabled` | `isCrdRoute(pathname)` | `isNotAuthorized` | Render |
+|:---:|:---:|:---:|---|
+| `false` | (any) | (any) | **MUI** `RedirectToAncestorDialog` |
+| `true` | `false` | (any) | **MUI** (CRD dialog over MUI page chrome would be inconsistent) |
+| `true` | `true` | `false` or `undefined` | **MUI** (page below is MUI `Error40X` — e.g. NotFound — so the dialog must match) |
+| `true` | `true` | `true` | **CRD** `CrdRedirectToAncestorDialog` |
+
+The `isNotAuthorized === true` branch is the **same** decision branch that triggers the CRD forbidden page in `CrdAwareErrorComponent`. The two render decisions are kept aligned so the page+dialog visual pair is always consistent.
+
+The `pathname` input comes from `useLocation().pathname` (current router state at boundary-render time, which is the URL that triggered the error). The `isNotAuthorized` input is forwarded from `Error40XBoundary.state.isNotAuthorized` via the boundary's render — see FR-039.
+
+---
+
 ## Cross-references
 
-- Spec: [spec.md](./spec.md) — FR-001 through FR-032 ground these contracts.
+- Spec: [spec.md](./spec.md) — FR-001 through FR-039 ground these contracts.
 - Research: [research.md](./research.md) — Decisions 1–5 cover the implementation rationale.
 - Contract: [contracts/forbidden-page-props.md](./contracts/forbidden-page-props.md) — TypeScript-level contract at the integration ↔ CRD boundary.
 - Quickstart: [quickstart.md](./quickstart.md) — manual test recipes for both stories and the toggle-off regression.
