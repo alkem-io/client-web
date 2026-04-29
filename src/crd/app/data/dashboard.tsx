@@ -217,6 +217,7 @@ export const MOCK_SIDEBAR_MENU_ITEMS = [
 export const MOCK_SIDEBAR_RESOURCE_SECTIONS = [
   {
     title: 'My Spaces',
+    square: true,
     items: [
       { id: 'sp-1', name: 'Green Energy Space', href: '/space/green-energy', initials: 'GE' },
       { id: 'sp-2', name: 'Community Garden', href: '/space/community-garden', initials: 'CG' },

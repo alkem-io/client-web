@@ -29,6 +29,8 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
  */
 export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
+  const authorSource = callout.publishedBy ?? callout.createdBy;
+  const dateSource = callout.publishedDate ?? callout.createdDate;
 
   return {
     id: callout.id,
@@ -36,9 +38,9 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
     title: callout.framing.profile.displayName,
     snippet: undefined, // Not available in list query
     isDraft: callout.draft,
-    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
-    author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
+    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
+    author: authorSource?.profile
+      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
       : undefined,
     commentCount: callout.activity ?? 0,
   };
@@ -50,6 +52,8 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
  */
 export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: CrdSpaceTranslator): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
+  const authorSource = callout.publishedBy ?? callout.createdBy;
+  const dateSource = callout.publishedDate ?? callout.createdDate;
 
   return {
     id: callout.id,
@@ -57,9 +61,9 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     title: callout.framing.profile.displayName,
     snippet: callout.framing.profile.description ?? undefined,
     isDraft: callout.draft,
-    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
-    author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
+    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
+    author: authorSource?.profile
+      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
@@ -120,13 +124,16 @@ export function mapCalloutDetailsToDialogData(
   callout: CalloutDetailsModelExtended,
   t: CrdSpaceTranslator
 ): CalloutDetailDialogData {
+  const authorSource = callout.publishedBy ?? callout.createdBy;
+  const dateSource = callout.publishedDate ?? callout.createdDate;
+
   return {
     id: callout.id,
     title: callout.framing.profile.displayName,
     description: callout.framing.profile.description ?? undefined,
-    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
-    author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
+    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
+    author: authorSource?.profile
+      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     reactionCount: 0,

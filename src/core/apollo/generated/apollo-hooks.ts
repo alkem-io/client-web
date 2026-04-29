@@ -1075,7 +1075,19 @@ export const CalloutDetailsFragmentDoc = gql`
     ...CalloutSettingsFull
   }
   publishedDate
+  createdDate
   createdBy {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  publishedBy {
     id
     profile {
       id
@@ -3839,6 +3851,30 @@ export const SearchResultCalloutFragmentDoc = gql`
     comments {
       id
       messagesCount
+    }
+    createdDate
+    publishedDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+    publishedBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
     }
   }
   ...CalloutParent
