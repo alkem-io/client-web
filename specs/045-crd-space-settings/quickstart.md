@@ -30,6 +30,21 @@ Navigate to a space you administer → Settings. The CRD Space Settings page sho
 - The About tab active by default
 - The Preview card on the right showing your space card
 
+### Subspace settings (added 2026-04-27)
+
+The same CRD Space Settings page also serves L1 (subspace) and L2 (sub-subspace) admins. Once CRD is enabled, navigate to:
+
+- **L1**: `<space>/challenges/<sub>/settings` — visible tabs: **About / Layout / Community / Updates / Subspaces / Settings** (no Templates, Storage, Account).
+- **L2**: `<space>/challenges/<sub>/opportunities/<subsub>/settings` — visible tabs: **About / Layout / Community / Updates / Settings** (no Subspaces either; sub-subspaces cannot have L3 children).
+
+Behaviour at L1 / L2:
+
+- All mutations target the **subspace's** `roleSetId` / `communityId` / `guidelinesId` (resolved by `useSettingsScope` from `useSubSpace()`, NOT the L0 root). Verify via Apollo devtools by editing a guideline and confirming the mutation variables match the subspace, not the L0 space.
+- The **member-lead toggle** (promote / demote member or organization to / from Lead) is visible in each Community-tab row's dropdown menu — gated to `level !== 'L0' && !row.isAdmin`. Disabled state composes aggregate `useCommunityPolicyChecker` flags with the row's `isLead`.
+- The Layout tab gains an **Add Phase** button (next to the page header) and a **Delete phase** entry in each column's three-dot kebab. Both are visible only when `level !== 'L0'`. Add is hidden when at the maximum number of states; Delete is hidden when at the minimum.
+- **Authorization gate**: Non-admin users are redirected to the subspace home via `NonSpaceAdminRedirect` (parity with legacy MUI `SpaceAdminRouteL1.tsx`).
+- **Breadcrumbs**: trail is `[L0 (when distinct from parent)] → [parent space] → [subspace, link] → [Settings, link] → [active tab]`.
+
 ## Per-tab save semantics
 
 | Tab | Save bar? | Commit model |
@@ -150,6 +165,17 @@ pnpm vitest run
 - [ ] Dirty tab (About or Layout) + tab switch → confirm dialog blocks. Cancel keeps state.
 - [ ] CRD toggle off → old MUI Space Settings renders unchanged.
 - [ ] Narrow viewport → tab strip scrolls horizontally; Layout columns stack; About two-column stacks.
+- [ ] **L1 settings**: navigate to `<space>/challenges/<sub>/settings`. Confirm visible tabs are exactly About / Layout / Community / Updates / Subspaces / Settings — no Templates / Storage / Account. Confirm mutations target the **subspace's** community (Apollo devtools).
+- [ ] **L1 settings — Layout**: confirm Add Phase button visible at top; column kebab includes Delete phase. Create a phase, confirm columns refresh and Save Changes bar resets to clean. Delete a phase (above min), confirm it disappears.
+- [ ] **L1 settings — Community**: open the dropdown on a non-Admin member row. Confirm "Promote to Lead" / "Demote from Lead" entries are visible. Confirm "Save as guidelines template" and the Virtual Contributors block are hidden.
+- [ ] **L1 settings — Settings tab**: confirm visibility per FR-036 — `Inherit Membership Rights` (L1+L2), `Allow Subspace Admins to Invite Members` (L0+L1), `Allow Members to Create Subspaces` (L0+L1) visible. Baseline toggles `Allow Members to Create Posts`, `Allow Video Calls`, `Allow Guest Contributions` also visible. `Allow Events from Subspaces` and `Alkemio Support` MUST be hidden (L0-only).
+- [ ] **L1 settings — Subspaces tab**: confirm the "Default Subspace Template" card is hidden. Per-subspace kebab still works (Pin / Save as Template / Delete) but Save as Template should be gated off at L1 (canSaveAsTemplate).
+- [ ] **L2 settings**: navigate to `<space>/challenges/<sub>/opportunities/<subsub>/settings`. Confirm visible tabs are About / Layout / Community / Updates / Settings — no Subspaces / Templates / Storage / Account. Confirm `Inherit Membership Rights` and the three baseline toggles (`Allow Members to Create Posts`, `Allow Video Calls`, `Allow Guest Contributions`) visible; `Allow Events from Subspaces`, `Allow Subspace Admins to Invite Members`, `Allow Members to Create Subspaces`, `Alkemio Support` hidden.
+- [ ] **Hidden-tab URL**: visit `<space>/challenges/<sub>/settings/account` — admin is redirected to `/settings/about` (not 404).
+- [ ] **Non-admin user**: confirm `NonSpaceAdminRedirect` redirects to the subspace home (parity with MUI).
+- [ ] **L1 / L2 breadcrumbs**: on `/settings`, the trail shows `[L0 (only at L2)] → [parent] → [subspace, link] → [Settings, link] → [active tab]`. Click the subspace name → returns to subspace home; click Settings → goes to `/settings`. On non-settings pages the subspace name remains a leaf.
+- [ ] **Phase min/max**: at minimum states, "Delete phase" disabled / hidden. At maximum states, "Add Phase" disabled / hidden. After Add Phase, the buffered Save Changes bar resets to clean (snapshot reseeded).
+- [ ] **Lead policy**: with a role-set at lead minimum (1 lead), confirm the demote control on the existing lead is disabled. At lead maximum, promote on non-leads is disabled.
 
 ## Rollback
 

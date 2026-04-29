@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommentEmojiPicker } from '@/crd/components/comment/CommentEmojiPicker';
+import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { cn } from '@/crd/lib/utils';
 import { Separator } from '@/crd/primitives/separator';
 import { isEditorReady } from './isEditorReady';
@@ -196,7 +196,7 @@ export function MarkdownToolbar({ editor, className, collaborative = false }: Ma
       <ToolbarLinkDialog editor={editor} />
 
       {/* Emoji */}
-      <CommentEmojiPicker
+      <EmojiPicker
         onSelect={handleEmojiSelect}
         trigger={
           <button

@@ -27,6 +27,26 @@
     "url": "URL delen",
     "copy": "Link kopiëren",
     "copied": "Gekopieerd",
-    "shareOnAlkemio": "Delen op Alkemio"
+    "shareOnAlkemio": "Delen op Alkemio",
+    "back": "Terug",
+    "alkemio": {
+      "description": "Stuur een link naar deze {{entity}} als privébericht naar andere Alkemio-gebruikers.",
+      "defaultMessage": "Dit is een interessante {{entity}}: {{url}}",
+      "searchPlaceholder": "Zoek gebruikers op naam of e-mail",
+      "searchAriaLabel": "Gebruikers zoeken",
+      "searching": "Zoeken…",
+      "noResults": "Geen gebruikers gevonden",
+      "removeUser": "{{name}} verwijderen",
+      "messageLabel": "Bericht",
+      "warning": "Ontvangers zien jouw naam als afzender.",
+      "send": "Verzenden",
+      "sent": "Bericht succesvol verzonden.",
+      "errors": {
+        "atLeastOneUser": "Selecteer ten minste één gebruiker.",
+        "messageRequired": "Bericht mag niet leeg zijn.",
+        "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
+        "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
+      }
+    }
   }
 }

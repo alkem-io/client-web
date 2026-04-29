@@ -1,3 +1,9 @@
+/**
+ * Plain string-union level prop. CRD components MUST NOT import the GraphQL
+ * `SpaceLevel` enum (per `src/crd/CLAUDE.md` Rule 4). Page boundary converts.
+ */
+export type SettingsScopeLevel = 'L0' | 'L1' | 'L2';
+
 export type MemberRole =
   | 'host'
   | 'admin'
@@ -21,8 +27,28 @@ export type MemberRow = {
   secondaryText: string | null;
   avatarUrl: string | null;
   role: MemberRole;
+  /** Added 2026-04-27. Drives the per-row promote/demote disabled state at L1/L2. */
+  isLead: boolean;
+  /** Added 2026-04-27. When true, lead-toggle dropdown items MUST be hidden (Admin row stays read-only). */
+  isAdmin: boolean;
   status: MemberStatus;
   joinedAt: string | null;
+};
+
+/**
+ * Aggregate flags from `useCommunityPolicyChecker` (added 2026-04-27).
+ *
+ * Users and organizations are gated independently — the policy returns
+ * separate add/remove flags per role-set entity type. The view composes the
+ * matching pair with each row's `isLead` to derive the per-row disabled
+ * state, e.g. for a user row:
+ * `(!canAddLeadUser && !row.isLead) || (!canRemoveLeadUser && row.isLead)`.
+ */
+export type LeadPolicy = {
+  canAddLeadUser: boolean;
+  canRemoveLeadUser: boolean;
+  canAddLeadOrganization: boolean;
+  canRemoveLeadOrganization: boolean;
 };
 
 export type MemberTableFilter = {
@@ -60,6 +86,18 @@ export type MemberRowAction =
   | 'toggleActive';
 
 export type CommunityViewProps = {
+  /**
+   * Added 2026-04-27. Gates promote/demote-Lead dropdown items (visible only when `level !== 'L0'`)
+   * and hides the VC block + "Save as guidelines template" at non-L0 (FR-036).
+   */
+  level: SettingsScopeLevel;
+  /** Added 2026-04-27. Aggregate flags driving the lead-toggle disabled state per row. */
+  leadPolicy: LeadPolicy;
+  /** Added 2026-04-27. Delegates to `useCommunityAdmin().onUserLeadChange`. Immediate (no buffer). */
+  onUserLeadChange: (userId: string, isLead: boolean) => void;
+  /** Added 2026-04-27. Delegates to `useCommunityAdmin().onOrganizationLeadChange`. Immediate. */
+  onOrgLeadChange: (orgId: string, isLead: boolean) => void;
+
   users: MemberTableState<10>;
   organizations: CollapsibleMemberTableState<5>;
   virtualContributors: CollapsibleMemberTableState<5>;

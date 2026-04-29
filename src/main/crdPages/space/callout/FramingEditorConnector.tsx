@@ -3,26 +3,47 @@ import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { DocumentFramingPlaceholder } from '@/crd/forms/callout/DocumentFramingPlaceholder';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
+import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
+import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
+
+type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
 
 type FramingEditorConnectorProps = {
+  /**
+   * Create vs edit. In edit mode, the memo and whiteboard editors are
+   * replaced by "Open" buttons that launch the collaborative dialogs
+   * (spec plan D13 / T048 / T048a). Content is then persisted by those
+   * dialogs directly, not by the main callout form.
+   */
+  mode?: 'create' | 'edit';
+  /** Server id of the existing memo, used by `CrdMemoDialog` on edit. */
+  editMemoId?: string;
+  /** Server-loaded whiteboard, used by `CrdWhiteboardView` on edit (T048). */
+  editWhiteboard?: EditWhiteboard;
+  /** Share URL for the callout's whiteboard panel — passed through to `CrdWhiteboardView`. */
+  editWhiteboardShareUrl?: string;
   framingType: string;
   // Link fields
   linkUrl: string;
@@ -59,6 +80,10 @@ type FramingEditorConnectorProps = {
     previewImages: WhiteboardPreviewImage[] | undefined,
     previewSettings: WhiteboardPreviewSettings
   ) => void;
+  // Memo framing (create mode) — value is the raw markdown; `onMemoMarkdownChange`
+  // is wired into the form hook's `memoMarkdown` field (spec T010/T011).
+  memoMarkdown?: string;
+  onMemoMarkdownChange?: (value: string) => void;
   // Media-gallery framing — required because a missing handler silently drops
   // user-selected files when `framingType === 'image'`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
@@ -66,6 +91,10 @@ type FramingEditorConnectorProps = {
 };
 
 export function FramingEditorConnector({
+  mode = 'create',
+  editMemoId,
+  editWhiteboard,
+  editWhiteboardShareUrl,
   framingType,
   linkUrl,
   onLinkUrlChange,
@@ -93,6 +122,8 @@ export function FramingEditorConnector({
   whiteboardConfigured,
   whiteboardTitle,
   onWhiteboardChange,
+  memoMarkdown = '',
+  onMemoMarkdownChange,
   mediaGalleryVisuals,
   onMediaGalleryVisualsChange,
 }: FramingEditorConnectorProps) {
@@ -101,9 +132,67 @@ export function FramingEditorConnector({
   const [statusConfirmOpen, setStatusConfirmOpen] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
+  const [memoDialogOpen, setMemoDialogOpen] = useState(false);
 
   switch (framingType) {
     case 'whiteboard': {
+      // Edit mode (T048): the form does NOT track whiteboard content. The
+      // "Open" button launches the collaborative `CrdWhiteboardView` against
+      // the actual server whiteboard; that dialog persists changes via its
+      // own mutations. The callout-update mutation never includes
+      // `whiteboardContent` (see `mapFormToCalloutUpdateInput`).
+      if (mode === 'edit') {
+        // Render a placeholder until the whiteboard payload arrives. Falling
+        // through to the create-mode single-user editor here would give the
+        // user a UI that silently discards edits — the update mapper omits
+        // whiteboardContent on purpose.
+        if (!editWhiteboard) {
+          return <Loading />;
+        }
+        const guestShareUrl = buildGuestShareUrl(editWhiteboard.id);
+        return (
+          <>
+            <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
+              <div className="flex items-center gap-3">
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
+                    color: 'var(--primary)',
+                  }}
+                >
+                  <Presentation className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-body-emphasis">{t('callout.whiteboard')}</p>
+                  <p className="text-caption text-muted-foreground">{t('framing.openWhiteboardHint')}</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
+                {t('framing.openWhiteboard')}
+              </Button>
+            </div>
+            {whiteboardEditorOpen && (
+              <CrdWhiteboardView
+                whiteboardId={editWhiteboard.id}
+                whiteboard={editWhiteboard}
+                authorization={editWhiteboard.authorization}
+                whiteboardShareUrl={editWhiteboardShareUrl ?? ''}
+                guestShareUrl={guestShareUrl}
+                readOnlyDisplayName={true}
+                displayName={whiteboardTitle || editWhiteboard.profile.displayName}
+                preventWhiteboardDeletion={true}
+                loadingWhiteboards={false}
+                backToWhiteboards={() => setWhiteboardEditorOpen(false)}
+              />
+            )}
+          </>
+        );
+      }
+
+      // Create mode: single-user editor — the callout doesn't exist yet, so
+      // there's nothing to collaborate on. Content lands in the form and is
+      // sent inline with the callout-create mutation.
       const templateWhiteboard: WhiteboardWithContent = {
         id: WHITEBOARD_FRAMING_TEMPLATE_ID,
         nameID: WHITEBOARD_FRAMING_TEMPLATE_ID,
@@ -151,7 +240,6 @@ export function FramingEditorConnector({
                 show: whiteboardEditorOpen,
                 canEdit: true,
                 canDelete: false,
-                fullscreen: true,
                 allowFilesAttached: true,
                 dialogTitle: whiteboardTitle || t('callout.whiteboard'),
               }}
@@ -162,23 +250,44 @@ export function FramingEditorConnector({
     }
 
     case 'memo':
-      return (
-        <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
-          <div className="flex items-center gap-3">
-            <div
-              className="p-2 rounded-lg"
-              style={{ background: 'color-mix(in srgb, var(--chart-2) 15%, transparent)', color: 'var(--chart-2)' }}
-            >
-              <StickyNote className="w-5 h-5" />
+      if (mode === 'edit') {
+        // Same reasoning as the whiteboard branch above: in edit mode without
+        // a memo id we can't open `CrdMemoDialog`, and falling through to the
+        // create-mode `MemoFramingEditor` would be a write-loss trap because
+        // the update mapper omits memoContent.
+        if (!editMemoId) {
+          return <Loading />;
+        }
+        return (
+          <>
+            <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
+              <div className="flex items-center gap-3">
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    background: 'color-mix(in srgb, var(--chart-2) 15%, transparent)',
+                    color: 'var(--chart-2)',
+                  }}
+                >
+                  <StickyNote className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-body-emphasis">{t('framing.memo')}</p>
+                  <p className="text-caption text-muted-foreground">{t('framing.memoOpenHint')}</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="h-8" onClick={() => setMemoDialogOpen(true)}>
+                {t('framing.openMemo')}
+              </Button>
             </div>
-            <div>
-              <p className="text-body-emphasis">{t('framing.memo')}</p>
-              <p className="text-caption text-muted-foreground">{t('framing.richTextEditor')}</p>
-            </div>
-          </div>
-          {/* Tiptap editor will be rendered here by the integration layer */}
-        </div>
-      );
+            <CrdMemoDialog open={memoDialogOpen} memoId={editMemoId} onClose={() => setMemoDialogOpen(false)} />
+          </>
+        );
+      }
+      return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
+
+    case 'document':
+      return <DocumentFramingPlaceholder />;
 
     case 'image':
       return (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -9,9 +10,12 @@ import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/sett
 import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { InviteMembersDialog } from '@/crd/components/space/settings/InviteMembersDialog';
+import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
+import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SaveSubspaceAsTemplateDialog } from '@/crd/components/space/settings/SaveSubspaceAsTemplateDialog';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
+import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import { SpaceSettingsCommunityView } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSettingsLayoutView';
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
@@ -23,8 +27,6 @@ import { TemplateEditDialog } from '@/crd/components/space/settings/TemplateEdit
 import { TemplateLibraryDialog } from '@/crd/components/space/settings/TemplateLibraryDialog';
 import { TemplatePreviewDialog } from '@/crd/components/space/settings/TemplatePreviewDialog';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
-import { useSpace } from '@/domain/space/context/useSpace';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import {
@@ -46,7 +48,9 @@ import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { useTemplatesTabData } from './templates/useTemplatesTabData';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
 import { useDirtyTabGuard } from './useDirtyTabGuard';
+import { useSettingsScope } from './useSettingsScope';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
+import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
 
 /**
  * CrdSpaceSettingsPage — route entry for the CRD Space Settings area.
@@ -57,42 +61,41 @@ import { useSpaceSettingsTab } from './useSpaceSettingsTab';
  */
 export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
-  const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
-  const { space, loading: loadingSpace } = useSpace();
-  const accountId = space?.accountId;
-  const { activeTab, setActiveTab } = useSpaceSettingsTab();
+  const scope = useSettingsScope();
+  const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
+  const visibleTabs = getVisibleSettingsTabs(level);
+  const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
   const guard = useDirtyTabGuard();
 
-  const spaceUrl = space?.about.profile.url ?? '';
-  const roleSetId = space?.about.membership?.roleSetID ?? '';
-  const communityId = space?.about.membership?.communityID ?? '';
-  const about = useAboutTabData(spaceId ?? '', spaceUrl);
-  const layout = useLayoutTabData(spaceId ?? '');
+  const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
+
+  const about = useAboutTabData(spaceId, spaceUrl);
+  const layout = useLayoutTabData(spaceId);
   const community = useCommunityTabData(roleSetId);
-  const subspacesTab = useSubspacesTabData(spaceId ?? '');
-  const createSubspace = useCreateSubspace(spaceId ?? '');
+  const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
+  const createSubspace = useCreateSubspace(spaceId);
   const saveAsTemplate = useSaveSubspaceAsTemplate({
     templatesSetId: subspacesTab.templatesSetId,
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
   });
-  const templatesTab = useTemplatesTabData(spaceId ?? '', accountId || undefined);
-  const storageTab = useStorageTabData(spaceId ?? '');
-  const settingsTab = useSettingsTabData(spaceId ?? '');
+  const templatesTab = useTemplatesTabData(isTabVisible('templates') ? spaceId : '', accountId || undefined);
+  const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
+  const settingsTab = useSettingsTabData(spaceId);
   const applicationForm = useApplicationFormData(settingsTab.roleSetId);
-  const accountTab = useAccountTabData(spaceId ?? '');
+  const accountTab = useAccountTabData(isTabVisible('account') ? spaceId : '');
   const updatesTab = useUpdatesTabData(communityId || undefined);
-  const communityGuidelinesId = space?.about?.guidelines?.id;
+  const communityGuidelinesId = scope.guidelinesId;
   const communityGuidelines = useCommunityGuidelinesData(communityGuidelinesId);
   const addOrgDialog = useAddOrganizationDialog({ community: community._adminRef });
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
-    spaceId: spaceId ?? '',
-    spaceLevel,
+    spaceId,
+    spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
   });
   const addVCExternalDialog = useAddVirtualContributorExternalDialog({
     community: community._adminRef,
-    spaceId: spaceId ?? '',
-    spaceLevel,
+    spaceId,
+    spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
   });
   const inviteDialog = useInviteUsersDialog({ community: community._adminRef });
   const columnMenu = useColumnMenu({
@@ -105,6 +108,9 @@ export default function CrdSpaceSettingsPage() {
     onColumnSaved: (columnId, title, description) => {
       layout.markColumnSaved(columnId, title, description);
     },
+    onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
+    columnCount: layout.columns.length,
+    minimumNumberOfStates: layout.minimumNumberOfStates,
   });
 
   // About uses per-section inline Save, so it does NOT participate in the
@@ -119,6 +125,32 @@ export default function CrdSpaceSettingsPage() {
   }, [guard, layout.isDirty, applicationForm.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+
+  // Member settings dialog state — owns the active subject so the dialog can be
+  // re-mounted instantly when the admin switches between rows. The Remove flow
+  // reuses the existing community.pendingRemoval / ConfirmationDialog plumbing
+  // below; `removeOriginatedFromDialog` lets us close the Member settings dialog
+  // (in addition to the confirmation prompt) when the removal succeeds AND the
+  // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
+  const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
+  const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  const buildUserSubject = (m: CommunityMember): MemberSettingsSubject => ({
+    type: 'user',
+    id: m.id,
+    displayName: m.displayName,
+    firstName: community.getMemberFirstName(m.id),
+    avatarUrl: m.avatarUrl,
+    isLead: m.isLead,
+    isAdmin: m.isAdmin,
+  });
+  const buildOrgSubject = (org: CommunityOrg): MemberSettingsSubject => ({
+    type: 'organization',
+    id: org.id,
+    displayName: org.displayName,
+    avatarUrl: org.avatarUrl,
+    isLead: org.isLead,
+  });
 
   // Bridge: when Subspaces tab signals "save as template" for a subspace,
   // hand it off to the dedicated dialog hook with the subspace's current name.
@@ -159,7 +191,7 @@ export default function CrdSpaceSettingsPage() {
     setLayoutDiscardOpen(false);
   };
 
-  const bootstrapping = resolvingUrl || loadingSpace || !spaceId;
+  const bootstrapping = scopeLoading || !spaceId;
 
   return (
     <div className="flex flex-col gap-4 pt-6">
@@ -172,6 +204,7 @@ export default function CrdSpaceSettingsPage() {
               (about.values && about.previewCard ? (
                 <SpaceSettingsAboutView
                   {...about.values}
+                  level={level}
                   previewCard={about.previewCard}
                   countries={COUNTRIES}
                   dirtyByField={about.dirtyByField}
@@ -190,6 +223,7 @@ export default function CrdSpaceSettingsPage() {
               ))}
             {activeTab === 'layout' && (
               <SpaceSettingsLayoutView
+                level={level}
                 columns={layout.columns}
                 postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
@@ -205,10 +239,14 @@ export default function CrdSpaceSettingsPage() {
                 onSave={layout.onSave}
                 onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}
+                onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
+                maximumNumberOfStates={layout.maximumNumberOfStates}
+                isStructureMutating={layout.isStructureMutating}
               />
             )}
             {activeTab === 'community' && (
               <SpaceSettingsCommunityView
+                level={level}
                 members={community.members}
                 pendingMemberships={community.pendingMemberships}
                 organizations={community.organizations}
@@ -245,8 +283,10 @@ export default function CrdSpaceSettingsPage() {
                 }
                 permissions={community.permissions}
                 onUserRemove={community.onUserRemove}
+                onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
                 onOrgRemove={community.onOrgRemove}
+                onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
@@ -256,18 +296,18 @@ export default function CrdSpaceSettingsPage() {
                 onInviteUsers={inviteDialog.openDialog}
               />
             )}
-            {activeTab === 'subspaces' && (
+            {activeTab === 'subspaces' && isTabVisible('subspaces') && (
               <SpaceSettingsSubspacesView
                 subspaces={subspacesTab.subspaces}
                 canCreate={subspacesTab.canCreate}
-                canSaveAsTemplate={subspacesTab.canSaveAsTemplate}
+                canSaveAsTemplate={subspacesTab.canSaveAsTemplate && level === 'L0'}
                 loading={subspacesTab.loading}
                 onCreate={() => createSubspace.openDialog()}
-                onChangeDefaultTemplate={subspacesTab.onChangeDefaultTemplate}
+                onChangeDefaultTemplate={level === 'L0' ? subspacesTab.onChangeDefaultTemplate : undefined}
                 onKebabAction={subspacesTab.onKebabAction}
               />
             )}
-            {activeTab === 'templates' && (
+            {activeTab === 'templates' && isTabVisible('templates') && (
               <SpaceSettingsTemplatesView
                 categories={templatesTab.categories}
                 loading={templatesTab.loading}
@@ -292,7 +332,7 @@ export default function CrdSpaceSettingsPage() {
                 onRequestRemove={updatesTab.onRequestRemove}
               />
             )}
-            {activeTab === 'storage' && (
+            {activeTab === 'storage' && isTabVisible('storage') && (
               <SpaceSettingsStorageView
                 tree={storageTab.tree}
                 expandedFolderIds={storageTab.expandedFolderIds}
@@ -303,6 +343,7 @@ export default function CrdSpaceSettingsPage() {
             )}
             {activeTab === 'settings' && (
               <SpaceSettingsSettingsView
+                level={level}
                 privacy={settingsTab.privacy}
                 membershipPolicy={settingsTab.membershipPolicy}
                 allowedActions={settingsTab.allowedActions}
@@ -316,7 +357,7 @@ export default function CrdSpaceSettingsPage() {
                 onHostOrgTrustChange={settingsTab.onHostOrgTrustChange}
               />
             )}
-            {activeTab === 'account' && (
+            {activeTab === 'account' && isTabVisible('account') && (
               <SpaceSettingsAccountView
                 url={accountTab.url}
                 plan={accountTab.plan}
@@ -492,7 +533,10 @@ export default function CrdSpaceSettingsPage() {
       <ConfirmationDialog
         open={community.pendingRemoval !== null}
         onOpenChange={open => {
-          if (!open) community.cancelRemoval();
+          if (!open) {
+            community.cancelRemoval();
+            setRemoveOriginatedFromDialog(false);
+          }
         }}
         variant="destructive"
         title={(() => {
@@ -536,9 +580,59 @@ export default function CrdSpaceSettingsPage() {
         })()}
         confirmLabel={t('community.confirmRemove.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={() => void community.confirmRemoval()}
-        onCancel={community.cancelRemoval}
+        onConfirm={async () => {
+          await community.confirmRemoval();
+          if (removeOriginatedFromDialog) {
+            setActiveMemberSubject(null);
+            setRemoveOriginatedFromDialog(false);
+          }
+        }}
+        onCancel={() => {
+          community.cancelRemoval();
+          setRemoveOriginatedFromDialog(false);
+        }}
       />
+
+      {activeMemberSubject && (
+        <MemberSettingsDialog
+          open={true}
+          onOpenChange={open => {
+            if (!open) setActiveMemberSubject(null);
+          }}
+          subject={activeMemberSubject}
+          leadGate={
+            activeMemberSubject.type === 'user'
+              ? {
+                  canAddLead: community.leadPolicy.canAddLeadUser,
+                  canRemoveLead: community.leadPolicy.canRemoveLeadUser,
+                }
+              : {
+                  canAddLead: community.leadPolicy.canAddLeadOrganization,
+                  canRemoveLead: community.leadPolicy.canRemoveLeadOrganization,
+                }
+          }
+          onLeadChange={(id, isLead) =>
+            activeMemberSubject.type === 'user'
+              ? community.onUserLeadChange(id, isLead)
+              : community.onOrgLeadChange(id, isLead)
+          }
+          onAdminChange={
+            activeMemberSubject.type === 'user' ? (id, isAdmin) => community.onUserAdminChange(id, isAdmin) : undefined
+          }
+          onRemoveMember={
+            community.viewerId === activeMemberSubject.id
+              ? undefined
+              : id => {
+                  setRemoveOriginatedFromDialog(true);
+                  if (activeMemberSubject.type === 'user') {
+                    community.onUserRemove(id);
+                  } else {
+                    community.onOrgRemove(id);
+                  }
+                }
+          }
+        />
+      )}
 
       <AddCommunityMemberDialog
         open={addOrgDialog.open}

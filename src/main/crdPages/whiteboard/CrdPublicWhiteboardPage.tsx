@@ -219,7 +219,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
             readOnlyDisplayName: true,
             headerActions: () => (
               <>
-                <ShareButton url={computedGuestShareUrl} disabled={!computedGuestShareUrl} showShareOnAlkemio={false} />
+                <ShareButton url={computedGuestShareUrl} disabled={!computedGuestShareUrl} />
                 {!isSmallScreen && <FullscreenButton />}
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
               </>

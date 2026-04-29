@@ -1,4 +1,10 @@
 {
+  "common": {
+    "Callout": "Post",
+    "callout": "post",
+    "Callouts": "Posts",
+    "callouts": "posts"
+  },
   "banner": {
     "homeSpace": "Home Space",
     "homeSpaceSettings": "Home space settings"
@@ -28,11 +34,12 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
-    "postIndex": "Post Index",
+    "postIndex": "$t(common.Callout) Index",
     "searchPlaceholder": "Search...",
-    "searchLabel": "Search posts",
+    "searchLabel": "Search $t(common.callouts)",
     "noResults": "No matches",
     "readMore": "Read more",
+    "editDescription": "Edit description",
     "addEvent": "Add event",
     "eventDateRelative": {
       "today": "Today",
@@ -133,7 +140,7 @@
     }
   },
   "feed": {
-    "addPost": "Add Post",
+    "addPost": "Add $t(common.Callout)",
     "showMore": "Show More",
     "activity": "Activity",
     "noCallouts": "No content yet",
@@ -158,6 +165,7 @@
     "callToAction": "Call to Action",
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
+    "document": "Document",
     "moreWhiteboards": "+{{count}} more",
     "moreContributions": "+{{count}} more",
     "vote": "Vote",
@@ -173,7 +181,27 @@
     "addMemo": "Add memo",
     "createMemo": "Create new memo",
     "defaultMemoName": "New Memo",
-    "memoNameLabel": "Memo title"
+    "memoNameLabel": "Memo title",
+    "addPost": "Add post",
+    "createPost": "Create post",
+    "editPost": "Edit post",
+    "defaultPostName": "New Post",
+    "postNameLabel": "Title",
+    "postDescriptionLabel": "Description",
+    "postDescriptionPlaceholder": "Write your post...",
+    "postTagsLabel": "Tags",
+    "postSave": "Save",
+    "postCreate": "Post",
+    "postDelete": "Delete post",
+    "postDeleteConfirmTitle": "Delete this post?",
+    "postDeleteConfirmDescription": "This will permanently remove the post and its comments. This action cannot be undone.",
+    "postUnsavedCloseTitle": "Discard unsaved changes?",
+    "postUnsavedCloseDescription": "You have unsaved changes. If you close now, your edits will be lost.",
+    "postUnsavedCloseConfirm": "Discard changes",
+    "postUnsavedCloseCancel": "Keep editing",
+    "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
+    "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
   },
   "contribution": {
     "edit": "Edit",
@@ -189,7 +217,13 @@
     "configure": "Configure",
     "edit": "Edit",
     "memo": "Memo",
-    "richTextEditor": "Rich text content editor"
+    "richTextEditor": "Rich text content editor",
+    "comingSoon": "Coming soon",
+    "memoPlaceholder": "Write your memo…",
+    "memoOpenHint": "Memo content is edited in its own dialog.",
+    "openMemo": "Open memo",
+    "openWhiteboard": "Open whiteboard",
+    "openWhiteboardHint": "Whiteboard content is edited in its own dialog."
   },
   "members": {
     "title": "Community",
@@ -287,6 +321,7 @@
   },
   "mobile": {
     "more": "More",
+    "menu": "Menu",
     "activity": "Activity",
     "videoCall": "Video Call",
     "share": "Share",
@@ -303,7 +338,41 @@
     "moveUp": "Move Up",
     "moveDown": "Move Down",
     "moveToBottom": "Move to Bottom",
-    "delete": "Delete"
+    "delete": "Delete",
+    "moveFailed": "Could not reorder. Please try again."
+  },
+  "visibilityChange": {
+    "publishTitle": "Publish this $t(common.callout)?",
+    "publishDescription": "The $t(common.callout) will become visible to every member of the space.",
+    "publishConfirm": "Publish",
+    "unpublishTitle": "Move this $t(common.callout) to draft?",
+    "unpublishDescription": "The $t(common.callout) will no longer be visible to space members.",
+    "unpublishConfirm": "Move to draft",
+    "notifyMembers": "Notify space members",
+    "saveFailed": "Could not change the visibility. Please try again."
+  },
+  "sortContributions": {
+    "title": "Sort contributions",
+    "description": "Drag to reorder. The new order applies on save.",
+    "empty": "This $t(common.callout) has no contributions to sort yet.",
+    "confirm": "Save order",
+    "dragHandle": "Drag to reorder",
+    "saveFailed": "Could not save the new order. Please try again."
+  },
+  "deleteCallout": {
+    "title": "Delete this $t(common.callout)?",
+    "description": "“{{title}}” will be deleted permanently, along with its contributions and comments. This action cannot be undone.",
+    "confirm": "Delete",
+    "saveFailed": "Could not delete the $t(common.callout). Please try again."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Could not save the template. Please try again."
+  },
+  "findTemplate": {
+    "overwriteTitle": "Replace your current content?",
+    "overwriteDescription": "Loading this template will replace the fields you've already filled in. This cannot be undone.",
+    "overwriteConfirm": "Load template",
+    "saveAsTemplateTitle": "Save as template"
   },
   "dates": {
     "today": "Today",
@@ -316,21 +385,34 @@
     "urlRequired": "URL is required",
     "urlInvalid": "URL must start with http:// or https://",
     "displayNameRequired": "Display name is required",
-    "questionRequired": "Question is required"
+    "questionRequired": "Question is required",
+    "required": "This field is required",
+    "maxSmall": "Must be {{count}} characters or fewer",
+    "maxMarkdown": "Must be {{count}} characters or fewer",
+    "minPollOptions": "At least {{count}} options are required",
+    "pollOptionRequired": "Option text is required",
+    "referenceTitleRequired": "Title is required when a URL is provided",
+    "linkRowTitleRequired": "Title is required when a URL is provided"
   },
   "forms": {
     "titleLabel": "Title",
-    "titlePlaceholder": "Give your post a title...",
+    "titlePlaceholder": "Give your $t(common.callout) a title...",
+    "insertEmoji": "Insert emoji",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
-    "framingType": "Content Type",
+    "tagsPlaceholder": "Comma-separated tags",
+    "framingType": "Add to post",
     "visibility": "Visibility",
     "publishedLabel": "Published",
     "draftLabel": "Draft",
     "notifyMembers": "Notify space members",
     "saveDraft": "Save Draft",
+    "save": "Save",
     "publish": "Post",
+    "createPost": "Create $t(common.Callout)",
+    "editPost": "Edit $t(common.Callout)",
+    "moreOptions": "More options",
     "findTemplate": "Find Template",
     "contributionTypes": "Allowed Contributions",
     "commentsEnabled": "Enable comments",
@@ -340,7 +422,71 @@
     "pollQuestion": "Question",
     "pollOption": "Option {{number}}",
     "addOption": "Add Option",
-    "removeOption": "Remove option"
+    "removeOption": "Remove option",
+    "allowComments": "Allow comments",
+    "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing."
+  },
+  "contributionSettings": {
+    "heading": "Responses",
+    "types": {
+      "link": "Links & Files",
+      "post": "Posts",
+      "memo": "Memos",
+      "whiteboard": "Whiteboards",
+      "document": "Documents"
+    },
+    "actors": {
+      "members": "Members can add",
+      "admins": "Admins can add"
+    },
+    "commentsEnabled": "Enable comments",
+    "setDefaults": "Set Default Response",
+    "prePopulate": {
+      "heading": "Pre-populate collection",
+      "description": "Add link items that appear in this $t(common.callout) as soon as it is created.",
+      "empty": "No pre-populated links yet.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Link title",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Optional description",
+      "addRow": "Add another link",
+      "removeRow": "Remove link"
+    }
+  },
+  "references": {
+    "heading": "References",
+    "empty": "No references yet.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Reference title",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional description",
+    "addRow": "Add another reference",
+    "removeRow": "Remove reference"
+  },
+  "responseDefaults": {
+    "srDescription": "Configure the default values for new contributions in this $t(common.callout).",
+    "title": {
+      "post": "Posts defaults",
+      "memo": "Memos defaults",
+      "whiteboard": "Whiteboards defaults",
+      "document": "Documents defaults",
+      "generic": "Response defaults"
+    },
+    "defaultTitle": "Default title",
+    "defaultTitlePlaceholder": "Give new contributions a default title",
+    "defaultDescription": "Default description",
+    "defaultDescriptionPlaceholder": "Guidance shown when a member starts a new contribution",
+    "defaultWhiteboard": "Default whiteboard",
+    "configureWhiteboard": "Configure whiteboard",
+    "editWhiteboard": "Edit whiteboard",
+    "template": "Template",
+    "templatePlaceholder": "Choose a template…",
+    "templateLoading": "Loading templates…",
+    "save": "Save"
   },
   "calloutDialog": {
     "close": "Close dialog",
@@ -450,7 +596,19 @@
   },
   "dialogs": {
     "cancel": "Cancel",
-    "create": "Create"
+    "create": "Create",
+    "discardChanges": {
+      "title": "Discard your changes?",
+      "description": "You have unsaved changes. If you close this dialog, your changes will be lost.",
+      "confirm": "Yes, close",
+      "cancel": "Keep editing"
+    },
+    "deleteFraming": {
+      "title": "Remove framing content?",
+      "description": "The framing content for this $t(common.callout) will be removed. This cannot be undone.",
+      "confirm": "Remove",
+      "cancel": "Keep"
+    }
   },
   "poll": {
     "status": {
@@ -522,6 +680,6 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading post"
+    "loadingPost": "Loading $t(common.callout)"
   }
 }
