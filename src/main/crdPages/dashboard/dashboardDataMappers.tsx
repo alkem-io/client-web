@@ -12,14 +12,13 @@ import {
   User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ActivityEventType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 export type CompactSpaceCardData = {
   id: string;
@@ -453,11 +452,11 @@ const mapEntryToPanelItem = (entry: MembershipEntry, depth = 0): MembershipItem 
   const isPrivate = !space.about.isContentPublic;
   const childEntries = entry.childMemberships ?? [];
 
-  // Root spaces (L0) show a banner thumbnail → prefer cardBanner, default to card visual.
-  // Child spaces (L1/L2) show an avatar → prefer avatar URI, default to avatar visual.
+  // Root spaces (L0) show a banner thumbnail → prefer cardBanner; if missing, the
+  // component renders the deterministic gradient from `color`.
+  // Child spaces (L1/L2) show an avatar → prefer avatar URI; same gradient fallback.
   const isRoot = depth === 0;
-  const realImage = isRoot ? profile.cardBanner?.uri || undefined : profile.avatar?.uri || undefined;
-  const image = realImage ?? getDefaultSpaceVisualUrl(isRoot ? VisualType.Card : VisualType.Avatar, space.id);
+  const image = isRoot ? profile.cardBanner?.uri || undefined : profile.avatar?.uri || undefined;
 
   return {
     id: space.id,
