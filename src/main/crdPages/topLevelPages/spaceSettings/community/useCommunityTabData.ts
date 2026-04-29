@@ -17,6 +17,7 @@ import {
   InvitationEvent,
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useCommunityPolicyChecker from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityPolicyChecker';
 
@@ -56,9 +57,14 @@ export type UseCommunityTabDataResult = {
   };
   onUserRemove: (id: string) => void;
   onUserLeadChange: (id: string, isLead: boolean) => Promise<unknown>;
+  onUserAdminChange: (id: string, isAdmin: boolean) => Promise<unknown>;
   onOrgRemove: (id: string) => void;
   onOrgLeadChange: (id: string, isLead: boolean) => Promise<unknown>;
   onVCRemove: (id: string) => void;
+  /** First name lookup used by the Member settings dialog's removal warning copy. */
+  getMemberFirstName: (id: string) => string | undefined;
+  /** The current viewer's user id (when authenticated) — used to hide self-remove affordances. */
+  viewerId: string | undefined;
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
@@ -109,6 +115,7 @@ const mapInvitationState = (state: string): PendingMembershipState | null => {
 
 export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResult {
   const community = useCommunityAdmin({ roleSetId });
+  const { userModel } = useCurrentUserContext();
   const [pendingRemoval, setPendingRemoval] = useState<CommunityPendingRemoval | null>(null);
 
   const members: CommunityMember[] = community.userAdmin.members.map(u => {
@@ -263,12 +270,31 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     const target = pendingRemoval;
     setPendingRemoval(null);
     switch (target.kind) {
-      case 'user':
+      case 'user': {
+        // Removing a user from the community means stripping every role they hold
+        // on this role set. The legacy `userAdmin.onRemove` only removes MEMBER,
+        // which leaves a user with LEAD or ADMIN visible in the members list
+        // (the role-set membership query returns anyone with any role). Cascade
+        // ADMIN → LEAD → MEMBER so a leader/admin gets fully purged.
+        const user = community.userAdmin.members.find(u => u.id === target.id);
+        if (user?.isAdmin) {
+          await community.userAdmin.onAuthorizationChange(target.id, false);
+        }
+        if (user?.isLead) {
+          await community.userAdmin.onLeadChange(target.id, false);
+        }
         await community.userAdmin.onRemove(target.id);
         return;
-      case 'organization':
+      }
+      case 'organization': {
+        // Same cascade for organizations — strip LEAD before MEMBER.
+        const org = community.organizationAdmin.members.find(o => o.id === target.id);
+        if (org?.isLead) {
+          await community.organizationAdmin.onLeadChange(target.id, false);
+        }
         await community.organizationAdmin.onRemove(target.id);
         return;
+      }
       case 'virtualContributor':
         await community.virtualContributorAdmin.onRemove(target.id);
         return;
@@ -297,7 +323,11 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
   };
 
   const onUserLeadChange = (id: string, isLead: boolean) => community.userAdmin.onLeadChange(id, isLead);
+  const onUserAdminChange = (id: string, isAdmin: boolean) => community.userAdmin.onAuthorizationChange(id, isAdmin);
   const onOrgLeadChange = (id: string, isLead: boolean) => community.organizationAdmin.onLeadChange(id, isLead);
+
+  const getMemberFirstName = (id: string): string | undefined =>
+    community.userAdmin.members.find(u => u.id === id)?.firstName;
 
   return {
     members,
@@ -308,12 +338,15 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     leadPolicy,
     onUserRemove,
     onUserLeadChange,
+    onUserAdminChange,
     onOrgRemove,
     onOrgLeadChange,
     onVCRemove,
     onPendingApprove,
     onPendingReject,
     onPendingDelete,
+    getMemberFirstName,
+    viewerId: userModel?.id,
     loading: community.loading,
     pendingRemoval,
     confirmRemoval,
