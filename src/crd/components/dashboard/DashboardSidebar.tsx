@@ -19,6 +19,8 @@ export type SidebarMenuItemData = {
 export type SidebarResourceSection = {
   title: string;
   items: SidebarResourceData[];
+  /** Render this section's avatars as rounded squares instead of circles. */
+  square?: boolean;
 };
 
 const iconMap: Record<string, LucideIcon> = {
@@ -114,7 +116,7 @@ export function DashboardSidebar({
           <ul className="space-y-0.5">
             {section.items.map(item => (
               <li key={item.id}>
-                <SidebarResourceItem {...item} />
+                <SidebarResourceItem {...item} square={section.square} />
               </li>
             ))}
           </ul>
