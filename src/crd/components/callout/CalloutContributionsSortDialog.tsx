@@ -68,6 +68,7 @@ export function CalloutContributionsSortDialog({
   useEffect(() => {
     if (!open) {
       hasSeededRef.current = false;
+      setItems([]);
       return;
     }
     if (!hasSeededRef.current && contributions.length > 0) {
