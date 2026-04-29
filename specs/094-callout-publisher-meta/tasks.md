@@ -27,7 +27,7 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 **Purpose**: Confirm the local environment can perform `pnpm codegen` against the backend.
 
-- [ ] T001 Verify the Alkemio backend is running and reachable at `http://localhost:4000/graphql` so that `pnpm codegen` will succeed in Phase 2.
+- [X] T001 Verify the Alkemio backend is running and reachable at `http://localhost:4000/graphql` so that `pnpm codegen` will succeed in Phase 2.
 
 ---
 
@@ -37,11 +37,11 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 **⚠️ CRITICAL**: No US1 or US2 task can begin until Phase 2 is complete — the consumer code in those phases will not type-check otherwise.
 
-- [ ] T002 [P] Extend the main Callout fragment in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` (lines 131–142) by adding `createdDate` and a `publishedBy` selection that mirrors the existing `createdBy` shape exactly (`{ id profile { id displayName avatar: visual(type: AVATAR) { id uri } } }`). See `specs/094-callout-publisher-meta/contracts/callout-fragment.graphql` for the precise diff.
-- [ ] T003 [P] Extend the `SearchResultCallout` fragment in `src/main/search/SearchQueries.graphql` (lines 130–164) by adding `createdBy`, `createdDate`, `publishedBy`, and `publishedDate` to the nested `callout` selection — none of these are queried today. Mirror the same User shape used in T002. See `specs/094-callout-publisher-meta/contracts/search-callout-fragment.graphql` for the precise diff.
-- [ ] T004 Run `pnpm codegen` from the repo root and stage the regenerated outputs under `src/core/apollo/generated/`. Verify the regenerated `apollo-hooks.ts` includes the new selections for both fragments. (Depends on T002 + T003.)
-- [ ] T005 Extend the `CalloutModelExtension<T>` type in `src/domain/collaboration/callout/models/CalloutModelLight.ts` (lines 42–63) by adding `createdDate?: Date | undefined` and a `publishedBy?` field whose nested shape matches the existing `createdBy` field one-for-one. (Depends on T004 — generated types must exist for editor type-checking.)
-- [ ] T006 In `src/domain/collaboration/callout/useCalloutDetails/useCalloutDetails.ts` (around line 72, where `publishedDate` is converted to a `Date`), pass `publishedBy` through unchanged and apply the same `Date`-coercion pattern to `createdDate` so consumers receive `Date | undefined` for both date fields. (Depends on T005.)
+- [X] T002 [P] Extend the main Callout fragment in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` (lines 131–142) by adding `createdDate` and a `publishedBy` selection that mirrors the existing `createdBy` shape exactly (`{ id profile { id displayName avatar: visual(type: AVATAR) { id uri } } }`). See `specs/094-callout-publisher-meta/contracts/callout-fragment.graphql` for the precise diff.
+- [X] T003 [P] Extend the `SearchResultCallout` fragment in `src/main/search/SearchQueries.graphql` (lines 130–164) by adding `createdBy`, `createdDate`, `publishedBy`, and `publishedDate` to the nested `callout` selection — none of these are queried today. Mirror the same User shape used in T002. See `specs/094-callout-publisher-meta/contracts/search-callout-fragment.graphql` for the precise diff.
+- [X] T004 Run `pnpm codegen` from the repo root and stage the regenerated outputs under `src/core/apollo/generated/`. Verify the regenerated `apollo-hooks.ts` includes the new selections for both fragments. (Depends on T002 + T003.)
+- [X] T005 Extend the `CalloutModelExtension<T>` type in `src/domain/collaboration/callout/models/CalloutModelLight.ts` (lines 42–63) by adding `createdDate?: Date | undefined` and a `publishedBy?` field whose nested shape matches the existing `createdBy` field one-for-one. (Depends on T004 — generated types must exist for editor type-checking.)
+- [X] T006 In `src/domain/collaboration/callout/useCalloutDetails/useCalloutDetails.ts` (around line 72, where `publishedDate` is converted to a `Date`), pass `publishedBy` through unchanged and apply the same `Date`-coercion pattern to `createdDate` so consumers receive `Date | undefined` for both date fields. (Depends on T005.)
 
 **Checkpoint**: All four presentation surfaces can now read `callout.publishedBy`, `callout.publishedDate`, `callout.createdBy`, and `callout.createdDate` from the view-model with full TypeScript safety. US1 and US2 phases may begin.
 
@@ -55,9 +55,9 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 ### Implementation for User Story 1
 
-- [ ] T007 [P] [US1] In `src/domain/collaboration/callout/calloutBlock/CalloutHeader.tsx` (line 53), change the `<Authorship>` `author` prop from `callout.createdBy` to `callout.publishedBy ?? callout.createdBy`. Leave the `date` prop untouched in this phase — US2 owns it.
-- [ ] T008 [P] [US1] In `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`, update the `author` expression in all three callout mappers — `mapCalloutLightToPostCard` (around line 40), `mapCalloutDetailsToPostCard` (around line 61), and `mapCalloutDetailsToDialogData` (around line 128). In each, prepend `const authorSource = callout.publishedBy ?? callout.createdBy;` and replace every `callout.createdBy` reference inside the `author` literal with `authorSource`. Leave the `timestamp` expression untouched in this phase — US2 owns it.
-- [ ] T009 [P] [US1] In `src/main/crdPages/search/searchDataMapper.ts`, replace the hard-coded `author: { name: unknownLabel }` in the `mappedCallouts` block (lines 145–156) with the same fallback chain used for whiteboard / memo / post results, but rooted at `publishedBy ?? createdBy`. Specifically, prepend `const authorSource = r.callout.publishedBy ?? r.callout.createdBy;` inside the `.map(r => …)` body and emit `author: { name: authorSource?.profile?.displayName ?? unknownLabel, avatarUrl: authorSource?.profile?.avatar?.uri }`. The `?? unknownLabel` last-resort matches the existing whiteboard / memo / post pattern. Leave the `date: ''` literal untouched in this phase — US2 owns it.
+- [X] T007 [P] [US1] In `src/domain/collaboration/callout/calloutBlock/CalloutHeader.tsx` (line 53), change the `<Authorship>` `author` prop from `callout.createdBy` to `callout.publishedBy ?? callout.createdBy`. Leave the `date` prop untouched in this phase — US2 owns it.
+- [X] T008 [P] [US1] In `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`, update the `author` expression in all three callout mappers — `mapCalloutLightToPostCard` (around line 40), `mapCalloutDetailsToPostCard` (around line 61), and `mapCalloutDetailsToDialogData` (around line 128). In each, prepend `const authorSource = callout.publishedBy ?? callout.createdBy;` and replace every `callout.createdBy` reference inside the `author` literal with `authorSource`. Leave the `timestamp` expression untouched in this phase — US2 owns it.
+- [X] T009 [P] [US1] In `src/main/crdPages/search/searchDataMapper.ts`, replace the hard-coded `author: { name: unknownLabel }` in the `mappedCallouts` block (lines 145–156) with the same fallback chain used for whiteboard / memo / post results, but rooted at `publishedBy ?? createdBy`. Specifically, prepend `const authorSource = r.callout.publishedBy ?? r.callout.createdBy;` inside the `.map(r => …)` body and emit `author: { name: authorSource?.profile?.displayName ?? unknownLabel, avatarUrl: authorSource?.profile?.avatar?.uri }`. The `?? unknownLabel` last-resort matches the existing whiteboard / memo / post pattern. Leave the `date: ''` literal untouched in this phase — US2 owns it.
 
 **Checkpoint**: US1 is fully functional and testable independently. Published callouts now show the publisher across all four surfaces. Drafts may still render with an empty / missing date in some surfaces — that is US2's job. Out-of-scope surfaces (post / whiteboard / memo cards, comments, calendar) are untouched.
 
@@ -71,9 +71,9 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 ### Implementation for User Story 2
 
-- [ ] T010 [P] [US2] In `src/domain/collaboration/callout/calloutBlock/CalloutHeader.tsx` (line 53), change the `<Authorship>` `date` prop from `callout.publishedDate` to `callout.publishedDate ?? callout.createdDate`. (Same line as T007's edit; sequence after T007 to avoid an in-line conflict.)
-- [ ] T011 [P] [US2] In `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`, update the `timestamp` expression in all three callout mappers (same call sites as T008). In each, prepend `const dateSource = callout.publishedDate ?? callout.createdDate;` and replace `callout.publishedDate` inside the `timestamp` ternary with `dateSource`, e.g. `timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined`. (Same file as T008; sequence after T008.)
-- [ ] T012 [P] [US2] In `src/main/crdPages/search/searchDataMapper.ts` (`mappedCallouts`, same call site as T009), prepend `const dateSource = r.callout.publishedDate ?? r.callout.createdDate;` and replace the literal `date: ''` with `date: dateSource ? formatDate(dateSource) : ''`. The empty-string fallback remains as the last-resort case (callouts where `createdDate` is somehow null), matching the surrounding mappings' tolerance for missing data.
+- [X] T010 [P] [US2] In `src/domain/collaboration/callout/calloutBlock/CalloutHeader.tsx` (line 53), change the `<Authorship>` `date` prop from `callout.publishedDate` to `callout.publishedDate ?? callout.createdDate`. (Same line as T007's edit; sequence after T007 to avoid an in-line conflict.)
+- [X] T011 [P] [US2] In `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`, update the `timestamp` expression in all three callout mappers (same call sites as T008). In each, prepend `const dateSource = callout.publishedDate ?? callout.createdDate;` and replace `callout.publishedDate` inside the `timestamp` ternary with `dateSource`, e.g. `timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined`. (Same file as T008; sequence after T008.)
+- [X] T012 [P] [US2] In `src/main/crdPages/search/searchDataMapper.ts` (`mappedCallouts`, same call site as T009), prepend `const dateSource = r.callout.publishedDate ?? r.callout.createdDate;` and replace the literal `date: ''` with `date: dateSource ? formatDate(dateSource) : ''`. The empty-string fallback remains as the last-resort case (callouts where `createdDate` is somehow null), matching the surrounding mappings' tolerance for missing data.
 
 **Checkpoint**: US1 + US2 both work independently. Draft callouts now show creator + creation date in all four surfaces. SC-002 (no blank or partially populated meta lines) is satisfied. Per FR-005, the visual presentation (avatar / name / separator / formatted date layout) is unchanged in every surface — only the resolved values differ.
 
@@ -83,8 +83,8 @@ Web application (single React frontend). Source under `src/`. No `tests/` direct
 
 **Purpose**: Validate the change end-to-end against the spec's success criteria before opening the PR.
 
-- [ ] T013 Run `pnpm lint` from the repo root. Must pass with zero new warnings or errors. This validates the type contract from the GraphQL fragments through the model, hook, and all five presentation call sites.
-- [ ] T014 Run `pnpm vitest run` from the repo root. Full suite must remain green (~595 tests). No new tests are expected to be added.
+- [X] T013 Run `pnpm lint` from the repo root. Must pass with zero new warnings or errors. This validates the type contract from the GraphQL fragments through the model, hook, and all five presentation call sites.
+- [X] T014 Run `pnpm vitest run` from the repo root. Full suite must remain green (~595 tests). No new tests are expected to be added.
 - [ ] T015 [P] Browser verification of `quickstart.md` **Scenario 1** (published callout, 4 surfaces). Confirm CRD summary card, CRD detail dialog, MUI callout-dialog header, and CRD search result all show the same publisher and publish date.
 - [ ] T016 [P] Browser verification of `quickstart.md` **Scenario 2** (draft callout fallback). Confirm both UIs show the creator's name and the creation date — no blank date in MUI, no missing fields anywhere.
 - [ ] T017 [P] Browser verification of `quickstart.md` **Scenario 3** (CRD search-result cards). Confirm a published callout shows the publisher (no longer `Unknown`); a draft callout shows the creator; a callout with neither still falls back to the localised `Unknown` label.
