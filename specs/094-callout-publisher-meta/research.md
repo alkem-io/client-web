@@ -58,7 +58,7 @@ No `[NEEDS CLARIFICATION]` markers remain in the spec. Q1 (independent fallback)
   - Keeps each mapper self-contained and readable; the source of truth for each field is one line away from where it's used.
   - For search specifically, layering the existing `?? unknownLabel` on top of the `??` chain preserves consistency with how whiteboard/memo/post search results already render and avoids introducing a new "no author" branch.
 - **Alternatives considered**:
-  - *Inline `?? ` directly in the `author: { name: …, avatarUrl: …}` literal*: rejected — produces an unreadably nested expression; the local `const` approach is one line longer per mapper but markedly clearer.
+  - *Inline `??` directly in the `author: { name: …, avatarUrl: …}` literal*: rejected — produces an unreadably nested expression; the local `const` approach is one line longer per mapper but markedly clearer.
   - *Extract a single shared helper across `calloutDataMapper.ts` and `searchDataMapper.ts`*: rejected — the two mappers serve different presentation prop shapes (`PostCardData` vs. `PostResultCardData`) and the fallback strategies differ slightly (search adds the `unknownLabel` last-resort). Four call sites with a two-line preamble is below the abstraction threshold called out in `CLAUDE.md`.
 
 ### D5. Visual-presentation neutrality is enforced by *not* changing the consuming components

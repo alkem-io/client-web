@@ -10,7 +10,7 @@ Switch the author + date metadata that appears on callout surfaces — the MUI c
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x · React 19 (with React Compiler) · Node 24.14.0 (Volta-pinned)
-**Primary Dependencies**: Apollo Client (existing — unchanged), MUI 5 + Emotion (legacy UI surface), shadcn/ui + Tailwind v4 (CRD surface), `react-i18next` (existing)
+**Primary Dependencies**: Apollo Client (existing — unchanged), MUI 7 + Emotion (legacy UI surface), shadcn/ui + Tailwind v4 (CRD surface), `react-i18next` (existing)
 **Storage**: N/A — presentation + GraphQL fragment extension; no client-side persistence and no backend schema change (`publishedBy` / `publishedDate` already exist on `Callout`)
 **Testing**: Vitest (jsdom). No targeted unit tests exist for the affected components/mappers; the suite must remain green
 **Target Platform**: Vite-built single-page web app served from `localhost:3001` against the Alkemio backend at `localhost:3000` (dev) / production deployment (prod)
