@@ -6,6 +6,7 @@ import {
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
@@ -103,7 +104,14 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent: contributionDefaults.whiteboardContent ?? '',
+      // Legacy callouts may have `EmptyWhiteboardString` persisted as the
+      // default-whiteboard sentinel from a prior buggy create path. Normalize
+      // it back to "" so the form treats this as "no default configured" and
+      // the mapper omits it on update — instead of round-tripping the sentinel.
+      whiteboardContent:
+        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
+          ? ''
+          : contributionDefaults.whiteboardContent,
     },
     prePopulateLinkRows: [],
     referenceRows:
