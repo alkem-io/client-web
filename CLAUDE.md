@@ -359,13 +359,11 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 094-callout-publisher-meta: Added TypeScript 5.x · React 19 (with React Compiler) · Node 24.14.0 (Volta-pinned) + Apollo Client (existing — unchanged), MUI 5 + Emotion (legacy UI surface), shadcn/ui + Tailwind v4 (CRD surface), `react-i18next` (existing)
 - 093-crd-search-scope: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), Apollo Client (existing — unchanged), `react-i18next` (existing), `lucide-react`, `@/crd/primitives/dropdown-menu` (Radix UI)
 - 091-crd-subspace-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
-- 089-crd-comments-refinement: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
-- 088-crd-space-apply-button: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies.
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), Apollo Client (existing — unchanged), `react-i18next` (existing), `lucide-react`, `@/crd/primitives/dropdown-menu` (Radix UI) (093-crd-search-scope)
-- N/A (presentation + GraphQL query parameter wiring; no persistence; no schema changes) (093-crd-search-scope)
-- N/A (presentation-only migration; GraphQL schema and cache semantics unchanged) (091-crd-subspace-page)
+- TypeScript 5.x · React 19 (with React Compiler) · Node 24.14.0 (Volta-pinned) + Apollo Client (existing — unchanged), MUI 5 + Emotion (legacy UI surface), shadcn/ui + Tailwind v4 (CRD surface), `react-i18next` (existing) (094-callout-publisher-meta)
+- N/A — presentation + GraphQL fragment extension; no client-side persistence and no backend schema change (`publishedBy` / `publishedDate` already exist on `Callout`) (094-callout-publisher-meta)
