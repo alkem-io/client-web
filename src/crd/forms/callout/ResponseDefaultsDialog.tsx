@@ -65,6 +65,21 @@ export function ResponseDefaultsDialog({
     wasOpenRef.current = open;
   }, [open]);
 
+  // Sync `whiteboardContent` from parent values into draft whenever it changes
+  // while the dialog is open. The whiteboard sub-flow commits via the parent's
+  // `onSave` (writing straight to the form), bypassing this dialog's draft —
+  // without this sync, the outer Save would commit a stale empty
+  // `whiteboardContent` and wipe the inner dialog's save.
+  useEffect(() => {
+    if (open) {
+      setDraft(prev =>
+        prev.whiteboardContent === values.whiteboardContent
+          ? prev
+          : { ...prev, whiteboardContent: values.whiteboardContent }
+      );
+    }
+  }, [open, values.whiteboardContent]);
+
   const title = (() => {
     switch (type) {
       case 'post':
@@ -81,7 +96,13 @@ export function ResponseDefaultsDialog({
   })();
 
   const handleSave = () => {
-    onSave(draft);
+    // The whiteboard editor commits its content directly to the parent form
+    // (via the connector's `onSave` from `whiteboardSlot`), so by the time the
+    // user clicks Save here, `values.whiteboardContent` already holds the
+    // freshly-configured whiteboard. The local `draft` was seeded at open time
+    // and still has the stale value — committing it would wipe the inner
+    // dialog's save. Merge the up-to-date whiteboard content from `values`.
+    onSave({ ...draft, whiteboardContent: values.whiteboardContent });
     onOpenChange(false);
   };
 

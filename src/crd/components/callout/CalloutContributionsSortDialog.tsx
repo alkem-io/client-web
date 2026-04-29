@@ -58,19 +58,24 @@ export function CalloutContributionsSortDialog({
   const { t } = useTranslation('crd-space');
   const [items, setItems] = useState<SortableContribution[]>(contributions);
 
-  // Re-seed only on the closed → open transition. A parent re-render that
-  // hands a new `contributions` reference (e.g. unrelated cache update) would
-  // otherwise wipe an in-progress drag reorder. The ref keeps `contributions`
-  // out of the effect deps without disabling the exhaustive-deps lint rule.
-  const contributionsRef = useRef(contributions);
-  contributionsRef.current = contributions;
-  const wasOpenRef = useRef(false);
+  // Seed `items` once per open cycle, the first time real data is available.
+  // The parent fires the GraphQL query on open (`skip: !sortOpen`), so the
+  // first render after open passes an empty array; this effect re-runs when
+  // the data arrives. After seeding, unrelated parent re-renders that hand a
+  // new `contributions` reference (e.g. cache updates) won't wipe an
+  // in-progress drag reorder.
+  const hasSeededRef = useRef(false);
   useEffect(() => {
-    if (open && !wasOpenRef.current) {
-      setItems(contributionsRef.current);
+    if (!open) {
+      hasSeededRef.current = false;
+      setItems([]);
+      return;
     }
-    wasOpenRef.current = open;
-  }, [open]);
+    if (!hasSeededRef.current && contributions.length > 0) {
+      setItems(contributions);
+      hasSeededRef.current = true;
+    }
+  }, [open, contributions]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -104,7 +109,12 @@ export function CalloutContributionsSortDialog({
               </ul>
             </SortableContext>
           </DndContext>
-          {items.length === 0 && (
+          {loading && items.length === 0 && (
+            <output className="flex justify-center py-4" aria-label={t('sortContributions.title')}>
+              <Loader2 aria-hidden="true" className="size-4 animate-spin text-muted-foreground" />
+            </output>
+          )}
+          {!loading && items.length === 0 && (
             <p className="text-caption text-muted-foreground py-4">{t('sortContributions.empty')}</p>
           )}
         </div>
