@@ -19,7 +19,7 @@ function PackCard({ pack, onClick }: { pack: typeof TEMPLATE_PACKS[0], onClick: 
   return (
     <div 
         onClick={onClick}
-        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
+        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer"
     >
       <div className="relative h-40 w-full overflow-hidden bg-muted">
         <img 
@@ -85,7 +85,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Space Banner" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/50">
@@ -117,7 +117,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Subspace Banner" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/50">
@@ -207,7 +207,7 @@ function TemplateCard({ template }: { template: typeof INDIVIDUAL_TEMPLATES[0] }
   return (
     <div 
         onClick={() => navigate(`/templates/${template.id}`)}
-        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer h-full"
+        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer h-full"
     >
       {/* Preview Section - Expanded to match PackCard style */}
       <div className="relative h-44 w-full overflow-hidden bg-muted border-b border-border/50">
@@ -339,9 +339,7 @@ export function TemplateLibrary() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header & Sticky Search */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="px-6 md:px-8 py-4">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Template Library</h1>
@@ -360,14 +358,13 @@ export function TemplateLibrary() {
               />
             </div>
           </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <main className="flex-1 w-full px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-12">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-8">
+        
+        {/* Main Content Area */}
+        <div className="flex-1 min-w-0 space-y-12">
           
           {/* Template Packs Section */}
           {(filteredPacks.length > 0) && (
@@ -382,7 +379,7 @@ export function TemplateLibrary() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {currentPacks.map(pack => (
                   <PackCard 
                     key={pack.id} 
@@ -470,7 +467,6 @@ export function TemplateLibrary() {
             )}
           </section>
 
-          </div>
         </div>
       </main>
     </div>

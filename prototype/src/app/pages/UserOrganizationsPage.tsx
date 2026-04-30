@@ -114,20 +114,12 @@ export default function UserOrganizationsPage() {
   return (
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
-      <div className="sticky top-16 z-20 border-b border-border bg-card">
-        <div className="px-6 md:px-8 pt-8 pb-0">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-          <div className="flex items-center gap-4 mb-8">
-            <Avatar className="w-12 h-12 shrink-0">
-              <AvatarImage
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Jeroen Nijkamp"
-              />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
-            </Avatar>
+      <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-3xl font-bold tracking-tight">Organizations</h1>
+              <p className="text-muted-foreground mt-1">Manage your professional affiliations and organization memberships.</p>
             </div>
           </div>
           
@@ -148,14 +140,10 @@ export default function UserOrganizationsPage() {
               </Link>
             ))}
           </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-8">
+      <div className="container mx-auto px-4 md:px-8 py-8 space-y-8">
         
         {/* Controls */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
@@ -333,8 +321,6 @@ export default function UserOrganizationsPage() {
               </Button>
             </div>
           )}
-        </div>
-        </div>
         </div>
       </div>
     </div>

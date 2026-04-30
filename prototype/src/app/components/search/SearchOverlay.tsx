@@ -335,12 +335,14 @@ export function SearchOverlay() {
             role="dialog"
             aria-modal="true"
             aria-label="Platform Search"
-            className="fixed inset-0 z-[101] grid grid-cols-12 gap-6 px-6 md:px-8 py-[5vh] max-md:p-0 pointer-events-none"
-          >
-            <div
             className={cn(
-              "col-span-12 lg:col-start-3 lg:col-span-8 max-md:col-start-1 max-md:col-span-12",
-              "flex flex-col overflow-hidden pointer-events-auto",
+              "fixed z-[101] flex flex-col overflow-hidden",
+              // Desktop
+              "top-[5vh] left-[10%] right-[10%] bottom-[5vh]",
+              // Tablet
+              "max-lg:left-[5%] max-lg:right-[5%]",
+              // Mobile
+              "max-md:inset-0 max-md:top-0 max-md:left-0 max-md:right-0 max-md:bottom-0",
             )}
             style={{
               background: "var(--background)",
@@ -455,10 +457,10 @@ export function SearchOverlay() {
             </div>
 
             {/* ── Body ── */}
-            <div className="flex-1 grid grid-cols-10 gap-6 min-h-0 overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
               {/* No search yet */}
               {!results && !loading && (
-                <div className="flex-1 flex items-center justify-center p-8 col-span-10">
+                <div className="flex-1 flex items-center justify-center p-8">
                   <div className="text-center" style={{ maxWidth: 360 }}>
                     <div
                       className="mx-auto mb-4 flex items-center justify-center rounded-full"
@@ -497,7 +499,7 @@ export function SearchOverlay() {
 
               {/* Loading skeleton */}
               {loading && (
-                <div className="flex-1 flex items-center justify-center p-8 col-span-10">
+                <div className="flex-1 flex items-center justify-center p-8">
                   <div className="flex flex-col items-center gap-3">
                     <Loader2
                       className="animate-spin"
@@ -518,7 +520,7 @@ export function SearchOverlay() {
 
               {/* Results with 0 matches */}
               {results && !loading && categoriesWithResults.length === 0 && (
-                <div className="flex-1 flex items-center justify-center p-8 col-span-10">
+                <div className="flex-1 flex items-center justify-center p-8">
                   <div className="text-center" style={{ maxWidth: 400 }}>
                     <div
                       className="mx-auto mb-4 flex items-center justify-center rounded-full"
@@ -567,8 +569,9 @@ export function SearchOverlay() {
                 <>
                   {/* Category sidebar — desktop */}
                   <nav
-                    className="hidden md:flex flex-col col-span-2 py-4 overflow-y-auto"
+                    className="hidden md:flex flex-col shrink-0 py-4 overflow-y-auto"
                     style={{
+                      width: 220,
                       borderRight: "1px solid var(--border)",
                     }}
                     aria-label="Result categories"
@@ -669,7 +672,7 @@ export function SearchOverlay() {
                   {/* Results pane */}
                   <div
                     ref={resultsRef}
-                    className="col-span-10 md:col-span-8 overflow-y-auto"
+                    className="flex-1 overflow-y-auto"
                     onScroll={handleScroll}
                     role="region"
                     aria-label="Search results"
@@ -860,7 +863,6 @@ export function SearchOverlay() {
                   </div>
                 </>
               )}
-            </div>
             </div>
           </motion.div>
         </>

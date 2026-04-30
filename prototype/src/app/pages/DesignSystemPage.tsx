@@ -6,7 +6,7 @@ import {
   Home, Upload, MessageSquare, Heart, Share2, Plus, Trash2,
   CreditCard, Calendar, Activity, ChevronLeft, Image as ImageIcon,
   Shield, BookOpen, Monitor, Star, LogIn, Lock, Mail, ArrowRight,
-  RefreshCw, Download, Lightbulb
+  RefreshCw, Download
 } from "lucide-react";
 
 // UI Components
@@ -900,10 +900,10 @@ const TemplatesAndPages = () => (
     </ComponentBlock>
 
     <ComponentBlock title="Implemented Page Links" description="Direct access to live pages.">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
          {[
             { name: "Home Dashboard", path: "/", icon: Home, desc: "Main landing" },
-            { name: "Template Library", path: "/templates", icon: Lightbulb, desc: "Catalog view" },
+            { name: "Template Library", path: "/templates", icon: Layout, desc: "Catalog view" },
             { name: "Settings", path: "/user/alex/settings/profile", icon: Settings, desc: "Form layouts" },
          ].map((page) => (
             <Link key={page.path} to={page.path} className="group block border border-border rounded-xl overflow-hidden hover:border-primary transition-colors bg-card">
@@ -983,7 +983,7 @@ export default function DesignSystemPage() {
           <div>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3">Patterns</h4>
             <div className="space-y-1">
-               <NavItem id="templates" label="Templates & Wireframes" icon={Lightbulb} />
+               <NavItem id="templates" label="Templates & Wireframes" icon={FileText} />
             </div>
           </div>
         </nav>

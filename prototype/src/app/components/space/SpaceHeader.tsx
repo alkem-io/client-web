@@ -1,8 +1,16 @@
 import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { Badge } from "@/app/components/ui/badge";
-import { Settings, Share2, Video, FileText, Activity } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "@/app/components/ui/breadcrumb";
+import { Settings, Share2, Video, FileText, ShieldCheck, ChevronRight, Home } from "lucide-react";
 import { Link } from "react-router";
+import AlkemioSymbolSquare from "@/imports/AlkemioSymbolSquare";
 
 interface SpaceHeaderProps {
   spaceSlug: string;
@@ -13,7 +21,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
   return (
     <div className="flex flex-col bg-background">
       {/* Hero Banner */}
-      <div className="relative w-full h-[256px] overflow-hidden group">
+      <div className="relative w-full h-[320px] overflow-hidden group">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
@@ -30,13 +38,51 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
 
         {/* Breadcrumb + Actions overlay — top of banner */}
         <div
-          className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8"
+          className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between"
           style={{
             paddingTop: 32,
+            paddingLeft: "max(24px, calc((100% - 1536px) / 2 + 24px))",
+            paddingRight: "max(24px, calc((100% - 1536px) / 2 + 24px))",
           }}
         >
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link
+                    to="/"
+                    className="flex items-center gap-1.5 transition-colors hover:opacity-100"
+                    style={{
+                      fontSize: 14,
+                      color: "white",
+                      lineHeight: "20px",
+                    }}
+                  >
+                    <Home className="w-3.5 h-3.5" />
+                    Home
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+
+              <BreadcrumbSeparator>
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+              </BreadcrumbSeparator>
+
+              <BreadcrumbItem>
+                <span
+                  style={{
+                    fontSize: 14,
+                    color: "white",
+                    fontWeight: 500,
+                    lineHeight: "20px",
+                  }}
+                >
+                  {spaceName}
+                </span>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
           {/* Action icons */}
           <div className="flex items-center gap-2">
             <Button
@@ -44,25 +90,6 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
               size="icon"
               className="h-9 w-9 rounded hover:opacity-100"
               style={{ color: "white" }}
-              title="Recent Activity"
-            >
-              <Activity className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded hover:opacity-100"
-              style={{ color: "white" }}
-              title="Video Call"
-            >
-              <Video className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded hover:opacity-100"
-              style={{ color: "white" }}
-              title="Documents"
             >
               <FileText className="h-4 w-4" />
             </Button>
@@ -71,7 +98,14 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
               size="icon"
               className="h-9 w-9 rounded hover:opacity-100"
               style={{ color: "white" }}
-              title="Share"
+            >
+              <Video className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 rounded hover:opacity-100"
+              style={{ color: "white" }}
             >
               <Share2 className="h-4 w-4" />
             </Button>
@@ -81,31 +115,25 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                 size="icon"
                 className="h-9 w-9 rounded hover:opacity-100"
                 style={{ color: "white" }}
-                title="Settings"
               >
                 <Settings className="h-4 w-4" />
               </Button>
             </Link>
           </div>
-            </div>
-          </div>
         </div>
 
-        {/* Content Container — title & members aligned to grid */}
+        {/* Content Container — aligned to same 1536px grid as breadcrumb */}
         <div
-          className="relative h-full flex flex-col justify-end w-full px-6 md:px-8"
+          className="relative h-full flex flex-col justify-end mx-auto w-full"
           style={{
+            maxWidth: 1536,
+            paddingLeft: 24,
+            paddingRight: 24,
             paddingBottom: 24,
           }}
-        >
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-          {/* Bottom: Title & Members */}
+        >          {/* Bottom: Title & Members */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            {/* Left: title */}
-            <div>
-
-            <div className="max-w-3xl pb-1" style={{ color: "var(--primary-foreground)" }}>
+            <div className="max-w-3xl" style={{ color: "var(--primary-foreground)" }}>
               <h1
                 className="mb-4"
                 style={{
@@ -132,7 +160,6 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                 Collaborating on the future of sustainable energy solutions and
                 urban transformation.
               </p>
-            </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -173,8 +200,6 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                   +24
                 </div>
               </div>
-            </div>
-          </div>
             </div>
           </div>
         </div>
