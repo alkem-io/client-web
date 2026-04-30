@@ -5,6 +5,7 @@ import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks
 import {
   AuthorizationPrivilege,
   type CalloutContributionType,
+  CalloutFramingType,
   type CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import useEnsurePresence from '@/core/utils/ensurePresence';
@@ -131,7 +132,12 @@ const useCalloutSettings = ({
 
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
 
-  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate;
+  // Collabora document callouts can't be turned into templates: the underlying
+  // document is a server-side resource provisioned at creation time, so a
+  // template would have nothing meaningful to clone (no markdown, no whiteboard
+  // content, just an empty document handle).
+  const canBeSavedAsTemplate =
+    callout.canBeSavedAsTemplate && callout.framing.type !== CalloutFramingType.CollaboraDocument;
 
   const provided: CalloutSettingsProvided = {
     settingsOpen: settingsOpened,
