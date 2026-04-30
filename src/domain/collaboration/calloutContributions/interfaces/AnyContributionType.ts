@@ -1,4 +1,4 @@
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
@@ -69,14 +69,14 @@ export type AnyContribution = Identifiable & {
   };
   collaboraDocument?: {
     id: string;
-    documentType: string;
-    createdDate: Date;
+    documentType: CollaboraDocumentType;
+    createdDate?: Date | string;
     createdBy?: {
       id: string;
       profile?: { displayName: string };
     };
     profile?: {
-      id: string;
+      id?: string;
       url: string;
       displayName: string;
     };

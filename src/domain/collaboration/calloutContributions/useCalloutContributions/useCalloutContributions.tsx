@@ -94,7 +94,11 @@ const useCalloutContributions = ({
       includeMemo: contributionType === CalloutContributionType.Memo,
       includePost: contributionType === CalloutContributionType.Post,
       includeCollaboraDocument: contributionType === CalloutContributionType.CollaboraDocument,
-      limit: fetchAllEnabled ? undefined : pageSize,
+      // Collabora documents have no dedicated server-side count — we derive total
+      // from the returned list. With a page-bounded limit the total would equal
+      // the page size and `hasMore` would always be false, so always fetch the
+      // full set for that type.
+      limit: fetchAllEnabled || contributionType === CalloutContributionType.CollaboraDocument ? undefined : pageSize,
     },
     skip: !inView || !callout?.id || skip,
     fetchPolicy: 'cache-and-network', // Always check network for updates

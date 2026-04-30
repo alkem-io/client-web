@@ -1,4 +1,4 @@
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
@@ -38,7 +38,7 @@ type CalloutContributionModel = Identifiable & {
   };
   collaboraDocument?: {
     id: string;
-    documentType: string;
+    documentType: CollaboraDocumentType;
     profile?: {
       displayName: string;
       url: string;

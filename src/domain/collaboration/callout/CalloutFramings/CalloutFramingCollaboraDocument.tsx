@@ -67,10 +67,22 @@ const CalloutFramingCollaboraDocument = ({ callout }: CalloutFramingCollaboraDoc
         : t('collaboraDocument.create.documentType.TEXT_DOCUMENT');
 
   const handleOpen = () => setEditorOpen(true);
+  const dialogTitleId = `collabora-fullscreen-title-${collaboraDocument.id}`;
 
   return (
     <>
-      <Container onClick={handleOpen}>
+      <Container
+        role="button"
+        tabIndex={0}
+        aria-label={t('callout.collaboraDocument.clickToSee')}
+        onClick={handleOpen}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleOpen();
+          }
+        }}
+      >
         <ContentContainer>
           <Centered>
             <DocumentIcon color="primary" sx={{ fontSize: '4rem' }} />
@@ -97,6 +109,7 @@ const CalloutFramingCollaboraDocument = ({ callout }: CalloutFramingCollaboraDoc
           open={true}
           onClose={() => setEditorOpen(false)}
           fullScreen={true}
+          aria-labelledby={dialogTitleId}
           PaperProps={{
             sx: {
               display: 'flex',
@@ -109,6 +122,7 @@ const CalloutFramingCollaboraDocument = ({ callout }: CalloutFramingCollaboraDoc
           }}
         >
           <DialogHeader
+            id={dialogTitleId}
             title={callout.framing.profile.displayName}
             icon={<DocumentIcon color="primary" />}
             onClose={() => setEditorOpen(false)}

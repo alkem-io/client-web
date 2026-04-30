@@ -1,7 +1,7 @@
 import type { ComponentType, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
-import { useCalloutContributionsCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCalloutContributionsCountQuery, useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -39,10 +39,15 @@ const CalloutContributionsBlock = ({
 
   const { canCreateContribution } = useCalloutCollaborationPermissions({ callout, contributionType });
 
+  // Collabora documents have no dedicated `contributionsCount.collaboraDocument`
+  // field on the server, so for that type we derive the count from the contributions
+  // list itself. Apollo will dedupe with the inner list's identical query.
+  const isCollaboraType = contributionType === CalloutContributionType.CollaboraDocument;
+
   const {
-    data,
-    loading: loadingContributions,
-    refetch,
+    data: countData,
+    loading: loadingCount,
+    refetch: refetchCount,
   } = useCalloutContributionsCountQuery({
     variables: {
       calloutId: callout.id,
@@ -51,16 +56,35 @@ const CalloutContributionsBlock = ({
       includePost: contributionType === CalloutContributionType.Post,
       includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
     },
-    skip: !callout.id || !inView,
+    skip: !callout.id || !inView || isCollaboraType,
   });
 
-  const contributionsCount =
-    (data?.lookup.callout?.contributionsCount.link ?? 0) +
-    (data?.lookup.callout?.contributionsCount.memo ?? 0) +
-    (data?.lookup.callout?.contributionsCount.post ?? 0) +
-    (data?.lookup.callout?.contributionsCount.whiteboard ?? 0);
+  const {
+    data: collaboraData,
+    loading: loadingCollabora,
+    refetch: refetchCollabora,
+  } = useCalloutContributionsQuery({
+    variables: {
+      calloutId: callout.id,
+      includeLink: false,
+      includeMemo: false,
+      includePost: false,
+      includeWhiteboard: false,
+      includeCollaboraDocument: true,
+      limit: undefined,
+    },
+    skip: !callout.id || !inView || !isCollaboraType,
+  });
 
-  const loading = loadingCallout || loadingContributions;
+  const contributionsCount = isCollaboraType
+    ? (collaboraData?.lookup.callout?.contributions.length ?? 0)
+    : (countData?.lookup.callout?.contributionsCount.link ?? 0) +
+      (countData?.lookup.callout?.contributionsCount.memo ?? 0) +
+      (countData?.lookup.callout?.contributionsCount.post ?? 0) +
+      (countData?.lookup.callout?.contributionsCount.whiteboard ?? 0);
+
+  const refetch = isCollaboraType ? refetchCollabora : refetchCount;
+  const loading = loadingCallout || (isCollaboraType ? loadingCollabora : loadingCount);
 
   return (
     <PageContentBlock sx={{ margin: gutters(1), width: 'auto' }} ref={inViewRef}>

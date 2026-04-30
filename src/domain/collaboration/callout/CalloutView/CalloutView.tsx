@@ -16,6 +16,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import type CalloutContributionModel from '../../calloutContributions/CalloutContributionModel';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
@@ -108,7 +109,9 @@ const CalloutView = ({
   const isContributionCommentsLoading = Boolean(contributionForComments && contributionComments.loading);
 
   const [commentsCollapsed, setCommentsCollapsed] = useState(true);
-  const [selectedCollaboraContribution, setSelectedCollaboraContribution] = useState<AnyContribution | undefined>();
+  const [selectedCollaboraContribution, setSelectedCollaboraContribution] = useState<
+    CalloutContributionModel | undefined
+  >();
 
   useEffect(() => {
     setCommentsCollapsed(true);
@@ -371,7 +374,11 @@ const CalloutView = ({
               contributionCardComponent={CollaboraDocumentCard}
               onClickOnContribution={contribution => {
                 if (contribution.collaboraDocument?.id) {
-                  setSelectedCollaboraContribution(contribution);
+                  // The Collabora dialog only reads `id`, `authorization`, and
+                  // `collaboraDocument` — all present on both shapes. Other
+                  // fields (e.g. whiteboard) diverge between the two types but
+                  // are unused here, so narrow once at the storage boundary.
+                  setSelectedCollaboraContribution(contribution as unknown as CalloutContributionModel);
                 }
               }}
             />
@@ -379,9 +386,7 @@ const CalloutView = ({
               <CalloutContributionDialogCollaboraDocument
                 calloutsSetId={callout.calloutsSetId}
                 calloutId={callout.id}
-                contribution={
-                  selectedCollaboraContribution as unknown as import('../../calloutContributions/CalloutContributionModel').default
-                }
+                contribution={selectedCollaboraContribution}
                 open={true}
                 onClose={() => setSelectedCollaboraContribution(undefined)}
                 onCalloutUpdate={onCalloutUpdate}
