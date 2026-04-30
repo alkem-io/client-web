@@ -24,7 +24,7 @@ root.tsx
 
 CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
 
-During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. Developers and QA opt in via the **Admin UI** (Administration → Platform Settings → Design System) or the browser console.
+During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. The user-facing toggle in the **User Admin → Settings → Design System** panel is only shown to users with the **Beta Tester** platform role (`RoleName.PlatformBetaTester`); a parallel toggle exists in the **Admin UI** (Administration → Platform Settings → Design System) for platform admins. Developers and QA can also opt in via the browser console.
 
 ## Feature Toggle
 

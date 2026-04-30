@@ -9,7 +9,7 @@
 
 Alkemio's Space About is the primary way visitors and members understand what a Space is, who is involved, and how to engage with it. Today it is rendered with the legacy MUI design system. The platform is being progressively migrated to the new CRD design system (shadcn/ui + Tailwind), and a partial CRD About view exists but lacks dialog presentation, apply/join flows, contact-host messaging, in-place editing for privileged users, the community guidelines block, and the visual cues that signal access state (lock icon, level-aware section titles).
 
-This feature brings the CRD About experience to feature-parity with the MUI version so that environments that opt into the CRD design system (via the existing `alkemio-crd-enabled` localStorage toggle, surfaced through the Admin → Platform Settings → Design System control) deliver the same functionality, in the new visual language. Environments without the toggle continue to render the MUI dialog unchanged.
+This feature brings the CRD About experience to feature-parity with the MUI version so that environments that opt into the CRD design system (via the existing `alkemio-crd-enabled` localStorage toggle, surfaced through the Admin → Platform Settings → Design System control for platform admins, and through the User Admin → Settings → Design System switch for users with the **Beta Tester** platform role) deliver the same functionality, in the new visual language. Environments without the toggle continue to render the MUI dialog unchanged.
 
 ## Clarifications
 

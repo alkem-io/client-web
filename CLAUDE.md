@@ -344,7 +344,7 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 ## CRD Feature Toggle
 
-The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
+The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; users with the **Beta Tester** platform role (`RoleName.PlatformBetaTester`) can opt in to the new CRD pages from their user settings (Admin → User → Settings → Design System). Developers and QA can also flip the localStorage key directly via the browser console for local testing.
 
 ```js
 // Enable:  open browser console and run:
