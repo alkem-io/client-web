@@ -24,7 +24,7 @@ export function SpaceGridCard({
   className,
 }: SpaceGridCardProps) {
   return (
-    <Card className={cn("overflow-hidden hover:shadow-md transition-all duration-300 group cursor-pointer h-full flex flex-col", className)}>
+    <Card className={cn("overflow-hidden hover:shadow-md transition-all group cursor-pointer h-full flex flex-col", className)}>
       <div className="relative h-32 w-full bg-muted overflow-hidden">
         {imageUrl ? (
           <div 

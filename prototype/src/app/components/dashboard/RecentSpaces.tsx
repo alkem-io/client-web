@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
-import { MyMembershipsPanel } from "@/app/components/memberships/MyMembershipsPanel";
+import { Link } from "react-router";
 
 const recentSpaces = [
   {
@@ -44,7 +43,6 @@ const recentSpaces = [
 
 export function RecentSpaces() {
   const navigate = useNavigate();
-  const [membershipsOpen, setMembershipsOpen] = useState(false);
 
   return (
     <div className="space-y-4" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -58,9 +56,9 @@ export function RecentSpaces() {
         >
           Recent Spaces
         </h2>
-        <button
-          onClick={() => setMembershipsOpen(true)}
-          className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-none"
+        <Link
+          to="/spaces"
+          className="flex items-center gap-1 hover:opacity-80 transition-opacity"
           style={{
             fontSize: "var(--text-sm)",
             fontWeight: "var(--font-weight-medium)" as any,
@@ -68,9 +66,10 @@ export function RecentSpaces() {
           }}
         >
           Explore all your Spaces <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
+      {/* Flat horizontal row — no carousel */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {recentSpaces.map((space) => (
           <div
@@ -90,6 +89,7 @@ export function RecentSpaces() {
               (e.currentTarget.style.boxShadow = "none")
             }
           >
+            {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden">
               <img
                 src={space.image}
@@ -111,14 +111,18 @@ export function RecentSpaces() {
               )}
             </div>
 
+            {/* Content */}
             <div className="p-4 flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-lg shrink-0 overflow-hidden"
+                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                 style={{
-                  border: "1.5px solid var(--border)",
+                  background: "var(--primary)",
+                  color: "var(--primary-foreground)",
+                  fontSize: "var(--text-sm)",
+                  fontWeight: 700,
                 }}
               >
-                <img src={space.image} alt={space.name} className="w-full h-full object-cover" />
+                {space.initials}
               </div>
               <div className="min-w-0 flex-1">
                 <h3
@@ -136,11 +140,6 @@ export function RecentSpaces() {
           </div>
         ))}
       </div>
-
-      <MyMembershipsPanel
-        open={membershipsOpen}
-        onOpenChange={setMembershipsOpen}
-      />
     </div>
   );
 }

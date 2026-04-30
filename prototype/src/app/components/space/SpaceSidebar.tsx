@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import {
@@ -17,7 +16,6 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { Link } from "react-router";
-import { AboutThisSpaceDialog } from "@/app/components/space/AboutThisSpaceDialog";
 
 interface SpaceSidebarProps {
   spaceSlug: string;
@@ -60,11 +58,9 @@ const COMMUNITY_GUIDELINES = [
 ];
 
 export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps) {
-  const [aboutOpen, setAboutOpen] = useState(false);
-
   return (
     <div
-      className="space-y-6 w-full"
+      className="space-y-6 w-full lg:w-80 shrink-0"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* ── Info Block (shared across all variants) ── */}
@@ -81,12 +77,10 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
               fontSize: "var(--text-sm)",
               fontWeight: "var(--font-weight-medium)" as any,
             }}
-            onClick={() => setAboutOpen(true)}
           >
             <Info className="w-4 h-4" />
             About this Space
           </Button>
-          <AboutThisSpaceDialog open={aboutOpen} onOpenChange={setAboutOpen} spaceSlug={spaceSlug} />
 
           {/* Subspaces List */}
           {variant === "home" && <SubspacesSection spaceSlug={spaceSlug} />}
@@ -99,6 +93,9 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
 
       {variant === "community" && (
         <>
+          {/* Lead block */}
+          <LeadBlock />
+
           {/* Action buttons */}
           <div className="flex gap-2">
             <Button
@@ -145,16 +142,6 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
 /* ─── Sub-components ─────────────────────────────────────────── */
 
 function InfoBlock() {
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const [isTruncated, setIsTruncated] = useState(false);
-
-  useEffect(() => {
-    const el = textRef.current;
-    if (el) {
-      setIsTruncated(el.scrollHeight > el.clientHeight);
-    }
-  }, []);
-
   return (
     <div
       className="p-5"
@@ -165,8 +152,7 @@ function InfoBlock() {
       }}
     >
       <p
-        ref={textRef}
-        className="mb-3 line-clamp-4"
+        className="mb-3"
         style={{
           fontSize: "var(--text-sm)",
           lineHeight: 1.6,
@@ -177,71 +163,92 @@ function InfoBlock() {
         transformation. Join our community of innovators working to solve
         real-world challenges.
       </p>
-      {isTruncated && (
-        <button
-          onClick={() => setAboutOpen(true)}
-          className="hover:underline mb-4"
-          style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: "var(--font-weight-medium)" as any,
-            color: "var(--primary-foreground)",
-            opacity: 0.8,
-          }}
-        >
-          Read more
-        </button>
-      )}
-
-      {/* Space Lead */}
-      <div
-        className="pt-3 mt-1"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
+      <button
+        className="hover:underline"
+        style={{
+          fontSize: "var(--text-sm)",
+          fontWeight: "var(--font-weight-medium)" as any,
+          color: "var(--primary-foreground)",
+          opacity: 0.8,
+        }}
       >
-        <p
-          className="uppercase tracking-wider mb-2"
-          style={{
-            fontSize: "10px",
-            fontWeight: 700,
-            opacity: 0.6,
-            letterSpacing: "0.04em",
-          }}
+        Read more
+      </button>
+    </div>
+  );
+}
+
+function LeadBlock() {
+  return (
+    <div
+      className="p-4"
+      style={{
+        background: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: "var(--radius)",
+      }}
+    >
+      <p
+        className="uppercase tracking-wider mb-3"
+        style={{
+          fontSize: "11px",
+          fontWeight: 600,
+          color: "var(--muted-foreground)",
+        }}
+      >
+        Space Lead
+      </p>
+      <div className="flex items-center gap-3">
+        <Avatar
+          className="w-10 h-10"
+          style={{ border: "2px solid var(--border)" }}
         >
-          Lead
-        </p>
-        <div className="flex items-center gap-3">
-          <Avatar
-            className="w-8 h-8"
-            style={{ border: "2px solid rgba(255,255,255,0.25)" }}
+          <AvatarImage
+            src="https://images.unsplash.com/photo-1623853589874-864b1dd4d922?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGdsYXNzZXMlMjBibGFjayUyMGFuZCUyMHdoaXRlJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY5NDQyNTM3fDA&ixlib=rb-4.1.0&q=80&w=256"
+            alt="Elena Martinez"
+          />
+          <AvatarFallback
+            style={{
+              background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+              color: "var(--primary)",
+              fontSize: "10px",
+              fontWeight: 700,
+            }}
           >
-            <AvatarImage
-              src="https://images.unsplash.com/photo-1623853589874-864b1dd4d922?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGdsYXNzZXMlMjBibGFjayUyMGFuZCUyMHdoaXRlJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY5NDQyNTM3fDA&ixlib=rb-4.1.0&q=80&w=256"
-              alt="Elena Martinez"
-            />
-            <AvatarFallback
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                color: "white",
-                fontSize: "9px",
-                fontWeight: 700,
-              }}
-            >
-              EM
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
-              Elena Martinez
-            </p>
-            <p
-              className="flex items-center gap-1"
-              style={{ fontSize: "11px", opacity: 0.7 }}
-            >
-              <MapPin className="w-3 h-3" />
-              Amsterdam, NL
-            </p>
-          </div>
+            EM
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <p
+            style={{
+              fontSize: "var(--text-sm)",
+              fontWeight: 600,
+              color: "var(--foreground)",
+            }}
+          >
+            Elena Martinez
+          </p>
+          <p
+            className="flex items-center gap-1"
+            style={{
+              fontSize: "12px",
+              color: "var(--muted-foreground)",
+            }}
+          >
+            <MapPin className="w-3 h-3" /> Amsterdam, NL
+          </p>
         </div>
       </div>
+      <p
+        className="mt-3"
+        style={{
+          fontSize: "var(--text-sm)",
+          color: "var(--muted-foreground)",
+          lineHeight: 1.5,
+        }}
+      >
+        Community Host. Driving sustainable innovation in urban planning.
+      </p>
     </div>
   );
 }
