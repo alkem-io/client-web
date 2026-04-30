@@ -11,6 +11,9 @@ export type SidebarResourceData = {
 };
 
 type SidebarResourceItemProps = SidebarResourceData & {
+  /** Render the avatar as a rounded square instead of a circle. Used by the
+   * My Spaces section to match the squared subspace avatars in the space sidebar. */
+  square?: boolean;
   className?: string;
 };
 
@@ -20,8 +23,10 @@ export function SidebarResourceItem({
   avatarUrl,
   initials,
   avatarColor,
+  square,
   className,
 }: SidebarResourceItemProps) {
+  const shapeClass = square ? 'rounded-md' : undefined;
   return (
     <a
       href={href}
@@ -30,9 +35,12 @@ export function SidebarResourceItem({
         className
       )}
     >
-      <Avatar className="size-6">
+      <Avatar className={cn('size-6', shapeClass)}>
         {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
-        <AvatarFallback className="text-badge" style={avatarColor ? { backgroundColor: avatarColor } : undefined}>
+        <AvatarFallback
+          className={cn('text-badge', shapeClass)}
+          style={avatarColor ? { backgroundColor: avatarColor } : undefined}
+        >
           {initials}
         </AvatarFallback>
       </Avatar>

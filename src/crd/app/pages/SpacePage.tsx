@@ -19,6 +19,7 @@ import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs'
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import {
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
@@ -137,6 +138,7 @@ export function SpacePage() {
             title={MOCK_SPACE_BANNER.title}
             tagline={MOCK_SPACE_BANNER.tagline}
             bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
+            color={pickColorFromId('mock-space-green-energy')}
             isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
             memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
             actions={{

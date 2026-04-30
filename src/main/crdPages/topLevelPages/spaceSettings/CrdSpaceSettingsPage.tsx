@@ -10,9 +10,12 @@ import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/sett
 import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { InviteMembersDialog } from '@/crd/components/space/settings/InviteMembersDialog';
+import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
+import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SaveSubspaceAsTemplateDialog } from '@/crd/components/space/settings/SaveSubspaceAsTemplateDialog';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
+import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import { SpaceSettingsCommunityView } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSettingsLayoutView';
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
@@ -129,6 +132,32 @@ export default function CrdSpaceSettingsPage() {
   }, [guard, layout.isDirty, applicationForm.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+
+  // Member settings dialog state — owns the active subject so the dialog can be
+  // re-mounted instantly when the admin switches between rows. The Remove flow
+  // reuses the existing community.pendingRemoval / ConfirmationDialog plumbing
+  // below; `removeOriginatedFromDialog` lets us close the Member settings dialog
+  // (in addition to the confirmation prompt) when the removal succeeds AND the
+  // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
+  const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
+  const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  const buildUserSubject = (m: CommunityMember): MemberSettingsSubject => ({
+    type: 'user',
+    id: m.id,
+    displayName: m.displayName,
+    firstName: community.getMemberFirstName(m.id),
+    avatarUrl: m.avatarUrl,
+    isLead: m.isLead,
+    isAdmin: m.isAdmin,
+  });
+  const buildOrgSubject = (org: CommunityOrg): MemberSettingsSubject => ({
+    type: 'organization',
+    id: org.id,
+    displayName: org.displayName,
+    avatarUrl: org.avatarUrl,
+    isLead: org.isLead,
+  });
 
   // Bridge: when Subspaces tab signals "save as template" for a subspace,
   // hand it off to the dedicated dialog hook with the subspace's current name.
@@ -260,12 +289,11 @@ export default function CrdSpaceSettingsPage() {
                   ) : undefined
                 }
                 permissions={community.permissions}
-                leadPolicy={community.leadPolicy}
                 onUserRemove={community.onUserRemove}
-                onUserLeadChange={(id, isLead) => void community.onUserLeadChange(id, isLead)}
+                onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
                 onOrgAdd={addOrgDialog.openDialog}
                 onOrgRemove={community.onOrgRemove}
-                onOrgLeadChange={(id, isLead) => void community.onOrgLeadChange(id, isLead)}
+                onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
@@ -512,7 +540,10 @@ export default function CrdSpaceSettingsPage() {
       <ConfirmationDialog
         open={community.pendingRemoval !== null}
         onOpenChange={open => {
-          if (!open) community.cancelRemoval();
+          if (!open) {
+            community.cancelRemoval();
+            setRemoveOriginatedFromDialog(false);
+          }
         }}
         variant="destructive"
         title={(() => {
@@ -556,9 +587,59 @@ export default function CrdSpaceSettingsPage() {
         })()}
         confirmLabel={t('community.confirmRemove.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={() => void community.confirmRemoval()}
-        onCancel={community.cancelRemoval}
+        onConfirm={async () => {
+          await community.confirmRemoval();
+          if (removeOriginatedFromDialog) {
+            setActiveMemberSubject(null);
+            setRemoveOriginatedFromDialog(false);
+          }
+        }}
+        onCancel={() => {
+          community.cancelRemoval();
+          setRemoveOriginatedFromDialog(false);
+        }}
       />
+
+      {activeMemberSubject && (
+        <MemberSettingsDialog
+          open={true}
+          onOpenChange={open => {
+            if (!open) setActiveMemberSubject(null);
+          }}
+          subject={activeMemberSubject}
+          leadGate={
+            activeMemberSubject.type === 'user'
+              ? {
+                  canAddLead: community.leadPolicy.canAddLeadUser,
+                  canRemoveLead: community.leadPolicy.canRemoveLeadUser,
+                }
+              : {
+                  canAddLead: community.leadPolicy.canAddLeadOrganization,
+                  canRemoveLead: community.leadPolicy.canRemoveLeadOrganization,
+                }
+          }
+          onLeadChange={(id, isLead) =>
+            activeMemberSubject.type === 'user'
+              ? community.onUserLeadChange(id, isLead)
+              : community.onOrgLeadChange(id, isLead)
+          }
+          onAdminChange={
+            activeMemberSubject.type === 'user' ? (id, isAdmin) => community.onUserAdminChange(id, isAdmin) : undefined
+          }
+          onRemoveMember={
+            community.viewerId === activeMemberSubject.id
+              ? undefined
+              : id => {
+                  setRemoveOriginatedFromDialog(true);
+                  if (activeMemberSubject.type === 'user') {
+                    community.onUserRemove(id);
+                  } else {
+                    community.onOrgRemove(id);
+                  }
+                }
+          }
+        />
+      )}
 
       <AddCommunityMemberDialog
         open={addOrgDialog.open}

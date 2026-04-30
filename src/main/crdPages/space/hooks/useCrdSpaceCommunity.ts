@@ -18,6 +18,7 @@ export function useCrdSpaceCommunity() {
   const {
     calloutsSetId,
     classificationTagsets,
+    flowStateForNewCallouts,
     tabDescription,
     loading: tabLoading,
   } = useSpaceTabProvider({ tabPosition: 1 });
@@ -76,6 +77,7 @@ export function useCrdSpaceCommunity() {
     calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
     tabDescription: tabDescription ?? '',
+    flowStateForNewCallouts,
     leadUsers,
     leadOrganizations,
     virtualContributors,

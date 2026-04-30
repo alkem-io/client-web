@@ -326,6 +326,30 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(noResponse.input.contributionDefaults).toBeUndefined();
   });
 
+  it('contributionDefaults: empty whiteboardContent is omitted for whiteboard responses (create + update)', () => {
+    const create = mapFormToCalloutCreationInput(
+      baseValues({
+        responseType: 'whiteboard',
+        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+      }),
+      createOptions
+    );
+    expect(create.input.contributionDefaults).toBeUndefined();
+
+    const update = mapFormToCalloutUpdateInput(
+      baseValues({
+        responseType: 'whiteboard',
+        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+      }),
+      updateOptions
+    );
+    expect(update.input.contributionDefaults).toEqual({
+      defaultDisplayName: undefined,
+      postDescription: undefined,
+      whiteboardContent: undefined,
+    });
+  });
+
   it('prePopulateLinkRows: only sent when responseType=link, blanks dropped', () => {
     const linkType = mapFormToCalloutCreationInput(
       baseValues({

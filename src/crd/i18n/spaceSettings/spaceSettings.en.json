@@ -160,6 +160,11 @@
       "remove": "Remove member",
       "joined": "Joined",
       "viewProfile": "View Profile",
+      "dropdown": {
+        "viewProfile": "View Profile",
+        "changeRole": "Change Role",
+        "removeFromSpace": "Remove from Space"
+      },
       "pagination": {
         "showing": "Showing {{from}} to {{to}} of {{total}} members",
         "previous": "Previous page",
@@ -167,6 +172,25 @@
         "next": "Next page"
       },
       "roleColumn": "Role"
+    },
+    "memberSettings": {
+      "title": "Member settings",
+      "lead": "This member is a <b>lead</b>: Leads are shown as the hosts of the community.",
+      "admin": "This member is an <b>admin</b>: (s)he has the right to administer this community and all of its content and contributors.",
+      "maxLeadsWarning": "Note that there is a specific <b>maximum number of leads</b> for the communities. If the maximum number is reached, this option will be disabled for others.",
+      "section": {
+        "role": "Role",
+        "authorization": "Authorization",
+        "removeMember": "Remove member"
+      },
+      "remove": {
+        "link": "Click here to remove this member from this community. Be careful, this action cannot be undone."
+      },
+      "footer": {
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "close": "Close"
     },
     "organizations": {
       "title": "Member Organizations",
@@ -178,6 +202,11 @@
       "description": "Allow members from specific organizations to join automatically.",
       "add": "Add Organization",
       "hint": "Users from these organizations can join without admin approval.",
+      "dropdown": {
+        "viewProfile": "View Profile",
+        "changeRole": "Change Role",
+        "removeFromSpace": "Remove from Space"
+      },
       "addDialog": {
         "title": "Add Organization",
         "description": "Pick an organization whose members can join this space without approval.",
@@ -222,12 +251,12 @@
     "confirmRemove": {
       "confirm": "Confirm",
       "user": {
-        "title": "Remove member",
-        "description": "Remove {{name}} from this space? They will lose access immediately."
+        "title": "Are you sure you want to remove this member?",
+        "description": "By clicking Confirm, {{name}} will be removed from this community and all underlying subspaces they may be a member of. Their contributions will remain in place. This action cannot be undone."
       },
       "organization": {
-        "title": "Remove organization",
-        "description": "Remove {{name}} from this space?"
+        "title": "Are you sure you want to remove this organization?",
+        "description": "By clicking Confirm, {{name}} will be removed from this community and all underlying subspaces they may be a member of. Their contributions will remain in place. This action cannot be undone."
       },
       "virtualContributor": {
         "title": "Remove virtual contributor",
