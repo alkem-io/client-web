@@ -1,0 +1,79 @@
+# GraphQL Contract Delta — Callout Fragment
+
+# This file documents the *additive* change to the existing Callout fragment in
+# `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql`.
+# It is not a standalone executable fragment — it shows the surrounding fields
+# (unchanged) and highlights the two new selections.
+
+# ─── BEFORE (current state, lines 131–142) ────────────────────────────────────
+#
+# fragment Callout on Callout {
+#   # … other fields …
+#   publishedDate
+#   createdBy {
+#     id
+#     profile {
+#       id
+#       displayName
+#       avatar: visual(type: AVATAR) {
+#         id
+#         uri
+#       }
+#     }
+#   }
+# }
+
+# ─── AFTER (new state) ────────────────────────────────────────────────────────
+
+fragment Callout on Callout {
+  # … other fields (unchanged) …
+
+  publishedDate         # already queried
+  createdDate           # NEW — required for FR-002 date fallback
+
+  createdBy {           # already queried
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+
+  publishedBy {         # NEW — required for FR-001 publisher rendering
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+# ─── Schema confirmation (already present, no backend change needed) ─────────
+#
+# `Callout.publishedBy` is declared as `Maybe<User>` in
+# `src/core/apollo/generated/graphql-schema.ts:1068`.
+#
+# `Callout.publishedDate` is declared as `Maybe<Scalars['DateTime']['output']>` at
+# line 1070. `Callout.createdDate` is required (`Scalars['DateTime']['output']`)
+# at line 1056.
+
+# ─── Cache impact ────────────────────────────────────────────────────────────
+#
+# Apollo normalized cache: the new `publishedBy` selection adds a `User`-typed
+# entity reference to each cached `Callout`. Because the same nested shape is
+# used for both `createdBy` and `publishedBy`, the User entity is normalized once
+# per `id` and is shared across both fields. No cache eviction needed.
+
+# ─── Codegen ─────────────────────────────────────────────────────────────────
+#
+# Run `pnpm codegen` after editing the .graphql file. The regenerated
+# `src/core/apollo/generated/apollo-hooks.ts` and `graphql-schema.ts` updates are
+# part of the same PR per Constitution Principle III.

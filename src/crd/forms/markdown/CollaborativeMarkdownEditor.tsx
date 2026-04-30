@@ -1,6 +1,7 @@
 import { type Editor, EditorContent, useEditor } from '@tiptap/react';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Loading } from '@/crd/components/common/Loading';
 import { cn } from '@/crd/lib/utils';
 import type { CollabProviderLike, YDocLike } from './collabProviderTypes';
 import { MarkdownToolbar } from './MarkdownToolbar';
@@ -17,7 +18,18 @@ type CollaborativeMarkdownEditorProps = {
   className?: string;
 };
 
-export function CollaborativeMarkdownEditor({
+// Local Suspense boundary contains the lazy `crd-markdown` namespace load. Without it the
+// suspension bubbles up to the page-level Suspense in CrdSpacePageLayout, which hides the
+// entire page (and any host dialog) on the first open before the namespace is cached.
+export function CollaborativeMarkdownEditor(props: CollaborativeMarkdownEditorProps) {
+  return (
+    <Suspense fallback={<Loading />}>
+      <CollaborativeMarkdownEditorLazy {...props} />
+    </Suspense>
+  );
+}
+
+function CollaborativeMarkdownEditorLazy({
   ydoc,
   provider,
   user,

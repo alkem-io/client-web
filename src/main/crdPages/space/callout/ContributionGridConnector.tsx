@@ -7,7 +7,13 @@ import type { ContributionCardData } from '../dataMappers/contributionDataMapper
 
 type ContributionGridConnectorProps = {
   contributions: ContributionCardData[];
-  onContributionClick?: (id: string, memoId?: string) => void;
+  /**
+   * Click handler for contribution cards.
+   * Memo and post types pass their underlying entity id as the second argument
+   * (memos via `memoId`, posts via `postId`) — the connector uses one optional
+   * `entityId` slot to keep the signature flat.
+   */
+  onContributionClick?: (id: string, entityId?: string) => void;
   /** Rendered at the end of the grid — used for the "Add Response" card */
   trailingSlot?: ReactNode;
 };
@@ -53,7 +59,7 @@ export function ContributionGridConnector({
                 description={contribution.description}
                 tags={contribution.tags}
                 commentCount={contribution.commentCount}
-                onClick={() => onContributionClick?.(contribution.id)}
+                onClick={() => onContributionClick?.(contribution.id, contribution.postId)}
               />
             );
         }

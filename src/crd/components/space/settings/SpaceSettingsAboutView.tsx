@@ -16,9 +16,16 @@ import type {
   AboutSectionSaveStatus,
   AboutVisual,
   SpaceCardPreview,
+  SpaceSettingsLevel,
 } from './SpaceSettingsAboutView.types';
 
 export type SpaceSettingsAboutViewProps = AboutFormValues & {
+  /**
+   * Space hierarchy level. Drives which visuals are editable: L0 spaces show
+   * avatar + page banner + card banner; L1/L2 subspaces show avatar + card
+   * banner only (subspaces have no page banner).
+   */
+  level: SpaceSettingsLevel;
   previewCard: SpaceCardPreview;
   countries: ReadonlyArray<{ name: string; code: string }>;
   /** Which sections differ from the server value. */
@@ -39,10 +46,12 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
 export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const {
+    level,
     name,
     tagline,
     country,
     city,
+    avatar,
     pageBanner,
     cardBanner,
     tags,
@@ -54,6 +63,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
+    onUploadAvatar,
     onUploadPageBanner,
     onUploadCardBanner,
     onAddReference,
@@ -62,6 +72,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onSaveSection,
     className,
   } = props;
+  const showPageBanner = level === 'L0';
+  // L0 spaces are presented with a full-width page banner and never display
+  // an avatar in cards/headers, so the avatar field is hidden at L0. L1/L2
+  // subspaces show the avatar overlaid on the parent's banner — see the MUI
+  // legacy `EditVisualsView` `visualTypes` filter.
+  const showAvatar = level !== 'L0';
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>
@@ -120,11 +136,27 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <div className="py-6">
             <h3 className="text-card-title">{t('about.branding.title')}</h3>
 
-            <div className="mt-4">
-              <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
-              <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspect="aspect-[6/1]" t={t} />
-              <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
-            </div>
+            {showAvatar && (
+              <div className="mt-4">
+                <FieldLabel>{t('about.branding.avatar.title')}</FieldLabel>
+                <BannerUpload
+                  visual={avatar}
+                  onUpload={onUploadAvatar}
+                  aspect="aspect-square"
+                  widthClass="max-w-[160px]"
+                  t={t}
+                />
+                <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
+              </div>
+            )}
+
+            {showPageBanner && (
+              <div className="mt-4">
+                <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
+                <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspect="aspect-[6/1]" t={t} />
+                <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
+              </div>
+            )}
 
             <div className="mt-6">
               <FieldLabel>{t('about.branding.cardBanner.title')}</FieldLabel>
@@ -309,6 +341,7 @@ function previewCardToSpaceCardData(preview: SpaceCardPreview): SpaceCardData {
     name: preview.name,
     description: preview.tagline,
     bannerImageUrl: preview.bannerUrl ?? undefined,
+    avatarUrl: preview.avatarUrl ?? undefined,
     initials: preview.initials,
     avatarColor: preview.color,
     isPrivate: false,
@@ -424,7 +457,9 @@ function BannerUpload({
       {visual.uri ? (
         <>
           <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+          {/* Touch devices have no hover, so the change action is always visible on mobile;
+              on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
               {t('about.branding.changeBanner')}

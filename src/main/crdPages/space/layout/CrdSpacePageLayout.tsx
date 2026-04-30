@@ -1,24 +1,23 @@
 import {
   Bookmark,
   HardDrive,
-  History,
   Info,
   Layers,
   LayoutGrid,
   Megaphone,
-  Settings,
   Settings as SettingsIcon,
-  Share2,
   UserCircle,
   Users,
 } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
+import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -31,7 +30,7 @@ import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import {
   type SpaceSettingsTabId,
@@ -40,20 +39,32 @@ import {
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
+  const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [_shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
+
+  // Sidebar links are portaled in (see SpaceSidebarPortal), so following one
+  // doesn't go through any handler in this layout that could close the drawer.
+  // Watch pathname instead and auto-close the mobile drawer on every navigation.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
@@ -63,25 +74,15 @@ export default function CrdSpacePageLayout() {
     skip: !isLevelZero || !permissions.canRead,
   });
 
-  // Must be derived before any early returns so `useSetBreadcrumbs` is called
-  // on every render. During loading the space fields are empty strings and
-  // the trail is `[]`; it updates once Apollo populates the context.
+  // L1/L2 settings breadcrumbs are owned by `CrdSubspacePageLayout`. This
+  // parent layout only sets breadcrumbs at L0 — and only when on settings —
+  // by mounting `<L0SettingsBreadcrumbs>` inside the JSX. If we instead called
+  // `useSetBreadcrumbs([])` unconditionally here, it would overwrite the
+  // subspace layout's trail on every re-render (e.g., tab switch), making
+  // the trail vanish.
   const isOnSettings = pathname.includes('/settings');
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
-
-  const breadcrumbItems: BreadcrumbTrailItem[] =
-    isLevelZero && isOnSettings && spaceDisplayName
-      ? [
-          { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-          {
-            label: t('crd-spaceSettings:tabs.settings'),
-            href: `${spaceUrl}/settings`,
-          },
-          { label: t(`crd-spaceSettings:tabs.${activeSettingsTab}`) },
-        ]
-      : [];
-  useSetBreadcrumbs(breadcrumbItems);
 
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
@@ -112,7 +113,8 @@ export default function CrdSpacePageLayout() {
 
   const headerActions = {
     showDocuments: true,
-    showVideoCall: false, // Wired to entitlements in future
+    showVideoCall: isVideoCallEnabled && !!videoCallUrl,
+    videoCallUrl: videoCallUrl || undefined,
     showShare: true,
     showSettings,
     settingsHref,
@@ -120,15 +122,6 @@ export default function CrdSpacePageLayout() {
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };
-
-  // Mobile actions for the "More" drawer
-  const mobileActions = [
-    { label: t('mobile.activity'), icon: <History className="w-4 h-4" />, onClick: () => setActivityDialogOpen(true) },
-    { label: t('mobile.share'), icon: <Share2 className="w-4 h-4" />, onClick: () => setShareDialogOpen(true) },
-    ...(showSettings && settingsHref
-      ? [{ label: t('mobile.settings'), icon: <Settings className="w-4 h-4" />, onClick: () => navigate(settingsHref) }]
-      : []),
-  ];
 
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
@@ -139,7 +132,7 @@ export default function CrdSpacePageLayout() {
     );
   }
 
-  const sidebarSlot = <div id="crd-space-sidebar" />;
+  const sidebarSlot = <div id="crd-space-sidebar-desktop" />;
 
   const settingsTabs: ReadonlyArray<SpaceSettingsTabDescriptor<SpaceSettingsTabId>> = [
     { id: 'about', label: t('crd-spaceSettings:tabs.about', { defaultValue: 'About' }), icon: Info },
@@ -179,9 +172,10 @@ export default function CrdSpacePageLayout() {
             <SpaceHeader
               title={space.about.profile.displayName}
               tagline={space.about.profile.tagline ?? undefined}
-              bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
+              bannerUrl={space.about.profile.banner?.uri}
+              color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
               memberAvatars={memberAvatars}
-              memberCount={memberAvatars.length}
+              onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}
             />
           )
@@ -194,7 +188,7 @@ export default function CrdSpacePageLayout() {
               activeIndex={activeTabIndex}
               onTabChange={handleTabChange}
               isSmallScreen={isSmallScreen}
-              mobileActions={mobileActions}
+              onMenuClick={() => setMobileMenuOpen(true)}
             />
           )
         }
@@ -203,6 +197,72 @@ export default function CrdSpacePageLayout() {
           <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
         </Suspense>
       </SpaceShell>
+
+      {!isOnSettings && (
+        <MobileSidebarDrawer
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          title={t('crd-space:mobile.menu')}
+          closeLabel={t('crd-space:a11y.close')}
+        >
+          <div id="crd-space-sidebar-mobile" />
+        </MobileSidebarDrawer>
+      )}
+
+      {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
+          this parent layout doesn't clobber the subspace layout's trail at
+          L1 / L2 (`pathname` includes `/settings` at those levels too). */}
+      {isLevelZero && isOnSettings && spaceDisplayName && (
+        <L0SettingsBreadcrumbs
+          spaceDisplayName={spaceDisplayName}
+          spaceUrl={spaceUrl}
+          activeSettingsTab={activeSettingsTab}
+        />
+      )}
+
+      {/* Community dialog — opened from banner avatar stack (shared with L1) */}
+      <CrdSpaceCommunityDialogConnector
+        open={communityOpen}
+        onOpenChange={setCommunityOpen}
+        roleSetId={space.about.membership?.roleSetID || undefined}
+      />
+
+      {/* Share dialog — opened from header share icon and the mobile "More" drawer.
+          `entityLabel` is lowercased so the default message reads "...this space
+          interesting" mid-sentence (mirrors the callout flow's "post"). */}
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        url={spaceUrl}
+        shareOnAlkemioSlot={
+          spaceUrl ? (
+            <CalloutShareOnAlkemioForm
+              key={spaceUrl}
+              url={spaceUrl}
+              entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
+            />
+          ) : undefined
+        }
+      />
     </StorageConfigContextProvider>
   );
+}
+
+function L0SettingsBreadcrumbs({
+  spaceDisplayName,
+  spaceUrl,
+  activeSettingsTab,
+}: {
+  spaceDisplayName: string;
+  spaceUrl: string;
+  activeSettingsTab: SpaceSettingsTabId;
+}) {
+  const { t } = useTranslation('crd-spaceSettings');
+  const items: BreadcrumbTrailItem[] = [
+    { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+    { label: t(`tabs.${activeSettingsTab}`) },
+  ];
+  useSetBreadcrumbs(items);
+  return null;
 }

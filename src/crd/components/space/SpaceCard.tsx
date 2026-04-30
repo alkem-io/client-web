@@ -25,6 +25,8 @@ export type SpaceCardData = {
   name: string;
   description: string;
   bannerImageUrl?: string;
+  /** Optional avatar image. When omitted the avatar renders initials on a coloured background. */
+  avatarUrl?: string;
   initials: string;
   avatarColor: string;
   isPrivate: boolean;
@@ -128,7 +130,12 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Space avatar — overlaps banner and card body */}
           <div className="absolute left-4 -bottom-[18px] z-10">
             <StackedAvatars
-              primary={{ initials: space.initials, avatarColor: space.avatarColor }}
+              primary={{
+                initials: space.initials,
+                avatarColor: space.avatarColor,
+                avatarUrl: space.avatarUrl,
+                name: space.name,
+              }}
               secondary={
                 space.parent
                   ? {

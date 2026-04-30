@@ -69,7 +69,10 @@ export function buildPreviewCard(spaceId: string, values: AboutFormValues, href:
   return {
     name: values.name,
     tagline: values.tagline,
-    bannerUrl: values.pageBanner.uri ?? null,
+    // The Preview is a SpaceCard (Explore-card shape), so its banner is the
+    // card banner — not the page banner. Subspaces never have a page banner;
+    // L0 spaces have both, but the Explore card uses cardBanner regardless.
+    bannerUrl: values.cardBanner.uri ?? null,
     avatarUrl: values.avatar.uri ?? null,
     tags: values.tags,
     color: pickColorFromId(spaceId),

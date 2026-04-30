@@ -770,6 +770,7 @@ export type CalloutContributionDefaultsFieldPolicy = {
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'post'
@@ -777,6 +778,7 @@ export type CalloutContributionsCountOutputKeySpecifier = (
   | CalloutContributionsCountOutputKeySpecifier
 )[];
 export type CalloutContributionsCountOutputFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2791,6 +2793,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToActor'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
+  | 'importCollaboraDocument'
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'leaveConversation'
@@ -2799,6 +2802,8 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
   | 'moveContributionToCallout'
+  | 'moveSpaceL1ToSpaceL0'
+  | 'moveSpaceL1ToSpaceL2'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -3003,6 +3008,7 @@ export type MutationFieldPolicy = {
   grantCredentialToActor?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  importCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   leaveConversation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3011,6 +3017,8 @@ export type MutationFieldPolicy = {
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3357,6 +3365,7 @@ export type PlatformAdminIdentityQueryResultsFieldPolicy = {
   identities?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAdminQueryResultsKeySpecifier = (
+  | 'accounts'
   | 'communication'
   | 'identity'
   | 'innovationHubs'
@@ -3368,6 +3377,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | PlatformAdminQueryResultsKeySpecifier
 )[];
 export type PlatformAdminQueryResultsFieldPolicy = {
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   identity?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3805,7 +3815,6 @@ export type PushSubscriptionFieldPolicy = {
   userAgent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
@@ -3846,7 +3855,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;

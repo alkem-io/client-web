@@ -34,6 +34,13 @@ export type AboutFormValues = {
   who: string;
 };
 
+/**
+ * Space hierarchy level. L0 is the root space; L1/L2 are subspaces. Subspaces
+ * have no page banner — only avatar + card banner are editable (mirrors the
+ * legacy MUI `EditVisualsView` filter on `space.level`).
+ */
+export type SpaceSettingsLevel = 'L0' | 'L1' | 'L2';
+
 export type SpaceCardPreview = {
   name: string;
   tagline: string;

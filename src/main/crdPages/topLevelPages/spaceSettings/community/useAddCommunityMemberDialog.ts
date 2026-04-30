@@ -60,7 +60,6 @@ export function useAddOrganizationDialog({
   useEffect(() => {
     if (!open) return;
     void loadCandidates(search.trim() || undefined);
-    // eslint-disable-next-line react-compiler/react-compiler
   }, [open, search]);
 
   const openDialog = () => {
@@ -130,7 +129,6 @@ export function useAddVirtualContributorDialog({
   useEffect(() => {
     if (!open) return;
     void loadCandidates(search.trim() || undefined);
-    // eslint-disable-next-line react-compiler/react-compiler
   }, [open, search]);
 
   const openDialog = () => {
@@ -200,7 +198,6 @@ export function useAddVirtualContributorExternalDialog({
   useEffect(() => {
     if (!open) return;
     void loadCandidates(search.trim() || undefined);
-    // eslint-disable-next-line react-compiler/react-compiler
   }, [open, search]);
 
   const openDialog = () => {
@@ -266,7 +263,6 @@ export function useInviteUsersDialog({
   useEffect(() => {
     if (!open) return;
     void loadCandidates(search.trim() || undefined);
-    // eslint-disable-next-line react-compiler/react-compiler
   }, [open, search]);
 
   const openDialog = () => {

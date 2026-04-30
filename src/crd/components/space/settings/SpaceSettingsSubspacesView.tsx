@@ -50,7 +50,12 @@ export type SpaceSettingsSubspacesViewProps = {
   canSaveAsTemplate: boolean;
   loading?: boolean;
   onCreate: () => void;
-  onChangeDefaultTemplate: () => void;
+  /**
+   * Optional — only provided at L0 where subspace templates are managed.
+   * Subspaces (L1) hide both the "Default subspace template" block and the
+   * "Save as template" kebab action; the page passes `undefined` there.
+   */
+  onChangeDefaultTemplate?: () => void;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
   className?: string;
 };
@@ -91,23 +96,27 @@ export function SpaceSettingsSubspacesView({
 
       <Separator />
 
-      {/* Default Subspace Template */}
-      <div className="bg-muted/30 border border-border rounded-xl p-6">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-          <div className="space-y-2 flex-1">
-            <h3 className="text-subsection-title flex items-center gap-2">
-              <LayoutTemplate className="size-5 text-primary" />
-              {t('subspaces.defaultTemplate.title')}
-            </h3>
-            <p className="text-muted-foreground text-sm">{t('subspaces.defaultTemplate.description')}</p>
+      {/* Default Subspace Template — L0 only (subspace templates are managed at the top-level space). */}
+      {onChangeDefaultTemplate && (
+        <>
+          <div className="bg-muted/30 border border-border rounded-xl p-6">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div className="space-y-2 flex-1">
+                <h3 className="text-subsection-title flex items-center gap-2">
+                  <LayoutTemplate aria-hidden="true" className="size-5 text-primary" />
+                  {t('subspaces.defaultTemplate.title')}
+                </h3>
+                <p className="text-muted-foreground text-sm">{t('subspaces.defaultTemplate.description')}</p>
+              </div>
+              <Button type="button" onClick={onChangeDefaultTemplate}>
+                {t('subspaces.defaultTemplate.change')}
+              </Button>
+            </div>
           </div>
-          <Button type="button" onClick={onChangeDefaultTemplate}>
-            {t('subspaces.defaultTemplate.change')}
-          </Button>
-        </div>
-      </div>
 
-      <Separator />
+          <Separator />
+        </>
+      )}
 
       {/* Subspaces List */}
       <div className="space-y-4">

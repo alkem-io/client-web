@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 /**
@@ -62,18 +63,30 @@ export function buildSpaceSettingsTabPath(pathname: string, tab: SpaceSettingsTa
  * Reads the active tab from the URL and exposes a setter that navigates to
  * `.../settings/<tab>`. Unknown URL segments fall back to the About tab.
  *
+ * If `visibleTabs` is provided and the parsed tab is not in the list (e.g.,
+ * the URL points to `account` on a subspace), the hook redirects to `about`
+ * via `replace` so that bookmarks to a hidden tab don't 404.
+ *
  * Does NOT implement the dirty-tab guard — that is composed separately by
  * `useDirtyTabGuard` so the guard can veto switches and this hook stays a
  * pure URL↔state binding.
  */
-export function useSpaceSettingsTab(): {
+export function useSpaceSettingsTab(visibleTabs?: readonly SpaceSettingsTabId[]): {
   activeTab: SpaceSettingsTabId;
   setActiveTab: (next: SpaceSettingsTabId) => void;
 } {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const activeTab = parseSpaceSettingsTab(pathname);
+  const parsed = parseSpaceSettingsTab(pathname);
+  const isHiddenAtThisLevel = visibleTabs !== undefined && !visibleTabs.includes(parsed);
+  const activeTab: SpaceSettingsTabId = isHiddenAtThisLevel ? DEFAULT_TAB : parsed;
+
+  useEffect(() => {
+    if (isHiddenAtThisLevel) {
+      navigate(buildSpaceSettingsTabPath(pathname, DEFAULT_TAB), { replace: true });
+    }
+  }, [isHiddenAtThisLevel, pathname, navigate]);
 
   const setActiveTab = (next: SpaceSettingsTabId) => {
     const target = buildSpaceSettingsTabPath(pathname, next);

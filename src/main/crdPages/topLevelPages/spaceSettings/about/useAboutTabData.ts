@@ -331,7 +331,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     // 2) Create new references (temp IDs with a title).
     for (const ref of current.references) {
       if (isTempId(ref.id) && ref.title.trim()) {
-        // eslint-disable-next-line no-await-in-loop
         await createReference({
           variables: {
             input: { profileID: current.profileId, name: ref.title, uri: ref.uri, description: ref.description },
@@ -344,7 +343,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     const currentIds = new Set(current.references.map(r => r.id));
     const removed = savedRefs.filter(r => !isTempId(r.id) && !currentIds.has(r.id));
     for (const ref of removed) {
-      // eslint-disable-next-line no-await-in-loop
       await deleteReference({ variables: { input: { ID: ref.id } } });
     }
   };

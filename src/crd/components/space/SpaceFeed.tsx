@@ -19,7 +19,6 @@ type SpaceFeedProps = {
   onShowMore?: () => void;
   hasMore?: boolean;
   onPostClick?: (id: string) => void;
-  onPostSettingsClick?: (id: string) => void;
   onPostExpandClick?: (id: string) => void;
   className?: string;
 };
@@ -34,7 +33,6 @@ export function SpaceFeed({
   onShowMore,
   hasMore,
   onPostClick,
-  onPostSettingsClick,
   onPostExpandClick,
   className,
 }: SpaceFeedProps) {
@@ -78,7 +76,6 @@ export function SpaceFeed({
             key={post.id}
             post={post}
             onClick={() => onPostClick?.(post.id)}
-            onSettingsClick={onPostSettingsClick ? () => onPostSettingsClick(post.id) : undefined}
             onExpandClick={onPostExpandClick ? () => onPostExpandClick(post.id) : undefined}
           />
         ))}

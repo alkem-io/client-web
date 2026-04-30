@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { 
   User, Layout, CreditCard, Users, Bell, Settings, 
-  Camera, Plus, Link as LinkIcon, Github, Twitter, Linkedin, Mail, MapPin, Check, Loader2, Save, Undo2
+  Camera, Plus, Link as LinkIcon, Github, Twitter, Linkedin, Mail, MapPin, Check
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -70,20 +70,12 @@ export default function UserProfileSettingsPage() {
   return (
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
-      <div className="sticky top-16 z-20 border-b border-border bg-card">
-        <div className="px-6 md:px-8 pt-8 pb-0">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-          <div className="flex items-center gap-4 mb-8">
-            <Avatar className="w-12 h-12 shrink-0">
-              <AvatarImage
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Jeroen Nijkamp"
-              />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
-            </Avatar>
+      <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
+              <p className="text-muted-foreground mt-1">Manage your personal profile and account preferences.</p>
             </div>
           </div>
           
@@ -104,18 +96,43 @@ export default function UserProfileSettingsPage() {
               </Link>
             ))}
           </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+      <div className="container mx-auto px-4 md:px-8 py-8">
         {/* Removed max-w-5xl mx-auto wrapper to fix spacing issue on the left */}
-        <div className="flex flex-col lg:flex-row gap-12 items-start">
+        <div className="flex flex-col md:flex-row gap-12 items-start">
           
-          {/* Left Column: Profile Form */}
+          {/* Left Column: Avatar */}
+          <div className="w-full md:w-64 flex-shrink-0 flex flex-col items-center text-center">
+            <div className="relative group mb-6">
+              {/* Updated Avatar to match Profile Page EXACTLY (size, shadow, image crop) */}
+              <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-background shadow-lg text-4xl">
+                <AvatarImage 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                  alt={`${formData.firstName} ${formData.lastName}`}
+                />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {formData.firstName.substring(0, 1)}{formData.lastName.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <button className="absolute bottom-2 right-2 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors">
+                <Camera className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <h2 className="text-xl font-bold">{formData.firstName} {formData.lastName}</h2>
+            {/* Nickname removed as requested */}
+            
+            <Button variant="outline" size="sm" className="w-full mt-4">
+              Change Avatar
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2 text-center px-2">
+              Recommended size: 400x400px. JPG, PNG or GIF.
+            </p>
+          </div>
+
+          {/* Right Column: Profile Form */}
           <div className="flex-1 space-y-8 min-w-0 max-w-3xl">
             
             {/* Identity Section */}
@@ -281,72 +298,24 @@ export default function UserProfileSettingsPage() {
             <Separator />
 
             <div className="sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t mt-8 -mx-4 px-4 md:mx-0 md:px-0 md:border-t-0 md:bg-transparent md:static">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  onClick={handleDiscard}
-                  disabled={!hasChanges}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Undo2 className="w-4 h-4 mr-2" />
-                  Discard Changes
-                </Button>
-                <Button 
-                  size="lg" 
-                  className="md:min-w-[200px]" 
-                  onClick={handleSave} 
-                  disabled={!hasChanges || isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </div>
+              <Button 
+                size="lg" 
+                className="w-full md:w-auto md:min-w-[200px]" 
+                onClick={handleSave} 
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>Saving...</>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
             </div>
 
           </div>
-
-          {/* Right Column: Profile Picture Preview */}
-          <div className="hidden lg:block w-80 flex-shrink-0 sticky top-52">
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground">Profile Picture</h3>
-              <div className="flex flex-col items-center text-center">
-                <div className="relative group mb-4">
-                  <Avatar className="w-40 h-40 border-4 border-background shadow-lg text-4xl">
-                    <AvatarImage
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt={`${formData.firstName} ${formData.lastName}`}
-                    />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {formData.firstName.substring(0, 1)}{formData.lastName.substring(0, 1)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <button className="absolute bottom-2 right-2 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors">
-                    <Camera className="w-5 h-5" />
-                  </button>
-                </div>
-                <h2 className="text-lg font-bold">{formData.firstName} {formData.lastName}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{formData.tagline}</p>
-                <Button variant="outline" size="sm" className="w-full mt-4">
-                  Change Avatar
-                </Button>
-                <p className="text-xs text-muted-foreground mt-2 text-center px-2">
-                  Recommended: 400x400px. JPG, PNG or GIF.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { Button } from '@/crd/primitives/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
-import { CommentEmojiPicker } from './CommentEmojiPicker';
 import type { CommentReaction } from './types';
 
 type CommentReactionsProps = {
@@ -71,7 +71,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
         </Popover>
       )}
 
-      <CommentEmojiPicker
+      <EmojiPicker
         onSelect={onAdd}
         trigger={
           <Button

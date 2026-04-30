@@ -38,6 +38,12 @@ export type ColumnMenuActions = {
   /** Fires mutation immediately — saves title + description to backend, cascades rename to callouts. */
   onSaveColumnDetails: (columnId: LayoutColumnId, title: string, description: string) => Promise<void>;
   availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /**
+   * Phase delete (immediate-save). Only present when phase management is enabled
+   * (subspaces) AND removing this phase would not violate the flow's min-states
+   * limit. Consumers MUST hide the menu entry when undefined.
+   */
+  onDeletePhase?: (columnId: LayoutColumnId) => Promise<void>;
 };
 
 export type LayoutPostDescriptionDisplay = 'collapsed' | 'expanded';

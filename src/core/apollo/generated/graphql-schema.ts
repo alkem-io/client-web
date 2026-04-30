@@ -76,6 +76,14 @@ export type Account = ActorFull & {
   virtualContributors: Array<VirtualContributor>;
 };
 
+export type AccountInnovationHubsArgs = {
+  searchVisibility?: InputMaybe<Array<SearchVisibility>>;
+};
+
+export type AccountInnovationPacksArgs = {
+  searchVisibility?: InputMaybe<Array<SearchVisibility>>;
+};
+
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID']['input'];
@@ -1133,6 +1141,8 @@ export enum CalloutContributionType {
 
 export type CalloutContributionsCountOutput = {
   __typename?: 'CalloutContributionsCountOutput';
+  /** The number of contributions of type CollaboraDocument in this callout */
+  collaboraDocument: Scalars['Float']['output'];
   /** The number of contributions of type Link in this callout */
   link: Scalars['Float']['output'];
   /** The number of contributions of type Memo in this callout */
@@ -1316,9 +1326,10 @@ export type CollaboraDocument = {
 };
 
 export enum CollaboraDocumentType {
+  Drawing = 'DRAWING',
   Presentation = 'PRESENTATION',
   Spreadsheet = 'SPREADSHEET',
-  TextDocument = 'TEXT_DOCUMENT',
+  Wordprocessing = 'WORDPROCESSING',
 }
 
 export type CollaboraEditorUrlResult = {
@@ -2604,6 +2615,7 @@ export enum CredentialType {
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -2998,6 +3010,15 @@ export enum IdentityVerificationStatusFilter {
   Unverified = 'UNVERIFIED',
   Verified = 'VERIFIED',
 }
+
+export type ImportCollaboraDocumentInput = {
+  /** The ID of the Callout to attach the imported document to as a new contribution. */
+  calloutID: Scalars['UUID']['input'];
+  /** Optional title override. If absent, derived from the uploaded filename (extension stripped). */
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  /** Optional sortOrder for the new contribution. Defaults to one less than the current minimum (new contribution appears first). */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+};
 
 export type InAppNotification = {
   __typename?: 'InAppNotification';
@@ -3594,6 +3615,7 @@ export enum LicenseEntitlementType {
   AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
   AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
   SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
+  SpaceFlagOfficeDocuments = 'SPACE_FLAG_OFFICE_DOCUMENTS',
   SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
   SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
@@ -3678,6 +3700,7 @@ export type Licensing = {
 export enum LicensingCredentialBasedCredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -4448,6 +4471,28 @@ export type MoveCalloutContributionInput = {
   contributionID: Scalars['UUID']['input'];
 };
 
+export type MoveSpaceL1ToSpaceL0Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L1 subspace to move to a different L0 space. */
+  spaceL1ID: Scalars['UUID']['input'];
+  /** The target L0 space (must be different from the current parent L0). */
+  targetSpaceL0ID: Scalars['UUID']['input'];
+};
+
+export type MoveSpaceL1ToSpaceL2Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L1 subspace to move and demote to L2. */
+  spaceL1ID: Scalars['UUID']['input'];
+  /** The target L1 subspace in a different L0 (new parent for the demoted space). */
+  targetSpaceL1ID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
@@ -4658,6 +4703,8 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Import an existing file as a CollaboraDocument contribution on the callout. file-service-go sniffs the MIME from content and rejects formats Collabora cannot edit. */
+  importCollaboraDocument: CalloutContribution;
   /** Invite new Contributors or users by email to join the specified RoleSet in the Entry Role. */
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
@@ -4674,6 +4721,10 @@ export type Mutation = {
   markNotificationsAsUnread: Scalars['Boolean']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Move an L1 subspace to a different L0 space. The subspace remains at level 1       but changes parent. All content moves with it. All community memberships are cleared.       Requires platform admin privileges. */
+  moveSpaceL1ToSpaceL0: Space;
+  /** Move an L1 subspace to become an L2 sub-subspace under a target L1 in a different L0 space.       The space is demoted from level 1 to level 2. All community roles are cleared.       Requires platform admin privileges. */
+  moveSpaceL1ToSpaceL2: Space;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5244,6 +5295,11 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
+export type MutationImportCollaboraDocumentArgs = {
+  file: Scalars['Upload']['input'];
+  uploadData: ImportCollaboraDocumentInput;
+};
+
 export type MutationInviteForEntryRoleOnRoleSetArgs = {
   invitationData: InviteForEntryRoleOnRoleSetInput;
 };
@@ -5274,6 +5330,14 @@ export type MutationMarkNotificationsAsUnreadArgs = {
 
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
+};
+
+export type MutationMoveSpaceL1ToSpaceL0Args = {
+  moveData: MoveSpaceL1ToSpaceL0Input;
+};
+
+export type MutationMoveSpaceL1ToSpaceL2Args = {
+  moveData: MoveSpaceL1ToSpaceL2Input;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -6087,6 +6151,8 @@ export type PlatformAdminIdentityQueryResultsIdentitiesArgs = {
 
 export type PlatformAdminQueryResults = {
   __typename?: 'PlatformAdminQueryResults';
+  /** Retrieve all Accounts on the Platform. This is only available to Platform Admins. */
+  accounts: Array<Account>;
   /** Lookup Communication related information. */
   communication: PlatformAdminCommunicationQueryResults;
   /** Lookup Identity related information. */
@@ -6655,8 +6721,6 @@ export enum PushSubscriptionStatus {
 
 export type Query = {
   __typename?: 'Query';
-  /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
-  accounts: Array<Account>;
   /** Activity events related to the current user. */
   activityFeed: ActivityFeed;
   /** Activity events related to the current user grouped by Activity type and resource. */
@@ -8471,6 +8535,8 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  /** Collabora document input. Used when switching framing type to COLLABORA_DOCUMENT. */
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<UpdateLinkInput>;
   /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
@@ -8593,8 +8659,8 @@ export type UpdateDiscussionInput = {
 
 export type UpdateDocumentInput = {
   ID: Scalars['UUID']['input'];
-  /** The display name for the Document. */
-  displayName: Scalars['String']['input'];
+  /** The display name for the Document. Not supported — rejected with a ValidationException if provided. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
   tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
@@ -13613,6 +13679,7 @@ export type UpdateCalloutContentMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -14017,6 +14084,20 @@ export type UpdateCalloutContentMutation = {
             | undefined;
         }
       | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14032,6 +14113,7 @@ export type UpdateCalloutVisibilityMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -14423,6 +14505,20 @@ export type UpdateCalloutVisibilityMutation = {
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
     createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    publishedBy?:
       | {
           __typename?: 'User';
           id: string;
@@ -15720,6 +15816,7 @@ export type CreateCalloutMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -16124,6 +16221,20 @@ export type CreateCalloutMutation = {
             | undefined;
         }
       | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -16240,6 +16351,7 @@ export type CalloutDetailsQuery = {
           sortOrder: number;
           activity: number;
           publishedDate?: Date | undefined;
+          createdDate: Date;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -16682,6 +16794,20 @@ export type CalloutDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          publishedBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
           classification?:
             | {
                 __typename?: 'Classification';
@@ -16729,6 +16855,7 @@ export type CalloutDetailsFragment = {
   sortOrder: number;
   activity: number;
   publishedDate?: Date | undefined;
+  createdDate: Date;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -17120,6 +17247,20 @@ export type CalloutDetailsFragment = {
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
   createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+  publishedBy?:
     | {
         __typename?: 'User';
         id: string;
@@ -39927,6 +40068,8 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
+              createdDate: Date;
+              publishedDate?: Date | undefined;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -39956,6 +40099,34 @@ export type SearchQuery = {
                 link?: { __typename?: 'Link'; id: string } | undefined;
               }>;
               comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              publishedBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             };
             space: {
               __typename?: 'Space';
@@ -40912,6 +41083,8 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
+    createdDate: Date;
+    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -40941,6 +41114,34 @@ export type SearchResultCalloutFragment = {
       link?: { __typename?: 'Link'; id: string } | undefined;
     }>;
     comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
   space: {
     __typename?: 'Space';

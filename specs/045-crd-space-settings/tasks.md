@@ -242,6 +242,50 @@ description: "Task list for CRD Space Settings Page implementation"
 
 ---
 
+## Phase 12: Subspace (L1 / L2) settings — added retroactively in 2026-04-27
+
+**Goal**: Reuse the same CRD Space Settings page for L1 (subspace) and L2 (sub-subspace) admins with level-aware tab visibility, level-aware ID resolution, and per-tab inner gating that mirrors legacy MUI's `SpaceAdminRouteL{0,1,2}.tsx` + `MemberActionsSettings.tsx`. Also closes two missing-feature gaps (member-lead toggle on Community, phase Add / Delete on Layout) — both built generically and gated to L1 / L2 in this PR.
+
+**Independent test**: navigate to `<space>/challenges/<sub>/settings` (L1) and `<space>/challenges/<sub>/opportunities/<subsub>/settings` (L2) with CRD enabled. Confirm visible tab list per Decision 19. Confirm mutations target the subspace's community (Apollo devtools).
+
+### Tests
+
+- [ ] T086 [P] Unit test `useSettingsScope.test.ts` — mocks `useUrlResolver` + `useSpace` + `useSubSpace`; asserts L0 returns space IDs from `useSpace`; L1 / L2 return subspace IDs from `useSubSpace`; `level` is the correct `'L0' | 'L1' | 'L2'` string union.
+- [ ] T087 [P] Unit test `useVisibleSettingsTabs.test.ts` — `getVisibleSettingsTabs('L0')` includes all 9 tabs; `('L1')` hides templates / storage / account; `('L2')` additionally hides subspaces.
+- [ ] T088 [P] Unit test extension `useSpaceSettingsTab.test.ts` — when `visibleTabs` is provided and the URL points to a hidden tab, the hook redirects to `'about'` via `replace: true`. When visibleTabs is omitted, behaviour is unchanged.
+- [ ] T089 [P] Component test `SpaceSettingsCommunityView.test.tsx` (L1/L2 cases) — `level !== 'L0'` shows promote/demote-Lead dropdown items on non-Admin rows; `level === 'L0'` hides them. VC block + "Save as guidelines template" hidden at non-L0.
+- [ ] T090 [P] Component test `SpaceSettingsSettingsView.test.tsx` (L1/L2 cases) — at L1, `inheritMembershipRights` is visible AND `subspaceAdminInvitations` / `memberCreateSubspaces` / `subspaceEvents` are visible. At L2, `inheritMembershipRights` visible but the three subspace-related toggles are hidden.
+- [ ] T091 [P] Component test `SpaceSettingsLayoutView.test.tsx` (L1/L2 cases) — Add Phase button visible only when `level !== 'L0'` and `columns.length < maximumNumberOfStates`. Delete phase entry in column kebab visible only when `level !== 'L0'` and `columns.length > minimumNumberOfStates`.
+- [ ] T092 [P] Component test `AddPhaseDialog.test.tsx` — duplicate-name check triggers inline error; submitting state disables the form; success closes the dialog.
+- [ ] T093 Integration test for `useLayoutTabData` — after `onCreateState` / `onDeleteState` resolves, `snapshotRef.current` is reseeded and the Save Changes bar transitions to `clean`. While `isStructureMutating` is true, the Save Changes bar is disabled.
+- [ ] T094 Integration test for `useCommunityTabData` — `onUserLeadChange` / `onOrgLeadChange` delegate to `useCommunityAdmin` and fire immediately (no buffer). `leadPolicy` is composed from `useCommunityPolicyChecker` aggregate flags.
+
+### Implementation
+
+- [X] T095 Create `src/main/crdPages/topLevelPages/spaceSettings/useSettingsScope.ts` — level-aware ID resolution per Decision 18.
+- [X] T096 Create `src/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs.ts` — `getVisibleSettingsTabs(level)` + `useSettingsTabDescriptors(level)` per Decision 19.
+- [X] T097 Update `src/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab.ts` — accept optional `visibleTabs` and clamp; redirect hidden URL hits to `'about'` via `replace: true`.
+- [X] T098 Update `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx` — replace direct `useSpace()` / `useUrlResolver()` calls with `useSettingsScope()`; pass `level` (string union) into Community / Settings / Subspaces / Layout views; gate hidden-tab content with `isTabVisible(id)`; pass `onUserLeadChange` / `onOrgLeadChange` / `leadPolicy` to community view; pass `onCreatePhase` / `minimumNumberOfStates` / `maximumNumberOfStates` / `isStructureMutating` to layout view; pass `onChangeDefaultTemplate` only at L0; convert `SpaceLevel` to the string union at the boundary.
+- [X] T099 Add subspace settings routes to `src/main/crdPages/subspace/routing/CrdSubspaceRoutes.tsx` — add `<Route path="settings/*" element={<CrdSubspaceSettingsRoute />} />` inside BOTH the L1 layout block AND the L2 layout block. Implement `CrdSubspaceSettingsRoute` as a thin wrapper that calls `useSubSpace()`, feeds the subspace id into `<NonSpaceAdminRedirect>`, and lazy-loads `CrdSpaceSettingsPage`.
+- [X] T100 Update `src/main/crdPages/subspace/layout/CrdSubspacePageLayout.tsx` — when `pathname.includes('/settings')`, render `SpaceSettingsHeader` + `SpaceSettingsTabStrip` (the same primitives the L0 path uses) instead of `SubspaceHeader`. Source the visible tab list from `getVisibleSettingsTabs(settingsLevel)` and the active tab from `useSpaceSettingsTab(visibleSettingsTabs)`.
+- [X] T100a Extend the L1 / L2 breadcrumbs in `CrdSubspacePageLayout.tsx` — when `isOnSettings` is true, the subspace name becomes a link (to `data.subspaceUrl`); the trail appends `{ label: t('tabs.settings'), href: \`\${data.subspaceUrl}/settings\` }` plus `{ label: t(\`tabs.\${activeSettingsTab}\`) }`. The trail is set unconditionally before any early return so `useSetBreadcrumbs` is invoked on every render (Decision 22 / FR-041).
+- [X] T101 Update `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts` — expose `members[].isLead` / `members[].isAdmin`, `organizations[].isLead`, `leadPolicy: { canAddLead, canRemoveLead }` (from `useCommunityPolicyChecker`), and `onUserLeadChange` / `onOrgLeadChange` (delegating to `useCommunityAdmin`).
+- [X] T102 Update `src/main/crdPages/topLevelPages/spaceSettings/layout/useLayoutTabData.ts` — internally call `useInnovationFlowSettings({ collaborationId, skip: !collaborationId })` and re-export `actions.createState` / `actions.deleteState` as `onCreateState` / `onDeleteState`. After each resolves, set `snapshotRef.current = null` so the seed effect re-runs. Expose `minimumNumberOfStates`, `maximumNumberOfStates`, `isStructureMutating`. Disable the Save Changes bar while `isStructureMutating` is true.
+- [X] T103 Update `src/main/crdPages/topLevelPages/spaceSettings/layout/useColumnMenu.ts` — accept optional `onDeleteState` / `columnCount` / `minimumNumberOfStates` options. Compute `onDeletePhase` only when `columnCount > minimumNumberOfStates`. Confirm via existing `ConfirmationDialog`.
+- [X] T104 Update `src/main/crdPages/topLevelPages/spaceSettings/settings/settingsMapper.ts` + `useSettingsTabData.ts` — add `inheritMembershipRights` to `mapAllowedActions` and to the `collaborationKeyMap` so the toggle round-trips correctly.
+- [X] T105 Update `src/crd/components/space/settings/SpaceSettingsSettingsView.tsx` — add `level` prop; introduce `AllowedActionKey` `inheritMembershipRights`; level-based action filtering via three `Set<AllowedActionKey>` constants (`ACTIONS_VISIBLE_AT_L0`, `ACTIONS_VISIBLE_AT_L1`, `ACTIONS_VISIBLE_AT_L2`).
+- [X] T106 Update `src/crd/components/space/settings/SpaceSettingsCommunityView.tsx` — add `level`, `leadPolicy`, `onUserLeadChange`, `onOrgLeadChange` props; add `isLead` / `isAdmin` to `CommunityMember`; promote / demote dropdown items gated by `level !== 'L0' && !m.isAdmin`; VC block wrapped in `{level === 'L0' && (...)}`; org rows converted from single button to DropdownMenu.
+- [X] T107 Update `src/crd/components/space/settings/SpaceSettingsSubspacesView.tsx` — make `onChangeDefaultTemplate` optional; wrap the entire "Default Subspace Template" card in `{onChangeDefaultTemplate && (<>...</>)}`; add `canSaveAsTemplate` prop (defaults to true).
+- [X] T108 Update `src/crd/components/space/settings/SpaceSettingsLayoutView.tsx` — add `level`, `onCreatePhase`, `minimumNumberOfStates`, `maximumNumberOfStates`, `isStructureMutating` props; add "Add Phase" button next to page header (gated to `level !== 'L0'` and `columns.length < maximumNumberOfStates`); render `AddPhaseDialog`.
+- [X] T109 Create `src/crd/components/space/settings/AddPhaseDialog.tsx` — modal with name + optional description, duplicate-name check, error display, submitting state.
+- [X] T110 Update `src/crd/components/space/settings/LayoutPoolColumn.tsx` — add `Trash2` import; add "Delete phase" menu item gated on `actions.onDeletePhase`. Update `SpaceSettingsLayoutView.types.ts` to include optional `onDeletePhase?: (columnId) => Promise<void>` on `ColumnMenuActions`.
+- [X] T111 i18n updates in all six languages (`spaceSettings.{en,nl,es,bg,de,fr}.json`) — add `community.members.role.promoteToLead` / `demoteFromLead`, `layout.column.deletePhase`, `layout.addPhase.button`, `layout.addPhase.dialog.{title,name,description,confirm}`, `settings.allowedActions.inheritMembershipRights`. Per CRD scope rules, all six languages are edited directly in this PR — Crowdin does NOT manage CRD translations.
+- [X] T112 Run `pnpm lint` (TypeScript + Biome + ESLint) and `pnpm vitest run` — confirm zero errors and 629 passing tests; run `pnpm build` and confirm successful build.
+
+**Checkpoint**: L1 / L2 settings reachable, gated to admin role, with level-aware tab visibility + per-tab gating. Member-lead toggle and phase Add / Delete functional at L1 / L2.
+
+---
+
 ## Phase 11: Polish & Cross-Cutting Concerns
 
 - [ ] T078 [P] Responsive QA: tab strip scrolls horizontally on narrow viewports; Layout's columns (dynamic count) stack or horizontally scroll; About's two columns stack; Community tables remain usable; Subspaces grid collapses to one column (SC-002)
