@@ -1,43 +1,19 @@
 /**
- * CRD User Settings shell — header + tab strip + outlet.
+ * CRD User Settings shell — header + tab strip + per-tab card primitive.
  *
  * File location at implementation time:
  *   src/crd/components/user/settings/UserSettingsShell.tsx
  *   src/crd/components/user/settings/UserSettingsTabStrip.tsx
- *   src/crd/components/user/UserPageHero.tsx
+ *   src/crd/components/user/settings/UserSettingsCard.tsx
+ *
+ * The `UserPageHero` contract (used by the public profile, sibling spec
+ * 096-crd-user-pages) lives in `specs/096-crd-user-pages/contracts/publicProfile.ts`.
  *
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
  */
 
 import type { ReactNode } from 'react';
-
-/* ----------------------------- UserPageHero ------------------------------ */
-
-export type UserPageHeroProps = {
-  /**
-   * Banner image. When `null` the component renders a deterministic gradient
-   * computed via `pickColorFromId(userId)` (FR-010).
-   */
-  bannerImageUrl: string | null;
-  avatarImageUrl: string | null;
-  displayName: string;
-  /** "City, Country" — null when both empty. */
-  location: string | null;
-  /**
-   * When true, render the Settings (gear) icon button. The component itself
-   * does not navigate — it calls `onClickSettings` (Q3 clarification:
-   * canEditSettings predicate is computed by the integration layer).
-   */
-  showSettingsIcon: boolean;
-  onClickSettings?: () => void;
-  /**
-   * When true, render the Message button. The button opens an in-hero
-   * compose Popover; submitting calls `onSendMessage` with the typed text.
-   */
-  showMessageButton: boolean;
-  onSendMessage?: (messageText: string) => Promise<void>;
-};
 
 /* --------------------------- UserSettingsShell --------------------------- */
 
@@ -66,7 +42,7 @@ export type UserSettingsTabDescriptor = {
 };
 
 export type UserSettingsShellProps = {
-  /** Header data — same shape as UserPageHero, minus the action buttons. */
+  /** Header data — abbreviated user identity (no action buttons in the shell). */
   user: {
     avatarImageUrl: string | null;
     displayName: string;
@@ -95,7 +71,9 @@ export type UserSettingsTabStripProps = {
  *  - `<  md`:   `overflow-x-auto no-scrollbar`. All tabs remain inline; the
  *               strip scrolls horizontally; the active tab MUST be auto-
  *               scrolled into view on mount and on every `activeTab` change
- *               (Q4 clarification, FR-020).
+ *               (FR-020). Same responsive behavior is shared with the
+ *               public-profile resource strip in sibling spec
+ *               096-crd-user-pages so the visual identity stays consistent.
  */
 
 /* -------------------------- UserSettingsCard ----------------------------- */
