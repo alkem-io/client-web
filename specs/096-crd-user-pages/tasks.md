@@ -1,122 +1,186 @@
 ---
-description: "Implementation tasks for CRD User Profile Page (public profile view)"
+
+description: "Task list for CRD Public Profile Pages (User, Organization, Virtual Contributor)"
 ---
 
-# Tasks: CRD User Profile Page
+# Tasks: CRD Public Profile Pages (User, Organization, Virtual Contributor)
 
 **Input**: Design documents from `/specs/096-crd-user-pages/`
-**Prerequisites**: plan.md, spec.md, research.md, data-model.md, quickstart.md, contracts/
-**Sibling spec**: `097-crd-user-settings` covers the seven settings tabs. Foundational tasks marked **[SHARED-097]** are owned jointly with 097; if 097 has already landed those pieces in a feature branch, this spec reuses them.
-**Tests**: Per-story functional UI tests are NOT included (per CRD-spec convention from 091/045 — manual verification follows quickstart.md). Targeted unit tests ARE included for: pure mappers (research §5), the `canEditSettings` predicate, the resource tab→section filter, and i18n key parity.
+**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/, quickstart.md
+
+**Tests**: Vitest unit tests are included for the three mappers, the BoK discriminated-union renderer, the `useCanEditSettings` predicate, and i18n key parity — per research §9 ("Unit-test the pure transformation logic for each actor type; rely on manual smoke for the end-to-end views"). Visual / interaction validation is manual via the per-actor smoke checklist in `quickstart.md`.
+
+**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story. All three stories are P1 and ship together as one user-vertical release with sibling spec `097-crd-user-settings`.
 
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
-- **[Story]**: User story this task belongs to (US1)
-- **[SHARED-097]**: Foundational task also referenced by sibling spec 097-crd-user-settings — implement once
-- All paths are absolute under `/home/carlos/DEV/Alkemio/client-web/`
+- **[Story]**: Which user story the task belongs to (US1 = User profile, US2 = Organization profile, US3 = VC profile)
+- File paths are absolute from the repository root (`src/...`)
+
+## Path Conventions
+
+This is a single Vite SPA. Source paths begin at `src/`. Three integration verticals live under `src/main/crdPages/topLevelPages/{userPages,organizationPages,vcPages}/`. Presentational CRD components live under `src/crd/components/{user,organization,virtualContributor,common}/`. The shared i18n namespace lives at `src/crd/i18n/profilePages/`.
 
 ---
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: i18n namespace for the public profile page + integration directory skeleton.
+**Purpose**: Repo-wide setup — confirm prerequisites, no new tooling needed.
 
-- [ ] T001 [SHARED-097] Register the new `crd-userPages` i18n namespace in `/home/carlos/DEV/Alkemio/client-web/src/core/i18n/config.ts` by adding it to `crdNamespaceImports` (lazy-load all 6 languages from `src/crd/i18n/userPages/userPages.<lang>.json`) — mirror the pattern used for `crd-spaceSettings`. (Sibling spec 097 registers `crd-userSettings` separately in the same file.)
-- [ ] T002 Add `'crd-userPages'` to the i18next namespace type union in `/home/carlos/DEV/Alkemio/client-web/@types/i18next.d.ts` so `useTranslation('crd-userPages')` is type-checked
-- [ ] T003 [P] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.en.json` with the full skeleton of keys covering: hero (`hero.settings`, `hero.message`, `hero.messageSend`, `hero.messagePlaceholder`), public-profile sidebar (`profile.about.title`, `profile.about.empty`, `profile.organizations.title`, `profile.organizations.empty`), public-profile resource tabs (`profile.tabs.allResources`, `profile.tabs.hostedSpaces`, `profile.tabs.virtualContributors`, `profile.tabs.leading`, `profile.tabs.memberOf`, `profile.sections.resourcesHosted`, `profile.sections.spaces`, `profile.sections.virtualContributors`, `profile.sections.spacesLeading`, `profile.sections.memberOf`, `profile.empty.leading`, `profile.empty.memberOf`)
-- [ ] T004 [P] Create empty placeholder JSON files for the other five languages: `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.nl.json`, `userPages.es.json`, `userPages.bg.json`, `userPages.de.json`, `userPages.fr.json` — each starts as `{}` and is filled during T035 (Polish phase)
-- [ ] T005 [P] Create the integration directory at `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/` so subsequent integration tasks have a stable path
-
-**Checkpoint**: i18n namespace registered, integration directory skeleton in place — Foundational phase can begin.
+- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-crd-enabled', 'true')` and reload `/user/<self>`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard) render with the toggle on. Document any environment issues in this task's notes — no code change.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Build the shared integration helpers + route shell + the conditional in `TopLevelRoutes.tsx`. These pieces are also used by sibling spec 097.
+**Purpose**: Cross-cutting infrastructure that ALL three user stories depend on. Must complete before any user-story phase can finish (US1 also depends on its own foundational helpers, included here).
 
-**⚠️ CRITICAL**: No user-story work can begin until this phase is complete.
+**⚠️ CRITICAL**: User-story implementation cannot ship until this phase is complete.
 
-### Integration helpers + route shells
+### i18n namespace
 
-- [ ] T006 [P] [SHARED-097] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` per the `UseUserPageRouteContext` contract in `specs/096-crd-user-pages/contracts/data-mapper.ts`. Wraps `useUserProvider` + `useCurrentUserContext` to return `{ userSlug, userId, currentUserId, loading }`. Resolves `/user/me` to the current user's nameID before returning
-- [ ] T007 [P] [SHARED-097] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/useCanEditSettings.ts` per the `UseCanEditSettings` contract. Returns `{ canEditSettings, isOwner, isPlatformAdmin }`. `isPlatformAdmin` calls `userWrapper.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin)` exactly as `UserAdminNotificationsPage` does today (FR-008a / FR-011)
-- [ ] T008 [SHARED-097] Unit-test `useCanEditSettings` at `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/useCanEditSettings.test.ts`: assert true when `currentUser.id === profileUser.id`, true when admin viewing other user, false when neither, false when both ids are undefined (anonymous). Depends on T007
-- [ ] T009 [P] [SHARED-097] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` — top-level CRD user routes mirroring the existing `src/domain/community/user/routing/UserRoute.tsx`. Two route blocks: `path="me/*"` and `path=":userNameId/*"`. Inside each, an `<Outlet />` wrapping the public-profile index route (this spec) and a `path="settings/*"` sub-route that delegates to `CrdUserAdminRoutes` (sibling spec 097). All page components are lazy-loaded
-- [ ] T011 [SHARED-097] Modify `/home/carlos/DEV/Alkemio/client-web/src/main/routing/TopLevelRoutes.tsx` at the `/user/*` route block (lines 209-220 today): inside the existing `<NoIdentityRedirect>` and `<Suspense>`, dispatch on `useCrdEnabled()` between the lazy-loaded `<CrdUserRoutes />` and the existing `<UserRoute />` — the existing wrapping (`<NoIdentityRedirect>`, `<WithApmTransaction>`, `<Suspense>`) MUST stay exactly as-is (research §1: anonymous viewers stay redirected to login for parity). Add a new lazy import `const CrdUserRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/userPages/CrdUserRoutes'))`. Depends on T009
+- [ ] T002 Create the shared CRD i18n namespace skeleton at `src/crd/i18n/profilePages/profilePages.en.json` with empty top-level keys for `userProfile`, `orgProfile`, `vcProfile`, `common` (per research §7 — one shared namespace for all three actor pages).
+- [ ] T003 [P] Create empty placeholder files for the other five languages: `src/crd/i18n/profilePages/profilePages.nl.json`, `profilePages.es.json`, `profilePages.bg.json`, `profilePages.de.json`, `profilePages.fr.json` — each mirroring the `en` key shape.
+- [ ] T004 Register the `crd-profilePages` namespace in `src/core/i18n/config.ts` (lazy-loaded, matching the existing `crd-exploreSpaces` registration pattern) and in `@types/i18next.d.ts`.
+- [ ] T005 [P] Add a Vitest assertion at `src/crd/i18n/profilePages/__tests__/keyParity.test.ts` that all six language files have identical key shapes (same pattern used by other CRD i18n namespaces).
 
-### Shared CRD presentational components for the hero
+### Shared CRD primitive
 
-- [ ] T012 [P] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserPageHero.tsx` per the `UserPageHeroProps` contract in `specs/096-crd-user-pages/contracts/publicProfile.ts`. Pure presentational: banner image (gradient fallback via `pickColorFromId`), avatar overlay, display name, location line, optional Settings (gear) icon button (renders only when `showSettingsIcon`), optional Message button (renders only when `showMessageButton` — opens `UserPageMessagePopover` from T013). Zero `@mui/*` imports. All `aria-label`s on icon-only buttons. **No presence dot** (FR-010 — clarification)
-- [ ] T013 [P] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserPageMessagePopover.tsx` — Radix `Popover` containing a `Textarea` and a Send button. Props: `{ onSend: (text: string) => Promise<void>; placeholder: string }`. Closes on success, displays inline error on failure. Uses CRD `popover.tsx` + `textarea.tsx` + `button.tsx` primitives only. Forwarded by `UserPageHero`'s Message button
+- [ ] T006 [P] Implement the new shared `CompactContributorCard` primitive at `src/crd/components/common/CompactContributorCard.tsx` per `specs/096-crd-user-pages/contracts/compactContributor.ts`. Pure presentational, built atop `card.tsx` and `avatar.tsx` only. Supports `compact` (default) and `spacious` variants; renders as `<a href>` when `href` is set, non-interactive otherwise (per `src/crd/CLAUDE.md`).
 
-**Checkpoint**: All shared primitives and helpers ready. The public profile can now be built.
+### Shared cross-actor handler
+
+- [ ] T007 [P] Implement `useSendMessageHandler` at `src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts` per the `UseSendMessageHandler` contract in `specs/096-crd-user-pages/contracts/data-mapper.ts`. Wraps `useSendMessageToUsersMutation` with a recipient-id-bound `(messageText: string) => Promise<void>` API; tracks `sending` and `error` state internally. Used by US1 (User hero) and US2 (Org hero) — same hook, different recipient ID per research §5.
+
+### User-vertical shared helpers (also reused by sibling spec 097-crd-user-settings)
+
+- [ ] T008 [P] Implement `useUserPageRouteContext` at `src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` per the `UseUserPageRouteContext` contract in `contracts/data-mapper.ts`. Resolves `userSlug` from the URL, `userId` from `useUserProvider`, and `currentUserId` from `useCurrentUserContext`; exposes a combined `loading` flag.
+- [ ] T009 [P] Implement `useCanEditSettings` at `src/main/crdPages/topLevelPages/userPages/useCanEditSettings.ts` per the `UseCanEditSettings` contract in `contracts/data-mapper.ts`. Computes `canEditSettings = isOwner || isPlatformAdmin` using `useCurrentUserContext().hasPlatformPrivilege(PlatformAdmin)`. Distinguishes `isOwner` and `isPlatformAdmin` flags so 097's Security tab can gate owner-only.
+- [ ] T010 [P] Add a Vitest unit test at `src/main/crdPages/topLevelPages/userPages/__tests__/useCanEditSettings.test.ts` covering the four viewer categories: owner / platform admin / non-admin signed-in / anonymous (research §9; FR-011 acceptance scenarios 2 / 3 / 4).
+
+**Checkpoint**: i18n namespace registered, shared primitive available, shared handlers ready. All three user stories can now begin in parallel.
 
 ---
 
 ## Phase 3: User Story 1 — Public User Profile Page (Priority: P1) 🎯 MVP
 
-**Goal**: `/user/:userSlug` renders the CRD hero + sidebar (bio + organizations) + sticky resource tab strip with the five tabs filtering the visible sections per the prototype.
+**Goal**: Migrate the public User profile page (`/user/:userSlug`) from MUI to CRD with the 5-tab resource strip, sidebar (bio + organizations), Settings/Message hero affordances per the FR-011/FR-012 visibility matrix, and skeleton loading states.
 
-**Independent Test**: Per quickstart.md "Public profile" — open `/user/<self>` and `/user/<other>` (as both regular user and platform admin); verify hero, sidebar, sticky strip, tab → section filter, no presence dot, Settings + Message visibility per the clarification, mobile horizontal-scroll on the strip.
+**Independent Test**: With CRD on, open `/user/<self>` and `/user/<otherUser>` (signed in as a regular user, then as a platform admin). Verify per the per-viewer matrix in spec.md User Story 1 acceptance scenarios 1–8: hero with no presence dot, sidebar, sticky 5-tab strip with `All Resources` active by default, tab filtering per data-model.md, Settings icon visibility, Message button visibility, message send via `useSendMessageToUsersMutation`. Toggle CRD off — existing MUI `UserProfilePage` renders unchanged.
 
-### CRD presentational components
+### Mapper (TDD pair — write test first if practicing TDD)
 
-- [ ] T024 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserResourceTabStrip.tsx` per the `UserResourceTabStripProps` contract in `contracts/publicProfile.ts`. Five tabs (`allResources`, `hostedSpaces`, `virtualContributors`, `leading`, `memberOf`) — sticky to its scroll container; on `< md` uses `overflow-x-auto no-scrollbar` and auto-scrolls the active tab into view (same responsive logic as the settings tab strip in sibling spec 097 — extract a small shared helper if helpful)
-- [ ] T025 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserResourceSections.tsx` per the `UserResourceSectionsProps` contract. Implements the tab → section filter from data-model.md exactly: `allResources` → all three sections; `hostedSpaces` / `virtualContributors` → the matching sub-section of Resources Hosted; `leading` / `memberOf` → the matching section. Empty sections are omitted (no empty container — FR-015). Reuse the existing CRD `SpaceCard` from `@/crd/components/space/SpaceCard.tsx` for space items; render VC items with `Sparkles` (or `Bot`) iconed cards
-- [ ] T026 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserProfileSidebar.tsx` per `UserProfileSidebarProps`. Two sections: About (renders `bio` markdown via the existing `@/crd/components/common/MarkdownContent`) + Organizations (compact rows with avatar, name, role, member count). Hidden on `< lg` viewports
-- [ ] T027 [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserPublicProfileView.tsx` per `UserPublicProfileViewProps`. Composes `UserPageHero` (T012) + `UserProfileSidebar` (T026) + `UserResourceTabStrip` (T024) + `UserResourceSections` (T025) into the two-column layout (sidebar 4 cols on `lg+`, hidden on smaller; right column 8 cols). Forwards `onClickSettings` and `onSendMessage` to the hero. Depends on T012, T024, T025, T026
+- [ ] T011 [P] [US1] Implement `publicProfileMapper.ts` at `src/main/crdPages/topLevelPages/userPages/publicProfile/publicProfileMapper.ts` — pure function mapping the User-vertical Apollo data (`useUserQuery`, `useUserAccountQuery`, `useUserContributionsQuery`, `useUserOrganizationIdsQuery`, `useFilteredMemberships`) to `UserPublicProfileViewProps` per `contracts/publicProfile.ts` and `data-model.md`. Includes the tab→section filter (data-model.md table) and the `canEditSettings`/`isOwn` computation (the predicate value comes from `useCanEditSettings`). The mapper itself is pure; i18n labels are passed in as a `labels` arg from the integration page.
+- [ ] T012 [P] [US1] Add a Vitest unit test at `src/main/crdPages/topLevelPages/userPages/publicProfile/__tests__/publicProfileMapper.test.ts` covering: tab→section filter for each of the 5 tabs, leading vs. member-of split via `useFilteredMemberships`, empty-section omission rule (FR-015), bio markdown null vs. populated, no-presence-dot invariant (the mapper must not surface `lastActiveDate`).
 
-### Integration
+### Active-tab state hook
 
-- [ ] T028 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/publicProfileMapper.ts` per `data-model.md` "Entity: `UserPublicProfile`" + "Entity: `PublicProfileResources`". Pure function mapping `useUserQuery` + `useUserAccountQuery` + `useUserContributionsQuery` + `useUserOrganizationIdsQuery` results to the `UserPublicProfileViewProps['user']` shape. Reuses `useFilteredMemberships` to split memberships into "leading" vs "member-of"
-- [ ] T029 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/useResourceTabs.ts` — `useState<ResourceTabKey>('allResources')` with a setter; persists nothing to URL (parity with prototype). Exposes `{ activeResourceTab, onSelectResourceTab }` for forwarding to the view
-- [ ] T030 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts` — wraps `useSendMessageToUsersMutation` from `@/core/apollo/generated/apollo-hooks`, returning an `onSendMessage(text: string): Promise<void>` callback that fires `{ message, receiverIds: [userId] }` (mirrors `UserPageBanner.handleSendMessage` exactly)
-- [ ] T031 [US1] Create `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx`. Reads `useUserPageRouteContext`, fires the four queries (user / userAccount / userContributions / userOrganizationIds), calls `publicProfileMapper`, gets `useResourceTabs` + `useSendMessageHandler`, computes `canEditSettings` via `useCanEditSettings`, and renders `<UserPublicProfileView>` with all props wired. The `onClickSettings` prop calls `useNavigate()` to `/user/<slug>/settings/profile`. Depends on T027, T028, T029, T030
-- [ ] T032 [US1] Wire the public-profile route in `CrdUserRoutes.tsx` (T009): index route (`<Route index element={<CrdUserProfilePage />} />`) inside both the `me/*` and `:userNameId/*` blocks. Depends on T031
+- [ ] T013 [US1] Implement `useResourceTabs` at `src/main/crdPages/topLevelPages/userPages/publicProfile/useResourceTabs.ts` — local React state (`useState<ResourceTabKey>('allResources')`) per FR-013 (NOT URL-synced); exposes `{ activeTab, onSelectTab }`. No URL search param sync; reload always lands on `allResources`.
 
-### Tests
+### Presentational components (parallelizable — independent files)
 
-- [ ] T033 [P] [US1] Unit-test `publicProfileMapper` at `/home/carlos/DEV/Alkemio/client-web/src/main/crdPages/topLevelPages/userPages/publicProfile/publicProfileMapper.test.ts`: a user with hosted spaces + VCs + leading + member-of → all four lists populated correctly; a user with empty memberships → empty arrays for all sections; sections with zero items map to empty arrays so the view can omit them
-- [ ] T034 [P] [US1] Unit-test the tab → section filter: a small render test on `UserResourceSections` (with mocked `MarkdownContent` if needed) at `/home/carlos/DEV/Alkemio/client-web/src/crd/components/user/UserResourceSections.test.tsx`: `allResources` renders all three sections; `hostedSpaces` renders only the Spaces sub-section; etc. Uses fixtures from contracts
+- [ ] T014 [P] [US1] Implement `UserPageHero` at `src/crd/components/user/UserPageHero.tsx` per `UserPageHeroProps` in `contracts/publicProfile.ts`. Pure presentational: banner (with `pickColorFromId(userId)` gradient fallback), avatar overlay, display name, location line. **No** presence dot. Settings icon button visible when `showSettingsIcon === true`; Message button visible when `showMessageButton === true`. Click handlers received as props (no internal navigation per `src/crd/CLAUDE.md`).
+- [ ] T015 [P] [US1] Implement `UserPageMessagePopover` at `src/crd/components/user/UserPageMessagePopover.tsx` — a Popover wrapping a Textarea + Send button. Internal state: open/closed flag + draft text. Calls `onSendMessage(text)` prop on submit; closes on success; preserves draft on failure with inline error display (state machine per data-model.md).
+- [ ] T016 [P] [US1] Implement `UserResourceTabStrip` at `src/crd/components/user/UserResourceTabStrip.tsx` per `UserResourceTabStripProps` in `contracts/publicProfile.ts`. Sticky position. Below `md`: `overflow-x-auto no-scrollbar`; all 5 tabs remain inline; the active tab auto-scrolls into view on mount and on tab change (FR-013 clarification). Keyboard-navigable per FR-111 — Tab into strip, Left/Right arrows, Enter to activate (use the existing CRD `tabs` primitive or replicate its keyboard pattern).
+- [ ] T017 [P] [US1] Implement `UserResourceSections` at `src/crd/components/user/UserResourceSections.tsx` per `UserResourceSectionsProps` in `contracts/publicProfile.ts`. Switches on `activeTab` to render Resources Hosted (with sub-sections on `allResources`; sub-section headers hidden on single-slice tabs per FR-013) / Spaces Leading / Member Of. Sections with empty data are omitted (FR-015) — except the empty-state caption rule for "No memberships yet" when applicable.
+- [ ] T018 [P] [US1] Implement `UserProfileSidebar` at `src/crd/components/user/UserProfileSidebar.tsx` per `UserProfileSidebarProps` in `contracts/publicProfile.ts`. Two stacked CRD card sections: About (bio rendered via existing CRD `MarkdownContent`) + Organizations list (rendered as a stack of compact rows per the AssociatedOrganizationCard shape; uses `CompactContributorCard` from T006 if visually equivalent, otherwise a small inline organization-card component).
+- [ ] T019 [US1] Implement `UserPublicProfileView` at `src/crd/components/user/UserPublicProfileView.tsx` per `UserPublicProfileViewProps` in `contracts/publicProfile.ts`. Composes the hero + sidebar + tab strip + sections inside the CRD `PageLayout` and `TwoColumnLayout` shells. Renders Skeleton placeholders (FR-009) per region while `loading === true` is forwarded by the integration page.
 
-### Manual smoke
+### Integration page + routing
 
-- [ ] T035 [US1] Run quickstart.md "Public profile" smoke checklist with the local dev server. Verify hero + sidebar + tab filter + Settings/Message visibility (own / non-admin other / admin other) + mobile horizontal-scroll. Capture any deviations as follow-up tasks
+- [ ] T020 [US1] Implement `CrdUserProfilePage` at `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx`. Wires `useUserPageRouteContext` (T008) → `useCanEditSettings` (T009) → existing Apollo queries → `publicProfileMapper` (T011) → `useResourceTabs` (T013) → `useSendMessageHandler` (T007). Renders `UserPublicProfileView` with the produced props. Uses `useTransition` to wrap the send-message mutation (Constitution Principle II).
+- [ ] T021 [US1] Implement `CrdUserRoutes` at `src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` mirroring the existing `src/domain/community/user/routing/UserRoute.tsx` structure. Routes `/:userSlug` → `CrdUserProfilePage`. Routes `/me` → resolves the current user's nameID from `useCurrentUserContext()` and redirects to `/<resolvedSlug>` (FR-007). The settings subtree (`path="settings/*"`) delegates to `CrdUserAdminRoutes` from sibling spec 097 if available; otherwise renders a placeholder that falls back to the existing MUI route. Wraps with `CrdLayoutWrapper`.
+- [ ] T022 [US1] Modify `src/main/routing/TopLevelRoutes.tsx` — add the conditional block for the User vertical: when `useCrdEnabled()` is true and the path matches `/user/*`, lazy-load `CrdUserRoutes`; otherwise lazy-load the existing `UserRoute` (preserving the existing `<NoIdentityRedirect>` and `<WithApmTransaction>` wrappers exactly per research §1).
 
-**Checkpoint**: User Story 1 complete — the public profile is independently demoable in CRD. MVP boundary.
+### i18n keys (User profile)
+
+- [ ] T023 [US1] Add User-profile i18n keys to `src/crd/i18n/profilePages/profilePages.en.json` under `userProfile.*` and any cross-actor keys to `common.*`. Keys to cover: hero (location format, Settings tooltip, Message button label, Message popover placeholder, Send button), tab strip (5 tab labels), section headings (`resourcesHosted`, `spaces`, `virtualContributors`, `spacesLeading`, `memberOf`), empty states (`emptyMembership`, `emptyLeading`, `emptyBio`, `emptyOrganizations`), sidebar (`aboutTitle`, `organizationsTitle`). Where current MUI uses generic keys already in `src/core/i18n/en/translation.en.json` (e.g., `pages.user-profile.communities.noMembership`), reuse via the `translation` namespace per FR-102 and document the choice in a comment in `publicProfileMapper.ts`.
+- [ ] T024 [P] [US1] Translate all User-profile keys added in T023 into `nl.json`, `es.json`, `bg.json`, `de.json`, `fr.json` (manual AI-assisted per `src/crd/CLAUDE.md`; same PR per FR-101).
+
+**Checkpoint**: User profile page is fully functional under CRD-on; MUI page renders unchanged under CRD-off. The 5-tab strip filters per data-model.md; Settings/Message gating matches the spec's per-viewer matrix.
 
 ---
 
-## Phase 4: Polish & Cross-Cutting Concerns
+## Phase 4: User Story 2 — Public Organization Profile Page (Priority: P1)
 
-**Purpose**: i18n completeness, lint, bundle delta, end-to-end smoke for the public profile.
+**Goal**: Migrate the public Organization profile page (`/organization/:orgSlug`) from MUI to CRD with hero (banner + avatar + name + location + Verified badge + Settings/Message), sidebar (Bio + Tagsets + References + Associates), and right column (Account Resources + Lead Spaces + All Memberships) per the parity rules in the spec.
 
-### i18n + accessibility
+**Independent Test**: With CRD on, open `/organization/<some-org>` (signed in as a regular user, then as an org admin, then as anonymous). Verify per spec.md User Story 2 acceptance scenarios 1–10: hero affordances, sidebar sections (Associates hidden when `canReadUsers === false`), right-column section omission rules (Account Resources omitted when empty; Lead Spaces omitted when empty; All Memberships always rendered with empty caption when empty), Verified badge, message send via `useSendMessageToUsersMutation` against the org as recipient. Toggle CRD off — existing MUI `OrganizationPage` renders unchanged.
 
-- [ ] T102 [P] Translate every key in `userPages.en.json` (T003) to Dutch in `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.nl.json`
-- [ ] T103 [P] Translate to Spanish in `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.es.json`
-- [ ] T104 [P] Translate to Bulgarian in `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.bg.json`
-- [ ] T105 [P] Translate to German in `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.de.json`
-- [ ] T106 [P] Translate to French in `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/userPages.fr.json`
-- [ ] T107 Add an i18n key-parity Vitest at `/home/carlos/DEV/Alkemio/client-web/src/crd/i18n/userPages/__tests__/keyParity.test.ts` — asserts every language file has the exact same key shape as the English source. Depends on T102–T106
-- [ ] T108 [P] Run an `axe` accessibility scan against the CRD public profile page on the running dev server (or the prototype preview) and fix any critical / serious violations (SC-004). Document results in the PR description
+### Mapper
 
-### Cleanup, lint, bundle
+- [ ] T025 [P] [US2] Implement `organizationProfileMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper.ts` — pure function mapping `useOrganizationProvider` data + `useOrganizationAccountQuery` + `useAccountResources` + `useFilteredMemberships(contributions, [RoleType.Lead])` to `OrganizationPublicProfileViewProps` per `contracts/organizationProfile.ts` and `data-model.md`. Implements the section-omission rules (Account Resources omitted when all three lists are empty; Lead Spaces omitted when empty; All Memberships always rendered) per FR-024. Computes `verified = organization.verification.status === VerifiedManualAttestation` and `settingsUrl = canEdit ? buildSettingsUrl(profile.url) : null`. Filters references via `isSocialNetworkSupported` (only the "other" group goes in the sidebar — same predicate file used by VC mapper).
+- [ ] T026 [P] [US2] Add a Vitest unit test at `src/main/crdPages/topLevelPages/organizationPages/publicProfile/__tests__/organizationProfileMapper.test.ts` covering: four sidebar sections including Associates `canReadUsers` gating; three right-column sections including Account Resources omission when all lists empty, Lead Spaces filtering, All Memberships empty-state; Verified badge predicate (manual-attestation true / false / unset); references social/non-social split (research §9).
 
-- [ ] T110 Run `pnpm lint` from `/home/carlos/DEV/Alkemio/client-web/` and fix all reported issues (Biome / ESLint / TypeScript)
-- [ ] T111 Run `pnpm vitest run` and confirm all tests pass (T008, T033, T034, T107)
-- [ ] T112 Run `pnpm analyze` and verify the user-profile chunk delta is ≤ +20 KB gzipped over the previous build (SC-005). If not, document any unavoidable budget overrun in the PR description with mitigation plan
-- [ ] T113 [P] Sweep every new file under `src/crd/components/user/`, `src/crd/i18n/userPages/`, and `src/main/crdPages/topLevelPages/userPages/publicProfile/` to confirm no `@mui/*`, `@emotion/*`, or generated GraphQL types leak through view imports (FR-005 / FR-006). Use `grep -rln '@mui\|@emotion\|@/core/apollo/generated' src/crd/components/user src/main/crdPages/topLevelPages/userPages/publicProfile`; expected output: only the mapper may show `@/core/apollo/generated`
-- [ ] T114 [P] Sweep all CRD public-profile components for explicit `aria-label` on every icon-only button (Settings, Message, tab strip controls) per FR-110
+### Presentational components (parallelizable)
 
-### Final validation
+- [ ] T027 [P] [US2] Implement `OrganizationPageHero` at `src/crd/components/organization/OrganizationPageHero.tsx` per `OrganizationPageHeroProps` in `contracts/organizationProfile.ts`. Banner with `pickColorFromId(organizationId)` gradient fallback, avatar overlay, display name, location line, Verified badge (FR-020). Settings icon visible when `settingsUrl !== null`. Message button visible when `onSendMessage !== null`. Reuses `UserPageMessagePopover` (T015) directly — the popover is recipient-agnostic — OR factor a shared `MessagePopover` if visual divergence appears.
+- [ ] T028 [P] [US2] Implement `OrganizationProfileSidebar` at `src/crd/components/organization/OrganizationProfileSidebar.tsx` per `OrganizationProfileSidebarProps` in `contracts/organizationProfile.ts`. Four sections: Bio (markdown via existing CRD `MarkdownContent`), Tagsets (Keywords + Capabilities as compact tag pills), References (labeled URL chips), Associates (renders every associate as a `CompactContributorCard` row in the `spacious` variant — no cap, no "View all" per FR-023; section omitted entirely when `associates === null`).
+- [ ] T029 [P] [US2] Implement `OrganizationResourceSections` at `src/crd/components/organization/OrganizationResourceSections.tsx` per `OrganizationResourceSectionsProps` in `contracts/organizationProfile.ts`. Three sections: Account Resources (combined spaces + innovationPacks + innovationHubs as a single titled section — omitted when `accountResources === null`), Lead Spaces (omitted when empty), All Memberships (always rendered; empty-state caption "No memberships yet" via the existing `translation` key).
+- [ ] T030 [US2] Implement `OrganizationPublicProfileView` at `src/crd/components/organization/OrganizationPublicProfileView.tsx` per `OrganizationPublicProfileViewProps` in `contracts/organizationProfile.ts`. Composes the hero + sidebar + sections inside the CRD `PageLayout` and `TwoColumnLayout` shells (`col-span-3` sidebar / `col-span-9` right column on `md+`). Renders Skeleton placeholders (FR-009) per region while loading.
 
-- [ ] T115 Run the full quickstart.md smoke checklist end-to-end: User Story 1, every authorization variant (own / admin-other / non-admin-other / anonymous), every CRD-on/off toggle path. Capture any regressions as bugs to fix before merge
-- [ ] T116 Confirm Success Criteria SC-001 through SC-006 from spec.md hold and document in PR description (5-s page-render flow; 100% URL parity; Message/Settings visibility matrix; zero critical/serious axe issues; ≤ +20 KB bundle delta; resource sections render correctly for 0 / 1 / 50+ memberships)
+### Integration page + routing
 
-**Checkpoint**: User Story 1 complete, validated, and ready for merge alongside sibling spec 097-crd-user-settings.
+- [ ] T031 [US2] Implement `CrdOrganizationProfilePage` at `src/main/crdPages/topLevelPages/organizationPages/publicProfile/CrdOrganizationProfilePage.tsx`. Wires `useUrlResolver` → `useOrganizationProvider` → `useOrganizationAccountQuery` → `useAccountResources` → `organizationProfileMapper` (T025) → `useSendMessageHandler` (T007 — recipient ID is `organization.id`). Renders `OrganizationPublicProfileView`. Wraps the send-message mutation in `useTransition`.
+- [ ] T032 [US2] Implement `CrdOrganizationRoutes` at `src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` mirroring the existing `src/domain/community/organization/pages/OrganizationRoute.tsx` structure. Routes `/:orgSlug` → `CrdOrganizationProfilePage`. The settings subtree (`path="settings/*"`) falls through to the existing MUI admin route — Org admin shell migration is out of scope. Wraps with `CrdLayoutWrapper`.
+- [ ] T033 [US2] Modify `src/main/routing/TopLevelRoutes.tsx` — add the conditional block for the Organization vertical: when `useCrdEnabled()` is true and the path matches `/organization/*`, lazy-load `CrdOrganizationRoutes`; otherwise lazy-load the existing `OrganizationRoute`. Preserve the existing wrapper exactly (research §1 — anonymous viewers can load the page).
+
+### i18n keys (Organization profile)
+
+- [ ] T034 [US2] Add Organization-profile i18n keys to `src/crd/i18n/profilePages/profilePages.en.json` under `orgProfile.*`. Keys to cover: hero (Verified badge label, Settings tooltip, Message button label), sidebar (`bioTitle`, `bioEmpty`, `tagsetKeywords`, `tagsetCapabilities`, `referencesTitle`, `referencesEmpty`, `associatesTitle`, `associatesEmpty`, `associatesCount` interpolation), right column (`accountResourcesTitle`, `accountResourcesSpacesSubtitle`, `accountResourcesInnovationPacksSubtitle`, `accountResourcesInnovationHubsSubtitle`, `leadSpacesTitle`, `memberOfTitle`, `memberOfEmpty` — reuse the existing `translation` key for "No memberships yet" per FR-102).
+- [ ] T035 [P] [US2] Translate all Organization-profile keys added in T034 into the five non-English language files under `src/crd/i18n/profilePages/`.
+
+**Checkpoint**: Organization profile page is fully functional under CRD-on; MUI page renders unchanged under CRD-off. Settings icon links to the existing MUI admin URL; Message button works against the org as recipient.
+
+---
+
+## Phase 5: User Story 3 — Public Virtual Contributor Profile Page (Priority: P1)
+
+**Goal**: Migrate the public VC profile page (`/vc/:vcSlug`) from MUI to CRD with hero (banner + avatar + name + Settings; **NO Message button**), sidebar (Description + Host + non-social References + Body of Knowledge with three discriminated-union variants), and right column (model card + social references with `lucide-react` brand icons). Honor existing 404 (`Error404` inside CRD layout) and `useRestrictedRedirect`.
+
+**Independent Test**: With CRD on, open `/vc/<some-vc>` (one VC per BoK variant: AlkemioSpace, AlkemioKnowledgeBase, External). Verify per spec.md User Story 3 acceptance scenarios 1–9: hero with no Message button, sidebar sections, BoK section per variant including private-space placeholder and disabled Visit-button-with-tooltip, right-column model card + social brand icons. Visit an invalid VC URL → `Error404`. Toggle CRD off — existing MUI `VCProfilePage` renders unchanged.
+
+### Mapper + BoK resolver
+
+- [ ] T036 [P] [US3] Implement `vcProfileMapper.ts` at `src/main/crdPages/topLevelPages/vcPages/publicProfile/vcProfileMapper.ts` — pure function mapping `useVirtualContributorProfileWithModelCardQuery` + `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery` + `useSpaceBodyOfKnowledgeAboutQuery` + `useKnowledgeBase` data to `VCPublicProfileViewProps` per `contracts/vcProfile.ts` and `data-model.md`. Implements the BoK discriminated-union resolver (research §4) — produces one of `{ kind: 'space', ... }`, `{ kind: 'knowledgeBase', ... }`, or `{ kind: 'external', engineLabel: 'assistant' | 'other' }`. Splits references via `isSocialNetworkSupported`: social → right-column, non-social → sidebar (FR-032). Computes `hasUpdatePrivilege` from `vc.authorization.myPrivileges` and `settingsUrl = hasUpdatePrivilege ? buildSettingsUrl(profile.url) : null`. Maps social references to `lucide-react` brand keys (`linkedin` / `bluesky` / `github` / `x` / `generic`).
+- [ ] T037 [P] [US3] Implement `useVCBodyOfKnowledge` at `src/main/crdPages/topLevelPages/vcPages/publicProfile/useVCBodyOfKnowledge.ts` — wraps the auxiliary BoK queries (`useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery`, `useSpaceBodyOfKnowledgeAboutQuery`, `useKnowledgeBase`) and exposes `{ bodyOfKnowledge, loading }` ready to feed into the mapper.
+- [ ] T038 [P] [US3] Add a Vitest unit test at `src/main/crdPages/topLevelPages/vcPages/publicProfile/__tests__/vcProfileMapper.test.ts` covering: BoK resolver for each `kind` variant (space with/without `hasReadAccess`; knowledgeBase with/without `hasReadAccess`; external with `Assistant` vs. other engine), social/non-social references split, model-card data shape, brand-icon mapping (research §9).
+
+### Presentational components (parallelizable)
+
+- [ ] T039 [P] [US3] Implement `VCPageHero` at `src/crd/components/virtualContributor/VCPageHero.tsx` per `VCPageHeroProps` in `contracts/vcProfile.ts`. Banner with `pickColorFromId(vcId)` gradient fallback, avatar overlay, display name. Settings icon visible when `settingsUrl !== null`. **NO Message button** (FR-030 — the props interface intentionally omits `onSendMessage`).
+- [ ] T040 [P] [US3] Implement `VCBodyOfKnowledgeSection` at `src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx` per `VCBodyOfKnowledgeSectionProps` in `contracts/vcProfile.ts`. Switches on `bodyOfKnowledge.kind`: `space` → SpaceCardHorizontal-equivalent CRD card linking to the backing space (or "Private space" placeholder when `hasReadAccess === false`); `knowledgeBase` → description + Visit button (disabled with `Tooltip` "Body of knowledge is private" when `hasReadAccess === false`); `external` → engine-type description per `engineLabel`.
+- [ ] T041 [P] [US3] Add a Vitest render test at `src/crd/components/virtualContributor/__tests__/VCBodyOfKnowledgeSection.test.tsx` covering each `kind` variant (research §9): `space` renders the card / placeholder; `knowledgeBase` renders description + Visit button enabled or disabled per `hasReadAccess`; `external` renders the engine-type copy.
+- [ ] T042 [P] [US3] Implement `VCProfileSidebar` at `src/crd/components/virtualContributor/VCProfileSidebar.tsx` per `VCProfileSidebarProps` in `contracts/vcProfile.ts`. Four sections: Description (markdown via existing CRD `MarkdownContent`), Host (renders `CompactContributorCard` from T006 in `compact` variant), non-social References (labeled URL chips; empty-state line "No references" when empty), and `VCBodyOfKnowledgeSection` (T040).
+- [ ] T043 [P] [US3] Implement `VCContentView` at `src/crd/components/virtualContributor/VCContentView.tsx` per `VCContentViewProps` in `contracts/vcProfile.ts`. Right column: model card details (`aiEngine`, `prompts.persona`, `prompts.constraints`, `dataPrivacy.summary`) + social links (filtered references rendered with `lucide-react` brand icons — `Linkedin`, `Twitter`, `Github`, `Youtube`, `Globe` fallback per FR-034). Brand-icon mapping receives the `brand` field from the mapper (no logic in the view).
+- [ ] T044 [US3] Implement `VCPublicProfileView` at `src/crd/components/virtualContributor/VCPublicProfileView.tsx` per `VCPublicProfileViewProps` in `contracts/vcProfile.ts`. Composes the hero + sidebar + content view inside the CRD `PageLayout` and `TwoColumnLayout` shells (`col-span-3` sidebar / `col-span-9` right column on `md+`). Renders Skeleton placeholders (FR-009) per region while loading.
+
+### Integration page + routing
+
+- [ ] T045 [US3] Implement `CrdVCProfilePage` at `src/main/crdPages/topLevelPages/vcPages/publicProfile/CrdVCProfilePage.tsx`. Wires `useUrlResolver` → `useRestrictedRedirect({ requiredPrivilege: AuthorizationPrivilege.Read })` → `useVirtualContributorProfileWithModelCardQuery` → `useVCBodyOfKnowledge` (T037) → `vcProfileMapper` (T036). Handles `isApolloNotFoundError` by rendering `Error404` inside the CRD layout (FR-036). Renders `VCPublicProfileView`.
+- [ ] T046 [US3] Implement `CrdVCRoutes` at `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` mirroring the existing `src/domain/community/virtualContributor/vcProfilePage/VCRoute.tsx` structure. Routes `/:vcSlug` → `CrdVCProfilePage`. The settings subtree (`path="settings/*"`) falls through to the existing MUI admin route — VC admin shell migration is out of scope. Wraps with `CrdLayoutWrapper`.
+- [ ] T047 [US3] Modify `src/main/routing/TopLevelRoutes.tsx` — add the conditional block for the VC vertical: when `useCrdEnabled()` is true and the path matches `/vc/*`, lazy-load `CrdVCRoutes`; otherwise lazy-load the existing `VCRoute`. Preserve the existing wrapper exactly (research §1 — anonymous viewers can load if VC has public Read).
+
+### i18n keys (VC profile)
+
+- [ ] T048 [US3] Add VC-profile i18n keys to `src/crd/i18n/profilePages/profilePages.en.json` under `vcProfile.*`. Keys to cover: hero (Settings tooltip), sidebar (`descriptionTitle`, `hostTitle`, `referencesTitle`, `referencesEmpty`, `bodyOfKnowledgeTitle`, `bodyOfKnowledgePrivateTooltip`, `bodyOfKnowledgeVisitButton`, `bodyOfKnowledgeSpaceContextDescription`, `bodyOfKnowledgeExternalAssistantDescription`, `bodyOfKnowledgeExternalOtherDescription`, `privateSpaceLabel`), right column (`modelCardTitle`, `aiEngineLabel`, `promptsLabel`, `promptsPersonaLabel`, `promptsConstraintsLabel`, `dataPrivacyLabel`, `socialLinksTitle`, `socialLinksEmpty`). Where current MUI uses generic keys already in `translation.en.json` (e.g., `components.profile.fields.bodyOfKnowledge.title`), reuse via the `translation` namespace per FR-102.
+- [ ] T049 [P] [US3] Translate all VC-profile keys added in T048 into the five non-English language files under `src/crd/i18n/profilePages/`.
+
+**Checkpoint**: VC profile page is fully functional under CRD-on; MUI page renders unchanged under CRD-off. All three BoK variants render correctly; 404 and Restricted-redirect parity preserved.
+
+---
+
+## Phase 6: Polish & Cross-Cutting Concerns
+
+**Purpose**: End-to-end validation, bundle-size verification, lint/test gates, and the per-actor smoke checklist from `quickstart.md`.
+
+- [ ] T050 [P] Run `pnpm lint` at the repo root and resolve any TypeScript / Biome / ESLint errors in the new files.
+- [ ] T051 [P] Run `pnpm vitest run` and ensure all new tests pass alongside the existing suite (target completion ~9 s per CLAUDE.md).
+- [ ] T052 Run `pnpm analyze` and verify the combined gzipped bundle delta across the three new lazy-loaded chunks (User profile + Organization profile + VC profile) does NOT exceed +35 KB over the prior build (SC-005). Log the chunk sizes in this task's notes for the PR description.
+- [ ] T053 Execute the manual smoke checklist in `specs/096-crd-user-pages/quickstart.md` end-to-end (User profile / Organization profile / VC profile / Authorization / Toggle blocks) against `localhost:3001`. Record any deviations as bug tasks before merge.
+- [ ] T054 Run an axe / Lighthouse accessibility pass on each of the three CRD profile pages. Fix any critical or serious violations (SC-004; FR-110).
+- [ ] T055 Verify the parity matrix per actor (SC-006) with seeded test fixtures: User 0 / 1 / 50+ memberships across L0/L1/L2; Organization 0 / 1 / 50+ memberships, account resources present and absent, verified and unverified; VC each of the three BoK variants.
 
 ---
 
@@ -124,35 +188,137 @@ description: "Implementation tasks for CRD User Profile Page (public profile vie
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately. T001 must precede T002. T003–T005 are parallel siblings of T002.
-- **Foundational (Phase 2)**: Depends on Setup completion. Internally:
-  - T006, T007, T009 are parallel (different files); they are **[SHARED-097]** so coordinate with sibling spec 097.
-  - T008 depends on T007.
-  - T011 depends on T009.
-  - T012, T013 are parallel siblings (different files).
-- **User Story (Phase 3)**: Depends on Foundational. Once Foundational is complete, the public profile components can be built in parallel.
-- **Polish (Phase 4)**: Depends on User Story 1 being complete (translations need final keys; lint/analyze run on the merged surface; final smoke covers everything).
+- **Setup (Phase 1)**: T001 only — environment sanity check.
+- **Foundational (Phase 2)**: T002–T010 — i18n namespace, shared `CompactContributorCard` primitive, shared `useSendMessageHandler`, User-vertical helpers (`useUserPageRouteContext`, `useCanEditSettings`). MUST complete before user-story phases land.
+- **User Stories (Phases 3–5)**: All depend on Foundational. Once Foundational is done, all three stories can proceed in parallel.
+- **Polish (Phase 6)**: Depends on all three user stories completing.
+
+### User Story Dependencies
+
+- **US1 (User profile)**: Depends only on Foundational (specifically T002–T009). Independent of US2 and US3 except for the shared `TopLevelRoutes.tsx` file (each story modifies a distinct conditional block — sequential edits to the same file but no logical cross-dependency).
+- **US2 (Organization profile)**: Depends on Foundational. Reuses `useSendMessageHandler` (T007), `CompactContributorCard` (T006), and `UserPageMessagePopover` (T015 — soft dependency; US2 can implement its own popover in parallel and refactor later if visual divergence appears).
+- **US3 (VC profile)**: Depends on Foundational. Reuses `CompactContributorCard` (T006). Independent of US1 and US2 otherwise.
+
+### Within Each User Story
+
+- Mapper (and its test) before the integration page. Within US3, the BoK resolver hook (T037) before the mapper consumes it.
+- Presentational components are independent (different files) and can be built in parallel — they are pure props consumers.
+- The composing view (`*PublicProfileView`) depends on all sub-components.
+- The integration page (`Crd*ProfilePage`) depends on the mapper + the view + the route helpers + the hooks.
+- Routing wiring (`Crd*Routes`) depends on the integration page.
+- `TopLevelRoutes.tsx` modification depends on the routes file.
 
 ### Parallel Opportunities
 
-- **Within Phase 1**: T003, T004, T005 in parallel after T002 lands.
-- **Within Phase 2**: T012–T013 (CRD primitives) parallel; T006, T007, T009 (helpers + route shells) parallel.
-- **Within Phase 3**: T024–T026 (CRD components) parallel; T028–T030 (integration hooks + mapper) parallel; the page component (T031) and route wiring (T032) sequential at the end.
-- **Within Phase 4**: T102–T106 (translations) all parallel; T108, T113, T114 parallel.
+**Foundational (Phase 2):**
+
+- T003, T005, T006, T007, T008, T009, T010 — all marked [P]. Languages, primitive, handlers, route helpers — all independent files.
+
+**Within US1:**
+
+- T011 (mapper), T012 (mapper test) — different files; can run in parallel after foundation.
+- T014, T015, T016, T017, T018 — all five presentational components are independent files.
+
+**Within US2:**
+
+- T025 (mapper), T026 (mapper test) — different files.
+- T027, T028, T029 — three presentational components are independent files.
+
+**Within US3:**
+
+- T036 (mapper), T037 (BoK hook), T038 (mapper test) — different files.
+- T039, T040, T041 (BoK render test), T042, T043 — five presentational components + one test, all independent files.
+
+**Across user stories (after Foundational):**
+
+- US1, US2, US3 phases can be developed in parallel by different team members. The only sequential step is each story modifying its own conditional block in `TopLevelRoutes.tsx` (T022 / T033 / T047) — coordinate the file edit order to avoid merge conflicts, but the logical edits are independent.
+
+**Polish (Phase 6):**
+
+- T050 (lint) and T051 (tests) can run in parallel (different processes).
+
+---
+
+## Parallel Example: Foundational Phase
+
+```bash
+# Once T002 + T004 (the namespace anchors) are done, the rest of Phase 2 can run in parallel:
+Task: "T003 [P] Create five non-English language file placeholders in src/crd/i18n/profilePages/"
+Task: "T005 [P] Add Vitest key-parity assertion at src/crd/i18n/profilePages/__tests__/keyParity.test.ts"
+Task: "T006 [P] Implement CompactContributorCard at src/crd/components/common/CompactContributorCard.tsx"
+Task: "T007 [P] Implement useSendMessageHandler at src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts"
+Task: "T008 [P] Implement useUserPageRouteContext at src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts"
+Task: "T009 [P] Implement useCanEditSettings at src/main/crdPages/topLevelPages/userPages/useCanEditSettings.ts"
+Task: "T010 [P] Add useCanEditSettings Vitest unit test at src/main/crdPages/topLevelPages/userPages/__tests__/useCanEditSettings.test.ts"
+```
+
+## Parallel Example: User Story 1 — Presentational Components
+
+```bash
+# Once T011 (mapper) and T013 (useResourceTabs) are done, the five presentational components can be built in parallel:
+Task: "T014 [P] [US1] Implement UserPageHero at src/crd/components/user/UserPageHero.tsx"
+Task: "T015 [P] [US1] Implement UserPageMessagePopover at src/crd/components/user/UserPageMessagePopover.tsx"
+Task: "T016 [P] [US1] Implement UserResourceTabStrip at src/crd/components/user/UserResourceTabStrip.tsx"
+Task: "T017 [P] [US1] Implement UserResourceSections at src/crd/components/user/UserResourceSections.tsx"
+Task: "T018 [P] [US1] Implement UserProfileSidebar at src/crd/components/user/UserProfileSidebar.tsx"
+```
+
+## Parallel Example: Three User Stories at Once
+
+```bash
+# Once Foundational is done, three engineers can pick up one user-story phase each:
+Engineer A: T011..T024  (Phase 3 — User Story 1)
+Engineer B: T025..T035  (Phase 4 — User Story 2)
+Engineer C: T036..T049  (Phase 5 — User Story 3)
+# Coordinate the TopLevelRoutes.tsx edits (T022 / T033 / T047) so they merge cleanly.
+```
 
 ---
 
 ## Implementation Strategy
 
-The public profile is User Story 1 of this spec — it is also the entry point of the entire user vertical. The ship-together rule (FR-001 / FR-002) couples this spec with sibling 097-crd-user-settings: both are gated by the same `useCrdEnabled` toggle and merge as one user-vertical release. The phases above are organized so the public profile can be developed and demoed independently, but the PR that merges to `develop` should land both 096 and 097 at once. Use the `alkemio-crd-enabled` localStorage toggle to gate developer / QA testing along the way.
+### MVP First (User Story 1 only)
+
+1. Complete Phase 1: Setup (T001).
+2. Complete Phase 2: Foundational (T002–T010). **CRITICAL — blocks all stories.**
+3. Complete Phase 3: User Story 1 (T011–T024).
+4. **STOP and VALIDATE**: Run the User profile portion of the smoke checklist; confirm spec.md User Story 1 acceptance scenarios 1–8 pass; confirm CRD-off renders the existing MUI page.
+5. Demo the User profile in CRD. Hold US2 and US3 for the next iteration if scope pressure mounts.
+
+### Incremental Delivery
+
+1. Setup + Foundational → foundation ready.
+2. Add US1 (User profile) → smoke pass → demo (MVP).
+3. Add US2 (Organization profile) → smoke pass → demo.
+4. Add US3 (VC profile) → smoke pass → demo.
+5. Polish (Phase 6).
+
+### Parallel Team Strategy
+
+With three developers:
+
+1. Team completes Setup + Foundational together (or one developer leads it while others read the spec).
+2. Once Foundational is done:
+   - Developer A: User Story 1 (T011–T024).
+   - Developer B: User Story 2 (T025–T035).
+   - Developer C: User Story 3 (T036–T049).
+3. Coordinate `TopLevelRoutes.tsx` edits (T022 / T033 / T047) — assign a merge order or merge into a shared integration branch.
+4. Polish phase runs after all three stories merge.
+
+### Ship Coupling (with sibling spec 097-crd-user-settings)
+
+- This spec ships together with sibling spec `097-crd-user-settings` as one user-vertical release (per spec.md "Coupling" note and research §10).
+- The `TopLevelRoutes.tsx` User-vertical block (T022) plumbs the settings subtree through to `CrdUserAdminRoutes` (097). Coordinate landing order: T022 lands first as a placeholder that falls back to MUI for `/user/:userSlug/settings/*`; once 097 lands, the placeholder is replaced with the real `CrdUserAdminRoutes` import.
 
 ---
 
 ## Notes
 
-- **Tests included**: pure mapper unit tests (T033, T034); `useCanEditSettings` predicate (T008); i18n key parity (T107). No per-story functional UI tests — manual smoke per quickstart.md (precedent from 091/045).
-- **[P] tasks** = different files, no dependencies on incomplete tasks.
-- **[Story] label** maps each task to a specific user story for traceability — Setup, Foundational, and Polish phases have NO story label.
-- **[SHARED-097]** label flags tasks shared with sibling spec 097-crd-user-settings — implement once, both specs benefit.
-- Verify lint + tests after each phase; commit after each task or logical group.
-- **Avoid**: vague tasks, same-file conflicts within a phase. CRD components MUST stay free of `@mui/*` / `@emotion/*` / `@/core/apollo/generated` imports; the mapper is the only place generated GraphQL types may surface.
+- [P] tasks = different files, no dependencies on incomplete tasks.
+- [Story] label maps each user-story task to its phase for traceability.
+- All three user stories are P1 and ship together. The MVP-first strategy above is a fallback if scope pressure forces a partial release; the spec's stated intent is to ship all three with sibling spec 097.
+- Tests included: per-mapper Vitest unit tests, BoK render test, useCanEditSettings predicate test, i18n key-parity test (research §9).
+- No new Apollo queries / mutations / GraphQL types — every data hook in `data-model.md` already exists and is reused unchanged.
+- The existing MUI files under `src/domain/community/{user,organization,virtualContributor}/` MUST stay in place per FR-002 / FR-004 — no deletion until the global CRD toggle is removed in a future spec.
+- Commit boundaries: one commit per task (or one commit per logical group within a story). Per CLAUDE.md, all commits must be signed.
+- Avoid: adding `useMemo` / `useCallback` / `React.memo` (React Compiler handles memoization); adding `@mui/*` or `@emotion/*` imports under `src/crd/`; importing generated GraphQL types into views.

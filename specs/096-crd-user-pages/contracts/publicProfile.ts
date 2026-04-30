@@ -1,5 +1,5 @@
 /**
- * CRD public-profile view contracts.
+ * CRD User public-profile view contracts.
  *
  * File location at implementation time:
  *   src/crd/components/user/UserPageHero.tsx
@@ -12,7 +12,14 @@
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
  *
- * The settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,
+ * Sibling contracts in this folder:
+ *  - `organizationProfile.ts` — Organization profile view contracts.
+ *  - `vcProfile.ts` — Virtual Contributor profile view contracts.
+ *  - `compactContributor.ts` — `CompactContributorCard` shared CRD primitive
+ *    (used by the Org Associates list and the VC Host card).
+ *  - `data-mapper.ts` — cross-page mapper utility contracts.
+ *
+ * The User Settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,
  * `UserSettingsCard`) live in sibling spec 097-crd-user-settings/contracts/shell.ts.
  */
 
