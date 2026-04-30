@@ -23,7 +23,7 @@ export function CrdRestrictedRoute() {
 
   const { t } = useTranslation('crd-error');
   const navigate = useNavigate();
-  const showGoBack = hasInAppHistory();
+  const isGoBackVisible = hasInAppHistory();
 
   usePageTitle(t('forbidden.title'));
 
@@ -35,8 +35,8 @@ export function CrdRestrictedRoute() {
         goHomeLabel={t('forbidden.actions.goHome')}
         goBackLabel={t('forbidden.actions.goBack')}
         onGoHome={() => navigate(`/${TopLevelRoutePath.Home}`)}
-        onGoBack={showGoBack ? () => navigate(-1) : undefined}
-        showGoBack={showGoBack}
+        onGoBack={isGoBackVisible ? () => navigate(-1) : undefined}
+        showGoBack={isGoBackVisible}
       />
     </CrdLayoutWrapper>
   );

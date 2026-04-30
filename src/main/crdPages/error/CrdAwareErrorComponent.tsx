@@ -20,33 +20,38 @@ export type CrdAwareErrorComponentProps = {
 };
 
 export function CrdAwareErrorComponent(props: CrdAwareErrorComponentProps) {
-  const { t } = useTranslation('crd-error');
-  const navigate = useNavigate();
   const crdEnabled = useCrdEnabled();
   const isCrd = isCrdRoute(props.pathname ?? '');
-  const showGoBack = hasInAppHistory();
-
-  usePageTitle(t('forbidden.title'));
 
   if (crdEnabled && isCrd && props.isNotAuthorized === true) {
-    return (
-      <CrdLayoutWrapper>
-        <CrdForbiddenPage
-          title={t('forbidden.title')}
-          description={t('forbidden.description')}
-          goHomeLabel={t('forbidden.actions.goHome')}
-          goBackLabel={t('forbidden.actions.goBack')}
-          onGoHome={() => navigate(`/${TopLevelRoutePath.Home}`)}
-          onGoBack={showGoBack ? () => navigate(-1) : undefined}
-          showGoBack={showGoBack}
-        />
-      </CrdLayoutWrapper>
-    );
+    return <CrdForbiddenBranch />;
   }
 
   return (
     <TopLevelLayout>
       <Error40X {...props} />
     </TopLevelLayout>
+  );
+}
+
+function CrdForbiddenBranch() {
+  const { t } = useTranslation('crd-error');
+  const navigate = useNavigate();
+  const showGoBack = hasInAppHistory();
+
+  usePageTitle(t('forbidden.title'));
+
+  return (
+    <CrdLayoutWrapper>
+      <CrdForbiddenPage
+        title={t('forbidden.title')}
+        description={t('forbidden.description')}
+        goHomeLabel={t('forbidden.actions.goHome')}
+        goBackLabel={t('forbidden.actions.goBack')}
+        onGoHome={() => navigate(`/${TopLevelRoutePath.Home}`)}
+        onGoBack={showGoBack ? () => navigate(-1) : undefined}
+        showGoBack={showGoBack}
+      />
+    </CrdLayoutWrapper>
   );
 }

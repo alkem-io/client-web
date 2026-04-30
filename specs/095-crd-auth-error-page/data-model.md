@@ -27,7 +27,7 @@ The minimal prop interface for the CRD `CrdForbiddenPage` component.
 - The component MUST NOT read `i18n` itself — all visible text comes from props.
 - The component MUST NOT call `useNavigate`, `useLocation`, or any router hook.
 - The component MUST NOT read auth state, Apollo cache, domain context, or any business-logic module.
-- If `showGoBack === true` and `onGoBack === undefined`, the component renders the button as disabled with no click effect (defensive default; should not occur in practice because the integration layer pairs them).
+- The go-back button is rendered only when `showGoBack === true` AND `onGoBack` is defined; if either is missing the button is hidden (matches `src/crd/components/error/CrdForbiddenPage.tsx`, which gates rendering on `showGoBack === true && onGoBack !== undefined`). The integration layer pairs them, so the asymmetric case is not expected in practice.
 
 **Why a flat string-prop shape (not a "view model object")**:
 - Per Constitution principle V (DIP) and the CRD architectural rules, presentational components depend only on prop abstractions. A flat shape keeps the dependency surface minimal and the component easy to render in Storybook / Vitest in isolation.

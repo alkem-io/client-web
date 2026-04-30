@@ -158,7 +158,6 @@ src/core/40XErrorHandler/ErrorBoundary.tsx  # MODIFIED — swap MUI RedirectToAn
 @types/i18next.d.ts                   # MODIFIED — register `crd-error` namespace in CustomTypeOptions
 
 # UNCHANGED — verified above
-src/core/40XErrorHandler/ErrorBoundary.tsx   # The boundary itself; contract preserved
 src/core/40XErrorHandler/40XErrors.ts        # NotAuthorizedError, NotFoundError; unchanged
 src/core/pages/Errors/Error403.tsx           # MUI fallback; preserved for toggle-off path
 src/core/pages/Errors/Error40X.tsx           # MUI dispatcher; preserved for toggle-off path

@@ -24,13 +24,17 @@ function AncestorSpaceCardSlot({ spaceId }: AncestorSpaceCardSlotProps) {
     skip: !spaceId,
   });
 
-  if (loading || !data?.lookup.space) {
+  if (loading) {
     return (
       <div className="flex items-center gap-3 rounded-md border bg-card p-3">
         <Skeleton className="size-12 rounded-md" />
         <Skeleton className="h-4 w-40" />
       </div>
     );
+  }
+
+  if (!data?.lookup.space) {
+    return null;
   }
 
   const space = data.lookup.space;

@@ -42,7 +42,7 @@ export function CrdForbiddenPage(props: CrdForbiddenPageProps): JSX.Element;
 
 **Constraints (enforced by the implementation, verified by review)**:
 - The module MUST NOT import from `@mui/*`, `@emotion/*`, `@apollo/client`, `@/core/apollo/*`, `@/domain/*`, `@/core/auth/*`, `react-router-dom`, or `formik`. (CRD architectural rules + FR-001.)
-- The module MUST NOT call any hook other than `useTranslation` is **forbidden** here too — the component receives all strings as props (FR-002 / FR-009). (The translation lookup happens in the integration layer.)
+- The module MUST NOT call any React hooks, including `useTranslation`; all strings must be provided via props (FR-002 / FR-009). (The translation lookup happens in the integration layer.)
 - The module MAY import `cn` from `@/crd/lib/utils`, primitives from `@/crd/primitives/*`, and icons from `lucide-react`.
 - The component MUST render an `<h1>` for the title and a real `<button>` (or shadcn `Button` primitive) for each action. Buttons MUST have `type="button"`.
 - The primary action button SHOULD receive focus on mount (e.g., via `autoFocus` on the shadcn `Button`) to satisfy FR-026.
@@ -123,7 +123,7 @@ export function CrdRestrictedRoute(): ReactNode;
 1. Calls `useTransactionScope({ type: 'authentication' })` — same APM transaction scope as MUI `Restricted.tsx`.
 2. Reads `useQueryParams().get('origin')`.
 3. Calls `useEffect(() => { logInfo('Attempted access to: ${origin}'); }, [origin])` — exactly mirroring `src/core/routing/Restricted.tsx:13-15`.
-4. Computes `showGoBack = typeof window !== 'undefined' && window.history.length > 1`.
+4. Computes `const isGoBackVisible = hasInAppHistory()` (the testable wrapper exported from `src/main/crdPages/error/hasInAppHistory.ts`, which encapsulates `typeof window !== 'undefined' && window.history.length > 1` per Constitution IV). Consumers and tests use the wrapper rather than reading `window.history.length` directly. The local variable uses the `is`-prefixed name per the project's boolean-naming convention; the value is then passed through to the component's `showGoBack` prop, whose name follows the HTML/React convention of no `is` prefix on props.
 5. Sets the document title via `usePageTitle(t('forbidden.title'))` — same key, same behavior as `CrdAwareErrorComponent`.
 6. Returns:
    ```tsx
@@ -134,8 +134,8 @@ export function CrdRestrictedRoute(): ReactNode;
        goHomeLabel={t('forbidden.actions.goHome')}
        goBackLabel={t('forbidden.actions.goBack')}
        onGoHome={() => navigate(`/${TopLevelRoutePath.Home}`)}
-       onGoBack={showGoBack ? () => navigate(-1) : undefined}
-       showGoBack={showGoBack}
+       onGoBack={isGoBackVisible ? () => navigate(-1) : undefined}
+       showGoBack={isGoBackVisible}
      />
    </CrdLayoutWrapper>
    ```
