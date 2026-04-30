@@ -106,19 +106,63 @@ The two manual stories below assume CRD is **on** unless stated otherwise.
 
 ---
 
-## Toggle-off regression — Story 1 / 2 with CRD disabled
+## Story 3 — Anonymous user lands on `/required` after a deep-link redirect (P2)
+
+**Setup**: CRD toggle on; **signed out**.
+
+**Steps**:
+
+1. Sign out of Alkemio.
+2. Navigate directly to a private Space's URL — `http://localhost:3001/<private-space-nameId>`.
+3. Watch the URL bar — the upstream `useRestrictedRedirect` should trigger a silent redirect, landing the browser on `http://localhost:3001/required?returnUrl=http%3A%2F%2Flocalhost%3A3001%2F<private-space-nameId>` (or equivalent encoded form).
+
+**Expected** (FR-040 / FR-041 / FR-042 / FR-043 / FR-044 / SC-010):
+
+- The page body shows the **CRD-styled** auth-required card: shadcn/ui surface, Tailwind tokens, `lucide-react` `ShieldAlert` icon, an `<h1>` reading "Access Restricted", two stacked paragraphs (the second one explicitly invites sign-in), a primary button "Sign in / Sign up", an "Or" separator, and a secondary outlined button "Return to dashboard as guest".
+- The CRD layout chrome (header / footer) is in place. React DevTools shows `<CrdLayoutWrapper>` → `<CrdAuthRequiredPage>` and **not** `<TopLevelLayout>` → `<AuthRequiredPage>`.
+- The browser tab title reads "Access Restricted | Alkemio".
+- Inspect the primary button's anchor (`<a href>` inside `<Button>`) — its `href` is the existing login URL (`_AUTH_LOGIN_PATH` + `returnUrl=...`) with the `returnUrl` query parameter preserved byte-for-byte from the URL bar.
+- Inspect the secondary button's anchor — its `href` is `https://<config-domain>/home` (or just `/home` if no domain is configured), matching the MUI behavior in `AuthRequiredPage.tsx:24-25`.
+- Click "Sign in / Sign up" — complete the login flow. After successful authentication you land back on the originally-requested private Space URL (because the `returnUrl` round-trip is preserved). If you happen to log in with credentials that *still* don't grant access, you land on the CRD forbidden page (Story 1 path).
+
+**Negative checks**:
+
+- No console errors, no React warnings, no missing-i18n-key fallbacks.
+- React DevTools confirms no `<TopLevelLayout>` mount and no `<AuthRequiredPage>` mount.
+- Disable JS history navigation (open in a new tab from Story 1's setup) — the page renders identically (the `/required` page is auth-redirect destination, history doesn't influence its render).
+
+---
+
+## Story 3b — Direct visit to `/required` (no upstream redirect)
+
+**Setup**: CRD toggle on; signed in OR signed out.
+
+**Steps**:
+
+1. Type `http://localhost:3001/required` directly into the URL bar.
+
+**Expected** (FR-044):
+
+- The CRD page renders with no `returnUrl` parameter — `buildLoginUrl(undefined)` produces the bare login URL with no return preserved. The page itself doesn't show an error or empty state.
+- The route handler does not branch on auth state; an authenticated user navigating here directly sees the same content (matching MUI's existing behavior on this route).
+
+---
+
+## Toggle-off regression — Story 1 / 2 / 3 with CRD disabled
 
 **Setup**: CRD toggle **off** (remove the localStorage entry and reload).
 
 **Steps**:
 1. Repeat Story 1 (private Space deep link as authenticated user).
 2. Repeat Story 2 (direct visit to `/restricted`).
+3. Repeat Story 3 (anonymous user on private Space deep link → `/required`).
 
-**Expected** (FR-030 / SC-003):
-- Both flows render the **MUI** `Error403` inside `TopLevelLayout`, exactly as on production `develop`. Verify by comparing the React tree to a fresh checkout of `develop`.
+**Expected** (FR-030 / SC-003 / SC-010):
+- Stories 1 / 2 render the **MUI** `Error403` inside `TopLevelLayout`, exactly as on production `develop`.
+- Story 3 renders the **MUI** `AuthRequiredPage` inside `TopLevelLayout`, exactly as on production `develop`. Verify by comparing the React tree to a fresh checkout of `develop`.
 - Tab title is still "Access Restricted | Alkemio" (it always was — this just confirms parity).
 - Sentry breadcrumb on `/restricted` still emits with the same `origin` field. The CRD path's breadcrumb is byte-for-byte identical to the MUI path's (SC-008).
-- No CRD CSS / shadcn primitives are loaded for the forbidden render (verify via the Network tab — no fetch for any CRD-only chunk if it's lazy-loaded).
+- No CRD CSS / shadcn primitives are loaded for the forbidden / auth-required render (verify via the Network tab — no fetch for any CRD-only chunk if it's lazy-loaded).
 
 ---
 

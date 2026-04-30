@@ -390,6 +390,147 @@ The boundary's `getDerivedStateFromError`, `getDerivedStateFromProps`, `redirect
 
 ---
 
+## 13. `CrdAuthRequiredPage` (presentational — US3)
+
+**Module**: `src/crd/components/error/CrdAuthRequiredPage.tsx`
+**Exported symbol**: `CrdAuthRequiredPage` (named export)
+
+```ts
+export type CrdAuthRequiredPageProps = {
+  /** Page headline (rendered as <h1>). */
+  title: string;
+  /** First paragraph of the body — explanation that the page is registered-users-only. */
+  description: string;
+  /** Second paragraph — sign-in invitation ("Please sign in to continue. Don't have an account? Sign up for free."). */
+  descriptionContinued: string;
+  /** Primary action label (e.g., "Sign in / Sign up"). */
+  signInLabel: string;
+  /** Separator label between the two actions (e.g., "Or"). */
+  orLabel: string;
+  /** Secondary action label (e.g., "Return to dashboard as guest"). */
+  returnAsGuestLabel: string;
+  /** URL the primary action navigates to. Constructed by the integration layer via buildLoginUrl(returnUrl). */
+  signInHref: string;
+  /** URL the secondary action navigates to. Absolute URL pointing at the platform domain's home. */
+  returnAsGuestHref: string;
+  /** Optional class merged into the root element via cn(). */
+  className?: string;
+};
+
+export function CrdAuthRequiredPage(props: CrdAuthRequiredPageProps): JSX.Element;
+```
+
+**Constraints (enforced by the implementation, verified by review)**:
+
+- Forbidden imports — same list as §1 (`@mui/*`, `@/core/apollo/*`, `@/domain/*`, `@/core/auth/*`, `react-router-dom`, `formik`, etc.).
+- The module MUST NOT call any React hooks, including `useTranslation`; all strings come from props (FR-040).
+- The module MAY import `cn` from `@/crd/lib/utils`, primitives from `@/crd/primitives/*` (specifically `Button`), and icons from `lucide-react` (`ShieldAlert`).
+- The component MUST render an `<h1>` for the title and MUST render both actions as real `<a href>` anchors composed with `Button asChild={true}` — programmatic navigation (`window.location`, `useNavigate`) is forbidden inside `src/crd/`.
+
+**Visual contract** (informal — for design review, not enforced by types):
+
+- Centered single-card layout matching `CrdForbiddenPage`.
+- A `lucide-react` `ShieldAlert` icon at the top of the card (`aria-hidden="true"`).
+- Stack: icon → headline → description paragraphs (two stacked `<p>` elements with a small gutter) → primary action → "Or" separator (rendered as `text-caption text-muted-foreground`) → secondary action.
+- The secondary action uses the `outline` variant of the CRD `Button` primitive.
+- Tailwind tokens only; no inline `style={...}` and no hard-coded colors.
+
+---
+
+## 14. `CrdAuthRequiredRoute` (integration — `/required` route element, US3)
+
+**Module**: `src/main/crdPages/error/CrdAuthRequiredRoute.tsx`
+**Exported symbol**: `CrdAuthRequiredRoute`
+
+```ts
+import type { ReactNode } from 'react';
+
+export function CrdAuthRequiredRoute(): ReactNode;
+```
+
+**Behavior**:
+
+1. Calls `useTransactionScope({ type: 'authentication' })` for APM parity.
+2. Reads `useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined`.
+3. Calls `buildLoginUrl(returnUrl)` from `src/main/routing/urlBuilders.ts` to compute `signInHref` — exact mirror of `src/core/auth/authentication/pages/AuthRequiredPage.tsx` line 23.
+4. Reads `locations` from `useConfig()` and computes `returnAsGuestHref = ${locations?.domain ? 'https://' + locations.domain : ''}/${TopLevelRoutePath.Home}` — exact mirror of `AuthRequiredPage.tsx` lines 24–25.
+5. Calls `usePageTitle(t('authRequired.title'))` to set the document title.
+6. Returns:
+   ```tsx
+   <CrdLayoutWrapper>
+     <CrdAuthRequiredPage
+       title={t('authRequired.title')}
+       description={t('authRequired.description')}
+       descriptionContinued={t('authRequired.descriptionContinued')}
+       signInLabel={t('authRequired.actions.signIn')}
+       orLabel={t('authRequired.actions.or')}
+       returnAsGuestLabel={t('authRequired.actions.returnAsGuest')}
+       signInHref={signInHref}
+       returnAsGuestHref={returnAsGuestHref}
+     />
+   </CrdLayoutWrapper>
+   ```
+
+**Constraints**:
+
+- MUST NOT branch on auth state — the route is auth-agnostic per FR-044. The CRD page is shown regardless of whether the visitor is authenticated.
+- MUST NOT add new validation or filtering for `returnUrl` — the value is passed through to `buildLoginUrl` as-is, mirroring MUI behavior.
+- MUST NOT include any redirect logic — no `<Navigate>`, no `navigate(...)` in `useEffect`. Direct visits and upstream-redirected visits both render the page.
+
+---
+
+## 15. `/required` route toggle in `IdentityRoute`
+
+**Module**: `src/core/auth/authentication/routing/IdentityRoute.tsx`
+
+The route's `element` is toggled between `<AuthRequiredPage />` (existing MUI page, unchanged) and `<CrdAuthRequiredRoute />` (new) using `useCrdEnabled()`.
+
+```diff
++ import { CrdAuthRequiredRoute } from '@/main/crdPages/error/CrdAuthRequiredRoute';
++ import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
+  import AuthRequiredPage from '../pages/AuthRequiredPage';
+  // …
+  export const IdentityRoute = () => {
++   const crdEnabled = useCrdEnabled();
+    return (
+      <>
+        // …
+-       <Route path={`${IdentityRoutes.Required}`} element={<AuthRequiredPage />} />
++       <Route
++         path={`${IdentityRoutes.Required}`}
++         element={crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />}
++       />
+        // …
+```
+
+No other route in `IdentityRoute.tsx` is changed. The legacy `AuthRequiredPage.tsx` MUST remain in the codebase as the toggle-off fallback.
+
+---
+
+## 16. i18n key shape (per language, `authRequired.*` group, US3)
+
+The existing `crd-error` namespace files (`src/crd/i18n/error/error.{en,nl,es,bg,de,fr}.json`) gain an `authRequired` sibling to `forbidden`:
+
+```jsonc
+{
+  "forbidden": { /* unchanged from §7 */ },
+  "authRequired": {
+    "title": "<localized>",
+    "description": "<localized>",
+    "descriptionContinued": "<localized>",
+    "actions": {
+      "signIn": "<localized>",
+      "or": "<localized>",
+      "returnAsGuest": "<localized>"
+    }
+  }
+}
+```
+
+English values are listed in plan.md's i18n key block. Other languages are translated manually (AI-assisted) per the project's CRD i18n process. No new namespace is created (FR-043).
+
+---
+
 ## Out of contract
 
 - No GraphQL schema change. The `useSpacePrivilegesQuery` hook used by `useSpaceSettingsAccessGuard` already exists in `src/core/apollo/generated/apollo-hooks.ts` from prior work — it is not introduced here. The `useSpaceCardQuery` reused by `CrdRedirectToAncestorDialog` is also pre-existing (it was used by the MUI `RedirectToAncestorDialog`).

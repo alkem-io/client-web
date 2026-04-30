@@ -149,9 +149,69 @@ The `pathname` input comes from `useLocation().pathname` (current router state a
 
 ---
 
+## 7. `CrdAuthRequiredPageProps` (presentational contract — US3)
+
+The minimal prop interface for the CRD `CrdAuthRequiredPage` component (the `/required` analogue of §1).
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `title` | `string` | yes | Page headline, rendered as `<h1>`. Sourced from `crd-error:authRequired.title`. |
+| `description` | `string` | yes | First paragraph of the body explanation. Sourced from `crd-error:authRequired.description`. |
+| `descriptionContinued` | `string` | yes | Second paragraph of the body (sign-in invitation). Sourced from `crd-error:authRequired.descriptionContinued`. |
+| `signInLabel` | `string` | yes | Primary action label. Sourced from `crd-error:authRequired.actions.signIn`. |
+| `orLabel` | `string` | yes | Separator label between the two actions. Sourced from `crd-error:authRequired.actions.or`. |
+| `returnAsGuestLabel` | `string` | yes | Secondary action label. Sourced from `crd-error:authRequired.actions.returnAsGuest`. |
+| `signInHref` | `string` | yes | URL the primary action navigates to. Constructed by the integration layer via `buildLoginUrl(returnUrl)`. |
+| `returnAsGuestHref` | `string` | yes | URL the secondary action navigates to. Absolute URL: `${domain}/${TopLevelRoutePath.Home}` from `useConfig().locations.domain`. |
+| `className` | `string` | no | Optional class merged into the root element via `cn()` for external composition. |
+
+**Validation rules**:
+
+- The component MUST NOT call `useTranslation`, `useNavigate`, `useLocation`, or any data hook. All copy and URLs come from props.
+- Both actions MUST be rendered as real `<a href>` anchors composed with `Button asChild={true}` — programmatic navigation is forbidden inside `src/crd/`.
+- The component MUST NOT branch on auth state, Apollo cache, or any business-logic module.
+
+**Why two paragraphs (not one or a `<Trans>`)**: the MUI `AuthRequiredPage` renders `subheader` and `subheader2` as two stacked `<Tagline>` elements with a small gutter — the CRD page mirrors this exactly. A single concatenated string would lose the visual rhythm; a `<Trans>` would force the CRD presentational layer to know about i18n component interpolation, violating CRD rule 4 (props are plain TypeScript).
+
+---
+
+## 8. `AuthRequiredRenderContext` (integration-layer in-memory state — US3)
+
+The render-time bundle assembled by `CrdAuthRequiredRoute`. Lives only inside the function while React renders.
+
+| Field | Type | Source |
+|---|---|---|
+| `returnUrl` | `string \| undefined` | `useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined` |
+| `signInHref` | `string` | `buildLoginUrl(returnUrl)` from `src/main/routing/urlBuilders.ts` |
+| `domain` | `string` | `locations?.domain` from `useConfig()`; empty string when undefined (matches MUI fallback) |
+| `returnAsGuestHref` | `string` | `${domain ? 'https://' + domain : ''}/${TopLevelRoutePath.Home}` (mirrors `AuthRequiredPage.tsx` line 24-25 verbatim) |
+
+**Validation rules**:
+
+- The integration layer MUST NOT validate or filter `returnUrl` — it passes through to `buildLoginUrl` as-is, mirroring the MUI behavior. The platform's login flow is the single source of truth for return-URL validation.
+- The integration layer MUST emit `useTransactionScope({ type: 'authentication' })` for APM parity; the absence of this call would silently regress observability on the `/required` render.
+- The integration layer MUST NOT branch on auth state — the route is reached only via the upstream redirect for anonymous users, and any direct-visit case (authenticated user) renders the same content (matching MUI's existing behavior).
+
+---
+
+## 9. i18n key map (`crd-error` namespace — `authRequired.*` group, US3)
+
+| Key | English value | Notes |
+|---|---|---|
+| `authRequired.title` | "Access Restricted" | Reuses existing `pages.authentication-required.header` value verbatim. Used both as `<h1>` text and as the `usePageTitle` argument. |
+| `authRequired.description` | "The page you're trying to access is only available to registered users." | Reuses existing `pages.authentication-required.subheader` value verbatim. |
+| `authRequired.descriptionContinued` | "Please sign in to continue. Don't have an account? Sign up for free." | Resolved-inline form of MUI's `subheader2` (`$t(common.account)` interpolation expanded to the literal "account"). |
+| `authRequired.actions.signIn` | "Sign in / Sign up" | New combined label (MUI uses two separate `authentication.sign-in` + `authentication.sign-up` strings joined with " / "). The CRD form is a single string for simplicity. |
+| `authRequired.actions.or` | "Or" | Standalone separator label between the two actions. |
+| `authRequired.actions.returnAsGuest` | "Return to dashboard as guest" | Reuses existing `buttons.returnToDashboardAsGuest` value verbatim. |
+
+All six MUST exist in en/nl/es/bg/de/fr at merge time. Translations are maintained manually (AI-assisted) per the CRD i18n process — not via Crowdin (FR-024).
+
+---
+
 ## Cross-references
 
-- Spec: [spec.md](./spec.md) — FR-001 through FR-039 ground these contracts.
+- Spec: [spec.md](./spec.md) — FR-001 through FR-044 ground these contracts.
 - Research: [research.md](./research.md) — Decisions 1–5 cover the implementation rationale.
-- Contract: [contracts/forbidden-page-props.md](./contracts/forbidden-page-props.md) — TypeScript-level contract at the integration ↔ CRD boundary.
-- Quickstart: [quickstart.md](./quickstart.md) — manual test recipes for both stories and the toggle-off regression.
+- Contract: [contracts/forbidden-page-props.md](./contracts/forbidden-page-props.md) — TypeScript-level contract at the integration ↔ CRD boundary (forbidden + auth-required + redirect dialog + privilege guard).
+- Quickstart: [quickstart.md](./quickstart.md) — manual test recipes for all three stories and the toggle-off regression.

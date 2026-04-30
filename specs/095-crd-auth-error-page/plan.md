@@ -16,6 +16,7 @@ Deliver the missing CRD-styled forbidden / unauthorized page. When an authentica
 3. Make `CrdLayoutWrapper` accept an optional `children` prop (falling back to `<Outlet />` when omitted). This lets the integration layer mount the layout chrome standalone for the boundary error path, where the route tree has been unwound. Non-breaking refactor — all current call sites continue to work.
 4. Register a new `crd-error` i18n namespace in `src/core/i18n/config.ts` and add 6 language files at `src/crd/i18n/error/error.<lang>.json` containing only the keys this feature needs (per Clarification Q5: smallest scope today).
 5. Update `src/root.tsx` to point the `Error40XBoundary` `errorComponent` at the new `CrdAwareErrorComponent`. Update `src/main/routing/TopLevelRoutes.tsx` to toggle the `/restricted` route between `Restricted` (MUI) and `CrdRestrictedRoute` (CRD).
+6. Add a CRD-styled `/required` page (US3): a presentational `CrdAuthRequiredPage` in `src/crd/components/error/`, an integration `CrdAuthRequiredRoute` in `src/main/crdPages/error/` that wires `useQueryParams` / `buildLoginUrl` / `useConfig` / `usePageTitle` / `useTransactionScope`, and a route-element toggle inside `src/core/auth/authentication/routing/IdentityRoute.tsx` (mirrors the `/restricted` pattern). Extend the existing `crd-error` i18n namespace with an `authRequired.*` key group (6 keys × 6 languages; English values reused verbatim from the existing MUI strings where available).
 
 No GraphQL changes. No new domain hooks. No new browser APIs beyond `window.history.length` (used by the existing app already).
 
@@ -35,7 +36,7 @@ No GraphQL changes. No new domain hooks. No new browser APIs beyond `window.hist
 - React Compiler enabled — no manual `useMemo` / `useCallback` / `React.memo`.
 - `Error40XBoundary` contract unchanged: it continues to handle `NotAuthorizedError` / `NotFoundError` exactly as today, including the `redirectUrl` branch and the `getDerivedStateFromProps` pathname-reset.
 - MUI `Error403` / `Error40X` / `Restricted` paths must work identically when the CRD toggle is off (zero regression).
-**Scale/Scope**: 1 new presentational component, 3 new integration files (predicate, error component, restricted route), 1 small refactor (`CrdLayoutWrapper.tsx` adds `children` prop), 6 new i18n files, 1 namespace registration line, 2 small consumer-side edits (`src/root.tsx`, `src/main/routing/TopLevelRoutes.tsx`).
+**Scale/Scope**: 2 new presentational components (forbidden + auth-required), 4 new integration files (predicate, error component, restricted route, auth-required route), 1 small refactor (`CrdLayoutWrapper.tsx` adds `children` prop), 6 new i18n files, 1 namespace registration line, 3 small consumer-side edits (`src/root.tsx`, `src/main/routing/TopLevelRoutes.tsx`, `src/core/auth/authentication/routing/IdentityRoute.tsx`). The `crd-error` namespace gains a second key group (`authRequired.*`) sharing the existing 6 language files.
 
 ## Constitution Check
 
@@ -97,6 +98,9 @@ Files touched by this feature, mapped to the project's existing layout:
 src/crd/components/error/
 ├── CrdForbiddenPage.tsx              # NEW — pure shadcn/ui + Tailwind page; props: title, description,
 │                                     #   onGoHome, onGoBack?, showGoBack?
+├── CrdAuthRequiredPage.tsx           # NEW — pure shadcn/ui + Tailwind page; props: title, description,
+│                                     #   descriptionContinued, signInLabel, orLabel, returnAsGuestLabel,
+│                                     #   signInHref, returnAsGuestHref, optional className (US3)
 └── CrdRedirectDialog.tsx             # NEW — pure shadcn/ui Dialog + Lock icon; props: open, onOpenChange,
                                       #   title, message, countdownLabel, cancelCountdownLabel, goNowLabel,
                                       #   cancelled, onCancelCountdown, onGoNow, ancestorSlot? (ReactNode)
@@ -129,7 +133,14 @@ src/main/crdPages/error/
 ├── CrdRedirectToAncestorDialog.test.tsx       # NEW — Vitest unit test (timer + cancel + navigation paths)
 ├── AncestorRedirectDispatcher.tsx             # NEW — chooses CRD vs MUI redirect dialog based on toggle +
 │                                              #   isCrdRoute(pathname) + isNotAuthorized
-└── AncestorRedirectDispatcher.test.tsx        # NEW — Vitest unit test (5 truth-table cases)
+├── AncestorRedirectDispatcher.test.tsx        # NEW — Vitest unit test (5 truth-table cases)
+├── CrdAuthRequiredRoute.tsx                   # NEW (US3) — /required route handler when CRD toggle is on:
+│                                              #   reads returnUrl, builds signInHref via buildLoginUrl,
+│                                              #   derives returnAsGuestHref from useConfig().locations.domain,
+│                                              #   sets document title via usePageTitle, opens APM scope,
+│                                              #   renders CrdLayoutWrapper + CrdAuthRequiredPage
+└── CrdAuthRequiredRoute.test.tsx              # NEW (US3) — Vitest unit test (returnUrl pass-through,
+                                                #   homeUrl construction, render of headings + actions)
 
 # Page-level privilege guard for CRD Space Settings
 src/main/crdPages/topLevelPages/spaceSettings/
@@ -149,6 +160,12 @@ src/root.tsx                          # MODIFIED — replace inline arrow with <
 src/main/routing/TopLevelRoutes.tsx   # MODIFIED — at the /restricted route, render either <Restricted />
                                       #   (toggle off) or <CrdRestrictedRoute /> (toggle on)
 
+# Routing — toggle /required between MUI and CRD handlers (US3)
+src/core/auth/authentication/routing/IdentityRoute.tsx  # MODIFIED — at the /required route, render either
+                                                        #   <AuthRequiredPage /> (toggle off) or
+                                                        #   <CrdAuthRequiredRoute /> (toggle on); reads
+                                                        #   useCrdEnabled() once at the top of the component.
+
 # Boundary — one-line dispatcher swap for the redirect-to-ancestor dialog
 src/core/40XErrorHandler/ErrorBoundary.tsx  # MODIFIED — swap MUI RedirectToAncestorDialog import for
                                             #   AncestorRedirectDispatcher; pass this.state.isNotAuthorized
@@ -163,6 +180,9 @@ src/core/pages/Errors/Error403.tsx           # MUI fallback; preserved for toggl
 src/core/pages/Errors/Error40X.tsx           # MUI dispatcher; preserved for toggle-off path
 src/core/routing/Restricted.tsx              # MUI /restricted handler; preserved for toggle-off path
 src/core/routing/useRestrictedRedirect.tsx   # Throw-path; unchanged (mirrors MUI 1:1 per FR-019)
+src/core/auth/authentication/pages/AuthRequiredPage.tsx  # MUI /required page; preserved for toggle-off path (US3)
+src/core/auth/authentication/constants/authentication.constants.ts  # PARAM_NAME_RETURN_URL etc.; unchanged
+src/main/routing/urlBuilders.ts              # buildLoginUrl etc.; unchanged (consumed by CrdAuthRequiredRoute)
 src/main/routing/urlResolver/UrlResolverProvider.tsx  # Throw-path; unchanged
 src/main/admin/NonAdminRedirect.tsx          # Redirects to /restricted; unchanged (now lands on CRD when toggle on)
 ```
@@ -183,6 +203,19 @@ src/main/admin/NonAdminRedirect.tsx          # Redirects to /restricted; unchang
     "actions": {
       "goHome": "Go to Home",
       "goBack": "Go back"
+    }
+  },
+  "authRequired": {                            // US3 — keys for the CRD /required page.
+    "title": "Access Restricted",              // Reuses existing MUI value (pages.authentication-required.header).
+    "description": "The page you're trying to access is only available to registered users.",
+                                                // Reuses existing MUI value (pages.authentication-required.subheader).
+    "descriptionContinued": "Please sign in to continue. Don't have an account? Sign up for free.",
+                                                // Resolved-inline form of MUI's subheader2 (the $t(common.account)
+                                                // nested-translation is expanded to the literal "account" string).
+    "actions": {
+      "signIn": "Sign in / Sign up",
+      "or": "Or",
+      "returnAsGuest": "Return to dashboard as guest"
     }
   }
 }
