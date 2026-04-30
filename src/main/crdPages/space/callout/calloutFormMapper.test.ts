@@ -4,6 +4,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CollaboraDocumentType,
   PollResultsDetail,
   PollResultsVisibility,
   VisualType,
@@ -40,14 +41,14 @@ const previewBlob: WhiteboardPreviewImage = {
 };
 
 describe('framingChipToServer', () => {
-  it('maps every chip including the disabled "document" → None', () => {
+  it('maps every chip to its server framing type', () => {
     expect(framingChipToServer('none')).toBe(CalloutFramingType.None);
     expect(framingChipToServer('whiteboard')).toBe(CalloutFramingType.Whiteboard);
     expect(framingChipToServer('memo')).toBe(CalloutFramingType.Memo);
     expect(framingChipToServer('cta')).toBe(CalloutFramingType.Link);
     expect(framingChipToServer('image')).toBe(CalloutFramingType.MediaGallery);
     expect(framingChipToServer('poll')).toBe(CalloutFramingType.Poll);
-    expect(framingChipToServer('document')).toBe(CalloutFramingType.None);
+    expect(framingChipToServer('document')).toBe(CalloutFramingType.CollaboraDocument);
   });
 });
 
@@ -210,9 +211,16 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect(result.input.framing.poll).toBeUndefined();
   });
 
-  it('"document" disabled chip is mapped to None framing', () => {
-    const result = mapFormToCalloutCreationInput(baseValues({ framingChip: 'document' }), createOptions);
-    expect(result.input.framing.type).toBe(CalloutFramingType.None);
+  it('"document" chip is mapped to CollaboraDocument framing with the chosen documentType', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'document', collaboraDocumentType: CollaboraDocumentType.Spreadsheet, title: 'Q1' }),
+      createOptions
+    );
+    expect(result.input.framing.type).toBe(CalloutFramingType.CollaboraDocument);
+    expect(result.input.framing.collaboraDocument).toEqual({
+      displayName: 'Q1',
+      documentType: CollaboraDocumentType.Spreadsheet,
+    });
   });
 });
 

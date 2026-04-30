@@ -152,6 +152,15 @@
     "collapse": "Mostrar menos",
     "openWhiteboard": "Abrir pizarra",
     "openMemo": "Abrir memo",
+    "openDocument": "Abrir documento",
+    "document": "Documento",
+    "documentText": "Documento de texto",
+    "documentSpreadsheet": "Hoja de cálculo",
+    "documentPresentation": "Presentación",
+    "addDocument": "Añadir documento",
+    "defaultDocumentName": "Nuevo documento",
+    "documentTypeLabel": "Tipo de documento",
+    "createNew": "Crear nuevo",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
     "expandComments": "Expandir comentarios",
@@ -165,7 +174,6 @@
     "callToAction": "Llamada a la acción",
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
-    "document": "Documento",
     "moreWhiteboards": "+{{count}} más",
     "moreContributions": "+{{count}} más",
     "vote": "Votar",
@@ -223,7 +231,8 @@
     "memoOpenHint": "El contenido de la nota se edita en su propio diálogo.",
     "openMemo": "Abrir nota",
     "openWhiteboard": "Abrir pizarra",
-    "openWhiteboardHint": "El contenido de la pizarra se edita en su propio diálogo."
+    "openWhiteboardHint": "El contenido de la pizarra se edita en su propio diálogo.",
+    "officeDocumentsNotEnabled": "Los documentos ofimáticos no están habilitados para este espacio."
   },
   "members": {
     "title": "Comunidad",
@@ -553,6 +562,36 @@
     "linkAriaLabelExternal": "{{displayName}} (abre {{url}} en una pestaña nueva)",
     "validation": {
       "invalidUrl": "URL no válida"
+    }
+  },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Error de Collabora: {{message}}",
+        "sessionClosed": "La sesión de colaboración se cerró."
+      }
+    },
+    "footer": {
+      "connected": "Conectado",
+      "connecting": "Conectando…",
+      "disconnected": "Desconectado",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "unsaved": "Cambios sin guardar",
+      "error": "Error al guardar",
+      "membersOnline_one": "1 miembro en línea",
+      "membersOnline_other": "{{count}} miembros en línea",
+      "connectedUsersLabel": "Usuarios conectados",
+      "moreConnectedUsers_one": "{{count}} usuario conectado más",
+      "moreConnectedUsers_other": "{{count}} usuarios conectados más",
+      "guestWarning": "Estás editando como invitado",
+      "delete": "Eliminar documento",
+      "readonlyReason": {
+        "connecting": "Conectando con el servicio de colaboración…",
+        "unauthenticated": "Inicia sesión para editar este documento.",
+        "contentUpdatePolicy": "No tienes permiso para editar este documento. Pide al propietario que cambie los ajustes de uso compartido.",
+        "noMembership": "Solo los miembros de este espacio pueden editar este documento. Únete al espacio para contribuir."
+      }
     }
   },
   "mediaGallery": {

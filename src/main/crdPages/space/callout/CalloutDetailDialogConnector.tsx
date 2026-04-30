@@ -15,7 +15,10 @@ import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
+import { CollaboraFramingConnector } from './CollaboraFramingConnector';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { MemoContributionConnector } from './MemoContributionConnector';
@@ -134,6 +137,7 @@ export function CalloutDetailDialogConnector({
   );
   const [postId, setPostId] = useState<string | undefined>(initialPostId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -199,6 +203,14 @@ export function CalloutDetailDialogConnector({
   const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
     <MediaGalleryFramingConnector callout={callout} />
   ) : undefined;
+
+  const hasCollaboraFraming =
+    callout.framing.type === CalloutFramingType.CollaboraDocument && !!callout.framing.collaboraDocument;
+  const collaboraFramingSlot = hasCollaboraFraming ? (
+    <CollaboraFramingConnector callout={callout} onOpen={() => setFramingCollaboraOpen(true)} />
+  ) : undefined;
+  const framingCollaboraDocument = callout.framing.collaboraDocument;
+  const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
@@ -266,6 +278,16 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  const framingCollaboraOverlay = framingCollaboraDocument ? (
+    <CollaboraFramingEditorOverlay
+      open={framingCollaboraOpen}
+      collaboraDocumentId={framingCollaboraDocument.id}
+      title={framingCollaboraTitle}
+      documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
+      onClose={() => setFramingCollaboraOpen(false)}
+    />
+  ) : null;
+
   const handleShareClick = () => setShareOpen(true);
   const settingsSlot = (
     <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
@@ -291,6 +313,7 @@ export function CalloutDetailDialogConnector({
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          collaboraFramingSlot={collaboraFramingSlot}
           callToActionFramingSlot={callToActionFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
@@ -302,6 +325,7 @@ export function CalloutDetailDialogConnector({
         {memoOverlay}
         {postOverlay}
         {framingMemoOverlay}
+        {framingCollaboraOverlay}
         {shareDialog}
       </>
     );
@@ -328,6 +352,7 @@ export function CalloutDetailDialogConnector({
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            collaboraFramingSlot={collaboraFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
@@ -338,6 +363,7 @@ export function CalloutDetailDialogConnector({
       {memoOverlay}
       {postOverlay}
       {framingMemoOverlay}
+      {framingCollaboraOverlay}
       {shareDialog}
     </>
   );

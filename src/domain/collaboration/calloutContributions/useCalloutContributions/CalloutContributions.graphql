@@ -4,7 +4,8 @@ query CalloutContributions(
   $includeWhiteboard: Boolean! = false
   $includeMemo: Boolean! = false
   $includePost: Boolean! = false
-  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST]
+  $includeCollaboraDocument: Boolean! = false
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST, COLLABORA_DOCUMENT]
   $limit: Int
 ) {
   lookup {
@@ -24,6 +25,9 @@ query CalloutContributions(
         }
         post @include(if: $includePost) {
           ...CalloutContributionsPostCard
+        }
+        collaboraDocument @include(if: $includeCollaboraDocument) {
+          ...CalloutContributionsCollaboraDocumentCard
         }
       }
       contributionsCount {
@@ -111,6 +115,24 @@ fragment CalloutContributionsPostCard on Post {
   comments {
     id
     messagesCount
+  }
+}
+
+fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
+  id
+  documentType
+  profile {
+    id
+    url
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  createdDate
+  createdBy {
+    ...ContributionAuthor
   }
 }
 

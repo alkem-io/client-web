@@ -856,6 +856,7 @@ export enum AuthorizationPolicyType {
   CalloutFraming = 'CALLOUT_FRAMING',
   Classification = 'CLASSIFICATION',
   Collaboration = 'COLLABORATION',
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   Communication = 'COMMUNICATION',
   CommunicationConversation = 'COMMUNICATION_CONVERSATION',
   CommunicationMessaging = 'COMMUNICATION_MESSAGING',
@@ -1092,6 +1093,8 @@ export type CalloutContribution = {
   __typename?: 'CalloutContribution';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The CollaboraDocument that was contributed. */
+  collaboraDocument?: Maybe<CollaboraDocument>;
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
@@ -1129,6 +1132,7 @@ export type CalloutContributionDefaults = {
 };
 
 export enum CalloutContributionType {
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   Link = 'LINK',
   Memo = 'MEMO',
   Post = 'POST',
@@ -1137,6 +1141,8 @@ export enum CalloutContributionType {
 
 export type CalloutContributionsCountOutput = {
   __typename?: 'CalloutContributionsCountOutput';
+  /** The number of contributions of type CollaboraDocument in this callout */
+  collaboraDocument: Scalars['Float']['output'];
   /** The number of contributions of type Link in this callout */
   link: Scalars['Float']['output'];
   /** The number of contributions of type Memo in this callout */
@@ -1156,6 +1162,8 @@ export type CalloutFraming = {
   __typename?: 'CalloutFraming';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Collabora document attached to this Callout Framing, if any. Present when framing.type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: Maybe<CollaboraDocument>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1179,6 +1187,7 @@ export type CalloutFraming = {
 };
 
 export enum CalloutFramingType {
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   Link = 'LINK',
   MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
@@ -1296,6 +1305,39 @@ export type Classification = {
 
 export type ClassificationTagsetArgs = {
   tagsetName: TagsetReservedName;
+};
+
+export type CollaboraDocument = {
+  __typename?: 'CollaboraDocument';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The user that created this CollaboraDocument. */
+  createdBy?: Maybe<User>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The type of the collaborative document. */
+  documentType: CollaboraDocumentType;
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The Profile for this CollaboraDocument. */
+  profile?: Maybe<Profile>;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
+export enum CollaboraDocumentType {
+  Drawing = 'DRAWING',
+  Presentation = 'PRESENTATION',
+  Spreadsheet = 'SPREADSHEET',
+  Wordprocessing = 'WORDPROCESSING',
+}
+
+export type CollaboraEditorUrlResult = {
+  __typename?: 'CollaboraEditorUrlResult';
+  /** The time-to-live of the access token in seconds. */
+  accessTokenTTL: Scalars['Float']['output'];
+  /** The URL to open the document in the Collabora editor. */
+  editorUrl: Scalars['String']['output'];
 };
 
 export type Collaboration = {
@@ -1773,6 +1815,7 @@ export type CreateCalendarEventOnCalendarInput = {
 
 export type CreateCalloutContributionData = {
   __typename?: 'CreateCalloutContributionData';
+  collaboraDocument?: Maybe<CreateCollaboraDocumentData>;
   link?: Maybe<CreateLinkData>;
   memo?: Maybe<CreateMemoData>;
   post?: Maybe<CreatePostData>;
@@ -1800,6 +1843,7 @@ export type CreateCalloutContributionDefaultsInput = {
 };
 
 export type CreateCalloutContributionInput = {
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   post?: InputMaybe<CreatePostInput>;
@@ -1827,6 +1871,8 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
+  /** Collabora document input. Required when type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: Maybe<CreateCollaboraDocumentData>;
   link?: Maybe<CreateLinkData>;
   memo?: Maybe<CreateMemoData>;
   /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
@@ -1839,6 +1885,8 @@ export type CreateCalloutFramingData = {
 };
 
 export type CreateCalloutFramingInput = {
+  /** Collabora document input. Required when type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
@@ -1950,6 +1998,21 @@ export type CreateClassificationInput = {
   tagsets: Array<CreateTagsetInput>;
 };
 
+export type CreateCollaboraDocumentData = {
+  __typename?: 'CreateCollaboraDocumentData';
+  /** Title for the new collaborative document. */
+  displayName: Scalars['String']['output'];
+  /** Type of document to create. */
+  documentType: CollaboraDocumentType;
+};
+
+export type CreateCollaboraDocumentInput = {
+  /** Title for the new collaborative document. */
+  displayName: Scalars['String']['input'];
+  /** Type of document to create. */
+  documentType: CollaboraDocumentType;
+};
+
 export type CreateCollaborationData = {
   __typename?: 'CreateCollaborationData';
   /** The CalloutsSet to use for this Collaboration. */
@@ -1987,6 +2050,7 @@ export type CreateCommunityGuidelinesInput = {
 
 export type CreateContributionOnCalloutInput = {
   calloutID: Scalars['UUID']['input'];
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   post?: InputMaybe<CreatePostInput>;
@@ -2584,6 +2648,11 @@ export type DeleteCalloutInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DeleteCollaboraDocumentInput = {
+  /** The ID of the CollaboraDocument to delete. */
+  ID: Scalars['UUID']['input'];
+};
+
 export type DeleteContributionInput = {
   ID: Scalars['UUID']['input'];
 };
@@ -2941,6 +3010,15 @@ export enum IdentityVerificationStatusFilter {
   Unverified = 'UNVERIFIED',
   Verified = 'VERIFIED',
 }
+
+export type ImportCollaboraDocumentInput = {
+  /** The ID of the Callout to attach the imported document to as a new contribution. */
+  calloutID: Scalars['UUID']['input'];
+  /** Optional title override. If absent, derived from the uploaded filename (extension stripped). */
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  /** Optional sortOrder for the new contribution. Defaults to one less than the current minimum (new contribution appears first). */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+};
 
 export type InAppNotification = {
   __typename?: 'InAppNotification';
@@ -4563,6 +4641,8 @@ export type Mutation = {
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
+  /** Deletes the specified CollaboraDocument. */
+  deleteCollaboraDocument: CollaboraDocument;
   /** Deletes a contribution. */
   deleteContribution: CalloutContribution;
   /** Deletes a Conversation. All members are notified via CONVERSATION_DELETED event. */
@@ -4623,6 +4703,8 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Import an existing file as a CollaboraDocument contribution on the callout. file-service-go sniffs the MIME from content and rejects formats Collabora cannot edit. */
+  importCollaboraDocument: CalloutContribution;
   /** Invite new Contributors or users by email to join the specified RoleSet in the Entry Role. */
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
@@ -4737,6 +4819,8 @@ export type Mutation = {
   updateCalloutsSortOrder: Array<Callout>;
   /** Updates a Tagset on a Classification. */
   updateClassificationTagset: Tagset;
+  /** Updates the specified CollaboraDocument. */
+  updateCollaboraDocument: CollaboraDocument;
   /** Updates a Collaboration using the Space content from the specified Template. Behavior depends on parameter combinations: (1) Flow Only: deleteExistingCallouts=false, addCallouts=false - updates only InnovationFlow states; (2) Add Posts: deleteExistingCallouts=false, addCallouts=true - keeps existing and adds template callouts; (3) Replace All: deleteExistingCallouts=true, addCallouts=true - deletes existing then adds template callouts; (4) Delete Only: deleteExistingCallouts=true, addCallouts=false - deletes existing callouts and updates InnovationFlow states. Execution order: delete (if requested) → update flow states (always) → add (if requested). */
   updateCollaborationFromSpaceTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
@@ -5085,6 +5169,10 @@ export type MutationDeleteCalloutArgs = {
   deleteData: DeleteCalloutInput;
 };
 
+export type MutationDeleteCollaboraDocumentArgs = {
+  deleteData: DeleteCollaboraDocumentInput;
+};
+
 export type MutationDeleteContributionArgs = {
   deleteData: DeleteContributionInput;
 };
@@ -5205,6 +5293,11 @@ export type MutationGrantCredentialToOrganizationArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
+};
+
+export type MutationImportCollaboraDocumentArgs = {
+  file: Scalars['Upload']['input'];
+  uploadData: ImportCollaboraDocumentInput;
 };
 
 export type MutationInviteForEntryRoleOnRoleSetArgs = {
@@ -5427,6 +5520,10 @@ export type MutationUpdateCalloutsSortOrderArgs = {
 
 export type MutationUpdateClassificationTagsetArgs = {
   updateData: UpdateClassificationSelectTagsetValueInput;
+};
+
+export type MutationUpdateCollaboraDocumentArgs = {
+  updateData: UpdateCollaboraDocumentInput;
 };
 
 export type MutationUpdateCollaborationFromSpaceTemplateArgs = {
@@ -6457,6 +6554,7 @@ export enum ProfileType {
   Account = 'ACCOUNT',
   CalendarEvent = 'CALENDAR_EVENT',
   CalloutFraming = 'CALLOUT_FRAMING',
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
@@ -6637,6 +6735,8 @@ export type Query = {
   adminIdentitiesUnverified: Array<KratosIdentity>;
   /** Alkemio AiServer */
   aiServer: AiServer;
+  /** Retrieves the editor URL for the specified CollaboraDocument. */
+  collaboraEditorUrl: CollaboraEditorUrlResult;
   /** Active Spaces only, order by most active in the past X days. */
   exploreSpaces: Array<Space>;
   /** Allow creation of inputs based on existing entities in the domain model */
@@ -6720,6 +6820,10 @@ export type QueryActorArgs = {
 export type QueryActorsWithCredentialArgs = {
   credentialType: CredentialType;
   resourceID?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type QueryCollaboraEditorUrlArgs = {
+  collaboraDocumentID: Scalars['UUID']['input'];
 };
 
 export type QueryExploreSpacesArgs = {
@@ -8431,6 +8535,8 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  /** Collabora document input. Used when switching framing type to COLLABORA_DOCUMENT. */
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<UpdateLinkInput>;
   /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
@@ -8499,6 +8605,13 @@ export type UpdateClassificationSelectTagsetValueInput = {
   classificationID: Scalars['UUID']['input'];
   selectedValue: Scalars['String']['input'];
   tagsetName: Scalars['String']['input'];
+};
+
+export type UpdateCollaboraDocumentInput = {
+  /** The ID of the CollaboraDocument to update. */
+  ID: Scalars['UUID']['input'];
+  /** Updated display name for the document. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCollaborationFromSpaceTemplateInput = {
@@ -13521,6 +13634,14 @@ export type CalloutContentQuery = {
                     | undefined;
                 }
               | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  documentType: CollaboraDocumentType;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13827,6 +13948,14 @@ export type UpdateCalloutContentMutation = {
                   selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
                 }
               | undefined;
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           }
         | undefined;
     };
@@ -14255,6 +14384,14 @@ export type UpdateCalloutVisibilityMutation = {
               | undefined;
           }
         | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -14423,6 +14560,7 @@ export type CalloutContributionQueryVariables = Exact<{
   includeWhiteboard?: Scalars['Boolean']['input'];
   includeMemo?: Scalars['Boolean']['input'];
   includePost?: Scalars['Boolean']['input'];
+  includeCollaboraDocument?: Scalars['Boolean']['input'];
 }>;
 
 export type CalloutContributionQuery = {
@@ -14591,6 +14729,37 @@ export type CalloutContributionQuery = {
                 };
               }
             | undefined;
+          collaboraDocument?:
+            | {
+                __typename?: 'CollaboraDocument';
+                id: string;
+                documentType: CollaboraDocumentType;
+                createdDate: Date;
+                profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+                createdBy?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile?:
+                        | {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            avatar?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: VisualType;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -14655,6 +14824,57 @@ export type UpdateContributionsSortOrderMutationVariables = Exact<{
 export type UpdateContributionsSortOrderMutation = {
   __typename?: 'Mutation';
   updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
+export type CollaboraEditorUrlQueryVariables = Exact<{
+  collaboraDocumentId: Scalars['UUID']['input'];
+}>;
+
+export type CollaboraEditorUrlQuery = {
+  __typename?: 'Query';
+  collaboraEditorUrl: { __typename?: 'CollaboraEditorUrlResult'; editorUrl: string; accessTokenTTL: number };
+};
+
+export type CreateCollaboraDocumentOnCalloutMutationVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  collaboraDocument: CreateCollaboraDocumentInput;
+}>;
+
+export type CreateCollaboraDocumentOnCalloutMutation = {
+  __typename?: 'Mutation';
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type DeleteCollaboraDocumentMutationVariables = Exact<{
+  deleteData: DeleteCollaboraDocumentInput;
+}>;
+
+export type DeleteCollaboraDocumentMutation = {
+  __typename?: 'Mutation';
+  deleteCollaboraDocument: { __typename?: 'CollaboraDocument'; id: string };
+};
+
+export type UpdateCollaboraDocumentMutationVariables = Exact<{
+  updateData: UpdateCollaboraDocumentInput;
+}>;
+
+export type UpdateCollaboraDocumentMutation = {
+  __typename?: 'Mutation';
+  updateCollaboraDocument: {
+    __typename?: 'CollaboraDocument';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type CalloutContributionCommentsQueryVariables = Exact<{
@@ -14968,6 +15188,7 @@ export type CalloutContributionsQueryVariables = Exact<{
   includeWhiteboard?: Scalars['Boolean']['input'];
   includeMemo?: Scalars['Boolean']['input'];
   includePost?: Scalars['Boolean']['input'];
+  includeCollaboraDocument?: Scalars['Boolean']['input'];
   filter?: InputMaybe<Array<CalloutContributionType> | CalloutContributionType>;
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
@@ -15140,6 +15361,44 @@ export type CalloutContributionsQuery = {
                   comments: { __typename?: 'Room'; id: string; messagesCount: number };
                 }
               | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  documentType: CollaboraDocumentType;
+                  createdDate: Date;
+                  profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile?:
+                          | {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              avatar?:
+                                | {
+                                    __typename?: 'Visual';
+                                    id: string;
+                                    uri: string;
+                                    name: VisualType;
+                                    alternativeText?: string | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }>;
           contributionsCount: {
             __typename?: 'CalloutContributionsCountOutput';
@@ -15298,6 +15557,39 @@ export type CalloutContributionsPostCardFragment = {
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   comments: { __typename?: 'Room'; id: string; messagesCount: number };
+};
+
+export type CalloutContributionsCollaboraDocumentCardFragment = {
+  __typename?: 'CollaboraDocument';
+  id: string;
+  documentType: CollaboraDocumentType;
+  createdDate: Date;
+  profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type ContributionAuthorFragment = {
@@ -15793,6 +16085,14 @@ export type CreateCalloutMutation = {
                   selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
                 }
               | undefined;
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           }
         | undefined;
     };
@@ -16347,6 +16647,14 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  documentType: CollaboraDocumentType;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -16816,6 +17124,14 @@ export type CalloutDetailsFragment = {
                 selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
               }
             | undefined;
+        }
+      | undefined;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         }
       | undefined;
   };
@@ -25042,30 +25358,6 @@ export type SpaceMoveSourceSubspacesQuery = {
     __typename?: 'LookupQueryResults';
     space?: { __typename?: 'Space'; id: string; subspaces: Array<{ __typename?: 'Space'; id: string }> } | undefined;
   };
-};
-
-export type MoveSpaceL1ToSpaceL0MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-  targetSpaceL0ID: Scalars['UUID']['input'];
-  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
-  invitationMessage?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type MoveSpaceL1ToSpaceL0Mutation = {
-  __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
-};
-
-export type MoveSpaceL1ToSpaceL2MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-  targetSpaceL1ID: Scalars['UUID']['input'];
-  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
-  invitationMessage?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type MoveSpaceL1ToSpaceL2Mutation = {
-  __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
 };
 
 export type CalloutUrlResolveQueryVariables = Exact<{

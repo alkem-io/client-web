@@ -727,6 +727,7 @@ export type CalloutFieldPolicy = {
 };
 export type CalloutContributionKeySpecifier = (
   | 'authorization'
+  | 'collaboraDocument'
   | 'createdBy'
   | 'createdDate'
   | 'id'
@@ -740,6 +741,7 @@ export type CalloutContributionKeySpecifier = (
 )[];
 export type CalloutContributionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -768,6 +770,7 @@ export type CalloutContributionDefaultsFieldPolicy = {
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'post'
@@ -775,6 +778,7 @@ export type CalloutContributionsCountOutputKeySpecifier = (
   | CalloutContributionsCountOutputKeySpecifier
 )[];
 export type CalloutContributionsCountOutputFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -782,6 +786,7 @@ export type CalloutContributionsCountOutputFieldPolicy = {
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
+  | 'collaboraDocument'
   | 'createdDate'
   | 'id'
   | 'link'
@@ -796,6 +801,7 @@ export type CalloutFramingKeySpecifier = (
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -880,6 +886,34 @@ export type ClassificationFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaboraDocumentKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'documentType'
+  | 'id'
+  | 'profile'
+  | 'updatedDate'
+  | CollaboraDocumentKeySpecifier
+)[];
+export type CollaboraDocumentFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaboraEditorUrlResultKeySpecifier = (
+  | 'accessTokenTTL'
+  | 'editorUrl'
+  | CollaboraEditorUrlResultKeySpecifier
+)[];
+export type CollaboraEditorUrlResultFieldPolicy = {
+  accessTokenTTL?: FieldPolicy<any> | FieldReadFunction<any>;
+  editorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CollaborationKeySpecifier = (
   | 'authorization'
@@ -1221,6 +1255,7 @@ export type ConversationUpdatedEventFieldPolicy = {
   conversation?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'post'
@@ -1230,6 +1265,7 @@ export type CreateCalloutContributionDataKeySpecifier = (
   | CreateCalloutContributionDataKeySpecifier
 )[];
 export type CreateCalloutContributionDataFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1270,6 +1306,7 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'poll'
@@ -1280,6 +1317,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1326,6 +1364,15 @@ export type CreateCalloutsSetDataFieldPolicy = {
 export type CreateClassificationDataKeySpecifier = ('tagsets' | CreateClassificationDataKeySpecifier)[];
 export type CreateClassificationDataFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCollaboraDocumentDataKeySpecifier = (
+  | 'displayName'
+  | 'documentType'
+  | CreateCollaboraDocumentDataKeySpecifier
+)[];
+export type CreateCollaboraDocumentDataFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCollaborationDataKeySpecifier = (
   | 'calloutsSetData'
@@ -2715,6 +2762,7 @@ export type MutationKeySpecifier = (
   | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteCollaboraDocument'
   | 'deleteContribution'
   | 'deleteConversation'
   | 'deleteDiscussion'
@@ -2745,6 +2793,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToActor'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
+  | 'importCollaboraDocument'
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'leaveConversation'
@@ -2802,6 +2851,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
   | 'updateClassificationTagset'
+  | 'updateCollaboraDocument'
   | 'updateCollaborationFromSpaceTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
@@ -2927,6 +2977,7 @@ export type MutationFieldPolicy = {
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2957,6 +3008,7 @@ export type MutationFieldPolicy = {
   grantCredentialToActor?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  importCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   leaveConversation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3014,6 +3066,7 @@ export type MutationFieldPolicy = {
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateClassificationTagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaborationFromSpaceTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3769,6 +3822,7 @@ export type QueryKeySpecifier = (
   | 'actorsWithCredential'
   | 'adminIdentitiesUnverified'
   | 'aiServer'
+  | 'collaboraEditorUrl'
   | 'exploreSpaces'
   | 'inputCreator'
   | 'lookup'
@@ -3808,6 +3862,7 @@ export type QueryFieldPolicy = {
   actorsWithCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraEditorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5686,6 +5741,14 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ClassificationKeySpecifier | (() => undefined | ClassificationKeySpecifier);
     fields?: ClassificationFieldPolicy;
   };
+  CollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CollaboraDocumentKeySpecifier | (() => undefined | CollaboraDocumentKeySpecifier);
+    fields?: CollaboraDocumentFieldPolicy;
+  };
+  CollaboraEditorUrlResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CollaboraEditorUrlResultKeySpecifier | (() => undefined | CollaboraEditorUrlResultKeySpecifier);
+    fields?: CollaboraEditorUrlResultFieldPolicy;
+  };
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
     fields?: CollaborationFieldPolicy;
@@ -5884,6 +5947,13 @@ export type StrictTypedTypePolicies = {
   CreateClassificationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateClassificationDataKeySpecifier | (() => undefined | CreateClassificationDataKeySpecifier);
     fields?: CreateClassificationDataFieldPolicy;
+  };
+  CreateCollaboraDocumentData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCollaboraDocumentDataKeySpecifier
+      | (() => undefined | CreateCollaboraDocumentDataKeySpecifier);
+    fields?: CreateCollaboraDocumentDataFieldPolicy;
   };
   CreateCollaborationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCollaborationDataKeySpecifier | (() => undefined | CreateCollaborationDataKeySpecifier);

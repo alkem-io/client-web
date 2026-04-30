@@ -1,0 +1,17 @@
+mutation CreateCollaboraDocumentOnCallout($calloutId: UUID!, $collaboraDocument: CreateCollaboraDocumentInput!) {
+  createContributionOnCallout(contributionData: {
+    calloutID: $calloutId,
+    type: COLLABORA_DOCUMENT,
+    collaboraDocument: $collaboraDocument
+  }) {
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}

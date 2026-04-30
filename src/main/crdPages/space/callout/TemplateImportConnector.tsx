@@ -34,6 +34,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, CalloutFormValues['framin
   [CalloutFramingType.None]: 'none',
   [CalloutFramingType.Whiteboard]: 'whiteboard',
   [CalloutFramingType.Memo]: 'memo',
+  [CalloutFramingType.CollaboraDocument]: 'document',
   [CalloutFramingType.Link]: 'cta',
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
@@ -44,6 +45,7 @@ const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, CalloutForm
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Memo]: 'memo',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
+  [CalloutContributionType.CollaboraDocument]: 'document',
 };
 
 const findDefaultTagset = (tagsets: TemplateCallout['framing']['profile']['tagsets']): string => {

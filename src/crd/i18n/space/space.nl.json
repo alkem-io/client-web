@@ -152,6 +152,15 @@
     "collapse": "Minder tonen",
     "openWhiteboard": "Whiteboard openen",
     "openMemo": "Memo openen",
+    "openDocument": "Document openen",
+    "document": "Document",
+    "documentText": "Tekstdocument",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentatie",
+    "addDocument": "Document toevoegen",
+    "defaultDocumentName": "Nieuw document",
+    "documentTypeLabel": "Documenttype",
+    "createNew": "Nieuw maken",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
     "expandComments": "Reacties uitvouwen",
@@ -165,7 +174,6 @@
     "callToAction": "Oproep tot actie",
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
-    "document": "Document",
     "moreWhiteboards": "+{{count}} meer",
     "moreContributions": "+{{count}} meer",
     "vote": "Stemmen",
@@ -223,7 +231,8 @@
     "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
     "openMemo": "Memo openen",
     "openWhiteboard": "Whiteboard openen",
-    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt."
+    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt.",
+    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
   },
   "members": {
     "title": "Community",
@@ -553,6 +562,36 @@
     "linkAriaLabelExternal": "{{displayName}} (opent {{url}} in een nieuw tabblad)",
     "validation": {
       "invalidUrl": "Ongeldige URL"
+    }
+  },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Collabora-fout: {{message}}",
+        "sessionClosed": "De samenwerkingssessie is gesloten."
+      }
+    },
+    "footer": {
+      "connected": "Verbonden",
+      "connecting": "Verbinden…",
+      "disconnected": "Verbinding verbroken",
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "unsaved": "Niet-opgeslagen wijzigingen",
+      "error": "Fout bij opslaan",
+      "membersOnline_one": "1 lid online",
+      "membersOnline_other": "{{count}} leden online",
+      "connectedUsersLabel": "Verbonden gebruikers",
+      "moreConnectedUsers_one": "{{count}} andere verbonden gebruiker",
+      "moreConnectedUsers_other": "{{count}} andere verbonden gebruikers",
+      "guestWarning": "Je bewerkt als gast",
+      "delete": "Document verwijderen",
+      "readonlyReason": {
+        "connecting": "Verbinden met de samenwerkingsdienst…",
+        "unauthenticated": "Meld je aan om dit document te bewerken.",
+        "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
+        "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      }
     }
   },
   "mediaGallery": {
