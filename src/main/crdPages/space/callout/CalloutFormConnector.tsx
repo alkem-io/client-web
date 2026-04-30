@@ -22,13 +22,13 @@ import {
   useCreateReferenceOnProfileMutation,
   useUpdateCalloutContentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
-import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
@@ -41,6 +41,7 @@ import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCallou
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import { useSpace } from '@/domain/space/context/useSpace';
 import {
   diffPollOptions,
   isAddedSentinel,
@@ -101,6 +102,19 @@ export function CalloutFormConnector({
 
   useBeforeUnloadGuard(open && dirty);
 
+  // Collabora "Document" framing is gated by the SPACE_FLAG_OFFICE_DOCUMENTS
+  // entitlement on the parent space (level-zero). SpaceContextProvider runs the
+  // entitlements query at that level and exposes both the result and a loading
+  // flag. While loading, leave the chip enabled so the user doesn't see a
+  // disabled flash on first paint; once the query resolves, the entitlement
+  // is the final authority.
+  const { entitlements, loading: spaceContextLoading } = useSpace();
+  const officeDocumentsEnabled =
+    spaceContextLoading || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
+  const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
+    ? undefined
+    : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
+
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
@@ -153,6 +167,7 @@ export function CalloutFormConnector({
     const { input, whiteboardPreviewImages } = mapFormToCalloutCreationInput(values, {
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
+      collaboraFallbackDisplayName: t('callout.defaultDocumentName'),
     });
 
     // Flow-state classification: tag the new callout with the active phase so it
@@ -407,6 +422,7 @@ export function CalloutFormConnector({
               value={values.framingChip}
               onChange={chip => setField('framingChip', chip)}
               locked={mode === 'edit'}
+              disabledChips={disabledChips}
             />
             <FramingEditorConnector
               mode={mode}
@@ -447,6 +463,8 @@ export function CalloutFormConnector({
               onMemoMarkdownChange={v => setField('memoMarkdown', v)}
               mediaGalleryVisuals={values.mediaGalleryVisuals}
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
+              collaboraDocumentType={values.collaboraDocumentType}
+              onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
             />
           </div>
         }

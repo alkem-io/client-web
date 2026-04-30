@@ -54,6 +54,15 @@ query CalloutContent($calloutId: UUID!) {
         poll {
           ...PollDetails
         }
+        collaboraDocument {
+          id
+          documentType
+          profile {
+            id
+            displayName
+            url
+          }
+        }
       }
       contributionDefaults {
         id

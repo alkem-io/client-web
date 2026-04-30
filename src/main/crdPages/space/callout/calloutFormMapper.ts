@@ -28,7 +28,7 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   none: CalloutFramingType.None,
   whiteboard: CalloutFramingType.Whiteboard,
   memo: CalloutFramingType.Memo,
-  document: CalloutFramingType.None, // disabled chip — never reaches submit
+  document: CalloutFramingType.CollaboraDocument,
   cta: CalloutFramingType.Link,
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
@@ -92,6 +92,8 @@ export type MapFormOptions = {
   visibility: CalloutVisibility;
   /** i18n-resolved fallback used when the framing has no title. */
   whiteboardFallbackDisplayName: string;
+  /** i18n-resolved fallback used when a Collabora document framing has no title. */
+  collaboraFallbackDisplayName?: string;
 };
 
 /**
@@ -249,6 +251,18 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     callout.framing.link = {
       uri: values.linkUrl.trim(),
       profile: { displayName: values.linkDisplayName.trim() || values.linkUrl.trim() },
+    };
+  }
+
+  // Collabora document framing — the server provisions the underlying document
+  // (text/spreadsheet/presentation) at creation time, so both `displayName` and
+  // `documentType` must travel inline. There is no edit-time counterpart: the
+  // document body is edited through the Collabora overlay against the
+  // already-created document.
+  if (framingType === CalloutFramingType.CollaboraDocument) {
+    callout.framing.collaboraDocument = {
+      displayName: values.title.trim() || options.collaboraFallbackDisplayName || 'New Document',
+      documentType: values.collaboraDocumentType,
     };
   }
 

@@ -1,5 +1,6 @@
 import {
   CalloutFramingType,
+  type CollaboraDocumentType,
   type CreateCalloutMutation,
   type CreateReferenceInput,
   type CreateTagsetInput,
@@ -29,6 +30,10 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     memo?: MemoFieldSubmittedValues;
     link?: LinkFramingFieldSubmittedValues;
     poll?: PollFormFieldSubmittedValues;
+    collaboraDocument?: {
+      displayName: string;
+      documentType: CollaboraDocumentType;
+    };
     tags?: string[];
   };
 }

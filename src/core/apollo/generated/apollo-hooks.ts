@@ -655,6 +655,25 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
 }
     ${TagsetDetailsFragmentDoc}
 ${ContributionAuthorFragmentDoc}`;
+export const CalloutContributionsCollaboraDocumentCardFragmentDoc = gql`
+    fragment CalloutContributionsCollaboraDocumentCard on CollaboraDocument {
+  id
+  documentType
+  profile {
+    id
+    url
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  createdDate
+  createdBy {
+    ...ContributionAuthor
+  }
+}
+    ${ContributionAuthorFragmentDoc}`;
 export const CalloutFragmentDoc = gql`
     fragment Callout on Callout {
   id
@@ -1047,6 +1066,15 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     poll {
       ...PollDetails
+    }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+        url
+      }
     }
   }
   contributionDefaults {
@@ -7636,6 +7664,15 @@ export const CalloutContentDocument = gql`
         poll {
           ...PollDetails
         }
+        collaboraDocument {
+          id
+          documentType
+          profile {
+            id
+            displayName
+            url
+          }
+        }
       }
       contributionDefaults {
         id
@@ -7855,7 +7892,7 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutationVariables
 >;
 export const CalloutContributionDocument = gql`
-    query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false) {
+    query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false, $includeCollaboraDocument: Boolean! = false) {
   lookup {
     contribution(ID: $contributionId) {
       id
@@ -7925,6 +7962,19 @@ export const CalloutContributionDocument = gql`
           }
         }
       }
+      collaboraDocument @include(if: $includeCollaboraDocument) {
+        id
+        documentType
+        profile {
+          id
+          url
+          displayName
+        }
+        createdDate
+        createdBy {
+          ...ContributionAuthor
+        }
+      }
     }
   }
 }
@@ -7950,6 +8000,7 @@ ${TagsetDetailsFragmentDoc}`;
  *      includeWhiteboard: // value for 'includeWhiteboard'
  *      includeMemo: // value for 'includeMemo'
  *      includePost: // value for 'includePost'
+ *      includeCollaboraDocument: // value for 'includeCollaboraDocument'
  *   },
  * });
  */
@@ -8170,6 +8221,236 @@ export type UpdateContributionsSortOrderMutationResult =
 export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateContributionsSortOrderMutation,
   SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+export const CollaboraEditorUrlDocument = gql`
+    query CollaboraEditorUrl($collaboraDocumentId: UUID!) {
+  collaboraEditorUrl(collaboraDocumentID: $collaboraDocumentId) {
+    editorUrl
+    accessTokenTTL
+  }
+}
+    `;
+
+/**
+ * __useCollaboraEditorUrlQuery__
+ *
+ * To run a query within a React component, call `useCollaboraEditorUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaboraEditorUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaboraEditorUrlQuery({
+ *   variables: {
+ *      collaboraDocumentId: // value for 'collaboraDocumentId'
+ *   },
+ * });
+ */
+export function useCollaboraEditorUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaboraEditorUrlQuery,
+    SchemaTypes.CollaboraEditorUrlQueryVariables
+  > &
+    ({ variables: SchemaTypes.CollaboraEditorUrlQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CollaboraEditorUrlQuery, SchemaTypes.CollaboraEditorUrlQueryVariables>(
+    CollaboraEditorUrlDocument,
+    options
+  );
+}
+export function useCollaboraEditorUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaboraEditorUrlQuery,
+    SchemaTypes.CollaboraEditorUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CollaboraEditorUrlQuery, SchemaTypes.CollaboraEditorUrlQueryVariables>(
+    CollaboraEditorUrlDocument,
+    options
+  );
+}
+export function useCollaboraEditorUrlSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CollaboraEditorUrlQuery, SchemaTypes.CollaboraEditorUrlQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CollaboraEditorUrlQuery, SchemaTypes.CollaboraEditorUrlQueryVariables>(
+    CollaboraEditorUrlDocument,
+    options
+  );
+}
+export type CollaboraEditorUrlQueryHookResult = ReturnType<typeof useCollaboraEditorUrlQuery>;
+export type CollaboraEditorUrlLazyQueryHookResult = ReturnType<typeof useCollaboraEditorUrlLazyQuery>;
+export type CollaboraEditorUrlSuspenseQueryHookResult = ReturnType<typeof useCollaboraEditorUrlSuspenseQuery>;
+export type CollaboraEditorUrlQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaboraEditorUrlQuery,
+  SchemaTypes.CollaboraEditorUrlQueryVariables
+>;
+export function refetchCollaboraEditorUrlQuery(variables: SchemaTypes.CollaboraEditorUrlQueryVariables) {
+  return { query: CollaboraEditorUrlDocument, variables: variables };
+}
+export const CreateCollaboraDocumentOnCalloutDocument = gql`
+    mutation CreateCollaboraDocumentOnCallout($calloutId: UUID!, $collaboraDocument: CreateCollaboraDocumentInput!) {
+  createContributionOnCallout(
+    contributionData: {calloutID: $calloutId, type: COLLABORA_DOCUMENT, collaboraDocument: $collaboraDocument}
+  ) {
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+    `;
+export type CreateCollaboraDocumentOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCollaboraDocumentOnCalloutMutation,
+  SchemaTypes.CreateCollaboraDocumentOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateCollaboraDocumentOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateCollaboraDocumentOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollaboraDocumentOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollaboraDocumentOnCalloutMutation, { data, loading, error }] = useCreateCollaboraDocumentOnCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      collaboraDocument: // value for 'collaboraDocument'
+ *   },
+ * });
+ */
+export function useCreateCollaboraDocumentOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCollaboraDocumentOnCalloutMutation,
+    SchemaTypes.CreateCollaboraDocumentOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateCollaboraDocumentOnCalloutMutation,
+    SchemaTypes.CreateCollaboraDocumentOnCalloutMutationVariables
+  >(CreateCollaboraDocumentOnCalloutDocument, options);
+}
+export type CreateCollaboraDocumentOnCalloutMutationHookResult = ReturnType<
+  typeof useCreateCollaboraDocumentOnCalloutMutation
+>;
+export type CreateCollaboraDocumentOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateCollaboraDocumentOnCalloutMutation>;
+export type CreateCollaboraDocumentOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCollaboraDocumentOnCalloutMutation,
+  SchemaTypes.CreateCollaboraDocumentOnCalloutMutationVariables
+>;
+export const DeleteCollaboraDocumentDocument = gql`
+    mutation DeleteCollaboraDocument($deleteData: DeleteCollaboraDocumentInput!) {
+  deleteCollaboraDocument(deleteData: $deleteData) {
+    id
+  }
+}
+    `;
+export type DeleteCollaboraDocumentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCollaboraDocumentMutation,
+  SchemaTypes.DeleteCollaboraDocumentMutationVariables
+>;
+
+/**
+ * __useDeleteCollaboraDocumentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCollaboraDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCollaboraDocumentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCollaboraDocumentMutation, { data, loading, error }] = useDeleteCollaboraDocumentMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteCollaboraDocumentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCollaboraDocumentMutation,
+    SchemaTypes.DeleteCollaboraDocumentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCollaboraDocumentMutation,
+    SchemaTypes.DeleteCollaboraDocumentMutationVariables
+  >(DeleteCollaboraDocumentDocument, options);
+}
+export type DeleteCollaboraDocumentMutationHookResult = ReturnType<typeof useDeleteCollaboraDocumentMutation>;
+export type DeleteCollaboraDocumentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCollaboraDocumentMutation>;
+export type DeleteCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCollaboraDocumentMutation,
+  SchemaTypes.DeleteCollaboraDocumentMutationVariables
+>;
+export const UpdateCollaboraDocumentDocument = gql`
+    mutation UpdateCollaboraDocument($updateData: UpdateCollaboraDocumentInput!) {
+  updateCollaboraDocument(updateData: $updateData) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+    `;
+export type UpdateCollaboraDocumentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCollaboraDocumentMutation,
+  SchemaTypes.UpdateCollaboraDocumentMutationVariables
+>;
+
+/**
+ * __useUpdateCollaboraDocumentMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollaboraDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollaboraDocumentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollaboraDocumentMutation, { data, loading, error }] = useUpdateCollaboraDocumentMutation({
+ *   variables: {
+ *      updateData: // value for 'updateData'
+ *   },
+ * });
+ */
+export function useUpdateCollaboraDocumentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCollaboraDocumentMutation,
+    SchemaTypes.UpdateCollaboraDocumentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCollaboraDocumentMutation,
+    SchemaTypes.UpdateCollaboraDocumentMutationVariables
+  >(UpdateCollaboraDocumentDocument, options);
+}
+export type UpdateCollaboraDocumentMutationHookResult = ReturnType<typeof useUpdateCollaboraDocumentMutation>;
+export type UpdateCollaboraDocumentMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCollaboraDocumentMutation>;
+export type UpdateCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCollaboraDocumentMutation,
+  SchemaTypes.UpdateCollaboraDocumentMutationVariables
 >;
 export const CalloutContributionCommentsDocument = gql`
     query CalloutContributionComments($contributionId: UUID!, $includePost: Boolean = false) {
@@ -8600,7 +8881,7 @@ export type CreatePostOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreatePostOnCalloutMutationVariables
 >;
 export const CalloutContributionsDocument = gql`
-    query CalloutContributions($calloutId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false, $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST], $limit: Int) {
+    query CalloutContributions($calloutId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false, $includeCollaboraDocument: Boolean! = false, $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST, COLLABORA_DOCUMENT], $limit: Int) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -8619,6 +8900,9 @@ export const CalloutContributionsDocument = gql`
         post @include(if: $includePost) {
           ...CalloutContributionsPostCard
         }
+        collaboraDocument @include(if: $includeCollaboraDocument) {
+          ...CalloutContributionsCollaboraDocumentCard
+        }
       }
       contributionsCount {
         link @include(if: $includeLink)
@@ -8632,7 +8916,8 @@ export const CalloutContributionsDocument = gql`
     ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CalloutContributionsWhiteboardCardFragmentDoc}
 ${CalloutContributionsMemoCardFragmentDoc}
-${CalloutContributionsPostCardFragmentDoc}`;
+${CalloutContributionsPostCardFragmentDoc}
+${CalloutContributionsCollaboraDocumentCardFragmentDoc}`;
 
 /**
  * __useCalloutContributionsQuery__
@@ -8651,6 +8936,7 @@ ${CalloutContributionsPostCardFragmentDoc}`;
  *      includeWhiteboard: // value for 'includeWhiteboard'
  *      includeMemo: // value for 'includeMemo'
  *      includePost: // value for 'includePost'
+ *      includeCollaboraDocument: // value for 'includeCollaboraDocument'
  *      filter: // value for 'filter'
  *      limit: // value for 'limit'
  *   },
@@ -20391,110 +20677,6 @@ export type SpaceMoveSourceSubspacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceMoveSourceSubspacesQuery(variables: SchemaTypes.SpaceMoveSourceSubspacesQueryVariables) {
   return { query: SpaceMoveSourceSubspacesDocument, variables: variables };
 }
-export const MoveSpaceL1ToSpaceL0Document = gql`
-    mutation MoveSpaceL1ToSpaceL0($spaceL1ID: UUID!, $targetSpaceL0ID: UUID!, $autoInvite: Boolean, $invitationMessage: String) {
-  moveSpaceL1ToSpaceL0(
-    moveData: {spaceL1ID: $spaceL1ID, targetSpaceL0ID: $targetSpaceL0ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
-  ) {
-    id
-  }
-}
-    `;
-export type MoveSpaceL1ToSpaceL0MutationFn = Apollo.MutationFunction<
-  SchemaTypes.MoveSpaceL1ToSpaceL0Mutation,
-  SchemaTypes.MoveSpaceL1ToSpaceL0MutationVariables
->;
-
-/**
- * __useMoveSpaceL1ToSpaceL0Mutation__
- *
- * To run a mutation, you first call `useMoveSpaceL1ToSpaceL0Mutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMoveSpaceL1ToSpaceL0Mutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [moveSpaceL1ToSpaceL0Mutation, { data, loading, error }] = useMoveSpaceL1ToSpaceL0Mutation({
- *   variables: {
- *      spaceL1ID: // value for 'spaceL1ID'
- *      targetSpaceL0ID: // value for 'targetSpaceL0ID'
- *      autoInvite: // value for 'autoInvite'
- *      invitationMessage: // value for 'invitationMessage'
- *   },
- * });
- */
-export function useMoveSpaceL1ToSpaceL0Mutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MoveSpaceL1ToSpaceL0Mutation,
-    SchemaTypes.MoveSpaceL1ToSpaceL0MutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.MoveSpaceL1ToSpaceL0Mutation,
-    SchemaTypes.MoveSpaceL1ToSpaceL0MutationVariables
-  >(MoveSpaceL1ToSpaceL0Document, options);
-}
-export type MoveSpaceL1ToSpaceL0MutationHookResult = ReturnType<typeof useMoveSpaceL1ToSpaceL0Mutation>;
-export type MoveSpaceL1ToSpaceL0MutationResult = Apollo.MutationResult<SchemaTypes.MoveSpaceL1ToSpaceL0Mutation>;
-export type MoveSpaceL1ToSpaceL0MutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MoveSpaceL1ToSpaceL0Mutation,
-  SchemaTypes.MoveSpaceL1ToSpaceL0MutationVariables
->;
-export const MoveSpaceL1ToSpaceL2Document = gql`
-    mutation MoveSpaceL1ToSpaceL2($spaceL1ID: UUID!, $targetSpaceL1ID: UUID!, $autoInvite: Boolean, $invitationMessage: String) {
-  moveSpaceL1ToSpaceL2(
-    moveData: {spaceL1ID: $spaceL1ID, targetSpaceL1ID: $targetSpaceL1ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
-  ) {
-    id
-  }
-}
-    `;
-export type MoveSpaceL1ToSpaceL2MutationFn = Apollo.MutationFunction<
-  SchemaTypes.MoveSpaceL1ToSpaceL2Mutation,
-  SchemaTypes.MoveSpaceL1ToSpaceL2MutationVariables
->;
-
-/**
- * __useMoveSpaceL1ToSpaceL2Mutation__
- *
- * To run a mutation, you first call `useMoveSpaceL1ToSpaceL2Mutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMoveSpaceL1ToSpaceL2Mutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [moveSpaceL1ToSpaceL2Mutation, { data, loading, error }] = useMoveSpaceL1ToSpaceL2Mutation({
- *   variables: {
- *      spaceL1ID: // value for 'spaceL1ID'
- *      targetSpaceL1ID: // value for 'targetSpaceL1ID'
- *      autoInvite: // value for 'autoInvite'
- *      invitationMessage: // value for 'invitationMessage'
- *   },
- * });
- */
-export function useMoveSpaceL1ToSpaceL2Mutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.MoveSpaceL1ToSpaceL2Mutation,
-    SchemaTypes.MoveSpaceL1ToSpaceL2MutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.MoveSpaceL1ToSpaceL2Mutation,
-    SchemaTypes.MoveSpaceL1ToSpaceL2MutationVariables
-  >(MoveSpaceL1ToSpaceL2Document, options);
-}
-export type MoveSpaceL1ToSpaceL2MutationHookResult = ReturnType<typeof useMoveSpaceL1ToSpaceL2Mutation>;
-export type MoveSpaceL1ToSpaceL2MutationResult = Apollo.MutationResult<SchemaTypes.MoveSpaceL1ToSpaceL2Mutation>;
-export type MoveSpaceL1ToSpaceL2MutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.MoveSpaceL1ToSpaceL2Mutation,
-  SchemaTypes.MoveSpaceL1ToSpaceL2MutationVariables
->;
 export const CalloutUrlResolveDocument = gql`
     query CalloutUrlResolve($url: String!) {
   urlResolver(url: $url) {

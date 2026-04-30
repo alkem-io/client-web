@@ -2,6 +2,7 @@ import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
@@ -47,6 +48,8 @@ export type CalloutFormValues = {
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
   whiteboardConfigured: boolean;
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
+  // Collabora document framing — only submitted when framingType is CollaboraDocument
+  collaboraDocumentType: CollaboraDocumentType;
   // Zone 2 — responses
   responseType: ResponseType;
   allowedActors: AllowedActors;
@@ -96,6 +99,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
+  collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   responseType: 'none',
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,

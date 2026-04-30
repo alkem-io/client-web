@@ -1,13 +1,19 @@
+import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import BlockIcon from '@mui/icons-material/Block';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import SlideshowOutlined from '@mui/icons-material/SlideshowOutlined';
+import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
 import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutFramingType,
+  CollaboraDocumentType,
+  LicenseEntitlementType,
   PollResultsDetail,
   PollResultsVisibility,
   type PollStatus,
@@ -26,6 +32,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import PollFormFields from '../../poll/PollFormFields';
@@ -57,6 +64,14 @@ const CalloutFormFramingSettings = ({
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
+
+  // Collabora "Document" framing is gated by SPACE_FLAG_OFFICE_DOCUMENTS on the
+  // parent space's license. While the SpaceContext is loading (or this form
+  // renders outside a SpaceContextProvider — e.g. template gallery — where
+  // `loading` stays true), keep the option enabled so we don't false-disable it.
+  const { entitlements, loading: spaceContextLoading } = useSpace();
+  const officeDocumentsEnabled =
+    spaceContextLoading || template || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
     let newFraming: CalloutFormSubmittedValues['framing'] | undefined;
@@ -141,6 +156,21 @@ const CalloutFormFramingSettings = ({
           mediaGallery: undefined,
         };
         break;
+      case CalloutFramingType.CollaboraDocument:
+        newFraming = {
+          ...framing,
+          type: newType,
+          collaboraDocument: {
+            displayName: framing.profile.displayName || t('common.collaboraDocument'),
+            documentType: CollaboraDocumentType.Wordprocessing,
+          },
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
+          mediaGallery: undefined,
+          poll: undefined,
+        };
+        break;
       default:
         newFraming = {
           ...framing,
@@ -210,6 +240,15 @@ const CalloutFormFramingSettings = ({
           label: t('callout.create.framingSettings.poll.title'),
           tooltip: t('callout.create.framingSettings.poll.tooltip'),
           disabled: calloutRestrictions?.disablePolls,
+        },
+        {
+          icon: DescriptionOutlined,
+          value: CalloutFramingType.CollaboraDocument,
+          label: t('callout.create.framingSettings.collaboraDocument.title'),
+          tooltip: officeDocumentsEnabled
+            ? t('callout.create.framingSettings.collaboraDocument.tooltip')
+            : t('callout.create.framingSettings.collaboraDocument.notEnabledTooltip'),
+          disabled: !officeDocumentsEnabled,
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -299,6 +338,36 @@ const CalloutFormFramingSettings = ({
       {framing.poll && framing.type === CalloutFramingType.Poll && (
         <PageContentBlock sx={{ marginBottom: gutters() }}>
           <PollFormFields readOnlySettings={edit} pollId={pollId} pollStatus={pollStatus} />
+        </PageContentBlock>
+      )}
+
+      {framing.type === CalloutFramingType.CollaboraDocument && (
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('collaboraDocument.create.documentType.label')} />
+          {/* Document type is fixed at creation time — Collabora has no server-side
+              conversion path between text/spreadsheet/presentation, so editing an
+              existing callout shows the picker read-only. */}
+          <FormikRadioButtonsGroup
+            name="framing.collaboraDocument.documentType"
+            readOnly={edit}
+            options={[
+              {
+                icon: ArticleOutlined,
+                value: CollaboraDocumentType.Wordprocessing,
+                label: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
+              },
+              {
+                icon: TableChartOutlined,
+                value: CollaboraDocumentType.Spreadsheet,
+                label: t('collaboraDocument.create.documentType.SPREADSHEET'),
+              },
+              {
+                icon: SlideshowOutlined,
+                value: CollaboraDocumentType.Presentation,
+                label: t('collaboraDocument.create.documentType.PRESENTATION'),
+              },
+            ]}
+          />
         </PageContentBlock>
       )}
     </>

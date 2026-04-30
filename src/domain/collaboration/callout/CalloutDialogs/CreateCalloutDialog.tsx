@@ -118,6 +118,13 @@ const CreateCalloutDialog = ({
               options: framingData.poll.options.map(o => o.text),
             }
           : undefined,
+        // Use the callout title as the document name
+        collaboraDocument: framingData.collaboraDocument
+          ? {
+              ...framingData.collaboraDocument,
+              displayName: framingData.profile.displayName || framingData.collaboraDocument.displayName,
+            }
+          : undefined,
       };
 
       // And map the radio button allowed contribution types to an array

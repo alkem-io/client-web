@@ -10,15 +10,15 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('FramingChipStrip', () => {
-  test('renders as a radiogroup with 6 chips (document disabled)', () => {
+  test('renders as a radiogroup with 6 chips', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} />);
     const group = screen.getByRole('radiogroup');
     expect(group).toBeInTheDocument();
     const chips = screen.getAllByRole('radio');
     expect(chips).toHaveLength(6);
-    // Document chip is always aria-disabled
+    // Document chip is interactive (Collabora wired in 085-collabora-callout)
     const doc = screen.getByRole('radio', { name: /callout.document/i });
-    expect(doc).toHaveAttribute('aria-disabled', 'true');
+    expect(doc).not.toHaveAttribute('aria-disabled', 'true');
   });
 
   test('clicking an inactive chip selects it', async () => {
@@ -37,12 +37,12 @@ describe('FramingChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('none');
   });
 
-  test('clicking the disabled document chip is a no-op', async () => {
+  test('clicking the document chip selects it (Collabora framing)', async () => {
     const onChange = vi.fn();
     render(<FramingChipStrip value="none" onChange={onChange} />);
     const doc = screen.getByRole('radio', { name: /callout.document/i });
     await userEvent.click(doc);
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith('document');
   });
 
   test('locked mode: clicking a non-active chip is a no-op, clicking active fires onChange("none")', async () => {
@@ -62,5 +62,21 @@ describe('FramingChipStrip', () => {
     expect(whiteboard).toBeInTheDocument();
     const memo = screen.getByRole('radio', { name: /callout.memo/i, checked: false });
     expect(memo).toBeInTheDocument();
+  });
+
+  test('disabledChips marks the listed chip as aria-disabled and ignores clicks', async () => {
+    const onChange = vi.fn();
+    render(
+      <FramingChipStrip
+        value="none"
+        onChange={onChange}
+        disabledChips={{ document: { tooltip: 'Office documents not enabled' } }}
+      />
+    );
+    const doc = screen.getByRole('radio', { name: /callout.document/i });
+    expect(doc).toHaveAttribute('aria-disabled', 'true');
+    expect(doc).toHaveAttribute('title', 'Office documents not enabled');
+    await userEvent.click(doc);
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

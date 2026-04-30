@@ -89,7 +89,7 @@
     }
   },
   "files": {
-    "maxSize": 1500000,
+    "maxSize": 2000000,
     "includes": [
       "**/src/**/*.ts",
       "**/src/**/*.tsx",

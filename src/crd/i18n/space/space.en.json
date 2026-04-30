@@ -182,6 +182,14 @@
     "createMemo": "Create new memo",
     "defaultMemoName": "New Memo",
     "memoNameLabel": "Memo title",
+    "documentText": "Text Document",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentation",
+    "openDocument": "Open Document",
+    "addDocument": "Add document",
+    "defaultDocumentName": "New Document",
+    "documentTypeLabel": "Document type",
+    "createNew": "Create new",
     "addPost": "Add post",
     "createPost": "Create post",
     "editPost": "Edit post",
@@ -223,7 +231,8 @@
     "memoOpenHint": "Memo content is edited in its own dialog.",
     "openMemo": "Open memo",
     "openWhiteboard": "Open whiteboard",
-    "openWhiteboardHint": "Whiteboard content is edited in its own dialog."
+    "openWhiteboardHint": "Whiteboard content is edited in its own dialog.",
+    "officeDocumentsNotEnabled": "Office documents are not enabled for this space."
   },
   "members": {
     "title": "Community",
@@ -536,6 +545,36 @@
       "title": "Delete memo",
       "body": "Are you sure you want to delete this memo? This action cannot be undone.",
       "confirm": "Delete"
+    }
+  },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Collabora error: {{message}}",
+        "sessionClosed": "The collaboration session was closed."
+      }
+    },
+    "footer": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "unsaved": "Unsaved changes",
+      "error": "Error saving",
+      "membersOnline_one": "1 member online",
+      "membersOnline_other": "{{count}} members online",
+      "connectedUsersLabel": "Connected users",
+      "moreConnectedUsers_one": "{{count}} more connected user",
+      "moreConnectedUsers_other": "{{count}} more connected users",
+      "guestWarning": "You are editing as a guest",
+      "delete": "Delete document",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "unauthenticated": "Sign in to edit this document.",
+        "contentUpdatePolicy": "You don't have permission to edit this document. Ask the owner to change the share settings.",
+        "noMembership": "Only members of this space can edit this document. Join the space to contribute."
+      }
     }
   },
   "callToAction": {

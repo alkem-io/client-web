@@ -1,4 +1,4 @@
-query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false) {
+query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false, $includeCollaboraDocument: Boolean! = false) {
   lookup {
     contribution(ID: $contributionId) {
       id
@@ -66,6 +66,19 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
             uri
             description
           }
+        }
+      }
+      collaboraDocument @include(if: $includeCollaboraDocument) {
+        id
+        documentType
+        profile {
+          id
+          url
+          displayName
+        }
+        createdDate
+        createdBy {
+          ...ContributionAuthor
         }
       }
     }

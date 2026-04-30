@@ -5,6 +5,7 @@ import type {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CollaboraDocumentType,
   CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
@@ -31,6 +32,10 @@ export interface CalloutCreationType {
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
+    collaboraDocument?: {
+      displayName: string;
+      documentType: CollaboraDocumentType;
+    };
     tags?: string[];
     link?: LinkFramingFieldSubmittedValues;
     mediaGallery?: {

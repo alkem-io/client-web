@@ -359,6 +359,7 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 085-collabora-callout: Added TypeScript 5.x, React 19, Node >= 22.0.0 + MUI (existing callout components), Apollo Client, react-i18next, lucide-react (for icons if MUI lacks appropriate ones)
 - 094-crd-member-settings-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `alert-dialog`, `checkbox`, `label`, `button`, `avatar`, `dropdown-menu`; `lucide-react` (Trash2, MoreHorizontal, X icons); `react-i18next` (existing); Apollo Client (existing, unchanged — reused via `useCommunityAdmin` and generated mutation hooks); React Compiler (`babel-plugin-react-compiler`)
 - 093-crd-search-scope: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), Apollo Client (existing — unchanged), `react-i18next` (existing), `lucide-react`, `@/crd/primitives/dropdown-menu` (Radix UI)
 - 091-crd-subspace-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
