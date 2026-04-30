@@ -9,7 +9,7 @@ import {
   Trash2, 
   Eye, 
   Edit,
-  Lightbulb,
+  LayoutTemplate,
   FileText,
   Users,
   PenTool
@@ -60,7 +60,7 @@ const SECTIONS: TemplateSection[] = [
     id: 'Space', 
     title: 'Space Templates', 
     description: 'Structure your space with predefined layouts and tools.',
-    icon: Lightbulb
+    icon: LayoutTemplate
   },
   { 
     id: 'Collaboration', 
@@ -171,7 +171,7 @@ function TemplateCard({ template, onAction }: {
 }) {
   return (
     <div className={cn(
-      "group relative flex flex-col border rounded-lg overflow-hidden bg-card hover:shadow-md transition-all duration-300"
+      "group relative flex flex-col border rounded-lg overflow-hidden bg-card hover:shadow-md transition-all duration-200"
     )}>
       {/* Thumbnail */}
       <div className="relative aspect-video bg-muted overflow-hidden">
@@ -352,7 +352,7 @@ export function SpaceSettingsTemplates() {
                        Create a new template
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleAction('select_library', section.id)}>
-                       <Lightbulb className="w-4 h-4 mr-2" />
+                       <LayoutTemplate className="w-4 h-4 mr-2" />
                        Select a template from the platform library
                      </DropdownMenuItem>
                    </DropdownMenuContent>
@@ -370,7 +370,7 @@ export function SpaceSettingsTemplates() {
                        Create a new template
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleAction('select_library', section.id)}>
-                       <Lightbulb className="w-4 h-4 mr-2" />
+                       <LayoutTemplate className="w-4 h-4 mr-2" />
                        Select a template from the platform library
                      </DropdownMenuItem>
                    </DropdownMenuContent>

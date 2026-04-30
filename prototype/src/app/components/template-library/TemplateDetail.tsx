@@ -302,61 +302,56 @@ function RenderSpaceContent({ structure }: { structure: any }) {
 }
 
 function RenderSubspaceContent({ structure }: { structure: any }) {
-  const [activeStage, setActiveStage] = useState(0);
-
   if (!structure) return null;
 
-  const stages = structure.stages || [];
-  const current = stages[activeStage];
-
   return (
-    <div className="space-y-0">
-       {/* Header */}
-       <div className="mb-1">
-          <h3 className="text-lg font-semibold text-foreground">Innovation Flow</h3>
-          <p className="text-muted-foreground text-sm mt-1 max-w-3xl">{structure.description}</p>
+    <div className="bg-white rounded-xl border border-border overflow-hidden shadow-sm">
+       <div className="p-6 border-b border-border bg-white">
+          <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-primary">
+                  <Layers className="w-6 h-6" />
+              </div>
+              <div>
+                  <h3 className="text-lg font-semibold text-foreground">Innovation Flow</h3>
+                  <p className="text-muted-foreground text-xs">Subspace Structure</p>
+              </div>
+          </div>
+          <p className="text-muted-foreground text-sm mt-2 max-w-3xl">{structure.description}</p>
        </div>
+       
+       <div className="p-0 bg-muted/50">
+          <div className="max-w-3xl mx-auto py-8 px-4 space-y-4">
+             {structure.stages?.map((stage: any, i: number) => (
+                 <div key={i} className="relative pl-8 md:pl-0">
+                     {/* Connector Line for Mobile/Desktop */}
+                     {i < structure.stages.length - 1 && (
+                        <div className="absolute left-[15px] top-10 bottom-[-20px] w-0.5 bg-border md:hidden" />
+                     )}
 
-       {/* Tab navigation — matches SpaceNavigationTabs style */}
-       <nav className="w-full">
-         <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none]">
-           {stages.map((stage: any, i: number) => (
-             <button
-               key={i}
-               onClick={() => setActiveStage(i)}
-               className={cn(
-                 "pb-2 pt-4 transition-all duration-200 whitespace-nowrap border-b-2 select-none cursor-pointer",
-                 i === activeStage
-                   ? "border-primary text-primary"
-                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
-               )}
-               style={{
-                 fontSize: 14,
-                 fontWeight: i === activeStage ? 600 : 500,
-                 fontFamily: "'Inter', sans-serif",
-                 lineHeight: "20px",
-               }}
-             >
-               {stage.name}
-             </button>
-           ))}
-         </div>
-       </nav>
-
-       {/* Stage content */}
-       {current && (
-         <div className="pt-6 space-y-2">
-           {current.posts?.map((post: string, k: number) => (
-             <div key={k} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
-               <FileText className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
-               {post}
-             </div>
-           ))}
-           {(!current.posts || current.posts.length === 0) && (
-             <p className="text-sm text-muted-foreground py-4">No items in this stage.</p>
-           )}
-         </div>
-       )}
+                     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+                         <div className="p-4 flex items-start gap-4 border-b border-border/50">
+                             <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center text-sm font-bold text-muted-foreground shrink-0">
+                                 {i + 1}
+                             </div>
+                             <div className="flex-1">
+                                 <h4 className="font-semibold text-foreground">{stage.name}</h4>
+                                 <p className="text-xs text-muted-foreground mb-3">{stage.posts?.length || 0} items included</p>
+                                 
+                                 <div className="space-y-2">
+                                     {stage.posts?.map((post: string, k: number) => (
+                                         <div key={k} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2 rounded border border-border/50">
+                                             <FileText className="w-3.5 h-3.5 text-muted-foreground/60" />
+                                             {post}
+                                         </div>
+                                     ))}
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             ))}
+          </div>
+       </div>
     </div>
   );
 }
@@ -520,7 +515,7 @@ function RenderWhiteboardContent({ template }: { template: any }) {
               </div>
               
               {/* Mock Content on Canvas */}
-              <div className="absolute inset-0 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500 ease-out">
+              <div className="absolute inset-0 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-700 ease-out">
                  {/* Zone 1 */}
                  <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
                      <div className="w-48 h-48 border-2 border-dashed border-border rounded-xl flex items-center justify-center bg-background/50">
@@ -835,18 +830,16 @@ export function TemplateDetail() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
-      <div className="w-full px-6 md:px-8 py-6 sm:py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         
         {/* Header */}
         <div className="mb-8">
            <TemplateHeader template={template} onBack={() => navigate(-1)} onApply={handleApplyClick} />
         </div>
 
-        <div className="grid grid-cols-12 gap-6 items-start">
-           {/* Left Column: Preview Content */}
-           <div className="col-span-12 lg:col-span-8 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+           {/* Left Column: Preview Content (60%) */}
+           <div className="lg:col-span-8 space-y-8">
               <TemplatePreview template={template} />
               
               <div className="block lg:hidden">
@@ -854,14 +847,12 @@ export function TemplateDetail() {
               </div>
            </div>
 
-           {/* Right Column: Metadata — Sticky */}
+           {/* Right Column: Metadata (40%) - Sticky */}
            <div className="hidden lg:block lg:col-span-4 sticky top-6">
               <MetadataPanel template={template} />
            </div>
         </div>
 
-          </div>
-        </div>
       </div>
 
       {/* Apply Dialog */}
