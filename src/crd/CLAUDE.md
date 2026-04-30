@@ -212,6 +212,30 @@ const startOfToday = dayjs().startOf('day');
 
 **Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/spec.md` for the full specification.
 
+### 9. Never Render Markdown / HTML-Tagged Strings As Plain Text
+
+Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders **must** be rendered through a markdown/rich-text renderer — never as `{someString}` inside a `<p>` or `<span>`. Doing so displays the raw markup to the user (bold asterisks, literal `<b>` tags, escaped entities), which is the bug this rule exists to prevent.
+
+**Two kinds of strings to watch for:**
+
+1. **User-generated content** — comment bodies, message text, post snippets, descriptions. These arrive from the backend as markdown. Render with `MarkdownContent` for full-width rich rendering, or `InlineMarkdown` for truncated previews (notification/activity items, list snippets).
+2. **Translation strings with HTML tags** — many i18n keys under `components.inAppNotifications.*` and `innovationHub.*` contain `<b>`, `<br />`, `<i>`, `<pre>`, `<strong>` tags (e.g. `"In <b>{{spaceName}}</b>, of which you are a $t(common.member)."`). Render via `<Trans i18nKey={...} components={{ b: <strong />, br: <br />, i: <em />, pre: <pre /> }} />` — never via `t(...)` dropped into a JSX expression.
+
+**Where this shows up:**
+
+- Notification items (`NotificationItem`): `title`, `description`, `comment` fields. `CrdNotificationItemData` typed as `ReactNode` so the consumer can pre-render `<Trans>` / `<InlineMarkdown>`. See `src/main/ui/layout/notificationDataMapper.tsx`.
+- Activity feed items (`ActivityItem`): `title` is typed `ReactNode`. Comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`) have markdown `description`/`message` — wrap in `InlineMarkdown`. All other types pass the entity display-name as a plain string. See `src/main/crdPages/dashboard/dashboardDataMappers.tsx` → `resolveActivity`.
+- Any new component receiving text from the backend that could contain formatting.
+
+**Checklist when adding a new text-rendering component:**
+
+- [ ] Is the string user-generated or translated? If user-generated → assume markdown → use `InlineMarkdown` or `MarkdownContent`.
+- [ ] Does the translation key contain `<...>` tags? If yes → use `<Trans components={...} />`, not bare `t()`.
+- [ ] Are you about to render a block-producing component (`<div>` from `InlineMarkdown`) inside `<p>`? If yes → change the wrapper to `<div>` to avoid invalid HTML.
+- [ ] Provide a plain-text equivalent for `aria-label` and other accessibility attributes when the rendered content is not pure text (see `ActivityItemData.titlePlain`).
+
+**Reference:** the legacy MUI stack uses `<Trans>` + `WrapperMarkdown plain={true}` for exactly these cases (see `src/main/inAppNotifications/views/InAppNotificationBaseView.tsx` and `src/domain/collaboration/activity/ActivityLog/views/ActivitySubjectMarkdown.tsx`). CRD's `InlineMarkdown` is the equivalent of `WrapperMarkdown plain={true}`.
+
 ---
 
 ## Accessibility (WCAG 2.1 AA)
@@ -727,3 +751,35 @@ export const mapMyEntityToCardData = (entity: GraphQLEntity): MyCardData => ({
 ```
 
 > **Naming note:** Some prop types use `color`, others use `avatarColor` for historical reasons (`SpaceCardData.avatarColor`, `SidebarResourceData.avatarColor`). When adding a new component, prefer `color` for the field name. Both are populated from the same `pickColorFromId` helper.
+
+### Share Dialog and Slot-Based Sub-Views
+
+`src/crd/components/common/ShareDialog.tsx` is the canonical CRD share dialog (URL + clipboard copy + optional Share-on-Alkemio sub-view). `src/crd/components/common/ShareButton.tsx` is a self-contained icon button that composes the dialog. `src/crd/forms/UserSelector.tsx` is the multi-select user picker used by the Alkemio sub-flow.
+
+#### Two consumption patterns
+
+- **`ShareButton`** — owns the trigger (32 px ghost icon button) AND the open state. Use when one button = one dialog. Props are minimal (`url`, `disabled`, `tooltip`, `dialogTitle`, `shareOnAlkemioSlot`, `children`).
+- **`ShareDialog` directly** — controlled (`open` / `onOpenChange`), trigger lives elsewhere. Use when multiple triggers (context-menu item, header icon, reactions-bar button) need to open the **same** dialog instance — lift the open state to a parent and pass `() => setShareOpen(true)` to each trigger. Don't mount one dialog per trigger.
+
+#### Slot-based view-switching (reusable pattern)
+
+`ShareDialog` exposes `shareOnAlkemioSlot?: ReactNode`. When provided:
+- An outlined "Share on Alkemio" button appears below the URL row.
+- Clicking it switches the dialog body to the slot.
+- The dialog header gains a Back arrow (managed by `ShareDialog`, not the slot) that returns to the URL view.
+- The view state resets to `'default'` whenever `open` transitions to `false`.
+
+This is the design-system pattern for **a CRD dialog that needs to host an integration-layer sub-view that uses Apollo / current-user / domain logic**. The dialog stays a pure CRD primitive (no Apollo, no business logic); the consumer fills the slot with whatever needs domain wiring. The slot is just a `ReactNode` — no render-prop, no context — because the dialog manages all dialog-level affordances (Back arrow, focus trap, close behaviour) and the slot is purely the body.
+
+When you add a new `Foo` sub-view to a CRD dialog:
+1. Add a `fooSlot?: ReactNode` prop on the CRD dialog. Render an entry-point button when the slot is provided. Manage the view state internally; reset on close.
+2. Build the integration form in `src/main/crdPages/<page>/<Foo>FormConnector.tsx` (or `_shared/`). It owns mutation state, Apollo hooks, current-user filtering.
+3. Mount the dialog at the consumer parent (page connector / list connector). Pass the integration form as the slot. If multiple triggers need the same dialog, lift the open state to that parent.
+
+#### `UserSelector` (form layer)
+
+`src/crd/forms/UserSelector.tsx` — multi-select picker. Inline result list (no popover, no `cmdk`) absolutely positioned over the input wrapper so it overlays content below without resizing the dialog. Plain TS prop type `ShareUser = { id; displayName; avatarUrl?; city?; country? }`. All labels (`placeholder`, `noResultsLabel`, `loadingLabel`, `removeAriaLabel(name)`, `searchAriaLabel`) come from props — the consumer i18n's. Filters already-selected users from results client-side. When you need a user picker for a non-Share context, this is the building block.
+
+#### MUI coexistence
+
+The MUI `ShareDialog` at `src/domain/shared/components/ShareDialog/ShareDialog.tsx` still ships and is used by 7+ MUI-page callsites (memo, calendar, discussion, community updates, etc.). They keep using it. They migrate to the CRD dialog when their host page migrates. Don't pre-migrate ahead of the host.

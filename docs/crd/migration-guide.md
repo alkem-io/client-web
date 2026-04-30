@@ -195,7 +195,7 @@ Tailwind is loaded globally but scoped via `.crd-root` — MUI pages outside thi
 
 ### Visual Fallbacks: Avatars & Banners (`pickColorFromId`)
 
-When migrating a page that displays spaces (or any entity with an avatar / card banner), do **not** wire `getDefaultSpaceVisualUrl` into the data mapper as a fallback for missing images. CRD has its own deterministic colour fallback that gives every space a stable accent colour derived from its id.
+When migrating a page that displays spaces (or any entity with an avatar / card banner), do **not** wire `getDefaultSpaceVisualUrl` into the data mapper as a fallback for missing images, and do **not** use static default-visual placeholder JPEGs. CRD has its own deterministic colour fallback that gives every space a stable accent colour derived from its id.
 
 The single shared helper lives at `@/crd/lib/pickColorFromId`. Use it in your mapper:
 
@@ -208,16 +208,18 @@ export const mapMyEntityToCardData = (entity): MyCardData => ({
   href: entity.profile.url,
   avatarUrl: entity.profile.avatar?.uri,
   // Leave undefined when no real banner exists — the component will render
-  // the deterministic gradient from `color`, not a stock placeholder.
+  // the deterministic gradient, not a stock placeholder image.
   bannerUrl: entity.profile.cardBanner?.uri || undefined,
-  color: pickColorFromId(entity.id),
+  avatarColor: pickColorFromId(entity.id),
 });
 ```
 
-The CRD component receives `color` as a plain string prop and:
+**Prop naming convention:** Space-domain components (`SpaceCard`, `SpaceSettingsHeader`, `StackedAvatars`) use `avatarColor`. Dashboard/common components (`CompactSpaceCard`, `SpaceHierarchyCard`, `PendingInvitationCard`, `PendingApplicationCard`) use `color`. Composite components like `SubspaceHeader` use semantic names (`subspaceColor`, `parentColor`). Match the prop name expected by the target component.
 
-- Renders an **avatar fallback** as a solid coloured `AvatarFallback` (`style={{ backgroundColor: color }}` + `text-white`) when `avatarUrl` is missing.
-- Renders a **banner fallback** as a `135deg` linear gradient (`color → color-mix(in srgb, color 70%, black)`) when `bannerUrl` is missing.
+The CRD component receives the colour prop and:
+
+- Renders an **avatar fallback** via the `AvatarFallback` primitive, which natively accepts a `color` prop and applies `backgroundGradient()` internally — producing a gradient background with `text-white` initials when `avatarUrl` is missing.
+- Renders a **banner fallback** as a `135deg` linear gradient (`color → color-mix(in srgb, color 70%, black)`) via the `backgroundGradient()` utility when `bannerUrl` is missing.
 
 A real image always wins — the colour is purely a fallback.
 
@@ -230,7 +232,10 @@ A real image always wins — the colour is purely a fallback.
 
 The rule of thumb: prominent display avatars and banner areas get the colour; small list rows and label tiles stay muted so the layout doesn't feel busy.
 
-See `src/crd/CLAUDE.md` (section "Deterministic Accent Colors") for the full data flow and the list of components currently consuming `color`.
+**Components currently consuming the colour prop:**
+`SpaceCard` (`avatarColor`), `SpaceHeader` (`color`), `SubspaceHeader` (`subspaceColor`, `parentColor`), `SpaceSettingsHeader` (`avatarColor`), `SpaceHierarchyCard` (`color`), `CompactSpaceCard` (`color`), `PendingInvitationCard` (`color`), `PendingApplicationCard` (`color`), `StackedAvatars` (`avatarColor`), `SidebarResourceItem` (`avatarColor`, optional), `EventDetailView` (`resolveColor` callback), `AvatarFallback` primitive (`color`).
+
+See `src/crd/CLAUDE.md` (section "Deterministic Accent Colors") for the full data flow.
 
 ### Typography: Semantic Tokens, Not Raw Classes
 
@@ -282,6 +287,29 @@ Full specification: `specs/042-crd-space-page/typography/spec.md`
 **Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.
 
 **Notifications**: Handled globally in `root.tsx` via `NotificationsGate`, which renders either the CRD `NotificationsPanel` or the MUI `InAppNotificationsDialog` based on the CRD toggle. Both are lazy-loaded — only one is ever fetched. The bell icon click (from either CRD Header or MUI AppBar) sets `InAppNotificationsContext.setIsOpen(true)` and the correct dialog opens on any page. The CRD component doesn't know about the toggle — it just calls a callback prop.
+
+### Share Dialog
+
+CRD has a fully-ported Share dialog at `src/crd/components/common/ShareDialog.tsx`. It replaces the MUI `src/domain/shared/components/ShareDialog/ShareDialog.tsx` for CRD-rendered entities (callouts, etc.). Two consumption patterns:
+
+**Self-contained (icon button + dialog)** — `src/crd/components/common/ShareButton.tsx` renders a 32 px ghost icon button that owns its own open state. Used by `CrdWhiteboardView`, `CrdPublicWhiteboardPage`. Just pass `url`:
+
+```typescript
+<ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl} />
+```
+
+**Controlled** — `<ShareDialog>` directly, when the trigger lives elsewhere (a context menu, a header button, multiple buttons sharing one dialog). The parent owns `open` state:
+
+```typescript
+const [shareOpen, setShareOpen] = useState(false);
+<ShareDialog open={shareOpen} onOpenChange={setShareOpen} url={url} />
+```
+
+**Share on Alkemio sub-flow.** The dialog supports view-switching: when you pass a `shareOnAlkemioSlot?: ReactNode`, an outlined "Share on Alkemio" button appears below the URL row. Clicking it switches the dialog body to the slot (and the header gains a Back arrow). The slot is the consumer's place to mount a form that calls `useShareLinkWithUserMutation`. CRD ships `src/crd/forms/UserSelector.tsx` (a multi-select user picker built from `Avatar` + `Input`, no Formik / `cmdk` / popover) for the picker UI; the form integration lives in the consumer layer (e.g. `src/main/crdPages/space/callout/CalloutShareOnAlkemioForm.tsx`).
+
+For a callout-like entity with multiple Share triggers (3-dots menu + dialog header + reactions bar), lift the `shareOpen` state to a parent and pass `() => setShareOpen(true)` down to each trigger so they share one dialog instance. Don't mount one dialog per trigger.
+
+i18n keys live in `src/crd/i18n/common/common.<lang>.json` under `share.*` and `share.alkemio.*`.
 
 ### Data Hooks Are Shared
 

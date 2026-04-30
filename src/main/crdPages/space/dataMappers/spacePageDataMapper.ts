@@ -1,4 +1,8 @@
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
+import { getInitials } from '@/crd/lib/getInitials';
+
+export { getInitials };
 
 type MemberAvatar = {
   id: string;
@@ -77,12 +81,42 @@ export function mapMemberAvatars(
     }));
 }
 
-export function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map(part => part[0])
+type LeadContributorLike = {
+  id: string;
+  profile?: {
+    displayName?: string | null;
+    avatar?: { uri?: string | null } | null;
+    url?: string | null;
+    location?: { city?: string | null; country?: string | null } | null;
+  } | null;
+};
+
+function mapLeadContributor(contributor: LeadContributorLike, type: 'person' | 'org'): LeadItem | undefined {
+  if (!contributor.profile) return undefined;
+  const name = contributor.profile.displayName ?? '';
+  const cityCountry = [contributor.profile.location?.city, contributor.profile.location?.country]
     .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+    .join(', ');
+  return {
+    id: contributor.id,
+    name,
+    avatarUrl: contributor.profile.avatar?.uri ?? undefined,
+    initials: getInitials(name) || '??',
+    location: cityCountry || undefined,
+    href: contributor.profile.url ?? undefined,
+    type,
+  };
+}
+
+export function mapSidebarLeads(
+  leadUsers: LeadContributorLike[] | undefined,
+  leadOrganizations?: LeadContributorLike[] | undefined
+): LeadItem[] {
+  const users = (leadUsers ?? [])
+    .map(u => mapLeadContributor(u, 'person'))
+    .filter((l): l is LeadItem => l !== undefined);
+  const orgs = (leadOrganizations ?? [])
+    .map(o => mapLeadContributor(o, 'org'))
+    .filter((l): l is LeadItem => l !== undefined);
+  return [...users, ...orgs];
 }

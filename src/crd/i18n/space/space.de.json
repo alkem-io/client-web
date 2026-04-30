@@ -1,4 +1,10 @@
 {
+  "common": {
+    "Callout": "Aufruf",
+    "callout": "aufruf",
+    "Callouts": "Aufrufe",
+    "callouts": "aufrufe"
+  },
   "banner": {
     "homeSpace": "Hauptbereich",
     "homeSpaceSettings": "Einstellungen des Hauptbereichs"
@@ -29,7 +35,11 @@
     "virtualContributors": "Virtuelle Mitwirkende",
     "communityGuidelines": "Gemeinschaftsrichtlinien",
     "postIndex": "Beitragsverzeichnis",
+    "searchPlaceholder": "Suchen...",
+    "searchLabel": "Beiträge durchsuchen",
+    "noResults": "Keine Treffer",
     "readMore": "Mehr lesen",
+    "editDescription": "Beschreibung bearbeiten",
     "addEvent": "Ereignis hinzufügen",
     "eventDateRelative": {
       "today": "Heute",
@@ -141,16 +151,21 @@
     "expand": "Mehr anzeigen",
     "collapse": "Weniger anzeigen",
     "openWhiteboard": "Whiteboard öffnen",
+    "openMemo": "Memo öffnen",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
+    "expandComments": "Kommentare ausklappen",
+    "collapseComments": "Kommentare einklappen",
     "post": "Beitrag",
     "whiteboard": "Whiteboard",
     "collection": "Sammlung",
     "callForWhiteboards": "Aufruf für Whiteboards",
     "poll": "Umfrage",
     "link": "Link",
+    "callToAction": "Handlungsaufforderung",
     "mediaGallery": "Mediengalerie",
     "memo": "Notiz",
+    "document": "Dokument",
     "moreWhiteboards": "+{{count}} weitere",
     "moreContributions": "+{{count}} mehr",
     "vote": "Abstimmen",
@@ -162,7 +177,31 @@
     "addResponse": "Antwort hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
     "defaultWhiteboardName": "Neues Whiteboard",
-    "whiteboardNameLabel": "Whiteboard-Titel"
+    "whiteboardNameLabel": "Whiteboard-Titel",
+    "addMemo": "Memo hinzufügen",
+    "createMemo": "Neues Memo erstellen",
+    "defaultMemoName": "Neues Memo",
+    "memoNameLabel": "Memo-Titel",
+    "addPost": "Beitrag hinzufügen",
+    "createPost": "Beitrag erstellen",
+    "editPost": "Beitrag bearbeiten",
+    "defaultPostName": "Neuer Beitrag",
+    "postNameLabel": "Titel",
+    "postDescriptionLabel": "Beschreibung",
+    "postDescriptionPlaceholder": "Schreibe deinen Beitrag...",
+    "postTagsLabel": "Schlagwörter",
+    "postSave": "Speichern",
+    "postCreate": "Veröffentlichen",
+    "postDelete": "Beitrag löschen",
+    "postDeleteConfirmTitle": "Diesen Beitrag löschen?",
+    "postDeleteConfirmDescription": "Damit werden der Beitrag und alle Kommentare endgültig entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "postUnsavedCloseTitle": "Nicht gespeicherte Änderungen verwerfen?",
+    "postUnsavedCloseDescription": "Du hast nicht gespeicherte Änderungen. Wenn du jetzt schließt, gehen sie verloren.",
+    "postUnsavedCloseConfirm": "Änderungen verwerfen",
+    "postUnsavedCloseCancel": "Weiter bearbeiten",
+    "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
+    "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
+    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut."
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -178,7 +217,13 @@
     "configure": "Konfigurieren",
     "edit": "Bearbeiten",
     "memo": "Notiz",
-    "richTextEditor": "Rich-Text-Editor"
+    "richTextEditor": "Rich-Text-Editor",
+    "comingSoon": "Bald verfügbar",
+    "memoPlaceholder": "Schreiben Sie Ihre Notiz…",
+    "memoOpenHint": "Der Memo-Inhalt wird in einem eigenen Dialog bearbeitet.",
+    "openMemo": "Memo öffnen",
+    "openWhiteboard": "Whiteboard öffnen",
+    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet."
   },
   "members": {
     "title": "Community",
@@ -213,6 +258,11 @@
     "search": "Unterbereiche suchen...",
     "showMore": "{{count}} weitere anzeigen",
     "showLess": "Weniger anzeigen",
+    "filter": {
+      "all": "Alle",
+      "active": "Aktiv",
+      "archived": "Archiviert"
+    },
     "empty": {
       "title": "Keine Unterbereiche gefunden",
       "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
@@ -229,8 +279,8 @@
     "leadUsers": "Leitende Benutzer",
     "leadOrganizations": "Leitende Organisationen",
     "guidelines": "Gemeinschaftsrichtlinien",
-    "references": "Referenzen",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Referenzen",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -280,6 +330,7 @@
   },
   "mobile": {
     "more": "Mehr",
+    "menu": "Menü",
     "activity": "Aktivität",
     "videoCall": "Videoanruf",
     "share": "Teilen",
@@ -296,7 +347,41 @@
     "moveUp": "Nach oben",
     "moveDown": "Nach unten",
     "moveToBottom": "Nach ganz unten",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "moveFailed": "Neue Reihenfolge fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "visibilityChange": {
+    "publishTitle": "Diesen $t(common.callout) veröffentlichen?",
+    "publishDescription": "Der $t(common.Callout) wird für alle Mitglieder des Space sichtbar.",
+    "publishConfirm": "Veröffentlichen",
+    "unpublishTitle": "Diesen $t(common.callout) in den Entwurf zurücksetzen?",
+    "unpublishDescription": "Der $t(common.Callout) ist dann für Space-Mitglieder nicht mehr sichtbar.",
+    "unpublishConfirm": "In Entwurf verschieben",
+    "notifyMembers": "Space-Mitglieder benachrichtigen",
+    "saveFailed": "Die Sichtbarkeit konnte nicht geändert werden. Bitte erneut versuchen."
+  },
+  "sortContributions": {
+    "title": "Beiträge sortieren",
+    "description": "Per Drag-and-Drop neu anordnen. Die neue Reihenfolge wird beim Speichern übernommen.",
+    "empty": "Dieser $t(common.Callout) hat noch keine Beiträge zum Sortieren.",
+    "confirm": "Reihenfolge speichern",
+    "dragHandle": "Ziehen zum Neuordnen",
+    "saveFailed": "Die neue Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen."
+  },
+  "deleteCallout": {
+    "title": "Diesen $t(common.Callout) löschen?",
+    "description": "„{{title}}“ wird dauerhaft gelöscht, zusammen mit seinen Beiträgen und Kommentaren. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "confirm": "Löschen",
+    "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
+  },
+  "findTemplate": {
+    "overwriteTitle": "Aktuellen Inhalt ersetzen?",
+    "overwriteDescription": "Das Laden dieser Vorlage ersetzt die bereits ausgefüllten Felder. Dies kann nicht rückgängig gemacht werden.",
+    "overwriteConfirm": "Vorlage laden",
+    "saveAsTemplateTitle": "Als Vorlage speichern"
   },
   "dates": {
     "today": "Heute",
@@ -309,21 +394,34 @@
     "urlRequired": "Die URL ist erforderlich",
     "urlInvalid": "Die URL muss mit http:// oder https:// beginnen",
     "displayNameRequired": "Der Anzeigename ist erforderlich",
-    "questionRequired": "Die Frage ist erforderlich"
+    "questionRequired": "Die Frage ist erforderlich",
+    "required": "Dieses Feld ist erforderlich",
+    "maxSmall": "Darf höchstens {{count}} Zeichen enthalten",
+    "maxMarkdown": "Darf höchstens {{count}} Zeichen enthalten",
+    "minPollOptions": "Mindestens {{count}} Optionen sind erforderlich",
+    "pollOptionRequired": "Der Optionstext ist erforderlich",
+    "referenceTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
+    "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird"
   },
   "forms": {
     "titleLabel": "Titel",
     "titlePlaceholder": "Geben Sie Ihrem Beitrag einen Titel...",
+    "insertEmoji": "Emoji einfügen",
     "descriptionLabel": "Beschreibung",
     "descriptionPlaceholder": "Schreiben Sie etwas...",
     "tagsLabel": "Schlagwörter",
-    "framingType": "Inhaltstyp",
+    "tagsPlaceholder": "Durch Kommas getrennte Schlagwörter",
+    "framingType": "Zum Beitrag hinzufügen",
     "visibility": "Sichtbarkeit",
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
     "saveDraft": "Entwurf speichern",
+    "save": "Speichern",
     "publish": "Veröffentlichen",
+    "createPost": "Beitrag erstellen",
+    "editPost": "Beitrag bearbeiten",
+    "moreOptions": "Weitere Optionen",
     "findTemplate": "Vorlage suchen",
     "contributionTypes": "Erlaubte Beiträge",
     "commentsEnabled": "Kommentare aktivieren",
@@ -333,7 +431,71 @@
     "pollQuestion": "Frage",
     "pollOption": "Option {{number}}",
     "addOption": "Option hinzufügen",
-    "removeOption": "Option entfernen"
+    "removeOption": "Option entfernen",
+    "allowComments": "Kommentare zulassen",
+    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen."
+  },
+  "contributionSettings": {
+    "heading": "Antworten",
+    "types": {
+      "link": "Links & Dateien",
+      "post": "Beiträge",
+      "memo": "Notizen",
+      "whiteboard": "Whiteboards",
+      "document": "Dokumente"
+    },
+    "actors": {
+      "members": "Mitglieder dürfen hinzufügen",
+      "admins": "Admins dürfen hinzufügen"
+    },
+    "commentsEnabled": "Kommentare aktivieren",
+    "setDefaults": "Standardantwort festlegen",
+    "prePopulate": {
+      "heading": "Sammlung vorbefüllen",
+      "description": "Fügen Sie Links hinzu, die sofort sichtbar sind, sobald dieser $t(common.Callout) erstellt wird.",
+      "empty": "Noch keine vorbefüllten Links.",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Link-Titel",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Beschreibung",
+      "descriptionPlaceholder": "Optionale Beschreibung",
+      "addRow": "Weiteren Link hinzufügen",
+      "removeRow": "Link entfernen"
+    }
+  },
+  "references": {
+    "heading": "Referenzen",
+    "empty": "Noch keine Referenzen.",
+    "titleLabel": "Titel",
+    "titlePlaceholder": "Referenztitel",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Optionale Beschreibung",
+    "addRow": "Weitere Referenz hinzufügen",
+    "removeRow": "Referenz entfernen"
+  },
+  "responseDefaults": {
+    "srDescription": "Konfigurieren Sie die Standardwerte für neue Beiträge in diesem $t(common.Callout).",
+    "title": {
+      "post": "Standardwerte für Beiträge",
+      "memo": "Standardwerte für Notizen",
+      "whiteboard": "Standardwerte für Whiteboards",
+      "document": "Standardwerte für Dokumente",
+      "generic": "Standardwerte"
+    },
+    "defaultTitle": "Standardtitel",
+    "defaultTitlePlaceholder": "Geben Sie neuen Beiträgen einen Standardtitel",
+    "defaultDescription": "Standardbeschreibung",
+    "defaultDescriptionPlaceholder": "Hinweis, der bei neuen Beiträgen angezeigt wird",
+    "defaultWhiteboard": "Standard-Whiteboard",
+    "configureWhiteboard": "Whiteboard konfigurieren",
+    "editWhiteboard": "Whiteboard bearbeiten",
+    "template": "Vorlage",
+    "templatePlaceholder": "Vorlage auswählen…",
+    "templateLoading": "Vorlagen werden geladen…",
+    "save": "Speichern"
   },
   "calloutDialog": {
     "close": "Dialog schließen",
@@ -345,16 +507,90 @@
     "reactionCount_one": "1 Reaktion",
     "contributions": "Beiträge"
   },
+  "memo": {
+    "close": "Schließen",
+    "stubDialog": {
+      "message": "Memo-Editor kommt bald — Klartextvorschau wird angezeigt."
+    },
+    "displayName": {
+      "inputLabel": "Titel",
+      "edit": "Memo-Titel bearbeiten",
+      "save": "Memo-Titel speichern",
+      "cancel": "Bearbeitung abbrechen"
+    },
+    "footer": {
+      "connected": "Verbunden",
+      "connecting": "Verbindung wird hergestellt…",
+      "disconnected": "Getrennt",
+      "membersOnline_one": "1 Mitglied online",
+      "membersOnline_other": "{{count}} Mitglieder online",
+      "connectedUsersLabel": "Verbundene Benutzer",
+      "moreConnectedUsers_one": "{{count}} weiterer verbundener Benutzer",
+      "moreConnectedUsers_other": "{{count}} weitere verbundene Benutzer",
+      "guestWarning": "Du bearbeitest als Gast",
+      "delete": "Notiz löschen",
+      "readonlyReason": {
+        "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
+        "notSynced": "Synchronisierung… öffne die Notiz erneut, um die Bearbeitung fortzusetzen.",
+        "unauthenticated": "Melde dich an, um diese Notiz zu bearbeiten.",
+        "contentUpdatePolicy": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
+        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen."
+      }
+    },
+    "errors": {
+      "loading": "Notiz wird geladen…",
+      "loadFailed": "Notiz konnte nicht geladen werden"
+    },
+    "deleteConfirm": {
+      "title": "Memo löschen",
+      "body": "Möchten Sie dieses Memo wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Löschen"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Dieser Link öffnet eine externe Seite in einem neuen Tab.",
+    "linkAriaLabel": "{{displayName}} (öffnet {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (öffnet {{url}} in einem neuen Tab)",
+    "validation": {
+      "invalidUrl": "Ungültige URL"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Bild öffnen",
+    "more_one": "+{{count}} weiteres",
+    "more_other": "+{{count}} weitere",
+    "previous": "Vorheriges Bild",
+    "next": "Nächstes Bild",
+    "goToImage": "Zu Bild {{index}} gehen",
+    "thumbnailsLabel": "Bildvorschauen",
+    "download": "Bild herunterladen",
+    "fullscreen": "Vollbild aktivieren",
+    "exitFullscreen": "Vollbild verlassen",
+    "emptyState": {
+      "title": "Noch keine Bilder",
+      "action": "Bilder hinzufügen"
+    },
+    "altTextLabel": "Alternativtext",
+    "deleteImage": "Bild löschen",
+    "dismissError": "Fehler schließen",
+    "uploading": "Hochladen…",
+    "downloadError": "Das Bild konnte nicht heruntergeladen werden.",
+    "validation": {
+      "type": "Nicht unterstützter Dateityp",
+      "tooSmall": "Bild ist zu klein",
+      "tooLarge": "Bild ist zu groß"
+    }
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",
     "showLess": "Weniger anzeigen",
-    "sortNewest": "Neueste zuerst",
-    "sortOldest": "Älteste zuerst",
     "reply": "Antworten",
     "delete": "Löschen",
     "deleted": "Dieser Kommentar wurde gelöscht",
     "addComment": "Kommentar hinzufügen...",
+    "mention": "Jemanden erwähnen",
+    "mentionVirtualContributor": "KI",
     "send": "Senden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
@@ -369,7 +605,19 @@
   },
   "dialogs": {
     "cancel": "Abbrechen",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "discardChanges": {
+      "title": "Änderungen verwerfen?",
+      "description": "Es gibt nicht gespeicherte Änderungen. Wenn Sie diesen Dialog schließen, gehen sie verloren.",
+      "confirm": "Ja, schließen",
+      "cancel": "Weiter bearbeiten"
+    },
+    "deleteFraming": {
+      "title": "Framing-Inhalt entfernen?",
+      "description": "Der Framing-Inhalt dieses $t(common.Callout)s wird entfernt. Dies kann nicht rückgängig gemacht werden.",
+      "confirm": "Entfernen",
+      "cancel": "Beibehalten"
+    }
   },
   "poll": {
     "status": {
@@ -436,6 +684,7 @@
     "feedRegion": "Inhalts-Feed des Bereichs",
     "membersGrid": "Mitgliederübersicht der Gemeinschaft",
     "subspacesGrid": "Unterbereichsübersicht",
+    "statusFilter": "Unterräume nach Status filtern",
     "visibilityNotice": "Sichtbarkeitshinweis des Bereichs",
     "mobileTabBar": "Reiternavigation",
     "moreActionsDrawer": "Weitere Aktionen",

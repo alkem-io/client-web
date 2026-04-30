@@ -1,18 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
+import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
 import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
+import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
-
+import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
+import { MemoContributionAddConnector } from './MemoContributionAddConnector';
+import { MemoContributionConnector } from './MemoContributionConnector';
+import { MemoFramingConnector } from './MemoFramingConnector';
+import { PostContributionAddConnector } from './PostContributionAddConnector';
+import { PostContributionConnector } from './PostContributionConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
-
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
@@ -20,8 +30,15 @@ type CalloutDetailDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   callout: CalloutDetailsModelExtended;
-  /** If set, the whiteboard dialog opens immediately on top of the callout dialog */
-  initialWhiteboardContributionId?: string;
+  /** If set, the matching contribution dialog opens immediately on top of the callout dialog.
+   *  Routed to whiteboard / memo / post overlay based on `callout.settings.contribution.type`. */
+  initialContributionId?: string;
+  /** For memo contributions only: the underlying memo id (the contribution wrapper id goes into `initialContributionId`). */
+  initialMemoId?: string;
+  /** For post contributions only: the underlying post id (the contribution wrapper id goes into `initialContributionId`). */
+  initialPostId?: string;
+  /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
+  moveActions?: CalloutMoveActions;
 };
 
 function ContributionsSlot({
@@ -32,7 +49,7 @@ function ContributionsSlot({
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
-  onContributionClick?: (id: string) => void;
+  onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
 }) {
   const contributionType = getCalloutContributionType(callout);
@@ -57,10 +74,26 @@ function ContributionsSlot({
 
   const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
 
-  const trailingSlot =
-    canCreateContribution && contributionType === CalloutContributionType.Whiteboard ? (
-      <WhiteboardContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
-    ) : null;
+  const defaults = callout.contributionDefaults;
+  const trailingSlot = canCreateContribution ? (
+    contributionType === CalloutContributionType.Whiteboard ? (
+      <WhiteboardContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultContent={defaults?.whiteboardContent}
+        onCreated={onContributionCreated}
+      />
+    ) : contributionType === CalloutContributionType.Memo ? (
+      <MemoContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+    ) : contributionType === CalloutContributionType.Post ? (
+      <PostContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultDescription={defaults?.postDescription}
+        onCreated={onContributionCreated}
+      />
+    ) : null
+  ) : null;
 
   return (
     <div ref={inViewRef}>
@@ -79,20 +112,75 @@ export function CalloutDetailDialogConnector({
   open,
   onOpenChange,
   callout,
-  initialWhiteboardContributionId,
+  initialContributionId,
+  initialMemoId,
+  initialPostId,
+  moveActions,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
+  const contributionType = getCalloutContributionType(callout);
+  const initialIsMemo = contributionType === CalloutContributionType.Memo;
+  const initialIsPost = contributionType === CalloutContributionType.Post;
+
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
-    initialWhiteboardContributionId
+    initialIsMemo || initialIsPost ? undefined : initialContributionId
   );
+  const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
+    initialIsMemo ? initialContributionId : undefined
+  );
+  const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
+  const [postContributionId, setPostContributionId] = useState<string | undefined>(
+    initialIsPost ? initialContributionId : undefined
+  );
+  const [postId, setPostId] = useState<string | undefined>(initialPostId);
+  const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
+  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
+  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
+  // once Hocuspocus has persisted (~2s lag).
+  const handleFramingMemoClose = () => {
+    const fmId = callout.framing.memo?.id;
+    if (framingRefreshRef.current) {
+      clearTimeout(framingRefreshRef.current);
+      framingRefreshRef.current = null;
+    }
+    if (fmId) {
+      framingRefreshRef.current = setTimeout(() => {
+        void fetchFramingMarkdown({ variables: { id: fmId } });
+        framingRefreshRef.current = null;
+      }, 2500);
+    }
+    setFramingMemoOpen(false);
+  };
+
+  // Clear the pending refresh on unmount — otherwise an unmount during the
+  // 2.5s window still fires the delayed fetch (wasted request, possible cache
+  // population for a component that's gone).
+  useEffect(() => {
+    return () => {
+      if (framingRefreshRef.current) {
+        clearTimeout(framingRefreshRef.current);
+        framingRefreshRef.current = null;
+      }
+    };
+  }, []);
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
-    if (initialWhiteboardContributionId) {
-      setWhiteboardContributionId(initialWhiteboardContributionId);
+    if (!initialContributionId) return;
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(initialContributionId);
+      setMemoId(initialMemoId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(initialContributionId);
+      setPostId(initialPostId);
+    } else {
+      setWhiteboardContributionId(initialContributionId);
     }
-  }, [initialWhiteboardContributionId]);
+  }, [initialContributionId, initialMemoId, initialPostId, contributionType]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -100,8 +188,31 @@ export function CalloutDetailDialogConnector({
   const hasWhiteboardFraming = callout.framing.type === CalloutFramingType.Whiteboard && !!callout.framing.whiteboard;
   const whiteboardFramingSlot = hasWhiteboardFraming ? <WhiteboardFramingConnector callout={callout} /> : undefined;
 
-  const handleContributionClick = (contributionId: string) => {
-    setWhiteboardContributionId(contributionId);
+  const hasMemoFraming = callout.framing.type === CalloutFramingType.Memo && !!callout.framing.memo;
+  const memoFramingSlot = hasMemoFraming ? (
+    <MemoFramingConnector callout={callout} onOpen={() => setFramingMemoOpen(true)} />
+  ) : undefined;
+  const framingMemoId = callout.framing.memo?.id;
+
+  const hasMediaGalleryFraming =
+    callout.framing.type === CalloutFramingType.MediaGallery && !!callout.framing.mediaGallery;
+  const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
+    <MediaGalleryFramingConnector callout={callout} />
+  ) : undefined;
+
+  const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
+  const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
+
+  const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(contributionId);
+      setMemoId(clickedEntityId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(contributionId);
+      setPostId(clickedEntityId);
+    } else {
+      setWhiteboardContributionId(contributionId);
+    }
   };
 
   const hasContributionType = Boolean(getCalloutContributionType(callout)) && callout.settings.contribution.enabled;
@@ -118,21 +229,80 @@ export function CalloutDetailDialogConnector({
     />
   ) : null;
 
+  const memoOverlay =
+    memoContributionId && memoId ? (
+      <MemoContributionConnector
+        open={true}
+        contributionId={memoContributionId}
+        memoId={memoId}
+        onClose={() => {
+          setMemoContributionId(undefined);
+          setMemoId(undefined);
+        }}
+      />
+    ) : null;
+
+  const postOverlay =
+    postContributionId && postId ? (
+      <PostContributionConnector
+        open={true}
+        calloutId={callout.id}
+        contributionId={postContributionId}
+        postId={postId}
+        onClose={() => {
+          setPostContributionId(undefined);
+          setPostId(undefined);
+        }}
+      />
+    ) : null;
+
+  const framingMemoOverlay =
+    framingMemoOpen && framingMemoId ? (
+      <CrdMemoDialog
+        open={true}
+        memoId={framingMemoId}
+        isContribution={false}
+        onClose={() => handleFramingMemoClose()}
+      />
+    ) : null;
+
+  const handleShareClick = () => setShareOpen(true);
+  const settingsSlot = (
+    <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
+  );
+
+  const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
+
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages readable. The dialog itself hides the discussion section entirely
+  // when commentsEnabled is false AND there are no existing messages.
+  const commentsEnabled = callout.settings.framing.commentsEnabled;
+
   if (!callout.comments?.id) {
     return (
       <>
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
-          callout={mapCalloutDetailsToDialogData(callout, formatDate)}
+          callout={mapCalloutDetailsToDialogData(callout, t)}
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
+          commentsEnabled={commentsEnabled}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
+          memoFramingSlot={memoFramingSlot}
+          mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          callToActionFramingSlot={callToActionFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
+          settingsSlot={settingsSlot}
+          onShareClick={handleShareClick}
         />
         {whiteboardOverlay}
+        {memoOverlay}
+        {postOverlay}
+        {framingMemoOverlay}
+        {shareDialog}
       </>
     );
   }
@@ -145,20 +315,30 @@ export function CalloutDetailDialogConnector({
             open={open}
             onOpenChange={onOpenChange}
             callout={{
-              ...mapCalloutDetailsToDialogData(callout, formatDate),
+              ...mapCalloutDetailsToDialogData(callout, t),
               commentCount,
             }}
             commentsSlot={thread}
-            commentInputSlot={commentInput}
+            commentInputSlot={commentsEnabled ? commentInput : null}
+            commentsEnabled={commentsEnabled}
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
             contributionsCount={callout.contributions.length}
             pollSlot={pollSlot}
             whiteboardFramingSlot={whiteboardFramingSlot}
+            memoFramingSlot={memoFramingSlot}
+            mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            callToActionFramingSlot={callToActionFramingSlot}
+            settingsSlot={settingsSlot}
+            onShareClick={handleShareClick}
           />
         )}
       </CalloutCommentsConnector>
       {whiteboardOverlay}
+      {memoOverlay}
+      {postOverlay}
+      {framingMemoOverlay}
+      {shareDialog}
     </>
   );
 }

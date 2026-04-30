@@ -180,7 +180,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                   {post.contentPreview?.whiteboards?.map((wb, idx) => (
                     <div 
                       key={`wb-${idx}`}
-                      className="group bg-background border border-border rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"
+                      className="group bg-background border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
                       onClick={() => handleLevel3(wb.title)}
                     >
                       <div className="h-32 bg-muted relative overflow-hidden">
@@ -212,7 +212,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                   {post.contentPreview?.items?.map((item, idx) => (
                     <div 
                       key={`item-${idx}`}
-                      className="group bg-background border border-border rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"
+                      className="group bg-background border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
                       onClick={() => handleLevel3(item.title)}
                     >
                       <div className="h-32 bg-accent/50 flex items-center justify-center relative">

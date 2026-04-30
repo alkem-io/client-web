@@ -33,6 +33,11 @@ fragment Callout on Callout {
       id
       url
       displayName
+      description
+      tagset {
+        id
+        tags
+      }
     }
     type
   }
@@ -124,7 +129,19 @@ fragment CalloutDetails on Callout {
     ...CalloutSettingsFull
   }
   publishedDate
+  createdDate
   createdBy {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  publishedBy {
     id
     profile {
       id

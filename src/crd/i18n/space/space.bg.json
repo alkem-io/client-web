@@ -1,4 +1,10 @@
 {
+  "common": {
+    "Callout": "Известие",
+    "callout": "известие",
+    "Callouts": "Известия",
+    "callouts": "известия"
+  },
   "banner": {
     "homeSpace": "Начално пространство",
     "homeSpaceSettings": "Настройки на началното пространство"
@@ -29,7 +35,11 @@
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
+    "searchPlaceholder": "Търсене...",
+    "searchLabel": "Търсене в публикациите",
+    "noResults": "Няма съвпадения",
     "readMore": "Прочети повече",
+    "editDescription": "Редактиране на описанието",
     "addEvent": "Добави събитие",
     "eventDateRelative": {
       "today": "Днес",
@@ -141,16 +151,21 @@
     "expand": "Покажи повече",
     "collapse": "Покажи по-малко",
     "openWhiteboard": "Отвори дъска",
+    "openMemo": "Отвори бележка",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
+    "expandComments": "Разгъни коментарите",
+    "collapseComments": "Сгъни коментарите",
     "post": "Публикация",
     "whiteboard": "Дъска",
     "collection": "Колекция",
     "callForWhiteboards": "Покана за дъски",
     "poll": "Анкета",
     "link": "Връзка",
+    "callToAction": "Призив за действие",
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
+    "document": "Документ",
     "moreWhiteboards": "+{{count}} още",
     "moreContributions": "+{{count}} още",
     "vote": "Гласувай",
@@ -162,7 +177,31 @@
     "addResponse": "Добави отговор",
     "createWhiteboard": "Създаване на нова бяла дъска",
     "defaultWhiteboardName": "Нова бяла дъска",
-    "whiteboardNameLabel": "Заглавие на бялата дъска"
+    "whiteboardNameLabel": "Заглавие на бялата дъска",
+    "addMemo": "Добави бележка",
+    "createMemo": "Създай нова бележка",
+    "defaultMemoName": "Нова бележка",
+    "memoNameLabel": "Заглавие на бележка",
+    "addPost": "Добави публикация",
+    "createPost": "Създай публикация",
+    "editPost": "Редактирай публикацията",
+    "defaultPostName": "Нова публикация",
+    "postNameLabel": "Заглавие",
+    "postDescriptionLabel": "Описание",
+    "postDescriptionPlaceholder": "Напиши публикацията си...",
+    "postTagsLabel": "Етикети",
+    "postSave": "Запази",
+    "postCreate": "Публикувай",
+    "postDelete": "Изтрий публикацията",
+    "postDeleteConfirmTitle": "Да се изтрие ли тази публикация?",
+    "postDeleteConfirmDescription": "Това ще премахне публикацията и всички коментари за постоянно. Действието е необратимо.",
+    "postUnsavedCloseTitle": "Да се отхвърлят ли незапазените промени?",
+    "postUnsavedCloseDescription": "Имаш незапазени промени. Ако затвориш сега, те ще бъдат загубени.",
+    "postUnsavedCloseConfirm": "Отхвърли промените",
+    "postUnsavedCloseCancel": "Продължи редактирането",
+    "uploadAfterCreateFailed": "Известието беше създадено, но качването на визуализацията се провали. Можете да опитате отново от диалога за редактиране на известието.",
+    "pollOptionsSaveFailed": "Една или повече промени на опциите на анкетата не бяха запазени. Можете да опитате отново от този диалог.",
+    "referencesSaveFailed": "Една или повече нови референции не бяха запазени. Останалите промени не бяха приложени. Моля, опитайте отново."
   },
   "contribution": {
     "edit": "Редактирай",
@@ -178,7 +217,13 @@
     "configure": "Конфигурирай",
     "edit": "Редактиране",
     "memo": "Бележка",
-    "richTextEditor": "Редактор за форматиран текст"
+    "richTextEditor": "Редактор за форматиран текст",
+    "comingSoon": "Скоро",
+    "memoPlaceholder": "Напишете бележката си…",
+    "memoOpenHint": "Съдържанието на бележката се редактира в отделен диалог.",
+    "openMemo": "Отвори бележка",
+    "openWhiteboard": "Отвори дъска",
+    "openWhiteboardHint": "Съдържанието на дъската се редактира в отделен диалог."
   },
   "members": {
     "title": "Общност",
@@ -213,6 +258,11 @@
     "search": "Търсене на подпространства...",
     "showMore": "Покажи още {{count}}",
     "showLess": "Покажи по-малко",
+    "filter": {
+      "all": "Всички",
+      "active": "Активни",
+      "archived": "Архивирани"
+    },
     "empty": {
       "title": "Няма намерени подпространства",
       "description": "Няма подпространства, съответстващи на текущото търсене или филтър.",
@@ -229,8 +279,8 @@
     "leadUsers": "Водещи потребители",
     "leadOrganizations": "Водещи организации",
     "guidelines": "Насоки на общността",
-    "references": "Референции",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Референции",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -280,6 +330,7 @@
   },
   "mobile": {
     "more": "Още",
+    "menu": "Меню",
     "activity": "Активност",
     "videoCall": "Видеоразговор",
     "share": "Сподели",
@@ -296,7 +347,41 @@
     "moveUp": "Премести нагоре",
     "moveDown": "Премести надолу",
     "moveToBottom": "Премести най-долу",
-    "delete": "Изтрий"
+    "delete": "Изтрий",
+    "moveFailed": "Пренареждането не бе успешно. Опитайте отново."
+  },
+  "visibilityChange": {
+    "publishTitle": "Да публикувам ли този $t(common.callout)?",
+    "publishDescription": "$t(common.Callout)-ът ще стане видим за всички членове на пространството.",
+    "publishConfirm": "Публикувай",
+    "unpublishTitle": "Да върна ли този $t(common.callout) в чернова?",
+    "unpublishDescription": "$t(common.Callout)-ът вече няма да е видим за членовете на пространството.",
+    "unpublishConfirm": "Към чернова",
+    "notifyMembers": "Уведоми членовете на пространството",
+    "saveFailed": "Видимостта не можа да бъде променена. Опитайте отново."
+  },
+  "sortContributions": {
+    "title": "Сортирай приносите",
+    "description": "Влачете, за да пренаредите. Новият ред се прилага при запис.",
+    "empty": "Този $t(common.callout) все още няма приноси за сортиране.",
+    "confirm": "Запази реда",
+    "dragHandle": "Влачи за пренареждане",
+    "saveFailed": "Новият ред не можа да бъде запазен. Опитайте отново."
+  },
+  "deleteCallout": {
+    "title": "Да изтрия ли този $t(common.callout)?",
+    "description": "“{{title}}” ще бъде изтрит окончателно, заедно с приносите и коментарите. Това действие не може да бъде отменено.",
+    "confirm": "Изтрий",
+    "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Шаблонът не можа да бъде запазен. Опитайте отново."
+  },
+  "findTemplate": {
+    "overwriteTitle": "Да заменя ли текущото съдържание?",
+    "overwriteDescription": "Зареждането на този шаблон ще замени полетата, които вече сте попълнили. Това действие не може да бъде отменено.",
+    "overwriteConfirm": "Зареди шаблон",
+    "saveAsTemplateTitle": "Запази като шаблон"
   },
   "dates": {
     "today": "Днес",
@@ -309,21 +394,34 @@
     "urlRequired": "URL адресът е задължителен",
     "urlInvalid": "URL адресът трябва да започва с http:// или https://",
     "displayNameRequired": "Показваното име е задължително",
-    "questionRequired": "Въпросът е задължителен"
+    "questionRequired": "Въпросът е задължителен",
+    "required": "Това поле е задължително",
+    "maxSmall": "Трябва да е {{count}} знака или по-малко",
+    "maxMarkdown": "Трябва да е {{count}} знака или по-малко",
+    "minPollOptions": "Изискват се поне {{count}} опции",
+    "pollOptionRequired": "Текстът на опцията е задължителен",
+    "referenceTitleRequired": "Заглавието е задължително, когато е предоставен URL",
+    "linkRowTitleRequired": "Заглавието е задължително, когато е предоставен URL"
   },
   "forms": {
     "titleLabel": "Заглавие",
     "titlePlaceholder": "Дайте заглавие на публикацията си...",
+    "insertEmoji": "Вмъкване на емоджи",
     "descriptionLabel": "Описание",
     "descriptionPlaceholder": "Напишете нещо...",
     "tagsLabel": "Етикети",
-    "framingType": "Тип съдържание",
+    "tagsPlaceholder": "Етикети, разделени със запетая",
+    "framingType": "Добавяне към публикация",
     "visibility": "Видимост",
     "publishedLabel": "Публикувано",
     "draftLabel": "Чернова",
     "notifyMembers": "Уведоми членовете на пространството",
     "saveDraft": "Запази чернова",
+    "save": "Запази",
     "publish": "Публикувай",
+    "createPost": "Създай публикация",
+    "editPost": "Редактирай публикация",
+    "moreOptions": "Още опции",
     "findTemplate": "Намери шаблон",
     "contributionTypes": "Разрешени приноси",
     "commentsEnabled": "Активирай коментари",
@@ -333,7 +431,71 @@
     "pollQuestion": "Въпрос",
     "pollOption": "Опция {{number}}",
     "addOption": "Добави опция",
-    "removeOption": "Премахни опция"
+    "removeOption": "Премахни опция",
+    "allowComments": "Разреши коментари",
+    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието."
+  },
+  "contributionSettings": {
+    "heading": "Отговори",
+    "types": {
+      "link": "Връзки и файлове",
+      "post": "Публикации",
+      "memo": "Бележки",
+      "whiteboard": "Бели дъски",
+      "document": "Документи"
+    },
+    "actors": {
+      "members": "Членовете могат да добавят",
+      "admins": "Администраторите могат да добавят"
+    },
+    "commentsEnabled": "Активирай коментари",
+    "setDefaults": "Настрой стойности по подразбиране",
+    "prePopulate": {
+      "heading": "Предварително попълване",
+      "description": "Добавете връзки, които се появяват веднага след създаването на известието.",
+      "empty": "Все още няма предварително добавени връзки.",
+      "titleLabel": "Заглавие",
+      "titlePlaceholder": "Заглавие на връзката",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Описание",
+      "descriptionPlaceholder": "По избор описание",
+      "addRow": "Добави нова връзка",
+      "removeRow": "Премахни връзката"
+    }
+  },
+  "references": {
+    "heading": "Препратки",
+    "empty": "Все още няма препратки.",
+    "titleLabel": "Заглавие",
+    "titlePlaceholder": "Заглавие на препратката",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "По избор описание",
+    "addRow": "Добави нова препратка",
+    "removeRow": "Премахни препратката"
+  },
+  "responseDefaults": {
+    "srDescription": "Настройте стойностите по подразбиране за новите приноси в това известие.",
+    "title": {
+      "post": "Стойности по подразбиране за публикации",
+      "memo": "Стойности по подразбиране за бележки",
+      "whiteboard": "Стойности по подразбиране за бели дъски",
+      "document": "Стойности по подразбиране за документи",
+      "generic": "Стойности по подразбиране"
+    },
+    "defaultTitle": "Заглавие по подразбиране",
+    "defaultTitlePlaceholder": "Задайте заглавие по подразбиране за новите приноси",
+    "defaultDescription": "Описание по подразбиране",
+    "defaultDescriptionPlaceholder": "Насоки, които се показват при започване на нов принос",
+    "defaultWhiteboard": "Бяла дъска по подразбиране",
+    "configureWhiteboard": "Конфигурирай бяла дъска",
+    "editWhiteboard": "Редактирай бяла дъска",
+    "template": "Шаблон",
+    "templatePlaceholder": "Избери шаблон…",
+    "templateLoading": "Зареждане на шаблоните…",
+    "save": "Запази"
   },
   "calloutDialog": {
     "close": "Затвори диалога",
@@ -345,16 +507,90 @@
     "reactionCount_one": "1 реакция",
     "contributions": "Приноси"
   },
+  "memo": {
+    "close": "Затвори",
+    "stubDialog": {
+      "message": "Редакторът на бележки предстои — показва се преглед на обикновен текст."
+    },
+    "displayName": {
+      "inputLabel": "Заглавие",
+      "edit": "Редактиране на заглавието на бележката",
+      "save": "Запазване на заглавието на бележката",
+      "cancel": "Отказ от редактиране"
+    },
+    "footer": {
+      "connected": "Свързан",
+      "connecting": "Свързване…",
+      "disconnected": "Прекъсната връзка",
+      "membersOnline_one": "1 член онлайн",
+      "membersOnline_other": "{{count}} члена онлайн",
+      "connectedUsersLabel": "Свързани потребители",
+      "moreConnectedUsers_one": "Още {{count}} свързан потребител",
+      "moreConnectedUsers_other": "Още {{count}} свързани потребители",
+      "guestWarning": "Редактирате като гост",
+      "delete": "Изтриване на бележка",
+      "readonlyReason": {
+        "connecting": "Свързване със сървиса за сътрудничество…",
+        "notSynced": "Синхронизиране… отворете бележката отново, за да продължите редактирането.",
+        "unauthenticated": "Влезте, за да редактирате тази бележка.",
+        "contentUpdatePolicy": "Нямате разрешение да редактирате тази бележка. Помолете собственика да промени настройките за споделяне.",
+        "noMembership": "Само членове на това пространство могат да редактират тази бележка. Присъединете се, за да допринесете."
+      }
+    },
+    "errors": {
+      "loading": "Зареждане на бележка…",
+      "loadFailed": "Неуспешно зареждане на бележка"
+    },
+    "deleteConfirm": {
+      "title": "Изтриване на бележка",
+      "body": "Сигурни ли сте, че искате да изтриете тази бележка? Това действие не може да бъде отменено.",
+      "confirm": "Изтрий"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Тази връзка отваря външен сайт в нов раздел.",
+    "linkAriaLabel": "{{displayName}} (отваря {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (отваря {{url}} в нов раздел)",
+    "validation": {
+      "invalidUrl": "Невалиден URL адрес"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Отвори изображение",
+    "more_one": "+{{count}} още",
+    "more_other": "+{{count}} още",
+    "previous": "Предишно изображение",
+    "next": "Следващо изображение",
+    "goToImage": "Премини към изображение {{index}}",
+    "thumbnailsLabel": "Миниатюри на изображения",
+    "download": "Изтегли изображение",
+    "fullscreen": "Цял екран",
+    "exitFullscreen": "Изход от цял екран",
+    "emptyState": {
+      "title": "Все още няма изображения",
+      "action": "Добави изображения"
+    },
+    "altTextLabel": "Алтернативен текст",
+    "deleteImage": "Изтрий изображение",
+    "dismissError": "Затвори грешката",
+    "uploading": "Качване…",
+    "downloadError": "Изображението не може да бъде изтеглено.",
+    "validation": {
+      "type": "Неподдържан тип файл",
+      "tooSmall": "Изображението е твърде малко",
+      "tooLarge": "Изображението е твърде голямо"
+    }
+  },
   "comments": {
     "title": "Дискусия",
     "showMore": "Показване на повече",
     "showLess": "Показване на по-малко",
-    "sortNewest": "Най-ново първо",
-    "sortOldest": "Най-старо първо",
     "reply": "Отговор",
     "delete": "Изтриване",
     "deleted": "Този коментар беше изтрит",
     "addComment": "Добавете коментар...",
+    "mention": "Споменаване на потребител",
+    "mentionVirtualContributor": "AI",
     "send": "Изпращане",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
@@ -369,7 +605,19 @@
   },
   "dialogs": {
     "cancel": "Отказ",
-    "create": "Създай"
+    "create": "Създай",
+    "discardChanges": {
+      "title": "Отхвърляне на промените?",
+      "description": "Имате незапазени промени. Ако затворите този диалог, те ще бъдат загубени.",
+      "confirm": "Да, затвори",
+      "cancel": "Продължи редактирането"
+    },
+    "deleteFraming": {
+      "title": "Премахване на рамковото съдържание?",
+      "description": "Рамковото съдържание на този $t(common.callout) ще бъде премахнато. Това действие не може да бъде отменено.",
+      "confirm": "Премахни",
+      "cancel": "Запази"
+    }
   },
   "poll": {
     "status": {
@@ -436,6 +684,7 @@
     "feedRegion": "Поток със съдържание на пространството",
     "membersGrid": "Решетка с членове на общността",
     "subspacesGrid": "Решетка с подпространства",
+    "statusFilter": "Филтрирай подпространствата по статус",
     "visibilityNotice": "Известие за видимост на пространството",
     "mobileTabBar": "Навигация с табове",
     "moreActionsDrawer": "Допълнителни действия",

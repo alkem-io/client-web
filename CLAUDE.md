@@ -156,9 +156,8 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- The project uses Crowdin for translations
-- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
-- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
+- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
 
 ### Namespaces
 
@@ -360,11 +359,11 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 088-crd-space-apply-button: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies.
-- 087-crd-space-about-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `yup` (already in deps; used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
-- 086-crd-space-timeline: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns` (peer of RDP, new), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in domain hooks), `yup` (existing — used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
+- 094-crd-member-settings-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `alert-dialog`, `checkbox`, `label`, `button`, `avatar`, `dropdown-menu`; `lucide-react` (Trash2, MoreHorizontal, X icons); `react-i18next` (existing); Apollo Client (existing, unchanged — reused via `useCommunityAdmin` and generated mutation hooks); React Compiler (`babel-plugin-react-compiler`)
+- 093-crd-search-scope: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), Apollo Client (existing — unchanged), `react-i18next` (existing), `lucide-react`, `@/crd/primitives/dropdown-menu` (Radix UI)
+- 091-crd-subspace-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies. (088-crd-space-apply-button)
-- N/A (frontend SPA; data via existing GraphQL queries — no schema changes and no new queries/mutations) (088-crd-space-apply-button)
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `alert-dialog`, `checkbox`, `label`, `button`, `avatar`, `dropdown-menu`; `lucide-react` (Trash2, MoreHorizontal, X icons); `react-i18next` (existing); Apollo Client (existing, unchanged — reused via `useCommunityAdmin` and generated mutation hooks); React Compiler (`babel-plugin-react-compiler`) (094-crd-member-settings-dialog)
+- N/A (frontend SPA; data via existing GraphQL queries — no schema changes) (094-crd-member-settings-dialog)

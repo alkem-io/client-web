@@ -2,7 +2,7 @@ import { EditorContent } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { MarkdownToolbar } from './MarkdownToolbar';
-import { useEditorExtensions } from './useEditorExtensions';
+import { buildCrdMarkdownExtensions } from './sharedExtensions';
 import { useMarkdownEditorState } from './useMarkdownEditorState';
 import './styles.css';
 import { Suspense } from 'react';
@@ -29,7 +29,8 @@ export function MarkdownEditor(props: MarkdownEditorProps) {
 function MarkdownEditorLazy({ value, onChange, placeholder, maxLength, disabled, className }: MarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
-  const editorOptions = useEditorExtensions({
+  const editorOptions = buildCrdMarkdownExtensions({
+    collaborative: false,
     disabled,
     ariaLabel: placeholder ?? t('editor.toolbar'),
   });

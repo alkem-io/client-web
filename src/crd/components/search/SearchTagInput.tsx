@@ -57,8 +57,6 @@ export function SearchTagInput({
     }
   };
 
-  const isScoped = scope && scope.activeScope !== 'all';
-
   return (
     <div className="shrink-0 flex flex-col gap-3 px-5 py-4 md:px-6 border-b border-border">
       {/* Row 1: Input row */}
@@ -81,20 +79,39 @@ export function SearchTagInput({
             <DropdownMenuTrigger asChild={true}>
               <button
                 type="button"
+                aria-label={t('search.a11y.scopeTrigger', {
+                  option: scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName,
+                })}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control font-medium whitespace-nowrap shrink-0 border border-border',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control font-medium whitespace-nowrap shrink-0 border border-primary',
                   'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isScoped ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                  'bg-primary text-primary-foreground'
                 )}
               >
                 <Globe aria-hidden="true" className="size-3.5" />
-                <span>{scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName}</span>
+                <span>
+                  {t('search.scopeTriggerLabel', {
+                    option: scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName,
+                  })}
+                </span>
                 <ChevronDown aria-hidden="true" className="size-3.5" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => onScopeChange('all')}>{t('search.scopeAll')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => onScopeChange(scope.currentSpaceName)}>
+            <DropdownMenuContent
+              align="end"
+              sideOffset={6}
+              className="z-[110] min-w-(--radix-dropdown-menu-trigger-width) bg-primary text-primary-foreground border-primary rounded-2xl p-1.5"
+            >
+              <DropdownMenuItem
+                onSelect={() => onScopeChange('all')}
+                className="rounded-full px-3 py-1.5 text-control font-medium focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
+              >
+                {t('search.scopeAll')}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => onScopeChange(scope.currentSpaceName)}
+                className="rounded-full px-3 py-1.5 text-control font-medium focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
+              >
                 {scope.currentSpaceName}
               </DropdownMenuItem>
             </DropdownMenuContent>

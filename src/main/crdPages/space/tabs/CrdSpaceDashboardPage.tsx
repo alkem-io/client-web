@@ -1,17 +1,20 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
@@ -20,13 +23,22 @@ export default function CrdSpaceDashboardPage() {
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const navigate = useNavigate();
-  const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
-    useCrdSpaceDashboard();
+  const {
+    callouts,
+    calloutsSetId,
+    canCreateCallout,
+    tabDescription,
+    dashboardNavigation,
+    flowStateForNewCallouts,
+    loading,
+  } = useCrdSpaceDashboard();
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
   const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const locale = useCrdSpaceLocale();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const [createOpen, setCreateOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const openCalendar = () => {
     setCalendarOpen(true);
@@ -46,46 +58,56 @@ export default function CrdSpaceDashboardPage() {
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
       initials: getInitials(child.displayName),
-      color: pickColorFromId(child.id),
       href: child.url,
     })) ?? [];
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="home"
-            description={tabDescription || space.about.profile.description || ''}
-            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
-            subspaces={subspaces}
-            events={sidebarEvents}
-            onShowCalendar={openCalendar}
-            onAddEvent={canCreateEvents ? openCreateEvent : undefined}
-            onEventClick={openEventDetail}
-            locale={locale}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="home"
+          description={space.about.profile.description || ''}
+          leads={sidebarLeads}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onAboutClick={() => setAboutOpen(true)}
+          subspaces={subspaces}
+          events={sidebarEvents}
+          onShowCalendar={openCalendar}
+          onAddEvent={canCreateEvents ? openCreateEvent : undefined}
+          onEventClick={openEventDetail}
+          locale={locale}
+        />
+      </SpaceSidebarPortal>
 
       <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
 
-      <CalloutListConnector
-        title={t('feed.activity')}
-        callouts={callouts}
-        calloutsSetId={calloutsSetId}
-        canCreate={canCreateCallout}
-        onCreateClick={() => setCreateOpen(true)}
-        loading={loading}
+      <TabStateHeader
+        description={tabDescription}
+        action={
+          canCreateCallout && (
+            <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              {t('feed.addPost')}
+            </Button>
+          )
+        }
+        className="mb-6"
       />
 
+      <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
+
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
 
       <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
+
+      <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
     </>
   );
 }

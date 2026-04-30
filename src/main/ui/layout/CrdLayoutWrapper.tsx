@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
+import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -14,6 +15,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
+import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -45,6 +47,7 @@ function CrdLayoutConnector() {
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const breadcrumbItems = useBreadcrumbs();
 
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
@@ -79,6 +82,7 @@ function CrdLayoutConnector() {
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
         currentLanguage={currentLanguage}
+        breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
@@ -107,8 +111,10 @@ function CrdLayoutConnector() {
 
 export function CrdLayoutWrapper() {
   return (
-    <SearchProvider>
-      <CrdLayoutConnector />
-    </SearchProvider>
+    <BreadcrumbsProvider>
+      <SearchProvider>
+        <CrdLayoutConnector />
+      </SearchProvider>
+    </BreadcrumbsProvider>
   );
 }
