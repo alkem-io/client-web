@@ -2,7 +2,7 @@ import { FileText, Presentation, Sheet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
-export type CollaboraDocumentTypeValue = 'TEXT_DOCUMENT' | 'SPREADSHEET' | 'PRESENTATION';
+export type CollaboraDocumentTypeValue = 'WORDPROCESSING' | 'SPREADSHEET' | 'PRESENTATION';
 
 type CollaboraDocumentTypePickerProps = {
   value: CollaboraDocumentTypeValue;
@@ -15,7 +15,7 @@ const options: Array<{
   labelKey: 'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation';
   Icon: typeof FileText;
 }> = [
-  { value: 'TEXT_DOCUMENT', labelKey: 'callout.documentText', Icon: FileText },
+  { value: 'WORDPROCESSING', labelKey: 'callout.documentText', Icon: FileText },
   { value: 'SPREADSHEET', labelKey: 'callout.documentSpreadsheet', Icon: Sheet },
   { value: 'PRESENTATION', labelKey: 'callout.documentPresentation', Icon: Presentation },
 ];

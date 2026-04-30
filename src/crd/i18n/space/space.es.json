@@ -231,7 +231,8 @@
     "memoOpenHint": "El contenido de la nota se edita en su propio diálogo.",
     "openMemo": "Abrir nota",
     "openWhiteboard": "Abrir pizarra",
-    "openWhiteboardHint": "El contenido de la pizarra se edita en su propio diálogo."
+    "openWhiteboardHint": "El contenido de la pizarra se edita en su propio diálogo.",
+    "officeDocumentsNotEnabled": "Los documentos ofimáticos no están habilitados para este espacio."
   },
   "members": {
     "title": "Comunidad",

@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import {
   CalloutFramingType,
   CollaboraDocumentType,
+  LicenseEntitlementType,
   PollResultsDetail,
   PollResultsVisibility,
   type PollStatus,
@@ -31,6 +32,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import PollFormFields from '../../poll/PollFormFields';
@@ -62,6 +64,14 @@ const CalloutFormFramingSettings = ({
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
+
+  // Collabora "Document" framing is gated by SPACE_FLAG_OFFICE_DOCUMENTS on the
+  // parent space's license. While the SpaceContext is loading (or this form
+  // renders outside a SpaceContextProvider — e.g. template gallery — where
+  // `loading` stays true), keep the option enabled so we don't false-disable it.
+  const { entitlements, loading: spaceContextLoading } = useSpace();
+  const officeDocumentsEnabled =
+    spaceContextLoading || template || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
     let newFraming: CalloutFormSubmittedValues['framing'] | undefined;
@@ -152,7 +162,7 @@ const CalloutFormFramingSettings = ({
           type: newType,
           collaboraDocument: {
             displayName: framing.profile.displayName || t('common.collaboraDocument'),
-            documentType: CollaboraDocumentType.TextDocument,
+            documentType: CollaboraDocumentType.Wordprocessing,
           },
           whiteboard: undefined,
           memo: undefined,
@@ -235,7 +245,10 @@ const CalloutFormFramingSettings = ({
           icon: DescriptionOutlined,
           value: CalloutFramingType.CollaboraDocument,
           label: t('callout.create.framingSettings.collaboraDocument.title'),
-          tooltip: t('callout.create.framingSettings.collaboraDocument.tooltip'),
+          tooltip: officeDocumentsEnabled
+            ? t('callout.create.framingSettings.collaboraDocument.tooltip')
+            : t('callout.create.framingSettings.collaboraDocument.notEnabledTooltip'),
+          disabled: !officeDocumentsEnabled,
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -336,7 +349,7 @@ const CalloutFormFramingSettings = ({
             options={[
               {
                 icon: ArticleOutlined,
-                value: CollaboraDocumentType.TextDocument,
+                value: CollaboraDocumentType.Wordprocessing,
                 label: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
               },
               {

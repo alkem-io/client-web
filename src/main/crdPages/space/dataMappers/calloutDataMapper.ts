@@ -32,7 +32,8 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
 function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): CollaboraDocumentPreviewType | undefined {
   if (type === CollaboraDocumentType.Spreadsheet) return 'spreadsheet';
   if (type === CollaboraDocumentType.Presentation) return 'presentation';
-  if (type === CollaboraDocumentType.TextDocument) return 'text';
+  if (type === CollaboraDocumentType.Wordprocessing) return 'text';
+  if (type === CollaboraDocumentType.Drawing) return 'text';
   return undefined;
 }
 

@@ -63,4 +63,20 @@ describe('FramingChipStrip', () => {
     const memo = screen.getByRole('radio', { name: /callout.memo/i, checked: false });
     expect(memo).toBeInTheDocument();
   });
+
+  test('disabledChips marks the listed chip as aria-disabled and ignores clicks', async () => {
+    const onChange = vi.fn();
+    render(
+      <FramingChipStrip
+        value="none"
+        onChange={onChange}
+        disabledChips={{ document: { tooltip: 'Office documents not enabled' } }}
+      />
+    );
+    const doc = screen.getByRole('radio', { name: /callout.document/i });
+    expect(doc).toHaveAttribute('aria-disabled', 'true');
+    expect(doc).toHaveAttribute('title', 'Office documents not enabled');
+    await userEvent.click(doc);
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

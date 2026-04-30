@@ -231,7 +231,8 @@
     "memoOpenHint": "Le contenu du mémo se modifie dans sa propre fenêtre.",
     "openMemo": "Ouvrir le mémo",
     "openWhiteboard": "Ouvrir le tableau blanc",
-    "openWhiteboardHint": "Le contenu du tableau blanc se modifie dans sa propre fenêtre."
+    "openWhiteboardHint": "Le contenu du tableau blanc se modifie dans sa propre fenêtre.",
+    "officeDocumentsNotEnabled": "Les documents bureautiques ne sont pas activés pour cet espace."
   },
   "members": {
     "title": "Communauté",

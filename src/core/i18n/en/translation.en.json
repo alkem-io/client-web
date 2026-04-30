@@ -885,7 +885,8 @@
         },
         "collaboraDocument": {
           "title": "Document",
-          "tooltip": "Add a collaborative document as additional content"
+          "tooltip": "Add a collaborative document as additional content",
+          "notEnabledTooltip": "Office documents are not enabled for this space."
         }
       },
       "contributionSettings": {

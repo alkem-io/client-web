@@ -231,7 +231,8 @@
     "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
     "openMemo": "Memo openen",
     "openWhiteboard": "Whiteboard openen",
-    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt."
+    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt.",
+    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
   },
   "members": {
     "title": "Community",

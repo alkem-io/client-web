@@ -231,7 +231,8 @@
     "memoOpenHint": "Der Memo-Inhalt wird in einem eigenen Dialog bearbeitet.",
     "openMemo": "Memo öffnen",
     "openWhiteboard": "Whiteboard öffnen",
-    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet."
+    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet.",
+    "officeDocumentsNotEnabled": "Office-Dokumente sind für diesen Space nicht aktiviert."
   },
   "members": {
     "title": "Community",

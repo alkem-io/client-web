@@ -30,13 +30,13 @@ const CreateContributionButtonCollaboraDocument = ({
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [displayName, setDisplayName] = useState('');
-  const [documentType, setDocumentType] = useState<CollaboraDocumentType>(CollaboraDocumentType.TextDocument);
+  const [documentType, setDocumentType] = useState<CollaboraDocumentType>(CollaboraDocumentType.Wordprocessing);
   const [createCollaboraDocument] = useCreateCollaboraDocumentOnCalloutMutation();
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDisplayName('');
-    setDocumentType(CollaboraDocumentType.TextDocument);
+    setDocumentType(CollaboraDocumentType.Wordprocessing);
   };
 
   const [handleCreate, creating] = useLoadingState(async () => {
@@ -92,7 +92,7 @@ const CreateContributionButtonCollaboraDocument = ({
               label={t('collaboraDocument.create.documentType.label')}
               onChange={e => setDocumentType(e.target.value as CollaboraDocumentType)}
             >
-              <MenuItem value={CollaboraDocumentType.TextDocument}>
+              <MenuItem value={CollaboraDocumentType.Wordprocessing}>
                 {t('collaboraDocument.create.documentType.TEXT_DOCUMENT')}
               </MenuItem>
               <MenuItem value={CollaboraDocumentType.Spreadsheet}>

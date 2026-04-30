@@ -99,7 +99,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
-  collaboraDocumentType: CollaboraDocumentType.TextDocument,
+  collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   responseType: 'none',
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,

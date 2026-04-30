@@ -9,7 +9,6 @@ type Chip = {
   id: FramingChipId;
   labelKey: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  disabled?: boolean;
 };
 
 const CHIPS: Chip[] = [
@@ -21,6 +20,8 @@ const CHIPS: Chip[] = [
   { id: 'poll', labelKey: 'callout.poll', icon: Vote },
 ];
 
+export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;
+
 export type FramingChipStripProps = {
   /** Currently-selected chip, or `'none'` if no chip is active. */
   value: FramingChipId | 'none';
@@ -31,14 +32,21 @@ export type FramingChipStripProps = {
    * fires `onChange('none')` (edit-mode "switch to None" flow — see plan D6).
    */
   locked?: boolean;
+  /**
+   * Marks specific chips as non-interactive with an optional tooltip explaining
+   * why. Used by the consumer to gate chips behind license entitlements (e.g.
+   * the `document` chip is disabled when the space lacks the office-documents
+   * feature). The tooltip text is i18n'd by the consumer.
+   */
+  disabledChips?: DisabledChipMap;
   className?: string;
 };
 
-export function FramingChipStrip({ value, onChange, locked = false, className }: FramingChipStripProps) {
+export function FramingChipStrip({ value, onChange, locked = false, disabledChips, className }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
 
   const handleClick = (chip: Chip) => {
-    if (chip.disabled) return;
+    if (disabledChips?.[chip.id]) return;
     if (locked) {
       if (chip.id === value) onChange('none');
       return;
@@ -60,7 +68,9 @@ export function FramingChipStrip({ value, onChange, locked = false, className }:
       >
         {CHIPS.map(chip => {
           const active = value === chip.id;
-          const isInert = chip.disabled || (locked && !active);
+          const disabledInfo = disabledChips?.[chip.id];
+          const isDisabled = Boolean(disabledInfo);
+          const isInert = isDisabled || (locked && !active);
           return (
             // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
             <button
@@ -70,15 +80,15 @@ export function FramingChipStrip({ value, onChange, locked = false, className }:
               aria-checked={active}
               aria-disabled={isInert ? 'true' : undefined}
               aria-label={t(chip.labelKey as 'callout.whiteboard')}
-              title={chip.disabled ? t('framing.comingSoon') : undefined}
+              title={disabledInfo?.tooltip}
               onClick={() => handleClick(chip)}
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
                   ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                   : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                chip.disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
-                locked && !active && !chip.disabled && 'opacity-60 cursor-not-allowed'
+                isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
+                locked && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
               )}
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />
