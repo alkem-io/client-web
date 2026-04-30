@@ -53,11 +53,11 @@ Always looking for collaborators on open source climate data projects. Feel free
     <div className="min-h-screen bg-background pb-12">
       <UserProfileHeader user={user} />
 
-      <div className="px-6 md:px-8">
-        <div className="grid grid-cols-12 gap-6">
+      <div className="container mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left Column: Bio & Orgs — col 2-3 */}
-          <div className="hidden lg:block lg:col-start-2 col-span-2 space-y-6 lg:sticky lg:top-24 self-start">
+          {/* Left Column: Bio & Orgs */}
+          <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-24 self-start">
             {/* Bio Section */}
             <section>
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">About</h2>
@@ -83,8 +83,8 @@ Always looking for collaborators on open source climate data projects. Feel free
             </section>
           </div>
 
-          {/* Right Column: Resources & Spaces — col 4-11 (8 cols) */}
-          <div className="col-span-12 lg:col-span-8 flex flex-col min-w-0">
+          {/* Right Column: Resources & Spaces */}
+          <div className="lg:col-span-8 flex flex-col min-w-0">
              {/* Sticky Navigation Tabs */}
             <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-4 pb-2 mb-8 -mx-4 px-4 md:mx-0 md:px-0 border-b border-border/40">
               <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
