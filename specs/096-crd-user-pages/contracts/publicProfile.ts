@@ -2,11 +2,50 @@
  * CRD public-profile view contracts.
  *
  * File location at implementation time:
+ *   src/crd/components/user/UserPageHero.tsx
+ *   src/crd/components/user/UserPageMessagePopover.tsx
  *   src/crd/components/user/UserPublicProfileView.tsx
  *   src/crd/components/user/UserProfileSidebar.tsx
  *   src/crd/components/user/UserResourceTabStrip.tsx
  *   src/crd/components/user/UserResourceSections.tsx
+ *
+ * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
+ * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
+ *
+ * The settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,
+ * `UserSettingsCard`) live in sibling spec 097-crd-user-settings/contracts/shell.ts.
  */
+
+/* ----------------------------- UserPageHero ------------------------------ */
+
+export type UserPageHeroProps = {
+  /**
+   * Banner image. When `null` the component renders a deterministic gradient
+   * computed via `pickColorFromId(userId)` (FR-010).
+   */
+  bannerImageUrl: string | null;
+  avatarImageUrl: string | null;
+  displayName: string;
+  /** "City, Country" — null when both empty. */
+  location: string | null;
+  /**
+   * When true, render the Settings (gear) icon button. The component itself
+   * does not navigate — it calls `onClickSettings` (the canEditSettings
+   * predicate is computed by the integration layer per FR-011 and the
+   * matching FR-008a in sibling spec 097-crd-user-settings).
+   */
+  showSettingsIcon: boolean;
+  onClickSettings?: () => void;
+  /**
+   * When true, render the Message button. The button opens an in-hero
+   * compose Popover; submitting calls `onSendMessage` with the typed text
+   * (FR-012).
+   */
+  showMessageButton: boolean;
+  onSendMessage?: (messageText: string) => Promise<void>;
+};
+
+/* --------------------------- ResourceTabKey ----------------------------- */
 
 export type ResourceTabKey =
   | 'allResources'
