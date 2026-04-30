@@ -89,7 +89,7 @@ export function useDashboardSidebar({
     : { spaces: [], virtualContributors: [], innovationHubs: [], innovationPacks: [] };
 
   const resourceSections: SidebarResourceSection[] = [
-    { title: t('sidebar.mySpaces'), items: resources.spaces },
+    { title: t('sidebar.mySpaces'), items: resources.spaces, square: true },
     { title: t('sidebar.virtualContributors'), items: resources.virtualContributors },
     { title: t('sidebar.innovationHubs'), items: resources.innovationHubs },
     { title: t('sidebar.innovationPacks'), items: resources.innovationPacks },

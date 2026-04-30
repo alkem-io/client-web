@@ -38,7 +38,7 @@ export function WhiteboardEditorShell({
       }}
     >
       <DialogPortal>
-        <DialogOverlay className="bg-background/80 backdrop-blur-sm" />
+        <DialogOverlay className="z-[60] bg-background/80 backdrop-blur-sm" />
         <DialogContentRaw
           aria-labelledby={titleId}
           onInteractOutside={e => e.preventDefault()}
@@ -48,7 +48,7 @@ export function WhiteboardEditorShell({
             onClose();
           }}
           className={cn(
-            'fixed z-50 bg-background flex flex-col',
+            'fixed z-[60] bg-background flex flex-col',
             fullscreen
               ? 'inset-0'
               : 'top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-[95vw] max-h-[90vh] w-full h-[85vh] rounded-lg border shadow-lg',

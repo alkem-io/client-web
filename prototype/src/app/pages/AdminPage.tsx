@@ -12,6 +12,7 @@ import {
   Database,
   ChevronRight,
   Lock,
+  Lightbulb,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -23,7 +24,7 @@ const ADMIN_SECTIONS = [
   { id: "users", label: "Users", icon: Users },
   { id: "spaces", label: "Spaces", icon: Globe },
   { id: "roles", label: "Roles & Permissions", icon: Shield },
-  { id: "templates", label: "Templates", icon: Layout },
+  { id: "templates", label: "Templates", icon: Lightbulb },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "audit-log", label: "Audit Log", icon: FileText },
   { id: "platform", label: "Platform Settings", icon: Settings },

@@ -1,7 +1,7 @@
 import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { Badge } from "@/app/components/ui/badge";
-import { Settings, Share2, Video, FileText } from "lucide-react";
+import { Settings, Share2, Video, FileText, Activity } from "lucide-react";
 import { Link } from "react-router";
 
 interface SpaceHeaderProps {
@@ -13,7 +13,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
   return (
     <div className="flex flex-col bg-background">
       {/* Hero Banner */}
-      <div className="relative w-full h-[320px] overflow-hidden group">
+      <div className="relative w-full h-[256px] overflow-hidden group">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
@@ -44,14 +44,16 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
               size="icon"
               className="h-9 w-9 rounded hover:opacity-100"
               style={{ color: "white" }}
+              title="Recent Activity"
             >
-              <FileText className="h-4 w-4" />
+              <Activity className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-9 w-9 rounded hover:opacity-100"
               style={{ color: "white" }}
+              title="Video Call"
             >
               <Video className="h-4 w-4" />
             </Button>
@@ -60,6 +62,16 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
               size="icon"
               className="h-9 w-9 rounded hover:opacity-100"
               style={{ color: "white" }}
+              title="Documents"
+            >
+              <FileText className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 rounded hover:opacity-100"
+              style={{ color: "white" }}
+              title="Share"
             >
               <Share2 className="h-4 w-4" />
             </Button>
@@ -69,6 +81,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                 size="icon"
                 className="h-9 w-9 rounded hover:opacity-100"
                 style={{ color: "white" }}
+                title="Settings"
               >
                 <Settings className="h-4 w-4" />
               </Button>
@@ -89,7 +102,10 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
             <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           {/* Bottom: Title & Members */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="max-w-3xl" style={{ color: "var(--primary-foreground)" }}>
+            {/* Left: title */}
+            <div>
+
+            <div className="max-w-3xl pb-1" style={{ color: "var(--primary-foreground)" }}>
               <h1
                 className="mb-4"
                 style={{
@@ -116,6 +132,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                 Collaborating on the future of sustainable energy solutions and
                 urban transformation.
               </p>
+            </div>
             </div>
 
             <div className="flex items-center gap-4">

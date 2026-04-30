@@ -2551,6 +2551,7 @@ export enum CredentialType {
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -3536,6 +3537,7 @@ export enum LicenseEntitlementType {
   AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
   AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
   SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
+  SpaceFlagOfficeDocuments = 'SPACE_FLAG_OFFICE_DOCUMENTS',
   SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
   SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
@@ -3620,6 +3622,7 @@ export type Licensing = {
 export enum LicensingCredentialBasedCredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
+  SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -8543,8 +8546,8 @@ export type UpdateDiscussionInput = {
 
 export type UpdateDocumentInput = {
   ID: Scalars['UUID']['input'];
-  /** The display name for the Document. */
-  displayName: Scalars['String']['input'];
+  /** The display name for the Document. Not supported — rejected with a ValidationException if provided. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
   tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
@@ -13555,6 +13558,7 @@ export type UpdateCalloutContentMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13951,6 +13955,20 @@ export type UpdateCalloutContentMutation = {
             | undefined;
         }
       | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -13966,6 +13984,7 @@ export type UpdateCalloutVisibilityMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -14349,6 +14368,20 @@ export type UpdateCalloutVisibilityMutation = {
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
     createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    publishedBy?:
       | {
           __typename?: 'User';
           id: string;
@@ -15491,6 +15524,7 @@ export type CreateCalloutMutation = {
     sortOrder: number;
     activity: number;
     publishedDate?: Date | undefined;
+    createdDate: Date;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -15887,6 +15921,20 @@ export type CreateCalloutMutation = {
             | undefined;
         }
       | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -15920,7 +15968,14 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               __typename?: 'CalloutFraming';
               id: string;
               type: CalloutFramingType;
-              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              };
             };
             settings: {
               __typename?: 'CalloutSettings';
@@ -15964,7 +16019,14 @@ export type CalloutFragment = {
     __typename?: 'CalloutFraming';
     id: string;
     type: CalloutFramingType;
-    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
   };
   settings: {
     __typename?: 'CalloutSettings';
@@ -15989,6 +16051,7 @@ export type CalloutDetailsQuery = {
           sortOrder: number;
           activity: number;
           publishedDate?: Date | undefined;
+          createdDate: Date;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -16423,6 +16486,20 @@ export type CalloutDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          publishedBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
           classification?:
             | {
                 __typename?: 'Classification';
@@ -16470,6 +16547,7 @@ export type CalloutDetailsFragment = {
   sortOrder: number;
   activity: number;
   publishedDate?: Date | undefined;
+  createdDate: Date;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -16853,6 +16931,20 @@ export type CalloutDetailsFragment = {
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
   createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+  publishedBy?:
     | {
         __typename?: 'User';
         id: string;
@@ -39684,6 +39776,8 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
+              createdDate: Date;
+              publishedDate?: Date | undefined;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -39713,6 +39807,34 @@ export type SearchQuery = {
                 link?: { __typename?: 'Link'; id: string } | undefined;
               }>;
               comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              publishedBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             };
             space: {
               __typename?: 'Space';
@@ -40669,6 +40791,8 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
+    createdDate: Date;
+    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -40698,6 +40822,34 @@ export type SearchResultCalloutFragment = {
       link?: { __typename?: 'Link'; id: string } | undefined;
     }>;
     comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    publishedBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
   space: {
     __typename?: 'Space';

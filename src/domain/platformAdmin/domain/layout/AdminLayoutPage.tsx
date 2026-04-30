@@ -1,4 +1,4 @@
-import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
+import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
 import { useState } from 'react';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
@@ -14,10 +14,9 @@ const AdminLayoutPage = () => {
     }
   });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const useNew = event.target.value === 'new';
+  const handleChange = (_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     try {
-      if (useNew) {
+      if (checked) {
         localStorage.setItem(CRD_STORAGE_KEY, 'true');
       } else {
         localStorage.removeItem(CRD_STORAGE_KEY);
@@ -25,7 +24,7 @@ const AdminLayoutPage = () => {
     } catch {
       return;
     }
-    setIsNewDesign(useNew);
+    setIsNewDesign(checked);
     location.reload();
   };
 
@@ -39,13 +38,10 @@ const AdminLayoutPage = () => {
           Switch between the old and new page design. This setting is stored in your browser and only affects your
           session.
         </Typography>
-        <FormControl>
-          <FormLabel>Active design</FormLabel>
-          <RadioGroup value={isNewDesign ? 'new' : 'old'} onChange={handleChange}>
-            <FormControlLabel value="old" control={<Radio />} label="Old design" />
-            <FormControlLabel value="new" control={<Radio />} label="New design" />
-          </RadioGroup>
-        </FormControl>
+        <FormControlLabel
+          control={<Switch checked={isNewDesign} onChange={handleChange} />}
+          label="Use the new design"
+        />
       </Box>
     </AdminLayout>
   );

@@ -190,7 +190,7 @@ const CrdWhiteboardDialog = ({
         : undefined;
       const result = await prepareWhiteboardForUpdate(whiteboard, excState);
       if (result.success) {
-        actions.onUpdate(result.whiteboard, result.previewImages);
+        await actions.onUpdate(result.whiteboard, result.previewImages);
       } else {
         logError(new Error('Error preparing whiteboard for update on close'), {
           category: TagCategoryValues.WHITEBOARD,

@@ -10,6 +10,10 @@ type ContributionCardData = {
   tags?: string[];
   previewUrl?: string;
   markdownContent?: string;
+  /** For memo contributions: the underlying memo id (different from the contribution wrapper id). */
+  memoId?: string;
+  /** For post contributions: the underlying post id (different from the contribution wrapper id). */
+  postId?: string;
   linkUrl?: string;
   linkDescription?: string;
 };
@@ -145,6 +149,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       author: extractAuthor(post.createdBy),
       createdDate: toDateString(post.createdDate),
       commentCount: post.comments?.messagesCount,
+      postId: post.id,
     };
   }
 
@@ -169,6 +174,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       title: memo.profile.displayName,
       href: memo.profile.url,
       markdownContent: memo.markdown,
+      memoId: memo.id,
       author: extractAuthor(memo.createdBy),
       createdDate: toDateString(memo.createdDate),
     };

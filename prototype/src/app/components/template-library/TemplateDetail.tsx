@@ -520,7 +520,7 @@ function RenderWhiteboardContent({ template }: { template: any }) {
               </div>
               
               {/* Mock Content on Canvas */}
-              <div className="absolute inset-0 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-700 ease-out">
+              <div className="absolute inset-0 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500 ease-out">
                  {/* Zone 1 */}
                  <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
                      <div className="w-48 h-48 border-2 border-dashed border-border rounded-xl flex items-center justify-center bg-background/50">

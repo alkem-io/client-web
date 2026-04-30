@@ -159,6 +159,30 @@ fragment SearchResultCallout on SearchResultCallout {
       id
       messagesCount
     }
+    createdDate
+    publishedDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+    publishedBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
   }
   ...CalloutParent
 }

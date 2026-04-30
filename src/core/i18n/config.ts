@@ -115,6 +115,22 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/search/search.de.json'),
     fr: () => import('@/crd/i18n/search/search.fr.json'),
   },
+  'crd-spaceSettings': {
+    en: () => import('@/crd/i18n/spaceSettings/spaceSettings.en.json'),
+    es: () => import('@/crd/i18n/spaceSettings/spaceSettings.es.json'),
+    nl: () => import('@/crd/i18n/spaceSettings/spaceSettings.nl.json'),
+    bg: () => import('@/crd/i18n/spaceSettings/spaceSettings.bg.json'),
+    de: () => import('@/crd/i18n/spaceSettings/spaceSettings.de.json'),
+    fr: () => import('@/crd/i18n/spaceSettings/spaceSettings.fr.json'),
+  },
+  'crd-subspace': {
+    en: () => import('@/crd/i18n/subspace/subspace.en.json'),
+    es: () => import('@/crd/i18n/subspace/subspace.es.json'),
+    nl: () => import('@/crd/i18n/subspace/subspace.nl.json'),
+    bg: () => import('@/crd/i18n/subspace/subspace.bg.json'),
+    de: () => import('@/crd/i18n/subspace/subspace.de.json'),
+    fr: () => import('@/crd/i18n/subspace/subspace.fr.json'),
+  },
   'crd-whiteboard': {
     en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),
     es: () => import('@/crd/i18n/whiteboard/whiteboard.es.json'),

@@ -1,0 +1,805 @@
+{
+  "tabs": {
+    "about": "Acerca de",
+    "layout": "Diseño",
+    "community": "Comunidad",
+    "subspaces": "Subespacios",
+    "templates": "Plantillas",
+    "updates": "Actualizaciones",
+    "storage": "Almacenamiento",
+    "settings": "Configuración",
+    "account": "Cuenta"
+  },
+  "dirtyGuard": {
+    "save": "Guardar",
+    "discard": "Descartar y salir",
+    "cancel": "Cancelar",
+    "tabSwitch": {
+      "title": "Cambios sin guardar",
+      "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?"
+    },
+    "navAway": {
+      "title": "Cambios sin guardar",
+      "description": "Si sales de esta página, se descartarán tus cambios sin guardar."
+    }
+  },
+  "saveBar": {
+    "save": "Guardar cambios",
+    "discard": "Descartar cambios",
+    "saving": "Guardando…"
+  },
+  "layout": {
+    "pageHeader": {
+      "title": "Diseño",
+      "subtitle": "Personaliza las pestañas de navegación de tu Espacio. Cambia el nombre, reordena y gestiona las asignaciones de publicaciones."
+    },
+    "discardChangesDialog": {
+      "title": "¿Descartar cambios?",
+      "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
+      "confirm": "Descartar cambios"
+    },
+    "postDescriptionDisplay": {
+      "title": "Visualización de descripciones de publicaciones",
+      "switchLabel": "Contraer descripciones de publicaciones por defecto",
+      "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
+    },
+    "column": {
+      "titleAriaLabel": "Título de la columna",
+      "descriptionAriaLabel": "Descripción de la columna",
+      "editTitle": "Editar título de la columna",
+      "editDescription": "Editar descripción de la columna",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "titlePlaceholder": "Título de la columna",
+      "descriptionPlaceholder": "Describe esta columna…",
+      "menu": "Acciones de columna",
+      "empty": "Aún no hay callouts en esta columna.",
+      "activePhase": {
+        "set": "Marcar como fase activa",
+        "current": "Fase activa (actual)"
+      },
+      "defaultPostTemplate": {
+        "label": "Plantilla de publicación predeterminada",
+        "header": "Elige una plantilla",
+        "clear": "Borrar predeterminada",
+        "none": "No hay plantillas disponibles"
+      },
+      "editDetails": {
+        "menuLabel": "Editar detalles",
+        "dialogTitle": "Editar detalles: fase del flujo",
+        "titleLabel": "Título",
+        "editTitle": "Editar título",
+        "insertEmoji": "Insertar emoji",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Descripción",
+        "cancel": "Cancelar",
+        "saving": "Guardando…",
+        "save": "Guardar"
+      },
+      "deletePhase": "Eliminar fase"
+    },
+    "addPhase": {
+      "button": "Añadir fase",
+      "dialog": {
+        "title": "Añadir una nueva fase",
+        "description": "Crea una nueva fase del flujo de innovación. Puedes cambiarle el nombre o eliminarla más tarde.",
+        "nameLabel": "Nombre de la fase",
+        "namePlaceholder": "p. ej. Descubrimiento",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿Qué ocurre en esta fase?",
+        "duplicate": "Ya existe una fase con este nombre.",
+        "errorGeneric": "No se pudo crear la fase. Inténtalo de nuevo.",
+        "cancel": "Cancelar",
+        "confirm": "Añadir fase"
+      }
+    },
+    "row": {
+      "drag": "Arrastra para reordenar",
+      "menu": "Acciones del callout",
+      "moveTo": "Mover a",
+      "viewPost": "Ver publicación",
+      "noOtherColumns": "No hay otras columnas"
+    }
+  },
+  "community": {
+    "pageHeader": {
+      "title": "Comunidad",
+      "subtitle": "Gestiona miembros, organizaciones y contribuidores virtuales en este espacio."
+    },
+    "applications": {
+      "title": "Solicitudes pendientes",
+      "approve": "Aprobar",
+      "reject": "Rechazar"
+    },
+    "invitations": {
+      "title": "Invitaciones pendientes",
+      "revoke": "Revocar invitación",
+      "platformInvite": "Invitación de plataforma"
+    },
+    "pendingMemberships": {
+      "title": "Membresías pendientes",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "date": "Fecha",
+      "type": "Tipo",
+      "actions": "Acciones",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "delete": "Eliminar",
+      "empty": "No hay membresías pendientes.",
+      "status": {
+        "column": "Estado",
+        "applicationReceived": "Solicitud recibida",
+        "applicationApproved": "Solicitud aprobada",
+        "applicationRejected": "Solicitud rechazada",
+        "invited": "Invitado",
+        "invitationAccepted": "Invitación aceptada",
+        "invitationRejected": "Invitación rechazada",
+        "invitedExternal": "Invitado (externo)"
+      },
+      "contributorType": {
+        "user": "Usuario",
+        "organization": "Organización",
+        "virtualContributor": "Contribuidor virtual"
+      }
+    },
+    "members": {
+      "title": "Miembros del espacio",
+      "search": "Buscar miembros…",
+      "invite": "Invitar",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "role": {
+        "lead": "Lead",
+        "member": "Miembro",
+        "promoteToLead": "Hacer lead",
+        "demoteFromLead": "Quitar como lead"
+      },
+      "actions": "Acciones",
+      "empty": "No se encontraron miembros.",
+      "remove": "Eliminar miembro",
+      "joined": "Se unió",
+      "viewProfile": "Ver perfil",
+      "dropdown": {
+        "viewProfile": "Ver perfil",
+        "changeRole": "Cambiar rol",
+        "removeFromSpace": "Eliminar del Espacio"
+      },
+      "pagination": {
+        "showing": "Mostrando {{from}} a {{to}} de {{total}} miembros",
+        "previous": "Página anterior",
+        "page": "Página {{page}} de {{total}}",
+        "next": "Página siguiente"
+      },
+      "roleColumn": "Rol"
+    },
+    "memberSettings": {
+      "title": "Configuración del miembro",
+      "lead": "Este miembro es un <b>lead</b>: Los responsables se muestran como los anfitriones de la comunidad.",
+      "admin": "Este miembro es un <b>admin</b>: tiene derecho a administrar esta comunidad y todo su contenido y contribuidores.",
+      "maxLeadsWarning": "Ten en cuenta que hay un <b>número máximo de leads</b> para las comunidades. Si se alcanza el máximo, esta opción se desactivará para otros.",
+      "section": {
+        "role": "Rol",
+        "authorization": "Autorización",
+        "removeMember": "Eliminar miembro"
+      },
+      "remove": {
+        "link": "Haz clic aquí para eliminar a este miembro de esta comunidad. Ten cuidado, esta acción no se puede deshacer."
+      },
+      "footer": {
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      },
+      "close": "Cerrar"
+    },
+    "organizations": {
+      "title": "Organizaciones miembros",
+      "name": "Nombre",
+      "role": "Rol",
+      "actions": "Acciones",
+      "empty": "No hay organizaciones.",
+      "remove": "Eliminar organización",
+      "description": "Permite que los miembros de organizaciones específicas se unan automáticamente.",
+      "add": "Añadir organización",
+      "hint": "Los usuarios de estas organizaciones pueden unirse sin aprobación del administrador.",
+      "dropdown": {
+        "viewProfile": "Ver perfil",
+        "changeRole": "Cambiar rol",
+        "removeFromSpace": "Eliminar del Espacio"
+      },
+      "addDialog": {
+        "title": "Añadir organización",
+        "description": "Elige una organización cuyos miembros puedan unirse a este espacio sin aprobación.",
+        "search": "Buscar organizaciones…",
+        "empty": "Ninguna organización coincide con tu búsqueda."
+      }
+    },
+    "virtualContributors": {
+      "title": "Contribuidores virtuales",
+      "name": "Nombre",
+      "actions": "Acciones",
+      "empty": "No hay contribuidores virtuales.",
+      "remove": "Eliminar contribuidor virtual",
+      "description": "Gestiona los agentes y bots de IA que participan en este espacio.",
+      "add": "Añadir contribuidor virtual",
+      "addExternal": "Invitar contribuidor virtual externo",
+      "addDialog": {
+        "title": "Añadir contribuidor virtual",
+        "description": "Elige un contribuidor virtual de esta cuenta para añadirlo al espacio.",
+        "search": "Buscar contribuidores virtuales…",
+        "empty": "No hay contribuidores virtuales disponibles en esta cuenta."
+      },
+      "addExternalDialog": {
+        "title": "Invitar contribuidor virtual externo",
+        "description": "Invita a un contribuidor virtual de la biblioteca de Alkemio. El propietario tendrá que aceptar la invitación.",
+        "search": "Buscar en la biblioteca…",
+        "empty": "Ningún contribuidor virtual de la biblioteca coincide con tu búsqueda."
+      }
+    },
+    "applicationForm": {
+      "title": "Formulario de solicitud",
+      "description": "Personaliza las preguntas que los usuarios deben responder al solicitar unirse a este espacio."
+    },
+    "guidelines": {
+      "title": "Normas de la comunidad",
+      "description": "Establece reglas y expectativas sobre el comportamiento de los miembros.",
+      "hint": "Se muestran a los nuevos miembros al unirse.",
+      "placeholder": "Describe el código de conducta de tu espacio…",
+      "save": "Guardar normas",
+      "saving": "Guardando…"
+    },
+    "confirmRemove": {
+      "confirm": "Confirmar",
+      "user": {
+        "title": "¿Estás seguro de que quieres eliminar a este miembro?",
+        "description": "Al hacer clic en Confirmar, {{name}} será eliminado de esta comunidad y de todos los subespacios subyacentes de los que pueda ser miembro. Sus contribuciones permanecerán en su lugar. Esta acción no se puede deshacer."
+      },
+      "organization": {
+        "title": "¿Estás seguro de que quieres eliminar a esta organización?",
+        "description": "Al hacer clic en Confirmar, {{name}} será eliminada de esta comunidad y de todos los subespacios subyacentes de los que pueda ser miembro. Sus contribuciones permanecerán en su lugar. Esta acción no se puede deshacer."
+      },
+      "virtualContributor": {
+        "title": "Eliminar contribuidor virtual",
+        "description": "¿Eliminar a {{name}} de este espacio?"
+      },
+      "invitation": {
+        "title": "Revocar invitación",
+        "description": "¿Revocar la invitación pendiente para {{name}}?"
+      },
+      "applicationReject": {
+        "title": "Rechazar solicitud",
+        "description": "¿Rechazar la solicitud de {{name}} para unirse a este espacio?"
+      },
+      "applicationDelete": {
+        "title": "Eliminar solicitud",
+        "description": "¿Eliminar la solicitud de {{name}} de la lista?"
+      }
+    },
+    "addDialog": {
+      "name": "Nombre",
+      "action": "Acción",
+      "empty": "Ningún candidato coincide con tu búsqueda.",
+      "added": "Añadido",
+      "addAriaLabel": "Añadir {{name}}",
+      "add": "Añadir"
+    },
+    "invite": {
+      "email": {
+        "errors": {
+          "empty": "Introduce una dirección de correo electrónico.",
+          "invalid": "Introduce una dirección de correo electrónico válida.",
+          "failed": "No se pudo enviar la invitación."
+        },
+        "title": "Invitar por correo electrónico",
+        "placeholder": "persona@ejemplo.com",
+        "send": "Enviar",
+        "sent": "Invitación enviada a {{email}}"
+      },
+      "title": "Invitar miembros",
+      "description": "Invita a un miembro existente de Alkemio eligiéndolo de la lista, o invita a alguien nuevo por correo electrónico.",
+      "users": {
+        "title": "Invitar miembros existentes",
+        "search": "Buscar miembros de Alkemio…",
+        "empty": "Ningún candidato coincide con tu búsqueda.",
+        "invited": "Invitado",
+        "invite": "Invitar"
+      }
+    }
+  },
+  "subspaces": {
+    "pageHeader": {
+      "title": "Subespacios",
+      "subtitle": "Edita los subespacios de este espacio. Configura plantillas predeterminadas y consulta todos los subespacios existentes."
+    },
+    "defaultTemplate": {
+      "title": "Plantilla de subespacio predeterminada",
+      "description": "Elige la configuración predeterminada que se aplicará al crear un nuevo subespacio dentro de este espacio.",
+      "change": "Cambiar plantilla predeterminada",
+      "dialog": {
+        "title": "Cambiar plantilla de subespacio predeterminada",
+        "intro": "Personaliza la plantilla predeterminada para los subespacios recién creados.",
+        "description": "A continuación puedes elegir entre las plantillas recopiladas en la biblioteca de plantillas del espacio. Si quieres crear nuevas plantillas o explorar plantillas adicionales, <library>haz clic aquí</library> para acceder a esta biblioteca.",
+        "fieldLabel": "Categoría",
+        "placeholder": "Seleccionar una plantilla",
+        "loading": "Cargando plantillas…",
+        "empty": "No hay plantillas de subespacio disponibles.",
+        "required": "Este campo es obligatorio.",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando…"
+      }
+    },
+    "listTitle": "Subespacios",
+    "search": "Buscar subespacios...",
+    "create": "Crear subespacio",
+    "filterLabel": "Filtro:",
+    "filter": {
+      "all": "Todos",
+      "active": "Activos",
+      "archived": "Archivados",
+      "activeOnly": "Solo activos",
+      "archivedOnly": "Solo archivados"
+    },
+    "viewMode": {
+      "list": "Vista de lista",
+      "grid": "Vista de cuadrícula"
+    },
+    "noResults": "No se encontraron subespacios",
+    "noResultsHint": "Prueba a ajustar tu búsqueda o tus filtros.",
+    "actions": "Acciones del subespacio",
+    "kebab": {
+      "pin": "Fijar",
+      "unpin": "Desfijar",
+      "saveAsTemplate": "Guardar como plantilla",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar subespacio",
+      "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    },
+    "saveAsTemplate": {
+      "title": "Crear nueva plantilla de espacio",
+      "profile": {
+        "title": "Descripción de la plantilla",
+        "help": "Esta descripción será visible para cualquiera que explore las plantillas. No forma parte del contenido de la plantilla en sí."
+      },
+      "fields": {
+        "displayName": "Título de la plantilla",
+        "description": "Descripción de la plantilla",
+        "tags": "Etiquetas de la plantilla",
+        "tagsPlaceholder": "Añade una etiqueta y pulsa Enter"
+      },
+      "spaceTemplate": {
+        "title": "Plantilla de espacio",
+        "activeSource": "Capturando contenido de: {{name}}"
+      },
+      "urlLoader": {
+        "open": "Actualizar la colaboración desde otro espacio",
+        "description": "Pega la URL de un espacio o subespacio para usar su contenido de colaboración como base de esta plantilla.",
+        "placeholder": "https://…",
+        "use": "Usar este espacio",
+        "cancel": "Cancelar",
+        "resolving": "Comprobando…",
+        "errors": {
+          "required": "Pega la URL del espacio que quieres copiar como plantilla.",
+          "invalidUrl": "Esta URL no apunta a un espacio.",
+          "notFound": "Espacio no encontrado.",
+          "noRights": "Necesitas derechos de administrador en el espacio que quieres copiar como plantilla."
+        }
+      },
+      "recursive": "Incluir también los subespacios del espacio seleccionado en la plantilla",
+      "preview": {
+        "info": "Siempre incluido: información Acerca de y Configuración",
+        "states": "Fases",
+        "callouts": "Callouts",
+        "noCalloutsInState": "No hay callouts en esta fase.",
+        "noCalloutDescription": "Sin descripción",
+        "subspaces": "Incluye estos subespacios"
+      },
+      "errors": {
+        "nameTooShort": "El nombre de la plantilla debe tener al menos 3 caracteres"
+      },
+      "cancel": "Cancelar",
+      "save": "Crear",
+      "saving": "Creando…"
+    },
+    "createDialog": {
+      "dialog": {
+        "title": "Crear nuevo subespacio",
+        "subtitle": "Configura un nuevo espacio de trabajo dentro de este espacio."
+      },
+      "template": {
+        "label": "Plantilla",
+        "hint": "Opcional — elige una plantilla de subespacio para rellenar contenido previamente.",
+        "loading": "Cargando plantillas…",
+        "placeholder": "Seleccionar una plantilla (opcional)",
+        "none": "Sin plantilla"
+      },
+      "displayName": {
+        "label": "Nombre",
+        "hint": "El nombre de tu subespacio, visible para los miembros.",
+        "placeholder": "p. ej. Campaña de marketing del Q1"
+      },
+      "tagline": {
+        "label": "Subtítulo",
+        "hint": "Un subtítulo corto que describa el subespacio.",
+        "placeholder": "Un subtítulo corto…"
+      },
+      "description": {
+        "label": "Descripción",
+        "hint": "Explica de qué trata este subespacio. Compatible con Markdown.",
+        "placeholder": "¿De qué trata este subespacio?"
+      },
+      "tags": {
+        "label": "Etiquetas",
+        "hint": "Las etiquetas ayudan a los miembros a encontrar este subespacio.",
+        "placeholder": "Añade una etiqueta y pulsa Enter"
+      },
+      "avatar": {
+        "label": "Avatar",
+        "upload": "Subir avatar"
+      },
+      "cardBanner": {
+        "label": "Banner de tarjeta",
+        "upload": "Subir banner de tarjeta"
+      },
+      "visuals": {
+        "remove": "Eliminar imagen",
+        "resolutionHint": "Recomendado: {{width}} × {{height}} px",
+        "tooSmall": "La imagen es demasiado pequeña. Se requiere un mínimo de {{width}} × {{height}} px.",
+        "loadFailed": "No se pudo leer el archivo de imagen."
+      },
+      "cancel": "Cancelar",
+      "submit": "Crear subespacio",
+      "creating": "Creando…",
+      "validation": {
+        "min3": "Debe tener al menos 3 caracteres",
+        "maxSmall": "Debe tener {{count}} caracteres o menos",
+        "maxMarkdown": "Debe tener {{count}} caracteres o menos",
+        "required": "El nombre es obligatorio"
+      }
+    }
+  },
+  "updates": {
+    "pageHeader": {
+      "title": "Actualizaciones de los leads",
+      "subtitle": "Publica anuncios, hitos y actualizaciones de progreso visibles para todos los miembros del espacio."
+    },
+    "composer": {
+      "new": "Nueva actualización",
+      "title": "Nueva actualización",
+      "placeholder": "Escribe tu actualización…",
+      "publish": "Publicar",
+      "submitting": "Publicando…",
+      "cancel": "Cancelar"
+    },
+    "empty": "Aún no hay actualizaciones.",
+    "unknownAuthor": "Autor desconocido",
+    "message": {
+      "actions": "Acciones de la actualización",
+      "delete": "Eliminar"
+    },
+    "deleteDialog": {
+      "title": "Eliminar actualización",
+      "description": "¿Estás seguro de que quieres eliminar esta actualización? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    },
+    "loading": "Cargando actualizaciones"
+  },
+  "templateLibrary": {
+    "title": "Selecciona una plantilla",
+    "titleForType": "Selecciona una plantilla de tipo {{type}}",
+    "cancel": "Cancelar",
+    "loadPlatform": "Cargar plantillas de la biblioteca de la plataforma",
+    "emptySection": "No hay plantillas en esta sección.",
+    "selectAria": "Seleccionar plantilla {{name}}",
+    "sections": {
+      "space": "Este espacio",
+      "account": "Mis paquetes de innovación",
+      "platform": "Biblioteca de la plataforma"
+    }
+  },
+  "templates": {
+    "pageHeader": {
+      "title": "Plantillas",
+      "subtitle": "Gestiona plantillas para espacios, herramientas de colaboración, pizarras, publicaciones y normas de la comunidad."
+    },
+    "search": "Buscar plantillas...",
+    "addNew": "Añadir nueva",
+    "createNew": "Crear una nueva plantilla",
+    "selectFromLibrary": "Seleccionar una plantilla de la biblioteca de la plataforma",
+    "noTemplates": "No se encontraron plantillas",
+    "noTemplatesHint": "Prueba a buscar otro término o crea una nueva plantilla.",
+    "duplicating": "Creando nueva plantilla…",
+    "noPreview": "Sin vista previa",
+    "custom": "Personalizada",
+    "actions": "Acciones de plantilla",
+    "categories": {
+      "space": "Espacio",
+      "collaborationTool": "Herramienta de colaboración",
+      "whiteboard": "Pizarra",
+      "post": "Publicación",
+      "communityGuidelines": "Normas de la comunidad"
+    },
+    "kebab": {
+      "preview": "Vista previa",
+      "duplicate": "Duplicar",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "preview": {
+      "title": "Vista previa",
+      "name": "Nombre",
+      "tagline": "Subtítulo",
+      "description": "Descripción",
+      "body": "Contenido",
+      "noDescription": "No se ha proporcionado descripción.",
+      "noBody": "Sin contenido.",
+      "close": "Cerrar",
+      "edit": "Editar",
+      "duplicate": "Duplicar",
+      "duplicating": "Duplicando…"
+    },
+    "edit": {
+      "title": "Editar plantilla",
+      "name": "Nombre",
+      "tagline": "Subtítulo",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe esta plantilla…",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
+      "postDefault": "Descripción predeterminada de la publicación",
+      "postDefaultPlaceholder": "Se muestra prerrellenada cuando los miembros crean una publicación a partir de esta plantilla…",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando…"
+    },
+    "deleteDialog": {
+      "title": "Eliminar plantilla",
+      "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    },
+    "library": {
+      "sections": {
+        "thisSpace": "Este espacio",
+        "myInnovationPacks": "Mis paquetes de innovación",
+        "platformLibrary": "Biblioteca de la plataforma"
+      },
+      "validation": {}
+    }
+  },
+  "settings": {
+    "pageHeader": {
+      "title": "Configuración",
+      "subtitle": "Configura la visibilidad de tu espacio, las políticas de membresía y las acciones permitidas a los miembros."
+    },
+    "visibility": {
+      "title": "Visibilidad",
+      "description": "Controla quién puede ver y acceder a este espacio",
+      "public": "Público",
+      "publicDescription": "Este espacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
+      "private": "Privado",
+      "privateDescription": "Este espacio es visible para todos en la plataforma, pero el contenido solo es visible para los miembros.",
+      "hint": "Considera el propósito y el público de tu espacio al elegir la visibilidad."
+    },
+    "membership": {
+      "title": "Membresía",
+      "description": "Elige cómo se unen los usuarios a tu espacio",
+      "open": "No se requiere solicitud",
+      "openDescription": "Todos los miembros del espacio pueden unirse directamente, sin que tengas que revisar sus solicitudes.",
+      "openHint": "Ideal para espacios públicos y abiertos de colaboración",
+      "application": "Solicitud requerida",
+      "applicationDescription": "Si las personas quieren convertirse en miembros, deben rellenar el formulario de solicitud. Recibes sus solicitudes (mira la pestaña de comunidad aquí) y puedes aceptarlas o rechazarlas.",
+      "applicationHint": "Ideal para espacios curados con requisitos específicos",
+      "invitation": "Solo por invitación",
+      "invitationDescription": "Los usuarios solo pueden ser miembros después de que les hayas invitado. No hay un botón de 'solicitar' o 'unirse' para que otros pulsen.",
+      "invitationHint": "Ideal para equipos de colaboración privados y restringidos",
+      "trustedApplicants": "Solicitantes de confianza",
+      "hostOrgTrust": "Permite que los miembros de {{host}} se unan a este espacio sin solicitud."
+    },
+    "applicationForm": {
+      "title": "Formulario de solicitud",
+      "description": "Esta sección te permite modificar las preguntas para los usuarios que solicitan unirse al espacio. Ten en cuenta que estas preguntas solo se mostrarán cuando las opciones de membresía (en el bloque de arriba) estén configuradas como \"Solicitud requerida\".",
+      "introductionLabel": "Introducción",
+      "questionsLabel": "Preguntas",
+      "addQuestion": "Añadir pregunta",
+      "noQuestions": "Aún no se han añadido preguntas.",
+      "questionPlaceholder": "Introduce la pregunta…",
+      "required": "Obligatoria",
+      "moveUp": "Mover hacia arriba",
+      "moveDown": "Mover hacia abajo",
+      "questionRequired": "El texto de la pregunta es obligatorio",
+      "deleteQuestion": "Eliminar pregunta",
+      "deleteConfirm": {
+        "title": "Eliminar pregunta",
+        "description": "¿Estás seguro de que quieres eliminar esta pregunta?",
+        "confirm": "Eliminar"
+      },
+      "save": "Guardar"
+    },
+    "allowedActions": {
+      "title": "Acciones permitidas",
+      "description": "Elige qué acciones pueden realizar los miembros en este espacio",
+      "subspaceAdminInvitations": "Invitaciones al espacio",
+      "memberCreatePosts": "Crear publicaciones",
+      "videoCalls": "Videollamadas",
+      "guestContributions": "Contribuciones de invitados",
+      "memberCreateSubspaces": "Crear subespacios",
+      "inheritMembershipRights": "Heredar derechos de membresía",
+      "inheritMembershipRightsDescription": "Los miembros del espacio principal obtienen automáticamente acceso a este subespacio.",
+      "subspaceEvents": "Eventos del subespacio",
+      "alkemioSupportAccess": "Soporte de Alkemio",
+      "trustHostOrganization": "Confiar en la organización anfitriona"
+    }
+  },
+  "storage": {
+    "pageHeader": {
+      "title": "Almacenamiento",
+      "subtitle": "Explora y gestiona los documentos almacenados en este espacio."
+    },
+    "empty": "Aún no hay documentos almacenados.",
+    "columns": {
+      "name": "Nombre",
+      "size": "Tamaño",
+      "uploader": "Subido por",
+      "date": "Fecha",
+      "actions": "Acciones"
+    },
+    "openInNewTab": "Abrir en nueva pestaña",
+    "delete": "Eliminar documento",
+    "deleteDialog": {
+      "title": "Eliminar documento",
+      "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    }
+  },
+  "account": {
+    "pageHeader": {
+      "title": "Cuenta",
+      "subtitle": "Aquí encontrarás todos tus espacios, contribuidores virtuales y otros recursos alojados. Si tienes alguna pregunta, no dudes en contactar con el equipo de Alkemio."
+    },
+    "url": {
+      "title": "URL",
+      "hint": "La URL única de este espacio. Contacta con Alkemio para cambiarla.",
+      "copy": "Copiar URL",
+      "copied": "URL copiada"
+    },
+    "visibility": {
+      "title": "Estado de visibilidad",
+      "prefix": "Este espacio está actualmente en",
+      "suffix": "modo",
+      "contact": "Para cambios de estado, contacta con el equipo de Alkemio."
+    },
+    "host": {
+      "title": "Información del anfitrión",
+      "description": "El anfitrión es la persona u organización propietaria de este espacio."
+    },
+    "plan": {
+      "title": "Licencia",
+      "description": "Detalles de tu suscripción actual al espacio",
+      "featuresHeading": "Funciones incluidas",
+      "daysLeft": "{{count}} días restantes",
+      "changeLicense": "Cambiar licencia"
+    },
+    "support": {
+      "title": "Soporte",
+      "message": "Si quieres cambiar alguna de estas configuraciones, por favor contacta con el equipo de Alkemio.",
+      "contact": "Contactar con el soporte de Alkemio"
+    },
+    "dangerZone": {
+      "title": "Zona de peligro",
+      "description": "Elimina permanentemente este espacio y todo su contenido.",
+      "delete": "Eliminar este espacio",
+      "deleteDialog": {
+        "title": "Eliminar espacio",
+        "description": "Esto eliminará permanentemente este espacio y todo su contenido. Esta acción no se puede deshacer.",
+        "confirm": "Eliminar espacio"
+      }
+    }
+  },
+  "about": {
+    "name": {
+      "title": "Nombre del espacio",
+      "description": "El nombre público de tu espacio.",
+      "ariaLabel": "Nombre del espacio"
+    },
+    "tagline": {
+      "title": "Subtítulo",
+      "description": "Un subtítulo corto que se muestra junto al nombre del espacio.",
+      "ariaLabel": "Subtítulo"
+    },
+    "branding": {
+      "title": "Branding del espacio",
+      "description": "Sube un avatar, un banner de página (1536×256) y un banner de tarjeta (416×256).",
+      "noImage": "Sin imagen",
+      "upload": "Subir",
+      "avatar": {
+        "title": "Avatar",
+        "hint": "El logo del espacio."
+      },
+      "pageBanner": {
+        "title": "Banner de página (1536 × 256px)",
+        "hint": "Se muestra en la parte superior de la página del espacio."
+      },
+      "cardBanner": {
+        "title": "Banner de tarjeta (416 × 256px)",
+        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio."
+      },
+      "cropDialog": {
+        "save": "Guardar",
+        "saving": "Guardando…",
+        "cancel": "Cancelar",
+        "title": "Recortar imagen",
+        "altText": "Descripción",
+        "altTextPlaceholder": "Describe esta imagen…"
+      },
+      "changeBanner": "Cambiar banner"
+    },
+    "location": {
+      "title": "Ubicación",
+      "description": "La ciudad y el país de este espacio.",
+      "city": "Ciudad",
+      "country": "País (código ISO)"
+    },
+    "what": {
+      "title": "Qué",
+      "description": "Describe de qué trata este espacio.",
+      "placeholder": "¿De qué trata este espacio…?"
+    },
+    "why": {
+      "title": "Por qué",
+      "description": "Explica la motivación o el valor de este espacio.",
+      "placeholder": "¿Por qué existe este espacio…?"
+    },
+    "who": {
+      "title": "Quién",
+      "description": "Describe el público objetivo o los miembros ideales.",
+      "placeholder": "¿Para quién es este espacio…?"
+    },
+    "tags": {
+      "title": "Etiquetas",
+      "description": "Las etiquetas ayudan a los miembros a descubrir tu espacio.",
+      "placeholder": "Añade una etiqueta y pulsa Enter"
+    },
+    "references": {
+      "title": "Referencias y enlaces",
+      "description": "Enlaces externos mostrados en la página de este espacio.",
+      "empty": "Aún no se han añadido referencias.",
+      "add": "Añadir",
+      "row": {
+        "title": "Título de la referencia",
+        "titlePlaceholder": "Título",
+        "uri": "URL de la referencia",
+        "uriPlaceholder": "https://…",
+        "description": "Descripción de la referencia",
+        "descriptionPlaceholder": "Descripción (opcional)",
+        "remove": "Eliminar referencia"
+      },
+      "deleteDialog": {
+        "title": "Eliminar referencia",
+        "description": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esto no se puede deshacer una vez que guardes.",
+        "untitled": "esta referencia",
+        "confirm": "Eliminar"
+      }
+    },
+    "preview": {
+      "title": "VISTA PREVIA",
+      "label": "VISTA PREVIA",
+      "livePreview": {
+        "title": "Vista previa en vivo",
+        "description": "Esta vista previa muestra cómo aparecerá tu tarjeta de espacio en el directorio \"Explorar espacios\"."
+      }
+    },
+    "inlineSave": {
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardado",
+      "retry": "Reintentar"
+    },
+    "pageHeader": {
+      "title": "Acerca de",
+      "subtitle": "Define el propósito, la motivación y el público objetivo de tu espacio."
+    }
+  }
+}

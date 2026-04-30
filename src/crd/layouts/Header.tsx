@@ -1,4 +1,5 @@
 import { Bell, LayoutGrid, MessageSquare, Search } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
@@ -62,6 +63,7 @@ type HeaderProps = {
   unreadNotificationsCount?: number;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
+  breadcrumbs?: ReactNode;
   onLogout?: () => void;
   onMenuClick?: () => void;
   onMessagesClick?: () => void;
@@ -85,6 +87,7 @@ export function Header({
   unreadNotificationsCount,
   languages,
   currentLanguage,
+  breadcrumbs,
   onLogout,
   onMenuClick,
   onMessagesClick,
@@ -105,11 +108,17 @@ export function Header({
         className
       )}
     >
-      {/* Left: Logo + mobile menu */}
-      <div className="flex items-center gap-4">
+      {/* Left: Logo + breadcrumbs */}
+      <div className="flex items-center gap-4 min-w-0">
         <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
           <AlkemioLogo className="w-8 h-8" />
         </a>
+        {breadcrumbs && (
+          <>
+            <div className="h-6 w-px hidden md:block bg-border" />
+            <div className="min-w-0">{breadcrumbs}</div>
+          </>
+        )}
       </div>
 
       {/* Right: icon row */}

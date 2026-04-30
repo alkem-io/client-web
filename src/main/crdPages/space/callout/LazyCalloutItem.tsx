@@ -6,23 +6,28 @@ import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
+import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
   calloutsSetId: string | undefined;
+  /** Ordered list of all callout ids in the feed — drives move actions (plan T063/T066). */
+  orderedCalloutIds?: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 };
 
 export function LazyCalloutItem({
   calloutId,
   calloutsSetId,
+  orderedCalloutIds = [],
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
   const { ref, inView, callout, loading } = useCalloutInView({
@@ -35,8 +40,9 @@ export function LazyCalloutItem({
       {inView && !loading && callout ? (
         <LazyCalloutItemContent
           callout={callout}
+          calloutsSetId={calloutsSetId}
+          orderedCalloutIds={orderedCalloutIds}
           onClick={onClick}
-          onSettingsClick={onSettingsClick}
           onExpandClick={onExpandClick}
         />
       ) : (
@@ -52,66 +58,129 @@ export function LazyCalloutItem({
  */
 function LazyCalloutItemContent({
   callout,
+  calloutsSetId,
+  orderedCalloutIds,
   onClick,
-  onSettingsClick,
   onExpandClick,
 }: {
   callout: CalloutDetailsModelExtended;
+  calloutsSetId: string | undefined;
+  orderedCalloutIds: string[];
   onClick?: () => void;
-  onSettingsClick?: () => void;
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [initialWhiteboardId, setInitialWhiteboardId] = useState<string | undefined>();
+  const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
+  const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
 
-  const postData = mapCalloutDetailsToPostCard(callout, formatDate);
+  const postData = mapCalloutDetailsToPostCard(callout, t);
 
-  const openDialog = (whiteboardContributionId?: string) => {
-    setInitialWhiteboardId(whiteboardContributionId);
+  const moveActions = useCrdCalloutMoveActions({
+    calloutsSetId,
+    orderedCalloutIds,
+    calloutId: callout.id,
+  });
+
+  const openDialog = (contributionId?: string, memoId?: string) => {
+    setInitialContributionId(contributionId);
+    setInitialMemoId(memoId);
     setDialogOpen(true);
   };
 
   const handleDialogClose = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
-      setInitialWhiteboardId(undefined);
+      setInitialContributionId(undefined);
+      setInitialMemoId(undefined);
     }
   };
 
   const contributionsEnabled = callout.settings.contribution.enabled;
 
+  const contributionsPreview = contributionsEnabled ? (
+    <ContributionsPreviewConnector
+      callout={callout}
+      onShowAll={() => openDialog()}
+      onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+    />
+  ) : undefined;
+
+  const pollPreview =
+    callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
+
+  // Without a comments room we can't wire the inline thread — fall back to the
+  // dialog-only flow. The dialog itself handles its own "no room" rendering.
+  const commentsRoomId = callout.comments?.id;
+  const hasCommentsRoom = Boolean(commentsRoomId) && callout.comments !== undefined;
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages visible (read-only). PostCard hides the footer entirely when
+  // commentsEnabled === false AND no messages exist.
+  const commentsEnabled = callout.settings.framing.commentsEnabled;
+
   return (
     <>
-      <PostCard
-        post={postData}
-        onClick={() => {
-          openDialog();
-          onClick?.();
-        }}
-        onCommentsClick={() => openDialog()}
-        onSettingsClick={onSettingsClick}
-        onExpandClick={onExpandClick}
-        contributionsPreview={
-          contributionsEnabled ? (
-            <ContributionsPreviewConnector
-              callout={callout}
-              onShowAll={() => openDialog()}
-              onContributionClick={contributionId => openDialog(contributionId)}
-            />
-          ) : undefined
-        }
-      >
-        {callout.framing.type === CalloutFramingType.Poll && <CalloutPollConnector callout={callout} />}
-      </PostCard>
+      {hasCommentsRoom && commentsRoomId ? (
+        <CalloutCommentsConnector
+          roomId={commentsRoomId}
+          calloutId={callout.id}
+          roomData={callout.comments}
+          skipSubscription={!commentsExpanded}
+        >
+          {({ thread, commentInput }) => (
+            <PostCard
+              post={postData}
+              onClick={() => {
+                openDialog();
+                onClick?.();
+              }}
+              settingsSlot={
+                <CalloutSettingsConnector
+                  callout={callout}
+                  moveActions={moveActions}
+                  onShare={() => setShareOpen(true)}
+                />
+              }
+              onExpandClick={onExpandClick}
+              commentsSlot={thread}
+              commentInputSlot={commentsEnabled ? commentInput : null}
+              onCommentsExpandedChange={setCommentsExpanded}
+              contributionsPreview={contributionsPreview}
+            >
+              {pollPreview}
+            </PostCard>
+          )}
+        </CalloutCommentsConnector>
+      ) : (
+        <PostCard
+          post={postData}
+          onClick={() => {
+            openDialog();
+            onClick?.();
+          }}
+          onCommentsClick={() => openDialog()}
+          settingsSlot={
+            <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
+          }
+          onExpandClick={onExpandClick}
+          contributionsPreview={contributionsPreview}
+        >
+          {pollPreview}
+        </PostCard>
+      )}
 
       <CalloutDetailDialogConnector
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         callout={callout}
-        initialWhiteboardContributionId={initialWhiteboardId}
+        moveActions={moveActions}
+        initialContributionId={initialContributionId}
+        initialMemoId={initialMemoId}
       />
+
+      <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />
     </>
   );
 }

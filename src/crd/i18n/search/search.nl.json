@@ -5,11 +5,12 @@
     "emptyDescription": "Zoek in Spaces, Berichten, Reacties, Gebruikers en Organisaties.",
     "noResultsTitle": "Geen resultaten gevonden voor {{terms}}",
     "noResultsSuggestion": "Probeer andere zoekwoorden of verbreed je zoekopdracht.",
-    "searchAllSpaces": "Zoek in alle Spaces",
+    "searchAllSpaces": "Zoek in plaats daarvan op het gehele platform",
     "loading": "Zoeken\u2026",
     "disclaimer": "Deze resultaten geven mogelijk niet de actuele status van het platform weer. Zoekresultaten worden periodiek bijgewerkt.",
     "loadMore": "Meer laden",
-    "scopeAll": "Alle Spaces",
+    "scopeAll": "Gehele platform",
+    "scopeTriggerLabel": "Zoek in: {{option}}",
     "categories": {
       "spaces": "Spaces",
       "posts": "Berichten",
@@ -47,7 +48,8 @@
       "platformSearch": "Platform zoeken",
       "filterBy": "Filter {{category}}",
       "resultsFound": "{{count}} resultaten gevonden",
-      "noResultsFound": "Geen resultaten gevonden"
+      "noResultsFound": "Geen resultaten gevonden",
+      "scopeTrigger": "Zoekbereik wijzigen. Huidig zoekbereik: {{option}}"
     }
   }
 }
