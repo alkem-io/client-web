@@ -33,7 +33,7 @@ The three public profile views ship together with the seven User Settings tabs (
   - Right column: VC content view — model card (`aiEngine`, `prompts`, `dataPrivacy`) + social-group references rendered with `lucide-react` brand icons (`Linkedin`, `Twitter`, `Github`, `Youtube`, …; `Globe` fallback). No new CRD primitive for icons.
   - 404 → existing `Error404` rendered inside the CRD layout. Restricted view → existing `useRestrictedRedirect` runs unchanged.
 
-**No pagination on any public profile page** — every section renders every item, parity with current MUI `TilesContributionsView` (FR-015a). The Organization Associates sidebar likewise renders every associate (no cap, no "View all").
+**No pagination on any public profile page** — every section renders every item, parity with current MUI `TilesContributionsView` (FR-016). The Organization Associates sidebar likewise renders every associate (no cap, no "View all").
 
 **Skeleton loading** — every page renders CRD `Skeleton` placeholders sized to the eventual content while queries are in flight, replaced per-region as each query resolves (FR-009).
 
@@ -59,16 +59,16 @@ The three public profile views ship together with the seven User Settings tabs (
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned)
-**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `dropdown-menu`, `popover`, `avatar`, `badge`, `button`, `textarea`, `skeleton`, `tooltip`, `scroll-area`) already exist under `src/crd/primitives/`. **One new shared CRD primitive introduced by this spec**: `CompactContributorCard` (under `src/crd/components/common/`) — used by the VC profile's Host section and the Organization profile's Associates list. No new runtime dependencies.
+**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `dropdown-menu`, `popover`, `avatar`, `badge`, `button`, `textarea`, `skeleton`, `tooltip`, `scroll-area`) already exist under `src/crd/primitives/`. **Two new shared CRD components introduced by this spec, both under `src/crd/components/common/`**: (1) `CompactContributorCard` — used by the User profile's Organizations sidebar (caption=role, secondaryCaption=member-count line per Q1 decision), the Organization profile's Associates list, and the VC profile's Host section; (2) `MessagePopover` — recipient-agnostic in-hero compose surface used by the User and Organization profile heroes (Q2 decision; placed in `common/` from day one rather than the User vertical so the Organization hero does not cross-import). No new runtime dependencies.
 **Storage**: localStorage (`alkemio-crd-enabled`) for CRD toggle (existing); GraphQL data layer unchanged
 **Testing**: Vitest with jsdom (`pnpm vitest run`) — unit tests for the three mappers (`publicProfileMapper`, `organizationProfileMapper`, `vcProfileMapper`), the User tab→section filter, the BoK discriminated-union resolver, and the `canEditSettings` predicate. Visual / interaction validation via `pnpm start` and the per-actor smoke checklist in `quickstart.md`.
 **Target Platform**: Web SPA (Vite dev server on `localhost:3001`)
 **Project Type**: Web application (frontend only — no backend changes)
 **Performance Goals**:
-- Page render < 5 s perceived on each actor page (SC-001), via lazy-loaded per-page chunks.
+- Page render < 5 s perceived on each actor page (SC-001), via lazy-loaded per-page chunks. **Three chunks total** (Q8 decision): one per actor's `Crd<Actor>Routes`; the per-actor page component lives inside its routes chunk, NOT as a separate `React.lazy()` boundary. Matches the precedent set by 045 / 091 / 097.
 - User-profile resource tab switch < 200 ms perceived (data-driven section filtering + React 19 `useTransition`).
 - Send-message round-trip < 3 s typical (User + Organization), surfaced via the Send button's spinner state and `aria-busy`.
-- Combined bundle delta on the three new lazy-loaded chunks (User + Organization + VC) ≤ +35 KB gzipped over the prior build (SC-005). +15 KB more than the original 096-User-only budget, accounting for two additional pages and the new `CompactContributorCard` primitive.
+- Combined bundle delta on the three new lazy-loaded chunks (User + Organization + VC) ≤ +35 KB gzipped over the prior build (SC-005). +15 KB more than the original 096-User-only budget, accounting for two additional pages and the two new shared CRD components (`CompactContributorCard`, `MessagePopover`) — both shipped in the small `crd-common` chunk that is already shared across CRD pages, so they do not count against the per-actor budget.
 **Constraints**: Zero `@mui/*` / `@emotion/*` imports under `src/crd/components/{user,organization,virtualContributor,common}/` and under `src/main/crdPages/topLevelPages/{userPages,organizationPages,vcPages}/publicProfile/*Mapper.ts`'s consumers (the mappers themselves DO import generated GraphQL types — that is the only allowed crossing per FR-005). All six languages (en / nl / es / bg / de / fr) edited in the same PR per the manual CRD i18n workflow (no Crowdin).
 **Scale/Scope**: Three public profile pages (User + Organization + VC) + three integration entry points + one new shared primitive (`CompactContributorCard`) + one shared CRD i18n namespace (`crd-profilePages`) covering all three actor pages. ~13–15 new CRD presentational components total across the three verticals, three data mappers, ~10 existing Apollo queries reused unchanged, two new shared User-vertical helpers (`useCanEditSettings`, `useUserPageRouteContext`) — these are also referenced by sibling spec 097 and are tracked here as foundational. One shared cross-actor helper (`useSendMessageHandler`) reused by User and Organization heroes.
 
@@ -88,7 +88,7 @@ The three public profile views ship together with the seven User Settings tabs (
 | Arch #3: i18n via react-i18next | PASS | New shared namespace `crd-profilePages` (one namespace covering all three actor pages, per research §7); English source only edited directly; the other five languages (nl / es / bg / de / fr) maintained manually in the same PR per `src/crd/CLAUDE.md` (no Crowdin). FR-102 allows reusing select existing `translation`-namespace keys to avoid duplication. No hard-coded strings. |
 | Arch #4: Build artifacts deterministic | PASS | No Vite config changes. No new runtime dependencies. Existing CRD chunk-splitting strategy applies. |
 | Arch #5: No barrel exports | PASS | All imports use explicit file paths. |
-| Arch #6: SOLID + DRY | PASS | **SRP**: per-actor hero / sidebar / sections / view composition each in their own file. **OCP**: User tab-key driven section filter is data-driven; VC BoK rendering switches on a discriminated-union `kind` field. **LSP**: every resource section accepts `SpaceCardItem[]` or `VCCardItem[]`. **ISP**: each component's prop shape is minimal — `VCPageHeroProps` does NOT include `onSendMessage` (FR-030). **DIP**: views consume plain props injected by the per-actor mapper — never call Apollo directly. **DRY**: shared CRD `SpaceCard` reused across User and Organization resource sections; new `CompactContributorCard` primitive shared between VC Host and Org Associates (research §6); single `useSendMessageHandler` helper shared by User and Organization heroes (research §5). |
+| Arch #6: SOLID + DRY | PASS | **SRP**: per-actor hero / sidebar / sections / view composition each in their own file. **OCP**: User tab-key driven section filter is data-driven; VC BoK rendering switches on a discriminated-union `kind` field. **LSP**: every resource section accepts `SpaceCardItem[]` or `VCCardItem[]`. **ISP**: each component's prop shape is minimal — `VCPageHeroProps` does NOT include `onSendMessage` (FR-030). **DIP**: views consume plain props injected by the per-actor mapper — never call Apollo directly. **DRY**: shared CRD `SpaceCard` reused across User and Organization resource sections; new `CompactContributorCard` primitive shared across User profile's Organizations sidebar, Org Associates list, and VC Host card (Q1 + research §6); new `MessagePopover` recipient-agnostic primitive shared between User and Org heroes (Q2 — placed under `src/crd/components/common/` from day one to avoid cross-vertical imports); single `useSendMessageHandler` helper shared by User and Organization heroes (research §5). |
 | WF #5: Root Cause Analysis Before Fixes | N/A | This is a presentation-layer migration, not a bug fix. No fetch policies / retries / defensive guards introduced — Apollo queries reused exactly as today. |
 
 **Post-Phase 1 re-check**: All gates pass. The Arch #2 violation is identical to prior CRD migrations.
@@ -121,12 +121,12 @@ src/
 ├── crd/
 │   ├── primitives/                                 # ALL primitives already exist — no new ports needed
 │   ├── components/
-│   │   ├── common/                                 # NEW — cross-vertical shared component
-│   │   │   └── CompactContributorCard.tsx          # NEW shared primitive (Host card + Associates row)
+│   │   ├── common/                                 # NEW — cross-vertical shared components
+│   │   │   ├── CompactContributorCard.tsx          # NEW shared primitive (User Orgs row + Org Associates row + VC Host card)
+│   │   │   └── MessagePopover.tsx                  # NEW recipient-agnostic in-hero compose surface (User + Org heroes)
 │   │   ├── user/                                   # NEW — User public-profile presentational components
-│   │   │   ├── UserPageHero.tsx                    # Banner + avatar + name + location + Settings icon + Message popover
-│   │   │   ├── UserPageMessagePopover.tsx          # In-hero compose surface (Popover + Textarea + Send)
-│   │   │   ├── UserProfileSidebar.tsx              # About + Organizations sidebar
+│   │   │   ├── UserPageHero.tsx                    # Banner + avatar + name + location + Settings icon + Message popover (consumes MessagePopover from common/)
+│   │   │   ├── UserProfileSidebar.tsx              # About + Organizations sidebar (Organizations rendered via CompactContributorCard with secondaryCaption=member-count)
 │   │   │   ├── UserResourceTabStrip.tsx            # 5-tab strip; horizontal-scroll on < md
 │   │   │   ├── UserResourceSections.tsx            # Conditional rendering of Resources Hosted / Spaces Leading / Member Of
 │   │   │   └── UserPublicProfileView.tsx           # Top-level User public profile composition

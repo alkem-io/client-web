@@ -3,11 +3,15 @@
  *
  * File location at implementation time:
  *   src/crd/components/user/UserPageHero.tsx
- *   src/crd/components/user/UserPageMessagePopover.tsx
  *   src/crd/components/user/UserPublicProfileView.tsx
  *   src/crd/components/user/UserProfileSidebar.tsx
  *   src/crd/components/user/UserResourceTabStrip.tsx
  *   src/crd/components/user/UserResourceSections.tsx
+ *
+ * The recipient-agnostic compose surface (`MessagePopover`) used by
+ * `UserPageHero` lives at `src/crd/components/common/MessagePopover.tsx`
+ * (shared with `OrganizationPageHero` per Q2 decision in
+ * `analysis-interview.md`).
  *
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
@@ -80,6 +84,14 @@ export type VCCardItem = {
   avatarImageUrl: string | null;
 };
 
+/**
+ * User profile sidebar's Organizations list item. Rendered via the shared
+ * `CompactContributorCard` primitive (Q1 decision in analysis-interview.md):
+ *  - `caption`         ← role label (e.g., "Admin", "Associate")
+ *  - `secondaryCaption` ← member-count line (e.g., "24 members" — i18n-resolved)
+ *
+ * The mapper composes the two strings; the view passes them through unchanged.
+ */
 export type AssociatedOrganizationCard = {
   id: string;
   url: string;
@@ -111,6 +123,22 @@ export type UserPublicProfileViewProps = {
     bio: string | null;
     organizations: AssociatedOrganizationCard[];
     resources: PublicProfileResources;
+  };
+
+  /**
+   * Per-region loading flags (FR-009). Each region renders a Skeleton while
+   * its driving query is still in flight; the page does not block on all
+   * queries before painting. Mapping (data-model.md "Query → region"):
+   *   - `hero` / `bio`             ← useUserQuery
+   *   - `organizations`            ← useUserOrganizationIds + downstream lookup
+   *   - `hostedResources`          ← useUserAccountQuery
+   *   - `memberships`              ← useUserContributionsQuery
+   */
+  loading: {
+    hero: boolean;
+    organizations: boolean;
+    hostedResources: boolean;
+    memberships: boolean;
   };
 
   /** Active resource tab; integration layer manages this state. */

@@ -155,6 +155,22 @@ export type OrganizationPublicProfileViewProps = {
   };
 
   /**
+   * Per-region loading flags (FR-009). Mapping (data-model.md "Query → region"):
+   *   - `hero` / `sidebar`        ← useOrganizationProvider (single facade)
+   *   - `accountResources`        ← useOrganizationAccountQuery + useAccountResources
+   *   - `memberships`             ← useFilteredMemberships(contributions, …)
+   *
+   * `useOrganizationProvider` resolves the org + sidebar data in one bundle;
+   * the right column's Account Resources and Memberships unblock independently.
+   */
+  loading: {
+    hero: boolean;
+    sidebar: boolean;
+    accountResources: boolean;
+    memberships: boolean;
+  };
+
+  /**
    * Slot for any out-of-tree CRD elements (e.g., a global toast portal). Rarely
    * used; included for parity with the User profile view's children prop.
    */

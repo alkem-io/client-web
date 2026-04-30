@@ -93,10 +93,21 @@ export type VCProfileSidebarProps = {
 export type BodyOfKnowledge =
   | {
       kind: 'space';
-      spaceId: string | null;            // null when not visible to the viewer
-      spaceProfile: SpaceProfileSummary | null;  // null when hasReadAccess is false
+      /**
+       * Always populated. When `hasReadAccess === false`, the mapper produces
+       * a placeholder `SpaceProfileSummary` matching current MUI parity:
+       *   - `displayName: t('components.card.privacy.private', { entity: 'space' })`
+       *   - `url: ''`, `id: ''`, `avatarImageUrl: null`, `level: 'L0'`
+       * The view renders the same `SpaceCardHorizontal`-equivalent for both
+       * read-allowed and private cases — no separate "Private space"
+       * component (Q7 — match MUI).
+       */
+      spaceProfile: SpaceProfileSummary;
       hasReadAccess: boolean;
-      description: string | null;        // vc.bodyOfKnowledgeDescription
+      /** vc.bodyOfKnowledgeDescription — rendered above the card regardless of read access. */
+      description: string | null;
+      /** vc.profile.displayName — used to interpolate the spaceBokDescription caption. */
+      vcDisplayName: string;
     }
   | {
       kind: 'knowledgeBase';
@@ -173,6 +184,23 @@ export type VCPublicProfileViewProps = {
     hero: VCPageHeroProps;
     sidebar: VCProfileSidebarProps;
     contentView: VCContentViewProps;
+  };
+
+  /**
+   * Per-region loading flags (FR-009). Mapping (data-model.md "Query → region"):
+   *   - `hero` / `sidebar` (excl. BoK) / `contentView`  ← useVirtualContributorProfileWithModelCardQuery
+   *   - `bodyOfKnowledge`                                ← BoK auxiliary queries
+   *     (useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery + useSpaceBodyOfKnowledgeAboutQuery
+   *      for space-backed; useKnowledgeBase for knowledge-base-backed; n/a for external)
+   *
+   * The BoK section unblocks independently — the rest of the page can paint
+   * before the auxiliary BoK queries resolve.
+   */
+  loading: {
+    hero: boolean;
+    sidebar: boolean;
+    bodyOfKnowledge: boolean;
+    contentView: boolean;
   };
 
   /** Optional slot for portals. */

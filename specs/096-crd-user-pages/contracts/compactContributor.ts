@@ -20,10 +20,17 @@ export type CompactContributorCardItem = {
   /** When `null` the avatar renders fallback initials. */
   avatarImageUrl: string | null;
   /**
-   * Optional caption rendered below the display name (e.g., role label "Admin",
+   * Primary caption rendered below the display name (e.g., role label "Admin",
    * location, or `null` to omit).
    */
   caption: string | null;
+  /**
+   * Optional secondary caption rendered below `caption` (e.g., member-count
+   * line "24 members" on the User profile's Organizations list). `null` to
+   * omit. Added to support the User profile's Organizations sidebar without
+   * introducing a third primitive.
+   */
+  secondaryCaption: string | null;
   /**
    * Click-through URL. Renders the card as an `<a href>` (NOT a programmatic
    * navigation per `src/crd/CLAUDE.md`). When `undefined`, the card is a

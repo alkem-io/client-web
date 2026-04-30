@@ -47,8 +47,8 @@ The three public profile pages ship together with the seven User Settings tabs (
    - `src/crd/components/common/CompactContributorCard.tsx` — used by both the Org profile (Associates list) and the VC profile (Host card). Per the `compactContributor.ts` contract.
 
 3. **User profile** (User Story 1)
-   - `src/crd/components/user/UserPageHero.tsx` (banner / avatar / name / location / Settings icon / Message Popover).
-   - `src/crd/components/user/UserPageMessagePopover.tsx`.
+   - `src/crd/components/common/MessagePopover.tsx` — shared recipient-agnostic compose surface (Q2 — placed in `common/` from day one; consumed by both User and Organization heroes).
+   - `src/crd/components/user/UserPageHero.tsx` (banner / avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
    - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
    - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab).
    - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations).
@@ -60,7 +60,7 @@ The three public profile pages ship together with the seven User Settings tabs (
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdOrganizationRoutes` and the existing `OrganizationRoute`.
 
 5. **Organization profile** (User Story 2)
-   - `src/crd/components/organization/OrganizationPageHero.tsx` (banner / avatar / name / location / Verified badge / Settings icon / Message Popover — reuses the User profile's `UserPageMessagePopover` directly, OR factor a shared `MessagePopover` if visual divergence appears).
+   - `src/crd/components/organization/OrganizationPageHero.tsx` (banner / avatar / name / location / Verified badge / Settings icon / Message Popover — consumes the shared `MessagePopover` from `src/crd/components/common/`, same primitive the User hero uses; no cross-vertical import per Q2).
    - `src/crd/components/organization/OrganizationProfileSidebar.tsx` (Bio + Tagsets + References + Associates list — Associates renders `CompactContributorCard` instances).
    - `src/crd/components/organization/OrganizationResourceSections.tsx` (Account Resources, Lead Spaces, All Memberships — each as a CRD section card).
    - `src/crd/components/organization/OrganizationPublicProfileView.tsx` (composes the above).

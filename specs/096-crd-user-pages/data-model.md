@@ -15,7 +15,7 @@ The mapper for each page lives at `src/main/crdPages/topLevelPages/<vertical>/pu
 | `useUserQuery` | `src/core/apollo/generated/apollo-hooks.ts` | Public profile data (`User`, `profile.*`, `firstName`, `lastName`) |
 | `useUserAccountQuery` | same | Hosted resources (`account.spaces`, `account.virtualContributors`) for the Resources Hosted section |
 | `useUserContributionsQuery` | same | Memberships (`rolesUser.spaces`, nested subspaces) for the User profile resource sections |
-| `useUserOrganizationIdsQuery` | same | Org IDs the user is associated with (sidebar Organizations list) |
+| `useUserOrganizationIds` | `src/domain/community/user/userContributions/useUserOrganizationIds.ts` | Org IDs the user is associated with (sidebar Organizations list); thin wrapper, not a generated Apollo hook |
 | `useSendMessageToUsersMutation` | same | In-hero compose surface (User profile + Organization profile share this mutation) |
 
 ### Organization profile
@@ -109,6 +109,14 @@ type AssociatedOrganizationCard = {
   memberCount: number;
   avatarImageUrl: string | null;
 };
+
+// The mapper composes `AssociatedOrganizationCard` into a
+// `CompactContributorCardItem` for rendering (Q1 decision):
+//   caption          ← role
+//   secondaryCaption ← i18n-resolved member-count line (e.g., "24 members")
+//   href             ← url
+//   avatarImageUrl   ← avatarImageUrl
+// One primitive renders three sites (User Orgs, Org Associates, VC Host).
 ```
 
 **Tab → section filter** (User profile, per the prototype `prototype/src/app/pages/UserProfilePage.tsx`):
@@ -168,7 +176,7 @@ type ReferenceLink = {
 };
 
 type AssociatesView = {
-  associates: CompactContributorCardItem[]; // capped at first N for sidebar (current MUI shows full list — parity)
+  associates: CompactContributorCardItem[]; // render every associate the org provider returns — no cap, no "View all" affordance, no truncation per FR-023 / FR-016
   totalCount: number;                       // metrics[Associate]
 };
 
@@ -177,6 +185,7 @@ type CompactContributorCardItem = {
   displayName: string;
   avatarImageUrl: string | null;
   caption: string | null;                   // role label (e.g., "Admin") or null
+  secondaryCaption: string | null;          // optional second line (Q1 — used by User Orgs list for "24 members")
   href: string;                             // contributor's profile URL
 };
 
@@ -240,10 +249,15 @@ type VCPublicProfile = {
 type BodyOfKnowledge =
   | {
       kind: 'space';
-      spaceId: string | null;              // null when private/not visible
-      spaceProfile: SpaceProfileSummary | null;  // null when hasReadAccess is false → render "Private space" placeholder
+      // Always populated. When hasReadAccess === false, the mapper produces a
+      // placeholder SpaceProfileSummary with displayName = the privacy label
+      // (i18n: components.card.privacy.private with entity="space") and url = '',
+      // matching current MUI's defaultProfile fallback exactly (Q7 decision).
+      // The view renders the same SpaceCardHorizontal-equivalent for both cases.
+      spaceProfile: SpaceProfileSummary;
       hasReadAccess: boolean;
-      description: string | null;          // vc.bodyOfKnowledgeDescription
+      description: string | null;          // vc.bodyOfKnowledgeDescription — rendered above the card
+      vcDisplayName: string;               // for spaceBokDescription caption interpolation
     }
   | {
       kind: 'knowledgeBase';
@@ -293,6 +307,58 @@ type SocialReferenceItem = {
 
 ---
 
+## Query → region (per-region loading; FR-009)
+
+Each integration page fires its queries in parallel and renders Skeleton placeholders
+**per region** until the driving query resolves. The page does not block on all
+queries before painting (Q3 decision). Each `*PublicProfileViewProps.loading` shape
+declares one boolean per region; the mapper produces it from the underlying
+Apollo `loading` flags.
+
+### User profile
+
+| Region | Driving query / hook | `loading.*` key |
+|---|---|---|
+| Hero (banner / avatar / name / location), Bio | `useUserQuery` | `hero` |
+| Sidebar Organizations list | `useUserOrganizationIds` (+ downstream lookup if any) | `organizations` |
+| Resources Hosted (hosted spaces + hosted VCs) | `useUserAccountQuery` | `hostedResources` |
+| Spaces Leading + Member Of (driven by `useFilteredMemberships`) | `useUserContributionsQuery` | `memberships` |
+
+### Organization profile
+
+| Region | Driving query / hook | `loading.*` key |
+|---|---|---|
+| Hero (banner / avatar / name / location / Verified badge) | `useOrganizationProvider` (single facade) | `hero` |
+| Sidebar (Bio / Tagsets / References / Associates) | `useOrganizationProvider` | `sidebar` |
+| Right column — Account Resources | `useOrganizationAccountQuery` + `useAccountResources` | `accountResources` |
+| Right column — Lead Spaces + All Memberships | `useFilteredMemberships(contributions, …)` (derives from `useOrganizationProvider`) | `memberships` |
+
+### VC profile
+
+| Region | Driving query / hook | `loading.*` key |
+|---|---|---|
+| Hero | `useVirtualContributorProfileWithModelCardQuery` | `hero` |
+| Sidebar (Description / Host / non-social References) | `useVirtualContributorProfileWithModelCardQuery` | `sidebar` |
+| Sidebar — Body of Knowledge section | space-backed: `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery` + `useSpaceBodyOfKnowledgeAboutQuery`; KB-backed: `useKnowledgeBase`; external: synchronous, no query | `bodyOfKnowledge` |
+| Right column — model card + social references | `useVirtualContributorProfileWithModelCardQuery` | `contentView` |
+
+---
+
+## Bundle / chunk strategy (Q8 decision)
+
+Three lazy-loaded chunks total — one per actor's `Crd<Actor>Routes`. The
+per-actor page component (`CrdUserProfilePage`, `CrdOrganizationProfilePage`,
+`CrdVCProfilePage`) lives **inside** its routes chunk, NOT as a separate
+`React.lazy()` boundary. This matches the precedent set by 045 / 091 / 097 and
+fits the SC-005 budget (≤ +35 KB gzipped combined across the three new
+chunks).
+
+The shared `CompactContributorCard` and `MessagePopover` primitives live in the
+small `crd-common` chunk that is already shared across CRD pages; they do not
+count against the per-actor budget.
+
+---
+
 ## Validation rules (carried over from MUI parity)
 
 - **Reference URI**: must be a syntactically valid URL (existing `referenceSegmentSchema` regex). The view does not validate — invalid URIs are filtered or rendered with a generic Link icon.
@@ -331,7 +397,7 @@ useUrlResolver resolved ── useVirtualContributorProfileWithModelCardQuery pe
 query success + Read privilege missing ──▶ useRestrictedRedirect runs → navigation away
 query success + Read privilege OK ──▶ render page
 query Apollo not-found error ──▶ render Error404 inside CRD layout
-query other error ──▶ surface CRD error display (parity with current MUI)
+query other error ──▶ propagate to the global ErrorBoundary (Q4 — no custom CRD error component; matches current MUI which has no dedicated error display either)
 ```
 
 ---

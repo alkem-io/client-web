@@ -8,11 +8,15 @@ This document resolves the open architectural decisions identified during planni
 
 **Question**: FR-008 states each public profile page MUST be reachable under the same authentication conditions as today (parity with current MUI route wrappers). What are those wrappers exactly, and does CRD preserve them?
 
-**Investigation**:
-- `src/main/routing/TopLevelRoutes.tsx` wraps the three actor routes differently:
-  - `/user/*` is wrapped by `<NoIdentityRedirect>` — so anonymous viewers hitting any `/user/*` URL (including the public profile) are redirected to login. This is the actual MUI behavior, despite some prose elsewhere suggesting the public profile is reachable anonymously.
-  - `/organization/*` is wrapped by an `<NonIdentity>` (or equivalent) wrapper that **does** allow anonymous viewers to load the public Organization profile. The Settings icon and Message button gate themselves separately based on viewer identity.
-  - `/vc/*` is wrapped similarly to Organization — anonymous viewers can load the page, with `useRestrictedRedirect` enforcing the `Read` privilege check downstream (which still allows the page render path for VCs that have public Read).
+**Investigation** (verified directly against `src/main/routing/TopLevelRoutes.tsx`):
+
+| Route | Wrapper today | Anonymous viewer behavior |
+|---|---|---|
+| `/user/*` | `<NoIdentityRedirect>` | Redirected to login |
+| `/vc/*` | `<NonIdentity>` | Allowed to load; `useRestrictedRedirect` enforces `Read` privilege downstream |
+| `/organization/*` | _no auth wrapper_ (only `<WithApmTransaction>` + `<Suspense>`) | Allowed to load; Settings + Message buttons gate themselves |
+
+Each route therefore preserves a different combination of access-gating semantics, and the CRD migration must mirror them exactly.
 
 **Decision**: **Preserve the existing per-actor wrapper exactly.** Each `CrdXxxRoutes` is wrapped by the same wrapper its MUI counterpart uses today, at the same point in `TopLevelRoutes.tsx`. The CRD migration is presentation-only — it must not change route-level access semantics.
 
@@ -100,6 +104,8 @@ The presentational `VCBodyOfKnowledgeSection` component switches on `kind` and r
 
 **Implementation note**: The shared helper file lives at `src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts` (already in the User vertical from spec 096's earlier scope). The Organization integration imports it directly. This is the only cross-vertical import in the integration layer; it does NOT introduce a barrel.
 
+**Companion CRD primitive (Q2 decision):** the in-hero compose surface itself — `MessagePopover` — lives at `src/crd/components/common/MessagePopover.tsx`, NOT under `src/crd/components/user/`. This avoids a cross-vertical import from `OrganizationPageHero` into the User folder. Both heroes consume `MessagePopover` from `common/`; the popover is recipient-agnostic by design (its only callback is `onSendMessage(text: string): Promise<void>`). Visual divergence, if it ever appears, can be handled with a `variant` prop later — without further refactor.
+
 ---
 
 ## 6. New shared CRD primitive: `CompactContributorCard`
@@ -136,7 +142,9 @@ The component is **purely presentational**: zero `@mui/*` imports, zero GraphQL 
 
 **Question**: Should the three profile pages share one i18n namespace, or each get its own?
 
-**Decision**: **One shared namespace: `crd-profilePages`.** All three actor pages register their keys under this single namespace. The namespace is declared at `src/crd/i18n/profilePages/profilePages.<lang>.json`, registered in `src/core/i18n/config.ts` and `@types/i18next.d.ts`. Where current MUI uses generic translation keys already defined in `src/core/i18n/en/translation.en.json` (e.g., `pages.user-profile.communities.noMembership`, `components.contributions.allMembershipsTitle`, `components.profile.fields.bodyOfKnowledge.title`), the CRD page MAY reuse those existing keys via the `translation` namespace rather than duplicating them under `crd-profilePages` (FR-102).
+**Decision**: **One shared namespace: `crd-profilePages`.** All three actor pages register their keys under this single namespace. The namespace is declared at `src/crd/i18n/profilePages/profilePages.<lang>.json`, registered in `src/core/i18n/config.ts` and `@types/i18next.d.ts`.
+
+> **Folder vs. namespace name (C3 doc fix).** The folder is `profilePages/` (matches the file prefix `profilePages.<lang>.json`); the i18n namespace is `crd-profilePages`. The `crd-` prefix is a project-wide convention for CRD namespaces (e.g., `exploreSpaces/` → `crd-exploreSpaces`, `userSettings/` → `crd-userSettings`). They are intentionally different — the folder name avoids the prefix; the namespace key carries it. Where current MUI uses generic translation keys already defined in `src/core/i18n/en/translation.en.json` (e.g., `pages.user-profile.communities.noMembership`, `components.contributions.allMembershipsTitle`, `components.profile.fields.bodyOfKnowledge.title`), the CRD page MAY reuse those existing keys via the `translation` namespace rather than duplicating them under `crd-profilePages` (FR-102).
 
 **Rationale**:
 - The three pages share many concepts (hero affordances, location string, empty-state captions, "Member Of" / "Lead Spaces" labels) — splitting into three namespaces would either duplicate keys or require cross-namespace lookups.
@@ -188,6 +196,50 @@ The component is **purely presentational**: zero `@mui/*` imports, zero GraphQL 
 **Alternatives considered**:
 - Per-actor CRD toggle (`alkemio-crd-user-enabled`, `alkemio-crd-org-enabled`, etc.). **Rejected** — over-engineering for a transitional state. The existing single-toggle pattern is intentional.
 - Ship User first, then expand to Org/VC in follow-up PRs gated by the same toggle. **Rejected** — would force the toggle to gate a heterogeneous (CRD User + MUI Org/VC) experience, which is exactly the half-CRD/half-MUI mix this migration explicitly avoids.
+
+---
+
+---
+
+## 11. Error path beyond 404 (Q4 — analysis-interview.md)
+
+**Question**: data-model previously said "query other error → surface CRD error display (parity with current MUI)." No CRD error component existed in the contracts; no task created one.
+
+**Investigation**: Current MUI `VCProfilePage` only handles the not-found case explicitly via `isApolloNotFoundError` → `Error404`. Every other error bubbles up to the global `ErrorBoundary` already wrapping the app — there is no dedicated MUI error display either.
+
+**Decision**: **Drop the "other error → CRD error display" line.** Only `isApolloNotFoundError` is handled explicitly (FR-036 → existing `Error404`). Anything else propagates to the global ErrorBoundary. No new CRD error component is created; no task is added.
+
+**Rationale**: This is a parity migration. Introducing a CRD error component the MUI page never had is scope creep. The global ErrorBoundary already produces a usable failure UX.
+
+**Alternatives considered**:
+- Build a new `CrdErrorState` primitive under `src/crd/components/common/`. **Rejected** — adds work without parity benefit.
+- Reuse an existing CRD primitive opportunistically. **Rejected** — same risk: adds non-parity behavior with no clear win.
+
+---
+
+## 12. VC Body-of-Knowledge "Private space" placeholder (Q7 — analysis-interview.md)
+
+**Question**: When the viewer lacks `ReadAbout` on a Space-backed VC's body of knowledge, what does the BoK section actually render?
+
+**Investigation**: `src/domain/community/virtualContributor/vcProfilePage/VCProfilePageView.tsx:74` defines:
+
+```ts
+const defaultProfile = { displayName: t('components.card.privacy.private', { entity: 'space' }), url: '' };
+```
+
+and renders the same `SpaceCardHorizontal` for both private and public cases — substituting `defaultProfile` for the space profile when `hasReadAccess === false`. The `bodyOfKnowledgeDescription` and the spaceBokDescription caption (interpolating the VC's display name) still render above the card.
+
+**Decision**: **Match MUI exactly.** The BoK discriminated union's `kind: 'space'` variant always carries a populated `spaceProfile`; when `hasReadAccess === false`, the mapper synthesizes a placeholder with `displayName = privacy label` (i18n: `components.card.privacy.private` with `entity: 'space'`) and empty URL/avatar/level. The view renders the same `SpaceCardHorizontal`-equivalent component for both cases — no separate "Private space" component exists.
+
+**Rationale**: Parity migration. The MUI behavior is the spec.
+
+---
+
+## 13. Lazy-chunk granularity (Q8 — analysis-interview.md)
+
+**Decision**: **Three lazy-loaded chunks total, one per actor's `Crd<Actor>Routes`.** The per-actor page component (`CrdUserProfilePage`, `CrdOrganizationProfilePage`, `CrdVCProfilePage`) lives inside its routes chunk; it is NOT a separate `React.lazy()` boundary. The shared `CompactContributorCard` and `MessagePopover` primitives live in the small `crd-common` chunk that is already shared across CRD pages.
+
+**Rationale**: Matches the precedent set by 045 / 091 / 097 (one route shell per vertical, page nested inside it). The +35 KB combined budget (SC-005) fits this shape. Six chunks would over-fragment; one combined chunk would inflate every actor's first-paint cost.
 
 ---
 
