@@ -144,7 +144,6 @@ export function mapPostResults(
     .filter((r): r is CalloutResult => r.type === SearchResultType.Callout)
     .map(r => {
       const authorSource = r.callout.publishedBy ?? r.callout.createdBy;
-      const dateSource = r.callout.publishedDate ?? r.callout.createdDate;
       return {
         id: r.id,
         title: r.callout.framing.profile.displayName,
@@ -155,7 +154,7 @@ export function mapPostResults(
           name: authorSource?.profile?.displayName ?? unknownLabel,
           avatarUrl: authorSource?.profile?.avatar?.uri,
         },
-        date: dateSource ? formatDate(dateSource) : '',
+        date: '',
         spaceName: r.space.about.profile.displayName,
 
         href: r.callout.framing.profile.url,
