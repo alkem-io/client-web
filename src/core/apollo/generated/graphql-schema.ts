@@ -40068,8 +40068,6 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              createdDate: Date;
-              publishedDate?: Date | undefined;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -41083,8 +41081,6 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
-    createdDate: Date;
-    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
