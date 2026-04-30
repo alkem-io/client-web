@@ -298,17 +298,16 @@ export function FramingEditorConnector({
       return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
 
     case 'document':
-      // Collabora document framing — type is fixed at creation time. In edit
-      // mode there is nothing to pick, so the picker is suppressed; the
-      // existing document is opened from the post card / detail dialog via
-      // `CollaboraFramingEditorOverlay`.
-      if (mode === 'edit') {
-        return null;
-      }
+      // Collabora document framing — type is fixed at creation time (Collabora
+      // has no server-side conversion path between text/spreadsheet/presentation),
+      // so in edit mode the picker is shown read-only as a reminder of which
+      // type was provisioned. The actual document body is edited from the post
+      // card / detail dialog via `CollaboraFramingEditorOverlay`.
       return (
         <CollaboraDocumentTypePicker
           value={collaboraDocumentType as CollaboraDocumentTypeValue}
           onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
+          readOnly={mode === 'edit'}
         />
       );
 

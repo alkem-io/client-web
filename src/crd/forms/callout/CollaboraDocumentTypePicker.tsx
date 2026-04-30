@@ -7,6 +7,12 @@ export type CollaboraDocumentTypeValue = 'WORDPROCESSING' | 'SPREADSHEET' | 'PRE
 type CollaboraDocumentTypePickerProps = {
   value: CollaboraDocumentTypeValue;
   onChange: (value: CollaboraDocumentTypeValue) => void;
+  /**
+   * When true, the type cannot be changed (used in edit mode — the document
+   * is provisioned with a fixed type at creation time and Collabora has no
+   * server-side conversion path between text/spreadsheet/presentation).
+   */
+  readOnly?: boolean;
   className?: string;
 };
 
@@ -20,7 +26,12 @@ const options: Array<{
   { value: 'PRESENTATION', labelKey: 'callout.documentPresentation', Icon: Presentation },
 ];
 
-export function CollaboraDocumentTypePicker({ value, onChange, className }: CollaboraDocumentTypePickerProps) {
+export function CollaboraDocumentTypePicker({
+  value,
+  onChange,
+  readOnly = false,
+  className,
+}: CollaboraDocumentTypePickerProps) {
   const { t } = useTranslation('crd-space');
 
   return (
@@ -33,14 +44,19 @@ export function CollaboraDocumentTypePicker({ value, onChange, className }: Coll
       >
         {options.map(option => {
           const active = value === option.value;
+          const inert = readOnly && !active;
           return (
             <label
               key={option.value}
+              aria-disabled={readOnly ? 'true' : undefined}
               className={cn(
-                'group flex flex-col items-center justify-center gap-2 p-6 rounded-lg border bg-background text-caption transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
+                'group flex flex-col items-center justify-center gap-2 p-6 rounded-lg border bg-background text-caption transition-all has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
+                readOnly ? 'cursor-not-allowed' : 'cursor-pointer',
                 active
                   ? 'border-primary ring-1 ring-primary/30 bg-primary/5 text-foreground'
-                  : 'border-border hover:border-foreground/20 hover:bg-muted text-muted-foreground'
+                  : 'border-border text-muted-foreground',
+                !active && !readOnly && 'hover:border-foreground/20 hover:bg-muted',
+                inert && 'opacity-50'
               )}
             >
               <input
@@ -48,6 +64,7 @@ export function CollaboraDocumentTypePicker({ value, onChange, className }: Coll
                 name="collabora-document-type"
                 value={option.value}
                 checked={active}
+                disabled={readOnly}
                 onChange={() => onChange(option.value)}
                 className="sr-only"
               />

@@ -154,6 +154,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
                   ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.collaboraDocument.tooltip'),
+                disabled: true,
               },
             ]}
             name="settings.contribution.allowedTypes"

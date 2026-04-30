@@ -344,8 +344,12 @@ const CalloutFormFramingSettings = ({
       {framing.type === CalloutFramingType.CollaboraDocument && (
         <PageContentBlock>
           <PageContentBlockHeader title={t('collaboraDocument.create.documentType.label')} />
+          {/* Document type is fixed at creation time — Collabora has no server-side
+              conversion path between text/spreadsheet/presentation, so editing an
+              existing callout shows the picker read-only. */}
           <FormikRadioButtonsGroup
             name="framing.collaboraDocument.documentType"
+            readOnly={edit}
             options={[
               {
                 icon: ArticleOutlined,
