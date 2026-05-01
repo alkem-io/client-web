@@ -32,6 +32,10 @@ An Innovation Hub admin knows the URL of a top-level Space (Level 0) they want t
 
 1. **Given** the admin is on the Innovation Hub settings page, **When** they click "Add by URL" and enter `https://<host>/<space-nameId>` (a valid L0 Space URL) and submit, **Then** the Space is added to the Hub's Space list and the dialog closes.
 2. **Given** the space is already in the Hub's list, **When** the admin submits its URL, **Then** the system informs them the Space is already added and does not create a duplicate.
+3. **Given** the admin enters a URL with a trailing slash, a query string, or both, **When** they submit, **Then** the system normalises the URL before all checks and resolution, and the Space is found and added identically to submitting the clean URL. Test vectors (all must resolve to the same Space as `https://example.com/path`):
+   - `https://example.com/path/` (trailing slash only)
+   - `https://example.com/path?utm=1` (query string only)
+   - `https://example.com/path/?a=1` (trailing slash and query string)
 
 ---
 
@@ -73,7 +77,7 @@ An admin accidentally pastes the URL of a subspace (Level 1 or deeper) or an unr
 - What happens if the Space is found but the admin's account lacks permission to view it? → The resolver will return an unauthorised/not-found result; the system shows a "Space not found or not accessible" error.
 - What happens if the network call to resolve the URL times out or fails? → The system shows a generic "Could not reach the server" error and leaves the input intact so the admin can retry.
 - What happens if the Space is already in the Hub? → The system informs the admin the Space is already present; no duplicate is created.
-- What happens if the admin pastes a URL with trailing slashes or query parameters? → The system normalises the URL before resolution (or passes it as-is and relies on the server resolver's tolerance).
+- What happens if the admin pastes a URL with trailing slashes or query parameters? → The system MUST normalise the URL before any further checks or server calls: trailing slashes are trimmed and the entire query string is stripped. For example, `https://example.com/path/`, `https://example.com/path?utm=1`, and `https://example.com/path/?a=1` all normalise to `https://example.com/path` and are resolved identically (see FR-003c and User Story 1, Acceptance Scenario 3).
 
 ## Requirements *(mandatory)*
 
@@ -85,9 +89,10 @@ An admin accidentally pastes the URL of a subspace (Level 1 or deeper) or an unr
 - **FR-002**: The "Add by URL" option MUST present a text input field that accepts a URL.
 - **FR-002a**: While URL resolution is in progress, the system MUST disable the submit button, display an inline loading spinner, and show a brief status message (e.g., "URL is being validated…") visible to the admin. The message MUST be i18n-ready.
 - **FR-003**: The system MUST validate that the input is a syntactically well-formed URL (parseable, contains a scheme and hostname) before any further checks.
+- **FR-003c**: Immediately after FR-003 passes, the system MUST normalise the URL by (1) trimming all trailing slashes from the path and (2) discarding the entire query string. All subsequent checks (FR-003a, FR-003b) and the server resolution call (FR-004) MUST operate on this normalised URL. Test vectors: `https://example.com/path/` → `https://example.com/path`; `https://example.com/path?utm=1` → `https://example.com/path`; `https://example.com/path/?a=1` → `https://example.com/path`.
 - **FR-003a**: The system MUST validate client-side that the URL's hostname matches the current Alkemio instance hostname. If it does not match, an inline error MUST be shown immediately stating the expected URL format (e.g., `https://alkem.io/<space-name>`). No server request is made.
 - **FR-003b**: The system MUST determine the Space hierarchy level purely from the URL path structure, client-side, at zero server cost. A URL path with exactly one non-empty segment identifies an L0 (top-level) Space. A path with two or more segments identifies a subspace (Level 1 or deeper) and MUST be rejected with an inline error.
-- **FR-004**: Only after FR-003, FR-003a, and FR-003b all pass, the system MUST make a server request to look up the Space by the nameId extracted from the URL path, retrieve its ID, and add it to the Hub's Space list.
+- **FR-004**: Only after FR-003, FR-003c, FR-003a, and FR-003b all pass, the system MUST make a server request to look up the Space by the nameId extracted from the normalised URL path, retrieve its ID, and add it to the Hub's Space list.
 - **FR-005**: The system MUST reject URLs whose path contains two or more segments (subspaces), with a user-visible inline error message stating only top-level Spaces can be added. This check is client-side (see FR-003b); no server request is required.
 - **FR-006**: The system MUST reject URLs that resolve to a non-Space entity (user profile, organisation, Innovation Pack, etc.), with a user-visible error message.
 - **FR-007**: The system MUST reject URLs that cannot be resolved (unknown URL, network error, server 404), with a user-visible inline error message displayed below the URL input field.
@@ -121,3 +126,4 @@ An admin accidentally pastes the URL of a subspace (Level 1 or deeper) or an unr
 - **SC-003**: 100% of submitted URLs that fail format validation (not a well-formed URL) are rejected client-side without triggering a server request.
 - **SC-004**: No duplicate Spaces are ever added to the Hub's Space list via the URL flow.
 - **SC-005**: The feature is fully operable without a mouse (keyboard-only navigation and submission work end-to-end).
+- **SC-006**: 100% of submitted URLs that contain a trailing slash, a query string, or both are normalised (trailing slash trimmed, query string discarded) before any validation check or server request; the resolution outcome is identical to submitting the same URL without those suffixes. Verified by the three test vectors: `https://example.com/path/`, `https://example.com/path?utm=1`, and `https://example.com/path/?a=1` all resolve identically to `https://example.com/path`.
