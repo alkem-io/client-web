@@ -85,7 +85,12 @@ export type UseUserPageRouteContext = () => {
  * the presentational hero only deals with `(messageText) => Promise<void>`.
  *
  * Implementation lives at:
- *   src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts
+ *   src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts
+ *
+ * Placed under `topLevelPages/common/` (not inside the User vertical) so neither
+ * the User nor the Organization integration cross-imports the other — same
+ * rationale as the `MessagePopover` placement under `src/crd/components/common/`
+ * (research §5).
  */
 export type UseSendMessageHandler = (params: {
   recipientId: string | undefined;

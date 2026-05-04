@@ -46,28 +46,29 @@ The three public profile pages ship together with the seven User Settings tabs (
 2. **New shared CRD primitive (cross-vertical)**
    - `src/crd/components/common/CompactContributorCard.tsx` — used by both the Org profile (Associates list) and the VC profile (Host card). Per the `compactContributor.ts` contract.
 
-3. **User profile** (User Story 1)
+3. **User profile** (User Story 1) — **prototype-driven redesign per `prototype/src/app/pages/UserProfilePage.tsx`** (NOT a parity restyle of current MUI).
    - `src/crd/components/common/MessagePopover.tsx` — shared recipient-agnostic compose surface (Q2 — placed in `common/` from day one; consumed by both User and Organization heroes).
+   - `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` — shared cross-vertical integration helper (placed under `topLevelPages/common/` for symmetry with `MessagePopover`).
    - `src/crd/components/user/UserPageHero.tsx` (banner / avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
    - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
-   - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab).
-   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations).
-   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above).
-   - `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx` + `publicProfileMapper.ts` + `useResourceTabs.ts` + `useSendMessageHandler.ts`.
+   - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab; renders all items per prototype, no pagination).
+   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations; layout `lg:col-span-4 lg:sticky lg:top-24` per prototype, stacked above main column on smaller viewports — sidebar is **not** hidden).
+   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above: outer `grid grid-cols-1 lg:grid-cols-12 gap-8`, sidebar `lg:col-span-4`, right column `lg:col-span-8`).
+   - `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx` + `publicProfileMapper.ts` + `useResourceTabs.ts`.
 
 4. **Organization vertical scaffold** (User Story 2 — route shell)
    - `src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` — minimal routing skeleton for the Organization vertical, mirroring the existing `OrganizationRoute`. Settings subtree (`path="settings/*"`) falls back to the existing MUI admin route — the Org admin shell migration is out of scope for this spec.
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdOrganizationRoutes` and the existing `OrganizationRoute`.
 
-5. **Organization profile** (User Story 2)
+5. **Organization profile** (User Story 2) — **parity restyle of current MUI** (`OrganizationPageView` + `AssociatesView`); no prototype.
    - `src/crd/components/organization/OrganizationPageHero.tsx` (banner / avatar / name / location / Verified badge / Settings icon / Message Popover — consumes the shared `MessagePopover` from `src/crd/components/common/`, same primitive the User hero uses; no cross-vertical import per Q2).
-   - `src/crd/components/organization/OrganizationProfileSidebar.tsx` (Bio + Tagsets + References + Associates list — Associates renders `CompactContributorCard` instances).
-   - `src/crd/components/organization/OrganizationResourceSections.tsx` (Account Resources, Lead Spaces, All Memberships — each as a CRD section card).
+   - `src/crd/components/organization/OrganizationProfileSidebar.tsx` (Bio + Tagsets + References + Associates — Associates is a parity port of MUI `AssociatesView`: square avatar grid capped at 12 with "Show more / Show less" toggle; sign-in CTA when `canReadUsers === false`. Does NOT consume `CompactContributorCard`).
+   - `src/crd/components/organization/OrganizationResourceSections.tsx` (Account Resources with `VISIBLE_SPACE_LIMIT = 6` + "Show all" parity, Lead Spaces, All Memberships — each as a CRD section card).
    - `src/crd/components/organization/OrganizationPublicProfileView.tsx` (composes the above).
-   - `src/main/crdPages/topLevelPages/organizationPages/publicProfile/CrdOrganizationProfilePage.tsx` + `organizationProfileMapper.ts` + reuses the shared `useSendMessageHandler.ts` (with `recipientId: organization.id`).
+   - `src/main/crdPages/topLevelPages/organizationPages/publicProfile/CrdOrganizationProfilePage.tsx` + `organizationProfileMapper.ts` + reuses `useSendMessageHandler` from `src/main/crdPages/topLevelPages/common/` (with `recipientId: organization.id`).
 
 6. **VC vertical scaffold** (User Story 3 — route shell)
-   - `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` — minimal routing skeleton for the VC vertical, mirroring the existing `VCRoute`. Settings subtree falls back to the existing MUI admin route (out of scope).
+   - `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` — minimal routing skeleton for the VC vertical, mirroring the existing `src/domain/community/virtualContributor/VCRoute.tsx`. Settings subtree (`path="settings/*"`) falls back to the existing MUI `<VCSettingsRoute />` (out of scope). **`${KNOWLEDGE_BASE_PATH}/*` subtree delegates to the existing MUI `<VCKnowledgeBaseRoute />`** so `/vc/:slug/knowledge-base/*` keeps working when CRD is on (out of scope; future spec).
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdVCRoutes` and the existing `VCRoute`.
 
 7. **VC profile** (User Story 3)
@@ -103,6 +104,9 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 - [ ] On someone else's profile (non-admin viewer): Settings icon hidden; Message button visible. Click Message → compose Popover opens; submit fires `useSendMessageToUsersMutation`; on success the Popover closes.
 - [ ] On someone else's profile (platform admin viewer): BOTH Settings icon and Message button visible. Click Settings → navigates to `/user/<otherUser>/settings/profile` (route owned by sibling spec 097).
 - [ ] Resize to a phone width: resource strip becomes horizontally scrollable; the active tab auto-scrolls into view; nothing wraps to a second line.
+- [ ] Resize to a phone width: sidebar **stacks above** the right column (single-column); sidebar is **not** hidden.
+- [ ] User who hosts at least one innovation pack or innovation hub in MUI: confirm those resources are **NOT** rendered on the CRD User profile (per prototype — see Out of Scope). Only hosted spaces and hosted virtual contributors should appear.
+- [ ] User with 50+ hosted spaces: every hosted space renders (no "Show all" affordance — per prototype). Compare with MUI on the same user, where hosted spaces would be capped at 6.
 
 **Organization profile** (User Story 2)
 
@@ -111,7 +115,9 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 - [ ] Org with no account resources → Account Resources section is omitted.
 - [ ] Org with no Lead Spaces → Lead Spaces section is omitted.
 - [ ] Org with no memberships → All Memberships section renders with the empty-state caption "No memberships yet".
-- [ ] Viewer lacks `canReadUsers` (e.g., signed in as a non-admin against a private org membership) → Associates section is hidden.
+- [ ] Org with 7+ hosted spaces → Account Resources hosted-spaces sub-list shows the first 6 with a "Show all" button; clicking expands to the full list (parity with MUI `AccountResourcesView`).
+- [ ] Org with 13+ associates → Associates sidebar shows the first 12 with a "Show more (N)" link; clicking expands; "Show less" collapses (parity with MUI `AssociatesView`).
+- [ ] Viewer lacks `canReadUsers` → Associates section header is **still visible**; section body shows the existing sign-in CTA copy (`associates-view.sign-in`) instead of the avatar grid (parity — section is **not** hidden).
 - [ ] Anonymous viewer → Message button is hidden; Settings icon hidden.
 - [ ] Signed-in non-admin viewer → Message button visible; click it → compose Popover opens; submit fires the send-message mutation against the org as recipient.
 - [ ] Org admin viewer → Settings icon visible; click → navigates to `/organization/<slug>/settings/...` (existing MUI admin shell — confirm the URL resolves and the MUI page renders).
@@ -127,6 +133,8 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 - [ ] VC owner viewer → Settings icon visible; click → navigates to `/vc/<slug>/settings/...` (existing MUI admin shell).
 - [ ] Visit an invalid VC URL → `Error404` renders inside the CRD layout.
 - [ ] Viewer lacks `Read` privilege on the VC → existing `useRestrictedRedirect` redirects.
+- [ ] Visit `/vc/<some-vc>/knowledge-base/...` with CRD on → existing MUI `VCKnowledgeBaseRoute` renders (delegated by `CrdVCRoutes`; out of CRD scope, but the URL must keep working).
+- [ ] VC with `AlkemioKnowledgeBase` BoK whose `knowledgeBaseDescription` is empty → BoK description shows the placeholder copy from `virtualContributorSpaceSettings.placeholder` (parity with MUI fallback `knowledgeBaseDescription || t(...)`).
 
 **Authorization** (cross-cutting)
 

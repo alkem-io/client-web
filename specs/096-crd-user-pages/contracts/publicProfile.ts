@@ -20,7 +20,9 @@
  *  - `organizationProfile.ts` — Organization profile view contracts.
  *  - `vcProfile.ts` — Virtual Contributor profile view contracts.
  *  - `compactContributor.ts` — `CompactContributorCard` shared CRD primitive
- *    (used by the Org Associates list and the VC Host card).
+ *    (used by the User profile's Organizations sidebar list and the VC
+ *    profile's Host card; NOT used by the Organization profile's Associates
+ *    section, which is a square-avatar grid parity port of MUI AssociatesView).
  *  - `data-mapper.ts` — cross-page mapper utility contracts.
  *
  * The User Settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,

@@ -61,11 +61,33 @@ export type ReferenceLink = {
   description: string | null;
 };
 
+/**
+ * Parity port of current MUI `AssociatesView`. The view paginates the avatar
+ * grid at 12 with a "Show more (N) / Show less" toggle (state held in the
+ * view, not the mapper). When `canReadUsers === false`, the view shows the
+ * existing `associates-view.sign-in` CTA copy in the section body — the
+ * section header is still rendered. The mapper passes the full associates
+ * list regardless of `canReadUsers`; the view is the gate.
+ *
+ * The shape is the existing MUI `ContributorCardSquare` prop set, NOT
+ * `CompactContributorCard` — Associates is a square avatar grid, not a
+ * sidebar row list.
+ */
+export type AssociateGridItem = {
+  id: string;
+  displayName: string;
+  avatarImageUrl: string | null;
+  /** Contributor profile URL (rendered as <a href>). */
+  url: string;
+};
+
 export type AssociatesView = {
-  /** Compact list of associates. Mapper trims to the same set the current MUI shows. */
-  associates: CompactContributorCardItem[];
+  /** All associates. View paginates at 12 with Show more / Show less. */
+  associates: AssociateGridItem[];
   /** Total associate count from `metrics[Associate]` — shown in the section header. */
   totalCount: number;
+  /** When false, view shows the sign-in CTA in the section body. */
+  canReadUsers: boolean;
 };
 
 export type OrganizationProfileSidebarProps = {
@@ -76,10 +98,11 @@ export type OrganizationProfileSidebarProps = {
   /** Free-form references. Empty array hides the section. */
   references: ReferenceLink[];
   /**
-   * Associates section. `null` when the viewer lacks the `canReadUsers`
-   * privilege (FR-023) — section omitted entirely.
+   * Associates section — always populated. The internal `canReadUsers` flag
+   * drives the view's grid-vs-sign-in-CTA branch (parity with current MUI
+   * `AssociatesView`). The section header is always rendered.
    */
-  associates: AssociatesView | null;
+  associates: AssociatesView;
   /** i18n-resolved labels. */
   labels: {
     bioTitle: string;
@@ -87,7 +110,12 @@ export type OrganizationProfileSidebarProps = {
     referencesTitle: string;
     referencesEmpty: string;
     associatesTitle: string;
-    associatesEmpty: string;
+    /** Parity reuse — i18n key `associates-view.sign-in`. */
+    associatesSignInCta: string;
+    /** Parity reuse — i18n key `associates-view.more` with `{count}` interpolation. */
+    associatesShowMore: string;
+    /** Parity reuse — i18n key `associates-view.less`. */
+    associatesShowLess: string;
   };
 };
 
@@ -110,8 +138,15 @@ export type InnovationHubCardItem = {
 };
 
 export type AccountResourcesGroup = {
+  /**
+   * The view paginates `spaces` at `VISIBLE_SPACE_LIMIT = 6` with a "Show all"
+   * button (state-machine in the view, NOT in the mapper) — exact parity port
+   * of current MUI `AccountResourcesView`. Mapper passes ALL spaces.
+   */
   spaces: SpaceCardItem[];
+  /** Rendered uncapped — current MUI parity. */
   innovationPacks: InnovationPackCardItem[];
+  /** Rendered uncapped — current MUI parity. */
   innovationHubs: InnovationHubCardItem[];
 };
 
@@ -134,8 +169,11 @@ export type OrganizationResourceSectionsProps = {
     accountResourcesSpacesSubtitle: string;
     accountResourcesInnovationPacksSubtitle: string;
     accountResourcesInnovationHubsSubtitle: string;
+    /** Parity reuse — i18n key `components.dashboardNavigation.showAll`. */
+    accountResourcesShowAll: string;
     leadSpacesTitle: string;
     memberOfTitle: string;
+    /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
     memberOfEmpty: string;
   };
 };

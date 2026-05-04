@@ -12,7 +12,8 @@
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
  *
  * The shared `CompactContributorCard` contract lives in `compactContributor.ts`
- * (used by the Host section here AND by the Organization profile's Associates section).
+ * (used by the Host section here AND by the User profile's Organizations
+ * sidebar — NOT by the Organization profile's Associates section).
  */
 
 import type { ReactNode } from 'react';
@@ -61,18 +62,35 @@ export type VCProfileSidebarProps = {
    * (rare but possible — render nothing for the BoK section in that case).
    */
   bodyOfKnowledge: BodyOfKnowledge | null;
-  /** i18n-resolved labels. */
+  /**
+   * i18n-resolved labels. Several are PARITY REUSES of existing
+   * `translation`-namespace keys (FR-102) — the mapper resolves them via
+   * `t(...)` from the global namespace rather than introducing duplicates
+   * under `crd-profilePages`.
+   */
   labels: {
     descriptionTitle: string;
     hostTitle: string;
+    /** Parity reuse — `components.profile.fields.references.title`. */
     referencesTitle: string;
+    /** Parity reuse — `common.no-references`. */
     referencesEmpty: string;
+    /** Parity reuse — `components.profile.fields.bodyOfKnowledge.title`. */
     bodyOfKnowledgeTitle: string;
+    /** Parity reuse — `components.profile.fields.bodyOfKnowledge.privateBokTooltip`. */
     bodyOfKnowledgePrivateTooltip: string;
+    /** Parity reuse — `buttons.visit`. */
     bodyOfKnowledgeVisitButton: string;
+    /** Parity reuse — `components.profile.fields.bodyOfKnowledge.spaceBokDescription` (interpolates `{vcName}`). */
     bodyOfKnowledgeSpaceContextDescription: string;
+    /**
+     * Parity reuse — `components.profile.fields.engines.externalVCDescription`,
+     * with `{engineName}` interpolated from `components.profile.fields.engines.externalAssistant`
+     * (variant=assistant) or `components.profile.fields.engines.external` (other).
+     */
     bodyOfKnowledgeExternalAssistantDescription: string;
     bodyOfKnowledgeExternalOtherDescription: string;
+    /** Parity reuse — `components.card.privacy.private` with `entity: 'space'`. */
     privateSpaceLabel: string;
   };
 };
@@ -111,7 +129,15 @@ export type BodyOfKnowledge =
     }
   | {
       kind: 'knowledgeBase';
-      description: string;               // useKnowledgeBase().knowledgeBaseDescription (or placeholder)
+      /**
+       * Resolved by the mapper:
+       *   description = useKnowledgeBase().knowledgeBaseDescription
+       *               || t('virtualContributorSpaceSettings.placeholder')
+       * Exact parity with current MUI `VCProfilePageView`'s
+       * `knowledgeBaseDescription || t('virtualContributorSpaceSettings.placeholder')`.
+       * The view receives a populated string and never branches on emptiness.
+       */
+      description: string;
       hasReadAccess: boolean;
       visitUrl: string;                  // ${vc.profile.url}/${KNOWLEDGE_BASE_PATH}
     }

@@ -78,7 +78,10 @@ type UserPublicProfile = {
 type PublicProfileResources = {
   hostedSpaces: SpaceCardItem[];          // user-hosted L0 spaces
   hostedVirtualContributors: VCCardItem[]; // user-hosted VCs
-  spacesLeading: SpaceCardItem[];          // spaces where the user holds host/admin/lead
+  // Innovation packs and innovation hubs are NOT included on the User profile
+  // (per prototype). `useAccountResources` returns them, but the User mapper
+  // intentionally drops them. See spec.md Out of Scope. Future spec can add.
+  spacesLeading: SpaceCardItem[];          // useFilteredMemberships(contributions, [Lead, Admin]) — current MUI parity
   spacesMember: SpaceCardItem[];           // remaining memberships
 };
 
@@ -154,7 +157,10 @@ type OrganizationPublicProfile = {
     bio: string | null;                    // markdown
     tagsets: TagsetGroup[];                // Keywords + Capabilities (FR-023)
     references: ReferenceLink[];           // profile.references[]
-    associates: AssociatesView | null;     // null when canReadUsers is false (FR-023)
+    // Always populated. The `canReadUsers` flag inside drives the view's
+    // grid-vs-sign-in-CTA branch (parity with MUI `AssociatesView`). The
+    // section header is always rendered.
+    associates: AssociatesView;
   };
   rightColumn: {
     accountResources: AccountResourcesGroup | null;   // null when all three account resource lists are empty (FR-024)
@@ -176,8 +182,27 @@ type ReferenceLink = {
 };
 
 type AssociatesView = {
-  associates: CompactContributorCardItem[]; // render every associate the org provider returns — no cap, no "View all" affordance, no truncation per FR-023 / FR-016
+  // Parity with current MUI `AssociatesView`:
+  //  - Renders all associates the org provider returns; the CRD view paginates
+  //    visually at 12 with a "Show more (N) / Show less" toggle (state-machine
+  //    in the view, NOT in the mapper).
+  //  - When `canReadUsers` is false, the view shows the existing
+  //    `associates-view.sign-in` CTA copy in the section body — the section
+  //    header is still rendered. The mapper still passes the associates list;
+  //    the view is the gate.
+  // The shape is the existing MUI `ContributorCardSquare` prop set, NOT
+  // `CompactContributorCard` (Associates is a square avatar grid, not a
+  // sidebar row list).
+  associates: AssociateGridItem[];
   totalCount: number;                       // metrics[Associate]
+  canReadUsers: boolean;                    // gates the avatar grid in the view
+};
+
+type AssociateGridItem = {
+  id: string;
+  displayName: string;
+  avatarImageUrl: string | null;
+  url: string;                              // contributor profile URL
 };
 
 type CompactContributorCardItem = {
@@ -190,9 +215,12 @@ type CompactContributorCardItem = {
 };
 
 type AccountResourcesGroup = {
+  // The CRD view paginates `spaces` at VISIBLE_SPACE_LIMIT = 6 with a
+  // "Show all" button (state-machine in the view, NOT in the mapper) — exact
+  // parity with current MUI `AccountResourcesView`. Mapper passes ALL spaces.
   spaces: SpaceCardItem[];
-  innovationPacks: InnovationPackCardItem[];
-  innovationHubs: InnovationHubCardItem[];
+  innovationPacks: InnovationPackCardItem[]; // rendered uncapped (MUI parity)
+  innovationHubs: InnovationHubCardItem[];   // rendered uncapped (MUI parity)
 };
 
 type InnovationPackCardItem = {
@@ -216,9 +244,9 @@ type InnovationHubCardItem = {
 
 | Section | Omitted when | Otherwise |
 |---|---|---|
-| Account Resources | `spaces.length === 0 && innovationPacks.length === 0 && innovationHubs.length === 0` (current MUI's `hasAccountResources` check) | Render section |
-| Lead Spaces | `leadSpaces.length === 0` | Render section |
-| All Memberships | Never omitted — always render section, with empty-state caption "No memberships yet" when `memberOf.length === 0` | Render section |
+| Account Resources | `spaces.length === 0 && innovationPacks.length === 0 && innovationHubs.length === 0` (current MUI's `hasAccountResources` check) | Render section. **Hosted-spaces sub-list paginates at VISIBLE_SPACE_LIMIT = 6 with a "Show all" button** — parity port of current MUI `AccountResourcesView` (FR-016). |
+| Lead Spaces | `leadSpaces.length === 0`. Driven by `useFilteredMemberships(contributions, [RoleType.Lead])` — `[Lead]` only (current MUI parity, no Admin). | Render section |
+| All Memberships | Never omitted — always render section, with empty-state caption "No memberships yet" when `memberOf.length === 0`. Reuses existing `pages.user-profile.communities.noMembership` translation key per FR-102. | Render section |
 
 ---
 
@@ -228,7 +256,6 @@ type InnovationHubCardItem = {
 type VCPublicProfile = {
   id: string;
   slug: string;                            // nameID
-  isOwn: boolean;                          // viewer is the VC's provider (uncommon)
   hasUpdatePrivilege: boolean;             // vc.authorization.myPrivileges includes Update (FR-031)
   hero: {
     bannerImageUrl: string | null;         // null → render gradient via pickColorFromId(id)
@@ -261,7 +288,13 @@ type BodyOfKnowledge =
     }
   | {
       kind: 'knowledgeBase';
-      description: string;                 // useKnowledgeBase().knowledgeBaseDescription
+      // useKnowledgeBase().knowledgeBaseDescription, OR the existing translation
+      // key `virtualContributorSpaceSettings.placeholder` when the API returns an
+      // empty value — matches current MUI VCProfilePageView's
+      // `knowledgeBaseDescription || t('virtualContributorSpaceSettings.placeholder')`
+      // exactly. The mapper resolves the fallback (passing the i18n `t` function
+      // in) so the view receives a populated string.
+      description: string;
       hasReadAccess: boolean;
       visitUrl: string;                    // ${vc.profile.url}/${KNOWLEDGE_BASE_PATH}
     }
@@ -406,6 +439,6 @@ query other error ──▶ propagate to the global ErrorBoundary (Q4 — no cus
 
 - **Slug → entity resolution**: each page resolves its actor entity via the existing facade hook (`useUserProvider` / `useOrganizationProvider` / `useUrlResolver` for VC); the same entity feeds the hero, sidebar, and main column in the same render cycle.
 - **`canEditSettings`** (User profile only) is computed via `useCanEditSettings()` from the `useUserPageRouteContext` user id + the current viewer's `hasPlatformPrivilege(PlatformAdmin)` — exactly the same predicate the sibling settings spec 097 uses (FR-008a). The User profile uses it to decide whether to render the Settings (gear) icon button. Organization and VC use their own per-entity predicates (`canEdit`, `Update` privilege respectively) — they do NOT share `useCanEditSettings`.
-- **Send-message mutation**: the User and Organization heroes share one wrapped helper hook (`useSendMessageHandler`) that calls the same `useSendMessageToUsersMutation` against different recipient IDs. The presentational hero components are recipient-agnostic — they only call `onSendMessage(text)`. The VC hero does NOT have a Message button (FR-030).
+- **Send-message mutation**: the User and Organization heroes share one wrapped helper hook (`useSendMessageHandler`, located at `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts`) that calls the same `useSendMessageToUsersMutation` against different recipient IDs. The presentational hero components are recipient-agnostic — they only call `onSendMessage(text)`. The VC hero does NOT have a Message button (FR-030).
 - **No mutations against the entity itself** are fired from any of the three public profile pages; the only mutations are `sendMessageToUsers` (User + Organization). VC is fully read-only. None of these mutations affect the entity document, so no refetch is required after sending a message.
 - **Bundle isolation**: each `CrdXxxProfilePage` is its own React.lazy chunk. The shared `CompactContributorCard` primitive lives in the small `crd-common` chunk that's already shared across CRD pages. The new i18n namespace `crd-profilePages` is lazy-loaded.

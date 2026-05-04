@@ -5,8 +5,17 @@
  *   src/crd/components/common/CompactContributorCard.tsx
  *
  * Consumers:
- *   - VC profile sidebar — Host card (sibling spec component VCProfileSidebar).
- *   - Organization profile sidebar — Associates list (OrganizationProfileSidebar).
+ *   - User profile sidebar — Organizations list (UserProfileSidebar);
+ *     `caption = role`, `secondaryCaption = i18n-resolved member-count line`.
+ *   - VC profile sidebar — Host card (VCProfileSidebar);
+ *     `caption = null`, `secondaryCaption = null` unless current MUI surfaces
+ *     a role/caption.
+ *
+ * NOT a consumer:
+ *   - Organization profile's Associates section. Associates is a parity port of
+ *     MUI `AssociatesView` — a square avatar grid (not a sidebar row list).
+ *     It uses the `AssociateGridItem` shape from `organizationProfile.ts`,
+ *     not `CompactContributorCard`.
  *
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
@@ -42,10 +51,11 @@ export type CompactContributorCardItem = {
 export type CompactContributorCardProps = CompactContributorCardItem & {
   /**
    * Visual variant:
-   *  - `compact` (default): tight spacing, single-line caption — used in the
-   *    VC profile sidebar (Host card).
-   *  - `spacious`: extra vertical breathing room — used in the Organization
-   *    profile sidebar (Associates list).
+   *  - `compact` (default): tight spacing, single-line caption — used by the
+   *    VC profile sidebar (Host card) and the User profile sidebar
+   *    (Organizations list).
+   *  - `spacious`: extra vertical breathing room — currently unused; reserved
+   *    for future consumers that need a larger row.
    */
   variant?: 'compact' | 'spacious';
   /**

@@ -102,7 +102,7 @@ The presentational `VCBodyOfKnowledgeSection` component switches on `kind` and r
 - Two separate handler hooks. **Rejected** — DRY violation; only differing input is `receiverIds`.
 - Build a recipient-list selector into the hero. **Rejected** — couples the hero to multi-recipient semantics that aren't needed here.
 
-**Implementation note**: The shared helper file lives at `src/main/crdPages/topLevelPages/userPages/publicProfile/useSendMessageHandler.ts` (already in the User vertical from spec 096's earlier scope). The Organization integration imports it directly. This is the only cross-vertical import in the integration layer; it does NOT introduce a barrel.
+**Implementation note**: The shared helper lives at `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` — under a new `topLevelPages/common/` integration-layer folder that mirrors the cross-vertical `src/crd/components/common/` folder for presentational primitives. Both the User and the Organization integration layers import the helper from `common/` so neither vertical cross-imports the other. (Earlier drafts of this plan placed the helper inside the User vertical; that introduced a one-off cross-vertical import which contradicted the rationale used to place `MessagePopover` in `common/`. The helper has been moved to keep the rationale consistent.)
 
 **Companion CRD primitive (Q2 decision):** the in-hero compose surface itself — `MessagePopover` — lives at `src/crd/components/common/MessagePopover.tsx`, NOT under `src/crd/components/user/`. This avoids a cross-vertical import from `OrganizationPageHero` into the User folder. Both heroes consume `MessagePopover` from `common/`; the popover is recipient-agnostic by design (its only callback is `onSendMessage(text: string): Promise<void>`). Visual divergence, if it ever appears, can be handled with a `variant` prop later — without further refactor.
 
@@ -240,6 +240,8 @@ and renders the same `SpaceCardHorizontal` for both private and public cases —
 **Decision**: **Three lazy-loaded chunks total, one per actor's `Crd<Actor>Routes`.** The per-actor page component (`CrdUserProfilePage`, `CrdOrganizationProfilePage`, `CrdVCProfilePage`) lives inside its routes chunk; it is NOT a separate `React.lazy()` boundary. The shared `CompactContributorCard` and `MessagePopover` primitives live in the small `crd-common` chunk that is already shared across CRD pages.
 
 **Rationale**: Matches the precedent set by 045 / 091 / 097 (one route shell per vertical, page nested inside it). The +35 KB combined budget (SC-005) fits this shape. Six chunks would over-fragment; one combined chunk would inflate every actor's first-paint cost.
+
+**Note**: This is a deliberate deviation from the example in `docs/crd/migration-guide.md` (which lazy-loads the page component itself via `lazyWithGlobalErrorHandler` directly in `TopLevelRoutes.tsx`). The route-shell-level lazy boundary is the established CRD-spec convention; the migration guide's example was written for single-page migrations and predates the multi-route verticals introduced by 045 / 091 / 097.
 
 ---
 
