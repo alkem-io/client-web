@@ -92,16 +92,18 @@ export function useCrdRoomComments({
 
   const confirmDelete = async () => {
     if (!pendingDeleteId) return;
-    const id = pendingDeleteId;
-    setPendingDeleteId(undefined);
-    await deleteMessage({
-      variables: {
-        messageData: {
-          roomID: roomId,
-          messageID: id,
+    try {
+      await deleteMessage({
+        variables: {
+          messageData: {
+            roomID: roomId,
+            messageID: pendingDeleteId,
+          },
         },
-      },
-    });
+      });
+    } finally {
+      setPendingDeleteId(undefined);
+    }
   };
 
   const thread = (

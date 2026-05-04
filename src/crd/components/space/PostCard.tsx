@@ -291,7 +291,7 @@ export function PostCard({
                 <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 has-[:focus-visible]:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100">
               <Button
                 variant="secondary"
                 className="shadow-sm"

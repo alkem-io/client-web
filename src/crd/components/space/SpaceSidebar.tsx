@@ -113,7 +113,7 @@ export function SpaceSidebar({
       {variant === 'home' && onAboutClick && (
         <Button variant="outline" className="w-full uppercase gap-2 font-medium px-2" onClick={onAboutClick}>
           <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
-          <span className="truncate text-[clamp(0.5rem,1.05vw,0.875rem)] leading-tight">{t('sidebar.aboutSpace')}</span>
+          <span className="truncate text-body-emphasis">{t('sidebar.aboutSpace')}</span>
         </Button>
       )}
 
