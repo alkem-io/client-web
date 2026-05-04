@@ -1,5 +1,5 @@
 import { type Editor, EditorContent, useEditor } from '@tiptap/react';
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '@/crd/components/common/Loading';
 import { cn } from '@/crd/lib/utils';
@@ -41,22 +41,18 @@ function CollaborativeMarkdownEditorLazy({
   const { t } = useTranslation('crd-markdown');
 
   // Mirrors MUI's `useEditorConfig` (src/core/ui/forms/MarkdownInput/hooks/useEditorConfig.ts):
-  // memoize on `disabled` so the editor is rebuilt whenever the editable state flips. With the
-  // collaboration extensions, `setEditable` after-the-fact doesn't always re-engage typing —
-  // recreating the editor is the path the legacy MUI memo dialog has used reliably for both
-  // first-load and reconnect transitions. Content lives in the ydoc, so a rebuild is non-lossy.
-  const editorOptions = useMemo(
-    () =>
-      buildCrdMarkdownExtensions({
-        collaborative: true,
-        ydoc,
-        provider,
-        user,
-        disabled,
-        ariaLabel: placeholder ?? t('editor.toolbar'),
-      }),
-    [ydoc, provider, user, disabled, placeholder, t]
-  );
+  // the editor is rebuilt whenever the editable state flips. With the collaboration
+  // extensions, `setEditable` after-the-fact doesn't always re-engage typing — recreating
+  // the editor is the path the legacy MUI memo dialog has used reliably for both first-load
+  // and reconnect transitions. Content lives in the ydoc, so a rebuild is non-lossy.
+  const editorOptions = buildCrdMarkdownExtensions({
+    collaborative: true,
+    ydoc,
+    provider,
+    user,
+    disabled,
+    ariaLabel: placeholder ?? t('editor.toolbar'),
+  });
 
   const editor = useEditor(editorOptions, [editorOptions]);
 
