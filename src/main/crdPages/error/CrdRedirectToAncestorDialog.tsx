@@ -86,17 +86,22 @@ export function CrdRedirectToAncestorDialog({ closestAncestor }: CrdRedirectToAn
 
     const timer = setInterval(() => {
       setSecondsLeft(prev => {
-        if (prev <= 1) {
+        const next = prev - 1;
+        if (next <= 0) {
           clearInterval(timer);
-          navigate(closestAncestor.url);
           return 0;
         }
-        return prev - 1;
+        return next;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [closed, cancelled, closestAncestor.url, navigate]);
+  }, [closed, cancelled, closestAncestor.url]);
+
+  useEffect(() => {
+    if (closed || cancelled || secondsLeft > 0) return;
+    navigate(closestAncestor.url);
+  }, [secondsLeft, closed, cancelled, closestAncestor.url, navigate]);
 
   const handleGoNow = () => {
     navigate(closestAncestor.url);
