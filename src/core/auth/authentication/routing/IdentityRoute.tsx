@@ -1,6 +1,8 @@
 import { Route } from 'react-router-dom';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
+import { CrdAuthRequiredRoute } from '@/main/crdPages/error/CrdAuthRequiredRoute';
+import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import SignUp from '../pages/SignUp';
 import ErrorRoute from './ErrorRoute';
@@ -24,6 +26,7 @@ export enum IdentityRoutes {
 }
 
 export const IdentityRoute = () => {
+  const crdEnabled = useCrdEnabled();
   return (
     <>
       <Route path={`${IdentityRoutes.Login}/*`} element={<LoginRoute />} />
@@ -31,7 +34,10 @@ export const IdentityRoute = () => {
       <Route path={`${IdentityRoutes.Registration}/*`} element={<RegistrationRoute />} />
       <Route path={`${IdentityRoutes.Verify}/*`} element={<VerifyRoute />} />
       <Route path={`${IdentityRoutes.Recovery}`} element={<RecoveryRoute />} />
-      <Route path={`${IdentityRoutes.Required}`} element={<AuthRequiredPage />} />
+      <Route
+        path={`${IdentityRoutes.Required}`}
+        element={crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />}
+      />
       <Route path={`${IdentityRoutes.Error}`} element={<ErrorRoute />} />
       <Route
         path={`${IdentityRoutes.Settings}`}

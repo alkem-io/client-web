@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -26,7 +26,7 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
-function CrdLayoutConnector() {
+function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
   const {
@@ -92,7 +92,7 @@ function CrdLayoutConnector() {
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
       >
-        <Outlet />
+        {children ?? <Outlet />}
       </CrdLayout>
       {userModel && (
         <Suspense fallback={null}>
@@ -109,11 +109,11 @@ function CrdLayoutConnector() {
   );
 }
 
-export function CrdLayoutWrapper() {
+export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
   return (
     <BreadcrumbsProvider>
       <SearchProvider>
-        <CrdLayoutConnector />
+        <CrdLayoutConnector>{children}</CrdLayoutConnector>
       </SearchProvider>
     </BreadcrumbsProvider>
   );
