@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { AncestorRedirectDispatcher } from '@/main/crdPages/error/AncestorRedirectDispatcher';
 import { setNavigationHistoryError } from '../routing/NavigationHistory';
 import { type ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
-import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
 
 interface Props extends React.PropsWithChildren {
   errorComponent: (errorState: State) => React.ReactNode;
@@ -89,7 +89,12 @@ class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
       return (
         <>
           {this.props.errorComponent(this.state)}
-          {this.state.closestAncestor && <RedirectToAncestorDialog closestAncestor={this.state.closestAncestor} />}
+          {this.state.closestAncestor && (
+            <AncestorRedirectDispatcher
+              closestAncestor={this.state.closestAncestor}
+              isNotAuthorized={this.state.isNotAuthorized}
+            />
+          )}
         </>
       );
     }

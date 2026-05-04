@@ -1,0 +1,20 @@
+{
+  "forbidden": {
+    "title": "Zugriff eingeschränkt",
+    "description": "Die Seite, die Sie aufrufen möchten, ist für Sie nicht verfügbar.",
+    "actions": {
+      "goHome": "Zur Startseite",
+      "goBack": "Zurück"
+    }
+  },
+  "authRequired": {
+    "title": "Zugriff eingeschränkt",
+    "description": "Die Seite, die Sie aufrufen möchten, ist nur für registrierte Benutzer verfügbar.",
+    "descriptionContinued": "Bitte melden Sie sich an, um fortzufahren. Sie haben noch kein Konto? Kostenlos registrieren.",
+    "actions": {
+      "signIn": "Anmelden / Registrieren",
+      "or": "Oder",
+      "returnAsGuest": "Als Gast zurück zum Dashboard"
+    }
+  }
+}
