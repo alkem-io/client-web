@@ -3,7 +3,6 @@ import { Plus, MoreVertical, Layout, Bot, FileBox, Home, Settings, CreditCard, U
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 export default function UserAccountPage() {
@@ -71,20 +70,12 @@ export default function UserAccountPage() {
   return (
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
-      <div className="sticky top-16 z-20 border-b border-border bg-card">
-        <div className="px-6 md:px-8 pt-8 pb-0">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-          <div className="flex items-center gap-4 mb-8">
-            <Avatar className="w-12 h-12 shrink-0">
-              <AvatarImage
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Jeroen Nijkamp"
-              />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
-            </Avatar>
+      <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
+              <p className="text-muted-foreground mt-1">Manage your resources, subscription, and account preferences.</p>
             </div>
           </div>
           
@@ -105,14 +96,10 @@ export default function UserAccountPage() {
               </Link>
             ))}
           </div>
-          </div>
-        </div>
         </div>
       </div>
 
-      <div className="px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-12">
+      <div className="container mx-auto px-4 md:px-8 py-8 space-y-12">
         {/* Help Text */}
         <div className="flex items-center gap-2 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm text-primary/80 max-w-3xl">
           <Layout className="w-4 h-4" />
@@ -226,7 +213,7 @@ export default function UserAccountPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Section: Template Packs */}
           <section className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
@@ -304,8 +291,6 @@ export default function UserAccountPage() {
               </div>
             </div>
           </section>
-          </div>
-        </div>
         </div>
       </div>
     </div>
