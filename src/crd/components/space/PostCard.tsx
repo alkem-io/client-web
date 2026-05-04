@@ -1,7 +1,10 @@
 import {
+  BarChart3,
   ChevronDown,
   FileText,
+  ImagePlus,
   Images,
+  type LucideIcon,
   Maximize2,
   Megaphone,
   MessageSquare,
@@ -11,7 +14,7 @@ import {
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
-import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { ExpandableMarkdown } from '@/crd/components/common/ExpandableMarkdown';
 import {
   MediaGalleryFeedGrid,
   type MediaGalleryFeedThumbnail,
@@ -24,7 +27,32 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'callToAction';
+export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'callToAction' | 'poll';
+
+type PostTypeLabelKey =
+  | 'callout.post'
+  | 'callout.whiteboard'
+  | 'callout.memo'
+  | 'callout.mediaGallery'
+  | 'callout.callToAction'
+  | 'callout.poll';
+
+/**
+ * Single source of truth for the icon and translation key per `PostType`.
+ * Adding a new framing type means adding one entry here — the typed Record
+ * forces every `PostType` to be covered, so the icon and label can never
+ * silently fall through to the wrong default. Label keys are typed as a
+ * literal union so the strict-typed `t()` (see `@types/i18next.d.ts`) accepts
+ * them without a cast.
+ */
+export const POST_TYPE_DESCRIPTORS: Record<PostType, { icon: LucideIcon; labelKey: PostTypeLabelKey }> = {
+  text: { icon: FileText, labelKey: 'callout.post' },
+  whiteboard: { icon: Presentation, labelKey: 'callout.whiteboard' },
+  memo: { icon: StickyNote, labelKey: 'callout.memo' },
+  mediaGallery: { icon: Images, labelKey: 'callout.mediaGallery' },
+  callToAction: { icon: Megaphone, labelKey: 'callout.callToAction' },
+  poll: { icon: BarChart3, labelKey: 'callout.poll' },
+};
 
 export type PostCardData = {
   id: string;
@@ -67,6 +95,18 @@ type PostCardProps = {
   href?: string;
   onClick?: () => void;
   /**
+   * Fired when the user clicks "Open Whiteboard" / "Open Memo" inside the framing
+   * preview. When omitted, the buttons fall back to `onClick` (i.e. open the
+   * callout dialog). Consumers wire this to launch the framing editor directly.
+   */
+  onOpenFraming?: () => void;
+  /**
+   * Fired when the user clicks "Add images" on a media-gallery framing preview.
+   * When omitted, the button is hidden. Consumer wires this to a hidden file
+   * picker + direct upload, matching the dialog-level flow.
+   */
+  onAddMediaGalleryImages?: () => void;
+  /**
    * Fallback handler for the footer when no `commentsSlot` is provided — e.g.
    * the standalone preview app or future callers that want a dialog-only flow.
    * When `commentsSlot` is supplied the footer becomes a collapsible and this
@@ -104,26 +144,12 @@ type PostCardProps = {
   className?: string;
 };
 
-const typeIcons: Record<PostType, typeof FileText> = {
-  text: FileText,
-  whiteboard: Presentation,
-  memo: StickyNote,
-  mediaGallery: Images,
-  callToAction: Megaphone,
-};
-
-const typeLabels = {
-  text: 'callout.post',
-  whiteboard: 'callout.whiteboard',
-  memo: 'callout.memo',
-  mediaGallery: 'callout.mediaGallery',
-  callToAction: 'callout.callToAction',
-} as const;
-
 export function PostCard({
   post,
   href,
   onClick,
+  onOpenFraming,
+  onAddMediaGalleryImages,
   onCommentsClick,
   settingsSlot,
   onExpandClick,
@@ -135,7 +161,7 @@ export function PostCard({
   className,
 }: PostCardProps) {
   const { t } = useTranslation('crd-space');
-  const TypeIcon = typeIcons[post.type];
+  const TypeIcon = POST_TYPE_DESCRIPTORS[post.type].icon;
   const hasCollapsibleComments = commentsSlot !== undefined;
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
@@ -181,7 +207,7 @@ export function PostCard({
               )}
               <span className="text-caption text-muted-foreground flex items-center gap-1">
                 <TypeIcon className="w-4 h-4" aria-hidden="true" />
-                {t(typeLabels[post.type])}
+                {t(POST_TYPE_DESCRIPTORS[post.type].labelKey)}
               </span>
             </div>
           </div>
@@ -222,45 +248,99 @@ export function PostCard({
             {post.title}
           </a>
         </h3>
-        {post.snippet && <MarkdownContent content={post.snippet} className="text-muted-foreground line-clamp-3 mb-4" />}
+        {post.snippet && <ExpandableMarkdown content={post.snippet} maxLines={3} className="mb-4" />}
 
-        {/* Whiteboard framing preview */}
-        {post.type === 'whiteboard' && post.framingImageUrl && (
+        {/* Whiteboard framing preview — always render (even when empty), MUI parity. */}
+        {post.type === 'whiteboard' && (
           <div className="rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video">
-            <img
-              src={post.framingImageUrl}
-              alt={t('callout.whiteboard')}
-              className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
-            />
+            {post.framingImageUrl ? (
+              <img
+                src={post.framingImageUrl}
+                alt={t('callout.whiteboard')}
+                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Presentation className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+              </div>
+            )}
             <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Button variant="secondary" className="shadow-sm" onClick={onClick}>
+              <Button
+                variant="secondary"
+                className="shadow-sm"
+                onClick={event => {
+                  event.stopPropagation();
+                  (onOpenFraming ?? onClick)?.();
+                }}
+              >
                 {t('callout.openWhiteboard')}
               </Button>
             </div>
           </div>
         )}
 
-        {/* Memo framing preview */}
-        {post.type === 'memo' && post.framingMemoMarkdown && (
-          <div className="relative rounded-lg overflow-hidden border border-border bg-muted/30">
-            <div className="p-3">
-              <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="12rem" />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100">
-              <Button variant="secondary" className="shadow-sm" onClick={onClick}>
+        {/* Memo framing preview — fixed-height box; renders icon centred when empty. */}
+        {post.type === 'memo' && (
+          <div className="relative rounded-lg overflow-hidden border border-border bg-muted/30 h-32">
+            {post.framingMemoMarkdown ? (
+              <div className="p-3 h-full">
+                <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
+              </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+              </div>
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 has-[:focus-visible]:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100">
+              <Button
+                variant="secondary"
+                className="shadow-sm"
+                onClick={event => {
+                  event.stopPropagation();
+                  (onOpenFraming ?? onClick)?.();
+                }}
+              >
                 {t('callout.openMemo')}
               </Button>
             </div>
           </div>
         )}
 
-        {/* Media gallery framing preview — 4-tile grid matching whiteboard-contribution layout */}
-        {post.type === 'mediaGallery' && post.framingMediaGallery && post.framingMediaGallery.thumbnails.length > 0 && (
-          <MediaGalleryFeedGrid
-            thumbnails={post.framingMediaGallery.thumbnails}
-            totalCount={post.framingMediaGallery.totalCount}
-            onOpenAt={onClick}
-          />
+        {/* Media gallery framing preview — 4-tile grid; falls back to a placeholder
+            (icon-centred empty box) when there are no images yet so the gallery has
+            a visible affordance in the feed. Mirrors the whiteboard / memo empty-state
+            pattern. The "Add images" button below opens the OS file picker directly
+            (MUI parity — no edit-dialog round-trip). */}
+        {post.type === 'mediaGallery' && (
+          <div className="space-y-2">
+            {post.framingMediaGallery && post.framingMediaGallery.thumbnails.length > 0 ? (
+              <MediaGalleryFeedGrid
+                thumbnails={post.framingMediaGallery.thumbnails}
+                totalCount={post.framingMediaGallery.totalCount}
+                onOpenAt={onClick}
+              />
+            ) : (
+              <div className="rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video flex items-center justify-center">
+                <Images className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
+              </div>
+            )}
+            {onAddMediaGalleryImages && (
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={event => {
+                    event.stopPropagation();
+                    onAddMediaGalleryImages();
+                  }}
+                >
+                  <ImagePlus className="size-4" aria-hidden="true" />
+                  {t('mediaGallery.emptyState.action')}
+                </Button>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Call-to-action framing preview — full-width link button */}

@@ -392,13 +392,16 @@
   "validation": {
     "titleRequired": "Der Titel ist erforderlich",
     "urlRequired": "Die URL ist erforderlich",
-    "urlInvalid": "Die URL muss mit http:// oder https:// beginnen",
+    "urlInvalid": "Bitte geben Sie eine gültige URL ein",
     "displayNameRequired": "Der Anzeigename ist erforderlich",
     "questionRequired": "Die Frage ist erforderlich",
     "required": "Dieses Feld ist erforderlich",
+    "minDisplayName": "Muss mindestens {{count}} Zeichen lang sein",
     "maxSmall": "Darf höchstens {{count}} Zeichen enthalten",
+    "maxMid": "Darf höchstens {{count}} Zeichen enthalten",
     "maxMarkdown": "Darf höchstens {{count}} Zeichen enthalten",
     "minPollOptions": "Mindestens {{count}} Optionen sind erforderlich",
+    "maxPollOptions": "Höchstens {{count}} Optionen sind erlaubt",
     "pollOptionRequired": "Der Optionstext ist erforderlich",
     "referenceTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
     "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird"
@@ -581,6 +584,10 @@
       "tooLarge": "Bild ist zu groß"
     }
   },
+  "postSnippet": {
+    "readMore": "… Mehr lesen",
+    "readLess": "Weniger lesen"
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",
@@ -588,6 +595,8 @@
     "reply": "Antworten",
     "delete": "Löschen",
     "deleted": "Dieser Kommentar wurde gelöscht",
+    "deleteConfirmTitle": "Kommentar löschen?",
+    "deleteConfirmDescription": "Möchten Sie diesen Kommentar wirklich löschen?",
     "addComment": "Kommentar hinzufügen...",
     "mention": "Jemanden erwähnen",
     "mentionVirtualContributor": "KI",
@@ -674,6 +683,11 @@
       "title": "Diese Umfrage wieder öffnen?",
       "description": "Das Wiedereröffnen der Umfrage ermöglicht neue Stimmen und Bearbeitung.",
       "confirm": "Umfrage wieder öffnen"
+    },
+    "deleteOptionConfirm": {
+      "title": "Option löschen?",
+      "description": "Diese Option wird aus der Umfrage entfernt.",
+      "descriptionWithText": "„{{text}}“ wird aus der Umfrage entfernt."
     },
     "dragHandle": "Zum Neuordnen ziehen"
   },

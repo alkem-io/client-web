@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
@@ -196,8 +200,12 @@ export function CalloutDetailDialogConnector({
 
   const hasMediaGalleryFraming =
     callout.framing.type === CalloutFramingType.MediaGallery && !!callout.framing.mediaGallery;
+  // MUI parity (CalloutFramingMediaGallery): when the user has Update on the callout
+  // the connector owns the file picker + upload mutation directly — clicking
+  // "Add images" goes straight to the OS file picker, not through the edit dialog.
+  const canEditMediaGallery = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
-    <MediaGalleryFramingConnector callout={callout} />
+    <MediaGalleryFramingConnector callout={callout} canEdit={canEditMediaGallery} />
   ) : undefined;
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;

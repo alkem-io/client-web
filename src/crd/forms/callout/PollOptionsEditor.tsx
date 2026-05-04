@@ -7,8 +7,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { BarChart3, GripVertical, Plus, Trash2 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Switch } from '@/crd/primitives/switch';
@@ -27,6 +28,12 @@ type PollOptionsEditorProps = {
   questionError?: string;
   options: PollOptionValue[];
   onOptionsChange: (options: PollOptionValue[]) => void;
+  /**
+   * Aggregated validation message for the options list (e.g. "At least 2 options
+   * are required"). Surface so the user sees why submit is blocked instead of
+   * a silent no-op.
+   */
+  optionsError?: string;
   settingsSlot?: ReactNode;
   pollStatus?: 'open' | 'closed';
   onStatusChange?: (status: 'open' | 'closed') => void;
@@ -105,6 +112,7 @@ export function PollOptionsEditor({
   questionError,
   options,
   onOptionsChange,
+  optionsError,
   settingsSlot,
   pollStatus,
   onStatusChange,
@@ -139,10 +147,21 @@ export function PollOptionsEditor({
     }
   };
 
-  const removeOption = (index: number) => {
+  // CRD CLAUDE.md Rule #9: every deletion is confirmed. The trash icon stages
+  // the index in `pendingDeleteIndex`; the actual remove only runs from the
+  // ConfirmationDialog's `onConfirm`. Cancel resets the staged index.
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
+
+  const requestRemoveOption = (index: number) => {
     if (options.length > MIN_POLL_OPTIONS) {
-      onOptionsChange(options.filter((_, i) => i !== index));
+      setPendingDeleteIndex(index);
     }
+  };
+
+  const confirmRemoveOption = () => {
+    if (pendingDeleteIndex === null) return;
+    onOptionsChange(options.filter((_, i) => i !== pendingDeleteIndex));
+    setPendingDeleteIndex(null);
   };
 
   const updateOption = (index: number, text: string) => {
@@ -150,6 +169,8 @@ export function PollOptionsEditor({
     updated[index] = { ...updated[index], text };
     onOptionsChange(updated);
   };
+
+  const pendingDeleteOptionText = pendingDeleteIndex !== null ? options[pendingDeleteIndex]?.text.trim() : undefined;
 
   return (
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
@@ -187,13 +208,18 @@ export function PollOptionsEditor({
                 index={index}
                 option={option}
                 canRemove={options.length > MIN_POLL_OPTIONS}
-                onRemove={() => removeOption(index)}
+                onRemove={() => requestRemoveOption(index)}
                 onTextChange={text => updateOption(index, text)}
                 disabled={isClosed}
               />
             ))}
           </SortableContext>
         </DndContext>
+        {optionsError && (
+          <p className="text-caption text-destructive" aria-live="polite">
+            {optionsError}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center justify-between">
@@ -221,6 +247,21 @@ export function PollOptionsEditor({
           {settingsSlot}
         </div>
       </div>
+      <ConfirmationDialog
+        open={pendingDeleteIndex !== null}
+        onOpenChange={open => {
+          if (!open) setPendingDeleteIndex(null);
+        }}
+        title={t('pollForm.deleteOptionConfirm.title')}
+        description={
+          pendingDeleteOptionText
+            ? t('pollForm.deleteOptionConfirm.descriptionWithText', { text: pendingDeleteOptionText })
+            : t('pollForm.deleteOptionConfirm.description')
+        }
+        confirmLabel={t('forms.removeOption')}
+        variant="destructive"
+        onConfirm={confirmRemoveOption}
+      />
     </div>
   );
 }

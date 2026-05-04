@@ -392,13 +392,16 @@
   "validation": {
     "titleRequired": "Titel is verplicht",
     "urlRequired": "URL is verplicht",
-    "urlInvalid": "URL moet beginnen met http:// of https://",
+    "urlInvalid": "Voer een geldige URL in",
     "displayNameRequired": "Weergavenaam is verplicht",
     "questionRequired": "Vraag is verplicht",
     "required": "Dit veld is verplicht",
+    "minDisplayName": "Moet minimaal {{count}} tekens zijn",
     "maxSmall": "Moet {{count}} tekens of minder zijn",
+    "maxMid": "Moet {{count}} tekens of minder zijn",
     "maxMarkdown": "Moet {{count}} tekens of minder zijn",
     "minPollOptions": "Minimaal {{count}} opties zijn vereist",
+    "maxPollOptions": "Maximaal {{count}} opties zijn toegestaan",
     "pollOptionRequired": "Optietekst is verplicht",
     "referenceTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
     "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven"
@@ -581,6 +584,10 @@
       "tooLarge": "Afbeelding is te groot"
     }
   },
+  "postSnippet": {
+    "readMore": "… Lees meer",
+    "readLess": "Lees minder"
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
@@ -588,6 +595,8 @@
     "reply": "Antwoorden",
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
+    "deleteConfirmTitle": "Opmerking verwijderen?",
+    "deleteConfirmDescription": "Weet je zeker dat je deze opmerking wilt verwijderen?",
     "addComment": "Voeg een opmerking toe...",
     "mention": "Iemand noemen",
     "mentionVirtualContributor": "AI",
@@ -674,6 +683,11 @@
       "title": "Deze peiling heropenen?",
       "description": "Het heropenen van de peiling staat nieuwe stemmen en bewerking weer toe.",
       "confirm": "Peiling heropenen"
+    },
+    "deleteOptionConfirm": {
+      "title": "Optie verwijderen?",
+      "description": "Deze optie wordt uit de peiling verwijderd.",
+      "descriptionWithText": "“{{text}}” wordt uit de peiling verwijderd."
     },
     "dragHandle": "Slepen om te herordenen"
   },

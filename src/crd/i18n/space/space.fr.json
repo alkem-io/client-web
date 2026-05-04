@@ -392,13 +392,16 @@
   "validation": {
     "titleRequired": "Le titre est obligatoire",
     "urlRequired": "L'URL est obligatoire",
-    "urlInvalid": "L'URL doit commencer par http:// ou https://",
+    "urlInvalid": "Veuillez saisir une URL valide",
     "displayNameRequired": "Le nom d'affichage est obligatoire",
     "questionRequired": "La question est obligatoire",
     "required": "Ce champ est obligatoire",
+    "minDisplayName": "Doit contenir au moins {{count}} caractères",
     "maxSmall": "Doit contenir au maximum {{count}} caractères",
+    "maxMid": "Doit contenir au maximum {{count}} caractères",
     "maxMarkdown": "Doit contenir au maximum {{count}} caractères",
     "minPollOptions": "Au moins {{count}} options sont requises",
+    "maxPollOptions": "Au maximum {{count}} options sont autorisées",
     "pollOptionRequired": "Le texte de l'option est obligatoire",
     "referenceTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
     "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie"
@@ -581,6 +584,10 @@
       "tooLarge": "L'image est trop grande"
     }
   },
+  "postSnippet": {
+    "readMore": "… Lire la suite",
+    "readLess": "Réduire"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",
@@ -588,6 +595,8 @@
     "reply": "Répondre",
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
+    "deleteConfirmTitle": "Supprimer le commentaire ?",
+    "deleteConfirmDescription": "Voulez-vous vraiment supprimer ce commentaire ?",
     "addComment": "Ajouter un commentaire...",
     "mention": "Mentionner quelqu'un",
     "mentionVirtualContributor": "IA",
@@ -674,6 +683,11 @@
       "title": "Rouvrir ce sondage ?",
       "description": "La réouverture du sondage permettra de nouveaux votes et l'édition.",
       "confirm": "Rouvrir le sondage"
+    },
+    "deleteOptionConfirm": {
+      "title": "Supprimer l'option ?",
+      "description": "Cette option sera retirée du sondage.",
+      "descriptionWithText": "« {{text}} » sera retirée du sondage."
     },
     "dragHandle": "Glisser pour réorganiser"
   },
