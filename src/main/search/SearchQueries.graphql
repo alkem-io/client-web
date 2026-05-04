@@ -159,8 +159,6 @@ fragment SearchResultCallout on SearchResultCallout {
       id
       messagesCount
     }
-    createdDate
-    publishedDate
     createdBy {
       id
       profile {

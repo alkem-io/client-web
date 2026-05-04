@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Separator } from "@/app/components/ui/separator";
-import { Upload, X, Plus, Loader2, Check, Pencil } from "lucide-react";
+import { Upload, X, Plus, ExternalLink, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Mock data for initial state
@@ -21,105 +21,36 @@ const INITIAL_DATA = {
   ]
 };
 
-// ─── Per-section save status ─────────────────────────────────────────────────
-type SectionId = "name" | "branding" | "what" | "why" | "who" | "tags" | "references";
-type SaveStatus = "idle" | "saving" | "saved";
-
-function useSectionSave() {
-  const [statuses, setStatuses] = useState<Record<SectionId, SaveStatus>>({
-    name: "idle", branding: "idle", what: "idle", why: "idle",
-    who: "idle", tags: "idle", references: "idle",
-  });
-
-  const save = useCallback((id: SectionId, onCommit: () => void) => {
-    setStatuses(s => ({ ...s, [id]: "saving" }));
-    setTimeout(() => {
-      onCommit();
-      setStatuses(s => ({ ...s, [id]: "saved" }));
-      setTimeout(() => setStatuses(s => ({ ...s, [id]: "idle" })), 1800);
-    }, 600);
-  }, []);
-
-  return { statuses, save };
-}
-
-// ─── Inline save button — bottom-right, appears when dirty ───────────────────
-function InlineSaveButton({
-  dirty,
-  status,
-  onSave,
-}: {
-  dirty: boolean;
-  status: SaveStatus;
-  onSave: () => void;
-}) {
-  if (status === "saved") {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
-        <Check className="w-3 h-3" /> Saved
-      </span>
-    );
-  }
-  if (status === "saving") {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-        <Loader2 className="w-3 h-3 animate-spin" /> Saving…
-      </span>
-    );
-  }
-  if (!dirty) return null;
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={onSave}
-      className="h-6 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
-    >
-      Save
-    </Button>
-  );
-}
-
-// ─── Subtle pencil icon — decorative indicator inside editable fields ─────────
-function EditPencil({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center justify-center text-muted-foreground/50 pointer-events-none",
-        className
-      )}
-      aria-hidden
-    >
-      <Pencil className="w-3.5 h-3.5" />
-    </span>
-  );
-}
-
 export function SpaceSettingsAbout() {
   const [formData, setFormData] = useState(INITIAL_DATA);
-  const [savedData, setSavedData] = useState(INITIAL_DATA);
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [tagInput, setTagInput] = useState("");
-  const { statuses, save } = useSectionSave();
 
-  // ─── Per-field dirty checks ────────────────────────────────────────────────
-  const dirty = {
-    name: formData.name !== savedData.name,
-    branding: false,
-    what: formData.what !== savedData.what,
-    why: formData.why !== savedData.why,
-    who: formData.who !== savedData.who,
-    tags: JSON.stringify(formData.tags) !== JSON.stringify(savedData.tags),
-    references: JSON.stringify(formData.references) !== JSON.stringify(savedData.references),
-  };
+  // Ensure formData.name is always defined to prevent crashes
+  useEffect(() => {
+    if (formData.name === undefined) {
+      setFormData(prev => ({ ...prev, name: INITIAL_DATA.name }));
+    }
+  }, [formData.name]);
 
-  const saveSection = (id: SectionId) => {
-    save(id, () => {
-      setSavedData(prev => ({ ...prev, [id]: (formData as any)[id] }));
-    });
-  };
+  // Simulate Auto-save
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (formData !== INITIAL_DATA) { // Simple check to avoid initial save
+        handleSave();
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [formData]);
 
-  const discardSection = (id: SectionId) => {
-    setFormData(prev => ({ ...prev, [id]: (savedData as any)[id] }));
+  const handleSave = () => {
+    setIsSaving(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSaving(false);
+      setLastSaved(new Date());
+    }, 800);
   };
 
   const handleQuillChange = (field: keyof typeof formData, value: string) => {
@@ -181,43 +112,39 @@ export function SpaceSettingsAbout() {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      {/* LEFT COLUMN - CONTENT */}
-      <div className="xl:col-span-2 space-y-6">
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      {/* LEFT COLUMN - CONTENT EDITOR */}
+      <div className="xl:col-span-2 space-y-8">
         
         {/* Header */}
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">About</h2>
-          <p className="text-muted-foreground mt-2">
+          <h2 className="text-xl font-semibold">About</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Define your space's purpose, motivation, and target audience.
           </p>
         </div>
 
         <Separator />
 
-        {/* ── Space Name ── */}
-        <section>
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Space Name</Label>
-          <div className="mt-2 space-y-2">
-            <div className="relative max-w-md">
-              <Input
+        {/* Space Identity Section */}
+        <section className="space-y-6">
+           <div className="space-y-3">
+             <Label htmlFor="spaceName">Space Name</Label>
+             <Input 
+                id="spaceName"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Green Energy Space"
-                className="pr-8"
-              />
-              <EditPencil className="absolute right-2.5 top-1/2 -translate-y-1/2" />
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <InlineSaveButton dirty={dirty.name} status={statuses.name} onSave={() => saveSection("name")} />
-            </div>
-          </div>
+                className="max-w-md font-semibold text-lg h-11"
+             />
+             <p className="text-xs text-muted-foreground">The public name of your space.</p>
+           </div>
         </section>
 
         <Separator />
 
-        {/* ── Branding ── */}
+        {/* Branding Section */}
         <section className="space-y-6">
           <h3 className="text-lg font-medium">Space Branding</h3>
           
@@ -260,86 +187,90 @@ export function SpaceSettingsAbout() {
 
         <Separator />
 
-        {/* ── What / Why / Who — Rich text sections ── */}
-        {(["what", "why", "who"] as const).map((field) => {
-          const labels: Record<string, { title: string; hint: string }> = {
-            what: { title: "What", hint: "A clear description of the space's focus or subject matter." },
-            why: { title: "Why", hint: "Why does this space exist? What problem does it solve?" },
-            who: { title: "Who", hint: "Who should join this space? What are their roles or interests?" },
-          };
-          const { title, hint } = labels[field];
-          const htmlContent = formData[field] as string;
-
-          return (
-            <section key={field} className="space-y-1">
-              <Label className="text-base font-semibold">{title}</Label>
-
-              <div className="space-y-2">
-                <div className="prose-editor">
-                  <ReactQuill
-                    theme="snow"
-                    value={htmlContent}
-                    onChange={(val) => handleQuillChange(field, val)}
-                    modules={quillModules}
-                    placeholder={hint}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-muted-foreground">{hint}</p>
-                  <InlineSaveButton dirty={dirty[field]} status={statuses[field]} onSave={() => saveSection(field as SectionId)} />
-                </div>
-              </div>
-              {field !== "who" && <Separator className="mt-6" />}
-            </section>
-          );
-        })}
-
-        <Separator />
-
-        {/* ── Tags ── */}
-        <section>
-          <Label>Tags</Label>
-
-          <div className="mt-2 space-y-2">
-            <div className="relative flex flex-wrap gap-2 p-3 pr-8 bg-background border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-h-[50px]">
-              <EditPencil className="absolute right-2.5 top-3" />
-              {formData.tags.map(tag => (
-                <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-xs font-medium">
-                  {tag}
-                  <button onClick={() => removeTag(tag)} className="text-muted-foreground hover:text-foreground">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              ))}
-              <input 
-                className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px]"
-                placeholder="Type a tag and press Enter…"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleAddTag}
+        {/* Structured Text Sections */}
+        <section className="space-y-8">
+          <div className="space-y-2">
+            <Label className="text-base">What</Label>
+            <div className="prose-editor">
+              <ReactQuill 
+                theme="snow" 
+                value={formData.what} 
+                onChange={(val) => handleQuillChange('what', val)} 
+                modules={quillModules}
+                placeholder="Describe what this space is about..."
               />
             </div>
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Tags help members discover your space.</p>
-              <InlineSaveButton dirty={dirty.tags} status={statuses.tags} onSave={() => saveSection("tags")} />
+            <p className="text-xs text-muted-foreground">A clear description of the space's focus or subject matter.</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-base">Why</Label>
+            <div className="prose-editor">
+              <ReactQuill 
+                theme="snow" 
+                value={formData.why} 
+                onChange={(val) => handleQuillChange('why', val)} 
+                modules={quillModules}
+                placeholder="Explain the motivation or value of this space..."
+              />
             </div>
+            <p className="text-xs text-muted-foreground">Why does this space exist? What problem does it solve?</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-base">Who</Label>
+            <div className="prose-editor">
+              <ReactQuill 
+                theme="snow" 
+                value={formData.who} 
+                onChange={(val) => handleQuillChange('who', val)} 
+                modules={quillModules}
+                placeholder="Describe the target audience or ideal members..."
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">Who should join this space? What are their roles or interests?</p>
           </div>
         </section>
 
         <Separator />
 
-        {/* ── References ── */}
-        <section>
+        {/* Tags Section */}
+        <section className="space-y-3">
+          <Label>Tags</Label>
+          <div className="flex flex-wrap gap-2 mb-2 p-3 bg-background border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-h-[50px]">
+            {formData.tags.map(tag => (
+              <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-xs font-medium">
+                {tag}
+                <button onClick={() => removeTag(tag)} className="text-muted-foreground hover:text-foreground">
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+            <input 
+              className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px]"
+              placeholder="Add tags (e.g., 'Innovation')..."
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleAddTag}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">Tags help members discover your space.</p>
+        </section>
+
+        <Separator />
+
+        {/* References Section */}
+        <section className="space-y-4">
           <div className="flex items-center justify-between">
             <Label>References & Links</Label>
-            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-7 text-xs">
-              <Plus className="w-3 h-3" /> Add
+            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-8">
+              <Plus className="w-3.5 h-3.5" /> Add Reference
             </Button>
           </div>
-
-          <div className="mt-3 space-y-3">
+          
+          <div className="space-y-3">
             {formData.references.map((ref, index) => (
-              <div key={index} className="flex gap-3 items-start">
+              <div key={index} className="flex gap-3 items-start group">
                 <div className="grid gap-2 flex-1 sm:grid-cols-2">
                   <Input 
                     placeholder="Link Title" 
@@ -360,11 +291,8 @@ export function SpaceSettingsAbout() {
               </div>
             ))}
             {formData.references.length === 0 && (
-              <p className="text-sm text-muted-foreground italic">No references added yet. Click "Add" above.</p>
+              <p className="text-sm text-muted-foreground italic">No references added yet.</p>
             )}
-            <div className="flex items-center justify-end gap-2">
-              <InlineSaveButton dirty={dirty.references} status={statuses.references} onSave={() => saveSection("references")} />
-            </div>
           </div>
         </section>
       </div>
@@ -374,11 +302,11 @@ export function SpaceSettingsAbout() {
         <div className="sticky top-6 space-y-6">
           <div className="flex items-center justify-between mb-2">
              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Preview</h3>
-             {Object.values(dirty).some(Boolean) ? (
-               <span className="text-xs text-amber-500 flex items-center gap-1.5">
-                 Unsaved changes
+             {isSaving ? (
+               <span className="text-xs text-muted-foreground flex items-center gap-1.5 animate-pulse">
+                 <Loader2 className="w-3 h-3 animate-spin" /> Saving...
                </span>
-             ) : Object.values(statuses).some(s => s === "saved") ? (
+             ) : lastSaved ? (
                <span className="text-xs text-success flex items-center gap-1.5">
                  <Check className="w-3 h-3" /> Saved
                </span>

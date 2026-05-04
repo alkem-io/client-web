@@ -392,13 +392,16 @@
   "validation": {
     "titleRequired": "El título es obligatorio",
     "urlRequired": "La URL es obligatoria",
-    "urlInvalid": "La URL debe comenzar con http:// o https://",
+    "urlInvalid": "Introduce una URL válida",
     "displayNameRequired": "El nombre para mostrar es obligatorio",
     "questionRequired": "La pregunta es obligatoria",
     "required": "Este campo es obligatorio",
+    "minDisplayName": "Debe tener al menos {{count}} caracteres",
     "maxSmall": "No debe superar {{count}} caracteres",
+    "maxMid": "No debe superar {{count}} caracteres",
     "maxMarkdown": "No debe superar {{count}} caracteres",
     "minPollOptions": "Se requieren al menos {{count}} opciones",
+    "maxPollOptions": "Se permiten como máximo {{count}} opciones",
     "pollOptionRequired": "El texto de la opción es obligatorio",
     "referenceTitleRequired": "El título es obligatorio cuando se proporciona una URL",
     "linkRowTitleRequired": "El título es obligatorio cuando se proporciona una URL"
@@ -581,6 +584,10 @@
       "tooLarge": "La imagen es demasiado grande"
     }
   },
+  "postSnippet": {
+    "readMore": "… Leer más",
+    "readLess": "Leer menos"
+  },
   "comments": {
     "title": "Discusión",
     "showMore": "Mostrar más",
@@ -588,6 +595,8 @@
     "reply": "Responder",
     "delete": "Eliminar",
     "deleted": "Este comentario fue eliminado",
+    "deleteConfirmTitle": "¿Eliminar comentario?",
+    "deleteConfirmDescription": "¿Seguro que quieres eliminar este comentario?",
     "addComment": "Añade un comentario...",
     "mention": "Mencionar a alguien",
     "mentionVirtualContributor": "IA",
@@ -674,6 +683,11 @@
       "title": "¿Reabrir esta encuesta?",
       "description": "Reabrir la encuesta permitirá nuevos votos y edición.",
       "confirm": "Reabrir encuesta"
+    },
+    "deleteOptionConfirm": {
+      "title": "¿Eliminar opción?",
+      "description": "Esta opción se eliminará de la encuesta.",
+      "descriptionWithText": "“{{text}}” se eliminará de la encuesta."
     },
     "dragHandle": "Arrastra para reordenar"
   },

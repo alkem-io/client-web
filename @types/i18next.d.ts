@@ -7,6 +7,7 @@ import type crdExploreSpacesTranslation from '@/crd/i18n/exploreSpaces/exploreSp
 import type crdNotificationsTranslation from '@/crd/i18n/notifications/notifications.en.json';
 import type crdDashboardTranslation from '@/crd/i18n/dashboard/dashboard.en.json';
 import type crdSpaceTranslation from '@/crd/i18n/space/space.en.json';
+import type crdErrorTranslation from '@/crd/i18n/error/error.en.json';
 import type crdSearchTranslation from '@/crd/i18n/search/search.en.json';
 import type crdMarkdownTranslation from '@/crd/i18n/markdown/markdown.en.json';
 import type crdSpaceSettingsTranslation from '@/crd/i18n/spaceSettings/spaceSettings.en.json';
@@ -25,6 +26,7 @@ declare module 'i18next' {
       'crd-dashboard': typeof crdDashboardTranslation;
       'crd-space': typeof crdSpaceTranslation;
       'crd-search': typeof crdSearchTranslation;
+      'crd-error': typeof crdErrorTranslation;
       'crd-markdown': typeof crdMarkdownTranslation;
       'crd-spaceSettings': typeof crdSpaceSettingsTranslation;
       'crd-subspace': typeof crdSubspaceTranslation;

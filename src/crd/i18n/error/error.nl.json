@@ -1,0 +1,20 @@
+{
+  "forbidden": {
+    "title": "Beperkte toegang",
+    "description": "De pagina die je probeert te openen, is niet beschikbaar voor jou.",
+    "actions": {
+      "goHome": "Naar startpagina",
+      "goBack": "Terug"
+    }
+  },
+  "authRequired": {
+    "title": "Beperkte toegang",
+    "description": "De pagina die je probeert te openen, is alleen beschikbaar voor geregistreerde gebruikers.",
+    "descriptionContinued": "Log in om door te gaan. Nog geen account? Schrijf je gratis in.",
+    "actions": {
+      "signIn": "Inloggen / Aanmelden",
+      "or": "Of",
+      "returnAsGuest": "Terug naar dashboard als gast"
+    }
+  }
+}

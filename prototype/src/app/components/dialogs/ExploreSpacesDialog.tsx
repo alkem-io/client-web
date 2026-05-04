@@ -306,10 +306,10 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                 {RECENT_SPACES.map(space => (
                   <div 
                     key={space.id}
-                    className="group bg-card hover:bg-card/80 border border-border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-md h-full flex flex-col"
+                    className="group bg-card hover:bg-card/80 border border-border rounded-xl overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 h-full flex flex-col"
                   >
                     <div className="relative aspect-video w-full overflow-hidden">
-                      <img src={space.image} alt={space.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={space.image} alt={space.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                       <div className="absolute top-3 right-3 flex flex-col gap-1">
                         <Badge variant={getRoleBadgeVariant(space.role)} className="shadow-sm bg-background/90 backdrop-blur text-foreground border-transparent hover:bg-background text-xs px-2 py-0.5">

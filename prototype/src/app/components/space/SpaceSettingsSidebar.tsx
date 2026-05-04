@@ -1,6 +1,6 @@
 import { 
   Info, Layout, Users, Layers, FileText, HardDrive, Settings, User, 
-  ChevronDown, ChevronRight, LogOut, ArrowLeft, Lightbulb 
+  ChevronDown, ChevronRight, LogOut, ArrowLeft 
 } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router";
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ const navGroups: NavGroup[] = [
   {
     title: "CONTENT & RESOURCES",
     items: [
-      { label: "Templates", icon: Lightbulb, id: "templates" },
+      { label: "Templates", icon: FileText, id: "templates" },
       { label: "Storage", icon: HardDrive, id: "storage" },
     ]
   },
