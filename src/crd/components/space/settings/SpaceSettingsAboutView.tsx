@@ -6,6 +6,7 @@ import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
@@ -479,13 +480,6 @@ function BannerUpload({
       <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />
     </div>
   );
-}
-
-function ensureHttps(url: string): string {
-  const trimmed = url.trim();
-  if (!trimmed) return trimmed;
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
 }
 
 function ReferenceRow({

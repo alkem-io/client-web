@@ -33,6 +33,7 @@ import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -269,7 +270,7 @@ export function CalloutFormConnector({
               input: {
                 profileID: framingProfileId,
                 name: row.title.trim(),
-                uri: row.url.trim(),
+                uri: ensureHttps(row.url),
                 description: row.description.trim() || undefined,
               },
             },
@@ -425,6 +426,7 @@ export function CalloutFormConnector({
               pollQuestionError={errors.pollQuestion}
               pollOptions={values.pollOptions}
               onPollOptionsChange={v => setField('pollOptions', v)}
+              pollOptionsError={errors.pollOptions}
               pollAllowMultiple={values.pollAllowMultiple}
               onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
               pollAllowCustomOptions={values.pollAllowCustomOptions}

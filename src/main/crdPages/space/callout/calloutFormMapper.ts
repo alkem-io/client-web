@@ -8,6 +8,7 @@ import {
   type UpdateCalloutEntityInput,
   type UpdateReferenceInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
@@ -134,7 +135,7 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     .filter(row => row.title.trim() && row.url.trim())
     .map(row => ({
       name: row.title.trim(),
-      uri: row.url.trim(),
+      uri: ensureHttps(row.url),
       description: row.description.trim() || undefined,
     }));
 
@@ -207,7 +208,7 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
       .map(r => ({
         type: CalloutContributionType.Link,
         link: {
-          uri: r.url.trim(),
+          uri: ensureHttps(r.url),
           profile: {
             displayName: r.title.trim(),
             description: r.description?.trim() || undefined,
@@ -246,9 +247,10 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   // `mediaGallery` out of the framing before sending — same effect.)
 
   if (framingType === CalloutFramingType.Link && values.linkUrl) {
+    const linkUri = ensureHttps(values.linkUrl);
     callout.framing.link = {
-      uri: values.linkUrl.trim(),
-      profile: { displayName: values.linkDisplayName.trim() || values.linkUrl.trim() },
+      uri: linkUri,
+      profile: { displayName: values.linkDisplayName.trim() || linkUri },
     };
   }
 
@@ -322,7 +324,7 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
     .map(row => ({
       ID: row.id,
       name: row.title.trim(),
-      uri: row.url.trim(),
+      uri: ensureHttps(row.url),
       description: row.description.trim(),
     }));
 
@@ -358,11 +360,12 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   if (framingType === CalloutFramingType.Link) {
     const linkId = values.editMeta?.framingLinkId;
     if (linkId) {
+      const linkUri = ensureHttps(values.linkUrl);
       framing.link = {
         ID: linkId,
-        uri: values.linkUrl.trim(),
+        uri: linkUri,
         profile: {
-          displayName: values.linkDisplayName.trim() || values.linkUrl.trim(),
+          displayName: values.linkDisplayName.trim() || linkUri,
         },
       };
     }

@@ -84,13 +84,9 @@ export function SubspaceSidebar({
     <aside className={cn('flex flex-col gap-6', className)} aria-label={t('a11y.sidebarNavigation')}>
       <InfoBlock description={description} leads={leadItems} onEditClick={onEditClick} />
 
-      <Button
-        variant="outline"
-        className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
-        onClick={onAboutClick}
-      >
-        <Info className="w-4 h-4" aria-hidden="true" />
-        {t('sidebar.about')}
+      <Button variant="outline" className="w-full uppercase gap-2 font-medium px-2" onClick={onAboutClick}>
+        <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
+        <span className="truncate text-[clamp(0.5rem,1.05vw,0.875rem)] leading-tight">{t('sidebar.about')}</span>
       </Button>
 
       <nav aria-label={t('sidebar.quickActions.heading')}>

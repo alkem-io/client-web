@@ -111,13 +111,9 @@ export function SpaceSidebar({
       <InfoBlock description={description} leads={leads} onEditClick={onEditClick} />
 
       {variant === 'home' && onAboutClick && (
-        <Button
-          variant="outline"
-          className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
-          onClick={onAboutClick}
-        >
-          <Info className="w-4 h-4" aria-hidden="true" />
-          {t('sidebar.aboutSpace')}
+        <Button variant="outline" className="w-full uppercase gap-2 font-medium px-2" onClick={onAboutClick}>
+          <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span className="truncate text-[clamp(0.5rem,1.05vw,0.875rem)] leading-tight">{t('sidebar.aboutSpace')}</span>
         </Button>
       )}
 
@@ -155,7 +151,15 @@ export function SpaceSidebar({
                 </Button>
               )}
               {canInvite && onInvite && (
-                <Button className="flex-1 gap-2 text-body-emphasis" onClick={onInvite}>
+                // Force explicit colors — the default `bg-primary text-primary-foreground`
+                // pair was rendering as dark-on-dark in the community sidebar (see issue
+                // screenshot). Setting `bg-primary` and `!text-white` with a `!` to win
+                // any cascade keeps the label legible regardless of ancestor `.dark`
+                // contexts or token redefinitions.
+                <Button
+                  className="flex-1 gap-2 text-body-emphasis bg-primary !text-white hover:bg-primary/90"
+                  onClick={onInvite}
+                >
                   <UserPlus className="w-4 h-4" aria-hidden="true" />
                   {t('sidebar.invite')}
                 </Button>

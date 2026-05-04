@@ -212,7 +212,33 @@ const startOfToday = dayjs().startOf('day');
 
 **Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/spec.md` for the full specification.
 
-### 9. Never Render Markdown / HTML-Tagged Strings As Plain Text
+### 9. All Deletions Must Be Confirmed
+
+**Every** destructive action in the CRD layer — anything that removes data the user can't trivially recover — **must** go through `ConfirmationDialog` (`@/crd/components/dialogs/ConfirmationDialog`) before the mutation fires. No exceptions, no "small" deletions, no inline "are you sure" toasts.
+
+**This includes (non-exhaustive):**
+- Deleting a comment, reply, or reaction
+- Deleting a poll option (and any other in-form list rows that map to a server-side delete on save)
+- Deleting a callout, post, memo, whiteboard, contribution, or any other entity
+- Removing a member, role, application, or invitation
+- Removing a reference, file, or media-gallery image
+- Discarding unsaved form state (use `DiscardChangesDialog`, which is a `ConfirmationDialog` variant)
+
+**The pattern:**
+
+1. The trash / "Delete" / "Remove" UI sets a `pendingDeleteId` (or similar) — it must NOT call the mutation directly.
+2. Render `<ConfirmationDialog open={Boolean(pendingDeleteId)} variant="destructive" ...>`.
+3. Only the dialog's `onConfirm` calls the actual delete mutation. Cancel resets `pendingDeleteId` to undefined.
+4. Use `variant="destructive"` and a `confirmLabel` that names the action (e.g. `t('comments.delete')`, `t('mediaGallery.deleteImage')`) — not a generic "Yes".
+
+**Reference implementations:**
+- `useCrdRoomComments.tsx` — comment deletion via `pendingDeleteId` + `ConfirmationDialog`
+- `CalloutSettingsConnector.tsx` — callout deletion via `DeleteCalloutDialog`
+- `CrdMemoDialog.tsx` — memo deletion via `ConfirmationDialog`
+
+**Why this rule exists:** an accidental click destroys user content with no undo at the server level. A dialog is cheap; a lost contribution or comment is not. This rule applies regardless of the entity's "importance" — once a user has typed it, they get to confirm before it goes away.
+
+### 10. Never Render Markdown / HTML-Tagged Strings As Plain Text
 
 Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders **must** be rendered through a markdown/rich-text renderer — never as `{someString}` inside a `<p>` or `<span>`. Doing so displays the raw markup to the user (bold asterisks, literal `<b>` tags, escaped entities), which is the bug this rule exists to prevent.
 

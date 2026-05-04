@@ -179,108 +179,125 @@ export function CalloutMediaGalleryCarousel({
   const currentItem = items[currentIndex];
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: WAI-ARIA Carousel pattern requires role="region" on a generic container (already set by the <Carousel> primitive inside). This outer wrapper hosts Home/End/F keyboard shortcuts; making it a button/link would break the landmark semantics.
-    <div
-      ref={rootRef}
-      className={cn(
-        'relative rounded-lg overflow-hidden border border-border bg-muted/30 select-none focus:outline-none',
-        isFullscreen && 'bg-black border-none rounded-none flex flex-col',
-        className
-      )}
-      tabIndex={-1}
-      onKeyDown={handleRootKeyDown}
-    >
-      {/* Top-right action bar */}
-      <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
-        <Button
-          variant="secondary"
-          size="icon"
-          className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
-          aria-label={t('mediaGallery.download')}
-          onClick={() => {
-            if (currentItem) onDownload(currentItem);
-          }}
-        >
-          <Download className="size-4" aria-hidden="true" />
-        </Button>
-        {fullscreenSupported && (
+    <div className={cn('space-y-2', className)}>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: WAI-ARIA Carousel pattern requires role="region" on a generic container (already set by the <Carousel> primitive inside). This outer wrapper hosts Home/End/F keyboard shortcuts; making it a button/link would break the landmark semantics. */}
+      <div
+        ref={rootRef}
+        className={cn(
+          'relative rounded-lg overflow-hidden border border-border bg-muted/30 select-none focus:outline-none',
+          isFullscreen && 'bg-black border-none rounded-none flex flex-col'
+        )}
+        tabIndex={-1}
+        onKeyDown={handleRootKeyDown}
+      >
+        {/* Top-right action bar — download + fullscreen only. The "Add images"
+          control lives below the gallery so it doesn't sit on top of the image. */}
+        <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
           <Button
             variant="secondary"
             size="icon"
             className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
-            aria-label={isFullscreen ? t('mediaGallery.exitFullscreen') : t('mediaGallery.fullscreen')}
-            onClick={handleToggleFullscreen}
+            aria-label={t('mediaGallery.download')}
+            onClick={() => {
+              if (currentItem) onDownload(currentItem);
+            }}
           >
-            {isFullscreen ? (
-              <Minimize2 className="size-4" aria-hidden="true" />
-            ) : (
-              <Maximize2 className="size-4" aria-hidden="true" />
-            )}
+            <Download className="size-4" aria-hidden="true" />
           </Button>
+          {fullscreenSupported && (
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+              aria-label={isFullscreen ? t('mediaGallery.exitFullscreen') : t('mediaGallery.fullscreen')}
+              onClick={handleToggleFullscreen}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="size-4" aria-hidden="true" />
+              ) : (
+                <Maximize2 className="size-4" aria-hidden="true" />
+              )}
+            </Button>
+          )}
+        </div>
+
+        <Carousel
+          className={cn('w-full', isFullscreen && 'flex-1 min-h-0')}
+          setApi={setApi}
+          opts={{
+            loop: true,
+            startIndex: initialIndex,
+            align: 'center',
+            containScroll: 'trimSnaps',
+          }}
+        >
+          <CarouselContent className={cn('-ml-4', isFullscreen && 'h-full')}>
+            {items.map(item => (
+              <CarouselItem key={item.id} className={cn('flex items-center justify-center pl-4 basis-[100%]')}>
+                <img
+                  src={item.uri}
+                  alt={item.alternativeText ?? ''}
+                  draggable={false}
+                  className={cn(
+                    'block mx-auto object-contain rounded-md pointer-events-none',
+                    isFullscreen ? 'max-h-[calc(100vh-8rem)] max-w-full' : 'max-h-[60vh] max-w-full'
+                  )}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {items.length > 1 && (
+            <>
+              <CarouselPrevious aria-label={t('mediaGallery.previous')} />
+              <CarouselNext aria-label={t('mediaGallery.next')} />
+            </>
+          )}
+        </Carousel>
+
+        {/* Thumbnail strip */}
+        {items.length > 1 && (
+          <div
+            className={cn(
+              'flex items-center justify-center gap-2 px-3 py-2 overflow-x-auto border-t border-border',
+              isFullscreen ? 'bg-black/50' : 'bg-background/60'
+            )}
+            role="tablist"
+            aria-label={t('mediaGallery.thumbnailsLabel')}
+          >
+            {items.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={index === currentIndex}
+                aria-label={t('mediaGallery.goToImage', { index: index + 1 })}
+                onClick={() => api?.scrollTo(index)}
+                className={cn(
+                  'shrink-0 size-14 rounded-md overflow-hidden border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  index === currentIndex
+                    ? 'border-primary ring-2 ring-primary opacity-100'
+                    : 'border-border opacity-60 hover:opacity-100'
+                )}
+              >
+                <img
+                  src={item.uri}
+                  alt=""
+                  draggable={false}
+                  className="w-full h-full object-cover pointer-events-none"
+                />
+              </button>
+            ))}
+          </div>
         )}
       </div>
-
-      <Carousel
-        className={cn('w-full', isFullscreen && 'flex-1 min-h-0')}
-        setApi={setApi}
-        opts={{
-          loop: true,
-          startIndex: initialIndex,
-          align: 'center',
-          containScroll: 'trimSnaps',
-        }}
-      >
-        <CarouselContent className={cn('-ml-4', isFullscreen && 'h-full')}>
-          {items.map(item => (
-            <CarouselItem key={item.id} className={cn('flex items-center justify-center pl-4 basis-[100%]')}>
-              <img
-                src={item.uri}
-                alt={item.alternativeText ?? ''}
-                draggable={false}
-                className={cn(
-                  'block mx-auto object-contain rounded-md pointer-events-none',
-                  isFullscreen ? 'max-h-[calc(100vh-8rem)] max-w-full' : 'max-h-[60vh] max-w-full'
-                )}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {items.length > 1 && (
-          <>
-            <CarouselPrevious aria-label={t('mediaGallery.previous')} />
-            <CarouselNext aria-label={t('mediaGallery.next')} />
-          </>
-        )}
-      </Carousel>
-
-      {/* Thumbnail strip */}
-      {items.length > 1 && (
-        <div
-          className={cn(
-            'flex items-center justify-center gap-2 px-3 py-2 overflow-x-auto border-t border-border',
-            isFullscreen ? 'bg-black/50' : 'bg-background/60'
-          )}
-          role="tablist"
-          aria-label={t('mediaGallery.thumbnailsLabel')}
-        >
-          {items.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={index === currentIndex}
-              aria-label={t('mediaGallery.goToImage', { index: index + 1 })}
-              onClick={() => api?.scrollTo(index)}
-              className={cn(
-                'shrink-0 size-14 rounded-md overflow-hidden border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                index === currentIndex
-                  ? 'border-primary ring-2 ring-primary opacity-100'
-                  : 'border-border opacity-60 hover:opacity-100'
-              )}
-            >
-              <img src={item.uri} alt="" draggable={false} className="w-full h-full object-cover pointer-events-none" />
-            </button>
-          ))}
+      {/* Add-images affordance — sits below the gallery (MUI parity) so it doesn't
+          obscure the image. Hidden in fullscreen where the gallery owns the viewport. */}
+      {canEdit && onAddImages && !isFullscreen && (
+        <div className="flex justify-end">
+          <Button variant="outline" size="sm" className="gap-2" onClick={onAddImages}>
+            <ImagePlus className="size-4" aria-hidden="true" />
+            {t('mediaGallery.emptyState.action')}
+          </Button>
         </div>
       )}
     </div>
