@@ -189,7 +189,7 @@ src/
 
 **TopLevelRoutes wiring** (mirrors the 045 / 091 / 097 patterns): `TopLevelRoutes.tsx` gets three conditional blocks (one per actor), each choosing between `Crd<Actor>Routes` (lazy-loaded) and the existing actor route (also lazy-loaded). Each pair is wrapped in the same wrapper its MUI counterpart uses today — the User pair wrapped in `<NoIdentityRedirect>`, the Org and VC pairs wrapped per their existing wrappers (research §1). All three pairs continue to be wrapped by `<WithApmTransaction>` exactly as today.
 
-**`/user/me` resolution**: handled by a CRD analog of `UserMeRoute` inside `CrdUserRoutes.tsx`. Resolves the current user's nameID from `useCurrentUserContext()` and replaces `me` with the slug, then renders the same `CrdUserProfilePage`. No analogous shorthand exists for Organization or VC (parity with current routing, per FR-007).
+**`/user/me` resolution**: handled by a CRD analog of `UserMeRoute` inside `CrdUserRoutes.tsx`. Resolves the current user's id from `useCurrentUserContext()` and supplies it via `MeUserProvider` (or a CRD analog) to the same `CrdUserProfilePage` component — URL stays `/user/me`, mirroring MUI's `UserMeRoute.tsx` (no redirect; verified via Q6). No analogous shorthand exists for Organization or VC (parity with current routing, per FR-007).
 
 ## Complexity Tracking
 

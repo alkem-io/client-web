@@ -12,9 +12,9 @@ The mapper for each page lives at `src/main/crdPages/topLevelPages/<vertical>/pu
 
 | Hook | File | Purpose |
 |---|---|---|
-| `useUserQuery` | `src/core/apollo/generated/apollo-hooks.ts` | Public profile data (`User`, `profile.*`, `firstName`, `lastName`) |
+| `useUserProvider` | `src/domain/community/user/hooks/useUserProvider.ts` | Domain wrapper exposing `userModel` (`User`, `profile.*`, `firstName`, `lastName`); internally calls `useUserModelFullQuery` from `src/core/apollo/generated/apollo-hooks.ts`. CRD integration consumes the wrapper, not the generated hook directly. |
 | `useUserAccountQuery` | same | Hosted resources (`account.spaces`, `account.virtualContributors`) for the Resources Hosted section |
-| `useUserContributionsQuery` | same | Memberships (`rolesUser.spaces`, nested subspaces) for the User profile resource sections |
+| `useUserContributions` | `src/domain/community/user/userContributions/useUserContributions.ts` | Domain wrapper that calls `useUserContributionsQuery` and returns the memberships transformed to `SpaceHostedItem[]` (the shape `useFilteredMemberships` consumes). |
 | `useUserOrganizationIds` | `src/domain/community/user/userContributions/useUserOrganizationIds.ts` | Org IDs the user is associated with (sidebar Organizations list); thin wrapper, not a generated Apollo hook |
 | `useSendMessageToUsersMutation` | same | In-hero compose surface (User profile + Organization profile share this mutation) |
 
@@ -319,10 +319,10 @@ Apollo `loading` flags.
 
 | Region | Driving query / hook | `loading.*` key |
 |---|---|---|
-| Hero (banner / avatar / name / location), Bio | `useUserQuery` | `hero` |
-| Sidebar Organizations list | `useUserOrganizationIds` (+ downstream lookup if any) | `organizations` |
+| Hero (banner / avatar / name / location), Bio | `useUserProvider` | `hero` |
+| Sidebar Organizations list | `useUserOrganizationIds` (+ downstream lookup if any) — wrapper swallows `loading`; mapper derives it as `userId !== undefined && organizationIds === undefined` | `organizations` |
 | Resources Hosted (hosted spaces + hosted VCs) | `useUserAccountQuery` | `hostedResources` |
-| Spaces Leading + Member Of (driven by `useFilteredMemberships`) | `useUserContributionsQuery` | `memberships` |
+| Spaces Leading + Member Of (driven by `useFilteredMemberships`) | `useUserContributions` — wrapper swallows `loading`; mapper derives it as `userId !== undefined && contributions === undefined` | `memberships` |
 
 ### Organization profile
 

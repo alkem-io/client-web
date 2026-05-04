@@ -129,10 +129,10 @@ export type UserPublicProfileViewProps = {
    * Per-region loading flags (FR-009). Each region renders a Skeleton while
    * its driving query is still in flight; the page does not block on all
    * queries before painting. Mapping (data-model.md "Query → region"):
-   *   - `hero` / `bio`             ← useUserQuery
+   *   - `hero` / `bio`             ← useUserProvider
    *   - `organizations`            ← useUserOrganizationIds + downstream lookup
    *   - `hostedResources`          ← useUserAccountQuery
-   *   - `memberships`              ← useUserContributionsQuery
+   *   - `memberships`              ← useUserContributions
    */
   loading: {
     hero: boolean;
