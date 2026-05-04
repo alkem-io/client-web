@@ -2,6 +2,7 @@ import { FormControlLabel, Switch, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
@@ -11,12 +12,14 @@ import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 
 const CRD_STORAGE_KEY = 'alkemio-crd-enabled';
 
 export const UserAdminSettingsPage = () => {
   const { userId } = useUserRouteContext();
   const { userModel, loading: isLoadingUser } = useUserProvider(userId);
+  const { userModel: currentUserModel, platformRoles } = useCurrentUserContext();
 
   const { t } = useTranslation();
   const userID = userModel?.id ?? '';
@@ -88,6 +91,8 @@ export const UserAdminSettingsPage = () => {
     location.reload();
   };
 
+  const isBetaTester = currentUserModel?.id === userID && platformRoles.includes(RoleName.PlatformBetaTester);
+
   return (
     <UserAdminLayout currentTab={SettingsSection.Settings}>
       <PageContent background="transparent">
@@ -110,14 +115,16 @@ export const UserAdminSettingsPage = () => {
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
               />
             </PageContentBlock>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.admin.user.settings.designSystem.title')}</BlockTitle>
-              <Typography variant="body2">{t('pages.admin.user.settings.designSystem.description')}</Typography>
-              <FormControlLabel
-                control={<Switch checked={isNewDesign} onChange={handleDesignSystemChange} />}
-                label={t('pages.admin.user.settings.designSystem.toggleLabel')}
-              />
-            </PageContentBlock>
+            {isBetaTester && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.admin.user.settings.designSystem.title')}</BlockTitle>
+                <Typography variant="body2">{t('pages.admin.user.settings.designSystem.description')}</Typography>
+                <FormControlLabel
+                  control={<Switch checked={isNewDesign} onChange={handleDesignSystemChange} />}
+                  label={t('pages.admin.user.settings.designSystem.toggleLabel')}
+                />
+              </PageContentBlock>
+            )}
           </>
         )}
       </PageContent>
