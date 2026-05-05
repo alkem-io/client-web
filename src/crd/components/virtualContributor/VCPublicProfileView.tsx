@@ -21,11 +21,11 @@ export function VCPublicProfileView({ hero, sidebar, contentView, loading }: VCP
       {loading.hero ? <HeroSkeleton /> : <VCPageHero {...hero} />}
 
       <div className="container mx-auto px-4 md:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <div className="md:col-span-3 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-4 space-y-8">
             {loading.sidebar ? <SidebarSkeleton /> : <VCProfileSidebar {...sidebar} />}
           </div>
-          <div className="md:col-span-9 flex flex-col min-w-0">
+          <div className="lg:col-span-8 flex flex-col min-w-0">
             {loading.contentView ? <ContentSkeleton /> : <VCContentView {...contentView} />}
           </div>
         </div>

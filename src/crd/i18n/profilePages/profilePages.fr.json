@@ -64,14 +64,21 @@
       "associatesCount_other": "{{count}} associés",
       "socialLinksTitle": "Réseaux sociaux"
     },
-    "rightColumn": {
-      "accountResourcesTitle": "Ressources du compte",
-      "accountResourcesSpacesSubtitle": "Espaces",
-      "accountResourcesInnovationPacksSubtitle": "Innovation Packs",
-      "accountResourcesInnovationHubsSubtitle": "Pages d'accueil personnalisées",
-      "leadSpacesTitle": "Espaces animés",
-      "memberOfTitle": "Toutes les adhésions"
-    }
+    "tabs": {
+      "resourcesHosted": "Ressources hébergées",
+      "leading": "Espaces animés",
+      "memberOf": "Toutes les adhésions"
+    },
+    "sections": {
+      "spacesSubsection": "Espaces",
+      "virtualContributorsSubsection": "Contributeurs virtuels",
+      "spacesLeading": "Espaces animés",
+      "memberOf": "Toutes les adhésions"
+    },
+    "empty": {
+      "leading": "N'anime aucun espace pour le moment."
+    },
+    "vcType": "Contributeur virtuel"
   },
   "vcProfile": {
     "hero": {

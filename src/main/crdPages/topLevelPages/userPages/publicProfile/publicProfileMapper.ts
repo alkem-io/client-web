@@ -1,7 +1,31 @@
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import type { TagsetGroup } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { buildTagsetGroups } from '../../organizationPages/publicProfile/organizationProfileMapper';
+
+type ProfileTagsetLike = { name: string; tags: string[] };
+
+export type UserTagsetLabels = {
+  keywords: string;
+  skills: string;
+};
+
+const findTagsetTags = (tagsets: ProfileTagsetLike[] | undefined, reservedName: string): string[] => {
+  const target = reservedName.toLowerCase();
+  return tagsets?.find(tagset => tagset.name.toLowerCase() === target)?.tags ?? [];
+};
+
+export const buildUserProfileTagsets = (
+  tagsets: ProfileTagsetLike[] | undefined,
+  labels: UserTagsetLabels
+): TagsetGroup[] =>
+  buildTagsetGroups([
+    { name: labels.keywords, tags: findTagsetTags(tagsets, TagsetReservedName.Keywords) },
+    { name: labels.skills, tags: findTagsetTags(tagsets, TagsetReservedName.Skills) },
+  ]);
 
 type AccountResourceProfileLike =
   | {

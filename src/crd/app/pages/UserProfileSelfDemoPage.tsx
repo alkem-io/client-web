@@ -64,6 +64,7 @@ export function UserProfileSelfDemoPage() {
       }}
       sidebar={{
         bio: me.bio,
+        tagsets: me.tagsets,
         organizationsSlot,
         organizationsEmpty: me.organizations.length === 0,
         references: me.references,

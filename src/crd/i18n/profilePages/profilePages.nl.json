@@ -64,14 +64,21 @@
       "associatesCount_other": "{{count}} geassocieerden",
       "socialLinksTitle": "Sociaal"
     },
-    "rightColumn": {
-      "accountResourcesTitle": "Account-bronnen",
-      "accountResourcesSpacesSubtitle": "Spaces",
-      "accountResourcesInnovationPacksSubtitle": "Innovation Packs",
-      "accountResourcesInnovationHubsSubtitle": "Aangepaste homepages",
-      "leadSpacesTitle": "Spaces onder leiding",
-      "memberOfTitle": "Alle lidmaatschappen"
-    }
+    "tabs": {
+      "resourcesHosted": "Gehoste bronnen",
+      "leading": "Spaces onder leiding",
+      "memberOf": "Alle lidmaatschappen"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "spacesLeading": "Spaces onder leiding",
+      "memberOf": "Alle lidmaatschappen"
+    },
+    "empty": {
+      "leading": "Nog geen leiding over spaces."
+    },
+    "vcType": "Virtuele bijdrager"
   },
   "vcProfile": {
     "hero": {

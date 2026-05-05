@@ -15,10 +15,7 @@ import type {
   ReferenceLink,
   TagsetGroup,
 } from '@/crd/components/organization/OrganizationProfileSidebar';
-import type {
-  AccountResourcesGroup,
-  SimpleResourceCardItem,
-} from '@/crd/components/organization/OrganizationResourceSections';
+import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import type { BodyOfKnowledge } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
@@ -58,6 +55,10 @@ export const MOCK_ALEX_RIVERA = {
   },
   bio:
     'Passionate about sustainable urban planning and civic technology. Leading the transition to renewable energy grids at CityScale.\n\nAlways looking for collaborators on open source climate data projects. Feel free to reach out if you\'re interested in smart city infrastructure!',
+  tagsets: [
+    { name: 'Keywords', tags: ['Smart Cities', 'Renewables', 'Civic Tech'] },
+    { name: 'Skills', tags: ['Urban Planning', 'GIS', 'Python', 'Stakeholder Engagement'] },
+  ] satisfies TagsetGroup[],
   organizations: [
     {
       id: 'org-cityscale',
@@ -225,6 +226,10 @@ export const MOCK_ME_USER = {
     "I'm a sustainability strategist and the platform owner of this Alkemio space. " +
     'I help cities and corporations align their innovation programs with measurable ' +
     'climate outcomes.',
+  tagsets: [
+    { name: 'Keywords', tags: ['Sustainability', 'Innovation Strategy', 'Climate'] },
+    { name: 'Skills', tags: ['Strategy', 'Facilitation', 'Programme Design'] },
+  ] satisfies TagsetGroup[],
   references: [
     { id: 'sam-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/in/sam-lee', description: null },
     { id: 'sam-github', name: 'GitHub', uri: 'https://github.com/sam-lee', description: null },
@@ -296,71 +301,82 @@ export const MOCK_ORG_ALKEMIO = {
     { id: 'a14', displayName: 'Felipe Reyes', avatarImageUrl: 'https://i.pravatar.cc/150?img=14', url: '/user/felipe-reyes' },
   ] satisfies AssociateGridItem[],
   associatesTotal: 142,
-  accountResources: {
-    spaces: [
-      {
-        id: 'space-renewable-energy-grid',
-        title: 'Renewable Energy Grid',
-        description: 'Distributed energy resources and microgrid implementation.',
-        href: '/space/renewable-energy-grid',
-        imageUrl: SPACE_BANNER_URL,
-        color: pickColorFromId('space-renewable-energy-grid'),
-        isPrivate: false,
-      },
-      {
-        id: 'space-smart-traffic',
-        title: 'Smart Traffic Systems',
-        description: 'AI-driven traffic management solutions.',
-        href: '/space/smart-traffic',
-        imageUrl: SPACE_BANNER_TRAFFIC,
-        color: pickColorFromId('space-smart-traffic'),
-        isPrivate: true,
-      },
-      {
-        id: 'space-urban-green',
-        title: 'Urban Green Spaces',
-        description: 'Accessible parks and recreational areas in dense urban environments.',
-        href: '/space/urban-green-spaces',
-        imageUrl: SPACE_BANNER_GREEN,
-        color: pickColorFromId('space-urban-green'),
-        isPrivate: false,
-      },
-      {
-        id: 'space-public-transit',
-        title: 'Public Transit Data',
-        description: 'Open data standards for transportation systems.',
-        href: '/space/public-transit',
-        imageUrl: SPACE_BANNER_TRANSIT,
-        color: pickColorFromId('space-public-transit'),
-        isPrivate: false,
-      },
-    ] satisfies SpaceGridCardData[],
-    innovationPacks: [
-      {
-        id: 'pack-circular-toolkit',
-        displayName: 'Circular Economy Toolkit',
-        description: 'Templates and methods for circular-economy facilitation sessions.',
-        href: '/innovation-packs/circular-toolkit',
-        avatarImageUrl: null,
-      },
-      {
-        id: 'pack-citizen-assemblies',
-        displayName: 'Citizen Assembly Pack',
-        description: 'Methods for running deliberative citizen assemblies.',
-        href: '/innovation-packs/citizen-assemblies',
-        avatarImageUrl: null,
-      },
-    ] satisfies SimpleResourceCardItem[],
-    innovationHubs: [
-      {
-        id: 'hub-climate',
-        displayName: 'Climate Action Hub',
-        description: 'Custom homepage curating climate-action programs.',
-        href: 'https://climate.alkem.io',
-        avatarImageUrl: null,
-      },
-    ] satisfies SimpleResourceCardItem[],
-  } satisfies AccountResourcesGroup,
+  // Phase-10 refined shape: 4 separate hosted-resource arrays — Spaces, VCs,
+  // Template Packs (`innovationPacks`), Custom Homepages (`innovationHubs`) —
+  // matching the User profile. Organisations CAN host VCs (rare in production
+  // today, included here to exercise the sub-section).
+  hostedSpaces: [
+    {
+      id: 'space-renewable-energy-grid',
+      title: 'Renewable Energy Grid',
+      description: 'Distributed energy resources and microgrid implementation.',
+      href: '/space/renewable-energy-grid',
+      imageUrl: SPACE_BANNER_URL,
+      color: pickColorFromId('space-renewable-energy-grid'),
+      isPrivate: false,
+    },
+    {
+      id: 'space-smart-traffic',
+      title: 'Smart Traffic Systems',
+      description: 'AI-driven traffic management solutions.',
+      href: '/space/smart-traffic',
+      imageUrl: SPACE_BANNER_TRAFFIC,
+      color: pickColorFromId('space-smart-traffic'),
+      isPrivate: true,
+    },
+    {
+      id: 'space-urban-green',
+      title: 'Urban Green Spaces',
+      description: 'Accessible parks and recreational areas in dense urban environments.',
+      href: '/space/urban-green-spaces',
+      imageUrl: SPACE_BANNER_GREEN,
+      color: pickColorFromId('space-urban-green'),
+      isPrivate: false,
+    },
+    {
+      id: 'space-public-transit',
+      title: 'Public Transit Data',
+      description: 'Open data standards for transportation systems.',
+      href: '/space/public-transit',
+      imageUrl: SPACE_BANNER_TRANSIT,
+      color: pickColorFromId('space-public-transit'),
+      isPrivate: false,
+    },
+  ] satisfies SpaceGridCardData[],
+  hostedVirtualContributors: [
+    {
+      id: 'vc-org-policyscanner',
+      displayName: 'Foundation PolicyScanner',
+      description: 'Surveys municipal policy texts for sustainability commitments.',
+      type: 'AI Model',
+      href: '/vc/foundation-policyscanner',
+    },
+  ] satisfies VirtualContributorCardItem[],
+  hostedInnovationPacks: [
+    {
+      id: 'pack-circular-toolkit',
+      displayName: 'Circular Economy Toolkit',
+      description: 'Templates and methods for circular-economy facilitation sessions.',
+      href: '/innovation-packs/circular-toolkit',
+      avatarImageUrl: null,
+    },
+    {
+      id: 'pack-citizen-assemblies',
+      displayName: 'Citizen Assembly Pack',
+      description: 'Methods for running deliberative citizen assemblies.',
+      href: '/innovation-packs/citizen-assemblies',
+      avatarImageUrl: null,
+    },
+  ] satisfies SimpleResourceCardItem[],
+  hostedInnovationHubs: [
+    {
+      id: 'hub-climate',
+      displayName: 'Climate Action Hub',
+      description: 'Custom homepage curating climate-action programs.',
+      href: 'https://climate.alkem.io',
+      avatarImageUrl: null,
+    },
+  ] satisfies SimpleResourceCardItem[],
   leadSpaces: [
     {
       id: 'space-renewable-energy-grid',

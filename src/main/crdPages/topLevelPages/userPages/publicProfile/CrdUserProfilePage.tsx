@@ -17,7 +17,7 @@ import useCanEditSettings from '../useCanEditSettings';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { MembershipCardConnector } from './MembershipCardConnector';
-import { buildLocationLine, mapHostedSpacesToCardData } from './publicProfileMapper';
+import { buildLocationLine, buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
 import useResourceTabs from './useResourceTabs';
 
 const buildSettingsHrefForUserSlug = (slug: string | undefined) =>
@@ -115,6 +115,10 @@ export const CrdUserProfilePage = () => {
       }}
       sidebar={{
         bio: profile?.description ?? null,
+        tagsets: buildUserProfileTagsets(profile?.tagsets, {
+          keywords: t('components.profile.fields.keywords.title', { ns: 'translation' }),
+          skills: t('components.profile.fields.skills.title', { ns: 'translation' }),
+        }),
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
         references: normaliseReferences(

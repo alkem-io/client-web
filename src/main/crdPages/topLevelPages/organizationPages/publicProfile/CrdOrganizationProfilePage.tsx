@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
@@ -13,13 +15,14 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
 import { MembershipCardConnector } from '../../userPages/publicProfile/MembershipCardConnector';
 import { buildLocationLine } from '../../userPages/publicProfile/publicProfileMapper';
 import {
   buildTagsetGroups,
-  mapAccountResources,
   mapAssociates,
+  mapOrgHostedResources,
   normaliseReferences,
 } from './organizationProfileMapper';
 
@@ -41,9 +44,21 @@ export const CrdOrganizationProfilePage = () => {
     recipientOrganizationId: organization?.id,
   });
 
+  const { activeTab, onSelectTab } = useResourceTabs();
+
+  // Tab definitions (i18n) — 3 tabs per FR-024 (refined to mirror User profile).
+  const tabs = useMemo<ProfileResourceTab[]>(
+    () => [
+      { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
+      { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
+      { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
+    ],
+    [t]
+  );
+
   const heroLoading = contextLoading || provided.loading || !organization;
   const sidebarLoading = heroLoading;
-  const accountResourcesLoading = loadingAccount;
+  const hostedResourcesLoading = loadingAccount;
   const membershipsLoading = provided.loading;
 
   const id = organization?.id ?? '';
@@ -79,8 +94,9 @@ export const CrdOrganizationProfilePage = () => {
     }))
   );
 
-  // Right column
-  const accountResourcesGroup = mapAccountResources(accountResources ?? undefined);
+  // Right column — 4 hosted-resource sub-sections + Lead Spaces + Member Of.
+  const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
+    mapOrgHostedResources(accountResources ?? undefined, t('orgProfile.vcType'));
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
@@ -117,25 +133,36 @@ export const CrdOrganizationProfilePage = () => {
           socialLinksTitle: t('orgProfile.sidebar.socialLinksTitle'),
         },
       }}
+      tabStrip={{
+        tabs,
+        activeTab,
+        onSelectTab,
+      }}
       rightColumn={{
-        accountResources: accountResourcesGroup,
+        activeTab,
+        hostedSpaces,
+        hostedVirtualContributors,
+        hostedInnovationPacks,
+        hostedInnovationHubs,
         leadSpaces,
         memberOf,
         labels: {
-          accountResourcesTitle: t('orgProfile.rightColumn.accountResourcesTitle'),
-          accountResourcesSpacesSubtitle: t('orgProfile.rightColumn.accountResourcesSpacesSubtitle'),
-          accountResourcesInnovationPacksSubtitle: t('orgProfile.rightColumn.accountResourcesInnovationPacksSubtitle'),
-          accountResourcesInnovationHubsSubtitle: t('orgProfile.rightColumn.accountResourcesInnovationHubsSubtitle'),
-          accountResourcesShowAll: t('components.dashboardNavigation.showAll', { ns: 'translation' }),
-          leadSpacesTitle: t('orgProfile.rightColumn.leadSpacesTitle'),
-          memberOfTitle: t('orgProfile.rightColumn.memberOfTitle'),
-          memberOfEmpty: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
+          spacesSubsection: t('orgProfile.sections.spacesSubsection'),
+          virtualContributorsSubsection: t('orgProfile.sections.virtualContributorsSubsection'),
+          // FR-102 parity reuse: pulled from the global `translation` namespace
+          // (existing keys), not duplicated under `crd-profilePages`.
+          templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
+          customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
+          spacesLeading: t('orgProfile.sections.spacesLeading'),
+          memberOf: t('orgProfile.sections.memberOf'),
+          emptyLeading: t('orgProfile.empty.leading'),
+          emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
         },
       }}
       loading={{
         hero: heroLoading,
         sidebar: sidebarLoading,
-        accountResources: accountResourcesLoading,
+        hostedResources: hostedResourcesLoading,
         memberships: membershipsLoading,
       }}
     />

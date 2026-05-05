@@ -226,6 +226,13 @@ export type UserResourceSectionsProps = {
 export type UserProfileSidebarProps = {
   /** Markdown bio. Rendered via the existing CRD `MarkdownContent`. */
   bio: string | null;
+  /**
+   * Reserved profile tagsets — Keywords + Skills (FR-010a). Empty entries are
+   * dropped by the mapper; the block is hidden entirely when the array is
+   * empty. The `TagsetGroup` shape is reused from `OrganizationProfileSidebar`
+   * (`{ name: string; tags: string[] }`).
+   */
+  tagsets: { name: string; tags: string[] }[];
   organizations: AssociatedOrganizationCard[];
   /** i18n-resolved labels. */
   labels: {

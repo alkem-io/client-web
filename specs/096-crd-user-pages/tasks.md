@@ -86,7 +86,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 - [X] T016 [P] [US1] Implement `UserResourceTabStrip` at `src/crd/components/user/UserResourceTabStrip.tsx` per `UserResourceTabStripProps` in `contracts/publicProfile.ts`. Sticky position. Below `md`: `overflow-x-auto no-scrollbar`; all 5 tabs remain inline; the active tab auto-scrolls into view on mount and on tab change (FR-013 clarification). Keyboard-navigable per FR-111 — Tab into strip, Left/Right arrows, Enter to activate (use the existing CRD `tabs` primitive or replicate its keyboard pattern).
 - [ ] T016a [P] [US1] Add a Vitest keyboard-navigation test for `UserResourceTabStrip` at `src/crd/components/user/__tests__/UserResourceTabStrip.test.tsx` (Q5 — Cv2). Asserts: Tab focuses the active tab; Left/Right arrows move focus AND activate the tab (calling `onSelectTab`); Enter on a focused tab activates it. Covers FR-111 explicitly so a regression is caught by tests, not only by axe.
 - [X] T017 [P] [US1] Implement `UserResourceSections` at `src/crd/components/user/UserResourceSections.tsx` per `UserResourceSectionsProps` in `contracts/publicProfile.ts`. Switches on `activeTab` to render Resources Hosted (with sub-sections on `allResources`; sub-section headers hidden on single-slice tabs per FR-013) / Spaces Leading / Member Of. Sections with empty data are omitted (FR-015) — except the empty-state caption rule for "No memberships yet" when applicable.
-- [X] T018 [P] [US1] Implement `UserProfileSidebar` at `src/crd/components/user/UserProfileSidebar.tsx` per `UserProfileSidebarProps` in `contracts/publicProfile.ts`. Two stacked CRD card sections: About (bio rendered via existing CRD `MarkdownContent`) + Organizations list (rendered as a stack of `CompactContributorCard` instances from T006 in the `compact` variant — `caption = role` label, `secondaryCaption = member-count line` per the Q1 decision; one primitive serves three sites — User Orgs, Org Associates, VC Host). No inline fallback component.
+- [X] T018 [P] [US1] Implement `UserProfileSidebar` at `src/crd/components/user/UserProfileSidebar.tsx` per `UserProfileSidebarProps` in `contracts/publicProfile.ts`. Stacked CRD card sections in this order: **About** (bio rendered via existing CRD `MarkdownContent`) → **Tagsets** (FR-010a — accepts `tagsets: TagsetGroup[]`; renders each entry as a `text-label` uppercase header followed by a `Badge` row of tag pills, mirroring the rendering in `OrganizationProfileSidebar`; the entire block is hidden when `tagsets.length === 0`) → **Social** (existing `<SocialLinks>` block, hidden when there are no social references) → **Organizations** list (rendered as a stack of `CompactContributorCard` instances from T006 in the `compact` variant — `caption = role` label, `secondaryCaption = member-count line` per the Q1 decision; one primitive serves three sites — User Orgs, Org Associates, VC Host). No inline fallback component.
 - [X] T019 [US1] Implement `UserPublicProfileView` at `src/crd/components/user/UserPublicProfileView.tsx` per `UserPublicProfileViewProps` in `contracts/publicProfile.ts`. Composes the hero + sidebar + tab strip + sections per the prototype layout: outer `grid grid-cols-1 lg:grid-cols-12 gap-8`, sidebar `lg:col-span-4 lg:sticky lg:top-24 self-start`, right column `lg:col-span-8`, both wrapped in the CRD `PageLayout` shell. On viewports below `lg`, the sidebar stacks **above** the right column in a single-column layout (it is **not** hidden — parity with prototype). **Renders Skeleton placeholders per region**, driven by the per-region `loading` shape (Q3 — `loading.hero`, `loading.organizations`, `loading.hostedResources`, `loading.memberships`); each region paints in independently as its driving query resolves (FR-009). Layout MUST NOT shift when a region transitions from skeleton to real content.
 
 ### Integration page + routing
@@ -286,6 +286,54 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
   - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'resourcesHosted'`.
 
 **Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs, Resources Hosted active by default, all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, and an empty Leading tab still showing the empty-state caption.
+
+---
+
+## Phase 10: Organization profile — tabbed right column matching User profile (FR-024 / FR-016 — refinement)
+
+**Purpose**: The original Organization right column was a stacked-blocks layout (Account Resources / Lead Spaces / All Memberships rendered as Card-bordered sections one below the other), parity-ported from MUI `OrganizationPageView`. Visually it was heavier than the rest of the CRD profile pages. This phase rewrites the Org right column to mirror the User profile's tabbed layout (Phase 9): a 3-tab strip (Resources Hosted / Lead Spaces / All Memberships) with the same `ResourceTabKey` union, the same `ResourceTabStrip` component (extracted to shared common), and four sub-sections under Resources Hosted (Spaces / Virtual Contributors / Template Packs / Custom Homepages — organisations CAN host VCs, the data was already in `useAccountResources`). Drops the `VISIBLE_SPACE_LIMIT = 6` cap on hosted Spaces (FR-016 refined) — every item renders, matching User profile.
+
+**Why a separate phase**: like Phase 9, the original spec preserved current MUI's stacked layout + 6-cap as the design choice. Only after the User profile Phase 9 work landed did the visual divergence between the two profile pages become obvious. This phase reuses the User profile's components and types directly — no new types are introduced; the Org just adopts the same `ResourceTabKey` / `SimpleResourceCardItem` / `ResourceTabStrip` / `useResourceTabs` extracted to shared common locations.
+
+- [ ] T075 Extract the shared tab strip + hook + `ResourceTabKey` type to common locations:
+  - `src/crd/components/common/ProfileResourceTabStrip.tsx` (renamed/moved from `src/crd/components/user/UserResourceTabStrip.tsx`). Same component implementation; the `ResourceTabKey` union exports from here.
+  - `src/main/crdPages/topLevelPages/common/useResourceTabs.ts` (moved from the userPages folder). Same hook implementation; default tab is `'resourcesHosted'`.
+  - Update User-side imports in `UserPublicProfileView.tsx`, `CrdUserProfilePage.tsx`, `UserResourceSections.tsx`, `UserProfileSelfDemoPage.tsx`, `UserProfileOtherDemoPage.tsx`, the contracts file, and any tests that reference the old paths. Leave a re-export shim at the old `UserResourceTabStrip.tsx` path if anything outside this spec references it (none found at write time, but check via grep).
+
+- [ ] T076 Refactor `src/crd/components/organization/OrganizationResourceSections.tsx`:
+  - Drop the `accountResources: AccountResourcesGroup | null` prop and the related `Card` wrappers / show-all logic.
+  - Add the same prop shape as `UserResourceSectionsProps` (minus User-specific labels): `activeTab`, `hostedSpaces`, `hostedVirtualContributors`, `hostedInnovationPacks`, `hostedInnovationHubs`, `leadSpaces`, `memberOf`, `labels`.
+  - Implementation mirrors `UserResourceSections.tsx`: switch on `activeTab` → 3 branches. The Resources Hosted branch renders the same 4 `SubSection` blocks (Spaces / VCs / Template Packs / Custom Homepages) with the same icons (`Bot` / `Package` / `LayoutDashboard`). Lead Spaces and Member Of branches render the list with an empty-state caption.
+  - **Important**: the membership cards (Lead Spaces + All Memberships) are pre-rendered `ReactNode[]` from the integration page (each is a `MembershipCardConnector` wrapping a `useContributionProvider` lookup). So the prop shape is `ReactNode[]` for those two arrays, NOT `SpaceCardItem[]`. (Same pattern as the User profile.)
+  - The Spaces sub-section under Resources Hosted uses `SpaceGridCard` directly (mapper produces `SpaceGridCardData[]`).
+
+- [ ] T077 Refactor `src/crd/components/organization/OrganizationPublicProfileView.tsx`:
+  - Add a `tabStrip: { activeTab; onSelectTab }` prop.
+  - Render the shared `ProfileResourceTabStrip` component above the sections panel.
+  - Update the `loading` shape: `accountResources` → `hostedResources`.
+
+- [ ] T078 Refactor `src/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper.ts`:
+  - Drop `mapAccountResources` (returns `AccountResourcesGroup | null`).
+  - Add a new `mapOrgHostedResources(accountResources, vcType)` that returns `{ hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs }`. Reuse the shared `mapHostedSpacesToCardData` from `userPages/publicProfile/publicProfileMapper.ts` if the input shape matches (it does — `useAccountResources` returns the same shape regardless of account owner).
+
+- [ ] T079 Refactor `src/main/crdPages/topLevelPages/organizationPages/publicProfile/CrdOrganizationProfilePage.tsx`:
+  - Wire `useResourceTabs` (from the new shared common location).
+  - Build the tab definitions array (3 tabs, labels via `t('orgProfile.tabs.*')`).
+  - Wire the four hosted-resource arrays from the new mapper helper.
+  - Pass `tabStrip` prop to `OrganizationPublicProfileView`.
+  - Update label keys passed to the sections (mirror `UserResourceSectionsProps.labels`).
+  - Drop the obsolete `accountResourcesTitle` / `accountResourcesSpacesSubtitle` / etc. labels.
+
+- [ ] T080 i18n updates in `src/crd/i18n/profilePages/profilePages.<lang>.json` (all 6 languages):
+  - Add `orgProfile.tabs.{resourcesHosted, leading, memberOf}` (English: "Resources Hosted" / "Lead Spaces" / "All Memberships").
+  - Drop the obsolete `orgProfile.rightColumn.{accountResourcesTitle, accountResourcesSpacesSubtitle, accountResourcesInnovationPacksSubtitle, accountResourcesInnovationHubsSubtitle, leadSpacesTitle, memberOfTitle}` keys (the section headers are gone — the tab labels are the headings now).
+  - The Resources Hosted sub-section labels (`spacesSubsection` / `virtualContributorsSubsection`) and the FR-102 reuses (Template Packs / Custom Homepages) are passed in by the integration page from the global `translation` namespace — same pattern as User profile.
+
+- [ ] T081 Update `src/crd/app/data/profiles.ts` and `src/crd/app/pages/OrganizationProfileDemoPage.tsx`:
+  - `MOCK_ORG_ALKEMIO`: replace the `accountResources: AccountResourcesGroup` block with 4 separate arrays (`hostedSpaces`, `hostedVirtualContributors` — keep the existing 4 spaces + 2 packs + 1 hub from the demo, add a 1-2 mock VCs to exercise the new sub-section).
+  - `OrganizationProfileDemoPage.tsx`: drop the `accountResources` prop wiring; add `useState<ResourceTabKey>('resourcesHosted')`; pass the 4 new arrays and the `tabStrip` prop.
+
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the Org profile demo with 3 tabs, Resources Hosted active by default, all 4 sub-sections rendering for `MOCK_ORG_ALKEMIO`. Toggle to Lead Spaces / All Memberships — only that tab's content renders.
 
 ---
 

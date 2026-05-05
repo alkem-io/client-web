@@ -75,6 +75,7 @@ export function UserProfileOtherDemoPage() {
       }}
       sidebar={{
         bio: alex.bio,
+        tagsets: alex.tagsets,
         organizationsSlot,
         organizationsEmpty: alex.organizations.length === 0,
         labels: SIDEBAR_LABELS,

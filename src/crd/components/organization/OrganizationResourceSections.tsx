@@ -1,11 +1,9 @@
-import { ChevronDown } from 'lucide-react';
+import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { SpaceGridCard, type SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import { Button } from '@/crd/primitives/button';
-import { Card, CardContent, CardHeader } from '@/crd/primitives/card';
-
-const VISIBLE_SPACE_LIMIT = 6;
+import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
+import { Badge } from '@/crd/primitives/badge';
 
 export type SimpleResourceCardItem = {
   id: string;
@@ -15,133 +13,159 @@ export type SimpleResourceCardItem = {
   avatarImageUrl: string | null;
 };
 
-export type AccountResourcesGroup = {
-  spaces: SpaceGridCardData[];
-  innovationPacks: SimpleResourceCardItem[];
-  innovationHubs: SimpleResourceCardItem[];
-};
-
 export type OrganizationResourceSectionsProps = {
-  accountResources: AccountResourcesGroup | null;
-  /** Pre-rendered Lead Spaces tiles. */
+  activeTab: ResourceTabKey;
+  hostedSpaces: SpaceGridCardData[];
+  hostedVirtualContributors: VirtualContributorCardItem[];
+  /** Backend field: `account.innovationPacks`. UI label: "Template Packs". */
+  hostedInnovationPacks: SimpleResourceCardItem[];
+  /** Backend field: `account.innovationHubs`. UI label: "Custom Homepages". */
+  hostedInnovationHubs: SimpleResourceCardItem[];
+  /** Pre-rendered Lead Spaces tiles (each is a `MembershipCardConnector`). */
   leadSpaces: ReactNode[];
   /** Pre-rendered All Memberships tiles. */
   memberOf: ReactNode[];
   labels: {
-    accountResourcesTitle: string;
-    accountResourcesSpacesSubtitle: string;
-    accountResourcesInnovationPacksSubtitle: string;
-    accountResourcesInnovationHubsSubtitle: string;
-    accountResourcesShowAll: string;
-    leadSpacesTitle: string;
-    memberOfTitle: string;
-    memberOfEmpty: string;
+    spacesSubsection: string;
+    virtualContributorsSubsection: string;
+    /** "Template Packs" — reused from `common.innovation-packs` per FR-102. */
+    templatePacksSubsection: string;
+    /** "Custom Homepages" — reused from `common.customHomepages` per FR-102. */
+    customHomepagesSubsection: string;
+    spacesLeading: string;
+    memberOf: string;
+    emptyLeading: string;
+    /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
+    emptyMembership: string;
   };
 };
 
 export function OrganizationResourceSections({
-  accountResources,
+  activeTab,
+  hostedSpaces,
+  hostedVirtualContributors,
+  hostedInnovationPacks,
+  hostedInnovationHubs,
   leadSpaces,
   memberOf,
   labels,
 }: OrganizationResourceSectionsProps) {
-  return (
-    <div className="space-y-10">
-      {accountResources ? <AccountResourcesView accountResources={accountResources} labels={labels} /> : null}
+  if (activeTab === 'resourcesHosted') {
+    return (
+      <div className="space-y-10">
+        {hostedSpaces.length > 0 ? (
+          <SubSection label={labels.spacesSubsection}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {hostedSpaces.map(space => (
+                <SpaceGridCard key={space.id} space={space} />
+              ))}
+            </div>
+          </SubSection>
+        ) : null}
 
-      {leadSpaces.length > 0 ? (
-        <section>
-          <h2 className="text-section-title mb-4">{labels.leadSpacesTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{leadSpaces}</div>
-        </section>
-      ) : null}
+        {hostedVirtualContributors.length > 0 ? (
+          <SubSection label={labels.virtualContributorsSubsection} icon={<Bot className="w-4 h-4" />}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {hostedVirtualContributors.map(vc => (
+                <a
+                  key={vc.id}
+                  href={vc.href}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow"
+                >
+                  <div className="p-2 bg-primary/10 rounded-md text-primary">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
+                    {vc.description ? <p className="text-body text-muted-foreground mb-2">{vc.description}</p> : null}
+                    <Badge variant="secondary" className="text-badge h-5">
+                      {vc.type}
+                    </Badge>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </SubSection>
+        ) : null}
 
+        {hostedInnovationPacks.length > 0 ? (
+          <SubSection label={labels.templatePacksSubsection} icon={<Package className="w-4 h-4" />}>
+            <SimpleResourceGrid items={hostedInnovationPacks} icon={<Package className="w-5 h-5" />} />
+          </SubSection>
+        ) : null}
+
+        {hostedInnovationHubs.length > 0 ? (
+          <SubSection label={labels.customHomepagesSubsection} icon={<LayoutDashboard className="w-4 h-4" />}>
+            <SimpleResourceGrid items={hostedInnovationHubs} icon={<LayoutDashboard className="w-5 h-5" />} />
+          </SubSection>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (activeTab === 'leading') {
+    return (
       <section>
-        <h2 className="text-section-title mb-4">{labels.memberOfTitle}</h2>
-        {memberOf.length === 0 ? (
-          <p className="text-body text-muted-foreground">{labels.memberOfEmpty}</p>
+        {leadSpaces.length === 0 ? (
+          <p className="text-body text-muted-foreground">{labels.emptyLeading}</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{memberOf}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{leadSpaces}</div>
         )}
       </section>
-    </div>
+    );
+  }
+
+  // memberOf
+  return (
+    <section>
+      {memberOf.length === 0 ? (
+        <p className="text-body text-muted-foreground">{labels.emptyMembership}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{memberOf}</div>
+      )}
+    </section>
   );
 }
 
-type AccountResourcesViewProps = {
-  accountResources: AccountResourcesGroup;
-  labels: OrganizationResourceSectionsProps['labels'];
+type SubSectionProps = {
+  label: string;
+  icon?: ReactNode;
+  children: ReactNode;
 };
 
-function AccountResourcesView({ accountResources, labels }: AccountResourcesViewProps) {
-  const [visibleSpacesCount, setVisibleSpacesCount] = useState(VISIBLE_SPACE_LIMIT);
-  const showSpaceMoreButton =
-    accountResources.spaces.length > VISIBLE_SPACE_LIMIT && visibleSpacesCount === VISIBLE_SPACE_LIMIT;
-  const visibleSpaces = accountResources.spaces.slice(0, visibleSpacesCount);
-
+function SubSection({ label, icon, children }: SubSectionProps) {
   return (
-    <Card>
-      <CardHeader>
-        <h2 className="text-section-title">{labels.accountResourcesTitle}</h2>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {accountResources.spaces.length > 0 ? (
-          <div>
-            <div className="text-label uppercase text-muted-foreground mb-3">
-              {labels.accountResourcesSpacesSubtitle}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {visibleSpaces.map(s => (
-                <SpaceGridCard key={s.id} space={s} />
-              ))}
-            </div>
-            {showSpaceMoreButton ? (
-              <div className="flex justify-end mt-3">
-                <Button variant="ghost" size="sm" onClick={() => setVisibleSpacesCount(accountResources.spaces.length)}>
-                  <ChevronDown className="w-4 h-4" />
-                  {labels.accountResourcesShowAll}
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+    <section>
+      <h3 className="text-label uppercase text-muted-foreground mb-4 flex items-center gap-2">
+        {icon ?? null}
+        {label}
+      </h3>
+      {children}
+    </section>
+  );
+}
 
-        {accountResources.innovationPacks.length > 0 ? (
-          <div>
-            <div className="text-label uppercase text-muted-foreground mb-3">
-              {labels.accountResourcesInnovationPacksSubtitle}
-            </div>
-            <ul className="space-y-2">
-              {accountResources.innovationPacks.map(p => (
-                <li key={p.id}>
-                  <a href={p.href} className="text-body-emphasis text-primary hover:underline">
-                    {p.displayName}
-                  </a>
-                  {p.description ? <p className="text-caption text-muted-foreground">{p.description}</p> : null}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+type SimpleResourceGridProps = {
+  items: SimpleResourceCardItem[];
+  icon: ReactNode;
+};
 
-        {accountResources.innovationHubs.length > 0 ? (
+function SimpleResourceGrid({ items, icon }: SimpleResourceGridProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {items.map(item => (
+        <a
+          key={item.id}
+          href={item.href}
+          className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow"
+        >
+          <div className="p-2 bg-primary/10 rounded-md text-primary">{icon}</div>
           <div>
-            <div className="text-label uppercase text-muted-foreground mb-3">
-              {labels.accountResourcesInnovationHubsSubtitle}
-            </div>
-            <ul className="space-y-2">
-              {accountResources.innovationHubs.map(h => (
-                <li key={h.id}>
-                  <a href={h.href} className="text-body-emphasis text-primary hover:underline">
-                    {h.displayName}
-                  </a>
-                  {h.description ? <p className="text-caption text-muted-foreground">{h.description}</p> : null}
-                </li>
-              ))}
-            </ul>
+            <h4 className="text-card-title text-foreground">{item.displayName}</h4>
+            {item.description ? <p className="text-body text-muted-foreground">{item.description}</p> : null}
           </div>
-        ) : null}
-      </CardContent>
-    </Card>
+        </a>
+      ))}
+    </div>
   );
 }

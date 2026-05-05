@@ -64,14 +64,21 @@
       "associatesCount_other": "{{count}} asociados",
       "socialLinksTitle": "Social"
     },
-    "rightColumn": {
-      "accountResourcesTitle": "Recursos de la cuenta",
-      "accountResourcesSpacesSubtitle": "Espacios",
-      "accountResourcesInnovationPacksSubtitle": "Innovation Packs",
-      "accountResourcesInnovationHubsSubtitle": "Páginas de inicio",
-      "leadSpacesTitle": "Espacios liderando",
-      "memberOfTitle": "Todas las afiliaciones"
-    }
+    "tabs": {
+      "resourcesHosted": "Recursos alojados",
+      "leading": "Espacios liderando",
+      "memberOf": "Todas las afiliaciones"
+    },
+    "sections": {
+      "spacesSubsection": "Espacios",
+      "virtualContributorsSubsection": "Colaboradores virtuales",
+      "spacesLeading": "Espacios liderando",
+      "memberOf": "Todas las afiliaciones"
+    },
+    "empty": {
+      "leading": "Aún no lidera ningún espacio."
+    },
+    "vcType": "Colaborador virtual"
   },
   "vcProfile": {
     "hero": {

@@ -64,14 +64,21 @@
       "associatesCount_other": "{{count}} сътрудника",
       "socialLinksTitle": "Социални"
     },
-    "rightColumn": {
-      "accountResourcesTitle": "Ресурси на акаунта",
-      "accountResourcesSpacesSubtitle": "Пространства",
-      "accountResourcesInnovationPacksSubtitle": "Innovation Packs",
-      "accountResourcesInnovationHubsSubtitle": "Персонализирани начални страници",
-      "leadSpacesTitle": "Пространства, които водя",
-      "memberOfTitle": "Всички членства"
-    }
+    "tabs": {
+      "resourcesHosted": "Хоствани ресурси",
+      "leading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "sections": {
+      "spacesSubsection": "Пространства",
+      "virtualContributorsSubsection": "Виртуални сътрудници",
+      "spacesLeading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "empty": {
+      "leading": "Все още не води пространства."
+    },
+    "vcType": "Виртуален сътрудник"
   },
   "vcProfile": {
     "hero": {

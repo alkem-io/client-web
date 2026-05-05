@@ -3,11 +3,9 @@ import type {
   ReferenceLink,
   TagsetGroup,
 } from '@/crd/components/organization/OrganizationProfileSidebar';
-import type {
-  AccountResourcesGroup,
-  SimpleResourceCardItem,
-} from '@/crd/components/organization/OrganizationResourceSections';
+import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
+import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 export type RawReference = {
@@ -75,8 +73,28 @@ export type AccountResourcesShape =
   | null
   | undefined;
 
-export const mapAccountResources = (input: AccountResourcesShape): AccountResourcesGroup | null => {
-  const spaces: SpaceGridCardData[] = (input?.spaces ?? [])
+/**
+ * Maps the raw `useAccountResources` payload into the four arrays the
+ * Organization profile's Resources Hosted tab consumes — Spaces, Virtual
+ * Contributors, Template Packs (`innovationPacks`), Custom Homepages
+ * (`innovationHubs`). Mirrors the User profile's `mapHostedSpacesToCardData`
+ * exactly; the input shape is identical regardless of account owner.
+ *
+ * Pre-Phase-10 the Org used a `mapAccountResources` helper that returned a
+ * single `AccountResourcesGroup | null` for a stacked-blocks card layout. That
+ * grouping was dropped along with the Card-bordered section; each sub-section
+ * is now its own omittable slot under the Resources Hosted tab.
+ */
+export const mapOrgHostedResources = (
+  input: AccountResourcesShape,
+  vcType: string
+): {
+  hostedSpaces: SpaceGridCardData[];
+  hostedVirtualContributors: VirtualContributorCardItem[];
+  hostedInnovationPacks: SimpleResourceCardItem[];
+  hostedInnovationHubs: SimpleResourceCardItem[];
+} => {
+  const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? [])
     .filter(s => Boolean(s.about?.profile))
     .map(s => {
       const profile = s.about!.profile!;
@@ -91,7 +109,17 @@ export const mapAccountResources = (input: AccountResourcesShape): AccountResour
       };
     });
 
-  const innovationPacks: SimpleResourceCardItem[] = (input?.innovationPacks ?? [])
+  const hostedVirtualContributors: VirtualContributorCardItem[] = (input?.virtualContributors ?? [])
+    .filter(v => Boolean(v.profile))
+    .map(v => ({
+      id: v.id,
+      displayName: v.profile!.displayName,
+      description: v.profile!.tagline ?? null,
+      type: vcType,
+      href: v.profile!.url,
+    }));
+
+  const hostedInnovationPacks: SimpleResourceCardItem[] = (input?.innovationPacks ?? [])
     .filter(p => Boolean(p.profile))
     .map(p => ({
       id: p.id,
@@ -101,7 +129,7 @@ export const mapAccountResources = (input: AccountResourcesShape): AccountResour
       avatarImageUrl: p.profile!.avatar?.uri ?? null,
     }));
 
-  const innovationHubs: SimpleResourceCardItem[] = (input?.innovationHubs ?? [])
+  const hostedInnovationHubs: SimpleResourceCardItem[] = (input?.innovationHubs ?? [])
     .filter(h => Boolean(h.profile))
     .map(h => ({
       id: h.id,
@@ -111,8 +139,5 @@ export const mapAccountResources = (input: AccountResourcesShape): AccountResour
       avatarImageUrl: h.profile!.avatar?.uri ?? null,
     }));
 
-  const isEmpty = spaces.length === 0 && innovationPacks.length === 0 && innovationHubs.length === 0;
-  if (isEmpty) return null;
-
-  return { spaces, innovationPacks, innovationHubs };
+  return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
 };

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { SpaceGridCard } from '@/crd/components/user/SpaceGridCard';
 import { MOCK_ORG_ALKEMIO } from '../data/profiles';
@@ -14,24 +16,32 @@ const SIDEBAR_LABELS = {
   socialLinksTitle: 'Social',
 };
 
-const RIGHT_LABELS = {
-  accountResourcesTitle: 'Account Resources',
-  accountResourcesSpacesSubtitle: 'Spaces',
-  accountResourcesInnovationPacksSubtitle: 'Innovation Packs',
-  accountResourcesInnovationHubsSubtitle: 'Custom Homepages',
-  accountResourcesShowAll: 'Show all',
-  leadSpacesTitle: 'Lead Spaces',
-  memberOfTitle: 'All Memberships',
-  memberOfEmpty: 'No memberships yet.',
+const SECTIONS_LABELS = {
+  spacesSubsection: 'Spaces',
+  virtualContributorsSubsection: 'Virtual Contributors',
+  templatePacksSubsection: 'Template Packs',
+  customHomepagesSubsection: 'Custom Homepages',
+  spacesLeading: 'Lead Spaces',
+  memberOf: 'All Memberships',
+  emptyLeading: 'Not leading any spaces yet.',
+  emptyMembership: 'No memberships yet.',
 };
+
+const TABS = [
+  { key: 'resourcesHosted' as ResourceTabKey, label: 'Resources Hosted' },
+  { key: 'leading' as ResourceTabKey, label: 'Lead Spaces' },
+  { key: 'memberOf' as ResourceTabKey, label: 'All Memberships' },
+];
 
 /**
  * Demo: Organization public profile (Alkemio Foundation).
  * Renders Verified badge, Settings (admin viewer), Message button (signed-in
- * viewer), associates grid with the 12-cap "Show more / less" toggle, and
- * Account Resources with 6-cap "Show all".
+ * viewer), associates grid with the 12-cap "Show more / less" toggle, and a
+ * 3-tab right column mirroring the User profile (Resources Hosted / Lead
+ * Spaces / All Memberships).
  */
 export function OrganizationProfileDemoPage() {
+  const [activeTab, setActiveTab] = useState<ResourceTabKey>('resourcesHosted');
   const org = MOCK_ORG_ALKEMIO;
 
   const handleSendMessage = (text: string) =>
@@ -62,13 +72,22 @@ export function OrganizationProfileDemoPage() {
         },
         labels: SIDEBAR_LABELS,
       }}
+      tabStrip={{
+        tabs: TABS,
+        activeTab,
+        onSelectTab: setActiveTab,
+      }}
       rightColumn={{
-        accountResources: org.accountResources,
+        activeTab,
+        hostedSpaces: org.hostedSpaces,
+        hostedVirtualContributors: org.hostedVirtualContributors,
+        hostedInnovationPacks: org.hostedInnovationPacks,
+        hostedInnovationHubs: org.hostedInnovationHubs,
         leadSpaces,
         memberOf,
-        labels: RIGHT_LABELS,
+        labels: SECTIONS_LABELS,
       }}
-      loading={{ hero: false, sidebar: false, accountResources: false, memberships: false }}
+      loading={{ hero: false, sidebar: false, hostedResources: false, memberships: false }}
     />
   );
 }
