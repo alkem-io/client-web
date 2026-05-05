@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/crd/lib/utils';
 
-export type ResourceTabKey = 'allResources' | 'hostedSpaces' | 'virtualContributors' | 'leading' | 'memberOf';
+export type ResourceTabKey = 'resourcesHosted' | 'leading' | 'memberOf';
 
 export type UserResourceTab = {
   key: ResourceTabKey;

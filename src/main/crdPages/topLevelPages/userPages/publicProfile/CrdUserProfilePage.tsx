@@ -43,12 +43,10 @@ export const CrdUserProfilePage = () => {
 
   const { onSendMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
 
-  // Tab definitions (i18n).
+  // Tab definitions (i18n) — 3 tabs per FR-013 (refined).
   const tabs = useMemo(
     () => [
-      { key: 'allResources' as ResourceTabKey, label: t('userProfile.tabs.allResources') },
-      { key: 'hostedSpaces' as ResourceTabKey, label: t('userProfile.tabs.hostedSpaces') },
-      { key: 'virtualContributors' as ResourceTabKey, label: t('userProfile.tabs.virtualContributors') },
+      { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
       { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
       { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
     ],
@@ -90,11 +88,9 @@ export const CrdUserProfilePage = () => {
 
   const settingsHref = buildSettingsHrefForUserSlug(userSlug);
 
-  // Hosted resources (per-prototype: spaces + VCs only).
-  const { hostedSpaces, hostedVirtualContributors } = mapHostedSpacesToCardData(
-    accountResources ?? undefined,
-    t('userProfile.vcType')
-  );
+  // Hosted resources — 4 sub-sections per FR-013 (refined).
+  const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
+    mapHostedSpacesToCardData(accountResources ?? undefined, t('userProfile.vcType'));
 
   const spacesLeading = leadingItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const spacesMember = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
@@ -146,15 +142,19 @@ export const CrdUserProfilePage = () => {
         activeTab,
         hostedSpaces,
         hostedVirtualContributors,
+        hostedInnovationPacks,
+        hostedInnovationHubs,
         spacesLeading,
         spacesMember,
         labels: {
-          resourcesHosted: t('userProfile.sections.resourcesHosted'),
           spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
+          // FR-102 parity reuse: pulled from the global `translation` namespace
+          // (existing keys), not duplicated under `crd-profilePages`.
+          templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
+          customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
-          totalBadge: count => t('userProfile.sections.totalBadge', { count }),
           emptyLeading: t('userProfile.empty.leading'),
           emptyMembership: t('userProfile.empty.membership'),
         },

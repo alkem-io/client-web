@@ -19,19 +19,15 @@
       "settingsAriaLabel": "Gebruikersinstellingen openen"
     },
     "tabs": {
-      "allResources": "Alle bronnen",
-      "hostedSpaces": "Gehoste spaces",
-      "virtualContributors": "Virtuele bijdragers",
+      "resourcesHosted": "Gehoste bronnen",
       "leading": "Leiding",
       "memberOf": "Lid van"
     },
     "sections": {
-      "resourcesHosted": "Gehoste bronnen",
       "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtuele bijdragers",
       "spacesLeading": "Spaces onder leiding",
-      "memberOf": "Lid van",
-      "totalBadge": "{{count}} totaal"
+      "memberOf": "Lid van"
     },
     "sidebar": {
       "aboutTitle": "Over",

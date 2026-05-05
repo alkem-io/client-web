@@ -6,9 +6,9 @@ import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip'
  *
  * NOTE (FR-013 clarification): the active tab is held in **local React state
  * only**; it is NOT synced to a URL search param or path segment. Direct entry
- * (reload, back/forward, shared link) always lands on `'allResources'`.
+ * (reload, back/forward, shared link) always lands on `'resourcesHosted'`.
  */
-const useResourceTabs = (initial: ResourceTabKey = 'allResources') => {
+const useResourceTabs = (initial: ResourceTabKey = 'resourcesHosted') => {
   const [activeTab, setActiveTab] = useState<ResourceTabKey>(initial);
   return {
     activeTab,

@@ -6,12 +6,12 @@ import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileVi
 import { MOCK_ALEX_RIVERA } from '../data/profiles';
 
 const SECTIONS_LABELS = {
-  resourcesHosted: 'Resources Hosted',
   spacesSubsection: 'Spaces',
   virtualContributorsSubsection: 'Virtual Contributors',
+  templatePacksSubsection: 'Template Packs',
+  customHomepagesSubsection: 'Custom Homepages',
   spacesLeading: 'Spaces Leading',
   memberOf: 'Member of',
-  totalBadge: (count: number) => `${count} Total`,
   emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
 };
@@ -25,9 +25,7 @@ const SIDEBAR_LABELS = {
 };
 
 const TABS = [
-  { key: 'allResources' as ResourceTabKey, label: 'All Resources' },
-  { key: 'hostedSpaces' as ResourceTabKey, label: 'Hosted Spaces' },
-  { key: 'virtualContributors' as ResourceTabKey, label: 'Virtual Contributors' },
+  { key: 'resourcesHosted' as ResourceTabKey, label: 'Resources Hosted' },
   { key: 'leading' as ResourceTabKey, label: 'Leading' },
   { key: 'memberOf' as ResourceTabKey, label: 'Member Of' },
 ];
@@ -41,7 +39,7 @@ const TABS = [
  * `aria-busy` / spinner state.
  */
 export function UserProfileOtherDemoPage() {
-  const [activeTab, setActiveTab] = useState<ResourceTabKey>('allResources');
+  const [activeTab, setActiveTab] = useState<ResourceTabKey>('resourcesHosted');
   const alex = MOCK_ALEX_RIVERA;
 
   const handleSendMessage = (text: string) =>
@@ -90,6 +88,8 @@ export function UserProfileOtherDemoPage() {
         activeTab,
         hostedSpaces: alex.hostedSpaces,
         hostedVirtualContributors: alex.hostedVirtualContributors,
+        hostedInnovationPacks: alex.hostedInnovationPacks,
+        hostedInnovationHubs: alex.hostedInnovationHubs,
         spacesLeading,
         spacesMember,
         labels: SECTIONS_LABELS,

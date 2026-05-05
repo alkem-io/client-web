@@ -19,19 +19,15 @@
       "settingsAriaLabel": "Abrir configuración de usuario"
     },
     "tabs": {
-      "allResources": "Todos los recursos",
-      "hostedSpaces": "Espacios alojados",
-      "virtualContributors": "Colaboradores virtuales",
+      "resourcesHosted": "Recursos alojados",
       "leading": "Liderando",
       "memberOf": "Miembro de"
     },
     "sections": {
-      "resourcesHosted": "Recursos alojados",
       "spacesSubsection": "Espacios",
       "virtualContributorsSubsection": "Colaboradores virtuales",
       "spacesLeading": "Espacios liderando",
-      "memberOf": "Miembro de",
-      "totalBadge": "{{count}} en total"
+      "memberOf": "Miembro de"
     },
     "sidebar": {
       "aboutTitle": "Acerca de",

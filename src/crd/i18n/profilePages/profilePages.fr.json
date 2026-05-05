@@ -19,19 +19,15 @@
       "settingsAriaLabel": "Ouvrir les paramètres utilisateur"
     },
     "tabs": {
-      "allResources": "Toutes les ressources",
-      "hostedSpaces": "Espaces hébergés",
-      "virtualContributors": "Contributeurs virtuels",
+      "resourcesHosted": "Ressources hébergées",
       "leading": "Animation",
       "memberOf": "Membre de"
     },
     "sections": {
-      "resourcesHosted": "Ressources hébergées",
       "spacesSubsection": "Espaces",
       "virtualContributorsSubsection": "Contributeurs virtuels",
       "spacesLeading": "Espaces animés",
-      "memberOf": "Membre de",
-      "totalBadge": "{{count}} au total"
+      "memberOf": "Membre de"
     },
     "sidebar": {
       "aboutTitle": "À propos",

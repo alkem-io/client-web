@@ -19,19 +19,15 @@
       "settingsAriaLabel": "Benutzereinstellungen öffnen"
     },
     "tabs": {
-      "allResources": "Alle Ressourcen",
-      "hostedSpaces": "Gehostete Spaces",
-      "virtualContributors": "Virtuelle Mitwirkende",
+      "resourcesHosted": "Gehostete Ressourcen",
       "leading": "Leitend",
       "memberOf": "Mitglied von"
     },
     "sections": {
-      "resourcesHosted": "Gehostete Ressourcen",
       "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtuelle Mitwirkende",
       "spacesLeading": "Geleitete Spaces",
-      "memberOf": "Mitglied von",
-      "totalBadge": "{{count}} insgesamt"
+      "memberOf": "Mitglied von"
     },
     "sidebar": {
       "aboutTitle": "Über",

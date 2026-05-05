@@ -127,6 +127,40 @@ export const MOCK_ALEX_RIVERA = {
       href: '/vc/policyscanner',
     },
   ] satisfies VirtualContributorCardItem[],
+  // Backend field: account.innovationPacks. UI label: "Template Packs".
+  hostedInnovationPacks: [
+    {
+      id: 'pack-circular-toolkit',
+      displayName: 'Circular Economy Toolkit',
+      description: 'Workshop templates and assessment frameworks for circular-economy programmes.',
+      href: '/innovation-packs/circular-toolkit',
+      avatarImageUrl: null,
+    },
+    {
+      id: 'pack-citizen-assemblies',
+      displayName: 'Citizen Assemblies',
+      description: 'Plug-and-play structure for running deliberative-democracy sessions.',
+      href: '/innovation-packs/citizen-assemblies',
+      avatarImageUrl: null,
+    },
+    {
+      id: 'pack-co-design-canvas',
+      displayName: 'Co-Design Canvas',
+      description: 'A printable canvas for facilitating multi-stakeholder co-design.',
+      href: '/innovation-packs/co-design-canvas',
+      avatarImageUrl: null,
+    },
+  ] satisfies SimpleResourceCardItem[],
+  // Backend field: account.innovationHubs. UI label: "Custom Homepages".
+  hostedInnovationHubs: [
+    {
+      id: 'hub-mobility-lab',
+      displayName: 'Mobility Lab',
+      description: 'Curated showcase of urban-mobility experiments across European cities.',
+      href: '/hub/mobility-lab',
+      avatarImageUrl: null,
+    },
+  ] satisfies SimpleResourceCardItem[],
   leadingSpaces: [
     {
       id: 'space-urban-green',

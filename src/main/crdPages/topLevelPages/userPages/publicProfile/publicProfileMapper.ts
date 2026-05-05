@@ -1,3 +1,4 @@
+import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -24,6 +25,14 @@ export type AccountResourcesShape =
         id: string;
         profile?: AccountResourceProfileLike;
       }>;
+      innovationPacks?: Array<{
+        id: string;
+        profile?: AccountResourceProfileLike;
+      }>;
+      innovationHubs?: Array<{
+        id: string;
+        profile?: AccountResourceProfileLike;
+      }>;
     }
   | null
   | undefined;
@@ -47,17 +56,38 @@ const formatLocation = (
 
 export type MapHostedSpacesResult = SpaceGridCardData[];
 
+const toSimpleResourceCard = (item: {
+  id: string;
+  profile?: AccountResourceProfileLike;
+}): SimpleResourceCardItem | null => {
+  if (!item.profile) return null;
+  return {
+    id: item.id,
+    displayName: item.profile.displayName,
+    description: item.profile.tagline ?? null,
+    href: item.profile.url,
+    avatarImageUrl: item.profile.avatar?.uri ?? null,
+  };
+};
+
 export const mapHostedSpacesToCardData = (
   accountResources: AccountResourcesShape,
   vcType: string
 ): {
   hostedSpaces: SpaceGridCardData[];
   hostedVirtualContributors: VirtualContributorCardItem[];
+  hostedInnovationPacks: SimpleResourceCardItem[];
+  hostedInnovationHubs: SimpleResourceCardItem[];
 } => {
-  // PROTOTYPE PARITY: innovation packs and innovation hubs are intentionally
-  // dropped from the User profile (FR-016). Only spaces and VCs are surfaced.
+  // FR-013 (refined): the User profile's Resources Hosted tab now surfaces
+  // four sub-sections — Spaces, Virtual Contributors, Template Packs
+  // (`account.innovationPacks`), and Custom Homepages (`account.innovationHubs`).
+  // The data was always in `useAccountResources`; the mapper just stopped
+  // dropping the latter two.
   const spacesIn = accountResources?.spaces ?? [];
   const vcsIn = accountResources?.virtualContributors ?? [];
+  const packsIn = accountResources?.innovationPacks ?? [];
+  const hubsIn = accountResources?.innovationHubs ?? [];
 
   const hostedSpaces: SpaceGridCardData[] = spacesIn
     .filter(s => Boolean(s.about?.profile))
@@ -84,7 +114,15 @@ export const mapHostedSpacesToCardData = (
       href: v.profile!.url,
     }));
 
-  return { hostedSpaces, hostedVirtualContributors };
+  const hostedInnovationPacks = packsIn
+    .map(toSimpleResourceCard)
+    .filter((card): card is SimpleResourceCardItem => card !== null);
+
+  const hostedInnovationHubs = hubsIn
+    .map(toSimpleResourceCard)
+    .filter((card): card is SimpleResourceCardItem => card !== null);
+
+  return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
 };
 
 export type LocationFormatLabels = {

@@ -19,19 +19,15 @@
       "settingsAriaLabel": "Отвори потребителските настройки"
     },
     "tabs": {
-      "allResources": "Всички ресурси",
-      "hostedSpaces": "Хоствани пространства",
-      "virtualContributors": "Виртуални сътрудници",
+      "resourcesHosted": "Хоствани ресурси",
       "leading": "Водещ",
       "memberOf": "Член на"
     },
     "sections": {
-      "resourcesHosted": "Хоствани ресурси",
       "spacesSubsection": "Пространства",
       "virtualContributorsSubsection": "Виртуални сътрудници",
       "spacesLeading": "Пространства, които водя",
-      "memberOf": "Член на",
-      "totalBadge": "{{count}} общо"
+      "memberOf": "Член на"
     },
     "sidebar": {
       "aboutTitle": "Относно",

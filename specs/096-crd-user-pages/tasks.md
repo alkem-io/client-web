@@ -246,6 +246,49 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 ---
 
+## Phase 9: User profile — 3-tab restructure + Template Packs / Custom Homepages (FR-013 / FR-016 — refinement)
+
+**Purpose**: Collapse the 5-tab User profile resource strip down to 3 tabs (Resources Hosted / Leading / Member of) and add the two missing hosted-resource sub-sections — **Template Packs** (`account.innovationPacks`) and **Custom Homepages** (`account.innovationHubs`). The data is already in `useAccountResources`; the original mapper just dropped the latter two on the assumption (now reversed — see spec.md FR-013 + Out of Scope replacement) that the prototype omitted them. The 5-tab design with two single-slice tabs (Hosted Spaces / Virtual Contributors) was a reasonable choice when Resources Hosted contained two sub-sections; with four sub-sections, splitting each into its own tab no longer scales, so the meta-view collapses to a single Resources Hosted tab and the slice-tabs go away.
+
+**Why a separate phase**: like Phase 8, the original spec's choice (5-tab strip, prototype-faithful resource list) was implemented and shipped before this refinement. The change touches the contract (`ResourceTabKey` shrinks from 5 → 3 elements; `PublicProfileResources` gains 2 fields), the mapper, the view, the i18n keys, and the demo data — grouping them in one phase makes the rollback boundary clean.
+
+- [ ] T069 Update the contract types in `src/crd/components/user/UserResourceTabStrip.tsx`: shrink `ResourceTabKey` to `'resourcesHosted' | 'leading' | 'memberOf'`. Update `useResourceTabs.ts` default to `'resourcesHosted'`.
+
+- [ ] T070 Refactor `src/crd/components/user/UserResourceSections.tsx`:
+  - Drop the `'allResources' | 'hostedSpaces' | 'virtualContributors'` switch branches.
+  - The Resources Hosted tab now renders FOUR sub-sections in order: Spaces → Virtual Contributors → Template Packs → Custom Homepages, each with its own `text-label` uppercase header. The parent "Resources Hosted" section header is suppressed (the tab label is the heading) — the entire section is a flat strip of sub-section blocks.
+  - Each sub-section is omitted entirely when its list is empty (FR-015) — no header, no empty caption per slot.
+  - Add new props `hostedInnovationPacks: SimpleResourceCardItem[]` and `hostedInnovationHubs: SimpleResourceCardItem[]`. Reuse the `SimpleResourceCardItem` type from `@/crd/components/organization/OrganizationResourceSections`.
+  - Add new label fields: `templatePacks` (reused from `common.innovation-packs`), `customHomepages` (reused from `common.customHomepages`).
+  - Drop label fields: `resourcesHosted`, `totalBadge` (the parent header + total badge are gone).
+  - Render Template Packs sub-section with the lucide `Package` icon next to the header; render Custom Homepages with `LayoutDashboard`. Both use the same card visual treatment as the existing Virtual Contributors sub-section (icon-tile + name + description).
+
+- [ ] T071 Update `src/main/crdPages/topLevelPages/userPages/publicProfile/publicProfileMapper.ts`:
+  - In `mapHostedSpacesToCardData` (or its successor), include `hostedInnovationPacks` and `hostedInnovationHubs` in the returned shape, mapping from `accountResources.innovationPacks` and `accountResources.innovationHubs` (each entry → `{ id, displayName: profile.displayName, description: profile.tagline ?? null, href: profile.url, avatarImageUrl: profile.avatar?.uri ?? null }`).
+  - Update any call site in `CrdUserProfilePage.tsx` to forward the two new fields to the view.
+
+- [ ] T072 Update `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx`:
+  - Tab definitions array drops the two removed entries; default active tab is `'resourcesHosted'`.
+  - Wire the two new `hostedInnovationPacks` / `hostedInnovationHubs` props from the mapper through to `UserResourceSections`.
+  - Drop the `totalBadge` and `resourcesHosted` label values.
+
+- [ ] T073 i18n updates in `src/crd/i18n/profilePages/profilePages.<lang>.json` (all 6 languages):
+  - Drop `userProfile.tabs.hostedSpaces` and `userProfile.tabs.virtualContributors`.
+  - Rename `userProfile.tabs.allResources` → `userProfile.tabs.resourcesHosted` (English label "Resources Hosted").
+  - Drop `userProfile.sections.resourcesHosted` and `userProfile.sections.totalBadge` (parent header + badge are gone).
+  - Add label reuses (FR-102) — these are NOT new CRD-namespace keys. The mapper resolves them from the global `translation` namespace and forwards via the `labels` arg:
+    - `templatePacks` ← `common.innovation-packs` (English: "Template Packs")
+    - `customHomepages` ← `common.customHomepages` (English: "Custom Homepages")
+  - Document the reuse in a comment in `publicProfileMapper.ts`.
+
+- [ ] T074 Demo data + pages:
+  - `src/crd/app/data/profiles.ts` — add 2-3 mock Template Packs and 1-2 mock Custom Homepages to `MOCK_ALEX_RIVERA` (and inherited by `MOCK_ME_USER`). Shape: `SimpleResourceCardItem`.
+  - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'resourcesHosted'`.
+
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs, Resources Hosted active by default, all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, and an empty Leading tab still showing the empty-state caption.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
