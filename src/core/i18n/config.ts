@@ -147,6 +147,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/whiteboard/whiteboard.de.json'),
     fr: () => import('@/crd/i18n/whiteboard/whiteboard.fr.json'),
   },
+  'crd-profilePages': {
+    en: () => import('@/crd/i18n/profilePages/profilePages.en.json'),
+    es: () => import('@/crd/i18n/profilePages/profilePages.es.json'),
+    nl: () => import('@/crd/i18n/profilePages/profilePages.nl.json'),
+    bg: () => import('@/crd/i18n/profilePages/profilePages.bg.json'),
+    de: () => import('@/crd/i18n/profilePages/profilePages.de.json'),
+    fr: () => import('@/crd/i18n/profilePages/profilePages.fr.json'),
+  },
 };
 
 // Cache for loaded translations

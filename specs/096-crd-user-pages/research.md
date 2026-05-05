@@ -88,21 +88,22 @@ The presentational `VCBodyOfKnowledgeSection` component switches on `kind` and r
 
 **Question**: The User profile uses `useSendMessageToUsersMutation`. The Organization profile's current MUI `OrganizationPageBanner` calls a similar `onSendMessage` callback. What mutation is that and how does CRD wire it?
 
-**Investigation**:
-- `OrganizationPageBanner` receives `onSendMessage` as a prop. Tracing back through `useOrganizationProvider`, the mutation is the same `useSendMessageToUsersMutation` — but the recipient list is `[organization.id]` (organizations are Communication Contributors; users can message them via the same mutation).
+**Investigation** (corrected vs. earlier draft — see §14 below):
+- `OrganizationPageBanner` receives `onSendMessage` as a prop. Tracing back through `useOrganizationProvider().handleSendMessage` (`src/domain/community/organization/useOrganization/useOrganization.ts:129-139`), the mutation is **`useSendMessageToOrganizationMutation`** — NOT `useSendMessageToUsersMutation`. Input shape is `{ messageData: { message, organizationId } }` — different from the User-side `{ messageData: { message, receiverIds: [userId] } }`. An earlier draft of this section claimed both verticals used the same mutation; that was wrong.
 
-**Decision**: **One shared CRD `useSendMessageHandler` helper, parameterized by recipient ID.** Both the User and Organization integration layers consume the same wrapped hook; the mapper passes the recipient ID (user ID or org ID) to the helper. The presentational hero components (`UserPageHero` and `OrganizationPageHero`) receive a uniform `onSendMessage(text: string): Promise<void>` callback prop.
+**Decision**: **Two integration helpers, one recipient-agnostic UI primitive.** The User and Organization integration layers each have a dedicated handler (`useSendMessageToUserHandler` / `useSendMessageToOrganizationHandler`) that wraps its own GraphQL mutation. Both helpers expose the **same `(text: string) => Promise<void>` API**, so the presentational `MessagePopover` (and the heroes that use it) stay recipient-agnostic — the popover doesn't know whether the message is going to a user or an organization, only that it has a "send" callback. Visually and behaviorally, the surface is identical for both recipient types.
 
 **Rationale**:
-- Avoids two near-identical wrappers (`useSendUserMessageHandler` and `useSendOrgMessageHandler`).
-- The mutation contract (`{ message, receiverIds: [...] }`) is identical regardless of recipient type.
-- The presentational layer is recipient-agnostic — it just calls `onSendMessage(text)`.
+- The two GraphQL mutations have **different input shapes** (`receiverIds: string[]` vs. `organizationId: string`); they are not interchangeable. A single shared helper would have to either (a) branch internally on recipient type, conflating two GraphQL operations into one wrapper, or (b) silently fail at runtime on Org. Two helpers keeps each thin and matches the GraphQL contract.
+- The presentational layer is still recipient-agnostic — it just calls `onSendMessage(text)`. Two helpers with identical *external* APIs satisfy the DRY principle from the consumer's point of view; the implementation difference is invisible to the popover.
+- Both helpers track `sending` and `error` state identically and expose the same return shape (`SendMessageHandlerResult`).
 
 **Alternatives considered**:
-- Two separate handler hooks. **Rejected** — DRY violation; only differing input is `receiverIds`.
+- One shared helper parameterized by recipient kind (`'user' | 'organization'`) that branches internally. **Rejected** — two mutations with two input shapes don't naturally fit one wrapper; the branching would be invisible to grep and a future maintainer would have to read the handler body to know which mutation fires for which recipient. Two named helpers are clearer.
+- Pre-compute a single envelope-shaped variable + use one mutation. **Impossible** — the mutations have different operation names server-side.
 - Build a recipient-list selector into the hero. **Rejected** — couples the hero to multi-recipient semantics that aren't needed here.
 
-**Implementation note**: The shared helper lives at `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` — under a new `topLevelPages/common/` integration-layer folder that mirrors the cross-vertical `src/crd/components/common/` folder for presentational primitives. Both the User and the Organization integration layers import the helper from `common/` so neither vertical cross-imports the other. (Earlier drafts of this plan placed the helper inside the User vertical; that introduced a one-off cross-vertical import which contradicted the rationale used to place `MessagePopover` in `common/`. The helper has been moved to keep the rationale consistent.)
+**Implementation note**: Both helpers live in **the same file** at `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` (named exports: `useSendMessageToUserHandler` and `useSendMessageToOrganizationHandler`) — under the cross-vertical `topLevelPages/common/` folder that mirrors `src/crd/components/common/` for presentational primitives. Both User and Organization integration layers import their respective helper from `common/` so neither vertical cross-imports the other. The shared `MessagePopover` in `src/crd/components/common/MessagePopover.tsx` consumes whichever helper the integration page wires in — the popover sees only `(text: string) => Promise<void>`.
 
 **Companion CRD primitive (Q2 decision):** the in-hero compose surface itself — `MessagePopover` — lives at `src/crd/components/common/MessagePopover.tsx`, NOT under `src/crd/components/user/`. This avoids a cross-vertical import from `OrganizationPageHero` into the User folder. Both heroes consume `MessagePopover` from `common/`; the popover is recipient-agnostic by design (its only callback is `onSendMessage(text: string): Promise<void>`). Visual divergence, if it ever appears, can be handled with a `variant` prop later — without further refactor.
 
@@ -245,6 +246,20 @@ and renders the same `SpaceCardHorizontal` for both private and public cases —
 
 ---
 
+## 14. Post-implementation corrections (F1 / F2 / F3 from the analyze pass)
+
+After Phase 5 implementation, three factual errors in the earlier drafts were caught and patched. They are recorded here so future re-runs of `/speckit.analyze` don't regress them.
+
+**F1 (CRITICAL — Org send-message mutation)**: The earlier draft of §5 incorrectly assumed Org Message reused `useSendMessageToUsersMutation` with `{ receiverIds: [orgId] }`. The actual MUI flow uses **`useSendMessageToOrganizationMutation` with `{ message, organizationId }`** — a different mutation with a different input shape. Resolution: split into two integration helpers, both exposing the same `(text) => Promise<void>` API. The shared `MessagePopover` UI primitive remains recipient-agnostic. See §5 above (now corrected) and FR-022.
+
+**F2 (HIGH — Org sidebar social links)**: The earlier draft of FR-023 listed only four sidebar sections (Bio / Tagsets / References / Associates) and described References as "links from `profile.references[]`", which silently dropped the social-network references that current MUI `OrganizationProfileView` renders via `<SocialLinks>`. Spec/contracts/data-model claimed parity restyle but actually lost UI. Resolution: References split via `isSocialNetworkSupported`; non-social rendered as link list, social rendered in a new fifth sidebar sub-block "Social" using a generic `Link2` glyph (lucide brand icons no longer ship). FR-023 expanded to five sections.
+
+**F3 (HIGH — VC right column parity claim)**: The earlier draft of FR-034 claimed "exact parity with current MUI `VCProfileContentView`" rendering "model card details (`aiEngine`, `prompts`, `dataPrivacy`) and social links." Inspection of `src/domain/community/virtualContributor/vcProfilePage/VCProfileContentView.tsx` shows the MUI version (a) renders **hard-coded placeholder data** from `useTemporaryHardCodedVCProfilePageData(modelCard)` with an explicit `// REMOVE when data is fetched from server` TODO, and (b) does NOT display social references at all. "Exact parity" was therefore impossible. Resolution: re-framed as a **modernization** — CRD content view renders real `modelCard.aiEngine` data from GraphQL and surfaces social references with a generic `Link2` glyph. The MUI's hard-coded `functionality` and `monitoring` blocks are out of scope and not ported.
+
+**Brand-icon caveat**: A separate finding surfaced during implementation: `lucide-react` no longer exports brand icons (`Linkedin` / `Github` / `Twitter` / `Youtube`) — they were removed from the package due to trademark considerations. Both Org `Social` (FR-023) and VC content view social links (FR-034) fall back to a generic `Link2` icon with platform identity in `aria-label`. A future enhancement may introduce a dedicated CRD primitive with exact-fidelity brand SVGs if product asks.
+
+---
+
 ## Summary
 
-All NEEDS CLARIFICATION items are resolved. No GraphQL schema change. One new runtime dependency (the new shared CRD primitive `CompactContributorCard` at `src/crd/components/common/`). One new CRD i18n namespace (`crd-profilePages`) shared across all three actor pages. The migration is a presentation-layer port plus one shared primitive plus one architectural pattern (the BoK discriminated-union resolver for VC profiles). Phase 1 (`data-model.md`, `contracts/`, `quickstart.md`) follows.
+All NEEDS CLARIFICATION items are resolved. Three post-implementation corrections (F1 / F2 / F3) are recorded in §14 above and reflected in spec.md / plan.md / data-model.md / contracts/. No GraphQL schema change. One new runtime dependency (the new shared CRD primitive `CompactContributorCard` at `src/crd/components/common/`). One new CRD i18n namespace (`crd-profilePages`) shared across all three actor pages. The migration is a presentation-layer port plus one shared primitive plus one architectural pattern (the BoK discriminated-union resolver for VC profiles). Phase 1 (`data-model.md`, `contracts/`, `quickstart.md`) follows.

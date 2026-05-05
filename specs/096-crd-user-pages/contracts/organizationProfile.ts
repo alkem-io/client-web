@@ -90,13 +90,39 @@ export type AssociatesView = {
   canReadUsers: boolean;
 };
 
+/**
+ * Social-network reference (F2 — Org sidebar parity port of MUI `<SocialLinks>`).
+ *
+ * `lucide-react` no longer ships brand icons (LinkedIn / GitHub / Twitter /
+ * YouTube) — they were removed in recent versions due to trademark concerns.
+ * The view falls back to a generic `Link2` glyph and conveys platform identity
+ * via `aria-label` (the platform name) and the link target. A future
+ * enhancement may introduce a dedicated CRD primitive with exact-fidelity
+ * brand SVGs if product asks.
+ */
+export type SocialReferenceItem = {
+  id: string;
+  name: string;
+  uri: string;
+  brand: 'linkedin' | 'twitter' | 'github' | 'youtube' | 'generic';
+};
+
 export type OrganizationProfileSidebarProps = {
   /** Markdown bio. Rendered via the existing CRD `MarkdownContent`. */
   bio: string | null;
-  /** Keywords + Capabilities tagsets. Empty array hides the section. */
+  /**
+   * Keywords + Capabilities tagsets. Empty per-tagset arrays are dropped by
+   * the mapper before reaching the view; the section is hidden only when ALL
+   * tagsets are empty (matches MUI `OrganizationProfileView` per-tagset filter).
+   */
   tagsets: TagsetGroup[];
-  /** Free-form references. Empty array hides the section. */
+  /** Non-social references — filtered via `isSocialNetworkSupported`. Empty array hides the section. */
   references: ReferenceLink[];
+  /**
+   * Social-network references — parity port of MUI `OrganizationProfileView`'s
+   * `<SocialLinks>` block (F2 fix). Empty array hides the section.
+   */
+  socialReferences: SocialReferenceItem[];
   /**
    * Associates section — always populated. The internal `canReadUsers` flag
    * drives the view's grid-vs-sign-in-CTA branch (parity with current MUI
@@ -116,6 +142,8 @@ export type OrganizationProfileSidebarProps = {
     associatesShowMore: string;
     /** Parity reuse — i18n key `associates-view.less`. */
     associatesShowLess: string;
+    /** Title for the Social sub-section (e.g., "Social"). Hidden when no social refs. */
+    socialLinksTitle: string;
   };
 };
 

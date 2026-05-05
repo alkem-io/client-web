@@ -77,28 +77,40 @@ export type UseUserPageRouteContext = () => {
   loading: boolean;
 };
 
-/* ---------------------- useSendMessageHandler (shared) ------------------- */
+/* ---------------------- send-message handlers (split per recipient — F1) - */
 
 /**
- * Shared hook used by the User AND Organization profile heroes (research §5).
- * Wraps `useSendMessageToUsersMutation` with the recipient ID baked in, so
- * the presentational hero only deals with `(messageText) => Promise<void>`.
+ * F1 correction (vs. earlier draft): User and Organization use DIFFERENT
+ * GraphQL mutations with different input shapes:
+ *   - User → `useSendMessageToUsersMutation` with `{ message, receiverIds: [userId] }`
+ *   - Organization → `useSendMessageToOrganizationMutation` with `{ message, organizationId }`
  *
- * Implementation lives at:
+ * The earlier draft assumed both verticals could share one wrapper around
+ * `useSendMessageToUsersMutation`; that was wrong (the operation names and
+ * input shapes diverge). The implementation provides two named helpers, both
+ * exposing the same external API, so the shared `MessagePopover` UI primitive
+ * stays recipient-agnostic.
+ *
+ * Both helpers live at:
  *   src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts
  *
- * Placed under `topLevelPages/common/` (not inside the User vertical) so neither
- * the User nor the Organization integration cross-imports the other — same
- * rationale as the `MessagePopover` placement under `src/crd/components/common/`
- * (research §5).
+ * Placed under `topLevelPages/common/` (not inside either vertical) so neither
+ * vertical cross-imports the other — same rationale as the `MessagePopover`
+ * placement under `src/crd/components/common/` (research §5).
  */
-export type UseSendMessageHandler = (params: {
-  recipientId: string | undefined;
-}) => {
+export type SendMessageHandlerResult = {
   onSendMessage: (messageText: string) => Promise<void>;
   sending: boolean;
   error: string | null;
 };
+
+export type UseSendMessageToUserHandler = (params: {
+  recipientUserId: string | undefined;
+}) => SendMessageHandlerResult;
+
+export type UseSendMessageToOrganizationHandler = (params: {
+  recipientOrganizationId: string | undefined;
+}) => SendMessageHandlerResult;
 
 /* -------------------- Per-page integration page shape ------------------- */
 

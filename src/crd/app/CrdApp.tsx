@@ -19,9 +19,13 @@ import {
   MOCK_PENDING_VC_INVITATIONS,
 } from './data/dashboard';
 import { DashboardPage } from './pages/DashboardPage';
+import { OrganizationProfileDemoPage } from './pages/OrganizationProfileDemoPage';
 import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
 import { SubspacePage } from './pages/SubspacePage';
+import { UserProfileOtherDemoPage } from './pages/UserProfileOtherDemoPage';
+import { UserProfileSelfDemoPage } from './pages/UserProfileSelfDemoPage';
+import { VCProfileDemoPage } from './pages/VCProfileDemoPage';
 import { WhiteboardPage } from './pages/WhiteboardPage';
 
 const MOCK_USER = {
@@ -101,6 +105,10 @@ export function CrdApp() {
           <Route path="/space/:spaceSlug" element={<SpacePage />} />
           <Route path="/space/:spaceSlug/challenges/:subspaceSlug" element={<SubspacePage />} />
           <Route path="/whiteboard" element={<WhiteboardPage />} />
+          <Route path="/user/me" element={<UserProfileSelfDemoPage />} />
+          <Route path="/user/alex-rivera" element={<UserProfileOtherDemoPage />} />
+          <Route path="/organization/alkemio" element={<OrganizationProfileDemoPage />} />
+          <Route path="/vc/datasynth-bot" element={<VCProfileDemoPage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>

@@ -161,17 +161,32 @@ export type VCBodyOfKnowledgeSectionProps = {
 
 /* ----------------------------- VCContentView ----------------------------- */
 
+/**
+ * F3 correction (vs. earlier draft):
+ *
+ * The earlier draft listed `prompts.persona`, `prompts.constraints`, and
+ * `dataPrivacy.summary` — none of those fields exist on the GraphQL
+ * `VirtualContributorModelCard` type. The MUI `VCProfileContentView` works
+ * around this by rendering hard-coded placeholder data via
+ * `useTemporaryHardCodedVCProfilePageData(modelCard)` (with a TODO comment in
+ * the MUI source: `// REMOVE when data is fetched from server`).
+ *
+ * The CRD content view modernizes rather than parity-restyles: it renders the
+ * **real** `aiEngine.*` fields that DO exist on the GraphQL model card. The
+ * MUI's hard-coded `functionality` and `monitoring` blocks are out of scope
+ * (re-rendering placeholder data in CRD would entrench tech debt).
+ */
 export type ModelCardSummary = {
   aiEngine: {
-    name: string;                        // e.g., "OpenAI Assistant", "External"
+    name: string;                        // engine identifier (e.g., 'openai-assistant', 'external')
     isExternal: boolean;
+    hostingLocation: string;             // free-form provenance string
+    isUsingOpenWeightsModel: boolean;
+    canAccessWebWhenAnswering: boolean;
+    additionalTechnicalDetails: string | null;
   };
-  prompts: {
-    persona: string | null;
-    constraints: string | null;
-  };
-  dataPrivacy: {
-    summary: string | null;
+  monitoring: {
+    isUsageMonitoredByAlkemio: boolean;
   };
 };
 
@@ -186,14 +201,16 @@ export type VCContentViewProps = {
   modelCard: ModelCardSummary;
   /** Filtered to the "social" group of references via `isSocialNetworkSupported`. */
   socialReferences: SocialReferenceItem[];
-  /** i18n-resolved labels. */
+  /**
+   * F3 correction: prompts/dataPrivacy labels removed (the corresponding
+   * `ModelCardSummary` fields no longer exist — see the F3 note above the
+   * `ModelCardSummary` type).
+   */
   labels: {
     modelCardTitle: string;
     aiEngineLabel: string;
-    promptsLabel: string;
-    promptsPersonaLabel: string;
-    promptsConstraintsLabel: string;
-    dataPrivacyLabel: string;
+    /** Suffix shown after the engine name when `isExternal === true` (e.g., "External"). */
+    aiEngineExternal: string;
     socialLinksTitle: string;
     socialLinksEmpty: string;
   };

@@ -1,0 +1,101 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Escribe un mensaje…",
+      "send": "Enviar",
+      "cancel": "Cancelar",
+      "sending": "Enviando…",
+      "errorTitle": "No se pudo enviar el mensaje",
+      "ariaLabel": "Redactar mensaje"
+    }
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración de usuario",
+      "messageButton": "Mensaje",
+      "settingsAriaLabel": "Abrir configuración de usuario"
+    },
+    "tabs": {
+      "allResources": "Todos los recursos",
+      "hostedSpaces": "Espacios alojados",
+      "virtualContributors": "Colaboradores virtuales",
+      "leading": "Liderando",
+      "memberOf": "Miembro de"
+    },
+    "sections": {
+      "resourcesHosted": "Recursos alojados",
+      "spacesSubsection": "Espacios",
+      "virtualContributorsSubsection": "Colaboradores virtuales",
+      "spacesLeading": "Espacios liderando",
+      "memberOf": "Miembro de",
+      "totalBadge": "{{count}} en total"
+    },
+    "sidebar": {
+      "aboutTitle": "Acerca de",
+      "organizationsTitle": "Organizaciones",
+      "emptyBio": "Aún no hay biografía.",
+      "emptyOrganizations": "Aún no forma parte de ninguna organización.",
+      "memberCountLine_one": "{{count}} miembro",
+      "memberCountLine_other": "{{count}} miembros"
+    },
+    "empty": {
+      "leading": "Aún no lidera ningún espacio.",
+      "membership": "Aún sin afiliaciones."
+    },
+    "vcType": "Colaborador virtual"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración de la organización",
+      "settingsAriaLabel": "Abrir configuración de la organización",
+      "messageButton": "Mensaje",
+      "verifiedBadge": "Verificada",
+      "verifiedTooltip": "Esta organización ha sido verificada por Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Biografía",
+      "bioEmpty": "Aún no hay biografía.",
+      "tagsetKeywords": "Palabras clave",
+      "tagsetCapabilities": "Capacidades",
+      "referencesTitle": "Enlaces",
+      "referencesEmpty": "Aún no hay enlaces.",
+      "associatesTitle": "Asociados",
+      "associatesCount_one": "{{count}} asociado",
+      "associatesCount_other": "{{count}} asociados",
+      "socialLinksTitle": "Social"
+    },
+    "rightColumn": {
+      "accountResourcesTitle": "Recursos de la cuenta",
+      "accountResourcesSpacesSubtitle": "Espacios",
+      "accountResourcesInnovationPacksSubtitle": "Innovation Packs",
+      "accountResourcesInnovationHubsSubtitle": "Páginas de inicio",
+      "leadSpacesTitle": "Espacios liderando",
+      "memberOfTitle": "Todas las afiliaciones"
+    }
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración del colaborador virtual",
+      "settingsAriaLabel": "Abrir configuración del colaborador virtual"
+    },
+    "sidebar": {
+      "descriptionTitle": "Descripción",
+      "hostTitle": "Anfitrión",
+      "hostEmpty": "Sin anfitrión."
+    },
+    "contentView": {
+      "modelCardTitle": "Ficha del modelo",
+      "aiEngineLabel": "Motor de IA",
+      "aiEngineExternal": "Externo",
+      "promptsLabel": "Prompts",
+      "promptsPersonaLabel": "Persona",
+      "promptsConstraintsLabel": "Restricciones",
+      "dataPrivacyLabel": "Privacidad de datos",
+      "socialLinksTitle": "Redes sociales",
+      "socialLinksEmpty": "Sin enlaces sociales."
+    }
+  }
+}

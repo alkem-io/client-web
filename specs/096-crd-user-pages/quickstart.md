@@ -148,6 +148,27 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 
 ---
 
+## Standalone preview demo pages (no backend required)
+
+For design-iteration without the full Alkemio backend, the standalone CRD preview app surfaces all four profile compositions with plain mock data:
+
+```bash
+pnpm crd:dev    # http://localhost:5200
+```
+
+Routes:
+
+| URL | What it shows |
+|---|---|
+| `/user/me` | Self-view: Settings icon visible, Message button hidden. |
+| `/user/alex-rivera` | Other-user view (mock data from the prototype): Message button visible, Settings hidden. Pressing Send waits 500 ms before resolving — exercises the `aria-busy` state. |
+| `/organization/alkemio` | Org profile: Verified badge, Message popover, 14 associates (exercises 12-cap "Show more / less"), 4 spaces + 2 innovation packs + 1 hub (exercises Account Resources 6-cap "Show all"). |
+| `/vc/datasynth-bot` | VC profile: NO Message button, Body-of-Knowledge in the `space` variant, model card + social links right column. |
+
+All four pages are wired in `src/crd/app/CrdApp.tsx` with mock data from `src/crd/app/data/profiles.ts`. No Apollo, no GraphQL, no backend.
+
+---
+
 ## Useful commands
 
 ```bash
@@ -164,6 +185,9 @@ pnpm vitest run src/main/crdPages/topLevelPages/vcPages/publicProfile/vcProfileM
 
 # Bundle analysis
 pnpm analyze            # outputs build/stats.html
+
+# Standalone preview app — design iteration on profile pages with mock data
+pnpm crd:dev            # http://localhost:5200 (see "Standalone preview" section above)
 
 # i18n key parity check (suggestion — wire in the test referenced in research §9)
 pnpm vitest run src/crd/i18n/profilePages/__tests__/keyParity.test.ts

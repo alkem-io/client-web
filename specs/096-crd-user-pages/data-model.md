@@ -155,8 +155,9 @@ type OrganizationPublicProfile = {
   };
   sidebar: {
     bio: string | null;                    // markdown
-    tagsets: TagsetGroup[];                // Keywords + Capabilities (FR-023)
-    references: ReferenceLink[];           // profile.references[]
+    tagsets: TagsetGroup[];                // Keywords + Capabilities — empty tagsets dropped per-entry (FR-023)
+    references: ReferenceLink[];           // non-social references only — filtered via isSocialNetworkSupported
+    socialReferences: SocialReferenceItem[]; // social-network references — parity port of MUI <SocialLinks>; F2 fix
     // Always populated. The `canReadUsers` flag inside drives the view's
     // grid-vs-sign-in-CTA branch (parity with MUI `AssociatesView`). The
     // section header is always rendered.
@@ -317,16 +318,21 @@ type VCContentView = {
 };
 
 type ModelCardSummary = {
+  // F3 correction: the original draft listed `prompts.persona`, `prompts.constraints`,
+  // `dataPrivacy.summary` — none of those fields exist on the GraphQL `VirtualContributorModelCard`
+  // type. The fields that DO exist (and are therefore renderable) are the `aiEngine.*` set below
+  // plus `monitoring.isUsageMonitoredByAlkemio`. The CRD content view renders the real aiEngine
+  // fields; the prompts/dataPrivacy fields from the earlier draft are dropped from the contract.
   aiEngine: {
-    name: string;                          // e.g., "OpenAI Assistant", "External"
+    name: string;                          // engine identifier (e.g., 'openai-assistant', 'external')
     isExternal: boolean;
+    hostingLocation: string;               // free-form provenance string from the model card
+    isUsingOpenWeightsModel: boolean;
+    canAccessWebWhenAnswering: boolean;
+    additionalTechnicalDetails: string | null;
   };
-  prompts: {
-    persona: string | null;
-    constraints: string | null;
-  };
-  dataPrivacy: {
-    summary: string | null;
+  monitoring: {
+    isUsageMonitoredByAlkemio: boolean;
   };
 };
 
@@ -439,6 +445,11 @@ query other error ──▶ propagate to the global ErrorBoundary (Q4 — no cus
 
 - **Slug → entity resolution**: each page resolves its actor entity via the existing facade hook (`useUserProvider` / `useOrganizationProvider` / `useUrlResolver` for VC); the same entity feeds the hero, sidebar, and main column in the same render cycle.
 - **`canEditSettings`** (User profile only) is computed via `useCanEditSettings()` from the `useUserPageRouteContext` user id + the current viewer's `hasPlatformPrivilege(PlatformAdmin)` — exactly the same predicate the sibling settings spec 097 uses (FR-008a). The User profile uses it to decide whether to render the Settings (gear) icon button. Organization and VC use their own per-entity predicates (`canEdit`, `Update` privilege respectively) — they do NOT share `useCanEditSettings`.
-- **Send-message mutation**: the User and Organization heroes share one wrapped helper hook (`useSendMessageHandler`, located at `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts`) that calls the same `useSendMessageToUsersMutation` against different recipient IDs. The presentational hero components are recipient-agnostic — they only call `onSendMessage(text)`. The VC hero does NOT have a Message button (FR-030).
+- **Send-message mutation**: User and Organization use **different** GraphQL mutations with different input shapes:
+  - User: `useSendMessageToUsersMutation` with `{ messageData: { message, receiverIds: [userId] } }`.
+  - Organization: `useSendMessageToOrganizationMutation` with `{ messageData: { message, organizationId } }`.
+
+  Both mutations are wrapped behind two integration helpers (`useSendMessageToUserHandler` and `useSendMessageToOrganizationHandler`) co-located in `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts`. Both helpers expose the same `(text: string) => Promise<void>` API plus `sending` / `error` state, so the presentational `MessagePopover` and the heroes that use it stay recipient-agnostic. The VC hero does NOT have a Message button (FR-030).
+  Earlier drafts of this document said a single `useSendMessageHandler` covered both verticals — that was incorrect; the mutations have different input shapes and cannot share one wrapper.
 - **No mutations against the entity itself** are fired from any of the three public profile pages; the only mutations are `sendMessageToUsers` (User + Organization). VC is fully read-only. None of these mutations affect the entity document, so no refetch is required after sending a message.
 - **Bundle isolation**: each `CrdXxxProfilePage` is its own React.lazy chunk. The shared `CompactContributorCard` primitive lives in the small `crd-common` chunk that's already shared across CRD pages. The new i18n namespace `crd-profilePages` is lazy-loaded.
