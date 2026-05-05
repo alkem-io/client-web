@@ -36,6 +36,7 @@
     "sidebar": {
       "aboutTitle": "Over",
       "organizationsTitle": "Organisaties",
+      "socialLinksTitle": "Sociaal",
       "emptyBio": "Nog geen bio.",
       "emptyOrganizations": "Nog geen lid van een organisatie.",
       "memberCountLine_one": "{{count}} lid",

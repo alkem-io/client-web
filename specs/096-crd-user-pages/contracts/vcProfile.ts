@@ -23,11 +23,6 @@ import type { ReferenceLink } from './organizationProfile';
 /* ----------------------------- VCPageHero -------------------------------- */
 
 export type VCPageHeroProps = {
-  /**
-   * Banner image. When `null` the component renders a deterministic gradient
-   * computed via `pickColorFromId(vcId)` (FR-030).
-   */
-  bannerImageUrl: string | null;
   avatarImageUrl: string | null;
   displayName: string;
   /**
@@ -190,17 +185,19 @@ export type ModelCardSummary = {
   };
 };
 
-export type SocialReferenceItem = {
-  id: string;
-  name: string;                          // 'LinkedIn' | 'Bluesky' | 'GitHub' | 'X' | …
-  uri: string;
-  brand: 'linkedin' | 'bluesky' | 'github' | 'x' | 'generic';
-};
+// SocialReferenceItem has been removed — social-link rendering and the
+// social/non-social split now live entirely inside the shared CRD `SocialLinks`
+// primitive at `src/crd/components/common/SocialLinks.tsx`. See the matching
+// note in `organizationProfile.ts`.
 
 export type VCContentViewProps = {
   modelCard: ModelCardSummary;
-  /** Filtered to the "social" group of references via `isSocialNetworkSupported`. */
-  socialReferences: SocialReferenceItem[];
+  /**
+   * ALL references — passed straight to `<SocialLinks references={refs} />`,
+   * which filters internally to the social subset and brand-resolves the icon.
+   * Same one-source-of-truth contract used on the Organization sidebar.
+   */
+  references: ReferenceLink[];
   /**
    * F3 correction: prompts/dataPrivacy labels removed (the corresponding
    * `ModelCardSummary` fields no longer exist — see the F3 note above the

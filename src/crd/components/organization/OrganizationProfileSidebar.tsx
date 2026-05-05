@@ -1,6 +1,6 @@
-import { Globe, Link2 } from 'lucide-react';
 import { useState } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -30,21 +30,17 @@ export type AssociatesView = {
   canReadUsers: boolean;
 };
 
-export type SocialReferenceItem = {
-  id: string;
-  name: string;
-  uri: string;
-  brand: 'linkedin' | 'twitter' | 'github' | 'youtube' | 'generic';
-};
-
 export type OrganizationProfileSidebarProps = {
   bio: string | null;
   /** Tagsets are filtered per-entry — empty arrays are dropped before reaching the view. */
   tagsets: TagsetGroup[];
-  /** Non-social references only. */
+  /**
+   * ALL references (social + non-social). The view splits internally:
+   *   • References section uses `excludeSocialReferences(references)`.
+   *   • Social section passes `references` to `<SocialLinks>`, which filters
+   *     and brand-resolves itself.
+   */
   references: ReferenceLink[];
-  /** Social references rendered with brand icons (parity port of MUI `SocialLinks`). */
-  socialReferences: SocialReferenceItem[];
   associates: AssociatesView;
   labels: {
     bioTitle: string;
@@ -69,22 +65,14 @@ const fallbackInitials = (name: string) =>
     .map(part => part[0]?.toUpperCase() ?? '')
     .join('') || '?';
 
-// `lucide-react` no longer ships brand icons (LinkedIn / GitHub / etc.) —
-// fall back to a generic Link / Globe glyph. The brand identity is conveyed
-// via `aria-label` and the link target. Brand-fidelity SVGs can be added
-// later as a dedicated CRD primitive if/when product asks.
-const brandIcon = (_brand: SocialReferenceItem['brand']) => {
-  return _brand === 'generic' ? Globe : Link2;
-};
-
 export function OrganizationProfileSidebar({
   bio,
   tagsets,
   references,
-  socialReferences,
   associates,
   labels,
 }: OrganizationProfileSidebarProps) {
+  const nonSocialReferences = excludeSocialReferences(references);
   return (
     <div className="space-y-8">
       <section>
@@ -113,11 +101,11 @@ export function OrganizationProfileSidebar({
 
       <section>
         <h2 className="text-section-title mb-4">{labels.referencesTitle}</h2>
-        {references.length === 0 ? (
+        {nonSocialReferences.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
           <ul className="space-y-2">
-            {references.map(ref => (
+            {nonSocialReferences.map(ref => (
               <li key={ref.id}>
                 <a
                   href={ref.uri}
@@ -134,27 +122,10 @@ export function OrganizationProfileSidebar({
         )}
       </section>
 
-      {socialReferences.length > 0 ? (
+      {hasSocialReferences(references) ? (
         <section>
           <h2 className="text-label uppercase text-muted-foreground mb-3">{labels.socialLinksTitle}</h2>
-          <div className="flex items-center gap-3 flex-wrap">
-            {socialReferences.map(s => {
-              const Icon = brandIcon(s.brand);
-              return (
-                <a
-                  key={s.id}
-                  href={s.uri}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={s.name}
-                  title={s.name}
-                >
-                  <Icon className="w-5 h-5" />
-                </a>
-              );
-            })}
-          </div>
+          <SocialLinks references={references} />
         </section>
       ) : null}
 

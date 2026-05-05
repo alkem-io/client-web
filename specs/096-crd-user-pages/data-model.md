@@ -45,7 +45,7 @@ The mapper for each page lives at `src/main/crdPages/topLevelPages/<vertical>/pu
 | Hook | File | Purpose |
 |---|---|---|
 | `useCurrentUserContext` | `src/domain/community/userCurrent/useCurrentUserContext.ts` | Current viewer identity + `hasPlatformPrivilege(...)` (used by `useCanEditSettings`) |
-| `pickColorFromId` | `src/crd/lib/pickColorFromId.ts` | Deterministic gradient generator for hero banner fallback |
+| `pickColorFromId` | `src/crd/lib/pickColorFromId.ts` | Deterministic accent-color generator (used by avatar fallback and space-card banner fallback; not used by profile heroes — they have no banner) |
 | `buildSettingsUrl` | `src/main/routing/urlBuilders.ts` | Builds the `/<entity>/<slug>/settings/...` URL for the gear icon (Org + VC use it; User uses a hardcoded path) |
 
 ---
@@ -61,7 +61,6 @@ type UserPublicProfile = {
   isOwn: boolean;                   // viewer is this user
   canEditSettings: boolean;         // owner OR platform admin (FR-008a / FR-011)
   hero: {
-    bannerImageUrl: string | null;  // null → render gradient via pickColorFromId(id)
     avatarImageUrl: string | null;
     displayName: string;
     location: string | null;        // "City, Country" — null if both empty
@@ -76,13 +75,23 @@ type UserPublicProfile = {
 
 ```ts
 type PublicProfileResources = {
-  hostedSpaces: SpaceCardItem[];          // user-hosted L0 spaces
-  hostedVirtualContributors: VCCardItem[]; // user-hosted VCs
-  // Innovation packs and innovation hubs are NOT included on the User profile
-  // (per prototype). `useAccountResources` returns them, but the User mapper
-  // intentionally drops them. See spec.md Out of Scope. Future spec can add.
-  spacesLeading: SpaceCardItem[];          // useFilteredMemberships(contributions, [Lead, Admin]) — current MUI parity
-  spacesMember: SpaceCardItem[];           // remaining memberships
+  hostedSpaces: SpaceCardItem[];                    // user-hosted L0 spaces
+  hostedVirtualContributors: VCCardItem[];          // user-hosted VCs
+  hostedInnovationPacks: SimpleResourceCardItem[];  // backend field: account.innovationPacks; UI label "Template Packs"
+  hostedInnovationHubs: SimpleResourceCardItem[];   // backend field: account.innovationHubs; UI label "Custom Homepages"
+  spacesLeading: SpaceCardItem[];                   // useFilteredMemberships(contributions, [Lead, Admin]) — current MUI parity
+  spacesMember: SpaceCardItem[];                    // remaining memberships
+};
+
+// Reused from `OrganizationResourceSections` (see Org-profile entity below).
+// Prop shape is identical across both pages: id, displayName, description,
+// avatarImageUrl, href.
+type SimpleResourceCardItem = {
+  id: string;
+  displayName: string;
+  description: string | null;
+  href: string;
+  avatarImageUrl: string | null;
 };
 
 type SpaceCardItem = {
@@ -122,17 +131,17 @@ type AssociatedOrganizationCard = {
 // One primitive renders three sites (User Orgs, Org Associates, VC Host).
 ```
 
-**Tab → section filter** (User profile, per the prototype `prototype/src/app/pages/UserProfilePage.tsx`):
+**Tab → section filter** (User profile — 3-tab layout per FR-013; default active tab is `Resources Hosted`):
 
 | Active tab | Sections rendered |
 |---|---|
-| `All Resources` | Resources Hosted (with "Spaces" + "Virtual Contributors" sub-sections) + Spaces Leading + Member of |
-| `Hosted Spaces` | Resources Hosted → Spaces sub-section only |
-| `Virtual Contributors` | Resources Hosted → Virtual Contributors sub-section only |
-| `Leading` | Spaces Leading only |
-| `Member Of` | Member of only |
+| `Resources Hosted` (default) | Four sub-sections in this order: **Spaces** → **Virtual Contributors** → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent "Resources Hosted" header suppressed; the tab label is the heading. Each sub-section uses a `text-label` uppercase header. |
+| `Leading` | Spaces Leading only; section header suppressed; empty-state caption when the list is empty. |
+| `Member Of` | Member of only; section header suppressed; empty-state caption when the list is empty. |
 
-A section is *omitted* (not rendered as an empty container) when its item list is empty (FR-015).
+A section (or sub-section) is *omitted* — no header, no empty caption per slot — when its item list is empty (FR-015). The exception is the Leading and Member of tabs, which render an empty-state caption when their list is empty (so the tab body is never blank).
+
+**Note (correction vs. earlier drafts):** the earlier 5-tab layout (`All Resources` / `Hosted Spaces` / `Virtual Contributors` / `Leading` / `Member of`) was dropped once Template Packs and Custom Homepages were added to the Resources Hosted group — five tabs with two of them being slices of a third did not scale. The "show everything stacked" meta-view (the old `All Resources` behaviour) is also gone; each tab now shows ONLY its own group.
 
 ---
 
@@ -146,7 +155,6 @@ type OrganizationPublicProfile = {
   canEdit: boolean;                        // useOrganizationProvider().permissions.canEdit (FR-021)
   canReadUsers: boolean;                   // useOrganizationProvider().permissions.canReadUsers — gates Associates section (FR-023)
   hero: {
-    bannerImageUrl: string | null;         // null → render gradient via pickColorFromId(id)
     avatarImageUrl: string | null;
     displayName: string;
     location: string | null;               // "City, Country" — null if both empty
@@ -156,8 +164,12 @@ type OrganizationPublicProfile = {
   sidebar: {
     bio: string | null;                    // markdown
     tagsets: TagsetGroup[];                // Keywords + Capabilities — empty tagsets dropped per-entry (FR-023)
-    references: ReferenceLink[];           // non-social references only — filtered via isSocialNetworkSupported
-    socialReferences: SocialReferenceItem[]; // social-network references — parity port of MUI <SocialLinks>; F2 fix
+    references: ReferenceLink[];           // ALL references — the view splits internally:
+                                           //   • References section uses excludeSocialReferences(refs)
+                                           //     from @/crd/components/common/SocialLinks
+                                           //   • Social section passes refs straight to <SocialLinks references={refs} />,
+                                           //     which filters via isSocialReference and brand-resolves itself.
+                                           // The mapper does NOT split; one source of truth.
     // Always populated. The `canReadUsers` flag inside drives the view's
     // grid-vs-sign-in-CTA branch (parity with MUI `AssociatesView`). The
     // section header is always rendered.
@@ -259,7 +271,6 @@ type VCPublicProfile = {
   slug: string;                            // nameID
   hasUpdatePrivilege: boolean;             // vc.authorization.myPrivileges includes Update (FR-031)
   hero: {
-    bannerImageUrl: string | null;         // null → render gradient via pickColorFromId(id)
     avatarImageUrl: string | null;
     displayName: string;
     settingsUrl: string | null;            // null → hide gear icon. Set to buildSettingsUrl(profile.url) when hasUpdatePrivilege (FR-031)
@@ -314,7 +325,9 @@ type SpaceProfileSummary = {
 
 type VCContentView = {
   modelCard: ModelCardSummary;             // existing VirtualContributorModelCardModel mapped to plain prop shape
-  socialReferences: SocialReferenceItem[]; // filtered via isSocialNetworkSupported (the "social" group)
+  references: ReferenceLink[];             // ALL references — passed straight to <SocialLinks references={refs} />,
+                                           // which filters internally. Same one-source-of-truth contract used on the
+                                           // Organization sidebar (see `OrganizationPublicProfile.sidebar.references`).
 };
 
 type ModelCardSummary = {
@@ -336,12 +349,17 @@ type ModelCardSummary = {
   };
 };
 
-type SocialReferenceItem = {
-  id: string;
-  name: string;                            // 'LinkedIn' | 'Bluesky' | 'GitHub' | 'X' | …
-  uri: string;
-  brand: 'linkedin' | 'bluesky' | 'github' | 'x' | 'generic';
-};
+// Note: the earlier draft of this document defined a `SocialReferenceItem`
+// shape with a `brand` discriminator that the mappers populated via a local
+// `brandFor(name)` helper. That has been dropped — brand resolution and the
+// social/non-social split now live entirely inside the shared `SocialLinks`
+// primitive at `src/crd/components/common/SocialLinks.tsx`. Consumers pass
+// raw `ReferenceLink[]` through; the primitive renders the social ones, and
+// the exported `excludeSocialReferences()` helper feeds the parallel
+// References sections on the Org and VC sidebars.
+//
+// Supported brands inside the primitive:
+//   website (globe) | linkedin | github | bsky | youtube | email | generic (fallback globe)
 ```
 
 ---
@@ -358,7 +376,7 @@ Apollo `loading` flags.
 
 | Region | Driving query / hook | `loading.*` key |
 |---|---|---|
-| Hero (banner / avatar / name / location), Bio | `useUserProvider` | `hero` |
+| Hero (avatar / name / location), Bio | `useUserProvider` | `hero` |
 | Sidebar Organizations list | `useUserOrganizationIds` (+ downstream lookup if any) — wrapper swallows `loading`; mapper derives it as `userId !== undefined && organizationIds === undefined` | `organizations` |
 | Resources Hosted (hosted spaces + hosted VCs) | `useUserAccountQuery` | `hostedResources` |
 | Spaces Leading + Member Of (driven by `useFilteredMemberships`) | `useUserContributions` — wrapper swallows `loading`; mapper derives it as `userId !== undefined && contributions === undefined` | `memberships` |
@@ -367,7 +385,7 @@ Apollo `loading` flags.
 
 | Region | Driving query / hook | `loading.*` key |
 |---|---|---|
-| Hero (banner / avatar / name / location / Verified badge) | `useOrganizationProvider` (single facade) | `hero` |
+| Hero (avatar / name / location / Verified badge) | `useOrganizationProvider` (single facade) | `hero` |
 | Sidebar (Bio / Tagsets / References / Associates) | `useOrganizationProvider` | `sidebar` |
 | Right column — Account Resources | `useOrganizationAccountQuery` + `useAccountResources` | `accountResources` |
 | Right column — Lead Spaces + All Memberships | `useFilteredMemberships(contributions, …)` (derives from `useOrganizationProvider`) | `memberships` |
@@ -423,7 +441,7 @@ pending ── mutation failure ──▶ popover stays open, inline error appea
 ### User profile resource tab strip
 
 ```
-mount ── default ──▶ activeTab = 'allResources'
+mount ── default ──▶ activeTab = 'resourcesHosted'
 click any tab ──▶ activeTab = clicked-tab-key (sections re-filter; no URL change)
 on smaller-than-md viewport ── activeTab change ──▶ active tab auto-scrolled into view
 ```

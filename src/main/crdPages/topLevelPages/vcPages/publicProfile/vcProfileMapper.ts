@@ -4,16 +4,15 @@ import {
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { CompactContributorCardItem } from '@/crd/components/common/CompactContributorCard';
-import type { ReferenceLink, SocialReferenceItem } from '@/crd/components/organization/OrganizationProfileSidebar';
+import type { ReferenceLink } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type {
   BodyOfKnowledge,
   SpaceProfileSummary,
 } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
 import type { ModelCardSummary } from '@/crd/components/virtualContributor/VCContentView';
 import type { VirtualContributorModelFull } from '@/domain/community/virtualContributor/model/VirtualContributorModelFull';
-import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
-import { splitReferences as orgSplit } from '../../organizationPages/publicProfile/organizationProfileMapper';
+import { normaliseReferences } from '../../organizationPages/publicProfile/organizationProfileMapper';
 
 export type BoKResolverInput = {
   vc: VirtualContributorModelFull | undefined;
@@ -80,20 +79,23 @@ export const resolveBodyOfKnowledge = (input: BoKResolverInput): BodyOfKnowledge
   return null;
 };
 
-export const splitVcReferences = (
-  references: VirtualContributorModelFull['profile']['references']
-): { other: ReferenceLink[]; social: SocialReferenceItem[] } => {
-  const refs = (references ?? []).map(r => ({
-    id: r.id,
-    name: r.name,
-    uri: r.uri,
-    description: r.description ?? null,
-  }));
-  const { other, social } = orgSplit(refs);
-  // Cross-actor parity with `isSocialNetworkSupported`.
-  void isSocialNetworkSupported;
-  return { other, social };
-};
+/**
+ * Pass-through normaliser for the VC's references. The social/non-social split
+ * (and brand-resolution for the social subset) lives entirely inside the
+ * shared `SocialLinks` primitive at `@/crd/components/common/SocialLinks` —
+ * the sidebar's References section uses `excludeSocialReferences(refs)` and
+ * the right-column Social Links section passes the raw refs straight to
+ * `<SocialLinks>`. No splitting in the mapper.
+ */
+export const mapVcReferences = (references: VirtualContributorModelFull['profile']['references']): ReferenceLink[] =>
+  normaliseReferences(
+    (references ?? []).map(r => ({
+      id: r.id,
+      name: r.name,
+      uri: r.uri,
+      description: r.description ?? null,
+    }))
+  );
 
 export const mapModelCardSummary = (
   vc: VirtualContributorModelFull | undefined,

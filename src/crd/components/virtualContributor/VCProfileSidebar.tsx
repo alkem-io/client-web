@@ -3,6 +3,7 @@ import {
   type CompactContributorCardItem,
 } from '@/crd/components/common/CompactContributorCard';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { excludeSocialReferences } from '@/crd/components/common/SocialLinks';
 import { VCBodyOfKnowledgeSection, type VCBodyOfKnowledgeSectionProps } from './VCBodyOfKnowledgeSection';
 
 export type ReferenceLink = {
@@ -16,7 +17,11 @@ export type VCProfileSidebarProps = {
   description: string | null;
   /** Provider compact card. `null` when the VC has no provider. */
   host: CompactContributorCardItem | null;
-  /** Non-social references only (filtered via `isSocialNetworkSupported`). */
+  /**
+   * ALL references (social + non-social). The view filters via
+   * `excludeSocialReferences` for the References section. Social links live
+   * in the right-column content view, not the sidebar.
+   */
   references: ReferenceLink[];
   bodyOfKnowledge: VCBodyOfKnowledgeSectionProps['bodyOfKnowledge'];
   labels: {
@@ -32,6 +37,7 @@ export type VCProfileSidebarProps = {
 };
 
 export function VCProfileSidebar({ description, host, references, bodyOfKnowledge, labels }: VCProfileSidebarProps) {
+  const nonSocialReferences = excludeSocialReferences(references);
   return (
     <div className="space-y-8">
       <section>
@@ -50,11 +56,11 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
 
       <section>
         <h2 className="text-section-title mb-3">{labels.referencesTitle}</h2>
-        {references.length === 0 ? (
+        {nonSocialReferences.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
           <ul className="space-y-2">
-            {references.map(ref => (
+            {nonSocialReferences.map(ref => (
               <li key={ref.id}>
                 <a
                   href={ref.uri}

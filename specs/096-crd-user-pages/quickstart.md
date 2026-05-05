@@ -49,7 +49,7 @@ The three public profile pages ship together with the seven User Settings tabs (
 3. **User profile** (User Story 1) — **prototype-driven redesign per `prototype/src/app/pages/UserProfilePage.tsx`** (NOT a parity restyle of current MUI).
    - `src/crd/components/common/MessagePopover.tsx` — shared recipient-agnostic compose surface (Q2 — placed in `common/` from day one; consumed by both User and Organization heroes).
    - `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` — shared cross-vertical integration helper (placed under `topLevelPages/common/` for symmetry with `MessagePopover`).
-   - `src/crd/components/user/UserPageHero.tsx` (banner / avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
+   - `src/crd/components/user/UserPageHero.tsx` (avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
    - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
    - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab; renders all items per prototype, no pagination).
    - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations; layout `lg:col-span-4 lg:sticky lg:top-24` per prototype, stacked above main column on smaller viewports — sidebar is **not** hidden).
@@ -61,7 +61,7 @@ The three public profile pages ship together with the seven User Settings tabs (
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdOrganizationRoutes` and the existing `OrganizationRoute`.
 
 5. **Organization profile** (User Story 2) — **parity restyle of current MUI** (`OrganizationPageView` + `AssociatesView`); no prototype.
-   - `src/crd/components/organization/OrganizationPageHero.tsx` (banner / avatar / name / location / Verified badge / Settings icon / Message Popover — consumes the shared `MessagePopover` from `src/crd/components/common/`, same primitive the User hero uses; no cross-vertical import per Q2).
+   - `src/crd/components/organization/OrganizationPageHero.tsx` (avatar / name / location / Verified badge / Settings icon / Message Popover — consumes the shared `MessagePopover` from `src/crd/components/common/`, same primitive the User hero uses; no cross-vertical import per Q2).
    - `src/crd/components/organization/OrganizationProfileSidebar.tsx` (Bio + Tagsets + References + Associates — Associates is a parity port of MUI `AssociatesView`: square avatar grid capped at 12 with "Show more / Show less" toggle; sign-in CTA when `canReadUsers === false`. Does NOT consume `CompactContributorCard`).
    - `src/crd/components/organization/OrganizationResourceSections.tsx` (Account Resources with `VISIBLE_SPACE_LIMIT = 6` + "Show all" parity, Lead Spaces, All Memberships — each as a CRD section card).
    - `src/crd/components/organization/OrganizationPublicProfileView.tsx` (composes the above).
@@ -72,7 +72,7 @@ The three public profile pages ship together with the seven User Settings tabs (
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdVCRoutes` and the existing `VCRoute`.
 
 7. **VC profile** (User Story 3)
-   - `src/crd/components/virtualContributor/VCPageHero.tsx` (banner / avatar / name / Settings icon — **no Message button**).
+   - `src/crd/components/virtualContributor/VCPageHero.tsx` (avatar / name / Settings icon — **no Message button**).
    - `src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx` (discriminated-union renderer per `kind`: space / knowledgeBase / external — research §4).
    - `src/crd/components/virtualContributor/VCProfileSidebar.tsx` (Description + Host card via `CompactContributorCard` + non-social References + Body of Knowledge section).
    - `src/crd/components/virtualContributor/VCContentView.tsx` (right column — model card + social references).
@@ -110,7 +110,7 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 
 **Organization profile** (User Story 2)
 
-- [ ] Open `/organization/<some-org>` — hero (banner + avatar + name + location + Verified badge if applicable), sidebar (Bio + Tagsets + References + Associates), and right column (Account Resources + Lead Spaces + All Memberships) render.
+- [ ] Open `/organization/<some-org>` — hero (avatar + name + location + Verified badge if applicable), sidebar (Bio + Tagsets + References + Associates), and right column (Account Resources + Lead Spaces + All Memberships) render.
 - [ ] Verified org → green Verified badge in hero. Unverified org → no badge.
 - [ ] Org with no account resources → Account Resources section is omitted.
 - [ ] Org with no Lead Spaces → Lead Spaces section is omitted.
@@ -124,7 +124,7 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 
 **VC profile** (User Story 3)
 
-- [ ] Open `/vc/<some-vc>` — hero (banner + avatar + name, **NO Message button**), sidebar (Description + Host card + non-social References + BoK section), right-column content view (model card + social links) render.
+- [ ] Open `/vc/<some-vc>` — hero (avatar + name, **NO Message button**), sidebar (Description + Host card + non-social References + BoK section), right-column content view (model card + social links) render.
 - [ ] VC with `AlkemioSpace` BoK → BoK section shows the SpaceCardHorizontal-equivalent linking to the backing space; "Visit" interaction takes the viewer to the space.
 - [ ] VC with `AlkemioSpace` BoK + viewer lacks `ReadAbout` on the backing space → "Private space" placeholder.
 - [ ] VC with `AlkemioKnowledgeBase` BoK → description + Visit button. Click Visit → navigates to `${vc.profile.url}/${KNOWLEDGE_BASE_PATH}`.

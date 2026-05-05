@@ -36,6 +36,7 @@
     "sidebar": {
       "aboutTitle": "Относно",
       "organizationsTitle": "Организации",
+      "socialLinksTitle": "Социални",
       "emptyBio": "Все още няма биография.",
       "emptyOrganizations": "Все още не е част от организация.",
       "memberCountLine_one": "{{count}} член",

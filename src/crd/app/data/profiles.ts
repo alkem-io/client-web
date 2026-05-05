@@ -13,7 +13,6 @@ import type { CompactContributorCardItem } from '@/crd/components/common/Compact
 import type {
   AssociateGridItem,
   ReferenceLink,
-  SocialReferenceItem,
   TagsetGroup,
 } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type {
@@ -53,7 +52,6 @@ export const MOCK_ALEX_RIVERA = {
   hero: {
     avatarImageUrl:
       'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    bannerImageUrl: null as string | null,
     color: pickColorFromId('user-alex-rivera'),
     displayName: 'Alex Rivera',
     location: 'San Francisco, US',
@@ -178,12 +176,12 @@ export const MOCK_ALEX_RIVERA = {
 
 export const MOCK_ME_USER = {
   ...MOCK_ALEX_RIVERA,
-  // Demo distinction: a different display name + different (no) banner so
-  // designers can tell at a glance which page is "self" vs. "other".
+  // Demo distinction: a different display name so designers can tell at a
+  // glance which page is "self" vs. "other".
   hero: {
     ...MOCK_ALEX_RIVERA.hero,
     displayName: 'Sam Lee',
-    avatarImageUrl: null as string | null,
+    avatarImageUrl: 'https://i.pravatar.cc/300?u=sam-lee' as string | null,
     color: pickColorFromId('user-me'),
     location: 'Amsterdam, Netherlands',
   },
@@ -193,6 +191,13 @@ export const MOCK_ME_USER = {
     "I'm a sustainability strategist and the platform owner of this Alkemio space. " +
     'I help cities and corporations align their innovation programs with measurable ' +
     'climate outcomes.',
+  references: [
+    { id: 'sam-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/in/sam-lee', description: null },
+    { id: 'sam-github', name: 'GitHub', uri: 'https://github.com/sam-lee', description: null },
+    { id: 'sam-bsky', name: 'bsky', uri: 'https://bsky.app/profile/samlee.bsky.social', description: null },
+    { id: 'sam-website', name: 'website', uri: 'https://samlee.dev', description: null },
+    { id: 'sam-email', name: 'email', uri: 'sam@samlee.dev', description: null },
+  ] satisfies ReferenceLink[],
 };
 
 /* --------------------------------------------------------------------- */
@@ -204,7 +209,6 @@ export const MOCK_ORG_ALKEMIO = {
   slug: 'alkemio',
   hero: {
     avatarImageUrl: null as string | null,
-    bannerImageUrl: null as string | null,
     color: pickColorFromId('org-alkemio'),
     displayName: 'Alkemio Foundation',
     location: 'Amsterdam, Netherlands',
@@ -219,24 +223,28 @@ export const MOCK_ORG_ALKEMIO = {
     { name: 'Capabilities', tags: ['Facilitation', 'Platform engineering', 'Research'] },
   ] satisfies TagsetGroup[],
   references: [
-    {
-      id: 'ref-website',
-      name: 'Website',
-      uri: 'https://alkem.io',
-      description: 'Main website',
-    },
+    // Non-social refs go to the sidebar's References section.
     {
       id: 'ref-handbook',
       name: 'Foundation handbook',
       uri: 'https://alkem.io/handbook',
       description: null,
     },
+    {
+      id: 'ref-paper',
+      name: 'Whitepaper (PDF)',
+      uri: 'https://alkem.io/whitepaper.pdf',
+      description: 'Methodology overview',
+    },
+    // Social refs (name === one of website/linkedin/github/bsky/youtube/email)
+    // go to the sidebar's Social section, rendered by <SocialLinks>.
+    { id: 's-website', name: 'website', uri: 'https://alkem.io', description: null },
+    { id: 's-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/company/alkemio', description: null },
+    { id: 's-github', name: 'GitHub', uri: 'https://github.com/alkem-io', description: null },
+    { id: 's-youtube', name: 'YouTube', uri: 'https://youtube.com/@alkemio', description: null },
+    { id: 's-bsky', name: 'bsky', uri: 'https://bsky.app/profile/alkemio.bsky.social', description: null },
+    { id: 's-email', name: 'email', uri: 'hello@alkem.io', description: null },
   ] satisfies ReferenceLink[],
-  socialReferences: [
-    { id: 's-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/company/alkemio', brand: 'linkedin' },
-    { id: 's-github', name: 'GitHub', uri: 'https://github.com/alkem-io', brand: 'github' },
-    { id: 's-twitter', name: 'X', uri: 'https://x.com/alkemio', brand: 'twitter' },
-  ] satisfies SocialReferenceItem[],
   associates: [
     { id: 'a1', displayName: 'Sarah Chen', avatarImageUrl: 'https://i.pravatar.cc/150?img=1', url: '/user/sarah-chen' },
     { id: 'a2', displayName: 'Jordan Park', avatarImageUrl: 'https://i.pravatar.cc/150?img=2', url: '/user/jordan-park' },
@@ -361,7 +369,6 @@ export const MOCK_VC_DATASYNTH = {
   slug: 'datasynth-bot',
   hero: {
     avatarImageUrl: null as string | null,
-    bannerImageUrl: null as string | null,
     color: pickColorFromId('vc-datasynth'),
     displayName: 'DataSynth Bot',
   },
@@ -378,12 +385,16 @@ export const MOCK_VC_DATASYNTH = {
     href: '/organization/cityscale',
   } as CompactContributorCardItem,
   references: [
+    // Non-social ref → sidebar References section.
     {
       id: 'vc-ref-1',
       name: 'Synthetic data primer',
       uri: 'https://en.wikipedia.org/wiki/Synthetic_data',
       description: 'Background reading on synthetic data.',
     },
+    // Social refs → right-column Social Links section, rendered by <SocialLinks>.
+    { id: 'vc-s-github', name: 'GitHub', uri: 'https://github.com/alkem-io/datasynth', description: null },
+    { id: 'vc-s-website', name: 'website', uri: 'https://datasynth.example/', description: null },
   ] satisfies ReferenceLink[],
   bodyOfKnowledge: {
     kind: 'space',
@@ -412,7 +423,4 @@ export const MOCK_VC_DATASYNTH = {
     },
     monitoring: { isUsageMonitoredByAlkemio: true },
   } satisfies ModelCardSummary,
-  socialReferences: [
-    { id: 'vc-s-1', name: 'GitHub', uri: 'https://github.com/alkem-io/datasynth', brand: 'github' },
-  ] satisfies SocialReferenceItem[],
 };

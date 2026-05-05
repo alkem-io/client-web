@@ -21,11 +21,6 @@ import type { SpaceCardItem } from './publicProfile';
 /* ----------------------------- OrganizationPageHero --------------------- */
 
 export type OrganizationPageHeroProps = {
-  /**
-   * Banner image. When `null` the component renders a deterministic gradient
-   * computed via `pickColorFromId(organizationId)` (FR-020).
-   */
-  bannerImageUrl: string | null;
   avatarImageUrl: string | null;
   displayName: string;
   /** "City, Country" — null when both empty. */
@@ -90,22 +85,16 @@ export type AssociatesView = {
   canReadUsers: boolean;
 };
 
-/**
- * Social-network reference (F2 — Org sidebar parity port of MUI `<SocialLinks>`).
- *
- * `lucide-react` no longer ships brand icons (LinkedIn / GitHub / Twitter /
- * YouTube) — they were removed in recent versions due to trademark concerns.
- * The view falls back to a generic `Link2` glyph and conveys platform identity
- * via `aria-label` (the platform name) and the link target. A future
- * enhancement may introduce a dedicated CRD primitive with exact-fidelity
- * brand SVGs if product asks.
- */
-export type SocialReferenceItem = {
-  id: string;
-  name: string;
-  uri: string;
-  brand: 'linkedin' | 'twitter' | 'github' | 'youtube' | 'generic';
-};
+// SocialReferenceItem and the per-mapper `brandFor` / `splitReferences` helpers
+// have been removed. Social-link rendering and the social/non-social split
+// now live entirely inside the shared CRD `SocialLinks` primitive at
+// `src/crd/components/common/SocialLinks.tsx`. Consumers pass raw
+// `ReferenceLink[]` through; `<SocialLinks references={refs} />` renders the
+// social subset with monochrome SVG icons (website / linkedin / github / bsky /
+// youtube / email + generic globe fallback), and the exported
+// `excludeSocialReferences(refs)` helper feeds the parallel non-social
+// References section. This eliminates ~30 lines of duplicate logic across
+// the three consumer pages.
 
 export type OrganizationProfileSidebarProps = {
   /** Markdown bio. Rendered via the existing CRD `MarkdownContent`. */
@@ -116,13 +105,16 @@ export type OrganizationProfileSidebarProps = {
    * tagsets are empty (matches MUI `OrganizationProfileView` per-tagset filter).
    */
   tagsets: TagsetGroup[];
-  /** Non-social references — filtered via `isSocialNetworkSupported`. Empty array hides the section. */
-  references: ReferenceLink[];
   /**
-   * Social-network references — parity port of MUI `OrganizationProfileView`'s
-   * `<SocialLinks>` block (F2 fix). Empty array hides the section.
+   * ALL references (social + non-social). The view splits internally:
+   *   • References section uses `excludeSocialReferences(references)` from
+   *     `@/crd/components/common/SocialLinks`.
+   *   • Social section passes `references` straight to
+   *     `<SocialLinks references={references} />`, which filters and
+   *     brand-resolves itself.
+   * Empty array hides both sub-sections.
    */
-  socialReferences: SocialReferenceItem[];
+  references: ReferenceLink[];
   /**
    * Associates section — always populated. The internal `canReadUsers` flag
    * drives the view's grid-vs-sign-in-CTA branch (parity with current MUI

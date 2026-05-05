@@ -44,11 +44,10 @@ export function UserPublicProfileView({ hero, sidebar, tabStrip, sections, loadi
 
 function HeroSkeleton() {
   return (
-    <div className="relative mb-20 md:mb-24">
-      <Skeleton className="h-64 md:h-80 w-full" />
-      <div className="absolute -bottom-16 left-0 right-0 px-4 md:px-8">
-        <div className="container mx-auto flex items-end gap-6">
-          <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-background" />
+    <div>
+      <div className="container mx-auto px-4 md:px-8 py-8 md:py-10">
+        <div className="flex flex-col md:flex-row md:items-end gap-6">
+          <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full shrink-0 border-4 border-background shadow-lg" />
           <div className="flex-1 space-y-2 pb-2">
             <Skeleton className="h-8 w-1/2" />
             <Skeleton className="h-4 w-1/4" />

@@ -19,6 +19,7 @@ const SECTIONS_LABELS = {
 const SIDEBAR_LABELS = {
   aboutTitle: 'About',
   organizationsTitle: 'Organizations',
+  socialLinksTitle: 'Social',
   emptyBio: 'No bio yet.',
   emptyOrganizations: 'Not part of any organization yet.',
 };
@@ -67,6 +68,7 @@ export function UserProfileSelfDemoPage() {
         bio: me.bio,
         organizationsSlot,
         organizationsEmpty: me.organizations.length === 0,
+        references: me.references,
         labels: SIDEBAR_LABELS,
       }}
       tabStrip={{

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
+import type { ReferenceLink } from '@/crd/components/organization/OrganizationProfileSidebar';
 
 export type UserProfileSidebarProps = {
   bio: string | null;
@@ -11,21 +13,45 @@ export type UserProfileSidebarProps = {
   organizationsSlot: ReactNode | ReactNode[];
   /** True when there are no organisations to render — drives the empty-state. */
   organizationsEmpty: boolean;
+  /**
+   * Optional references (social + non-social). The view passes the array
+   * straight to `<SocialLinks>` which filters internally for known networks
+   * (website / linkedin / github / bsky / youtube / email) and renders them
+   * as a monochrome icon row. When no social refs are present, the section
+   * is hidden entirely.
+   */
+  references?: ReferenceLink[];
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
+    socialLinksTitle: string;
     emptyBio: string;
     emptyOrganizations: string;
   };
 };
 
-export function UserProfileSidebar({ bio, organizationsSlot, organizationsEmpty, labels }: UserProfileSidebarProps) {
+export function UserProfileSidebar({
+  bio,
+  organizationsSlot,
+  organizationsEmpty,
+  references,
+  labels,
+}: UserProfileSidebarProps) {
+  const refs = references ?? [];
+
   return (
     <div className="space-y-8">
       <section>
         <h2 className="text-section-title mb-4 flex items-center gap-2">{labels.aboutTitle}</h2>
         {bio ? <MarkdownContent content={bio} /> : <p className="text-body text-muted-foreground">{labels.emptyBio}</p>}
       </section>
+
+      {hasSocialReferences(refs) ? (
+        <section>
+          <h2 className="text-label uppercase text-muted-foreground mb-3">{labels.socialLinksTitle}</h2>
+          <SocialLinks references={refs} />
+        </section>
+      ) : null}
 
       <section>
         <h2 className="text-section-title mb-4 flex items-center gap-2">{labels.organizationsTitle}</h2>

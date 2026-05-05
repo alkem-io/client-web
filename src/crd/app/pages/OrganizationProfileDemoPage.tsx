@@ -55,7 +55,6 @@ export function OrganizationProfileDemoPage() {
         bio: org.bio,
         tagsets: org.tagsets,
         references: org.references,
-        socialReferences: org.socialReferences,
         associates: {
           associates: org.associates,
           totalCount: org.associatesTotal,

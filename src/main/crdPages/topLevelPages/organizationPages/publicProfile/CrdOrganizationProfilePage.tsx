@@ -16,7 +16,12 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
 import { MembershipCardConnector } from '../../userPages/publicProfile/MembershipCardConnector';
 import { buildLocationLine } from '../../userPages/publicProfile/publicProfileMapper';
-import { buildTagsetGroups, mapAccountResources, mapAssociates, splitReferences } from './organizationProfileMapper';
+import {
+  buildTagsetGroups,
+  mapAccountResources,
+  mapAssociates,
+  normaliseReferences,
+} from './organizationProfileMapper';
 
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
@@ -64,7 +69,7 @@ export const CrdOrganizationProfilePage = () => {
     { name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
     { name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
   ]);
-  const { other: nonSocialReferences, social: socialReferences } = splitReferences(provided.references);
+  const references = normaliseReferences(provided.references);
   const associatesGrid = mapAssociates(
     provided.associates.map(a => ({
       id: a.id,
@@ -83,7 +88,6 @@ export const CrdOrganizationProfilePage = () => {
   return (
     <OrganizationPublicProfileView
       hero={{
-        bannerImageUrl: null,
         avatarImageUrl: profile?.avatar?.uri ?? null,
         color,
         displayName: profile?.displayName ?? '',
@@ -95,8 +99,7 @@ export const CrdOrganizationProfilePage = () => {
       sidebar={{
         bio: profile?.description ?? null,
         tagsets,
-        references: nonSocialReferences,
-        socialReferences,
+        references,
         associates: {
           associates: associatesGrid,
           totalCount: associatesCount,

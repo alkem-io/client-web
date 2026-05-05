@@ -1,7 +1,6 @@
 import type {
   AssociateGridItem,
   ReferenceLink,
-  SocialReferenceItem,
   TagsetGroup,
 } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type {
@@ -10,16 +9,6 @@ import type {
 } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-
-const brandFor = (name: string): SocialReferenceItem['brand'] => {
-  const n = name.toLowerCase();
-  if (n.includes('linkedin')) return 'linkedin';
-  if (n.includes('twitter') || n === 'x' || n.includes('bsky')) return 'twitter';
-  if (n.includes('github')) return 'github';
-  if (n.includes('youtube')) return 'youtube';
-  return 'generic';
-};
 
 export type RawReference = {
   id: string;
@@ -28,25 +17,20 @@ export type RawReference = {
   description?: string | null;
 };
 
-export const splitReferences = (
-  references: RawReference[]
-): { other: ReferenceLink[]; social: SocialReferenceItem[] } => {
-  const other: ReferenceLink[] = [];
-  const social: SocialReferenceItem[] = [];
-  references.forEach(ref => {
-    if (isSocialNetworkSupported(ref.name)) {
-      social.push({ id: ref.id, name: ref.name, uri: ref.uri, brand: brandFor(ref.name) });
-    } else {
-      other.push({
-        id: ref.id,
-        name: ref.name,
-        uri: ref.uri,
-        description: ref.description ?? null,
-      });
-    }
-  });
-  return { other, social };
-};
+/**
+ * Pass-through normaliser for the references array. The social/non-social
+ * split (and brand resolution for the social subset) lives entirely inside
+ * the shared `SocialLinks` primitive at `@/crd/components/common/SocialLinks`
+ * — this mapper just hands the raw refs through with `description: null`
+ * defaulted so the consumer sees a stable shape.
+ */
+export const normaliseReferences = (references: RawReference[]): ReferenceLink[] =>
+  references.map(ref => ({
+    id: ref.id,
+    name: ref.name,
+    uri: ref.uri,
+    description: ref.description ?? null,
+  }));
 
 export const buildTagsetGroups = (groups: Array<{ name: string; tags: string[] }>): TagsetGroup[] =>
   groups.filter(g => g.tags.length > 0);

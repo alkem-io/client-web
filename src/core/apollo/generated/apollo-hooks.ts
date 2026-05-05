@@ -1391,6 +1391,7 @@ export const AccountResourceProfileFragmentDoc = gql`
     fragment AccountResourceProfile on Profile {
   id
   displayName
+  tagline
   url
   avatar: visual(type: AVATAR) {
     ...VisualModel
@@ -13248,7 +13249,6 @@ export const AccountResourcesInfoDocument = gql`
         id
         profile {
           ...AccountResourceProfile
-          tagline
         }
       }
       innovationPacks {

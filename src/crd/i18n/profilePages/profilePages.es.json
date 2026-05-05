@@ -36,6 +36,7 @@
     "sidebar": {
       "aboutTitle": "Acerca de",
       "organizationsTitle": "Organizaciones",
+      "socialLinksTitle": "Social",
       "emptyBio": "Aún no hay biografía.",
       "emptyOrganizations": "Aún no forma parte de ninguna organización.",
       "memberCountLine_one": "{{count}} miembro",

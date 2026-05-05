@@ -12,7 +12,7 @@ The three public profile views ship together with the seven User Settings tabs (
 **Per-actor design-source highlights:**
 
 - **User profile** — **prototype-driven redesign** (`prototype/src/app/pages/UserProfilePage.tsx`). NOT a parity restyle of current MUI; where prototype and MUI disagree, the prototype wins.
-  - Hero: banner / avatar / display name / location line. **No presence dot** (clarified — drop the prototype's mock dot).
+  - Hero: avatar / display name / location line. **No presence dot** (clarified — drop the prototype's mock dot).
   - **Settings (gear) icon** visible when `canEditSettings = (currentUser.id === profileUser.id) || hasPlatformPrivilege(PlatformAdmin)` (owner OR platform admin) — for admins on another user's profile it links to the target's settings, not the admin's own.
   - **Message button** visible to any signed-in non-owner viewer (admins included). Both can coexist for an admin viewing someone else's profile.
   - Sticky 5-tab resource strip per the prototype: `All Resources`, `Hosted Spaces`, `Virtual Contributors`, `Leading`, `Member of`. Default `All Resources`. Local React state only (not URL-synced). Horizontally scrollable below `md`.
@@ -21,14 +21,14 @@ The three public profile views ship together with the seven User Settings tabs (
   - **Innovation packs and innovation hubs are intentionally omitted** (per prototype) even though `useAccountResources` returns them — see Out of Scope in spec.md.
 
 - **Organization profile** — **parity restyle of current MUI** (`OrganizationPageView` + `AssociatesView`). No prototype exists.
-  - Hero: banner / avatar / display name / location / Verified badge (when `verification.status === VerifiedManualAttestation`).
+  - Hero: avatar / display name / location / Verified badge (when `verification.status === VerifiedManualAttestation`).
   - **Settings (gear) icon** visible when `useOrganizationProvider().permissions.canEdit` is true → links to `buildSettingsUrl(profile.url)` (existing MUI admin URL — out of scope for migration).
   - **Message button** visible to any signed-in viewer (parity with current MUI `OrganizationPageBanner.onSendMessage`); calls **`useSendMessageToOrganizationMutation`** with input `{ message, organizationId }` (parity with current MUI `useOrganizationProvider().handleSendMessage`). NOTE: an earlier draft of this plan claimed Org Message reused `useSendMessageToUsersMutation` with `[orgId]` — that was incorrect; the Organization vertical has its own dedicated mutation with a different input shape. The implementation provides two integration helpers (`useSendMessageToUserHandler` / `useSendMessageToOrganizationHandler`), both exposing the same `(text) => Promise<void>` API, so the shared `MessagePopover` primitive stays recipient-agnostic.
   - Sidebar: Bio + Tagsets (Keywords + Capabilities, each tagset hidden individually when its `tags` array is empty) + non-social References + **Social** (the social-network group of references — LinkedIn / GitHub / X / Bluesky etc., as identified by `isSocialNetworkSupported`; parity port of MUI `OrganizationProfileView`'s `<SocialLinks>` block; section hidden when there are no social references; rendered with a generic `Link2` glyph — `lucide-react` no longer ships brand icons) + **Associates** (parity port of MUI `AssociatesView` — paginates at `ASSOCIATE_CARDS_COUNT = 12` with "Show more (N) / Show less" toggle; when `canReadUsers === false` the section header still renders and the body shows the existing `associates-view.sign-in` CTA copy instead of the avatar grid — section is **not** hidden).
   - Right column: Account Resources (combined spaces + innovationPacks + innovationHubs — omitted when all three lists are empty; **hosted-spaces sub-list preserves the current MUI `VISIBLE_SPACE_LIMIT = 6` cap with the "Show all" button** — parity port) + Lead Spaces (filtered via `useFilteredMemberships(contributions, [RoleType.Lead])` — `[Lead]` only; omitted when empty) + All Memberships (always rendered, with empty-state caption when empty — reuses existing `pages.user-profile.communities.noMembership` translation key).
 
 - **VC profile** — **parity restyle of current MUI** (`VCProfilePageView` + `VCProfileContentView`). No prototype exists.
-  - Hero: banner / avatar / display name (no location line per FR-030). **No Message button** (parity with current MUI; VCs are AI personas).
+  - Hero: avatar / display name (no location line per FR-030). **No Message button** (parity with current MUI; VCs are AI personas).
   - **Settings (gear) icon** visible when `vc.authorization.myPrivileges` includes `Update` → links to `buildSettingsUrl(profile.url)` (existing MUI admin URL — out of scope for migration).
   - Sidebar: Description + Host (compact card showing `vc.provider.profile`) + non-social References (filtered via `isSocialNetworkSupported`; empty-state line via existing `common.no-references` key — FR-102 parity reuse) + Body of Knowledge.
   - **Body of Knowledge discriminated union** at the mapper boundary — three variants: `space` (renders SpaceCardHorizontal-equivalent CRD card; placeholder profile when `hasReadAccess === false` — `displayName` from existing `components.card.privacy.private` key, empty URL — exact MUI parity), `knowledgeBase` (description from `useKnowledgeBase().knowledgeBaseDescription`, falling back to existing `virtualContributorSpaceSettings.placeholder` key when empty — exact MUI parity; Visit button disabled with tooltip from existing `components.profile.fields.bodyOfKnowledge.privateBokTooltip` key when `hasReadAccess === false`), `external` (engine-type copy via existing `components.profile.fields.engines.externalVCDescription` interpolation — FR-102 parity reuse).
@@ -128,18 +128,18 @@ src/
 │   │   │   ├── CompactContributorCard.tsx          # NEW shared primitive (User Orgs row + Org Associates row + VC Host card)
 │   │   │   └── MessagePopover.tsx                  # NEW recipient-agnostic in-hero compose surface (User + Org heroes)
 │   │   ├── user/                                   # NEW — User public-profile presentational components
-│   │   │   ├── UserPageHero.tsx                    # Banner + avatar + name + location + Settings icon + Message popover (consumes MessagePopover from common/)
+│   │   │   ├── UserPageHero.tsx                    # Avatar + name + location + Settings icon + Message popover (consumes MessagePopover from common/)
 │   │   │   ├── UserProfileSidebar.tsx              # About + Organizations sidebar (Organizations rendered via CompactContributorCard with secondaryCaption=member-count)
 │   │   │   ├── UserResourceTabStrip.tsx            # 5-tab strip; horizontal-scroll on < md
 │   │   │   ├── UserResourceSections.tsx            # Conditional rendering of Resources Hosted / Spaces Leading / Member Of
 │   │   │   └── UserPublicProfileView.tsx           # Top-level User public profile composition
 │   │   ├── organization/                           # NEW — Organization public-profile presentational components
-│   │   │   ├── OrganizationPageHero.tsx            # Banner + avatar + name + location + Verified badge + Settings icon + Message popover
+│   │   │   ├── OrganizationPageHero.tsx            # Avatar + name + location + Verified badge + Settings icon + Message popover
 │   │   │   ├── OrganizationProfileSidebar.tsx      # Bio + Tagsets + References + Associates (CompactContributorCard list)
 │   │   │   ├── OrganizationResourceSections.tsx    # Account Resources + Lead Spaces + All Memberships
 │   │   │   └── OrganizationPublicProfileView.tsx   # Top-level Org public profile composition
 │   │   └── virtualContributor/                     # NEW — VC public-profile presentational components
-│   │       ├── VCPageHero.tsx                      # Banner + avatar + name + Settings icon (NO Message button)
+│   │       ├── VCPageHero.tsx                      # Avatar + name + Settings icon (NO Message button)
 │   │       ├── VCProfileSidebar.tsx                # Description + Host (CompactContributorCard) + non-social References + BoK
 │   │       ├── VCBodyOfKnowledgeSection.tsx        # Discriminated-union renderer: space / knowledgeBase / external
 │   │       ├── VCContentView.tsx                   # Right column — model card + social references (lucide-react brand icons)

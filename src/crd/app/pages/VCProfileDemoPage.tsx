@@ -43,7 +43,7 @@ export function VCProfileDemoPage() {
       }}
       contentView={{
         modelCard: vc.modelCard,
-        socialReferences: vc.socialReferences,
+        references: vc.references,
         labels: CONTENT_LABELS,
       }}
       loading={{ hero: false, sidebar: false, bodyOfKnowledge: false, contentView: false }}

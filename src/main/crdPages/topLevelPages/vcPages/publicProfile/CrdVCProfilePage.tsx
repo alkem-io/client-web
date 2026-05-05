@@ -20,8 +20,8 @@ import {
   computeSettingsHref,
   mapHostCard,
   mapModelCardSummary,
+  mapVcReferences,
   resolveBodyOfKnowledge,
-  splitVcReferences,
 } from './vcProfileMapper';
 
 export const CrdVCProfilePage = () => {
@@ -107,7 +107,7 @@ export const CrdVCProfilePage = () => {
     }),
   });
 
-  const { other: nonSocialReferences, social: socialReferences } = splitVcReferences(profile.references);
+  const references = mapVcReferences(profile.references);
 
   const modelCard = mapModelCardSummary(vc, t('vcProfile.contentView.aiEngineExternal'));
   const host = mapHostCard(vc);
@@ -119,7 +119,6 @@ export const CrdVCProfilePage = () => {
   return (
     <VCPublicProfileView
       hero={{
-        bannerImageUrl: null,
         avatarImageUrl: profile.avatar?.uri ?? null,
         color,
         displayName: profile.displayName,
@@ -128,7 +127,7 @@ export const CrdVCProfilePage = () => {
       sidebar={{
         description: profile.description ?? null,
         host,
-        references: nonSocialReferences,
+        references,
         bodyOfKnowledge,
         labels: {
           descriptionTitle: t('vcProfile.sidebar.descriptionTitle'),
@@ -143,7 +142,7 @@ export const CrdVCProfilePage = () => {
       }}
       contentView={{
         modelCard,
-        socialReferences,
+        references,
         labels: {
           modelCardTitle: t('vcProfile.contentView.modelCardTitle'),
           aiEngineLabel: t('vcProfile.contentView.aiEngineLabel'),

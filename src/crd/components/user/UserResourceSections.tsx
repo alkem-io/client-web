@@ -67,7 +67,7 @@ export function UserResourceSections({
               {activeTab === 'allResources' && (
                 <h3 className="text-label uppercase text-muted-foreground mb-4">{labels.spacesSubsection}</h3>
               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {hostedSpaces.map(space => (
                   <SpaceGridCard key={space.id} space={space} />
                 ))}
@@ -82,7 +82,7 @@ export function UserResourceSections({
                   <Bot className="w-4 h-4" /> {labels.virtualContributorsSubsection}
                 </h3>
               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {hostedVirtualContributors.map(vc => (
                   <a
                     key={vc.id}

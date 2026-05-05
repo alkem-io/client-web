@@ -12,6 +12,7 @@ import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMem
 import useUserContributions from '@/domain/community/user/userContributions/useUserContributions';
 import useUserOrganizationIds from '@/domain/community/user/userContributions/useUserOrganizationIds';
 import { useSendMessageToUserHandler } from '../../common/useSendMessageHandler';
+import { normaliseReferences } from '../../organizationPages/publicProfile/organizationProfileMapper';
 import useCanEditSettings from '../useCanEditSettings';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
@@ -107,7 +108,6 @@ export const CrdUserProfilePage = () => {
   return (
     <UserPublicProfileView
       hero={{
-        bannerImageUrl: null,
         avatarImageUrl: profile?.avatar?.uri ?? null,
         color,
         displayName: profile?.displayName ?? '',
@@ -121,9 +121,18 @@ export const CrdUserProfilePage = () => {
         bio: profile?.description ?? null,
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
+        references: normaliseReferences(
+          (profile?.references ?? []).map(r => ({
+            id: r.id,
+            name: r.name,
+            uri: r.uri,
+            description: r.description ?? null,
+          }))
+        ),
         labels: {
           aboutTitle: t('userProfile.sidebar.aboutTitle'),
           organizationsTitle: t('userProfile.sidebar.organizationsTitle'),
+          socialLinksTitle: t('userProfile.sidebar.socialLinksTitle'),
           emptyBio: t('userProfile.sidebar.emptyBio'),
           emptyOrganizations: t('userProfile.sidebar.emptyOrganizations'),
         },

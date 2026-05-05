@@ -4682,7 +4682,7 @@ export type Mutation = {
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
-  resetLicenseOnAccounts: Space;
+  resetLicenseOnAccounts: Scalars['Boolean']['output'];
   /** Revoke a credential from an Actor. */
   revokeCredentialFromActor: Scalars['Boolean']['output'];
   /** Removes an authorization credential from an Organization. */
@@ -8830,17 +8830,17 @@ export type UpdateSpacePlatformSettingsInput = {
 
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
-  allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  allowEventsFromSubspaces?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if guest users can contribute to this Space. */
-  allowGuestContributions: Scalars['Boolean']['input'];
+  allowGuestContributions?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create callouts. */
-  allowMembersToCreateCallouts: Scalars['Boolean']['input'];
+  allowMembersToCreateCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create subspaces. */
-  allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  allowMembersToCreateSubspaces?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create video calls in this Space. */
-  allowMembersToVideoCall: Scalars['Boolean']['input'];
+  allowMembersToVideoCall?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if ability to contribute is inherited from parent Space. */
-  inheritMembershipRights: Scalars['Boolean']['input'];
+  inheritMembershipRights?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateSpaceSettingsEntityInput = {
@@ -20537,6 +20537,7 @@ export type AccountResourcesInfoQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                tagline?: string | undefined;
                 url: string;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 cardBanner?:
@@ -20566,9 +20567,9 @@ export type AccountResourcesInfoQuery = {
             profile?:
               | {
                   __typename?: 'Profile';
-                  tagline?: string | undefined;
                   id: string;
                   displayName: string;
+                  tagline?: string | undefined;
                   url: string;
                   avatar?:
                     | {
@@ -20589,6 +20590,7 @@ export type AccountResourcesInfoQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               url: string;
               avatar?:
                 | {
@@ -20620,6 +20622,7 @@ export type AccountResourcesInfoQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               url: string;
               banner?:
                 | {
@@ -20650,6 +20653,7 @@ export type AccountResourceProfileFragment = {
   __typename?: 'Profile';
   id: string;
   displayName: string;
+  tagline?: string | undefined;
   url: string;
   avatar?:
     | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }

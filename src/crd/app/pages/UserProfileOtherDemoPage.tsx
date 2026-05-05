@@ -19,6 +19,7 @@ const SECTIONS_LABELS = {
 const SIDEBAR_LABELS = {
   aboutTitle: 'About',
   organizationsTitle: 'Organizations',
+  socialLinksTitle: 'Social',
   emptyBio: 'No bio yet.',
   emptyOrganizations: 'Not part of any organization yet.',
 };

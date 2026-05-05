@@ -1,4 +1,5 @@
-import { Globe, Link2 } from 'lucide-react';
+import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
+import type { ReferenceLink } from '@/crd/components/organization/OrganizationProfileSidebar';
 import { Card, CardContent, CardHeader } from '@/crd/primitives/card';
 
 export type ModelCardSummary = {
@@ -15,16 +16,14 @@ export type ModelCardSummary = {
   };
 };
 
-export type SocialReferenceItem = {
-  id: string;
-  name: string;
-  uri: string;
-  brand: 'linkedin' | 'twitter' | 'github' | 'youtube' | 'generic';
-};
-
 export type VCContentViewProps = {
   modelCard: ModelCardSummary;
-  socialReferences: SocialReferenceItem[];
+  /**
+   * ALL references — passed straight to `<SocialLinks>`, which filters
+   * internally to the social subset and brand-resolves the icon. Same
+   * one-source-of-truth contract used on the Organization sidebar.
+   */
+  references: ReferenceLink[];
   labels: {
     modelCardTitle: string;
     aiEngineLabel: string;
@@ -34,10 +33,7 @@ export type VCContentViewProps = {
   };
 };
 
-// `lucide-react` no longer ships brand icons — fall back to a generic glyph.
-const brandIcon = (brand: SocialReferenceItem['brand']) => (brand === 'generic' ? Globe : Link2);
-
-export function VCContentView({ modelCard, socialReferences, labels }: VCContentViewProps) {
+export function VCContentView({ modelCard, references, labels }: VCContentViewProps) {
   return (
     <div className="space-y-6">
       <Card>
@@ -68,27 +64,10 @@ export function VCContentView({ modelCard, socialReferences, labels }: VCContent
           <h2 className="text-section-title">{labels.socialLinksTitle}</h2>
         </CardHeader>
         <CardContent>
-          {socialReferences.length === 0 ? (
-            <p className="text-body text-muted-foreground">{labels.socialLinksEmpty}</p>
+          {hasSocialReferences(references) ? (
+            <SocialLinks references={references} className="gap-4" />
           ) : (
-            <div className="flex items-center gap-4 flex-wrap">
-              {socialReferences.map(s => {
-                const Icon = brandIcon(s.brand);
-                return (
-                  <a
-                    key={s.id}
-                    href={s.uri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={s.name}
-                    title={s.name}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                );
-              })}
-            </div>
+            <p className="text-body text-muted-foreground">{labels.socialLinksEmpty}</p>
           )}
         </CardContent>
       </Card>
