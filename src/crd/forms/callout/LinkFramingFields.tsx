@@ -1,5 +1,6 @@
 import { Link as LinkIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 
 type LinkFramingFieldsProps = {
@@ -39,6 +40,10 @@ export function LinkFramingFields({
             type="url"
             value={url}
             onChange={e => onUrlChange(e.target.value)}
+            onBlur={e => {
+              const normalized = ensureHttps(e.target.value);
+              if (normalized !== e.target.value) onUrlChange(normalized);
+            }}
             placeholder={t('forms.linkUrlPlaceholder')}
             className={cn(
               'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20',

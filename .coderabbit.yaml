@@ -51,7 +51,8 @@ reviews:
         - Follow the hierarchy: constitution → agents.md → .github/copilot-instructions.md.
         - Require `pnpm codegen` and schema diff summaries when `*.graphql` changes; prohibit ad-hoc `useQuery` usage.
         - Enforce React 19 concurrency hygiene, WCAG 2.1 AA accessibility, and localization via `react-i18next` (no hard-coded copy).
-        - **i18n/Crowdin**: Only `src/core/i18n/en/translation.en.json` may be edited directly. All other locale files are generated via Crowdin and must never be modified manually. Reject PRs that change non-English translation files.
+        - **i18n/Crowdin (core translations only)**: The Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. In that directory, only `src/core/i18n/en/translation.en.json` may be edited directly; all non-English files under `src/core/i18n/` are generated via Crowdin and must never be modified manually. Reject PRs that change non-English files under `src/core/i18n/`.
+        - **i18n/CRD (manual translations)**: Translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. Changes to any CRD locale file — including non-English ones — are expected and must pass PR review without Crowdin-compliance objections. All supported languages (en, nl, es, bg, de, fr) are edited in the same PR that introduces or removes a key.
         - Reject commits containing build artifacts (`.build/`, `public/env-config.js`, `build/`) or missing validation evidence.
         - Ensure new env vars use the `VITE_APP_*` prefix and flow through `buildConfiguration.js` into `window._env_`.
 
@@ -74,6 +75,12 @@ reviews:
     - path: "src/**/*.json"
       instructions: |
         Validate structure, schema compliance, and absence of secrets. Keep localization payloads consistent.
+    - path: "src/core/i18n/**/*.json"
+      instructions: |
+        Crowdin-managed translations. Only `src/core/i18n/en/translation.en.json` may be edited directly. Non-English files under this path are generated via Crowdin and must never be modified manually — flag any such edit as a policy violation.
+    - path: "src/crd/i18n/**/*.json"
+      instructions: |
+        Manual (AI-assisted) translations per `src/crd/CLAUDE.md`. NOT managed by Crowdin. All supported languages (en, nl, es, bg, de, fr) are edited in the same PR. Do NOT raise Crowdin-compliance objections against edits to non-English CRD locale files — that policy applies only to `src/core/i18n/`. Validate JSON structure, key-set parity across locales, and absence of secrets.
     - path: "public/**/*.html"
       instructions: |
         Enforce semantic HTML and accessibility requirements. Confirm injected env placeholders remain intact.

@@ -18,6 +18,7 @@ export function useCrdSpaceCommunity() {
   const {
     calloutsSetId,
     classificationTagsets,
+    flowStateForNewCallouts,
     tabDescription,
     loading: tabLoading,
   } = useSpaceTabProvider({ tabPosition: 1 });
@@ -50,8 +51,6 @@ export function useCrdSpaceCommunity() {
   });
 
   const members: MemberCardData[] = mapRoleSetToMemberCards(users, organizations);
-  const usersCount = users.length;
-  const organizationsCount = organizations.length;
 
   // Sidebar leads (users + organizations with the Lead role)
   const leadUsers: SidebarLeadData[] = (usersByRole[RoleName.Lead] ?? [])
@@ -78,14 +77,13 @@ export function useCrdSpaceCommunity() {
     calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
     tabDescription: tabDescription ?? '',
+    flowStateForNewCallouts,
     leadUsers,
     leadOrganizations,
     virtualContributors,
     hasVcEntitlement,
     guidelines,
     members,
-    usersCount,
-    organizationsCount,
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,

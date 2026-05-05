@@ -6,6 +6,7 @@ import crdDashboardEN from '@/crd/i18n/dashboard/dashboard.en.json';
 import crdExploreSpacesEN from '@/crd/i18n/exploreSpaces/exploreSpaces.en.json';
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import crdSpaceEN from '@/crd/i18n/space/space.en.json';
+import crdSubspaceEN from '@/crd/i18n/subspace/subspace.en.json';
 import crdMarkdownEN from '@/crd/i18n/markdown/markdown.en.json';
 import crdNotificationsEN from '@/crd/i18n/notifications/notifications.en.json';
 import '@/crd/styles/crd.css';
@@ -19,12 +20,22 @@ i18n.use(initReactI18next).init({
       'crd-exploreSpaces': crdExploreSpacesEN,
       'crd-dashboard': crdDashboardEN,
       'crd-space': crdSpaceEN,
+      'crd-subspace': crdSubspaceEN,
       'crd-markdown': crdMarkdownEN,
       'crd-notifications': crdNotificationsEN,
     },
   },
   lng: 'en',
-  ns: ['crd-layout', 'crd-common', 'crd-exploreSpaces', 'crd-dashboard', 'crd-space', 'crd-markdown', 'crd-notifications'],
+  ns: [
+    'crd-layout',
+    'crd-common',
+    'crd-exploreSpaces',
+    'crd-dashboard',
+    'crd-space',
+    'crd-subspace',
+    'crd-markdown',
+    'crd-notifications',
+  ],
   defaultNS: 'crd-layout',
   fallbackLng: 'en',
   interpolation: {

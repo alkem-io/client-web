@@ -1,4 +1,4 @@
-import { Folder, Plus, Search } from 'lucide-react';
+import { Folder, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -9,13 +9,10 @@ type StatusFilter = 'all' | 'active' | 'archived';
 
 type SpaceSubspacesListProps = {
   subspaces: SpaceCardData[];
-  /** Optional title override — defaults to t('subspaces.title'). */
+  /** Optional section title — heading is hidden when omitted. */
   title?: string;
-  /** Optional subtitle override — defaults to t('subspaces.subtitle'). */
+  /** Optional subtitle rendered under the title. */
   subtitle?: string;
-  /** "Create Subspace" button only renders when both `canCreate` and `onCreateClick` are set. */
-  canCreate?: boolean;
-  onCreateClick?: () => void;
   onSubspaceClick?: (space: SpaceCardData) => void;
   /**
    * Initial number of subspace cards rendered before a "Show more" button
@@ -51,8 +48,6 @@ export function SpaceSubspacesList({
   subspaces,
   title,
   subtitle,
-  canCreate,
-  onCreateClick,
   onSubspaceClick,
   initialVisibleCount = DEFAULT_INITIAL_VISIBLE,
   className,
@@ -104,19 +99,13 @@ export function SpaceSubspacesList({
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.subspacesGrid')}>
-      {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Section header — rendered only when an explicit title is provided. */}
+      {title && (
         <div>
-          <h2 className="text-page-title text-foreground">{title ?? t('subspaces.title')}</h2>
-          <p className="mt-1 text-body text-muted-foreground">{subtitle ?? t('subspaces.subtitle')}</p>
+          <h2 className="text-page-title text-foreground">{title}</h2>
+          {subtitle && <p className="mt-1 text-body text-muted-foreground">{subtitle}</p>}
         </div>
-        {canCreate && onCreateClick && (
-          <Button className="shrink-0 gap-2" onClick={onCreateClick}>
-            <Plus className="w-4 h-4" aria-hidden="true" />
-            {t('subspaces.createSubspace')}
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Search */}
       <div className="relative">

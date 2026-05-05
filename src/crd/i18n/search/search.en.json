@@ -5,11 +5,12 @@
     "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organizations.",
     "noResultsTitle": "No results found for {{terms}}",
     "noResultsSuggestion": "Try different keywords or broaden your search.",
-    "searchAllSpaces": "Search all Spaces instead",
+    "searchAllSpaces": "Search the entire platform instead",
     "loading": "Searching\u2026",
     "disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
     "loadMore": "Load more",
-    "scopeAll": "All Spaces",
+    "scopeAll": "Entire platform",
+    "scopeTriggerLabel": "Search In: {{option}}",
     "categories": {
       "spaces": "Spaces",
       "posts": "Posts",
@@ -47,7 +48,8 @@
       "platformSearch": "Platform Search",
       "filterBy": "Filter {{category}}",
       "resultsFound": "{{count}} results found",
-      "noResultsFound": "No results found"
+      "noResultsFound": "No results found",
+      "scopeTrigger": "Change search scope. Currently searching: {{option}}"
     }
   }
 }

@@ -70,6 +70,7 @@ const useCalloutDetails = ({
       canBeSavedAsTemplate: canBeSavedAsTemplate && calloutDetails.framing.type !== CalloutFramingType.Poll,
       classificationTagsets: [],
       publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
+      createdDate: calloutDetails.createdDate ? new Date(calloutDetails.createdDate) : undefined,
       ...memoizedOverrideCalloutSettings,
     };
   })();

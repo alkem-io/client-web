@@ -91,24 +91,30 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
           {sidebar}
         </nav>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <Button
+        {/* Content. Bottom padding on mobile clears the fixed hamburger bar (h-14). */}
+        <div className="min-w-0 space-y-6 pb-14 md:pb-0">{children}</div>
+      </div>
+
+      {/* Mobile-only fixed bottom bar — mirrors the SpaceNavigationTabs pattern. */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border md:hidden"
+        aria-label={t('sidebar.openMenu')}
+      >
+        <div className="flex items-stretch justify-end h-14">
+          <button
             ref={triggerRef}
-            variant="ghost"
-            size="sm"
+            type="button"
             onClick={() => setDrawerOpen(true)}
+            className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
             aria-label={t('sidebar.openMenu')}
+            aria-haspopup="dialog"
             aria-expanded={drawerOpen}
             aria-controls="dashboard-mobile-drawer"
           >
             <Menu className="h-5 w-5" aria-hidden="true" />
-          </Button>
+          </button>
         </div>
-
-        {/* Content */}
-        <div className="min-w-0 space-y-6">{children}</div>
-      </div>
+      </nav>
 
       {/* Mobile drawer */}
       {drawerOpen && (

@@ -2,12 +2,16 @@ import { PenTool } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/graphql-schema';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
+
+type CreatedWhiteboard = NonNullable<CreateWhiteboardOnCalloutMutation['createContributionOnCallout']['whiteboard']>;
 
 type WhiteboardContributionAddConnectorProps = {
   calloutId: string;
@@ -26,6 +30,7 @@ export function WhiteboardContributionAddConnector({
   const fallbackName = defaultDisplayName ?? t('callout.defaultWhiteboardName');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [whiteboardName, setWhiteboardName] = useState(fallbackName);
+  const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
 
   const handleOpen = () => {
@@ -40,7 +45,7 @@ export function WhiteboardContributionAddConnector({
   const [handleCreate, creating] = useLoadingState(async () => {
     const trimmed = whiteboardName.trim();
     if (!trimmed) return;
-    await createWhiteboard({
+    const { data } = await createWhiteboard({
       variables: {
         calloutId,
         whiteboard: {
@@ -53,6 +58,8 @@ export function WhiteboardContributionAddConnector({
     });
     onCreated?.();
     handleClose();
+    const created = data?.createContributionOnCallout.whiteboard;
+    if (created) setEditingWhiteboard(created);
   });
 
   return (
@@ -90,6 +97,17 @@ export function WhiteboardContributionAddConnector({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {editingWhiteboard && (
+        <CrdWhiteboardView
+          whiteboardId={editingWhiteboard.id}
+          whiteboard={editingWhiteboard}
+          authorization={editingWhiteboard.authorization}
+          whiteboardShareUrl={editingWhiteboard.profile.url ?? ''}
+          loadingWhiteboards={false}
+          preventWhiteboardDeletion={true}
+          backToWhiteboards={() => setEditingWhiteboard(undefined)}
+        />
+      )}
     </>
   );
 }

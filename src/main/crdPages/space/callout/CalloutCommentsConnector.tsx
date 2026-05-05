@@ -9,6 +9,14 @@ type CalloutCommentsConnectorProps = {
   calloutId?: string;
   contributionId?: string;
   roomData?: CommentsWithMessagesModel;
+  /**
+   * Override the default subscription gate. When omitted, the subscription
+   * starts once the connector scrolls into view (`!inView`) — the dialog path
+   * relies on this. The list-view path passes `!commentsExpanded` so the live
+   * subscription only starts after the user has expanded the inline footer
+   * at least once, and stays active afterwards (sticky).
+   */
+  skipSubscription?: boolean;
   children?: (slots: { thread: ReactNode; commentInput: ReactNode | null; commentCount: number }) => ReactNode;
 };
 
@@ -23,6 +31,7 @@ export function CalloutCommentsConnector({
   calloutId: _calloutId,
   contributionId,
   roomData,
+  skipSubscription,
   children,
 }: CalloutCommentsConnectorProps) {
   const { ref, inView } = useInView({ triggerOnce: true, delay: 200 });
@@ -44,7 +53,7 @@ export function CalloutCommentsConnector({
   const { thread, commentInput, commentCount } = useCrdRoomComments({
     roomId,
     room,
-    skipSubscription: !inView,
+    skipSubscription: skipSubscription ?? !inView,
   });
 
   if (children) {

@@ -6,16 +6,14 @@ import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
-import { InfoBlock } from './sidebar/InfoBlock';
+import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 import { KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
-import { LeadBlock, type LeadItem } from './sidebar/LeadBlock';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection';
 
 type SubspaceItem = {
   name: string;
   initials: string;
-  color: string;
   href: string;
 };
 
@@ -38,12 +36,16 @@ type KnowledgeEntry = {
   id: string;
   title: string;
   type: 'text' | 'collection';
+  description?: string;
+  tags?: string[];
 };
 
 type SpaceSidebarProps = {
   variant: 'home' | 'community' | 'subspaces' | 'knowledge';
   description: string;
-  // Home & Knowledge
+  /** Pencil overlay on the InfoBlock — opens the settings/about page (edit mode). */
+  onEditClick?: () => void;
+  /** "About this Space" button on the home tab — opens the read-only about dialog. */
   onAboutClick?: () => void;
   subspaces?: SubspaceItem[];
   subspacesHref?: string;
@@ -77,6 +79,7 @@ type SpaceSidebarProps = {
 export function SpaceSidebar({
   variant,
   description,
+  onEditClick,
   onAboutClick,
   subspaces = [],
   subspacesHref,
@@ -105,22 +108,18 @@ export function SpaceSidebar({
   return (
     <nav className={cn('space-y-6 w-full', className)} aria-label={t('a11y.sidebarNavigation')}>
       {/* Info Block — shared across all variants */}
-      <InfoBlock description={description} onReadMore={onAboutClick} />
+      <InfoBlock description={description} leads={leads} onEditClick={onEditClick} />
+
+      {variant === 'home' && onAboutClick && (
+        <Button variant="outline" className="w-full uppercase gap-2 font-medium px-2" onClick={onAboutClick}>
+          <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span className="truncate text-body-emphasis">{t('sidebar.aboutSpace')}</span>
+        </Button>
+      )}
 
       {/* Variant-specific content */}
       {(variant === 'home' || variant === 'knowledge') && (
         <>
-          {onAboutClick && (
-            <Button
-              variant="outline"
-              className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
-              onClick={onAboutClick}
-            >
-              <Info className="w-4 h-4" aria-hidden="true" />
-              {t('sidebar.aboutSpace')}
-            </Button>
-          )}
-
           {variant === 'home' && subspaces.length > 0 && (
             <SubspacesSection subspaces={subspaces} showAllHref={subspacesHref} onSubspaceClick={onSubspaceClick} />
           )}
@@ -129,20 +128,20 @@ export function SpaceSidebar({
             <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
           )}
 
-          <EventsSection
-            events={events}
-            onShowCalendar={onShowCalendar}
-            onAddEvent={onAddEvent}
-            onEventClick={onEventClick}
-            locale={locale}
-          />
+          {variant === 'home' && (
+            <EventsSection
+              events={events}
+              onShowCalendar={onShowCalendar}
+              onAddEvent={onAddEvent}
+              onEventClick={onEventClick}
+              locale={locale}
+            />
+          )}
         </>
       )}
 
       {variant === 'community' && (
         <>
-          {leads.length > 0 && <LeadBlock leads={leads} />}
-
           {(canContactLeads || (canInvite && onInvite)) && (
             <div className="flex gap-2">
               {canContactLeads && onContactLead && (
@@ -152,7 +151,15 @@ export function SpaceSidebar({
                 </Button>
               )}
               {canInvite && onInvite && (
-                <Button className="flex-1 gap-2 text-body-emphasis" onClick={onInvite}>
+                // Force explicit colors — the default `bg-primary text-primary-foreground`
+                // pair was rendering as dark-on-dark in the community sidebar (see issue
+                // screenshot). Setting `bg-primary` and `!text-white` with a `!` to win
+                // any cascade keeps the label legible regardless of ancestor `.dark`
+                // contexts or token redefinitions.
+                <Button
+                  className="flex-1 gap-2 text-body-emphasis bg-primary !text-white hover:bg-primary/90"
+                  onClick={onInvite}
+                >
                   <UserPlus className="w-4 h-4" aria-hidden="true" />
                   {t('sidebar.invite')}
                 </Button>

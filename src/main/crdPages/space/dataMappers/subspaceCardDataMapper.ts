@@ -1,12 +1,6 @@
-import {
-  CommunityMembershipStatus,
-  SpaceSortMode,
-  SpaceVisibility,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceSortMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { getInitials } from './spacePageDataMapper';
 
 type SubspaceQueryData = {
@@ -68,7 +62,9 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     id: subspace.id,
     name: profile.displayName,
     description: profile.tagline ?? '',
-    bannerImageUrl: profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, subspace.id),
+    // Leave undefined when no real cardBanner exists — `SpaceCard` renders the
+    // deterministic gradient from `avatarColor` instead of a stock default image.
+    bannerImageUrl: profile.cardBanner?.uri || undefined,
     initials: getInitials(profile.displayName),
     avatarColor: pickColorFromId(subspace.id),
     isPrivate: !subspace.about.isContentPublic,

@@ -27,6 +27,26 @@
     "url": "URL de partage",
     "copy": "Copier le lien",
     "copied": "Copié",
-    "shareOnAlkemio": "Partager sur Alkemio"
+    "shareOnAlkemio": "Partager sur Alkemio",
+    "back": "Retour",
+    "alkemio": {
+      "description": "Envoyez un lien vers ce {{entity}} en message privé à d'autres utilisateurs d'Alkemio.",
+      "defaultMessage": "Je pense que ce {{entity}} pourrait vous intéresser : {{url}}",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom ou e-mail",
+      "searchAriaLabel": "Rechercher des utilisateurs",
+      "searching": "Recherche…",
+      "noResults": "Aucun utilisateur trouvé",
+      "removeUser": "Retirer {{name}}",
+      "messageLabel": "Message",
+      "warning": "Les destinataires verront votre nom comme expéditeur.",
+      "send": "Envoyer",
+      "sent": "Message envoyé avec succès.",
+      "errors": {
+        "atLeastOneUser": "Sélectionnez au moins un utilisateur.",
+        "messageRequired": "Le message ne peut pas être vide.",
+        "messageTooLong": "Le message doit comporter au maximum {{max}} caractères.",
+        "sendFailed": "Impossible d'envoyer le message. Veuillez réessayer."
+      }
+    }
   }
 }

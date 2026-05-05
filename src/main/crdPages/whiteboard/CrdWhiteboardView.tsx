@@ -6,13 +6,12 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { Separator } from '@/crd/primitives/separator';
-import CollaborationSettings from '@/domain/collaboration/realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import WhiteboardPreviewSettingsButton from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
-import WhiteboardGuestAccessControls from '@/domain/collaboration/whiteboard/WhiteboardShareDialog/WhiteboardGuestAccessControls';
-import WhiteboardGuestAccessSection from '@/domain/collaboration/whiteboard/WhiteboardShareDialog/WhiteboardGuestAccessSection';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
+import { CrdWhiteboardGuestAccessControls } from '@/main/crdPages/whiteboard/CrdWhiteboardGuestAccessControls';
 import type { WhiteboardDetails } from './CrdWhiteboardDialog';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
 
@@ -98,13 +97,11 @@ const CrdWhiteboardView = ({
           headerActions: (collabState: CollabState) => (
             <>
               <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
-                <WhiteboardGuestAccessControls whiteboard={whiteboard}>
-                  <WhiteboardGuestAccessSection guestAccess={guestAccess} />
-                </WhiteboardGuestAccessControls>
+                <CrdWhiteboardGuestAccessControls whiteboard={whiteboard} guestAccess={guestAccess} />
                 {hasUpdatePrivileges && (
                   <>
                     {hasPublicSharePrivilege && <Separator />}
-                    <CollaborationSettings
+                    <CrdCollaborationSettings
                       element={whiteboard}
                       elementType="whiteboard"
                       guestAccessEnabled={guestAccess.enabled}

@@ -40,7 +40,21 @@
       }
     },
     "showMore": "Покажи повече",
-    "noActivity": "Няма скорошна активност"
+    "noActivity": "Няма скорошна активност",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "Нова публикация",
+      "CALLOUT_POST_CREATED": "Нова публикация",
+      "CALLOUT_POST_COMMENT": "Нов коментар",
+      "DISCUSSION_COMMENT": "Нов коментар",
+      "CALLOUT_WHITEBOARD_CREATED": "Нова бяла дъска",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Бялата дъска е актуализирана",
+      "CALLOUT_MEMO_CREATED": "Нова бележка",
+      "CALLOUT_LINK_CREATED": "Нов линк",
+      "MEMBER_JOINED": "Нов член",
+      "SUBSPACE_CREATED": "Ново подпространство",
+      "CALENDAR_EVENT_CREATED": "Ново събитие",
+      "UPDATE_SENT": "Ново обновление"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Съвети и трикове",

@@ -51,18 +51,16 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
 
         {/* Content */}
         <div className="flex-1 min-w-0 space-y-1">
-          <p className="text-body text-foreground">
+          <div className="text-body text-foreground">
             {notification.isUnread && (
               <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1.5 align-middle" aria-hidden="true" />
             )}
             <span className={cn(notification.isUnread && 'font-semibold')}>{notification.title}</span>
-          </p>
+          </div>
           {notification.description && (
-            <p className="text-body text-muted-foreground line-clamp-2">{notification.description}</p>
+            <div className="text-body text-muted-foreground line-clamp-2">{notification.description}</div>
           )}
-          {notification.comment && (
-            <p className="text-body text-muted-foreground line-clamp-2 italic">{notification.comment}</p>
-          )}
+          {notification.comment && <div className="text-body text-muted-foreground italic">{notification.comment}</div>}
         </div>
       </button>
 

@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 type SubspaceItem = {
   name: string;
   initials: string;
-  color: string;
   href: string;
 };
 
@@ -50,16 +49,8 @@ export function SubspacesSection({
             className="group flex items-center justify-between px-3 py-2 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="flex items-center gap-3">
-              <Avatar className="w-7 h-7">
-                <AvatarFallback
-                  style={{
-                    background: `color-mix(in srgb, ${subspace.color} 15%, transparent)`,
-                    color: subspace.color,
-                  }}
-                  className="text-badge"
-                >
-                  {subspace.initials}
-                </AvatarFallback>
+              <Avatar className="w-7 h-7 rounded-md">
+                <AvatarFallback className="rounded-md text-badge">{subspace.initials}</AvatarFallback>
               </Avatar>
               <span className="text-body-emphasis text-foreground">{subspace.name}</span>
             </div>

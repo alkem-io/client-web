@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { LicenseEntitlementType, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
@@ -11,7 +11,6 @@ import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
@@ -101,7 +100,6 @@ export default function DashboardWithoutMemberships({
               }
             }}
             onDecline={id => rejectInvitation(id)}
-            getDefaultAvatarUrl={spaceId => getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)}
           />
         )}
 

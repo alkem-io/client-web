@@ -21,18 +21,20 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommentEmojiPicker } from '@/crd/components/comment/CommentEmojiPicker';
+import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { cn } from '@/crd/lib/utils';
 import { Separator } from '@/crd/primitives/separator';
+import { isEditorReady } from './isEditorReady';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarLinkDialog } from './ToolbarLinkDialog';
 
 type MarkdownToolbarProps = {
   editor: Editor | null;
   className?: string;
+  collaborative?: boolean;
 };
 
-export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editor, className, collaborative = false }: MarkdownToolbarProps) {
   const { t } = useTranslation('crd-markdown');
   const [, setTick] = useState(0);
 
@@ -46,7 +48,7 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
     };
   }, [editor]);
 
-  if (!editor) return null;
+  if (!isEditorReady(editor)) return null;
 
   const isInTable = editor.isActive('table');
 
@@ -60,11 +62,14 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
       aria-label={t('editor.toolbar')}
       className={cn('flex items-center gap-0.5 px-2 py-1.5 overflow-x-auto', className)}
     >
-      {/* Undo / Redo */}
-      <ToolbarButton editor={editor} icon={Undo2} label={t('editor.undo')} command={c => c.undo()} />
-      <ToolbarButton editor={editor} icon={Redo2} label={t('editor.redo')} command={c => c.redo()} />
-
-      <Separator orientation="vertical" className="mx-1 h-5" />
+      {/* Undo / Redo — hidden in collaborative mode (Yjs owns history) */}
+      {!collaborative && (
+        <>
+          <ToolbarButton editor={editor} icon={Undo2} label={t('editor.undo')} command={c => c.undo()} />
+          <ToolbarButton editor={editor} icon={Redo2} label={t('editor.redo')} command={c => c.redo()} />
+          <Separator orientation="vertical" className="mx-1 h-5" />
+        </>
+      )}
 
       {/* Text formatting */}
       <ToolbarButton
@@ -191,7 +196,7 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
       <ToolbarLinkDialog editor={editor} />
 
       {/* Emoji */}
-      <CommentEmojiPicker
+      <EmojiPicker
         onSelect={handleEmojiSelect}
         trigger={
           <button

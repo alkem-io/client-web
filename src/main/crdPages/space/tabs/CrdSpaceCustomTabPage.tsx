@@ -1,32 +1,45 @@
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
+import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
 };
 
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
+  const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const navigate = useNavigate();
+  const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
-  const { callouts, calloutsSetId, classificationTagsets, canCreateCallout, tabDescription, loading } =
-    useCrdCalloutList({
-      tabPosition: sectionIndex,
-      tagsFilter: tagsFilter.length > 0 ? tagsFilter : undefined,
-    });
+  const {
+    callouts,
+    calloutsSetId,
+    classificationTagsets,
+    canCreateCallout,
+    tabDescription,
+    flowStateForNewCallouts,
+    loading,
+  } = useCrdCalloutList({
+    tabPosition: sectionIndex,
+    tagsFilter: tagsFilter.length > 0 ? tagsFilter : undefined,
+  });
 
   // Fetch tags via the same GraphQL query the MUI version uses
   const { data: tagsData } = useCalloutsSetTagsQuery({
@@ -40,11 +53,16 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(tag => ({ name: tag, count: 0 }));
 
   // Build sidebar list from light callout data (also used as knowledge entries)
-  const sidebarItems = callouts.map(callout => ({
-    id: callout.id,
-    title: callout.framing.profile.displayName,
-    type: callout.framing.type === CalloutFramingType.Whiteboard ? ('whiteboard' as const) : ('text' as const),
-  }));
+  const sidebarItems = callouts.map(callout => {
+    const profile = callout.framing.profile;
+    return {
+      id: callout.id,
+      title: profile.displayName,
+      type: callout.framing.type === CalloutFramingType.Whiteboard ? ('collection' as const) : ('text' as const),
+      description: profile.description,
+      tags: profile.tagset?.tags,
+    };
+  });
 
   const handleSelectTag = (tag: string) => {
     setTagsFilter(prev => [...prev, tag]);
@@ -63,26 +81,32 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="knowledge"
-            description={tabDescription || space.about.profile.description || ''}
-            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
-            knowledgeEntries={sidebarItems.map(item => ({
-              ...item,
-              type: item.type === 'whiteboard' ? ('collection' as const) : item.type,
-            }))}
-            onKnowledgeEntryClick={handleScrollToCallout}
-          />,
-          sidebarContainer
-        )}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="knowledge"
+          description={space.about.profile.description || ''}
+          leads={sidebarLeads}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          knowledgeEntries={sidebarItems}
+          onKnowledgeEntryClick={handleScrollToCallout}
+        />
+      </SpaceSidebarPortal>
 
       <div className="space-y-6">
+        <TabStateHeader
+          description={tabDescription}
+          action={
+            canCreateCallout && (
+              <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('feed.addPost')}
+              </Button>
+            )
+          }
+        />
+
         {(allTags.length > 0 || tagsFilter.length > 0) && (
           <CalloutTagCloud
             tags={allTags}
@@ -94,17 +118,16 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           />
         )}
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateOpen(true)}
-          loading={loading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
       </div>
 
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
     </>
   );

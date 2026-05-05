@@ -142,18 +142,24 @@ export function mapPostResults(
 
   const mappedCallouts: PostResultCardData[] = calloutResults
     .filter((r): r is CalloutResult => r.type === SearchResultType.Callout)
-    .map(r => ({
-      id: r.id,
-      title: r.callout.framing.profile.displayName,
-      snippet: '',
-      type: 'post' as PostType,
-      bannerUrl: undefined,
-      author: { name: unknownLabel },
-      date: '',
-      spaceName: r.space.about.profile.displayName,
+    .map(r => {
+      const authorSource = r.callout.publishedBy ?? r.callout.createdBy;
+      return {
+        id: r.id,
+        title: r.callout.framing.profile.displayName,
+        snippet: '',
+        type: 'post' as PostType,
+        bannerUrl: undefined,
+        author: {
+          name: authorSource?.profile?.displayName ?? unknownLabel,
+          avatarUrl: authorSource?.profile?.avatar?.uri,
+        },
+        date: '',
+        spaceName: r.space.about.profile.displayName,
 
-      href: r.callout.framing.profile.url,
-    }));
+        href: r.callout.framing.profile.url,
+      };
+    });
 
   const mappedFraming: PostResultCardData[] = framingResults
     .filter(

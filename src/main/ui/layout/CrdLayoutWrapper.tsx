@@ -1,8 +1,9 @@
-import { Suspense, useEffect, useState } from 'react';
+import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
+import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -14,6 +15,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
+import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -24,7 +26,7 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
-function CrdLayoutConnector() {
+function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
   const {
@@ -45,6 +47,7 @@ function CrdLayoutConnector() {
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const breadcrumbItems = useBreadcrumbs();
 
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
@@ -79,6 +82,7 @@ function CrdLayoutConnector() {
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
         currentLanguage={currentLanguage}
+        breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
@@ -88,7 +92,7 @@ function CrdLayoutConnector() {
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
       >
-        <Outlet />
+        {children ?? <Outlet />}
       </CrdLayout>
       {userModel && (
         <Suspense fallback={null}>
@@ -105,10 +109,12 @@ function CrdLayoutConnector() {
   );
 }
 
-export function CrdLayoutWrapper() {
+export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
   return (
-    <SearchProvider>
-      <CrdLayoutConnector />
-    </SearchProvider>
+    <BreadcrumbsProvider>
+      <SearchProvider>
+        <CrdLayoutConnector>{children}</CrdLayoutConnector>
+      </SearchProvider>
+    </BreadcrumbsProvider>
   );
 }

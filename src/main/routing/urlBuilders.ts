@@ -20,6 +20,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+// Single migration point for the L1 settings link. Returns the legacy MUI
+// settings URL until the SubSpace settings page is itself CRD-migrated.
+export const buildSubspaceSettingsUrl = (subspaceUrl: string) => buildSettingsUrl(subspaceUrl);
+
 export const buildNotificationSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/notifications`;
 };

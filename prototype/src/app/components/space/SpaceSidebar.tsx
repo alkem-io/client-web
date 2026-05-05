@@ -60,7 +60,7 @@ const COMMUNITY_GUIDELINES = [
 export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps) {
   return (
     <div
-      className="space-y-6 w-full"
+      className="space-y-6 w-full lg:w-80 shrink-0"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* ── Info Block (shared across all variants) ── */}

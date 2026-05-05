@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import { ContributionCreateButton } from '@/crd/components/contribution/ContributionCreateButton';
 import { ContributionFormLayout } from '@/crd/forms/contribution/ContributionFormLayout';
 
 type ContributionCreateConnectorProps = {
+  /** Callout to attach the new contribution to. Required for the post branch. */
+  calloutId?: string;
   allowedTypes: Array<'post' | 'memo' | 'whiteboard' | 'link'>;
   onCreated?: () => void;
 };
 
-export function ContributionCreateConnector({ allowedTypes, onCreated }: ContributionCreateConnectorProps) {
+export function ContributionCreateConnector({ calloutId, allowedTypes, onCreated }: ContributionCreateConnectorProps) {
   const [activeForm, setActiveForm] = useState<'post' | 'memo' | 'whiteboard' | 'link' | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -16,8 +19,34 @@ export function ContributionCreateConnector({ allowedTypes, onCreated }: Contrib
   const [linkUrl, setLinkUrl] = useState('');
   const [linkDescription, setLinkDescription] = useState('');
 
-  const handleSubmit = () => {
-    // TODO: Call appropriate mutation based on activeForm type
+  const [createPost] = useCreatePostOnCalloutMutation();
+
+  const handleSubmit = async () => {
+    // Only the post branch is wired today; memo / whiteboard / link land via
+    // their own sub-specs. Bail without resetting/closing the form when the
+    // submit can't actually run, so the user keeps their input and can fix
+    // missing fields rather than seeing a phantom "success".
+    if (activeForm !== 'post') return;
+    if (!calloutId || !title.trim()) return;
+
+    await createPost({
+      variables: {
+        calloutId,
+        post: {
+          profileData: {
+            displayName: title.trim(),
+            description,
+          },
+          tags: tags
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean),
+        },
+      },
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      awaitRefetchQueries: true,
+    });
+
     setActiveForm(null);
     resetForm();
     onCreated?.();

@@ -72,53 +72,65 @@ export function ActivityFeed({
         </div>
       )}
 
-      <div className="mb-6 flex gap-2 flex-wrap shrink-0">
-        <div>
-          <label htmlFor={`${idPrefix}-space-filter`} className="sr-only">
-            {t('activity.filter.space.label')}
-          </label>
-          <Select value={spaceFilter} onValueChange={onSpaceFilterChange}>
-            <SelectTrigger
-              id={`${idPrefix}-space-filter`}
-              aria-label={t('activity.filter.space.label')}
-              className="h-8 w-auto min-w-[140px]"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {spaceFilterOptions.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Filter row — render only when at least one filter has options. Dialog usage scoped
+          to a single space passes no options and we hide the row entirely (avoiding the
+          empty-Select bug where the dropdown opens with nothing to choose). */}
+      {(spaceFilterOptions.length > 0 ||
+        (variant === 'spaces' && roleFilterOptions && roleFilterOptions.length > 0)) && (
+        <div className="mb-6 flex gap-2 flex-wrap shrink-0">
+          {spaceFilterOptions.length > 0 && (
+            <div>
+              <label htmlFor={`${idPrefix}-space-filter`} className="sr-only">
+                {t('activity.filter.space.label')}
+              </label>
+              <Select value={spaceFilter} onValueChange={onSpaceFilterChange}>
+                <SelectTrigger
+                  id={`${idPrefix}-space-filter`}
+                  aria-label={t('activity.filter.space.label')}
+                  className="h-8 w-auto min-w-[140px]"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {spaceFilterOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
-        {variant === 'spaces' && roleFilterOptions && onRoleFilterChange && roleFilter !== undefined && (
-          <div>
-            <label htmlFor={`${idPrefix}-role-filter`} className="sr-only">
-              {t('activity.filter.role.label')}
-            </label>
-            <Select value={roleFilter} onValueChange={onRoleFilterChange}>
-              <SelectTrigger
-                id={`${idPrefix}-role-filter`}
-                aria-label={t('activity.filter.role.label')}
-                className="h-8 w-auto min-w-[130px]"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {roleFilterOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-      </div>
+          {variant === 'spaces' &&
+            roleFilterOptions &&
+            roleFilterOptions.length > 0 &&
+            onRoleFilterChange &&
+            roleFilter !== undefined && (
+              <div>
+                <label htmlFor={`${idPrefix}-role-filter`} className="sr-only">
+                  {t('activity.filter.role.label')}
+                </label>
+                <Select value={roleFilter} onValueChange={onRoleFilterChange}>
+                  <SelectTrigger
+                    id={`${idPrefix}-role-filter`}
+                    aria-label={t('activity.filter.role.label')}
+                    className="h-8 w-auto min-w-[130px]"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roleFilterOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+        </div>
+      )}
 
       <div className="flex-1 min-w-0">
         {loading ? (

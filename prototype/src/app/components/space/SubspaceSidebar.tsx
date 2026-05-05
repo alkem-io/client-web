@@ -42,7 +42,7 @@ export function SubspaceSidebar({
     <div
       className={cn(
         "relative transition-all duration-300 ease-in-out shrink-0",
-        isCollapsed ? "w-12" : "w-full",
+        isCollapsed ? "w-12" : "w-full md:w-80",
         className
       )}
       style={{ fontFamily: "var(--font-family, 'Inter', sans-serif)" }}

@@ -71,9 +71,7 @@ export default function UserAccountPage() {
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
       <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="px-6 md:px-8 pt-8 pb-0">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
@@ -98,14 +96,10 @@ export default function UserAccountPage() {
               </Link>
             ))}
           </div>
-          </div>
-        </div>
         </div>
       </div>
 
-      <div className="px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-12">
+      <div className="container mx-auto px-4 md:px-8 py-8 space-y-12">
         {/* Help Text */}
         <div className="flex items-center gap-2 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm text-primary/80 max-w-3xl">
           <Layout className="w-4 h-4" />
@@ -219,7 +213,7 @@ export default function UserAccountPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Section: Template Packs */}
           <section className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
@@ -297,8 +291,6 @@ export default function UserAccountPage() {
               </div>
             </div>
           </section>
-          </div>
-        </div>
         </div>
       </div>
     </div>

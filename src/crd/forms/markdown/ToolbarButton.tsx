@@ -2,6 +2,7 @@ import type { ChainedCommands, Editor } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
+import { isEditorReady } from './isEditorReady';
 
 type ToolbarButtonProps = {
   editor: Editor;
@@ -24,14 +25,33 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [, setTick] = useState(0);
 
+  const ready = isEditorReady(editor);
+
   // Refresh state on every editor transaction
   useEffect(() => {
+    if (!ready) return;
     const handler = () => setTick(t => t + 1);
     editor.on('transaction', handler);
     return () => {
       editor.off('transaction', handler);
     };
-  }, [editor]);
+  }, [editor, ready]);
+
+  if (!ready) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          'h-8 w-8 inline-flex items-center justify-center rounded-md opacity-40 pointer-events-none',
+          className
+        )}
+        disabled={true}
+        aria-label={label}
+      >
+        <Icon className="w-4 h-4" aria-hidden="true" />
+      </button>
+    );
+  }
 
   const active = activeSpec
     ? Array.isArray(activeSpec)

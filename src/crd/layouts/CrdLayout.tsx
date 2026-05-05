@@ -22,6 +22,7 @@ type CrdLayoutProps = {
   unreadNotificationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
+  breadcrumbs?: ReactNode;
   onLanguageChange: (code: string) => void;
   onLogout?: () => void;
   onMessagesClick?: () => void;
@@ -45,6 +46,7 @@ export function CrdLayout({
   unreadNotificationsCount,
   languages,
   currentLanguage,
+  breadcrumbs,
   onLanguageChange,
   onLogout,
   onMessagesClick,
@@ -69,6 +71,7 @@ export function CrdLayout({
         unreadNotificationsCount={unreadNotificationsCount}
         languages={languages}
         currentLanguage={currentLanguage}
+        breadcrumbs={breadcrumbs}
         onLanguageChange={onLanguageChange}
         onLogout={onLogout}
         onMessagesClick={onMessagesClick}

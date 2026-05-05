@@ -1,16 +1,17 @@
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/crd/primitives/button';
 import { CommentItem } from './CommentItem';
-import type { CommentData, CommentsContainerData } from './types';
+import type { CommentData, CommentsContainerData, CrdMentionSearch } from './types';
 
-type SortOrder = 'newest' | 'oldest';
+type CommentThreadProps = CommentsContainerData & {
+  mentionSearch?: CrdMentionSearch;
+};
 
 /**
- * Thread list component: sort toggle + comment items + reply indentation.
- * Does NOT include a sticky comment input — that is rendered by the parent
- * (CalloutDetailDialog) as a sticky footer, keeping layout concerns separated.
+ * Thread list component: comment count header + comment items + reply indentation.
+ * Top-level comments render newest-first; replies render oldest-first within
+ * their parent thread. Does NOT include a comment input — that is rendered by
+ * the parent composite (EventDetailView, CalloutDetailDialog) above the thread.
  */
 export function CommentThread({
   comments,
@@ -20,9 +21,9 @@ export function CommentThread({
   onDelete,
   onAddReaction,
   onRemoveReaction,
-}: CommentsContainerData) {
+  mentionSearch,
+}: CommentThreadProps) {
   const { t } = useTranslation('crd-space');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
 
   const topLevel = comments.filter(comment => !comment.parentId);
   const repliesByParent = new Map<string, CommentData[]>();
@@ -34,11 +35,9 @@ export function CommentThread({
     repliesByParent.set(comment.parentId, [...existing, comment]);
   }
 
-  const sortedTopLevel = [...topLevel].sort((a, b) => {
-    const aTime = new Date(a.timestamp).getTime();
-    const bTime = new Date(b.timestamp).getTime();
-    return sortOrder === 'newest' ? bTime - aTime : aTime - bTime;
-  });
+  const sortedTopLevel = [...topLevel].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
 
   for (const [parentId, replies] of repliesByParent.entries()) {
     repliesByParent.set(
@@ -54,18 +53,8 @@ export function CommentThread({
 
   return (
     <div className="space-y-4">
-      {/* Sort toggle header */}
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-body text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 px-2 text-caption"
-          onClick={() => setSortOrder(current => (current === 'newest' ? 'oldest' : 'newest'))}
-        >
-          {sortOrder === 'newest' ? t('comments.sortNewest') : t('comments.sortOldest')}
-        </Button>
-      </div>
+      {/* Comment count header */}
+      <p className="text-body text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
 
       {/* Comment list */}
       {loading ? (
@@ -85,6 +74,7 @@ export function CommentThread({
               <CommentItem
                 comment={comment}
                 currentUser={currentUser}
+                mentionSearch={mentionSearch}
                 onReply={onReply}
                 onDelete={onDelete}
                 onAddReaction={onAddReaction}
@@ -96,6 +86,7 @@ export function CommentThread({
                   key={reply.id}
                   comment={reply}
                   currentUser={currentUser}
+                  mentionSearch={mentionSearch}
                   isReply={true}
                   onReply={onReply}
                   onDelete={onDelete}

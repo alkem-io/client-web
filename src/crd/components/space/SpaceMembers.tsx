@@ -1,4 +1,4 @@
-import { Building2, ChevronLeft, ChevronRight, Search, Shield, User, UserCheck, UserPlus } from 'lucide-react';
+import { Building2, ChevronLeft, ChevronRight, Search, Shield, User, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -38,18 +38,12 @@ type MemberFilter = 'all' | 'admin' | 'lead' | 'member' | 'organization';
 
 type SpaceMembersProps = {
   members: MemberCardData[];
-  /** Counts for the section subtitle. If omitted, derived from `members`. */
-  usersCount?: number;
-  organizationsCount?: number;
-  /** Optional title override — defaults to t('members.title'). */
+  /** Optional section title — heading is hidden when omitted. */
   title?: string;
-  /** Optional subtitle override — defaults to t('members.subtitle') with counts. */
+  /** Optional subtitle rendered under the title. */
   subtitle?: string;
   /** Pagination size (default: 9, matches prototype). */
   pageSize?: number;
-  /** Invite action — button only renders when both `canInvite` and `onInvite` are set. */
-  canInvite?: boolean;
-  onInvite?: () => void;
   onMemberClick?: (href: string) => void;
   className?: string;
 };
@@ -65,13 +59,9 @@ const ROLE_BADGE_CLASSES: Record<MemberRoleType, string> = {
 
 export function SpaceMembers({
   members,
-  usersCount,
-  organizationsCount,
   title,
   subtitle,
   pageSize = DEFAULT_PAGE_SIZE,
-  canInvite,
-  onInvite,
   onMemberClick,
   className,
 }: SpaceMembersProps) {
@@ -79,9 +69,6 @@ export function SpaceMembers({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<MemberFilter>('all');
   const [currentPage, setCurrentPage] = useState(0);
-
-  const totalUsers = usersCount ?? members.filter(m => m.type === 'user').length;
-  const totalOrgs = organizationsCount ?? members.filter(m => m.type === 'organization').length;
 
   const filterLabels: Record<MemberFilter, string> = {
     all: t('members.filterAll'),
@@ -127,21 +114,13 @@ export function SpaceMembers({
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.membersGrid')}>
-      {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Section header — rendered only when an explicit title is provided (e.g. inside the community dialog). */}
+      {title && (
         <div>
-          <h2 className="text-page-title text-foreground">{title ?? t('members.title')}</h2>
-          <p className="mt-1 text-body text-muted-foreground">
-            {subtitle ?? t('members.subtitle', { users: totalUsers, organizations: totalOrgs })}
-          </p>
+          <h2 className="text-page-title text-foreground">{title}</h2>
+          {subtitle && <p className="mt-1 text-body text-muted-foreground">{subtitle}</p>}
         </div>
-        {canInvite && onInvite && (
-          <Button className="shrink-0 gap-2" onClick={onInvite}>
-            <UserPlus className="w-4 h-4" aria-hidden="true" />
-            {t('members.inviteMember')}
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Search + filters */}
       <div className="flex flex-col sm:flex-row gap-3">

@@ -2922,6 +2922,11 @@
           },
           "privacy": {
             "contributorRolesVisible": "Show contributor roles to all registered users"
+          },
+          "designSystem": {
+            "title": "Design",
+            "description": "Try the new Alkemio design. This setting only applies to this browser, so your other devices will keep the current design.",
+            "toggleLabel": "Use the new design"
           }
         },
         "security": {

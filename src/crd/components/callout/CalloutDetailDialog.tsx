@@ -1,4 +1,4 @@
-import { MoreHorizontal, Share2, Smile, X } from 'lucide-react';
+import { Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -27,7 +27,7 @@ type CalloutDetailDialogProps = {
   callout: CalloutDetailDialogData;
   /** CommentThread rendered here, inside the scrollable body */
   commentsSlot: ReactNode;
-  /** CommentInput rendered in sticky footer — omit when canComment is false */
+  /** CommentInput rendered above the thread, inside the scrollable body — omit when canComment is false */
   commentInputSlot?: ReactNode;
   /** Contributions grid rendered above the discussion section */
   contributionsSlot?: ReactNode;
@@ -37,8 +37,26 @@ type CalloutDetailDialogProps = {
   pollSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
   whiteboardFramingSlot?: ReactNode;
-  onReactionsClick?: () => void;
+  /** Memo framing preview rendered below description (e.g. CalloutMemoPreview) */
+  memoFramingSlot?: ReactNode;
+  /** Media gallery inline carousel rendered below description (e.g. CalloutMediaGalleryCarousel) */
+  mediaGalleryFramingSlot?: ReactNode;
+  /** Call-to-action link button rendered below description (e.g. CalloutLinkAction) */
+  callToActionFramingSlot?: ReactNode;
   onShareClick?: () => void;
+  /**
+   * 3-dots settings slot in the sticky-header cluster. Consumer injects a
+   * full menu component (e.g. `CalloutContextMenu`) with its own trigger
+   * button (plan D8 / T061).
+   */
+  settingsSlot?: ReactNode;
+  /**
+   * Mirrors `callout.settings.framing.commentsEnabled`. When `false` AND there are no existing
+   * messages (`callout.commentCount === 0`), the discussion section is hidden entirely. When
+   * `false` but messages exist, the thread renders read-only — consumer simply omits
+   * `commentInputSlot`. Default `true`.
+   */
+  commentsEnabled?: boolean;
 };
 
 export function CalloutDetailDialog({
@@ -52,10 +70,15 @@ export function CalloutDetailDialog({
   contributionsCount,
   pollSlot,
   whiteboardFramingSlot,
-  onReactionsClick,
+  memoFramingSlot,
+  mediaGalleryFramingSlot,
+  callToActionFramingSlot,
   onShareClick,
+  settingsSlot,
+  commentsEnabled,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
+  const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -85,17 +108,11 @@ export function CalloutDetailDialog({
               size="icon"
               className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
               aria-label={t('calloutDialog.share')}
+              onClick={onShareClick}
             >
               <Share2 className="w-5 h-5" aria-hidden="true" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
-              aria-label={t('calloutDialog.more')}
-            >
-              <MoreHorizontal className="w-5 h-5" aria-hidden="true" />
-            </Button>
+            {settingsSlot}
             <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
             <DialogClose asChild={true}>
               <Button
@@ -138,6 +155,9 @@ export function CalloutDetailDialog({
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
+              {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
+              {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
+              {callToActionFramingSlot && <div className="pt-2">{callToActionFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
@@ -149,10 +169,6 @@ export function CalloutDetailDialog({
                 </span>
               )}
               <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onReactionsClick}>
-                <Smile className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                {t('calloutDialog.reactions')}
-              </Button>
               <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
                 <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                 {t('calloutDialog.share')}
@@ -174,27 +190,25 @@ export function CalloutDetailDialog({
               </div>
             )}
 
-            {/* Discussion section */}
-            <div className="pt-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
-                {callout.commentCount !== undefined && (
-                  <Badge variant="secondary" className="rounded-full px-2">
-                    {callout.commentCount}
-                  </Badge>
-                )}
+            {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
+                (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the
+                consumer omits `commentInputSlot` in that case). */}
+            {showDiscussion && (
+              <div className="pt-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
+                  {callout.commentCount !== undefined && (
+                    <Badge variant="secondary" className="rounded-full px-2">
+                      {callout.commentCount}
+                    </Badge>
+                  )}
+                </div>
+                {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
+                {commentsSlot}
               </div>
-              {commentsSlot}
-            </div>
+            )}
           </div>
         </div>
-
-        {/* Sticky footer — comment input */}
-        {commentInputSlot && (
-          <div className="shrink-0 p-4 bg-background border-t border-border z-20">
-            <div className="max-w-4xl mx-auto">{commentInputSlot}</div>
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );

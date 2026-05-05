@@ -1,10 +1,13 @@
+import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import type { LeadItem } from '@/crd/components/space/sidebar/LeadBlock';
+import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { Button } from '@/crd/primitives/button';
 import {
   DirectMessageDialog,
   type MessageReceiverChipData,
@@ -15,22 +18,23 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
+import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 export default function CrdSpaceCommunityPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'crd-space']);
   const { space } = useSpace();
+  const navigate = useNavigate();
   const {
     callouts,
     calloutsSetId,
     canCreateCallout,
     tabDescription,
+    flowStateForNewCallouts,
     leadUsers,
     leadOrganizations,
     virtualContributors,
     hasVcEntitlement,
     members,
-    usersCount,
-    organizationsCount,
     canInvite,
     communityId,
     loading,
@@ -57,34 +61,38 @@ export default function CrdSpaceCommunityPage() {
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
-  const sidebarContainer = document.getElementById('crd-space-sidebar');
-
   return (
     <>
-      {sidebarContainer &&
-        createPortal(
-          <SpaceSidebar
-            variant="community"
-            description={tabDescription || space.about.profile.description || ''}
-            leads={sidebarLeads}
-            canContactLeads={canContactLeads}
-            onContactLead={handleContactLead}
-            canInvite={canInvite}
-            onInvite={handleInvite}
-            virtualContributors={virtualContributors}
-            showVirtualContributors={hasVcEntitlement}
-          />,
-          sidebarContainer
-        )}
-
-      <div className="space-y-8">
-        <SpaceMembers
-          members={members}
-          usersCount={usersCount}
-          organizationsCount={organizationsCount}
+      <SpaceSidebarPortal>
+        <SpaceSidebar
+          variant="community"
+          description={space.about.profile.description || ''}
+          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          leads={sidebarLeads}
+          canContactLeads={canContactLeads}
+          onContactLead={handleContactLead}
           canInvite={canInvite}
           onInvite={handleInvite}
+          virtualContributors={virtualContributors}
+          showVirtualContributors={hasVcEntitlement}
         />
+      </SpaceSidebarPortal>
+
+      <div className="space-y-8">
+        <TabStateHeader
+          description={tabDescription}
+          action={
+            canInvite &&
+            handleInvite && (
+              <Button size="sm" className="gap-2" onClick={handleInvite}>
+                <UserPlus className="w-4 h-4" aria-hidden="true" />
+                {t('crd-space:members.inviteMember')}
+              </Button>
+            )
+          }
+        />
+
+        <SpaceMembers members={members} />
 
         <CalloutListConnector
           callouts={callouts}
@@ -96,7 +104,12 @@ export default function CrdSpaceCommunityPage() {
       </div>
 
       {canCreateCallout && (
-        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+        />
       )}
 
       {canInvite && (

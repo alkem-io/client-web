@@ -20,6 +20,10 @@ export function CalloutListConnector({
   onCreateClick,
 }: CalloutListConnectorProps) {
   const sorted = [...callouts].sort((a, b) => a.sortOrder - b.sortOrder);
+  // The move-actions hook (plan D9 / T066) needs the ordered id list to
+  // derive each callout's top/bottom neighbour state. We compute it once here
+  // and pass it through so every item shares the same view of the feed.
+  const orderedCalloutIds = sorted.map(c => c.id);
 
   return (
     <SpaceFeed
@@ -29,7 +33,12 @@ export function CalloutListConnector({
       loading={loading && callouts.length === 0}
     >
       {sorted.map(callout => (
-        <LazyCalloutItem key={callout.id} calloutId={callout.id} calloutsSetId={calloutsSetId} />
+        <LazyCalloutItem
+          key={callout.id}
+          calloutId={callout.id}
+          calloutsSetId={calloutsSetId}
+          orderedCalloutIds={orderedCalloutIds}
+        />
       ))}
     </SpaceFeed>
   );

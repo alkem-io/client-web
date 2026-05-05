@@ -23,19 +23,10 @@ type InvitationsBlockProps = {
   loading?: boolean;
   onAccept: (id: string) => void;
   onDecline: (id: string) => void;
-  /** Resolves a default avatar URL for a space when no custom avatar is set. */
-  getDefaultAvatarUrl?: (spaceId: string) => string;
   className?: string;
 };
 
-export function InvitationsBlock({
-  invitations,
-  loading,
-  onAccept,
-  onDecline,
-  getDefaultAvatarUrl,
-  className,
-}: InvitationsBlockProps) {
+export function InvitationsBlock({ invitations, loading, onAccept, onDecline, className }: InvitationsBlockProps) {
   const { t } = useTranslation('crd-dashboard');
 
   if (loading) {
@@ -57,12 +48,12 @@ export function InvitationsBlock({
       ) : (
         <ul className="space-y-2">
           {invitations.map(invitation => {
-            const avatarSrc = invitation.spaceAvatarUrl || getDefaultAvatarUrl?.(invitation.spaceId);
-
             return (
               <li key={invitation.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
                 <Avatar className="size-10 rounded-lg">
-                  {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
+                  {invitation.spaceAvatarUrl ? (
+                    <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} />
+                  ) : null}
                   <AvatarFallback
                     className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
                     color={invitation.color}

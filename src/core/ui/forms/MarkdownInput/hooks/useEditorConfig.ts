@@ -9,7 +9,7 @@ import { TableRow } from '@tiptap/extension-table-row';
 import type { EditorView } from '@tiptap/pm/view';
 import StarterKit from '@tiptap/starter-kit';
 import { useMemo } from 'react';
-import { Iframe } from '../../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
+import { Iframe } from '@/crd/forms/markdown/extensions/iframe/Iframe';
 
 const ImageExtension = Image.configure({ inline: true });
 

@@ -1,3 +1,4 @@
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { CalloutFormConnector } from './CalloutFormConnector';
 
 type CalloutEditConnectorProps = {
@@ -5,22 +6,36 @@ type CalloutEditConnectorProps = {
   onOpenChange: (open: boolean) => void;
   calloutId: string;
   calloutsSetId?: string;
+  /**
+   * The fully-loaded callout from the parent (`LazyCalloutItem`'s
+   * `useCalloutInView`). Threaded down so the form's whiteboard "Open" button
+   * (T048) can launch the collaborative `CrdWhiteboardView` against the actual
+   * server whiteboard — `useCalloutContentQuery` doesn't return the rich
+   * `WhiteboardDetails` shape that dialog needs.
+   */
+  editCallout?: CalloutDetailsModelExtended;
 };
 
 /**
- * Pre-fills the form with existing callout data and locks framing type + contribution type.
- * This is a thin wrapper around CalloutFormConnector that loads the callout
- * and pre-fills the form values.
+ * Thin wrapper that renders `CalloutFormConnector` in edit mode. Pre-fetching
+ * the callout and mapping it to form values is handled inside
+ * `CalloutFormConnector` itself (wired in P3 — spec T041).
  */
 export function CalloutEditConnector({
   open,
   onOpenChange,
-  calloutId: _calloutId,
+  calloutId,
   calloutsSetId,
+  editCallout,
 }: CalloutEditConnectorProps) {
-  // In the full implementation, this would:
-  // 1. Fetch callout details by ID
-  // 2. Map to form values
-  // 3. Pass to CalloutFormConnector with locked fields
-  return <CalloutFormConnector open={open} onOpenChange={onOpenChange} calloutsSetId={calloutsSetId} />;
+  return (
+    <CalloutFormConnector
+      open={open}
+      onOpenChange={onOpenChange}
+      mode="edit"
+      calloutId={calloutId}
+      calloutsSetId={calloutsSetId}
+      editCallout={editCallout}
+    />
+  );
 }

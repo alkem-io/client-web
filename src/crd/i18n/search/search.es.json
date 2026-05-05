@@ -5,11 +5,12 @@
     "emptyDescription": "Busca en Espacios, Publicaciones, Respuestas, Usuarios y Organizaciones.",
     "noResultsTitle": "No se encontraron resultados para {{terms}}",
     "noResultsSuggestion": "Prueba con otras palabras clave o amplía tu búsqueda.",
-    "searchAllSpaces": "Buscar en todos los Espacios",
+    "searchAllSpaces": "Buscar en toda la plataforma",
     "loading": "Buscando\u2026",
     "disclaimer": "Estos resultados pueden no reflejar el estado actual de la plataforma. Los resultados de búsqueda se actualizan periódicamente.",
     "loadMore": "Cargar más",
-    "scopeAll": "Todos los Espacios",
+    "scopeAll": "Toda la plataforma",
+    "scopeTriggerLabel": "Buscar en: {{option}}",
     "categories": {
       "spaces": "Espacios",
       "posts": "Publicaciones",
@@ -47,7 +48,8 @@
       "platformSearch": "Búsqueda de plataforma",
       "filterBy": "Filtrar {{category}}",
       "resultsFound": "{{count}} resultados encontrados",
-      "noResultsFound": "No se encontraron resultados"
+      "noResultsFound": "No se encontraron resultados",
+      "scopeTrigger": "Cambiar el ámbito de búsqueda. Buscando actualmente en: {{option}}"
     }
   }
 }

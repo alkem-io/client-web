@@ -51,14 +51,12 @@ export function SpaceSettingsPage() {
         }}
       >
         <nav
-          className="px-6 md:px-8"
+          className="flex items-center gap-0 px-6"
           style={{
             minHeight: 44,
             fontFamily: "var(--font-family, 'Inter', sans-serif)",
           }}
         >
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center gap-0">
           {[
             { label: "About", icon: Info, id: "about" },
             { label: "Layout", icon: Layout, id: "layout" },
@@ -101,16 +99,12 @@ export function SpaceSettingsPage() {
               </Link>
             );
           })}
-            </div>
-          </div>
         </nav>
       </div>
 
       {/* Main Content Area — full width, no sidebar */}
-      <main className="flex-1 px-6 md:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-        <div>
+      <main className="flex-1 p-6 md:p-8">
+        <div className="max-w-6xl mx-auto">
           {/* Content Rendered based on Tab */}
           <div
             className="w-full min-h-[500px] p-6 md:p-8 shadow-sm"
@@ -167,8 +161,6 @@ export function SpaceSettingsPage() {
                 </div>
               </div>
             )}
-          </div>
-        </div>
           </div>
         </div>
       </main>

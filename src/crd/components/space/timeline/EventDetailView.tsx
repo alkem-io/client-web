@@ -189,13 +189,13 @@ export function EventDetailView({
   );
 
   const commentsColumn = showComments ? (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
+    <div className="flex flex-col gap-3">
       <h4 className="text-label uppercase text-muted-foreground">
         {t('calendar.details.comments')}
         {typeof commentCount === 'number' && <span className="ml-1 font-normal">({commentCount})</span>}
       </h4>
-      <div className="min-h-0 flex-1 overflow-y-auto pr-2">{commentsSlot}</div>
-      {commentInputSlot && <div className="border-t border-border pt-3">{commentInputSlot}</div>}
+      {commentInputSlot && <div>{commentInputSlot}</div>}
+      <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
     </div>
   ) : null;
 

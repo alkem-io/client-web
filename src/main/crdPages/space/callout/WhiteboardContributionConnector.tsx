@@ -25,7 +25,7 @@ export function WhiteboardContributionConnector({
   const callout = data?.lookup.callout;
   const whiteboardContribution = callout?.contributions[0];
   const whiteboard = whiteboardContribution?.whiteboard;
-  const authorization = callout?.authorization;
+  const authorization = whiteboard?.authorization;
 
   const guestShareUrl = whiteboard ? buildGuestShareUrl(whiteboard.id ?? whiteboard.nameID) : undefined;
 
