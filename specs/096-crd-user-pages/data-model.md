@@ -66,10 +66,21 @@ type UserPublicProfile = {
     location: string | null;        // "City, Country" — null if both empty
   };
   bio: string | null;               // markdown — null if empty
+  // Reserved profile tagsets — Keywords + Skills — resolved by
+  // `TagsetReservedName.{Keywords,Skills}` against `profile.tagsets[]`.
+  // Empty tagsets are dropped per-entry. The view hides the entire block
+  // when `tagsets.length === 0` (parity with MUI `UserProfileView` which
+  // conditionally renders each block).
+  tagsets: TagsetGroup[];           // FR-010a
   organizations: AssociatedOrganizationCard[];
   resources: PublicProfileResources;
 };
 ```
+
+The `TagsetGroup` shape is identical to the one declared on the Organization
+entity below (`{ name: string; tags: string[] }`). The CRD components share
+the type via `@/crd/components/organization/OrganizationProfileSidebar`
+(same precedent as `ReferenceLink`); no new shared module is introduced.
 
 ### Entity: `PublicProfileResources` (User profile right column section data)
 
@@ -176,9 +187,16 @@ type OrganizationPublicProfile = {
     associates: AssociatesView;
   };
   rightColumn: {
-    accountResources: AccountResourcesGroup | null;   // null when all three account resource lists are empty (FR-024)
-    leadSpaces: SpaceCardItem[];                       // filtered via useFilteredMemberships(contributions, [RoleType.Lead])
-    memberOf: SpaceCardItem[];                         // remaining memberships
+    // 3-tab layout mirroring User profile (FR-024 refined). Tab keys are the
+    // shared `ResourceTabKey` union: 'resourcesHosted' | 'leading' | 'memberOf'.
+    // The 'resourcesHosted' tab renders four sub-sections in this order;
+    // each sub-section is omitted when its list is empty (FR-015).
+    hostedSpaces: SpaceCardItem[];                    // account.spaces
+    hostedVirtualContributors: VCCardItem[];          // account.virtualContributors (organisations CAN host VCs)
+    hostedInnovationPacks: SimpleResourceCardItem[];  // account.innovationPacks; UI label "Template Packs"
+    hostedInnovationHubs: SimpleResourceCardItem[];   // account.innovationHubs; UI label "Custom Homepages"
+    leadSpaces: SpaceCardItem[];                      // useFilteredMemberships(contributions, [RoleType.Lead])
+    memberOf: SpaceCardItem[];                        // remaining memberships
   };
 };
 
@@ -227,39 +245,24 @@ type CompactContributorCardItem = {
   href: string;                             // contributor's profile URL
 };
 
-type AccountResourcesGroup = {
-  // The CRD view paginates `spaces` at VISIBLE_SPACE_LIMIT = 6 with a
-  // "Show all" button (state-machine in the view, NOT in the mapper) — exact
-  // parity with current MUI `AccountResourcesView`. Mapper passes ALL spaces.
-  spaces: SpaceCardItem[];
-  innovationPacks: InnovationPackCardItem[]; // rendered uncapped (MUI parity)
-  innovationHubs: InnovationHubCardItem[];   // rendered uncapped (MUI parity)
-};
-
-type InnovationPackCardItem = {
-  id: string;
-  url: string;
-  displayName: string;
-  description: string | null;
-  avatarImageUrl: string | null;
-};
-
-type InnovationHubCardItem = {
-  id: string;
-  url: string;
-  displayName: string;
-  description: string | null;
-  avatarImageUrl: string | null;
-};
+// Note: an earlier draft defined `AccountResourcesGroup`, `InnovationPackCardItem`,
+// and `InnovationHubCardItem` to back a single titled "Account Resources" section
+// that grouped spaces + packs + hubs into one card. That stacked-blocks layout was
+// dropped in favour of the User-profile-style tabbed layout (FR-024 refined).
+// The Org now reuses `SimpleResourceCardItem` (defined under PublicProfileResources
+// for the User profile) for both packs and hubs — the prop shape is identical so
+// there's no reason to keep parallel types.
 ```
 
-**Section omission rules (Organization right column)**:
+**Tab → section filter (Organization right column)** — mirrors User profile per FR-024 refined; default active tab is `Resources Hosted`:
 
-| Section | Omitted when | Otherwise |
-|---|---|---|
-| Account Resources | `spaces.length === 0 && innovationPacks.length === 0 && innovationHubs.length === 0` (current MUI's `hasAccountResources` check) | Render section. **Hosted-spaces sub-list paginates at VISIBLE_SPACE_LIMIT = 6 with a "Show all" button** — parity port of current MUI `AccountResourcesView` (FR-016). |
-| Lead Spaces | `leadSpaces.length === 0`. Driven by `useFilteredMemberships(contributions, [RoleType.Lead])` — `[Lead]` only (current MUI parity, no Admin). | Render section |
-| All Memberships | Never omitted — always render section, with empty-state caption "No memberships yet" when `memberOf.length === 0`. Reuses existing `pages.user-profile.communities.noMembership` translation key per FR-102. | Render section |
+| Active tab | Sections rendered |
+|---|---|
+| `Resources Hosted` (default) | Four sub-sections in this order: **Spaces** (`hostedSpaces`) → **Virtual Contributors** (`hostedVirtualContributors`) → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent header suppressed; tab label is the heading. Empty sub-sections omitted entirely. |
+| `Lead Spaces` | `leadSpaces` only; section header suppressed; empty-state caption when the list is empty. Filtered via `useFilteredMemberships(contributions, [RoleType.Lead])` — `[Lead]` only (current MUI parity, no Admin). |
+| `All Memberships` | `memberOf` only; section header suppressed; empty-state caption "No memberships yet" (existing `pages.user-profile.communities.noMembership` translation key per FR-102) when the list is empty. |
+
+A sub-section is *omitted* — no header, no empty caption per slot — when its item list is empty (FR-015). Lead Spaces and All Memberships render an empty-state caption (so the tab body is never blank).
 
 ---
 
@@ -376,7 +379,7 @@ Apollo `loading` flags.
 
 | Region | Driving query / hook | `loading.*` key |
 |---|---|---|
-| Hero (avatar / name / location), Bio | `useUserProvider` | `hero` |
+| Hero (avatar / name / location), Bio, Tagsets (Keywords + Skills) | `useUserProvider` | `hero` |
 | Sidebar Organizations list | `useUserOrganizationIds` (+ downstream lookup if any) — wrapper swallows `loading`; mapper derives it as `userId !== undefined && organizationIds === undefined` | `organizations` |
 | Resources Hosted (hosted spaces + hosted VCs) | `useUserAccountQuery` | `hostedResources` |
 | Spaces Leading + Member Of (driven by `useFilteredMemberships`) | `useUserContributions` — wrapper swallows `loading`; mapper derives it as `userId !== undefined && contributions === undefined` | `memberships` |
@@ -387,7 +390,7 @@ Apollo `loading` flags.
 |---|---|---|
 | Hero (avatar / name / location / Verified badge) | `useOrganizationProvider` (single facade) | `hero` |
 | Sidebar (Bio / Tagsets / References / Associates) | `useOrganizationProvider` | `sidebar` |
-| Right column — Account Resources | `useOrganizationAccountQuery` + `useAccountResources` | `accountResources` |
+| Right column — Resources Hosted (4 sub-sections) | `useOrganizationAccountQuery` + `useAccountResources` | `hostedResources` |
 | Right column — Lead Spaces + All Memberships | `useFilteredMemberships(contributions, …)` (derives from `useOrganizationProvider`) | `memberships` |
 
 ### VC profile

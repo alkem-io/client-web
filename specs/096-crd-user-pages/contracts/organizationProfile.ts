@@ -16,7 +16,7 @@
 
 import type { ReactNode } from 'react';
 import type { CompactContributorCardItem } from './compactContributor';
-import type { SpaceCardItem } from './publicProfile';
+import type { ResourceTabKey, SimpleResourceCardItem, SpaceCardItem, VCCardItem } from './publicProfile';
 
 /* ----------------------------- OrganizationPageHero --------------------- */
 
@@ -141,60 +141,45 @@ export type OrganizationProfileSidebarProps = {
 
 /* -------------------- OrganizationResourceSections ---------------------- */
 
-export type InnovationPackCardItem = {
-  id: string;
-  url: string;
-  displayName: string;
-  description: string | null;
-  avatarImageUrl: string | null;
-};
-
-export type InnovationHubCardItem = {
-  id: string;
-  url: string;
-  displayName: string;
-  description: string | null;
-  avatarImageUrl: string | null;
-};
-
-export type AccountResourcesGroup = {
-  /**
-   * The view paginates `spaces` at `VISIBLE_SPACE_LIMIT = 6` with a "Show all"
-   * button (state-machine in the view, NOT in the mapper) — exact parity port
-   * of current MUI `AccountResourcesView`. Mapper passes ALL spaces.
-   */
-  spaces: SpaceCardItem[];
-  /** Rendered uncapped — current MUI parity. */
-  innovationPacks: InnovationPackCardItem[];
-  /** Rendered uncapped — current MUI parity. */
-  innovationHubs: InnovationHubCardItem[];
-};
+// Note: an earlier draft defined `AccountResourcesGroup`, `InnovationPackCardItem`,
+// and `InnovationHubCardItem` to back a single titled "Account Resources" section
+// that grouped spaces + packs + hubs into one card. That stacked-blocks layout was
+// dropped in favour of the User-profile-style tabbed layout (FR-024 refined).
+// Packs and Hubs are now rendered with the shared `SimpleResourceCardItem` type
+// (defined in `publicProfile.ts`) — same shape, no parallel types.
 
 export type OrganizationResourceSectionsProps = {
+  /** Active resource tab; integration layer manages this state. */
+  activeTab: ResourceTabKey;
+  /** Backend field: `account.spaces`. Empty array → sub-section omitted. */
+  hostedSpaces: SpaceCardItem[];
   /**
-   * `null` when all three account-resource lists are empty (FR-024) — the
-   * Account Resources section is omitted entirely.
+   * Backend field: `account.virtualContributors`. Organisations CAN host VCs
+   * (rare in production today, but supported for parity with the User profile).
+   * Empty array → sub-section omitted.
    */
-  accountResources: AccountResourcesGroup | null;
-  /** Empty array hides the Lead Spaces section. */
+  hostedVirtualContributors: VCCardItem[];
+  /** Backend field: `account.innovationPacks`. UI label: "Template Packs". */
+  hostedInnovationPacks: SimpleResourceCardItem[];
+  /** Backend field: `account.innovationHubs`. UI label: "Custom Homepages". */
+  hostedInnovationHubs: SimpleResourceCardItem[];
+  /** Empty array → empty-state caption shown when this tab is active. */
   leadSpaces: SpaceCardItem[];
-  /**
-   * The All Memberships section is ALWAYS rendered. When this array is empty,
-   * the section shows the empty-state caption "No memberships yet" (FR-024).
-   */
+  /** Empty array → empty-state caption shown when this tab is active. */
   memberOf: SpaceCardItem[];
-  /** i18n-resolved labels. */
+  /** i18n-resolved labels — mirrors `UserResourceSectionsProps.labels`. */
   labels: {
-    accountResourcesTitle: string;
-    accountResourcesSpacesSubtitle: string;
-    accountResourcesInnovationPacksSubtitle: string;
-    accountResourcesInnovationHubsSubtitle: string;
-    /** Parity reuse — i18n key `components.dashboardNavigation.showAll`. */
-    accountResourcesShowAll: string;
-    leadSpacesTitle: string;
-    memberOfTitle: string;
+    spacesSubsection: string;
+    virtualContributorsSubsection: string;
+    /** "Template Packs" — reused from `common.innovation-packs` per FR-102. */
+    templatePacksSubsection: string;
+    /** "Custom Homepages" — reused from `common.customHomepages` per FR-102. */
+    customHomepagesSubsection: string;
+    spacesLeading: string;
+    memberOf: string;
+    emptyLeading: string;
     /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
-    memberOfEmpty: string;
+    emptyMembership: string;
   };
 };
 
@@ -213,18 +198,27 @@ export type OrganizationPublicProfileViewProps = {
   };
 
   /**
+   * Active tab strip props — same shape as the User profile (`UserResourceTabStripProps`).
+   * Held in local React state at the integration layer (`useResourceTabs`).
+   */
+  tabStrip: {
+    activeTab: ResourceTabKey;
+    onSelectTab: (next: ResourceTabKey) => void;
+  };
+
+  /**
    * Per-region loading flags (FR-009). Mapping (data-model.md "Query → region"):
-   *   - `hero` / `sidebar`        ← useOrganizationProvider (single facade)
-   *   - `accountResources`        ← useOrganizationAccountQuery + useAccountResources
-   *   - `memberships`             ← useFilteredMemberships(contributions, …)
+   *   - `hero` / `sidebar`     ← useOrganizationProvider (single facade)
+   *   - `hostedResources`      ← useOrganizationAccountQuery + useAccountResources
+   *   - `memberships`          ← useFilteredMemberships(contributions, …)
    *
    * `useOrganizationProvider` resolves the org + sidebar data in one bundle;
-   * the right column's Account Resources and Memberships unblock independently.
+   * the right column's hosted resources and memberships unblock independently.
    */
   loading: {
     hero: boolean;
     sidebar: boolean;
-    accountResources: boolean;
+    hostedResources: boolean;
     memberships: boolean;
   };
 
