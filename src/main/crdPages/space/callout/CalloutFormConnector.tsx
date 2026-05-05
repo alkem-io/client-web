@@ -36,6 +36,13 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import {
+  COLLABORA_IMPORT_ACCEPT_ATTR,
+  COLLABORA_IMPORT_EXTENSIONS_P1,
+  COLLABORA_IMPORT_MAX_BYTES,
+} from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
+import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
@@ -99,6 +106,17 @@ export function CalloutFormConnector({
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
+  // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
+  // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
+  // change (handled inside the FramingChipStrip onChange wrapper below).
+  const [collaboraImportError, setCollaboraImportError] = useState<
+    | { kind: 'no-file' }
+    | { kind: 'multiple-files' }
+    | { kind: 'folder' }
+    | { kind: 'extension'; received: string }
+    | { kind: 'size'; bytes: number; maxBytes: number }
+    | null
+  >(null);
 
   useBeforeUnloadGuard(open && dirty);
 
@@ -157,6 +175,85 @@ export function CalloutFormConnector({
     }
   }, [mode, open, editData, prefill]);
 
+  // --- Collabora import staging -----------------------------------------
+  const setCollaboraImportFile = (file: File | null) => {
+    if (!file) {
+      setField('collaboraUploadFile', null);
+      setField('collaboraAutoPrefilledTitle', undefined);
+      return;
+    }
+    const validation = validateCollaboraImportFile([file]);
+    if (!validation.ok) {
+      setCollaboraImportError(validation.error);
+      // Don't stage the file when validation fails — pre-check before any network call.
+      setField('collaboraUploadFile', null);
+      setField('collaboraAutoPrefilledTitle', undefined);
+      return;
+    }
+    setCollaboraImportError(null);
+    setField('collaboraUploadFile', file);
+    // Auto-prefill the post title from the filename when the title is empty.
+    // Captures the prefilled value so the submit-time mapper can decide whether
+    // to send the displayName explicitly or rely on the server's filename
+    // derivation (FR-004a + FR-004b).
+    if (!values.title.trim()) {
+      const prefilled = filenameWithoutExtension(file.name);
+      setField('title', prefilled);
+      setField('collaboraAutoPrefilledTitle', prefilled);
+    } else {
+      setField('collaboraAutoPrefilledTitle', undefined);
+    }
+  };
+
+  const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
+  const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
+  const collaboraImportErrorMessage: string | null = collaboraImportError
+    ? (() => {
+        switch (collaboraImportError.kind) {
+          case 'extension':
+            return t('callout.documentImportErrorUnsupported', { formats: formatList });
+          case 'size':
+            return t('callout.documentImportErrorTooLarge', { cap: capMb });
+          case 'multiple-files':
+            return t('callout.documentImportErrorMultiple');
+          case 'folder':
+            return t('callout.documentImportErrorFolder');
+          default:
+            return null;
+        }
+      })()
+    : null;
+
+  // Map server errors raised by the create-callout mutation to the appropriate
+  // surface. FORMAT_NOT_SUPPORTED + STORAGE_UPLOAD_FAILED render inline near the
+  // upload zone (same i18n keys as the client pre-check). STORAGE_SERVICE_UNAVAILABLE
+  // is a transport-level concern → dialog-level toast (FR-011, no auto-retry).
+  // Anything else falls through to the existing dialog-level error toast.
+  const handleSubmitError = (err: unknown) => {
+    const message = err instanceof Error ? err.message : '';
+    const code = (err as { graphQLErrors?: Array<{ extensions?: { code?: string } }> })?.graphQLErrors?.[0]?.extensions
+      ?.code;
+    if (code === 'FORMAT_NOT_SUPPORTED' || /FORMAT_NOT_SUPPORTED/.test(message)) {
+      setCollaboraImportError({ kind: 'extension', received: '' });
+      return;
+    }
+    if (code === 'STORAGE_UPLOAD_FAILED' || /STORAGE_UPLOAD_FAILED/.test(message)) {
+      setCollaboraImportError({
+        kind: 'size',
+        bytes: values.collaboraUploadFile?.size ?? 0,
+        maxBytes: COLLABORA_IMPORT_MAX_BYTES,
+      });
+      return;
+    }
+    if (code === 'STORAGE_SERVICE_UNAVAILABLE' || /STORAGE_SERVICE_UNAVAILABLE/.test(message)) {
+      notify(t('callout.documentImportErrorServiceUnavailable'), 'error');
+      return;
+    }
+    // Generic fall-through — log + let the existing dialog-level toast surface
+    // whatever the connector previously showed for unknown errors.
+    logError(new Error('Callout creation mutation failed', { cause: err as Error }));
+  };
+
   // --- Create path -------------------------------------------------------
   const submitting = creating || updating || mediaGalleryUploading;
 
@@ -164,7 +261,7 @@ export function CalloutFormConnector({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
-    const { input, whiteboardPreviewImages } = mapFormToCalloutCreationInput(values, {
+    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(values, {
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
       collaboraFallbackDisplayName: t('callout.defaultDocumentName'),
@@ -179,9 +276,13 @@ export function CalloutFormConnector({
 
     let result: Awaited<ReturnType<typeof handleCreateCallout>>;
     try {
-      result = await handleCreateCallout(input);
+      // Collabora-document framing's upload path attaches the file as the second
+      // arg; blank-create path passes nothing extra. The `apollo-upload-client`
+      // link auto-promotes the request to multipart when a `file` variable is
+      // present (`apollo-require-preflight: true` is set globally on the link).
+      result = await handleCreateCallout(input, collaboraUploadFile);
     } catch (err) {
-      logError(new Error('Callout creation mutation failed', { cause: err as Error }));
+      handleSubmitError(err);
       return;
     }
     if (!result) return;
@@ -420,7 +521,17 @@ export function CalloutFormConnector({
           <div className="space-y-4">
             <FramingChipStrip
               value={values.framingChip}
-              onChange={chip => setField('framingChip', chip)}
+              onChange={chip => {
+                // When switching framing AWAY from 'document', clear any staged
+                // upload so the file does not persist invisibly under another
+                // framing type (Edge Case in spec.md).
+                if (chip !== 'document' && values.framingChip === 'document') {
+                  setField('collaboraUploadFile', null);
+                  setField('collaboraAutoPrefilledTitle', undefined);
+                  setCollaboraImportError(null);
+                }
+                setField('framingChip', chip);
+              }}
               locked={mode === 'edit'}
               disabledChips={disabledChips}
             />
@@ -465,6 +576,23 @@ export function CalloutFormConnector({
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
               collaboraDocumentType={values.collaboraDocumentType}
               onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+              collaboraUpload={
+                mode === 'create'
+                  ? {
+                      acceptAttr: COLLABORA_IMPORT_ACCEPT_ATTR,
+                      file: values.collaboraUploadFile,
+                      onFileChange: setCollaboraImportFile,
+                      error: collaboraImportError,
+                      onError: setCollaboraImportError,
+                      errorMessage: collaboraImportErrorMessage,
+                      busy: creating,
+                      labelHint: t('callout.documentImportHint'),
+                      labelMaxSize: t('callout.documentImportMaxSize', { cap: capMb }),
+                      labelRemoveFile: t('callout.documentImportRemoveFile'),
+                      labelOr: t('callout.documentImportOr'),
+                    }
+                  : undefined
+              }
             />
           </div>
         }

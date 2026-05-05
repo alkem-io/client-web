@@ -886,7 +886,20 @@
         "collaboraDocument": {
           "title": "Document",
           "tooltip": "Add a collaborative document as additional content",
-          "notEnabledTooltip": "Office documents are not enabled for this space."
+          "notEnabledTooltip": "Office documents are not enabled for this space.",
+          "upload": {
+            "or": "or",
+            "hint": "Drag & drop a file, or click to upload",
+            "maxSize": ".docx, .xlsx, .pptx up to {{cap}} MB",
+            "removeFile": "Remove file",
+            "errors": {
+              "unsupported": "This file type isn't supported. Try {{formats}}.",
+              "tooLarge": "File is too large. Maximum size is {{cap}} MB.",
+              "multiple": "Drop a single file at a time.",
+              "folder": "Drop a single file, not a folder.",
+              "serviceUnavailable": "Document service is temporarily unavailable. Please try again in a moment."
+            }
+          }
         }
       },
       "contributionSettings": {
@@ -4715,7 +4728,7 @@
         "label": "Document type",
         "SPREADSHEET": "Spreadsheet",
         "PRESENTATION": "Presentation",
-        "TEXT_DOCUMENT": "Text Document"
+        "TEXT_DOCUMENT": "Word Document"
       }
     },
     "editor": {

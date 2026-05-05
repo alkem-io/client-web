@@ -15,6 +15,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraDocumentDisplayName';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileTagsToCreateTags,
@@ -107,6 +108,27 @@ const CreateCalloutDialog = ({
       const formData = ensurePresence(calloutFormData);
       // Map the profile to CreateProfileInput
       const { mediaGallery, ...framingData } = formData.framing;
+      // Pull the staged Collabora upload (if any) out of the framing payload — it
+      // travels as a separate top-level mutation argument, not inside the input.
+      // `autoPrefilledTitle` likewise is FE-only state; it never reaches the server.
+      const collaboraUploadFile = framingData.collaboraDocument?.uploadFile;
+      const collaboraAutoPrefilledTitle = framingData.collaboraDocument?.autoPrefilledTitle;
+      const collaboraDocumentForServer = framingData.collaboraDocument
+        ? collaboraUploadFile
+          ? // Upload path: typed-vs-prefill decision rule (FR-004b). When the post
+            // title differs from the auto-prefill, send displayName explicitly;
+            // otherwise send `{}` and let the server derive from the filename.
+            deriveCollaboraDocumentDisplayName({
+              mode: 'upload',
+              postTitle: framingData.profile.displayName,
+              autoPrefilledTitle: collaboraAutoPrefilledTitle,
+            })
+          : // Blank-create path: send displayName + documentType (existing behaviour).
+            {
+              displayName: framingData.profile.displayName || framingData.collaboraDocument.displayName,
+              documentType: framingData.collaboraDocument.documentType,
+            }
+        : undefined;
       const framing = {
         ...framingData,
         profile: mapProfileModelToCreateProfileInput(framingData.profile),
@@ -118,13 +140,7 @@ const CreateCalloutDialog = ({
               options: framingData.poll.options.map(o => o.text),
             }
           : undefined,
-        // Use the callout title as the document name
-        collaboraDocument: framingData.collaboraDocument
-          ? {
-              ...framingData.collaboraDocument,
-              displayName: framingData.profile.displayName || framingData.collaboraDocument.displayName,
-            }
-          : undefined,
+        collaboraDocument: collaboraDocumentForServer,
       };
 
       // And map the radio button allowed contribution types to an array
@@ -174,7 +190,7 @@ const CreateCalloutDialog = ({
         sendNotification,
       };
 
-      const createdCallout = await handleCreateCallout(createCalloutInput);
+      const createdCallout = await handleCreateCallout(createCalloutInput, collaboraUploadFile);
       if (mediaGallery?.visuals?.length) {
         try {
           await uploadMediaGalleryVisuals({

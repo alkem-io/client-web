@@ -8,6 +8,7 @@ import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
 } from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
@@ -97,6 +98,24 @@ type FramingEditorConnectorProps = {
   // create-callout mutation and cannot change after the document is created.
   collaboraDocumentType: CollaboraDocumentType;
   onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
+  /**
+   * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
+   * Omitted in edit mode — once a Collabora document exists, replacing its bytes
+   * is out of P1 scope.
+   */
+  collaboraUpload?: {
+    acceptAttr: string;
+    file: File | null;
+    onFileChange: (file: File | null) => void;
+    error: DocumentImportError | null;
+    onError: (error: DocumentImportError | null) => void;
+    errorMessage: string | null;
+    busy?: boolean;
+    labelHint: string;
+    labelMaxSize: string;
+    labelRemoveFile: string;
+    labelOr: string;
+  };
 };
 
 export function FramingEditorConnector({
@@ -137,6 +156,7 @@ export function FramingEditorConnector({
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
+  collaboraUpload,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -308,6 +328,7 @@ export function FramingEditorConnector({
           value={collaboraDocumentType as CollaboraDocumentTypeValue}
           onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
           readOnly={mode === 'edit'}
+          upload={collaboraUpload}
         />
       );
 

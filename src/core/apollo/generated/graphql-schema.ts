@@ -1320,7 +1320,7 @@ export type CollaboraDocument = {
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Profile for this CollaboraDocument. */
-  profile?: Maybe<Profile>;
+  profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2000,17 +2000,17 @@ export type CreateClassificationInput = {
 
 export type CreateCollaboraDocumentData = {
   __typename?: 'CreateCollaboraDocumentData';
-  /** Title for the new collaborative document. */
-  displayName: Scalars['String']['output'];
-  /** Type of document to create. */
-  documentType: CollaboraDocumentType;
+  /** Title for the new collaborative document. Required for blank-create. On the upload path, defaulted from the uploaded filename (extension stripped) when absent or empty. */
+  displayName?: Maybe<Scalars['String']['output']>;
+  /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
+  documentType?: Maybe<CollaboraDocumentType>;
 };
 
 export type CreateCollaboraDocumentInput = {
-  /** Title for the new collaborative document. */
-  displayName: Scalars['String']['input'];
-  /** Type of document to create. */
-  documentType: CollaboraDocumentType;
+  /** Title for the new collaborative document. Required for blank-create. On the upload path, defaulted from the uploaded filename (extension stripped) when absent or empty. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  /** Type of document to create. Required for blank-create. On the upload path, ignored — the type is derived from the uploaded file's sniffed MIME by file-service-go. */
+  documentType?: InputMaybe<CollaboraDocumentType>;
 };
 
 export type CreateCollaborationData = {
@@ -4406,6 +4406,7 @@ export type MigrateEmbeddings = {
 export enum MimeType {
   Avif = 'AVIF',
   Bmp = 'BMP',
+  Csv = 'CSV',
   Doc = 'DOC',
   Docx = 'DOCX',
   Gif = 'GIF',
@@ -4413,6 +4414,7 @@ export enum MimeType {
   Heif = 'HEIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Odg = 'ODG',
   Odp = 'ODP',
   Ods = 'ODS',
   Odt = 'ODT',
@@ -4425,6 +4427,7 @@ export enum MimeType {
   Ppt = 'PPT',
   Pptm = 'PPTM',
   Pptx = 'PPTX',
+  Rtf = 'RTF',
   Svg = 'SVG',
   Webp = 'WEBP',
   Xls = 'XLS',
@@ -4591,7 +4594,7 @@ export type Mutation = {
   convertSpaceL2ToSpaceL1: Space;
   /** Convert a VC of type ALKEMIO_SPACE to be of type KNOWLEDGE_BASE. All Callouts from the Space currently being used are moved to the Knowledge Base. Note: only allowed for VCs using a Space within the same Account. */
   convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
-  /** Create a new Callout on the CalloutsSet. */
+  /** Create a new Callout on the CalloutsSet. When `file` is supplied alongside a COLLABORA_DOCUMENT framing, the new callout is framed with a Collabora document populated from the uploaded bytes (file-service-go sniffs MIME, validates format and size, and derives the document type; any documentType in the input is ignored on the upload path; displayName defaults from the filename when absent). When `file` is omitted, the existing blank-create behaviour applies and framing.collaboraDocument must specify both displayName and documentType. */
   createCalloutOnCalloutsSet: Callout;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
@@ -5071,6 +5074,7 @@ export type MutationConvertVirtualContributorToUseKnowledgeBaseArgs = {
 
 export type MutationCreateCalloutOnCalloutsSetArgs = {
   calloutData: CreateCalloutOnCalloutsSetInput;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 };
 
 export type MutationCreateContributionOnCalloutArgs = {
@@ -8659,7 +8663,7 @@ export type UpdateDiscussionInput = {
 
 export type UpdateDocumentInput = {
   ID: Scalars['UUID']['input'];
-  /** The display name for the Document. Not supported — rejected with a ValidationException if provided. */
+  /** Display name. Currently rejected with a ValidationException — for documents owned by a parent entity (e.g., CollaboraDocument, Profile), use the parent's update mutation, which carries the context (file extension, MIME, profile coupling) needed to keep editor titles, download names, and the file-service row in sync. Direct rename via updateDocument will be wired when documents become a directly-managed resource (e.g., a per-space documents collection). */
   displayName?: InputMaybe<Scalars['String']['input']>;
   tagset?: InputMaybe<UpdateTagsetInput>;
 };
@@ -8943,17 +8947,17 @@ export type UpdateSpacePlatformSettingsInput = {
 
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
-  allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  allowEventsFromSubspaces?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if guest users can contribute to this Space. */
-  allowGuestContributions: Scalars['Boolean']['input'];
+  allowGuestContributions?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create callouts. */
-  allowMembersToCreateCallouts: Scalars['Boolean']['input'];
+  allowMembersToCreateCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create subspaces. */
-  allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  allowMembersToCreateSubspaces?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if members can create video calls in this Space. */
-  allowMembersToVideoCall: Scalars['Boolean']['input'];
+  allowMembersToVideoCall?: InputMaybe<Scalars['Boolean']['input']>;
   /** Flag to control if ability to contribute is inherited from parent Space. */
-  inheritMembershipRights: Scalars['Boolean']['input'];
+  inheritMembershipRights?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateSpaceSettingsEntityInput = {
@@ -13639,7 +13643,7 @@ export type CalloutContentQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | undefined;
           };
@@ -13955,7 +13959,7 @@ export type UpdateCalloutContentMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
     };
@@ -14389,7 +14393,7 @@ export type UpdateCalloutVisibilityMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
     };
@@ -14735,7 +14739,7 @@ export type CalloutContributionQuery = {
                 id: string;
                 documentType: CollaboraDocumentType;
                 createdDate: Date;
-                profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 createdBy?:
                   | {
                       __typename?: 'User';
@@ -14849,7 +14853,7 @@ export type CreateCollaboraDocumentOnCalloutMutation = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
-          profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+          profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
         }
       | undefined;
   };
@@ -14873,7 +14877,7 @@ export type UpdateCollaboraDocumentMutation = {
   updateCollaboraDocument: {
     __typename?: 'CollaboraDocument';
     id: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
@@ -15367,7 +15371,7 @@ export type CalloutContributionsQuery = {
                   id: string;
                   documentType: CollaboraDocumentType;
                   createdDate: Date;
-                  profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+                  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -15564,7 +15568,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
   id: string;
   documentType: CollaboraDocumentType;
   createdDate: Date;
-  profile?: { __typename?: 'Profile'; id: string; url: string; displayName: string } | undefined;
+  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -15805,6 +15809,7 @@ export type CalloutsSetTagsQuery = {
 
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
+  file?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 export type CreateCalloutMutation = {
@@ -16092,7 +16097,7 @@ export type CreateCalloutMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
     };
@@ -16652,7 +16657,7 @@ export type CalloutDetailsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | undefined;
           };
@@ -17131,7 +17136,7 @@ export type CalloutDetailsFragment = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
-          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         }
       | undefined;
   };

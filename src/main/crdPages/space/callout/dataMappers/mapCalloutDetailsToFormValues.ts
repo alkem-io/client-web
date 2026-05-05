@@ -22,12 +22,16 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Poll]: 'poll',
 };
 
-const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType> = {
+// Documents are framing-only in P1 — no `document` response type. Existing
+// callouts with `CalloutContributionType.CollaboraDocument` in `allowedTypes`
+// (provisioned during the Documents MVP before this iteration) collapse to
+// `'none'` on prefill, since the response surface no longer renders them.
+const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType | 'none'> = {
   [CalloutContributionType.Link]: 'link',
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Memo]: 'memo',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
-  [CalloutContributionType.CollaboraDocument]: 'document',
+  [CalloutContributionType.CollaboraDocument]: 'none',
 };
 
 const findDefaultTagset = (tagsets: CalloutData['framing']['profile']['tagsets']) => {

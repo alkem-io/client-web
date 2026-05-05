@@ -3,12 +3,14 @@ import BlockIcon from '@mui/icons-material/Block';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import CloseIcon from '@mui/icons-material/Close';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import SlideshowOutlined from '@mui/icons-material/SlideshowOutlined';
 import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
-import { Tooltip } from '@mui/material';
+import UploadFileOutlined from '@mui/icons-material/UploadFileOutlined';
+import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutFramingType,
@@ -30,6 +32,16 @@ import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioBut
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import { nameOf } from '@/core/utils/nameOf';
+import {
+  COLLABORA_IMPORT_ACCEPT_ATTR,
+  COLLABORA_IMPORT_EXTENSIONS_P1,
+  COLLABORA_IMPORT_MAX_BYTES,
+} from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
+import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import {
+  type ValidationError,
+  validateCollaboraImportFile,
+} from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -64,6 +76,54 @@ const CalloutFormFramingSettings = ({
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
+  const [collaboraImportError, setCollaboraImportError] = useState<ValidationError | null>(null);
+
+  const collaboraCapMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
+  const collaboraImportErrorMessage: string | null = collaboraImportError
+    ? (() => {
+        const formats = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
+        switch (collaboraImportError.kind) {
+          case 'extension':
+            return t('callout.create.framingSettings.collaboraDocument.upload.errors.unsupported', { formats });
+          case 'size':
+            return t('callout.create.framingSettings.collaboraDocument.upload.errors.tooLarge', {
+              cap: collaboraCapMb,
+            });
+          case 'multiple-files':
+            return t('callout.create.framingSettings.collaboraDocument.upload.errors.multiple');
+          case 'folder':
+            return t('callout.create.framingSettings.collaboraDocument.upload.errors.folder');
+          default:
+            return null;
+        }
+      })()
+    : null;
+
+  const handleCollaboraFileSelect = (file: File | null) => {
+    if (!file) {
+      setFieldValue('framing.collaboraDocument.uploadFile', undefined);
+      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+      setCollaboraImportError(null);
+      return;
+    }
+    const validation = validateCollaboraImportFile([file]);
+    if (!validation.ok) {
+      setCollaboraImportError(validation.error);
+      // Don't stage the file when validation fails — pre-check before any network call.
+      setFieldValue('framing.collaboraDocument.uploadFile', undefined);
+      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+      return;
+    }
+    setCollaboraImportError(null);
+    setFieldValue('framing.collaboraDocument.uploadFile', file);
+    if (!framing.profile.displayName?.trim()) {
+      const prefilled = filenameWithoutExtension(file.name);
+      setFieldValue('framing.profile.displayName', prefilled);
+      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', prefilled);
+    } else {
+      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+    }
+  };
 
   // Collabora "Document" framing is gated by SPACE_FLAG_OFFICE_DOCUMENTS on the
   // parent space's license. While the SpaceContext is loading (or this form
@@ -90,6 +150,7 @@ const CalloutFormFramingSettings = ({
           memo: undefined,
           link: undefined,
           poll: undefined,
+          collaboraDocument: undefined,
         };
         break;
       case CalloutFramingType.Memo:
@@ -100,6 +161,7 @@ const CalloutFormFramingSettings = ({
           link: undefined,
           mediaGallery: undefined,
           poll: undefined,
+          collaboraDocument: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
             markdown: undefined,
@@ -117,6 +179,7 @@ const CalloutFormFramingSettings = ({
           memo: undefined,
           link: undefined,
           poll: undefined,
+          collaboraDocument: undefined,
         };
         break;
       case CalloutFramingType.Link:
@@ -133,6 +196,7 @@ const CalloutFormFramingSettings = ({
           memo: undefined,
           mediaGallery: undefined,
           poll: undefined,
+          collaboraDocument: undefined,
         };
         break;
       case CalloutFramingType.Poll:
@@ -154,6 +218,7 @@ const CalloutFormFramingSettings = ({
           memo: undefined,
           link: undefined,
           mediaGallery: undefined,
+          collaboraDocument: undefined,
         };
         break;
       case CalloutFramingType.CollaboraDocument:
@@ -180,6 +245,7 @@ const CalloutFormFramingSettings = ({
           link: undefined,
           mediaGallery: undefined,
           poll: undefined,
+          collaboraDocument: undefined,
         };
         break;
     }
@@ -349,7 +415,7 @@ const CalloutFormFramingSettings = ({
               existing callout shows the picker read-only. */}
           <FormikRadioButtonsGroup
             name="framing.collaboraDocument.documentType"
-            readOnly={edit}
+            readOnly={edit || !!framing.collaboraDocument?.uploadFile}
             options={[
               {
                 icon: ArticleOutlined,
@@ -368,6 +434,65 @@ const CalloutFormFramingSettings = ({
               },
             ]}
           />
+          {!edit && (
+            <Stack spacing={1} marginTop={2}>
+              <Typography variant="caption" color="text.secondary" textAlign="center">
+                {t('callout.create.framingSettings.collaboraDocument.upload.or')}
+              </Typography>
+              {framing.collaboraDocument?.uploadFile ? (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ border: 1, borderColor: 'divider', borderRadius: 1, padding: 1.5 }}
+                >
+                  <UploadFileOutlined fontSize="small" color="primary" />
+                  <Box flex={1} overflow="hidden">
+                    <Typography variant="body2" noWrap={true} title={framing.collaboraDocument.uploadFile.name}>
+                      {framing.collaboraDocument.uploadFile.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {(framing.collaboraDocument.uploadFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </Typography>
+                  </Box>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleCollaboraFileSelect(null)}
+                    aria-label={t('callout.create.framingSettings.collaboraDocument.upload.removeFile')}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
+              ) : (
+                <Button
+                  component="label"
+                  variant="outlined"
+                  startIcon={<UploadFileOutlined />}
+                  sx={{ alignSelf: 'center' }}
+                >
+                  {t('callout.create.framingSettings.collaboraDocument.upload.hint')}
+                  <input
+                    type="file"
+                    accept={COLLABORA_IMPORT_ACCEPT_ATTR}
+                    hidden={true}
+                    onChange={e => {
+                      const file = e.currentTarget.files?.[0] ?? null;
+                      handleCollaboraFileSelect(file);
+                      e.currentTarget.value = '';
+                    }}
+                  />
+                </Button>
+              )}
+              <Typography variant="caption" color="text.secondary" textAlign="center">
+                {t('callout.create.framingSettings.collaboraDocument.upload.maxSize', { cap: collaboraCapMb })}
+              </Typography>
+              {collaboraImportErrorMessage && (
+                <Typography variant="caption" color="error" role="alert" textAlign="center">
+                  {collaboraImportErrorMessage}
+                </Typography>
+              )}
+            </Stack>
+          )}
         </PageContentBlock>
       )}
     </>

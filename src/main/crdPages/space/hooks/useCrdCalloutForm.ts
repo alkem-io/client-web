@@ -50,6 +50,15 @@ export type CalloutFormValues = {
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   // Collabora document framing — only submitted when framingType is CollaboraDocument
   collaboraDocumentType: CollaboraDocumentType;
+  /** Optional file staged for the upload-path of Document framing. Mutually exclusive with the blank-create card selection. */
+  collaboraUploadFile: File | null;
+  /**
+   * The post title that was auto-prefilled when `collaboraUploadFile` was staged
+   * (filename minus extension). Compared against the current `title` at submit time
+   * to decide whether to send `framing.collaboraDocument.displayName` explicitly
+   * (typed/edited) or rely on the server's filename-derivation default (unchanged).
+   */
+  collaboraAutoPrefilledTitle?: string;
   // Zone 2 — responses
   responseType: ResponseType;
   allowedActors: AllowedActors;
@@ -100,6 +109,8 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
+  collaboraUploadFile: null,
+  collaboraAutoPrefilledTitle: undefined,
   responseType: 'none',
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,

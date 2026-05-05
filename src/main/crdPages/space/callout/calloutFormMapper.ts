@@ -8,6 +8,7 @@ import {
   type UpdateCalloutEntityInput,
   type UpdateReferenceInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraDocumentDisplayName';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
@@ -40,7 +41,6 @@ const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionTyp
   post: CalloutContributionType.Post,
   memo: CalloutContributionType.Memo,
   whiteboard: CalloutContributionType.Whiteboard,
-  document: undefined, // disabled chip — never reaches submit
 };
 
 export const framingChipToServer = (chip: FramingChip): CalloutFramingType => FRAMING_CHIP_TO_SERVER[chip];
@@ -119,6 +119,15 @@ export type MapFormResult = {
    * mutation resolves.
    */
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
+  /**
+   * File staged for upload as the Collabora document framing's bytes. Set only
+   * when `framingChip === 'document'` AND `values.collaboraUploadFile` is non-null.
+   * The connector passes this as the second argument to `handleCreateCallout`.
+   * On the upload path, `input.framing.collaboraDocument` is `{}` or `{ displayName }`
+   * depending on the typed-vs-prefill comparison; `documentType` is server-derived
+   * from the file's MIME and never sent.
+   */
+  collaboraUploadFile?: File;
 };
 
 /**
@@ -254,16 +263,30 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     };
   }
 
-  // Collabora document framing — the server provisions the underlying document
-  // (text/spreadsheet/presentation) at creation time, so both `displayName` and
-  // `documentType` must travel inline. There is no edit-time counterpart: the
-  // document body is edited through the Collabora overlay against the
-  // already-created document.
+  // Collabora document framing has two creation paths:
+  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  //   - Upload: send `{}` or `{ displayName }` (per the typed-vs-prefill rule)
+  //     plus the `file` separately to `handleCreateCallout`. `documentType` is
+  //     server-derived from the file's sniffed MIME and MUST NOT be sent.
+  // There is no edit-time counterpart on either branch; the document body is
+  // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
-    callout.framing.collaboraDocument = {
-      displayName: values.title.trim() || options.collaboraFallbackDisplayName || 'New Document',
-      documentType: values.collaboraDocumentType,
-    };
+    const postTitle = values.title.trim() || options.collaboraFallbackDisplayName || 'New Document';
+    if (values.collaboraUploadFile) {
+      const decision = deriveCollaboraDocumentDisplayName({
+        mode: 'upload',
+        postTitle,
+        autoPrefilledTitle: values.collaboraAutoPrefilledTitle,
+      });
+      callout.framing.collaboraDocument = decision;
+    } else {
+      const decision = deriveCollaboraDocumentDisplayName({
+        mode: 'blank-create',
+        postTitle,
+        documentType: values.collaboraDocumentType,
+      });
+      callout.framing.collaboraDocument = decision;
+    }
   }
 
   if (framingType === CalloutFramingType.Poll && values.pollQuestion) {
@@ -287,6 +310,10 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     whiteboardPreviewImages:
       framingType === CalloutFramingType.Whiteboard && values.whiteboardPreviewImages.length > 0
         ? values.whiteboardPreviewImages
+        : undefined,
+    collaboraUploadFile:
+      framingType === CalloutFramingType.CollaboraDocument && values.collaboraUploadFile
+        ? values.collaboraUploadFile
         : undefined,
   };
 };
