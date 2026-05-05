@@ -72,11 +72,20 @@ const CalloutFormFramingSettings = ({
   pollId,
   pollStatus,
 }: CalloutFormFramingSettingsProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
   const [collaboraImportError, setCollaboraImportError] = useState<ValidationError | null>(null);
+
+  const fileSizeFormatter = new Intl.NumberFormat(i18n.language, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const formatFileSizeMB = (bytes: number): string =>
+    t('callout.create.framingSettings.collaboraDocument.upload.fileSizeMB', {
+      value: fileSizeFormatter.format(bytes / (1024 * 1024)),
+    });
 
   const collaboraCapMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
   const collaboraImportErrorMessage: string | null = collaboraImportError
@@ -134,6 +143,15 @@ const CalloutFormFramingSettings = ({
     spaceContextLoading || template || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
+    // Switching away from Document framing wipes any stale upload-zone error
+    // so it doesn't reappear if the user toggles back later. The framing
+    // object reset below also clears `collaboraDocument.uploadFile` and
+    // `collaboraDocument.autoPrefilledTitle` via the explicit
+    // `collaboraDocument: undefined` in each non-Document branch.
+    if (newType !== CalloutFramingType.CollaboraDocument) {
+      setCollaboraImportError(null);
+    }
+
     let newFraming: CalloutFormSubmittedValues['framing'] | undefined;
 
     switch (newType) {
@@ -452,7 +470,7 @@ const CalloutFormFramingSettings = ({
                       {framing.collaboraDocument.uploadFile.name}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {(framing.collaboraDocument.uploadFile.size / (1024 * 1024)).toFixed(2)} MB
+                      {formatFileSizeMB(framing.collaboraDocument.uploadFile.size)}
                     </Typography>
                   </Box>
                   <IconButton

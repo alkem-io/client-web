@@ -1,8 +1,4 @@
-import {
-  COLLABORA_IMPORT_EXTENSIONS_P1,
-  COLLABORA_IMPORT_MAX_BYTES,
-  type CollaboraImportExtensionP1,
-} from './collaboraImportFormats';
+import { COLLABORA_IMPORT_EXTENSIONS_P1, COLLABORA_IMPORT_MAX_BYTES } from './collaboraImportFormats';
 
 export type ValidationError =
   | { kind: 'no-file' }
@@ -21,8 +17,7 @@ const extensionOf = (filename: string): string => {
   return filename.slice(lastDot).toLowerCase();
 };
 
-const isAllowedExtension = (ext: string): ext is CollaboraImportExtensionP1 =>
-  (ALLOWED_EXTENSIONS_LOWER as ReadonlyArray<string>).includes(ext);
+const isAllowedExtension = (ext: string): boolean => ALLOWED_EXTENSIONS_LOWER.includes(ext);
 
 const collectFiles = (input: FileList | File[] | DataTransferItemList): File[] => {
   if (Array.isArray(input)) return input.filter((f): f is File => f instanceof File);

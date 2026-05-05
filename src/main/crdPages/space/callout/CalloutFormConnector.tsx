@@ -14,6 +14,7 @@
  * The form state lives in `useCrdCalloutForm`; `calloutFormMapper` builds the create/update
  * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
  */
+import { ApolloError } from '@apollo/client';
 import { Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +29,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
+import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
@@ -109,14 +111,7 @@ export function CalloutFormConnector({
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
   // change (handled inside the FramingChipStrip onChange wrapper below).
-  const [collaboraImportError, setCollaboraImportError] = useState<
-    | { kind: 'no-file' }
-    | { kind: 'multiple-files' }
-    | { kind: 'folder' }
-    | { kind: 'extension'; received: string }
-    | { kind: 'size'; bytes: number; maxBytes: number }
-    | null
-  >(null);
+  const [collaboraImportError, setCollaboraImportError] = useState<DocumentImportError | null>(null);
 
   useBeforeUnloadGuard(open && dirty);
 
@@ -229,15 +224,22 @@ export function CalloutFormConnector({
   // upload zone (same i18n keys as the client pre-check). STORAGE_SERVICE_UNAVAILABLE
   // is a transport-level concern → dialog-level toast (FR-011, no auto-retry).
   // Anything else falls through to the existing dialog-level error toast.
+  // Decisions are driven by the structured `extensions.code` on each
+  // `graphQLError` — never by the error's combined message.
   const handleSubmitError = (err: unknown) => {
-    const message = err instanceof Error ? err.message : '';
-    const code = (err as { graphQLErrors?: Array<{ extensions?: { code?: string } }> })?.graphQLErrors?.[0]?.extensions
-      ?.code;
-    if (code === 'FORMAT_NOT_SUPPORTED' || /FORMAT_NOT_SUPPORTED/.test(message)) {
+    const handledCodes = ['FORMAT_NOT_SUPPORTED', 'STORAGE_UPLOAD_FAILED', 'STORAGE_SERVICE_UNAVAILABLE'] as const;
+    const code =
+      err instanceof ApolloError
+        ? err.graphQLErrors.find(gqlErr =>
+            handledCodes.includes(gqlErr.extensions?.code as (typeof handledCodes)[number])
+          )?.extensions?.code
+        : undefined;
+
+    if (code === 'FORMAT_NOT_SUPPORTED') {
       setCollaboraImportError({ kind: 'extension', received: '' });
       return;
     }
-    if (code === 'STORAGE_UPLOAD_FAILED' || /STORAGE_UPLOAD_FAILED/.test(message)) {
+    if (code === 'STORAGE_UPLOAD_FAILED') {
       setCollaboraImportError({
         kind: 'size',
         bytes: values.collaboraUploadFile?.size ?? 0,
@@ -245,7 +247,7 @@ export function CalloutFormConnector({
       });
       return;
     }
-    if (code === 'STORAGE_SERVICE_UNAVAILABLE' || /STORAGE_SERVICE_UNAVAILABLE/.test(message)) {
+    if (code === 'STORAGE_SERVICE_UNAVAILABLE') {
       notify(t('callout.documentImportErrorServiceUnavailable'), 'error');
       return;
     }

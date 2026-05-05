@@ -55,15 +55,15 @@ export type ValidationResult =
 export function validateCollaboraImportFile(input: FileList | File[] | DataTransferItemList): ValidationResult;
 ```
 
-| Variant | Mapped i18n key (sketch) | UI placement |
-|---|---|---|
-| `no-file` | `collaboraDocument.upload.errors.noFile` | submit button disabled state hint |
-| `multiple-files` | `collaboraDocument.upload.errors.multipleFiles` | inline error on the upload zone |
-| `folder` | `collaboraDocument.upload.errors.folder` | inline error on the upload zone |
-| `extension` | `collaboraDocument.upload.errors.unsupported` (interpolates list of extensions) | inline error on the upload zone |
-| `size` | `collaboraDocument.upload.errors.tooLarge` (interpolates 15 MB) | inline error on the upload zone |
+| Variant | Mapped i18n key (sketch) | UI placement | Server error reusing this variant |
+|---|---|---|---|
+| `no-file` | `collaboraDocument.upload.errors.noFile` | submit button disabled state hint | — |
+| `multiple-files` | `collaboraDocument.upload.errors.multipleFiles` | inline error on the upload zone | — |
+| `folder` | `collaboraDocument.upload.errors.folder` | inline error on the upload zone | — |
+| `extension` | `collaboraDocument.upload.errors.unsupported` (interpolates list of extensions) | inline error on the upload zone | `FORMAT_NOT_SUPPORTED` (415) — content-sniff mismatch |
+| `size` | `collaboraDocument.upload.errors.tooLarge` (interpolates 15 MB) | inline error on the upload zone | `STORAGE_UPLOAD_FAILED` (413) — server-side cap hit |
 
-The same union is the single mapping target for both client-side pre-check rejections and server-side `FORMAT_NOT_SUPPORTED` / `STORAGE_UPLOAD_FAILED` errors — i.e., the inline message shown after a server-side rejection of a content-mismatched file is the same `extension` variant copy. This satisfies SC-002's "names supported formats and never with a raw HTTP code" requirement.
+The same union is the single mapping target for both client-side pre-check rejections and server-side `FORMAT_NOT_SUPPORTED` / `STORAGE_UPLOAD_FAILED` errors — i.e., the inline message shown after a server-side rejection of a content-mismatched file is the same `extension` variant copy, and a 413 reuses the `size` variant copy. This satisfies SC-002's "names supported formats and never with a raw HTTP code" requirement and keeps the FE → i18n mapping symmetric across pre-check and server-rejection paths. (Server-side `STORAGE_SERVICE_UNAVAILABLE` does NOT reuse this union — it is a transport-level concern and surfaces as a dialog-level toast, not an inline upload-zone error.)
 
 ### `DisplayNameDecision` (helper return type)
 
@@ -90,8 +90,11 @@ Decision rule (mirrors FR-004b):
 | `mode` | `postTitle` vs `autoPrefilledTitle` | `documentType` | Returns |
 |---|---|---|---|
 | `blank-create` | n/a | required | `{ displayName: postTitle, documentType }` |
-| `upload` | equal (or no prefill) | n/a | `{}` (empty) — server derives from filename |
-| `upload` | different (user typed) | n/a | `{ displayName: postTitle }` |
+| `upload` | `autoPrefilledTitle` set AND `postTitle === autoPrefilledTitle` (prefill unchanged) | n/a | `{}` — server derives from filename |
+| `upload` | `autoPrefilledTitle` set AND `postTitle !== autoPrefilledTitle` (user edited the prefill) | n/a | `{ displayName: postTitle }` |
+| `upload` | `autoPrefilledTitle` absent (user typed a title BEFORE staging the file — auto-prefill never ran) | n/a | `{ displayName: postTitle }` |
+
+The third row honors the clarified product intent ("if the author typed a title explicitly, send it; otherwise rely on the server's filename derivation"). A title typed before file-staging is treated as an explicit override and preserved.
 
 ### `CalloutFormSubmittedValues.framing.collaboraDocument` (extension)
 

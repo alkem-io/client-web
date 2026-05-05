@@ -93,7 +93,7 @@ export type MapFormOptions = {
   /** i18n-resolved fallback used when the framing has no title. */
   whiteboardFallbackDisplayName: string;
   /** i18n-resolved fallback used when a Collabora document framing has no title. */
-  collaboraFallbackDisplayName?: string;
+  collaboraFallbackDisplayName: string;
 };
 
 /**
@@ -271,7 +271,7 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   // There is no edit-time counterpart on either branch; the document body is
   // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
-    const postTitle = values.title.trim() || options.collaboraFallbackDisplayName || 'New Document';
+    const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
     if (values.collaboraUploadFile) {
       const decision = deriveCollaboraDocumentDisplayName({
         mode: 'upload',

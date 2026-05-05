@@ -31,6 +31,7 @@ const baseValues = (overrides: Partial<CalloutFormValues> = {}): CalloutFormValu
 const createOptions = {
   visibility: CalloutVisibility.Published,
   whiteboardFallbackDisplayName: 'Untitled whiteboard',
+  collaboraFallbackDisplayName: 'Untitled document',
 };
 
 const updateOptions = { calloutId: 'callout-1' };

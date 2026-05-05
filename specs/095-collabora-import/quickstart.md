@@ -8,7 +8,7 @@
 2. **file-service-go**: running and reachable (it's where the upload goes after the GraphQL gateway parses the multipart request).
 3. **Collabora Online**: running and reachable from the browser (for the editor iframe after creation).
 4. **License entitlement**: the test space's license must include `SPACE_FLAG_OFFICE_DOCUMENTS`. Without it, the Document framing option is disabled by design (FR-013).
-5. **Node ≥ 22**, **pnpm ≥ 10.17.1**.
+5. **Node ≥ 24.0.0 (Volta 24.14.0)**, **pnpm ≥ 10.17.1**.
 
 ## Setup
 

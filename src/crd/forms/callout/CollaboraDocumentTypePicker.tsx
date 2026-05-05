@@ -55,11 +55,11 @@ export function CollaboraDocumentTypePicker({
   const { t } = useTranslation('crd-space');
 
   // Mutual exclusion (FR-005): when a file is staged, the blank-create cards
-  // become inactive (cannot be picked); when a card is selected the upload
-  // zone is inactive. The connector enforces the data-level exclusion;
-  // here we only render the visual state.
+  // are dimmed (they appear "inactive") but remain clickable — clicking one
+  // clears the staged file as part of the same gesture (see the `onChange`
+  // handler below). Only the `readOnly` edit-mode flag truly disables them.
   const fileStaged = upload?.file != null;
-  const cardsDisabled = readOnly || fileStaged;
+  const cardsDisabled = readOnly;
 
   return (
     <div className={cn('rounded-xl border border-border bg-muted/30 p-4 space-y-3 animate-in fade-in', className)}>
@@ -71,7 +71,9 @@ export function CollaboraDocumentTypePicker({
       >
         {options.map(option => {
           const active = value === option.value && !fileStaged;
-          const inert = cardsDisabled && !active;
+          // Visual dim when readOnly+inactive OR when a file is staged (cards
+          // are still clickable in the staged case — the click clears the file).
+          const dimmed = (cardsDisabled && !active) || fileStaged;
           return (
             <label
               key={option.value}
@@ -83,7 +85,7 @@ export function CollaboraDocumentTypePicker({
                   ? 'border-primary ring-1 ring-primary/30 bg-primary/5 text-foreground'
                   : 'border-border text-muted-foreground',
                 !active && !cardsDisabled && 'hover:border-foreground/20 hover:bg-muted',
-                inert && 'opacity-50'
+                dimmed && 'opacity-50'
               )}
             >
               <input
