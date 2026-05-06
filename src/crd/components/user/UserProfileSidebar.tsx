@@ -55,20 +55,20 @@ export function UserProfileSidebar({
 
       {tagsets.length > 0 ? (
         <section>
-          <div className="space-y-4">
+          <ul className="space-y-4 list-none p-0 m-0">
             {tagsets.map(tagset => (
-              <div key={tagset.name}>
-                <div className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</div>
-                <div className="flex flex-wrap gap-2">
+              <li key={tagset.key}>
+                <h3 className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</h3>
+                <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
                   {tagset.tags.map(tag => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
-                    </Badge>
+                    <li key={tag}>
+                      <Badge variant="secondary">{tag}</Badge>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       ) : null}
 

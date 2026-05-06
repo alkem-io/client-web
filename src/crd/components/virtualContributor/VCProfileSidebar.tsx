@@ -59,7 +59,9 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
         {nonSocialReferences.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
-          <ul className="space-y-2">
+          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+          <ul role="list" className="space-y-2">
             {nonSocialReferences.map(ref => (
               <li key={ref.id}>
                 <a

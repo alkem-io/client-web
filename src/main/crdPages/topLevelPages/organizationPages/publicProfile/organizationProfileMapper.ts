@@ -30,7 +30,7 @@ export const normaliseReferences = (references: RawReference[]): ReferenceLink[]
     description: ref.description ?? null,
   }));
 
-export const buildTagsetGroups = (groups: Array<{ name: string; tags: string[] }>): TagsetGroup[] =>
+export const buildTagsetGroups = (groups: Array<{ key: string; name: string; tags: string[] }>): TagsetGroup[] =>
   groups.filter(g => g.tags.length > 0);
 
 export type AssociateInput = {

@@ -1,6 +1,7 @@
 import { BadgeCheck, MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
+import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -17,14 +18,6 @@ export type OrganizationPageHeroProps = {
   /** When `null` (anonymous viewer) the Message button is hidden. */
   onSendMessage: ((messageText: string) => Promise<void>) | null;
 };
-
-const fallbackInitials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 export function OrganizationPageHero({
   avatarImageUrl,

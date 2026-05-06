@@ -56,8 +56,8 @@ export const MOCK_ALEX_RIVERA = {
   bio:
     'Passionate about sustainable urban planning and civic technology. Leading the transition to renewable energy grids at CityScale.\n\nAlways looking for collaborators on open source climate data projects. Feel free to reach out if you\'re interested in smart city infrastructure!',
   tagsets: [
-    { name: 'Keywords', tags: ['Smart Cities', 'Renewables', 'Civic Tech'] },
-    { name: 'Skills', tags: ['Urban Planning', 'GIS', 'Python', 'Stakeholder Engagement'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Smart Cities', 'Renewables', 'Civic Tech'] },
+    { key: 'skills', name: 'Skills', tags: ['Urban Planning', 'GIS', 'Python', 'Stakeholder Engagement'] },
   ] satisfies TagsetGroup[],
   organizations: [
     {
@@ -227,8 +227,8 @@ export const MOCK_ME_USER = {
     'I help cities and corporations align their innovation programs with measurable ' +
     'climate outcomes.',
   tagsets: [
-    { name: 'Keywords', tags: ['Sustainability', 'Innovation Strategy', 'Climate'] },
-    { name: 'Skills', tags: ['Strategy', 'Facilitation', 'Programme Design'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Sustainability', 'Innovation Strategy', 'Climate'] },
+    { key: 'skills', name: 'Skills', tags: ['Strategy', 'Facilitation', 'Programme Design'] },
   ] satisfies TagsetGroup[],
   references: [
     { id: 'sam-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/in/sam-lee', description: null },
@@ -258,8 +258,8 @@ export const MOCK_ORG_ALKEMIO = {
     'collaborative innovation. We help organizations co-design solutions to societal ' +
     'challenges — from circular economy to inclusive education.',
   tagsets: [
-    { name: 'Keywords', tags: ['Open Source', 'Climate', 'Civic Tech', 'Co-Design'] },
-    { name: 'Capabilities', tags: ['Facilitation', 'Platform engineering', 'Research'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Open Source', 'Climate', 'Civic Tech', 'Co-Design'] },
+    { key: 'capabilities', name: 'Capabilities', tags: ['Facilitation', 'Platform engineering', 'Research'] },
   ] satisfies TagsetGroup[],
   references: [
     // Non-social refs go to the sidebar's References section.

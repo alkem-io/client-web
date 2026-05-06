@@ -1,6 +1,7 @@
 import { MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
+import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 
@@ -16,14 +17,6 @@ export type UserPageHeroProps = {
   showMessageButton: boolean;
   onSendMessage?: (messageText: string) => Promise<void>;
 };
-
-const fallbackInitials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 export function UserPageHero({
   avatarImageUrl,

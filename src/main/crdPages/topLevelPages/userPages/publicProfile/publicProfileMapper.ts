@@ -23,8 +23,12 @@ export const buildUserProfileTagsets = (
   labels: UserTagsetLabels
 ): TagsetGroup[] =>
   buildTagsetGroups([
-    { name: labels.keywords, tags: findTagsetTags(tagsets, TagsetReservedName.Keywords) },
-    { name: labels.skills, tags: findTagsetTags(tagsets, TagsetReservedName.Skills) },
+    {
+      key: TagsetReservedName.Keywords,
+      name: labels.keywords,
+      tags: findTagsetTags(tagsets, TagsetReservedName.Keywords),
+    },
+    { key: TagsetReservedName.Skills, name: labels.skills, tags: findTagsetTags(tagsets, TagsetReservedName.Skills) },
   ]);
 
 type AccountResourceProfileLike =

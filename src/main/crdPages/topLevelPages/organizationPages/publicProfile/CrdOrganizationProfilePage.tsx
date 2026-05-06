@@ -1,16 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import useOrganizationProvider from '@/domain/community/organization/useOrganization/useOrganization';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -24,20 +19,13 @@ import {
   mapOrgHostedResources,
   normaliseReferences,
 } from './organizationProfileMapper';
+import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
-  const { organization, loading: contextLoading } = useOrganizationContext();
-  const provided = useOrganizationProvider();
-  const { isAuthenticated } = useCurrentUserContext();
+  const { organization, provided, isAuthenticated, accountResources, loading } = useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
-
-  const { data: organizationAccountData, loading: loadingAccount } = useOrganizationAccountQuery({
-    variables: { organizationId: organization?.id ?? '' },
-    skip: !organization?.id,
-  });
-  const accountResources = useAccountResources(organizationAccountData?.lookup.organization?.account?.id);
 
   const { onSendMessage } = useSendMessageToOrganizationHandler({
     recipientOrganizationId: organization?.id,
@@ -51,10 +39,10 @@ export const CrdOrganizationProfilePage = () => {
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
   ];
 
-  const heroLoading = contextLoading || provided.loading || !organization;
+  const heroLoading = loading.context || loading.provider || !organization;
   const sidebarLoading = heroLoading;
-  const hostedResourcesLoading = loadingAccount;
-  const membershipsLoading = provided.loading;
+  const hostedResourcesLoading = loading.account;
+  const membershipsLoading = loading.provider;
 
   const id = organization?.id ?? '';
   const color = pickColorFromId(id);
@@ -76,8 +64,8 @@ export const CrdOrganizationProfilePage = () => {
 
   // Sidebar pieces
   const tagsets = buildTagsetGroups([
-    { name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
-    { name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
+    { key: 'keywords', name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
+    { key: 'capabilities', name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
   ]);
   const references = normaliseReferences(provided.references);
   const associatesGrid = mapAssociates(
@@ -91,7 +79,7 @@ export const CrdOrganizationProfilePage = () => {
 
   // Right column — 4 hosted-resource sub-sections + Lead Spaces + Member Of.
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
-    mapOrgHostedResources(accountResources ?? undefined, t('orgProfile.vcType'));
+    mapOrgHostedResources(accountResources, t('orgProfile.vcType'));
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);

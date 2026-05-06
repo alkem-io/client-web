@@ -1,9 +1,22 @@
 import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { isValidElement, type Key, type ReactNode } from 'react';
 import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
 import { Badge } from '@/crd/primitives/badge';
 import type { ResourceTabKey } from './UserResourceTabStrip';
+
+/**
+ * Wraps each pre-rendered card in an `<li>`, reusing the inner element's key
+ * (set by the connector) so React's reconciliation stays stable across renders.
+ * Falls back to the array index only when the node is not a keyed React element.
+ */
+function asListItems(nodes: ReactNode[]) {
+  return nodes.map((node, idx) => {
+    const fallbackKey: Key = idx;
+    const key: Key = isValidElement(node) && node.key != null ? node.key : fallbackKey;
+    return <li key={key}>{node}</li>;
+  });
+}
 
 export type VirtualContributorCardItem = {
   id: string;
@@ -56,11 +69,13 @@ export function UserResourceSections({
       <div className="space-y-10">
         {hostedSpaces.length > 0 ? (
           <SubSection label={labels.spacesSubsection}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
               {hostedSpaces.map(space => (
-                <SpaceGridCard key={space.id} space={space} labels={labels.spacePrivacy} />
+                <li key={space.id}>
+                  <SpaceGridCard space={space} labels={labels.spacePrivacy} />
+                </li>
               ))}
-            </div>
+            </ul>
           </SubSection>
         ) : null}
 
@@ -69,26 +84,27 @@ export function UserResourceSections({
             label={labels.virtualContributorsSubsection}
             icon={<Bot className="w-4 h-4" aria-hidden="true" />}
           >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
               {hostedVirtualContributors.map(vc => (
-                <a
-                  key={vc.id}
-                  href={vc.href}
-                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                >
-                  <div className="p-2 bg-primary/10 rounded-md text-primary">
-                    <Sparkles className="w-5 h-5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
-                    {vc.description ? <p className="text-body text-muted-foreground mb-2">{vc.description}</p> : null}
-                    <Badge variant="secondary" className="text-badge h-5">
-                      {vc.type}
-                    </Badge>
-                  </div>
-                </a>
+                <li key={vc.id}>
+                  <a
+                    href={vc.href}
+                    className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  >
+                    <div className="p-2 bg-primary/10 rounded-md text-primary">
+                      <Sparkles className="w-5 h-5" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
+                      {vc.description ? <p className="text-body text-muted-foreground mb-2">{vc.description}</p> : null}
+                      <Badge variant="secondary" className="text-badge h-5">
+                        {vc.type}
+                      </Badge>
+                    </div>
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </SubSection>
         ) : null}
 
@@ -122,7 +138,9 @@ export function UserResourceSections({
         {spacesLeading.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.emptyLeading}</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{spacesLeading}</div>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+            {asListItems(spacesLeading)}
+          </ul>
         )}
       </section>
     );
@@ -134,7 +152,9 @@ export function UserResourceSections({
       {spacesMember.length === 0 ? (
         <p className="text-body text-muted-foreground">{labels.emptyMembership}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{spacesMember}</div>
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+          {asListItems(spacesMember)}
+        </ul>
       )}
     </section>
   );
@@ -165,20 +185,21 @@ type SimpleResourceGridProps = {
 
 function SimpleResourceGrid({ items, icon }: SimpleResourceGridProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
       {items.map(item => (
-        <a
-          key={item.id}
-          href={item.href}
-          className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        >
-          <div className="p-2 bg-primary/10 rounded-md text-primary">{icon}</div>
-          <div>
-            <h4 className="text-card-title text-foreground">{item.displayName}</h4>
-            {item.description ? <p className="text-body text-muted-foreground">{item.description}</p> : null}
-          </div>
-        </a>
+        <li key={item.id}>
+          <a
+            href={item.href}
+            className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <div className="p-2 bg-primary/10 rounded-md text-primary">{icon}</div>
+            <div>
+              <h4 className="text-card-title text-foreground">{item.displayName}</h4>
+              {item.description ? <p className="text-body text-muted-foreground">{item.description}</p> : null}
+            </div>
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

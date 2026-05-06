@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
+import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 
 export type TagsetGroup = {
+  /** Stable identity for the group (e.g., reserved tagset name) — used as the React key. */
+  key: string;
+  /** i18n-resolved display name (e.g., "Keywords", "Skills"). Rendered as the group's `<h3>`. */
   name: string;
   tags: string[];
 };
@@ -56,14 +60,6 @@ export type OrganizationProfileSidebarProps = {
 
 const ASSOCIATE_CARDS_COUNT = 12;
 
-const fallbackInitials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0]?.toUpperCase() ?? '')
-    .join('') || '?';
-
 export function OrganizationProfileSidebar({
   bio,
   tagsets,
@@ -81,20 +77,24 @@ export function OrganizationProfileSidebar({
 
       {tagsets.length > 0 ? (
         <section>
-          <div className="space-y-4">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="space-y-4 list-none p-0 m-0">
             {tagsets.map(tagset => (
-              <div key={tagset.name}>
-                <div className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</div>
-                <div className="flex flex-wrap gap-2">
+              <li key={tagset.key}>
+                <h3 className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</h3>
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className="flex flex-wrap gap-2 list-none p-0 m-0">
                   {tagset.tags.map(tag => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
-                    </Badge>
+                    <li key={tag}>
+                      <Badge variant="secondary">{tag}</Badge>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       ) : null}
 
@@ -103,7 +103,9 @@ export function OrganizationProfileSidebar({
         {nonSocialReferences.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
-          <ul className="space-y-2">
+          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+          <ul role="list" className="space-y-2">
             {nonSocialReferences.map(ref => (
               <li key={ref.id}>
                 <a
@@ -150,26 +152,29 @@ function AssociatesSection({ associates, labels }: AssociatesSectionProps) {
         <p className="text-body text-muted-foreground">{labels.associatesSignInCta}</p>
       ) : (
         <>
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="grid grid-cols-3 sm:grid-cols-4 gap-3 list-none p-0 m-0">
             {visible.map(a => (
-              <a
-                key={a.id}
-                href={a.url}
-                className="flex flex-col items-center text-center gap-1 group rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                aria-label={a.displayName}
-              >
-                <Avatar className="w-12 h-12 border border-border">
-                  {a.avatarImageUrl ? <AvatarImage src={a.avatarImageUrl} alt={a.displayName} /> : null}
-                  <AvatarFallback className="bg-secondary text-secondary-foreground text-badge">
-                    {fallbackInitials(a.displayName)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-caption text-muted-foreground truncate w-full group-hover:text-foreground transition-colors">
-                  {a.displayName}
-                </span>
-              </a>
+              <li key={a.id}>
+                <a
+                  href={a.url}
+                  className="flex flex-col items-center text-center gap-1 group rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  aria-label={a.displayName}
+                >
+                  <Avatar className="w-12 h-12 border border-border">
+                    {a.avatarImageUrl ? <AvatarImage src={a.avatarImageUrl} alt={a.displayName} /> : null}
+                    <AvatarFallback className="bg-secondary text-secondary-foreground text-badge">
+                      {fallbackInitials(a.displayName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-caption text-muted-foreground truncate w-full group-hover:text-foreground transition-colors">
+                    {a.displayName}
+                  </span>
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
           {remaining > 0 ? (
             <button
               type="button"
