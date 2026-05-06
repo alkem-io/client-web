@@ -15,13 +15,22 @@ export type SpaceGridCardData = {
   isPrivate: boolean;
 };
 
+/** i18n-resolved labels for the card's accessibility affordances. */
+export type SpaceGridCardLabels = {
+  /** Visually-hidden label announced to assistive tech for the privacy chip. */
+  privacyPrivate: string;
+  privacyPublic: string;
+};
+
 export type SpaceGridCardProps = {
   space: SpaceGridCardData;
+  labels: SpaceGridCardLabels;
   className?: string;
 };
 
-export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
+export function SpaceGridCard({ space, labels, className }: SpaceGridCardProps) {
   const banner = space.imageUrl ? { backgroundImage: `url(${space.imageUrl})` } : backgroundGradient(space.color);
+  const privacyLabel = space.isPrivate ? labels.privacyPrivate : labels.privacyPublic;
 
   return (
     <a
@@ -45,6 +54,7 @@ export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
               ) : (
                 <Globe className="w-3 h-3" aria-hidden="true" />
               )}
+              <span className="sr-only">{privacyLabel}</span>
             </div>
           </div>
         </div>

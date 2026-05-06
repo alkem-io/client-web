@@ -110,7 +110,7 @@ export function OrganizationProfileSidebar({
                   href={ref.uri}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-body-emphasis text-primary hover:underline"
+                  className="text-body-emphasis text-primary hover:underline rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   {ref.name}
                 </a>
@@ -174,6 +174,7 @@ function AssociatesSection({ associates, labels }: AssociatesSectionProps) {
             <button
               type="button"
               onClick={() => setShowAll(prev => !prev)}
+              aria-expanded={showAll}
               className="mt-3 text-body-emphasis text-primary hover:underline rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
               {showAll ? labels.associatesShowLess : labels.associatesShowMore(remaining)}

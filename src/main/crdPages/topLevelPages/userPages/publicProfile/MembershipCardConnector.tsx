@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SpaceGridCard, type SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -9,10 +10,14 @@ export type MembershipCardConnectorProps = {
 };
 
 export function MembershipCardConnector({ contribution }: MembershipCardConnectorProps) {
+  const { t } = useTranslation('crd-profilePages');
   const { details, loading } = useContributionProvider({ spaceHostedItem: contribution });
 
-  if (loading || !details) {
+  if (loading) {
     return <Skeleton className="h-48 w-full rounded-xl" />;
+  }
+  if (!details) {
+    return null;
   }
 
   const profile = details.about.profile;
@@ -23,8 +28,18 @@ export function MembershipCardConnector({ contribution }: MembershipCardConnecto
     href: profile.url,
     imageUrl: profile.cardBanner?.uri || undefined,
     color: pickColorFromId(contribution.id),
-    isPrivate: !details.about.isContentPublic,
+    // Treat missing data as public (the optional flag is `undefined` until the
+    // backend explicitly opts in to private content); only `false` means private.
+    isPrivate: details.about.isContentPublic === false,
   };
 
-  return <SpaceGridCard space={space} />;
+  return (
+    <SpaceGridCard
+      space={space}
+      labels={{
+        privacyPrivate: t('common.spacePrivacy.private'),
+        privacyPublic: t('common.spacePrivacy.public'),
+      }}
+    />
+  );
 }

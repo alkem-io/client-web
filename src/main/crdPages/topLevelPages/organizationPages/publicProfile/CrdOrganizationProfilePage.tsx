@@ -153,6 +153,10 @@ export const CrdOrganizationProfilePage = () => {
           memberOf: t('orgProfile.sections.memberOf'),
           emptyLeading: t('orgProfile.empty.leading'),
           emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
+          spacePrivacy: {
+            privacyPrivate: t('common.spacePrivacy.private'),
+            privacyPublic: t('common.spacePrivacy.public'),
+          },
         },
       }}
       loading={{

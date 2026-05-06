@@ -20,6 +20,10 @@
       "memberships": "Chargement des adhésions",
       "contentView": "Chargement du contenu",
       "bodyOfKnowledge": "Chargement de la base de connaissances"
+    },
+    "spacePrivacy": {
+      "private": "Espace privé",
+      "public": "Espace public"
     }
   },
   "userProfile": {

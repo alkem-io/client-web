@@ -20,6 +20,10 @@
       "memberships": "Cargando membresías",
       "contentView": "Cargando contenido",
       "bodyOfKnowledge": "Cargando base de conocimiento"
+    },
+    "spacePrivacy": {
+      "private": "Espacio privado",
+      "public": "Espacio público"
     }
   },
   "userProfile": {

@@ -20,6 +20,10 @@
       "memberships": "Зареждане на членствата",
       "contentView": "Зареждане на съдържанието",
       "bodyOfKnowledge": "Зареждане на базата от знания"
+    },
+    "spacePrivacy": {
+      "private": "Частно пространство",
+      "public": "Публично пространство"
     }
   },
   "userProfile": {

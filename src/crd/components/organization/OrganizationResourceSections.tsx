@@ -1,7 +1,7 @@
 import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
-import { SpaceGridCard, type SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
+import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { Badge } from '@/crd/primitives/badge';
 
@@ -37,6 +37,8 @@ export type OrganizationResourceSectionsProps = {
     emptyLeading: string;
     /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
     emptyMembership: string;
+    /** sr-only labels for the SpaceGridCard privacy chip (WCAG 2.1 AA). */
+    spacePrivacy: SpaceGridCardLabels;
   };
 };
 
@@ -57,7 +59,7 @@ export function OrganizationResourceSections({
           <SubSection label={labels.spacesSubsection}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {hostedSpaces.map(space => (
-                <SpaceGridCard key={space.id} space={space} />
+                <SpaceGridCard key={space.id} space={space} labels={labels.spacePrivacy} />
               ))}
             </div>
           </SubSection>

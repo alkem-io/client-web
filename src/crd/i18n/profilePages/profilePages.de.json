@@ -20,6 +20,10 @@
       "memberships": "Mitgliedschaften werden geladen",
       "contentView": "Inhalt wird geladen",
       "bodyOfKnowledge": "Wissensbasis wird geladen"
+    },
+    "spacePrivacy": {
+      "private": "Privater Space",
+      "public": "Öffentlicher Space"
     }
   },
   "userProfile": {
@@ -42,7 +46,7 @@
     "sidebar": {
       "aboutTitle": "Über",
       "organizationsTitle": "Organisationen",
-      "socialLinksTitle": "Soziales",
+      "socialLinksTitle": "Soziale Links",
       "bioEmpty": "Noch keine Biografie.",
       "organizationsEmpty": "Noch in keiner Organisation.",
       "memberCountLine_one": "{{count}} Mitglied",
@@ -72,7 +76,7 @@
       "associatesTitle": "Zugehörige",
       "associatesCount_one": "{{count}} Zugehöriger",
       "associatesCount_other": "{{count}} Zugehörige",
-      "socialLinksTitle": "Soziale"
+      "socialLinksTitle": "Soziale Links"
     },
     "tabs": {
       "resourcesHosted": "Gehostete Ressourcen",

@@ -186,18 +186,27 @@ export type UserPublicProfileViewProps = {
 
 /* -------------------------- UserResourceTabStrip ------------------------- */
 
+/**
+ * The User profile tab strip is implemented as a thin re-export over the
+ * shared `ProfileResourceTabStrip` (also used by the Organization profile).
+ * Props mirror the shared API exactly: a `tabs` array of `{key, label}` plus
+ * `activeTab` / `onSelectTab` / `ariaLabel` / optional `className`. There is
+ * no per-tab `counts` field — an earlier draft included badge counts; that
+ * shape was dropped when the shared strip was extracted, so the contract
+ * here matches the shared implementation.
+ */
+export type UserResourceTab = {
+  key: ResourceTabKey;
+  label: string;
+};
+
 export type UserResourceTabStripProps = {
+  tabs: UserResourceTab[];
   activeTab: ResourceTabKey;
   onSelectTab: (next: ResourceTabKey) => void;
-  /**
-   * Per-tab counts, used for badge rendering. The strip itself only renders
-   * the count when `count !== null`. Integration layer can pass null to hide.
-   */
-  counts: {
-    resourcesHosted: number | null;
-    leading: number | null;
-    memberOf: number | null;
-  };
+  /** i18n-resolved aria-label for the tablist (WCAG 2.1 AA). */
+  ariaLabel: string;
+  className?: string;
 };
 
 /**

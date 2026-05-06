@@ -158,6 +158,10 @@ export const CrdUserProfilePage = () => {
           memberOf: t('userProfile.sections.memberOf'),
           emptyLeading: t('userProfile.empty.leading'),
           emptyMembership: t('userProfile.empty.membership'),
+          spacePrivacy: {
+            privacyPrivate: t('common.spacePrivacy.private'),
+            privacyPublic: t('common.spacePrivacy.public'),
+          },
         },
       }}
       loading={{

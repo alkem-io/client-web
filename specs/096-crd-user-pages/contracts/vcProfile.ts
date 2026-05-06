@@ -121,6 +121,13 @@ export type BodyOfKnowledge =
       description: string | null;
       /** vc.profile.displayName — used to interpolate the spaceBokDescription caption. */
       vcDisplayName: string;
+      /**
+       * i18n-resolved caption rendered above the space-backed card with the VC's
+       * displayName interpolated in (e.g., "Spaces hosted by {{vcName}}…"). The
+       * mapper calls `t('components.profile.fields.bodyOfKnowledge.spaceBokDescription', { vcName })`.
+       * Pass an empty string when the consumer wants to suppress the caption.
+       */
+      spaceContextDescription: string;
     }
   | {
       kind: 'knowledgeBase';
@@ -138,7 +145,20 @@ export type BodyOfKnowledge =
     }
   | {
       kind: 'external';
-      engineLabel: 'assistant' | 'other'; // derived from vc.aiPersona.engine === OpenaiAssistant
+      /**
+       * Fully i18n-resolved engine-type description. The mapper derives this
+       * from `vc.aiPersona.engine` — when the engine is `OpenaiAssistant` it
+       * resolves `externalAssistantDescription`; otherwise `externalGenericDescription`.
+       * Both come from `components.profile.fields.engines.externalVCDescription`
+       * with the engine name interpolated in. The view renders the string
+       * through `MarkdownContent` (the description may contain a link).
+       *
+       * NOTE: an earlier draft of this contract declared `engineLabel: 'assistant' | 'other'`
+       * and let the view resolve the copy. That was inverted in the implementation —
+       * the integration layer owns translation resolution (FR-005), so the
+       * resolved string crosses the boundary, not the discriminator.
+       */
+      description: string;
     };
 
 export type SpaceProfileSummary = {

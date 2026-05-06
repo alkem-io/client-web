@@ -20,6 +20,10 @@
       "memberships": "Lidmaatschappen worden geladen",
       "contentView": "Inhoud wordt geladen",
       "bodyOfKnowledge": "Kennisbasis wordt geladen"
+    },
+    "spacePrivacy": {
+      "private": "Privéruimte",
+      "public": "Openbare ruimte"
     }
   },
   "userProfile": {

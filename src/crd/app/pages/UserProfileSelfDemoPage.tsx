@@ -14,6 +14,7 @@ const SECTIONS_LABELS = {
   memberOf: 'Member of',
   emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
+  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const SIDEBAR_LABELS = {
@@ -51,8 +52,11 @@ export function UserProfileSelfDemoPage() {
     />
   ));
 
-  const spacesLeading = me.leadingSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
-  const spacesMember = me.memberSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
+  const spacePrivacyLabels = { privacyPrivate: 'Private space', privacyPublic: 'Public space' };
+  const spacesLeading = me.leadingSpaces.map(s => (
+    <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />
+  ));
+  const spacesMember = me.memberSpaces.map(s => <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />);
 
   return (
     <UserPublicProfileView

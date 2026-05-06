@@ -132,5 +132,9 @@ function KnowledgeBaseBoK({
 }
 
 function ExternalBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'external' }> }) {
-  return <p className="text-body text-muted-foreground">{bok.description}</p>;
+  // The description is interpolated translation copy that may contain markdown
+  // (the existing key `components.profile.fields.engines.externalVCDescription`
+  // includes a link). Render through `MarkdownContent` for parity with
+  // SpaceBoK/KnowledgeBaseBoK and to satisfy CRD Golden Rule #10.
+  return <MarkdownContent content={bok.description} />;
 }
