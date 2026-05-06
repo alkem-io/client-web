@@ -11,7 +11,16 @@
       "errorTitle": "No se pudo enviar el mensaje",
       "ariaLabel": "Redactar mensaje"
     },
-    "resourceTabsAriaLabel": "Secciones de recursos"
+    "resourceTabsAriaLabel": "Secciones de recursos",
+    "loading": {
+      "hero": "Cargando encabezado del perfil",
+      "sidebar": "Cargando detalles del perfil",
+      "organizations": "Cargando organizaciones",
+      "hostedResources": "Cargando recursos alojados",
+      "memberships": "Cargando membresías",
+      "contentView": "Cargando contenido",
+      "bodyOfKnowledge": "Cargando base de conocimiento"
+    }
   },
   "userProfile": {
     "hero": {

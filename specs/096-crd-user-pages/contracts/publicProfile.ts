@@ -155,6 +155,19 @@ export type UserPublicProfileViewProps = {
     memberships: boolean;
   };
 
+  /**
+   * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
+   * (WCAG 2.1 AA — loading regions must be exposed to assistive tech). One
+   * entry per `loading` flag; the integration layer resolves these from the
+   * `crd-profilePages` `common.loading.*` namespace.
+   */
+  loadingLabels: {
+    hero: string;
+    organizations: string;
+    hostedResources: string;
+    memberships: string;
+  };
+
   /** Active resource tab; integration layer manages this state. */
   activeResourceTab: ResourceTabKey;
   onSelectResourceTab: (next: ResourceTabKey) => void;

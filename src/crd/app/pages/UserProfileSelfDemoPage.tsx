@@ -87,6 +87,12 @@ export function UserProfileSelfDemoPage() {
         labels: SECTIONS_LABELS,
       }}
       loading={{ hero: false, organizations: false, hostedResources: false, memberships: false }}
+      loadingLabels={{
+        hero: 'Loading profile header',
+        organizations: 'Loading organizations',
+        hostedResources: 'Loading hosted resources',
+        memberships: 'Loading memberships',
+      }}
     />
   );
 }

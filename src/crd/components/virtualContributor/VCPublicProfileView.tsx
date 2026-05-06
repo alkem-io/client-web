@@ -13,20 +13,44 @@ export type VCPublicProfileViewProps = {
     bodyOfKnowledge: boolean;
     contentView: boolean;
   };
+  /** i18n-resolved aria-labels for the per-region skeleton status containers (FR-009 / WCAG 2.1 AA). */
+  loadingLabels: {
+    hero: string;
+    sidebar: string;
+    contentView: string;
+  };
 };
 
-export function VCPublicProfileView({ hero, sidebar, contentView, loading }: VCPublicProfileViewProps) {
+export function VCPublicProfileView({ hero, sidebar, contentView, loading, loadingLabels }: VCPublicProfileViewProps) {
   return (
     <div className="min-h-screen bg-background pb-12">
-      {loading.hero ? <HeroSkeleton /> : <VCPageHero {...hero} />}
+      {loading.hero ? (
+        <output aria-label={loadingLabels.hero}>
+          <HeroSkeleton />
+        </output>
+      ) : (
+        <VCPageHero {...hero} />
+      )}
 
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-8">
-            {loading.sidebar ? <SidebarSkeleton /> : <VCProfileSidebar {...sidebar} />}
+            {loading.sidebar ? (
+              <output aria-label={loadingLabels.sidebar}>
+                <SidebarSkeleton />
+              </output>
+            ) : (
+              <VCProfileSidebar {...sidebar} />
+            )}
           </div>
           <div className="lg:col-span-8 flex flex-col min-w-0">
-            {loading.contentView ? <ContentSkeleton /> : <VCContentView {...contentView} />}
+            {loading.contentView ? (
+              <output aria-label={loadingLabels.contentView}>
+                <ContentSkeleton />
+              </output>
+            ) : (
+              <VCContentView {...contentView} />
+            )}
           </div>
         </div>
       </div>

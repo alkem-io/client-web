@@ -167,6 +167,11 @@ export const CrdVCProfilePage = () => {
         bodyOfKnowledge: bokLoading,
         contentView: contentViewLoading,
       }}
+      loadingLabels={{
+        hero: t('common.loading.hero'),
+        sidebar: t('common.loading.sidebar'),
+        contentView: t('common.loading.contentView'),
+      }}
     />
   );
 };

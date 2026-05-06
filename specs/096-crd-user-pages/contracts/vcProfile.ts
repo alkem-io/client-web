@@ -243,6 +243,18 @@ export type VCPublicProfileViewProps = {
     contentView: boolean;
   };
 
+  /**
+   * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
+   * (WCAG 2.1 AA). Three entries — `bodyOfKnowledge` is rendered inside the
+   * sidebar so it shares the sidebar label rather than getting its own. Resolved
+   * from the `crd-profilePages` `common.loading.*` namespace.
+   */
+  loadingLabels: {
+    hero: string;
+    sidebar: string;
+    contentView: string;
+  };
+
   /** Optional slot for portals. */
   children?: ReactNode;
 };

@@ -11,7 +11,16 @@
       "errorTitle": "Nachricht konnte nicht gesendet werden",
       "ariaLabel": "Nachricht verfassen"
     },
-    "resourceTabsAriaLabel": "Ressourcenbereiche"
+    "resourceTabsAriaLabel": "Ressourcenbereiche",
+    "loading": {
+      "hero": "Profilkopf wird geladen",
+      "sidebar": "Profildetails werden geladen",
+      "organizations": "Organisationen werden geladen",
+      "hostedResources": "Gehostete Ressourcen werden geladen",
+      "memberships": "Mitgliedschaften werden geladen",
+      "contentView": "Inhalt wird geladen",
+      "bodyOfKnowledge": "Wissensbasis wird geladen"
+    }
   },
   "userProfile": {
     "hero": {

@@ -166,6 +166,12 @@ export const CrdUserProfilePage = () => {
         hostedResources: hostedLoading,
         memberships: membershipsLoading,
       }}
+      loadingLabels={{
+        hero: t('common.loading.hero'),
+        organizations: t('common.loading.organizations'),
+        hostedResources: t('common.loading.hostedResources'),
+        memberships: t('common.loading.memberships'),
+      }}
     />
   );
 };

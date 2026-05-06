@@ -11,7 +11,16 @@
       "errorTitle": "Bericht kon niet worden verzonden",
       "ariaLabel": "Bericht opstellen"
     },
-    "resourceTabsAriaLabel": "Resourcesecties"
+    "resourceTabsAriaLabel": "Resourcesecties",
+    "loading": {
+      "hero": "Profielkop wordt geladen",
+      "sidebar": "Profielgegevens worden geladen",
+      "organizations": "Organisaties worden geladen",
+      "hostedResources": "Gehoste resources worden geladen",
+      "memberships": "Lidmaatschappen worden geladen",
+      "contentView": "Inhoud wordt geladen",
+      "bodyOfKnowledge": "Kennisbasis wordt geladen"
+    }
   },
   "userProfile": {
     "hero": {

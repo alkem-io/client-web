@@ -223,6 +223,18 @@ export type OrganizationPublicProfileViewProps = {
   };
 
   /**
+   * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
+   * (WCAG 2.1 AA). One entry per `loading` flag; resolved from the
+   * `crd-profilePages` `common.loading.*` namespace.
+   */
+  loadingLabels: {
+    hero: string;
+    sidebar: string;
+    hostedResources: string;
+    memberships: string;
+  };
+
+  /**
    * Slot for any out-of-tree CRD elements (e.g., a global toast portal). Rarely
    * used; included for parity with the User profile view's children prop.
    */

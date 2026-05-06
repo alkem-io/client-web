@@ -57,7 +57,7 @@ export function OrganizationPageHero({
                     <Tooltip>
                       <TooltipTrigger asChild={true}>
                         <Badge variant="secondary" className="gap-1">
-                          <BadgeCheck className="w-3 h-3" />
+                          <BadgeCheck className="w-3 h-3" aria-hidden="true" />
                           {t('orgProfile.hero.verifiedBadge')}
                         </Badge>
                       </TooltipTrigger>
@@ -68,7 +68,7 @@ export function OrganizationPageHero({
               </div>
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
-                  <MapPin className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" aria-hidden="true" />
                   <span>{location}</span>
                 </div>
               ) : null}
@@ -79,16 +79,17 @@ export function OrganizationPageHero({
                 <MessagePopover triggerLabel={t('orgProfile.hero.messageButton')} onSendMessage={onSendMessage} />
               ) : null}
               {settingsHref ? (
-                <a href={settingsHref} aria-label={t('orgProfile.hero.settingsAriaLabel')}>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="shadow-sm"
-                    title={t('orgProfile.hero.settingsTooltip')}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </a>
+                <Button
+                  asChild={true}
+                  variant="secondary"
+                  size="icon"
+                  className="shadow-sm"
+                  title={t('orgProfile.hero.settingsTooltip')}
+                >
+                  <a href={settingsHref} aria-label={t('orgProfile.hero.settingsAriaLabel')}>
+                    <Settings className="w-4 h-4" aria-hidden="true" />
+                  </a>
+                </Button>
               ) : null}
             </div>
           </div>

@@ -61,7 +61,7 @@ export function CompactContributorCard({
       </div>
       {badge ? (
         <div className="flex items-center gap-1 text-caption text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full shrink-0">
-          {badge.icon === 'users' ? <Users className="w-3 h-3" /> : null}
+          {badge.icon === 'users' ? <Users className="w-3 h-3" aria-hidden="true" /> : null}
           <span>{badge.label}</span>
         </div>
       ) : null}

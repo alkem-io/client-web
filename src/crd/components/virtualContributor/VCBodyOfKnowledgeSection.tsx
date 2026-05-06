@@ -84,7 +84,7 @@ function SpaceBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'space' }> })
               </a>
             ) : (
               <div className="text-card-title flex items-center gap-2 text-muted-foreground">
-                <Lock className="w-3.5 h-3.5" />
+                <Lock className="w-3.5 h-3.5" aria-hidden="true" />
                 {bok.spaceProfile.displayName}
               </div>
             )}
@@ -109,7 +109,7 @@ function KnowledgeBaseBoK({
         <Button variant="outline" size="sm" asChild={true}>
           <a href={bok.visitUrl}>
             {labels.visitButton}
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-4 h-4" aria-hidden="true" />
           </a>
         </Button>
       ) : (
@@ -119,7 +119,7 @@ function KnowledgeBaseBoK({
               <span>
                 <Button variant="outline" size="sm" disabled={true}>
                   {labels.visitButton}
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 </Button>
               </span>
             </TooltipTrigger>

@@ -89,6 +89,12 @@ export function OrganizationProfileDemoPage() {
         labels: SECTIONS_LABELS,
       }}
       loading={{ hero: false, sidebar: false, hostedResources: false, memberships: false }}
+      loadingLabels={{
+        hero: 'Loading profile header',
+        sidebar: 'Loading profile details',
+        hostedResources: 'Loading hosted resources',
+        memberships: 'Loading memberships',
+      }}
     />
   );
 }

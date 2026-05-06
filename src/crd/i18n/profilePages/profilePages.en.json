@@ -11,7 +11,16 @@
       "errorTitle": "Could not send your message",
       "ariaLabel": "Compose message"
     },
-    "resourceTabsAriaLabel": "Resource sections"
+    "resourceTabsAriaLabel": "Resource sections",
+    "loading": {
+      "hero": "Loading profile header",
+      "sidebar": "Loading profile details",
+      "organizations": "Loading organizations",
+      "hostedResources": "Loading hosted resources",
+      "memberships": "Loading memberships",
+      "contentView": "Loading content",
+      "bodyOfKnowledge": "Loading body of knowledge"
+    }
   },
   "userProfile": {
     "hero": {

@@ -64,7 +64,10 @@ export function OrganizationResourceSections({
         ) : null}
 
         {hostedVirtualContributors.length > 0 ? (
-          <SubSection label={labels.virtualContributorsSubsection} icon={<Bot className="w-4 h-4" />}>
+          <SubSection
+            label={labels.virtualContributorsSubsection}
+            icon={<Bot className="w-4 h-4" aria-hidden="true" />}
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {hostedVirtualContributors.map(vc => (
                 <a
@@ -73,7 +76,7 @@ export function OrganizationResourceSections({
                   className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <div className="p-2 bg-primary/10 rounded-md text-primary">
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
@@ -89,14 +92,23 @@ export function OrganizationResourceSections({
         ) : null}
 
         {hostedInnovationPacks.length > 0 ? (
-          <SubSection label={labels.templatePacksSubsection} icon={<Package className="w-4 h-4" />}>
-            <SimpleResourceGrid items={hostedInnovationPacks} icon={<Package className="w-5 h-5" />} />
+          <SubSection label={labels.templatePacksSubsection} icon={<Package className="w-4 h-4" aria-hidden="true" />}>
+            <SimpleResourceGrid
+              items={hostedInnovationPacks}
+              icon={<Package className="w-5 h-5" aria-hidden="true" />}
+            />
           </SubSection>
         ) : null}
 
         {hostedInnovationHubs.length > 0 ? (
-          <SubSection label={labels.customHomepagesSubsection} icon={<LayoutDashboard className="w-4 h-4" />}>
-            <SimpleResourceGrid items={hostedInnovationHubs} icon={<LayoutDashboard className="w-5 h-5" />} />
+          <SubSection
+            label={labels.customHomepagesSubsection}
+            icon={<LayoutDashboard className="w-4 h-4" aria-hidden="true" />}
+          >
+            <SimpleResourceGrid
+              items={hostedInnovationHubs}
+              icon={<LayoutDashboard className="w-5 h-5" aria-hidden="true" />}
+            />
           </SubSection>
         ) : null}
       </div>

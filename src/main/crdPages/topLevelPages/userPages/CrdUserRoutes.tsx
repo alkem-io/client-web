@@ -21,8 +21,18 @@ const CrdMeUserRoute = () => {
   const { t } = useTranslation();
   const { userModel, loadingMe } = useCurrentUserContext();
 
-  if (loadingMe || !userModel) {
+  if (loadingMe) {
     return <Loading text={t('pages.user-profile.loading')} />;
+  }
+
+  // Auth resolved with no current user — the parent NoIdentityRedirect handles
+  // redirect, but render Error404 as a safety net so we never spin forever.
+  if (!userModel) {
+    return (
+      <CrdLayoutWrapper>
+        <Error404 />
+      </CrdLayoutWrapper>
+    );
   }
 
   return (

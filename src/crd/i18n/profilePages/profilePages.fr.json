@@ -11,7 +11,16 @@
       "errorTitle": "Impossible d'envoyer le message",
       "ariaLabel": "Composer un message"
     },
-    "resourceTabsAriaLabel": "Sections de ressources"
+    "resourceTabsAriaLabel": "Sections de ressources",
+    "loading": {
+      "hero": "Chargement de l'en-tête du profil",
+      "sidebar": "Chargement des détails du profil",
+      "organizations": "Chargement des organisations",
+      "hostedResources": "Chargement des ressources hébergées",
+      "memberships": "Chargement des adhésions",
+      "contentView": "Chargement du contenu",
+      "bodyOfKnowledge": "Chargement de la base de connaissances"
+    }
   },
   "userProfile": {
     "hero": {

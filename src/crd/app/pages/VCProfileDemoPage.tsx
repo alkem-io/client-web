@@ -47,6 +47,11 @@ export function VCProfileDemoPage() {
         labels: CONTENT_LABELS,
       }}
       loading={{ hero: false, sidebar: false, bodyOfKnowledge: false, contentView: false }}
+      loadingLabels={{
+        hero: 'Loading profile header',
+        sidebar: 'Loading profile details',
+        contentView: 'Loading content',
+      }}
     />
   );
 }

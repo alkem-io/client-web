@@ -11,7 +11,16 @@
       "errorTitle": "Съобщението не може да бъде изпратено",
       "ariaLabel": "Съставяне на съобщение"
     },
-    "resourceTabsAriaLabel": "Раздели с ресурси"
+    "resourceTabsAriaLabel": "Раздели с ресурси",
+    "loading": {
+      "hero": "Зареждане на заглавието на профила",
+      "sidebar": "Зареждане на детайлите на профила",
+      "organizations": "Зареждане на организациите",
+      "hostedResources": "Зареждане на хостваните ресурси",
+      "memberships": "Зареждане на членствата",
+      "contentView": "Зареждане на съдържанието",
+      "bodyOfKnowledge": "Зареждане на базата от знания"
+    }
   },
   "userProfile": {
     "hero": {

@@ -53,7 +53,7 @@ export function UserPageHero({
               <h1 className="text-page-title md:text-4xl text-foreground truncate">{displayName}</h1>
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
-                  <MapPin className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" aria-hidden="true" />
                   <span>{location}</span>
                 </div>
               ) : null}
@@ -64,16 +64,17 @@ export function UserPageHero({
                 <MessagePopover triggerLabel={t('userProfile.hero.messageButton')} onSendMessage={onSendMessage} />
               ) : null}
               {showSettingsIcon && settingsHref ? (
-                <a href={settingsHref} aria-label={t('userProfile.hero.settingsAriaLabel')}>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="shadow-sm"
-                    title={t('userProfile.hero.settingsTooltip')}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </a>
+                <Button
+                  asChild={true}
+                  variant="secondary"
+                  size="icon"
+                  className="shadow-sm"
+                  title={t('userProfile.hero.settingsTooltip')}
+                >
+                  <a href={settingsHref} aria-label={t('userProfile.hero.settingsAriaLabel')}>
+                    <Settings className="w-4 h-4" aria-hidden="true" />
+                  </a>
+                </Button>
               ) : null}
             </div>
           </div>

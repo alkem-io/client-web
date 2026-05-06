@@ -59,16 +59,34 @@ export const isSocialReference = (ref: { name: string }): boolean => resolveBran
 export const excludeSocialReferences = <T extends { name: string }>(refs: T[]): T[] =>
   refs.filter(ref => !isSocialReference(ref));
 
+const SAFE_PROTOCOLS = ['http:', 'https:', 'mailto:'];
+
+/**
+ * Returns true when `uri` uses an allowlisted protocol (http / https / mailto).
+ * Used to filter out unsafe schemes (`javascript:`, `data:`, etc.) before
+ * rendering social-link anchors — `uri` comes from user-controlled profile data.
+ */
+const isSafeUri = (uri: string): boolean => {
+  const trimmed = uri.trim();
+  if (!trimmed) return false;
+  // No scheme = relative URL (safe).
+  if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return true;
+  const lower = trimmed.toLowerCase();
+  return SAFE_PROTOCOLS.some(proto => lower.startsWith(proto));
+};
+
 /**
  * Returns true when at least one ref in the array is a social reference with a
- * non-empty URI. Use this in the consumer when you need to gate the section
- * header (or a different empty-state) based on whether `<SocialLinks>` will
- * render anything — `<SocialLinks>` itself returns null when empty, but a JSX
- * element is never null at evaluation time, so the consumer can't check the
- * return value.
+ * non-empty URI AND a safe protocol. Use this in the consumer when you need to
+ * gate the section header based on whether `<SocialLinks>` will render anything.
  */
 export const hasSocialReferences = (refs: { name: string; uri: string }[]): boolean =>
-  refs.some(ref => isSocialReference(ref) && ref.uri.trim().length > 0);
+  refs.some(ref => {
+    if (!isSocialReference(ref) || ref.uri.trim().length === 0) return false;
+    const brand = resolveBrand(ref.name);
+    // Email is wrapped in mailto: by buildHref; other brands need an allowlisted protocol.
+    return brand === 'email' || isSafeUri(ref.uri);
+  });
 
 const buildHref = (brand: Brand, uri: string): string => {
   if (brand !== 'email') return uri;
@@ -83,7 +101,13 @@ export type SocialLinksProps = {
 export function SocialLinks({ references, className }: SocialLinksProps) {
   const items = references
     .map(ref => ({ ref, brand: resolveBrand(ref.name) ?? ('generic' as const) }))
-    .filter(({ ref }) => resolveBrand(ref.name) !== null && ref.uri.trim().length > 0)
+    .filter(({ ref, brand }) => {
+      if (resolveBrand(ref.name) === null) return false;
+      if (ref.uri.trim().length === 0) return false;
+      // Email refs are wrapped in `mailto:` by buildHref — accept them unconditionally;
+      // for every other brand, allowlist the URI's protocol.
+      return brand === 'email' || isSafeUri(ref.uri);
+    })
     .sort((a, b) => BRAND_ORDER[a.brand] - BRAND_ORDER[b.brand]);
 
   if (items.length === 0) return null;

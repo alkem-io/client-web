@@ -41,16 +41,17 @@ export function VCPageHero({ avatarImageUrl, color, displayName, settingsHref }:
 
             <div className="flex gap-3 shrink-0">
               {settingsHref ? (
-                <a href={settingsHref} aria-label={t('vcProfile.hero.settingsAriaLabel')}>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="shadow-sm"
-                    title={t('vcProfile.hero.settingsTooltip')}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </a>
+                <Button
+                  asChild={true}
+                  variant="secondary"
+                  size="icon"
+                  className="shadow-sm"
+                  title={t('vcProfile.hero.settingsTooltip')}
+                >
+                  <a href={settingsHref} aria-label={t('vcProfile.hero.settingsAriaLabel')}>
+                    <Settings className="w-4 h-4" aria-hidden="true" />
+                  </a>
+                </Button>
               ) : null}
             </div>
           </div>
