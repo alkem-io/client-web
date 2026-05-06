@@ -1,192 +1,199 @@
-# Phase 1 — Quickstart: CRD User Settings
+# Quickstart: CRD Contributor Settings
 
-A pragmatic build order, environment notes, and a smoke checklist for verifying the migration end-to-end. The public-profile-view migration lives in sibling spec `096-crd-user-pages`; both ship together as one user-vertical release.
+**Feature**: 097-crd-user-settings | **Spec**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md)
 
----
+This is the developer's hands-on guide: how to enable the toggle, where to look for issues per tab, what to smoke-test before opening a PR, and what counts as "feature complete."
 
 ## Prerequisites
 
-- Node ≥ 22 (Volta-pinned to 24.14.0).
-- pnpm ≥ 10.17.1.
-- A running Alkemio backend at `localhost:3000` (Traefik). Without it, GraphQL calls will fail; the CRD shell still loads but every tab renders an empty / error state.
-- The current branch is `097-crd-user-settings` (or both 096 + 097 merged into a working branch).
-- Sibling spec `096-crd-user-pages` provides the foundational pieces (`CrdUserRoutes.tsx`, `useUserPageRouteContext`, `useCanEditSettings`). When developing 097 standalone, those need to land first or be coordinated via the same feature branch.
+- Node 24.14.0 (Volta-pinned) and pnpm 10.17.1
+- Backend running locally at `localhost:3000` (Traefik reverse proxy, expects services up at `localhost:4000`, etc.)
+- A user account on the local backend (or seeded test data) with at least:
+  - One organization where the user has `Update` privilege (for Org settings smoke)
+  - At least one space membership (for Membership tab smoke)
+  - At least one associated organization (for User Organizations tab smoke)
+  - Optional: PlatformAdmin role on a separate user account (for admin-on-other-user smoke)
+- Browser DevTools open with cache disabled (Network tab visible) — useful for verifying no broken queries.
+
+## One-time setup
 
 ```bash
 pnpm install
-pnpm start              # http://localhost:3001
+pnpm codegen          # only needed when GraphQL schema changes; this spec introduces none
+pnpm start            # dev server on localhost:3001
 ```
 
-Once the dev server is up, enable CRD in the browser console:
+Enable the CRD toggle in the browser console:
 
 ```js
 localStorage.setItem('alkemio-crd-enabled', 'true');
 location.reload();
 ```
 
-To toggle off:
+To disable (back to MUI):
 
 ```js
 localStorage.removeItem('alkemio-crd-enabled');
 location.reload();
 ```
 
----
+## Build order (per implementation strategy)
 
-## Build order
+The spec ships **all 7 user tabs together** and **all 5 org tabs together**, gated by the same toggle. The recommended build order to keep the toggle usable for smoke at each stage:
 
-The seven settings tabs ship together with the public profile view (sibling spec 096), but the build order below minimizes rework — each step lands a usable demo.
+1. **Phase 1 (Setup)**: register `crd-contributorSettings` i18n namespace; create empty translation files; scaffold the two integration directories.
+2. **Phase 2 (Foundational)**: build the shared shell (`SettingsShell`, `SettingsTabStrip`, `SettingsCard`), the `EditableField` family, the per-actor predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), the `CrdUserSettingsRoutes` and `CrdOrgSettingsRoutes` route shells. Wire the toggle dispatch in `TopLevelRoutes.tsx` (User) and `CrdOrganizationRoutes.tsx` (Org). At this point, all tabs render an "empty" page that proves the routing works.
+3. **Phase 3+ (Per-tab)**: implement each of the 12 tabs in any order — they're independent. The smoke checklist below validates each one in isolation.
+4. **Phase Polish**: translations for all 6 languages, axe accessibility scan per tab, lint, bundle delta check, end-to-end smoke through every tab × every authorization variant.
 
-1. **Foundation** (shared with 096; if 096 has already landed these in a feature branch, skip)
-   - `src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` and `useCanEditSettings.ts` — the shared route helpers.
-   - `src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` — top-level route shell. Settings subtree delegates to `CrdUserAdminRoutes` (this spec).
+## Smoke checklist (per tab)
 
-2. **Settings shell + i18n setup**
-   - `src/crd/i18n/userSettings/userSettings.en.json` — add the i18n namespace skeleton with placeholder keys for every tab's labels.
-   - Register `crd-userSettings` in `src/core/i18n/config.ts` and `@types/i18next.d.ts`.
-   - `src/crd/components/user/settings/UserSettingsShell.tsx` and `UserSettingsTabStrip.tsx`. The strip uses the same horizontal-scroll responsive behaviour as the resource strip (096) on `< md`.
-   - `src/crd/components/user/settings/UserSettingsCard.tsx` (icon + title + body primitive).
-   - `src/main/crdPages/topLevelPages/userPages/settings/CrdUserAdminRoutes.tsx` — wire the seven sub-routes; redirect non-`canEditSettings` viewers to `/user/<slug>` (the public profile, owned by 096); redirect `/security` to `/profile` when the viewer is an admin but not the owner.
+Each item should be verified manually with the toggle ON. After all 12 are green, run again with the toggle OFF to confirm the MUI fallback works (no regressions on the existing pages).
 
-3. **My Profile** (User Story 1 — the largest tab)
-   - `src/crd/components/user/settings/EditableField.tsx` (state machine: idle / editing / pending / idle-saved / editing-error).
-   - The five variants: `EditableTextField`, `EditableMarkdownField`, `EditableSelectField`, `EditableTagsField`, `EditableReferenceRow`.
-   - `src/crd/components/user/settings/tabs/MyProfileView.tsx` and `MyProfileAvatarColumn.tsx`.
-   - Integration: `CrdMyProfilePage.tsx`, `useMyProfileFields.ts`, `useReferenceCrud.ts`, `useTagsetSave.ts`, `useAvatarUpload.ts`, `myProfileMapper.ts`.
+### User Story 1 — User My Profile
 
-4. **Account** (User Story 2 — uses navigation, smallest behavior surface)
-   - `src/crd/components/user/settings/tabs/AccountView.tsx` and `AccountResourceCard.tsx`.
-   - Integration: `CrdAccountPage.tsx`, `useAccountActions.ts`, `accountMapper.ts`. `useAccountActions` wires Create / Manage / Transfer / Delete kebab actions to navigation against the existing MUI admin routes (research §2).
+- [ ] Open `/user/<self>/settings/profile`. Sticky header shows avatar + name + 7-tab strip; My Profile is highlighted with `border-primary` underline.
+- [ ] Hover **First Name** — pencil glyph appears. Click — input becomes active with check + × icons.
+- [ ] Edit, click check — value persists; transient "Saved" indicator appears next to label for ~2s.
+- [ ] Edit Tagline, click × — value reverts to server.
+- [ ] Edit Phone with invalid format — Save is disabled and inline error shows.
+- [ ] Edit Bio (markdown), press Enter — newline inserted (does NOT save). Click Save icon — change persists.
+- [ ] Add a LinkedIn URL via the recognized Social Links row, click Save — appears on `/user/<self>` (public profile, sibling 096).
+- [ ] Click trash on a saved reference — disappears immediately, no confirmation dialog.
+- [ ] Click "Add Another Reference" — new row in edit mode; fill name + URL + description, click Save — created.
+- [ ] Click "Change Avatar" → pick a JPG → preview updates immediately, no Save click needed.
+- [ ] Edit a field, click another tab without saving — navigation completes, field's typed value is silently dropped, no confirmation dialog.
+- [ ] **Failure smoke**: temporarily kill backend connection (DevTools → Network → Offline) → edit a field → click Save — field stays in edit mode with typed value preserved + inline error. Re-enable network, click Save — succeeds without retyping.
+- [ ] As a platform admin viewer: open `/user/<otherUser>/settings/profile` — page is fully editable, saves persist against the target user.
+- [ ] As a non-admin viewer: open `/user/<otherUser>/settings/profile` — redirected to `/user/<otherUser>` (public profile).
 
-5. **Membership** (User Story 3)
-   - Views: `MembershipView.tsx`, `HomeSpaceCard.tsx`, `MembershipsTable.tsx`, `PendingApplicationsTable.tsx`.
-   - Integration: `CrdMembershipPage.tsx`, `useHomeSpace.ts`, `useLeaveMembership.ts` (wraps `useContributionProvider.leaveCommunity`), `membershipMapper.ts`.
+### User Story 2 — User Account
 
-6. **Organizations** (User Story 4)
-   - Views: `OrganizationsView.tsx`, `OrganizationsTable.tsx`.
-   - Integration: `CrdOrganizationsPage.tsx`, `useLeaveOrganization.ts`, `useCreateOrganization.ts`, `organizationsMapper.ts`.
+- [ ] Open `/user/<self>/settings/account`. Help banner + 4 card groups visible.
+- [ ] Click "Create Virtual Contributor" — navigates to existing MUI VC creation flow.
+- [ ] Click a hosted space's kebab → Manage — navigates to existing MUI manage flow.
+- [ ] Click a hosted resource's kebab → Delete — opens confirmation dialog; on confirm, existing delete mutation fires.
 
-7. **Notifications** (User Story 5)
-   - Views: `NotificationsView.tsx`, `NotificationGroupCard.tsx`, `NotificationRow.tsx`, `PushSubscriptionsListCard.tsx`, `PushAvailabilityBanner.tsx`.
-   - Integration: `CrdNotificationsPage.tsx`, `useNotificationToggle.ts` (optimistic-overrides dictionary, research §7), `usePushSubscriptionList.ts`, `notificationsMapper.ts`.
+### User Story 3 — User Membership
 
-8. **Settings** (User Story 6 — small)
-   - Views: `SettingsView.tsx`, `DesignSystemSwitchCard.tsx`.
-   - Integration: `CrdSettingsPage.tsx`, `useDesignSystemToggle.ts`, `useAllowMessagesToggle.ts`, `settingsMapper.ts`.
-
-9. **Security** (User Story 7 — wraps Kratos)
-   - View: `SecurityView.tsx`.
-   - Integration: `CrdSecurityPage.tsx`, `useKratosSettingsFlow.ts` (reuses the same Kratos flow hook used by `UserSecuritySettingsPage`).
-
-10. **i18n completeness**
-    - Translate every key into `nl / es / bg / de / fr` in the same PR (no Crowdin).
-    - Add a small Vitest assertion that every language file has the same key shape.
-
-11. **Smoke + cleanup**
-    - Run the smoke checklist below.
-    - Run `pnpm lint` + `pnpm vitest run`.
-    - Run `pnpm analyze` and verify the user-settings chunk delta is ≤ +25 KB gzipped (SC-006).
-
----
-
-## Smoke checklist (manual)
-
-For each block below, toggle CRD on, sign in as a regular user, then sign in as a platform admin and re-run the same flows on a non-self profile.
-
-**My Profile** (User Story 1)
-
-- [ ] Hover any editable field — pencil glyph appears trailing the value.
-- [ ] Click into First Name, edit, click Save. Field returns to idle with a transient "Saved" indicator. Refresh → new value persists.
-- [ ] Edit Tagline, click ×. Field reverts to its prior value. No mutation in the network tab.
-- [ ] Edit Bio, click another tab in the strip. Tab switches immediately. No confirmation dialog. Return to My Profile → Bio still shows the last server value.
-- [ ] Edit First Name, hold the network panel offline, click Save. Field stays in edit mode with the typed value preserved. Inline error appears beneath the input. Re-enable network, click Save again — succeeds.
-- [ ] Add a LinkedIn reference via Add Another Reference; click Save → row becomes saved. Click the trash icon → row disappears immediately, no confirmation.
-- [ ] Pick a new avatar via Change Avatar — preview updates immediately.
-- [ ] Country dropdown opens; type to search; pick a country; field commits.
-
-**Account** (User Story 2)
-
-- [ ] Four card groups render with the user's hosted spaces / VCs / packs / hubs.
-- [ ] Click Create Virtual Contributor — navigates to the existing creation flow. After creation, navigate back to `/user/<self>/settings/account` — the new VC appears in the list.
-- [ ] Click any kebab → Manage — navigates to the existing manage flow.
-- [ ] Click Delete on a hosted resource → CRD ConfirmationDialog → Confirm → resource is removed from the list (mutation succeeds).
-
-**Membership** (User Story 3)
-
-- [ ] Pick a Home Space from the dropdown — spinner appears briefly; new value persists after reload.
+- [ ] Open `/user/<self>/settings/membership`. Home Space card + Memberships table + Pending Applications visible.
+- [ ] Pick a Home Space — dropdown updates, mutation fires; Auto-redirect checkbox becomes enabled.
 - [ ] Tick Auto-redirect — change persists.
-- [ ] Untick Auto-redirect; clear Home Space — Auto-redirect becomes disabled with the explanatory caption.
-- [ ] Type "Garden" in the search input — list filters client-side; pagination resets to page 1.
-- [ ] Click Leave on a row → CRD ConfirmationDialog → Confirm → row disappears.
-- [ ] Cancel the Leave dialog → no mutation fires.
-- [ ] Pending Applications table renders below with read-only rows (no kebab).
+- [ ] Type "Garden" in the memberships search — list filters client-side; pagination resets to page 1.
+- [ ] Open a row's kebab → Leave → Confirm — row disappears.
+- [ ] Pending Applications table is read-only (no kebab).
 
-**Organizations** (User Story 4)
+### User Story 4 — User Organizations
 
-- [ ] Associated organizations render with avatar / name / city / role / verified badge.
-- [ ] Search "Alkemio" — list filters client-side.
-- [ ] Create Organization button visible only with `CreateOrganization` privilege.
-- [ ] Leave on a row → CRD ConfirmationDialog → Confirm → row disappears.
+- [ ] Open `/user/<self>/settings/organizations`. Org list visible with avatar / name / location / role / associates / verified badge / website.
+- [ ] If the user has `CreateOrganization` privilege — Create Organization button visible.
+- [ ] Type "Alkemio" in search — list filters client-side.
+- [ ] Open a row's kebab → Leave → Confirm — org disappears from list.
+- [ ] Click an org name — navigates to `/organization/<orgSlug>` (public profile, sibling 096).
 
-**Notifications** (User Story 5)
+### User Story 5 — User Notifications
 
-- [ ] All visible groups render with one row per property and three switches (`inApp` / `email` / `push`).
-- [ ] Flip an email switch — UI updates immediately (optimistic), persists after reload.
-- [ ] Flip the push master toggle — browser permission prompt fires.
-- [ ] In a private window: master toggle replaced by an info banner; push columns hidden across every group.
-- [ ] As a non-admin user: Space Admin / Platform Admin / Organization Notifications cards are hidden.
-- [ ] As a platform admin: those cards are visible.
+- [ ] Open `/user/<self>/settings/notifications`. All visible cards render with one row per property and three Switch columns (inApp, email, push).
+- [ ] Flip an email Switch — UI updates immediately; reload — value persists.
+- [ ] Flip Push master toggle ON — browser permission prompt fires; on accept, subscription appears in Push Subscriptions List.
+- [ ] In a private window, open the page — push master replaced by info banner; every push column hidden.
+- [ ] Confirm Space Admin / Platform Admin / Organization Notifications cards appear only with the appropriate privileges.
+- [ ] **Failure smoke**: kill network, flip a switch — UI flips optimistically, then reverts on the failure response with an inline error toast.
 
-**Settings** (User Story 6)
+### User Story 6 — User Settings
 
-- [ ] Flip the messages-from-others switch — change persists after reload.
-- [ ] Flip the Design System switch off — page reloads in MUI mode (URL stays the same).
-- [ ] From the equivalent MUI page, flip Design System on — page reloads in CRD mode.
+- [ ] Open `/user/<self>/settings/settings`. Two cards: Communication & Privacy + Design System.
+- [ ] Flip "Allow other users to send me messages" — change persists after reload.
+- [ ] Flip Design System OFF — page reloads in MUI mode.
+- [ ] In MUI, navigate to the equivalent settings tab and flip Design System ON — page reloads back into CRD.
 
-**Security** (User Story 7)
+### User Story 7 — User Security
 
-- [ ] On `/user/<self>/settings/security`: Kratos passkey form renders inside a CRD card shell. Add a passkey via the existing flow.
-- [ ] As a platform admin: open `/user/<otherUser>/settings/security` — redirected to `/user/<otherUser>/settings/profile`.
-- [ ] When the Kratos flow has no WebAuthn nodes: info banner reads "WebAuthn / Passkey is not enabled on this account".
+- [ ] Open `/user/<self>/settings/security` as the profile owner. Identity-provider passkey form renders inside CRD card shell.
+- [ ] Click "Add Passkey" or equivalent — existing flow runs.
+- [ ] If the account has no WebAuthn nodes — info alert reads "WebAuthn / Passkey is not enabled on this account".
+- [ ] As a platform admin (not owner): open `/user/<otherUser>/settings/security` — redirected to `/user/<otherUser>/settings/profile`.
+- [ ] As any non-owner viewer: tab strip omits the Security tab on `/user/<otherUser>/settings/<any>`.
 
-**Authorization** (cross-cutting)
+### User Story 8 — Org Profile
 
-- [ ] Sign out. Open `/user/<otherUser>/settings/profile` — redirected to login (NoIdentityRedirect, parity with current MUI; research §1).
-- [ ] Sign in as a non-admin user; visit `/user/<otherUser>/settings/profile` — redirected to `/user/<otherUser>` (the public profile, owned by sibling spec 096).
-- [ ] Sign in as a non-admin user; visit `/user/<otherUser>/settings/notifications` — redirected to `/user/<otherUser>`.
+- [ ] Open `/organization/<orgSlug>/settings/profile` as an org admin. Sticky header shows avatar + org name + 5-tab strip; Profile highlighted.
+- [ ] Hover Display Name — pencil glyph. Edit + Save — value persists.
+- [ ] Edit Description (markdown) — Enter inserts newline; Save icon commits.
+- [ ] Edit Domain to an invalid value — inline error displays, Save disabled.
+- [ ] Upload a new logo — preview updates immediately.
+- [ ] Verified badge displays current `verification.status` read-only — click does nothing.
+- [ ] As a non-admin viewer: open `/organization/<orgSlug>/settings/profile` — redirected to `/organization/<orgSlug>` (public profile).
 
-**Toggle**
+### User Story 9 — Org Account
 
-- [ ] With CRD off (`localStorage.removeItem('alkemio-crd-enabled')`): every URL above renders the existing MUI page unchanged.
+- [ ] Open `/organization/<orgSlug>/settings/account` as an org admin. 4 card groups render with the org's resources.
+- [ ] Click Create Innovation Pack — existing creation flow runs.
+- [ ] Click a resource's kebab → Manage — existing manage flow runs.
 
----
+### User Story 10 — Org Community (Associates)
 
-## Useful commands
+- [ ] Open `/organization/<orgSlug>/settings/community` as an org admin. Two columns: current Associates + Available Users.
+- [ ] Type "Maria" in search — Available Users filters.
+- [ ] Click + on an available user — they move to Associates list (mutation fires immediately).
+- [ ] Click × on an existing Associate — they're removed.
+- [ ] Scroll the Available Users column — load-more triggers, additional users appear.
 
-```bash
-# Type-check + lint
-pnpm lint
+### User Story 11 — Org Authorization
 
-# Run all tests once
-pnpm vitest run
+- [ ] Open `/organization/<orgSlug>/settings/authorization` as an org admin. Two sub-tabs (Admin / Owner).
+- [ ] Admin sub-tab is selected by default — Admin role-assignment view renders.
+- [ ] Click + on an available user — added to Admins.
+- [ ] Switch to Owner sub-tab — Owner role-assignment view renders.
+- [ ] Click × on an Owner — removed.
+- [ ] Switch sub-tabs back and forth — local state, no URL change.
 
-# Run a specific test file
-pnpm vitest run src/main/crdPages/topLevelPages/userPages/settings/myProfile/myProfileMapper.test.ts --reporter=basic
+### User Story 12 — Org Settings
 
-# Bundle analysis
-pnpm analyze            # outputs build/stats.html
+- [ ] Open `/organization/<orgSlug>/settings/settings` as an org admin. Card with two switches.
+- [ ] Flip "Allow users matching domain to join" — change persists after reload.
+- [ ] Flip "Contribution roles publicly visible" — change persists.
+- [ ] Confirm there is **no** Design System toggle on this tab (FR-132).
 
-# i18n key parity check (suggestion — wire in the test referenced in research §13)
-pnpm vitest run src/crd/i18n/userSettings/__tests__/keyParity.test.ts
-```
+## Cross-cutting smoke
 
----
+- [ ] **Tab strip overflow**: shrink browser to `< md` width — both User (7-tab) and Org (5-tab) strips horizontally scroll; active tab auto-scrolls into view.
+- [ ] **Keyboard navigation**: Tab into the tab strip → Left/Right arrows switch tabs → Enter activates. Same for the Org Authorization Admin/Owner sub-tab strip.
+- [ ] **Routing**: every URL `/user/<slug>/settings/<tab>` and `/organization/<slug>/settings/<tab>` resolves directly to the matching tab (deep-linking parity).
+- [ ] **CRD toggle off**: disable the toggle → every URL above resolves to the existing MUI page → no broken links → no console errors.
+- [ ] **Anonymous viewer**: open any settings URL while signed out → redirected to login.
+- [ ] **i18n**: switch language to nl, es, bg, de, fr → every visible string is localized (no `crd-contributorSettings.foo.bar` literal showing).
+- [ ] **Accessibility**: run axe scan on each of the 12 tabs — zero critical/serious violations.
 
-## Done criteria
+## Performance & bundle smoke
 
-- All seven settings tabs reachable in CRD with parity to MUI for every action listed in the spec's Acceptance Scenarios.
-- All seven tabs reachable in MUI when the toggle is off.
-- `pnpm lint` and `pnpm vitest run` clean.
-- Bundle delta on the user-settings chunk ≤ +25 KB gzipped.
-- All six languages updated.
-- Spec's Success Criteria SC-001 through SC-007 verified.
+- [ ] `pnpm analyze` — combined delta of the two new lazy-loaded chunks (`userSettings*.js` and `orgSettings*.js`) ≤ +50 KB gzipped over the prior build (SC-007).
+- [ ] Tab switch < 200ms; pencil-hover affordance reveal < 50ms; per-field save round-trip < 3s on a healthy connection.
+
+## Done definition
+
+The feature is "feature complete" when:
+
+1. All 12 smoke checklists pass with the toggle ON.
+2. The CRD-OFF smoke passes (no MUI regressions).
+3. `pnpm lint` passes with no new warnings.
+4. `pnpm vitest run` passes — all unit tests for mappers, predicate hooks, the editable-field state machine, push availability, optimistic overrides, and the i18n key parity test green.
+5. Bundle delta within budget (SC-007).
+6. Zero critical/serious axe violations on every tab (SC-006).
+7. PR description includes:
+   - Screenshots of each tab in CRD mode.
+   - Confirmation that the toggle round-trip works in both directions.
+   - Network log evidence that the per-actor predicate redirects fire correctly.
+   - Bundle analyze chart screenshot.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Tab strip renders 0 tabs | `useCanEdit*Settings` returns `loading: true` indefinitely; the route guard treats loading as falsy. | Verify the underlying provider hook resolves; render a Skeleton during loading instead of evaluating the gate. |
+| "Saved" indicator never disappears | The integration hook's success-flash timer never transitions back to `idle`. | Check the `idle-saved → idle` setTimeout in the per-field state machine (Decision #2). |
+| Per-field save disables Save button forever after a failure | The integration hook never resets `errorMessage`. | On `onSave` retry, clear `errorMessage` before transitioning to `pending`. |
+| Org Profile doesn't update after Save | The mutation fired but the cache didn't refetch. | Confirm the integration hook calls `refetch()` on the relevant query, or uses Apollo's automatic update via the mutation result + cache normalization. |
+| `useCrdEnabled()` flips but Org settings still renders MUI | `CrdOrganizationRoutes.tsx` change wasn't picked up. | Verify the dispatch was added at lines 29–34 of that file (research §1). |
+| Tab navigation triggers a confirmation dialog | A hidden tab-wide dirty buffer is present. | None should exist (FR-016) — review whether a Formik or controlled-form was inadvertently introduced. |
+| Push master toggle flickers between ON and OFF | Optimistic-overrides clearing logic is wrong. | Verify the override is cleared only on refetch success (Decision #4), not on mutation completion alone. |

@@ -1,404 +1,369 @@
-# Phase 1 — Data Model & Mapping (User Settings)
+# Phase 1 Data Model: CRD Contributor Settings
 
-This document enumerates the entities consumed by the CRD User Settings tabs, the GraphQL hooks they originate from, the CRD prop shapes the views expect, and the mapping rules that bridge the two. Every CRD prop type listed here is plain TypeScript (no generated GraphQL imports) per FR-005.
+**Feature**: 097-crd-user-settings | **Spec**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md)
 
-The mapper for each tab lives at `src/main/crdPages/topLevelPages/userPages/settings/<tab>/<tab>Mapper.ts` and is the only place GraphQL types are visible. Sibling spec `096-crd-user-pages` covers the public profile view's data model — see `specs/096-crd-user-pages/data-model.md`.
+## Purpose
+
+Document the entities the spec touches and how each one maps from generated GraphQL types into plain CRD prop types. Every CRD view consumes plain TypeScript shapes; the GraphQL → plain-shape mapping is performed exclusively by per-tab data mappers in the integration layer (FR-006).
+
+This document is **specification-side**: it lists field names, validation rules, and the source-of-truth for each piece of data. The exact TypeScript interface shapes for CRD components live in `contracts/`.
 
 ---
 
-## Source GraphQL hooks (existing — unchanged)
+## Entity Overview
 
-| Hook | File | Purpose |
+| Entity | Source (GraphQL) | Used by tab(s) | Owner spec |
+|---|---|---|---|
+| User | `useUserQuery`, `useUserAccountQuery`, `useCurrentUserContext` | User: My Profile, Account, Membership, Organizations, Notifications, Settings, Security | this spec + 096 |
+| Organization | `useOrganizationProvider`, `useOrganizationAccountQuery`, `useOrganizationSettingsQuery` | Org: Profile, Account, Community, Authorization, Settings | this spec + 096 |
+| Reference | `User.profile.references[]` / `Organization.profile.references[]` | User My Profile, Org Profile | this spec |
+| Tagset | `User.profile.tagsets[]` / `Organization.profile.tagsets[]` | User My Profile, Org Profile | this spec |
+| Membership | `useUserContributionsQuery` | User Membership | this spec |
+| Pending Application | `useUserPendingMembershipsQuery` | User Membership | this spec |
+| AssociatedOrganization | `useUserOrganizationIds` + lazy fetch | User Organizations | this spec + 096 |
+| NotificationSettings | `User.settings.notification` (via `useUserSettingsQuery`) | User Notifications | this spec |
+| HomeSpace | `User.settings.homeSpace` | User Membership | this spec |
+| AccountResource (Space / VC / Innovation Pack / Innovation Hub) | `useUserAccountQuery` / `useOrganizationAccountQuery` + `useAccountInformationQuery` | User Account, Org Account | this spec |
+| Associate (member of an org in `Associate` role) | `useRoleSetManager(roleSet, [Associate])` | Org Community | this spec |
+| RoleAssignment (Admin / Owner) | `useRoleSetManager(roleSet, [Admin])` / `(roleSet, [Owner])` | Org Authorization | this spec |
+| OrganizationSettings | `useOrganizationSettingsQuery` | Org Settings | this spec |
+| Verification | `Organization.verification.status` | Org Profile (read-only) | this spec |
+
+---
+
+## User Story 1 — User My Profile
+
+### Entity: User (subset consumed by this tab)
+
+| Field | GraphQL path | CRD prop | Required | Validation | Notes |
+|---|---|---|---|---|---|
+| Display Name | `user.profile.displayName` | `displayName` | yes | `displayNameValidator` (existing) | Per-field saved via `updateUser` |
+| First Name | `user.firstName` | `firstName` | yes | `nameValidator` (existing) | Per-field saved via `updateUser` |
+| Last Name | `user.lastName` | `lastName` | yes | `nameValidator` (existing) | Per-field saved via `updateUser` |
+| Email | `user.email` | `email` | n/a (read-only) | — | "Contact support to change email" caption; not editable |
+| Phone | `user.phone` | `phone` | no | Existing phone-format regex | Per-field saved via `updateUser` |
+| Tagline | `user.profile.tagline` | `tagline` | no | `textLengthValidator({ maxLength: ALT_TEXT_LENGTH })` | Per-field saved via `updateUser` |
+| City | `user.profile.location.city` | `city` | no | `textLengthValidator()` | Per-field saved via `updateUser` |
+| Country | `user.profile.location.country` | `country` | no | Single-select against `COUNTRIES` constant | Per-field saved via `updateUser` |
+| Bio | `user.profile.description` | `bio` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` | Markdown editor; Enter inserts newline; commit only via Save icon |
+| Tags | `user.profile.tagsets[].tags[]` | `tags` | no | — | Resolved via the `default` tagset; first save fires `createTagsetOnProfile` if no default tagset exists |
+| Avatar | `user.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | File-select commits immediately; helper text "Recommended: 400x400px. JPG, PNG or GIF." |
+
+### Entity: Reference (User social links + arbitrary references)
+
+Recognized social references resolve by name (case-insensitive): `linkedin`, `bsky`, `github`. Anything else is an arbitrary reference with editable name + URL + description.
+
+| Field | GraphQL path | CRD prop | Required | Validation |
+|---|---|---|---|---|
+| Reference id | `user.profile.references[i].id` | `id` | yes | — |
+| Reference name | `user.profile.references[i].name` | `name` | yes (read-only on recognized; editable on arbitrary) | `textLengthValidator` |
+| Reference URI | `user.profile.references[i].uri` | `uri` | yes | `urlValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Reference description | `user.profile.references[i].description` | `description` | no | `textLengthValidator` |
+
+CRUD mutations (existing):
+- Create: `createReferenceOnProfile`
+- Update: `updateReference`
+- Delete: `deleteReference` (no confirmation dialog per FR-025)
+
+---
+
+## User Story 2 — User Account
+
+Renders four card groups. The CRD view is the **shared** `ContributorAccountView` (Decision #3 in research.md).
+
+### Entity: AccountResource (Space / VC / Innovation Pack / Innovation Hub)
+
+Each card group's row shape:
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Resource id | `account.<group>[i].id` | `id` | |
+| Display name | `account.<group>[i].profile.displayName` | `displayName` | |
+| Description | `account.<group>[i].profile.tagline ?? account.<group>[i].profile.description` | `description` | Tagline preferred for brevity |
+| Avatar URL | `account.<group>[i].profile.avatar?.uri` | `avatarUrl` | Falls back to `pickColorFromId` deterministic color (per migration-guide.md) |
+| Resource URL | `account.<group>[i].profile.url` | `href` | Used by the row name link |
+| Kebab actions | derived from privileges + group type | `actions: KebabAction[]` | View / Manage / Transfer / Delete per existing MUI behavior |
+
+Source query: `useUserAccountQuery` → `account.id` → `useAccountInformationQuery({ accountId })`.
+
+---
+
+## User Story 3 — User Membership
+
+### Entity: HomeSpace
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Selected Home Space ID | `user.settings.homeSpace.spaceID` | `selectedSpaceId` | Single-select |
+| Auto-redirect flag | `user.settings.homeSpace.autoRedirect` | `autoRedirect` | Disabled until a Home Space is selected |
+
+Mutation: `useUpdateUserSettingsMutation` (existing).
+
+### Entity: Membership
+
+Rows in the My Memberships table.
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Membership id | `rolesUser.spaces[i].id` (or nested subspace id) | `id` | |
+| Display name | `rolesUser.spaces[i].displayName` | `displayName` | |
+| Avatar URL | `rolesUser.spaces[i].profile.avatar?.uri` | `avatarUrl` | |
+| Type | derived from `level` | `type` | `'Space'` (L0) or `'Subspace'` (L1+) |
+| Description | `rolesUser.spaces[i].profile.tagline ?? ''` | `description` | |
+| Role | derived from `roleNames[]` | `role` | First role of `[Admin, Lead, Member]` that matches |
+| Member count | `rolesUser.spaces[i].metrics[Member].value` | `memberCount` | Optional |
+| Status | derived from space lifecycle state | `status` | `'Active'` / `'Archived'` |
+| Space URL | `rolesUser.spaces[i].profile.url` | `spaceUrl` | Click on row name navigates here |
+
+Filters (client-side):
+- Search input → filters by `displayName` substring (case-insensitive)
+- Filter dropdown → narrows by `type` (`Spaces` / `Subspaces`) + `status` (`Active` / `Archived`)
+
+Pagination (client-side): ~10 rows per page. Resets to page 1 on search/filter change.
+
+Leave action: confirmation dialog → `useLeaveCommunityMutation` (existing).
+
+### Entity: Pending Application
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Application id | `me.communityApplications[i].id` | `id` | |
+| Space display name | `me.communityApplications[i].spacePendingMembershipInfo.displayName` | `displayName` | |
+| Application date | `me.communityApplications[i].createdDate` | `createdDate` | Formatted date string |
+| Status | `me.communityApplications[i].state` | `status` | |
+
+Read-only: no kebab, no actions.
+
+---
+
+## User Story 4 — User Organizations
+
+### Entity: AssociatedOrganization
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Organization id | (lazy-fetched) `organization.id` | `id` | |
+| Avatar URL | `organization.profile.avatar?.uri` | `avatarUrl` | Falls back to `pickColorFromId` |
+| Display name | `organization.profile.displayName` | `displayName` | |
+| Description | `organization.profile.description` (truncated) | `description` | |
+| Location | `organization.profile.location.{city, country}` | `location` | Concatenated |
+| Role | derived from user's role on the org | `role` | `'Admin'` or `'Associate'` |
+| Associates count | `organization.metrics[Associate].value` | `associatesCount` | |
+| Verified | `organization.verification.status === VerifiedManualAttestation` | `verified` | Boolean |
+| Website | `organization.profile.url` | `url` | |
+
+Source: `useUserOrganizationIds()` → ids → lazy `useOrganizationsQuery({ ids: [...] })` (existing path used by MUI today).
+
+Search input → filters by `displayName` substring (client-side).
+Create button → gated by `currentUser.hasPlatformPrivilege(CreateOrganization)`. Calls existing org-creation flow.
+Leave kebab → confirmation dialog → existing leave-organization mutation.
+
+---
+
+## User Story 5 — User Notifications
+
+### Entity: NotificationSettings
+
+A nested settings tree on `user.settings.notification`. Source-of-truth definition in `src/domain/community/userAdmin/tabs/model/NotificationSettings.model.ts` — the CRD mapper imports this file to keep the row list in sync with MUI.
+
+Top-level groups (each is a card on the page):
+- `space` (always visible)
+- `space.admin` (privilege-gated: `ReceiveNotificationsSpaceAdmin` OR `ReceiveNotificationsSpaceLead` OR Platform Admin)
+- `user`
+- `user.membership` (rendered as part of `user`)
+- `platform`
+- `platform.admin` (privilege-gated: Platform Admin)
+- `organization` (privilege-gated: `ReceiveNotificationsOrganizationAdmin` OR Platform Admin)
+- `virtualContributor`
+
+Each leaf property is an object `{ inApp: boolean, email: boolean, push: boolean }`.
+
+| Row attribute | CRD prop |
+|---|---|
+| Group label (i18n) | `groupLabel` |
+| Property label (i18n) | `propertyLabel` |
+| Channel switches | `{ inApp, email, push }` (each is `{ value: boolean, saving: boolean }` or `null` for hidden push) |
+| Toggle handler | `(channel: 'inApp' | 'email' | 'push', next: boolean) => void` |
+
+Mutation: `useUpdateUserSettingsMutation` (existing). Optimistic-overrides pattern (Decision #4 in research.md).
+
+### Entity: PushAvailability
+
+| Field | Source | CRD prop | Notes |
+|---|---|---|---|
+| Available | `pushNotificationContext.{isSupported, isServerEnabled, !requiresPWAMode, !isPrivateBrowsing}` (all true) | `available` | When false, info banner replaces the master toggle and every push column |
+| Reason | derived from above flags | `reasonI18nKey` | E.g., `'push.unavailable.privateBrowsing'` |
+| Subscribe handler | `pushNotificationContext.subscribe` | `onSubscribe` | |
+| Unsubscribe handler | `pushNotificationContext.unsubscribe` | `onUnsubscribe` | |
+
+### Entity: PushSubscription
+
+Rendered in the Push Subscriptions List card (parity port of MUI `PushSubscriptionsList`).
+
+| Field | CRD prop | Notes |
 |---|---|---|
-| `useUserQuery` | `src/core/apollo/generated/apollo-hooks.ts` | My Profile data (`User`, `profile.*`, `firstName`, `lastName`, `email`, `phone`, `settings.*`, `account.id`) |
-| `useUserAccountQuery` | same | Hosted resources (`account.spaces`, `account.virtualContributors`, `account.innovationPacks`, `account.innovationHubs`) |
-| `useAccountInformationQuery` | same | Detailed account capabilities + entitlements for the Account tab |
-| `useUserContributionsQuery` | same | Memberships (`rolesUser.spaces`, nested subspaces) for the Membership tab table |
-| `useUserOrganizationIdsQuery` | same | Org IDs the user is associated with (Organizations tab) |
-| `useUserPendingMembershipsQuery` | same | Pending applications (Membership tab read-only table) |
-| `useUserSettingsQuery` | same | Notification + privacy settings |
-| `useUpdateUserMutation` | same | Per-field My Profile saves (one call per field) |
-| `useUpdateUserSettingsMutation` | same | Notification toggles, Home Space, Auto-redirect, allow-messages |
-| `useCreateReferenceOnProfileMutation` | same | Add a new social link / arbitrary reference |
-| `useUpdateReferenceMutation` | same | Edit an existing reference's URL |
-| `useDeleteReferenceMutation` | same | Delete a reference (immediate, no confirmation) |
-| `useCreateTagsetOnProfileMutation` | same | Create a new tagset (skills tags etc.) |
-| `useRemoveRoleFromUserMutation` | same | Underlies the Leave membership / Leave organization flows (called via `useContributionProvider.leaveCommunity`) |
+| Subscription id | `id` | |
+| Display name (browser/device) | `displayName` | |
+| Last used timestamp | `lastUsedAt` | Formatted timestamp |
+| Is current device | `isCurrentDevice` | Adds a "Current device" badge |
+| Remove handler | `onRemove` | |
 
-## Existing facade hooks reused
+---
 
-| Hook | File | Purpose |
+## User Story 6 — User Settings
+
+### Entity: Communication settings
+
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Allow other users to send me messages | `user.settings.communication.allowOtherUsersToSendMessages` | `allowOtherUsersToSendMessages` | Switch; commits via `updateUserSettings` |
+
+### Entity: Design System toggle (viewer-scoped, browser-only)
+
+| Field | Source | CRD prop | Notes |
+|---|---|---|---|
+| CRD enabled | `localStorage.getItem('alkemio-crd-enabled') === 'true'` | `crdEnabled` | Switch; commits via `localStorage.setItem` + page reload |
+
+This is **not** a server-stored attribute — it is a viewer-scoped browser preference (FR-073).
+
+---
+
+## User Story 7 — User Security
+
+### Entity: Identity-provider settings flow
+
+The integration hook `useIdentityProviderSettingsFlow` returns a discriminated state:
+
+```typescript
+type SecurityViewState =
+  | { kind: 'loading' }
+  | { kind: 'error'; error: Error }
+  | { kind: 'noWebauthn' }
+  | { kind: 'ready'; flow: KratosSettingsFlow };
+```
+
+The view never imports the identity-provider SDK directly — it receives a `renderKratos(flow)` callback prop that the integration layer fills in by mounting `<KratosForm><KratosUI flow={flow} /></KratosForm>` with the existing `REMOVED_FIELDS` filter.
+
+Visible only to the profile owner (FR-083 — even platform admins on other users' profiles see Security hidden).
+
+---
+
+## User Story 8 — Org Profile
+
+### Entity: Organization (subset consumed by this tab)
+
+| Field | GraphQL path | CRD prop | Required | Validation |
+|---|---|---|---|---|
+| Display Name | `organization.profile.displayName` | `displayName` | yes | `displayNameValidator` |
+| Name ID | `organization.nameID` | `nameID` | n/a (read-only after creation) | — |
+| Tagline | `organization.profile.tagline` | `tagline` | no | `textLengthValidator` |
+| Description | `organization.profile.description` | `description` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` |
+| City | `organization.profile.location.city` | `city` | no | `textLengthValidator` |
+| Country | `organization.profile.location.country` | `country` | no | Single-select against `COUNTRIES` |
+| Tags (Keywords + Capabilities) | `organization.profile.tagsets[]` | `tags` | no | — |
+| Contact Email | `organization.contactEmail` | `contactEmail` | no | `emailValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Domain | `organization.domain` | `domain` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Legal Entity Name | `organization.legalEntityName` | `legalEntityName` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Website | `organization.website` | `website` | no | `urlValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Avatar/logo | `organization.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` |
+| Verification status | `organization.verification.status` | `verifiedStatus` | n/a (read-only) | — |
+
+Mutation: `updateOrganization` (existing) for every editable field except references / tagsets / avatar (which use their own existing mutations).
+
+### Entity: Reference (Org social links + arbitrary references)
+
+Same shape as User references (`linkedin`, `bsky`, `github` recognized). Same CRUD mutations — references on `organization.profile.references[]`.
+
+### Entity: Tagset (Org)
+
+Two reserved tagsets: **Keywords** and **Capabilities**. Edited per-field same as User tagsets.
+
+---
+
+## User Story 9 — Org Account
+
+Same entity (`AccountResource`) as User Account. Shared CRD view. Per-actor mapper feeds the org's `account.id` instead of the user's.
+
+Source: `useOrganizationAccountQuery` → `account.id` → `useAccountInformationQuery({ accountId })`.
+
+---
+
+## User Story 10 — Org Community (Associates)
+
+### Entity: Associate
+
+A user with the `Associate` role on the org's role set.
+
+| Field | Source | CRD prop |
 |---|---|---|
-| `useUserProvider` | `src/domain/community/user/hooks/useUserProvider.ts` | Resolve the profile-being-viewed user from the URL `:userSlug`; handles canonical URL redirects |
-| `useCurrentUserContext` | `src/domain/community/userCurrent/useCurrentUserContext.ts` | Current viewer identity + `hasPlatformPrivilege(...)` |
-| `useFilteredMemberships` | `src/domain/community/user/hooks/useFilteredMemberships.ts` | Splits memberships into "filtered" (lead/host/admin) vs. "remaining" (member-of) |
-| `useContributionProvider` | `src/domain/community/profile/useContributionProvider/` | `leaveCommunity()` action + post-leave refetch |
-| `usePushNotificationContext` | `src/main/pushNotifications/PushNotificationProvider` | Push subscribe/unsubscribe + availability flags |
-| `useKratosSettingsFlow` (or equivalent existing hook) | `src/main/auth/kratos/...` | Kratos `settings` flow loader for the Security tab |
+| User id | `usersByRole[Associate][i].id` | `id` |
+| Display name | `usersByRole[Associate][i].profile.displayName` | `displayName` |
+| Avatar URL | `usersByRole[Associate][i].profile.avatar?.uri` | `avatarUrl` |
+
+Source hook: `useRoleSetManager({ roleSetId, relevantRoles: [Associate], contributorTypes: [User], fetchContributors: true })`.
+
+Available users (right-side list): `useRoleSetAvailableUsers({ roleSetId, mode: 'platform', role: Associate, filter: searchTerm, usersAlreadyInRole: usersByRole[Associate] })`.
+
+Add: `assignRoleToUser(userId, Associate)`. Remove: `removeRoleFromUser(userId, Associate)`. Both fire immediately on click.
 
 ---
 
-## Entities consumed (CRD prop shapes)
+## User Story 11 — Org Authorization
 
-### Entity: `MyProfileViewModel`
+### Entity: RoleAssignment (Admin / Owner)
 
-```ts
-type MyProfileViewModel = {
-  identity: {
-    displayName: EditableTextValue;        // required
-    firstName: EditableTextValue;          // required
-    lastName: EditableTextValue;           // required
-    email: { value: string; readOnly: true; helperText: string }; // Kratos-managed
-    phone: EditableTextValue;              // optional, validated via existing phone regex
-  };
-  aboutYou: {
-    tagline: EditableTextValue;
-    city: EditableTextValue;
-    country: EditableSelectValue<CountryCode>;
-    bio: EditableMarkdownValue;
-    tags: EditableTagsValue;               // tagset
-  };
-  socialLinks: {
-    recognized: EditableReferenceRow[];    // LinkedIn / Bluesky / GitHub (auto-inserted if missing)
-    arbitrary: EditableReferenceRow[];     // everything else, in user-defined order
-  };
-  avatar: {
-    imageUrl: string | null;
-    displayName: string;
-    tagline: string | null;
-    helperText: string;                    // "Recommended: 400x400px. JPG, PNG or GIF."
-  };
-};
+Same shape as Associate (Story 10), but parameterized by role. Two sub-tabs in the Authorization tab body, each with its own `useOrgRoleAssignment(roleName)` hook instance:
 
-type EditableTextValue = {
-  value: string;
-  saving: boolean;
-  error: string | null;                    // present in editing+error state
-};
+- Admin sub-tab → `useRoleSetManager({ roleSetId, relevantRoles: [Admin], contributorTypes: [User], fetchContributors: true })`
+- Owner sub-tab → `useRoleSetManager({ roleSetId, relevantRoles: [Owner], contributorTypes: [User], fetchContributors: true })`
 
-type EditableSelectValue<T> = {
-  value: T | null;
-  options: { value: T; label: string }[];
-  saving: boolean;
-  error: string | null;
-};
-
-type EditableMarkdownValue = {
-  markdown: string;
-  saving: boolean;
-  error: string | null;
-};
-
-type EditableTagsValue = {
-  tags: string[];
-  tagsetId: string | null;                 // null → first save fires createTagsetOnProfile
-  saving: boolean;
-  error: string | null;
-};
-
-type EditableReferenceRow = {
-  id: string | null;                       // null → unsaved row created via Add Another Reference
-  recognizedKind: 'LinkedIn' | 'Bluesky' | 'GitHub' | null; // null → arbitrary
-  name: string;                            // editable for arbitrary, fixed for recognized
-  uri: string;
-  description: string | null;
-  saving: boolean;
-  error: string | null;
-};
-```
-
-**Per-field save mapping** (one targeted `updateUser` call per field unless otherwise noted):
-
-| Field | Mutation | Mutation input shape (essentials) |
-|---|---|---|
-| `firstName` | `updateUser` | `{ ID, firstName, lastName, profile: { … } }` (preserve all other fields) |
-| `lastName` | `updateUser` | same — only `lastName` differs |
-| `phone` | `updateUser` | same — only `phone` differs |
-| `profile.displayName` | `updateUser` | `profile.displayName` updated, rest preserved |
-| `profile.tagline` | `updateUser` | `profile.tagline` updated |
-| `profile.location.city` | `updateUser` | `profile.location.city` updated |
-| `profile.location.country` | `updateUser` | `profile.location.country` updated |
-| `profile.description` (Bio) | `updateUser` | `profile.description` updated |
-| Add tag (first) | `createTagsetOnProfile` | `{ profileID, name: 'default', tags: [...] }` |
-| Add tag (existing tagset) | `updateUser` | `profile.tagsets[].tags` updated for the existing tagset id |
-| Add reference | `createReferenceOnProfile` | `{ profileID, name, uri, description }` |
-| Edit reference URL | `updateReference` | `{ ID, uri }` |
-| Delete reference (trash icon) | `deleteReference` | `{ ID }` — fires immediately; no confirmation |
-| Avatar file-pick | `useUploadVisualMutation` | targets `profile.avatar.id` — no separate Save click |
+Active sub-tab held in local React state (no URL sync, parity with current MUI).
 
 ---
 
-### Entity: `AccountTabViewModel`
+## User Story 12 — Org Settings
 
-```ts
-type AccountTabViewModel = {
-  helpText: string;                        // "Here you can view your active resources …" (parity copy)
-  hostedSpaces: {
-    items: AccountResourceCardItem[];
-    onCreate: () => void;                  // navigates to existing creation route
-  };
-  virtualContributors: {
-    items: AccountResourceCardItem[];
-    onCreate: () => void;
-  };
-  innovationPacks: {
-    items: AccountResourceCardItem[];
-    onCreate: () => void;
-  };
-  innovationHubs: {
-    items: AccountResourceCardItem[];
-    onCreate: () => void;
-  };
-};
+### Entity: OrganizationSettings
 
-type AccountResourceCardItem = {
-  id: string;
-  displayName: string;
-  description: string | null;
-  avatarImageUrl: string | null;
-  url: string;                             // existing entity URL
-  kebab: AccountKebabAction[];             // every action a CRD-styled menu entry → calls a navigate-to-existing-MUI-route handler
-};
+| Field | GraphQL path | CRD prop | Notes |
+|---|---|---|---|
+| Allow users matching domain to join | `organization.settings.membership.allowUsersMatchingDomainToJoin` | `allowUsersMatchingDomainToJoin` | Switch |
+| Contribution roles publicly visible | `organization.settings.privacy.contributionRolesPubliclyVisible` | `contributionRolesPubliclyVisible` | Switch |
 
-type AccountKebabAction =
-  | { kind: 'view';          onClick: () => void; label: string }
-  | { kind: 'manage';        onClick: () => void; label: string }
-  | { kind: 'transferOut';   onClick: () => void; label: string }   // navigates to existing transfer flow
-  | { kind: 'delete';        onClick: () => void; label: string }   // CRD ConfirmationDialog → existing delete mutation
-  ;
-```
+Mutation: `useUpdateOrganizationSettingsMutation` (existing).
 
-The integration layer (`useAccountActions`) maps each action to the corresponding existing route, exactly as today's MUI Account tab dispatches its dialogs (research §3).
+**There is no Design System switch on this tab** (FR-132).
 
 ---
 
-### Entity: `MembershipTabViewModel`
+## Cross-Cutting Concerns
 
-```ts
-type MembershipTabViewModel = {
-  homeSpace: {
-    options: { id: string; displayName: string }[];   // every L0 the user belongs to
-    selectedSpaceId: string | null;
-    autoRedirect: boolean;
-    autoRedirectDisabledReason: string | null;        // i18n caption when no Home Space is selected
-    saving: boolean;
-    onSelectSpace: (id: string | null) => void;
-    onToggleAutoRedirect: (next: boolean) => void;
-  };
-  myMemberships: {
-    rows: MembershipRow[];                           // already filtered / paginated client-side
-    search: string;
-    onSearchChange: (next: string) => void;
-    filter: MembershipFilter;
-    onFilterChange: (next: MembershipFilter) => void;
-    page: number;
-    pageSize: 10;
-    totalRows: number;
-    onPageChange: (next: number) => void;
-    onLeaveRow: (row: MembershipRow) => void;        // opens CRD ConfirmationDialog → leaveCommunity
-  };
-  pendingApplications: {
-    rows: PendingApplicationRow[];                   // read-only
-  };
-};
+### Loading / error states per region
 
-type MembershipRow = {
-  id: string;                              // role-set member ID
-  displayName: string;
-  spaceUrl: string;                        // for click-through
-  type: 'Space' | 'Subspace';
-  description: string | null;
-  role: string;                            // "Admin" | "Lead" | "Member" | …
-  memberCount: number;
-  status: 'Active' | 'Archived';
-  avatarImageUrl: string | null;
-};
+Each `*ViewProps` carries a `loading: boolean` flag (or a more granular shape per region for tabs that fetch from multiple queries). The mapper produces it from the underlying Apollo `loading` flags. Skeletons are rendered inline via the existing `Skeleton` primitive in `src/crd/primitives/skeleton`.
 
-type MembershipFilter = 'all' | 'spaces' | 'subspaces' | 'active' | 'archived';
+### Save state per field (Profile tabs)
 
-type PendingApplicationRow = {
-  id: string;
-  spaceDisplayName: string;
-  appliedAt: string;                       // ISO date
-  status: string;                          // "Pending"
+Per-field state is held in the integration hook (`useUserMyProfileFields` / `useOrgProfileFields`). Each field exposes:
+
+```typescript
+type EditableFieldState = {
+  status: 'idle' | 'editing' | 'pending' | 'idle-saved' | 'editing-error';
+  serverValue: string;       // Last known server value (used for cancel/discard)
+  draftValue: string;        // The user's in-progress input
+  errorMessage: string | null;
 };
 ```
 
----
+State machine details: see [research.md Decision #2](research.md).
 
-### Entity: `OrganizationsTabViewModel`
+### i18n key reuse
 
-```ts
-type OrganizationsTabViewModel = {
-  rows: OrganizationRow[];                 // filtered client-side
-  search: string;
-  onSearchChange: (next: string) => void;
-  canCreateOrganization: boolean;          // CreateOrganization platform privilege
-  onCreateOrganization: () => void;        // navigates to existing flow
-  onLeaveRow: (row: OrganizationRow) => void;
-};
+Where current MUI uses keys already present in `src/core/i18n/en/translation.en.json` (e.g., `forms.validations.elementMustBeValidUrl`, `components.profileSegment.socialLinks.linkedin`, `pages.user-profile.communities.noMembership`), the CRD mapper reuses those existing keys via the `translation` namespace rather than duplicating under `crd-contributorSettings` (FR-142). Per-tab mappers note which keys are reused.
 
-type OrganizationRow = {
-  id: string;
-  url: string;                             // org profile page
-  displayName: string;
-  description: string | null;
-  city: string | null;
-  country: string | null;
-  role: 'Admin' | 'Associate';
-  associatesCount: number;
-  verified: boolean;
-  websiteUrl: string | null;
-  avatarImageUrl: string | null;
-};
-```
+### Authorization predicates
 
----
+- User shell: `useCanEditUserSettings(profileUserId)` → `{ canEditSettings, isOwner, isPlatformAdmin }`
+- Org shell: `useCanEditOrganizationSettings(organizationId)` → `{ canEditSettings, hasUpdatePrivilege }`
 
-### Entity: `NotificationsTabViewModel`
-
-```ts
-type NotificationsTabViewModel = {
-  pushAvailability: PushAvailability;
-  pushSubscriptionList: PushSubscriptionItem[];
-  groups: NotificationGroup[];
-};
-
-type PushAvailability =
-  | { available: true;  master: { value: boolean; saving: boolean; onToggle: (next: boolean) => Promise<void> } }
-  | { available: false; reason: 'unsupported' | 'requiresPWA' | 'privateBrowsing' | 'serverDisabled' };
-
-type PushSubscriptionItem = {
-  id: string;
-  displayName: string;                     // device / browser name
-  lastUsedAt: string | null;               // ISO date
-  isCurrentDevice: boolean;
-  onRemove: () => Promise<void>;
-};
-
-type NotificationGroup = {
-  key: 'space' | 'spaceAdmin' | 'user' | 'platform' | 'platformAdmin' | 'organization' | 'virtualContributor';
-  visible: boolean;                        // privilege-gated; hidden groups simply omit
-  title: string;                           // i18n
-  rows: NotificationRow[];
-};
-
-type NotificationRow = {
-  property: string;                        // i18n key for the row label
-  inApp: NotificationToggle;
-  email: NotificationToggle;
-  push: NotificationToggle | null;         // null when push column is hidden
-};
-
-type NotificationToggle = {
-  value: boolean;                          // optimistic-overrides applied
-  saving: boolean;
-  onToggle: (next: boolean) => Promise<void>;
-};
-```
-
-**Group → property mapping** mirrors the current MUI `UserAdminNotificationsPage` exactly (FR-070). The integration layer reads the source-of-truth list of properties from the existing `NotificationSettings.model.ts` so additions / removals on the model land in CRD automatically. Privilege gating (`isPlatformAdmin`, `isSpaceAdmin`, `isSpaceLead`, `isOrgAdmin`) reuses `useCurrentUserContext.userWrapper.hasPlatformPrivilege(...)` exactly as MUI does.
-
----
-
-### Entity: `SettingsTabViewModel`
-
-```ts
-type SettingsTabViewModel = {
-  allowOtherUsersToSendMessages: {
-    value: boolean;
-    saving: boolean;
-    onToggle: (next: boolean) => Promise<void>;
-  };
-  designSystem: {
-    crdEnabled: boolean;                   // reads localStorage at mount
-    onToggle: (next: boolean) => void;     // writes localStorage + reload
-    captionI18nKey: string;                // "The page will reload after the change."
-  };
-};
-```
-
----
-
-### Entity: `SecurityTabViewModel`
-
-```ts
-type SecurityTabViewModel = {
-  state:
-    | { kind: 'loading' }
-    | { kind: 'error'; errorMessage: string }
-    | { kind: 'noWebauthn' }                              // info banner
-    | { kind: 'ready'; flow: KratosFlow };                // KratosFlow type imported in mapper, not in view
-};
-```
-
-The view receives the `flow` as an opaque value and renders it via `KratosForm` + `KratosUI` — the CRD layer does not introspect Kratos's internal node types.
-
----
-
-## Validation rules (carried over from MUI parity)
-
-- **First Name / Last Name / Display Name**: required (non-empty after trim).
-- **Phone**: must match the existing phone regex used by `UserForm` (validated client-side; server-side validation is the source of truth — failures surface as inline errors via the per-field state machine).
-- **Email**: read-only — never validated client-side.
-- **City**: free text.
-- **Country**: must be one of `COUNTRIES` constant values.
-- **Bio**: markdown — no length cap client-side.
-- **Tags**: each tag is non-empty string; duplicates are de-duplicated client-side before save.
-- **Reference URL**: must be a syntactically valid URL (existing `referenceSegmentSchema` regex). Per-row Save button is disabled while invalid; an inline error surfaces under the URL input.
-- **Reference name** (arbitrary only): free text; required (non-empty after trim).
-
----
-
-## State transitions
-
-### `EditableField` state machine
-
-```
-idle ── click value/pencil ──▶ editing
-editing ── type ──▶ editing (value updated, error cleared)
-editing ── click Save / Enter (single-line) ──▶ pending
-editing ── click × / Escape ──▶ idle (value reset to server)
-pending ── mutation success ──▶ idle (transient "Saved" indicator for ~2 s)
-pending ── mutation failure ──▶ editing (typed value preserved, inline error shown)
-```
-
-The `editing` ⇄ `pending` ⇄ `editing+error` cycle preserves the user's input across retries — no retyping.
-
-### Reference row lifecycle
-
-```
-(no row) ── click Add Another Reference ──▶ unsaved row in editing (id=null)
-unsaved row in editing ── click Save ──▶ pending → on success: row becomes saved (id set), idle
-unsaved row in editing ── click × ──▶ row removed entirely
-saved row in idle ── click value ──▶ saved row in editing
-saved row in editing ── click Save ──▶ pending → on success: idle
-saved row ── click trash ──▶ row removed (deleteReference fires immediately, no confirmation)
-```
-
-### Membership / Organization Leave flow
-
-```
-idle ── click kebab → Leave ──▶ ConfirmationDialog open
-ConfirmationDialog ── click Cancel ──▶ idle (no mutation)
-ConfirmationDialog ── click Confirm ──▶ pending (button shows spinner)
-pending ── leaveCommunity success ──▶ row removed, list refetches
-pending ── leaveCommunity failure ──▶ ConfirmationDialog stays open with inline error; user can retry or cancel
-```
-
-### CRD design-system toggle
-
-```
-idle ── click Switch ──▶ pending (Switch becomes disabled briefly)
-pending ── localStorage write ──▶ window.location.reload() — page reloads in the chosen renderer
-```
-
-No rollback path: the reload commits the change.
-
----
-
-## Cross-tab invariants
-
-- **Slug → user resolution**: every tab resolves the profile-being-edited user via `useUserPageRouteContext()` (a thin wrapper around `useUserProvider`); the same user object feeds the settings shell header and every settings tab in the same render cycle.
-- **`canEditSettings` is computed once per route** at the settings shell boundary; it is passed as a prop to every settings tab view (every tab view ALSO accepts it for its own conditional rendering, but the shell guarantees the value is identical across tabs).
-- **Mutation refetch**: every mutation that affects the User entity uses `refetchQueries: [UserDocument]` (or the equivalent Apollo cache update) so the next render sees the new value — same strategy current MUI uses; no custom optimistic cache writes are introduced beyond the Notifications optimistic-overrides dictionary (research §8).
+Sources documented in [research.md Decision #7](research.md).

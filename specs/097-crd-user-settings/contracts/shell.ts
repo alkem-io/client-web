@@ -1,89 +1,51 @@
 /**
- * CRD User Settings shell — header + tab strip + per-tab card primitive.
+ * SettingsShell + SettingsTabStrip + SettingsCard contracts.
  *
- * File location at implementation time:
- *   src/crd/components/user/settings/UserSettingsShell.tsx
- *   src/crd/components/user/settings/UserSettingsTabStrip.tsx
- *   src/crd/components/user/settings/UserSettingsCard.tsx
+ * The shell is actor-agnostic — both User (7 tabs) and Organization (5 tabs)
+ * pass their tab list via the `tabs` prop. See research.md Decision #9.
  *
- * The `UserPageHero` contract (used by the public profile, sibling spec
- * 096-crd-user-pages) lives in `specs/096-crd-user-pages/contracts/publicProfile.ts`.
- *
- * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
- * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
+ * All components live under `src/crd/components/contributor/settings/`.
  */
 
+import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-/* --------------------------- UserSettingsShell --------------------------- */
-
-export type UserSettingsTabKey =
-  | 'profile'
-  | 'account'
-  | 'membership'
-  | 'organizations'
-  | 'notifications'
-  | 'settings'
-  | 'security';
-
-export type UserSettingsTabDescriptor = {
-  key: UserSettingsTabKey;
-  /** i18n key resolved by the shell. */
-  labelI18nKey: string;
-  /** lucide-react icon component. */
-  icon: ReactNode;
-  /** Absolute `/user/<slug>/settings/<tab>` URL. */
-  href: string;
-  /**
-   * When false, the tab is omitted from the strip entirely (e.g., Security
-   * for any non-owner viewer per FR-093).
-   */
-  visible: boolean;
+/** A single tab descriptor. Hidden tabs are not rendered (used for User Security on non-owner viewers). */
+export type SettingsTab = {
+  id: string; // 'profile' | 'account' | 'membership' | ... — actor-specific union
+  label: string; // i18n-resolved label
+  icon: LucideIcon; // lucide-react icon component
+  hidden?: boolean; // optional — when true, the tab is omitted from the strip
 };
 
-export type UserSettingsShellProps = {
-  /** Header data — abbreviated user identity (no action buttons in the shell). */
-  user: {
-    avatarImageUrl: string | null;
-    displayName: string;
-  };
-  tabs: UserSettingsTabDescriptor[];
-  activeTab: UserSettingsTabKey;
-  /** The active tab's content node. */
+/** Sticky header above the tab strip — avatar + display name. */
+export type SettingsShellHeader = {
+  avatarUrl?: string;
+  displayName: string;
+};
+
+export type SettingsShellProps = {
+  header: SettingsShellHeader;
+  tabs: SettingsTab[];
+  activeTabId: string;
+  /** Called when the user clicks a tab. Integration layer wires this to navigation. */
+  onTabSelect: (id: string) => void;
+  /** The active tab body — receives the tab content rendered by route children. */
   children: ReactNode;
 };
 
-/* -------------------------- UserSettingsTabStrip ------------------------- */
-
-export type UserSettingsTabStripProps = {
-  tabs: UserSettingsTabDescriptor[];
-  activeTab: UserSettingsTabKey;
-  /**
-   * Called when the user clicks a tab. The integration layer is responsible
-   * for navigation (`react-router-dom` lives in the integration layer only).
-   */
-  onSelectTab: (key: UserSettingsTabKey) => void;
+export type SettingsTabStripProps = {
+  tabs: SettingsTab[];
+  activeTabId: string;
+  onTabSelect: (id: string) => void;
 };
 
-/**
- * Responsive contract:
- *  - `>= md`:   horizontal strip, all tabs inline, no scroll required.
- *  - `<  md`:   `overflow-x-auto no-scrollbar`. All tabs remain inline; the
- *               strip scrolls horizontally; the active tab MUST be auto-
- *               scrolled into view on mount and on every `activeTab` change
- *               (FR-020). Same responsive behavior is shared with the
- *               public-profile resource strip in sibling spec
- *               096-crd-user-pages so the visual identity stays consistent.
- */
-
-/* -------------------------- UserSettingsCard ----------------------------- */
-
-export type UserSettingsCardProps = {
-  /** lucide-react icon component shown next to the title. */
-  icon: ReactNode;
-  /** i18n-resolved title text. */
+/** Card primitive used by every settings tab. Title + bottom-bordered heading + body. */
+export type SettingsCardProps = {
+  /** Lucide icon rendered to the left of the title in primary color. */
+  icon: LucideIcon;
   title: string;
-  /** Optional helper / caption text rendered below the title. */
+  /** Optional helper text below the title, above the bottom border. */
   helperText?: string;
   children: ReactNode;
 };

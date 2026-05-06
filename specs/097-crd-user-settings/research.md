@@ -1,197 +1,260 @@
-# Phase 0 Research — CRD User Settings
+# Phase 0 Research: CRD Contributor Settings
 
-This document resolves the open architectural decisions identified during planning. Every "NEEDS CLARIFICATION" from the Technical Context is settled below; no unresolved item gates Phase 1. Decisions that are shared with sibling spec `096-crd-user-pages` (the public-profile-view migration) are cross-referenced rather than duplicated.
+**Feature**: 097-crd-user-settings (rewritten 2026-05-06 to scope User + Organization)
+**Spec**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md)
+
+## Purpose
+
+Resolve every "how exactly does this work today?" question that the spec leaves to research, so the implementation tasks (Phase 2) can proceed with no remaining ambiguity. No new GraphQL or runtime dependencies are introduced; every decision below either (a) reuses an existing pattern from a prior CRD spec, or (b) ports a well-understood MUI behavior into CRD.
 
 ---
 
-## 1. Anonymous-viewer access to the settings tabs (parity check)
+## Decision 1 — Routing dispatch: where the `useCrdEnabled()` toggle lives for each shell
 
-**Question**: All settings routes live under `/user/<slug>/settings/*`. The current `TopLevelRoutes.tsx` wraps the entire `/user/*` route in `<NoIdentityRedirect>` — so anonymous viewers are redirected to login before reaching any descendant route. Does CRD preserve that?
+**Decision**:
+- **User shell**: dispatch lives in `src/main/routing/TopLevelRoutes.tsx`, inside the existing `/user/*` route block, between `<CrdUserRoutes />` (lazy-loaded, owned by 096) and the existing `<UserRoute />`. The `<NoIdentityRedirect>` and `<WithApmTransaction>` wrappers stay exactly as today (verified parity with research §1 of the prior 097 + the 096 wiring pattern).
+- **Org shell**: dispatch lives **inside** `src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` at lines 29–34, where `<MuiOrganizationAdminRoutes />` is currently hard-coded. This is replaced by `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />`. **Rationale**: 096 already added `CrdOrganizationRoutes.tsx` with the public-profile route; the settings dispatch is naturally a sibling of that file rather than a `TopLevelRoutes.tsx` change. Keeps the routing dispatch local to its actor's route file.
 
-**Investigation**:
-- `src/main/routing/TopLevelRoutes.tsx:209-220` wraps `<UserRoute />` (which contains both the public profile and the settings sub-routes) in `<NoIdentityRedirect>`.
-- `src/core/routing/NoIdentityRedirect.tsx` is unconditional — any unauthenticated viewer hitting any descendant route is redirected to `${AUTH_REQUIRED_PATH}?return=…`.
-
-**Decision**: **Mirror the actual MUI behaviour (anonymous viewers redirected to login).** The CRD `CrdUserRoutes` subtree (which nests `CrdUserAdminRoutes` from this spec) is wrapped in the same `<NoIdentityRedirect>` at the same point in the route tree. The Edge Cases bullet "Unauthenticated viewer hits a settings URL" is consistent with this: it says the user is redirected to login via the existing `NoIdentityRedirect` wrapper.
-
-**Rationale**: Diverging from current MUI behaviour for anonymous viewers would (a) be a behaviour change disguised as a "migration" and (b) require coordinating a routing-tree change that is outside the scope of a presentational migration. Parity wins.
+**Rationale**: Mirrors the 096 pattern. Two dispatch points (one per actor) keeps each one local to its actor's route owner. A single dispatch in `TopLevelRoutes.tsx` would require duplicating 096's work; we prefer to extend 096's `CrdOrganizationRoutes.tsx` instead.
 
 **Alternatives considered**:
-- Move `<NoIdentityRedirect>` to wrap only `/user/*/settings/*` and leave `/user/:userSlug` open. **Rejected** — this changes user-visible behaviour and is out of scope per the migration's "presentation-layer port" principle (Out of Scope first bullet).
+- Putting both dispatches in `TopLevelRoutes.tsx` — rejected because it would mean modifying 096's already-pushed `CrdOrganizationRoutes.tsx` to forward through, adding indirection.
+- A single combined `CrdContributorRoutes.tsx` covering both actors — rejected because the route trees are unrelated (`/user/*` vs `/organization/*`); combining them would cross actor verticals.
 
 ---
 
-## 2. Account tab: how to invoke create / manage / delete flows
+## Decision 2 — Per-field save state machine (used by User My Profile + Org Profile)
 
-**Question**: The spec says the CRD Account tab should "preserve every action the current MUI `ContributorAccountView` exposes" (FR-041) without "a single button added or removed". `ContributorAccountView` itself imports `@mui/material`, `@mui/icons-material`, `@/core/ui/*`, and many MUI-only modules — embedding it inside a CRD page would violate FR-005 (no `@mui/*` imports in `src/crd/` or `src/main/crdPages/`).
+**Decision**: Five-state state machine, owned by the parent integration hook (controlled component pattern). Each editable field passes its current `status` into `EditableField` and provides `onSave` / `onCancel` callbacks.
 
-**Decision**: **Navigate to the existing MUI routes for heavy flows; render simple confirmations as CRD dialogs.**
+States:
+1. `idle` — value renders as plain text. Hover reveals a pencil glyph.
+2. `editing` — input is active; Save (check) and Cancel (×) icons visible.
+3. `pending` — Save was clicked; mutation in flight. Spinner replaces Save icon. `aria-busy="true"` on the input. Both Save and Cancel disabled.
+4. `idle-saved` — mutation succeeded. Field returns to idle visually; a transient "Saved" indicator appears next to the field label for ~2 seconds before fading. Auto-transitions back to `idle` after the timer.
+5. `editing-error` — mutation failed. Field stays in `editing` visually with the user's typed value preserved. Inline error appears beneath the input. Save and Cancel re-enabled. Clicking Save again retries (re-enters `pending`); clicking Cancel discards and returns to `idle` (with the last server value).
 
-The CRD `AccountView` is a thin presentational shell:
+Transitions:
+- `idle` + click value/pencil → `editing`
+- `editing` + click × / press Escape → `idle` (calls `onCancel`)
+- `editing` + click Save / press Enter (single-line) → `pending` (calls `onSave`)
+- `pending` + success → `idle-saved` → `idle` (after ~2s)
+- `pending` + failure → `editing-error`
+- `editing-error` + click Save → `pending` (retry)
+- `editing-error` + click × / press Escape → `idle`
 
-1. Renders the four card groups (Hosted Spaces, Virtual Contributors, Innovation Packs, Innovation Hubs) using CRD primitives.
-2. Each card has a kebab menu whose entries fire callback props (`onManageSpace(id)`, `onCreatePack()`, `onTransferHub(id)`, etc.).
-3. The integration layer (`src/main/crdPages/topLevelPages/userPages/settings/account/useAccountActions.ts`) wires those callbacks to `useNavigate(...)` calls that land the user on the existing MUI admin pages (e.g., `/admin/innovation-packs/<id>/manage`, `/admin/...`). The user then completes the flow in MUI and navigates back to `/user/<self>/settings/account` when done.
-
-**Rationale**:
-- Preserves "no new affordances" (Out of Scope) by reusing the exact existing flows.
-- Honors FR-005 — no MUI import in any CRD or `crdPages` file.
-- Keeps the migration scope tractable: the spec author flagged "only the visual shell changes" — the navigation-first approach IS only-visual.
-- A user-experience cost (a brief MUI page-load on Manage / Create) is acceptable and clearly communicated by the existing route segment (`/admin/...` URL).
+**Rationale**: Spec FR-022 / FR-023 explicitly mandate "stay in edit mode with typed value preserved on failure" — not an auto-revert. The five-state machine cleanly separates the success-flash state (`idle-saved`) from the error-recovery state (`editing-error`) without conflating them. Owning the state in the parent hook (rather than inside the primitive) lets the same primitive be used by integration code across User and Org without forking.
 
 **Alternatives considered**:
-- **Port every dialog to CRD** (`CreateVirtualContributorDialog`, `CreateInnovationPackDialog`, `TransferHubDialog`, etc.). **Rejected** — these dialogs are non-trivial multi-step wizards. Porting them all would inflate the spec to multiple PRs of work and introduce visual / behavioural drift between MUI and CRD until each port lands. Better to ship the migration first and tackle individual dialogs as follow-ups.
-- **Render the existing MUI dialogs inside the CRD page**. **Rejected** — violates FR-005.
-- **Wrap `ContributorAccountView` in a CRD shell**. **Rejected** — same FR-005 violation; the wrapper would still pull MUI imports through the View.
+- 3-state (idle / editing / pending) with error rendered as an extra badge — rejected because failure-flow has subtly different affordances (Save is re-enabled, error message visible, value preserved) that warrant a distinct state.
+- Component-internal state — rejected because the integration hook owns the field's last-known server value and needs to control resets after refetches.
 
 ---
 
-## 3. Push Subscriptions List — port vs. reuse
+## Decision 3 — Account tab navigation pattern (User Account + Org Account)
 
-**Question**: FR-072 says the Notifications tab MUST "reuse the existing `PushSubscriptionsList` component (restyled with CRD primitives)". The existing component is at `src/domain/community/userAdmin/tabs/components/PushSubscriptionsList.tsx` and imports `@mui/material` (Box, Button, Typography). It cannot be embedded in CRD per FR-005.
+**Decision**: The CRD Account view is a **shared presentational component** (`src/crd/components/contributor/settings/ContributorAccountView.tsx`) consumed by both User Account and Org Account integrations. Heavy create / manage / delete flows are **callbacks** that the integration layer wires to `useNavigate(...)` calls landing on existing MUI admin routes:
 
-**Decision**: **Build a CRD `PushSubscriptionsListCard` under `src/crd/components/user/settings/tabs/`** that mirrors the MUI component's structure (one row per subscription, name + last-used timestamp + a "remove" button) using CRD primitives only. Reuse the data hook(s) the MUI version uses (the GraphQL queries + the push-subscription removal mutation) inside the integration mapper at `src/main/crdPages/topLevelPages/userPages/settings/notifications/usePushSubscriptionList.ts`.
+- **Create Space** → `/admin/spaces/new` (existing MUI flow)
+- **Create Virtual Contributor** → `/admin/virtual-contributors/new` (existing MUI flow)
+- **Create Innovation Pack** → `/admin/innovation-packs/new` (existing MUI flow)
+- **Create Innovation Hub** → `/admin/innovation-hubs/new` (existing MUI flow)
+- **Manage `<resource>`** → existing per-resource admin route (e.g., `/admin/innovation-packs/<id>`)
+- **Delete `<resource>`** → opens CRD `ConfirmationDialog`; on confirm, fires the corresponding existing delete mutation (located in the existing MUI flows). No new mutations are introduced.
 
-**Rationale**:
-- Spec wording "(restyled with CRD primitives)" makes the intent unambiguous: a CRD-styled equivalent, not a literal reuse.
-- The MUI `PushSubscriptionsList` is small (one table + remove buttons); a CRD port is low-effort.
-- Honors FR-005.
+The CRD Account view itself never imports `react-router-dom` — it receives `onCreateSpace`, `onCreateVC`, `onManage(id)`, `onDelete(id)`, etc. as props, satisfying FR-007.
+
+**Rationale**: The existing MUI `ContributorAccountView` imports MUI core/icons heavily and cannot be embedded in CRD per FR-006. Porting the entire admin-flow surface (create / manage dialogs) would dramatically inflate scope and break "no new affordances" (Out of Scope). Navigating to the existing MUI routes preserves behaviour exactly while keeping the CRD scope tractable. This is the same pattern the prior 097 used (research §3 in the abandoned prior research) and the same pattern 096's "Org admin shell remains MUI" assumption used.
 
 **Alternatives considered**:
-- Embed the MUI component. **Rejected** — FR-005 violation.
-- Defer Push Subscriptions to a follow-up spec. **Rejected** — FR-072 is in scope; the user expects parity in one PR.
+- Full CRD ports of each create / manage dialog — rejected as scope inflation. Per-dialog ports can be tackled in follow-up specs.
+- Two parallel CRD Account views (one per actor) — rejected; the shape is identical (4 card groups, same kebab actions, same data hooks) so DRY favors one shared component with per-actor mappers.
 
 ---
 
-## 4. Per-field save UX state machine
+## Decision 4 — Optimistic-overrides pattern (User Notifications)
 
-**Question**: The clarification settled the post-failure behaviour, but the in-flight (pending) phase needs a single canonical implementation note so the My Profile fields don't drift.
+**Decision**: Notifications uses an in-memory **override dictionary** keyed by `(group, property, channel)` (where channel ∈ `inApp` / `email` / `push`). The view reads from `serverValue ?? override`, where the override wins until cleared. Each `onToggle` writes the override immediately (UI flips), fires `useUpdateUserSettingsMutation`, then:
+- **on success**: clears the override after the refetch resolves (server value now matches what the user wanted)
+- **on failure**: rolls back the override and surfaces an inline error toast
 
-**Decision**: **Single `EditableField` primitive, three explicit visual states.**
-
-| State | Trigger | Visual |
-|---|---|---|
-| `idle` | initial; after Cancel; ~2 s after a successful save | Text-only render. Hovering reveals a subtle pencil glyph trailing the value. |
-| `editing` | click the value or the pencil | Input becomes interactive. Save (check) and Cancel (×) icons appear inline. |
-| `pending` | click Save (or press Enter on a single-line input) until the mutation resolves | Save and Cancel buttons disabled; input set to `aria-busy="true"`; a small spinner replaces the Save icon temporarily. |
-| `idle + saved-toast` | mutation resolves successfully | Field returns to `idle` with a transient grayed-out "Saved" indicator next to the label for ~2 s, then the indicator clears. |
-| `editing + error` | mutation rejects | Field stays in `editing`. The user's typed value is preserved. An inline error message appears beneath the input. The error clears the next time the user transitions out of `editing` (Save success or Cancel). |
-
-This state machine lives in the `EditableField` primitive and is reused by `EditableTextField`, `EditableMarkdownField` (Bio — Enter inserts newline), `EditableSelectField` (Country dropdown), `EditableTagsField` (tagsets), and `EditableReferenceRow` (URL field in a social link row).
-
-**Rationale**: A single state machine eliminates implementation drift across 9+ editable fields on the My Profile tab. The `pending` state surfaces `aria-busy` for assistive tech (FR-110). The post-failure rule (clarification) is encoded directly: stay in `editing`, preserve typed value, show error.
+**Rationale**: Direct port of the current MUI `UserAdminNotificationsPage` pattern (verified by reading the MUI implementation). FR-064 mandates "optimistic-overrides pattern" parity. Apollo's built-in optimistic responses don't compose well with the deeply-nested settings object — the override-dictionary approach matches exactly what MUI does today.
 
 **Alternatives considered**:
-- Optimistic UI (flip to `idle` immediately, revert on error). **Rejected** — clarification explicitly chose pessimistic behaviour with the typed value preserved on failure.
+- Apollo `optimisticResponse` — rejected because the settings tree is deep and the existing MUI does not use it; introducing it now would diverge from MUI behavior in ways that may surface subtle bugs.
+- Pessimistic (no optimistic, wait for server) — rejected; UX would feel sluggish vs. current MUI.
 
 ---
 
-## 5. Reference (social-link) recognized vs. arbitrary
+## Decision 5 — Role-set manager integration (Org Community + Authorization)
 
-**Question**: The clarification (about Identity / About You / Social Links exact field set) clarified Social Links as `LinkedIn`, `Bluesky`, `GitHub` recognized + arbitrary references list with name + URL + description. How do we distinguish "recognized" from "arbitrary" in the data?
+**Decision**: A **shared** `RoleAssignmentView` (`src/crd/components/contributor/settings/RoleAssignmentView.tsx`) renders two columns — current members and available users — with a search input above the available column, +/× action buttons per row, and load-more pagination on the available column. Three integrations consume it:
+1. **Org Community tab** — `useOrgAssociates()` → `RoleAssignmentView` for the `Associate` role.
+2. **Org Authorization → Admin sub-tab** — `useOrgRoleAssignment(RoleName.Admin)` → `RoleAssignmentView`.
+3. **Org Authorization → Owner sub-tab** — `useOrgRoleAssignment(RoleName.Owner)` → `RoleAssignmentView`.
 
-**Decision**: **Mirror the current MUI `referenceSegmentWithSocialSchema` exactly.** Recognized references are matched by `reference.name` against the canonical set (`LinkedIn`, `Bluesky`, `GitHub`) — case-insensitive — and rendered with their dedicated icon tile. Everything else falls into the "Add Another Reference" arbitrary-references list with a generic Link icon and an editable name + URL + description per row. The recognized-reference rows render a dedicated single URL input (no name editing — name is fixed); the arbitrary rows render name + URL + description inputs.
+All three integration hooks wrap the existing `useRoleSetManager` (from `src/domain/access/RoleSetManager/`) + `useRoleSetAvailableUsers` (from `src/domain/access/AvailableContributors/`). Add / remove actions commit immediately via `assignRoleToUser` / `removeRoleFromUser` from the manager.
 
-**Rationale**: Parity with the current MUI exactly avoids rebuilding the recognition logic. The `referenceSegmentWithSocialSchema` already enumerates the recognized names, validation rules, and per-row icon mapping.
+**Rationale**: FR-110 / FR-120 say Community + Authorization are parity restyles of `OrganizationAssociatesView` and `OrganizationAuthorizationRoleAssignementView`. Both MUI views use the same underlying hooks (`useRoleSetManager` + `useRoleSetAvailableUsers`); the only difference is the role they pass. A single shared CRD view, parameterized by role label and the manager's output, satisfies both.
 
 **Alternatives considered**:
-- Treat all references as arbitrary, drop the special LinkedIn/Bluesky/GitHub tiles. **Rejected** — the current MUI surfaces these dedicated tiles, the prototype expects them, and the clarification (Q about field set) explicitly named the three.
+- Three separate views, one per role — rejected; pure duplication.
+- Different pagination strategy than current MUI — rejected; FR-113 mandates parity with current load-more behavior.
 
 ---
 
-## 6. Country selector — data source and component
+## Decision 6 — Identity-provider settings flow integration (User Security)
 
-**Question**: The spec specifies `Country (select from the existing COUNTRIES list)`. Where does the COUNTRIES list live, and which CRD primitive renders the selector?
+**Decision**: The integration hook `useIdentityProviderSettingsFlow` reuses the **same** flow loader the existing MUI `UserSecuritySettingsPage` uses. Specifically:
+- Reuses the existing `KratosForm` + `KratosUI` components.
+- Reuses the existing `REMOVED_FIELDS` filter constant (hides password change, profile fields, OIDC link / unlink).
+- The CRD layer wraps these in a `SettingsCard` shell — **does not restyle** the rendered fields themselves (out of scope per spec Out of Scope and FR-080).
 
-**Decision**: **Reuse the existing `COUNTRIES` constant** (typically at `src/domain/common/location/Countries.ts` or similar — confirmed during implementation). The selector is built on the existing CRD `select.tsx` primitive — a Radix UI Select wrapped in shadcn/ui styling — used by other CRD pages already.
+Returns `{ kind: 'loading' | 'error' | 'noWebauthn' | 'ready', flow?, error? }` so the view can render the correct shell variant.
 
-**Rationale**: The country list is a shared constant; copying or re-listing it would risk drift. The CRD `select` primitive is already in use across the migration and supports keyboard nav + searchable filtering out-of-the-box.
-
----
-
-## 7. Notifications optimistic-overrides pattern
-
-**Question**: FR-074 mandates "optimistic-overrides pattern (immediate UI update, then resync after server refetch) — parity with current MUI". How is this expressed in the integration layer?
-
-**Decision**: **Local override dictionary keyed by `(group, property, channel)`.** When the user flips a `Switch`, the integration layer:
-
-1. Writes the new value into a local override dictionary (`useState`-backed).
-2. Fires `useUpdateUserSettingsMutation` with the new value.
-3. The view receives `value = override[key] ?? serverValue[key]` for each switch — so the override wins until the server refetch lands.
-4. On mutation success, the override is cleared (the refetch arrives with the authoritative value, which now matches).
-5. On mutation failure, the override is rolled back to the prior server value and an inline error is surfaced.
-
-**Rationale**: This is the same mechanism the current MUI `UserAdminNotificationsPage` uses (see its `optimisticOverrides` state). No new pattern introduced. The CRD layer just relocates this state from the MUI page to the integration mapper hook.
-
----
-
-## 8. Membership Leave flow — exact mutation and refetch
-
-**Question**: The spec mentions `useLeaveCommunityMutation` but the apollo-hooks file contains no such hook — the mutation is named `removeRoleFromUser`. How does Leave wire?
-
-**Decision**: **Reuse `useContributionProvider` from `src/domain/community/profile/useContributionProvider/`.** This existing hook wraps `useRemoveRoleFromUserMutation` and exposes a `leaveCommunity()` function. The CRD integration mapper imports this hook the same way the MUI `ActionableContributionsView` does (used by `UserAdminMembershipPage:215-220`).
-
-**Rationale**: Reusing the existing facade hook avoids reimplementing the role-removal mechanics in the CRD integration layer. The spec's `useLeaveCommunityMutation` wording was imprecise — the actual mechanism is `useContributionProvider.leaveCommunity` calling `useRemoveRoleFromUserMutation` under the hood.
+**Rationale**: Spec FR-080 / FR-081 / FR-082 mandate exact parity with current MUI behavior, including the field filter and the "WebAuthn / Passkey not enabled" alert. Restyling the rendered fields would break the contract that this iteration only changes the surrounding shell.
 
 **Alternatives considered**:
-- Call `useRemoveRoleFromUserMutation` directly from the CRD integration. **Rejected** — `useContributionProvider` already encapsulates the parameter resolution (which roleSet, which contributorId) and the post-leave refetch; reimplementing it would duplicate logic.
+- Restyling the form fields — rejected (Out of Scope).
+- Building a CRD passkey form from scratch — rejected; the identity provider's UI generates the form, restyling it would require substantial new work.
 
 ---
 
-## 9. Avatar upload — file-pick triggers the existing visual upload mutation
+## Decision 7 — Per-actor authorization predicate sources
 
-**Question**: FR-033 says avatar uploads commit on file-select. The current MUI flow uses an `EditableAvatar` / `VisualUploader` pattern. What's the CRD equivalent?
+**Decision**: Two sibling hooks:
 
-**Decision**: **The CRD `MyProfileAvatarColumn` component exposes an `onAvatarFilePicked(file: File): Promise<void>` prop.** The integration layer wires this to the existing `useUploadVisualMutation` (or the same upload helper the current MUI uses) targeting `profile.avatar.id`. While the upload is in flight the avatar shows a subtle overlay spinner; on success the new image renders immediately (the mutation refetches the user query); on failure a CRD `Toast` surfaces the error and the avatar reverts to the previous image (Edge Cases line "Avatar upload failure").
+**`useCanEditUserSettings(profileUserId: string)`** — returns `{ canEditSettings, isOwner, isPlatformAdmin }`:
+- `isOwner = currentUser.id === profileUserId`
+- `isPlatformAdmin = userWrapper.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin)` — the canonical predicate already used by `UserAdminNotificationsPage` line 172
+- `canEditSettings = isOwner || isPlatformAdmin`
 
-**Rationale**: This isolates the file-picker UI in the CRD presentational layer (no Apollo coupling) while keeping the upload mechanism identical to MUI.
+**`useCanEditOrganizationSettings(organizationId: string)`** — returns `{ canEditSettings, hasUpdatePrivilege }`:
+- Reads `useOrganizationProvider().permissions.canEdit` — the existing predicate the MUI `NonAdminRedirect` uses on the org admin route
+- `hasUpdatePrivilege = permissions.canEdit`
+- `canEditSettings = hasUpdatePrivilege`
 
----
+Both are pure custom hooks colocated with their actor-specific integration subtree. Both are unit-tested for true/false branches and the loading state.
 
-## 10. Kratos Security tab — minimum CRD wrapping
+**Rationale**: The two sources are fundamentally different (User: platform-level privilege OR self; Org: per-organization Update privilege). Collapsing into a discriminated union helper would obscure the two distinct authorization domains. Two named hooks make the per-actor predicate explicit at every consumption site.
 
-**Question**: How much CRD restyling do the Kratos-rendered fields receive?
-
-**Decision**: **None this iteration.** Per the existing Out of Scope bullet ("No restyle of Kratos-rendered form fields"), the CRD Security tab renders only an outer CRD card shell (`UserSettingsCard` with title "Security") and mounts the existing Kratos `KratosForm` + `KratosUI` inside the body. The `REMOVED_FIELDS` filter (passwords / profile / OIDC link controls) is reused verbatim from `UserSecuritySettingsPage`. The "WebAuthn / Passkey is not enabled on this account" info alert is shown via a CRD `Alert` (or equivalent info banner primitive) when the flow has zero WebAuthn nodes.
-
-**Rationale**: Restyling Kratos UI markup is out of scope; this iteration only re-skins the outer shell. A future spec may tackle Kratos itself.
-
----
-
-## 11. i18n namespace registration
-
-**Question**: How is the new `crd-userSettings` namespace registered?
-
-**Decision**: **Register `crd-userSettings` in `src/core/i18n/config.ts` (as a lazy-loaded namespace) and add the type augmentation in `@types/i18next.d.ts`.** All six language files live under `src/crd/i18n/userSettings/userSettings.{en,nl,es,bg,de,fr}.json` and are edited manually in the same PR — no Crowdin involvement (per `src/crd/CLAUDE.md`). Sibling spec `096-crd-user-pages` registers its own `crd-userPages` namespace separately so the two specs can ship independently.
-
-**Rationale**: Mirrors the precedent set by `crd-spaceSettings`, `crd-search`, etc. Lazy loading prevents bloating the main bundle.
+**Alternatives considered**:
+- One generic `useCanEditSettings(actor)` discriminated helper — rejected; the call sites are static (User route guard always uses User predicate; Org route guard always uses Org predicate), so discrimination at call time is unnecessary.
 
 ---
 
-## 12. Performance targets
+## Decision 8 — i18n namespace
 
-**Decisions**:
-- **Tab switch latency**: target < 200 ms perceived; achieved by lazy-loading each tab as its own React.lazy chunk + React 19 `useTransition` so a slow render does not block paint.
-- **Per-field save round-trip**: target < 3 s typical; surfaced via the `pending` state's spinner and `aria-busy`. The 90-s SC-001 budget covers a complete edit-many-fields flow.
-- **Bundle delta**: ≤ +25 KB gzipped on the user-settings chunk over the prior build (SC-006). Verified post-implementation via `pnpm analyze`.
+**Decision**: Single combined namespace `crd-contributorSettings` covering both User and Org tabs. Files at `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`, all six languages maintained manually (no Crowdin), all edited in the same PR that introduces or removes a key (FR-141).
 
-**Rationale**: These are the same performance budgets the prior CRD migrations set; no domain-specific reason to deviate.
+Top-level key structure:
+```json
+{
+  "shell": {
+    "tabs": {
+      "user": { "profile": "...", "account": "...", ... },
+      "org":  { "profile": "...", "account": "...", ... }
+    }
+  },
+  "user": {
+    "myProfile": { "identity": { ... }, "aboutYou": { ... }, "socialLinks": { ... } },
+    "account":   { ... },
+    ...
+  },
+  "org": {
+    "profile":       { ... },
+    "account":       { ... },
+    "community":     { ... },
+    "authorization": { ... },
+    "settings":      { ... }
+  },
+  "shared": {
+    "saved": "Saved",
+    "saveFailed": "Couldn't save — try again",
+    "addAnotherReference": "Add another reference",
+    ...
+  }
+}
+```
+
+**Rationale**: Spec FR-140 mandates one combined namespace. Top-level scoping by `shell` / `user` / `org` / `shared` keeps the keys discoverable and avoids cross-actor key collisions. Where the current MUI uses a translation key already present in the global `translation` namespace (e.g., `forms.validations.elementMustBeValidUrl`), the CRD code reuses that key via the `translation` namespace rather than duplicating it under `crd-contributorSettings` (FR-142).
+
+**Alternatives considered**:
+- Two parallel namespaces (`crd-userSettings` + `crd-organizationSettings`) — rejected; would duplicate the shell tab labels and the shared edit-pattern strings ("Saved", "Save failed") across two files.
 
 ---
 
-## 13. Tests
+## Decision 9 — Shell + tab strip primitive shape
 
-**Decisions**:
-- **Mappers** (one Vitest file per mapper) — pure functions transforming GraphQL fixtures to CRD prop shapes. Cover the recognized-vs-arbitrary reference sort, the membership filtering / search, the notification group privilege gating.
-- **Route guards** — Vitest tests for `useCanEditSettings`, plus an integration test that a non-owner-non-admin viewer hitting `/user/<other>/settings/profile` redirects to `/user/<other>` (SC-007).
-- **Per-field state machine** — Vitest tests on `EditableField` covering idle → editing → pending → idle (success), idle → editing → pending → editing+error (failure with typed value preserved), idle → editing → idle (cancel via × or Escape).
-- **Push availability gating** — Vitest test that the master toggle is replaced by an info banner when `isPushSupported` / `isServerEnabled` / `requiresPWAMode` / `isPrivateBrowsing` flag combinations indicate unavailability.
-- **i18n keys present in all six languages** — a small runtime test that each language file has the same key shape (existing pattern in the codebase).
+**Decision**: `SettingsShell` and `SettingsTabStrip` are actor-agnostic. Both accept a `tabs: SettingsTab[]` prop (User integration passes 7, Org integration passes 5).
 
-**Rationale**: Unit-test the pure transformation logic and the per-field state machine; rely on manual smoke for the end-to-end editing flows (consistent with the prior CRD specs).
+```typescript
+type SettingsTab = {
+  id: string;            // 'profile' | 'account' | ...
+  label: string;         // i18n-resolved
+  icon: LucideIcon;      // lucide-react component
+  hidden?: boolean;      // optional — User Security uses this for non-owner viewers
+};
+
+type SettingsShellProps = {
+  header: { avatarUrl?: string; displayName: string; };
+  tabs: SettingsTab[];
+  activeTabId: string;
+  onTabSelect: (id: string) => void;
+  children: React.ReactNode;  // The active tab body
+};
+```
+
+The view never knows about route paths — `onTabSelect` is a callback the integration layer wires to `useNavigate(...)` (`/user/<slug>/settings/<id>` or `/organization/<slug>/settings/<id>`).
+
+**Rationale**: One shell primitive for both actors satisfies DRY and keeps behavior parity (responsive horizontal scroll, auto-scroll active into view, keyboard navigation). The `hidden` flag handles FR-083 (Security tab hidden for non-owner) without a special-case branch in the primitive.
+
+**Alternatives considered**:
+- Hard-coded 7-tab User shell + hard-coded 5-tab Org shell — rejected (the prior 097 did this; bad for consistency and maintenance).
+
+---
+
+## Decision 10 — Avatar / logo upload commit-on-file-select semantics
+
+**Decision**: Uploads commit immediately on file-select on both User My Profile (FR-024) and Org Profile (FR-093). The file-picker dialog itself is the explicit confirmation — no separate Save click. The integration hook (`useUserAvatarUpload` / `useOrgAvatarUpload`) wraps the same upload mutation the existing MUI uploaders use and exposes:
+
+```typescript
+{ onAvatarFilePicked: (file: File) => Promise<void>; uploading: boolean }
+```
+
+On error, surfaces a CRD `Toast` and reverts the visual avatar via refetch.
+
+**Rationale**: Direct parity with current MUI behavior. The `VisualUpload` component in MUI already commits immediately on file-select — there's no "preview + Save" flow today, so CRD doesn't introduce one.
+
+**Alternatives considered**:
+- Preview-then-Save flow — rejected (would be a new affordance, violating Out of Scope).
+
+---
+
+## Decision 11 — Reference (social link) URL validation
+
+**Decision**: Reuses the existing `referenceSegmentSchema` URL validator from `src/domain/common/reference/`. The per-row Save button on `EditableReferenceRow` is **disabled** while the URL is invalid (FR + edge case: "malformed URLs surface an inline error on the URL input; the per-row Save button is disabled while the URL is invalid"). Validation error message uses the global `translation` key `forms.validations.elementMustBeValidUrl` (per FR-142).
+
+**Rationale**: Parity with current MUI `UserForm` / `OrganizationForm` reference editing. No new validators introduced.
+
+---
+
+## Decision 12 — Verification badge on Org Profile (read-only)
+
+**Decision**: A small read-only `OrgVerifiedBadge` component renders one of three states based on `organization.verification.status`:
+- `VerifiedManualAttestation` → green check + "Verified" label
+- `Pending` → muted clock icon + "Verification Pending" label
+- `NotVerified` → muted shield icon + "Not Verified" label
+
+The badge has **no edit affordance** (FR-094). Mutating verification status is owned by a separate platform-admin flow not covered here.
+
+**Rationale**: Spec Out of Scope explicitly carves out verification-status mutation. The badge displays the current value as part of the Profile-tab parity restyle.
+
+**Alternatives considered**:
+- Hide the badge entirely — rejected; the current MUI `OrganizationForm` exposes it as a read-only field today, and removing it would lose information. CRD shows it read-only.
 
 ---
 
 ## Summary
 
-All NEEDS CLARIFICATION items are resolved. No GraphQL schema change. No new runtime dependencies. The migration is a presentation-layer port plus one new CRD i18n namespace plus one architectural pattern (the `EditableField` per-field state machine). Phase 1 (`data-model.md`, `contracts/`, `quickstart.md`) follows.
+No NEEDS CLARIFICATION markers remain. All technical decisions either reuse a documented prior pattern or port a well-understood MUI behavior. The next phase (Phase 1 — Design & Contracts) builds the per-tab component contracts, the data-model entity → CRD prop tables, and the quickstart smoke checklist on top of these decisions.
