@@ -75,6 +75,7 @@ export function OrganizationProfileDemoPage() {
       tabStrip={{
         tabs: TABS,
         activeTab,
+        ariaLabel: 'Organization profile resource tabs',
         onSelectTab: setActiveTab,
       }}
       rightColumn={{

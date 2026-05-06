@@ -10,7 +10,8 @@
       "sending": "Versturen…",
       "errorTitle": "Bericht kon niet worden verzonden",
       "ariaLabel": "Bericht opstellen"
-    }
+    },
+    "resourceTabsAriaLabel": "Resourcesecties"
   },
   "userProfile": {
     "hero": {
@@ -33,8 +34,8 @@
       "aboutTitle": "Over",
       "organizationsTitle": "Organisaties",
       "socialLinksTitle": "Sociaal",
-      "emptyBio": "Nog geen bio.",
-      "emptyOrganizations": "Nog geen lid van een organisatie.",
+      "bioEmpty": "Nog geen bio.",
+      "organizationsEmpty": "Nog geen lid van een organisatie.",
       "memberCountLine_one": "{{count}} lid",
       "memberCountLine_other": "{{count}} leden"
     },

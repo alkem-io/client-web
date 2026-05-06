@@ -31,6 +31,7 @@ export const CrdVCProfilePage = () => {
   const { loading: authLoading } = useAuthenticationContext();
 
   const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { id: vcId! },
     skip: !vcId,
   });
@@ -43,6 +44,7 @@ export const CrdVCProfilePage = () => {
 
   const { data: vcSpaceBokAuthPrivileges, loading: loadingBokAuth } =
     useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       variables: { spaceId: bokId! },
       skip: !bokId || !isBokSpace,
     });
@@ -50,6 +52,7 @@ export const CrdVCProfilePage = () => {
     vcSpaceBokAuthPrivileges?.lookup.myPrivileges?.space?.includes(AuthorizationPrivilege.ReadAbout) ?? false;
 
   const { data: bokProfileData, loading: loadingBokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: bokId! },
     skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
   });
@@ -71,19 +74,26 @@ export const CrdVCProfilePage = () => {
 
   usePageTitle(data?.lookup.virtualContributor?.profile?.displayName);
 
-  if (authLoading || urlResolverLoading || loading || !vcId) {
-    return null;
-  }
-
   if (error && isApolloNotFoundError(error)) {
     return <Error404 />;
   }
+
+  // Per-region loading flags (FR-009): each region renders a Skeleton while
+  // its underlying queries are in flight, then swaps to real content as data
+  // lands. The page does not block on all queries before rendering.
+  const heroLoading = authLoading || urlResolverLoading || loading || !vcId;
+  const sidebarLoading = heroLoading;
+  const contentViewLoading = heroLoading;
+  const bokLoading =
+    heroLoading ||
+    (isBokSpace && (loadingBokAuth || (hasSpaceProfileReadAccess && loadingBokProfile))) ||
+    (isBokKb && kbLoading);
 
   const virtualContributor = data?.lookup.virtualContributor;
   const vc = createVirtualContributorModelFull(virtualContributor);
   const myPrivileges = virtualContributor?.authorization?.myPrivileges;
 
-  const id = vc.id || vcId;
+  const id = vc.id || vcId || '';
   const color = pickColorFromId(id);
   const profile = vc.profile;
 
@@ -105,6 +115,9 @@ export const CrdVCProfilePage = () => {
     externalGenericDescription: tBase('components.profile.fields.engines.externalVCDescription', {
       engineName: tBase('components.profile.fields.engines.external'),
     }),
+    spaceContextDescription: tBase('components.profile.fields.bodyOfKnowledge.spaceBokDescription', {
+      vcName: vc.profile.displayName,
+    }),
   });
 
   const references = mapVcReferences(profile.references);
@@ -112,9 +125,6 @@ export const CrdVCProfilePage = () => {
   const modelCard = mapModelCardSummary(vc, t('vcProfile.contentView.aiEngineExternal'));
   const host = mapHostCard(vc);
   const settingsHref = computeSettingsHref(vc, myPrivileges, buildSettingsUrl);
-
-  const bokLoading =
-    (isBokSpace && (loadingBokAuth || (hasSpaceProfileReadAccess && loadingBokProfile))) || (isBokKb && kbLoading);
 
   return (
     <VCPublicProfileView
@@ -152,10 +162,10 @@ export const CrdVCProfilePage = () => {
         },
       }}
       loading={{
-        hero: false,
-        sidebar: false,
+        hero: heroLoading,
+        sidebar: sidebarLoading,
         bodyOfKnowledge: bokLoading,
-        contentView: false,
+        contentView: contentViewLoading,
       }}
     />
   );

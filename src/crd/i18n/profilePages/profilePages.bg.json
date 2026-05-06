@@ -10,7 +10,8 @@
       "sending": "Изпращане…",
       "errorTitle": "Съобщението не може да бъде изпратено",
       "ariaLabel": "Съставяне на съобщение"
-    }
+    },
+    "resourceTabsAriaLabel": "Раздели с ресурси"
   },
   "userProfile": {
     "hero": {
@@ -33,8 +34,8 @@
       "aboutTitle": "Относно",
       "organizationsTitle": "Организации",
       "socialLinksTitle": "Социални",
-      "emptyBio": "Все още няма биография.",
-      "emptyOrganizations": "Все още не е част от организация.",
+      "bioEmpty": "Все още няма биография.",
+      "organizationsEmpty": "Все още не е част от организация.",
       "memberCountLine_one": "{{count}} член",
       "memberCountLine_other": "{{count}} члена"
     },

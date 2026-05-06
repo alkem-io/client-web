@@ -24,6 +24,12 @@ export type BoKResolverInput = {
   privateSpaceLabel: string;
   externalAssistantDescription: string;
   externalGenericDescription: string;
+  /**
+   * Resolved caption rendered above the space-backed BoK card. Per FR-033 /
+   * contracts/vcProfile.ts, this is `components.profile.fields.bodyOfKnowledge.spaceBokDescription`
+   * with `{vcName}` already interpolated by the caller.
+   */
+  spaceContextDescription: string;
 };
 
 export const resolveBodyOfKnowledge = (input: BoKResolverInput): BodyOfKnowledge | null => {
@@ -55,7 +61,7 @@ export const resolveBodyOfKnowledge = (input: BoKResolverInput): BodyOfKnowledge
       hasReadAccess: Boolean(input.hasSpaceReadAccess),
       description: vc.bodyOfKnowledgeDescription ?? null,
       vcDisplayName: vc.profile.displayName,
-      spaceContextDescription: '',
+      spaceContextDescription: input.spaceContextDescription,
     };
   }
 

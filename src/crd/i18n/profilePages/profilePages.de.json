@@ -10,7 +10,8 @@
       "sending": "Senden…",
       "errorTitle": "Nachricht konnte nicht gesendet werden",
       "ariaLabel": "Nachricht verfassen"
-    }
+    },
+    "resourceTabsAriaLabel": "Ressourcenbereiche"
   },
   "userProfile": {
     "hero": {
@@ -33,8 +34,8 @@
       "aboutTitle": "Über",
       "organizationsTitle": "Organisationen",
       "socialLinksTitle": "Soziales",
-      "emptyBio": "Noch keine Biografie.",
-      "emptyOrganizations": "Noch in keiner Organisation.",
+      "bioEmpty": "Noch keine Biografie.",
+      "organizationsEmpty": "Noch in keiner Organisation.",
       "memberCountLine_one": "{{count}} Mitglied",
       "memberCountLine_other": "{{count}} Mitglieder"
     },

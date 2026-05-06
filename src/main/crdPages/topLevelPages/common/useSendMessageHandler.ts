@@ -8,7 +8,6 @@ export type SendMessageHandlerResult = {
   /** Recipient-bound `(text) => Promise<void>` — the only API the CRD heroes consume. */
   onSendMessage: (messageText: string) => Promise<void>;
   sending: boolean;
-  error: string | null;
 };
 
 /**
@@ -16,7 +15,8 @@ export type SendMessageHandlerResult = {
  *
  * Wraps `useSendMessageToUsersMutation` with the recipient user id baked in.
  * Same signature as `useSendMessageToOrganizationHandler` so the two heroes
- * stay recipient-agnostic (`onSendMessage(text)` only).
+ * stay recipient-agnostic (`onSendMessage(text)` only). Errors are re-thrown
+ * so the consuming `MessagePopover` can surface them in its own UI.
  *
  * NOTE: User and Organization use **different** GraphQL mutations with
  * different input shapes — User: `{ message, receiverIds: [userId] }`,
@@ -29,14 +29,12 @@ export const useSendMessageToUserHandler = (params: {
   const { recipientUserId } = params;
   const [sendMessageToUser] = useSendMessageToUsersMutation();
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const onSendMessage = async (messageText: string) => {
     if (!recipientUserId) {
       throw new Error('Recipient user not loaded.');
     }
     setSending(true);
-    setError(null);
     try {
       await sendMessageToUser({
         variables: {
@@ -46,16 +44,12 @@ export const useSendMessageToUserHandler = (params: {
           },
         },
       });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Send failed.';
-      setError(message);
-      throw err;
     } finally {
       setSending(false);
     }
   };
 
-  return { onSendMessage, sending, error };
+  return { onSendMessage, sending };
 };
 
 /**
@@ -70,14 +64,12 @@ export const useSendMessageToOrganizationHandler = (params: {
   const { recipientOrganizationId } = params;
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const onSendMessage = async (messageText: string) => {
     if (!recipientOrganizationId) {
       throw new Error('Recipient organization not loaded.');
     }
     setSending(true);
-    setError(null);
     try {
       await sendMessageToOrganization({
         variables: {
@@ -87,14 +79,10 @@ export const useSendMessageToOrganizationHandler = (params: {
           },
         },
       });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Send failed.';
-      setError(message);
-      throw err;
     } finally {
       setSending(false);
     }
   };
 
-  return { onSendMessage, sending, error };
+  return { onSendMessage, sending };
 };

@@ -66,7 +66,7 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
                   href={ref.uri}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-body-emphasis text-primary hover:underline"
+                  className="text-body-emphasis text-primary hover:underline rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   {ref.name}
                 </a>

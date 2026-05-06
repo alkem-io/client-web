@@ -76,7 +76,10 @@ function SpaceBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'space' }> })
           </div>
           <div className="flex-1 min-w-0">
             {bok.spaceProfile.url ? (
-              <a href={bok.spaceProfile.url} className="text-card-title hover:underline truncate block">
+              <a
+                href={bok.spaceProfile.url}
+                className="text-card-title hover:underline truncate block rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
                 {bok.spaceProfile.displayName}
               </a>
             ) : (

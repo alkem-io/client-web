@@ -70,7 +70,7 @@ export function OrganizationResourceSections({
                 <a
                   key={vc.id}
                   href={vc.href}
-                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow"
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <div className="p-2 bg-primary/10 rounded-md text-primary">
                     <Sparkles className="w-5 h-5" />
@@ -157,7 +157,7 @@ function SimpleResourceGrid({ items, icon }: SimpleResourceGridProps) {
         <a
           key={item.id}
           href={item.href}
-          className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow"
+          className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
           <div className="p-2 bg-primary/10 rounded-md text-primary">{icon}</div>
           <div>

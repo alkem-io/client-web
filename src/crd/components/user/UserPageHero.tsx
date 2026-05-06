@@ -1,7 +1,6 @@
 import { MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
-import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 
@@ -51,7 +50,7 @@ export function UserPageHero({
 
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
             <div className="min-w-0">
-              <h1 className="text-page-title md:text-4xl font-bold text-foreground truncate">{displayName}</h1>
+              <h1 className="text-page-title md:text-4xl text-foreground truncate">{displayName}</h1>
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
                   <MapPin className="w-4 h-4" />
@@ -60,7 +59,7 @@ export function UserPageHero({
               ) : null}
             </div>
 
-            <div className={cn('flex gap-3 shrink-0')}>
+            <div className="flex gap-3 shrink-0">
               {showMessageButton && onSendMessage ? (
                 <MessagePopover triggerLabel={t('userProfile.hero.messageButton')} onSendMessage={onSendMessage} />
               ) : null}

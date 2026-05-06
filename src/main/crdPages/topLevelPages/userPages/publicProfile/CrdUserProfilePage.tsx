@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -31,6 +30,7 @@ export const CrdUserProfilePage = () => {
   const { canEditSettings } = useCanEditSettings({ profileUserId: userId });
 
   const { data: userAccountData, loading: loadingUserAccount } = useUserAccountQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { userId: userId! },
     skip: !userId,
   });
@@ -43,15 +43,11 @@ export const CrdUserProfilePage = () => {
 
   const { onSendMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
 
-  // Tab definitions (i18n) — 3 tabs per FR-013 (refined).
-  const tabs = useMemo(
-    () => [
-      { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
-      { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
-      { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
-    ],
-    [t]
-  );
+  const tabs = [
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
+    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
+    { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
+  ];
 
   // Loading flags per region (FR-009).
   const heroLoading = routeLoading || !userModel;
@@ -71,7 +67,7 @@ export const CrdUserProfilePage = () => {
 
   const profile = userModel?.profile;
   const id = userModel?.id ?? userId ?? '';
-  const color = id ? pickColorFromId(id) : '#42a5f5';
+  const color = pickColorFromId(id);
 
   const location = buildLocationLine(
     profile?.location?.city,
@@ -133,14 +129,15 @@ export const CrdUserProfilePage = () => {
           aboutTitle: t('userProfile.sidebar.aboutTitle'),
           organizationsTitle: t('userProfile.sidebar.organizationsTitle'),
           socialLinksTitle: t('userProfile.sidebar.socialLinksTitle'),
-          emptyBio: t('userProfile.sidebar.emptyBio'),
-          emptyOrganizations: t('userProfile.sidebar.emptyOrganizations'),
+          bioEmpty: t('userProfile.sidebar.bioEmpty'),
+          organizationsEmpty: t('userProfile.sidebar.organizationsEmpty'),
         },
       }}
       tabStrip={{
         tabs,
         activeTab,
         onSelectTab,
+        ariaLabel: t('common.resourceTabsAriaLabel'),
       }}
       sections={{
         activeTab,

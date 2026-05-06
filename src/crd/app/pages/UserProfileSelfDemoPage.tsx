@@ -20,8 +20,8 @@ const SIDEBAR_LABELS = {
   aboutTitle: 'About',
   organizationsTitle: 'Organizations',
   socialLinksTitle: 'Social',
-  emptyBio: 'No bio yet.',
-  emptyOrganizations: 'Not part of any organization yet.',
+  bioEmpty: 'No bio yet.',
+  organizationsEmpty: 'Not part of any organization yet.',
 };
 
 const TABS = [
@@ -74,6 +74,7 @@ export function UserProfileSelfDemoPage() {
         tabs: TABS,
         activeTab,
         onSelectTab: setActiveTab,
+        ariaLabel: 'User profile resource tabs',
       }}
       sections={{
         activeTab,

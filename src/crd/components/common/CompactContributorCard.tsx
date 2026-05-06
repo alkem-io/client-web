@@ -70,7 +70,9 @@ export function CompactContributorCard({
 
   const baseClasses = cn(
     'block w-full overflow-hidden rounded-xl border border-border/50 bg-card text-card-foreground transition-shadow',
-    href ? 'hover:shadow-md cursor-pointer' : '',
+    href
+      ? 'hover:shadow-md cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
+      : '',
     className
   );
 
@@ -81,9 +83,5 @@ export function CompactContributorCard({
       </a>
     );
   }
-  return (
-    <fieldset aria-label={ariaLabel ?? displayName} className={baseClasses}>
-      {content}
-    </fieldset>
-  );
+  return <div className={baseClasses}>{content}</div>;
 }

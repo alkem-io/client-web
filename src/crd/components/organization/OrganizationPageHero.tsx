@@ -1,7 +1,6 @@
 import { BadgeCheck, MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
-import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -52,7 +51,7 @@ export function OrganizationPageHero({
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-page-title md:text-4xl font-bold text-foreground">{displayName}</h1>
+                <h1 className="text-page-title md:text-4xl text-foreground">{displayName}</h1>
                 {verified ? (
                   <TooltipProvider>
                     <Tooltip>
@@ -75,7 +74,7 @@ export function OrganizationPageHero({
               ) : null}
             </div>
 
-            <div className={cn('flex gap-3 shrink-0')}>
+            <div className="flex gap-3 shrink-0">
               {onSendMessage ? (
                 <MessagePopover triggerLabel={t('orgProfile.hero.messageButton')} onSendMessage={onSendMessage} />
               ) : null}

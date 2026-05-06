@@ -24,7 +24,14 @@ export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
   const banner = space.imageUrl ? { backgroundImage: `url(${space.imageUrl})` } : backgroundGradient(space.color);
 
   return (
-    <a href={space.href} className={cn('block h-full', className)} aria-label={space.title}>
+    <a
+      href={space.href}
+      className={cn(
+        'block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+        className
+      )}
+      aria-label={space.title}
+    >
       <Card className="overflow-hidden hover:shadow-md transition-all group cursor-pointer h-full flex flex-col gap-0">
         <div className="relative h-32 w-full bg-muted overflow-hidden">
           <div
@@ -33,7 +40,11 @@ export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
           />
           <div className="absolute top-2 right-2 flex gap-2">
             <div className="h-6 w-6 rounded-full bg-background/90 backdrop-blur flex items-center justify-center text-muted-foreground shadow-sm">
-              {space.isPrivate ? <Lock className="w-3 h-3" /> : <Globe className="w-3 h-3" />}
+              {space.isPrivate ? (
+                <Lock className="w-3 h-3" aria-hidden="true" />
+              ) : (
+                <Globe className="w-3 h-3" aria-hidden="true" />
+              )}
             </div>
           </div>
         </div>

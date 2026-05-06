@@ -16,6 +16,7 @@ export type ProfileResourceTabStripProps = {
   tabs: ProfileResourceTab[];
   activeTab: ResourceTabKey;
   onSelectTab: (next: ResourceTabKey) => void;
+  ariaLabel: string;
   className?: string;
 };
 
@@ -26,7 +27,13 @@ export type ProfileResourceTabStripProps = {
  * On viewports below `md` the strip is horizontally scrollable; the active
  * tab auto-scrolls into view on mount and on every tab change.
  */
-export function ProfileResourceTabStrip({ tabs, activeTab, onSelectTab, className }: ProfileResourceTabStripProps) {
+export function ProfileResourceTabStrip({
+  tabs,
+  activeTab,
+  onSelectTab,
+  ariaLabel,
+  className,
+}: ProfileResourceTabStripProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -58,7 +65,7 @@ export function ProfileResourceTabStrip({ tabs, activeTab, onSelectTab, classNam
       <div
         ref={scrollRef}
         role="tablist"
-        aria-label="Resource sections"
+        aria-label={ariaLabel}
         onKeyDown={handleKeyDown}
         className="flex items-center gap-6 overflow-x-auto no-scrollbar"
       >

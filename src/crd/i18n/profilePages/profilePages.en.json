@@ -10,7 +10,8 @@
       "sending": "Sending…",
       "errorTitle": "Could not send your message",
       "ariaLabel": "Compose message"
-    }
+    },
+    "resourceTabsAriaLabel": "Resource sections"
   },
   "userProfile": {
     "hero": {
@@ -33,8 +34,8 @@
       "aboutTitle": "About",
       "organizationsTitle": "Organizations",
       "socialLinksTitle": "Social",
-      "emptyBio": "No bio yet.",
-      "emptyOrganizations": "Not part of any organization yet.",
+      "bioEmpty": "No bio yet.",
+      "organizationsEmpty": "Not part of any organization yet.",
       "memberCountLine_one": "{{count}} member",
       "memberCountLine_other": "{{count}} members"
     },

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
@@ -46,15 +45,11 @@ export const CrdOrganizationProfilePage = () => {
 
   const { activeTab, onSelectTab } = useResourceTabs();
 
-  // Tab definitions (i18n) — 3 tabs per FR-024 (refined to mirror User profile).
-  const tabs = useMemo<ProfileResourceTab[]>(
-    () => [
-      { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
-      { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
-      { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
-    ],
-    [t]
-  );
+  const tabs: ProfileResourceTab[] = [
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
+    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
+    { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
+  ];
 
   const heroLoading = contextLoading || provided.loading || !organization;
   const sidebarLoading = heroLoading;
@@ -62,7 +57,7 @@ export const CrdOrganizationProfilePage = () => {
   const membershipsLoading = provided.loading;
 
   const id = organization?.id ?? '';
-  const color = id ? pickColorFromId(id) : '#42a5f5';
+  const color = pickColorFromId(id);
   const profile = organization?.profile;
 
   const location = buildLocationLine(
@@ -137,6 +132,7 @@ export const CrdOrganizationProfilePage = () => {
         tabs,
         activeTab,
         onSelectTab,
+        ariaLabel: t('common.resourceTabsAriaLabel'),
       }}
       rightColumn={{
         activeTab,

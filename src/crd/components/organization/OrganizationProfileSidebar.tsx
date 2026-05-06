@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
-import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 
@@ -151,12 +150,12 @@ function AssociatesSection({ associates, labels }: AssociatesSectionProps) {
         <p className="text-body text-muted-foreground">{labels.associatesSignInCta}</p>
       ) : (
         <>
-          <div className={cn('grid grid-cols-3 sm:grid-cols-4 gap-3')}>
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
             {visible.map(a => (
               <a
                 key={a.id}
                 href={a.url}
-                className="flex flex-col items-center text-center gap-1 group"
+                className="flex flex-col items-center text-center gap-1 group rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 aria-label={a.displayName}
               >
                 <Avatar className="w-12 h-12 border border-border">
@@ -175,7 +174,7 @@ function AssociatesSection({ associates, labels }: AssociatesSectionProps) {
             <button
               type="button"
               onClick={() => setShowAll(prev => !prev)}
-              className="mt-3 text-body-emphasis text-primary hover:underline"
+              className="mt-3 text-body-emphasis text-primary hover:underline rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
               {showAll ? labels.associatesShowLess : labels.associatesShowMore(remaining)}
             </button>

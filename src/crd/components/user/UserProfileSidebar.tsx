@@ -31,8 +31,8 @@ export type UserProfileSidebarProps = {
     aboutTitle: string;
     organizationsTitle: string;
     socialLinksTitle: string;
-    emptyBio: string;
-    emptyOrganizations: string;
+    bioEmpty: string;
+    organizationsEmpty: string;
   };
 };
 
@@ -50,7 +50,7 @@ export function UserProfileSidebar({
     <div className="space-y-8">
       <section>
         <h2 className="text-section-title mb-4 flex items-center gap-2">{labels.aboutTitle}</h2>
-        {bio ? <MarkdownContent content={bio} /> : <p className="text-body text-muted-foreground">{labels.emptyBio}</p>}
+        {bio ? <MarkdownContent content={bio} /> : <p className="text-body text-muted-foreground">{labels.bioEmpty}</p>}
       </section>
 
       {tagsets.length > 0 ? (
@@ -82,7 +82,7 @@ export function UserProfileSidebar({
       <section>
         <h2 className="text-section-title mb-4 flex items-center gap-2">{labels.organizationsTitle}</h2>
         {organizationsEmpty ? (
-          <p className="text-body text-muted-foreground">{labels.emptyOrganizations}</p>
+          <p className="text-body text-muted-foreground">{labels.organizationsEmpty}</p>
         ) : (
           <div className="flex flex-col gap-3">{organizationsSlot}</div>
         )}

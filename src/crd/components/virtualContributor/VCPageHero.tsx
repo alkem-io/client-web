@@ -36,7 +36,7 @@ export function VCPageHero({ avatarImageUrl, color, displayName, settingsHref }:
 
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
             <div className="min-w-0">
-              <h1 className="text-page-title md:text-4xl font-bold text-foreground truncate">{displayName}</h1>
+              <h1 className="text-page-title md:text-4xl text-foreground truncate">{displayName}</h1>
             </div>
 
             <div className="flex gap-3 shrink-0">
