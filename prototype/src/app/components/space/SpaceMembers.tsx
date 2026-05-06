@@ -237,16 +237,30 @@ export function SpaceMembers() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <p
-          style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--muted-foreground)",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          {totalUsers} members and {totalOrgs} organizations in this space.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2
+            style={{
+              fontSize: "var(--text-2xl)",
+              fontWeight: 700,
+              color: "var(--foreground)",
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Community
+          </h2>
+          <p
+            className="mt-1"
+            style={{
+              fontSize: "var(--text-sm)",
+              color: "var(--muted-foreground)",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            {totalUsers} members and {totalOrgs} organizations in this space.
+          </p>
+        </div>
         <Button className="shrink-0">
           <UserPlus className="w-4 h-4 mr-2" />
           Invite Member
@@ -413,7 +427,7 @@ function UserCard({
   getRoleIcon: (rt: string) => React.ReactNode;
 }) {
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-all duration-300">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardContent className="p-0">
         <div className="p-4 flex items-start justify-between gap-3">
           <div className="flex items-start gap-3">
@@ -507,7 +521,7 @@ function UserCard({
 // ── Organization Card ──
 function OrgCard({ org }: { org: OrgEntry }) {
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-all duration-300">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardContent className="p-0">
         <div className="p-4 flex items-start justify-between gap-3">
           <div className="flex items-start gap-3">

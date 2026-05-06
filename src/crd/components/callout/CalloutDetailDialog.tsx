@@ -1,4 +1,4 @@
-import { Share2, Smile, X } from 'lucide-react';
+import { Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -43,7 +43,6 @@ type CalloutDetailDialogProps = {
   mediaGalleryFramingSlot?: ReactNode;
   /** Call-to-action link button rendered below description (e.g. CalloutLinkAction) */
   callToActionFramingSlot?: ReactNode;
-  onReactionsClick?: () => void;
   onShareClick?: () => void;
   /**
    * 3-dots settings slot in the sticky-header cluster. Consumer injects a
@@ -74,7 +73,6 @@ export function CalloutDetailDialog({
   memoFramingSlot,
   mediaGalleryFramingSlot,
   callToActionFramingSlot,
-  onReactionsClick,
   onShareClick,
   settingsSlot,
   commentsEnabled,
@@ -171,10 +169,6 @@ export function CalloutDetailDialog({
                 </span>
               )}
               <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onReactionsClick}>
-                <Smile className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                {t('calloutDialog.reactions')}
-              </Button>
               <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
                 <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                 {t('calloutDialog.share')}

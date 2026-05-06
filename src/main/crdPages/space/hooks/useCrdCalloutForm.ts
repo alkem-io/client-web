@@ -2,9 +2,9 @@ import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
-import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
+import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type {
   AllowedActors,
   ContributionDefaults,
@@ -14,6 +14,7 @@ import type {
   ResponseType,
 } from '@/crd/forms/callout/types';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
+import { ensureHttps, isValidHttpUrl } from '@/crd/lib/ensureHttps';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
@@ -116,12 +117,17 @@ type ValidationCode =
   | 'urlInvalid'
   | 'displayNameRequired'
   | 'questionRequired'
+  | 'minDisplayName'
   | 'maxSmall'
+  | 'maxMid'
   | 'maxMarkdown'
   | 'minPollOptions'
+  | 'maxPollOptions'
   | 'pollOptionRequired'
   | 'referenceTitleRequired'
-  | 'linkRowTitleRequired';
+  | 'referenceUrlInvalid'
+  | 'linkRowTitleRequired'
+  | 'linkRowUrlInvalid';
 
 export type UseCrdCalloutFormResult = {
   values: CalloutFormValues;
@@ -154,50 +160,93 @@ export function useCrdCalloutForm(): UseCrdCalloutFormResult {
         return t('validation.displayNameRequired');
       case 'questionRequired':
         return t('validation.questionRequired');
+      case 'minDisplayName':
+        return t('validation.minDisplayName', { count: 3, ...params });
       case 'maxSmall':
         return t('validation.maxSmall', { count: SMALL_TEXT_LENGTH, ...params });
+      case 'maxMid':
+        return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
         return t('validation.maxMarkdown', { count: MARKDOWN_TEXT_LENGTH, ...params });
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });
+      case 'maxPollOptions':
+        return t('validation.maxPollOptions', { count: MAX_POLL_OPTIONS, ...params });
       case 'pollOptionRequired':
         return t('validation.pollOptionRequired');
       case 'referenceTitleRequired':
         return t('validation.referenceTitleRequired');
+      case 'referenceUrlInvalid':
+        return t('validation.urlInvalid');
       case 'linkRowTitleRequired':
         return t('validation.linkRowTitleRequired');
+      case 'linkRowUrlInvalid':
+        return t('validation.urlInvalid');
       default:
         return code;
     }
   };
 
+  // Title (framing.profile.displayName) mirrors the MUI `displayNameValidator({ required: true })`:
+  // required, min 3, max SMALL_TEXT_LENGTH, no spaces-only.
   const schema = yup.object().shape({
-    title: yup.string().trim().required('required').max(SMALL_TEXT_LENGTH, 'maxSmall'),
+    title: yup.string().trim().required('required').min(3, 'minDisplayName').max(SMALL_TEXT_LENGTH, 'maxSmall'),
     description: yup.string().max(MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
   });
 
   const validateFraming = (v: CalloutFormValues, next: CalloutFormErrors) => {
     if (v.framingChip === 'cta') {
-      if (!v.linkDisplayName.trim()) next.linkDisplayName = translateValidationMessage('displayNameRequired');
-      if (!v.linkUrl.trim()) {
+      // Display name (link.profile.displayName) — required, min 3, max SMALL_TEXT_LENGTH.
+      const displayName = v.linkDisplayName.trim();
+      if (!displayName) {
+        next.linkDisplayName = translateValidationMessage('displayNameRequired');
+      } else if (displayName.length < 3) {
+        next.linkDisplayName = translateValidationMessage('minDisplayName');
+      } else if (displayName.length > SMALL_TEXT_LENGTH) {
+        next.linkDisplayName = translateValidationMessage('maxSmall');
+      }
+      // URL (link.uri) — required, valid URL after `ensureHttps`, max MID_TEXT_LENGTH.
+      const rawUrl = v.linkUrl.trim();
+      if (!rawUrl) {
         next.linkUrl = translateValidationMessage('urlRequired');
-      } else if (!/^https?:\/\//i.test(v.linkUrl.trim())) {
-        next.linkUrl = translateValidationMessage('urlInvalid');
+      } else {
+        const normalized = ensureHttps(rawUrl);
+        if (normalized.length > MID_TEXT_LENGTH) {
+          next.linkUrl = translateValidationMessage('maxMid');
+        } else if (!isValidHttpUrl(rawUrl)) {
+          next.linkUrl = translateValidationMessage('urlInvalid');
+        }
       }
     }
     if (v.framingChip === 'poll') {
-      if (!v.pollQuestion.trim()) next.pollQuestion = translateValidationMessage('questionRequired');
+      // Poll question — `displayNameValidator()` is non-required at the schema level, but the
+      // server requires `framing.poll.title` for poll framing, so the form keeps it required.
+      const question = v.pollQuestion.trim();
+      if (!question) {
+        next.pollQuestion = translateValidationMessage('questionRequired');
+      } else if (question.length < 3) {
+        next.pollQuestion = translateValidationMessage('minDisplayName');
+      } else if (question.length > SMALL_TEXT_LENGTH) {
+        next.pollQuestion = translateValidationMessage('maxSmall');
+      }
       const filled = v.pollOptions.filter(o => o.text.trim().length > 0);
       if (filled.length < MIN_POLL_OPTIONS) {
         next.pollOptions = translateValidationMessage('minPollOptions');
+      } else if (filled.length > MAX_POLL_OPTIONS) {
+        next.pollOptions = translateValidationMessage('maxPollOptions');
       }
     }
   };
 
   const validateReferences = (v: CalloutFormValues, next: CalloutFormErrors) => {
     v.referenceRows.forEach((row, idx) => {
-      if (row.url.trim() && !row.title.trim()) {
+      const url = row.url.trim();
+      const title = row.title.trim();
+      if (url && !title) {
         next[`referenceRows.${idx}.title`] = translateValidationMessage('referenceTitleRequired');
+      }
+      if (url && !isValidHttpUrl(url)) {
+        next[`referenceRows.${idx}.url`] = translateValidationMessage('referenceUrlInvalid');
       }
     });
   };
@@ -205,8 +254,13 @@ export function useCrdCalloutForm(): UseCrdCalloutFormResult {
   const validatePrePopulateLinks = (v: CalloutFormValues, next: CalloutFormErrors) => {
     if (v.responseType !== 'link') return;
     v.prePopulateLinkRows.forEach((row, idx) => {
-      if (row.url.trim() && !row.title.trim()) {
+      const url = row.url.trim();
+      const title = row.title.trim();
+      if (url && !title) {
         next[`prePopulateLinkRows.${idx}.title`] = translateValidationMessage('linkRowTitleRequired');
+      }
+      if (url && !isValidHttpUrl(url)) {
+        next[`prePopulateLinkRows.${idx}.url`] = translateValidationMessage('linkRowUrlInvalid');
       }
     });
   };

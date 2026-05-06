@@ -15,12 +15,24 @@ import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
  */
 export type CrdSpaceTranslator = TFunction<'crd-space'>;
 
+/**
+ * Maps every server framing type to the PostCard's PostType. The default
+ * (`CalloutFramingType.None`) → 'text'. Each non-None type must be mapped
+ * explicitly; the icon/label for each PostType lives in `POST_TYPE_DESCRIPTORS`
+ * so adding a new server framing type only needs one mapping entry here and
+ * one descriptor entry there.
+ */
+const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
+  [CalloutFramingType.None]: 'text',
+  [CalloutFramingType.Whiteboard]: 'whiteboard',
+  [CalloutFramingType.Memo]: 'memo',
+  [CalloutFramingType.MediaGallery]: 'mediaGallery',
+  [CalloutFramingType.Link]: 'callToAction',
+  [CalloutFramingType.Poll]: 'poll',
+};
+
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
-  if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
-  if (framingType === CalloutFramingType.Memo) return 'memo';
-  if (framingType === CalloutFramingType.MediaGallery) return 'mediaGallery';
-  if (framingType === CalloutFramingType.Link) return 'callToAction';
-  return 'text';
+  return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
 }
 
 /**

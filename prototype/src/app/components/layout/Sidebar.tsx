@@ -8,6 +8,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Bot,
+  LayoutTemplate,
 } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
@@ -41,7 +42,7 @@ export function Sidebar({ className }: { className?: string }) {
     },
     { icon: Rocket, label: "Create my own Space", onClick: () => setShowCreateSpace(true) },
     { icon: Lightbulb, label: "Tips & Tricks", href: "#" },
-    { icon: Lightbulb, label: "Template Library", href: "/templates" },
+    { icon: LayoutTemplate, label: "Template Library", href: "/templates" },
     { icon: Tag, label: "My Account", href: "/user/alex-rivera/settings/account" },
   ];
 

@@ -3852,8 +3852,6 @@ export const SearchResultCalloutFragmentDoc = gql`
       id
       messagesCount
     }
-    createdDate
-    publishedDate
     createdBy {
       id
       profile {

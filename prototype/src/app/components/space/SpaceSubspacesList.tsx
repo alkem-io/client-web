@@ -15,9 +15,6 @@ const SUBSPACE_COLORS = [
   "#0891b2",
 ];
 
-// Parent space banner for avatar derivation
-const PARENT_BANNER = "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400";
-
 // Mock Data — mapped to SpaceCardData format
 const SUBSPACES: (SpaceCardData & { status: string })[] = [
   {
@@ -26,7 +23,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Renewable Energy Transition",
     description: "Developing strategies for municipal energy transition to 100% renewables by 2030.",
     bannerImage: "https://images.unsplash.com/photo-1677506048377-1099738d294d?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1509391366360-2e959784a276?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "RE",
     avatarColor: SUBSPACE_COLORS[0],
     isPrivate: false,
@@ -44,7 +40,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Urban Mobility Lab",
     description: "Reimagining city transportation networks for better accessibility and reduced carbon footprint.",
     bannerImage: "https://images.unsplash.com/photo-1743385779313-ac03bb0f997b?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "UM",
     avatarColor: SUBSPACE_COLORS[1],
     isPrivate: false,
@@ -61,7 +56,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Green Infrastructure",
     description: "Planning and implementation of urban green spaces, vertical gardens, and sustainable drainage.",
     bannerImage: "https://images.unsplash.com/photo-1760611656007-f767a8082758?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "GI",
     avatarColor: SUBSPACE_COLORS[2],
     isPrivate: false,
@@ -80,7 +74,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Policy Frameworks",
     description: "Drafting policy recommendations and regulatory frameworks to support sustainability initiatives.",
     bannerImage: "https://images.unsplash.com/photo-1769069918751-9cdb7c752fcc?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1554103210-26d928978fb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "PF",
     avatarColor: SUBSPACE_COLORS[3],
     isPrivate: true,
@@ -97,7 +90,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Community Engagement",
     description: "Tools and methodologies for involving local communities in decision-making processes.",
     bannerImage: "https://images.unsplash.com/photo-1554103210-26d928978fb5?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1552664730-d307ca884978?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "CE",
     avatarColor: SUBSPACE_COLORS[4],
     isPrivate: false,
@@ -115,7 +107,6 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     name: "Digital Twin Project",
     description: "Creating digital replicas of urban systems to simulate and optimize performance.",
     bannerImage: "https://images.unsplash.com/photo-1683818051102-dd1199d163b9?auto=format&fit=crop&w=800&q=80",
-    avatar: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
     initials: "DT",
     avatarColor: SUBSPACE_COLORS[5],
     isPrivate: false,
@@ -142,7 +133,6 @@ export function SpaceSubspacesList() {
         .replace(/-/g, " ")
         .replace(/\b\w/g, (c) => c.toUpperCase()),
       slug,
-      bannerImage: PARENT_BANNER,
       initials: slug.substring(0, 2).toUpperCase(),
       avatarColor: "#2563eb",
     },
@@ -156,15 +146,27 @@ export function SpaceSubspacesList() {
   return (
     <div className="space-y-6" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <p
-          style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--muted-foreground)",
-          }}
-        >
-          Explore focused workstreams and challenges within this space.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2
+            style={{
+              fontSize: "var(--text-2xl)",
+              fontWeight: 700,
+              color: "var(--foreground)",
+            }}
+          >
+            Subspaces
+          </h2>
+          <p
+            className="mt-1"
+            style={{
+              fontSize: "var(--text-sm)",
+              color: "var(--muted-foreground)",
+            }}
+          >
+            Explore focused workstreams and challenges within this space.
+          </p>
+        </div>
         <Button className="shrink-0 gap-2">
           <Plus className="w-4 h-4" />
           Create Subspace

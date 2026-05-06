@@ -383,13 +383,16 @@
   "validation": {
     "titleRequired": "Title is required",
     "urlRequired": "URL is required",
-    "urlInvalid": "URL must start with http:// or https://",
+    "urlInvalid": "Please enter a valid URL",
     "displayNameRequired": "Display name is required",
     "questionRequired": "Question is required",
     "required": "This field is required",
+    "minDisplayName": "Must be at least {{count}} characters",
     "maxSmall": "Must be {{count}} characters or fewer",
+    "maxMid": "Must be {{count}} characters or fewer",
     "maxMarkdown": "Must be {{count}} characters or fewer",
     "minPollOptions": "At least {{count}} options are required",
+    "maxPollOptions": "At most {{count}} options are allowed",
     "pollOptionRequired": "Option text is required",
     "referenceTitleRequired": "Title is required when a URL is provided",
     "linkRowTitleRequired": "Title is required when a URL is provided"
@@ -572,6 +575,10 @@
       "tooLarge": "Image is too large"
     }
   },
+  "postSnippet": {
+    "readMore": "… Read more",
+    "readLess": "Read less"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
@@ -579,6 +586,8 @@
     "reply": "Reply",
     "delete": "Delete",
     "deleted": "This comment was deleted",
+    "deleteConfirmTitle": "Delete comment?",
+    "deleteConfirmDescription": "Are you sure you want to delete this comment?",
     "addComment": "Add a comment...",
     "mention": "Mention someone",
     "mentionVirtualContributor": "AI",
@@ -665,6 +674,11 @@
       "title": "Reopen this poll?",
       "description": "Reopening the poll will allow new votes and editing.",
       "confirm": "Reopen poll"
+    },
+    "deleteOptionConfirm": {
+      "title": "Delete option?",
+      "description": "This option will be removed from the poll.",
+      "descriptionWithText": "“{{text}}” will be removed from the poll."
     },
     "dragHandle": "Drag to reorder"
   },

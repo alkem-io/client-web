@@ -392,13 +392,16 @@
   "validation": {
     "titleRequired": "Заглавието е задължително",
     "urlRequired": "URL адресът е задължителен",
-    "urlInvalid": "URL адресът трябва да започва с http:// или https://",
+    "urlInvalid": "Моля, въведете валиден URL адрес",
     "displayNameRequired": "Показваното име е задължително",
     "questionRequired": "Въпросът е задължителен",
     "required": "Това поле е задължително",
+    "minDisplayName": "Трябва да е поне {{count}} знака",
     "maxSmall": "Трябва да е {{count}} знака или по-малко",
+    "maxMid": "Трябва да е {{count}} знака или по-малко",
     "maxMarkdown": "Трябва да е {{count}} знака или по-малко",
     "minPollOptions": "Изискват се поне {{count}} опции",
+    "maxPollOptions": "Допускат се най-много {{count}} опции",
     "pollOptionRequired": "Текстът на опцията е задължителен",
     "referenceTitleRequired": "Заглавието е задължително, когато е предоставен URL",
     "linkRowTitleRequired": "Заглавието е задължително, когато е предоставен URL"
@@ -581,6 +584,10 @@
       "tooLarge": "Изображението е твърде голямо"
     }
   },
+  "postSnippet": {
+    "readMore": "… Прочети повече",
+    "readLess": "Прочети по-малко"
+  },
   "comments": {
     "title": "Дискусия",
     "showMore": "Показване на повече",
@@ -588,6 +595,8 @@
     "reply": "Отговор",
     "delete": "Изтриване",
     "deleted": "Този коментар беше изтрит",
+    "deleteConfirmTitle": "Изтриване на коментара?",
+    "deleteConfirmDescription": "Сигурни ли сте, че искате да изтриете този коментар?",
     "addComment": "Добавете коментар...",
     "mention": "Споменаване на потребител",
     "mentionVirtualContributor": "AI",
@@ -674,6 +683,11 @@
       "title": "Отваряне отново на тази анкета?",
       "description": "Отварянето отново на анкетата ще позволи нови гласове и редактиране.",
       "confirm": "Отвори отново анкетата"
+    },
+    "deleteOptionConfirm": {
+      "title": "Изтриване на опцията?",
+      "description": "Тази опция ще бъде премахната от анкетата.",
+      "descriptionWithText": "„{{text}}“ ще бъде премахната от анкетата."
     },
     "dragHandle": "Плъзнете за пренареждане"
   },
