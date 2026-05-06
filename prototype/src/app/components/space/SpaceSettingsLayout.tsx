@@ -13,6 +13,7 @@ import {
   Save,
   Check,
   Loader2,
+  Undo2,
   MessageSquare,
   Calendar,
   FileText,
@@ -347,6 +348,7 @@ interface KanbanColumnProps {
   onRemove: (postId: string, tabId: TabId) => void;
   onMoveToTab: (postId: string, fromTab: TabId, toTab: TabId) => void;
   onRename: (id: TabId, newName: string) => void;
+  onDescriptionChange: (id: TabId, newDescription: string) => void;
   onIconChange: (id: TabId, newIcon: React.ElementType) => void;
   isEditing: boolean;
   setEditingId: (id: TabId | null) => void;
@@ -364,6 +366,7 @@ const KanbanColumn = ({
   onRemove,
   onMoveToTab,
   onRename,
+  onDescriptionChange,
   onIconChange,
   isEditing,
   setEditingId,
@@ -371,6 +374,8 @@ const KanbanColumn = ({
   const autoExpandTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showIconPicker, setShowIconPicker] = useState(false);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const descInputRef = useRef<HTMLInputElement>(null);
   const iconPickerRef = useRef<HTMLDivElement>(null);
   const Icon = tab.icon;
 
@@ -516,7 +521,7 @@ const KanbanColumn = ({
               {!isEditing && (
                 <button
                   onClick={() => setEditingId(tab.id)}
-                  className="opacity-0 group-hover/header:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground/50 hover:text-primary transition-colors"
                 >
                   <Pencil className="w-3 h-3" />
                 </button>
@@ -539,9 +544,40 @@ const KanbanColumn = ({
             </CollapsibleTrigger>
           </div>
 
-          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-            {tab.description}
-          </p>
+          {isEditingDescription ? (
+            <Input
+              ref={descInputRef}
+              value={tab.description}
+              onChange={(e) => onDescriptionChange(tab.id, e.target.value)}
+              onBlur={() => setIsEditingDescription(false)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === "Escape") setIsEditingDescription(false);
+              }}
+              className="h-6 py-0 px-1.5 text-xs w-full"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <div className="group/desc flex items-start gap-1">
+              <p
+                className="text-xs text-muted-foreground leading-relaxed line-clamp-2 cursor-pointer hover:underline decoration-dashed underline-offset-4"
+                onClick={() => {
+                  setIsEditingDescription(true);
+                  setTimeout(() => descInputRef.current?.focus(), 0);
+                }}
+              >
+                {tab.description}
+              </p>
+              <button
+                onClick={() => {
+                  setIsEditingDescription(true);
+                  setTimeout(() => descInputRef.current?.focus(), 0);
+                }}
+                className="text-muted-foreground/50 hover:text-primary transition-colors mt-0.5 shrink-0"
+              >
+                <Pencil className="w-2.5 h-2.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         <CollapsibleContent>
@@ -666,6 +702,8 @@ export function SpaceSettingsLayout() {
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [tabPosts, setTabPosts] = useState<TabPosts>(DEFAULT_POSTS);
+  const [savedTabs, setSavedTabs] = useState<TabItem[]>(DEFAULT_TABS);
+  const [savedTabPosts, setSavedTabPosts] = useState<TabPosts>(DEFAULT_POSTS);
   const [expandedCols, setExpandedCols] = useState<Record<TabId, boolean>>({
     home: true,
     community: true,
@@ -676,19 +714,22 @@ export function SpaceSettingsLayout() {
   // ─── Change detection (tabs + posts) ───────────────────────────────────────
   const hasChanges = useMemo(() => {
     const tabsChanged = tabs.some((tab, i) => {
-      const d = DEFAULT_TABS[i];
-      return tab.id !== d.id || tab.label !== d.label || tab.icon !== d.icon;
+      const d = savedTabs[i];
+      if (!d) return true;
+      return tab.id !== d.id || tab.label !== d.label || tab.icon !== d.icon || tab.description !== d.description;
     });
     if (tabsChanged) return true;
+    if (tabs.length !== savedTabs.length) return true;
 
-    for (const tabId of Object.keys(DEFAULT_POSTS) as TabId[]) {
+    for (const tabId of Object.keys(savedTabPosts) as TabId[]) {
       const cur = tabPosts[tabId];
-      const orig = DEFAULT_POSTS[tabId];
+      const orig = savedTabPosts[tabId];
+      if (!cur || !orig) return true;
       if (cur.length !== orig.length) return true;
       if (cur.some((p, i) => p.id !== orig[i]?.id)) return true;
     }
     return false;
-  }, [tabs, tabPosts]);
+  }, [tabs, tabPosts, savedTabs, savedTabPosts]);
 
   // ─── Tab reorder ───────────────────────────────────────────────────────────
   const moveTab = useCallback(
@@ -778,37 +819,38 @@ export function SpaceSettingsLayout() {
     );
   };
 
+  const handleDescriptionChange = (id: TabId, newDescription: string) => {
+    setTabs((prev) =>
+      prev.map((tab) => (tab.id === id ? { ...tab, description: newDescription } : tab))
+    );
+  };
+
   const handleIconChange = (id: TabId, newIcon: React.ElementType) => {
     setTabs((prev) =>
       prev.map((tab) => (tab.id === id ? { ...tab, icon: newIcon } : tab))
     );
   };
 
-  // ─── Save / Reset ─────────────────────────────────────────────────────────
+  // ─── Save / Discard ─────────────────────────────────────────────────────────
   const handleSave = () => {
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
+      setSavedTabs([...tabs]);
+      setSavedTabPosts({ ...tabPosts });
       setLastSaved(new Date());
     }, 1000);
   };
 
-  const handleReset = () => {
-    if (
-      confirm(
-        "Are you sure you want to reset all tabs and post assignments to defaults?"
-      )
-    ) {
-      setTabs(DEFAULT_TABS);
-      setTabPosts(DEFAULT_POSTS);
-      setExpandedCols({
-        home: true,
-        community: true,
-        subspaces: false,
-        knowledge: true,
-      });
-      setLastSaved(null);
-    }
+  const handleDiscard = () => {
+    setTabs([...savedTabs]);
+    setTabPosts({ ...savedTabPosts });
+    setExpandedCols({
+      home: true,
+      community: true,
+      subspaces: false,
+      knowledge: true,
+    });
   };
 
   // ─── Column toggle helpers ────────────────────────────────────────────────
@@ -825,8 +867,8 @@ export function SpaceSettingsLayout() {
       <div className="w-full h-full">
         <div className="flex flex-col h-full">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-foreground">Layout</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Layout</h2>
+            <p className="text-muted-foreground mt-2">
               Customize your Space's navigation tabs. Rename, reorder, and manage post assignments.
             </p>
           </div>
@@ -851,6 +893,7 @@ export function SpaceSettingsLayout() {
                   onRemove={handleRemovePost}
                   onMoveToTab={handleMoveToTab}
                   onRename={handleRename}
+                  onDescriptionChange={handleDescriptionChange}
                   onIconChange={handleIconChange}
                   isEditing={editingId === tab.id}
                   setEditingId={setEditingId}
@@ -868,11 +911,11 @@ export function SpaceSettingsLayout() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleReset}
-              disabled={!hasChanges && !lastSaved}
+              onClick={handleDiscard}
+              disabled={!hasChanges}
               className="text-muted-foreground hover:text-destructive"
             >
-              <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset
+              <Undo2 className="w-3.5 h-3.5 mr-1.5" /> Discard Changes
             </Button>
             <Button
               size="sm"

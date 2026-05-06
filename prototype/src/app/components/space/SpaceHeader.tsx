@@ -1,16 +1,7 @@
-import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { Badge } from "@/app/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from "@/app/components/ui/breadcrumb";
-import { Settings, Share2, Video, FileText, ShieldCheck, ChevronRight, Home } from "lucide-react";
+import { Settings, Share2, Video, FileText, Activity } from "lucide-react";
 import { Link } from "react-router";
-import AlkemioSymbolSquare from "@/imports/AlkemioSymbolSquare";
 
 interface SpaceHeaderProps {
   spaceSlug: string;
@@ -21,7 +12,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
   return (
     <div className="flex flex-col bg-background">
       {/* Hero Banner */}
-      <div className="relative w-full h-[320px] overflow-hidden group">
+      <div className="relative w-full h-[256px] overflow-hidden group">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
@@ -32,108 +23,58 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, rgba(29,56,74,0.4), rgba(102,102,102,0.08))",
+              "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.65) 100%)",
           }}
         />
 
         {/* Breadcrumb + Actions overlay — top of banner */}
         <div
-          className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between"
+          className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8"
           style={{
             paddingTop: 32,
-            paddingLeft: "max(24px, calc((100% - 1536px) / 2 + 24px))",
-            paddingRight: "max(24px, calc((100% - 1536px) / 2 + 24px))",
           }}
         >
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to="/"
-                    className="flex items-center gap-1.5 transition-colors hover:opacity-100"
-                    style={{
-                      fontSize: 14,
-                      color: "white",
-                      lineHeight: "20px",
-                    }}
-                  >
-                    <Home className="w-3.5 h-3.5" />
-                    Home
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-
-              <BreadcrumbSeparator>
-                <ChevronRight className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
-              </BreadcrumbSeparator>
-
-              <BreadcrumbItem>
-                <span
-                  style={{
-                    fontSize: 14,
-                    color: "white",
-                    fontWeight: 500,
-                    lineHeight: "20px",
-                  }}
-                >
-                  {spaceName}
-                </span>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
           {/* Action icons */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded hover:opacity-100"
-              style={{ color: "white" }}
-            >
-              <FileText className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded hover:opacity-100"
-              style={{ color: "white" }}
-            >
-              <Video className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded hover:opacity-100"
-              style={{ color: "white" }}
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
+          <div className="flex items-center gap-1">
+            <button className="banner-action-btn" title="Recent Activity">
+              <Activity />
+            </button>
+            <button className="banner-action-btn" title="Video Call">
+              <Video />
+            </button>
+            <button className="banner-action-btn" title="Documents">
+              <FileText />
+            </button>
+            <button className="banner-action-btn" title="Share">
+              <Share2 />
+            </button>
             <Link to={`/space/${spaceSlug}/settings`}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 rounded hover:opacity-100"
-                style={{ color: "white" }}
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
+              <button className="banner-action-btn" title="Settings">
+                <Settings />
+              </button>
             </Link>
+          </div>
+            </div>
           </div>
         </div>
 
-        {/* Content Container — aligned to same 1536px grid as breadcrumb */}
+        {/* Content Container — title & members aligned to grid */}
         <div
-          className="relative h-full flex flex-col justify-end mx-auto w-full"
+          className="relative h-full flex flex-col justify-end w-full px-6 md:px-8"
           style={{
-            maxWidth: 1536,
-            paddingLeft: 24,
-            paddingRight: 24,
             paddingBottom: 24,
           }}
-        >          {/* Bottom: Title & Members */}
+        >
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+          {/* Bottom: Title & Members */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="max-w-3xl" style={{ color: "var(--primary-foreground)" }}>
+            {/* Left: title */}
+            <div>
+
+            <div className="max-w-3xl pb-1" style={{ color: "var(--primary-foreground)" }}>
               <h1
                 className="mb-4"
                 style={{
@@ -143,6 +84,7 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                   lineHeight: 1.1,
                   color: "var(--primary-foreground)",
                   fontFamily: "var(--font-family, 'Inter', sans-serif)",
+                  textShadow: "0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)",
                 }}
               >
                 Green Energy Space
@@ -155,11 +97,13 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                   opacity: 0.9,
                   lineHeight: 1.6,
                   fontFamily: "var(--font-family, 'Inter', sans-serif)",
+                  textShadow: "0 1px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25)",
                 }}
               >
                 Collaborating on the future of sustainable energy solutions and
                 urban transformation.
               </p>
+            </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -200,6 +144,8 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                   +24
                 </div>
               </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>

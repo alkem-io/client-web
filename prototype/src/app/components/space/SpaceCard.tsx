@@ -28,6 +28,7 @@ export interface SpaceCardData {
   parent?: {
     name: string;
     slug: string;
+    bannerImage?: string;
     avatar?: string;
     initials: string;
     avatarColor: string;
@@ -120,7 +121,7 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
             {space.parent ? (
               /* Stacked avatars for subspace: parent behind, subspace in front */
               <div className="relative" style={{ width: 44, height: 44 }}>
-                {/* Parent avatar (behind) */}
+                {/* Parent avatar (behind) — derived from banner */}
                 <div
                   className="absolute top-0 left-0 overflow-hidden flex items-center justify-center"
                   style={{
@@ -128,11 +129,13 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
                     height: 32,
                     borderRadius: "var(--radius)",
                     border: "2px solid var(--card)",
-                    background: space.parent.avatarColor,
+                    background: space.parent.bannerImage ? undefined : space.parent.avatarColor,
                     zIndex: 1,
                   }}
                 >
-                  {space.parent.avatar ? (
+                  {space.parent.bannerImage ? (
+                    <img src={space.parent.bannerImage} alt={space.parent.name} className="w-full h-full object-cover" />
+                  ) : space.parent.avatar ? (
                     <img src={space.parent.avatar} alt={space.parent.name} className="w-full h-full object-cover" />
                   ) : (
                     <span style={{ fontSize: "9px", fontWeight: 700, color: "var(--primary-foreground)" }}>
@@ -163,7 +166,7 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
                 </div>
               </div>
             ) : (
-              /* Single avatar for top-level space */
+              /* Single avatar for top-level space — derived from banner */
               <div
                 className="overflow-hidden flex items-center justify-center"
                 style={{
@@ -171,11 +174,13 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
                   height: 40,
                   borderRadius: "var(--radius)",
                   border: "2.5px solid var(--card)",
-                  background: space.avatarColor,
+                  background: space.bannerImage ? undefined : space.avatarColor,
                   boxShadow: "var(--elevation-sm)",
                 }}
               >
-                {space.avatar ? (
+                {space.bannerImage ? (
+                  <img src={space.bannerImage} alt={space.name} className="w-full h-full object-cover" />
+                ) : space.avatar ? (
                   <img src={space.avatar} alt={space.name} className="w-full h-full object-cover" />
                 ) : (
                   <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--primary-foreground)" }}>
