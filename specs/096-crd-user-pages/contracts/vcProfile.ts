@@ -22,6 +22,18 @@ import type { ReferenceLink } from './organizationProfile';
 
 /* ----------------------------- VCPageHero -------------------------------- */
 
+/**
+ * 2026-05-06 redesign: the hero gains two new structural elements introduced
+ * by `prototype/src/app/pages/VCProfilePage.tsx`:
+ *   - A "Virtual Contributor" type badge sitting beside the display name.
+ *   - A row of skill-tag chips below the name, sourced from the VC's reserved
+ *     `Keywords` tagset (resolved by the mapper via TagsetReservedName.Keywords
+ *     against `vc.profile.tagsets[]`).
+ *
+ * The hero MUST NOT render a banner image (the prototype removes the banner)
+ * and MUST NOT render a Message button (parity with current MUI VCPageBanner;
+ * VCs are AI personas, not message recipients).
+ */
 export type VCPageHeroProps = {
   avatarImageUrl: string | null;
   displayName: string;
@@ -31,6 +43,19 @@ export type VCPageHeroProps = {
    * `buildSettingsUrl(vc.profile.url)` per FR-031).
    */
   settingsUrl: string | null;
+  /**
+   * i18n-resolved "Virtual Contributor" label rendered inside a small Badge
+   * next to the display name (with a Bot icon). Resolved by the mapper from
+   * `crd-profilePages:vcProfile.typeBadge`.
+   */
+  typeBadgeLabel: string;
+  /**
+   * Resolved keyword strings from `vc.profile.tagsets[]` filtered by
+   * TagsetReservedName.Keywords. Empty array → the chip row is omitted entirely
+   * (no header, no empty-state caption — same omission rule as the User profile
+   * Tagsets block, FR-010a).
+   */
+  keywords: string[];
   /**
    * NOTE: VCs do NOT have a Message button (FR-030). This contract intentionally
    * omits `onSendMessage`.
@@ -48,8 +73,11 @@ export type VCProfileSidebarProps = {
    */
   host: CompactContributorCardItem | null;
   /**
-   * Non-social references only — filtered via `isSocialNetworkSupported`. Social
-   * references are surfaced in the right-column content view, not here (FR-032).
+   * 2026-05-06 redesign: ALL references rendered as flat URL chips (no
+   * social/non-social split). Deliberate divergence from current MUI which
+   * silently discards the social subset; the redesigned right column does not
+   * surface social references either, so MUI's split would lose UI. Parity
+   * with the prototype's flat reference list. (FR-032 updated)
    */
   references: ReferenceLink[];
   /**
@@ -177,59 +205,136 @@ export type VCBodyOfKnowledgeSectionProps = {
 /* ----------------------------- VCContentView ----------------------------- */
 
 /**
- * F3 correction (vs. earlier draft):
+ * 2026-05-06 redesign — research §15:
  *
- * The earlier draft listed `prompts.persona`, `prompts.constraints`, and
- * `dataPrivacy.summary` — none of those fields exist on the GraphQL
- * `VirtualContributorModelCard` type. The MUI `VCProfileContentView` works
- * around this by rendering hard-coded placeholder data via
- * `useTemporaryHardCodedVCProfilePageData(modelCard)` (with a TODO comment in
- * the MUI source: `// REMOVE when data is fetched from server`).
+ * The right column was rebuilt per `prototype/src/app/pages/VCProfilePage.tsx`
+ * to render three card-grid sections (Functionality / AI Engine / Monitoring).
+ * The data extraction logic is the same as the existing MUI hook
+ * `useTemporaryHardCodedVCProfilePageData(modelCard)`; the labels/copy are
+ * moved to the `crd-profilePages` i18n namespace; the two MUI
+ * `dangerouslySetInnerHTML` calls are replaced by `<Trans>`.
  *
- * The CRD content view modernizes rather than parity-restyles: it renders the
- * **real** `aiEngine.*` fields that DO exist on the GraphQL model card. The
- * MUI's hard-coded `functionality` and `monitoring` blocks are out of scope
- * (re-rendering placeholder data in CRD would entrench tech debt).
+ * The MUI hook is NOT imported by the CRD layer (it lives under
+ * `src/domain/`, off-limits per CRD architectural rules). The CRD mapper
+ * re-implements the equivalent extraction in plain TypeScript locally.
+ *
+ * The earlier `ModelCardSummary` shape (single object with aiEngine +
+ * monitoring sub-objects) is replaced by the three structured section shapes
+ * below. The earlier "Social Links sub-section" inside the right column is
+ * also removed — the redesigned right column does not surface social
+ * references at all (sidebar's References block now renders all entries flat).
  */
-export type ModelCardSummary = {
-  aiEngine: {
-    name: string;                        // engine identifier (e.g., 'openai-assistant', 'external')
-    isExternal: boolean;
-    hostingLocation: string;             // free-form provenance string
-    isUsingOpenWeightsModel: boolean;
-    canAccessWebWhenAnswering: boolean;
-    additionalTechnicalDetails: string | null;
-  };
-  monitoring: {
-    isUsageMonitoredByAlkemio: boolean;
-  };
+
+/**
+ * One bullet row for the Functionality section's Capabilities + Data Access
+ * cards. The mapper produces one BulletItem per `flag` in the matching
+ * `modelCard.spaceUsage[…].flags[]` entry, resolving the human-readable
+ * `label` from a per-flag-name i18n key.
+ */
+export type BulletItem = {
+  label: string;                           // i18n-resolved
+  enabled: boolean;                        // → Check (foreground) when true; Minus (muted) when false
 };
 
-// SocialReferenceItem has been removed — social-link rendering and the
-// social/non-social split now live entirely inside the shared CRD `SocialLinks`
-// primitive at `src/crd/components/common/SocialLinks.tsx`. See the matching
-// note in `organizationProfile.ts`.
+/**
+ * One transparency card in the AI Engine section. The mapper produces six in
+ * a fixed order (see VCAiEngineSectionData). Each card has an icon, title,
+ * description, and exactly ONE answer field populated:
+ *  - `booleanAnswer`: renders Yes/No row with CheckCircle2 / XCircle (or noIcon override)
+ *  - `textValue`: renders plain text answer (Physical Location)
+ *  - `action`: renders an outlined Button linking to a URL (Technical References),
+ *    OR an italic muted "Not available" caption when href === ''
+ */
+export type TransparencyCardData = {
+  /** Stable iterator key (e.g., 'openModelTransparency'). */
+  id: string;
+  /** Mapped to a lucide-react component inside the view. */
+  iconName:
+    | 'eye'
+    | 'database'
+    | 'shieldCheck'
+    | 'globe'
+    | 'mapPin'
+    | 'fileText';
+  title: string;                           // i18n-resolved
+  description: string;                     // i18n-resolved caption ("Does the VC use…?")
+  /** Boolean answer — renders Yes/No glyph row. */
+  booleanAnswer?: { value: boolean; noIcon?: 'clock' | 'xCircle' };
+  /** Plain text answer — renders as `<span>{textValue}</span>`. */
+  textValue?: string;
+  /**
+   * Action answer — renders an outlined Button. When `href === ''`, the view
+   * renders an italic muted "Not available" caption instead (mapper passes
+   * an empty href when `aiEngine.additionalTechnicalDetails` is empty).
+   */
+  action?: { href: string; label: string };
+};
+
+export type VCFunctionalitySectionData = {
+  /** From modelCard.spaceUsage[…SpaceCapabilities].flags[] */
+  capabilities: BulletItem[];
+  /** From modelCard.spaceUsage[…SpaceDataAccess].flags[] */
+  dataAccess: BulletItem[];
+  /**
+   * Discriminated kind. The mapper resolves `'memberRequired'` when
+   * `spaceUsage[…SpaceRoleRequired].flags` contains `SpaceRoleMember.enabled === true`,
+   * else `'noneRequired'`. The view renders different copy per kind:
+   *  - 'memberRequired' → "This VC needs to be granted **member rights**…"
+   *    rendered via `<Trans i18nKey={memberRequiredKey} components={{ strong: <strong /> }} />`
+   *  - 'noneRequired' → plain "No special member rights required" paragraph.
+   */
+  roleRequirements: { kind: 'memberRequired' | 'noneRequired' };
+};
+
+export type VCAiEngineSectionData = {
+  /**
+   * i18n-resolved engine display name. The mapper picks one of three keys
+   * based on `modelCard.aiEngine.isExternal` + `isAssistant`:
+   *   - `vcProfile.aiEngine.engineName.alkemio`     when !isExternal && !isAssistant
+   *   - `vcProfile.aiEngine.engineName.assistant`   when isAssistant
+   *   - `vcProfile.aiEngine.engineName.external`    when isExternal && !isAssistant
+   */
+  engineName: string;
+  /** Always exactly six entries, in fixed prototype order. */
+  cards: TransparencyCardData[];
+};
+
+export type VCMonitoringSectionData = {
+  /**
+   * The view passes these keys directly to `<Trans>` (the body key contains
+   * `<a>` markup; the view supplies the `<a>` component with the hard-coded
+   * T&C href). Heading uses `t()` directly.
+   */
+  headingKey: string;                      // e.g., 'crd-profilePages:vcProfile.monitoring.heading'
+  bodyKey: string;                         // e.g., 'crd-profilePages:vcProfile.monitoring.body'
+};
 
 export type VCContentViewProps = {
-  modelCard: ModelCardSummary;
+  functionality: VCFunctionalitySectionData;
+  aiEngine: VCAiEngineSectionData;
+  monitoring: VCMonitoringSectionData;
   /**
-   * ALL references — passed straight to `<SocialLinks references={refs} />`,
-   * which filters internally to the social subset and brand-resolves the icon.
-   * Same one-source-of-truth contract used on the Organization sidebar.
-   */
-  references: ReferenceLink[];
-  /**
-   * F3 correction: prompts/dataPrivacy labels removed (the corresponding
-   * `ModelCardSummary` fields no longer exist — see the F3 note above the
-   * `ModelCardSummary` type).
+   * i18n-resolved labels for the Functionality + AI Engine sections. The
+   * Monitoring section's labels are not in this object because they're keys
+   * passed straight to `<Trans>` (see `VCMonitoringSectionData`).
    */
   labels: {
-    modelCardTitle: string;
-    aiEngineLabel: string;
-    /** Suffix shown after the engine name when `isExternal === true` (e.g., "External"). */
-    aiEngineExternal: string;
-    socialLinksTitle: string;
-    socialLinksEmpty: string;
+    functionalityHeading: string;          // "Functionality"
+    capabilitiesTitle: string;             // "Functional Capabilities"
+    dataAccessTitle: string;               // "Data access from the Space where it is a member"
+    roleRequirementsTitle: string;         // "Role Requirements"
+    /** i18n KEY (not resolved) — passed to <Trans> with `<strong>` component. */
+    roleRequirementsMemberRequiredKey: string;
+    roleRequirementsNoneRequired: string;  // "No special member rights required" — plain string
+    aiEngineHeading: string;               // resolved with engineName interpolated, e.g., "AI Engine: Alkemio AI"
+    /**
+     * Yes/No labels for the boolean transparency cards. The view picks the
+     * correct one based on each card's `booleanAnswer.value`.
+     */
+    yesAnswer: string;
+    noAnswer: string;
+    unknownAnswer: string;                 // "Unknown" — used for null isInteractionDataUsedForTraining and empty hostingLocation fallback
+    technicalReferencesNotAvailable: string;  // italic muted caption when href === ''
   };
 };
 

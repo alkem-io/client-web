@@ -260,6 +260,47 @@ After Phase 5 implementation, three factual errors in the earlier drafts were ca
 
 ---
 
+## 15. VC profile redesign — right column rebuild (2026-05-06)
+
+**Question**: The VC prototype was updated and now defines a fresh visual structure for the hero AND the right column. The earlier §14/F3 correction reframed the right column as a "modernization" rendering only `aiEngine.*` data + a Social Links sub-section. The updated prototype goes much further: it adds back **Functionality** (3 cards) + **AI Engine** (6 transparency cards) + **Monitoring by Alkemio** sections, plus a hero "Virtual Contributor" badge and a Keywords skill-tag chip row. How does the CRD VC page reconcile this with the existing MUI `useTemporaryHardCodedVCProfilePageData(modelCard)` hook which is the source of the labels but is named "Temporary"?
+
+**Investigation**:
+
+- The current MUI `VCProfileContentView` renders three sections via `useTemporaryHardCodedVCProfilePageData`: (i) Functionality with three `SectionItem` cards (Capabilities / Data Access / Role Requirements) sourced from `modelCard.spaceUsage[]`; (ii) AI Engine with six cells sourced from `modelCard.aiEngine.*`; (iii) Monitoring with a single descriptive paragraph. The hook contains **hard-coded English strings** plus two `dangerouslySetInnerHTML` calls (Role Requirements `<strong>member rights</strong>`, Monitoring T&C anchor) and has a `// REMOVE when data is fetched from server and use Trans!` TODO.
+- The data-extraction logic in the hook IS production-quality — it correctly maps `modelCard.spaceUsage[]` → bullet rows, derives the engine display name from `aiEngine.isExternal` + `isAssistant`, handles the `null` case for `isInteractionDataUsedForTraining`. The "Temporary" label refers to the hard-coded labels, NOT the extraction logic.
+- The updated prototype `prototype/src/app/pages/VCProfilePage.tsx` (verified 2026-05-06) renders exactly this three-section structure, using shadcn `Card` + lucide-react icons (`CircuitBoard` / `Upload` / `Users` for Functionality; `Eye` / `Database` / `ShieldCheck` / `Globe` / `MapPin` / `FileText` for AI Engine).
+- The earlier §14/F3 conclusion ("MUI hard-coded `functionality` and `monitoring` blocks are out of scope and not ported") was based on an older version of the prototype that didn't include them. With the updated prototype, those sections ARE in scope — but the labels move to i18n and the `dangerouslySetInnerHTML` calls go away.
+
+**Decision**: **Reuse the data-extraction logic; replace the labels with i18n keys; render HTML-tagged copy via `<Trans>`.** The CRD migration:
+
+1. Re-implements the extraction logic (`modelCard.spaceUsage[]` → bullet rows, `aiEngine.*` → transparency answers, engine-display-name derivation) in plain TypeScript inside `src/main/crdPages/topLevelPages/vcPages/publicProfile/dataMapper.ts`. The CRD page does NOT import the MUI hook (which lives under `src/domain/`, off-limits per CRD architectural rules).
+2. Moves all hard-coded English copy (3 section titles, 6 transparency-card titles, 6 captions, ~10 bullet labels, button copy, the `<strong>member rights</strong>` and Terms & Conditions HTML strings) into `src/crd/i18n/profilePages/profilePages.<lang>.json` under the `vcProfile.functionality.*` / `vcProfile.aiEngine.*` / `vcProfile.monitoring.*` key prefixes.
+3. Replaces both `dangerouslySetInnerHTML` calls with `<Trans i18nKey="..." components={{ strong: <strong />, a: <a target="_blank" rel="noreferrer" href="https://welcome.alkem.io/legal/#tc" /> }} />` per CRD Golden Rule 10 (`src/crd/CLAUDE.md` — "Never Render Markdown / HTML-Tagged Strings As Plain Text").
+4. Leaves the MUI hook `useTemporaryHardCodedVCProfilePageData.ts` **completely unchanged** — it continues to power the legacy MUI page when CRD is OFF.
+5. Adds the hero "Virtual Contributor" type badge + Keywords skill-tag chip row (sourced from `vc.profile.tagsets` resolved against `TagsetReservedName.Keywords`, parity with the User profile keyword pills).
+6. Switches the sidebar References block from MUI's "split + discard social refs" to the prototype's flat list of all references — narrow divergence from MUI documented in spec.md Session 2026-05-06.
+
+**Rationale**:
+- The "logic-vs-labels" split is the cleanest expression of intent: the logic stays (it's the meaningful product behaviour), the hard-coded labels go (they were always meant to be i18n keys per the MUI source TODO).
+- Re-implementing the extraction in the CRD mapper rather than importing the MUI hook keeps the CRD page strictly compliant with `src/crd/CLAUDE.md` (no `@/domain/*` imports from CRD-layer code).
+- Not modifying the MUI hook keeps the legacy MUI page working until the global CRD toggle is removed and all MUI files are deleted in one cleanup pass.
+- `<Trans>` is the project-wide standard for HTML-tagged i18n strings; `dangerouslySetInnerHTML` is explicitly banned by CRD Golden Rule 10.
+
+**Alternatives considered**:
+- Move the MUI hook to a shared location and import it from both pages. **Rejected** — (a) violates the CRD `no @/domain/* imports` rule; (b) the hook returns React-shaped objects with `bullets[].icon: string` keys ("check" / "exclamation") that would need re-shaping anyway for the CRD components.
+- Modify the MUI hook in place to produce structured i18n-key data. **Rejected** — would change the MUI page's runtime behaviour (it currently renders English literals; switching it to i18n keys requires the MUI page to also call `t()` on the returned values, expanding scope into MUI-page changes that the spec explicitly excludes).
+- Keep the §14/F3 "modernization" approach and skip Functionality / Monitoring entirely. **Rejected by user 2026-05-06** — the updated prototype includes those sections, and dropping them would visually under-deliver against the prototype.
+
+**Three new presentational CRD components introduced**:
+
+- `src/crd/components/virtualContributor/VCFunctionalityGrid.tsx` — 3-column responsive `Card` grid for Capabilities / Data Access / Role Requirements. Props: `{ capabilities: BulletItem[]; dataAccess: BulletItem[]; roleRequirements: { kind: 'memberRequired' | 'noneRequired' }; labels }`. Renders Check / Minus glyphs based on `enabled`. Uses `<Trans>` for the Role Requirements memberRequired variant.
+- `src/crd/components/virtualContributor/VCAiEngineGrid.tsx` — 3×2 responsive grid wrapping a small reusable `VCTransparencyCard` sub-component. Props: `{ engineName: string; cards: TransparencyCardData[] }`. Each card supports either a Yes/No answer with a configurable "no" glyph (Web Access uses `Clock` instead of `XCircle` per the prototype) or a plain text answer.
+- `src/crd/components/virtualContributor/VCMonitoringSection.tsx` — `Separator` + heading + `<Trans>`-rendered paragraph. Props: `{ labels: { heading; bodyKey } }`. The `bodyKey` is passed through to `<Trans>` so the consumer's `i18n.t()` resolves the embedded `<a>` component.
+
+The three sections compose inside `VCContentView.tsx` which becomes a thin wrapper over them.
+
+---
+
 ## Summary
 
-All NEEDS CLARIFICATION items are resolved. Three post-implementation corrections (F1 / F2 / F3) are recorded in §14 above and reflected in spec.md / plan.md / data-model.md / contracts/. No GraphQL schema change. One new runtime dependency (the new shared CRD primitive `CompactContributorCard` at `src/crd/components/common/`). One new CRD i18n namespace (`crd-profilePages`) shared across all three actor pages. The migration is a presentation-layer port plus one shared primitive plus one architectural pattern (the BoK discriminated-union resolver for VC profiles). Phase 1 (`data-model.md`, `contracts/`, `quickstart.md`) follows.
+All NEEDS CLARIFICATION items are resolved. Four post-implementation corrections (F1 / F2 / F3 from §14, plus the 2026-05-06 VC redesign in §15) are recorded above and reflected in spec.md / data-model.md / contracts/. No GraphQL schema change. New runtime artifacts: the shared CRD primitive `CompactContributorCard` at `src/crd/components/common/`, the shared `MessagePopover` at `src/crd/components/common/`, and three new VC content-view components at `src/crd/components/virtualContributor/` (`VCFunctionalityGrid`, `VCAiEngineGrid`, `VCMonitoringSection`). One new CRD i18n namespace (`crd-profilePages`) shared across all three actor pages, with the VC redesign adding ~30 keys under `vcProfile.functionality.*` / `vcProfile.aiEngine.*` / `vcProfile.monitoring.*`. The migration is a presentation-layer port plus a small set of shared primitives plus two architectural patterns (BoK discriminated-union resolver for VC profiles; data-mapper-based reuse of MUI's space-usage / aiEngine extraction logic). Phase 1 (`data-model.md`, `contracts/`, `quickstart.md`) follows.

@@ -71,13 +71,19 @@ The three public profile pages ship together with the seven User Settings tabs (
    - `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` — minimal routing skeleton for the VC vertical, mirroring the existing `src/domain/community/virtualContributor/VCRoute.tsx`. Settings subtree (`path="settings/*"`) falls back to the existing MUI `<VCSettingsRoute />` (out of scope). **`${KNOWLEDGE_BASE_PATH}/*` subtree delegates to the existing MUI `<VCKnowledgeBaseRoute />`** so `/vc/:slug/knowledge-base/*` keeps working when CRD is on (out of scope; future spec).
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdVCRoutes` and the existing `VCRoute`.
 
-7. **VC profile** (User Story 3)
-   - `src/crd/components/virtualContributor/VCPageHero.tsx` (avatar / name / Settings icon — **no Message button**).
-   - `src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx` (discriminated-union renderer per `kind`: space / knowledgeBase / external — research §4).
-   - `src/crd/components/virtualContributor/VCProfileSidebar.tsx` (Description + Host card via `CompactContributorCard` + non-social References + Body of Knowledge section).
-   - `src/crd/components/virtualContributor/VCContentView.tsx` (right column — model card + social references).
-   - `src/crd/components/virtualContributor/VCPublicProfileView.tsx` (composes the above).
+7. **VC profile** (User Story 3) — **prototype-driven redesign per `prototype/src/app/pages/VCProfilePage.tsx`** (2026-05-06; research §15). Sidebar largely parity-restyle of MUI; hero gains a "Virtual Contributor" type badge + Keywords skill-tag chip row; right column rebuilt into three card-grid sections (Functionality / AI Engine / Monitoring).
+   - `src/crd/components/virtualContributor/VCPageHero.tsx` (avatar / name / **type badge** / **Keywords chip row** / Settings icon — **no banner image, no Message button**).
+   - `src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx` (discriminated-union renderer per `kind`: space / knowledgeBase / external — research §4; unchanged by 2026-05-06 redesign).
+   - `src/crd/components/virtualContributor/VCProfileSidebar.tsx` (Description + Host card via `CompactContributorCard` + flat References list of ALL refs + Body of Knowledge section; sticky on `lg+`).
+   - **3 new presentational components for the right column** (research §15):
+     - `src/crd/components/virtualContributor/VCFunctionalityGrid.tsx` — 3-column responsive `Card` grid for Capabilities / Data Access / Role Requirements. Renders `Check` / `Minus` glyphs based on the `enabled` flag of each `BulletItem`. Role Requirements `memberRequired` variant uses `<Trans>` with `<strong>` component (no `dangerouslySetInnerHTML`).
+     - `src/crd/components/virtualContributor/VCAiEngineGrid.tsx` — 3×2 responsive grid wrapping a small reusable `VCTransparencyCard` sub-component. Each card supports either Yes/No, plain text, or action (link button / "Not available" caption) answer types.
+     - `src/crd/components/virtualContributor/VCMonitoringSection.tsx` — `Separator` + heading + `<Trans>`-rendered paragraph with embedded `<a>` linking to `https://welcome.alkem.io/legal/#tc`.
+   - `src/crd/components/virtualContributor/VCContentView.tsx` — thin composition wrapper over the three section components above.
+   - `src/crd/components/virtualContributor/VCPublicProfileView.tsx` (composes the hero + sidebar + right column).
    - `src/main/crdPages/topLevelPages/vcPages/publicProfile/CrdVCProfilePage.tsx` + `vcProfileMapper.ts` + `useVCBodyOfKnowledge.ts` (wraps the auxiliary BoK queries: `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery`, `useSpaceBodyOfKnowledgeAboutQuery`, `useKnowledgeBase`).
+   - `vcProfileMapper.ts` re-implements the data-extraction logic of the existing MUI hook `useTemporaryHardCodedVCProfilePageData(modelCard)` in plain TypeScript (mapping `modelCard.spaceUsage[]` entries to bullet rows, `modelCard.aiEngine.*` to transparency-card answers, deriving the engine display name from `aiPersona.engine`). The MUI hook itself is **NOT modified or imported** — it continues to power the legacy MUI page when CRD is OFF. All hard-coded English copy moves to the `crd-profilePages:vcProfile.*` i18n keys.
+   - The mapper inlines a local `EMPTY_MODEL_CARD_FALLBACK` constant (mirrors `EMPTY_MODEL_CARD` from `src/domain/community/virtualContributor/model/VirtualContributorModelCardModel.ts`, but locally duplicated to comply with the CRD layer's no-domain-imports rule) so VCs with no model card data still render every section with safe defaults.
 
 8. **i18n completeness**
    - Translate every key into `nl / es / bg / de / fr` in the same PR (no Crowdin).
@@ -124,17 +130,28 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 
 **VC profile** (User Story 3)
 
-- [ ] Open `/vc/<some-vc>` — hero (avatar + name, **NO Message button**), sidebar (Description + Host card + non-social References + BoK section), right-column content view (model card + social links) render.
-- [ ] VC with `AlkemioSpace` BoK → BoK section shows the SpaceCardHorizontal-equivalent linking to the backing space; "Visit" interaction takes the viewer to the space.
+- [ ] Open `/vc/<some-vc>` — hero (avatar + name + "Virtual Contributor" type badge + Keywords chip row + Settings icon when permitted, **NO banner, NO Message button**), sidebar (Description + Host card + flat References list + BoK section, sticky on `lg+`), right-column content view (Functionality + AI Engine + Monitoring sections) render.
+- [ ] VC with at least one tag in its reserved `Keywords` tagset → chip row renders one outlined `Badge` per tag in tagset order.
+- [ ] VC with no Keywords tagset → chip row is omitted entirely (no header, no empty caption).
+- [ ] **Functionality section**: a 3-column grid renders three cards. Capabilities and Data Access cards each show three bullet rows with `Check` (foreground) or `Minus` (muted) glyphs based on the model card's flag enabled state. Role Requirements card shows the `memberRequired` text with a real `<strong>` tag (no escaped HTML, no raw asterisks) when `SpaceRoleMember.enabled === true`; otherwise shows "No special member rights required".
+- [ ] **AI Engine section**: heading reads "AI Engine: Alkemio AI" / "AI Engine: External AI Assistant" / "AI Engine: External AI" depending on `aiEngine.isExternal` + `isAssistant`. Six transparency cards render in a 3×2 grid in fixed prototype order: Open Model Transparency, Data Usage Disclosure, Knowledge Restriction, Web Access, Physical Location, Technical References.
+- [ ] AI Engine: Web Access card with `canAccessWebWhenAnswering === false` → renders "No" with the `Clock` glyph (NOT the default `XCircle`).
+- [ ] AI Engine: Data Usage Disclosure card with `isInteractionDataUsedForTraining === null` → renders "Unknown" with the warning glyph.
+- [ ] AI Engine: Technical References card with non-empty `additionalTechnicalDetails` URL → renders the SEE DOCUMENTATION outlined Button; clicking opens the URL in a new tab. With empty URL → renders italic muted "Not available" caption (the card itself is NOT hidden).
+- [ ] **Monitoring section**: separator + heading + paragraph render. Click the "Terms & Conditions" link → opens `https://welcome.alkem.io/legal/#tc` in a new tab. The link is rendered via `<Trans>` (no `dangerouslySetInnerHTML` — verify with browser devtools that the DOM contains a real `<a>` element).
+- [ ] **Empty model card fallback**: a VC where the GraphQL query returns no `modelCard` data → all three right-column sections still render with safe defaults (Capabilities/DataAccess with `Minus` glyphs and muted text; AI Engine with "No"/"Unknown"/"Not available" answers; Monitoring unchanged). The page maintains a stable visual rhythm.
+- [ ] VC with `AlkemioSpace` BoK → sidebar BoK section shows the SpaceCardHorizontal-equivalent linking to the backing space; "Visit" interaction takes the viewer to the space.
 - [ ] VC with `AlkemioSpace` BoK + viewer lacks `ReadAbout` on the backing space → "Private space" placeholder.
 - [ ] VC with `AlkemioKnowledgeBase` BoK → description + Visit button. Click Visit → navigates to `${vc.profile.url}/${KNOWLEDGE_BASE_PATH}`.
 - [ ] VC with `AlkemioKnowledgeBase` BoK + viewer lacks `hasReadAccess` → Visit button is disabled with tooltip "Body of knowledge is private".
 - [ ] VC with `External` BoK → engine-type description renders ("Assistant" or "External" copy).
+- [ ] VC with both LinkedIn and a docs URL in `vc.profile.references[]` → BOTH render as flat URL chips in the sidebar's References block (deliberate divergence from current MUI which silently hides social refs — verify by toggling CRD off; MUI sidebar shows only the docs URL).
 - [ ] VC owner viewer → Settings icon visible; click → navigates to `/vc/<slug>/settings/...` (existing MUI admin shell).
 - [ ] Visit an invalid VC URL → `Error404` renders inside the CRD layout.
 - [ ] Viewer lacks `Read` privilege on the VC → existing `useRestrictedRedirect` redirects.
 - [ ] Visit `/vc/<some-vc>/knowledge-base/...` with CRD on → existing MUI `VCKnowledgeBaseRoute` renders (delegated by `CrdVCRoutes`; out of CRD scope, but the URL must keep working).
 - [ ] VC with `AlkemioKnowledgeBase` BoK whose `knowledgeBaseDescription` is empty → BoK description shows the placeholder copy from `virtualContributorSpaceSettings.placeholder` (parity with MUI fallback `knowledgeBaseDescription || t(...)`).
+- [ ] **MUI parity check**: toggle CRD off and visit the same `/vc/<some-vc>` URL → existing MUI page renders unchanged with its current three hard-coded `PageContentBlock`s (Functionality / AI Engine / Monitoring with `dangerouslySetInnerHTML` calls). The MUI source files including `useTemporaryHardCodedVCProfilePageData.ts` are NOT modified by this migration.
 
 **Authorization** (cross-cutting)
 
@@ -163,7 +180,7 @@ Routes:
 | `/user/me` | Self-view: Settings icon visible, Message button hidden. |
 | `/user/alex-rivera` | Other-user view (mock data from the prototype): Message button visible, Settings hidden. Pressing Send waits 500 ms before resolving — exercises the `aria-busy` state. |
 | `/organization/alkemio` | Org profile: Verified badge, Message popover, 14 associates (exercises 12-cap "Show more / less"), 4 spaces + 2 innovation packs + 1 hub (exercises Account Resources 6-cap "Show all"). |
-| `/vc/datasynth-bot` | VC profile: NO Message button, Body-of-Knowledge in the `space` variant, model card + social links right column. |
+| `/vc/datasynth-bot` | VC profile: hero with "Virtual Contributor" type badge + Keywords chips, NO Message button, sidebar with Body-of-Knowledge in the `space` variant, redesigned right column with Functionality / AI Engine / Monitoring card-grid sections. |
 
 All four pages are wired in `src/crd/app/CrdApp.tsx` with mock data from `src/crd/app/data/profiles.ts`. No Apollo, no GraphQL, no backend.
 
