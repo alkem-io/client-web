@@ -1,0 +1,106 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Escribe un mensaje…",
+      "send": "Enviar",
+      "cancel": "Cancelar",
+      "sending": "Enviando…",
+      "errorTitle": "No se pudo enviar el mensaje",
+      "ariaLabel": "Redactar mensaje"
+    },
+    "resourceTabsAriaLabel": "Secciones de recursos"
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración de usuario",
+      "messageButton": "Mensaje",
+      "settingsAriaLabel": "Abrir configuración de usuario"
+    },
+    "tabs": {
+      "resourcesHosted": "Recursos alojados",
+      "leading": "Liderando",
+      "memberOf": "Miembro de"
+    },
+    "sections": {
+      "spacesSubsection": "Espacios",
+      "virtualContributorsSubsection": "Colaboradores virtuales",
+      "spacesLeading": "Espacios liderando",
+      "memberOf": "Miembro de"
+    },
+    "sidebar": {
+      "aboutTitle": "Acerca de",
+      "organizationsTitle": "Organizaciones",
+      "socialLinksTitle": "Social",
+      "bioEmpty": "Aún no hay biografía.",
+      "organizationsEmpty": "Aún no forma parte de ninguna organización.",
+      "memberCountLine_one": "{{count}} miembro",
+      "memberCountLine_other": "{{count}} miembros"
+    },
+    "empty": {
+      "leading": "Aún no lidera ningún espacio.",
+      "membership": "Aún sin afiliaciones."
+    },
+    "vcType": "Colaborador virtual"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración de la organización",
+      "settingsAriaLabel": "Abrir configuración de la organización",
+      "messageButton": "Mensaje",
+      "verifiedBadge": "Verificada",
+      "verifiedTooltip": "Esta organización ha sido verificada por Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Biografía",
+      "bioEmpty": "Aún no hay biografía.",
+      "tagsetKeywords": "Palabras clave",
+      "tagsetCapabilities": "Capacidades",
+      "referencesTitle": "Enlaces",
+      "referencesEmpty": "Aún no hay enlaces.",
+      "associatesTitle": "Asociados",
+      "associatesCount_one": "{{count}} asociado",
+      "associatesCount_other": "{{count}} asociados",
+      "socialLinksTitle": "Social"
+    },
+    "tabs": {
+      "resourcesHosted": "Recursos alojados",
+      "leading": "Espacios liderando",
+      "memberOf": "Todas las afiliaciones"
+    },
+    "sections": {
+      "spacesSubsection": "Espacios",
+      "virtualContributorsSubsection": "Colaboradores virtuales",
+      "spacesLeading": "Espacios liderando",
+      "memberOf": "Todas las afiliaciones"
+    },
+    "empty": {
+      "leading": "Aún no lidera ningún espacio."
+    },
+    "vcType": "Colaborador virtual"
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Configuración del colaborador virtual",
+      "settingsAriaLabel": "Abrir configuración del colaborador virtual"
+    },
+    "sidebar": {
+      "descriptionTitle": "Descripción",
+      "hostTitle": "Anfitrión",
+      "hostEmpty": "Sin anfitrión."
+    },
+    "contentView": {
+      "modelCardTitle": "Ficha del modelo",
+      "aiEngineLabel": "Motor de IA",
+      "aiEngineExternal": "Externo",
+      "promptsLabel": "Prompts",
+      "promptsPersonaLabel": "Persona",
+      "promptsConstraintsLabel": "Restricciones",
+      "dataPrivacyLabel": "Privacidad de datos",
+      "socialLinksTitle": "Redes sociales",
+      "socialLinksEmpty": "Sin enlaces sociales."
+    }
+  }
+}

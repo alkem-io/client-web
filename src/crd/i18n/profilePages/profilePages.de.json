@@ -1,0 +1,106 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Nachricht schreiben…",
+      "send": "Senden",
+      "cancel": "Abbrechen",
+      "sending": "Senden…",
+      "errorTitle": "Nachricht konnte nicht gesendet werden",
+      "ariaLabel": "Nachricht verfassen"
+    },
+    "resourceTabsAriaLabel": "Ressourcenbereiche"
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Benutzereinstellungen",
+      "messageButton": "Nachricht",
+      "settingsAriaLabel": "Benutzereinstellungen öffnen"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehostete Ressourcen",
+      "leading": "Leitend",
+      "memberOf": "Mitglied von"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuelle Mitwirkende",
+      "spacesLeading": "Geleitete Spaces",
+      "memberOf": "Mitglied von"
+    },
+    "sidebar": {
+      "aboutTitle": "Über",
+      "organizationsTitle": "Organisationen",
+      "socialLinksTitle": "Soziales",
+      "bioEmpty": "Noch keine Biografie.",
+      "organizationsEmpty": "Noch in keiner Organisation.",
+      "memberCountLine_one": "{{count}} Mitglied",
+      "memberCountLine_other": "{{count}} Mitglieder"
+    },
+    "empty": {
+      "leading": "Leitet noch keine Spaces.",
+      "membership": "Noch keine Mitgliedschaften."
+    },
+    "vcType": "Virtueller Mitwirkender"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Organisationseinstellungen",
+      "settingsAriaLabel": "Organisationseinstellungen öffnen",
+      "messageButton": "Nachricht",
+      "verifiedBadge": "Verifiziert",
+      "verifiedTooltip": "Diese Organisation wurde von Alkemio verifiziert."
+    },
+    "sidebar": {
+      "bioTitle": "Biografie",
+      "bioEmpty": "Noch keine Biografie.",
+      "tagsetKeywords": "Schlüsselwörter",
+      "tagsetCapabilities": "Fähigkeiten",
+      "referencesTitle": "Links",
+      "referencesEmpty": "Noch keine Links.",
+      "associatesTitle": "Zugehörige",
+      "associatesCount_one": "{{count}} Zugehöriger",
+      "associatesCount_other": "{{count}} Zugehörige",
+      "socialLinksTitle": "Soziale"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehostete Ressourcen",
+      "leading": "Geleitete Spaces",
+      "memberOf": "Alle Mitgliedschaften"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuelle Mitwirkende",
+      "spacesLeading": "Geleitete Spaces",
+      "memberOf": "Alle Mitgliedschaften"
+    },
+    "empty": {
+      "leading": "Leitet noch keine Spaces."
+    },
+    "vcType": "Virtueller Mitwirkender"
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Einstellungen virtueller Mitwirkender",
+      "settingsAriaLabel": "Einstellungen virtueller Mitwirkender öffnen"
+    },
+    "sidebar": {
+      "descriptionTitle": "Beschreibung",
+      "hostTitle": "Anbieter",
+      "hostEmpty": "Kein Anbieter."
+    },
+    "contentView": {
+      "modelCardTitle": "Modellkarte",
+      "aiEngineLabel": "KI-Engine",
+      "aiEngineExternal": "Extern",
+      "promptsLabel": "Prompts",
+      "promptsPersonaLabel": "Persona",
+      "promptsConstraintsLabel": "Einschränkungen",
+      "dataPrivacyLabel": "Datenschutz",
+      "socialLinksTitle": "Soziale Links",
+      "socialLinksEmpty": "Keine sozialen Links."
+    }
+  }
+}

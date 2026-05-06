@@ -1,0 +1,106 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Напишете съобщение…",
+      "send": "Изпрати",
+      "cancel": "Отмяна",
+      "sending": "Изпращане…",
+      "errorTitle": "Съобщението не може да бъде изпратено",
+      "ariaLabel": "Съставяне на съобщение"
+    },
+    "resourceTabsAriaLabel": "Раздели с ресурси"
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Настройки на потребителя",
+      "messageButton": "Съобщение",
+      "settingsAriaLabel": "Отвори потребителските настройки"
+    },
+    "tabs": {
+      "resourcesHosted": "Хоствани ресурси",
+      "leading": "Водещ",
+      "memberOf": "Член на"
+    },
+    "sections": {
+      "spacesSubsection": "Пространства",
+      "virtualContributorsSubsection": "Виртуални сътрудници",
+      "spacesLeading": "Пространства, които водя",
+      "memberOf": "Член на"
+    },
+    "sidebar": {
+      "aboutTitle": "Относно",
+      "organizationsTitle": "Организации",
+      "socialLinksTitle": "Социални",
+      "bioEmpty": "Все още няма биография.",
+      "organizationsEmpty": "Все още не е част от организация.",
+      "memberCountLine_one": "{{count}} член",
+      "memberCountLine_other": "{{count}} члена"
+    },
+    "empty": {
+      "leading": "Все още не води пространства.",
+      "membership": "Все още няма членства."
+    },
+    "vcType": "Виртуален сътрудник"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Настройки на организацията",
+      "settingsAriaLabel": "Отвори настройките на организацията",
+      "messageButton": "Съобщение",
+      "verifiedBadge": "Потвърдена",
+      "verifiedTooltip": "Тази организация е потвърдена от Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Биография",
+      "bioEmpty": "Все още няма биография.",
+      "tagsetKeywords": "Ключови думи",
+      "tagsetCapabilities": "Възможности",
+      "referencesTitle": "Връзки",
+      "referencesEmpty": "Все още няма връзки.",
+      "associatesTitle": "Сътрудници",
+      "associatesCount_one": "{{count}} сътрудник",
+      "associatesCount_other": "{{count}} сътрудника",
+      "socialLinksTitle": "Социални"
+    },
+    "tabs": {
+      "resourcesHosted": "Хоствани ресурси",
+      "leading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "sections": {
+      "spacesSubsection": "Пространства",
+      "virtualContributorsSubsection": "Виртуални сътрудници",
+      "spacesLeading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "empty": {
+      "leading": "Все още не води пространства."
+    },
+    "vcType": "Виртуален сътрудник"
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Настройки на виртуалния сътрудник",
+      "settingsAriaLabel": "Отвори настройките на виртуалния сътрудник"
+    },
+    "sidebar": {
+      "descriptionTitle": "Описание",
+      "hostTitle": "Домакин",
+      "hostEmpty": "Няма домакин."
+    },
+    "contentView": {
+      "modelCardTitle": "Карта на модела",
+      "aiEngineLabel": "AI двигател",
+      "aiEngineExternal": "Външен",
+      "promptsLabel": "Подкани",
+      "promptsPersonaLabel": "Персона",
+      "promptsConstraintsLabel": "Ограничения",
+      "dataPrivacyLabel": "Поверителност на данните",
+      "socialLinksTitle": "Социални връзки",
+      "socialLinksEmpty": "Няма социални връзки."
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Schrijf een bericht…",
+      "send": "Verstuur",
+      "cancel": "Annuleren",
+      "sending": "Versturen…",
+      "errorTitle": "Bericht kon niet worden verzonden",
+      "ariaLabel": "Bericht opstellen"
+    },
+    "resourceTabsAriaLabel": "Resourcesecties"
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Gebruikersinstellingen",
+      "messageButton": "Bericht",
+      "settingsAriaLabel": "Gebruikersinstellingen openen"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehoste bronnen",
+      "leading": "Leiding",
+      "memberOf": "Lid van"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "spacesLeading": "Spaces onder leiding",
+      "memberOf": "Lid van"
+    },
+    "sidebar": {
+      "aboutTitle": "Over",
+      "organizationsTitle": "Organisaties",
+      "socialLinksTitle": "Sociaal",
+      "bioEmpty": "Nog geen bio.",
+      "organizationsEmpty": "Nog geen lid van een organisatie.",
+      "memberCountLine_one": "{{count}} lid",
+      "memberCountLine_other": "{{count}} leden"
+    },
+    "empty": {
+      "leading": "Nog geen leiding over spaces.",
+      "membership": "Nog geen lidmaatschappen."
+    },
+    "vcType": "Virtuele bijdrager"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Organisatie-instellingen",
+      "settingsAriaLabel": "Organisatie-instellingen openen",
+      "messageButton": "Bericht",
+      "verifiedBadge": "Geverifieerd",
+      "verifiedTooltip": "Deze organisatie is geverifieerd door Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Bio",
+      "bioEmpty": "Nog geen bio.",
+      "tagsetKeywords": "Trefwoorden",
+      "tagsetCapabilities": "Capaciteiten",
+      "referencesTitle": "Links",
+      "referencesEmpty": "Nog geen links.",
+      "associatesTitle": "Geassocieerden",
+      "associatesCount_one": "{{count}} geassocieerde",
+      "associatesCount_other": "{{count}} geassocieerden",
+      "socialLinksTitle": "Sociaal"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehoste bronnen",
+      "leading": "Spaces onder leiding",
+      "memberOf": "Alle lidmaatschappen"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "spacesLeading": "Spaces onder leiding",
+      "memberOf": "Alle lidmaatschappen"
+    },
+    "empty": {
+      "leading": "Nog geen leiding over spaces."
+    },
+    "vcType": "Virtuele bijdrager"
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Instellingen virtuele bijdrager",
+      "settingsAriaLabel": "Instellingen virtuele bijdrager openen"
+    },
+    "sidebar": {
+      "descriptionTitle": "Beschrijving",
+      "hostTitle": "Host",
+      "hostEmpty": "Geen host."
+    },
+    "contentView": {
+      "modelCardTitle": "Model Card",
+      "aiEngineLabel": "AI-engine",
+      "aiEngineExternal": "Extern",
+      "promptsLabel": "Prompts",
+      "promptsPersonaLabel": "Persona",
+      "promptsConstraintsLabel": "Beperkingen",
+      "dataPrivacyLabel": "Gegevensprivacy",
+      "socialLinksTitle": "Sociale links",
+      "socialLinksEmpty": "Geen sociale links."
+    }
+  }
+}

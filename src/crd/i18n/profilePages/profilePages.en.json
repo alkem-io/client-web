@@ -1,0 +1,106 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Write a message…",
+      "send": "Send",
+      "cancel": "Cancel",
+      "sending": "Sending…",
+      "errorTitle": "Could not send your message",
+      "ariaLabel": "Compose message"
+    },
+    "resourceTabsAriaLabel": "Resource sections"
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "User settings",
+      "messageButton": "Message",
+      "settingsAriaLabel": "Open user settings"
+    },
+    "tabs": {
+      "resourcesHosted": "Resources Hosted",
+      "leading": "Leading",
+      "memberOf": "Member Of"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtual Contributors",
+      "spacesLeading": "Spaces Leading",
+      "memberOf": "Member of"
+    },
+    "sidebar": {
+      "aboutTitle": "About",
+      "organizationsTitle": "Organizations",
+      "socialLinksTitle": "Social",
+      "bioEmpty": "No bio yet.",
+      "organizationsEmpty": "Not part of any organization yet.",
+      "memberCountLine_one": "{{count}} member",
+      "memberCountLine_other": "{{count}} members"
+    },
+    "empty": {
+      "leading": "Not leading any spaces yet.",
+      "membership": "No memberships yet."
+    },
+    "vcType": "Virtual Contributor"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Organization settings",
+      "settingsAriaLabel": "Open organization settings",
+      "messageButton": "Message",
+      "verifiedBadge": "Verified",
+      "verifiedTooltip": "This organization has been verified by Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Bio",
+      "bioEmpty": "No bio yet.",
+      "tagsetKeywords": "Keywords",
+      "tagsetCapabilities": "Capabilities",
+      "referencesTitle": "Links",
+      "referencesEmpty": "No links yet.",
+      "associatesTitle": "Associates",
+      "associatesCount_one": "{{count}} associate",
+      "associatesCount_other": "{{count}} associates",
+      "socialLinksTitle": "Social"
+    },
+    "tabs": {
+      "resourcesHosted": "Resources Hosted",
+      "leading": "Lead Spaces",
+      "memberOf": "All Memberships"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtual Contributors",
+      "spacesLeading": "Lead Spaces",
+      "memberOf": "All Memberships"
+    },
+    "empty": {
+      "leading": "Not leading any spaces yet."
+    },
+    "vcType": "Virtual Contributor"
+  },
+  "vcProfile": {
+    "hero": {
+      "settingsTooltip": "Virtual contributor settings",
+      "settingsAriaLabel": "Open virtual contributor settings"
+    },
+    "sidebar": {
+      "descriptionTitle": "Description",
+      "hostTitle": "Host",
+      "hostEmpty": "No host."
+    },
+    "contentView": {
+      "modelCardTitle": "Model Card",
+      "aiEngineLabel": "AI Engine",
+      "aiEngineExternal": "External",
+      "promptsLabel": "Prompts",
+      "promptsPersonaLabel": "Persona",
+      "promptsConstraintsLabel": "Constraints",
+      "dataPrivacyLabel": "Data Privacy",
+      "socialLinksTitle": "Social Links",
+      "socialLinksEmpty": "No social links."
+    }
+  }
+}

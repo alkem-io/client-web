@@ -1,29 +1,37 @@
 /**
- * CRD public-profile view contracts.
+ * CRD User public-profile view contracts.
  *
  * File location at implementation time:
  *   src/crd/components/user/UserPageHero.tsx
- *   src/crd/components/user/UserPageMessagePopover.tsx
  *   src/crd/components/user/UserPublicProfileView.tsx
  *   src/crd/components/user/UserProfileSidebar.tsx
  *   src/crd/components/user/UserResourceTabStrip.tsx
  *   src/crd/components/user/UserResourceSections.tsx
  *
+ * The recipient-agnostic compose surface (`MessagePopover`) used by
+ * `UserPageHero` lives at `src/crd/components/common/MessagePopover.tsx`
+ * (shared with `OrganizationPageHero` per Q2 decision in
+ * `analysis-interview.md`).
+ *
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
  *
- * The settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,
+ * Sibling contracts in this folder:
+ *  - `organizationProfile.ts` — Organization profile view contracts.
+ *  - `vcProfile.ts` — Virtual Contributor profile view contracts.
+ *  - `compactContributor.ts` — `CompactContributorCard` shared CRD primitive
+ *    (used by the User profile's Organizations sidebar list and the VC
+ *    profile's Host card; NOT used by the Organization profile's Associates
+ *    section, which is a square-avatar grid parity port of MUI AssociatesView).
+ *  - `data-mapper.ts` — cross-page mapper utility contracts.
+ *
+ * The User Settings shell contracts (`UserSettingsShell`, `UserSettingsTabStrip`,
  * `UserSettingsCard`) live in sibling spec 097-crd-user-settings/contracts/shell.ts.
  */
 
 /* ----------------------------- UserPageHero ------------------------------ */
 
 export type UserPageHeroProps = {
-  /**
-   * Banner image. When `null` the component renders a deterministic gradient
-   * computed via `pickColorFromId(userId)` (FR-010).
-   */
-  bannerImageUrl: string | null;
   avatarImageUrl: string | null;
   displayName: string;
   /** "City, Country" — null when both empty. */
@@ -47,12 +55,12 @@ export type UserPageHeroProps = {
 
 /* --------------------------- ResourceTabKey ----------------------------- */
 
-export type ResourceTabKey =
-  | 'allResources'
-  | 'hostedSpaces'
-  | 'virtualContributors'
-  | 'leading'
-  | 'memberOf';
+export type ResourceTabKey = 'resourcesHosted' | 'leading' | 'memberOf';
+
+// Note: an earlier 5-tab design (`allResources` / `hostedSpaces` /
+// `virtualContributors` / `leading` / `memberOf`) was dropped once Template
+// Packs and Custom Homepages were added to the Resources Hosted group — five
+// tabs with two of them being slices of a third did not scale. See FR-013.
 
 export type SpaceCardItem = {
   id: string;
@@ -73,6 +81,14 @@ export type VCCardItem = {
   avatarImageUrl: string | null;
 };
 
+/**
+ * User profile sidebar's Organizations list item. Rendered via the shared
+ * `CompactContributorCard` primitive (Q1 decision in analysis-interview.md):
+ *  - `caption`         ← role label (e.g., "Admin", "Associate")
+ *  - `secondaryCaption` ← member-count line (e.g., "24 members" — i18n-resolved)
+ *
+ * The mapper composes the two strings; the view passes them through unchanged.
+ */
 export type AssociatedOrganizationCard = {
   id: string;
   url: string;
@@ -85,8 +101,26 @@ export type AssociatedOrganizationCard = {
 export type PublicProfileResources = {
   hostedSpaces: SpaceCardItem[];
   hostedVirtualContributors: VCCardItem[];
+  /** Backend field: `account.innovationPacks`. UI label: "Template Packs". */
+  hostedInnovationPacks: SimpleResourceCardItem[];
+  /** Backend field: `account.innovationHubs`. UI label: "Custom Homepages". */
+  hostedInnovationHubs: SimpleResourceCardItem[];
   spacesLeading: SpaceCardItem[];
   spacesMember: SpaceCardItem[];
+};
+
+/**
+ * Generic resource card shape used by both the User profile (Template Packs +
+ * Custom Homepages sub-sections under Resources Hosted) and the Organization
+ * profile (Account Resources packs + hubs lists). Same shape as the existing
+ * `SimpleResourceCardItem` exported by `OrganizationResourceSections`.
+ */
+export type SimpleResourceCardItem = {
+  id: string;
+  displayName: string;
+  description: string | null;
+  href: string;
+  avatarImageUrl: string | null;
 };
 
 export type UserPublicProfileViewProps = {
@@ -96,7 +130,6 @@ export type UserPublicProfileViewProps = {
     isOwn: boolean;
     canEditSettings: boolean;
     hero: {
-      bannerImageUrl: string | null;
       avatarImageUrl: string | null;
       displayName: string;
       location: string | null;
@@ -104,6 +137,22 @@ export type UserPublicProfileViewProps = {
     bio: string | null;
     organizations: AssociatedOrganizationCard[];
     resources: PublicProfileResources;
+  };
+
+  /**
+   * Per-region loading flags (FR-009). Each region renders a Skeleton while
+   * its driving query is still in flight; the page does not block on all
+   * queries before painting. Mapping (data-model.md "Query → region"):
+   *   - `hero` / `bio`             ← useUserProvider
+   *   - `organizations`            ← useUserOrganizationIds + downstream lookup
+   *   - `hostedResources`          ← useUserAccountQuery
+   *   - `memberships`              ← useUserContributions
+   */
+  loading: {
+    hero: boolean;
+    organizations: boolean;
+    hostedResources: boolean;
+    memberships: boolean;
   };
 
   /** Active resource tab; integration layer manages this state. */
@@ -132,9 +181,7 @@ export type UserResourceTabStripProps = {
    * the count when `count !== null`. Integration layer can pass null to hide.
    */
   counts: {
-    allResources: number | null;
-    hostedSpaces: number | null;
-    virtualContributors: number | null;
+    resourcesHosted: number | null;
     leading: number | null;
     memberOf: number | null;
   };
@@ -143,13 +190,15 @@ export type UserResourceTabStripProps = {
 /**
  * Tab-to-section filter contract (data-model.md):
  *
- *   `allResources`         → Resources Hosted (Spaces + VCs sub-sections) + Leading + Member of
- *   `hostedSpaces`         → Resources Hosted → Spaces sub-section only
- *   `virtualContributors`  → Resources Hosted → Virtual Contributors sub-section only
- *   `leading`              → Spaces Leading only
- *   `memberOf`             → Member of only
- *
- * Sections with zero items are omitted entirely (FR-015).
+ *   `resourcesHosted` → 4 sub-sections in order: Spaces → Virtual Contributors
+ *                       → Template Packs (`hostedInnovationPacks`) → Custom
+ *                       Homepages (`hostedInnovationHubs`). Parent header
+ *                       suppressed (tab label is the heading). Empty
+ *                       sub-sections omitted entirely (FR-015).
+ *   `leading`         → Spaces Leading only; section header suppressed; empty
+ *                       caption when the list is empty.
+ *   `memberOf`        → Member of only; section header suppressed; empty
+ *                       caption when the list is empty.
  */
 
 /* --------------------------- UserResourceSections ------------------------ */
@@ -159,9 +208,12 @@ export type UserResourceSectionsProps = {
   resources: PublicProfileResources;
   /** i18n-resolved labels for each section heading. */
   labels: {
-    resourcesHosted: string;
     spaces: string;
     virtualContributors: string;
+    /** "Template Packs" — reused from `common.innovation-packs` per FR-102. */
+    templatePacks: string;
+    /** "Custom Homepages" — reused from `common.customHomepages` per FR-102. */
+    customHomepages: string;
     spacesLeading: string;
     memberOf: string;
     emptyMembership: string;
@@ -174,6 +226,13 @@ export type UserResourceSectionsProps = {
 export type UserProfileSidebarProps = {
   /** Markdown bio. Rendered via the existing CRD `MarkdownContent`. */
   bio: string | null;
+  /**
+   * Reserved profile tagsets — Keywords + Skills (FR-010a). Empty entries are
+   * dropped by the mapper; the block is hidden entirely when the array is
+   * empty. The `TagsetGroup` shape is reused from `OrganizationProfileSidebar`
+   * (`{ name: string; tags: string[] }`).
+   */
+  tagsets: { name: string; tags: string[] }[];
   organizations: AssociatedOrganizationCard[];
   /** i18n-resolved labels. */
   labels: {

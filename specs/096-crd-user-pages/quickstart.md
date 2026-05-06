@@ -1,6 +1,6 @@
-# Phase 1 — Quickstart: CRD User Profile Page
+# Phase 1 — Quickstart: CRD Public Profile Pages (User, Organization, VC)
 
-A pragmatic build order, environment notes, and a smoke checklist for the public-profile-view migration. The seven settings tabs are owned by sibling spec `097-crd-user-settings`; both ship together as one user-vertical release.
+A pragmatic build order, environment notes, and a smoke checklist for the three public-profile-view migrations covered by this spec. The seven User Settings tabs are owned by sibling spec `097-crd-user-settings`; both specs ship together as one user-vertical release.
 
 ---
 
@@ -8,7 +8,7 @@ A pragmatic build order, environment notes, and a smoke checklist for the public
 
 - Node ≥ 22 (Volta-pinned to 24.14.0).
 - pnpm ≥ 10.17.1.
-- A running Alkemio backend at `localhost:3000` (Traefik). Without it, GraphQL calls will fail; the CRD shell still loads but every section renders an empty / error state.
+- A running Alkemio backend at `localhost:3000` (Traefik). Without it, GraphQL calls will fail; the CRD shells still load but every section renders an empty / error state.
 - The current branch is `096-crd-user-pages` (or both 096 + 097 merged into a working branch).
 
 ```bash
@@ -34,32 +34,59 @@ location.reload();
 
 ## Build order
 
-The public profile view ships together with the seven settings tabs (sibling spec 097). The 096 portion below is self-contained — once these pieces land, `/user/<slug>` renders correctly even before 097 is wired (the Settings gear icon will navigate to `/user/<slug>/settings/profile`, which routes to MUI until 097 lands or to the CRD settings shell once 097 lands).
+The three public profile pages ship together with the seven User Settings tabs (sibling spec 097). The build order below minimizes rework — each step lands a usable demo.
 
-1. **Foundation** (shared with 097)
-   - `src/crd/i18n/userPages/userPages.en.json` — add the i18n namespace skeleton with placeholder keys for hero / sidebar / resource tabs.
-   - Register `crd-userPages` in `src/core/i18n/config.ts` and `@types/i18next.d.ts`.
-   - `src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` and `useCanEditSettings.ts` — the shared route helpers (also consumed by 097's settings shell route guard).
-   - `src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` — minimal routing skeleton. The settings subtree (`path="settings/*"`) delegates to `CrdUserAdminRoutes` (097); when 097 has not yet landed, that path resolves to a placeholder that falls back to the existing MUI route.
+1. **Foundation (User vertical, shared with 097)**
+   - `src/crd/i18n/profilePages/profilePages.en.json` — add the i18n namespace skeleton with placeholder keys for all three actor pages (hero / sidebar / sections).
+   - Register `crd-profilePages` in `src/core/i18n/config.ts` and `@types/i18next.d.ts`.
+   - `src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` and `useCanEditSettings.ts` — the User-vertical shared route helpers (also consumed by 097's settings shell route guard).
+   - `src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` — minimal routing skeleton for the User vertical. The settings subtree (`path="settings/*"`) delegates to `CrdUserAdminRoutes` (097); when 097 has not yet landed, that path resolves to a placeholder that falls back to the existing MUI route.
    - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdUserRoutes` and the existing `UserRoute`.
 
-2. **Public profile** (User Story 1)
-   - `src/crd/components/user/UserPageHero.tsx` (banner / avatar / name / location / Settings icon / Message Popover).
-   - `src/crd/components/user/UserPageMessagePopover.tsx`.
-   - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
-   - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab).
-   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations).
-   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above).
-   - `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx` + `publicProfileMapper.ts` + `useResourceTabs.ts` + `useSendMessageHandler.ts`.
+2. **New shared CRD primitive (cross-vertical)**
+   - `src/crd/components/common/CompactContributorCard.tsx` — used by both the Org profile (Associates list) and the VC profile (Host card). Per the `compactContributor.ts` contract.
 
-3. **i18n completeness**
+3. **User profile** (User Story 1) — **prototype-driven redesign per `prototype/src/app/pages/UserProfilePage.tsx`** (NOT a parity restyle of current MUI).
+   - `src/crd/components/common/MessagePopover.tsx` — shared recipient-agnostic compose surface (Q2 — placed in `common/` from day one; consumed by both User and Organization heroes).
+   - `src/main/crdPages/topLevelPages/common/useSendMessageHandler.ts` — shared cross-vertical integration helper (placed under `topLevelPages/common/` for symmetry with `MessagePopover`).
+   - `src/crd/components/user/UserPageHero.tsx` (avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
+   - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
+   - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab; renders all items per prototype, no pagination).
+   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations; layout `lg:col-span-4 lg:sticky lg:top-24` per prototype, stacked above main column on smaller viewports — sidebar is **not** hidden).
+   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above: outer `grid grid-cols-1 lg:grid-cols-12 gap-8`, sidebar `lg:col-span-4`, right column `lg:col-span-8`).
+   - `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx` + `publicProfileMapper.ts` + `useResourceTabs.ts`.
+
+4. **Organization vertical scaffold** (User Story 2 — route shell)
+   - `src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` — minimal routing skeleton for the Organization vertical, mirroring the existing `OrganizationRoute`. Settings subtree (`path="settings/*"`) falls back to the existing MUI admin route — the Org admin shell migration is out of scope for this spec.
+   - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdOrganizationRoutes` and the existing `OrganizationRoute`.
+
+5. **Organization profile** (User Story 2) — **parity restyle of current MUI** (`OrganizationPageView` + `AssociatesView`); no prototype.
+   - `src/crd/components/organization/OrganizationPageHero.tsx` (avatar / name / location / Verified badge / Settings icon / Message Popover — consumes the shared `MessagePopover` from `src/crd/components/common/`, same primitive the User hero uses; no cross-vertical import per Q2).
+   - `src/crd/components/organization/OrganizationProfileSidebar.tsx` (Bio + Tagsets + References + Associates — Associates is a parity port of MUI `AssociatesView`: square avatar grid capped at 12 with "Show more / Show less" toggle; sign-in CTA when `canReadUsers === false`. Does NOT consume `CompactContributorCard`).
+   - `src/crd/components/organization/OrganizationResourceSections.tsx` (Account Resources with `VISIBLE_SPACE_LIMIT = 6` + "Show all" parity, Lead Spaces, All Memberships — each as a CRD section card).
+   - `src/crd/components/organization/OrganizationPublicProfileView.tsx` (composes the above).
+   - `src/main/crdPages/topLevelPages/organizationPages/publicProfile/CrdOrganizationProfilePage.tsx` + `organizationProfileMapper.ts` + reuses `useSendMessageHandler` from `src/main/crdPages/topLevelPages/common/` (with `recipientId: organization.id`).
+
+6. **VC vertical scaffold** (User Story 3 — route shell)
+   - `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` — minimal routing skeleton for the VC vertical, mirroring the existing `src/domain/community/virtualContributor/VCRoute.tsx`. Settings subtree (`path="settings/*"`) falls back to the existing MUI `<VCSettingsRoute />` (out of scope). **`${KNOWLEDGE_BASE_PATH}/*` subtree delegates to the existing MUI `<VCKnowledgeBaseRoute />`** so `/vc/:slug/knowledge-base/*` keeps working when CRD is on (out of scope; future spec).
+   - Wire `TopLevelRoutes.tsx` to dispatch on `useCrdEnabled()` between `CrdVCRoutes` and the existing `VCRoute`.
+
+7. **VC profile** (User Story 3)
+   - `src/crd/components/virtualContributor/VCPageHero.tsx` (avatar / name / Settings icon — **no Message button**).
+   - `src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx` (discriminated-union renderer per `kind`: space / knowledgeBase / external — research §4).
+   - `src/crd/components/virtualContributor/VCProfileSidebar.tsx` (Description + Host card via `CompactContributorCard` + non-social References + Body of Knowledge section).
+   - `src/crd/components/virtualContributor/VCContentView.tsx` (right column — model card + social references).
+   - `src/crd/components/virtualContributor/VCPublicProfileView.tsx` (composes the above).
+   - `src/main/crdPages/topLevelPages/vcPages/publicProfile/CrdVCProfilePage.tsx` + `vcProfileMapper.ts` + `useVCBodyOfKnowledge.ts` (wraps the auxiliary BoK queries: `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery`, `useSpaceBodyOfKnowledgeAboutQuery`, `useKnowledgeBase`).
+
+8. **i18n completeness**
    - Translate every key into `nl / es / bg / de / fr` in the same PR (no Crowdin).
    - Add a small Vitest assertion that every language file has the same key shape.
 
-4. **Smoke + cleanup**
-   - Run the smoke checklist below.
+9. **Smoke + cleanup**
+   - Run the smoke checklist below for all three pages.
    - Run `pnpm lint` + `pnpm vitest run`.
-   - Run `pnpm analyze` and verify the user-profile chunk delta is ≤ +20 KB gzipped (SC-005).
+   - Run `pnpm analyze` and verify the combined user-profile + organization-profile + vc-profile chunk delta is ≤ +35 KB gzipped (SC-005).
 
 ---
 
@@ -67,7 +94,7 @@ The public profile view ships together with the seven settings tabs (sibling spe
 
 For each block below, toggle CRD on, sign in as a regular user, then sign in as a platform admin and re-run the same flows on a non-self profile.
 
-**Public profile** (User Story 1)
+**User profile** (User Story 1)
 
 - [ ] Open `/user/<self>` — hero, sidebar, sticky resource strip render.
 - [ ] Tab through `All Resources / Hosted Spaces / Virtual Contributors / Leading / Member Of`. Each tab filters per data-model.md.
@@ -77,14 +104,68 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 - [ ] On someone else's profile (non-admin viewer): Settings icon hidden; Message button visible. Click Message → compose Popover opens; submit fires `useSendMessageToUsersMutation`; on success the Popover closes.
 - [ ] On someone else's profile (platform admin viewer): BOTH Settings icon and Message button visible. Click Settings → navigates to `/user/<otherUser>/settings/profile` (route owned by sibling spec 097).
 - [ ] Resize to a phone width: resource strip becomes horizontally scrollable; the active tab auto-scrolls into view; nothing wraps to a second line.
+- [ ] Resize to a phone width: sidebar **stacks above** the right column (single-column); sidebar is **not** hidden.
+- [ ] User who hosts at least one innovation pack or innovation hub in MUI: confirm those resources are **NOT** rendered on the CRD User profile (per prototype — see Out of Scope). Only hosted spaces and hosted virtual contributors should appear.
+- [ ] User with 50+ hosted spaces: every hosted space renders (no "Show all" affordance — per prototype). Compare with MUI on the same user, where hosted spaces would be capped at 6.
+
+**Organization profile** (User Story 2)
+
+- [ ] Open `/organization/<some-org>` — hero (avatar + name + location + Verified badge if applicable), sidebar (Bio + Tagsets + References + Associates), and right column (Account Resources + Lead Spaces + All Memberships) render.
+- [ ] Verified org → green Verified badge in hero. Unverified org → no badge.
+- [ ] Org with no account resources → Account Resources section is omitted.
+- [ ] Org with no Lead Spaces → Lead Spaces section is omitted.
+- [ ] Org with no memberships → All Memberships section renders with the empty-state caption "No memberships yet".
+- [ ] Org with 7+ hosted spaces → Account Resources hosted-spaces sub-list shows the first 6 with a "Show all" button; clicking expands to the full list (parity with MUI `AccountResourcesView`).
+- [ ] Org with 13+ associates → Associates sidebar shows the first 12 with a "Show more (N)" link; clicking expands; "Show less" collapses (parity with MUI `AssociatesView`).
+- [ ] Viewer lacks `canReadUsers` → Associates section header is **still visible**; section body shows the existing sign-in CTA copy (`associates-view.sign-in`) instead of the avatar grid (parity — section is **not** hidden).
+- [ ] Anonymous viewer → Message button is hidden; Settings icon hidden.
+- [ ] Signed-in non-admin viewer → Message button visible; click it → compose Popover opens; submit fires the send-message mutation against the org as recipient.
+- [ ] Org admin viewer → Settings icon visible; click → navigates to `/organization/<slug>/settings/...` (existing MUI admin shell — confirm the URL resolves and the MUI page renders).
+
+**VC profile** (User Story 3)
+
+- [ ] Open `/vc/<some-vc>` — hero (avatar + name, **NO Message button**), sidebar (Description + Host card + non-social References + BoK section), right-column content view (model card + social links) render.
+- [ ] VC with `AlkemioSpace` BoK → BoK section shows the SpaceCardHorizontal-equivalent linking to the backing space; "Visit" interaction takes the viewer to the space.
+- [ ] VC with `AlkemioSpace` BoK + viewer lacks `ReadAbout` on the backing space → "Private space" placeholder.
+- [ ] VC with `AlkemioKnowledgeBase` BoK → description + Visit button. Click Visit → navigates to `${vc.profile.url}/${KNOWLEDGE_BASE_PATH}`.
+- [ ] VC with `AlkemioKnowledgeBase` BoK + viewer lacks `hasReadAccess` → Visit button is disabled with tooltip "Body of knowledge is private".
+- [ ] VC with `External` BoK → engine-type description renders ("Assistant" or "External" copy).
+- [ ] VC owner viewer → Settings icon visible; click → navigates to `/vc/<slug>/settings/...` (existing MUI admin shell).
+- [ ] Visit an invalid VC URL → `Error404` renders inside the CRD layout.
+- [ ] Viewer lacks `Read` privilege on the VC → existing `useRestrictedRedirect` redirects.
+- [ ] Visit `/vc/<some-vc>/knowledge-base/...` with CRD on → existing MUI `VCKnowledgeBaseRoute` renders (delegated by `CrdVCRoutes`; out of CRD scope, but the URL must keep working).
+- [ ] VC with `AlkemioKnowledgeBase` BoK whose `knowledgeBaseDescription` is empty → BoK description shows the placeholder copy from `virtualContributorSpaceSettings.placeholder` (parity with MUI fallback `knowledgeBaseDescription || t(...)`).
 
 **Authorization** (cross-cutting)
 
 - [ ] Sign out. Open `/user/<otherUser>` — redirected to login (NoIdentityRedirect, parity with current MUI; research §1).
+- [ ] Sign out. Open `/organization/<some-org>` — page loads (Org route does not require auth; parity).
+- [ ] Sign out. Open `/vc/<some-vc>` — page loads if VC has public Read; otherwise redirected per `useRestrictedRedirect`.
 
 **Toggle**
 
-- [ ] With CRD off (`localStorage.removeItem('alkemio-crd-enabled')`): every URL above renders the existing MUI page unchanged.
+- [ ] With CRD off (`localStorage.removeItem('alkemio-crd-enabled')`): every URL above renders the existing MUI page unchanged for all three actor types.
+
+---
+
+## Standalone preview demo pages (no backend required)
+
+For design-iteration without the full Alkemio backend, the standalone CRD preview app surfaces all four profile compositions with plain mock data:
+
+```bash
+pnpm crd:dev    # http://localhost:5200
+```
+
+Routes:
+
+| URL | What it shows |
+|---|---|
+| `/user/me` | Self-view: Settings icon visible, Message button hidden. |
+| `/user/alex-rivera` | Other-user view (mock data from the prototype): Message button visible, Settings hidden. Pressing Send waits 500 ms before resolving — exercises the `aria-busy` state. |
+| `/organization/alkemio` | Org profile: Verified badge, Message popover, 14 associates (exercises 12-cap "Show more / less"), 4 spaces + 2 innovation packs + 1 hub (exercises Account Resources 6-cap "Show all"). |
+| `/vc/datasynth-bot` | VC profile: NO Message button, Body-of-Knowledge in the `space` variant, model card + social links right column. |
+
+All four pages are wired in `src/crd/app/CrdApp.tsx` with mock data from `src/crd/app/data/profiles.ts`. No Apollo, no GraphQL, no backend.
 
 ---
 
@@ -99,21 +180,26 @@ pnpm vitest run
 
 # Run a specific test file
 pnpm vitest run src/main/crdPages/topLevelPages/userPages/publicProfile/publicProfileMapper.test.ts --reporter=basic
+pnpm vitest run src/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper.test.ts --reporter=basic
+pnpm vitest run src/main/crdPages/topLevelPages/vcPages/publicProfile/vcProfileMapper.test.ts --reporter=basic
 
 # Bundle analysis
 pnpm analyze            # outputs build/stats.html
 
-# i18n key parity check (suggestion — wire in the test referenced in research §5)
-pnpm vitest run src/crd/i18n/userPages/__tests__/keyParity.test.ts
+# Standalone preview app — design iteration on profile pages with mock data
+pnpm crd:dev            # http://localhost:5200 (see "Standalone preview" section above)
+
+# i18n key parity check (suggestion — wire in the test referenced in research §9)
+pnpm vitest run src/crd/i18n/profilePages/__tests__/keyParity.test.ts
 ```
 
 ---
 
 ## Done criteria
 
-- The public profile reachable in CRD with parity to MUI for every action listed in the spec's Acceptance Scenarios.
-- The public profile reachable in MUI when the toggle is off.
+- All three public profile pages reachable in CRD with parity to MUI for every action listed in the spec's Acceptance Scenarios (User Story 1, 2, 3).
+- All three public profile pages reachable in MUI when the toggle is off.
 - `pnpm lint` and `pnpm vitest run` clean.
-- Bundle delta on the user-profile chunk ≤ +20 KB gzipped.
+- Combined bundle delta on the user-profile + organization-profile + vc-profile chunks ≤ +35 KB gzipped.
 - All six languages updated.
-- Spec's Success Criteria SC-001 through SC-006 verified.
+- Spec's Success Criteria SC-001 through SC-007 verified.
