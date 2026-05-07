@@ -35,8 +35,8 @@ export function VCPublicProfileView({ hero, sidebar, contentView, loading, loadi
       )}
 
       <div className="container mx-auto px-4 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-24 self-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start">
             {loading.sidebar ? (
               <output aria-label={loadingLabels.sidebar}>
                 <SidebarSkeleton />
@@ -49,7 +49,7 @@ export function VCPublicProfileView({ hero, sidebar, contentView, loading, loadi
               />
             )}
           </div>
-          <div className="lg:col-span-8 flex flex-col min-w-0">
+          <div className="lg:col-span-9 flex flex-col min-w-0">
             {loading.contentView ? (
               <output aria-label={loadingLabels.contentView}>
                 <ContentSkeleton />
@@ -70,9 +70,9 @@ function HeroSkeleton() {
   // which spells out no location field on the VC hero).
   return (
     <div>
-      <div className="container mx-auto px-4 md:px-8 py-8 md:py-10">
-        <div className="flex flex-col md:flex-row md:items-end gap-6">
-          <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full shrink-0 border-4 border-background shadow-lg" />
+      <div className="container mx-auto px-4 md:px-8 pt-8 pb-6">
+        <div className="flex flex-col md:flex-row md:items-start gap-6">
+          <Skeleton className="w-28 h-28 md:w-32 md:h-32 rounded-full shrink-0 border-4 border-background shadow-lg" />
           <div className="flex-1 pb-2 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <Skeleton className="h-8 w-1/2" />
