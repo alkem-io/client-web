@@ -3,7 +3,7 @@ import {
   type CompactContributorCardItem,
 } from '@/crd/components/common/CompactContributorCard';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { excludeSocialReferences } from '@/crd/components/common/SocialLinks';
+import { Skeleton } from '@/crd/primitives/skeleton';
 import { VCBodyOfKnowledgeSection, type VCBodyOfKnowledgeSectionProps } from './VCBodyOfKnowledgeSection';
 
 export type ReferenceLink = {
@@ -18,31 +18,51 @@ export type VCProfileSidebarProps = {
   /** Provider compact card. `null` when the VC has no provider. */
   host: CompactContributorCardItem | null;
   /**
-   * ALL references (social + non-social). The view filters via
-   * `excludeSocialReferences` for the References section. Social links live
-   * in the right-column content view, not the sidebar.
+   * ALL references — flat URL-chip list (FR-032 / Session 2026-05-06).
+   * No social/non-social split: the redesigned right column does not surface
+   * social references at all, so MUI's silent split-and-discard would lose UI.
+   * Deliberate divergence from MUI.
    */
   references: ReferenceLink[];
   bodyOfKnowledge: VCBodyOfKnowledgeSectionProps['bodyOfKnowledge'];
+  /**
+   * When true, the BoK section renders a section-scoped skeleton instead of
+   * `VCBodyOfKnowledgeSection`. Lets the rest of the sidebar paint while the
+   * auxiliary BoK auth/profile queries are still in flight, without flashing
+   * misleading "Private space" placeholder content from partial data.
+   */
+  bodyOfKnowledgeLoading?: boolean;
   labels: {
     descriptionTitle: string;
+    descriptionEmpty: string;
     hostTitle: string;
     hostEmpty: string;
     referencesTitle: string;
     referencesEmpty: string;
     bodyOfKnowledgeTitle: string;
+    bodyOfKnowledgeLoading: string;
     bodyOfKnowledgePrivateTooltip: string;
     bodyOfKnowledgeVisitButton: string;
   };
 };
 
-export function VCProfileSidebar({ description, host, references, bodyOfKnowledge, labels }: VCProfileSidebarProps) {
-  const nonSocialReferences = excludeSocialReferences(references);
+export function VCProfileSidebar({
+  description,
+  host,
+  references,
+  bodyOfKnowledge,
+  bodyOfKnowledgeLoading = false,
+  labels,
+}: VCProfileSidebarProps) {
   return (
     <div className="space-y-8">
       <section>
         <h2 className="text-section-title mb-3">{labels.descriptionTitle}</h2>
-        {description ? <MarkdownContent content={description} /> : <p className="text-body text-muted-foreground">—</p>}
+        {description ? (
+          <MarkdownContent content={description} />
+        ) : (
+          <p className="text-body text-muted-foreground">{labels.descriptionEmpty}</p>
+        )}
       </section>
 
       <section>
@@ -56,11 +76,13 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
 
       <section>
         <h2 className="text-section-title mb-3">{labels.referencesTitle}</h2>
-        {nonSocialReferences.length === 0 ? (
+        {references.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
-          <ul className="space-y-2">
-            {nonSocialReferences.map(ref => (
+          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+          <ul role="list" className="space-y-2">
+            {references.map(ref => (
               <li key={ref.id}>
                 <a
                   href={ref.uri}
@@ -77,14 +99,24 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
         )}
       </section>
 
-      <VCBodyOfKnowledgeSection
-        bodyOfKnowledge={bodyOfKnowledge}
-        labels={{
-          title: labels.bodyOfKnowledgeTitle,
-          privateTooltip: labels.bodyOfKnowledgePrivateTooltip,
-          visitButton: labels.bodyOfKnowledgeVisitButton,
-        }}
-      />
+      {bodyOfKnowledgeLoading ? (
+        <output aria-label={labels.bodyOfKnowledgeLoading}>
+          <section className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </section>
+        </output>
+      ) : (
+        <VCBodyOfKnowledgeSection
+          bodyOfKnowledge={bodyOfKnowledge}
+          labels={{
+            title: labels.bodyOfKnowledgeTitle,
+            privateTooltip: labels.bodyOfKnowledgePrivateTooltip,
+            visitButton: labels.bodyOfKnowledgeVisitButton,
+          }}
+        />
+      )}
     </div>
   );
 }

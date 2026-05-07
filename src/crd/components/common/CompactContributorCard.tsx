@@ -1,4 +1,5 @@
 import { Users } from 'lucide-react';
+import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -21,14 +22,6 @@ export type CompactContributorCardProps = CompactContributorCardItem & {
   badge?: { label: string; icon?: 'users' };
   className?: string;
 };
-
-const fallbackInitials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 export function CompactContributorCard({
   displayName,
@@ -61,7 +54,7 @@ export function CompactContributorCard({
       </div>
       {badge ? (
         <div className="flex items-center gap-1 text-caption text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full shrink-0">
-          {badge.icon === 'users' ? <Users className="w-3 h-3" /> : null}
+          {badge.icon === 'users' ? <Users className="w-3 h-3" aria-hidden="true" /> : null}
           <span>{badge.label}</span>
         </div>
       ) : null}

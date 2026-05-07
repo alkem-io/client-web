@@ -15,13 +15,22 @@ export type SpaceGridCardData = {
   isPrivate: boolean;
 };
 
+/** i18n-resolved labels for the card's accessibility affordances. */
+export type SpaceGridCardLabels = {
+  /** Visually-hidden label announced to assistive tech for the privacy chip. */
+  privacyPrivate: string;
+  privacyPublic: string;
+};
+
 export type SpaceGridCardProps = {
   space: SpaceGridCardData;
+  labels: SpaceGridCardLabels;
   className?: string;
 };
 
-export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
+export function SpaceGridCard({ space, labels, className }: SpaceGridCardProps) {
   const banner = space.imageUrl ? { backgroundImage: `url(${space.imageUrl})` } : backgroundGradient(space.color);
+  const privacyLabel = space.isPrivate ? labels.privacyPrivate : labels.privacyPublic;
 
   return (
     <a
@@ -30,7 +39,10 @@ export function SpaceGridCard({ space, className }: SpaceGridCardProps) {
         'block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         className
       )}
-      aria-label={space.title}
+      // Privacy is folded into the link's accessible name because aria-label
+      // suppresses descendant text per the ARIA naming spec — an `sr-only` span
+      // inside the chip would never be announced.
+      aria-label={`${space.title}, ${privacyLabel}`}
     >
       <Card className="overflow-hidden hover:shadow-md transition-all group cursor-pointer h-full flex flex-col gap-0">
         <div className="relative h-32 w-full bg-muted overflow-hidden">

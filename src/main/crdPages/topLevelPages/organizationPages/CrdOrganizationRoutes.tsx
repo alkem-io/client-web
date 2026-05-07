@@ -9,9 +9,8 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdOrganizationProfilePage from './publicProfile/CrdOrganizationProfilePage';
 
-// Settings sub-tree — owned by spec 097. The CRD toggle picks between the
-// new CRD shell and the existing MUI admin routes.
 const CrdOrgSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdOrgSettingsRoutes'));
+
 const MuiOrganizationAdminRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/organizationAdmin/OrganizationAdminRoutes')
 );

@@ -1,13 +1,16 @@
+import {
+  ProfileResourceTabStrip,
+  type ProfileResourceTabStripProps,
+} from '@/crd/components/common/ProfileResourceTabStrip';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { UserPageHero, type UserPageHeroProps } from './UserPageHero';
 import { UserProfileSidebar, type UserProfileSidebarProps } from './UserProfileSidebar';
 import { UserResourceSections, type UserResourceSectionsProps } from './UserResourceSections';
-import { UserResourceTabStrip, type UserResourceTabStripProps } from './UserResourceTabStrip';
 
 export type UserPublicProfileViewProps = {
   hero: UserPageHeroProps;
   sidebar: UserProfileSidebarProps;
-  tabStrip: UserResourceTabStripProps;
+  tabStrip: ProfileResourceTabStripProps;
   sections: UserResourceSectionsProps;
   loading: {
     hero: boolean;
@@ -15,23 +18,55 @@ export type UserPublicProfileViewProps = {
     hostedResources: boolean;
     memberships: boolean;
   };
+  /** i18n-resolved aria-labels for the per-region skeleton status containers (FR-009 / WCAG 2.1 AA). */
+  loadingLabels: {
+    hero: string;
+    organizations: string;
+    hostedResources: string;
+    memberships: string;
+  };
 };
 
-export function UserPublicProfileView({ hero, sidebar, tabStrip, sections, loading }: UserPublicProfileViewProps) {
+export function UserPublicProfileView({
+  hero,
+  sidebar,
+  tabStrip,
+  sections,
+  loading,
+  loadingLabels,
+}: UserPublicProfileViewProps) {
+  const sectionsLoading = sections.activeTab === 'resourcesHosted' ? loading.hostedResources : loading.memberships;
+  const sectionsLabel =
+    sections.activeTab === 'resourcesHosted' ? loadingLabels.hostedResources : loadingLabels.memberships;
+
   return (
     <div className="min-h-screen bg-background pb-12">
-      {loading.hero ? <HeroSkeleton /> : <UserPageHero {...hero} />}
+      {loading.hero ? (
+        <output aria-label={loadingLabels.hero}>
+          <HeroSkeleton />
+        </output>
+      ) : (
+        <UserPageHero {...hero} />
+      )}
 
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-24 self-start">
-            {loading.organizations ? <SidebarSkeleton /> : <UserProfileSidebar {...sidebar} />}
+            {loading.organizations ? (
+              <output aria-label={loadingLabels.organizations}>
+                <SidebarSkeleton />
+              </output>
+            ) : (
+              <UserProfileSidebar {...sidebar} />
+            )}
           </div>
 
           <div className="lg:col-span-8 flex flex-col min-w-0">
-            <UserResourceTabStrip {...tabStrip} />
-            {loading.hostedResources || loading.memberships ? (
-              <SectionsSkeleton />
+            <ProfileResourceTabStrip {...tabStrip} />
+            {sectionsLoading ? (
+              <output aria-label={sectionsLabel}>
+                <SectionsSkeleton />
+              </output>
             ) : (
               <UserResourceSections {...sections} />
             )}

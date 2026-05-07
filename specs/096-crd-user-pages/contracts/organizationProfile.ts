@@ -127,11 +127,25 @@ export type OrganizationProfileSidebarProps = {
     bioEmpty: string;
     referencesTitle: string;
     referencesEmpty: string;
-    associatesTitle: string;
+    /**
+     * Receives `totalCount` from `metrics[Associate]` and returns the localized
+     * heading (e.g., "Associates (12)"). The implementation interpolates via
+     * `t('orgProfile.sidebar.associatesCount', { count })`.
+     *
+     * NOTE: an earlier draft typed this as `string`. That was wrong — the
+     * count needs to be interpolated at render time, so the consumer-supplied
+     * function is required.
+     */
+    associatesTitle: (count: number) => string;
     /** Parity reuse — i18n key `associates-view.sign-in`. */
     associatesSignInCta: string;
-    /** Parity reuse — i18n key `associates-view.more` with `{count}` interpolation. */
-    associatesShowMore: string;
+    /**
+     * Receives `remaining` (the count of associates hidden beneath the cap)
+     * and returns the toggle label (e.g., "Show more (5)"). Same reason as
+     * `associatesTitle` — the count is interpolated. Parity reuse — i18n key
+     * `associates-view.more` with `{count}` interpolation.
+     */
+    associatesShowMore: (count: number) => string;
     /** Parity reuse — i18n key `associates-view.less`. */
     associatesShowLess: string;
     /** Title for the Social sub-section (e.g., "Social"). Hidden when no social refs. */
@@ -220,6 +234,18 @@ export type OrganizationPublicProfileViewProps = {
     sidebar: boolean;
     hostedResources: boolean;
     memberships: boolean;
+  };
+
+  /**
+   * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
+   * (WCAG 2.1 AA). One entry per `loading` flag; resolved from the
+   * `crd-profilePages` `common.loading.*` namespace.
+   */
+  loadingLabels: {
+    hero: string;
+    sidebar: string;
+    hostedResources: string;
+    memberships: string;
   };
 
   /**

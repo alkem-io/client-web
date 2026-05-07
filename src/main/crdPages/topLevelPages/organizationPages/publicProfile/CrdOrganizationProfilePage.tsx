@@ -1,43 +1,27 @@
 import { useTranslation } from 'react-i18next';
-import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import useOrganizationProvider from '@/domain/community/organization/useOrganization/useOrganization';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { MembershipCardConnector } from '../../common/MembershipCardConnector';
+import { buildTagsetGroups, normaliseReferences } from '../../common/profileMapperHelpers';
 import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
-import { MembershipCardConnector } from '../../userPages/publicProfile/MembershipCardConnector';
-import { buildLocationLine } from '../../userPages/publicProfile/publicProfileMapper';
-import {
-  buildTagsetGroups,
-  mapAssociates,
-  mapOrgHostedResources,
-  normaliseReferences,
-} from './organizationProfileMapper';
+import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
+import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 
 export const CrdOrganizationProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
-  const { organization, loading: contextLoading } = useOrganizationContext();
-  const provided = useOrganizationProvider();
-  const { isAuthenticated } = useCurrentUserContext();
+  const { organization, provided, isAuthenticated, accountResources, loading } = useCrdOrganizationProfilePageData();
 
   usePageTitle(organization?.profile?.displayName);
-
-  const { data: organizationAccountData, loading: loadingAccount } = useOrganizationAccountQuery({
-    variables: { organizationId: organization?.id ?? '' },
-    skip: !organization?.id,
-  });
-  const accountResources = useAccountResources(organizationAccountData?.lookup.organization?.account?.id);
 
   const { onSendMessage } = useSendMessageToOrganizationHandler({
     recipientOrganizationId: organization?.id,
@@ -51,22 +35,31 @@ export const CrdOrganizationProfilePage = () => {
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
   ];
 
-  const heroLoading = contextLoading || provided.loading || !organization;
+  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+
+  if (!loading.context && !loading.provider && !organization) {
+    return <Error404 />;
+  }
+
+  const heroLoading = loading.context || loading.provider || !organization;
   const sidebarLoading = heroLoading;
-  const hostedResourcesLoading = loadingAccount;
-  const membershipsLoading = provided.loading;
+  const hostedResourcesLoading = loading.account;
+  const membershipsLoading = loading.provider;
 
   const id = organization?.id ?? '';
   const color = pickColorFromId(id);
   const profile = organization?.profile;
 
-  const location = buildLocationLine(
-    profile?.location?.city,
-    profile?.location?.country,
-    vars => t('common.locationFormat', vars),
-    vars => t('common.locationCityOnly', vars),
-    vars => t('common.locationCountryOnly', vars)
-  );
+  const city = profile?.location?.city?.trim() ?? '';
+  const country = profile?.location?.country?.trim() ?? '';
+  const location =
+    city && country
+      ? t('common.locationFormat', { city, country })
+      : city
+        ? t('common.locationCityOnly', { city })
+        : country
+          ? t('common.locationCountryOnly', { country })
+          : null;
 
   const verified = organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation;
 
@@ -74,10 +67,9 @@ export const CrdOrganizationProfilePage = () => {
 
   const associatesCount = getMetricCount(organization?.metrics ?? [], MetricType.Associate);
 
-  // Sidebar pieces
   const tagsets = buildTagsetGroups([
-    { name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
-    { name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
+    { key: 'keywords', name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
+    { key: 'capabilities', name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
   ]);
   const references = normaliseReferences(provided.references);
   const associatesGrid = mapAssociates(
@@ -89,10 +81,8 @@ export const CrdOrganizationProfilePage = () => {
     }))
   );
 
-  // Right column — 4 hosted-resource sub-sections + Lead Spaces + Member Of.
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
-    mapOrgHostedResources(accountResources ?? undefined, t('orgProfile.vcType'));
-  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+    mapOrgHostedResources(accountResources, t('orgProfile.vcType'));
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
@@ -145,14 +135,16 @@ export const CrdOrganizationProfilePage = () => {
         labels: {
           spacesSubsection: t('orgProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('orgProfile.sections.virtualContributorsSubsection'),
-          // FR-102 parity reuse: pulled from the global `translation` namespace
-          // (existing keys), not duplicated under `crd-profilePages`.
           templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('orgProfile.sections.spacesLeading'),
           memberOf: t('orgProfile.sections.memberOf'),
           emptyLeading: t('orgProfile.empty.leading'),
           emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
+          spacePrivacy: {
+            privacyPrivate: t('common.spacePrivacy.private'),
+            privacyPublic: t('common.spacePrivacy.public'),
+          },
         },
       }}
       loading={{
@@ -160,6 +152,12 @@ export const CrdOrganizationProfilePage = () => {
         sidebar: sidebarLoading,
         hostedResources: hostedResourcesLoading,
         memberships: membershipsLoading,
+      }}
+      loadingLabels={{
+        hero: t('common.loading.hero'),
+        sidebar: t('common.loading.sidebar'),
+        hostedResources: t('common.loading.hostedResources'),
+        memberships: t('common.loading.memberships'),
       }}
     />
   );

@@ -1,37 +1,7 @@
-import type {
-  AssociateGridItem,
-  ReferenceLink,
-  TagsetGroup,
-} from '@/crd/components/organization/OrganizationProfileSidebar';
-import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
+import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
+import type { AssociateGridItem } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-
-export type RawReference = {
-  id: string;
-  name: string;
-  uri: string;
-  description?: string | null;
-};
-
-/**
- * Pass-through normaliser for the references array. The social/non-social
- * split (and brand resolution for the social subset) lives entirely inside
- * the shared `SocialLinks` primitive at `@/crd/components/common/SocialLinks`
- * — this mapper just hands the raw refs through with `description: null`
- * defaulted so the consumer sees a stable shape.
- */
-export const normaliseReferences = (references: RawReference[]): ReferenceLink[] =>
-  references.map(ref => ({
-    id: ref.id,
-    name: ref.name,
-    uri: ref.uri,
-    description: ref.description ?? null,
-  }));
-
-export const buildTagsetGroups = (groups: Array<{ name: string; tags: string[] }>): TagsetGroup[] =>
-  groups.filter(g => g.tags.length > 0);
 
 export type AssociateInput = {
   id: string;
@@ -94,11 +64,11 @@ export const mapOrgHostedResources = (
   hostedInnovationPacks: SimpleResourceCardItem[];
   hostedInnovationHubs: SimpleResourceCardItem[];
 } => {
-  const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? [])
-    .filter(s => Boolean(s.about?.profile))
-    .map(s => {
-      const profile = s.about!.profile!;
-      return {
+  const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? []).flatMap(s => {
+    const profile = s.about?.profile;
+    if (!profile) return [];
+    return [
+      {
         id: s.id,
         title: profile.displayName,
         description: profile.tagline ?? null,
@@ -106,38 +76,51 @@ export const mapOrgHostedResources = (
         imageUrl: profile.cardBanner?.uri,
         color: pickColorFromId(s.id),
         isPrivate: s.about?.isContentPublic === false,
-      };
-    });
+      },
+    ];
+  });
 
-  const hostedVirtualContributors: VirtualContributorCardItem[] = (input?.virtualContributors ?? [])
-    .filter(v => Boolean(v.profile))
-    .map(v => ({
-      id: v.id,
-      displayName: v.profile!.displayName,
-      description: v.profile!.tagline ?? null,
-      type: vcType,
-      href: v.profile!.url,
-    }));
+  const hostedVirtualContributors: VirtualContributorCardItem[] = (input?.virtualContributors ?? []).flatMap(v => {
+    const profile = v.profile;
+    if (!profile) return [];
+    return [
+      {
+        id: v.id,
+        displayName: profile.displayName,
+        description: profile.tagline ?? null,
+        type: vcType,
+        href: profile.url,
+      },
+    ];
+  });
 
-  const hostedInnovationPacks: SimpleResourceCardItem[] = (input?.innovationPacks ?? [])
-    .filter(p => Boolean(p.profile))
-    .map(p => ({
-      id: p.id,
-      displayName: p.profile!.displayName,
-      description: p.profile!.tagline ?? null,
-      href: p.profile!.url,
-      avatarImageUrl: p.profile!.avatar?.uri ?? null,
-    }));
+  const hostedInnovationPacks: SimpleResourceCardItem[] = (input?.innovationPacks ?? []).flatMap(p => {
+    const profile = p.profile;
+    if (!profile) return [];
+    return [
+      {
+        id: p.id,
+        displayName: profile.displayName,
+        description: profile.tagline ?? null,
+        href: profile.url,
+        avatarImageUrl: profile.avatar?.uri ?? null,
+      },
+    ];
+  });
 
-  const hostedInnovationHubs: SimpleResourceCardItem[] = (input?.innovationHubs ?? [])
-    .filter(h => Boolean(h.profile))
-    .map(h => ({
-      id: h.id,
-      displayName: h.profile!.displayName,
-      description: h.profile!.tagline ?? null,
-      href: h.profile!.url,
-      avatarImageUrl: h.profile!.avatar?.uri ?? null,
-    }));
+  const hostedInnovationHubs: SimpleResourceCardItem[] = (input?.innovationHubs ?? []).flatMap(h => {
+    const profile = h.profile;
+    if (!profile) return [];
+    return [
+      {
+        id: h.id,
+        displayName: profile.displayName,
+        description: profile.tagline ?? null,
+        href: profile.url,
+        avatarImageUrl: profile.avatar?.uri ?? null,
+      },
+    ];
+  });
 
   return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
 };

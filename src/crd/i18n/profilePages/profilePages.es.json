@@ -11,7 +11,20 @@
       "errorTitle": "No se pudo enviar el mensaje",
       "ariaLabel": "Redactar mensaje"
     },
-    "resourceTabsAriaLabel": "Secciones de recursos"
+    "resourceTabsAriaLabel": "Secciones de recursos",
+    "loading": {
+      "hero": "Cargando encabezado del perfil",
+      "sidebar": "Cargando detalles del perfil",
+      "organizations": "Cargando organizaciones",
+      "hostedResources": "Cargando recursos alojados",
+      "memberships": "Cargando membresías",
+      "contentView": "Cargando contenido",
+      "bodyOfKnowledge": "Cargando base de conocimiento"
+    },
+    "spacePrivacy": {
+      "private": "Espacio privado",
+      "public": "Espacio público"
+    }
   },
   "userProfile": {
     "hero": {
@@ -82,25 +95,79 @@
     "vcType": "Colaborador virtual"
   },
   "vcProfile": {
+    "typeBadge": "Colaborador virtual",
     "hero": {
       "settingsTooltip": "Configuración del colaborador virtual",
       "settingsAriaLabel": "Abrir configuración del colaborador virtual"
     },
     "sidebar": {
       "descriptionTitle": "Descripción",
+      "descriptionEmpty": "Sin descripción.",
       "hostTitle": "Anfitrión",
       "hostEmpty": "Sin anfitrión."
     },
-    "contentView": {
-      "modelCardTitle": "Ficha del modelo",
-      "aiEngineLabel": "Motor de IA",
-      "aiEngineExternal": "Externo",
-      "promptsLabel": "Prompts",
-      "promptsPersonaLabel": "Persona",
-      "promptsConstraintsLabel": "Restricciones",
-      "dataPrivacyLabel": "Privacidad de datos",
-      "socialLinksTitle": "Redes sociales",
-      "socialLinksEmpty": "Sin enlaces sociales."
+    "functionality": {
+      "heading": "Funcionalidad",
+      "capabilities": {
+        "title": "Capacidades funcionales",
+        "tagging": "Responder a preguntas en los comentarios",
+        "createContent": "Crear nuevas publicaciones",
+        "communityManagement": "Invitar a otros colaboradores"
+      },
+      "dataAccess": {
+        "title": "Acceso a datos del Espacio del que es miembro",
+        "about": "Página «Acerca de»",
+        "content": "Publicaciones y aportaciones",
+        "subspaces": "Subespacios"
+      },
+      "roleRequirements": {
+        "title": "Requisitos de rol",
+        "memberRequired": "Este CV necesita que se le concedan <strong>derechos de miembro</strong> para funcionar correctamente",
+        "noneRequired": "No se requieren derechos de miembro especiales"
+      }
+    },
+    "aiEngine": {
+      "heading": "Motor de IA: {{engineName}}",
+      "engineName": {
+        "alkemio": "IA de Alkemio",
+        "assistant": "Asistente de IA externo",
+        "external": "IA externa"
+      },
+      "seeDocumentation": "VER DOCUMENTACIÓN",
+      "notAvailable": "No disponible",
+      "unknown": "Desconocido",
+      "yes": "Sí",
+      "no": "No",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Transparencia del modelo abierto",
+          "description": "¿El CV utiliza un modelo de pesos abiertos?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Divulgación del uso de datos",
+          "description": "¿Se utilizan los datos de interacción de algún modo para entrenar el modelo?"
+        },
+        "knowledgeRestriction": {
+          "title": "Restricción de conocimiento",
+          "description": "¿Se solicita al CV que limite las respuestas a un cuerpo de conocimiento específico?"
+        },
+        "webAccess": {
+          "title": "Acceso web",
+          "description": "¿Puede el CV acceder a la web o realizar búsquedas?"
+        },
+        "physicalLocation": {
+          "title": "Ubicación física",
+          "description": "¿Dónde está alojado el servicio de IA?"
+        },
+        "technicalReferences": {
+          "title": "Referencias técnicas",
+          "description": "Acceso a información detallada sobre las especificaciones de los modelos subyacentes"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Supervisión por Alkemio",
+      "body": "Dado que Alkemio facilita la interacción con el proveedor externo, asume una responsabilidad operativa de supervisar el servicio. Como el resto de datos e interacciones de la plataforma, esto se rige por nuestros <a>Términos y Condiciones</a>."
     }
   }
 }

@@ -11,15 +11,16 @@
 
 import type { CompactContributorCardItem } from '@/crd/components/common/CompactContributorCard';
 import type {
-  AssociateGridItem,
   ReferenceLink,
+  SimpleResourceCardItem,
   TagsetGroup,
-} from '@/crd/components/organization/OrganizationProfileSidebar';
-import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
+  VirtualContributorCardItem,
+} from '@/crd/components/common/profileTypes';
+import type { AssociateGridItem } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
+import type { VCAiEngineSectionData } from '@/crd/components/virtualContributor/VCAiEngineGrid';
 import type { BodyOfKnowledge } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
-import type { ModelCardSummary } from '@/crd/components/virtualContributor/VCContentView';
+import type { VCFunctionalitySectionData } from '@/crd/components/virtualContributor/VCFunctionalityGrid';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 /* --------------------------------------------------------------------- */
@@ -56,8 +57,8 @@ export const MOCK_ALEX_RIVERA = {
   bio:
     'Passionate about sustainable urban planning and civic technology. Leading the transition to renewable energy grids at CityScale.\n\nAlways looking for collaborators on open source climate data projects. Feel free to reach out if you\'re interested in smart city infrastructure!',
   tagsets: [
-    { name: 'Keywords', tags: ['Smart Cities', 'Renewables', 'Civic Tech'] },
-    { name: 'Skills', tags: ['Urban Planning', 'GIS', 'Python', 'Stakeholder Engagement'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Smart Cities', 'Renewables', 'Civic Tech'] },
+    { key: 'skills', name: 'Skills', tags: ['Urban Planning', 'GIS', 'Python', 'Stakeholder Engagement'] },
   ] satisfies TagsetGroup[],
   organizations: [
     {
@@ -227,8 +228,8 @@ export const MOCK_ME_USER = {
     'I help cities and corporations align their innovation programs with measurable ' +
     'climate outcomes.',
   tagsets: [
-    { name: 'Keywords', tags: ['Sustainability', 'Innovation Strategy', 'Climate'] },
-    { name: 'Skills', tags: ['Strategy', 'Facilitation', 'Programme Design'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Sustainability', 'Innovation Strategy', 'Climate'] },
+    { key: 'skills', name: 'Skills', tags: ['Strategy', 'Facilitation', 'Programme Design'] },
   ] satisfies TagsetGroup[],
   references: [
     { id: 'sam-linkedin', name: 'LinkedIn', uri: 'https://www.linkedin.com/in/sam-lee', description: null },
@@ -258,8 +259,8 @@ export const MOCK_ORG_ALKEMIO = {
     'collaborative innovation. We help organizations co-design solutions to societal ' +
     'challenges — from circular economy to inclusive education.',
   tagsets: [
-    { name: 'Keywords', tags: ['Open Source', 'Climate', 'Civic Tech', 'Co-Design'] },
-    { name: 'Capabilities', tags: ['Facilitation', 'Platform engineering', 'Research'] },
+    { key: 'keywords', name: 'Keywords', tags: ['Open Source', 'Climate', 'Civic Tech', 'Co-Design'] },
+    { key: 'capabilities', name: 'Capabilities', tags: ['Facilitation', 'Platform engineering', 'Research'] },
   ] satisfies TagsetGroup[],
   references: [
     // Non-social refs go to the sidebar's References section.
@@ -421,6 +422,7 @@ export const MOCK_VC_DATASYNTH = {
     avatarImageUrl: null as string | null,
     color: pickColorFromId('vc-datasynth'),
     displayName: 'DataSynth Bot',
+    keywords: ['Synthetic data', 'Urban modeling', 'Research', 'EU-hosted'],
   },
   description:
     'DataSynth generates synthetic datasets for urban-modeling research projects. ' +
@@ -434,15 +436,15 @@ export const MOCK_VC_DATASYNTH = {
     secondaryCaption: null,
     href: '/organization/cityscale',
   } as CompactContributorCardItem,
+  // 2026-05-06 redesign: ALL references rendered as a flat URL-chip list in
+  // the sidebar (FR-032). No social/non-social split.
   references: [
-    // Non-social ref → sidebar References section.
     {
       id: 'vc-ref-1',
       name: 'Synthetic data primer',
       uri: 'https://en.wikipedia.org/wiki/Synthetic_data',
       description: 'Background reading on synthetic data.',
     },
-    // Social refs → right-column Social Links section, rendered by <SocialLinks>.
     { id: 'vc-s-github', name: 'GitHub', uri: 'https://github.com/alkem-io/datasynth', description: null },
     { id: 'vc-s-website', name: 'website', uri: 'https://datasynth.example/', description: null },
   ] satisfies ReferenceLink[],
@@ -454,6 +456,8 @@ export const MOCK_VC_DATASYNTH = {
       displayName: 'Renewable Energy Grid',
       level: 'L0',
       avatarImageUrl: null,
+      color: '#42a5f5',
+      initials: 'RE',
     },
     hasReadAccess: true,
     description: 'Trained on the open knowledge base of the Renewable Energy Grid space.',
@@ -461,16 +465,69 @@ export const MOCK_VC_DATASYNTH = {
     spaceContextDescription:
       "DataSynth Bot's knowledge is sourced from the Renewable Energy Grid space.",
   } as BodyOfKnowledge,
-  modelCard: {
-    aiEngine: {
-      name: 'OpenAI Assistant',
-      isExternal: false,
-      hostingLocation: 'EU (Amsterdam)',
-      isUsingOpenWeightsModel: false,
-      canAccessWebWhenAnswering: false,
-      additionalTechnicalDetails:
-        'Inference is sandboxed inside the host space; no third-party data access.',
-    },
-    monitoring: { isUsageMonitoredByAlkemio: true },
-  } satisfies ModelCardSummary,
+  // 2026-05-06 redesign: Functionality / AI Engine / Monitoring shapes per
+  // contracts/vcProfile.ts. Mixed flags exercise Check vs. Minus glyphs;
+  // SpaceRoleMember enabled exercises the <Trans>-rendered <strong> path;
+  // canAccessWebWhenAnswering=false exercises the Clock glyph; null
+  // isInteractionDataUsedForTraining exercises the "Unknown" fallback.
+  functionality: {
+    capabilities: [
+      { label: 'Answer questions in comments', enabled: true },
+      { label: 'Create new posts', enabled: false },
+      { label: 'Invite other contributors', enabled: false },
+    ],
+    dataAccess: [
+      { label: 'About page', enabled: true },
+      { label: 'Posts & Contributions', enabled: true },
+      { label: 'Subspaces', enabled: false },
+    ],
+    roleRequirements: { kind: 'memberRequired' },
+  } satisfies VCFunctionalitySectionData,
+  aiEngine: {
+    engineName: 'Alkemio AI',
+    cards: [
+      {
+        id: 'openModelTransparency',
+        iconName: 'eye',
+        title: 'Open Model Transparency',
+        description: 'Does the VC use an open-weight model?',
+        booleanAnswer: { value: true },
+      },
+      {
+        id: 'dataUsageDisclosure',
+        iconName: 'database',
+        title: 'Data Usage Disclosure',
+        description: 'Is interaction data used in any way for model training?',
+        textValue: '',
+      },
+      {
+        id: 'knowledgeRestriction',
+        iconName: 'shieldCheck',
+        title: 'Knowledge Restriction',
+        description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
+        textValue: 'Yes',
+      },
+      {
+        id: 'webAccess',
+        iconName: 'globe',
+        title: 'Web Access',
+        description: 'Can the VC access or search the web?',
+        booleanAnswer: { value: false, noIcon: 'clock' },
+      },
+      {
+        id: 'physicalLocation',
+        iconName: 'mapPin',
+        title: 'Physical Location',
+        description: 'Where is the AI service hosted?',
+        textValue: 'EU (Amsterdam)',
+      },
+      {
+        id: 'technicalReferences',
+        iconName: 'fileText',
+        title: 'Technical References',
+        description: 'Access to detailed information on the underlying models specifications',
+        action: { href: 'https://example.com/tech-details.pdf', label: 'SEE DOCUMENTATION' },
+      },
+    ],
+  } satisfies VCAiEngineSectionData,
 };

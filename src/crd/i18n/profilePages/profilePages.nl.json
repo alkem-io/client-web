@@ -11,7 +11,20 @@
       "errorTitle": "Bericht kon niet worden verzonden",
       "ariaLabel": "Bericht opstellen"
     },
-    "resourceTabsAriaLabel": "Resourcesecties"
+    "resourceTabsAriaLabel": "Resourcesecties",
+    "loading": {
+      "hero": "Profielkop wordt geladen",
+      "sidebar": "Profielgegevens worden geladen",
+      "organizations": "Organisaties worden geladen",
+      "hostedResources": "Gehoste resources worden geladen",
+      "memberships": "Lidmaatschappen worden geladen",
+      "contentView": "Inhoud wordt geladen",
+      "bodyOfKnowledge": "Kennisbasis wordt geladen"
+    },
+    "spacePrivacy": {
+      "private": "Privéruimte",
+      "public": "Openbare ruimte"
+    }
   },
   "userProfile": {
     "hero": {
@@ -82,25 +95,79 @@
     "vcType": "Virtuele bijdrager"
   },
   "vcProfile": {
+    "typeBadge": "Virtuele bijdrager",
     "hero": {
       "settingsTooltip": "Instellingen virtuele bijdrager",
       "settingsAriaLabel": "Instellingen virtuele bijdrager openen"
     },
     "sidebar": {
       "descriptionTitle": "Beschrijving",
+      "descriptionEmpty": "Geen beschrijving beschikbaar.",
       "hostTitle": "Host",
       "hostEmpty": "Geen host."
     },
-    "contentView": {
-      "modelCardTitle": "Model Card",
-      "aiEngineLabel": "AI-engine",
-      "aiEngineExternal": "Extern",
-      "promptsLabel": "Prompts",
-      "promptsPersonaLabel": "Persona",
-      "promptsConstraintsLabel": "Beperkingen",
-      "dataPrivacyLabel": "Gegevensprivacy",
-      "socialLinksTitle": "Sociale links",
-      "socialLinksEmpty": "Geen sociale links."
+    "functionality": {
+      "heading": "Functionaliteit",
+      "capabilities": {
+        "title": "Functionele mogelijkheden",
+        "tagging": "Vragen in opmerkingen beantwoorden",
+        "createContent": "Nieuwe berichten aanmaken",
+        "communityManagement": "Andere bijdragers uitnodigen"
+      },
+      "dataAccess": {
+        "title": "Gegevenstoegang vanuit de Space waarvan deze lid is",
+        "about": "Over-pagina",
+        "content": "Berichten en bijdragen",
+        "subspaces": "Subspaces"
+      },
+      "roleRequirements": {
+        "title": "Rolvereisten",
+        "memberRequired": "Deze VC heeft <strong>lidrechten</strong> nodig om correct te functioneren",
+        "noneRequired": "Geen speciale lidrechten vereist"
+      }
+    },
+    "aiEngine": {
+      "heading": "AI-engine: {{engineName}}",
+      "engineName": {
+        "alkemio": "Alkemio AI",
+        "assistant": "Externe AI-assistent",
+        "external": "Externe AI"
+      },
+      "seeDocumentation": "DOCUMENTATIE BEKIJKEN",
+      "notAvailable": "Niet beschikbaar",
+      "unknown": "Onbekend",
+      "yes": "Ja",
+      "no": "Nee",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Open modeltransparantie",
+          "description": "Gebruikt de VC een open-weight model?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Openbaarmaking gegevensgebruik",
+          "description": "Worden interactiegegevens op enige wijze gebruikt voor modeltraining?"
+        },
+        "knowledgeRestriction": {
+          "title": "Kennisbeperking",
+          "description": "Wordt de VC aangespoord de antwoorden te beperken tot een specifieke kennisbasis?"
+        },
+        "webAccess": {
+          "title": "Webtoegang",
+          "description": "Kan de VC het web raadplegen of doorzoeken?"
+        },
+        "physicalLocation": {
+          "title": "Fysieke locatie",
+          "description": "Waar wordt de AI-dienst gehost?"
+        },
+        "technicalReferences": {
+          "title": "Technische referenties",
+          "description": "Toegang tot gedetailleerde informatie over de specificaties van de onderliggende modellen"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Monitoring door Alkemio",
+      "body": "Omdat Alkemio de interactie met de externe leverancier faciliteert, draagt Alkemio een operationele verantwoordelijkheid om de dienst te monitoren. Net als alle gegevens en interacties op het platform, vallen deze onder onze <a>Algemene voorwaarden</a>."
     }
   }
 }

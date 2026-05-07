@@ -277,15 +277,23 @@ type VCPublicProfile = {
     avatarImageUrl: string | null;
     displayName: string;
     settingsUrl: string | null;            // null → hide gear icon. Set to buildSettingsUrl(profile.url) when hasUpdatePrivilege (FR-031)
+    // 2026-05-06 redesign additions:
+    typeBadgeLabel: string;                // i18n-resolved "Virtual Contributor" string from `crd-profilePages:vcProfile.typeBadge`
+    keywords: string[];                    // resolved from vc.profile.tagsets[] against TagsetReservedName.Keywords; empty array hides the chip row entirely (FR-030 omission rule)
     // NOTE: no Message button for VCs (FR-030)
   };
   sidebar: {
     description: string | null;            // markdown — vc.profile.description
     host: CompactContributorCardItem | null;  // vc.provider.profile mapped to compact card; null when no provider
-    references: ReferenceLink[];           // non-social only — filter via isSocialNetworkSupported (FR-032)
+    // 2026-05-06 redesign change: ALL references rendered as flat URL chips
+    // (no social/non-social split — the redesigned right column does not surface
+    //  social refs separately, and MUI's silent split-and-discard is replaced
+    //  by the prototype's flat list per FR-032). Empty list → "No references"
+    //  empty-state caption.
+    references: ReferenceLink[];
     bodyOfKnowledge: BodyOfKnowledge | null;  // null only for VCs with no BoK at all (rare)
   };
-  contentView: VCContentView;              // right column data
+  contentView: VCContentView;              // right column data — 2026-05-06 redesigned (Functionality / AI Engine / Monitoring)
 };
 
 type BodyOfKnowledge =
@@ -315,7 +323,19 @@ type BodyOfKnowledge =
     }
   | {
       kind: 'external';
-      engineLabel: 'assistant' | 'other';  // derived from vc.aiPersona.engine === OpenaiAssistant
+      // Fully i18n-resolved engine-type description. The mapper derives this
+      // from `vc.aiPersona.engine` — when the engine is `OpenaiAssistant` it
+      // resolves `externalAssistantDescription`; otherwise `externalGenericDescription`.
+      // Both come from `components.profile.fields.engines.externalVCDescription`
+      // with the engine name interpolated in. The view renders the string
+      // through `MarkdownContent` (the description may contain a link).
+      //
+      // NOTE: an earlier draft of this document declared `engineLabel: 'assistant' | 'other'`
+      // and let the view resolve the copy. That was inverted in the implementation —
+      // the integration layer owns translation resolution (FR-005), so the
+      // resolved string crosses the boundary, not the discriminator. Aligned with
+      // contracts/vcProfile.ts and the actual mapper output.
+      description: string;
     };
 
 type SpaceProfileSummary = {
@@ -326,43 +346,108 @@ type SpaceProfileSummary = {
   avatarImageUrl: string | null;
 };
 
+// 2026-05-06 redesign: VCContentView is now a structured shape with three
+// section-shaped fields, each fully resolved by the mapper (data + i18n labels)
+// before crossing the CRD prop boundary. The view does NO data extraction or
+// label resolution itself — pure render function (Constitution Principle II).
+//
+// The mapper runs the same logic as the existing MUI hook
+// `useTemporaryHardCodedVCProfilePageData(modelCard)`, re-implemented in plain
+// TypeScript locally inside `vcProfileMapper.ts` (NOT imported from MUI — see
+// research §15 for the rationale). The MUI hook continues to ship for the
+// legacy MUI page that renders when CRD is OFF.
 type VCContentView = {
-  modelCard: ModelCardSummary;             // existing VirtualContributorModelCardModel mapped to plain prop shape
-  references: ReferenceLink[];             // ALL references — passed straight to <SocialLinks references={refs} />,
-                                           // which filters internally. Same one-source-of-truth contract used on the
-                                           // Organization sidebar (see `OrganizationPublicProfile.sidebar.references`).
+  functionality: VCFunctionalitySection;
+  aiEngine: VCAiEngineSection;
+  monitoring: VCMonitoringSection;
 };
 
-type ModelCardSummary = {
-  // F3 correction: the original draft listed `prompts.persona`, `prompts.constraints`,
-  // `dataPrivacy.summary` — none of those fields exist on the GraphQL `VirtualContributorModelCard`
-  // type. The fields that DO exist (and are therefore renderable) are the `aiEngine.*` set below
-  // plus `monitoring.isUsageMonitoredByAlkemio`. The CRD content view renders the real aiEngine
-  // fields; the prompts/dataPrivacy fields from the earlier draft are dropped from the contract.
-  aiEngine: {
-    name: string;                          // engine identifier (e.g., 'openai-assistant', 'external')
-    isExternal: boolean;
-    hostingLocation: string;               // free-form provenance string from the model card
-    isUsingOpenWeightsModel: boolean;
-    canAccessWebWhenAnswering: boolean;
-    additionalTechnicalDetails: string | null;
-  };
-  monitoring: {
-    isUsageMonitoredByAlkemio: boolean;
-  };
+type BulletItem = {
+  // The mapper produces one BulletItem per entry of `modelCard.spaceUsage[…]`
+  // .flags[]. The `enabled` flag drives the Check / Minus glyph and the
+  // foreground / muted text colour in the view.
+  label: string;                           // i18n-resolved label
+  enabled: boolean;
 };
 
-// Note: the earlier draft of this document defined a `SocialReferenceItem`
+type VCFunctionalitySection = {
+  // Sourced from `modelCard.spaceUsage[]`:
+  //   capabilities       ← entry where modelCardEntry === SpaceCapabilities (.flags[])
+  //   dataAccess         ← entry where modelCardEntry === SpaceDataAccess (.flags[])
+  //   roleRequirements   ← presence of SpaceRoleMember.enabled in the
+  //                        SpaceRoleRequired entry → 'memberRequired'; else 'noneRequired'.
+  capabilities: BulletItem[];
+  dataAccess: BulletItem[];
+  roleRequirements: { kind: 'memberRequired' | 'noneRequired' };
+};
+
+type VCAiEngineSection = {
+  // engineName is i18n-resolved from one of three keys, picked by the mapper:
+  //   `vcProfile.aiEngine.engineName.alkemio`     when !isExternal && !isAssistant
+  //   `vcProfile.aiEngine.engineName.assistant`   when isAssistant
+  //   `vcProfile.aiEngine.engineName.external`    when isExternal && !isAssistant
+  engineName: string;
+  cards: TransparencyCardData[];           // exactly six entries in fixed order, see below
+};
+
+// The view renders an ordered list of these — order is fixed by the mapper:
+//   [0] Open Model Transparency
+//   [1] Data Usage Disclosure
+//   [2] Knowledge Restriction
+//   [3] Web Access (uses the optional `noIcon: 'clock'` override)
+//   [4] Physical Location (textValue, no Yes/No)
+//   [5] Technical References (action-shaped — link button or "not available")
+type TransparencyCardData = {
+  id: string;                              // stable key for the iterator (e.g., 'openModelTransparency')
+  iconName:                                // mapped to a lucide-react component inside the view
+    | 'eye' | 'database' | 'shieldCheck' | 'globe' | 'mapPin' | 'fileText';
+  title: string;                           // i18n-resolved
+  description: string;                     // i18n-resolved caption
+  // EXACTLY ONE of the following three answer fields is populated (discriminated):
+  //   booleanAnswer   → renders Yes/No row with CheckCircle2 / XCircle (or noIcon override)
+  //   textValue       → renders plain text answer (Physical Location, Knowledge Restriction)
+  //   action          → renders an outlined Button linking to a URL (Technical References)
+  //                     OR an italic muted "Not available" caption when href === ''
+  booleanAnswer?: { value: boolean; noIcon?: 'clock' | 'xCircle' }; // default 'xCircle'
+  textValue?: string;
+  action?: { href: string; label: string }; // href === '' → "Not available" fallback
+};
+
+type VCMonitoringSection = {
+  // The view renders a horizontal Separator + heading + paragraph. The body
+  // is rendered via <Trans> with an <a> component for the embedded T&C link.
+  // The mapper passes the i18n key (not the resolved string) so <Trans> can
+  // resolve the `<a>` placeholder against the components prop.
+  headingKey: string;                      // e.g., 'crd-profilePages:vcProfile.monitoring.heading'
+  bodyKey: string;                         // e.g., 'crd-profilePages:vcProfile.monitoring.body' — contains <a>...</a>
+  // The view hard-codes the actual T&C URL in the <Trans components={{ a }} />
+  // call (the URL is product-stable; injecting it through props would add
+  // overhead with no flexibility benefit).
+};
+
+// Note 1: the earlier draft of this document defined a `SocialReferenceItem`
 // shape with a `brand` discriminator that the mappers populated via a local
 // `brandFor(name)` helper. That has been dropped — brand resolution and the
 // social/non-social split now live entirely inside the shared `SocialLinks`
 // primitive at `src/crd/components/common/SocialLinks.tsx`. Consumers pass
 // raw `ReferenceLink[]` through; the primitive renders the social ones, and
 // the exported `excludeSocialReferences()` helper feeds the parallel
-// References sections on the Org and VC sidebars.
+// References sections on the Org sidebar (User profile uses Social block).
 //
-// Supported brands inside the primitive:
+// Note 2 (2026-05-06): the VC profile is no longer a consumer of the shared
+// `SocialLinks` primitive — the redesigned right column does not surface
+// social references at all (research §15). The VC sidebar's References block
+// renders all references as flat URL chips. Brand-icon mapping is no longer
+// required for VC.
+//
+// Supported brands inside the SocialLinks primitive (User+Org consumers):
 //   website (globe) | linkedin | github | bsky | youtube | email | generic (fallback globe)
+//
+// Note 3 (2026-05-06): the legacy `ModelCardSummary` shape (single object with
+// aiEngine + monitoring sub-objects) is replaced by the structured
+// VCFunctionalitySection / VCAiEngineSection / VCMonitoringSection shapes
+// above. The mapper runs the equivalent of `useTemporaryHardCodedVCProfilePageData`'s
+// extraction logic (research §15) but never imports the MUI hook itself.
 ```
 
 ---
@@ -397,10 +482,12 @@ Apollo `loading` flags.
 
 | Region | Driving query / hook | `loading.*` key |
 |---|---|---|
-| Hero | `useVirtualContributorProfileWithModelCardQuery` | `hero` |
-| Sidebar (Description / Host / non-social References) | `useVirtualContributorProfileWithModelCardQuery` | `sidebar` |
+| Hero (avatar / name / type badge / Keywords chip row / Settings icon) | `useVirtualContributorProfileWithModelCardQuery` | `hero` |
+| Sidebar (Description / Host / flat References list — 2026-05-06: all refs, no split) | `useVirtualContributorProfileWithModelCardQuery` | `sidebar` |
 | Sidebar — Body of Knowledge section | space-backed: `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery` + `useSpaceBodyOfKnowledgeAboutQuery`; KB-backed: `useKnowledgeBase`; external: synchronous, no query | `bodyOfKnowledge` |
-| Right column — model card + social references | `useVirtualContributorProfileWithModelCardQuery` | `contentView` |
+| Right column — Functionality / AI Engine / Monitoring sections (2026-05-06 redesign) | `useVirtualContributorProfileWithModelCardQuery` (the `modelCard` + `aiPersona.engine` fields drive all three sections) | `contentView` |
+
+**Skeleton shape for the VC right column (FR-009 update)**: while `contentView` loads, render three skeleton blocks: a 3-column grid of card-shaped placeholders (Functionality), a 3-column grid of 6 transparency-card placeholders (AI Engine), and a separator + paragraph placeholder (Monitoring) — so the redesigned right column does not collapse into a single block while loading.
 
 ---
 
@@ -432,7 +519,7 @@ count against the per-actor budget.
 
 ### Send-message popover (User + Organization)
 
-```
+```text
 idle ── click Message ──▶ popover open (textarea empty)
 popover open ── type ──▶ textarea has draft text (Send button enabled when non-empty)
 popover open ── click × / press Escape ──▶ popover closed (draft discarded)
@@ -443,7 +530,7 @@ pending ── mutation failure ──▶ popover stays open, inline error appea
 
 ### User profile resource tab strip
 
-```
+```text
 mount ── default ──▶ activeTab = 'resourcesHosted'
 click any tab ──▶ activeTab = clicked-tab-key (sections re-filter; no URL change)
 on smaller-than-md viewport ── activeTab change ──▶ active tab auto-scrolled into view
@@ -451,7 +538,7 @@ on smaller-than-md viewport ── activeTab change ──▶ active tab auto-sc
 
 ### VC profile load lifecycle
 
-```
+```text
 mount ── useUrlResolver pending ──▶ render Loading
 useUrlResolver resolved ── useVirtualContributorProfileWithModelCardQuery pending ──▶ render Loading
 query success + Read privilege missing ──▶ useRestrictedRedirect runs → navigation away
@@ -474,3 +561,44 @@ query other error ──▶ propagate to the global ErrorBoundary (Q4 — no cus
   Earlier drafts of this document said a single `useSendMessageHandler` covered both verticals — that was incorrect; the mutations have different input shapes and cannot share one wrapper.
 - **No mutations against the entity itself** are fired from any of the three public profile pages; the only mutations are `sendMessageToUsers` (User + Organization). VC is fully read-only. None of these mutations affect the entity document, so no refetch is required after sending a message.
 - **Bundle isolation**: each `CrdXxxProfilePage` is its own React.lazy chunk. The shared `CompactContributorCard` primitive lives in the small `crd-common` chunk that's already shared across CRD pages. The new i18n namespace `crd-profilePages` is lazy-loaded.
+
+### VC empty model card fallback (2026-05-06)
+
+When `useVirtualContributorProfileWithModelCardQuery` returns no `modelCard` (or returns one with all-falsy flags), the VC mapper MUST still produce a fully-populated `VCContentView` — every section renders, just with safe defaults. The CRD mapper inlines a local `EMPTY_MODEL_CARD_FALLBACK` constant that mirrors the existing `EMPTY_MODEL_CARD` from `src/domain/community/virtualContributor/model/VirtualContributorModelCardModel.ts` (the constant is duplicated locally because the CRD layer must not import from `src/domain/`).
+
+```ts
+// Inside vcProfileMapper.ts (NOT imported from src/domain/):
+const EMPTY_MODEL_CARD_FALLBACK = {
+  spaceUsage: [
+    { modelCardEntry: 'SPACE_CAPABILITIES', flags: [
+      { name: 'SPACE_CAPABILITY_TAGGING', enabled: false },
+      { name: 'SPACE_CAPABILITY_CREATE_CONTENT', enabled: false },
+      { name: 'SPACE_CAPABILITY_COMMUNITY_MANAGEMENT', enabled: false },
+    ]},
+    { modelCardEntry: 'SPACE_DATA_ACCESS', flags: [
+      { name: 'SPACE_DATA_ACCESS_ABOUT', enabled: false },
+      { name: 'SPACE_DATA_ACCESS_CONTENT', enabled: false },
+      { name: 'SPACE_DATA_ACCESS_SUBSPACES', enabled: false },
+    ]},
+    { modelCardEntry: 'SPACE_ROLE_REQUIRED', flags: [
+      { name: 'SPACE_ROLE_MEMBER', enabled: false },
+      { name: 'SPACE_ROLE_ADMIN', enabled: false },
+    ]},
+  ],
+  aiEngine: {
+    isExternal: false,
+    isAssistant: false,
+    hostingLocation: '',
+    isUsingOpenWeightsModel: false,
+    isInteractionDataUsedForTraining: null,
+    canAccessWebWhenAnswering: false,
+    areAnswersRestrictedToBodyOfKnowledge: '',
+    additionalTechnicalDetails: '',
+  },
+  monitoring: { isUsageMonitoredByAlkemio: true },
+};
+```
+
+This produces a `VCContentView` where (a) all Functionality bullets render with the `Minus` glyph in muted text, (b) AI Engine cards render with safe defaults (Open Model: "No"; Data Usage: "Unknown" because of the `null`; Knowledge Restriction: empty string from `areAnswersRestrictedToBodyOfKnowledge` — the view falls back to "Unknown" via the i18n string when the value is empty; Web Access: "No"; Physical Location: empty → falls back to localized "Unknown"; Technical References: empty href → "Not available" caption), and (c) Monitoring renders unchanged. Cards never collapse or hide — the page maintains a stable visual rhythm.
+
+Parity with current MUI's `modelCard ?? EMPTY_MODEL_CARD` fallback in `VCProfileContentView.tsx`.

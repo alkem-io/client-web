@@ -9,7 +9,6 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdVCProfilePage from './publicProfile/CrdVCProfilePage';
 
-// VC settings + knowledge-base subroutes stay in MUI under spec 096 (Out of Scope).
 const MuiVCSettingsRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/virtualContributorAdmin/VCSettingsRoute')
 );

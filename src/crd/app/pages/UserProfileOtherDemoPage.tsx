@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CompactContributorCard } from '@/crd/components/common/CompactContributorCard';
 import { SpaceGridCard } from '@/crd/components/user/SpaceGridCard';
-import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
 import { MOCK_ALEX_RIVERA } from '../data/profiles';
 
@@ -14,6 +14,7 @@ const SECTIONS_LABELS = {
   memberOf: 'Member of',
   emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
+  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const SIDEBAR_LABELS = {
@@ -62,8 +63,13 @@ export function UserProfileOtherDemoPage() {
     />
   ));
 
-  const spacesLeading = alex.leadingSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
-  const spacesMember = alex.memberSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
+  const spacePrivacyLabels = { privacyPrivate: 'Private space', privacyPublic: 'Public space' };
+  const spacesLeading = alex.leadingSpaces.map(s => (
+    <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />
+  ));
+  const spacesMember = alex.memberSpaces.map(s => (
+    <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />
+  ));
 
   return (
     <UserPublicProfileView
@@ -97,6 +103,12 @@ export function UserProfileOtherDemoPage() {
         labels: SECTIONS_LABELS,
       }}
       loading={{ hero: false, organizations: false, hostedResources: false, memberships: false }}
+      loadingLabels={{
+        hero: 'Loading profile header',
+        organizations: 'Loading organizations',
+        hostedResources: 'Loading hosted resources',
+        memberships: 'Loading memberships',
+      }}
     />
   );
 }

@@ -1,76 +1,62 @@
-import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
-import type { ReferenceLink } from '@/crd/components/organization/OrganizationProfileSidebar';
-import { Card, CardContent, CardHeader } from '@/crd/primitives/card';
-
-export type ModelCardSummary = {
-  aiEngine: {
-    name: string;
-    isExternal: boolean;
-    hostingLocation: string;
-    isUsingOpenWeightsModel: boolean;
-    canAccessWebWhenAnswering: boolean;
-    additionalTechnicalDetails: string | null;
-  };
-  monitoring: {
-    isUsageMonitoredByAlkemio: boolean;
-  };
-};
+import type { ReactNode } from 'react';
+import { VCAiEngineGrid, type VCAiEngineSectionData } from './VCAiEngineGrid';
+import { VCFunctionalityGrid, type VCFunctionalitySectionData } from './VCFunctionalityGrid';
+import { VCMonitoringSection } from './VCMonitoringSection';
 
 export type VCContentViewProps = {
-  modelCard: ModelCardSummary;
-  /**
-   * ALL references — passed straight to `<SocialLinks>`, which filters
-   * internally to the social subset and brand-resolves the icon. Same
-   * one-source-of-truth contract used on the Organization sidebar.
-   */
-  references: ReferenceLink[];
+  functionality: VCFunctionalitySectionData;
+  /** Pre-rendered Role Requirements paragraph (constructed with `<Trans>` upstream). */
+  roleRequirementsContent: ReactNode;
+  aiEngine: VCAiEngineSectionData;
+  monitoring: {
+    heading: string;
+    /** Pre-rendered Monitoring body (the integration layer supplies the `<a>` href). */
+    body: ReactNode;
+  };
   labels: {
-    modelCardTitle: string;
-    aiEngineLabel: string;
-    aiEngineExternal: string;
-    socialLinksTitle: string;
-    socialLinksEmpty: string;
+    functionalityHeading: string;
+    capabilitiesTitle: string;
+    dataAccessTitle: string;
+    roleRequirementsTitle: string;
+    /** Already interpolated with engineName by the mapper (e.g., "AI Engine: Alkemio AI"). */
+    aiEngineHeading: string;
+    yesAnswer: string;
+    noAnswer: string;
+    unknownAnswer: string;
+    technicalReferencesNotAvailable: string;
   };
 };
 
-export function VCContentView({ modelCard, references, labels }: VCContentViewProps) {
+export function VCContentView({
+  functionality,
+  roleRequirementsContent,
+  aiEngine,
+  monitoring,
+  labels,
+}: VCContentViewProps) {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <h2 className="text-section-title">{labels.modelCardTitle}</h2>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <div className="text-label uppercase text-muted-foreground mb-1">{labels.aiEngineLabel}</div>
-            <p className="text-body">
-              <span className="text-body-emphasis">{modelCard.aiEngine.name}</span>
-              {modelCard.aiEngine.isExternal ? (
-                <span className="text-muted-foreground"> · {labels.aiEngineExternal}</span>
-              ) : null}
-            </p>
-            {modelCard.aiEngine.hostingLocation ? (
-              <p className="text-caption text-muted-foreground mt-1">{modelCard.aiEngine.hostingLocation}</p>
-            ) : null}
-            {modelCard.aiEngine.additionalTechnicalDetails ? (
-              <p className="text-body text-muted-foreground mt-2">{modelCard.aiEngine.additionalTechnicalDetails}</p>
-            ) : null}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <h2 className="text-section-title">{labels.socialLinksTitle}</h2>
-        </CardHeader>
-        <CardContent>
-          {hasSocialReferences(references) ? (
-            <SocialLinks references={references} className="gap-4" />
-          ) : (
-            <p className="text-body text-muted-foreground">{labels.socialLinksEmpty}</p>
-          )}
-        </CardContent>
-      </Card>
+    <div className="space-y-10">
+      <VCFunctionalityGrid
+        functionality={functionality}
+        roleRequirementsContent={roleRequirementsContent}
+        labels={{
+          heading: labels.functionalityHeading,
+          capabilitiesTitle: labels.capabilitiesTitle,
+          dataAccessTitle: labels.dataAccessTitle,
+          roleRequirementsTitle: labels.roleRequirementsTitle,
+        }}
+      />
+      <VCAiEngineGrid
+        aiEngine={aiEngine}
+        labels={{
+          heading: labels.aiEngineHeading,
+          yesAnswer: labels.yesAnswer,
+          noAnswer: labels.noAnswer,
+          unknownAnswer: labels.unknownAnswer,
+          notAvailable: labels.technicalReferencesNotAvailable,
+        }}
+      />
+      <VCMonitoringSection heading={monitoring.heading} body={monitoring.body} />
     </div>
   );
 }

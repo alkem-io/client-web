@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { 
-  ArrowLeft, Share2, Layers, Check, ChevronRight, Home, Image as ImageIcon,
-  MoreHorizontal, Plus, Shield, FileText
+  Share2, Layers, Check, Home, Image as ImageIcon,
+  Settings, Plus, Shield, FileText
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -90,7 +90,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Space Banner" 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/40">
@@ -117,7 +117,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Subspace Banner" 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/40">
@@ -209,7 +209,7 @@ function TemplateCard({ template, onApply }: { template: typeof PACK_TEMPLATES[0
   return (
     <div 
         onClick={handleViewDetails}
-        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer h-full"
+        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer h-full"
     >
       <div className="relative h-32 w-full overflow-hidden bg-muted border-b border-border/50">
         <TemplatePreview type={template.type} content={template.previewContent} structure={template.structure} />
@@ -286,16 +286,8 @@ export function TemplatePackDetail() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-           {/* Breadcrumb / Back */}
-           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-              <Link to="/templates" className="hover:text-foreground hover:underline transition-colors flex items-center gap-1">
-                 <ArrowLeft className="w-3 h-3" /> Template Library
-              </Link>
-              <ChevronRight className="w-3 h-3 opacity-50" />
-              <span className="text-foreground font-medium truncate">{PACK_DATA.name}</span>
-           </div>
-           
+        <div className="grid grid-cols-12 gap-6 px-6 md:px-8 py-4">
+         <div className="col-span-12 lg:col-start-2 lg:col-span-10">
            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
               <div className="flex-1 space-y-3">
                  <div className="flex items-start gap-4">
@@ -329,6 +321,10 @@ export function TemplatePackDetail() {
               </div>
               
               <div className="flex items-center gap-3 md:self-center shrink-0 w-full md:w-auto">
+                  <Button variant="outline" size="icon" className="shrink-0" title="Pack Settings" onClick={() => navigate(`/templates/packs/${packSlug}/settings`)}>
+                      <Settings className="w-4 h-4" />
+                  </Button>
+
                   <Button variant="outline" size="icon" className="shrink-0" title="Share Pack">
                       <Share2 className="w-4 h-4" />
                   </Button>
@@ -339,10 +335,12 @@ export function TemplatePackDetail() {
                   </Button>
               </div>
            </div>
+         </div>
         </div>
       </div>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 grid grid-cols-12 gap-6 px-6 md:px-8 py-8">
+       <div className="col-span-12 lg:col-start-2 lg:col-span-10">
          <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
             <Accordion type="multiple" defaultValue={["space", "subspace", "collab", "whiteboard", "guidelines"]}>
                 {SECTIONS.map(section => {
@@ -384,6 +382,7 @@ export function TemplatePackDetail() {
                  ))}
              </div>
          </div>
+       </div>
       </main>
 
       {/* Apply Dialog */}

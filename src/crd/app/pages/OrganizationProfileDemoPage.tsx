@@ -25,6 +25,7 @@ const SECTIONS_LABELS = {
   memberOf: 'All Memberships',
   emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
+  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const TABS = [
@@ -51,8 +52,9 @@ export function OrganizationProfileDemoPage() {
       setTimeout(resolve, 500);
     });
 
-  const leadSpaces = org.leadSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
-  const memberOf = org.memberOfSpaces.map(s => <SpaceGridCard key={s.id} space={s} />);
+  const spacePrivacyLabels = { privacyPrivate: 'Private space', privacyPublic: 'Public space' };
+  const leadSpaces = org.leadSpaces.map(s => <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />);
+  const memberOf = org.memberOfSpaces.map(s => <SpaceGridCard key={s.id} space={s} labels={spacePrivacyLabels} />);
 
   return (
     <OrganizationPublicProfileView
@@ -89,6 +91,12 @@ export function OrganizationProfileDemoPage() {
         labels: SECTIONS_LABELS,
       }}
       loading={{ hero: false, sidebar: false, hostedResources: false, memberships: false }}
+      loadingLabels={{
+        hero: 'Loading profile header',
+        sidebar: 'Loading profile details',
+        hostedResources: 'Loading hosted resources',
+        memberships: 'Loading memberships',
+      }}
     />
   );
 }

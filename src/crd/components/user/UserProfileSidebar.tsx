@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
 import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
-import type { ReferenceLink, TagsetGroup } from '@/crd/components/organization/OrganizationProfileSidebar';
 import { Badge } from '@/crd/primitives/badge';
 
 export type UserProfileSidebarProps = {
@@ -55,20 +55,24 @@ export function UserProfileSidebar({
 
       {tagsets.length > 0 ? (
         <section>
-          <div className="space-y-4">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="space-y-4 list-none p-0 m-0">
             {tagsets.map(tagset => (
-              <div key={tagset.name}>
-                <div className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</div>
-                <div className="flex flex-wrap gap-2">
+              <li key={tagset.key}>
+                <h3 className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</h3>
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className="flex flex-wrap gap-2 list-none p-0 m-0">
                   {tagset.tags.map(tag => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
-                    </Badge>
+                    <li key={tag}>
+                      <Badge variant="secondary">{tag}</Badge>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       ) : null}
 

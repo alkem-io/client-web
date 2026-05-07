@@ -26,14 +26,13 @@ export function SpaceShell() {
     <div className="flex flex-col bg-background">
       <SpaceHeader spaceSlug={slug} />
 
-      {/* Content area: sidebar + tabs/content column */}
-      <div
-        className="w-full mx-auto py-8"
-        style={{ maxWidth: 1536, paddingLeft: 24, paddingRight: 24 }}
-      >
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} />
-          <div className="flex-1 w-full min-w-0">
+      {/* Content area: 12-column grid — 1 col margin each side, sidebar 2 cols, content 8 cols */}
+      <div className="w-full px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6 items-start">
+          <div className="hidden lg:block lg:col-start-2 col-span-2">
+            <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} />
+          </div>
+          <div className="col-span-12 lg:col-span-8 min-w-0">
             {/* Tab bar inside content column */}
             <div className="mb-6">
               <SpaceNavigationTabs spaceSlug={slug} />

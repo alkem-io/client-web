@@ -11,9 +11,6 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdUserProfilePage from './publicProfile/CrdUserProfilePage';
 
-// User settings/admin shell — owned by spec 097-crd-user-settings. When
-// the CRD toggle is enabled, settings/* renders the new CRD shell; when
-// disabled it falls back to the existing MUI admin route.
 const CrdUserSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdUserSettingsRoutes'));
 const MuiUserAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/userAdmin/routing/UserAdminRoute')
@@ -28,8 +25,18 @@ const CrdMeUserRoute = () => {
   const { t } = useTranslation();
   const { userModel, loadingMe } = useCurrentUserContext();
 
-  if (loadingMe || !userModel) {
+  if (loadingMe) {
     return <Loading text={t('pages.user-profile.loading')} />;
+  }
+
+  // Safety net — NoIdentityRedirect should already redirect, but render Error404
+  // if auth resolved with no current user so we never spin forever.
+  if (!userModel) {
+    return (
+      <CrdLayoutWrapper>
+        <Error404 />
+      </CrdLayoutWrapper>
+    );
   }
 
   return (

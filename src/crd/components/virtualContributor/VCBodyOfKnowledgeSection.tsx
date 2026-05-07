@@ -1,7 +1,6 @@
 import { ExternalLink, Lock } from 'lucide-react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent } from '@/crd/primitives/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/crd/primitives/tooltip';
@@ -12,6 +11,10 @@ export type SpaceProfileSummary = {
   displayName: string;
   level: 'L0' | 'L1' | 'L2';
   avatarImageUrl: string | null;
+  /** Resolved by the mapper via `pickColorFromId(spaceProfile.id || displayName)`. */
+  color: string;
+  /** Resolved by the mapper via `fallbackInitials(displayName)`. */
+  initials: string;
 };
 
 export type BodyOfKnowledge =
@@ -61,7 +64,6 @@ export function VCBodyOfKnowledgeSection({ bodyOfKnowledge, labels }: VCBodyOfKn
 }
 
 function SpaceBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'space' }> }) {
-  const color = pickColorFromId(bok.spaceProfile.id || bok.spaceProfile.displayName);
   return (
     <div className="space-y-3">
       {bok.description ? <MarkdownContent content={bok.description} /> : null}
@@ -70,9 +72,9 @@ function SpaceBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'space' }> })
         <CardContent className="p-3 flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-md shrink-0 flex items-center justify-center text-white text-badge"
-            style={backgroundGradient(color)}
+            style={backgroundGradient(bok.spaceProfile.color)}
           >
-            {bok.spaceProfile.displayName.slice(0, 2).toUpperCase()}
+            {bok.spaceProfile.initials}
           </div>
           <div className="flex-1 min-w-0">
             {bok.spaceProfile.url ? (
@@ -84,7 +86,7 @@ function SpaceBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'space' }> })
               </a>
             ) : (
               <div className="text-card-title flex items-center gap-2 text-muted-foreground">
-                <Lock className="w-3.5 h-3.5" />
+                <Lock className="w-3.5 h-3.5" aria-hidden="true" />
                 {bok.spaceProfile.displayName}
               </div>
             )}
@@ -109,7 +111,7 @@ function KnowledgeBaseBoK({
         <Button variant="outline" size="sm" asChild={true}>
           <a href={bok.visitUrl}>
             {labels.visitButton}
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-4 h-4" aria-hidden="true" />
           </a>
         </Button>
       ) : (
@@ -119,7 +121,7 @@ function KnowledgeBaseBoK({
               <span>
                 <Button variant="outline" size="sm" disabled={true}>
                   {labels.visitButton}
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 </Button>
               </span>
             </TooltipTrigger>
@@ -132,5 +134,9 @@ function KnowledgeBaseBoK({
 }
 
 function ExternalBoK({ bok }: { bok: Extract<BodyOfKnowledge, { kind: 'external' }> }) {
-  return <p className="text-body text-muted-foreground">{bok.description}</p>;
+  // The description is interpolated translation copy that may contain markdown
+  // (the existing key `components.profile.fields.engines.externalVCDescription`
+  // includes a link). Render through `MarkdownContent` for parity with
+  // SpaceBoK/KnowledgeBaseBoK and to satisfy CRD Golden Rule #10.
+  return <MarkdownContent content={bok.description} />;
 }

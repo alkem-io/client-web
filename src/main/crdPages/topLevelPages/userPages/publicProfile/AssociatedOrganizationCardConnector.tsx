@@ -17,8 +17,15 @@ export function AssociatedOrganizationCardConnector({ organizationId }: Associat
   const { t } = useTranslation('crd-profilePages');
   const data = useAssociatedOrganization({ organizationId });
 
-  if (data.loading || !data.profile) {
+  // Loading and "resolved but no profile" are different terminal states.
+  // Show the skeleton only while the hook is in flight; if it resolves with
+  // no profile (404, deleted org, lacking permission), render nothing rather
+  // than a permanent skeleton.
+  if (data.loading) {
     return <Skeleton className="h-16 w-full rounded-xl" />;
+  }
+  if (!data.profile) {
+    return null;
   }
 
   const memberCount = data.associatesCount ?? 0;

@@ -1,43 +1,24 @@
 import { useTranslation } from 'react-i18next';
-import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
-import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
-import useUserContributions from '@/domain/community/user/userContributions/useUserContributions';
-import useUserOrganizationIds from '@/domain/community/user/userContributions/useUserOrganizationIds';
+import { MembershipCardConnector } from '../../common/MembershipCardConnector';
+import { normaliseReferences } from '../../common/profileMapperHelpers';
+import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToUserHandler } from '../../common/useSendMessageHandler';
-import { normaliseReferences } from '../../organizationPages/publicProfile/organizationProfileMapper';
-import useCanEditSettings from '../useCanEditSettings';
-import useUserPageRouteContext from '../useUserPageRouteContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
-import { MembershipCardConnector } from './MembershipCardConnector';
-import { buildLocationLine, buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
-import useResourceTabs from './useResourceTabs';
-
-const buildSettingsHrefForUserSlug = (slug: string | undefined) =>
-  slug ? `/user/${slug}/settings/profile` : undefined;
+import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
+import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
 
 export const CrdUserProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
-  const { userId, userModel, userSlug, currentUserId, loading: routeLoading } = useUserPageRouteContext();
+  const data = useCrdUserProfilePageData();
+  const { userId, userModel, currentUserId, accountResources, contributions, organizationIds, loading } = data;
   usePageTitle(userModel?.profile?.displayName);
-
-  const { canEditSettings } = useCanEditSettings({ profileUserId: userId });
-
-  const { data: userAccountData, loading: loadingUserAccount } = useUserAccountQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { userId: userId! },
-    skip: !userId,
-  });
-  const accountResources = useAccountResources(userAccountData?.lookup.user?.account?.id);
-
-  const contributions = useUserContributions(userId);
-  const organizationIds = useUserOrganizationIds(userId);
 
   const { activeTab, onSelectTab } = useResourceTabs();
 
@@ -49,19 +30,15 @@ export const CrdUserProfilePage = () => {
     { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
   ];
 
-  // Loading flags per region (FR-009).
-  const heroLoading = routeLoading || !userModel;
-  const orgsLoading = userId !== undefined && organizationIds === undefined;
-  const hostedLoading = loadingUserAccount;
-  const membershipsLoading = userId !== undefined && contributions === undefined;
+  const heroLoading = loading.route || !userModel;
+  const orgsLoading = loading.organizations;
+  const hostedLoading = loading.userAccount;
+  const membershipsLoading = loading.memberships;
 
-  // Hooks below MUST run on every render (rules of hooks). Build all derived
-  // data before any early return.
   const safeContributions = contributions ?? [];
   const [leadingItems, memberItems] = useFilteredMemberships(safeContributions, [RoleType.Lead, RoleType.Admin]);
 
-  // 404 — `userId` resolved (no longer loading) but no userModel returned.
-  if (!routeLoading && userId === undefined) {
+  if (!loading.route && !userModel) {
     return <Error404 />;
   }
 
@@ -69,29 +46,30 @@ export const CrdUserProfilePage = () => {
   const id = userModel?.id ?? userId ?? '';
   const color = pickColorFromId(id);
 
-  const location = buildLocationLine(
-    profile?.location?.city,
-    profile?.location?.country,
-    vars => t('common.locationFormat', vars),
-    vars => t('common.locationCityOnly', vars),
-    vars => t('common.locationCountryOnly', vars)
-  );
+  const city = profile?.location?.city?.trim() ?? '';
+  const country = profile?.location?.country?.trim() ?? '';
+  const location =
+    city && country
+      ? t('common.locationFormat', { city, country })
+      : city
+        ? t('common.locationCityOnly', { city })
+        : country
+          ? t('common.locationCountryOnly', { country })
+          : null;
 
   const isOwnProfile = Boolean(currentUserId && userModel?.id && currentUserId === userModel.id);
 
-  const showSettingsIcon = canEditSettings;
+  const showSettingsIcon = data.canEditSettings;
   const showMessageButton = Boolean(currentUserId) && !isOwnProfile;
 
-  const settingsHref = buildSettingsHrefForUserSlug(userSlug);
+  const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
-  // Hosted resources — 4 sub-sections per FR-013 (refined).
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
-    mapHostedSpacesToCardData(accountResources ?? undefined, t('userProfile.vcType'));
+    mapHostedSpacesToCardData(accountResources, t('userProfile.vcType'));
 
   const spacesLeading = leadingItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const spacesMember = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
-  // Organizations sidebar.
   const safeOrgIds = organizationIds ?? [];
   const organizationsSlot = safeOrgIds.map(orgId => (
     <AssociatedOrganizationCardConnector key={orgId} organizationId={orgId} />
@@ -117,14 +95,7 @@ export const CrdUserProfilePage = () => {
         }),
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
-        references: normaliseReferences(
-          (profile?.references ?? []).map(r => ({
-            id: r.id,
-            name: r.name,
-            uri: r.uri,
-            description: r.description ?? null,
-          }))
-        ),
+        references: normaliseReferences(profile?.references ?? []),
         labels: {
           aboutTitle: t('userProfile.sidebar.aboutTitle'),
           organizationsTitle: t('userProfile.sidebar.organizationsTitle'),
@@ -150,14 +121,16 @@ export const CrdUserProfilePage = () => {
         labels: {
           spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
-          // FR-102 parity reuse: pulled from the global `translation` namespace
-          // (existing keys), not duplicated under `crd-profilePages`.
           templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
           emptyLeading: t('userProfile.empty.leading'),
           emptyMembership: t('userProfile.empty.membership'),
+          spacePrivacy: {
+            privacyPrivate: t('common.spacePrivacy.private'),
+            privacyPublic: t('common.spacePrivacy.public'),
+          },
         },
       }}
       loading={{
@@ -165,6 +138,12 @@ export const CrdUserProfilePage = () => {
         organizations: orgsLoading,
         hostedResources: hostedLoading,
         memberships: membershipsLoading,
+      }}
+      loadingLabels={{
+        hero: t('common.loading.hero'),
+        organizations: t('common.loading.organizations'),
+        hostedResources: t('common.loading.hostedResources'),
+        memberships: t('common.loading.memberships'),
       }}
     />
   );

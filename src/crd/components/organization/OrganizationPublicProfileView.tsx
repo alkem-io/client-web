@@ -18,6 +18,13 @@ export type OrganizationPublicProfileViewProps = {
     hostedResources: boolean;
     memberships: boolean;
   };
+  /** i18n-resolved aria-labels for the per-region skeleton status containers (FR-009 / WCAG 2.1 AA). */
+  loadingLabels: {
+    hero: string;
+    sidebar: string;
+    hostedResources: string;
+    memberships: string;
+  };
 };
 
 export function OrganizationPublicProfileView({
@@ -26,20 +33,39 @@ export function OrganizationPublicProfileView({
   tabStrip,
   rightColumn,
   loading,
+  loadingLabels,
 }: OrganizationPublicProfileViewProps) {
+  const sectionsLoading = rightColumn.activeTab === 'resourcesHosted' ? loading.hostedResources : loading.memberships;
+  const sectionsLabel =
+    rightColumn.activeTab === 'resourcesHosted' ? loadingLabels.hostedResources : loadingLabels.memberships;
+
   return (
     <div className="min-h-screen bg-background pb-12">
-      {loading.hero ? <HeroSkeleton /> : <OrganizationPageHero {...hero} />}
+      {loading.hero ? (
+        <output aria-label={loadingLabels.hero}>
+          <HeroSkeleton />
+        </output>
+      ) : (
+        <OrganizationPageHero {...hero} />
+      )}
 
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-8">
-            {loading.sidebar ? <SidebarSkeleton /> : <OrganizationProfileSidebar {...sidebar} />}
+            {loading.sidebar ? (
+              <output aria-label={loadingLabels.sidebar}>
+                <SidebarSkeleton />
+              </output>
+            ) : (
+              <OrganizationProfileSidebar {...sidebar} />
+            )}
           </div>
           <div className="lg:col-span-8 flex flex-col min-w-0">
             <ProfileResourceTabStrip {...tabStrip} />
-            {loading.hostedResources || loading.memberships ? (
-              <SectionsSkeleton />
+            {sectionsLoading ? (
+              <output aria-label={sectionsLabel}>
+                <SectionsSkeleton />
+              </output>
             ) : (
               <OrganizationResourceSections {...rightColumn} />
             )}

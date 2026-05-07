@@ -68,7 +68,7 @@ export function MessagePopover({
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild={true}>
         <Button variant={triggerVariant} className={cn('gap-2 shadow-sm', className)} aria-haspopup="dialog">
-          <Mail className="w-4 h-4" />
+          <Mail className="w-4 h-4" aria-hidden="true" />
           {triggerLabel}
         </Button>
       </PopoverTrigger>

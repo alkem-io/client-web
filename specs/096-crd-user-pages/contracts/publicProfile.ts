@@ -29,6 +29,8 @@
  * `UserSettingsCard`) live in sibling spec 097-crd-user-settings/contracts/shell.ts.
  */
 
+import type { ReactNode } from 'react';
+
 /* ----------------------------- UserPageHero ------------------------------ */
 
 export type UserPageHeroProps = {
@@ -155,6 +157,19 @@ export type UserPublicProfileViewProps = {
     memberships: boolean;
   };
 
+  /**
+   * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
+   * (WCAG 2.1 AA — loading regions must be exposed to assistive tech). One
+   * entry per `loading` flag; the integration layer resolves these from the
+   * `crd-profilePages` `common.loading.*` namespace.
+   */
+  loadingLabels: {
+    hero: string;
+    organizations: string;
+    hostedResources: string;
+    memberships: string;
+  };
+
   /** Active resource tab; integration layer manages this state. */
   activeResourceTab: ResourceTabKey;
   onSelectResourceTab: (next: ResourceTabKey) => void;
@@ -173,18 +188,27 @@ export type UserPublicProfileViewProps = {
 
 /* -------------------------- UserResourceTabStrip ------------------------- */
 
+/**
+ * The User profile tab strip is implemented as a thin re-export over the
+ * shared `ProfileResourceTabStrip` (also used by the Organization profile).
+ * Props mirror the shared API exactly: a `tabs` array of `{key, label}` plus
+ * `activeTab` / `onSelectTab` / `ariaLabel` / optional `className`. There is
+ * no per-tab `counts` field — an earlier draft included badge counts; that
+ * shape was dropped when the shared strip was extracted, so the contract
+ * here matches the shared implementation.
+ */
+export type UserResourceTab = {
+  key: ResourceTabKey;
+  label: string;
+};
+
 export type UserResourceTabStripProps = {
+  tabs: UserResourceTab[];
   activeTab: ResourceTabKey;
   onSelectTab: (next: ResourceTabKey) => void;
-  /**
-   * Per-tab counts, used for badge rendering. The strip itself only renders
-   * the count when `count !== null`. Integration layer can pass null to hide.
-   */
-  counts: {
-    resourcesHosted: number | null;
-    leading: number | null;
-    memberOf: number | null;
-  };
+  /** i18n-resolved aria-label for the tablist (WCAG 2.1 AA). */
+  ariaLabel: string;
+  className?: string;
 };
 
 /**
@@ -229,16 +253,35 @@ export type UserProfileSidebarProps = {
   /**
    * Reserved profile tagsets — Keywords + Skills (FR-010a). Empty entries are
    * dropped by the mapper; the block is hidden entirely when the array is
-   * empty. The `TagsetGroup` shape is reused from `OrganizationProfileSidebar`
-   * (`{ name: string; tags: string[] }`).
+   * empty. The `TagsetGroup` shape is shared via
+   * `@/crd/components/common/profileTypes` (`{ key: string; name: string;
+   * tags: string[] }`).
    */
-  tagsets: { name: string; tags: string[] }[];
-  organizations: AssociatedOrganizationCard[];
+  tagsets: { key: string; name: string; tags: string[] }[];
+  /**
+   * Pre-rendered organisation cards. Lazy fetching per organisation lives in
+   * the integration layer (each card is a `useAssociatedOrganization`
+   * consumer that produces a `CompactContributorCard`). The view just
+   * renders the slot.
+   */
+  organizationsSlot: ReactNode | ReactNode[];
+  /** True when there are no organisations to render — drives the empty state. */
+  organizationsEmpty: boolean;
+  /**
+   * Optional references (social + non-social). The view passes the array
+   * straight to `<SocialLinks>` which filters internally for known networks
+   * (website / linkedin / github / bsky / youtube / email) and renders them
+   * as a monochrome icon row. When no social refs are present, the section
+   * is hidden entirely. The `ReferenceLink` shape is shared via
+   * `@/crd/components/common/profileTypes`.
+   */
+  references?: { id: string; name: string; uri: string; description: string | null }[];
   /** i18n-resolved labels. */
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
-    emptyBio: string;
-    emptyOrganizations: string;
+    socialLinksTitle: string;
+    bioEmpty: string;
+    organizationsEmpty: string;
   };
 };
