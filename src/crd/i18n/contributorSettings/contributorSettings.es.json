@@ -1,0 +1,125 @@
+{
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Perfil",
+        "account": "Cuenta",
+        "membership": "Membresía",
+        "organizations": "Organizaciones",
+        "notifications": "Notificaciones",
+        "settings": "Ajustes",
+        "security": "Seguridad"
+      },
+      "org": {
+        "profile": "Perfil",
+        "account": "Cuenta",
+        "community": "Comunidad",
+        "authorization": "Autorización",
+        "settings": "Ajustes"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Perfil",
+      "identity": {
+        "title": "Identidad",
+        "displayName": {
+          "label": "Nombre visible",
+          "hint": "Cómo apareces en Alkemio.",
+          "required": "El nombre visible es obligatorio"
+        },
+        "firstName": {
+          "label": "Nombre",
+          "hint": "Tu nombre de pila.",
+          "required": "El nombre es obligatorio"
+        },
+        "lastName": {
+          "label": "Apellido",
+          "hint": "Tus apellidos.",
+          "required": "El apellido es obligatorio"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "readOnlyCaption": "Contacta con soporte para cambiar tu correo"
+        },
+        "phone": {
+          "label": "Teléfono",
+          "hint": "Opcional. Nunca lo compartiremos.",
+          "invalidFormat": "Formato de teléfono no admitido"
+        }
+      },
+      "aboutYou": {
+        "title": "Sobre ti",
+        "tagline": {
+          "label": "Lema",
+          "hint": "Una frase corta visible en tu perfil."
+        },
+        "location": {
+          "title": "Ubicación",
+          "city": "Ciudad",
+          "country": "País",
+          "countryPlaceholder": "Selecciona un país"
+        },
+        "bio": {
+          "label": "Biografía",
+          "hint": "Compatible con Markdown."
+        },
+        "tags": {
+          "label": "Etiquetas",
+          "hint": "Pulsa Enter para añadir una etiqueta."
+        }
+      },
+      "socialLinks": {
+        "title": "Redes sociales",
+        "linkedinPlaceholder": "https://linkedin.com/in/tu-usuario",
+        "bskyPlaceholder": "https://bsky.app/profile/tu-usuario",
+        "githubPlaceholder": "https://github.com/tu-usuario",
+        "addAnother": "Añadir otra referencia",
+        "namePlaceholder": "Nombre de la referencia",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Descripción (opcional)",
+        "deleteDialog": {
+          "title": "¿Eliminar referencia?",
+          "description": "Al eliminarla también desaparecerá de tu perfil público tras guardar.",
+          "confirm": "Eliminar referencia"
+        }
+      },
+      "avatar": {
+        "title": "Foto de perfil",
+        "changeButton": "Cambiar avatar",
+        "helperText": "Recomendado: 400×400 px. JPG, PNG o GIF.",
+        "uploading": "Subiendo…"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Perfil"
+    },
+    "account": {
+      "pageTitle": "Cuenta"
+    },
+    "community": {
+      "pageTitle": "Comunidad"
+    },
+    "authorization": {
+      "pageTitle": "Autorización"
+    },
+    "settings": {
+      "pageTitle": "Ajustes"
+    }
+  },
+  "shared": {
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "¡Guardado!",
+    "saveFailed": "No se pudo guardar — inténtalo de nuevo",
+    "loading": "Cargando…",
+    "cancel": "Cancelar",
+    "remove": "Quitar",
+    "delete": "Eliminar",
+    "yes": "Sí",
+    "no": "No"
+  }
+}

@@ -1,0 +1,526 @@
+import { useEffect, useRef, useState } from 'react';
+import {
+  useCreateReferenceOnProfileMutation,
+  useCreateTagsetOnProfileMutation,
+  useDeleteReferenceMutation,
+  useUpdateUserMutation,
+  useUploadVisualMutation,
+  useUserQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import type { UpdateProfileInput, UpdateUserInput } from '@/core/apollo/generated/graphql-schema';
+import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
+import type {
+  SectionSaveStatus,
+  UserProfileFormValues,
+  UserProfileReference,
+  UserProfileSectionKey,
+} from '@/crd/components/user/settings/UserProfileTabView.types';
+import { mapUserToProfileFormValues } from './userProfileMapper';
+
+const TEMP_PREFIX = 'temp-';
+const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
+
+export type UseUserProfileTabDataResult = {
+  values: UserProfileFormValues | null;
+  loading: boolean;
+  error: Error | null;
+  dirtyByField: Partial<Record<UserProfileSectionKey, boolean>>;
+  saveStatusByField: Partial<Record<UserProfileSectionKey, SectionSaveStatus>>;
+  pendingReferenceDelete: { id: string; name: string } | null;
+  uploadingAvatar: boolean;
+
+  onChange: (patch: Partial<UserProfileFormValues>) => void;
+  onAddReference: () => void;
+  onUpdateReference: (id: string, patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => void;
+  onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;
+  onRequestRemoveReference: (id: string) => void;
+  onConfirmRemoveReference: () => void;
+  onCancelRemoveReference: () => void;
+  onUploadAvatar: (file: File) => void;
+  onSaveSection: (section: UserProfileSectionKey) => Promise<void>;
+};
+
+/**
+ * Per-section save hook for the User Profile tab — parallel to 045's
+ * `useAboutTabData`. Holds local form values + per-section status; each
+ * `onSaveSection(k)` fires ONE targeted mutation (only that section's
+ * fields), then merges the freshly-saved slice back into the local buffer
+ * to preserve unsaved edits in OTHER sections.
+ *
+ * Failure semantics (FR-022):
+ * - `saving` → `error` on hard failure. The section stays dirty with the
+ *   user's typed values preserved + an inline error message. The error
+ *   persists until the admin edits any field in the section again, at
+ *   which point `onChange` clears the error and re-enables Save.
+ *
+ * References (FR-025 / Rule #9):
+ * - Trash sets `pendingReferenceDelete`; only the dialog's Confirm queues
+ *   the row for deletion in the local buffer.
+ * - The actual `deleteReference` mutation fires only on the
+ *   References-section Save (in the same batch as create / update).
+ */
+export const useUserProfileTabData = (userId: string | undefined): UseUserProfileTabDataResult => {
+  const {
+    data,
+    loading: queryLoading,
+    error: queryError,
+    refetch,
+  } = useUserQuery({ variables: { id: userId ?? '' }, skip: !userId });
+
+  const user = data?.lookup.user;
+  const saved: UserProfileFormValues | null = user ? mapUserToProfileFormValues(user) : null;
+
+  const [values, setValues] = useState<UserProfileFormValues | null>(null);
+  const valuesRef = useRef<UserProfileFormValues | null>(null);
+
+  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<UserProfileSectionKey, SectionSaveStatus>>>(
+    {}
+  );
+  const savedFlashTimers = useRef<Partial<Record<UserProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
+
+  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; name: string } | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const [updateUser] = useUpdateUserMutation();
+  const [createReference] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
+  const [createTagset] = useCreateTagsetOnProfileMutation();
+  const [uploadVisual] = useUploadVisualMutation();
+
+  // Seed the local buffer once when the query first resolves. Subsequent
+  // cache updates flow through `saved` for dirty detection, but never
+  // overwrite the user's edits.
+  useEffect(() => {
+    if (saved && valuesRef.current === null) {
+      valuesRef.current = saved;
+      setValues(saved);
+    }
+  }, [saved]);
+
+  useEffect(
+    () => () => {
+      for (const timer of Object.values(savedFlashTimers.current)) {
+        if (timer) clearTimeout(timer);
+      }
+    },
+    []
+  );
+
+  // ────────────────── Dirty map (per section) ──────────────────
+
+  const arrayEq = <T>(a: ReadonlyArray<T>, b: ReadonlyArray<T>) => JSON.stringify(a) === JSON.stringify(b);
+
+  const referencesEqual = (a: UserProfileFormValues | null, b: UserProfileFormValues | null): boolean => {
+    if (!a || !b) return true;
+    if (a.references.length !== b.references.length) return false;
+    if (!arrayEq(a.references, b.references)) return false;
+    const recognizedKinds = ['linkedin', 'bsky', 'github'] as const;
+    return recognizedKinds.every(k => {
+      const aRef = a.recognizedReferences[k];
+      const bRef = b.recognizedReferences[k];
+      return (aRef?.uri ?? '') === (bRef?.uri ?? '');
+    });
+  };
+
+  const dirtyByField: Partial<Record<UserProfileSectionKey, boolean>> = (() => {
+    if (!values || !saved) return {};
+    return {
+      displayName: values.displayName !== saved.displayName,
+      firstName: values.firstName !== saved.firstName,
+      lastName: values.lastName !== saved.lastName,
+      phone: values.phone !== saved.phone,
+      tagline: values.tagline !== saved.tagline,
+      location: values.city !== saved.city || values.country !== saved.country,
+      bio: values.bio !== saved.bio,
+      tags: !arrayEq(values.tags, saved.tags),
+      references: !referencesEqual(values, saved),
+    };
+  })();
+
+  // ────────────────── Local mutations ──────────────────
+
+  /** Clear the section's error status when the user edits it again. */
+  const clearSectionErrorIfPresent = (section: UserProfileSectionKey) => {
+    setSaveStatusByField(prev => {
+      const current = prev[section];
+      if (!current || current.kind !== 'error') return prev;
+      const next = { ...prev };
+      delete next[section];
+      return next;
+    });
+  };
+
+  const onChange = (patch: Partial<UserProfileFormValues>) => {
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const next = { ...base, ...patch };
+      valuesRef.current = next;
+      return next;
+    });
+    // Heuristic: any single-field change clears that field's error.
+    if ('displayName' in patch) clearSectionErrorIfPresent('displayName');
+    if ('firstName' in patch) clearSectionErrorIfPresent('firstName');
+    if ('lastName' in patch) clearSectionErrorIfPresent('lastName');
+    if ('phone' in patch) clearSectionErrorIfPresent('phone');
+    if ('tagline' in patch) clearSectionErrorIfPresent('tagline');
+    if ('city' in patch || 'country' in patch) clearSectionErrorIfPresent('location');
+    if ('bio' in patch) clearSectionErrorIfPresent('bio');
+    if ('tags' in patch) clearSectionErrorIfPresent('tags');
+    if ('references' in patch || 'recognizedReferences' in patch) clearSectionErrorIfPresent('references');
+  };
+
+  const onAddReference = () => {
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const newRef: UserProfileReference = {
+        id: `${TEMP_PREFIX}${Date.now()}`,
+        name: '',
+        uri: '',
+        description: '',
+        recognized: false,
+      };
+      const next = { ...base, references: [...base.references, newRef] };
+      valuesRef.current = next;
+      return next;
+    });
+    clearSectionErrorIfPresent('references');
+  };
+
+  const onUpdateReference = (id: string, patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => {
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const next = {
+        ...base,
+        references: base.references.map(r => (r.id === id ? { ...r, ...patch } : r)),
+      };
+      valuesRef.current = next;
+      return next;
+    });
+    clearSectionErrorIfPresent('references');
+  };
+
+  const onUpdateRecognizedReference = (kind: 'linkedin' | 'bsky' | 'github', uri: string) => {
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const current = base.recognizedReferences[kind] ?? {
+        id: '',
+        name: kind,
+        uri: '',
+        description: '',
+        recognized: true,
+      };
+      const next = {
+        ...base,
+        recognizedReferences: {
+          ...base.recognizedReferences,
+          [kind]: { ...current, uri },
+        },
+      };
+      valuesRef.current = next;
+      return next;
+    });
+    clearSectionErrorIfPresent('references');
+  };
+
+  const onRequestRemoveReference = (id: string) => {
+    const base = valuesRef.current;
+    const ref = base?.references.find(r => r.id === id);
+    if (!ref) return;
+    // Use the URI as the dialog body label when the ref has no human name yet
+    // (newly-added arbitrary rows often start blank).
+    setPendingReferenceDelete({ id, name: ref.name || ref.uri || 'this reference' });
+  };
+
+  const onConfirmRemoveReference = () => {
+    const pending = pendingReferenceDelete;
+    if (!pending) return;
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const next = { ...base, references: base.references.filter(r => r.id !== pending.id) };
+      valuesRef.current = next;
+      return next;
+    });
+    setPendingReferenceDelete(null);
+    clearSectionErrorIfPresent('references');
+  };
+
+  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
+
+  // ────────────────── Avatar (immediate commit per FR-024) ──────────────────
+
+  const onUploadAvatar = (file: File) => {
+    const current = valuesRef.current;
+    const visual = current?.avatar;
+    if (!visual?.id) return; // No avatar slot yet — backend hasn't seeded one.
+    setUploadingAvatar(true);
+    void uploadVisual({
+      variables: {
+        file,
+        uploadData: {
+          visualID: visual.id,
+          alternativeText: visual.altText ?? undefined,
+        },
+      },
+    })
+      .then(result => {
+        const uploaded = result.data?.uploadImageOnVisual;
+        if (uploaded) {
+          setValues(prev => {
+            const base = prev ?? valuesRef.current;
+            if (!base) return prev;
+            const next = {
+              ...base,
+              avatar: {
+                ...base.avatar,
+                uri: uploaded.uri ?? null,
+                altText: uploaded.alternativeText ?? null,
+              },
+            };
+            valuesRef.current = next;
+            return next;
+          });
+        }
+      })
+      .finally(() => setUploadingAvatar(false));
+  };
+
+  // ────────────────── Per-section save ──────────────────
+
+  const setSectionStatus = (section: UserProfileSectionKey, status: SectionSaveStatus) => {
+    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
+  };
+
+  const flashSaved = (section: UserProfileSectionKey) => {
+    setSectionStatus(section, { kind: 'saved', at: Date.now() });
+    const existing = savedFlashTimers.current[section];
+    if (existing) clearTimeout(existing);
+    savedFlashTimers.current[section] = setTimeout(() => {
+      setSaveStatusByField(prev => {
+        const next = { ...prev };
+        delete next[section];
+        return next;
+      });
+      delete savedFlashTimers.current[section];
+    }, SAVED_FLASH_MS);
+  };
+
+  const buildUserPatch = (section: UserProfileSectionKey, current: UserProfileFormValues): UpdateUserInput | null => {
+    if (!userId) return null;
+    const base: UpdateUserInput = { ID: userId };
+    switch (section) {
+      case 'displayName':
+        return { ...base, profileData: { displayName: current.displayName } };
+      case 'firstName':
+        return { ...base, firstName: current.firstName };
+      case 'lastName':
+        return { ...base, lastName: current.lastName };
+      case 'phone':
+        return { ...base, phone: current.phone };
+      case 'tagline':
+        return { ...base, profileData: { tagline: current.tagline } };
+      case 'location':
+        return {
+          ...base,
+          profileData: { location: { city: current.city, country: current.country } },
+        };
+      case 'bio':
+        return { ...base, profileData: { description: current.bio } };
+      case 'tags':
+        if (!current.tagsetId) return null;
+        return {
+          ...base,
+          profileData: { tagsets: [{ ID: current.tagsetId, tags: current.tags }] },
+        };
+      case 'references':
+        return null; // handled via the dedicated batch path
+    }
+  };
+
+  const ensureTagsetThenSave = async (current: UserProfileFormValues) => {
+    if (current.tagsetId || !current.profileId) return;
+    await createTagset({
+      variables: { input: { profileID: current.profileId, name: 'default', tags: current.tags } },
+    });
+  };
+
+  const collectExistingReferencePatches = (current: UserProfileFormValues): UpdateProfileInput['references'] => {
+    const all = [
+      ...(['linkedin', 'bsky', 'github'] as const)
+        .map(kind => current.recognizedReferences[kind])
+        .filter((r): r is UserProfileReference => Boolean(r) && Boolean(r?.id)),
+      ...current.references.filter(r => !isTempId(r.id) && r.id),
+    ];
+    return all.map(r => ({
+      ID: r.id,
+      name: r.name,
+      uri: r.uri,
+      description: r.description,
+    }));
+  };
+
+  const collectNewReferences = (current: UserProfileFormValues): Array<UserProfileReference> => {
+    const recognizedRefs = (['linkedin', 'bsky', 'github'] as const)
+      .map(kind => current.recognizedReferences[kind])
+      .filter((r): r is UserProfileReference => r !== null);
+    const newRecognized = recognizedRefs
+      .filter(r => r.id === '' && r.uri.trim() !== '')
+      .map(r => ({ ...r, name: r.name || r.id }));
+    const newArbitrary = current.references.filter(r => isTempId(r.id) && r.name.trim());
+    return [...newRecognized, ...newArbitrary];
+  };
+
+  const collectRemovedReferenceIds = (current: UserProfileFormValues, savedNow: UserProfileFormValues): string[] => {
+    const currentIds = new Set([
+      ...current.references.map(r => r.id),
+      ...(['linkedin', 'bsky', 'github'] as const)
+        .map(kind => current.recognizedReferences[kind]?.id)
+        .filter((id): id is string => Boolean(id)),
+    ]);
+    const savedAll = [
+      ...savedNow.references,
+      ...(['linkedin', 'bsky', 'github'] as const)
+        .map(kind => savedNow.recognizedReferences[kind])
+        .filter((r): r is UserProfileReference => Boolean(r) && Boolean(r?.id)),
+    ];
+    return savedAll.filter(r => r.id && !isTempId(r.id) && !currentIds.has(r.id)).map(r => r.id);
+  };
+
+  const saveReferencesSection = async (current: UserProfileFormValues, savedNow: UserProfileFormValues) => {
+    if (!userId) return;
+
+    // 1) Patch existing.
+    const existingPatches = collectExistingReferencePatches(current);
+    if (existingPatches && existingPatches.length > 0) {
+      await updateUser({
+        variables: { input: { ID: userId, profileData: { references: existingPatches } } },
+      });
+    }
+
+    // 2) Create new.
+    const toCreate = collectNewReferences(current);
+    for (const ref of toCreate) {
+      await createReference({
+        variables: {
+          input: {
+            profileID: current.profileId,
+            name: ref.name || 'reference',
+            uri: ref.uri,
+            description: ref.description,
+          },
+        },
+      });
+    }
+
+    // 3) Delete removed.
+    const removedIds = collectRemovedReferenceIds(current, savedNow);
+    for (const id of removedIds) {
+      await deleteReference({ variables: { input: { ID: id } } });
+    }
+  };
+
+  const onSaveSection = async (section: UserProfileSectionKey) => {
+    const current = valuesRef.current;
+    const savedNow = saved;
+    if (!current || !savedNow || !userId) return;
+
+    setSectionStatus(section, { kind: 'saving' });
+
+    try {
+      if (section === 'tags') {
+        await ensureTagsetThenSave(current);
+      }
+      if (section === 'references') {
+        await saveReferencesSection(current, savedNow);
+      } else {
+        const patch = buildUserPatch(section, current);
+        if (patch) {
+          await updateUser({ variables: { input: patch } });
+        }
+      }
+
+      // Resync the local buffer with the server. The freshly-fetched values
+      // overwrite ONLY the section we just saved; unsaved edits in other
+      // sections are preserved.
+      const fresh = await refetch();
+      const freshUser = fresh.data?.lookup.user;
+      if (freshUser) {
+        const freshValues = mapUserToProfileFormValues(freshUser);
+        setValues(prev => {
+          const base = prev ?? valuesRef.current;
+          const merged = base ? mergeSavedSection(base, freshValues, section) : freshValues;
+          valuesRef.current = merged;
+          return merged;
+        });
+      }
+
+      flashSaved(section);
+    } catch (err) {
+      setSectionStatus(section, {
+        kind: 'error',
+        message: err instanceof Error ? err.message : 'Save failed',
+      });
+    }
+  };
+
+  return {
+    values,
+    loading: queryLoading,
+    error: queryError ?? null,
+    dirtyByField,
+    saveStatusByField,
+    pendingReferenceDelete,
+    uploadingAvatar,
+    onChange,
+    onAddReference,
+    onUpdateReference,
+    onUpdateRecognizedReference,
+    onRequestRemoveReference,
+    onConfirmRemoveReference,
+    onCancelRemoveReference,
+    onUploadAvatar,
+    onSaveSection,
+  };
+};
+
+/**
+ * Overlay the freshly-saved section's values onto the current buffer, so
+ * the user's unsaved edits in other sections are preserved after a
+ * per-section save (mirrors 045's `mergeSavedSection`).
+ */
+const mergeSavedSection = (
+  buffer: UserProfileFormValues,
+  fresh: UserProfileFormValues,
+  section: UserProfileSectionKey
+): UserProfileFormValues => {
+  switch (section) {
+    case 'displayName':
+      return { ...buffer, displayName: fresh.displayName };
+    case 'firstName':
+      return { ...buffer, firstName: fresh.firstName };
+    case 'lastName':
+      return { ...buffer, lastName: fresh.lastName };
+    case 'phone':
+      return { ...buffer, phone: fresh.phone };
+    case 'tagline':
+      return { ...buffer, tagline: fresh.tagline };
+    case 'location':
+      return { ...buffer, city: fresh.city, country: fresh.country };
+    case 'bio':
+      return { ...buffer, bio: fresh.bio };
+    case 'tags':
+      return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
+    case 'references':
+      return {
+        ...buffer,
+        references: fresh.references,
+        recognizedReferences: fresh.recognizedReferences,
+      };
+  }
+};
+
+export default useUserProfileTabData;

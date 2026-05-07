@@ -1,0 +1,125 @@
+{
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Профил",
+        "account": "Акаунт",
+        "membership": "Членство",
+        "organizations": "Организации",
+        "notifications": "Известия",
+        "settings": "Настройки",
+        "security": "Сигурност"
+      },
+      "org": {
+        "profile": "Профил",
+        "account": "Акаунт",
+        "community": "Общност",
+        "authorization": "Оторизация",
+        "settings": "Настройки"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Профил",
+      "identity": {
+        "title": "Самоличност",
+        "displayName": {
+          "label": "Показвано име",
+          "hint": "Как се показвате в Alkemio.",
+          "required": "Показваното име е задължително"
+        },
+        "firstName": {
+          "label": "Име",
+          "hint": "Личното ви име.",
+          "required": "Името е задължително"
+        },
+        "lastName": {
+          "label": "Фамилия",
+          "hint": "Фамилното ви име.",
+          "required": "Фамилията е задължителна"
+        },
+        "email": {
+          "label": "Имейл",
+          "readOnlyCaption": "Свържете се с поддръжката, за да промените имейла"
+        },
+        "phone": {
+          "label": "Телефон",
+          "hint": "По избор. Никога няма да го споделим.",
+          "invalidFormat": "Телефонният номер е в неподдържан формат"
+        }
+      },
+      "aboutYou": {
+        "title": "За вас",
+        "tagline": {
+          "label": "Слоган",
+          "hint": "Кратък ред, който се вижда в профила ви."
+        },
+        "location": {
+          "title": "Местоположение",
+          "city": "Град",
+          "country": "Държава",
+          "countryPlaceholder": "Изберете държава"
+        },
+        "bio": {
+          "label": "Биография",
+          "hint": "Поддържа Markdown."
+        },
+        "tags": {
+          "label": "Етикети",
+          "hint": "Натиснете Enter, за да добавите етикет."
+        }
+      },
+      "socialLinks": {
+        "title": "Социални връзки",
+        "linkedinPlaceholder": "https://linkedin.com/in/вашeто-име",
+        "bskyPlaceholder": "https://bsky.app/profile/вашeто-име",
+        "githubPlaceholder": "https://github.com/вашeто-име",
+        "addAnother": "Добави друга препратка",
+        "namePlaceholder": "Име на препратката",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "deleteDialog": {
+          "title": "Премахване на препратката?",
+          "description": "Премахването на тази препратка ще я изтрие и от публичния ви профил след запис.",
+          "confirm": "Премахване на препратката"
+        }
+      },
+      "avatar": {
+        "title": "Профилна снимка",
+        "changeButton": "Смени аватара",
+        "helperText": "Препоръчано: 400×400 px. JPG, PNG или GIF.",
+        "uploading": "Качване…"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Профил"
+    },
+    "account": {
+      "pageTitle": "Акаунт"
+    },
+    "community": {
+      "pageTitle": "Общност"
+    },
+    "authorization": {
+      "pageTitle": "Оторизация"
+    },
+    "settings": {
+      "pageTitle": "Настройки"
+    }
+  },
+  "shared": {
+    "save": "Запазване",
+    "saving": "Запазване…",
+    "saved": "Запазено!",
+    "saveFailed": "Записът не успя — опитайте отново",
+    "loading": "Зареждане…",
+    "cancel": "Отказ",
+    "remove": "Премахване",
+    "delete": "Изтриване",
+    "yes": "Да",
+    "no": "Не"
+  }
+}

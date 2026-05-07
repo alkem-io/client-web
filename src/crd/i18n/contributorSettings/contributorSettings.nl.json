@@ -1,0 +1,125 @@
+{
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Profiel",
+        "account": "Account",
+        "membership": "Lidmaatschap",
+        "organizations": "Organisaties",
+        "notifications": "Meldingen",
+        "settings": "Instellingen",
+        "security": "Beveiliging"
+      },
+      "org": {
+        "profile": "Profiel",
+        "account": "Account",
+        "community": "Gemeenschap",
+        "authorization": "Autorisatie",
+        "settings": "Instellingen"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Profiel",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe je verschijnt op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "firstName": {
+          "label": "Voornaam",
+          "hint": "Je voornaam.",
+          "required": "Voornaam is verplicht"
+        },
+        "lastName": {
+          "label": "Achternaam",
+          "hint": "Je achternaam.",
+          "required": "Achternaam is verplicht"
+        },
+        "email": {
+          "label": "E-mailadres",
+          "readOnlyCaption": "Neem contact op met support om je e-mailadres te wijzigen"
+        },
+        "phone": {
+          "label": "Telefoon",
+          "hint": "Optioneel. We delen dit nooit.",
+          "invalidFormat": "Telefoonnummer heeft geen ondersteunde indeling"
+        }
+      },
+      "aboutYou": {
+        "title": "Over jou",
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte zin die op je profiel verschijnt."
+        },
+        "location": {
+          "title": "Locatie",
+          "city": "Plaats",
+          "country": "Land",
+          "countryPlaceholder": "Kies een land"
+        },
+        "bio": {
+          "label": "Biografie",
+          "hint": "Markdown wordt ondersteund."
+        },
+        "tags": {
+          "label": "Tags",
+          "hint": "Druk op Enter om een tag toe te voegen."
+        }
+      },
+      "socialLinks": {
+        "title": "Sociale links",
+        "linkedinPlaceholder": "https://linkedin.com/in/jouw-naam",
+        "bskyPlaceholder": "https://bsky.app/profile/jouw-naam",
+        "githubPlaceholder": "https://github.com/jouw-naam",
+        "addAnother": "Andere referentie toevoegen",
+        "namePlaceholder": "Naam van de referentie",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op je openbare profiel na opslaan.",
+          "confirm": "Referentie verwijderen"
+        }
+      },
+      "avatar": {
+        "title": "Profielfoto",
+        "changeButton": "Avatar wijzigen",
+        "helperText": "Aanbevolen: 400×400 px. JPG, PNG of GIF.",
+        "uploading": "Uploaden…"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Profiel"
+    },
+    "account": {
+      "pageTitle": "Account"
+    },
+    "community": {
+      "pageTitle": "Gemeenschap"
+    },
+    "authorization": {
+      "pageTitle": "Autorisatie"
+    },
+    "settings": {
+      "pageTitle": "Instellingen"
+    }
+  },
+  "shared": {
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "saved": "Opgeslagen!",
+    "saveFailed": "Opslaan mislukt — probeer opnieuw",
+    "loading": "Laden…",
+    "cancel": "Annuleren",
+    "remove": "Verwijderen",
+    "delete": "Verwijderen",
+    "yes": "Ja",
+    "no": "Nee"
+  }
+}

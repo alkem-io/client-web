@@ -14,6 +14,7 @@ import type crdSpaceSettingsTranslation from '@/crd/i18n/spaceSettings/spaceSett
 import type crdSubspaceTranslation from '@/crd/i18n/subspace/subspace.en.json';
 import type crdWhiteboardTranslation from '@/crd/i18n/whiteboard/whiteboard.en.json';
 import type crdProfilePagesTranslation from '@/crd/i18n/profilePages/profilePages.en.json';
+import type crdContributorSettingsTranslation from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -33,6 +34,7 @@ declare module 'i18next' {
       'crd-subspace': typeof crdSubspaceTranslation;
       'crd-whiteboard': typeof crdWhiteboardTranslation;
       'crd-profilePages': typeof crdProfilePagesTranslation;
+      'crd-contributorSettings': typeof crdContributorSettingsTranslation;
     };
   }
 }
