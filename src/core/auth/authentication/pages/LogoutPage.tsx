@@ -36,22 +36,31 @@ async function cleanupPushSubscription(
 const LogoutPage = () => {
   const { t } = useTranslation();
 
-  const { getLogoutUrl, logoutUrl, error } = useLogoutUrl();
+  const { getLogoutUrl, outcome, error } = useLogoutUrl();
   const { clearReturnUrl } = useReturnUrl();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
 
   useEffect(() => {
-    if (logoutUrl) {
+    if (!outcome) {
+      getLogoutUrl();
+      return;
+    }
+    if (outcome.kind === 'redirect') {
       // Wait for push cleanup before redirecting to avoid leaving stale subscriptions
       cleanupPushSubscription(unsubscribeMutation).finally(() => {
         clearReturnUrl();
-        window.location.replace(logoutUrl);
+        window.location.replace(outcome.url);
       });
-    } else {
-      getLogoutUrl();
+      return;
     }
-    return () => {};
-  }, [logoutUrl]);
+    // outcome.kind === 'cleared' — already logged out. Tidy up local state,
+    // then redirect to the public home page so the user lands on a real
+    // anonymous view instead of the bare "logged out" placeholder.
+    cleanupPushSubscription(unsubscribeMutation).finally(() => {
+      clearReturnUrl();
+      window.location.replace('/home');
+    });
+  }, [outcome]);
 
   if (error) return <Typography>{String(error)}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;

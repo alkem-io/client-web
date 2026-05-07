@@ -1,35 +1,48 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useIdTokenHint } from './useIdTokenHint';
 
+type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
+
 export const useLogoutUrl = () => {
-  const { t } = useTranslation();
   const { fetchIdTokenHint } = useIdTokenHint();
-  const [error, setError] = useState<Error>();
+  const [error] = useState<Error>();
   const [loading, setLoading] = useState<boolean>();
-  const [logoutUrl, setLogoutUrl] = useState<string>();
+  const [outcome, setOutcome] = useState<LogoutOutcome>();
 
   const getLogoutUrl = async () => {
+    setLoading(true);
+    const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
     try {
-      setLoading(true);
       const idToken = await fetchIdTokenHint();
-      const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
       const params = new URLSearchParams({
         id_token_hint: idToken,
         post_logout_redirect_uri: postLogoutRedirectUri,
       });
-      setLogoutUrl(`/api/auth/oidc/logout?${params.toString()}`);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t('kratos.errors.session.default');
-      setError(new Error(message));
+      // Hintful path — full RP-initiated logout via Hydra, then back to /logout.
+      setOutcome({ kind: 'redirect', url: `/api/auth/oidc/logout?${params.toString()}` });
+    } catch {
+      // No hint available — session is already gone. Call BFF hintless to
+      // sweep any stale cookie. We use fetch (not navigation) so the page
+      // does not reload; this avoids a redirect loop when /logout itself is
+      // the post-logout target.
+      try {
+        await fetch('/api/auth/oidc/logout', {
+          credentials: 'include',
+          redirect: 'manual',
+        });
+      } catch {
+        // Network error mid-cleanup is non-fatal — the cookie either got
+        // cleared or there was nothing to clear in the first place.
+      }
+      setOutcome({ kind: 'cleared' });
     } finally {
       setLoading(false);
     }
   };
 
   return {
-    logoutUrl,
+    outcome,
     error,
     loading,
     getLogoutUrl: () => getLogoutUrl(),
