@@ -8,7 +8,7 @@ import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import SlideshowOutlined from '@mui/icons-material/SlideshowOutlined';
 import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
 import UploadFileOutlined from '@mui/icons-material/UploadFileOutlined';
-import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +75,7 @@ const CalloutFormFramingSettings = ({
   const { t, i18n } = useTranslation();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
-  const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
+  const { setFieldValue, setValues } = useFormikContext<CalloutFormSubmittedValues>();
   const [collaboraImportError, setCollaboraImportError] = useState<ValidationError | null>(null);
 
   const fileSizeFormatter = new Intl.NumberFormat(i18n.language, {
@@ -108,30 +108,116 @@ const CalloutFormFramingSettings = ({
       })()
     : null;
 
+  const [isDraggingCollabora, setIsDraggingCollabora] = useState(false);
+
+  // Single source of truth for "stage a validated file": clears the error and
+  // writes Formik values + auto-prefill (FR-004a) in ONE atomic update so
+  // Formik runs a single validation pass against the final state. Sequential
+  // setFieldValue calls would each trigger an intermediate validation against
+  // a half-updated state where the title is still empty — leaving `isValid`
+  // stuck at false and the POST button greyed out even though the title is
+  // visibly populated.
+  const stageValidatedCollaboraFile = (file: File) => {
+    setCollaboraImportError(null);
+    const shouldPrefillTitle = !framing.profile.displayName?.trim();
+    const prefilled = shouldPrefillTitle ? filenameWithoutExtension(file.name) : undefined;
+    setValues(
+      prev => ({
+        ...prev,
+        framing: {
+          ...prev.framing,
+          profile: {
+            ...prev.framing.profile,
+            ...(shouldPrefillTitle && prefilled ? { displayName: prefilled } : {}),
+          },
+          collaboraDocument: {
+            ...prev.framing.collaboraDocument,
+            displayName: prev.framing.collaboraDocument?.displayName ?? '',
+            documentType: prev.framing.collaboraDocument?.documentType ?? CollaboraDocumentType.Wordprocessing,
+            uploadFile: file,
+            autoPrefilledTitle: shouldPrefillTitle ? prefilled : undefined,
+          },
+        },
+      }),
+      true
+    );
+  };
+
   const handleCollaboraFileSelect = (file: File | null) => {
     if (!file) {
-      setFieldValue('framing.collaboraDocument.uploadFile', undefined);
-      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+      // Clear the staged file in one atomic update so validation runs once
+      // against the final state.
       setCollaboraImportError(null);
+      setValues(
+        prev => ({
+          ...prev,
+          framing: {
+            ...prev.framing,
+            collaboraDocument: prev.framing.collaboraDocument
+              ? {
+                  ...prev.framing.collaboraDocument,
+                  uploadFile: undefined,
+                  autoPrefilledTitle: undefined,
+                }
+              : prev.framing.collaboraDocument,
+          },
+        }),
+        true
+      );
       return;
     }
     const validation = validateCollaboraImportFile([file]);
     if (!validation.ok) {
       setCollaboraImportError(validation.error);
       // Don't stage the file when validation fails — pre-check before any network call.
-      setFieldValue('framing.collaboraDocument.uploadFile', undefined);
-      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+      setValues(
+        prev => ({
+          ...prev,
+          framing: {
+            ...prev.framing,
+            collaboraDocument: prev.framing.collaboraDocument
+              ? {
+                  ...prev.framing.collaboraDocument,
+                  uploadFile: undefined,
+                  autoPrefilledTitle: undefined,
+                }
+              : prev.framing.collaboraDocument,
+          },
+        }),
+        true
+      );
       return;
     }
-    setCollaboraImportError(null);
-    setFieldValue('framing.collaboraDocument.uploadFile', file);
-    if (!framing.profile.displayName?.trim()) {
-      const prefilled = filenameWithoutExtension(file.name);
-      setFieldValue('framing.profile.displayName', prefilled);
-      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', prefilled);
-    } else {
-      setFieldValue('framing.collaboraDocument.autoPrefilledTitle', undefined);
+    stageValidatedCollaboraFile(validation.file);
+  };
+
+  const handleCollaboraDrop = (event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    setIsDraggingCollabora(false);
+    if (edit) return;
+
+    // Folder drops surface as items with kind='file' and webkitGetAsEntry().isDirectory.
+    // Inspecting the DataTransferItemList catches folders before reading files.
+    const items = event.dataTransfer.items;
+    if (items) {
+      for (let i = 0; i < items.length; i += 1) {
+        const item = items[i] as DataTransferItem & {
+          webkitGetAsEntry?: () => { isDirectory: boolean } | null;
+        };
+        const entry = item.webkitGetAsEntry?.();
+        if (entry?.isDirectory) {
+          setCollaboraImportError({ kind: 'folder' });
+          return;
+        }
+      }
     }
+
+    const validation = validateCollaboraImportFile(event.dataTransfer.files);
+    if (!validation.ok) {
+      setCollaboraImportError(validation.error);
+      return;
+    }
+    stageValidatedCollaboraFile(validation.file);
   };
 
   // Collabora "Document" framing is gated by SPACE_FLAG_OFFICE_DOCUMENTS on the
@@ -305,6 +391,15 @@ const CalloutFormFramingSettings = ({
           disabled: calloutRestrictions?.disableMemos,
         },
         {
+          icon: DescriptionOutlined,
+          value: CalloutFramingType.CollaboraDocument,
+          label: t('callout.create.framingSettings.collaboraDocument.title'),
+          tooltip: officeDocumentsEnabled
+            ? t('callout.create.framingSettings.collaboraDocument.tooltip')
+            : t('callout.create.framingSettings.collaboraDocument.notEnabledTooltip'),
+          disabled: !officeDocumentsEnabled,
+        },
+        {
           icon: CampaignIcon,
           value: CalloutFramingType.Link,
           label: t('callout.create.framingSettings.link.title'),
@@ -324,15 +419,6 @@ const CalloutFormFramingSettings = ({
           label: t('callout.create.framingSettings.poll.title'),
           tooltip: t('callout.create.framingSettings.poll.tooltip'),
           disabled: calloutRestrictions?.disablePolls,
-        },
-        {
-          icon: DescriptionOutlined,
-          value: CalloutFramingType.CollaboraDocument,
-          label: t('callout.create.framingSettings.collaboraDocument.title'),
-          tooltip: officeDocumentsEnabled
-            ? t('callout.create.framingSettings.collaboraDocument.tooltip')
-            : t('callout.create.framingSettings.collaboraDocument.notEnabledTooltip'),
-          disabled: !officeDocumentsEnabled,
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -482,13 +568,47 @@ const CalloutFormFramingSettings = ({
                   </IconButton>
                 </Stack>
               ) : (
-                <Button
+                <Box
                   component="label"
-                  variant="outlined"
-                  startIcon={<UploadFileOutlined />}
-                  sx={{ alignSelf: 'center' }}
+                  onDragOver={e => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                    setIsDraggingCollabora(true);
+                  }}
+                  onDragEnter={e => {
+                    e.preventDefault();
+                    setIsDraggingCollabora(true);
+                  }}
+                  onDragLeave={() => setIsDraggingCollabora(false)}
+                  onDrop={handleCollaboraDrop}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 1,
+                    padding: 3,
+                    border: '2px dashed',
+                    borderColor: isDraggingCollabora ? 'primary.main' : 'divider',
+                    borderRadius: 1,
+                    backgroundColor: isDraggingCollabora ? 'action.hover' : 'transparent',
+                    cursor: 'pointer',
+                    transition: 'border-color 120ms ease, background-color 120ms ease',
+                    '&:hover': {
+                      borderColor: 'text.secondary',
+                      backgroundColor: 'action.hover',
+                    },
+                    '&:focus-within': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.main',
+                      outlineOffset: 2,
+                    },
+                  }}
                 >
-                  {t('callout.create.framingSettings.collaboraDocument.upload.hint')}
+                  <UploadFileOutlined fontSize="medium" color="action" />
+                  <Typography variant="body2" color="text.primary">
+                    {t('callout.create.framingSettings.collaboraDocument.upload.hint')}
+                  </Typography>
                   <input
                     type="file"
                     accept={COLLABORA_IMPORT_ACCEPT_ATTR}
@@ -499,7 +619,7 @@ const CalloutFormFramingSettings = ({
                       e.currentTarget.value = '';
                     }}
                   />
-                </Button>
+                </Box>
               )}
               <Typography variant="caption" color="text.secondary" textAlign="center">
                 {t('callout.create.framingSettings.collaboraDocument.upload.maxSize', { cap: collaboraCapMb })}
