@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { useParams, Link, Navigate, useNavigate } from "react-router";
-import { Info, FileText, Trash2, Check, Loader2, Plus, X, GripVertical, Pencil, MessageSquare, Layers } from "lucide-react";
+import { useParams, useNavigate } from "react-router";
+import { Info, FileText, Trash2, Check, Loader2, Plus, X, Pencil, MessageSquare, Layers } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
@@ -27,8 +27,9 @@ import {
 } from "@/app/components/ui/alert-dialog";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { cn } from "@/lib/utils";
+
 import { toast } from "sonner";
+import { ALL_TEMPLATES } from "@/app/data/template-data";
 
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 
@@ -273,7 +274,31 @@ const TEMPLATE_DATA: Record<string, {
 
 // Fallback for unknown templates
 function getTemplate(id: string) {
-  return TEMPLATE_DATA[id] || {
+  if (TEMPLATE_DATA[id]) return TEMPLATE_DATA[id];
+
+  // Fallback: look up from shared template library data
+  const libTemplate = ALL_TEMPLATES.find(t => t.id === id);
+  if (libTemplate) {
+    return {
+      id: libTemplate.id,
+      name: libTemplate.name,
+      type: libTemplate.type,
+      description: `<p>${libTemplate.description}</p>`,
+      tags: libTemplate.tags || [],
+      content: {
+        title: libTemplate.name,
+        body: "",
+        additionalContent: "none",
+        references: [],
+        responseOptions: { comments: true, collection: "none" },
+        innovationFlow: libTemplate.type === "Subspace" && libTemplate.structure?.stages
+          ? { phases: libTemplate.structure.stages.map((s: any) => ({ name: s.name, description: "", collaborationTools: (s.posts || []).map((p: string) => ({ name: p, type: "Collaboration Tool" })) })) }
+          : undefined,
+      }
+    };
+  }
+
+  return {
     id, name: "Unknown Template", type: "Collaboration Tool",
     description: "<p>Template description.</p>",
     tags: [],
@@ -438,40 +463,6 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
           />
         </div>
       </section>
-
-      <Separator />
-
-      {/* Danger Zone */}
-      <section className="space-y-4">
-        <Label className="text-xs text-muted-foreground uppercase tracking-wider">Danger Zone</Label>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10 gap-2">
-              <Trash2 className="w-4 h-4" /> Delete Template
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete template?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will permanently remove "{template.name}" from this pack. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                onClick={() => {
-                  toast.success("Template deleted");
-                  navigate(packSlug ? `/templates/packs/${packSlug}/settings/templates` : `/templates`);
-                }}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </section>
     </div>
   );
 }
@@ -481,6 +472,9 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
 function TemplateContentTab({ template }: { template: ReturnType<typeof getTemplate> }) {
   const [content, setContent] = useState(template.content);
   const [savedContent, setSavedContent] = useState(template.content);
+  const [sourceUrl, setSourceUrl] = useState(template.content.sourceUrl || "");
+  const [isLoaded, setIsLoaded] = useState(!!(template.content.innovationFlow?.phases?.length));
+  const [activePhase, setActivePhase] = useState(0);
   const { statuses, save } = useSectionSave();
 
   const dirty = {
@@ -509,148 +503,97 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
     ],
   };
 
-  // ─── Space type: Innovation Flow editor ─────────────────────────────────────
-  if (template.type === "Space") {
+  // ─── Space / Subspace type: Link to source + Innovation Flow preview ─────────
+  if (template.type === "Space" || template.type === "Subspace") {
+    const handleLoad = () => {
+      if (!sourceUrl.trim()) {
+        toast.error("Please enter a URL to a space or subspace");
+        return;
+      }
+      // Simulate loading - in production this would fetch the innovation flow
+      setIsLoaded(true);
+      toast.success("Innovation flow loaded from source");
+    };
+
     return (
       <div className="space-y-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Content</h2>
           <p className="text-muted-foreground mt-2">
-            Configure the Innovation Flow phases and the collaboration tools within each phase.
+            Provide a link to a {template.type === "Space" ? "space" : "subspace"} to use as the template source.
           </p>
         </div>
 
         <Separator />
 
-        {/* Innovation Flow */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Innovation Flow</Label>
-            <InlineSaveButton dirty={dirty.flow} status={statuses["flow"] || "idle"} onSave={() => saveSection("flow")} />
-          </div>
-          <div className="space-y-3">
-            {(content.innovationFlow?.phases || []).map((phase, phaseIdx) => (
-              <div key={phaseIdx} className="border border-border rounded-lg overflow-hidden">
-                <div className="flex items-center gap-3 px-4 py-3 bg-muted/30">
-                  <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab" />
-                  <div className="flex-1 min-w-0">
-                    <Input
-                      value={phase.name}
-                      onChange={(e) => {
-                        const newPhases = [...(content.innovationFlow?.phases || [])];
-                        newPhases[phaseIdx] = { ...newPhases[phaseIdx], name: e.target.value };
-                        setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                      }}
-                      className="h-8 text-sm font-medium bg-transparent border-none shadow-none px-0 focus-visible:ring-0"
-                      placeholder="Phase name"
-                    />
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="shrink-0 h-7 w-7"
-                    onClick={() => {
-                      const newPhases = (content.innovationFlow?.phases || []).filter((_, i) => i !== phaseIdx);
-                      setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                    }}
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-                <div className="px-4 py-2 border-t border-border/50">
-                  <Input
-                    value={phase.description}
-                    onChange={(e) => {
-                      const newPhases = [...(content.innovationFlow?.phases || [])];
-                      newPhases[phaseIdx] = { ...newPhases[phaseIdx], description: e.target.value };
-                      setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                    }}
-                    className="h-7 text-xs bg-transparent border-none shadow-none px-0 focus-visible:ring-0 text-muted-foreground"
-                    placeholder="Phase description"
-                  />
-                </div>
-                <div className="px-4 py-3 space-y-2 border-t border-border/50 bg-background">
-                  <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Collaboration Tools</Label>
-                  {phase.collaborationTools.map((tool, toolIdx) => (
-                    <div key={toolIdx} className="flex items-center gap-2">
-                      <GripVertical className="w-3 h-3 text-muted-foreground/40 cursor-grab shrink-0" />
-                      <Input
-                        value={tool.name}
-                        onChange={(e) => {
-                          const newPhases = [...(content.innovationFlow?.phases || [])];
-                          const newTools = [...newPhases[phaseIdx].collaborationTools];
-                          newTools[toolIdx] = { ...newTools[toolIdx], name: e.target.value };
-                          newPhases[phaseIdx] = { ...newPhases[phaseIdx], collaborationTools: newTools };
-                          setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                        }}
-                        className="h-7 text-xs flex-1 bg-muted/50 border-border"
-                        placeholder="Tool name"
-                      />
-                      <Select
-                        value={tool.type}
-                        onValueChange={(v) => {
-                          const newPhases = [...(content.innovationFlow?.phases || [])];
-                          const newTools = [...newPhases[phaseIdx].collaborationTools];
-                          newTools[toolIdx] = { ...newTools[toolIdx], type: v };
-                          newPhases[phaseIdx] = { ...newPhases[phaseIdx], collaborationTools: newTools };
-                          setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                        }}
-                      >
-                        <SelectTrigger className="w-40 h-7 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Collaboration Tool">Collaboration Tool</SelectItem>
-                          <SelectItem value="Whiteboard">Whiteboard</SelectItem>
-                          <SelectItem value="Post">Post</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="shrink-0 h-6 w-6"
-                        onClick={() => {
-                          const newPhases = [...(content.innovationFlow?.phases || [])];
-                          const newTools = newPhases[phaseIdx].collaborationTools.filter((_, i) => i !== toolIdx);
-                          newPhases[phaseIdx] = { ...newPhases[phaseIdx], collaborationTools: newTools };
-                          setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                        }}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs gap-1 text-muted-foreground"
-                    onClick={() => {
-                      const newPhases = [...(content.innovationFlow?.phases || [])];
-                      newPhases[phaseIdx] = {
-                        ...newPhases[phaseIdx],
-                        collaborationTools: [...newPhases[phaseIdx].collaborationTools, { name: "", type: "Collaboration Tool" }]
-                      };
-                      setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-                    }}
-                  >
-                    <Plus className="w-3 h-3" /> Add tool
-                  </Button>
-                </div>
-              </div>
-            ))}
+        {/* Source URL */}
+        <section className="space-y-3">
+          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Source {template.type}</Label>
+          <div className="flex items-center gap-3">
+            <Input
+              value={sourceUrl}
+              onChange={(e) => setSourceUrl(e.target.value)}
+              placeholder={`https://alkem.io/${template.type === "Space" ? "space-name" : "space/subspace-name"}`}
+              className="flex-1 bg-muted/50 border-border"
+            />
             <Button
               variant="outline"
-              size="sm"
-              className="gap-1"
-              onClick={() => {
-                const newPhases = [...(content.innovationFlow?.phases || []), { name: "", description: "", collaborationTools: [] }];
-                setContent(prev => ({ ...prev, innovationFlow: { phases: newPhases } }));
-              }}
+              onClick={handleLoad}
+              className="shrink-0 gap-2"
             >
-              <Plus className="w-3 h-3" /> Add Phase
+              Load
             </Button>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Paste a link to an existing {template.type === "Space" ? "space" : "subspace"} to import its innovation flow.
+          </p>
         </section>
+
+        {/* Innovation Flow Preview (shown after loading) */}
+        {isLoaded && content.innovationFlow?.phases && (
+          <>
+            <Separator />
+
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-muted-foreground uppercase tracking-wider">Innovation Flow</Label>
+                <InlineSaveButton dirty={dirty.flow} status={statuses["flow"] || "idle"} onSave={() => saveSection("flow")} />
+              </div>
+
+              {/* Flow stages as tab-like navigation */}
+              <div className="border border-border rounded-lg overflow-hidden">
+                <div className="flex items-center gap-6 px-4 overflow-x-auto border-b border-border bg-muted/30">
+                  {content.innovationFlow.phases.map((phase, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActivePhase(i)}
+                      className={`pb-2 pt-3 text-sm font-medium border-b-2 whitespace-nowrap cursor-pointer transition-colors ${
+                        i === activePhase
+                          ? "border-primary text-primary"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {phase.name}
+                    </button>
+                  ))}
+                </div>
+                <div className="p-4 space-y-2">
+                  {content.innovationFlow.phases[activePhase]?.collaborationTools.map((tool, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
+                      <FileText className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
+                      {tool.name}
+                      <Badge variant="outline" className="ml-auto text-[10px] h-4 px-1.5">{tool.type}</Badge>
+                    </div>
+                  ))}
+                  {(!content.innovationFlow.phases[activePhase]?.collaborationTools || content.innovationFlow.phases[activePhase].collaborationTools.length === 0) && (
+                    <p className="text-sm text-muted-foreground py-4">No collaboration tools in this phase.</p>
+                  )}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
       </div>
     );
   }
@@ -968,35 +911,63 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
   );
 }
 
+// ─── Danger Zone ─────────────────────────────────────────────────────────────
+
+function DangerZone({ template }: { template: ReturnType<typeof getTemplate> }) {
+  const navigate = useNavigate();
+  const { packSlug } = useParams();
+
+  return (
+    <section className="space-y-4">
+      <Label className="text-xs text-muted-foreground uppercase tracking-wider">Danger Zone</Label>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10 gap-2">
+            <Trash2 className="w-4 h-4" /> Delete Template
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete template?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove "{template.name}". This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                toast.success("Template deleted");
+                navigate(packSlug ? `/templates/packs/${packSlug}/settings/templates` : `/templates`);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </section>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function TemplateSettingsPage() {
-  const { packSlug, templateId, tab } = useParams<{ packSlug?: string; templateId: string; tab?: string }>();
+  const { packSlug, templateId } = useParams<{ packSlug?: string; templateId: string }>();
 
   const template = getTemplate(templateId || "");
 
-  const basePath = packSlug
-    ? `/templates/packs/${packSlug}/settings/templates/${templateId}`
-    : `/templates/${templateId}/settings`;
-
-  // Redirect to /about if no tab
-  if (!tab) {
-    return <Navigate to={`${basePath}/about`} replace />;
-  }
-
-  const tabs = [
-    { label: "About", icon: Info, id: "about" },
-    { label: "Content", icon: FileText, id: "content" },
-  ];
-
   return (
-    <div className="min-h-screen bg-background pb-12">
-      {/* Sticky header with title + tabs */}
-      <div className="sticky top-16 z-20 border-b border-border bg-card">
-        <div className="px-6 md:px-8 pt-8 pb-0">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-              <div className="flex items-center gap-4 mb-8">
+    <div
+      className="flex flex-col w-full px-6 md:px-8"
+      style={{ paddingBottom: 48, fontFamily: "'Inter', sans-serif" }}
+    >
+      {/* Sticky header with title */}
+      <div className="sticky top-16 z-20 border-b border-border bg-card -mx-6 md:-mx-8 px-6 md:px-8 pt-8 pb-6">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+              <div className="flex items-center gap-4">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight">{template.name}</h1>
                   <div className="flex items-center gap-2 mt-0.5">
@@ -1004,57 +975,33 @@ export default function TemplateSettingsPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
-                {tabs.map((item) => {
-                  const isActive = tab === item.id;
-                  return (
-                    <Link
-                      key={item.id}
-                      to={`${basePath}/${item.id}`}
-                      className={cn(
-                        "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                        isActive
-                          ? "border-primary text-primary"
-                          : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
-                      )}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <main className="px-6 md:px-8 py-8">
+      <div className="py-8">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
             <div
-              className="w-full min-h-[500px] p-6 md:p-8 shadow-sm"
+              className="w-full p-6 md:p-8 shadow-sm"
               style={{
                 background: "var(--card)",
                 border: "1px solid var(--border)",
                 borderRadius: "var(--radius)",
               }}
             >
-              {tab === "about" ? (
+              <div className="space-y-10">
                 <TemplateAboutTab template={template} />
-              ) : tab === "content" ? (
+                <Separator />
                 <TemplateContentTab template={template} />
-              ) : (
-                <div className="flex flex-col justify-center h-full min-h-[300px] space-y-4">
-                  <p className="text-muted-foreground">Unknown tab.</p>
-                </div>
-              )}
+                <Separator />
+                <DangerZone template={template} />
+              </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
