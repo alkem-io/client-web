@@ -10,9 +10,6 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdUserProfilePage from './publicProfile/CrdUserProfilePage';
 
-// User settings/admin shell — owned by sibling spec 097-crd-user-settings.
-// Until 097 lands, the settings subtree falls back to the existing MUI
-// admin route.
 const MuiUserAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/userAdmin/routing/UserAdminRoute')
 );
@@ -25,8 +22,8 @@ const CrdMeUserRoute = () => {
     return <Loading text={t('pages.user-profile.loading')} />;
   }
 
-  // Auth resolved with no current user — the parent NoIdentityRedirect handles
-  // redirect, but render Error404 as a safety net so we never spin forever.
+  // Safety net — NoIdentityRedirect should already redirect, but render Error404
+  // if auth resolved with no current user so we never spin forever.
   if (!userModel) {
     return (
       <CrdLayoutWrapper>

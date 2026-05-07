@@ -1,8 +1,10 @@
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import type { TagsetGroup } from '@/crd/components/organization/OrganizationProfileSidebar';
-import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
+import type {
+  SimpleResourceCardItem,
+  TagsetGroup,
+  VirtualContributorCardItem,
+} from '@/crd/components/common/profileTypes';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { buildTagsetGroups } from '../../common/profileMapperHelpers';
 
@@ -90,21 +92,16 @@ export const mapHostedSpacesToCardData = (
   hostedInnovationPacks: SimpleResourceCardItem[];
   hostedInnovationHubs: SimpleResourceCardItem[];
 } => {
-  // FR-013 (refined): the User profile's Resources Hosted tab now surfaces
-  // four sub-sections — Spaces, Virtual Contributors, Template Packs
-  // (`account.innovationPacks`), and Custom Homepages (`account.innovationHubs`).
-  // The data was always in `useAccountResources`; the mapper just stopped
-  // dropping the latter two.
   const spacesIn = accountResources?.spaces ?? [];
   const vcsIn = accountResources?.virtualContributors ?? [];
   const packsIn = accountResources?.innovationPacks ?? [];
   const hubsIn = accountResources?.innovationHubs ?? [];
 
-  const hostedSpaces: SpaceGridCardData[] = spacesIn
-    .filter(s => Boolean(s.about?.profile))
-    .map(s => {
-      const profile = s.about!.profile!;
-      return {
+  const hostedSpaces: SpaceGridCardData[] = spacesIn.flatMap(s => {
+    const profile = s.about?.profile;
+    if (!profile) return [];
+    return [
+      {
         id: s.id,
         title: profile.displayName,
         description: profile.tagline ?? null,
@@ -112,18 +109,23 @@ export const mapHostedSpacesToCardData = (
         imageUrl: profile.cardBanner?.uri,
         color: pickColorFromId(s.id),
         isPrivate: s.about?.isContentPublic === false,
-      };
-    });
+      },
+    ];
+  });
 
-  const hostedVirtualContributors: VirtualContributorCardItem[] = vcsIn
-    .filter(v => Boolean(v.profile))
-    .map(v => ({
-      id: v.id,
-      displayName: v.profile!.displayName,
-      description: v.profile!.tagline ?? null,
-      type: vcType,
-      href: v.profile!.url,
-    }));
+  const hostedVirtualContributors: VirtualContributorCardItem[] = vcsIn.flatMap(v => {
+    const profile = v.profile;
+    if (!profile) return [];
+    return [
+      {
+        id: v.id,
+        displayName: profile.displayName,
+        description: profile.tagline ?? null,
+        type: vcType,
+        href: profile.url,
+      },
+    ];
+  });
 
   const hostedInnovationPacks = packsIn
     .map(toSimpleResourceCard)

@@ -1,11 +1,10 @@
 import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
 import { isValidElement, type Key, type ReactNode } from 'react';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
+import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
-import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { Badge } from '@/crd/primitives/badge';
 
-/** See `UserResourceSections.asListItems` — preserves the inner element's key when wrapping in `<li>`. */
 function asListItems(nodes: ReactNode[]) {
   return nodes.map((node, idx) => {
     const fallbackKey: Key = idx;
@@ -13,14 +12,6 @@ function asListItems(nodes: ReactNode[]) {
     return <li key={key}>{node}</li>;
   });
 }
-
-export type SimpleResourceCardItem = {
-  id: string;
-  displayName: string;
-  description: string | null;
-  href: string;
-  avatarImageUrl: string | null;
-};
 
 export type OrganizationResourceSectionsProps = {
   activeTab: ResourceTabKey;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CompactContributorCard } from '@/crd/components/common/CompactContributorCard';
 import { SpaceGridCard } from '@/crd/components/user/SpaceGridCard';
-import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
 import { MOCK_ALEX_RIVERA } from '../data/profiles';
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
 import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
-import type { ReferenceLink, TagsetGroup } from '@/crd/components/organization/OrganizationProfileSidebar';
 import { Badge } from '@/crd/primitives/badge';
 
 export type UserProfileSidebarProps = {

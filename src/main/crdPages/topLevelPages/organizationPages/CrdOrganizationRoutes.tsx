@@ -8,7 +8,6 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdOrganizationProfilePage from './publicProfile/CrdOrganizationProfilePage';
 
-// Org admin shell stays in MUI under spec 096 (Out of Scope).
 const MuiOrganizationAdminRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/organizationAdmin/OrganizationAdminRoutes')
 );

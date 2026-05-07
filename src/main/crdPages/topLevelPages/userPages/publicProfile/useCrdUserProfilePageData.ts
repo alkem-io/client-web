@@ -5,17 +5,6 @@ import useUserOrganizationIds from '@/domain/community/user/userContributions/us
 import useCanEditSettings from '../useCanEditSettings';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 
-/**
- * Container hook for the User public-profile page — bundles every Apollo /
- * domain hook the page relies on into a single typed view-model so the page
- * component stays purely declarative (CLAUDE.md: "Keep Apollo-related hooks in
- * Containers/hooks, not directly in Pages").
- *
- * Returns the resolved-from-URL viewer + viewed-user identity, the user's
- * account resources, contributions (memberships) and associated organisation
- * ids, plus per-region loading flags. The page reads from the returned view
- * model and never touches Apollo or the domain hooks directly.
- */
 export const useCrdUserProfilePageData = () => {
   const route = useUserPageRouteContext();
   const { userId, loading: routeLoading } = route;
@@ -38,11 +27,9 @@ export const useCrdUserProfilePageData = () => {
     accountResources,
     contributions,
     organizationIds,
-    // Downstream flags include `routeLoading` so the page never renders empty
-    // sections before the route's userId is known. Without this, the
-    // organizations/memberships/account flags briefly flip to `false` between
-    // the route resolving and the downstream queries firing — long enough for
-    // the page to paint empty-state placeholders for the wrong user.
+    // Folding `routeLoading` into the downstream flags prevents the page from
+    // briefly painting empty-state for the wrong user between route resolution
+    // and the dependent queries firing.
     loading: {
       route: routeLoading,
       userAccount: routeLoading || loadingUserAccount,

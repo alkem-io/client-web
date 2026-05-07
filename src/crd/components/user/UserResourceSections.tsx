@@ -1,15 +1,10 @@
 import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
 import { isValidElement, type Key, type ReactNode } from 'react';
-import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
+import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
 import { Badge } from '@/crd/primitives/badge';
-import type { ResourceTabKey } from './UserResourceTabStrip';
 
-/**
- * Wraps each pre-rendered card in an `<li>`, reusing the inner element's key
- * (set by the connector) so React's reconciliation stays stable across renders.
- * Falls back to the array index only when the node is not a keyed React element.
- */
 function asListItems(nodes: ReactNode[]) {
   return nodes.map((node, idx) => {
     const fallbackKey: Key = idx;
@@ -17,14 +12,6 @@ function asListItems(nodes: ReactNode[]) {
     return <li key={key}>{node}</li>;
   });
 }
-
-export type VirtualContributorCardItem = {
-  id: string;
-  displayName: string;
-  description: string | null;
-  type: string;
-  href: string;
-};
 
 export type UserResourceSectionsProps = {
   activeTab: ResourceTabKey;

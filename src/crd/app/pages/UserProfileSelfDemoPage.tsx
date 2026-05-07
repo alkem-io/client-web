@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
-import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { SpaceGridCard } from '@/crd/components/user/SpaceGridCard';
 import { CompactContributorCard } from '@/crd/components/common/CompactContributorCard';
 import { MOCK_ME_USER } from '../data/profiles';

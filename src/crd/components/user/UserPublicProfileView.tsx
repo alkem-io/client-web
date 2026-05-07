@@ -1,13 +1,16 @@
+import {
+  ProfileResourceTabStrip,
+  type ProfileResourceTabStripProps,
+} from '@/crd/components/common/ProfileResourceTabStrip';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { UserPageHero, type UserPageHeroProps } from './UserPageHero';
 import { UserProfileSidebar, type UserProfileSidebarProps } from './UserProfileSidebar';
 import { UserResourceSections, type UserResourceSectionsProps } from './UserResourceSections';
-import { UserResourceTabStrip, type UserResourceTabStripProps } from './UserResourceTabStrip';
 
 export type UserPublicProfileViewProps = {
   hero: UserPageHeroProps;
   sidebar: UserProfileSidebarProps;
-  tabStrip: UserResourceTabStripProps;
+  tabStrip: ProfileResourceTabStripProps;
   sections: UserResourceSectionsProps;
   loading: {
     hero: boolean;
@@ -59,7 +62,7 @@ export function UserPublicProfileView({
           </div>
 
           <div className="lg:col-span-8 flex flex-col min-w-0">
-            <UserResourceTabStrip {...tabStrip} />
+            <ProfileResourceTabStrip {...tabStrip} />
             {sectionsLoading ? (
               <output aria-label={sectionsLabel}>
                 <SectionsSkeleton />

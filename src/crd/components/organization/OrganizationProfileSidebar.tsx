@@ -1,24 +1,10 @@
 import { useState } from 'react';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
 import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
-
-export type TagsetGroup = {
-  /** Stable identity for the group (e.g., reserved tagset name) — used as the React key. */
-  key: string;
-  /** i18n-resolved display name (e.g., "Keywords", "Skills"). Rendered as the group's `<h3>`. */
-  name: string;
-  tags: string[];
-};
-
-export type ReferenceLink = {
-  id: string;
-  name: string;
-  uri: string;
-  description: string | null;
-};
 
 export type AssociateGridItem = {
   id: string;

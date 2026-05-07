@@ -11,13 +11,13 @@
 
 import type { CompactContributorCardItem } from '@/crd/components/common/CompactContributorCard';
 import type {
-  AssociateGridItem,
   ReferenceLink,
+  SimpleResourceCardItem,
   TagsetGroup,
-} from '@/crd/components/organization/OrganizationProfileSidebar';
-import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
+  VirtualContributorCardItem,
+} from '@/crd/components/common/profileTypes';
+import type { AssociateGridItem } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
-import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import type { VCAiEngineSectionData } from '@/crd/components/virtualContributor/VCAiEngineGrid';
 import type { BodyOfKnowledge } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
 import type { VCFunctionalitySectionData } from '@/crd/components/virtualContributor/VCFunctionalityGrid';

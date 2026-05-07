@@ -11,7 +11,7 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { MembershipCardConnector } from '../../common/MembershipCardConnector';
-import { buildLocationLine, buildTagsetGroups, normaliseReferences } from '../../common/profileMapperHelpers';
+import { buildTagsetGroups, normaliseReferences } from '../../common/profileMapperHelpers';
 import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
 import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
@@ -35,13 +35,8 @@ export const CrdOrganizationProfilePage = () => {
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
   ];
 
-  // Memberships filter MUST run on every render (rules of hooks) — derive
-  // it before the 404 early-return below.
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
 
-  // 404 — context + provider have both resolved but no organization came back
-  // (deleted / unreadable org). Without this, heroLoading stays true forever
-  // and the page sits on a permanent skeleton.
   if (!loading.context && !loading.provider && !organization) {
     return <Error404 />;
   }
@@ -55,13 +50,16 @@ export const CrdOrganizationProfilePage = () => {
   const color = pickColorFromId(id);
   const profile = organization?.profile;
 
-  const location = buildLocationLine(
-    profile?.location?.city,
-    profile?.location?.country,
-    vars => t('common.locationFormat', vars),
-    vars => t('common.locationCityOnly', vars),
-    vars => t('common.locationCountryOnly', vars)
-  );
+  const city = profile?.location?.city?.trim() ?? '';
+  const country = profile?.location?.country?.trim() ?? '';
+  const location =
+    city && country
+      ? t('common.locationFormat', { city, country })
+      : city
+        ? t('common.locationCityOnly', { city })
+        : country
+          ? t('common.locationCountryOnly', { country })
+          : null;
 
   const verified = organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation;
 
@@ -69,7 +67,6 @@ export const CrdOrganizationProfilePage = () => {
 
   const associatesCount = getMetricCount(organization?.metrics ?? [], MetricType.Associate);
 
-  // Sidebar pieces
   const tagsets = buildTagsetGroups([
     { key: 'keywords', name: t('orgProfile.sidebar.tagsetKeywords'), tags: provided.keywords },
     { key: 'capabilities', name: t('orgProfile.sidebar.tagsetCapabilities'), tags: provided.capabilities },
@@ -84,7 +81,6 @@ export const CrdOrganizationProfilePage = () => {
     }))
   );
 
-  // Right column — 4 hosted-resource sub-sections + Lead Spaces + Member Of.
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
     mapOrgHostedResources(accountResources, t('orgProfile.vcType'));
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
@@ -139,8 +135,6 @@ export const CrdOrganizationProfilePage = () => {
         labels: {
           spacesSubsection: t('orgProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('orgProfile.sections.virtualContributorsSubsection'),
-          // FR-102 parity reuse: pulled from the global `translation` namespace
-          // (existing keys), not duplicated under `crd-profilePages`.
           templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('orgProfile.sections.spacesLeading'),

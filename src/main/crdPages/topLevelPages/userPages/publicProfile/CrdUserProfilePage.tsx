@@ -1,27 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileView';
-import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { MembershipCardConnector } from '../../common/MembershipCardConnector';
-import { buildLocationLine, normaliseReferences } from '../../common/profileMapperHelpers';
+import { normaliseReferences } from '../../common/profileMapperHelpers';
 import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToUserHandler } from '../../common/useSendMessageHandler';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
 import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
 
-const buildSettingsHrefForUserSlug = (slug: string | undefined) =>
-  slug ? `/user/${slug}/settings/profile` : undefined;
-
 export const CrdUserProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const data = useCrdUserProfilePageData();
-  const { userId, userModel, userSlug, currentUserId, accountResources, contributions, organizationIds, loading } =
-    data;
+  const { userId, userModel, currentUserId, accountResources, contributions, organizationIds, loading } = data;
   usePageTitle(userModel?.profile?.displayName);
 
   const { activeTab, onSelectTab } = useResourceTabs();
@@ -34,21 +30,14 @@ export const CrdUserProfilePage = () => {
     { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
   ];
 
-  // Loading flags per region (FR-009).
   const heroLoading = loading.route || !userModel;
   const orgsLoading = loading.organizations;
   const hostedLoading = loading.userAccount;
   const membershipsLoading = loading.memberships;
 
-  // Hooks below MUST run on every render (rules of hooks). Build all derived
-  // data before any early return.
   const safeContributions = contributions ?? [];
   const [leadingItems, memberItems] = useFilteredMemberships(safeContributions, [RoleType.Lead, RoleType.Admin]);
 
-  // 404 — route resolved but the user lookup returned nothing (deleted /
-  // unreadable user). Checking `userModel` rather than just `userId` so the
-  // page reaches a terminal state when the slug resolves but the entity is
-  // gone.
   if (!loading.route && !userModel) {
     return <Error404 />;
   }
@@ -57,29 +46,30 @@ export const CrdUserProfilePage = () => {
   const id = userModel?.id ?? userId ?? '';
   const color = pickColorFromId(id);
 
-  const location = buildLocationLine(
-    profile?.location?.city,
-    profile?.location?.country,
-    vars => t('common.locationFormat', vars),
-    vars => t('common.locationCityOnly', vars),
-    vars => t('common.locationCountryOnly', vars)
-  );
+  const city = profile?.location?.city?.trim() ?? '';
+  const country = profile?.location?.country?.trim() ?? '';
+  const location =
+    city && country
+      ? t('common.locationFormat', { city, country })
+      : city
+        ? t('common.locationCityOnly', { city })
+        : country
+          ? t('common.locationCountryOnly', { country })
+          : null;
 
   const isOwnProfile = Boolean(currentUserId && userModel?.id && currentUserId === userModel.id);
 
   const showSettingsIcon = data.canEditSettings;
   const showMessageButton = Boolean(currentUserId) && !isOwnProfile;
 
-  const settingsHref = buildSettingsHrefForUserSlug(userSlug);
+  const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
-  // Hosted resources — 4 sub-sections per FR-013 (refined).
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
     mapHostedSpacesToCardData(accountResources, t('userProfile.vcType'));
 
   const spacesLeading = leadingItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const spacesMember = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 
-  // Organizations sidebar.
   const safeOrgIds = organizationIds ?? [];
   const organizationsSlot = safeOrgIds.map(orgId => (
     <AssociatedOrganizationCardConnector key={orgId} organizationId={orgId} />
@@ -105,14 +95,7 @@ export const CrdUserProfilePage = () => {
         }),
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
-        references: normaliseReferences(
-          (profile?.references ?? []).map(r => ({
-            id: r.id,
-            name: r.name,
-            uri: r.uri,
-            description: r.description ?? null,
-          }))
-        ),
+        references: normaliseReferences(profile?.references ?? []),
         labels: {
           aboutTitle: t('userProfile.sidebar.aboutTitle'),
           organizationsTitle: t('userProfile.sidebar.organizationsTitle'),
@@ -138,8 +121,6 @@ export const CrdUserProfilePage = () => {
         labels: {
           spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
-          // FR-102 parity reuse: pulled from the global `translation` namespace
-          // (existing keys), not duplicated under `crd-profilePages`.
           templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
