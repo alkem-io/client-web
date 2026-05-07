@@ -56,7 +56,9 @@ export function UserResourceSections({
       <div className="space-y-10">
         {hostedSpaces.length > 0 ? (
           <SubSection label={labels.spacesSubsection}>
-            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+            <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
               {hostedSpaces.map(space => (
                 <li key={space.id}>
                   <SpaceGridCard space={space} labels={labels.spacePrivacy} />
@@ -71,7 +73,9 @@ export function UserResourceSections({
             label={labels.virtualContributorsSubsection}
             icon={<Bot className="w-4 h-4" aria-hidden="true" />}
           >
-            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+            <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
               {hostedVirtualContributors.map(vc => (
                 <li key={vc.id}>
                   <a
@@ -125,7 +129,9 @@ export function UserResourceSections({
         {spacesLeading.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.emptyLeading}</p>
         ) : (
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+          <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
             {asListItems(spacesLeading)}
           </ul>
         )}
@@ -139,7 +145,9 @@ export function UserResourceSections({
       {spacesMember.length === 0 ? (
         <p className="text-body text-muted-foreground">{labels.emptyMembership}</p>
       ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+        /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+        /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+        <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
           {asListItems(spacesMember)}
         </ul>
       )}
@@ -172,7 +180,9 @@ type SimpleResourceGridProps = {
 
 function SimpleResourceGrid({ items, icon }: SimpleResourceGridProps) {
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
+    /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
+    /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
+    <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
       {items.map(item => (
         <li key={item.id}>
           <a

@@ -9,11 +9,11 @@ import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
+import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
+import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { MembershipCardConnector } from '../../common/MembershipCardConnector';
-import { buildTagsetGroups, normaliseReferences } from '../../common/profileMapperHelpers';
-import useResourceTabs from '../../common/useResourceTabs';
-import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
 import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 

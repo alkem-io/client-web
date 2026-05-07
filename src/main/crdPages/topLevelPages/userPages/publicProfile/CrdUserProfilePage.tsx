@@ -6,10 +6,10 @@ import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileVi
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
-import { MembershipCardConnector } from '../../common/MembershipCardConnector';
-import { normaliseReferences } from '../../common/profileMapperHelpers';
-import useResourceTabs from '../../common/useResourceTabs';
-import { useSendMessageToUserHandler } from '../../common/useSendMessageHandler';
+import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
+import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
+import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
+import { useSendMessageToUserHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
 import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';

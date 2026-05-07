@@ -1,5 +1,6 @@
 /**
- * CRD Organization profile view contracts.
+ * CRD Organization profile view contracts — synced with the shipped
+ * implementation (flat-prop shape; no `organization: { … }` wrapper).
  *
  * File location at implementation time:
  *   src/crd/components/organization/OrganizationPageHero.tsx
@@ -11,17 +12,27 @@
  * `@/domain/*`, `react-router-dom`, or `formik` imports per FR-005 / FR-006.
  *
  * The shared `CompactContributorCard` contract lives in `compactContributor.ts`
- * (used by the Associates section here AND by the VC profile's Host section).
+ * (used by the User profile's Organizations sidebar list and the VC profile's
+ * Host section — NOT by the Organization profile's Associates section, which
+ * renders a square-avatar grid).
  */
 
-import type { ReactNode } from 'react';
-import type { CompactContributorCardItem } from './compactContributor';
-import type { ResourceTabKey, SimpleResourceCardItem, SpaceCardItem, VCCardItem } from './publicProfile';
+import type {
+  ProfileResourceTabStripProps,
+  ReferenceLink,
+  ResourceTabKey,
+  SimpleResourceCardItem,
+  SpaceGridCardItem,
+  TagsetGroup,
+  VirtualContributorCardItem,
+} from './publicProfile';
 
 /* ----------------------------- OrganizationPageHero --------------------- */
 
 export type OrganizationPageHeroProps = {
   avatarImageUrl: string | null;
+  /** Deterministic colour (from `pickColorFromId(orgId)`) used for the avatar fallback. */
+  color: string;
   displayName: string;
   /** "City, Country" — null when both empty. */
   location: string | null;
@@ -29,10 +40,10 @@ export type OrganizationPageHeroProps = {
   verified: boolean;
   /**
    * When `null` the Settings (gear) icon is hidden. When set, the icon links
-   * to this URL (which is the existing MUI admin URL via
-   * `buildSettingsUrl(organization.profile.url)` per FR-021).
+   * to this URL (built via `buildSettingsUrl(organization.profile.url)` per
+   * FR-021). The component renders an `<a href>` directly — no callback.
    */
-  settingsUrl: string | null;
+  settingsHref: string | null;
   /**
    * When `null` the Message button is hidden (parity for anonymous viewers).
    * When set, the button opens an in-hero compose Popover; submitting calls
@@ -42,19 +53,6 @@ export type OrganizationPageHeroProps = {
 };
 
 /* --------------------- OrganizationProfileSidebar ----------------------- */
-
-export type TagsetGroup = {
-  /** i18n-resolved label (e.g., "Keywords", "Capabilities"). */
-  name: string;
-  tags: string[];
-};
-
-export type ReferenceLink = {
-  id: string;
-  name: string;
-  uri: string;
-  description: string | null;
-};
 
 /**
  * Parity port of current MUI `AssociatesView`. The view paginates the avatar
@@ -93,8 +91,7 @@ export type AssociatesView = {
 // social subset with monochrome SVG icons (website / linkedin / github / bsky /
 // youtube / email + generic globe fallback), and the exported
 // `excludeSocialReferences(refs)` helper feeds the parallel non-social
-// References section. This eliminates ~30 lines of duplicate logic across
-// the three consumer pages.
+// References section.
 
 export type OrganizationProfileSidebarProps = {
   /** Markdown bio. Rendered via the existing CRD `MarkdownContent`. */
@@ -129,21 +126,17 @@ export type OrganizationProfileSidebarProps = {
     referencesEmpty: string;
     /**
      * Receives `totalCount` from `metrics[Associate]` and returns the localized
-     * heading (e.g., "Associates (12)"). The implementation interpolates via
-     * `t('orgProfile.sidebar.associatesCount', { count })`.
-     *
-     * NOTE: an earlier draft typed this as `string`. That was wrong — the
-     * count needs to be interpolated at render time, so the consumer-supplied
-     * function is required.
+     * heading (e.g., "Associates (12)"). Implemented as a closure so the
+     * count can be interpolated at render time.
      */
     associatesTitle: (count: number) => string;
     /** Parity reuse — i18n key `associates-view.sign-in`. */
     associatesSignInCta: string;
     /**
      * Receives `remaining` (the count of associates hidden beneath the cap)
-     * and returns the toggle label (e.g., "Show more (5)"). Same reason as
-     * `associatesTitle` — the count is interpolated. Parity reuse — i18n key
-     * `associates-view.more` with `{count}` interpolation.
+     * and returns the toggle label (e.g., "Show more (5)"). Same closure
+     * reason as `associatesTitle`. Parity reuse — i18n key
+     * `associates-view.more`.
      */
     associatesShowMore: (count: number) => string;
     /** Parity reuse — i18n key `associates-view.less`. */
@@ -162,25 +155,27 @@ export type OrganizationProfileSidebarProps = {
 // Packs and Hubs are now rendered with the shared `SimpleResourceCardItem` type
 // (defined in `publicProfile.ts`) — same shape, no parallel types.
 
+import type { ReactNode } from 'react';
+
 export type OrganizationResourceSectionsProps = {
   /** Active resource tab; integration layer manages this state. */
   activeTab: ResourceTabKey;
   /** Backend field: `account.spaces`. Empty array → sub-section omitted. */
-  hostedSpaces: SpaceCardItem[];
+  hostedSpaces: SpaceGridCardItem[];
   /**
    * Backend field: `account.virtualContributors`. Organisations CAN host VCs
    * (rare in production today, but supported for parity with the User profile).
    * Empty array → sub-section omitted.
    */
-  hostedVirtualContributors: VCCardItem[];
+  hostedVirtualContributors: VirtualContributorCardItem[];
   /** Backend field: `account.innovationPacks`. UI label: "Template Packs". */
   hostedInnovationPacks: SimpleResourceCardItem[];
   /** Backend field: `account.innovationHubs`. UI label: "Custom Homepages". */
   hostedInnovationHubs: SimpleResourceCardItem[];
-  /** Empty array → empty-state caption shown when this tab is active. */
-  leadSpaces: SpaceCardItem[];
-  /** Empty array → empty-state caption shown when this tab is active. */
-  memberOf: SpaceCardItem[];
+  /** Pre-rendered Lead Spaces tiles (each is a `MembershipCardConnector`). */
+  leadSpaces: ReactNode[];
+  /** Pre-rendered All Memberships tiles. */
+  memberOf: ReactNode[];
   /** i18n-resolved labels — mirrors `UserResourceSectionsProps.labels`. */
   labels: {
     spacesSubsection: string;
@@ -194,31 +189,29 @@ export type OrganizationResourceSectionsProps = {
     emptyLeading: string;
     /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
     emptyMembership: string;
+    /** sr-only labels for the SpaceGridCard privacy chip (WCAG 2.1 AA). */
+    spacePrivacy: { privacyPrivate: string; privacyPublic: string };
   };
 };
 
 /* -------------------- OrganizationPublicProfileView --------------------- */
 
+/**
+ * Flat prop shape (matches `OrganizationPublicProfileView.tsx` exactly). The
+ * view composes `OrganizationPageHero` + `OrganizationProfileSidebar` +
+ * `ProfileResourceTabStrip` + `OrganizationResourceSections`. Each child
+ * receives its own props block; loading is per-region (FR-009).
+ *
+ * NOTE: an earlier draft wrapped these under a top-level `organization: { … }`
+ * object plus a separate `tabStrip: { activeTab, onSelectTab }` field. That
+ * shape was rejected in favour of the flat composition shown here, which
+ * matches how every CRD view component in this PR is structured.
+ */
 export type OrganizationPublicProfileViewProps = {
-  organization: {
-    id: string;
-    slug: string;
-    isOwn: boolean;
-    canEdit: boolean;
-    canReadUsers: boolean;
-    hero: OrganizationPageHeroProps;
-    sidebar: OrganizationProfileSidebarProps;
-    rightColumn: OrganizationResourceSectionsProps;
-  };
-
-  /**
-   * Active tab strip props — same shape as the User profile (`UserResourceTabStripProps`).
-   * Held in local React state at the integration layer (`useResourceTabs`).
-   */
-  tabStrip: {
-    activeTab: ResourceTabKey;
-    onSelectTab: (next: ResourceTabKey) => void;
-  };
+  hero: OrganizationPageHeroProps;
+  sidebar: OrganizationProfileSidebarProps;
+  tabStrip: ProfileResourceTabStripProps;
+  rightColumn: OrganizationResourceSectionsProps;
 
   /**
    * Per-region loading flags (FR-009). Mapping (data-model.md "Query → region"):
@@ -247,10 +240,4 @@ export type OrganizationPublicProfileViewProps = {
     hostedResources: string;
     memberships: string;
   };
-
-  /**
-   * Slot for any out-of-tree CRD elements (e.g., a global toast portal). Rarely
-   * used; included for parity with the User profile view's children prop.
-   */
-  children?: ReactNode;
 };

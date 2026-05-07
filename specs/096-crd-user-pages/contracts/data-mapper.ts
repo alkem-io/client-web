@@ -123,11 +123,19 @@ export type UseSendMessageToOrganizationHandler = (params: {
  *   2. Compute the actor's `can*` predicate (User: `useCanEditSettings`;
  *      Org: `useOrganizationProvider().permissions.canEdit`; VC: check
  *      `vc.authorization.myPrivileges` for `Update`).
- *   3. Run the per-page Apollo queries.
- *   4. Build callback handlers (User+Org: send-message; Org+VC: navigate to
- *      MUI admin URL on Settings click).
- *   5. Call the per-page mapper to produce the view-prop object.
- *   6. Render the CRD view, passing the view-prop object.
+ *   3. Run the per-page Apollo queries — wrapped in a `useCrd<Actor>ProfilePageData`
+ *      hook so the page itself stays declarative (User/Org/VC all follow this
+ *      pattern).
+ *   4. Build the send-message handler when applicable (User + Org only — VC has
+ *      no Message button per FR-030). Settings is rendered as an `<a href>` in
+ *      the CRD hero — no callback indirection (per CRD Golden Rule 3, which
+ *      allows `<a href>` links without programmatic navigation).
+ *   5. Call the per-page mapper to produce the view-prop sub-objects. The User
+ *      and Organization "hosted resources" sub-mapper is shared via
+ *      `mapAccountHostedResources` in `topLevelPages/common/profileMapperHelpers.ts`.
+ *   6. Render the CRD view, passing the view-prop sub-objects (flat shape:
+ *      `{ hero, sidebar, tabStrip, sections|rightColumn|contentView, loading,
+ *      loadingLabels }` — there is no `user`/`organization`/`vc` wrapper).
  *
  * No business logic lives in the CRD view. No Apollo / routing imports
  * leak into the CRD view.

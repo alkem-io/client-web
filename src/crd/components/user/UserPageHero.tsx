@@ -43,7 +43,7 @@ export function UserPageHero({
 
           <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 min-w-0">
             <div className="min-w-0">
-              <h1 className="text-page-title md:text-4xl text-foreground">{displayName}</h1>
+              <h1 className="text-page-title text-foreground">{displayName}</h1>
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
                   <MapPin className="w-4 h-4" aria-hidden="true" />
