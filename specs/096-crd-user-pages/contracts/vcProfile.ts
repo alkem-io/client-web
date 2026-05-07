@@ -1,11 +1,19 @@
 /**
- * CRD Virtual Contributor profile view contracts.
+ * CRD Virtual Contributor profile view contracts — synced with the shipped
+ * implementation (flat-prop shape; no `vc: { … }` wrapper). The right column
+ * (`VCContentView`) was rebuilt 2026-05-06 per `prototype/src/app/pages/VCProfilePage.tsx`
+ * into three sub-components (`VCFunctionalityGrid`, `VCAiEngineGrid`,
+ * `VCMonitoringSection`) — see research §15 and `data-model.md`.
  *
  * File location at implementation time:
  *   src/crd/components/virtualContributor/VCPageHero.tsx
  *   src/crd/components/virtualContributor/VCProfileSidebar.tsx
  *   src/crd/components/virtualContributor/VCBodyOfKnowledgeSection.tsx
  *   src/crd/components/virtualContributor/VCContentView.tsx
+ *   src/crd/components/virtualContributor/VCFunctionalityGrid.tsx
+ *   src/crd/components/virtualContributor/VCAiEngineGrid.tsx
+ *   src/crd/components/virtualContributor/VCTransparencyCard.tsx
+ *   src/crd/components/virtualContributor/VCMonitoringSection.tsx
  *   src/crd/components/virtualContributor/VCPublicProfileView.tsx
  *
  * Purely presentational. Zero `@mui/*`, `@emotion/*`, `@/core/apollo`,
@@ -18,7 +26,7 @@
 
 import type { ReactNode } from 'react';
 import type { CompactContributorCardItem } from './compactContributor';
-import type { ReferenceLink } from './organizationProfile';
+import type { ReferenceLink } from './publicProfile';
 
 /* ----------------------------- VCPageHero -------------------------------- */
 
@@ -39,8 +47,8 @@ export type VCPageHeroProps = {
   displayName: string;
   /**
    * When `null` the Settings (gear) icon is hidden. When set, the icon links
-   * to this URL (which is the existing MUI admin URL via
-   * `buildSettingsUrl(vc.profile.url)` per FR-031).
+   * to this URL (built via `buildSettingsUrl(vc.profile.url)` per FR-031).
+   * The component renders an `<a href>` directly — no callback.
    */
   settingsUrl: string | null;
   /**
@@ -86,6 +94,13 @@ export type VCProfileSidebarProps = {
    */
   bodyOfKnowledge: BodyOfKnowledge | null;
   /**
+   * When true, the BoK section renders a section-scoped skeleton instead of
+   * `VCBodyOfKnowledgeSection`. Lets the rest of the sidebar paint while the
+   * auxiliary BoK auth/profile queries are still in flight, without flashing
+   * misleading "Private space" placeholder content from partial data.
+   */
+  bodyOfKnowledgeLoading?: boolean;
+  /**
    * i18n-resolved labels. Several are PARITY REUSES of existing
    * `translation`-namespace keys (FR-102) — the mapper resolves them via
    * `t(...)` from the global namespace rather than introducing duplicates
@@ -93,28 +108,21 @@ export type VCProfileSidebarProps = {
    */
   labels: {
     descriptionTitle: string;
+    descriptionEmpty: string;
     hostTitle: string;
+    hostEmpty: string;
     /** Parity reuse — `components.profile.fields.references.title`. */
     referencesTitle: string;
     /** Parity reuse — `common.no-references`. */
     referencesEmpty: string;
     /** Parity reuse — `components.profile.fields.bodyOfKnowledge.title`. */
     bodyOfKnowledgeTitle: string;
+    /** Aria-label for the BoK section's own skeleton (FR-009 / WCAG 2.1 AA). */
+    bodyOfKnowledgeLoading: string;
     /** Parity reuse — `components.profile.fields.bodyOfKnowledge.privateBokTooltip`. */
     bodyOfKnowledgePrivateTooltip: string;
     /** Parity reuse — `buttons.visit`. */
     bodyOfKnowledgeVisitButton: string;
-    /** Parity reuse — `components.profile.fields.bodyOfKnowledge.spaceBokDescription` (interpolates `{vcName}`). */
-    bodyOfKnowledgeSpaceContextDescription: string;
-    /**
-     * Parity reuse — `components.profile.fields.engines.externalVCDescription`,
-     * with `{engineName}` interpolated from `components.profile.fields.engines.externalAssistant`
-     * (variant=assistant) or `components.profile.fields.engines.external` (other).
-     */
-    bodyOfKnowledgeExternalAssistantDescription: string;
-    bodyOfKnowledgeExternalOtherDescription: string;
-    /** Parity reuse — `components.card.privacy.private` with `entity: 'space'`. */
-    privateSpaceLabel: string;
   };
 };
 
@@ -180,26 +188,39 @@ export type BodyOfKnowledge =
        * Both come from `components.profile.fields.engines.externalVCDescription`
        * with the engine name interpolated in. The view renders the string
        * through `MarkdownContent` (the description may contain a link).
-       *
-       * NOTE: an earlier draft of this contract declared `engineLabel: 'assistant' | 'other'`
-       * and let the view resolve the copy. That was inverted in the implementation —
-       * the integration layer owns translation resolution (FR-005), so the
-       * resolved string crosses the boundary, not the discriminator.
        */
       description: string;
     };
 
+/**
+ * Note: in the shipped implementation, `SpaceProfileSummary` carries the
+ * resolved accent `color` and pre-computed `initials` so the view stays a
+ * pure render with no string-manipulation. Mappers populate these via
+ * `pickColorFromId(...)` and `fallbackInitials(...)`.
+ */
 export type SpaceProfileSummary = {
   id: string;
   url: string;
   displayName: string;
   level: 'L0' | 'L1' | 'L2';
   avatarImageUrl: string | null;
+  color: string;
+  initials: string;
 };
 
+/**
+ * Rendered as a sub-section of the VC sidebar; the shipped `bodyOfKnowledge`
+ * prop accepts `null` to handle the rare "no BoK at all" case (the view
+ * returns `null` instead of an empty section). Labels are a smaller subset
+ * (title / privateTooltip / visitButton) than the full sidebar labels block.
+ */
 export type VCBodyOfKnowledgeSectionProps = {
-  bodyOfKnowledge: BodyOfKnowledge;
-  labels: VCProfileSidebarProps['labels'];
+  bodyOfKnowledge: BodyOfKnowledge | null;
+  labels: {
+    title: string;
+    privateTooltip: string;
+    visitButton: string;
+  };
 };
 
 /* ----------------------------- VCContentView ----------------------------- */
@@ -218,11 +239,9 @@ export type VCBodyOfKnowledgeSectionProps = {
  * `src/domain/`, off-limits per CRD architectural rules). The CRD mapper
  * re-implements the equivalent extraction in plain TypeScript locally.
  *
- * The earlier `ModelCardSummary` shape (single object with aiEngine +
- * monitoring sub-objects) is replaced by the three structured section shapes
- * below. The earlier "Social Links sub-section" inside the right column is
- * also removed — the redesigned right column does not surface social
- * references at all (sidebar's References block now renders all entries flat).
+ * Implementation decision: the integration page pre-renders the
+ * `<Trans>`-driven Role Requirements paragraph and the Monitoring body so the
+ * CRD components stay i18n-agnostic. Each is passed in as a `ReactNode`.
  */
 
 /**
@@ -300,10 +319,9 @@ export type VCFunctionalitySectionData = {
   /**
    * Discriminated kind. The mapper resolves `'memberRequired'` when
    * `spaceUsage[…SpaceRoleRequired].flags` contains `SpaceRoleMember.enabled === true`,
-   * else `'noneRequired'`. The view renders different copy per kind:
-   *  - 'memberRequired' → "This VC needs to be granted **member rights**…"
-   *    rendered via `<Trans i18nKey={memberRequiredKey} components={{ strong: <strong /> }} />`
-   *  - 'noneRequired' → plain "No special member rights required" paragraph.
+   * else `'noneRequired'`. The integration page composes the rendered paragraph
+   * from this kind (`<Trans>` for `memberRequired`, plain text for `noneRequired`)
+   * and passes it as `roleRequirementsContent`.
    */
   roleRequirements: { kind: 'memberRequired' | 'noneRequired' };
 };
@@ -321,34 +339,36 @@ export type VCAiEngineSectionData = {
   cards: TransparencyCardData[];
 };
 
-export type VCMonitoringSectionData = {
-  /**
-   * The view passes these keys directly to `<Trans>` (the body key contains
-   * `<a>` markup; the view supplies the `<a>` component with the hard-coded
-   * T&C href). Heading uses `t()` directly.
-   */
-  headingKey: string;                      // e.g., 'crd-profilePages:vcProfile.monitoring.heading'
-  bodyKey: string;                         // e.g., 'crd-profilePages:vcProfile.monitoring.body'
-};
+/**
+ * The `VCMonitoringSection` shipped as a pure presentational primitive that
+ * receives the heading and a pre-rendered body node from the integration
+ * page. The page constructs the body via `<Trans>` with the T&C link
+ * supplied as a component, so the CRD primitive carries no i18n coupling
+ * (Golden Rule 3).
+ */
 
+/**
+ * `VCContentView` props (matches `VCContentView.tsx` exactly): three section
+ * datas + the pre-rendered Role Requirements paragraph and Monitoring body
+ * (constructed by the integration page) + i18n-resolved labels.
+ */
 export type VCContentViewProps = {
   functionality: VCFunctionalitySectionData;
+  /** Pre-rendered Role Requirements paragraph (constructed with `<Trans>` upstream). */
+  roleRequirementsContent: ReactNode;
   aiEngine: VCAiEngineSectionData;
-  monitoring: VCMonitoringSectionData;
-  /**
-   * i18n-resolved labels for the Functionality + AI Engine sections. The
-   * Monitoring section's labels are not in this object because they're keys
-   * passed straight to `<Trans>` (see `VCMonitoringSectionData`).
-   */
+  monitoring: {
+    heading: string;
+    /** Pre-rendered Monitoring body (the integration layer supplies the `<a>` href). */
+    body: ReactNode;
+  };
   labels: {
     functionalityHeading: string;          // "Functionality"
     capabilitiesTitle: string;             // "Functional Capabilities"
     dataAccessTitle: string;               // "Data access from the Space where it is a member"
     roleRequirementsTitle: string;         // "Role Requirements"
-    /** i18n KEY (not resolved) — passed to <Trans> with `<strong>` component. */
-    roleRequirementsMemberRequiredKey: string;
-    roleRequirementsNoneRequired: string;  // "No special member rights required" — plain string
-    aiEngineHeading: string;               // resolved with engineName interpolated, e.g., "AI Engine: Alkemio AI"
+    /** Already interpolated with engineName by the mapper (e.g., "AI Engine: Alkemio AI"). */
+    aiEngineHeading: string;
     /**
      * Yes/No labels for the boolean transparency cards. The view picks the
      * correct one based on each card's `booleanAnswer.value`.
@@ -362,16 +382,23 @@ export type VCContentViewProps = {
 
 /* ----------------------- VCPublicProfileView ----------------------------- */
 
+/**
+ * Flat prop shape (matches `VCPublicProfileView.tsx` exactly). The view
+ * composes `VCPageHero` + `VCProfileSidebar` + `VCContentView`. Each child
+ * receives its own props block; loading is per-region (FR-009).
+ *
+ * NOTE: an earlier draft wrapped these under a top-level `vc: { … }` object
+ * with `id` / `slug` / `isOwn` / `hasUpdatePrivilege` siblings to the
+ * pre-built sub-prop blocks, plus an optional `children?: ReactNode` slot.
+ * That shape was rejected in favour of the flat composition shown here,
+ * which matches how every CRD view component in this PR is structured. The
+ * privilege-driven `settingsUrl: string | null` on `VCPageHero` is the
+ * canonical surface for the "can edit?" predicate (FR-031).
+ */
 export type VCPublicProfileViewProps = {
-  vc: {
-    id: string;
-    slug: string;
-    isOwn: boolean;
-    hasUpdatePrivilege: boolean;
-    hero: VCPageHeroProps;
-    sidebar: VCProfileSidebarProps;
-    contentView: VCContentViewProps;
-  };
+  hero: VCPageHeroProps;
+  sidebar: VCProfileSidebarProps;
+  contentView: VCContentViewProps;
 
   /**
    * Per-region loading flags (FR-009). Mapping (data-model.md "Query → region"):
@@ -381,7 +408,8 @@ export type VCPublicProfileViewProps = {
    *      for space-backed; useKnowledgeBase for knowledge-base-backed; n/a for external)
    *
    * The BoK section unblocks independently — the rest of the page can paint
-   * before the auxiliary BoK queries resolve.
+   * before the auxiliary BoK queries resolve. The view threads `bodyOfKnowledge`
+   * into `VCProfileSidebar.bodyOfKnowledgeLoading`.
    */
   loading: {
     hero: boolean;
@@ -392,16 +420,13 @@ export type VCPublicProfileViewProps = {
 
   /**
    * i18n-resolved aria-labels for the per-region skeleton `<output>` containers
-   * (WCAG 2.1 AA). Three entries — `bodyOfKnowledge` is rendered inside the
-   * sidebar so it shares the sidebar label rather than getting its own. Resolved
-   * from the `crd-profilePages` `common.loading.*` namespace.
+   * (WCAG 2.1 AA). Resolved from the `crd-profilePages` `common.loading.*`
+   * namespace.
    */
   loadingLabels: {
     hero: string;
     sidebar: string;
+    bodyOfKnowledge: string;
     contentView: string;
   };
-
-  /** Optional slot for portals. */
-  children?: ReactNode;
 };

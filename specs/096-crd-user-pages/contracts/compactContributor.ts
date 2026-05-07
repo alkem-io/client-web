@@ -59,9 +59,17 @@ export type CompactContributorCardProps = CompactContributorCardItem & {
    */
   variant?: 'compact' | 'spacious';
   /**
-   * Accessible label for the entire card (typically derived from the display
-   * name + caption). Required when `href` is set so the link's aria-label is
-   * explicit.
+   * Accessible label for the entire card. Defaults to `displayName` when
+   * `href` is set; supply explicitly to add caption context (e.g., "Acme Corp,
+   * Admin").
    */
   ariaLabel?: string;
+  /**
+   * Optional badge rendered to the right of the row (e.g., member-count chip).
+   * When provided, it replaces the `secondaryCaption` rendering. The icon is
+   * a closed enum so the visual pattern stays under the design system.
+   */
+  badge?: { label: string; icon?: 'users' };
+  /** Optional `className` for composition. */
+  className?: string;
 };

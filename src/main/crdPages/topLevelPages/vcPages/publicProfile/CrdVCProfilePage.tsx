@@ -1,20 +1,9 @@
 import { Trans, useTranslation } from 'react-i18next';
-import {
-  useSpaceBodyOfKnowledgeAboutQuery,
-  useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
-  useVirtualContributorProfileWithModelCardQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
-import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { VCPublicProfileView } from '@/crd/components/virtualContributor/VCPublicProfileView';
-import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
-import { createVirtualContributorModelFull } from '@/domain/community/virtualContributor/utils/createVirtualContributorModelFull';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useCrdVCProfilePageData } from './useCrdVCProfilePageData';
 import {
   computeSettingsHref,
   extractVcKeywords,
@@ -30,82 +19,31 @@ const ALKEMIO_TERMS_HREF = 'https://welcome.alkem.io/legal/#tc';
 export const CrdVCProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const { t: tBase } = useTranslation();
-  const { vcId, loading: urlResolverLoading } = useUrlResolver();
-  const { loading: authLoading } = useAuthenticationContext();
-
-  const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { id: vcId! },
-    skip: !vcId,
-  });
-
-  const isBokSpace =
-    data?.lookup.virtualContributor?.bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioSpace;
-  const isBokKb =
-    data?.lookup.virtualContributor?.bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase;
-  const bokId = data?.lookup.virtualContributor?.bodyOfKnowledgeID;
-
-  const { data: vcSpaceBokAuthPrivileges, loading: loadingBokAuth } =
-    useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
-      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-      variables: { spaceId: bokId! },
-      skip: !bokId || !isBokSpace,
-    });
-  const hasSpaceProfileReadAccess =
-    vcSpaceBokAuthPrivileges?.lookup.myPrivileges?.space?.includes(AuthorizationPrivilege.ReadAbout) ?? false;
-
-  const { data: bokProfileData, loading: loadingBokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { spaceId: bokId! },
-    skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
-  });
-
   const {
+    virtualContributor,
+    vc,
+    myPrivileges,
+    isNotFoundError,
+    bokSpaceProfile,
+    hasSpaceProfileReadAccess,
     knowledgeBaseDescription,
-    hasReadAccess: kbHasReadAccess,
-    loading: kbLoading,
-  } = useKnowledgeBase({
-    id: vcId,
-  });
+    kbHasReadAccess,
+    loading,
+  } = useCrdVCProfilePageData();
 
-  useRestrictedRedirect(
-    { data, error, skip: urlResolverLoading || loading },
-    d => d.lookup.virtualContributor?.authorization?.myPrivileges,
-    { requiredPrivilege: AuthorizationPrivilege.Read }
-  );
+  usePageTitle(virtualContributor?.profile?.displayName);
 
-  usePageTitle(data?.lookup.virtualContributor?.profile?.displayName);
-
-  if (error && isApolloNotFoundError(error)) {
+  if (isNotFoundError) {
     return <Error404 />;
   }
 
-  // Per-region loading flags (FR-009): each region renders a Skeleton while
-  // its underlying queries are in flight, then swaps to real content as data
-  // lands.
-  const heroLoading = authLoading || urlResolverLoading || loading || !vcId;
-  const sidebarLoading = heroLoading;
-  const contentViewLoading = heroLoading;
-  const bokLoading =
-    heroLoading ||
-    (isBokSpace && (loadingBokAuth || (hasSpaceProfileReadAccess && loadingBokProfile))) ||
-    (isBokKb && kbLoading);
-
-  const virtualContributor = data?.lookup.virtualContributor;
-  const vc = createVirtualContributorModelFull(virtualContributor);
-  const myPrivileges = virtualContributor?.authorization?.myPrivileges;
-
   const profile = vc.profile;
-
-  const bokSpaceProfile = isBokSpace ? bokProfileData?.lookup.space?.about.profile : undefined;
 
   const bodyOfKnowledge = resolveBodyOfKnowledge({
     vc,
-    bokSpaceProfile: bokSpaceProfile
-      ? { id: bokSpaceProfile.id, displayName: bokSpaceProfile.displayName, url: bokSpaceProfile.url }
-      : undefined,
+    bokSpaceProfile,
     hasSpaceReadAccess: hasSpaceProfileReadAccess,
-    knowledgeBaseDescription: knowledgeBaseDescription ?? undefined,
+    knowledgeBaseDescription,
     knowledgeBasePlaceholder: tBase('virtualContributorSpaceSettings.placeholder'),
     knowledgeBaseHasReadAccess: kbHasReadAccess,
     privateSpaceLabel: tBase('components.card.privacy.private', { entity: 'space' }),
@@ -253,12 +191,7 @@ export const CrdVCProfilePage = () => {
           technicalReferencesNotAvailable: t('vcProfile.aiEngine.notAvailable'),
         },
       }}
-      loading={{
-        hero: heroLoading,
-        sidebar: sidebarLoading,
-        bodyOfKnowledge: bokLoading,
-        contentView: contentViewLoading,
-      }}
+      loading={loading}
       loadingLabels={{
         hero: t('common.loading.hero'),
         sidebar: t('common.loading.sidebar'),

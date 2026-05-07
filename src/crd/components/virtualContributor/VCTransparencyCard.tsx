@@ -101,10 +101,7 @@ function AnswerArea({ card, labels }: { card: TransparencyCardData; labels: VCTr
 
   if (card.textValue !== undefined) {
     const value = card.textValue.trim();
-    const display =
-      value === '' || value.toLowerCase() === 'unknown' || value.toLowerCase() === 'unknown'
-        ? labels.unknownAnswer
-        : card.textValue;
+    const display = value === '' || value.toLowerCase() === 'unknown' ? labels.unknownAnswer : value;
     return <span className="text-body-emphasis">{display}</span>;
   }
 

@@ -67,7 +67,7 @@
       "verifiedTooltip": "Deze organisatie is geverifieerd door Alkemio."
     },
     "sidebar": {
-      "bioTitle": "Bio",
+      "bioTitle": "Biografie",
       "bioEmpty": "Nog geen bio.",
       "tagsetKeywords": "Trefwoorden",
       "tagsetCapabilities": "Capaciteiten",
@@ -103,7 +103,7 @@
     "sidebar": {
       "descriptionTitle": "Beschrijving",
       "descriptionEmpty": "Geen beschrijving beschikbaar.",
-      "hostTitle": "Host",
+      "hostTitle": "Aanbieder",
       "hostEmpty": "Geen host."
     },
     "functionality": {
