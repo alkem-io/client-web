@@ -57,7 +57,19 @@ const LoginPage = ({ flow }: LoginPageProps) => {
     if (returnUrlFromParam) {
       setReturnUrl(returnUrlFromParam);
     }
-    const returnTo = returnUrlFromParam ?? storedReturnUrl ?? '/';
+    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
+    // FR-017a — server-side validator requires a same-origin path-only value.
+    // Legacy callers (buildReturnUrlParam) prepend window.location.origin for
+    // Kratos compatibility; strip it here when same-origin so the OIDC BFF
+    // accepts the value instead of warn-rejecting it back to '/'.
+    const returnTo = (() => {
+      try {
+        const u = new URL(raw, window.location.origin);
+        return u.origin === window.location.origin ? `${u.pathname}${u.search}${u.hash}` || '/' : '/';
+      } catch {
+        return raw.startsWith('/') ? raw : '/';
+      }
+    })();
     window.location.replace(`/api/auth/oidc/login?returnTo=${encodeURIComponent(returnTo)}`);
   }, [isOidcEntry, returnUrlFromParam]);
 
