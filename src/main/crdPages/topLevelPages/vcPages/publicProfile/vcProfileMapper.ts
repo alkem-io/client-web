@@ -333,7 +333,7 @@ export const mapVCAiEngine = (
       iconName: 'mapPin',
       title: labels.cards.physicalLocation.title,
       description: labels.cards.physicalLocation.description,
-      // Empty / 'unkown' (legacy literal) → "Unknown" via view fallback.
+      // Empty / 'unknown' (legacy literal) → "Unknown" via view fallback.
       textValue: aiEngine.hostingLocation ?? '',
     },
     {
