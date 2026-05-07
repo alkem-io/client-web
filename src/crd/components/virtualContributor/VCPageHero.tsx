@@ -1,19 +1,22 @@
-import { Settings } from 'lucide-react';
+import { Bot, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
 export type VCPageHeroProps = {
   avatarImageUrl: string | null;
-  color: string;
   displayName: string;
   /** When `null` the gear icon is hidden. */
-  settingsHref: string | null;
+  settingsUrl: string | null;
+  /** i18n-resolved "Virtual Contributor" label rendered inside a Badge next to the name. */
+  typeBadgeLabel: string;
+  /** Resolved keyword strings. Empty array → chip row is omitted entirely (FR-030). */
+  keywords: string[];
   /** NO Message button (FR-030). */
 };
 
-export function VCPageHero({ avatarImageUrl, color, displayName, settingsHref }: VCPageHeroProps) {
+export function VCPageHero({ avatarImageUrl, displayName, settingsUrl, typeBadgeLabel, keywords }: VCPageHeroProps) {
   const { t } = useTranslation('crd-profilePages');
 
   return (
@@ -22,18 +25,33 @@ export function VCPageHero({ avatarImageUrl, color, displayName, settingsHref }:
         <div className="flex flex-col md:flex-row md:items-end gap-6">
           <Avatar className="w-32 h-32 md:w-40 md:h-40 shrink-0 border-4 border-background shadow-lg text-4xl">
             {avatarImageUrl ? <AvatarImage src={avatarImageUrl} alt={displayName} /> : null}
-            <AvatarFallback color={color} className="text-white text-3xl">
-              {fallbackInitials(displayName)}
+            <AvatarFallback className="bg-muted text-foreground">
+              <Bot className="size-12 md:size-16" aria-hidden="true" />
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
-            <div className="min-w-0">
-              <h1 className="text-page-title md:text-4xl text-foreground truncate">{displayName}</h1>
+            <div className="min-w-0 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-page-title md:text-4xl text-foreground">{displayName}</h1>
+                <Badge variant="secondary">
+                  <Bot className="size-3" aria-hidden="true" />
+                  {typeBadgeLabel}
+                </Badge>
+              </div>
+              {keywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {keywords.map(keyword => (
+                    <Badge key={keyword} variant="outline">
+                      {keyword}
+                    </Badge>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div className="flex gap-3 shrink-0">
-              {settingsHref ? (
+              {settingsUrl ? (
                 <Button
                   asChild={true}
                   variant="secondary"
@@ -41,7 +59,7 @@ export function VCPageHero({ avatarImageUrl, color, displayName, settingsHref }:
                   className="shadow-sm"
                   title={t('vcProfile.hero.settingsTooltip')}
                 >
-                  <a href={settingsHref} aria-label={t('vcProfile.hero.settingsAriaLabel')}>
+                  <a href={settingsUrl} aria-label={t('vcProfile.hero.settingsAriaLabel')}>
                     <Settings className="w-4 h-4" aria-hidden="true" />
                   </a>
                 </Button>

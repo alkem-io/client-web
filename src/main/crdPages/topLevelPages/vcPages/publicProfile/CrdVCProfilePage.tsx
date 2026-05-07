@@ -11,17 +11,19 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { VCPublicProfileView } from '@/crd/components/virtualContributor/VCPublicProfileView';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
 import { createVirtualContributorModelFull } from '@/domain/community/virtualContributor/utils/createVirtualContributorModelFull';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   computeSettingsHref,
+  extractVcKeywords,
   mapHostCard,
-  mapModelCardSummary,
+  mapVCAiEngine,
+  mapVCFunctionality,
   mapVcReferences,
   resolveBodyOfKnowledge,
+  VC_MONITORING_SECTION,
 } from './vcProfileMapper';
 
 export const CrdVCProfilePage = () => {
@@ -57,7 +59,6 @@ export const CrdVCProfilePage = () => {
     skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
   });
 
-  // Knowledge-base description + privilege.
   const {
     knowledgeBaseDescription,
     hasReadAccess: kbHasReadAccess,
@@ -80,7 +81,7 @@ export const CrdVCProfilePage = () => {
 
   // Per-region loading flags (FR-009): each region renders a Skeleton while
   // its underlying queries are in flight, then swaps to real content as data
-  // lands. The page does not block on all queries before rendering.
+  // lands.
   const heroLoading = authLoading || urlResolverLoading || loading || !vcId;
   const sidebarLoading = heroLoading;
   const contentViewLoading = heroLoading;
@@ -93,8 +94,6 @@ export const CrdVCProfilePage = () => {
   const vc = createVirtualContributorModelFull(virtualContributor);
   const myPrivileges = virtualContributor?.authorization?.myPrivileges;
 
-  const id = vc.id || vcId || '';
-  const color = pickColorFromId(id);
   const profile = vc.profile;
 
   const bokSpaceProfile = isBokSpace ? bokProfileData?.lookup.space?.about.profile : undefined;
@@ -121,18 +120,67 @@ export const CrdVCProfilePage = () => {
   });
 
   const references = mapVcReferences(profile.references);
-
-  const modelCard = mapModelCardSummary(vc, t('vcProfile.contentView.aiEngineExternal'));
   const host = mapHostCard(vc);
-  const settingsHref = computeSettingsHref(vc, myPrivileges, buildSettingsUrl);
+  const settingsUrl = computeSettingsHref(vc, myPrivileges, buildSettingsUrl);
+
+  // Hero: type badge + Keywords chip row (FR-030).
+  // `tagsets` is not on `VirtualContributorModelFull`; read from the raw
+  // GraphQL profile (the runtime shape includes tagsets per
+  // VirtualContributorProfileWithModelCard.graphql).
+  const keywords = extractVcKeywords(virtualContributor?.profile?.tagsets);
+
+  // Right column — redesigned VCContentView (Functionality / AI Engine / Monitoring).
+  const contentLabels = {
+    capabilitiesTagging: t('vcProfile.functionality.capabilities.tagging'),
+    capabilitiesCreateContent: t('vcProfile.functionality.capabilities.createContent'),
+    capabilitiesCommunityManagement: t('vcProfile.functionality.capabilities.communityManagement'),
+    dataAccessAbout: t('vcProfile.functionality.dataAccess.about'),
+    dataAccessContent: t('vcProfile.functionality.dataAccess.content'),
+    dataAccessSubspaces: t('vcProfile.functionality.dataAccess.subspaces'),
+    engineNameAlkemio: t('vcProfile.aiEngine.engineName.alkemio'),
+    engineNameAssistant: t('vcProfile.aiEngine.engineName.assistant'),
+    engineNameExternal: t('vcProfile.aiEngine.engineName.external'),
+    aiEngineHeadingFor: (engineName: string) => t('vcProfile.aiEngine.heading', { engineName }),
+    cards: {
+      openModelTransparency: {
+        title: t('vcProfile.aiEngine.cards.openModelTransparency.title'),
+        description: t('vcProfile.aiEngine.cards.openModelTransparency.description'),
+      },
+      dataUsageDisclosure: {
+        title: t('vcProfile.aiEngine.cards.dataUsageDisclosure.title'),
+        description: t('vcProfile.aiEngine.cards.dataUsageDisclosure.description'),
+      },
+      knowledgeRestriction: {
+        title: t('vcProfile.aiEngine.cards.knowledgeRestriction.title'),
+        description: t('vcProfile.aiEngine.cards.knowledgeRestriction.description'),
+      },
+      webAccess: {
+        title: t('vcProfile.aiEngine.cards.webAccess.title'),
+        description: t('vcProfile.aiEngine.cards.webAccess.description'),
+      },
+      physicalLocation: {
+        title: t('vcProfile.aiEngine.cards.physicalLocation.title'),
+        description: t('vcProfile.aiEngine.cards.physicalLocation.description'),
+      },
+      technicalReferences: {
+        title: t('vcProfile.aiEngine.cards.technicalReferences.title'),
+        description: t('vcProfile.aiEngine.cards.technicalReferences.description'),
+      },
+    },
+    seeDocumentation: t('vcProfile.aiEngine.seeDocumentation'),
+  } as const;
+
+  const functionality = mapVCFunctionality(vc, contentLabels);
+  const aiEngine = mapVCAiEngine(vc, contentLabels);
 
   return (
     <VCPublicProfileView
       hero={{
         avatarImageUrl: profile.avatar?.uri ?? null,
-        color,
         displayName: profile.displayName,
-        settingsHref,
+        settingsUrl,
+        typeBadgeLabel: t('vcProfile.typeBadge'),
+        keywords,
       }}
       sidebar={{
         description: profile.description ?? null,
@@ -151,14 +199,21 @@ export const CrdVCProfilePage = () => {
         },
       }}
       contentView={{
-        modelCard,
-        references,
+        functionality,
+        aiEngine,
+        monitoring: VC_MONITORING_SECTION,
         labels: {
-          modelCardTitle: t('vcProfile.contentView.modelCardTitle'),
-          aiEngineLabel: t('vcProfile.contentView.aiEngineLabel'),
-          aiEngineExternal: t('vcProfile.contentView.aiEngineExternal'),
-          socialLinksTitle: t('vcProfile.contentView.socialLinksTitle'),
-          socialLinksEmpty: t('vcProfile.contentView.socialLinksEmpty'),
+          functionalityHeading: t('vcProfile.functionality.heading'),
+          capabilitiesTitle: t('vcProfile.functionality.capabilities.title'),
+          dataAccessTitle: t('vcProfile.functionality.dataAccess.title'),
+          roleRequirementsTitle: t('vcProfile.functionality.roleRequirements.title'),
+          roleRequirementsMemberRequiredKey: 'crd-profilePages:vcProfile.functionality.roleRequirements.memberRequired',
+          roleRequirementsNoneRequired: t('vcProfile.functionality.roleRequirements.noneRequired'),
+          aiEngineHeading: t('vcProfile.aiEngine.heading', { engineName: aiEngine.engineName }),
+          yesAnswer: t('vcProfile.aiEngine.yes'),
+          noAnswer: t('vcProfile.aiEngine.no'),
+          unknownAnswer: t('vcProfile.aiEngine.unknown'),
+          technicalReferencesNotAvailable: t('vcProfile.aiEngine.notAvailable'),
         },
       }}
       loading={{

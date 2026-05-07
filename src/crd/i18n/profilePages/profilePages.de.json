@@ -95,6 +95,7 @@
     "vcType": "Virtueller Mitwirkender"
   },
   "vcProfile": {
+    "typeBadge": "Virtueller Mitwirkender",
     "hero": {
       "settingsTooltip": "Einstellungen virtueller Mitwirkender",
       "settingsAriaLabel": "Einstellungen virtueller Mitwirkender öffnen"
@@ -104,16 +105,68 @@
       "hostTitle": "Anbieter",
       "hostEmpty": "Kein Anbieter."
     },
-    "contentView": {
-      "modelCardTitle": "Modellkarte",
-      "aiEngineLabel": "KI-Engine",
-      "aiEngineExternal": "Extern",
-      "promptsLabel": "Prompts",
-      "promptsPersonaLabel": "Persona",
-      "promptsConstraintsLabel": "Einschränkungen",
-      "dataPrivacyLabel": "Datenschutz",
-      "socialLinksTitle": "Soziale Links",
-      "socialLinksEmpty": "Keine sozialen Links."
+    "functionality": {
+      "heading": "Funktionalität",
+      "capabilities": {
+        "title": "Funktionale Fähigkeiten",
+        "tagging": "Fragen in Kommentaren beantworten",
+        "createContent": "Neue Beiträge erstellen",
+        "communityManagement": "Andere Mitwirkende einladen"
+      },
+      "dataAccess": {
+        "title": "Datenzugriff aus dem Space, in dem er Mitglied ist",
+        "about": "Seite „Über“",
+        "content": "Beiträge & Mitwirkungen",
+        "subspaces": "Subspaces"
+      },
+      "roleRequirements": {
+        "title": "Rollenanforderungen",
+        "memberRequired": "Diesem VC müssen <strong>Mitgliedsrechte</strong> erteilt werden, damit er korrekt funktioniert",
+        "noneRequired": "Keine besonderen Mitgliedsrechte erforderlich"
+      }
+    },
+    "aiEngine": {
+      "heading": "KI-Engine: {{engineName}}",
+      "engineName": {
+        "alkemio": "Alkemio-KI",
+        "assistant": "Externer KI-Assistent",
+        "external": "Externe KI"
+      },
+      "seeDocumentation": "DOKUMENTATION ANZEIGEN",
+      "notAvailable": "Nicht verfügbar",
+      "unknown": "Unbekannt",
+      "yes": "Ja",
+      "no": "Nein",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Transparenz offener Modelle",
+          "description": "Verwendet der VC ein Modell mit offenen Gewichten?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Offenlegung der Datennutzung",
+          "description": "Werden Interaktionsdaten in irgendeiner Weise für das Modelltraining genutzt?"
+        },
+        "knowledgeRestriction": {
+          "title": "Wissensbeschränkung",
+          "description": "Wird der VC angewiesen, Antworten auf einen bestimmten Wissensbestand zu beschränken?"
+        },
+        "webAccess": {
+          "title": "Webzugriff",
+          "description": "Kann der VC auf das Web zugreifen oder darin suchen?"
+        },
+        "physicalLocation": {
+          "title": "Physischer Standort",
+          "description": "Wo wird der KI-Dienst gehostet?"
+        },
+        "technicalReferences": {
+          "title": "Technische Referenzen",
+          "description": "Zugriff auf detaillierte Informationen zu den Spezifikationen der zugrunde liegenden Modelle"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Überwachung durch Alkemio",
+      "body": "Da Alkemio die Interaktion mit dem externen Anbieter ermöglicht, trägt es eine operative Verantwortung für die Überwachung des Dienstes. Wie alle Daten und Interaktionen auf der Plattform unterliegen sie unseren <a>Allgemeinen Geschäftsbedingungen</a>."
     }
   }
 }

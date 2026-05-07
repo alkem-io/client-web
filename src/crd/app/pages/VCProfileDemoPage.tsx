@@ -13,17 +13,25 @@ const SIDEBAR_LABELS = {
 };
 
 const CONTENT_LABELS = {
-  modelCardTitle: 'Model Card',
-  aiEngineLabel: 'AI Engine',
-  aiEngineExternal: 'External',
-  socialLinksTitle: 'Social Links',
-  socialLinksEmpty: 'No social links.',
+  functionalityHeading: 'Functionality',
+  capabilitiesTitle: 'Functional Capabilities',
+  dataAccessTitle: 'Data access from the Space where it is a member',
+  roleRequirementsTitle: 'Role Requirements',
+  roleRequirementsMemberRequiredKey: 'crd-profilePages:vcProfile.functionality.roleRequirements.memberRequired',
+  roleRequirementsNoneRequired: 'No special member rights required',
+  aiEngineHeading: 'AI Engine: Alkemio AI',
+  yesAnswer: 'Yes',
+  noAnswer: 'No',
+  unknownAnswer: 'Unknown',
+  technicalReferencesNotAvailable: 'Not available',
 };
 
 /**
  * Demo: Virtual Contributor public profile (DataSynth Bot).
- * Renders the BoK section in the `space` variant, the host card, and the
- * model-card content view. NO Message button (FR-030).
+ * Renders the redesigned hero (Bot avatar fallback + "Virtual Contributor"
+ * type badge + Keywords chip row), the BoK section in the `space` variant,
+ * the host card, and the redesigned right column (Functionality / AI Engine /
+ * Monitoring). NO Message button (FR-030).
  */
 export function VCProfileDemoPage() {
   const vc = MOCK_VC_DATASYNTH;
@@ -31,8 +39,11 @@ export function VCProfileDemoPage() {
   return (
     <VCPublicProfileView
       hero={{
-        ...vc.hero,
-        settingsHref: `/vc/${vc.slug}/settings`,
+        avatarImageUrl: vc.hero.avatarImageUrl,
+        displayName: vc.hero.displayName,
+        settingsUrl: `/vc/${vc.slug}/settings`,
+        typeBadgeLabel: 'Virtual Contributor',
+        keywords: vc.hero.keywords,
       }}
       sidebar={{
         description: vc.description,
@@ -42,8 +53,9 @@ export function VCProfileDemoPage() {
         labels: SIDEBAR_LABELS,
       }}
       contentView={{
-        modelCard: vc.modelCard,
-        references: vc.references,
+        functionality: vc.functionality,
+        aiEngine: vc.aiEngine,
+        monitoring: vc.monitoring,
         labels: CONTENT_LABELS,
       }}
       loading={{ hero: false, sidebar: false, bodyOfKnowledge: false, contentView: false }}

@@ -95,6 +95,7 @@
     "vcType": "Virtual Contributor"
   },
   "vcProfile": {
+    "typeBadge": "Virtual Contributor",
     "hero": {
       "settingsTooltip": "Virtual contributor settings",
       "settingsAriaLabel": "Open virtual contributor settings"
@@ -104,16 +105,68 @@
       "hostTitle": "Host",
       "hostEmpty": "No host."
     },
-    "contentView": {
-      "modelCardTitle": "Model Card",
-      "aiEngineLabel": "AI Engine",
-      "aiEngineExternal": "External",
-      "promptsLabel": "Prompts",
-      "promptsPersonaLabel": "Persona",
-      "promptsConstraintsLabel": "Constraints",
-      "dataPrivacyLabel": "Data Privacy",
-      "socialLinksTitle": "Social Links",
-      "socialLinksEmpty": "No social links."
+    "functionality": {
+      "heading": "Functionality",
+      "capabilities": {
+        "title": "Functional Capabilities",
+        "tagging": "Answer questions in comments",
+        "createContent": "Create new posts",
+        "communityManagement": "Invite other contributors"
+      },
+      "dataAccess": {
+        "title": "Data access from the Space where it is a member",
+        "about": "About page",
+        "content": "Posts & Contributions",
+        "subspaces": "Subspaces"
+      },
+      "roleRequirements": {
+        "title": "Role Requirements",
+        "memberRequired": "This VC needs to be granted <strong>member rights</strong> to function correctly",
+        "noneRequired": "No special member rights required"
+      }
+    },
+    "aiEngine": {
+      "heading": "AI Engine: {{engineName}}",
+      "engineName": {
+        "alkemio": "Alkemio AI",
+        "assistant": "External AI Assistant",
+        "external": "External AI"
+      },
+      "seeDocumentation": "SEE DOCUMENTATION",
+      "notAvailable": "Not available",
+      "unknown": "Unknown",
+      "yes": "Yes",
+      "no": "No",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Open Model Transparency",
+          "description": "Does the VC use an open-weight model?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Data Usage Disclosure",
+          "description": "Is interaction data used in any way for model training?"
+        },
+        "knowledgeRestriction": {
+          "title": "Knowledge Restriction",
+          "description": "Is the VC prompted to limit the responses to a specific body of knowledge?"
+        },
+        "webAccess": {
+          "title": "Web Access",
+          "description": "Can the VC access or search the web?"
+        },
+        "physicalLocation": {
+          "title": "Physical Location",
+          "description": "Where is the AI service hosted?"
+        },
+        "technicalReferences": {
+          "title": "Technical References",
+          "description": "Access to detailed information on the underlying models specifications"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Monitoring by Alkemio",
+      "body": "Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a>Terms & Conditions</a>."
     }
   }
 }

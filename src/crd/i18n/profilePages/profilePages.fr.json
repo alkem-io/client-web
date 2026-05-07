@@ -95,6 +95,7 @@
     "vcType": "Contributeur virtuel"
   },
   "vcProfile": {
+    "typeBadge": "Contributeur virtuel",
     "hero": {
       "settingsTooltip": "Paramètres du contributeur virtuel",
       "settingsAriaLabel": "Ouvrir les paramètres du contributeur virtuel"
@@ -104,16 +105,68 @@
       "hostTitle": "Hôte",
       "hostEmpty": "Aucun hôte."
     },
-    "contentView": {
-      "modelCardTitle": "Fiche du modèle",
-      "aiEngineLabel": "Moteur IA",
-      "aiEngineExternal": "Externe",
-      "promptsLabel": "Prompts",
-      "promptsPersonaLabel": "Persona",
-      "promptsConstraintsLabel": "Contraintes",
-      "dataPrivacyLabel": "Confidentialité des données",
-      "socialLinksTitle": "Liens sociaux",
-      "socialLinksEmpty": "Aucun lien social."
+    "functionality": {
+      "heading": "Fonctionnalité",
+      "capabilities": {
+        "title": "Capacités fonctionnelles",
+        "tagging": "Répondre aux questions dans les commentaires",
+        "createContent": "Créer de nouvelles publications",
+        "communityManagement": "Inviter d’autres contributeurs"
+      },
+      "dataAccess": {
+        "title": "Accès aux données depuis l’Espace dont il est membre",
+        "about": "Page « À propos »",
+        "content": "Publications et contributions",
+        "subspaces": "Sous-espaces"
+      },
+      "roleRequirements": {
+        "title": "Exigences de rôle",
+        "memberRequired": "Ce CV doit recevoir des <strong>droits de membre</strong> pour fonctionner correctement",
+        "noneRequired": "Aucun droit de membre particulier requis"
+      }
+    },
+    "aiEngine": {
+      "heading": "Moteur IA : {{engineName}}",
+      "engineName": {
+        "alkemio": "IA Alkemio",
+        "assistant": "Assistant IA externe",
+        "external": "IA externe"
+      },
+      "seeDocumentation": "VOIR LA DOCUMENTATION",
+      "notAvailable": "Non disponible",
+      "unknown": "Inconnu",
+      "yes": "Oui",
+      "no": "Non",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Transparence du modèle ouvert",
+          "description": "Le CV utilise-t-il un modèle à poids ouverts ?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Divulgation de l’utilisation des données",
+          "description": "Les données d’interaction sont-elles utilisées d’une quelconque manière pour entraîner le modèle ?"
+        },
+        "knowledgeRestriction": {
+          "title": "Restriction des connaissances",
+          "description": "Le CV est-il invité à limiter ses réponses à un corpus de connaissances spécifique ?"
+        },
+        "webAccess": {
+          "title": "Accès au web",
+          "description": "Le CV peut-il accéder au web ou y effectuer des recherches ?"
+        },
+        "physicalLocation": {
+          "title": "Emplacement physique",
+          "description": "Où le service IA est-il hébergé ?"
+        },
+        "technicalReferences": {
+          "title": "Références techniques",
+          "description": "Accès à des informations détaillées sur les spécifications des modèles sous-jacents"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Supervision par Alkemio",
+      "body": "Étant donné qu’Alkemio facilite l’interaction avec le fournisseur externe, elle assume une responsabilité opérationnelle de supervision du service. Comme toutes les données et interactions sur la plateforme, celles-ci sont régies par nos <a>Conditions générales</a>."
     }
   }
 }

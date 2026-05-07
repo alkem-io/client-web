@@ -3,7 +3,6 @@ import {
   type CompactContributorCardItem,
 } from '@/crd/components/common/CompactContributorCard';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { excludeSocialReferences } from '@/crd/components/common/SocialLinks';
 import { VCBodyOfKnowledgeSection, type VCBodyOfKnowledgeSectionProps } from './VCBodyOfKnowledgeSection';
 
 export type ReferenceLink = {
@@ -18,9 +17,10 @@ export type VCProfileSidebarProps = {
   /** Provider compact card. `null` when the VC has no provider. */
   host: CompactContributorCardItem | null;
   /**
-   * ALL references (social + non-social). The view filters via
-   * `excludeSocialReferences` for the References section. Social links live
-   * in the right-column content view, not the sidebar.
+   * ALL references — flat URL-chip list (FR-032 / Session 2026-05-06).
+   * No social/non-social split: the redesigned right column does not surface
+   * social references at all, so MUI's silent split-and-discard would lose UI.
+   * Deliberate divergence from MUI.
    */
   references: ReferenceLink[];
   bodyOfKnowledge: VCBodyOfKnowledgeSectionProps['bodyOfKnowledge'];
@@ -37,7 +37,6 @@ export type VCProfileSidebarProps = {
 };
 
 export function VCProfileSidebar({ description, host, references, bodyOfKnowledge, labels }: VCProfileSidebarProps) {
-  const nonSocialReferences = excludeSocialReferences(references);
   return (
     <div className="space-y-8">
       <section>
@@ -56,13 +55,13 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
 
       <section>
         <h2 className="text-section-title mb-3">{labels.referencesTitle}</h2>
-        {nonSocialReferences.length === 0 ? (
+        {references.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (
           /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
           /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
           <ul role="list" className="space-y-2">
-            {nonSocialReferences.map(ref => (
+            {references.map(ref => (
               <li key={ref.id}>
                 <a
                   href={ref.uri}
