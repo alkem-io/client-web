@@ -28,8 +28,6 @@ export function MembershipCardConnector({ contribution }: MembershipCardConnecto
     href: profile.url,
     imageUrl: profile.cardBanner?.uri || undefined,
     color: pickColorFromId(contribution.id),
-    // Treat missing data as public (the optional flag is `undefined` until the
-    // backend explicitly opts in to private content); only `false` means private.
     isPrivate: details.about.isContentPublic === false,
   };
 

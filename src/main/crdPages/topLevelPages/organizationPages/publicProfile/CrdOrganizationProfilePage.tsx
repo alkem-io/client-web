@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
@@ -9,16 +10,11 @@ import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMem
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { MembershipCardConnector } from '../../common/MembershipCardConnector';
+import { buildLocationLine, buildTagsetGroups, normaliseReferences } from '../../common/profileMapperHelpers';
 import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '../../common/useSendMessageHandler';
-import { MembershipCardConnector } from '../../userPages/publicProfile/MembershipCardConnector';
-import { buildLocationLine } from '../../userPages/publicProfile/publicProfileMapper';
-import {
-  buildTagsetGroups,
-  mapAssociates,
-  mapOrgHostedResources,
-  normaliseReferences,
-} from './organizationProfileMapper';
+import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 
 export const CrdOrganizationProfilePage = () => {
@@ -38,6 +34,17 @@ export const CrdOrganizationProfilePage = () => {
     { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
   ];
+
+  // Memberships filter MUST run on every render (rules of hooks) — derive
+  // it before the 404 early-return below.
+  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+
+  // 404 — context + provider have both resolved but no organization came back
+  // (deleted / unreadable org). Without this, heroLoading stays true forever
+  // and the page sits on a permanent skeleton.
+  if (!loading.context && !loading.provider && !organization) {
+    return <Error404 />;
+  }
 
   const heroLoading = loading.context || loading.provider || !organization;
   const sidebarLoading = heroLoading;
@@ -80,7 +87,6 @@ export const CrdOrganizationProfilePage = () => {
   // Right column — 4 hosted-resource sub-sections + Lead Spaces + Member Of.
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
     mapOrgHostedResources(accountResources, t('orgProfile.vcType'));
-  const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
   const leadSpaces = leadItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
   const memberOf = memberItems.map(item => <MembershipCardConnector key={item.id} contribution={item} />);
 

@@ -1,5 +1,5 @@
 import { Check, CircuitBoard, Minus, Upload, Users } from 'lucide-react';
-import { Trans } from 'react-i18next';
+import type { ReactNode } from 'react';
 import { Card, CardContent } from '@/crd/primitives/card';
 
 export type BulletItem = {
@@ -10,24 +10,27 @@ export type BulletItem = {
 export type VCFunctionalitySectionData = {
   capabilities: BulletItem[];
   dataAccess: BulletItem[];
+  /** Discriminator only — the integration layer maps it to `roleRequirementsContent`. */
   roleRequirements: { kind: 'memberRequired' | 'noneRequired' };
 };
 
 export type VCFunctionalityGridProps = {
   functionality: VCFunctionalitySectionData;
+  /**
+   * Pre-rendered Role Requirements paragraph. The page constructs this with
+   * `<Trans>` (the `memberRequired` copy contains `<strong>` markup) so the
+   * CRD component never touches i18n keys directly.
+   */
+  roleRequirementsContent: ReactNode;
   labels: {
     heading: string;
     capabilitiesTitle: string;
     dataAccessTitle: string;
     roleRequirementsTitle: string;
-    /** i18n KEY (passed straight to <Trans>) — contains <strong> markup. */
-    roleRequirementsMemberRequiredKey: string;
-    /** Plain string. */
-    roleRequirementsNoneRequired: string;
   };
 };
 
-export function VCFunctionalityGrid({ functionality, labels }: VCFunctionalityGridProps) {
+export function VCFunctionalityGrid({ functionality, roleRequirementsContent, labels }: VCFunctionalityGridProps) {
   return (
     <section>
       <h2 className="text-section-title mb-4">{labels.heading}</h2>
@@ -39,20 +42,7 @@ export function VCFunctionalityGrid({ functionality, labels }: VCFunctionalityGr
           <BulletList items={functionality.dataAccess} />
         </BulletCard>
         <BulletCard icon={Users} title={labels.roleRequirementsTitle}>
-          {functionality.roleRequirements.kind === 'memberRequired' ? (
-            <p className="text-body text-foreground">
-              {/* i18nKey is a runtime-supplied key (mapper output) so the strict
-                  literal-key type would reject it. Cast through `unknown` to
-                  satisfy the typed-keys constraint while still resolving via i18next. */}
-              <Trans
-                // biome-ignore lint/suspicious/noExplicitAny: runtime-supplied i18n key
-                i18nKey={labels.roleRequirementsMemberRequiredKey as any}
-                components={{ strong: <strong /> }}
-              />
-            </p>
-          ) : (
-            <p className="text-body text-muted-foreground">{labels.roleRequirementsNoneRequired}</p>
-          )}
+          {roleRequirementsContent}
         </BulletCard>
       </div>
     </section>

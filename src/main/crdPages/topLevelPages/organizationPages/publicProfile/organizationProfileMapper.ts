@@ -1,37 +1,8 @@
-import type {
-  AssociateGridItem,
-  ReferenceLink,
-  TagsetGroup,
-} from '@/crd/components/organization/OrganizationProfileSidebar';
+import type { AssociateGridItem } from '@/crd/components/organization/OrganizationProfileSidebar';
 import type { SimpleResourceCardItem } from '@/crd/components/organization/OrganizationResourceSections';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-
-export type RawReference = {
-  id: string;
-  name: string;
-  uri: string;
-  description?: string | null;
-};
-
-/**
- * Pass-through normaliser for the references array. The social/non-social
- * split (and brand resolution for the social subset) lives entirely inside
- * the shared `SocialLinks` primitive at `@/crd/components/common/SocialLinks`
- * — this mapper just hands the raw refs through with `description: null`
- * defaulted so the consumer sees a stable shape.
- */
-export const normaliseReferences = (references: RawReference[]): ReferenceLink[] =>
-  references.map(ref => ({
-    id: ref.id,
-    name: ref.name,
-    uri: ref.uri,
-    description: ref.description ?? null,
-  }));
-
-export const buildTagsetGroups = (groups: Array<{ key: string; name: string; tags: string[] }>): TagsetGroup[] =>
-  groups.filter(g => g.tags.length > 0);
 
 export type AssociateInput = {
   id: string;

@@ -102,6 +102,7 @@
     },
     "sidebar": {
       "descriptionTitle": "Beschrijving",
+      "descriptionEmpty": "Geen beschrijving beschikbaar.",
       "hostTitle": "Host",
       "hostEmpty": "Geen host."
     },

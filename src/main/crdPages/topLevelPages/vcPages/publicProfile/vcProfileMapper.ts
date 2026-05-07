@@ -13,9 +13,10 @@ import type {
   SpaceProfileSummary,
 } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
 import type { VCFunctionalitySectionData } from '@/crd/components/virtualContributor/VCFunctionalityGrid';
-import type { VCMonitoringSectionData } from '@/crd/components/virtualContributor/VCMonitoringSection';
 import type { ReferenceLink } from '@/crd/components/virtualContributor/VCProfileSidebar';
 import type { TransparencyCardData } from '@/crd/components/virtualContributor/VCTransparencyCard';
+import { fallbackInitials } from '@/crd/lib/fallbackInitials';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { VirtualContributorModelFull } from '@/domain/community/virtualContributor/model/VirtualContributorModelFull';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 
@@ -46,21 +47,17 @@ export const resolveBodyOfKnowledge = (input: BoKResolverInput): BodyOfKnowledge
   const type = vc.bodyOfKnowledgeType;
 
   if (type === VirtualContributorBodyOfKnowledgeType.AlkemioSpace) {
-    const spaceProfile: SpaceProfileSummary = input.hasSpaceReadAccess
-      ? {
-          id: input.bokSpaceProfile?.id ?? vc.bodyOfKnowledgeID ?? '',
-          url: input.bokSpaceProfile?.url ?? '',
-          displayName: input.bokSpaceProfile?.displayName ?? '',
-          level: 'L0',
-          avatarImageUrl: null,
-        }
-      : {
-          id: '',
-          url: '',
-          displayName: input.privateSpaceLabel,
-          level: 'L0',
-          avatarImageUrl: null,
-        };
+    const spaceId = input.hasSpaceReadAccess ? (input.bokSpaceProfile?.id ?? vc.bodyOfKnowledgeID ?? '') : '';
+    const displayName = input.hasSpaceReadAccess ? (input.bokSpaceProfile?.displayName ?? '') : input.privateSpaceLabel;
+    const spaceProfile: SpaceProfileSummary = {
+      id: spaceId,
+      url: input.hasSpaceReadAccess ? (input.bokSpaceProfile?.url ?? '') : '',
+      displayName,
+      level: 'L0',
+      avatarImageUrl: null,
+      color: pickColorFromId(spaceId || displayName),
+      initials: fallbackInitials(displayName),
+    };
 
     return {
       kind: 'space',
@@ -350,9 +347,4 @@ export const mapVCAiEngine = (
   ];
 
   return { engineName, cards };
-};
-
-export const VC_MONITORING_SECTION: VCMonitoringSectionData = {
-  headingKey: 'crd-profilePages:vcProfile.monitoring.heading',
-  bodyKey: 'crd-profilePages:vcProfile.monitoring.body',
 };

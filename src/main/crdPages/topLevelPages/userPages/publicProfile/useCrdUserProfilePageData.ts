@@ -38,11 +38,16 @@ export const useCrdUserProfilePageData = () => {
     accountResources,
     contributions,
     organizationIds,
+    // Downstream flags include `routeLoading` so the page never renders empty
+    // sections before the route's userId is known. Without this, the
+    // organizations/memberships/account flags briefly flip to `false` between
+    // the route resolving and the downstream queries firing — long enough for
+    // the page to paint empty-state placeholders for the wrong user.
     loading: {
       route: routeLoading,
-      userAccount: loadingUserAccount,
-      organizations: userId !== undefined && organizationIds === undefined,
-      memberships: userId !== undefined && contributions === undefined,
+      userAccount: routeLoading || loadingUserAccount,
+      organizations: routeLoading || (userId !== undefined && organizationIds === undefined),
+      memberships: routeLoading || (userId !== undefined && contributions === undefined),
     },
   };
 };

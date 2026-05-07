@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useSpaceBodyOfKnowledgeAboutQuery,
   useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
@@ -23,8 +23,9 @@ import {
   mapVCFunctionality,
   mapVcReferences,
   resolveBodyOfKnowledge,
-  VC_MONITORING_SECTION,
 } from './vcProfileMapper';
+
+const ALKEMIO_TERMS_HREF = 'https://welcome.alkem.io/legal/#tc';
 
 export const CrdVCProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
@@ -173,6 +174,38 @@ export const CrdVCProfilePage = () => {
   const functionality = mapVCFunctionality(vc, contentLabels);
   const aiEngine = mapVCAiEngine(vc, contentLabels);
 
+  const roleRequirementsContent =
+    functionality.roleRequirements.kind === 'memberRequired' ? (
+      <p className="text-body text-foreground">
+        <Trans
+          i18nKey="vcProfile.functionality.roleRequirements.memberRequired"
+          ns="crd-profilePages"
+          components={{ strong: <strong /> }}
+        />
+      </p>
+    ) : (
+      <p className="text-body text-muted-foreground">{t('vcProfile.functionality.roleRequirements.noneRequired')}</p>
+    );
+
+  const monitoringBody = (
+    <Trans
+      i18nKey="vcProfile.monitoring.body"
+      ns="crd-profilePages"
+      components={{
+        a: (
+          <a
+            href={ALKEMIO_TERMS_HREF}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            {/* href + body provided by the Trans `<a>...</a>` markup */}
+          </a>
+        ),
+      }}
+    />
+  );
+
   return (
     <VCPublicProfileView
       hero={{
@@ -189,26 +222,30 @@ export const CrdVCProfilePage = () => {
         bodyOfKnowledge,
         labels: {
           descriptionTitle: t('vcProfile.sidebar.descriptionTitle'),
+          descriptionEmpty: t('vcProfile.sidebar.descriptionEmpty'),
           hostTitle: t('vcProfile.sidebar.hostTitle'),
           hostEmpty: t('vcProfile.sidebar.hostEmpty'),
           referencesTitle: tBase('components.profile.fields.references.title'),
           referencesEmpty: tBase('common.no-references'),
           bodyOfKnowledgeTitle: tBase('components.profile.fields.bodyOfKnowledge.title'),
+          bodyOfKnowledgeLoading: t('common.loading.bodyOfKnowledge'),
           bodyOfKnowledgePrivateTooltip: tBase('components.profile.fields.bodyOfKnowledge.privateBokTooltip'),
           bodyOfKnowledgeVisitButton: tBase('buttons.visit'),
         },
       }}
       contentView={{
         functionality,
+        roleRequirementsContent,
         aiEngine,
-        monitoring: VC_MONITORING_SECTION,
+        monitoring: {
+          heading: t('vcProfile.monitoring.heading'),
+          body: monitoringBody,
+        },
         labels: {
           functionalityHeading: t('vcProfile.functionality.heading'),
           capabilitiesTitle: t('vcProfile.functionality.capabilities.title'),
           dataAccessTitle: t('vcProfile.functionality.dataAccess.title'),
           roleRequirementsTitle: t('vcProfile.functionality.roleRequirements.title'),
-          roleRequirementsMemberRequiredKey: 'crd-profilePages:vcProfile.functionality.roleRequirements.memberRequired',
-          roleRequirementsNoneRequired: t('vcProfile.functionality.roleRequirements.noneRequired'),
           aiEngineHeading: t('vcProfile.aiEngine.heading', { engineName: aiEngine.engineName }),
           yesAnswer: t('vcProfile.aiEngine.yes'),
           noAnswer: t('vcProfile.aiEngine.no'),
@@ -225,6 +262,7 @@ export const CrdVCProfilePage = () => {
       loadingLabels={{
         hero: t('common.loading.hero'),
         sidebar: t('common.loading.sidebar'),
+        bodyOfKnowledge: t('common.loading.bodyOfKnowledge'),
         contentView: t('common.loading.contentView'),
       }}
     />

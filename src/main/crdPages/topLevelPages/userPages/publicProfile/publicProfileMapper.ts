@@ -4,7 +4,7 @@ import type { SimpleResourceCardItem } from '@/crd/components/organization/Organ
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import type { VirtualContributorCardItem } from '@/crd/components/user/UserResourceSections';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import { buildTagsetGroups } from '../../organizationPages/publicProfile/organizationProfileMapper';
+import { buildTagsetGroups } from '../../common/profileMapperHelpers';
 
 type ProfileTagsetLike = { name: string; tags: string[] };
 
@@ -64,23 +64,6 @@ export type AccountResourcesShape =
     }
   | null
   | undefined;
-
-const formatLocation = (
-  city: string | null | undefined,
-  country: string | null | undefined,
-  format: {
-    both: (city: string, country: string) => string;
-    cityOnly: (city: string) => string;
-    countryOnly: (country: string) => string;
-  }
-): string | null => {
-  const c = (city ?? '').trim();
-  const co = (country ?? '').trim();
-  if (c && co) return format.both(c, co);
-  if (c) return format.cityOnly(c);
-  if (co) return format.countryOnly(co);
-  return null;
-};
 
 export type MapHostedSpacesResult = SpaceGridCardData[];
 
@@ -152,22 +135,3 @@ export const mapHostedSpacesToCardData = (
 
   return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };
 };
-
-export type LocationFormatLabels = {
-  format: string;
-  cityOnly: string;
-  countryOnly: string;
-};
-
-export const buildLocationLine = (
-  city: string | null | undefined,
-  country: string | null | undefined,
-  resolveBoth: (vars: { city: string; country: string }) => string,
-  resolveCity: (vars: { city: string }) => string,
-  resolveCountry: (vars: { country: string }) => string
-): string | null =>
-  formatLocation(city, country, {
-    both: (cityValue, countryValue) => resolveBoth({ city: cityValue, country: countryValue }),
-    cityOnly: cityValue => resolveCity({ city: cityValue }),
-    countryOnly: countryValue => resolveCountry({ country: countryValue }),
-  });

@@ -102,6 +102,7 @@
     },
     "sidebar": {
       "descriptionTitle": "Описание",
+      "descriptionEmpty": "Няма описание.",
       "hostTitle": "Домакин",
       "hostEmpty": "Няма домакин."
     },

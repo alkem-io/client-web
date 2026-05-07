@@ -6,13 +6,13 @@ import type { ResourceTabKey } from '@/crd/components/user/UserResourceTabStrip'
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
+import { MembershipCardConnector } from '../../common/MembershipCardConnector';
+import { buildLocationLine, normaliseReferences } from '../../common/profileMapperHelpers';
+import useResourceTabs from '../../common/useResourceTabs';
 import { useSendMessageToUserHandler } from '../../common/useSendMessageHandler';
-import { normaliseReferences } from '../../organizationPages/publicProfile/organizationProfileMapper';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
-import { MembershipCardConnector } from './MembershipCardConnector';
-import { buildLocationLine, buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
+import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
 import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
-import useResourceTabs from './useResourceTabs';
 
 const buildSettingsHrefForUserSlug = (slug: string | undefined) =>
   slug ? `/user/${slug}/settings/profile` : undefined;
@@ -45,8 +45,11 @@ export const CrdUserProfilePage = () => {
   const safeContributions = contributions ?? [];
   const [leadingItems, memberItems] = useFilteredMemberships(safeContributions, [RoleType.Lead, RoleType.Admin]);
 
-  // 404 — `userId` resolved (no longer loading) but no userModel returned.
-  if (!loading.route && userId === undefined) {
+  // 404 — route resolved but the user lookup returned nothing (deleted /
+  // unreadable user). Checking `userModel` rather than just `userId` so the
+  // page reaches a terminal state when the slug resolves but the entity is
+  // gone.
+  if (!loading.route && !userModel) {
     return <Error404 />;
   }
 

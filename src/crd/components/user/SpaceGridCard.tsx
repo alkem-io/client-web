@@ -39,7 +39,10 @@ export function SpaceGridCard({ space, labels, className }: SpaceGridCardProps) 
         'block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         className
       )}
-      aria-label={space.title}
+      // Privacy is folded into the link's accessible name because aria-label
+      // suppresses descendant text per the ARIA naming spec — an `sr-only` span
+      // inside the chip would never be announced.
+      aria-label={`${space.title}, ${privacyLabel}`}
     >
       <Card className="overflow-hidden hover:shadow-md transition-all group cursor-pointer h-full flex flex-col gap-0">
         <div className="relative h-32 w-full bg-muted overflow-hidden">
@@ -54,7 +57,6 @@ export function SpaceGridCard({ space, labels, className }: SpaceGridCardProps) 
               ) : (
                 <Globe className="w-3 h-3" aria-hidden="true" />
               )}
-              <span className="sr-only">{privacyLabel}</span>
             </div>
           </div>
         </div>

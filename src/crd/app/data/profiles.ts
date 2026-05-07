@@ -21,7 +21,6 @@ import type { VirtualContributorCardItem } from '@/crd/components/user/UserResou
 import type { VCAiEngineSectionData } from '@/crd/components/virtualContributor/VCAiEngineGrid';
 import type { BodyOfKnowledge } from '@/crd/components/virtualContributor/VCBodyOfKnowledgeSection';
 import type { VCFunctionalitySectionData } from '@/crd/components/virtualContributor/VCFunctionalityGrid';
-import type { VCMonitoringSectionData } from '@/crd/components/virtualContributor/VCMonitoringSection';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 /* --------------------------------------------------------------------- */
@@ -457,6 +456,8 @@ export const MOCK_VC_DATASYNTH = {
       displayName: 'Renewable Energy Grid',
       level: 'L0',
       avatarImageUrl: null,
+      color: '#42a5f5',
+      initials: 'RE',
     },
     hasReadAccess: true,
     description: 'Trained on the open knowledge base of the Renewable Energy Grid space.',
@@ -529,8 +530,4 @@ export const MOCK_VC_DATASYNTH = {
       },
     ],
   } satisfies VCAiEngineSectionData,
-  monitoring: {
-    headingKey: 'crd-profilePages:vcProfile.monitoring.heading',
-    bodyKey: 'crd-profilePages:vcProfile.monitoring.body',
-  } satisfies VCMonitoringSectionData,
 };

@@ -102,6 +102,7 @@
     },
     "sidebar": {
       "descriptionTitle": "Description",
+      "descriptionEmpty": "Aucune description fournie.",
       "hostTitle": "Hôte",
       "hostEmpty": "Aucun hôte."
     },

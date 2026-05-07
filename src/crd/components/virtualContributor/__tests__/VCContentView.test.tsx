@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { VCContentView, type VCContentViewProps } from '../VCContentView';
 
@@ -7,21 +6,19 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
-  // Smart mock: when `components` is provided, render the wrapper element with
-  // a representative inner string so the test can verify a real <strong> /
-  // <a> appears in the DOM. When no `components`, fall back to text.
-  Trans: ({ i18nKey, components }: { i18nKey: string; components?: Record<string, ReactElement> }) => {
-    if (!components) return <span data-testid="trans">{i18nKey}</span>;
-    return (
-      <span data-testid="trans" data-i18n-key={i18nKey}>
-        {Object.entries(components).map(([name, element]) => {
-          const child: ReactNode = name === 'strong' ? 'member rights' : name === 'a' ? 'Terms & Conditions' : i18nKey;
-          return isValidElement(element) ? cloneElement(element, { key: name }, ...Children.toArray(child)) : null;
-        })}
-      </span>
-    );
-  },
 }));
+
+const noneRequiredContent = <p className="text-body text-muted-foreground">No special member rights required</p>;
+
+const monitoringBody = (
+  <p>
+    Read the{' '}
+    <a href="https://welcome.alkem.io/legal/#tc" target="_blank" rel="noreferrer">
+      Terms &amp; Conditions
+    </a>{' '}
+    for details.
+  </p>
+);
 
 const baseProps: VCContentViewProps = {
   functionality: {
@@ -37,6 +34,7 @@ const baseProps: VCContentViewProps = {
     ],
     roleRequirements: { kind: 'noneRequired' },
   },
+  roleRequirementsContent: noneRequiredContent,
   aiEngine: {
     engineName: 'Alkemio AI',
     cards: [
@@ -85,16 +83,14 @@ const baseProps: VCContentViewProps = {
     ],
   },
   monitoring: {
-    headingKey: 'crd-profilePages:vcProfile.monitoring.heading',
-    bodyKey: 'crd-profilePages:vcProfile.monitoring.body',
+    heading: 'Monitoring by Alkemio',
+    body: monitoringBody,
   },
   labels: {
     functionalityHeading: 'Functionality',
     capabilitiesTitle: 'Functional Capabilities',
     dataAccessTitle: 'Data access from the Space where it is a member',
     roleRequirementsTitle: 'Role Requirements',
-    roleRequirementsMemberRequiredKey: 'crd-profilePages:vcProfile.functionality.roleRequirements.memberRequired',
-    roleRequirementsNoneRequired: 'No special member rights required',
     aiEngineHeading: 'AI Engine: Alkemio AI',
     yesAnswer: 'Yes',
     noAnswer: 'No',
@@ -108,12 +104,7 @@ describe('VCContentView (redesigned)', () => {
     render(<VCContentView {...baseProps} />);
     expect(screen.getByRole('heading', { level: 2, name: 'Functionality' })).toBeTruthy();
     expect(screen.getByRole('heading', { level: 2, name: 'AI Engine: Alkemio AI' })).toBeTruthy();
-    expect(
-      screen.getByRole('heading', {
-        level: 2,
-        name: 'crd-profilePages:vcProfile.monitoring.heading',
-      })
-    ).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'Monitoring by Alkemio' })).toBeTruthy();
   });
 
   test('renders three Functionality cards with all bullet labels', () => {
@@ -125,38 +116,53 @@ describe('VCContentView (redesigned)', () => {
     expect(screen.getByText('About page')).toBeTruthy();
   });
 
-  test('Role Requirements `noneRequired` path renders plain "No special member rights required"', () => {
+  test('Role Requirements `noneRequired` content renders the supplied paragraph', () => {
     render(<VCContentView {...baseProps} />);
     expect(screen.getByText('No special member rights required')).toBeTruthy();
   });
 
-  test('Role Requirements `memberRequired` path renders a real <strong> via <Trans> (no escaped HTML)', () => {
+  test('Role Requirements `memberRequired` content can render a real <strong>', () => {
+    const memberRequiredContent = (
+      <p>
+        This VC needs <strong>member rights</strong> in the Space.
+      </p>
+    );
     const props: VCContentViewProps = {
       ...baseProps,
       functionality: { ...baseProps.functionality, roleRequirements: { kind: 'memberRequired' } },
+      roleRequirementsContent: memberRequiredContent,
     };
     const { container } = render(<VCContentView {...props} />);
     const strong = container.querySelector('strong');
     expect(strong).toBeTruthy();
     expect(strong?.textContent).toBe('member rights');
-    // Assert no escaped HTML markers leaked through.
     expect(container.innerHTML).not.toContain('&lt;strong&gt;');
   });
 
   test('renders exactly six transparency cards in fixed order', () => {
     render(<VCContentView {...baseProps} />);
-    expect(screen.getByText('Open Model Transparency')).toBeTruthy();
-    expect(screen.getByText('Data Usage Disclosure')).toBeTruthy();
-    expect(screen.getByText('Knowledge Restriction')).toBeTruthy();
-    expect(screen.getByText('Web Access')).toBeTruthy();
-    expect(screen.getByText('Physical Location')).toBeTruthy();
-    expect(screen.getByText('Technical References')).toBeTruthy();
+    const expectedOrder = [
+      'Open Model Transparency',
+      'Data Usage Disclosure',
+      'Knowledge Restriction',
+      'Web Access',
+      'Physical Location',
+      'Technical References',
+    ];
+    // The transparency cards are rendered as <h3> headings inside their cards.
+    // Querying by role + level guarantees we read them in DOM (visual) order
+    // rather than each lookup's first-match order, which is what makes this
+    // test actually verify the contract its name advertises.
+    const cardHeadings = screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent ?? '');
+    const renderedOrder = expectedOrder.filter(name => cardHeadings.includes(name));
+    const orderedSubset = cardHeadings.filter(name => expectedOrder.includes(name));
+    expect(orderedSubset).toEqual(renderedOrder);
+    expect(orderedSubset).toEqual(expectedOrder);
   });
 
   test('Technical References card with empty href renders the "Not available" italic caption (not a button)', () => {
     render(<VCContentView {...baseProps} />);
     expect(screen.getByText('Not available')).toBeTruthy();
-    // No SEE DOCS button when the href is empty.
     expect(screen.queryByRole('link', { name: /SEE DOCS/i })).toBeNull();
   });
 
@@ -180,16 +186,14 @@ describe('VCContentView (redesigned)', () => {
 
   test('Data Usage Disclosure with empty textValue falls back to the "Unknown" label', () => {
     render(<VCContentView {...baseProps} />);
-    // The "Unknown" label appears at least once (Data Usage card has empty textValue).
     expect(screen.getAllByText('Unknown').length).toBeGreaterThanOrEqual(1);
   });
 
-  test('Monitoring T&C link is a real <a target="_blank" href="https://welcome.alkem.io/legal/#tc">', () => {
+  test('Monitoring body renders the consumer-supplied node verbatim (no escaped HTML)', () => {
     const { container } = render(<VCContentView {...baseProps} />);
     const tcLink = container.querySelector('a[href="https://welcome.alkem.io/legal/#tc"]') as HTMLAnchorElement | null;
     expect(tcLink).toBeTruthy();
     expect(tcLink?.getAttribute('target')).toBe('_blank');
-    // No escaped HTML (parity with Golden Rule 10 — `dangerouslySetInnerHTML` MUST NOT appear).
     expect(container.innerHTML).not.toContain('&lt;a&gt;');
     expect(container.innerHTML).not.toContain('&lt;/a&gt;');
   });

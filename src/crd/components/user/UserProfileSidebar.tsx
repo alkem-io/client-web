@@ -55,11 +55,15 @@ export function UserProfileSidebar({
 
       {tagsets.length > 0 ? (
         <section>
-          <ul className="space-y-4 list-none p-0 m-0">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="space-y-4 list-none p-0 m-0">
             {tagsets.map(tagset => (
               <li key={tagset.key}>
                 <h3 className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</h3>
-                <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className="flex flex-wrap gap-2 list-none p-0 m-0">
                   {tagset.tags.map(tag => (
                     <li key={tag}>
                       <Badge variant="secondary">{tag}</Badge>

@@ -1,19 +1,23 @@
+import type { ReactNode } from 'react';
 import { VCAiEngineGrid, type VCAiEngineSectionData } from './VCAiEngineGrid';
 import { VCFunctionalityGrid, type VCFunctionalitySectionData } from './VCFunctionalityGrid';
-import { VCMonitoringSection, type VCMonitoringSectionData } from './VCMonitoringSection';
+import { VCMonitoringSection } from './VCMonitoringSection';
 
 export type VCContentViewProps = {
   functionality: VCFunctionalitySectionData;
+  /** Pre-rendered Role Requirements paragraph (constructed with `<Trans>` upstream). */
+  roleRequirementsContent: ReactNode;
   aiEngine: VCAiEngineSectionData;
-  monitoring: VCMonitoringSectionData;
+  monitoring: {
+    heading: string;
+    /** Pre-rendered Monitoring body (the integration layer supplies the `<a>` href). */
+    body: ReactNode;
+  };
   labels: {
     functionalityHeading: string;
     capabilitiesTitle: string;
     dataAccessTitle: string;
     roleRequirementsTitle: string;
-    /** i18n KEY (not resolved) — passed to <Trans> with `<strong>` component. */
-    roleRequirementsMemberRequiredKey: string;
-    roleRequirementsNoneRequired: string;
     /** Already interpolated with engineName by the mapper (e.g., "AI Engine: Alkemio AI"). */
     aiEngineHeading: string;
     yesAnswer: string;
@@ -23,18 +27,23 @@ export type VCContentViewProps = {
   };
 };
 
-export function VCContentView({ functionality, aiEngine, monitoring, labels }: VCContentViewProps) {
+export function VCContentView({
+  functionality,
+  roleRequirementsContent,
+  aiEngine,
+  monitoring,
+  labels,
+}: VCContentViewProps) {
   return (
     <div className="space-y-10">
       <VCFunctionalityGrid
         functionality={functionality}
+        roleRequirementsContent={roleRequirementsContent}
         labels={{
           heading: labels.functionalityHeading,
           capabilitiesTitle: labels.capabilitiesTitle,
           dataAccessTitle: labels.dataAccessTitle,
           roleRequirementsTitle: labels.roleRequirementsTitle,
-          roleRequirementsMemberRequiredKey: labels.roleRequirementsMemberRequiredKey,
-          roleRequirementsNoneRequired: labels.roleRequirementsNoneRequired,
         }}
       />
       <VCAiEngineGrid
@@ -47,7 +56,7 @@ export function VCContentView({ functionality, aiEngine, monitoring, labels }: V
           notAvailable: labels.technicalReferencesNotAvailable,
         }}
       />
-      <VCMonitoringSection monitoring={monitoring} />
+      <VCMonitoringSection heading={monitoring.heading} body={monitoring.body} />
     </div>
   );
 }

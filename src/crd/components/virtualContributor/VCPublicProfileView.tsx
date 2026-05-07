@@ -17,6 +17,8 @@ export type VCPublicProfileViewProps = {
   loadingLabels: {
     hero: string;
     sidebar: string;
+    /** Aria-label for the BoK section's own skeleton when only the auxiliary BoK queries are still in flight. */
+    bodyOfKnowledge: string;
     contentView: string;
   };
 };
@@ -40,7 +42,11 @@ export function VCPublicProfileView({ hero, sidebar, contentView, loading, loadi
                 <SidebarSkeleton />
               </output>
             ) : (
-              <VCProfileSidebar {...sidebar} />
+              <VCProfileSidebar
+                {...sidebar}
+                bodyOfKnowledgeLoading={loading.bodyOfKnowledge}
+                labels={{ ...sidebar.labels, bodyOfKnowledgeLoading: loadingLabels.bodyOfKnowledge }}
+              />
             )}
           </div>
           <div className="lg:col-span-8 flex flex-col min-w-0">

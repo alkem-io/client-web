@@ -3,6 +3,7 @@ import {
   type CompactContributorCardItem,
 } from '@/crd/components/common/CompactContributorCard';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { Skeleton } from '@/crd/primitives/skeleton';
 import { VCBodyOfKnowledgeSection, type VCBodyOfKnowledgeSectionProps } from './VCBodyOfKnowledgeSection';
 
 export type ReferenceLink = {
@@ -24,24 +25,44 @@ export type VCProfileSidebarProps = {
    */
   references: ReferenceLink[];
   bodyOfKnowledge: VCBodyOfKnowledgeSectionProps['bodyOfKnowledge'];
+  /**
+   * When true, the BoK section renders a section-scoped skeleton instead of
+   * `VCBodyOfKnowledgeSection`. Lets the rest of the sidebar paint while the
+   * auxiliary BoK auth/profile queries are still in flight, without flashing
+   * misleading "Private space" placeholder content from partial data.
+   */
+  bodyOfKnowledgeLoading?: boolean;
   labels: {
     descriptionTitle: string;
+    descriptionEmpty: string;
     hostTitle: string;
     hostEmpty: string;
     referencesTitle: string;
     referencesEmpty: string;
     bodyOfKnowledgeTitle: string;
+    bodyOfKnowledgeLoading: string;
     bodyOfKnowledgePrivateTooltip: string;
     bodyOfKnowledgeVisitButton: string;
   };
 };
 
-export function VCProfileSidebar({ description, host, references, bodyOfKnowledge, labels }: VCProfileSidebarProps) {
+export function VCProfileSidebar({
+  description,
+  host,
+  references,
+  bodyOfKnowledge,
+  bodyOfKnowledgeLoading = false,
+  labels,
+}: VCProfileSidebarProps) {
   return (
     <div className="space-y-8">
       <section>
         <h2 className="text-section-title mb-3">{labels.descriptionTitle}</h2>
-        {description ? <MarkdownContent content={description} /> : <p className="text-body text-muted-foreground">—</p>}
+        {description ? (
+          <MarkdownContent content={description} />
+        ) : (
+          <p className="text-body text-muted-foreground">{labels.descriptionEmpty}</p>
+        )}
       </section>
 
       <section>
@@ -78,14 +99,24 @@ export function VCProfileSidebar({ description, host, references, bodyOfKnowledg
         )}
       </section>
 
-      <VCBodyOfKnowledgeSection
-        bodyOfKnowledge={bodyOfKnowledge}
-        labels={{
-          title: labels.bodyOfKnowledgeTitle,
-          privateTooltip: labels.bodyOfKnowledgePrivateTooltip,
-          visitButton: labels.bodyOfKnowledgeVisitButton,
-        }}
-      />
+      {bodyOfKnowledgeLoading ? (
+        <output aria-label={labels.bodyOfKnowledgeLoading}>
+          <section className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </section>
+        </output>
+      ) : (
+        <VCBodyOfKnowledgeSection
+          bodyOfKnowledge={bodyOfKnowledge}
+          labels={{
+            title: labels.bodyOfKnowledgeTitle,
+            privateTooltip: labels.bodyOfKnowledgePrivateTooltip,
+            visitButton: labels.bodyOfKnowledgeVisitButton,
+          }}
+        />
+      )}
     </div>
   );
 }

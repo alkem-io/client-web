@@ -23,20 +23,23 @@ export function VCAiEngineGrid({ aiEngine, labels }: VCAiEngineGridProps) {
   return (
     <section>
       <h2 className="text-section-title mb-4">{labels.heading}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+      {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+      <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
         {aiEngine.cards.map(card => (
-          <VCTransparencyCard
-            key={card.id}
-            card={card}
-            labels={{
-              yesAnswer: labels.yesAnswer,
-              noAnswer: labels.noAnswer,
-              unknownAnswer: labels.unknownAnswer,
-              notAvailable: labels.notAvailable,
-            }}
-          />
+          <li key={card.id}>
+            <VCTransparencyCard
+              card={card}
+              labels={{
+                yesAnswer: labels.yesAnswer,
+                noAnswer: labels.noAnswer,
+                unknownAnswer: labels.unknownAnswer,
+                notAvailable: labels.notAvailable,
+              }}
+            />
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
