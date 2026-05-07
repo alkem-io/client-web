@@ -239,13 +239,15 @@ export type BulletItem = {
 /**
  * One transparency card in the AI Engine section. The mapper produces six in
  * a fixed order (see VCAiEngineSectionData). Each card has an icon, title,
- * description, and exactly ONE answer field populated:
+ * description, and exactly ONE answer field populated. The union below
+ * encodes that invariant at the type level: setting two answer fields on the
+ * same card is a compile-time error.
  *  - `booleanAnswer`: renders Yes/No row with CheckCircle2 / XCircle (or noIcon override)
  *  - `textValue`: renders plain text answer (Physical Location)
  *  - `action`: renders an outlined Button linking to a URL (Technical References),
  *    OR an italic muted "Not available" caption when href === ''
  */
-export type TransparencyCardData = {
+type TransparencyCardBase = {
   /** Stable iterator key (e.g., 'openModelTransparency'). */
   id: string;
   /** Mapped to a lucide-react component inside the view. */
@@ -258,17 +260,37 @@ export type TransparencyCardData = {
     | 'fileText';
   title: string;                           // i18n-resolved
   description: string;                     // i18n-resolved caption ("Does the VC use…?")
+};
+
+type TransparencyBooleanCard = TransparencyCardBase & {
   /** Boolean answer — renders Yes/No glyph row. */
-  booleanAnswer?: { value: boolean; noIcon?: 'clock' | 'xCircle' };
+  booleanAnswer: { value: boolean; noIcon?: 'clock' | 'xCircle' };
+  textValue?: never;
+  action?: never;
+};
+
+type TransparencyTextCard = TransparencyCardBase & {
+  booleanAnswer?: never;
   /** Plain text answer — renders as `<span>{textValue}</span>`. */
-  textValue?: string;
+  textValue: string;
+  action?: never;
+};
+
+type TransparencyActionCard = TransparencyCardBase & {
+  booleanAnswer?: never;
+  textValue?: never;
   /**
    * Action answer — renders an outlined Button. When `href === ''`, the view
    * renders an italic muted "Not available" caption instead (mapper passes
    * an empty href when `aiEngine.additionalTechnicalDetails` is empty).
    */
-  action?: { href: string; label: string };
+  action: { href: string; label: string };
 };
+
+export type TransparencyCardData =
+  | TransparencyBooleanCard
+  | TransparencyTextCard
+  | TransparencyActionCard;
 
 export type VCFunctionalitySectionData = {
   /** From modelCard.spaceUsage[…SpaceCapabilities].flags[] */

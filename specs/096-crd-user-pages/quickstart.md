@@ -6,7 +6,7 @@ A pragmatic build order, environment notes, and a smoke checklist for the three 
 
 ## Prerequisites
 
-- Node ≥ 22 (Volta-pinned to 24.14.0).
+- Node ≥ 24.0.0 (Volta-pinned to 24.14.0).
 - pnpm ≥ 10.17.1.
 - A running Alkemio backend at `localhost:3000` (Traefik). Without it, GraphQL calls will fail; the CRD shells still load but every section renders an empty / error state.
 - The current branch is `096-crd-user-pages` (or both 096 + 097 merged into a working branch).

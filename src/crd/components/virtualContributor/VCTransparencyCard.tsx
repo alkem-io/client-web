@@ -13,15 +13,32 @@ import {
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent } from '@/crd/primitives/card';
 
-export type TransparencyCardData = {
+type TransparencyCardBase = {
   id: string;
   iconName: 'eye' | 'database' | 'shieldCheck' | 'globe' | 'mapPin' | 'fileText';
   title: string;
   description: string;
-  booleanAnswer?: { value: boolean; noIcon?: 'clock' | 'xCircle' };
-  textValue?: string;
-  action?: { href: string; label: string };
 };
+
+type TransparencyBooleanCard = TransparencyCardBase & {
+  booleanAnswer: { value: boolean; noIcon?: 'clock' | 'xCircle' };
+  textValue?: never;
+  action?: never;
+};
+
+type TransparencyTextCard = TransparencyCardBase & {
+  booleanAnswer?: never;
+  textValue: string;
+  action?: never;
+};
+
+type TransparencyActionCard = TransparencyCardBase & {
+  booleanAnswer?: never;
+  textValue?: never;
+  action: { href: string; label: string };
+};
+
+export type TransparencyCardData = TransparencyBooleanCard | TransparencyTextCard | TransparencyActionCard;
 
 export type VCTransparencyCardProps = {
   card: TransparencyCardData;

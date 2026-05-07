@@ -172,7 +172,15 @@ describe('VCContentView (redesigned)', () => {
       aiEngine: {
         ...baseProps.aiEngine,
         cards: baseProps.aiEngine.cards.map(c =>
-          c.id === 'technicalReferences' ? { ...c, action: { href: 'https://example.com/docs', label: 'SEE DOCS' } } : c
+          c.id === 'technicalReferences'
+            ? {
+                id: c.id,
+                iconName: c.iconName,
+                title: c.title,
+                description: c.description,
+                action: { href: 'https://example.com/docs', label: 'SEE DOCS' },
+              }
+            : c
         ),
       },
     };

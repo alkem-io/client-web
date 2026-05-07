@@ -29,6 +29,8 @@
  * `UserSettingsCard`) live in sibling spec 097-crd-user-settings/contracts/shell.ts.
  */
 
+import type { ReactNode } from 'react';
+
 /* ----------------------------- UserPageHero ------------------------------ */
 
 export type UserPageHeroProps = {
@@ -251,16 +253,35 @@ export type UserProfileSidebarProps = {
   /**
    * Reserved profile tagsets — Keywords + Skills (FR-010a). Empty entries are
    * dropped by the mapper; the block is hidden entirely when the array is
-   * empty. The `TagsetGroup` shape is reused from `OrganizationProfileSidebar`
-   * (`{ name: string; tags: string[] }`).
+   * empty. The `TagsetGroup` shape is shared via
+   * `@/crd/components/common/profileTypes` (`{ key: string; name: string;
+   * tags: string[] }`).
    */
-  tagsets: { name: string; tags: string[] }[];
-  organizations: AssociatedOrganizationCard[];
+  tagsets: { key: string; name: string; tags: string[] }[];
+  /**
+   * Pre-rendered organisation cards. Lazy fetching per organisation lives in
+   * the integration layer (each card is a `useAssociatedOrganization`
+   * consumer that produces a `CompactContributorCard`). The view just
+   * renders the slot.
+   */
+  organizationsSlot: ReactNode | ReactNode[];
+  /** True when there are no organisations to render — drives the empty state. */
+  organizationsEmpty: boolean;
+  /**
+   * Optional references (social + non-social). The view passes the array
+   * straight to `<SocialLinks>` which filters internally for known networks
+   * (website / linkedin / github / bsky / youtube / email) and renders them
+   * as a monochrome icon row. When no social refs are present, the section
+   * is hidden entirely. The `ReferenceLink` shape is shared via
+   * `@/crd/components/common/profileTypes`.
+   */
+  references?: { id: string; name: string; uri: string; description: string | null }[];
   /** i18n-resolved labels. */
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
-    emptyBio: string;
-    emptyOrganizations: string;
+    socialLinksTitle: string;
+    bioEmpty: string;
+    organizationsEmpty: string;
   };
 };

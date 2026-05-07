@@ -519,7 +519,7 @@ count against the per-actor budget.
 
 ### Send-message popover (User + Organization)
 
-```
+```text
 idle ── click Message ──▶ popover open (textarea empty)
 popover open ── type ──▶ textarea has draft text (Send button enabled when non-empty)
 popover open ── click × / press Escape ──▶ popover closed (draft discarded)
@@ -530,7 +530,7 @@ pending ── mutation failure ──▶ popover stays open, inline error appea
 
 ### User profile resource tab strip
 
-```
+```text
 mount ── default ──▶ activeTab = 'resourcesHosted'
 click any tab ──▶ activeTab = clicked-tab-key (sections re-filter; no URL change)
 on smaller-than-md viewport ── activeTab change ──▶ active tab auto-scrolled into view
@@ -538,7 +538,7 @@ on smaller-than-md viewport ── activeTab change ──▶ active tab auto-sc
 
 ### VC profile load lifecycle
 
-```
+```text
 mount ── useUrlResolver pending ──▶ render Loading
 useUrlResolver resolved ── useVirtualContributorProfileWithModelCardQuery pending ──▶ render Loading
 query success + Read privilege missing ──▶ useRestrictedRedirect runs → navigation away
