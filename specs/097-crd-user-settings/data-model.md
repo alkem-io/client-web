@@ -31,45 +31,69 @@ This document is **specification-side**: it lists field names, validation rules,
 
 ---
 
-## User Story 1 — User My Profile
+## User Story 1 — User Profile
+
+**Save model**: per-section explicit-save (matches 045 About). Each row below maps to a section unit; sections marked "compound" group multiple fields under one Save button. See [research.md Decision #2](research.md) for the full state shape.
 
 ### Entity: User (subset consumed by this tab)
 
-| Field | GraphQL path | CRD prop | Required | Validation | Notes |
-|---|---|---|---|---|---|
-| Display Name | `user.profile.displayName` | `displayName` | yes | `displayNameValidator` (existing) | Per-field saved via `updateUser` |
-| First Name | `user.firstName` | `firstName` | yes | `nameValidator` (existing) | Per-field saved via `updateUser` |
-| Last Name | `user.lastName` | `lastName` | yes | `nameValidator` (existing) | Per-field saved via `updateUser` |
-| Email | `user.email` | `email` | n/a (read-only) | — | "Contact support to change email" caption; not editable |
-| Phone | `user.phone` | `phone` | no | Existing phone-format regex | Per-field saved via `updateUser` |
-| Tagline | `user.profile.tagline` | `tagline` | no | `textLengthValidator({ maxLength: ALT_TEXT_LENGTH })` | Per-field saved via `updateUser` |
-| City | `user.profile.location.city` | `city` | no | `textLengthValidator()` | Per-field saved via `updateUser` |
-| Country | `user.profile.location.country` | `country` | no | Single-select against `COUNTRIES` constant | Per-field saved via `updateUser` |
-| Bio | `user.profile.description` | `bio` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` | Markdown editor; Enter inserts newline; commit only via Save icon |
-| Tags | `user.profile.tagsets[].tags[]` | `tags` | no | — | Resolved via the `default` tagset; first save fires `createTagsetOnProfile` if no default tagset exists |
-| Avatar | `user.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | File-select commits immediately; helper text "Recommended: 400x400px. JPG, PNG or GIF." |
+| Field | GraphQL path | CRD prop | Required | Validation | Section unit | Notes |
+|---|---|---|---|---|---|---|
+| Display Name | `user.profile.displayName` | `displayName` | yes | `displayNameValidator` (existing); empty-check fires on Save click | `displayName` | One-field section saved via `updateUser` |
+| First Name | `user.firstName` | `firstName` | yes | `nameValidator` (existing); empty-check on Save | `firstName` | One-field section saved via `updateUser` |
+| Last Name | `user.lastName` | `lastName` | yes | `nameValidator` (existing); empty-check on Save | `lastName` | One-field section saved via `updateUser` |
+| Email | `user.email` | `email` | n/a (read-only) | — | — (not a section) | "Contact support to change email" caption; not editable |
+| Phone | `user.phone` | `phone` | no | Phone-format regex runs live; Save disabled while invalid | `phone` | One-field section saved via `updateUser` |
+| Tagline | `user.profile.tagline` | `tagline` | no | `textLengthValidator({ maxLength: ALT_TEXT_LENGTH })` | `tagline` | One-field section saved via `updateUser` |
+| City + Country | `user.profile.location.{city, country}` | `location: { city, country }` | no | `textLengthValidator()` (city); single-select against `COUNTRIES` (country) | `location` (compound) | Both fields share one Save button; one mutation patches both |
+| Bio | `user.profile.description` | `bio` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` | `bio` | One-field section; `MarkdownEditor` is the input; Enter inserts newline (no Enter-to-Save semantics — section Save is the only commit) |
+| Tags | `user.profile.tagsets[].tags[]` | `tags` | no | — | `tags` (list) | Whole list saved per click; first save fires `createTagsetOnProfile` if no default tagset exists |
+| Avatar | `user.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | — (immediate commit) | File picker IS the commit; no Save click; no debounce. On success the avatar slot's status flashes "Saved!" for 1800 ms (FR-024). |
 
 ### Entity: Reference (User social links + arbitrary references)
 
 Recognized social references resolve by name (case-insensitive): `linkedin`, `bsky`, `github`. Anything else is an arbitrary reference with editable name + URL + description.
 
+The entire References list is **one section unit** (`references`) — Add / Edit / Delete operate on the local section buffer until the section's Save button fires the mutation batch (parity with 045's references handling).
+
 | Field | GraphQL path | CRD prop | Required | Validation |
 |---|---|---|---|---|
 | Reference id | `user.profile.references[i].id` | `id` | yes | — |
 | Reference name | `user.profile.references[i].name` | `name` | yes (read-only on recognized; editable on arbitrary) | `textLengthValidator` |
-| Reference URI | `user.profile.references[i].uri` | `uri` | yes | `urlValidator({ maxLength: SMALL_TEXT_LENGTH })` |
+| Reference URI | `user.profile.references[i].uri` | `uri` | yes | `urlValidator({ maxLength: SMALL_TEXT_LENGTH })` runs live; Save disabled while any URL row is invalid |
 | Reference description | `user.profile.references[i].description` | `description` | no | `textLengthValidator` |
 
-CRUD mutations (existing):
-- Create: `createReferenceOnProfile`
-- Update: `updateReference`
-- Delete: `deleteReference` (no confirmation dialog per FR-025)
+Section-buffer states (parallel to 045's `pendingReferenceDelete` pattern):
+- New row → temp-id (e.g. `temp-<uuid>`); not yet on the server.
+- Edited row → patched in-place in the buffer.
+- Pending-delete → row queued for deletion in the buffer (`pendingReferenceDeleteId` state).
+
+Confirmation flow (Rule #9 per FR-025):
+- Trash icon click → opens `ConfirmationDialog` (CRD `AlertDialog`, `variant="destructive"`).
+- Confirm → row queued for deletion in the section buffer.
+- Cancel → dialog dismisses; row stays as-is.
+
+CRUD mutations (existing — fired in one batch on References-section Save):
+- Create (for each temp-id row): `createReferenceOnProfile`.
+- Update (for each modified existing row): `updateReference`.
+- Delete (for each pending-delete row): `deleteReference`.
 
 ---
 
 ## User Story 2 — User Account
 
 Renders four card groups. The CRD view is the **shared** `ContributorAccountView` (Decision #3 in research.md).
+
+**Empty-state UX per sub-section** (FR-033, ports `prototype/src/app/pages/UserAccountPage.tsx` verbatim):
+
+| Sub-section | Empty-state |
+|---|---|
+| Hosted Spaces | Always renders a dashed-border "Create New Space" card at the end of the grid alongside any existing space cards. Copy: *"Launch a new collaborative environment for your team."* When 0 spaces, only the dashed card shows. |
+| Virtual Contributors | Always renders a dashed-border "Create New Contributor" card at the end of the grid. |
+| Template Packs | Renders existing pack cards followed by up to 3 dashed "Empty Slot" placeholders (`Math.max(0, 3 − packs.length)`), each with a `+` icon. |
+| Custom Homepages | When ≥1 page → renders cards. When 0 pages → centered full empty-state with a circular icon tile + *"No Custom Homepages"* heading + *"Create a personalized landing page for your account."* descriptive copy + a **Create Homepage** CTA + a *"Capacity: 0/1 Used"* indicator below the CTA. |
+
+All "Create" / "+" affordances on this tab navigate to existing MUI admin creation flows via callback props (FR-032 / Decision #3) — no new CRD creation dialogs introduced.
 
 ### Entity: AccountResource (Space / VC / Innovation Pack / Innovation Hub)
 
@@ -187,6 +211,10 @@ Each leaf property is an object `{ inApp: boolean, email: boolean, push: boolean
 
 Mutation: `useUpdateUserSettingsMutation` (existing). Optimistic-overrides pattern (Decision #4 in research.md).
 
+Failure handling (FR-064 — clarification Q5):
+- **Divergence** (server returns a value different from the optimistic one) → optimistic override clears after the refetch; UI re-renders to authoritative server value.
+- **Hard failure** (network error / 5xx / mutation throws) → the toggle reverts to its prior state and an inline toast surfaces the error message. Same revert-and-toast pattern as FR-133 / Org Settings; consistent across every settings toggle in the contributor vertical.
+
 ### Entity: PushAvailability
 
 | Field | Source | CRD prop | Notes |
@@ -282,7 +310,7 @@ Two reserved tagsets: **Keywords** and **Capabilities**. Edited per-field same a
 
 ## User Story 9 — Org Account
 
-Same entity (`AccountResource`) as User Account. Shared CRD view. Per-actor mapper feeds the org's `account.id` instead of the user's.
+Same entity (`AccountResource`) as User Account. Shared CRD view. Per-actor mapper feeds the org's `account.id` instead of the user's. **Empty-state UX is identical to User Account** (FR-103) — the same `ContributorAccountView` renders the prototype-faithful per-sub-section affordances; the per-actor mapper supplies the labels and `onCreate*` callbacks.
 
 Source: `useOrganizationAccountQuery` → `account.id` → `useAccountInformationQuery({ accountId })`.
 
@@ -304,7 +332,11 @@ Source hook: `useRoleSetManager({ roleSetId, relevantRoles: [Associate], contrib
 
 Available users (right-side list): `useRoleSetAvailableUsers({ roleSetId, mode: 'platform', role: Associate, filter: searchTerm, usersAlreadyInRole: usersByRole[Associate] })`.
 
-Add: `assignRoleToUser(userId, Associate)`. Remove: `removeRoleFromUser(userId, Associate)`. Both fire immediately on click.
+Add (+): `assignRoleToUser(userId, Associate)` — fires immediately on click (no dialog; not destructive).
+
+Remove (×): opens a `ConfirmationDialog` (CRD `AlertDialog`, `variant="destructive"`) with the role-aware label *"Remove {{name}} as Associate"* per Rule #9 (FR-112). Only the dialog's Confirm fires `removeRoleFromUser(userId, Associate)`; Cancel dismisses the dialog with no mutation. The integration hook (`useOrgAssociates`) tracks a `pendingRemoveId: string | null` state to drive the dialog.
+
+Empty-state: when current Associates list or available Users list is empty, render a single muted caption line per FR-018.
 
 ---
 
@@ -318,6 +350,10 @@ Same shape as Associate (Story 10), but parameterized by role. Two sub-tabs in t
 - Owner sub-tab → `useRoleSetManager({ roleSetId, relevantRoles: [Owner], contributorTypes: [User], fetchContributors: true })`
 
 Active sub-tab held in local React state (no URL sync, parity with current MUI).
+
+Add (+): fires immediately on click. Remove (×): opens a `ConfirmationDialog` (CRD `AlertDialog`, `variant="destructive"`) with role-aware copy (*"Remove {{name}} as Admin"* on the Admin sub-tab; *"Remove {{name}} as Owner"* on the Owner sub-tab) per Rule #9 (FR-121). Only Confirm fires `removeRoleFromUser`; Cancel dismisses with no mutation. The `useOrgRoleAssignment(role)` hook tracks per-role `pendingRemoveId: string | null` state.
+
+Empty-state: when an Admin / Owner list is empty, render a single muted caption line per FR-018.
 
 ---
 
@@ -342,20 +378,29 @@ Mutation: `useUpdateOrganizationSettingsMutation` (existing).
 
 Each `*ViewProps` carries a `loading: boolean` flag (or a more granular shape per region for tabs that fetch from multiple queries). The mapper produces it from the underlying Apollo `loading` flags. Skeletons are rendered inline via the existing `Skeleton` primitive in `src/crd/primitives/skeleton`.
 
-### Save state per field (Profile tabs)
+### Save state per section (Profile tabs)
 
-Per-field state is held in the integration hook (`useUserMyProfileFields` / `useOrgProfileFields`). Each field exposes:
+Per-section state lives in the per-tab integration hook (`useUserProfileTabData` / `useOrgProfileTabData`). The hook holds a values buffer (the user's draft per section) and a saved buffer (the last server-known shape) and derives `dirtyByField` + `saveStatusByField` from those:
 
 ```typescript
-type EditableFieldState = {
-  status: 'idle' | 'editing' | 'pending' | 'idle-saved' | 'editing-error';
-  serverValue: string;       // Last known server value (used for cancel/discard)
-  draftValue: string;        // The user's in-progress input
-  errorMessage: string | null;
+type SectionSaveStatus =
+  | { kind: 'idle' }
+  | { kind: 'saving' }
+  | { kind: 'saved' }    // transient — auto-transitions to idle after SAVED_FLASH_MS = 1800
+  | { kind: 'error'; message: string };
+
+type ProfileTabState = {
+  values: Record<SectionKey, FieldValueShape>;
+  saved:  Record<SectionKey, FieldValueShape>;
+  dirtyByField:    Partial<Record<SectionKey, boolean>>;
+  saveStatusByField: Partial<Record<SectionKey, SectionSaveStatus>>;
+  pendingReferenceDeleteId: string | null;  // for Rule #9 confirmation flow on the references section
 };
 ```
 
-State machine details: see [research.md Decision #2](research.md).
+`onSaveSection(section)` patches ONLY that section's fields via the corresponding mutation (e.g., `updateUser` for User Profile sections; `updateOrganization` for Org Profile sections; `createReferenceOnProfile` / `updateReference` / `deleteReference` batched for the references section).
+
+State transition details and the references-section batch shape: see [research.md Decision #2](research.md).
 
 ### i18n key reuse
 

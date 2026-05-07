@@ -42,7 +42,7 @@ location.reload();
 The spec ships **all 7 user tabs together** and **all 5 org tabs together**, gated by the same toggle. The recommended build order to keep the toggle usable for smoke at each stage:
 
 1. **Phase 1 (Setup)**: register `crd-contributorSettings` i18n namespace; create empty translation files; scaffold the two integration directories.
-2. **Phase 2 (Foundational)**: build the shared shell (`SettingsShell`, `SettingsTabStrip`, `SettingsCard`), the `EditableField` family, the per-actor predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), the `CrdUserSettingsRoutes` and `CrdOrgSettingsRoutes` route shells. Wire the toggle dispatch in `TopLevelRoutes.tsx` (User) and `CrdOrganizationRoutes.tsx` (Org). At this point, all tabs render an "empty" page that proves the routing works.
+2. **Phase 2 (Foundational)**: build the shared shell (`SettingsShell`, `SettingsTabStrip`, `SettingsCard`), extract `FieldFooter` from 045 to `@/crd/components/common/FieldFooter.tsx` (the per-section Save button + dirty indicator + status pill), the per-actor predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), the `CrdUserSettingsRoutes` and `CrdOrgSettingsRoutes` route shells. Wire the toggle dispatch in `TopLevelRoutes.tsx` (User) and `CrdOrganizationRoutes.tsx` (Org). At this point, all tabs render an "empty" page that proves the routing works.
 3. **Phase 3+ (Per-tab)**: implement each of the 12 tabs in any order — they're independent. The smoke checklist below validates each one in isolation.
 4. **Phase Polish**: translations for all 6 languages, axe accessibility scan per tab, lint, bundle delta check, end-to-end smoke through every tab × every authorization variant.
 
@@ -50,21 +50,21 @@ The spec ships **all 7 user tabs together** and **all 5 org tabs together**, gat
 
 Each item should be verified manually with the toggle ON. After all 12 are green, run again with the toggle OFF to confirm the MUI fallback works (no regressions on the existing pages).
 
-### User Story 1 — User My Profile
+### User Story 1 — User Profile
 
-- [ ] Open `/user/<self>/settings/profile`. Sticky header shows avatar + name + 7-tab strip; My Profile is highlighted with `border-primary` underline.
-- [ ] Hover **First Name** — pencil glyph appears. Click — input becomes active with check + × icons.
-- [ ] Edit, click check — value persists; transient "Saved" indicator appears next to label for ~2s.
-- [ ] Edit Tagline, click × — value reverts to server.
-- [ ] Edit Phone with invalid format — Save is disabled and inline error shows.
-- [ ] Edit Bio (markdown), press Enter — newline inserted (does NOT save). Click Save icon — change persists.
-- [ ] Add a LinkedIn URL via the recognized Social Links row, click Save — appears on `/user/<self>` (public profile, sibling 096).
-- [ ] Click trash on a saved reference — disappears immediately, no confirmation dialog.
-- [ ] Click "Add Another Reference" — new row in edit mode; fill name + URL + description, click Save — created.
-- [ ] Click "Change Avatar" → pick a JPG → preview updates immediately, no Save click needed.
-- [ ] Edit a field, click another tab without saving — navigation completes, field's typed value is silently dropped, no confirmation dialog.
-- [ ] **Failure smoke**: temporarily kill backend connection (DevTools → Network → Offline) → edit a field → click Save — field stays in edit mode with typed value preserved + inline error. Re-enable network, click Save — succeeds without retyping.
-- [ ] As a platform admin viewer: open `/user/<otherUser>/settings/profile` — page is fully editable, saves persist against the target user.
+- [ ] Open `/user/<self>/settings/profile`. Sticky header shows avatar + name + 7-tab strip; Profile is highlighted with `border-primary` underline.
+- [ ] Edit **First Name** in its inline input — the section's `FieldFooter` shows a dirty indicator and the Save button enables. **No per-field pencil / check / × icons anywhere on the tab.**
+- [ ] Click the section's **Save** button — value persists; "Saved!" indicator flashes adjacent to the Save button for **~1.8 s** (`SAVED_FLASH_MS = 1800`) and the section returns to idle.
+- [ ] Edit Phone with an invalid format — the section's Save button is disabled while the value is format-invalid (live URL/email/phone validation per FR-023).
+- [ ] Click Save with **Display Name** / First Name / Last Name empty — inline error appears beneath the offending input, the section stays dirty, and no mutation fires. Re-type a valid value — the error clears.
+- [ ] Edit Bio (markdown) — Enter inserts a newline (no Enter-to-Save semantics). Click the Bio section's Save — change persists with the same "Saved!" flash.
+- [ ] Add a new LinkedIn URL via the recognized Social Links row — the row appears as unsaved (temp-id) in the local References-section buffer; nothing fires server-side until the section's Save click. Click the **References-section Save** — the mutation batch fires (createReferenceOnProfile) and the reference appears on `/user/<self>` (public profile, sibling 096) after reload.
+- [ ] Click trash on a saved reference — a `ConfirmationDialog` (`AlertDialog`, destructive variant) opens (Rule #9 / FR-025). **Cancel** dismisses with no change. **Confirm** queues the row for deletion in the section buffer (still local). Click the References-section Save — the mutation batch (`deleteReference`) fires and the row disappears.
+- [ ] Click "Add Another Reference" — a new arbitrary row appears in the buffer; fill name + URL + description; click the References-section Save — created.
+- [ ] Click "Change Avatar" → pick a JPG → preview updates **immediately**, no Save click needed (FR-024 — file picker IS the commit). On success the avatar slot's status flashes "Saved!" for ~1.8 s.
+- [ ] Edit any field, click another tab without saving — navigation completes immediately, the in-progress edit is silently dropped, no confirmation dialog (FR-016).
+- [ ] **Failure smoke (per-section)**: temporarily kill backend connection (DevTools → Network → Offline) → edit a field → click the section's Save — the section stays dirty with the typed value preserved + an inline error message persists in the section. Re-enable network → edit any field in the section (clears the error and re-enables Save) → click Save — succeeds without retyping. There is no auto-retry and no auto-revert.
+- [ ] As a platform admin viewer: open `/user/<otherUser>/settings/profile` — page is fully editable, per-section saves persist against the target user.
 - [ ] As a non-admin viewer: open `/user/<otherUser>/settings/profile` — redirected to `/user/<otherUser>` (public profile).
 
 ### User Story 2 — User Account
@@ -117,13 +117,17 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 
 ### User Story 8 — Org Profile
 
-- [ ] Open `/organization/<orgSlug>/settings/profile` as an org admin. Sticky header shows avatar + org name + 5-tab strip; Profile highlighted.
-- [ ] Hover Display Name — pencil glyph. Edit + Save — value persists.
-- [ ] Edit Description (markdown) — Enter inserts newline; Save icon commits.
-- [ ] Edit Domain to an invalid value — inline error displays, Save disabled.
-- [ ] Upload a new logo — preview updates immediately.
-- [ ] Verified badge displays current `verification.status` read-only — click does nothing.
-- [ ] As a non-admin viewer: open `/organization/<orgSlug>/settings/profile` — redirected to `/organization/<orgSlug>` (public profile).
+- [ ] Open `/organization/<orgSlug>/settings/profile` as an org admin. Sticky header shows avatar + org name + 5-tab strip; Profile highlighted. **Same per-section save model as User Profile (FR-090) — no per-field pencil / check / × icons anywhere.**
+- [ ] Edit **Display Name** in its inline input — the section's `FieldFooter` shows a dirty indicator and the Save button enables. Click the section's Save — value persists; "Saved!" flashes for ~1.8 s.
+- [ ] Edit Description (markdown) — Enter inserts a newline. Click the Description section's Save — change persists.
+- [ ] Edit Contact Email / Domain / Website to an invalid format — that section's Save is disabled live (FR-023). Re-enter a valid value — Save re-enables.
+- [ ] Click Save with Display Name (or Description) empty — inline error appears beneath the input; section stays dirty; no mutation fires.
+- [ ] Trash a saved reference (Social Links / References section) — `ConfirmationDialog` (destructive variant) opens (Rule #9 / FR-025 / FR-092). Confirm queues the row for deletion in the buffer; only the References-section Save click fires the actual `deleteReference` mutation in the batch. Cancel dismisses with no change.
+- [ ] Upload a new logo — preview updates **immediately**, no Save click (FR-093 — file picker IS the commit).
+- [ ] **Verified badge** displays current `verification.status` read-only — click does nothing (FR-094 — there is no edit affordance).
+- [ ] **Mid-edit tab switch**: edit any field, click another tab — navigation completes, the in-progress edit is silently dropped, no confirmation dialog (FR-016).
+- [ ] **Failure smoke (per-section)**: kill network → edit a field → click Save — section stays dirty with typed values preserved + inline error. Re-enable network, edit any field (clears the error), click Save — succeeds.
+- [ ] As a viewer without `Update` privilege: open `/organization/<orgSlug>/settings/profile` — redirected to `/organization/<orgSlug>` (public profile).
 
 ### User Story 9 — Org Account
 
@@ -168,7 +172,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 ## Performance & bundle smoke
 
 - [ ] `pnpm analyze` — combined delta of the two new lazy-loaded chunks (`userSettings*.js` and `orgSettings*.js`) ≤ +50 KB gzipped over the prior build (SC-007).
-- [ ] Tab switch < 200ms; pencil-hover affordance reveal < 50ms; per-field save round-trip < 3s on a healthy connection.
+- [ ] Tab switch < 200ms; per-section save round-trip < 1s perceived (mutation + refetch + "Saved!" flash for 1.8s); avatar / logo upload commit immediate on file-pick.
 
 ## Done definition
 
@@ -177,7 +181,7 @@ The feature is "feature complete" when:
 1. All 12 smoke checklists pass with the toggle ON.
 2. The CRD-OFF smoke passes (no MUI regressions).
 3. `pnpm lint` passes with no new warnings.
-4. `pnpm vitest run` passes — all unit tests for mappers, predicate hooks, the editable-field state machine, push availability, optimistic overrides, and the i18n key parity test green.
+4. `pnpm vitest run` passes — all unit tests for mappers, predicate hooks, the per-section save state machine (`useUserProfileTabData` / `useOrgProfileTabData` — `idle | saving | saved | error`), push availability, optimistic overrides + hard-failure revert, and the i18n key parity test green.
 5. Bundle delta within budget (SC-007).
 6. Zero critical/serious axe violations on every tab (SC-006).
 7. PR description includes:
@@ -191,8 +195,9 @@ The feature is "feature complete" when:
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Tab strip renders 0 tabs | `useCanEdit*Settings` returns `loading: true` indefinitely; the route guard treats loading as falsy. | Verify the underlying provider hook resolves; render a Skeleton during loading instead of evaluating the gate. |
-| "Saved" indicator never disappears | The integration hook's success-flash timer never transitions back to `idle`. | Check the `idle-saved → idle` setTimeout in the per-field state machine (Decision #2). |
-| Per-field save disables Save button forever after a failure | The integration hook never resets `errorMessage`. | On `onSave` retry, clear `errorMessage` before transitioning to `pending`. |
+| "Saved!" indicator never disappears | The integration hook's success-flash timer never transitions back to `idle`. | Check the `saved → idle` setTimeout (`SAVED_FLASH_MS = 1800`) in the per-section state machine (Decision #2 / `useUserProfileTabData` / `useOrgProfileTabData`). |
+| Section's Save button stays disabled after a failure | The integration hook left `saveStatusByField[section]` in `error` and never clears it on the next edit. | The next field edit in the section MUST reset `saveStatusByField[section]` to `idle` and clear the inline error. Verify the `onChange` path runs that reset (Decision #2 transition: `error → idle on next edit`). |
+| Reference deletion fires immediately with no dialog | Trash icon wired directly to the `deleteReference` mutation, bypassing the `pendingReferenceDeleteId` state + `ConfirmationDialog`. | Trash MUST set `pendingReferenceDeleteId`; the dialog's Confirm queues the row in the section buffer; the actual `deleteReference` fires only on the References-section Save click batch (Rule #9 / FR-025). |
 | Org Profile doesn't update after Save | The mutation fired but the cache didn't refetch. | Confirm the integration hook calls `refetch()` on the relevant query, or uses Apollo's automatic update via the mutation result + cache normalization. |
 | `useCrdEnabled()` flips but Org settings still renders MUI | `CrdOrganizationRoutes.tsx` change wasn't picked up. | Verify the dispatch was added at lines 29–34 of that file (research §1). |
 | Tab navigation triggers a confirmation dialog | A hidden tab-wide dirty buffer is present. | None should exist (FR-016) — review whether a Formik or controlled-form was inadvertently introduced. |

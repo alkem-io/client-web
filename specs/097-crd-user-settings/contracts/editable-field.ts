@@ -1,4 +1,25 @@
 /**
+ * ⚠️ STALE — pre-clarification per-field 5-state machine.
+ *
+ * Spec clarification Q4 (2026-05-06) replaced the per-field model with the
+ * 045 About per-section model. The new contract lives in:
+ *   - `tab-userProfile.ts`  → `EditableSectionProps`, `SectionSaveStatus`
+ *   - `tab-orgProfile.ts`   → (will be updated to mirror tab-userProfile)
+ *
+ * Save / dirty / status are now SECTION-level, not field-level. The single-line
+ * input primitive is `@/crd/components/common/InlineEditText` (already shared
+ * with 045); the rich-text input is `@/crd/forms/markdown/MarkdownEditor`;
+ * the country select is `@/crd/components/common/CountryCombobox`; the tags
+ * input is `@/crd/forms/tags-input`. The Save button + dirty indicator + status
+ * pill is rendered by `FieldFooter` (extracted from 045's
+ * `SpaceSettingsAboutView.tsx` to `@/crd/components/common/FieldFooter.tsx`).
+ *
+ * This file is retained ONLY as a transitional reference; consumers should
+ * import from `tab-userProfile.ts` / `tab-orgProfile.ts` instead. It will be
+ * deleted in the /speckit.tasks pass once every consumer has migrated.
+ *
+ * ─── original docstring (per-field model) ────────────────────────────────
+ *
  * EditableField family — per-field explicit-save primitive shared by
  * User My Profile (Story 1) and Org Profile (Story 8).
  *

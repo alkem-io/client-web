@@ -1,463 +1,304 @@
 ---
-description: "Implementation tasks for CRD Contributor Settings (12 settings tabs across User + Organization)"
+description: "Task list for CRD Contributor Settings (User + Organization)"
 ---
 
 # Tasks: CRD Contributor Settings (User + Organization)
 
 **Input**: Design documents from `/specs/097-crd-user-settings/`
-**Prerequisites**: plan.md, spec.md, research.md, data-model.md, quickstart.md, contracts/
-**Sibling spec**: `096-crd-user-pages` covers the public-profile views. Helpers marked **[SHARED-096]** are owned jointly with 096; if 096 has already landed those pieces in a feature branch, this spec reuses them.
-**Tests**: Per-story functional UI tests are NOT included (per CRD-spec convention from 091/045/096 — manual verification follows quickstart.md). Targeted unit tests ARE included for: pure mappers (research §1–§7), the `EditableField` state machine, the per-actor predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), push-availability gating, optimistic-overrides, and i18n key parity. Authorization route-guard integration tests are also included.
+**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/, quickstart.md
+
+**Tests**: Vitest unit tests are included for the per-tab data hooks (Profile per-section save state, Notifications optimistic-overrides + hard-failure revert, Membership filter / search, Role assignment add/remove with confirmation), the two authorization-predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), and i18n key parity across the six languages. Visual / interaction validation is manual via the per-tab smoke checklist in `quickstart.md`.
+
+**Organization**: Tasks are grouped by user story (US1 = User Profile, …, US12 = Org Settings) so each story can be implemented and verified independently. All 12 stories are P1 and ship together as one contributor-vertical CRD release with sibling spec `096-crd-user-pages` (the public-profile views).
 
 ## Format: `[ID] [P?] [Story] Description`
 
-- **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
-- **[Story]**: User story this task belongs to (US1 / US2 / US3 / US4 / US5 / US6 / US7 / US8 / US9 / US10 / US11 / US12)
-- **[SHARED-096]**: Foundational task also referenced by sibling spec 096-crd-user-pages — implement once
-- All paths are absolute under `/home/carlos/DEV/Alkemio/client-web-097/` (the active worktree)
+- **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks).
+- **[Story]**: Which user story the task belongs to (US1 = User Profile, US2 = User Account, US3 = User Membership, US4 = User Organizations, US5 = User Notifications, US6 = User Settings, US7 = User Security, US8 = Org Profile, US9 = Org Account, US10 = Org Community, US11 = Org Authorization, US12 = Org Settings).
+- File paths are absolute from the repository root (`src/...`).
+
+## Path Conventions
+
+This is a single Vite SPA. Source paths begin at `src/`. Two settings integration verticals live under `src/main/crdPages/topLevelPages/{userPages,organizationPages}/settings/`. Presentational CRD components live under `src/crd/components/{contributor,user,organization}/settings/`. Shared helper components live under `src/crd/components/common/`. The shared i18n namespace lives at `src/crd/i18n/contributorSettings/`.
 
 ---
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Register the i18n namespace + scaffold the two integration subtrees.
+**Purpose**: Repo-wide setup — confirm prerequisites, no new tooling needed.
 
-- [ ] T001 Register the new `crd-contributorSettings` i18n namespace in `/home/carlos/DEV/Alkemio/client-web-097/src/core/i18n/config.ts` by adding it to `crdNamespaceImports` (lazy-load all 6 languages from `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`) — mirror the pattern used for `crd-spaceSettings` / `crd-userPages`
-- [ ] T002 Add `'crd-contributorSettings'` to the i18next namespace type union in `/home/carlos/DEV/Alkemio/client-web-097/@types/i18next.d.ts` so `useTranslation('crd-contributorSettings')` is type-checked
-- [ ] T003 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.en.json` with the full skeleton of keys covering: `shell.tabs.user.{profile,account,membership,organizations,notifications,settings,security}`, `shell.tabs.org.{profile,account,community,authorization,settings}`, plus per-tab keys (Identity / About You / Social Links / Avatar / Account / Membership / Organizations / Notifications / Settings / Security for User; Identity / About / Contact & Legal / Social Links / Account / Community / Authorization / Settings for Org), plus `shared.{saved,saveFailed,addAnotherReference,...}` — full key inventory per data-model.md and contracts/
-- [ ] T004 [P] Create empty placeholder JSON files for the other five languages: `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.{nl,es,bg,de,fr}.json` — each starts as `{}` and is filled during the Polish phase
-- [ ] T005 [P] Create the User integration directory at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/` with empty subdirectories `myProfile/`, `account/`, `membership/`, `organizations/`, `notifications/`, `settings/`, `security/`
-- [ ] T006 [P] Create the Org integration directory at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/` with empty subdirectories `profile/`, `account/`, `community/`, `authorization/`, `settings/`
-
-**Checkpoint**: i18n namespace registered, both integration directory skeletons in place — Foundational phase can begin.
+- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-crd-enabled', 'true')` and reload `/user/<self>/settings/profile`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard / Profile from 096) render with the toggle on. Document any environment issues in this task's notes — no code change.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Build the shared CRD primitives + per-actor predicate hooks + route shells the entire contributor-settings vertical depends on.
+**Purpose**: Cross-cutting infrastructure that ALL twelve user stories depend on. Must complete before any user-story phase can finish.
 
-**⚠️ CRITICAL**: No user-story work can begin until this phase is complete.
+**⚠️ CRITICAL**: User-story implementation cannot ship until this phase is complete.
 
-### Per-actor route context + predicate helpers
+### i18n namespace
 
-- [ ] T007 [P] [SHARED-096] Verify `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/useUserPageRouteContext.ts` exists per the `UseUserPageRouteContext` contract in `specs/097-crd-user-settings/contracts/data-mapper.ts`. Owned by 096; this spec reuses without modification. If absent, create per the contract: wraps `useUserProvider` + `useCurrentUserContext` to return `{ userSlug, userId, currentUserId, loading }`, resolves `/user/me` to the current user's nameID
-- [ ] T008 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/useCanEditUserSettings.ts` per the `UseCanEditUserSettings` contract. Returns `{ canEditSettings, isOwner, isPlatformAdmin, loading }`. `isPlatformAdmin` calls `userWrapper.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin)` — the canonical predicate already used by `UserAdminNotificationsPage` line 172. Replaces / supersedes any prior `useCanEditSettings.ts` from 096
-- [ ] T009 Unit-test `useCanEditUserSettings` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/useCanEditUserSettings.test.ts`: assert true when `currentUser.id === profileUser.id`, true when admin viewing other user, false when neither, false when both ids are undefined (anonymous). Depends on T008
-- [ ] T010 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/useCanEditOrganizationSettings.ts` per the `UseCanEditOrganizationSettings` contract. Reads `useOrganizationProvider().permissions.canEdit` (the existing predicate used by MUI `NonAdminRedirect`). Returns `{ canEditSettings, hasUpdatePrivilege, loading }`
-- [ ] T011 Unit-test `useCanEditOrganizationSettings` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/useCanEditOrganizationSettings.test.ts`: assert true when `permissions.canEdit === true`, false when false, false when permissions missing. Depends on T010
+- [ ] T002 Create the shared CRD i18n namespace skeleton at `src/crd/i18n/contributorSettings/contributorSettings.en.json` with the top-level scoping per research §8 — `shell.tabs.{user, org}`, `user.{profile, account, membership, organizations, notifications, settings, security}`, `org.{profile, account, community, authorization, settings}`, `shared.{saved, saveFailed, addAnotherReference, ...}`. Empty placeholder values for now; per-tab i18n tasks fill them.
+- [ ] T003 [P] Create empty placeholder files for the other five languages: `src/crd/i18n/contributorSettings/contributorSettings.nl.json`, `contributorSettings.es.json`, `contributorSettings.bg.json`, `contributorSettings.de.json`, `contributorSettings.fr.json` — each mirroring the `en` key shape.
+- [ ] T004 Register the `crd-contributorSettings` namespace in `src/core/i18n/config.ts` (lazy-loaded, matching the existing `crd-exploreSpaces` registration pattern) and in `@types/i18next.d.ts`.
+- [ ] T005 [P] Add a Vitest assertion at `src/crd/i18n/contributorSettings/__tests__/keyParity.test.ts` that all six language files have identical key shapes.
 
-### Shared CRD presentational components — Shell + cards
+### Shared CRD presentational primitives
 
-- [ ] T012 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/SettingsShell.tsx` per the `SettingsShellProps` contract. Renders sticky header (avatar + display name only) + `SettingsTabStrip` + `{children}` outlet
-- [ ] T013 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/SettingsTabStrip.tsx` per the `SettingsTabStripProps` contract. Wraps the CRD `tabs.tsx` primitive. Each tab is a `lucide-react` icon + uppercase label. Active tab uses `border-primary` underline. **Responsive:** on viewports below `md` the strip uses `overflow-x-auto no-scrollbar` (FR-014); the active tab MUST be auto-scrolled into view on mount and on `activeTabId` change (use a ref on the active button + `scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })`). Hidden tabs are omitted entirely
-- [ ] T014 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/SettingsCard.tsx` per the `SettingsCardProps` contract — primary-colored icon + bottom-bordered title + helper-text + body. Uses CRD `card.tsx` primitive
+- [ ] T006 [P] Implement `SettingsShell` at `src/crd/components/contributor/settings/SettingsShell.tsx` per `contracts/shell.ts`. Sticky header (avatar + display name) + body slot for the active tab. Pure presentational; receives `tabs`, `activeTabId`, `onTabSelect`, `header`, `children` as props (research §9).
+- [ ] T007 [P] Implement `SettingsTabStrip` at `src/crd/components/contributor/settings/SettingsTabStrip.tsx` per `contracts/shell.ts`. Horizontal tab strip; below `md` breakpoint use `overflow-x-auto no-scrollbar`; auto-scroll the active tab into view on mount and on every tab change (FR-014). Keyboard navigation per FR-151 — Tab into strip, Left/Right arrows, Enter to activate.
+- [ ] T008 [P] Implement `SettingsCard` at `src/crd/components/contributor/settings/SettingsCard.tsx` — wrapper card primitive used by every per-tab content block (icon + heading + bottom border + body slot).
+- [ ] T009 [P] Extract `FieldFooter` from 045's `SpaceSettingsAboutView.tsx` into a shared primitive at `src/crd/components/common/FieldFooter.tsx`. Props per `contracts/tab-userProfile.ts` `EditableSectionProps`: `hint`, `dirty`, `status: SectionSaveStatus`, `onSave`. Renders the dirty indicator + Save button + per-render status (idle / saving / saved / error). On `status.kind === 'saved'` the "Saved!" indicator displays for `SAVED_FLASH_MS = 1800` ms (matches 045). Save button exposes `aria-busy` while saving and `disabled` while saving (FR-150). Update 045's `SpaceSettingsAboutView.tsx` to import from the new shared location.
+- [ ] T010 [P] Implement `ContributorAccountView` at `src/crd/components/contributor/settings/ContributorAccountView.tsx`. Renders the four card groups (Hosted Spaces, Virtual Contributors, Template Packs, Custom Homepages) per the prototype-faithful empty-state patterns (FR-033 / FR-103). Hosted Spaces and Virtual Contributors render existing items + an inline dashed "Create New" card (always present). Template Packs render existing items + up to 3 dashed "Empty Slot" placeholders. Custom Homepages render cards when non-empty OR a centered full empty-state with icon + heading + descriptive copy + CTA + capacity indicator when empty. All `onCreate*`, `onManage`, `onDelete` are received as callback props; the view never imports `react-router-dom` (FR-007).
+- [ ] T011 [P] Implement `RoleAssignmentView` at `src/crd/components/contributor/settings/RoleAssignmentView.tsx`. Two-column layout — current members (with × per row) and available users (search input above + + per row + load-more pagination). All actions are callback props. **Remove (×) opens a `ConfirmationDialog` (Rule #9 / FR-112 / FR-121)** — the view holds the dialog open state and calls `onConfirmRemove(id)` only after Confirm. `confirmLabel` is received as a prop (so the parent can supply role-aware copy: "Remove {{name}} as Associate" / "as Admin" / "as Owner").
+- [ ] T012 [P] Implement `OrgVerifiedBadge` at `src/crd/components/contributor/settings/OrgVerifiedBadge.tsx` per Decision #12. Three states based on `status` prop (`'verified' | 'pending' | 'notVerified'`); read-only (no edit affordance per FR-094).
 
-### Shared CRD presentational components — EditableField family
+### Per-actor authorization predicate hooks
 
-- [ ] T015 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableField.tsx` per the `EditableFieldShellProps` contract. Implements the five-state machine from research §2 (`idle` / `editing` / `pending` / `idle-saved` / `editing-error`). Hover-reveal pencil glyph. Save (check) and Cancel (×) icons in `editing`. Spinner replacing Save in `pending`. Disabled Save/Cancel in `pending`; `aria-busy="true"` on the input. Inline error beneath the input in `editing-error`. Transient "Saved" indicator next to the label for ~2 s in `idle-saved`. Enter-key behavior gated by `enterIsNewline` prop. State is owned BY the parent (controlled component) — primitive renders the right UI for the passed `status`
-- [ ] T016 Unit-test `EditableField` state-driven rendering at `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableField.test.tsx`: idle hover reveals pencil; click value → onEnterEdit fires; editing renders Save+Cancel; click × → onCancel fires; click Save → onSave fires; pending disables Save+Cancel + sets aria-busy; idle-saved renders the "Saved" indicator; editing-error renders inline error and Save+Cancel re-enabled. Use Vitest + `@testing-library/react`. Depends on T015
-- [ ] T017 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableTextField.tsx` per the `EditableTextFieldProps` contract. Wraps `EditableField` with a CRD `input.tsx`. Supports `text` / `email` / `tel` and an optional leading `lucide-react` icon (used by City — `MapPin`). Surfaces client-side `validate` errors as inline messages (mutation never fires when invalid)
-- [ ] T018 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableMarkdownField.tsx` per `EditableMarkdownFieldProps`. Wraps `EditableField` (with `enterIsNewline=true`) around the existing `@/crd/forms/markdown/MarkdownEditor`. Save / Cancel only via the icons (Enter inserts newline)
-- [ ] T019 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableSelectField.tsx` per `EditableSelectFieldProps<T>`. Wraps `EditableField` around the CRD `select.tsx` primitive (used by Country selector on both Profile tabs)
-- [ ] T020 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableTagsField.tsx` per `EditableTagsFieldProps`. Wraps `EditableField` around `@/crd/forms/tags-input.tsx`
-- [ ] T021 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/EditableReferenceRow.tsx` per `EditableReferenceRowProps`. Renders a circular icon-tile (LinkedIn / Bluesky / GitHub / generic Link), a name input (editable only when `kind === 'arbitrary'`), a URL input (with the `validateUrl` callback gating Save), an optional description input (arbitrary only), the `EditableField` Save / Cancel pair, and a trash icon that calls `onDelete` immediately (no confirmation per FR-025)
+- [ ] T013 [P] Implement `useCanEditUserSettings` at `src/main/crdPages/topLevelPages/userPages/useCanEditUserSettings.ts` per Decision #7. Returns `{ canEditSettings, isOwner, isPlatformAdmin }`. Uses `useCurrentUserContext().hasPlatformPrivilege(PlatformAdmin)` and `currentUser.id === profileUserId`. **Note**: 096 already added `useCanEditSettings.ts` in this folder; either rename / extend that file or re-export under both names. Document the alias in the file header.
+- [ ] T014 [P] Implement `useCanEditOrganizationSettings` at `src/main/crdPages/topLevelPages/organizationPages/useCanEditOrganizationSettings.ts` per Decision #7. Returns `{ canEditSettings, hasUpdatePrivilege }` from `useOrganizationProvider().permissions.canEdit`.
+- [ ] T015 [P] Add Vitest unit tests at `src/main/crdPages/topLevelPages/__tests__/canEditPredicates.test.ts` covering both predicate hooks: User (owner / platform admin / non-admin / anonymous → 4 viewer categories per FR-010 / SC-008); Org (Update privilege true / false → FR-011 / SC-009).
 
-### Shared CRD presentational components — composite views
+### Route shells + access guards + tab-state hooks
 
-- [ ] T022 [P] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/AccountResourceCard.tsx` per the `AccountResourceCardItem` shape in `contracts/tab-userAccount.ts`. Horizontal card: avatar / displayName / description / kebab dropdown. Uses CRD `card.tsx`, `dropdown-menu.tsx`, `avatar.tsx`. Each kebab entry is a `lucide-react` icon + label that calls the entry's `onClick`. Pure presentational
-- [ ] T023 [US2 US9] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/ContributorAccountView.tsx` per the `ContributorAccountViewProps` contract. Renders the help-text info banner + four sections (Hosted Spaces, Virtual Contributors, Innovation Packs, Innovation Hubs), each with its title, optional Create button (gated by `canCreate`), the list of `AccountResourceCard`s, and an empty-state line when the list is empty. **Shared across US2 (User Account) and US9 (Org Account)** — single implementation, two integrations. Depends on T022
-- [ ] T024 [P] [US10 US11] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/contributor/settings/RoleAssignmentView.tsx` per the `RoleAssignmentViewProps` contract. Two-column layout: current members (left, with × per row) + available users (right, with search + + per row + load-more). Uses CRD `card.tsx`, `input.tsx`, `avatar.tsx`. **Shared across US10 (Org Community) and US11 (Org Authorization Admin/Owner sub-tabs)** — single implementation, three integrations
+- [ ] T016 [P] Implement `useUserSettingsAccessGuard` at `src/main/crdPages/topLevelPages/userPages/settings/useUserSettingsAccessGuard.ts`. Wraps `useCanEditUserSettings`; on `canEditSettings === false` calls `navigate('/user/<userSlug>', { replace: true })` (FR-010). Returns the predicate result so consumers can also branch on it (Security tab visibility per FR-012 / FR-083 / FR-084).
+- [ ] T017 [P] Implement `useOrgSettingsAccessGuard` at `src/main/crdPages/topLevelPages/organizationPages/settings/useOrgSettingsAccessGuard.ts`. Wraps `useCanEditOrganizationSettings`; on `canEditSettings === false` calls `navigate('/organization/<orgSlug>', { replace: true })` (FR-011).
+- [ ] T018 [P] Implement `useUserSettingsTab` at `src/main/crdPages/topLevelPages/userPages/settings/useUserSettingsTab.ts`. Resolves `activeTabId` from the URL (`useParams`/`useResolvedPath`); exposes `onTabSelect(id)` that pushes `/user/<slug>/settings/<id>` via `navigate`. Maps tab id → URL segment (`'profile' | 'account' | 'membership' | 'organizations' | 'notifications' | 'settings' | 'security'`).
+- [ ] T019 [P] Implement `useOrgSettingsTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/useOrgSettingsTab.ts`. Same pattern as T018; tab ids `'profile' | 'account' | 'community' | 'authorization' | 'settings'`.
+- [ ] T020 [P] Implement `CrdUserSettingsRoutes` at `src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.tsx`. Routes matching `/user/:userSlug/settings/*` to `CrdUserSettingsPage`; runs `useUserSettingsAccessGuard` at the top to redirect on access denied. Each tab id resolves to the corresponding `Crd<Tab>Tab` lazy import (placeholder until per-tab phases land).
+- [ ] T021 [P] Implement `CrdOrgSettingsRoutes` at `src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.tsx`. Same pattern; access guard via `useOrgSettingsAccessGuard`.
+- [ ] T022 Implement `CrdUserSettingsPage` at `src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsPage.tsx`. Hosts `SettingsShell` with the User 7-tab list (resolved labels from i18n + lucide-react icons). Receives `activeTabId` from `useUserSettingsTab`; renders the active tab's component as a child slot. Hides the Security tab (`tabs[6].hidden = true`) for non-owner viewers per FR-012 / FR-083.
+- [ ] T023 Implement `CrdOrgSettingsPage` at `src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsPage.tsx`. Same pattern with the Org 5-tab list.
+- [ ] T024 Modify `src/main/routing/TopLevelRoutes.tsx` — wire the User-shell dispatch under the existing `/user/*` block: when `useCrdEnabled()` is true, lazy-load `CrdUserSettingsRoutes` for the `settings/*` subtree (preserving 096's existing `/user/:userSlug` public-profile route + `<NoIdentityRedirect>` and `<WithApmTransaction>` wrappers).
+- [ ] T025 Modify `src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` — at the existing `settings/*` route (currently hard-coded to `<MuiOrganizationAdminRoutes />`), gate via `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />` per research §1. The 096 public-profile route in this file is unchanged.
 
-### Route shells
-
-- [ ] T025 [P] [SHARED-096] Verify `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/CrdUserRoutes.tsx` exists (owned by 096). If present, extend it to nest a `path="settings/*"` sub-route that delegates to `CrdUserSettingsRoutes` (T026). All page components are lazy-loaded
-- [ ] T026 Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.tsx` — the seven settings sub-routes (`profile`, `account`, `membership`, `organizations`, `notifications`, `settings`, `security`) with the index redirecting to `profile`. At route-resolution time, evaluate `useCanEditUserSettings()`: when false, `<Navigate to={`/user/${slug}`} replace />`. For the `security` route specifically, additionally redirect to `/user/<slug>/settings/profile` when `isOwner === false` (FR-084). Each tab page component is lazy-loaded. Depends on T008, T025
-- [ ] T027 [SHARED-096] Modify `/home/carlos/DEV/Alkemio/client-web-097/src/main/routing/TopLevelRoutes.tsx` at the `/user/*` route block: inside the existing `<NoIdentityRedirect>` and `<Suspense>`, dispatch on `useCrdEnabled()` between the lazy-loaded `<CrdUserRoutes />` and the existing `<UserRoute />` — the existing wrapping (`<NoIdentityRedirect>`, `<WithApmTransaction>`, `<Suspense>`) MUST stay exactly as-is (research §1: anonymous viewers stay redirected to login for parity). Add a new lazy import `const CrdUserRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/userPages/CrdUserRoutes'))`. Depends on T025
-- [ ] T028 Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.tsx` — the five settings sub-routes (`profile`, `account`, `community`, `authorization`, `settings`) with the index redirecting to `profile`. At route-resolution time, evaluate `useCanEditOrganizationSettings()`: when false, `<Navigate to={`/organization/${slug}`} replace />`. Each tab page component is lazy-loaded. Depends on T010
-- [ ] T029 Modify `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes.tsx` at lines 29–34 (currently hard-codes `<MuiOrganizationAdminRoutes />` for `path="settings/*"`): replace with `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />`. Add lazy import for `CrdOrgSettingsRoutes`. Depends on T028
-
-**Checkpoint**: All shared primitives, helpers, and route shells ready. The 12 settings tabs can now be built in parallel.
+**Checkpoint**: Both shells render placeholder tab bodies; all 12 tabs reachable by URL with correct active highlight; CRD-off renders existing MUI shells unchanged. Ready to land per-tab phases in any order.
 
 ---
 
-## Phase 3: User Story 1 — User My Profile Tab (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 — User Profile (Priority: P1) 🎯 MVP
 
-**Goal**: `/user/<self>/settings/profile` renders the per-field-explicit-save form (Identity / About You / Social Links + right-column avatar preview) with the full state machine (idle → editing → pending → success / failure).
+**Goal**: Migrate the User Profile tab (`/user/:userSlug/settings/profile`) from MUI to CRD with the per-section explicit-save model (matches 045 About), per-section "Saved!" flash, inline-error-until-next-edit, references list with confirmation-gated delete, immediate avatar upload commit.
 
-**Independent Test**: Per quickstart.md "User Story 1" — edit each field type (text, markdown, select, tags, reference), verify save / cancel / failure-retry / network-offline flows, verify silent-drop-on-tab-switch behavior, verify avatar upload commits on file-select, verify trash icon deletes references immediately.
+**Independent Test**: With CRD on, open `/user/<self>/settings/profile`. Edit Display Name in the section's input, click the section's Save — value persists, "Saved!" flashes for ~1.8 s. Add a LinkedIn reference, click References-section Save — created. Click trash on a saved reference — confirmation dialog appears; Confirm + click Save — deleted. Upload avatar — commits immediately. As a platform admin viewer on `/user/<otherUser>/settings/profile`: page is fully editable, saves persist against the target. As non-admin on someone else's: redirected to `/user/<otherUser>`.
 
-### CRD presentational components
+### Mapper + per-tab data hook
 
-- [ ] T030 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/MyProfileAvatarColumn.tsx` per the `AvatarColumnProps` contract. Right-column profile picture preview: large circular avatar (with optional uploading overlay spinner), display name + tagline, "Change Avatar" file picker button, "Recommended: 400x400px. JPG, PNG or GIF." caption. The button accepts a file and calls `onAvatarFilePicked(file)` immediately (FR-024)
-- [ ] T031 [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/MyProfileView.tsx` per `UserMyProfileViewProps`. Two-column layout on `lg+` (form on the left, avatar on the right) and single column on smaller viewports. Three subsections (`Identity`, `About You`, `Social Links`), each with the icon + bottom-bordered title treatment from `SettingsCard`. Renders the field instances passed via props. The "Add Another Reference" button at the bottom of Social Links calls `onAddAnotherReference`. Depends on T015–T021, T030
+- [ ] T026 [P] [US1] Implement `userProfileMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/profile/userProfileMapper.ts`. Pure function mapping `User` GraphQL data + recognized-references partition (`linkedin` / `bsky` / `github` case-insensitive) + arbitrary references list to `UserProfileViewProps` per `contracts/tab-userProfile.ts`. Includes the `mapUserToFormValues` analog of 045's `mapSpaceToAboutFormValues` — produces the section values buffer the per-tab hook consumes. Validation rules per data-model.md (URL live, phone live, required-field on Save).
+- [ ] T027 [US1] Implement `useUserProfileTabData` at `src/main/crdPages/topLevelPages/userPages/settings/profile/useUserProfileTabData.ts` — the per-section save hook, parallel to 045's `useAboutTabData`. Holds `values` + `saved` + `dirtyByField` + `saveStatusByField` + `pendingReferenceDeleteId`. Exposes `onChange(patch)`, `onAddReference()`, `onUpdateReference(id, patch)`, `onRequestRemoveReference(id)`, `onConfirmRemoveReference()`, `onCancelRemoveReference()`, `onSaveSection(section)`, and `onAvatarFilePicked(file)`. `onSaveSection` fires the targeted mutation: `updateUser` (single sections), `updateUser` with `profile.location` patch (compound `location` section), profile-tagset add/update via the tags-input flow, references batch (`createReferenceOnProfile` x N + `updateReference` x M + `deleteReference` x P) on `references`. On success, runs `flashSaved(section)` with `SAVED_FLASH_MS = 1800` and merges fresh server values into `saved`. On failure sets `saveStatusByField[section] = { kind: 'error', message }` and leaves `values[section]` untouched.
+- [ ] T028 [P] [US1] Add Vitest unit tests at `src/main/crdPages/topLevelPages/userPages/settings/profile/__tests__/useUserProfileTabData.test.ts` covering: per-section idle → saving → saved → idle (with the 1800 ms timer); per-section saving → error; error → idle on next edit; references batch (add + edit + delete in one save click); pendingReferenceDeleteId state machine (request → confirm fires deleteReference, request → cancel does not); URL-format live validation (Save disabled while invalid); required-field empty check on Save click for Display Name / First Name / Last Name; avatar upload immediate commit (no Save click).
 
-### Integration
+### Presentational view
 
-- [ ] T032 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/useUserMyProfileFields.ts` — for each editable field, owns the `EditableFieldStatus` state and exposes `onEnterEdit / onSave / onCancel` callbacks. The `onSave` of each field fires a single targeted `useUpdateUserMutation` call that preserves the rest of the user payload, then transitions `pending → idle-saved → idle` (timer ~2 s) on success or `pending → editing-error` on failure with the typed value preserved (FR-022). Implements the state machine ownership for: `displayName`, `firstName`, `lastName`, `phone`, `tagline`, `city`, `country`, `bio` (markdown), `tags` (delegates to T033 for first-tag creation)
-- [ ] T033 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/useUserTagsetSave.ts` — for the `tags` field on the form. When the user has no existing default tagset, the first save fires `useCreateTagsetOnProfileMutation`. Subsequent saves fire `useUpdateUserMutation` against the existing tagset id within `profile.tagsets`
-- [ ] T034 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/useUserReferenceCrud.ts` — owns the per-row state for every Social Links row (recognized + arbitrary). Wraps `useCreateReferenceOnProfileMutation`, `useUpdateReferenceMutation`, `useDeleteReferenceMutation`. Add Another Reference appends an unsaved row in `editing` (id=null); Save → `createReferenceOnProfile`; trash icon → `deleteReference` immediately (no confirmation, FR-025). Reuses the existing `referenceSegmentSchema` URL validator
-- [ ] T035 [P] [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/useUserAvatarUpload.ts` — exposes `{ onAvatarFilePicked: (file: File) => Promise<void>; uploading: boolean }`. Calls the same upload mutation the existing MUI avatar uploader uses. On error, surfaces a CRD `Toast` and reverts the avatar via refetch
-- [ ] T036 [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/userMyProfileMapper.ts` — pure function mapping `useUserQuery` results + the four hooks above into the full `UserMyProfileViewProps` object. Pulls the `COUNTRIES` constant for the Country select options
-- [ ] T037 [US1] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/CrdUserMyProfilePage.tsx` — composes the four hooks + the mapper, renders `<SettingsShell>` with `<MyProfileView>` inside. Depends on T031, T032, T033, T034, T035, T036
-- [ ] T038 [US1] Wire the `profile` route in `CrdUserSettingsRoutes.tsx` (T026) → `<CrdUserMyProfilePage />`. Depends on T037
+- [ ] T029 [US1] Implement `UserProfileTabView` at `src/crd/components/user/settings/UserProfileTabView.tsx` per `contracts/tab-userProfile.ts`. Two-column layout on `lg+` (form left, avatar column right); single column below `lg`. Form sections in order: Identity (Display Name, First Name, Last Name, Email read-only, Phone), About You (Tagline, Location compound, Bio, Tags), Social Links / References. Each section composes one of `InlineEditText` / `MarkdownEditor` / `CountryCombobox` / `TagsField` plus `FieldFooter`. References section uses an `EditableReferenceRow` sub-component that renders the recognized-tile or arbitrary-row variants. **No per-field pencil / check / × icons.** The `pendingReferenceDelete` `ConfirmationDialog` is rendered at the view level; props come from the integration hook.
 
-### Tests
+### Integration page
 
-- [ ] T039 [P] [US1] Unit-test `userMyProfileMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/myProfile/userMyProfileMapper.test.ts`: handles missing optional fields (no phone, no tagline, no bio, empty tagsets); recognized references (LinkedIn, Bluesky, GitHub) sort to `socialLinks.recognized` even when missing in the data (auto-inserted as empty rows); arbitrary references end up in `socialLinks.arbitrary` in stable order; the helper text for Email is the i18n-resolved "Contact support to change email"
+- [ ] T030 [US1] Implement `CrdUserProfileTab` at `src/main/crdPages/topLevelPages/userPages/settings/profile/CrdUserProfileTab.tsx`. Wires `useUserPageRouteContext` (096) → `useUserQuery` → `useUserProfileTabData` (T027) → `userProfileMapper` (T026). Renders `UserProfileTabView` with the produced props. Wraps `onSaveSection` calls in `useTransition` (Constitution Principle II). Handles the loading state via skeleton placeholders sized to the eventual content.
 
-### Manual smoke
+### i18n keys (User Profile)
 
-- [ ] T040 [US1] Run quickstart.md "User Story 1" smoke checklist. Verify each field type (text / markdown / select / tags / reference) edits and saves; verify the offline-Save flow keeps the typed value preserved; verify trash deletes references immediately; verify avatar upload commits on file-select. Capture deviations as follow-up tasks
+- [ ] T031 [US1] Add User Profile keys to `src/crd/i18n/contributorSettings/contributorSettings.en.json` under `user.profile.*` and shared edit-pattern strings under `shared.*`. Keys: section labels (`displayName.label`, `firstName.label`, ..., `references.title`, `references.addAnother`), section hints, the recognized tiles' brand labels (`socialLinks.linkedin`, `socialLinks.bsky`, `socialLinks.github` — verify if `translation` namespace already has these per FR-142), the avatar column copy (`avatar.changeButton`, `avatar.helperText`), the references confirmation copy (`references.deleteDialogTitle`, `references.deleteDialogBody`, `references.deleteConfirm`). **Parity reuses (FR-142)**: `forms.validations.elementMustBeValidUrl` (URL invalid), email read-only caption. Document each reuse in `userProfileMapper.ts`.
+- [ ] T032 [P] [US1] Translate all User Profile keys added in T031 into `nl.json`, `es.json`, `bg.json`, `de.json`, `fr.json` (manual AI-assisted per `src/crd/CLAUDE.md`).
 
-**Checkpoint**: User Story 1 complete — User My Profile is independently editable end-to-end. MVP boundary.
+**Checkpoint**: User Profile tab fully functional under CRD-on; existing MUI page renders unchanged under CRD-off. Per-section save model verified end-to-end including the Rule #9 reference-delete confirmation. SC-001 (full edit flow under 90 s) achievable.
 
 ---
 
-## Phase 4: User Story 2 — User Account Tab (Priority: P1)
+## Phase 4: User Story 2 — User Account (Priority: P1)
 
-**Goal**: `/user/<self>/settings/account` renders the four card groups (Hosted Spaces / VCs / Innovation Packs / Innovation Hubs) with kebab actions that navigate to existing flows.
+**Goal**: Migrate the User Account tab (`/user/:userSlug/settings/account`) — four card groups via the shared `ContributorAccountView` (T010) with prototype-faithful empty states (FR-033) and existing-MUI-route navigation for create / manage / delete.
 
-**Independent Test**: Per quickstart.md "User Story 2".
+**Independent Test**: With CRD on, open `/user/<self>/settings/account`. Help banner + four card groups visible with the user's actual resources. With 0 hosted spaces — only the dashed "Create New Space" inline card shows; click it — navigates to `/admin/spaces/new`. With 0 custom homepages — full empty-state with CTA + "Capacity: 0/1 Used" indicator. Click a hosted resource's kebab → Delete — `ConfirmationDialog` opens; Confirm fires the existing delete mutation.
 
-### Integration
+- [ ] T033 [P] [US2] Implement `userAccountMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/account/userAccountMapper.ts`. Pure function mapping `useUserAccountQuery` + `useAccountInformationQuery({accountId})` data to the props the shared `ContributorAccountView` expects. Each row mapped per data-model.md (id, displayName, description from tagline ?? description, avatarUrl, href, kebab actions derived from privileges). Resolves the `onCreate*` / `onManage` / `onDelete` callbacks at the integration page level (T034).
+- [ ] T034 [US2] Implement `CrdUserAccountTab` at `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`. Wires data → mapper → `ContributorAccountView`. Provides `onCreateSpace = () => navigate('/admin/spaces/new')`, `onCreateVC`, `onCreateInnovationPack`, `onCreateInnovationHub`, `onManage(id)`, `onDelete(id) = () => setPendingDeleteId(id)` callbacks. Renders the delete `ConfirmationDialog` at the page level using the existing 045-style `pendingDeleteId` state pattern.
+- [ ] T035 [US2] Add User Account keys to `src/crd/i18n/contributorSettings/contributorSettings.en.json` under `user.account.*` (Help banner copy, four sub-section headings, "Create New Space" / "Create New Contributor" / "Empty Slot" / "No Custom Homepages" + descriptive copy / "Capacity: 0/1 Used" indicator copy + "Create Homepage" CTA label). Translate to nl/es/bg/de/fr in the same task.
 
-- [ ] T041 [P] [US2] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/account/useUserAccountActions.ts` — exposes `{ onCreateSpace, onCreateVC, onCreatePack, onCreateHub, onView, onManage, onTransferOut, onDelete }` callbacks. Each one calls `useNavigate()` to the corresponding existing MUI admin route (research §3). The Delete callback opens the existing CRD `ConfirmationDialog` and on confirm fires the corresponding existing delete mutation. No new mutations added
-- [ ] T042 [P] [US2] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/account/userAccountMapper.ts` — pure function mapping `useUserAccountQuery` + `useAccountInformationQuery({ accountId: user.account.id })` + the action callbacks into the shared `ContributorAccountViewProps` shape. Reads privilege flags from the same authorization fields the MUI `ContributorAccountView` reads
-- [ ] T043 [US2] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountPage.tsx` composing the hook + mapper + `<ContributorAccountView>` (the shared component from T023). Depends on T023, T041, T042
-- [ ] T044 [US2] Wire the `account` route in `CrdUserSettingsRoutes.tsx`. Depends on T043
-
-### Tests
-
-- [ ] T045 [P] [US2] Unit-test `userAccountMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/account/userAccountMapper.test.ts`: privilege gating (Create button hidden when the corresponding privilege flag is false); empty resource lists; kebab entries match the `AccountKebabAction` discriminated union exactly
-
-### Manual smoke
-
-- [ ] T046 [US2] Run quickstart.md "User Story 2" smoke checklist
-
-**Checkpoint**: User Story 2 complete.
+**Checkpoint**: User Account renders under CRD-on with parity behavior. Empty states match prototype exactly.
 
 ---
 
-## Phase 5: User Story 3 — User Membership Tab (Priority: P1)
+## Phase 5: User Story 3 — User Membership (Priority: P1)
 
-**Goal**: `/user/<self>/settings/membership` renders the Home Space card + paginated My Memberships table + read-only Pending Applications table.
+**Goal**: Migrate User Membership (`/user/:userSlug/settings/membership`) — Home Space card + Memberships table (search/filter/leave) + Pending Applications table.
 
-**Independent Test**: Per quickstart.md "User Story 3".
+**Independent Test**: With CRD on, open `/user/<self>/settings/membership`. Pick a Home Space — dropdown + mutation fires. Tick Auto-redirect — persists. Search "Garden" — table filters client-side. Leave a membership via kebab → `ConfirmationDialog` → Confirm — row removed.
 
-### CRD presentational components
+- [ ] T036 [P] [US3] Implement `userMembershipMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/membership/userMembershipMapper.ts`. Maps `useUserSettingsQuery` (HomeSpace), `useUserContributionsQuery` (memberships), `useUserPendingMembershipsQuery` (pending applications) to the view props per data-model.md.
+- [ ] T037 [US3] Implement `useUserMembershipTabData` at `src/main/crdPages/topLevelPages/userPages/settings/membership/useUserMembershipTabData.ts`. Holds search / filter dropdown state (client-side); exposes `onSelectHomeSpace`, `onToggleAutoRedirect`, `onSearch`, `onFilterChange`, `onPageChange`, `onRequestLeave(id)`, `onConfirmLeave`, `onCancelLeave`. The Auto-redirect checkbox is disabled until a Home Space is selected (FR-042). Pending Applications has no actions.
+- [ ] T038 [P] [US3] Add Vitest unit tests at `src/main/crdPages/topLevelPages/userPages/settings/membership/__tests__/useUserMembershipTabData.test.ts` covering: search filter (case-insensitive substring); type filter (Spaces / Subspaces / All); status filter (Active / Archived — derived from `space.archived` flag — confirm against current MUI in case the heuristic differs); pagination resets to page 1 on search/filter change; Leave confirmation flow.
+- [ ] T039 [US3] Implement `UserMembershipTabView` at `src/crd/components/user/settings/UserMembershipTabView.tsx`. Three sections: Home Space card (single-select dropdown + Auto-redirect checkbox + spinner during mutation), My Memberships table (~10 rows visible, search input + filter dropdown above, kebab → Leave per row, click row name navigates to space), Pending Applications table (read-only). Empty-state for both tables: muted caption per FR-018.
+- [ ] T040 [US3] Implement `CrdUserMembershipTab` at `src/main/crdPages/topLevelPages/userPages/settings/membership/CrdUserMembershipTab.tsx`. Wires data → mapper → hook → view. `ConfirmationDialog` for Leave is rendered at the page level using the hook's pending-leave state.
+- [ ] T041 [US3] Add User Membership keys to `src/crd/i18n/contributorSettings/contributorSettings.en.json` under `user.membership.*`: `homeSpaceTitle`, `homeSpaceCaption` (the "Select a home space to enable auto-redirect" caption), `autoRedirectLabel`, `myMembershipsTitle`, `searchPlaceholder`, filter labels (`all`, `spaces`, `subspaces`, `active`, `archived`), `leaveDialogTitle`, `leaveDialogBody` (with `{{spaceName}}`), `leaveConfirm`, `pendingApplicationsTitle`, `noMembershipsCaption` (FR-018) — **parity reuse** of `pages.user-profile.communities.noMembership` per FR-142 if the MUI key exists. Translate to nl/es/bg/de/fr.
 
-- [ ] T047 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/HomeSpaceCard.tsx` per `HomeSpaceCardProps`. CRD `select.tsx` for the Home Space picker + `checkbox.tsx` for Auto-redirect (disabled when no Home Space, with the explanatory caption). Spinner overlay during the `saving` flag
-- [ ] T048 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/MembershipsTable.tsx` per `MembershipsTableProps`. Uses CRD `table.tsx` + `input.tsx` (search) + `select.tsx` (filter dropdown) + `dropdown-menu.tsx` (per-row kebab with a Leave action). Pagination at ~10 rows visible, controlled via `page` / `pageSize` / `onPageChange`. Click on the row name navigates to `spaceUrl` (renders as `<a href>` per CRD architectural rules)
-- [ ] T049 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/PendingApplicationsTable.tsx` per `PendingApplicationsTableProps`. Pure read-only — no kebab, no actions. Empty-state line when `rows` is empty
-- [ ] T050 [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/MembershipView.tsx` per `UserMembershipViewProps`. Composes T047 + T048 + T049 inside `SettingsCard` containers. Depends on T047, T048, T049
-
-### Integration
-
-- [ ] T051 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/membership/useHomeSpace.ts` — wraps `useUpdateUserSettingsMutation` for both the Home Space picker and the Auto-redirect checkbox. Exposes `{ selectedSpaceId, autoRedirect, saving, onSelectSpace, onToggleAutoRedirect }`. Refetches `useUserSettingsQuery` after each mutation
-- [ ] T052 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/membership/useLeaveMembership.ts` — wraps the existing leave-community flow. Opens the CRD `ConfirmationDialog`; on confirm fires the leave action and refetches `useUserContributionsQuery`. On failure surfaces the error inside the open dialog so the user can retry
-- [ ] T053 [P] [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/membership/userMembershipMapper.ts` — pure function. Includes the client-side filter + search logic over the fetched memberships list and the pagination slicing (page/pageSize). Pending applications come from `useUserPendingMembershipsQuery`
-- [ ] T054 [US3] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/membership/CrdUserMembershipPage.tsx`. Depends on T050, T051, T052, T053
-- [ ] T055 [US3] Wire the `membership` route in `CrdUserSettingsRoutes.tsx`. Depends on T054
-
-### Tests
-
-- [ ] T056 [P] [US3] Unit-test `userMembershipMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/membership/userMembershipMapper.test.ts`: search filters by `displayName` substring (case-insensitive); filter dropdown narrows by `Spaces` / `Subspaces` / `Active` / `Archived`; pagination resets to page 1 when search/filter change; the `Auto-redirect disabled when no Home Space` flag is correctly produced
-
-### Manual smoke
-
-- [ ] T057 [US3] Run quickstart.md "User Story 3" smoke checklist
-
-**Checkpoint**: User Story 3 complete.
+**Checkpoint**: User Membership tab fully functional with both tables and the Home Space card. All actions commit per-control immediately.
 
 ---
 
-## Phase 6: User Story 4 — User Organizations Tab (Priority: P1)
+## Phase 6: User Story 4 — User Organizations (Priority: P1)
 
-**Goal**: `/user/<self>/settings/organizations` renders the user's associated organizations with search, optional Create button (privilege-gated), and a Leave kebab.
+**Goal**: Migrate User Organizations (`/user/:userSlug/settings/organizations`) — associated organizations table with search + Create button (privilege-gated) + per-row Leave with confirmation dialog.
 
-**Independent Test**: Per quickstart.md "User Story 4".
+**Independent Test**: With CRD on, open `/user/<self>/settings/organizations`. Search "Alkemio" — list filters. Privileged user sees Create Organization button — click → existing creation flow. Click row name → navigates to `/organization/<orgSlug>` (096). Leave via kebab → Confirm dialog → row removed.
 
-### CRD presentational components
+- [ ] T042 [P] [US4] Implement `userOrganizationsMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/organizations/userOrganizationsMapper.ts`. Maps `useUserOrganizationIds` + lazy `useOrganizationsQuery({ids})` to the view's row props per data-model.md.
+- [ ] T043 [US4] Implement `UserOrganizationsTabView` at `src/crd/components/user/settings/UserOrganizationsTabView.tsx`. Search input + Create Organization button (gated by `showCreateButton` prop) above the table. Table rows: avatar + name + description + location + role + associates count + verified badge + website link. Per-row kebab → Leave. Empty-state: muted caption per FR-018.
+- [ ] T044 [US4] Implement `CrdUserOrganizationsTab` at `src/main/crdPages/topLevelPages/userPages/settings/organizations/CrdUserOrganizationsTab.tsx`. Wires data + mapper + view; resolves `showCreateButton` from `currentUser.hasPlatformPrivilege(CreateOrganization)`; `onCreateOrganization` navigates to existing org-creation flow; Leave confirmation dialog at page level.
+- [ ] T045 [US4] Add User Organizations keys: `user.organizations.{title, searchPlaceholder, createButton, leaveDialogTitle, leaveDialogBody, leaveConfirm, noOrgsCaption}` + role labels (`role.admin`, `role.associate`) + verified badge label. Translate.
 
-- [ ] T058 [P] [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/OrganizationsTable.tsx` per `OrganizationsTableProps`. CRD `table.tsx`-based; columns: avatar, name, description, location, role, associates count, verified badge, website link. Click on the org name navigates to `url` (`<a href>`). Per-row kebab with a single Leave entry
-- [ ] T059 [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/OrganizationsView.tsx` per `UserOrganizationsViewProps`. Search input + (privilege-gated) Create button + the table. Empty-state line when no organizations. Depends on T058
-
-### Integration
-
-- [ ] T060 [P] [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/organizations/useLeaveOrganization.ts` — wraps the existing leave-organization mutation (locate via `grep` in `src/domain/community/organization/`). Opens CRD `ConfirmationDialog`; refetches the organization list after leaving
-- [ ] T061 [P] [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/organizations/useCreateOrganization.ts` — exposes `{ canCreate, onCreate }`. `canCreate` is true iff the user has the `CreateOrganization` platform privilege. `onCreate` calls `useNavigate()` to the existing organization-creation route
-- [ ] T062 [P] [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/organizations/userOrganizationsMapper.ts` — pure function. Implements client-side search by `displayName` substring (case-insensitive)
-- [ ] T063 [US4] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/organizations/CrdUserOrganizationsPage.tsx`. Depends on T059, T060, T061, T062
-- [ ] T064 [US4] Wire the `organizations` route in `CrdUserSettingsRoutes.tsx`. Depends on T063
-
-### Tests
-
-- [ ] T065 [P] [US4] Unit-test `userOrganizationsMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/organizations/userOrganizationsMapper.test.ts`: search filter logic; `canCreateOrganization` privilege gating; row shape (location resolves from city/country, fallback when one is missing)
-
-### Manual smoke
-
-- [ ] T066 [US4] Run quickstart.md "User Story 4" smoke checklist
-
-**Checkpoint**: User Story 4 complete.
+**Checkpoint**: User Organizations tab functional; Leave / Create gated correctly.
 
 ---
 
-## Phase 7: User Story 5 — User Notifications Tab (Priority: P1)
+## Phase 7: User Story 5 — User Notifications (Priority: P1)
 
-**Goal**: `/user/<self>/settings/notifications` renders every notification group / property / channel the current MUI exposes, with the optimistic-overrides update pattern, the push master toggle (gated by availability), and the push subscriptions list.
+**Goal**: Migrate User Notifications (`/user/:userSlug/settings/notifications`) — every group / property / channel from current MUI restyled with CRD `Switch` primitives. Optimistic-overrides on toggle. Hard-failure revert + toast (Q5 / FR-064).
 
-**Independent Test**: Per quickstart.md "User Story 5".
+**Independent Test**: With CRD on, open `/user/<self>/settings/notifications`. Flip an email toggle — UI updates immediately, persists on reload. Push master ON — browser permission prompt; subscription appears. Private window: push hidden. Hard-failure smoke (DevTools Offline + flip a toggle): toggle reverts to prior state + inline toast.
 
-### CRD presentational components
+- [ ] T046 [P] [US5] Implement `userNotificationsMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/notifications/userNotificationsMapper.ts`. Maps `useUserSettingsQuery().settings.notification` + `pushNotificationContext` + privilege flags to the row list per data-model.md. Imports the row schema from `src/domain/community/userAdmin/tabs/model/NotificationSettings.model.ts` to keep parity with MUI.
+- [ ] T047 [US5] Implement `useUserNotificationsTabData` at `src/main/crdPages/topLevelPages/userPages/settings/notifications/useUserNotificationsTabData.ts`. Holds the optimistic-override dictionary keyed by `(group, property, channel)`. `onToggle(key, next)` writes the override → fires `useUpdateUserSettingsMutation` → on success clears the override after refetch resolves; **on hard failure rolls back the override and surfaces an inline toast** (FR-064 / Q5). Push master toggle wraps `pushNotificationContext.subscribe` / `unsubscribe`.
+- [ ] T048 [P] [US5] Add Vitest unit tests at `src/main/crdPages/topLevelPages/userPages/settings/notifications/__tests__/useUserNotificationsTabData.test.ts` covering: optimistic flip + success refetch (override clears); divergence (server returns different value — UI re-renders to authoritative); **hard-failure revert + toast (Q5)**; push master subscribe + unsubscribe; push unavailable info-banner branch.
+- [ ] T049 [US5] Implement `UserNotificationsTabView` at `src/crd/components/user/settings/UserNotificationsTabView.tsx`. Push master toggle card (or info banner when unavailable per FR-061) + Push Subscriptions List card (FR-062). Then per-group cards rendered conditionally on privilege gating: Space (always), Space Admin (gated), User, Platform, Platform Admin (gated), Organization (gated), Virtual Contributor. Each row: property label + three `Switch`es (inApp / email / push — push hidden when unavailable).
+- [ ] T050 [US5] Implement `CrdUserNotificationsTab` at `src/main/crdPages/topLevelPages/userPages/settings/notifications/CrdUserNotificationsTab.tsx`. Wires data + push context + privilege flags → mapper → hook → view.
+- [ ] T051 [US5] Add User Notifications keys: every group title, property label, channel label (`inApp`, `email`, `push`), the push availability banner copy, the toast error copy. Translate.
 
-- [ ] T067 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/NotificationRow.tsx` per `NotificationRow` shape in `contracts/tab-userNotifications.ts`. One row with the property label + three switches (`inApp`, `email`, `push` — push hidden when `null`). Each switch gets `aria-busy` while `saving`
-- [ ] T068 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/NotificationGroupCard.tsx` — wraps a `SettingsCard` with the group title + list of `NotificationRow`s
-- [ ] T069 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/PushAvailabilityBanner.tsx` per the `PushAvailability` discriminated shape — info banner shown when push is unavailable, with the reason-specific copy
-- [ ] T070 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/PushSubscriptionsListCard.tsx` per `PushSubscriptionItem`. CRD `table.tsx`-based: one row per subscription with display name, last-used timestamp, current-device badge, and a remove button. Pure presentational — `onRemove` is a callback prop
-- [ ] T071 [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/NotificationsView.tsx` per `UserNotificationsViewProps`. Composes the master toggle / banner + Push Subscriptions card + the visible groups (privilege-gated; hidden groups simply omitted). Depends on T067, T068, T069, T070
-
-### Integration
-
-- [ ] T072 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/useNotificationToggle.ts` — implements the optimistic-overrides dictionary from research §4. Reads server values from `useUserSettingsQuery`, holds an in-memory override dictionary keyed by `(group, property, channel)`. Each `onToggle` writes the override + fires `useUpdateUserSettingsMutation`; clears the override on success; rolls back the override on failure
-- [ ] T073 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/usePushSubscriptionList.ts` — wraps `usePushNotificationContext` (subscribe/unsubscribe + availability flags) and the existing push subscriptions queries / mutations the MUI component uses. Returns `{ pushAvailability, pushSubscriptions }` shapes for the view
-- [ ] T074 [P] [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/userNotificationsMapper.ts` — pure function. Reads the source-of-truth notification properties from `src/domain/community/userAdmin/tabs/model/NotificationSettings.model.ts` so the CRD layer stays in sync with the MUI side. Privilege gating reuses the existing `useCurrentUserContext.userWrapper.hasPlatformPrivilege(...)` predicates exactly as `UserAdminNotificationsPage` does. Hidden groups are omitted entirely from `groups`
-- [ ] T075 [US5] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/CrdUserNotificationsPage.tsx`. Depends on T071, T072, T073, T074
-- [ ] T076 [US5] Wire the `notifications` route in `CrdUserSettingsRoutes.tsx`. Depends on T075
-
-### Tests
-
-- [ ] T077 [P] [US5] Unit-test `userNotificationsMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/userNotificationsMapper.test.ts`: privilege gating hides Space Admin / Platform Admin / Organization Notifications correctly; the push column on each row is `null` when `pushAvailability.available` is false
-- [ ] T078 [P] [US5] Unit-test `useNotificationToggle` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/notifications/useNotificationToggle.test.ts`: an override is applied immediately on `onToggle`; cleared on mutation success; rolled back on mutation failure
-- [ ] T079 [P] [US5] Unit-test the push-availability gating: a small render test on `NotificationsView` (or `PushAvailabilityBanner`) at `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/NotificationsView.test.tsx`: when `available: false`, master toggle replaced by banner; every push column hidden across every group
-
-### Manual smoke
-
-- [ ] T080 [US5] Run quickstart.md "User Story 5" smoke checklist
-
-**Checkpoint**: User Story 5 complete.
+**Checkpoint**: User Notifications tab functional with parity row coverage. Hard-failure UX consistent with FR-133.
 
 ---
 
-## Phase 8: User Story 6 — User Settings Tab (Priority: P1)
+## Phase 8: User Story 6 — User Settings (Priority: P1)
 
-**Goal**: `/user/<self>/settings/settings` renders the Communication & Privacy switch + Design System on/off switch with the existing localStorage write + reload semantics.
+**Goal**: Migrate User Settings (`/user/:userSlug/settings/settings`) — Communication & Privacy switch + Design System toggle (writes localStorage and reloads).
 
-**Independent Test**: Per quickstart.md "User Story 6".
+**Independent Test**: With CRD on, open `/user/<self>/settings/settings`. Flip messages-from-others switch — persists. Flip Design System OFF — page reloads in MUI mode. Flip ON from MUI side — page reloads back into CRD.
 
-### CRD presentational components
+- [ ] T052 [P] [US6] Implement `userSettingsMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/settings/userSettingsMapper.ts`. Maps `useUserSettingsQuery().settings.communication.allowOtherUsersToSendMessages` to the view props.
+- [ ] T053 [US6] Implement `UserSettingsTabView` at `src/crd/components/user/settings/UserSettingsTabView.tsx`. Two cards: Communication & Privacy (single switch) + Design System (single switch with caption "The page will reload after the change."). Both commits via callback props.
+- [ ] T054 [US6] Implement `CrdUserSettingsTab` at `src/main/crdPages/topLevelPages/userPages/settings/settings/CrdUserSettingsTab.tsx`. Communication switch wraps `useUpdateUserSettingsMutation`. Design System toggle wraps `localStorage.setItem('alkemio-crd-enabled', 'true' | removed) + location.reload()` per FR-071. **Always reads/writes the viewer's own browser localStorage**, never a server-stored attribute (FR-073). Hard-failure on the communication mutation reverts + toasts (parity with Q5 / FR-133).
+- [ ] T055 [US6] Add User Settings keys: `user.settings.{communicationTitle, communicationLabel, designSystemTitle, designSystemLabel, designSystemCaption}`. Translate.
 
-- [ ] T081 [P] [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/DesignSystemSwitchCard.tsx` per `DesignSystemSwitchCardProps`. `SettingsCard` wrapper + CRD `switch.tsx`. Pure presentational — `onToggle` callback owns localStorage + reload
-- [ ] T082 [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/SettingsView.tsx` per `UserSettingsViewProps`. Two cards: Communication & Privacy (single switch for `allowOtherUsersToSendMessages`) + Design System. Depends on T081
-
-### Integration
-
-- [ ] T083 [P] [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/settings/useDesignSystemToggle.ts` — reads `localStorage.getItem('alkemio-crd-enabled')` at mount; on toggle writes `localStorage.setItem('alkemio-crd-enabled', 'true')` or `removeItem` and calls `window.location.reload()`. The toggle is viewer-scoped (FR-073) — never tied to the target user
-- [ ] T084 [P] [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/settings/useAllowMessagesToggle.ts` — wraps `useUpdateUserSettingsMutation` for `settings.communication.allowOtherUsersToSendMessages`
-- [ ] T085 [P] [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/settings/userSettingsMapper.ts` — pure function combining the two hooks above into `UserSettingsViewProps`
-- [ ] T086 [US6] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/settings/CrdUserSettingsPage.tsx`. Depends on T082, T083, T084, T085
-- [ ] T087 [US6] Wire the `settings` route in `CrdUserSettingsRoutes.tsx`. Depends on T086
-
-### Manual smoke
-
-- [ ] T088 [US6] Run quickstart.md "User Story 6" smoke checklist; in particular verify that toggling Design System reloads the page into the chosen renderer in both directions
-
-**Checkpoint**: User Story 6 complete.
+**Checkpoint**: User Settings tab functional. Design System toggle reload reliably under 3 s (SC-003).
 
 ---
 
-## Phase 9: User Story 7 — User Security Tab (Priority: P1)
+## Phase 9: User Story 7 — User Security (Priority: P1)
 
-**Goal**: `/user/<self>/settings/security` mounts the existing identity-provider `settings` flow inside a CRD card shell. Owner-only — admins viewing other users get redirected to `/profile`.
+**Goal**: Migrate User Security (`/user/:userSlug/settings/security`) — identity-provider passkey/WebAuthn flow with the existing `REMOVED_FIELDS` filter. Owner-only (Security tab hidden for admins on other users' profiles).
 
-**Independent Test**: Per quickstart.md "User Story 7".
+**Independent Test**: With CRD on, open `/user/<self>/settings/security`. Passkey form renders; can add a passkey via existing flow. As platform admin on `/user/<otherUser>/settings/security` — redirect to `/user/<otherUser>/settings/profile` (FR-084).
 
-### CRD presentational components
+- [ ] T056 [P] [US7] Implement `useIdentityProviderSettingsFlow` at `src/main/crdPages/topLevelPages/userPages/settings/security/useIdentityProviderSettingsFlow.ts` per Decision #6. Reuses the existing flow loader from MUI `UserSecuritySettingsPage`. Returns `{ kind: 'loading' | 'error' | 'noWebauthn' | 'ready', flow?, error? }`.
+- [ ] T057 [US7] Implement `userSecurityMapper.ts` at `src/main/crdPages/topLevelPages/userPages/settings/security/userSecurityMapper.ts`. Maps the flow result + the `renderKratos` callback to the view props.
+- [ ] T058 [US7] Implement `UserSecurityTabView` at `src/crd/components/user/settings/UserSecurityTabView.tsx`. Renders one of: loading skeleton, error display (existing copy), info alert ("WebAuthn / Passkey is not enabled on this account" — FR-081), or the Kratos form via the `renderKratos(flow)` callback prop wrapped in a `SettingsCard`. **Does NOT restyle the rendered Kratos fields** (FR-080 / out of scope).
+- [ ] T059 [US7] Implement `CrdUserSecurityTab` at `src/main/crdPages/topLevelPages/userPages/settings/security/CrdUserSecurityTab.tsx`. Top-level redirect: when the viewer is not the owner (even with PlatformAdmin), navigate to `/user/<slug>/settings/profile` per FR-084. Wires `useIdentityProviderSettingsFlow` + provides the `renderKratos(flow)` callback that mounts `<KratosForm><KratosUI flow={flow} /></KratosForm>` with the existing `REMOVED_FIELDS` filter.
+- [ ] T060 [US7] Add User Security keys: `user.security.{title, noWebauthnInfoAlert, errorTitle}`. Translate.
 
-- [ ] T089 [US7] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/user/settings/tabs/SecurityView.tsx` per `SecurityViewProps`. Outer `SettingsCard` shell + a body that switches on `state.kind`: `loading` → CRD `skeleton.tsx`; `error` → `errorView` prop; `noWebauthn` → CRD info banner with the i18n-resolved alert text; `ready` → calls `renderKratos(state.flow)` (the integration layer supplies the actual rendering). The view itself never imports the identity-provider SDK
-
-### Integration
-
-- [ ] T090 [P] [US7] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/security/useIdentityProviderSettingsFlow.ts` — reuses the same flow loader the existing `UserSecuritySettingsPage` uses. Reuses the existing `REMOVED_FIELDS` filter so password / profile / OIDC link controls remain hidden. Returns the `SecurityViewState` shape
-- [ ] T091 [US7] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/security/CrdUserSecurityPage.tsx` — calls `useIdentityProviderSettingsFlow`, supplies a `renderKratos` function that wraps the flow in `<KratosForm><KratosUI /></KratosForm>`. Depends on T089, T090
-- [ ] T092 [US7] Wire the `security` route in `CrdUserSettingsRoutes.tsx` (T026) — already gated to owner-only by the redirect logic at the routing level. Depends on T091
-
-### Manual smoke
-
-- [ ] T093 [US7] Run quickstart.md "User Story 7" smoke checklist
-
-**Checkpoint**: User Story 7 complete — the User vertical is fully migrated to CRD.
+**Checkpoint**: User Security tab functional. Tab is hidden in the strip for non-owners; URL-direct redirect runs.
 
 ---
 
-## Phase 10: User Story 8 — Org Profile Tab (Priority: P1)
+## Phase 10: User Story 8 — Org Profile (Priority: P1)
 
-**Goal**: `/organization/<orgSlug>/settings/profile` renders the per-field-explicit-save form using the same shared edit-pattern primitives as User My Profile (Identity / About / Contact & Legal / Social Links + right-column logo preview + read-only verified badge).
+**Goal**: Migrate Org Profile (`/organization/:orgSlug/settings/profile`) — same per-section save model as User Profile (FR-090); read-only Verified badge; Org-specific fields (Name ID read-only, Contact Email validated, Domain, Legal Entity Name, Website validated).
 
-**Independent Test**: Per quickstart.md "User Story 8".
+**Independent Test**: With CRD on, open `/organization/<orgSlug>/settings/profile` as org admin. Edit Display Name section, click Save — value persists, "Saved!" flashes. Edit Domain to invalid → Save disabled. Edit Description (markdown), navigate away mid-edit — silently dropped. Verified badge renders correctly per `verification.status`. As non-admin: redirect to `/organization/<orgSlug>`.
 
-### CRD presentational components
+- [ ] T061 [P] [US8] Implement `orgProfileMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/settings/profile/orgProfileMapper.ts`. Same shape as User Profile mapper but for Organization fields (data-model.md User Story 8). Includes the Verified badge state derivation (`'verified' | 'pending' | 'notVerified'`).
+- [ ] T062 [US8] Implement `useOrgProfileTabData` at `src/main/crdPages/topLevelPages/organizationPages/settings/profile/useOrgProfileTabData.ts` — parallel to `useUserProfileTabData` but for Org. Sections: displayName, tagline, description (markdown), location (compound), tags (Keywords + Capabilities), contactEmail, domain, legalEntityName, website, references. Avatar/logo upload immediate-commit. References gate delete via `ConfirmationDialog` per FR-025.
+- [ ] T063 [P] [US8] Add Vitest unit tests at `src/main/crdPages/topLevelPages/organizationPages/settings/profile/__tests__/useOrgProfileTabData.test.ts` mirroring the User Profile hook tests for the Org-specific field set. Includes Email format live validation and required-field empty checks (Display Name + Description).
+- [ ] T064 [US8] Implement `OrgProfileTabView` at `src/crd/components/organization/settings/OrgProfileTabView.tsx`. Same two-column layout as User Profile. Sections in order: Identity (Display Name, Name ID read-only, Tagline), About (Description, City+Country, Tags), Contact & Legal (Contact Email, Domain, Legal Entity Name, Website), Social Links / References. Avatar column on the right with logo + Change Logo button. Verified badge rendered alongside the avatar via `OrgVerifiedBadge` (T012).
+- [ ] T065 [US8] Implement `CrdOrgProfileTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/profile/CrdOrgProfileTab.tsx`. Wires `useOrganizationProvider` + `useUpdateOrganizationMutation` → mapper → hook → view. `useTransition` wraps `onSaveSection`.
+- [ ] T066 [US8] Add Org Profile keys: `org.profile.*` mirroring `user.profile.*` plus Org-specific fields (`nameID.label` + caption "Cannot be changed after creation"; `contactEmail.label`; `domain.label`; `legalEntityName.label`; `website.label`; `verification.{verified, pending, notVerified}`). Translate.
+- [ ] T066a [P] [US8] Update `contracts/tab-orgProfile.ts` to mirror the new per-section shape from `tab-userProfile.ts` (sections + EditableSectionProps + ReferencesSectionProps + PendingReferenceDeleteProps + the Org-specific Identity / About / Contact & Legal section keys + the read-only Verified badge slot). Drop any pre-clarification per-field types.
 
-- [ ] T094 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgProfileAvatarColumn.tsx` per `OrgAvatarColumnProps` — same shape as User MyProfileAvatarColumn
-- [ ] T095 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgVerifiedBadge.tsx` per `OrgVerifiedBadgeProps` — three states (Verified / Pending / NotVerified) with appropriate `lucide-react` icons (CheckCircle2 / Clock / Shield) and i18n labels. Read-only — no edit affordance (FR-094)
-- [ ] T096 [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgProfileView.tsx` per `OrgProfileViewProps`. Two-column layout on `lg+` (form on the left, logo + verified badge on the right). Four subsections (`Identity`, `About`, `Contact & Legal`, `Social Links`), each with the icon + bottom-bordered title treatment from `SettingsCard`. Renders the EditableField instances passed via props. Depends on T015–T021, T094, T095
-
-### Integration
-
-- [ ] T097 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/useOrgProfileFields.ts` — for each editable field on the form, owns the `EditableFieldStatus` state and exposes `onEnterEdit / onSave / onCancel` callbacks. The `onSave` of each field fires a single targeted `useUpdateOrganizationMutation` call that preserves the rest of the org payload. Implements the state machine ownership for: `displayName`, `tagline`, `description` (markdown), `city`, `country`, `tags`, `contactEmail`, `domain`, `legalEntityName`, `website`. Excludes `nameID` (read-only after creation, FR-091)
-- [ ] T098 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/useOrgTagsetSave.ts` — same shape as `useUserTagsetSave.ts`, using `organization.profile.tagsets`
-- [ ] T099 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/useOrgReferenceCrud.ts` — same shape as `useUserReferenceCrud.ts`, using `organization.profile.references`
-- [ ] T100 [P] [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/useOrgAvatarUpload.ts` — same shape as `useUserAvatarUpload.ts`, using the org logo upload mutation
-- [ ] T101 [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/orgProfileMapper.ts` — pure function mapping `useOrganizationProvider` results + the four hooks above into the full `OrgProfileViewProps` object. Resolves `verifiedBadge.status` from `organization.verification.status` mapping to `'Verified'` / `'Pending'` / `'NotVerified'`
-- [ ] T102 [US8] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/CrdOrgProfilePage.tsx` — composes the four hooks + the mapper, renders `<SettingsShell>` with `<OrgProfileView>` inside. Depends on T096, T097, T098, T099, T100, T101
-- [ ] T103 [US8] Wire the `profile` route in `CrdOrgSettingsRoutes.tsx` (T028) → `<CrdOrgProfilePage />`. Depends on T102
-
-### Tests
-
-- [ ] T104 [P] [US8] Unit-test `orgProfileMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/profile/orgProfileMapper.test.ts`: handles missing optional fields (no contactEmail, no domain, no legalEntityName, no website); recognized references (LinkedIn, Bluesky, GitHub) sort to `socialLinks.recognized`; arbitrary references end up in `socialLinks.arbitrary`; `verifiedBadge.status` resolves correctly for each `OrganizationVerificationEnum` value; `nameID` is rendered read-only
-
-### Manual smoke
-
-- [ ] T105 [US8] Run quickstart.md "User Story 8" smoke checklist
-
-**Checkpoint**: User Story 8 complete — Org Profile editable end-to-end.
+**Checkpoint**: Org Profile tab fully functional with the same per-section save UX as User Profile. Verification badge renders read-only.
 
 ---
 
-## Phase 11: User Story 9 — Org Account Tab (Priority: P1)
+## Phase 11: User Story 9 — Org Account (Priority: P1)
 
-**Goal**: `/organization/<orgSlug>/settings/account` renders the four card groups for the org's account (sourced from `useOrganizationAccountQuery`).
+**Goal**: Migrate Org Account (`/organization/:orgSlug/settings/account`) — same shared `ContributorAccountView` (T010) consumed with org-specific data and labels (FR-100 / FR-103).
 
-**Independent Test**: Per quickstart.md "User Story 9".
+**Independent Test**: With CRD on, open `/organization/<orgSlug>/settings/account`. Same four card groups as User Account, populated with the org's resources. Empty-states identical to User Account.
 
-### Integration
+- [ ] T067 [P] [US9] Implement `orgAccountMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/settings/account/orgAccountMapper.ts`. Uses `useOrganizationAccountQuery` → `account.id` → `useAccountInformationQuery({accountId})`. Maps to the same row shape as `userAccountMapper`.
+- [ ] T068 [US9] Implement `CrdOrgAccountTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/account/CrdOrgAccountTab.tsx`. Same callback wiring as `CrdUserAccountTab` (T034) — navigates to existing MUI admin routes for create / manage / delete.
+- [ ] T069 [US9] Add Org Account keys: `org.account.*` mirroring `user.account.*`. Reuse the shared empty-state copy from `shared.*` where possible (FR-142). Translate.
 
-- [ ] T106 [P] [US9] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/account/useOrgAccountActions.ts` — same shape as `useUserAccountActions.ts`, exposing the same callback set. Each callback navigates to the corresponding existing MUI admin route
-- [ ] T107 [P] [US9] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/account/orgAccountMapper.ts` — pure function mapping `useOrganizationAccountQuery({ organizationId })` + `useAccountInformationQuery({ accountId: org.account.id })` + the action callbacks into the shared `ContributorAccountViewProps` shape
-- [ ] T108 [US9] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/account/CrdOrgAccountPage.tsx` composing the hook + mapper + `<ContributorAccountView>` (T023). Depends on T023, T106, T107
-- [ ] T109 [US9] Wire the `account` route in `CrdOrgSettingsRoutes.tsx`. Depends on T108
-
-### Tests
-
-- [ ] T110 [P] [US9] Unit-test `orgAccountMapper` at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/account/orgAccountMapper.test.ts`: same property assertions as the user-account-mapper test (privilege gating, empty lists, kebab discriminated-union); plus assert the org's `displayName` is used as `accountHostName`
-
-### Manual smoke
-
-- [ ] T111 [US9] Run quickstart.md "User Story 9" smoke checklist
-
-**Checkpoint**: User Story 9 complete.
+**Checkpoint**: Org Account tab functional with the shared view. Per-actor mappers verified to feed correct data.
 
 ---
 
-## Phase 12: User Story 10 — Org Community (Associates) Tab (Priority: P1)
+## Phase 12: User Story 10 — Org Community (Priority: P1)
 
-**Goal**: `/organization/<orgSlug>/settings/community` renders the role-assignment view for the `Associate` role (current associates + available users with add/remove).
+**Goal**: Migrate Org Community (`/organization/:orgSlug/settings/community`) — Associates list with Add (+) immediate, Remove (×) gated by `ConfirmationDialog` per Rule #9 (Q2 / FR-112).
 
-**Independent Test**: Per quickstart.md "User Story 10".
+**Independent Test**: With CRD on, open `/organization/<orgSlug>/settings/community`. Search "Maria" → available filters. Click + on a user → moves immediately (no dialog). Click × on an associate → confirmation dialog with "Remove {{name}} as Associate" → Confirm → removed.
 
-### CRD presentational components
+- [ ] T070 [P] [US10] Implement `orgCommunityMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/settings/community/orgCommunityMapper.ts`. Maps `useRoleSetManager({roleSetId, relevantRoles: [Associate], contributorTypes: [User], fetchContributors: true})` + `useRoleSetAvailableUsers({...})` to the view's two-column row shape.
+- [ ] T071 [US10] Implement `useOrgAssociates` at `src/main/crdPages/topLevelPages/organizationPages/settings/community/useOrgAssociates.ts`. Wraps the role-set hooks; exposes `onAdd(userId)` (immediate), `onRequestRemove(userId)` / `onConfirmRemove` / `onCancelRemove` (Q2 / Rule #9), `onSearchChange`, `onLoadMore`.
+- [ ] T072 [P] [US10] Add Vitest unit tests at `src/main/crdPages/topLevelPages/organizationPages/settings/community/__tests__/useOrgAssociates.test.ts` covering: add fires immediately; remove → request → confirm fires `removeRoleFromUser`; remove → request → cancel does NOT fire; search filtering pass-through; load-more pagination.
+- [ ] T073 [US10] Implement `OrgCommunityTabView` at `src/crd/components/organization/settings/OrgCommunityTabView.tsx`. Composes `RoleAssignmentView` (T011) with the Associate role label and the role-aware confirm copy ("Remove {{name}} as Associate"). Empty-state per FR-018 (muted caption when current Associates list or available list is empty).
+- [ ] T074 [US10] Implement `CrdOrgCommunityTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/community/CrdOrgCommunityTab.tsx`. Wires data + hook + view; the `ConfirmationDialog` open state is owned by `useOrgAssociates`'s `pendingRemoveId`.
+- [ ] T075 [US10] Add Org Community keys: `org.community.{title, searchPlaceholder, currentAssociatesTitle, availableUsersTitle, removeDialogTitle, removeDialogBody, removeConfirmAssociate, errorToast}`. Translate.
+- [ ] T075a [P] [US10] Update `contracts/tab-orgCommunity.ts` to add the `pendingRemoveId` state field + `onConfirmRemove` / `onCancelRemove` / `onRequestRemove` callback triple per Q2 / Rule #9.
 
-- [ ] T112 [US10] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgCommunityView.tsx` per `OrgCommunityViewProps`. Wraps the shared `<RoleAssignmentView>` (T024) for the Associate role. Depends on T024
-
-### Integration
-
-- [ ] T113 [P] [US10] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/community/useOrgAssociates.ts` — wraps `useRoleSetManager({ roleSetId, relevantRoles: [Associate], contributorTypes: [User], fetchContributors: true })` + `useRoleSetAvailableUsers({ roleSetId, mode: 'platform', role: Associate, filter: searchTerm, usersAlreadyInRole })`. Exposes the `RoleAssignmentViewProps` shape. Add/remove fire `assignRoleToUser(userId, Associate)` / `removeRoleFromUser(userId, Associate)` immediately on click
-- [ ] T114 [P] [US10] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/community/orgCommunityMapper.ts` — pure function combining the hook output into `OrgCommunityViewProps`
-- [ ] T115 [US10] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/community/CrdOrgCommunityPage.tsx`. Depends on T112, T113, T114
-- [ ] T116 [US10] Wire the `community` route in `CrdOrgSettingsRoutes.tsx`. Depends on T115
-
-### Manual smoke
-
-- [ ] T117 [US10] Run quickstart.md "User Story 10" smoke checklist
-
-**Checkpoint**: User Story 10 complete.
+**Checkpoint**: Org Community tab functional. Add / Remove parity with current MUI behavior (now with destructive confirm dialog on Remove).
 
 ---
 
-## Phase 13: User Story 11 — Org Authorization Tab (Priority: P1)
+## Phase 13: User Story 11 — Org Authorization (Priority: P1)
 
-**Goal**: `/organization/<orgSlug>/settings/authorization` renders two sub-tabs (Admin / Owner) each wrapping the role-assignment view.
+**Goal**: Migrate Org Authorization (`/organization/:orgSlug/settings/authorization`) — two sub-tabs (Admin / Owner) in local React state, each sharing the same `RoleAssignmentView` with role-aware destructive confirmation copy.
 
-**Independent Test**: Per quickstart.md "User Story 11".
+**Independent Test**: With CRD on, open `/organization/<orgSlug>/settings/authorization`. Default sub-tab Admin. Switch to Owner — shows Owner list. Click + on Admin sub-tab — immediate add. Click × on an Owner — confirmation dialog with "Remove {{name}} as Owner" → Confirm → removed.
 
-### CRD presentational components
+- [ ] T076 [P] [US11] Implement `orgAuthorizationMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/settings/authorization/orgAuthorizationMapper.ts`. Maps role-set data for both Admin and Owner sub-tabs to two `RoleAssignmentView`-shaped prop sets.
+- [ ] T077 [US11] Implement `useOrgRoleAssignment` at `src/main/crdPages/topLevelPages/organizationPages/settings/authorization/useOrgRoleAssignment.ts`. Parameterized by `role: 'Admin' | 'Owner'`. Same shape as `useOrgAssociates` (Q2 / Rule #9 confirmation flow per role).
+- [ ] T078 [P] [US11] Add Vitest unit tests at `src/main/crdPages/topLevelPages/organizationPages/settings/authorization/__tests__/useOrgRoleAssignment.test.ts` covering both roles' add/remove flows including the role-specific confirmation copy.
+- [ ] T079 [US11] Implement `OrgAuthorizationTabView` at `src/crd/components/organization/settings/OrgAuthorizationTabView.tsx`. Sub-tab strip (`useState<'Admin' | 'Owner'>('Admin')`, no URL sync per FR-120). Each sub-tab body composes `RoleAssignmentView` with the role-aware confirm label. Sub-tab strip keyboard-navigable per FR-152.
+- [ ] T080 [US11] Implement `CrdOrgAuthorizationTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/authorization/CrdOrgAuthorizationTab.tsx`. Two `useOrgRoleAssignment` hook instances (one per role); their dialogs render at the page level.
+- [ ] T081 [US11] Add Org Authorization keys: `org.authorization.{title, adminTabLabel, ownerTabLabel, removeConfirmAdmin, removeConfirmOwner}`. Translate.
+- [ ] T081a [P] [US11] Update `contracts/tab-orgAuthorization.ts` to add per-role `pendingRemoveId` state + the confirm/cancel callback triple per Q2 / Rule #9.
 
-- [ ] T118 [US11] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgAuthorizationView.tsx` per `OrgAuthorizationViewProps`. Renders the Admin/Owner sub-tab strip (uses CRD `tabs.tsx` primitive at the inner level) + the active sub-tab's `<RoleAssignmentView>`. Active sub-tab is held in a `useState('admin')` inside the integration page (no URL sync). Depends on T024
-
-### Integration
-
-- [ ] T119 [P] [US11] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/authorization/useOrgRoleAssignment.ts` — parameterized by `RoleName` (`Admin` or `Owner`). Wraps `useRoleSetManager` + `useRoleSetAvailableUsers` for the given role. Two instances are used by the page — one per sub-tab
-- [ ] T120 [P] [US11] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/authorization/orgAuthorizationMapper.ts` — pure function combining the two hook outputs into `OrgAuthorizationViewProps`
-- [ ] T121 [US11] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/authorization/CrdOrgAuthorizationPage.tsx`. Holds the `activeSubTab` local state. Depends on T118, T119, T120
-- [ ] T122 [US11] Wire the `authorization` route in `CrdOrgSettingsRoutes.tsx`. Depends on T121
-
-### Manual smoke
-
-- [ ] T123 [US11] Run quickstart.md "User Story 11" smoke checklist
-
-**Checkpoint**: User Story 11 complete.
+**Checkpoint**: Org Authorization tab functional with two sub-tabs and role-aware Remove confirmations per Rule #9.
 
 ---
 
-## Phase 14: User Story 12 — Org Settings Tab (Priority: P1)
+## Phase 14: User Story 12 — Org Settings (Priority: P1)
 
-**Goal**: `/organization/<orgSlug>/settings/settings` renders two switches (domain-membership + contribution-roles-public).
+**Goal**: Migrate Org Settings (`/organization/:orgSlug/settings/settings`) — two switches (`allowUsersMatchingDomainToJoin`, `contributionRolesPubliclyVisible`) committed via `updateOrganizationSettings`. NO Design System toggle on this tab (FR-132).
 
-**Independent Test**: Per quickstart.md "User Story 12".
+**Independent Test**: With CRD on, open `/organization/<orgSlug>/settings/settings`. Flip both switches — each persists. Hard-failure on either: switch reverts + toast (FR-133).
 
-### CRD presentational components
+- [ ] T082 [P] [US12] Implement `orgSettingsMapper.ts` at `src/main/crdPages/topLevelPages/organizationPages/settings/settings/orgSettingsMapper.ts`. Maps `useOrganizationSettingsQuery` data to the view's two switch values.
+- [ ] T083 [US12] Implement `OrgSettingsTabView` at `src/crd/components/organization/settings/OrgSettingsTabView.tsx`. Single card containing the two `Switch`es + descriptive copy for each. NO Design System toggle (FR-132).
+- [ ] T084 [US12] Implement `CrdOrgSettingsTab` at `src/main/crdPages/topLevelPages/organizationPages/settings/settings/CrdOrgSettingsTab.tsx`. `onToggle` wraps `useUpdateOrganizationSettingsMutation`. On hard failure: switch reverts + inline toast (FR-133).
+- [ ] T085 [US12] Add Org Settings keys: `org.settings.{title, allowDomainLabel, allowDomainCaption, contributionRolesLabel, contributionRolesCaption, errorToast}`. Translate.
 
-- [ ] T124 [US12] Create `/home/carlos/DEV/Alkemio/client-web-097/src/crd/components/organization/settings/tabs/OrgSettingsView.tsx` per `OrgSettingsViewProps`. `SettingsCard` wrapper containing two `OrgSettingsSwitchRow`s. **No Design System toggle here** (FR-132)
-
-### Integration
-
-- [ ] T125 [P] [US12] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/settings/useOrgDomainMembershipToggle.ts` — wraps `useUpdateOrganizationSettingsMutation` for `settings.membership.allowUsersMatchingDomainToJoin`. On failure, reverts the switch to its prior state and surfaces an inline toast (FR-133)
-- [ ] T126 [P] [US12] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/settings/useOrgContributionRolesToggle.ts` — same shape, for `settings.privacy.contributionRolesPubliclyVisible`
-- [ ] T127 [P] [US12] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/settings/orgSettingsMapper.ts` — pure function combining the two hooks into `OrgSettingsViewProps`
-- [ ] T128 [US12] Create `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/settings/CrdOrgSettingsPage.tsx`. Depends on T124, T125, T126, T127
-- [ ] T129 [US12] Wire the `settings` route in `CrdOrgSettingsRoutes.tsx`. Depends on T128
-
-### Manual smoke
-
-- [ ] T130 [US12] Run quickstart.md "User Story 12" smoke checklist
-
-**Checkpoint**: User Story 12 complete — every settings tab in the contributor vertical is reachable in CRD with parity to MUI for every action.
+**Checkpoint**: Org Settings tab functional. Both switches commit immediately with revert-on-failure UX.
 
 ---
 
 ## Phase 15: Polish & Cross-Cutting Concerns
 
-**Purpose**: i18n completeness, authorization integration tests, lint, bundle delta, end-to-end smoke.
+**Purpose**: End-to-end validation, bundle-size verification, lint/test gates, accessibility audit, route smoke tests, and the per-tab smoke checklist from `quickstart.md`.
 
-### i18n + accessibility
-
-- [ ] T131 [P] Translate every key in `contributorSettings.en.json` (T003) to Dutch in `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.nl.json`
-- [ ] T132 [P] Translate to Spanish in `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.es.json`
-- [ ] T133 [P] Translate to Bulgarian in `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.bg.json`
-- [ ] T134 [P] Translate to German in `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.de.json`
-- [ ] T135 [P] Translate to French in `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/contributorSettings.fr.json`
-- [ ] T136 Add an i18n key-parity Vitest at `/home/carlos/DEV/Alkemio/client-web-097/src/crd/i18n/contributorSettings/__tests__/keyParity.test.ts` — asserts every language file has the exact same key shape as the English source. Depends on T131–T135
-- [ ] T137 [P] Run an `axe` accessibility scan against each CRD settings tab on the running dev server (all 7 user tabs + all 5 org tabs) and fix any critical / serious violations (SC-006). Document results in the PR description
-
-### Authorization integration tests
-
-- [ ] T138 [P] Add a User route-guard integration test at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.test.tsx`: a non-owner non-admin viewer hitting `/user/<other>/settings/profile` is redirected to `/user/<other>` within one render cycle (SC-008); an admin viewer hitting the same URL renders the settings shell; an admin hitting `/user/<other>/settings/security` is redirected to `/user/<other>/settings/profile` (FR-084)
-- [ ] T139 [P] Add an Org route-guard integration test at `/home/carlos/DEV/Alkemio/client-web-097/src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.test.tsx`: a viewer without `Update` privilege hitting `/organization/<slug>/settings/profile` is redirected to `/organization/<slug>` within one render cycle (SC-009); a viewer with `Update` privilege renders the settings shell
-
-### Cleanup, lint, bundle
-
-- [ ] T140 Run `pnpm lint` from `/home/carlos/DEV/Alkemio/client-web-097/` and fix all reported issues (Biome / ESLint / TypeScript)
-- [ ] T141 Run `pnpm vitest run` and confirm all tests pass (T009, T011, T016, T039, T045, T056, T065, T077, T078, T079, T104, T110, T136, T138, T139)
-- [ ] T142 Run `pnpm analyze` and verify the combined delta of the User-settings + Org-settings chunks is ≤ +50 KB gzipped over the previous build (SC-007). If not, document any unavoidable budget overrun in the PR description with mitigation plan
-- [ ] T143 [P] Sweep every new file under `src/crd/components/contributor/settings/`, `src/crd/components/user/settings/`, `src/crd/components/organization/settings/`, `src/crd/i18n/contributorSettings/`, `src/main/crdPages/topLevelPages/userPages/settings/`, and `src/main/crdPages/topLevelPages/organizationPages/settings/` to confirm no `@mui/*`, `@emotion/*`, or generated GraphQL types leak through view imports (FR-006 / FR-007). Run `grep -rln '@mui\|@emotion\|@/core/apollo/generated' src/crd/components/contributor/settings src/crd/components/user/settings src/crd/components/organization/settings src/main/crdPages/topLevelPages/userPages/settings src/main/crdPages/topLevelPages/organizationPages/settings`; expected output: only mappers (`*Mapper.ts`) may show `@/core/apollo/generated`
-- [ ] T144 [P] Sweep all CRD settings components for explicit `aria-label` on every icon-only button (Save, ×, kebabs, trash, file-pick, +/× role-assignment buttons) per FR-150
-
-### Final validation
-
-- [ ] T145 Run the full quickstart.md smoke checklist end-to-end: every user story (US1–US12), every authorization variant (own / admin-other / non-admin-other / anonymous; org-admin / non-admin / anonymous), every CRD-on/off toggle path. Capture any regressions as bugs to fix before merge
-- [ ] T146 Confirm Success Criteria SC-001 through SC-010 from spec.md hold and document in PR description (90-s My Profile + Org Profile edit flows; CRD/MUI toggle reload < 3 s; 100% notifications parity; 100% URL parity; zero critical/serious axe issues; ≤ +50 KB bundle delta; non-admin redirects within one render cycle for both actors; role-assignment network-parity)
-
-**Checkpoint**: All 12 user stories complete, validated, and ready for merge alongside sibling spec 096-crd-user-pages.
+- [ ] T086 [P] Run `pnpm lint` at the repo root and resolve any TypeScript / Biome / ESLint errors in the new files.
+- [ ] T087 [P] Run `pnpm vitest run` and ensure all new tests pass alongside the existing suite (target completion ~9 s per CLAUDE.md).
+- [ ] T088 Run `pnpm analyze` and verify the combined gzipped bundle delta across the two new lazy-loaded settings chunks (User Settings + Org Settings) does NOT exceed +50 KB over the prior build (SC-007). Log the chunk sizes in this task's notes for the PR description.
+- [ ] T089 [P] Add an automated cross-actor route smoke test at `src/main/routing/__tests__/crdContributorSettingsRoutes.test.tsx` per SC-005: with the CRD toggle ON, mount each of the 12 settings URLs against a `MockedProvider` (Apollo) feeding minimal seeded fixtures, and assert each tab's `Crd<Actor><Tab>Tab` chunk loads without throwing. Reuse fixtures from the per-tab unit-test files.
+- [ ] T090 [P] Add an automated CRD-off route smoke test at `src/main/routing/__tests__/crdContributorSettingsToggleOff.test.tsx`: with `localStorage` unset, the same 12 URLs MUST resolve to the existing MUI `UserAdminRoute` / `OrganizationAdminRoutes` modules.
+- [ ] T091 Run an axe / Lighthouse accessibility pass on each of the 12 CRD settings tabs. Fix any critical or serious violations (SC-006; FR-150 / FR-151 / FR-152 / FR-153). Verify keyboard navigation across both tab strips and the Authorization sub-tab strip.
+- [ ] T092 Execute the manual smoke checklist in `specs/097-crd-user-settings/quickstart.md` end-to-end (all 12 tabs × authorization variants × CRD-on / CRD-off) against `localhost:3001`. Record any deviations as bug tasks before merge. **Note**: quickstart.md still contains pre-clarification language (per-field pencil/check/× references; "User My Profile" name); update it as part of T096 below.
+- [ ] T093 [P] Verify the parity matrix per actor (SC-008 / SC-009 / SC-010): User — 4 viewer categories × every tab; Org — Update vs. no-Update × every tab. Capture network logs on Community + Authorization parity test cases (SC-010).
+- [ ] T094 [P] Verify SC-001 (User Profile full-edit flow under 90 s) and SC-002 (Org Profile under 90 s) with a stopwatch. SC-003 (Design System toggle reload under 3 s) on each supported browser.
+- [ ] T095 [P] Verify SC-004 (Notifications row-by-row checklist comparison MUI vs CRD — every group/property/channel present and functionally identical).
+- [ ] T096 Update `quickstart.md` to reflect the post-clarification model: rename "User My Profile" → "User Profile"; replace per-field pencil/check/× language with per-section Save button + "Saved!" flash; add a confirmation-dialog smoke step for reference deletion (User Profile + Org Profile) and role removal (Org Community + Org Authorization); add a hard-failure smoke step for Notifications + Org Settings revert + toast.
+- [ ] T097 Delete the stale `contracts/editable-field.ts` once `tab-orgProfile.ts` has been rewritten (T066a) and no consumer imports from it. Verify with `grep -rn "EditableFieldShellProps\|EditableFieldStatus" src/` returns no results.
 
 ---
 
@@ -465,56 +306,102 @@ description: "Implementation tasks for CRD Contributor Settings (12 settings tab
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately. T001 must precede T002. T003–T006 are parallel siblings.
-- **Foundational (Phase 2)**: Depends on Setup completion. Internally:
-  - T007 (verify 096 helper), T008 (User predicate), T010 (Org predicate) parallel.
-  - T009 depends on T008. T011 depends on T010.
-  - T012, T013, T014 (Shell + Strip + Card) parallel.
-  - T015 must precede T016, T017, T018, T019, T020, T021 (EditableField variants reuse the shell).
-  - T022 must precede T023.
-  - T024 has no internal deps.
-  - T026 depends on T008 + T025. T027 depends on T025. T028 depends on T010. T029 depends on T028.
-- **User Stories (Phases 3–14)**: All 12 depend on Foundational. Once Foundational is complete, all 12 stories can be developed in parallel — they touch different files.
-- **Polish (Phase 15)**: Depends on all 12 user stories being complete (translations need final keys; lint/analyze run on the merged surface; final smoke covers everything).
+- **Setup (Phase 1)**: T001 only — environment sanity check.
+- **Foundational (Phase 2)**: T002–T025 — i18n namespace, all shared CRD primitives (SettingsShell, SettingsTabStrip, SettingsCard, FieldFooter, ContributorAccountView, RoleAssignmentView, OrgVerifiedBadge), per-actor predicate hooks, route shells + access guards + tab-state hooks, both Settings pages, both `TopLevelRoutes.tsx` / `CrdOrganizationRoutes.tsx` dispatch wirings. **MUST complete before any user-story phase can finish**.
+- **User Stories (Phases 3–14)**: All depend on Foundational. Once Foundational is done, all twelve stories can proceed in parallel by 12 separate engineers.
+- **Polish (Phase 15)**: Depends on all twelve user stories completing.
+
+### Critical path within Foundational
+
+- T002, T004 (i18n namespace anchors) — must land first; T003 / T005 are [P] after them.
+- T006 (`SettingsShell`) and T007 (`SettingsTabStrip`) — no inter-dependency; both [P].
+- T009 (`FieldFooter` extracted from 045) — affects 045's `SpaceSettingsAboutView.tsx`; coordinate with 045 maintainer if active dev.
+- T010 (`ContributorAccountView`) and T011 (`RoleAssignmentView`) — independent; both [P].
+- T013–T015 (predicates + tests) — [P] after the User vertical predicate file from 096 is verified to exist.
+- T016–T019 (access guards + tab-state hooks) — [P] after T013 / T014.
+- T020 / T021 (route shells) — depend on T016 / T017 / T018 / T019 + T022 / T023.
+- T022 / T023 (settings pages) — depend on T006 + T020 / T021.
+- T024 / T025 (route dispatch) — depend on T020 / T021 + T022 / T023.
 
 ### User Story Dependencies
 
-- **US1–US12 (12 settings tabs)**: independent of each other — each tab has its own view, mapper, and route. They share Foundational primitives:
-  - All 12 share `SettingsShell` + `SettingsTabStrip` + `SettingsCard` (T012–T014).
-  - US1 + US8 share the `EditableField` family (T015–T021).
-  - US2 + US9 share `ContributorAccountView` (T023).
-  - US10 + US11 share `RoleAssignmentView` (T024).
-- All 12 stories are independently testable per the spec's "Independent Test" criteria.
+- **US1 (User Profile)**: Foundational only.
+- **US2 (User Account)**: Foundational + T010 (`ContributorAccountView`).
+- **US3, US4, US5, US6**: Foundational only.
+- **US7 (User Security)**: Foundational only — requires the existing `KratosForm` / `KratosUI` from MUI.
+- **US8 (Org Profile)**: Foundational + T009 (`FieldFooter`) + T012 (`OrgVerifiedBadge`).
+- **US9 (Org Account)**: Foundational + T010 (`ContributorAccountView`).
+- **US10 (Org Community)** / **US11 (Org Authorization)**: Foundational + T011 (`RoleAssignmentView`).
+- **US12 (Org Settings)**: Foundational only.
 
-### Parallel Opportunities
+### Within Each User Story
 
-- **Within Phase 1**: T003, T004, T005, T006 in parallel after T002 lands.
-- **Within Phase 2**: T012–T014 parallel; T017–T021 parallel after T015; T007 / T008 / T010 / T022 / T024 parallel.
-- **Across Phases 3–14**: With multiple developers, all 12 stories run in parallel after Foundational completes.
-- **Within each user-story phase**: CRD presentational components and integration hooks are parallel siblings; the per-tab page component (`Crd<Tab>Page.tsx`) and the route wiring are sequential at the end.
-- **Within Phase 15**: T131–T135 (translations) all parallel; T137, T138, T139, T143, T144 parallel.
+- Mapper (and unit test where present) before the integration page.
+- Per-tab data hook before the integration page.
+- Presentational view is independent (different file) and can be built in parallel.
+- Integration page depends on mapper + hook + view.
+- i18n keys can land in parallel with view (different files) but should land before the integration page that consumes them.
 
 ---
 
-## Parallel Example: User Story 1 (My Profile)
+## Parallel Opportunities
+
+**Foundational (Phase 2)**:
+
+- T003, T005, T006, T007, T008, T009, T010, T011, T012, T013, T014, T015, T016, T017, T018, T019 — all [P] after T002 / T004 anchor i18n namespace.
+- T020 / T021 (route shells) [P] with each other after their dependencies.
+
+**Within US1 (User Profile)**:
+
+- T026 (mapper), T028 (mapper test), T032 (translations) — independent files.
+- T029 (view), T031 (i18n keys) — different files.
+
+**Across user stories (after Foundational)**:
+
+- US1 / US2 / US3 / US4 / US5 / US6 / US7 / US8 / US9 / US10 / US11 / US12 — twelve engineers, one per story.
+
+**Polish**:
+
+- T086 (lint), T087 (tests), T089 (route on smoke), T090 (route off smoke), T093 (parity), T094 (SC-001..003 timing), T095 (notifications parity) — all [P].
+
+---
+
+## Parallel Example: Foundational Phase
 
 ```bash
-# Foundational primitives (Phase 2) already complete. Now launch in parallel:
-Task: "Create useUserMyProfileFields.ts (T032)"
-Task: "Create useUserTagsetSave.ts (T033)"
-Task: "Create useUserReferenceCrud.ts (T034)"
-Task: "Create useUserAvatarUpload.ts (T035)"
-Task: "Create MyProfileAvatarColumn.tsx (T030)"
+# Once T002 + T004 are done, the rest of Phase 2 can run in parallel:
+Task: "T003 [P] Create five non-English language file placeholders"
+Task: "T005 [P] Add Vitest key-parity assertion"
+Task: "T006 [P] Implement SettingsShell"
+Task: "T007 [P] Implement SettingsTabStrip"
+Task: "T008 [P] Implement SettingsCard"
+Task: "T009 [P] Extract FieldFooter to common"
+Task: "T010 [P] Implement ContributorAccountView"
+Task: "T011 [P] Implement RoleAssignmentView"
+Task: "T012 [P] Implement OrgVerifiedBadge"
+Task: "T013 [P] Implement useCanEditUserSettings"
+Task: "T014 [P] Implement useCanEditOrganizationSettings"
+Task: "T015 [P] Add canEditPredicates Vitest tests"
+Task: "T016..T019 [P] Implement access guards + tab-state hooks"
+```
 
-# After all five complete, sequentially:
-Task: "Create MyProfileView.tsx (T031)"
-Task: "Create userMyProfileMapper.ts (T036)"
-Task: "Create CrdUserMyProfilePage.tsx (T037)"
-Task: "Wire profile route (T038)"
+## Parallel Example: Twelve User Stories at Once
 
-# Then in parallel:
-Task: "Unit-test userMyProfileMapper (T039)"
-Task: "Run smoke per quickstart (T040)"
+```bash
+# Once Foundational is done, twelve engineers can pick up one story each:
+Engineer A:  T026..T032   (Phase 3 — User Story 1: User Profile)  🎯 MVP
+Engineer B:  T033..T035   (Phase 4 — User Story 2: User Account)
+Engineer C:  T036..T041   (Phase 5 — User Story 3: User Membership)
+Engineer D:  T042..T045   (Phase 6 — User Story 4: User Organizations)
+Engineer E:  T046..T051   (Phase 7 — User Story 5: User Notifications)
+Engineer F:  T052..T055   (Phase 8 — User Story 6: User Settings)
+Engineer G:  T056..T060   (Phase 9 — User Story 7: User Security)
+Engineer H:  T061..T066a  (Phase 10 — User Story 8: Org Profile)
+Engineer I:  T067..T069   (Phase 11 — User Story 9: Org Account)
+Engineer J:  T070..T075a  (Phase 12 — User Story 10: Org Community)
+Engineer K:  T076..T081a  (Phase 13 — User Story 11: Org Authorization)
+Engineer L:  T082..T085   (Phase 14 — User Story 12: Org Settings)
+# All twelve merge into a shared integration branch; T024 / T025 (TopLevelRoutes / CrdOrganizationRoutes dispatch) coordinated as a single merge.
 ```
 
 ---
@@ -523,43 +410,43 @@ Task: "Run smoke per quickstart (T040)"
 
 ### MVP First (User Story 1 only)
 
-1. Complete Phase 1: Setup.
-2. Complete Phase 2: Foundational — every shared CRD primitive + the route shell + the conditional in `TopLevelRoutes.tsx` + the conditional in `CrdOrganizationRoutes.tsx`.
-3. Complete Phase 3: User Story 1 (User My Profile).
-4. **STOP and VALIDATE**: smoke-test User My Profile per quickstart.md US1.
-5. With User Story 1 in place, the other 11 tabs are routed but not yet implemented. Keep the localStorage toggle OFF in production until Phase 14 completes; only enable it for developer / QA validation per phase.
+1. Complete Phase 1: Setup (T001).
+2. Complete Phase 2: Foundational (T002–T025). **CRITICAL — blocks all stories**.
+3. Complete Phase 3: User Story 1 — User Profile (T026–T032).
+4. **STOP and VALIDATE**: Run the User Profile portion of the smoke checklist; confirm spec.md User Story 1 acceptance scenarios 1–8 pass; confirm CRD-off renders the existing MUI page unchanged.
+5. Demo the User Profile in CRD. Hold the remaining 11 stories for the next iteration if scope pressure mounts.
 
-### Incremental Delivery (per the spec's "ship together" rule)
+### Incremental Delivery
 
-The spec explicitly says all 7 user tabs ship together (FR-001) and all 5 org tabs ship together (FR-002), and they ship together with the public profiles (sibling spec 096). The phases above are organized so each user story is independently testable and demonstrable, but the PR that merges to `develop` should land all 12 (and 096's 3 stories) at once. Use the `alkemio-crd-enabled` localStorage toggle to gate developer / QA testing along the way:
-
-1. Land Phase 1 + Phase 2 in a feature branch — toggle stays OFF for everyone except devs.
-2. Land each user-story phase in sequence (or in parallel if multiple devs are working). After each, smoke-test under the toggle locally.
-3. Once Phase 14 is complete and Phase 15 polish passes, open the PR for review (combined with the 096 PR if working off a single feature branch).
-4. Merge with the toggle still default OFF — validation in production is gated to opted-in users until ramp-up.
+1. Setup + Foundational → foundation ready.
+2. Add US1 (User Profile) → smoke pass → demo (MVP).
+3. Add the remaining User-side tabs (US2 → US7) → smoke pass at each step.
+4. Add the Org-side tabs (US8 → US12).
+5. Polish (Phase 15).
 
 ### Parallel Team Strategy
 
-With multiple developers:
+With 4–12 developers:
 
-1. Team completes Phase 1 + Phase 2 together (two or three devs; mostly parallel within Foundational). The **[SHARED-096]** tasks are coordinated with the 096 work stream.
-2. Once Foundational is done, the 12 stories are split among developers (any combination — they're independent):
-   - Developer A: US1 (User My Profile — the largest tab) + US8 (Org Profile — uses the same primitives)
-   - Developer B: US2 + US9 (User Account + Org Account — share `ContributorAccountView`)
-   - Developer C: US3 + US4 (User Membership + User Organizations)
-   - Developer D: US5 (User Notifications — second largest tab)
-   - Developer E: US6 + US7 (User Settings + User Security)
-   - Developer F: US10 + US11 (Org Community + Org Authorization — share `RoleAssignmentView`) + US12 (Org Settings)
-3. Stories complete and integrate independently; final cross-cutting Polish phase runs on the combined surface.
+1. Team completes Setup + Foundational together (or one developer leads it while others read the spec).
+2. Once Foundational is done, parallelize per the "Parallel Example: Twelve User Stories at Once" block above.
+3. Coordinate `TopLevelRoutes.tsx` (T024) and `CrdOrganizationRoutes.tsx` (T025) edits — assign a merge order or merge into a shared integration branch.
+4. Polish phase runs after all stories merge.
+
+### Ship Coupling (with sibling spec 096-crd-user-pages)
+
+- This spec ships together with sibling spec `096-crd-user-pages` as one contributor-vertical CRD release.
+- 096 already added `useUserPageRouteContext`, `useCanEditSettings` (User-side predicate base), `CrdUserRoutes.tsx`, and `CrdOrganizationRoutes.tsx`. This spec extends those: T013 renames / aliases the User-vertical predicate as `useCanEditUserSettings`; T024 adds the User Settings dispatch into `TopLevelRoutes.tsx`; T025 extends `CrdOrganizationRoutes.tsx`'s existing `settings/*` route to gate via `useCrdEnabled()`.
 
 ---
 
 ## Notes
 
-- **Tests included**: pure mapper unit tests (T039, T045, T056, T065, T077, T104, T110); the `EditableField` state-driven rendering (T016); `useCanEditUserSettings` predicate (T009); `useCanEditOrganizationSettings` predicate (T011); `useNotificationToggle` optimistic-overrides (T078); push-availability gating (T079); i18n key parity (T136); authorization route-guard integration tests for both User (T138) and Org (T139). No per-tab functional UI tests — manual smoke per quickstart.md (precedent from 091/045/096).
-- **[P] tasks** = different files, no dependencies on incomplete tasks.
-- **[Story] label** maps each task to a specific user story for traceability — Setup, Foundational, and Polish phases have NO story label. Tasks shared across two stories carry both labels (e.g., `[US10 US11]` on `RoleAssignmentView`).
-- **[SHARED-096]** label flags tasks shared with sibling spec 096-crd-user-pages — implement once, both specs benefit. Coordinate with 096 work stream.
-- Each user story is independently completable and testable.
-- Verify lint + tests after each phase; commit after each task or logical group.
-- **Avoid**: vague tasks, same-file conflicts within a phase, cross-story dependencies that break independence. CRD components MUST stay free of `@mui/*` / `@emotion/*` / `@/core/apollo/generated` imports; integration mappers are the only place generated GraphQL types may surface.
+- [P] tasks = different files, no dependencies on incomplete tasks.
+- [Story] label maps each user-story task to its phase for traceability.
+- All twelve user stories are P1 and ship together. The MVP-first strategy above is a fallback if scope pressure forces a partial release; the spec's stated intent is to ship all twelve plus sibling spec 096.
+- Tests included: per-tab integration hook unit tests where the hook's logic is non-trivial (Profile per-section save state, Notifications optimistic-overrides + hard-failure revert, Membership filter / search, Role assignment confirmation flow), authorization-predicate tests, i18n key-parity test, route smoke tests.
+- No new Apollo queries / mutations / GraphQL types — every data hook in `data-model.md` already exists and is reused unchanged (FR-006).
+- The existing MUI files under `src/domain/community/{user,organization}Admin/` MUST stay in place per FR-003 / FR-005 — no deletion until the global CRD toggle is removed in a future spec.
+- Commit boundaries: one commit per task (or one commit per logical group within a story). Per CLAUDE.md, all commits must be signed.
+- Avoid: adding `useMemo` / `useCallback` / `React.memo` (React Compiler handles memoization); adding `@mui/*` or `@emotion/*` imports under `src/crd/`; importing generated GraphQL types into views; firing role-removal or reference-delete mutations without `ConfirmationDialog` first (Rule #9 / Q2 / FR-025 / FR-112 / FR-121).

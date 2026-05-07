@@ -1,47 +1,98 @@
 # Implementation Plan: CRD Contributor Settings (User + Organization)
 
-**Branch**: `097-crd-user-settings` | **Date**: 2026-05-06 | **Spec**: [spec.md](spec.md)
+**Branch**: `097-crd-user-settings` | **Date**: 2026-05-07 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/097-crd-user-settings/spec.md`
 
 ## Summary
 
-Migrate the **two contributor settings shells** — the 7-tab User shell at `/user/:userSlug/settings/*` and the 5-tab Organization shell at `/organization/:orgSlug/settings/*` — from MUI to the CRD design system, following the parallel-design-system migration pattern proven by 039 / 041 / 042 / 043 / 045 / 091 / 096. Apollo queries and mutations are completely unchanged — per-tab data mappers under each integration subtree bridge generated GraphQL types to plain CRD prop types. **No GraphQL schema change.** Both shells are gated by the existing `alkemio-crd-enabled` localStorage toggle, dispatched at two locations: `TopLevelRoutes.tsx` (for `/user/*`, jointly with sibling spec 096) and `CrdOrganizationRoutes.tsx` (which currently delegates `settings/*` unconditionally to MUI — flipped to a `useCrdEnabled()` dispatch by this spec).
+Migrate the **User Settings shell** (`/user/:userSlug/settings/{profile,account,membership,organizations,notifications,settings,security}` — 7 tabs) and the **Organization Settings shell** (`/organization/:orgSlug/settings/{profile,account,community,authorization,settings}` — 5 tabs) from the current MUI implementations (`src/domain/community/userAdmin/*`, `src/domain/community/organizationAdmin/*`) to the CRD design system (shadcn/ui + Tailwind), following the parallel-design-system migration pattern proven by 039 / 041 / 042 / 043 / 045 / 091 / 096. Apollo queries and mutations are completely untouched — per-tab data mappers under `src/main/crdPages/topLevelPages/{userPages,organizationPages}/settings/` bridge generated GraphQL types to plain CRD prop types. No GraphQL schema change. Both shells gate behind the existing `alkemio-crd-enabled` localStorage toggle dispatched via `useCrdEnabled()` — User shell from `TopLevelRoutes.tsx`, Org shell from the existing `CrdOrganizationRoutes.tsx` (extended). Both shells ship together with sibling spec `096-crd-user-pages` (the public-profile views) as one contributor-vertical CRD release: when the toggle is on, every contributor URL renders in CRD; when off, every URL renders in the existing MUI files (which stay in place).
 
-The 12 settings tabs ship together with the public profiles (sibling spec 096) as one CRD rollout cohort: when the toggle is on, the entire contributor vertical (3 public profile pages + 7 user settings tabs + 5 org settings tabs) renders in CRD; when off, the entire vertical renders in the existing MUI files. Each settings tab is an independently testable user story (P1 ×12, per the spec).
+**Save model — the central architectural choice (clarification Q4):** both Profile tabs (User Profile and Org Profile) adopt the **per-section explicit-save model** as already implemented in spec 045 About (`src/main/crdPages/topLevelPages/spaceSettings/about/` — `useAboutTabData.ts` + `SpaceSettingsAboutView.tsx` + `@/crd/components/common/InlineEditText`). Each editable section uses one `FieldFooter` containing the section's dirty indicator, Save button, and per-render status (`idle | saving | saved | error`). On success a "Saved!" indicator flashes for **1800 ms** (`SAVED_FLASH_MS` from 045) before returning to idle. On failure the section stays dirty with the user's typed values preserved + an inline error that persists until the admin edits a field in the section again — no auto-retry, no auto-revert. There are NO per-field pencil / check / × icons; the section's Save is the only commit affordance. Avatar / logo uploads commit immediately on upload completion. The earlier 5-state per-field state machine drafted in `research.md` Decision #2 is superseded by this 045-aligned model. All other settings tabs (Account, Membership, Organizations, Notifications, User Settings, Security on the User side; Account, Community, Authorization, Settings on the Org side) commit per-control on click — switches, dropdowns, table-row actions — with no Save bar anywhere in the contributor settings vertical.
 
-**Per-tab save semantics:**
+**Per-actor highlights:**
 
-- **User My Profile and Org Profile** — per-field explicit save with hover-reveal pencil affordance + check (Save) and × (Cancel) icons. No tab-wide buffer; switching tabs silently drops in-progress edits. On save failure the field stays in edit mode with the typed value preserved (FR-022 / FR-090). Org Profile uses the **same** per-field model as User My Profile — a deliberate UX divergence from current MUI's Formik-with-single-Save in `OrganizationForm`, chosen for consistency across the contributor vertical.
-- **User Account / Org Account** — per-action commit (no Save bar). Create / Manage / Delete trigger existing flows by navigating to the existing MUI admin routes (the CRD Account tabs are presentational shells + kebab dispatchers; see Architectural Note below). The CRD Account view is a **shared** component reused by both actor integrations.
-- **User Membership / Organizations / Notifications / Settings** — per-control commit on click (no Save bar). Notifications uses the optimistic-overrides pattern from current MUI.
-- **Org Community / Org Authorization** — per-action commit on click via the existing `useRoleSetManager` + `useRoleSetAvailableUsers` flows. The shared role-assignment view is reused across Community (Associate role) and the two Authorization sub-tabs (Admin / Owner).
-- **Org Settings** — per-control commit on click. Two switches: domain-membership and contribution-roles-public. **No Design System toggle here** — that toggle is User-only (viewer-scoped browser preference).
-- **User Security** — identity-provider settings flow mounted inside a CRD card shell; the rendered fields keep their default styling (out of scope to restyle this iteration).
+- **User Settings shell (7 tabs)** — sticky header (avatar + display name) + horizontal tab strip in the order **Profile / Account / Membership / Organizations / Notifications / Settings / Security** (each entry icon + uppercase label; horizontal scroll below `md`). The Security tab is hidden in the strip for non-owner viewers, and a direct hit on `/user/<other>/settings/security` by a platform admin redirects to `/user/<other>/settings/profile` (FR-012, FR-083, FR-084).
+  - Authorization predicate: `canEditUserSettings = currentUser.id === profileUser.id || hasPlatformPrivilege(PlatformAdmin)` evaluated at the shell's route boundary (FR-010). When false, redirect to the public profile owned by 096 (`/user/<slug>`). No read-only fallback.
+  - Profile tab: per-section save model (045 About pattern). Sections: Display Name, First Name, Last Name, Phone, Tagline, Bio, Tags as their own sections; Location (city + country) as one compound section; Social Links / References as one list-managed section. Avatar uploads commit on file-select. References add / edit / delete operate on the section buffer until References-section Save fires (one mutation batch — patch existing + create new + delete pending); reference deletion gates a `ConfirmationDialog` per Rule #9 (FR-025).
+  - Account tab: shared `ContributorAccountView` (consumed by both User Account and Org Account). Empty-state pattern ports `prototype/src/app/pages/UserAccountPage.tsx` per sub-section verbatim — "Create New Space" dashed inline card on Hosted Spaces, "Create New Contributor" dashed inline card on Virtual Contributors, up-to-3 "Empty Slot" placeholders on Template Packs, full empty-state with CTA + "Capacity: 0/1 Used" indicator on Custom Homepages (FR-033). Heavy create / manage / delete actions navigate to existing MUI admin routes via callback props (research §3).
+  - Membership tab: Home Space dropdown + Auto-redirect checkbox (commits via `updateUserSettings` immediately), My Memberships table (~10 rows visible, client-side search + filter, kebab → Leave with confirmation dialog), Pending Applications table (read-only). Empty-state for both tables: single muted caption line per FR-018.
+  - Organizations tab: associated organizations table with client-side search and (privilege-gated) Create Organization button. Each row's kebab → Leave with confirmation dialog. Empty-state: muted caption.
+  - Notifications tab: parity port of every group / property / channel the current MUI exposes — Push master + Push Subscriptions list, Space, Space Admin (gated), User, Platform, Platform Admin (gated), Organization (gated), Virtual Contributor cards. Toggles commit via `updateUserSettings` with the optimistic-overrides pattern (immediate UI flip, then resync after refetch). On hard failure (network error / 5xx), the switch reverts to its prior state and an inline toast surfaces the error (FR-064 — clarification Q5, parity with FR-133).
+  - Settings tab: Communication & Privacy switch (allow-other-users-message via `updateUserSettings`) and the Design System CRD/MUI toggle (writes localStorage, reloads). Design System toggle is always tied to the viewer's OWN browser localStorage (FR-073) — even a platform admin viewing another user sees their own toggle state, not the target user's preference.
+  - Security tab: identity-provider settings flow rendered via the existing `KratosForm` + `KratosUI` with the same `REMOVED_FIELDS` filter the MUI page uses (passwords / profile / OIDC link / unlink hidden). When the flow contains no WebAuthn nodes, an info alert reads "WebAuthn / Passkey is not enabled on this account". CRD only restyles the surrounding card / heading; the Kratos-rendered form fields keep their default styling.
 
-**Authorization (per-actor predicates):**
+- **Organization Settings shell (5 tabs)** — same `SettingsShell` primitive the User shell uses (Decision #9), passing 5 tabs in the order **Profile / Account / Community / Authorization / Settings**. Same responsive horizontal-scroll behavior.
+  - Authorization predicate: `canEditOrganizationSettings = organization.authorization.myPrivileges.includes(AuthorizationPrivilege.Update)` evaluated at the shell's route boundary (FR-011). When false, redirect to `/organization/<orgSlug>` (public profile owned by 096). No read-only fallback.
+  - Profile tab: per-section save model identical to User Profile (FR-090). Sections mirror the User shape — Display Name, Tagline, Description, City+Country, Tags (Keywords + Capabilities), Contact Email, Domain, Legal Entity Name, Website, Social Links / References. Verification status renders as a read-only badge (FR-094). Avatar / logo uploads commit on file-select. References gated by `ConfirmationDialog` on delete per Rule #9 (FR-025 / FR-092).
+  - Account tab: shared `ContributorAccountView` (FR-100) — same sub-sections, same prototype-faithful empty states (FR-103). Per-actor mapper feeds the org's `account.id` into the shared view.
+  - Community tab: shared `RoleAssignmentView` (Decision #5) for the `Associate` role. Two-column layout — current Associates (with a remove × per row) and available Users (with an add + per row) — backed by the existing `useRoleSetManager` + `useRoleSetAvailableUsers`. Add fires immediately on click; **remove (×) opens a `ConfirmationDialog` (destructive variant) per Rule #9 (FR-112)** with a role-aware confirm label. Pagination on available users preserved (load-more, parity with current MUI).
+  - Authorization tab: same `RoleAssignmentView` parameterized for `Admin` and `Owner` roles, exposed as two sub-tabs in local React state (no URL sync, parity with current MUI). Both sub-tabs gate remove (×) via `ConfirmationDialog` per Rule #9 (FR-121) with role-aware copy ("Remove {{name}} as Admin" / "as Owner").
+  - Settings tab: two switches — `allowUsersMatchingDomainToJoin` (membership) and `contributionRolesPubliclyVisible` (privacy). Each commits via `updateOrganizationSettings` immediately. On hard failure the switch reverts and a toast surfaces the error (FR-133). NO Design System toggle on this tab (FR-132 — viewer-scoped browser preference, User-only).
 
-- **User shell** — `canEditUserSettings = (currentUser.id === profileUser.id) || hasPlatformAdminPrivilege`. Falsy → redirect to `/user/<slug>` (public profile, sibling spec 096). No read-only mode.
-- **Org shell** — `canEditOrganizationSettings = organization.authorization.myPrivileges.includes(AuthorizationPrivilege.Update)`. Falsy → redirect to `/organization/<slug>` (public profile, sibling spec 096). No read-only mode.
-- **User Security tab** — owner only regardless of admin status (identity-provider session constraint). Hidden from the strip and the route redirects to `/user/<slug>/settings/profile` for any non-owner viewer (FR-083 / FR-084).
-- The `/user/*` route subtree continues to be wrapped by the existing `NoIdentityRedirect`; the `/organization/*` admin subtree is wrapped by the existing `NonAdminRedirect` (preserved unchanged).
+**Shared CRD primitives introduced by this spec** (all under `src/crd/components/contributor/settings/` unless noted):
+
+- `SettingsShell.tsx` — actor-agnostic shell (sticky header + tab strip + tab body slot). One shell, two consumers (Decision #9).
+- `SettingsTabStrip.tsx` — actor-agnostic horizontal tab strip with auto-scroll-into-view + keyboard navigation.
+- `SettingsCard.tsx` — wrapper card used across all per-tab content.
+- `ContributorAccountView.tsx` — shared 4-card-group view (Decision #3) consumed by User Account + Org Account; renders the prototype-faithful empty states (FR-033 / FR-103).
+- `RoleAssignmentView.tsx` — shared two-column +/× role manager (Decision #5) consumed by Org Community + Org Authorization Admin sub-tab + Org Authorization Owner sub-tab.
+- `OrgVerifiedBadge.tsx` — read-only verification status indicator (Decision #12).
+
+**Reused from 045 verbatim** (no new primitive needed):
+
+- `@/crd/components/common/InlineEditText` — single-line inline-edit text input (Display Name, First Name, Last Name, Phone, Tagline, Domain, Contact Email, Website, etc.).
+- `@/crd/forms/markdown/MarkdownEditor` — Bio / Description rich-text editor.
+- `@/crd/forms/tags-input` — Tags / Keywords / Capabilities tag editor.
+- `@/crd/components/common/CountryCombobox` — Country single-select (045 uses this).
+- The `FieldFooter` pattern from 045 About — to be extracted into `@/crd/components/common/FieldFooter.tsx` if not already shared (currently defined locally in `SpaceSettingsAboutView.tsx`).
+- The 045 dirty / status state shape (`SAVED_FLASH_MS = 1800`, `idle | saving | saved | error`) — encoded in the per-tab integration hook (`useUserProfileTabData` / `useOrgProfileTabData`), parallel to 045's `useAboutTabData`.
+
+**Reused from 096 verbatim:**
+
+- `CrdLayoutWrapper` (CRD shell + header + footer + dialogs).
+- `useCrdEnabled` localStorage toggle.
+- `CrdUserRoutes` (extended with `settings/*` subtree → `CrdUserSettingsRoutes`).
+- `CrdOrganizationRoutes` (extended with `settings/*` dispatch → `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />`).
+- `useUserPageRouteContext` + `useCanEditSettings` (User-vertical auth helpers; this spec consumes them and adds the renamed `useCanEditUserSettings` per Decision #7).
+
+**Out of scope (for this spec):**
+
+- VC settings shell (`/vc/:vcSlug/settings/*`) — explicitly deferred to a future spec. The Settings (gear) icon on the VC public-profile hero (096 FR-031) continues to link to the existing MUI VC admin shell.
+- Public profile pages (`/user/:userSlug`, `/organization/:orgSlug`, `/vc/:vcSlug`) without `/settings` — owned by sibling spec `096-crd-user-pages`.
+- New backend capabilities — no new GraphQL types, mutations, or permission semantics.
+- New affordances on Account tabs — hosted resources keep the same create / edit / delete flows the current MUI exposes.
+- Restyle of identity-provider rendered form fields inside User Security — only the surrounding shell is restyled.
+- Restyle of the existing MUI heavy-flow dialogs (Create VC / Pack / Hub) — Account-tab kebabs navigate to those.
+- Mutation of `Organization.verification.status` — read-only on the Org Profile tab; verification is managed by platform admins via a separate flow.
+- Tab-wide dirty buffer / discard-confirm dialogs — every settings tab commits per-control (or per-section on Profile tabs); switching tabs never blocks navigation.
+
+**Authorization (per-actor route wrappers preserved exactly):**
+
+- `/user/*` — wrapped by existing `<NoIdentityRedirect>`. CRD preserves this; anonymous viewers on `/user/<slug>/settings/*` are redirected to login. Shell-level redirect (FR-010) applies after auth.
+- `/organization/*` — anonymous viewers can load the public profile (parity with current MUI); the settings subtree's existing auth wrapping continues to apply.
 
 **Coupling with sibling spec `096-crd-user-pages`:**
 
-- Both specs share the same `useCrdEnabled` toggle and the same `CrdLayoutWrapper`. They are gated together — toggling CRD on flips both the public profiles and the settings shells simultaneously.
-- The shared route helpers `useUserPageRouteContext` (already added by 096), `CrdUserRoutes.tsx` (already added by 096), and `CrdOrganizationRoutes.tsx` (already added by 096) are extended by this spec — not duplicated. The Org settings dispatch in `CrdOrganizationRoutes.tsx` is the one piece that 096 deliberately stubbed (delegated to MUI) for this spec to fill in.
-- 096's existing assumption that "the Org admin shell is a future spec" is satisfied by **this** spec, expanded to also cover the User admin shell so both verticals migrate in lockstep.
+- Both specs share `useCrdEnabled`, `CrdLayoutWrapper`, `useUserPageRouteContext`, and the User-vertical `useCanEditSettings` helper. They flip together — toggling CRD on flips both the public profile views and the settings tabs simultaneously, on both User and Org verticals.
+- 096 added `CrdOrganizationRoutes.tsx` with the public-profile route; this spec extends that file's `settings/*` dispatch to choose between `CrdOrgSettingsRoutes` and `MuiOrganizationAdminRoutes` (research §1). 096 itself is not modified.
+- The 096 Settings (gear) icon click handlers (User hero / Org hero) link into URLs owned by this spec; those handlers were already wired in 096 — no change required here.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned)
-**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`, `table`, `checkbox`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD dialogs (`ConfirmationDialog` from `@/crd/components/dialogs/`). **No new runtime dependencies.**
+**Language/Version**: TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned).
+**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`, `table`, `checkbox`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD common components (`@/crd/components/common/InlineEditText`, `@/crd/components/common/CountryCombobox`, `@/crd/components/dialogs/ConfirmationDialog`). **`FieldFooter` MAY need extraction from 045's `SpaceSettingsAboutView.tsx` to `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse.** No new runtime dependencies.
 **Storage**: localStorage (`alkemio-crd-enabled`) for the CRD toggle (existing). GraphQL data layer unchanged.
-**Testing**: Vitest with jsdom (`pnpm vitest run`) — unit tests for mappers, route guards, the per-actor `canEdit*Settings` predicates, the per-field `EditableField` state machine, push-availability gating, and i18n key parity. Visual / interaction validation via `pnpm start` and manual smoke through each tab.
+**Testing**: Vitest with jsdom (`pnpm vitest run`) — unit tests for: each per-tab integration hook (Profile per-section save state machine; Notifications optimistic-override + hard-failure revert; Membership filter / search; Org Community / Authorization role assignments), the two authorization-predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`), and i18n key parity across the six languages. Visual / interaction validation via `pnpm start` and the per-tab smoke checklist in `quickstart.md`.
 **Target Platform**: Web SPA (Vite dev server on `localhost:3001`).
 **Project Type**: Web application (frontend only — no backend changes).
-**Performance Goals**: Per-field save round-trip < 3s (typical) on User My Profile and Org Profile; tab switch < 200ms; pencil-hover affordance reveal < 50ms; bundle delta on the two new lazy-loaded chunks combined ≤ +50 KB gzipped over the prior build (SC-007).
-**Constraints**: Zero `@mui/*` / `@emotion/*` imports under `src/crd/` and under either of the two integration subtrees (`src/main/crdPages/topLevelPages/userPages/settings/`, `src/main/crdPages/topLevelPages/organizationPages/settings/`). Generated GraphQL types only crossable inside per-tab mappers (FR-006). All 7 user tabs ship together; all 5 org tabs ship together (FR-001 / FR-002). All six languages (en / nl / es / bg / de / fr) edited in the same PR per the manual CRD i18n workflow.
-**Scale/Scope**: 2 settings shells (User 7-tab, Org 5-tab) sharing a generalized `SettingsShell` primitive + 12 settings tabs (each its own P1 user story) + 1 new CRD i18n namespace (`crd-contributorSettings`) + ~30 new CRD presentational components + 12 data mappers (one per tab) + ~12 existing Apollo queries / mutations reused unchanged + ~3 new shared helpers (`useCanEditUserSettings`, `useCanEditOrganizationSettings`, the shared `EditableField` wrapper family). The shared shell, the role-assignment view (used by Community + Authorization sub-tabs), and the `ContributorAccountView`-equivalent (used by both Account tabs) are all single-implementation reuses. **No new primitives required.**
+**Performance Goals**:
+- Per-section Profile save round-trip < 1 s perceived (mutation + refetch + Saved! flash). Save button exposes `aria-busy` while the mutation is pending.
+- Notifications toggle UI flip < 100 ms perceived (optimistic-overrides pattern; FR-064).
+- Tab switch < 100 ms perceived (no per-tab data prefetch; each tab's lazy chunk loads on first visit).
+- User and Org settings shells SHOULD lazy-load as separate chunks (one chunk per shell). The combined lazy-loaded chunk delta SHOULD NOT exceed +50 KB gzipped over the prior build (SC-007).
+- CRD ↔ MUI design-system reload (FR-071 / SC-003) < 3 s consistently.
+**Constraints**: Zero `@mui/*` / `@emotion/*` imports under `src/crd/components/contributor/settings/`, `src/crd/components/user/settings/`, `src/crd/components/organization/settings/`, and the per-tab integration mappers' consumers (the mappers themselves DO import generated GraphQL types — that is the only allowed crossing per FR-006). All six languages (en / nl / es / bg / de / fr) edited in the same PR per the manual CRD i18n workflow (no Crowdin). All destructive actions go through `ConfirmationDialog` per `src/crd/CLAUDE.md` Rule #9 (Org Community / Authorization removes per FR-112 / FR-121; reference deletion on Profile tabs per FR-025; Leave actions on User Membership / Organizations per FR-044 / FR-053).
+**Scale/Scope**: Two settings shells (User 7-tab + Org 5-tab) + 12 tab-body integration entry points + ~10 shared CRD presentational components + one shared CRD i18n namespace (`crd-contributorSettings`). ~25–30 new CRD presentational components total. Reuses ~20 existing Apollo queries/mutations. Two new authorization-predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`). One shared cross-actor presentational view (`ContributorAccountView`) and one shared role-manager view (`RoleAssignmentView`). Tab dispatchers extend two existing files (`TopLevelRoutes.tsx` for User; `CrdOrganizationRoutes.tsx` for Org).
 
 ## Constitution Check
 
@@ -49,50 +100,20 @@ The 12 settings tabs ship together with the public profiles (sibling spec 096) a
 
 | Principle | Status | Notes |
 | --- | --- | --- |
-| I. Domain-Driven Frontend Boundaries | PASS | CRD components purely presentational. All business logic stays in existing domain hooks (`useUserSettings`, `useFilteredMemberships`, `useContributionProvider.leaveCommunity`, `usePushNotificationContext`, `useOrganizationProvider`, `useRoleSetManager`, `useRoleSetAvailableUsers`). Per-tab data mappers live under each integration subtree. |
-| II. React 19 Concurrent UX Discipline | PASS | All CRD views are pure render functions. Per-field save uses local visual state only; mutations wrap with `useTransition` in the integration layer so a slow save never blocks a tab switch. Suspense boundaries surround each lazy-loaded CRD page. No legacy lifecycles introduced. |
-| III. GraphQL Contract Fidelity | PASS | No GraphQL changes (FR-006 + Out of Scope). All Apollo operations go through generated hooks from `src/core/apollo/generated/apollo-hooks.ts`. CRD components never import generated GraphQL types — only data mappers do. |
-| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (edit/idle, hover, active tab, popover open, scroll position, sub-tab selection on Authorization). All side effects (mutations, navigation, localStorage writes for the design-system toggle, identity-provider flow) live in the integration layer. |
-| V. Experience Quality & Safeguards | PASS | FR-150 / FR-151 / FR-152 / FR-153 codify WCAG 2.1 AA: semantic HTML, visible focus, accessible names on icon-only buttons, keyboard reachable tab strip and sub-tab strip, `aria-busy` on async-pending controls. Tab-strip horizontal-scroll variant on `< md` keeps every tab keyboard-reachable. |
-| Arch #1: Feature directories map to domain contexts | PASS | Presentational components under `src/crd/components/contributor/settings/` (shared), `src/crd/components/user/settings/` (User-specific), `src/crd/components/organization/settings/` (Org-specific). Integration under two parallel subtrees of `src/main/crdPages/topLevelPages/`. Domain hooks reused from `src/domain/community/userAdmin/`, `src/domain/community/organizationAdmin/`, `src/domain/access/`. |
+| I. Domain-Driven Frontend Boundaries | PASS | All CRD components purely presentational. Domain logic stays in existing `src/domain/community/{user,organization}Admin/*` hooks (`useUserSettingsQuery`, `useUpdateUserSettingsMutation`, `useOrganizationProvider`, `useUpdateOrganizationMutation`, `useRoleSetManager`, `pushNotificationContext`, etc.). Per-tab data mappers live under `src/main/crdPages/topLevelPages/<vertical>/settings/<tab>/`. |
+| II. React 19 Concurrent UX Discipline | PASS | All CRD views are pure render functions. Per-section save mutations, Notifications toggles, and role-assignment add/remove wrap with `useTransition` in the integration layer (per Constitution Principle II). Suspense boundaries surround the lazy-loaded settings shells. The 045 About-pattern hook (`useUserProfileTabData` / `useOrgProfileTabData`) tracks per-section status with plain `useState` (no legacy lifecycles). |
+| III. GraphQL Contract Fidelity | PASS | No GraphQL changes (Out of Scope). All Apollo operations go through generated hooks from `src/core/apollo/generated/apollo-hooks.ts`. CRD components never import generated GraphQL types — only the per-tab mappers do (FR-006). |
+| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (active tab, popover open, confirmation-dialog open). All side effects (mutations, navigation, localStorage writes, push-permission requests) live in the integration layer or in adapters (`pushNotificationContext`). Mid-edit Profile-tab values are silently dropped on tab-switch / nav-away (FR-016) — no global dirty buffer to leak. |
+| V. Experience Quality & Safeguards | PASS | FR-150 / FR-151 / FR-152 / FR-153 codify WCAG 2.1 AA: semantic HTML, visible focus, accessible names on icon-only buttons (Save, Cancel, kebabs, trash icons, +/× role-assignment buttons), keyboard-navigable settings tab strip + Authorization sub-tab strip, `aria-busy` on async-pending Save buttons, all Confirmation dialogs via the CRD `AlertDialog` primitive with `variant="destructive"` and role-aware confirm labels per Rule #9. Per-region Skeleton placeholders prevent layout shift while queries resolve. |
+| Arch #1: Feature directories map to domain contexts | PASS | Presentational components under `src/crd/components/{contributor,user,organization}/settings/`. Integration under `src/main/crdPages/topLevelPages/{userPages,organizationPages}/settings/<tab>/`. Domain hooks reused from `src/domain/community/{user,organization}Admin/*` and `src/domain/access/RoleSetManager/*`. |
 | Arch #2: Styling standardizes on MUI theming | **JUSTIFIED VIOLATION** | Same intentional, constitution-acknowledged violation as 039 / 041 / 042 / 043 / 045 / 091 / 096. CRD is the announced successor design system. See Complexity Tracking. |
-| Arch #3: i18n via react-i18next | PASS | New combined namespace `crd-contributorSettings`; English source only edited directly; the other five languages (nl / es / bg / de / fr) maintained manually in the same PR per `src/crd/CLAUDE.md` (no Crowdin). No hard-coded strings. |
-| Arch #4: Build artifacts deterministic | PASS | No Vite config changes. No new runtime dependencies. Existing CRD chunk-splitting strategy applies — two new lazy-loaded chunks (one per actor settings shell). |
+| Arch #3: i18n via react-i18next | PASS | New shared namespace `crd-contributorSettings` (one namespace covering both User and Org tabs, per research §8). English source only edited directly; other five languages (nl / es / bg / de / fr) maintained manually in the same PR per `src/crd/CLAUDE.md`. FR-142 allows reusing select existing `translation`-namespace keys. No hard-coded strings. |
+| Arch #4: Build artifacts deterministic | PASS | No Vite config changes. No new runtime dependencies. Existing CRD chunk-splitting strategy applies. |
 | Arch #5: No barrel exports | PASS | All imports use explicit file paths. |
-| Arch #6: SOLID + DRY | PASS | **SRP**: view vs. mapper vs. hook per tab. **OCP**: per-tab compositions independent; per-field `EditableField` primitive accepts a strategy callback for save; the shared `RoleAssignmentView` is parameterized by role label + role-set manager output. **LSP**: every editable field implements a uniform `EditableFieldProps<T>` contract. **ISP**: each tab's view-prop interface is minimal and tab-specific (`MyProfileViewProps`, `OrgProfileViewProps`, `RoleAssignmentViewProps`, etc.). **DIP**: views consume plain props injected by mappers — never call Apollo directly. **DRY**: shared `EditableField` wrapper across User My Profile + Org Profile fields, shared `SettingsCard`, shared `SettingsShell` + `SettingsTabStrip` (User passes 7 tabs, Org passes 5), shared `ContributorAccountView` (User Account + Org Account), shared `RoleAssignmentView` (Org Community + both Authorization sub-tabs), shared `ConfirmationDialog` from `src/crd/components/dialogs/`. |
+| Arch #6: SOLID + DRY | PASS | **SRP**: per-tab view / mapper / integration hook each in their own file. **OCP**: shared `SettingsShell` parameterized via `tabs[]`; shared `ContributorAccountView` parameterized via `actor`; shared `RoleAssignmentView` parameterized via role. **LSP**: every per-tab view accepts the same `loading: boolean` shape; every Profile-tab field uses the same `EditableSectionState`. **ISP**: each tab's prop shape is minimal (`UserNotificationsViewProps` does NOT include the org-side toggle states). **DIP**: views consume plain props injected by the per-tab mapper — never call Apollo directly. **DRY**: shared `SettingsShell` / `SettingsTabStrip` / `ContributorAccountView` / `RoleAssignmentView` / `FieldFooter` (extracted from 045) eliminate cross-actor duplication. |
+| WF #5: Root Cause Analysis Before Fixes | N/A | This is a presentation-layer migration, not a bug fix. No fetch policies / retries / defensive guards introduced — Apollo queries reused exactly as today. |
 
 **Post-Phase 1 re-check**: All gates pass. The Arch #2 violation is identical to prior CRD migrations.
-
-### Architectural Note — Account tab create / manage / delete flows
-
-The existing `ContributorAccountView` (used by both MUI User Account and MUI Org Account today) imports `@mui/material`, `@mui/icons-material`, and other MUI core/UI modules — it cannot be embedded in a CRD page (FR-006). The spec wording "render four card groups using the existing data hooks" is interpreted as **wrap the data hooks** (which is fine), not the View component (which is impossible without violating FR-006).
-
-Each CRD Account tab is therefore a **thin presentational shell** that:
-
-1. Renders the four card groups (Hosted Spaces, Virtual Contributors, Innovation Packs, Innovation Hubs) using CRD primitives + a reused `CompactSpaceCard` / `ContributorCardHorizontal`-equivalent CRD component.
-2. Surfaces every kebab action and create button as a callback prop.
-3. The integration layer wires those callbacks to the existing creation / management routes via `useNavigate(...)` — landing the user on the existing MUI admin pages for the heavy flows. **No CRD ports of the existing MUI creation dialogs are introduced in this spec** — preserving "no new behavior" while honoring FR-006.
-
-The CRD Account view is a **single shared component** consumed by both User Account and Org Account integrations via per-actor mappers. This pragmatic choice is documented in `research.md` (Decision #3) and preserves the option to port specific dialogs to CRD in a follow-up spec if desired.
-
-### Architectural Note — Per-actor predicate split
-
-The two settings shells use different authorization sources (FR-010 / FR-011). Rather than collapsing them into a single discriminated union helper, this plan uses **two siblings** for clarity:
-
-- `useCanEditUserSettings(profileUserId: string)` → `{ canEditSettings, isOwner, isPlatformAdmin }`. Same predicate the prior 097 used. **Already specced** as a shared helper between 096 and the prior 097 — referenced under `src/main/crdPages/topLevelPages/userPages/useCanEditSettings.ts` in 096's plan. This spec **renames** that helper to `useCanEditUserSettings.ts` to match the new namespace pattern; if 096 has already landed it under the old name, this rename is a one-line change in the imports.
-- `useCanEditOrganizationSettings(organizationId: string)` → `{ canEditSettings, hasUpdatePrivilege }`. New helper introduced by this spec. Reads `useOrganizationProvider().permissions.canEdit` (the existing predicate the MUI `NonAdminRedirect` uses) and lifts it into a hook so the settings-shell route guard can consume it cleanly.
-
-Both helpers are pure and testable; both are colocated with their actor-specific integration subtree (`userPages/` for the User one, `organizationPages/` for the Org one).
-
-### Architectural Note — Edit pattern unification (User + Org Profile)
-
-The decision to use **per-field explicit save on Org Profile** (FR-090, matching User My Profile FR-020) is a deliberate UX divergence from the current MUI `OrganizationForm.tsx` (Formik with a single Save button). Rationale:
-
-- **Consistency**: a contributor in this product can be both a user and an org admin. Cross-tab consistency reduces cognitive load — one mental model ("each field saves on its own") instead of two.
-- **Smaller blast radius per save**: per-field saves preserve the rest of the payload, so a transient validation failure on one field doesn't block saves on others.
-- **Mid-edit tab switching**: with no tab-wide dirty buffer, users never face a "discard changes?" dialog when switching tabs (FR-016) — the pattern works the same way on both actor profiles.
-
-Implementation: the `EditableField` family (text / markdown / select / tags / reference-row variants) is **shared** across both Profile tabs. The Org Profile mapper produces the same `EditableFieldProps` shape as the User My Profile mapper, just with `updateOrganization` as the underlying mutation instead of `updateUser`.
 
 ## Project Structure
 
@@ -101,14 +122,15 @@ Implementation: the `EditableField` family (text / markdown / select / tags / re
 ```text
 specs/097-crd-user-settings/
 ├── plan.md              # This file
-├── spec.md              # Feature specification (12 P1 user stories)
-├── research.md          # Phase 0: research findings + ambiguity resolutions
-├── data-model.md        # Phase 1: entities + GraphQL → CRD prop mappings
-├── quickstart.md        # Phase 1: setup, build order, smoke checklist
+├── spec.md              # Feature specification (12 P1 user stories — 7 User + 5 Org)
+├── research.md          # Phase 0: research findings (12 decisions; Decision #2 needs update — see "Post-clarification updates" below)
+├── data-model.md        # Phase 1: entities + GraphQL → CRD prop mappings (per actor / per tab)
+├── quickstart.md        # Phase 1: setup, build order, per-tab smoke checklist
 ├── contracts/           # Phase 1: TypeScript interfaces for CRD components
-│   ├── shell.ts                       # SettingsShell + SettingsTabStrip + SettingsCard
-│   ├── editable-field.ts              # EditableField family contracts
-│   ├── tab-userMyProfile.ts
+│   ├── shell.ts                  # SettingsShell + SettingsTabStrip contracts
+│   ├── editable-field.ts         # EditableSection / FieldFooter / per-section save state
+│   ├── data-mapper.ts            # Cross-tab mapper utility contracts
+│   ├── tab-userProfile.ts        # RENAMED from tab-userMyProfile.ts (Q3 clarification)
 │   ├── tab-userAccount.ts
 │   ├── tab-userMembership.ts
 │   ├── tab-userOrganizations.ts
@@ -119,174 +141,143 @@ specs/097-crd-user-settings/
 │   ├── tab-orgAccount.ts
 │   ├── tab-orgCommunity.ts
 │   ├── tab-orgAuthorization.ts
-│   ├── tab-orgSettings.ts
-│   └── data-mapper.ts                 # Cross-tab mapper utility contracts (per-actor route context, predicates)
+│   └── tab-orgSettings.ts
 └── checklists/
     └── requirements.md
 ```
+
+**Post-clarification updates** (research.md / data-model.md / contracts/ rolling forward into the Phase-2 task list):
+
+- **Q3 (tab rename)**: rename `contracts/tab-userMyProfile.ts` → `contracts/tab-userProfile.ts`; rename internal type identifiers (e.g., `UserMyProfileTabProps` → `UserProfileTabProps`); update every prose reference in `data-model.md` and `quickstart.md` (`User My Profile` → `User Profile`); update i18n key skeleton from `user.myProfile.*` → `user.profile.*`. The route segment `/settings/profile` does not change.
+- **Q4 (per-section save model)**: research.md Decision #2's 5-state per-field machine (`idle | editing | pending | idle-saved | editing-error`) is superseded by the 045 per-section model. The new state shape lives in the per-tab integration hook as `Partial<Record<SectionKey, { kind: 'idle' | 'saving' | 'saved' | 'error'; error?: string }>>`. Field-level pencil/check/× icons are removed; `FieldFooter` (Save button + dirty indicator + status) lives at the section level. `SAVED_FLASH_MS = 1800` matches 045. data-model.md's "Save state per field (Profile tabs)" section becomes "Save state per section (Profile tabs)" with the new shape.
+- **Q1 (empty-state policy)**: data-model.md gains an "Empty-state UX" sub-section per tab. The Account tab section captures the prototype-faithful per-sub-section patterns (FR-033 / FR-103); read-only list tabs document the muted-caption pattern (FR-018).
+- **Q2 (Rule #9 across all role-removals + reference deletion)**: contract `tab-orgCommunity.ts` and `tab-orgAuthorization.ts` gain a `pendingRemoveId` state field + `onConfirmRemove` / `onCancelRemove` callback pair; `tab-userProfile.ts` (renamed) and `tab-orgProfile.ts` similarly gain `pendingReferenceDeleteId` state + confirm/cancel callbacks (mirroring the 045 About `pendingReferenceDelete` pattern).
+- **Q5 (Notifications hard-failure)**: `tab-userNotifications.ts` documents the failure-revert behaviour; data-model.md "Optimistic overrides" sub-section adds the rollback path.
 
 ### Source Code (repository root)
 
 ```text
 src/
 ├── crd/
-│   ├── primitives/                                          # ALL primitives already exist — no new ports needed
+│   ├── primitives/                                       # ALL primitives already exist — no new ports needed
 │   ├── components/
-│   │   ├── dialogs/                                         # EXISTING — ConfirmationDialog reused for Leave / Delete confirmations
+│   │   ├── common/
+│   │   │   ├── InlineEditText.tsx                        # EXISTING — reused from 045
+│   │   │   ├── CountryCombobox.tsx                       # EXISTING — reused from 045
+│   │   │   └── FieldFooter.tsx                           # NEW (or extracted from 045's SpaceSettingsAboutView.tsx) — Save button + dirty indicator + per-section status
 │   │   ├── contributor/
-│   │   │   └── settings/                                    # NEW — actor-agnostic shell + edit primitives + shared views
-│   │   │       ├── SettingsShell.tsx                        # Sticky header (avatar + name) + tab strip + outlet
-│   │   │       ├── SettingsTabStrip.tsx                     # Radix-Tabs over tabs[]; horizontal-scroll on < md; auto-scrolls active into view
-│   │   │       ├── SettingsCard.tsx                         # Title + bottom-bordered heading + body primitive
-│   │   │       ├── EditableField.tsx                        # Hover-pencil reveal + edit-mode Save/Cancel + per-field error/Saved indicator
-│   │   │       ├── EditableTextField.tsx                    # Text/email/single-line variant
-│   │   │       ├── EditableMarkdownField.tsx                # Bio / Description variant (Enter inserts newline; icons-only commit)
-│   │   │       ├── EditableSelectField.tsx                  # Country selector variant
-│   │   │       ├── EditableTagsField.tsx                    # Tagsets variant (uses tags-input)
-│   │   │       ├── EditableReferenceRow.tsx                 # Social Link / arbitrary reference row
-│   │   │       ├── ContributorAccountView.tsx               # Shared 4-card-group view (Hosted Spaces / VCs / Packs / Hubs)
-│   │   │       ├── AccountResourceCard.tsx                  # Reusable horizontal resource card (avatar + title + description + kebab)
-│   │   │       └── RoleAssignmentView.tsx                   # Shared role-assignment view (Org Community + Authorization sub-tabs)
+│   │   │   └── settings/                                 # NEW — actor-agnostic settings primitives
+│   │   │       ├── SettingsShell.tsx                     # NEW — sticky header + tab strip + body slot
+│   │   │       ├── SettingsTabStrip.tsx                  # NEW — horizontal-scroll responsive tab strip
+│   │   │       ├── SettingsCard.tsx                      # NEW — wrapper card used by every per-tab content block
+│   │   │       ├── ContributorAccountView.tsx            # NEW — shared 4-card-group view (User Account + Org Account); renders prototype-faithful empty states
+│   │   │       ├── RoleAssignmentView.tsx                # NEW — shared two-column +/× role manager (Org Community + Org Authorization Admin / Owner)
+│   │   │       └── OrgVerifiedBadge.tsx                  # NEW — read-only verification badge
 │   │   ├── user/
-│   │   │   └── settings/                                    # NEW — User-specific tab views
-│   │   │       └── tabs/
-│   │   │           ├── MyProfileView.tsx                    # Two-column layout (form + avatar preview); composes EditableField instances
-│   │   │           ├── MyProfileAvatarColumn.tsx
-│   │   │           ├── MembershipView.tsx                   # Composes HomeSpaceCard + MembershipsTable + PendingApplicationsTable
-│   │   │           ├── HomeSpaceCard.tsx
-│   │   │           ├── MembershipsTable.tsx
-│   │   │           ├── PendingApplicationsTable.tsx
-│   │   │           ├── OrganizationsView.tsx                # Org-list table + search + Create Organization button
-│   │   │           ├── OrganizationsTable.tsx
-│   │   │           ├── NotificationsView.tsx                # Composes master toggle + push subs + N notification group cards
-│   │   │           ├── NotificationGroupCard.tsx
-│   │   │           ├── NotificationRow.tsx
-│   │   │           ├── PushAvailabilityBanner.tsx
-│   │   │           ├── PushSubscriptionsListCard.tsx
-│   │   │           ├── SettingsView.tsx                     # Communication & Privacy + Design System cards
-│   │   │           ├── DesignSystemSwitchCard.tsx
-│   │   │           └── SecurityView.tsx                     # CRD card shell wrapping the identity-provider flow
+│   │   │   └── settings/                                 # NEW — User-specific tab views (7 files mirroring tabs)
+│   │   │       ├── UserProfileTabView.tsx                # Per-section save (045 pattern)
+│   │   │       ├── UserAccountTabView.tsx                # Composes ContributorAccountView with per-actor labels + callbacks
+│   │   │       ├── UserMembershipTabView.tsx             # Home Space card + Memberships table + Pending Applications table
+│   │   │       ├── UserOrganizationsTabView.tsx          # Associated organizations table
+│   │   │       ├── UserNotificationsTabView.tsx          # Push master + 7 cards (gated by privilege)
+│   │   │       ├── UserSettingsTabView.tsx               # Communication switch + Design System toggle
+│   │   │       └── UserSecurityTabView.tsx               # Identity-provider settings flow
 │   │   └── organization/
-│   │       └── settings/                                    # NEW — Org-specific tab views
-│   │           └── tabs/
-│   │               ├── OrgProfileView.tsx                   # Two-column layout (form + logo preview); composes EditableField instances
-│   │               ├── OrgProfileAvatarColumn.tsx
-│   │               ├── OrgVerifiedBadge.tsx                 # Read-only verification status indicator
-│   │               ├── OrgCommunityView.tsx                 # Wraps RoleAssignmentView for the Associate role
-│   │               ├── OrgAuthorizationView.tsx             # Sub-tab strip (Admin / Owner) → wraps RoleAssignmentView per role
-│   │               └── OrgSettingsView.tsx                  # Two switches (allowUsersMatchingDomainToJoin, contributionRolesPubliclyVisible)
+│   │       └── settings/                                 # NEW — Org-specific tab views (5 files)
+│   │           ├── OrgProfileTabView.tsx                 # Per-section save (045 pattern); read-only Verified badge
+│   │           ├── OrgAccountTabView.tsx                 # Composes ContributorAccountView
+│   │           ├── OrgCommunityTabView.tsx               # Composes RoleAssignmentView for Associate role
+│   │           ├── OrgAuthorizationTabView.tsx           # Two sub-tabs (Admin / Owner); each composes RoleAssignmentView
+│   │           └── OrgSettingsTabView.tsx                # Two switches
 │   ├── i18n/
-│   │   └── contributorSettings/                             # NEW — single combined namespace (manually managed, all 6 languages)
+│   │   └── contributorSettings/                          # NEW — manually managed (en / nl / es / bg / de / fr)
 │   │       ├── contributorSettings.en.json
 │   │       ├── contributorSettings.nl.json
 │   │       ├── contributorSettings.es.json
 │   │       ├── contributorSettings.bg.json
 │   │       ├── contributorSettings.de.json
 │   │       └── contributorSettings.fr.json
-│   └── lib/
-│       └── (existing — no new helpers required by this spec)
+│   └── lib/                                              # EXISTING — no changes
 ├── main/
 │   ├── crdPages/
 │   │   └── topLevelPages/
-│   │       ├── userPages/                                   # SHARED with sibling spec 096-crd-user-pages
-│   │       │   ├── CrdUserRoutes.tsx                        # OWNED BY 096 — extended by this spec to nest CrdUserSettingsRoutes for `settings/*`
-│   │       │   ├── useUserPageRouteContext.ts              # OWNED BY 096 — reused unchanged
-│   │       │   ├── useCanEditUserSettings.ts                # NEW (renamed from 096's useCanEditSettings.ts) — per-actor predicate hook
-│   │       │   └── settings/                                # NEW (this spec) — User settings integration layer
-│   │       │       ├── CrdUserSettingsRoutes.tsx            # 7 settings sub-routes; redirect non-owner-non-admin → /user/<slug>; Security route gated to owner only
-│   │       │       ├── myProfile/
-│   │       │       │   ├── CrdUserMyProfilePage.tsx
-│   │       │       │   ├── useUserMyProfileFields.ts        # Per-field save handlers (one updateUser call per field)
-│   │       │       │   ├── useUserReferenceCrud.ts          # create / update / delete reference handlers
-│   │       │       │   ├── useUserTagsetSave.ts
-│   │       │       │   ├── useUserAvatarUpload.ts
-│   │       │       │   └── userMyProfileMapper.ts
+│   │       ├── userPages/                                # EXISTING (owned by 096) — extended with settings/* subtree
+│   │       │   ├── CrdUserRoutes.tsx                     # MODIFIED — settings/* delegates to CrdUserSettingsRoutes
+│   │       │   ├── useUserPageRouteContext.ts            # EXISTING (096) — reused
+│   │       │   ├── useCanEditSettings.ts                 # EXISTING (096) — reused; renamed/aliased as useCanEditUserSettings here per Decision #7
+│   │       │   └── settings/                             # NEW — User Settings integration subtree
+│   │       │       ├── CrdUserSettingsRoutes.tsx         # 7-tab Routes for the User shell; redirects on canEditUserSettings false
+│   │       │       ├── CrdUserSettingsPage.tsx           # Hosts SettingsShell with the User tab list; routes the active tab body
+│   │       │       ├── useUserSettingsAccessGuard.ts     # Wraps useCanEditUserSettings; redirects to /user/<slug> when false
+│   │       │       ├── useUserSettingsTab.ts             # Resolves active tab from URL; provides onTabSelect that pushes /user/<slug>/settings/<id>
+│   │       │       ├── profile/
+│   │       │       │   ├── CrdUserProfileTab.tsx
+│   │       │       │   ├── useUserProfileTabData.ts      # 045-style per-section save hook (status by section + onSaveSection per section)
+│   │       │       │   └── userProfileMapper.ts          # GraphQL → UserProfileTabViewProps
 │   │       │       ├── account/
-│   │       │       │   ├── CrdUserAccountPage.tsx
-│   │       │       │   ├── useUserAccountActions.ts         # Navigation handlers for Create / Manage / Delete kebabs
+│   │       │       │   ├── CrdUserAccountTab.tsx
 │   │       │       │   └── userAccountMapper.ts
 │   │       │       ├── membership/
-│   │       │       │   ├── CrdUserMembershipPage.tsx
-│   │       │       │   ├── useHomeSpace.ts
-│   │       │       │   ├── useLeaveMembership.ts
+│   │       │       │   ├── CrdUserMembershipTab.tsx
+│   │       │       │   ├── useUserMembershipTabData.ts   # Home Space mutation + memberships filter/search + Leave-confirm flow
 │   │       │       │   └── userMembershipMapper.ts
 │   │       │       ├── organizations/
-│   │       │       │   ├── CrdUserOrganizationsPage.tsx
-│   │       │       │   ├── useLeaveOrganization.ts
-│   │       │       │   ├── useCreateOrganization.ts
+│   │       │       │   ├── CrdUserOrganizationsTab.tsx
 │   │       │       │   └── userOrganizationsMapper.ts
 │   │       │       ├── notifications/
-│   │       │       │   ├── CrdUserNotificationsPage.tsx
-│   │       │       │   ├── useNotificationToggle.ts         # Optimistic-overrides pattern
-│   │       │       │   ├── usePushSubscriptionList.ts
+│   │       │       │   ├── CrdUserNotificationsTab.tsx
+│   │       │       │   ├── useUserNotificationsTabData.ts  # Optimistic-override dictionary + hard-failure revert (Q5)
 │   │       │       │   └── userNotificationsMapper.ts
 │   │       │       ├── settings/
-│   │       │       │   ├── CrdUserSettingsPage.tsx
-│   │       │       │   ├── useDesignSystemToggle.ts
-│   │       │       │   ├── useAllowMessagesToggle.ts
+│   │       │       │   ├── CrdUserSettingsTab.tsx
 │   │       │       │   └── userSettingsMapper.ts
 │   │       │       └── security/
-│   │       │           ├── CrdUserSecurityPage.tsx          # Mounts existing identity-provider flow inside CRD card shell
-│   │       │           └── useIdentityProviderSettingsFlow.ts
-│   │       └── organizationPages/                           # SHARED with sibling spec 096
-│   │           ├── CrdOrganizationRoutes.tsx                # OWNED BY 096 — MODIFIED by this spec to flip the `settings/*` dispatch
-│   │           ├── useCanEditOrganizationSettings.ts        # NEW — per-actor predicate hook
-│   │           └── settings/                                # NEW (this spec) — Org settings integration layer
-│   │               ├── CrdOrgSettingsRoutes.tsx             # 5 settings sub-routes; redirect non-Update-privilege → /organization/<slug>
+│   │       │           ├── CrdUserSecurityTab.tsx
+│   │       │           ├── useIdentityProviderSettingsFlow.ts  # Wraps the existing Kratos flow loader (Decision #6)
+│   │       │           └── userSecurityMapper.ts
+│   │       └── organizationPages/                        # EXISTING (owned by 096) — extended with settings/* subtree
+│   │           ├── CrdOrganizationRoutes.tsx             # MODIFIED — settings/* dispatch chooses between CrdOrgSettingsRoutes (CRD) and existing MuiOrganizationAdminRoutes
+│   │           └── settings/                             # NEW — Org Settings integration subtree
+│   │               ├── CrdOrgSettingsRoutes.tsx          # 5-tab Routes for the Org shell; redirects on canEditOrganizationSettings false
+│   │               ├── CrdOrgSettingsPage.tsx            # Hosts SettingsShell with the Org tab list
+│   │               ├── useOrgSettingsAccessGuard.ts      # Wraps useCanEditOrganizationSettings (Decision #7)
+│   │               ├── useOrgSettingsTab.ts              # Active tab from URL + onTabSelect
 │   │               ├── profile/
-│   │               │   ├── CrdOrgProfilePage.tsx
-│   │               │   ├── useOrgProfileFields.ts           # Per-field save handlers (one updateOrganization call per field)
-│   │               │   ├── useOrgReferenceCrud.ts
-│   │               │   ├── useOrgTagsetSave.ts
-│   │               │   ├── useOrgAvatarUpload.ts
+│   │               │   ├── CrdOrgProfileTab.tsx
+│   │               │   ├── useOrgProfileTabData.ts       # 045-style per-section save hook (parallel to user version)
 │   │               │   └── orgProfileMapper.ts
 │   │               ├── account/
-│   │               │   ├── CrdOrgAccountPage.tsx
-│   │               │   ├── useOrgAccountActions.ts          # Same shape as useUserAccountActions
+│   │               │   ├── CrdOrgAccountTab.tsx
 │   │               │   └── orgAccountMapper.ts
 │   │               ├── community/
-│   │               │   ├── CrdOrgCommunityPage.tsx
-│   │               │   ├── useOrgAssociates.ts              # Wraps useRoleSetManager + useRoleSetAvailableUsers for Associate role
+│   │               │   ├── CrdOrgCommunityTab.tsx
+│   │               │   ├── useOrgAssociates.ts           # Wraps useRoleSetManager + useRoleSetAvailableUsers for Associate role; pendingRemoveId state for Rule #9 dialog (Q2)
 │   │               │   └── orgCommunityMapper.ts
 │   │               ├── authorization/
-│   │               │   ├── CrdOrgAuthorizationPage.tsx
-│   │               │   ├── useOrgRoleAssignment.ts          # Parameterized by role (Admin / Owner)
+│   │               │   ├── CrdOrgAuthorizationTab.tsx
+│   │               │   ├── useOrgRoleAssignment.ts       # Parameterized by role (Admin | Owner); pendingRemoveId state per role (Q2)
 │   │               │   └── orgAuthorizationMapper.ts
 │   │               └── settings/
-│   │                   ├── CrdOrgSettingsPage.tsx
-│   │                   ├── useOrgDomainMembershipToggle.ts  # Wraps useUpdateOrganizationSettingsMutation
-│   │                   ├── useOrgContributionRolesToggle.ts
+│   │                   ├── CrdOrgSettingsTab.tsx
 │   │                   └── orgSettingsMapper.ts
 │   └── routing/
-│       └── TopLevelRoutes.tsx                               # MODIFIED (jointly with 096) — adds the conditional CrdUserRoutes vs. UserRoute branch under `useCrdEnabled()` gate
+│       └── TopLevelRoutes.tsx                            # MODIFIED — User shell dispatch (Org dispatch lives in CrdOrganizationRoutes.tsx, research §1)
 ├── core/
 │   └── i18n/
-│       └── config.ts                                        # MODIFIED — register `crd-contributorSettings` namespace
-├── @types/
-│   └── i18next.d.ts                                         # MODIFIED — add `crd-contributorSettings` to namespace union
-└── domain/
-    ├── community/userAdmin/                                 # UNCHANGED — existing MUI files stay for toggle-off
-    └── community/organizationAdmin/                         # UNCHANGED — existing MUI files stay for toggle-off
+│       └── config.ts                                     # MODIFIED — register `crd-contributorSettings` namespace
+└── domain/community/                                     # UNCHANGED — existing MUI files stay for toggle-off
+    ├── userAdmin/                                        # UNCHANGED
+    └── organizationAdmin/                                # UNCHANGED
 ```
 
-**Structure Decision**: Three layers per actor.
+**Structure Decision**: Presentational CRD components live under `src/crd/components/{contributor,user,organization}/settings/`. Per-tab integration (route entries, per-tab pages, integration hooks, mappers) lives under two parallel sibling subtrees: `src/main/crdPages/topLevelPages/userPages/settings/` and `src/main/crdPages/topLevelPages/organizationPages/settings/`. Each tab has its own subfolder (`<tab>/`) with `Crd<Actor><Tab>Tab.tsx`, `use<Actor><Tab>TabData.ts` (where applicable), and `<actor><Tab>Mapper.ts`. The User shell's settings subtree is hosted by an extension to the existing 096 `CrdUserRoutes.tsx` (the `settings/*` route delegates to the new `CrdUserSettingsRoutes`). The Org shell's settings dispatch extends 096's existing `CrdOrganizationRoutes.tsx` (the `settings/*` route inside that file gains a `useCrdEnabled()`-gated branch). The existing MUI files under `src/domain/community/{user,organization}Admin/` stay intact and continue to serve users when `useCrdEnabled()` returns `false`. No GraphQL changes.
 
-1. **Presentational** (`src/crd/components/`): three subdirectories — `contributor/settings/` for actor-agnostic shared components, `user/settings/` for User-specific tabs, `organization/settings/` for Org-specific tabs. Zero MUI imports, zero GraphQL imports. The shared `SettingsShell`, `EditableField` family, `ContributorAccountView`, and `RoleAssignmentView` live in `contributor/settings/`.
-2. **Integration** (`src/main/crdPages/topLevelPages/`): two parallel subtrees — `userPages/settings/` (for the 7 user tabs) and `organizationPages/settings/` (for the 5 org tabs). Each tab has a folder with one mapper, one top-level page component, and per-tab integration hooks. Both subtrees share helpers from `userPages/` (already added by 096) and `organizationPages/` (already added by 096) — this spec only **adds** new helpers and the settings subdirectories; it does not duplicate the route-context logic.
-3. **MUI** (`src/domain/community/userAdmin/`, `src/domain/community/organizationAdmin/`): unchanged. Continues to serve users when `useCrdEnabled()` returns false. No deletion until the toggle is removed globally.
+**TopLevelRoutes wiring**: The User shell dispatch lives in `TopLevelRoutes.tsx` (mirrors the 096 pattern for `/user/*`). The Org shell dispatch lives in 096's `CrdOrganizationRoutes.tsx`'s existing `settings/*` route — `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />`. Both dispatches preserve the route's existing wrappers (NoIdentityRedirect on User, the Org route's existing wrappers).
 
-**TopLevelRoutes wiring** (mirrors the 045 / 091 / 096 patterns): the conditional branch in `TopLevelRoutes.tsx` for `/user/*` chooses between `<CrdUserRoutes />` (lazy-loaded, owned by 096; nests `CrdUserSettingsRoutes` for the settings subtree) and the existing `<UserRoute />` (also lazy-loaded). The Org dispatch is **not** in `TopLevelRoutes.tsx` — it lives inside `CrdOrganizationRoutes.tsx` (owned by 096), which currently delegates `settings/*` unconditionally to `<MuiOrganizationAdminRoutes />` and is flipped by this spec to dispatch on `useCrdEnabled()`. Both wirings are wrapped in the existing `NoIdentityRedirect` (User) / existing org admin auth chain (Org) — identical to today's wiring (research §1).
-
-**`/user/me/settings/*` resolution**: handled by the shared `CrdUserRoutes.tsx` (owned by 096). Resolves the current user's nameID from `useCurrentUserContext()` and replaces `me` with the slug, then delegates the settings subtree to `CrdUserSettingsRoutes`.
-
-**Org Settings access**: `CrdOrgSettingsRoutes.tsx` resolves `canEditOrganizationSettings` via `useCanEditOrganizationSettings()` and redirects falsy → `/organization/<slug>` (public profile, owned by 096).
-
-**User Security tab redirect**: `CrdUserSettingsRoutes.tsx` resolves `canEditUserSettings` via `useCanEditUserSettings()` and redirects falsy → `/user/<slug>` (public profile, owned by 096). It additionally checks `currentUser.id === profileUser.id` for the `security` route specifically and redirects falsy → `/user/<slug>/settings/profile` (FR-084).
+**`/user/me/settings/*` resolution**: handled by the existing 096 `/me` route in `CrdUserRoutes.tsx`. The `settings/*` subtree under `/me` resolves to the current user's settings via the same `MeUserProvider` analog 096 wires.
 
 ## Complexity Tracking
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | Arch #2 (parallel CRD design system) | CRD is the announced successor design system; all new pages adopt it per 039 / 041 / 042 / 043 / 045 / 091 / 096 precedent | Continuing MUI-only would block the CRD migration mandate; this intentional parallel-systems phase is tracked, bounded by the localStorage toggle, and removed once every page is migrated and validated. |
-| Both Account tabs navigate to existing MUI admin routes for Create / Manage / Delete instead of porting full creation dialogs | Spec Out of Scope says "no new affordances" and the existing dialogs (`CreateVirtualContributorDialog`, `CreateInnovationPackDialog`, etc.) are large MUI components that cannot be embedded in CRD per FR-006; full ports would balloon the spec scope and introduce visual divergence not justified by the user-facing goal | A complete port of every Account-tab dialog would significantly inflate scope and risk visual drift between MUI and CRD versions of the same flows. Navigation to the existing MUI routes preserves behaviour exactly while keeping the CRD scope tractable; per-dialog ports can be tackled in follow-up specs as needed. |
-| Org Profile uses per-field save instead of MUI's Formik-with-single-Save | UX consistency with User My Profile across the contributor vertical; smaller blast radius per save; no tab-wide dirty buffer means no discard-confirm dialogs anywhere | Keeping MUI's Formik shape would introduce two different save UX patterns in the same settings shell family, increasing cognitive load and adding tab-switch dirty-buffer handling that the rest of CRD avoids. |

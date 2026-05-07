@@ -23,31 +23,84 @@ Resolve every "how exactly does this work today?" question that the spec leaves 
 
 ---
 
-## Decision 2 — Per-field save state machine (used by User My Profile + Org Profile)
+## Decision 2 — Per-section save model (used by User Profile + Org Profile) — REWRITTEN per spec clarification Q4 (2026-05-06)
 
-**Decision**: Five-state state machine, owned by the parent integration hook (controlled component pattern). Each editable field passes its current `status` into `EditableField` and provides `onSave` / `onCancel` callbacks.
+**Decision**: Adopt the **045 About per-section explicit-save model verbatim**. Source of truth: `src/main/crdPages/topLevelPages/spaceSettings/about/useAboutTabData.ts` + `src/crd/components/space/settings/SpaceSettingsAboutView.tsx` + `@/crd/components/common/InlineEditText`. The earlier 5-state per-field state machine (pencil → check / × per field, `idle | editing | pending | idle-saved | editing-error`) is superseded.
 
-States:
-1. `idle` — value renders as plain text. Hover reveals a pencil glyph.
-2. `editing` — input is active; Save (check) and Cancel (×) icons visible.
-3. `pending` — Save was clicked; mutation in flight. Spinner replaces Save icon. `aria-busy="true"` on the input. Both Save and Cancel disabled.
-4. `idle-saved` — mutation succeeded. Field returns to idle visually; a transient "Saved" indicator appears next to the field label for ~2 seconds before fading. Auto-transitions back to `idle` after the timer.
-5. `editing-error` — mutation failed. Field stays in `editing` visually with the user's typed value preserved. Inline error appears beneath the input. Save and Cancel re-enabled. Clicking Save again retries (re-enters `pending`); clicking Cancel discards and returns to `idle` (with the last server value).
+**Section-level state** (held in the per-tab integration hook — `useUserProfileTabData` / `useOrgProfileTabData`):
 
-Transitions:
-- `idle` + click value/pencil → `editing`
-- `editing` + click × / press Escape → `idle` (calls `onCancel`)
-- `editing` + click Save / press Enter (single-line) → `pending` (calls `onSave`)
-- `pending` + success → `idle-saved` → `idle` (after ~2s)
-- `pending` + failure → `editing-error`
-- `editing-error` + click Save → `pending` (retry)
-- `editing-error` + click × / press Escape → `idle`
+```typescript
+type SectionSaveStatus =
+  | { kind: 'idle' }
+  | { kind: 'saving' }
+  | { kind: 'saved' }   // transient — auto-transitions to idle after SAVED_FLASH_MS
+  | { kind: 'error'; message: string };
 
-**Rationale**: Spec FR-022 / FR-023 explicitly mandate "stay in edit mode with typed value preserved on failure" — not an auto-revert. The five-state machine cleanly separates the success-flash state (`idle-saved`) from the error-recovery state (`editing-error`) without conflating them. Owning the state in the parent hook (rather than inside the primitive) lets the same primitive be used by integration code across User and Org without forking.
+const SAVED_FLASH_MS = 1800; // matches 045's useAboutTabData.ts
+
+type SectionState = {
+  values: Record<SectionKey, FieldValueShape>;       // user's draft per section
+  saved: Record<SectionKey, FieldValueShape>;        // last server-known per section
+  dirtyByField: Partial<Record<SectionKey, boolean>>;// derived from values vs. saved (same pattern 045 uses)
+  saveStatusByField: Partial<Record<SectionKey, SectionSaveStatus>>;
+};
+```
+
+**Section units** (User Profile tab — same shape applies to Org Profile with the org-specific fields per FR-091):
+
+| Section | Field(s) it commits |
+|---|---|
+| `displayName` | Display Name |
+| `firstName` | First Name |
+| `lastName` | Last Name |
+| `phone` | Phone |
+| `tagline` | Tagline |
+| `bio` | Bio (markdown) |
+| `tags` | Tags (whole list saved per click) |
+| `location` | City + Country (compound) |
+| `references` | Social Links + arbitrary references (whole list batched: patch-existing + create-new + delete-pending) |
+
+Avatar / logo upload is NOT a section — it commits IMMEDIATELY on upload completion (the file picker IS the commit, FR-024 / FR-093).
+
+**View binding** (per section):
+- `<InlineEditText value={values[k]} onChange={next => onChange({[k]: next})} />` (single-line) OR `<MarkdownEditor>` for Bio / Description OR `<CountryCombobox>` for Country OR `<TagsField>` for Tags.
+- `<FieldFooter dirty={dirtyByField[k]} status={saveStatusByField[k] ?? {kind:'idle'}} onSave={() => onSaveSection(k)} />`.
+- The `FieldFooter` is the only commit affordance — there is no per-field pencil / check / × icon.
+
+**State transitions** (per section):
+- (any) → `saving` on `onSaveSection` invocation.
+- `saving` → `saved` on mutation success → `idle` after `SAVED_FLASH_MS` (1800 ms).
+- `saving` → `error` on mutation failure. The section stays dirty with the user's typed values preserved. Inline error message persists in the section.
+- `error` → `idle` (and dirty cleared if the field's value matches the server value) the next time the admin edits a field in the section. The next edit resets `saveStatusByField[k]` to `idle`, re-enabling Save.
+
+**Discard / cancellation**: there is NO per-section Cancel button or Escape-to-revert. Mid-edit values silently drop on tab-switch / nav-away (FR-016) — the local section buffer is reset on remount via the next render of `mapSpaceToAboutFormValues`-equivalent. To revert a single field to its server value, the admin clears the input and re-enters the original value, OR navigates away (which discards the entire section's pending edits).
+
+**References-section special behaviour** (FR-025 — same as 045's references handling):
+- Add: appends an unsaved (temp-ID) row to `values.references[]`. The row is editable in the buffer; nothing fires server-side.
+- Edit: patches the row in `values.references[]` by id.
+- Delete: opens a `ConfirmationDialog` (CRD `AlertDialog`, `variant="destructive"`); only the dialog's Confirm queues the row for deletion in the section buffer (`pendingReferenceDelete` state pattern, copied from 045).
+- The mutation batch (`createReferenceOnProfile` × N + `updateReference` × M + `deleteReference` × P) fires only when the References-section Save is clicked.
+
+**Save handler signature**:
+```typescript
+type OnSaveSection = (section: SectionKey) => Promise<void>;
+```
+The handler reads the current section values from the local buffer, fires the targeted mutation (only that section's fields in the patch), and on success merges the fresh server values back into the local buffer's `saved` slice (so subsequent dirty-detection works correctly). On failure it sets `saveStatusByField[section] = { kind: 'error', message }` and leaves `values[section]` untouched.
+
+**Validation** (FR-023):
+- Format validators (URL, email, phone) run live on input change. While a section's input is format-invalid, the section's Save button is disabled.
+- Required-field empty checks (Display Name / First Name / Last Name on User; Display Name / Description on Org) fire on Save click. Clicking Save with an empty required field surfaces an inline error beneath the offending input; the section stays dirty; no mutation fires.
+- Server-side validation errors surface inline per the `error` state.
+
+**Rationale**:
+- The 045 About model is already implemented and shipped. Reusing it eliminates a dimension of risk (state-machine bugs, edge-case regressions) and gives consumers a familiar pattern across the CRD settings family.
+- Per-section commit reduces network chatter for compound fields (Location's two inputs save together) and matches user mental model better than per-field saving (typing in City and tabbing to Country shouldn't fire two separate saves).
+- The 5-state per-field machine added complexity (Cancel/Escape per field, edit-mode-with-error vs. idle-saved separation) without commensurate UX value. The simpler 4-state per-section model (idle / saving / saved / error) is sufficient and consistent with the production pattern.
 
 **Alternatives considered**:
-- 3-state (idle / editing / pending) with error rendered as an extra badge — rejected because failure-flow has subtly different affordances (Save is re-enabled, error message visible, value preserved) that warrant a distinct state.
-- Component-internal state — rejected because the integration hook owns the field's last-known server value and needs to control resets after refetches.
+- Field-level saves with the 5-state machine — rejected per spec clarification Q4: not consistent with 045 About; introduces unnecessary UX divergence across the CRD settings vertical.
+- Autosave with debounce (the 045 spec originally proposed this in FR-005a) — rejected because the actual 045 implementation moved to per-section explicit save, and clarification Q4 mandates matching the implementation, not the older spec language.
+- Component-internal state — rejected: the integration hook owns the last-known server value (via `mapXToFormValues`) and needs to control resets after refetches; same as the 045 pattern.
 
 ---
 

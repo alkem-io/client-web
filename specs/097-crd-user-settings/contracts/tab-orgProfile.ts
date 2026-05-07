@@ -1,17 +1,29 @@
 /**
- * Org Profile tab — view contract.
- * Same per-field-save model as User My Profile (FR-090).
- * See data-model.md "User Story 8" for field-level details.
+ * Org Profile tab — view contract (per-section save model — matches 045 About).
+ *
+ * Save model: per-section explicit save via `FieldFooter` per section. State
+ * (`idle | saving | saved | error`) lives in the integration hook
+ * (`useOrgProfileTabData`). On success a "Saved!" indicator flashes for
+ * 1800 ms (`SAVED_FLASH_MS`) before returning to idle. On failure the section
+ * stays dirty with the user's typed values preserved + an inline error
+ * message that persists until the admin edits a field in the section again.
+ *
+ * Identical save semantics to User Profile — see `tab-userProfile.ts` and
+ * data-model.md "User Story 8" for field-level details, research.md
+ * Decision #2 for the state machine.
+ *
+ * Rewritten per spec clarification Q4 (2026-05-06) and tasks.md T066a
+ * (per-section / SAVED_FLASH_MS = 1800 / Rule #9 reference deletion).
  */
 
 import type {
-  EditableMarkdownFieldProps,
-  EditableReferenceRowProps,
-  EditableSelectFieldProps,
-  EditableTagsFieldProps,
-  EditableTextFieldProps,
-} from './editable-field';
+  AvatarColumnProps,
+  EditableSectionProps,
+  PendingReferenceDeleteProps,
+  ReferencesSectionProps,
+} from './tab-userProfile';
 
+/** Read-only verification status badge (FR-094). No edit affordance. */
 export type OrgVerifiedBadgeProps = {
   /** Display label resolved from `Organization.verification.status`. */
   status: 'Verified' | 'Pending' | 'NotVerified';
@@ -19,54 +31,49 @@ export type OrgVerifiedBadgeProps = {
   label: string;
 };
 
-export type OrgAvatarColumnProps = {
-  avatarUrl?: string;
-  displayName: string;
-  tagline?: string;
-  uploading: boolean;
-  uploadHelperText: string;
-  changeButtonLabel: string;
-  onAvatarFilePicked: (file: File) => Promise<void>;
+/**
+ * Read-only Name ID — the URL slug, fixed after creation. Renders as plain
+ * text + a "Cannot be changed after creation" caption; not an editable
+ * section, so no `FieldFooter` and no Save button.
+ */
+export type OrgNameIdReadOnlyProps = {
+  value: string;
+  caption: string; // i18n: "Cannot be changed after creation"
 };
 
-export type OrgIdentitySection = {
-  displayName: EditableTextFieldProps;
-  /** Read-only after creation. */
-  nameID: EditableTextFieldProps;
-  tagline: EditableTextFieldProps;
+/**
+ * Sections of the Org Profile tab. Each maps to one section unit in the
+ * integration hook's `saveStatusByField` / `dirtyByField` records.
+ */
+export type OrgProfileSections = {
+  // Identity (2 single-field sections + 1 read-only)
+  displayName: EditableSectionProps;
+  nameID: OrgNameIdReadOnlyProps; // not a section; renders as plain text + caption
+  tagline: EditableSectionProps;
+
+  // About
+  description: EditableSectionProps;
+  /** Compound section: city + country share one Save button. */
+  location: EditableSectionProps;
+  /** Single section covering Keywords + Capabilities tagsets. */
+  tags: EditableSectionProps;
+
+  // Contact & Legal — each its own section; format validators run live
+  contactEmail: EditableSectionProps;
+  domain: EditableSectionProps;
+  legalEntityName: EditableSectionProps;
+  website: EditableSectionProps;
+
+  // Social Links / References — one list-managed section
+  references: ReferencesSectionProps;
 };
 
-export type OrgAboutSection = {
-  description: EditableMarkdownFieldProps;
-  city: EditableTextFieldProps;
-  country: EditableSelectFieldProps;
-  tags: EditableTagsFieldProps;
-};
-
-export type OrgContactLegalSection = {
-  contactEmail: EditableTextFieldProps;
-  domain: EditableTextFieldProps;
-  legalEntityName: EditableTextFieldProps;
-  website: EditableTextFieldProps;
-};
-
-export type OrgSocialLinksSection = {
-  recognized: {
-    linkedin: EditableReferenceRowProps;
-    bsky: EditableReferenceRowProps;
-    github: EditableReferenceRowProps;
-  };
-  arbitrary: EditableReferenceRowProps[];
-  onAddAnotherReference: () => void;
-};
-
+/** Top-level view contract for the Org Profile tab. */
 export type OrgProfileViewProps = {
-  identity: OrgIdentitySection;
-  about: OrgAboutSection;
-  contactLegal: OrgContactLegalSection;
-  socialLinks: OrgSocialLinksSection;
-  avatarColumn: OrgAvatarColumnProps;
+  sections: OrgProfileSections;
+  avatarColumn: AvatarColumnProps;
   /** Read-only verification badge (FR-094). */
   verifiedBadge: OrgVerifiedBadgeProps;
+  pendingReferenceDelete: PendingReferenceDeleteProps;
   loading: boolean;
 };
