@@ -9335,8 +9335,8 @@ export function refetchCalloutsSetTagsQuery(variables: SchemaTypes.CalloutsSetTa
   return { query: CalloutsSetTagsDocument, variables: variables };
 }
 export const CreateCalloutDocument = gql`
-    mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
-  createCalloutOnCalloutsSet(calloutData: $calloutData) {
+    mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!, $file: Upload) {
+  createCalloutOnCalloutsSet(calloutData: $calloutData, file: $file) {
     ...CalloutDetails
     nameID
   }
@@ -9361,6 +9361,7 @@ export type CreateCalloutMutationFn = Apollo.MutationFunction<
  * const [createCalloutMutation, { data, loading, error }] = useCreateCalloutMutation({
  *   variables: {
  *      calloutData: // value for 'calloutData'
+ *      file: // value for 'file'
  *   },
  * });
  */

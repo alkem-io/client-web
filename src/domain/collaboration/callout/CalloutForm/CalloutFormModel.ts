@@ -55,6 +55,8 @@ export interface CalloutFormSubmittedValues {
     collaboraDocument?: {
       displayName: string;
       documentType: CollaboraDocumentType;
+      uploadFile?: File;
+      autoPrefilledTitle?: string;
     };
   };
   contributionDefaults: ContributionDefaultsModel;

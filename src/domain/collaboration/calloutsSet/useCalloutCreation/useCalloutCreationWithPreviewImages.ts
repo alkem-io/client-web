@@ -31,8 +31,8 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     link?: LinkFramingFieldSubmittedValues;
     poll?: PollFormFieldSubmittedValues;
     collaboraDocument?: {
-      displayName: string;
-      documentType: CollaboraDocumentType;
+      displayName?: string;
+      documentType?: CollaboraDocumentType;
     };
     tags?: string[];
   };
@@ -40,7 +40,8 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
 
 export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreationUtils, 'handleCreateCallout'> {
   handleCreateCallout: (
-    callout: CalloutCreationTypeWithPreviewImages
+    callout: CalloutCreationTypeWithPreviewImages,
+    file?: File
   ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
 }
 
@@ -65,11 +66,11 @@ export const useCalloutCreationWithPreviewImages = (
     return { callout };
   };
 
-  const handleCreateCallout = async (callout: CalloutCreationTypeWithPreviewImages) => {
+  const handleCreateCallout = async (callout: CalloutCreationTypeWithPreviewImages, file?: File) => {
     // Remove the previewImages from the form data if it's present, to handle it separately
     const { callout: cleanCallout, previewImages } = separatePreviewImages(callout);
 
-    const result = await parentHook.handleCreateCallout(cleanCallout);
+    const result = await parentHook.handleCreateCallout(cleanCallout, file);
 
     // The PreviewImages (like the ones generated for SingleWhiteboard callouts
     // are sent from here to the server after the callout creation
