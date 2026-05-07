@@ -245,6 +245,7 @@ CRD uses semantic typography tokens defined in `src/crd/styles/typography.css`. 
 
 | Token | Size | Weight | Use for |
 |-------|------|--------|---------|
+| `text-profile-title` | 36px | 700 | Public-profile hero name only (User / Organization / VC). Reserved — do not use for ordinary page titles. |
 | `text-page-title` | 30px | 700 | Page headings (`<h1>`) |
 | `text-section-title` | 20px | 700 | Section headings (`<h2>`) |
 | `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles (`<h3>`) |

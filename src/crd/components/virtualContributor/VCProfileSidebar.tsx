@@ -57,7 +57,7 @@ export function VCProfileSidebar({
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-section-title mb-3">{labels.descriptionTitle}</h2>
+        <h2 className="text-section-title mb-4">{labels.descriptionTitle}</h2>
         {description ? (
           <MarkdownContent content={description} />
         ) : (
@@ -66,7 +66,7 @@ export function VCProfileSidebar({
       </section>
 
       <section>
-        <h2 className="text-section-title mb-3">{labels.hostTitle}</h2>
+        <h2 className="text-section-title mb-4">{labels.hostTitle}</h2>
         {host ? (
           <CompactContributorCard {...host} />
         ) : (
@@ -75,7 +75,7 @@ export function VCProfileSidebar({
       </section>
 
       <section>
-        <h2 className="text-section-title mb-3">{labels.referencesTitle}</h2>
+        <h2 className="text-section-title mb-4">{labels.referencesTitle}</h2>
         {references.length === 0 ? (
           <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
         ) : (

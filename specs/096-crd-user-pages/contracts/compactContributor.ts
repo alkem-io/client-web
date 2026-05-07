@@ -50,15 +50,6 @@ export type CompactContributorCardItem = {
 
 export type CompactContributorCardProps = CompactContributorCardItem & {
   /**
-   * Visual variant:
-   *  - `compact` (default): tight spacing, single-line caption — used by the
-   *    VC profile sidebar (Host card) and the User profile sidebar
-   *    (Organizations list).
-   *  - `spacious`: extra vertical breathing room — currently unused; reserved
-   *    for future consumers that need a larger row.
-   */
-  variant?: 'compact' | 'spacious';
-  /**
    * Accessible label for the entire card. Defaults to `displayName` when
    * `href` is set; supply explicitly to add caption context (e.g., "Acme Corp,
    * Admin").

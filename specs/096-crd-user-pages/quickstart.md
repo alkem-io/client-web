@@ -52,8 +52,8 @@ The three public profile pages ship together with the seven User Settings tabs (
    - `src/crd/components/user/UserPageHero.tsx` (avatar / name / location / Settings icon / Message Popover — consumes the shared `MessagePopover` from `common/`).
    - `src/crd/components/user/UserResourceTabStrip.tsx` (5 tabs, horizontal-scroll on `< md`, auto-scroll active into view).
    - `src/crd/components/user/UserResourceSections.tsx` (filter logic per active tab; renders all items per prototype, no pagination).
-   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations; layout `lg:col-span-4 lg:sticky lg:top-24` per prototype, stacked above main column on smaller viewports — sidebar is **not** hidden).
-   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above: outer `grid grid-cols-1 lg:grid-cols-12 gap-8`, sidebar `lg:col-span-4`, right column `lg:col-span-8`).
+   - `src/crd/components/user/UserProfileSidebar.tsx` (bio + organizations; layout `lg:col-span-3 lg:sticky lg:top-24` per FR-040 / FR-044, stacked above main column on smaller viewports — sidebar is **not** hidden).
+   - `src/crd/components/user/UserPublicProfileView.tsx` (composes the above: outer `grid grid-cols-1 lg:grid-cols-12 gap-6`, sidebar `lg:col-span-3`, right column `lg:col-span-9`, hero schema per FR-041 — avatar `w-28 h-28 md:w-32 md:h-32`, padding `pt-8 pb-6`, name `text-profile-title`).
    - `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx` + `publicProfileMapper.ts` + `useResourceTabs.ts`.
 
 4. **Organization vertical scaffold** (User Story 2 — route shell)

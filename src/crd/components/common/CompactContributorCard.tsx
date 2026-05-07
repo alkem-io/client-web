@@ -13,7 +13,6 @@ export type CompactContributorCardItem = {
 };
 
 export type CompactContributorCardProps = CompactContributorCardItem & {
-  variant?: 'compact' | 'spacious';
   ariaLabel?: string;
   /**
    * Optional badge rendered to the right of the row (e.g., member-count chip).
@@ -29,17 +28,13 @@ export function CompactContributorCard({
   caption,
   secondaryCaption,
   href,
-  variant = 'compact',
   ariaLabel,
   badge,
   className,
 }: CompactContributorCardProps) {
-  const padding = variant === 'compact' ? 'p-3' : 'p-4';
-  const avatarSize = variant === 'compact' ? 'size-10' : 'size-12';
-
   const content = (
-    <div className={cn('flex w-full items-center gap-3', padding)}>
-      <Avatar className={cn(avatarSize, 'rounded-lg border border-border shrink-0')}>
+    <div className="flex w-full items-center gap-3 p-4">
+      <Avatar className="size-12 rounded-lg border border-border shrink-0">
         {avatarImageUrl ? <AvatarImage src={avatarImageUrl} alt={displayName} /> : null}
         <AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground text-badge">
           {fallbackInitials(displayName)}
