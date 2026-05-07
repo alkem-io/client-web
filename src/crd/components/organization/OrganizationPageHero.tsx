@@ -33,7 +33,7 @@ export function OrganizationPageHero({
   return (
     <div>
       <div className="container mx-auto px-4 md:px-8 py-8 md:py-10">
-        <div className="flex flex-col md:flex-row md:items-end gap-6">
+        <div className="flex flex-col md:flex-row md:items-start gap-6">
           <Avatar className="w-32 h-32 md:w-40 md:h-40 shrink-0 border-4 border-background shadow-lg text-4xl rounded-2xl">
             {avatarImageUrl ? <AvatarImage src={avatarImageUrl} alt={displayName} className="object-cover" /> : null}
             <AvatarFallback color={color} className="text-white text-3xl rounded-2xl">
@@ -41,7 +41,7 @@ export function OrganizationPageHero({
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
+          <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 min-w-0">
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-page-title md:text-4xl text-foreground">{displayName}</h1>

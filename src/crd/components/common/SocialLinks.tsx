@@ -72,6 +72,8 @@ const isSafeUri = (uri: string): boolean => {
   // No scheme = relative URL (safe).
   if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return true;
   const lower = trimmed.toLowerCase();
+  // Explicitly block `data:` URIs
+  if (lower.startsWith('data:')) return false;
   return SAFE_PROTOCOLS.some(proto => lower.startsWith(proto));
 };
 
