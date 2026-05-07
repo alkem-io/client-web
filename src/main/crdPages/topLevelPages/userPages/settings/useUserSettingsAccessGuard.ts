@@ -5,8 +5,13 @@ import useCanEditUserSettings, { type UseCanEditUserSettingsResult } from '../us
 export type UseUserSettingsAccessGuardArgs = {
   /** The profile being viewed (resolved by `useUserPageRouteContext`). */
   profileUserId: string | undefined;
-  /** The slug used to build the public-profile redirect URL. */
-  profileSlug: string | undefined;
+  /**
+   * The user's canonical public-profile URL (`user.profile.url`, mapped
+   * through `getProfileUrl` for the `/user/me` case). Used directly as the
+   * redirect target on access denial — never built from a `nameID` here. See
+   * `docs/crd/migration-guide.md` "URL Construction".
+   */
+  profileUrl: string | undefined;
 };
 
 /**
@@ -14,16 +19,16 @@ export type UseUserSettingsAccessGuardArgs = {
  * (FR-010 / SC-008).
  *
  * When the predicate resolves to `canEditSettings === false`, navigates the
- * viewer to `/user/<slug>` (the public profile owned by sibling spec 096) —
- * no read-only fallback. The redirect uses `replace: true` so the back
- * button doesn't bounce the viewer back into the settings shell.
+ * viewer to the user's public profile (owned by sibling spec 096) — no
+ * read-only fallback. The redirect uses `replace: true` so the back button
+ * doesn't bounce the viewer back into the settings shell.
  *
  * Returns the predicate result so the consumer can also branch on it (e.g.
  * the Security tab visibility per FR-012).
  */
 const useUserSettingsAccessGuard = ({
   profileUserId,
-  profileSlug,
+  profileUrl,
 }: UseUserSettingsAccessGuardArgs): UseCanEditUserSettingsResult => {
   const navigate = useNavigate();
   const result = useCanEditUserSettings({ profileUserId });
@@ -32,9 +37,9 @@ const useUserSettingsAccessGuard = ({
     if (result.loading) return;
     if (!profileUserId) return;
     if (result.canEditSettings) return;
-    if (!profileSlug) return;
-    navigate(`/user/${profileSlug}`, { replace: true });
-  }, [result.loading, result.canEditSettings, profileUserId, profileSlug, navigate]);
+    if (!profileUrl) return;
+    navigate(profileUrl, { replace: true });
+  }, [result.loading, result.canEditSettings, profileUserId, profileUrl, navigate]);
 
   return result;
 };

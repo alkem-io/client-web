@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 
 export const ORG_SETTINGS_TAB_IDS = ['profile', 'account', 'community', 'authorization', 'settings'] as const;
 
@@ -12,9 +13,13 @@ const isOrgSettingsTabId = (value: string): value is OrgSettingsTabId =>
 
 /**
  * Resolves the active Org Settings tab from the URL and exposes a navigation
- * handler that pushes `/organization/<orgSlug>/settings/<id>`.
+ * handler that pushes the tab URL via `buildSettingsTabUrl` (from
+ * `@/main/routing/urlBuilders`) — never an inline `/organization/...`
+ * template, per the URL Construction rule in `docs/crd/migration-guide.md`.
+ *
+ * `profileUrl` is supplied by the caller (from `organization.profile.url`).
  */
-export const useOrgSettingsTab = (params: { organizationSlug: string | undefined }) => {
+export const useOrgSettingsTab = (params: { profileUrl: string | undefined }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -25,8 +30,9 @@ export const useOrgSettingsTab = (params: { organizationSlug: string | undefined
   const activeTabId: OrgSettingsTabId = isOrgSettingsTabId(tabSegment) ? tabSegment : DEFAULT_TAB;
 
   const onTabSelect = (next: OrgSettingsTabId) => {
-    if (!params.organizationSlug) return;
-    navigate(`/organization/${params.organizationSlug}/settings/${next}`);
+    const target = buildSettingsTabUrl(params.profileUrl, next);
+    if (!target) return;
+    navigate(target);
   };
 
   return { activeTabId, onTabSelect };

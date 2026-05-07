@@ -7,8 +7,15 @@
 
 /** User-side route context. Resolves /user/me → /user/<self> and currentUser. Owned by 096; reused here. */
 export type UserPageRouteContext = {
-  /** The user nameID from the URL (after /user/me resolution). */
-  userSlug: string | null;
+  /**
+   * Canonical public-profile URL for the resolved user (`user.profile.url`,
+   * mapped through `getProfileUrl` so `/user/me` stays `/user/me`). The
+   * settings shell composes its tab URLs on top of this via
+   * `buildSettingsTabUrl(profileUrl, tabId)` from `@/main/routing/urlBuilders`
+   * — never by hand-rolling `/user/<nameId>/...`. The URL is the canonical
+   * identifier here; the underlying `nameID` is an implementation detail.
+   */
+  profileUrl: string | undefined;
   /** The user's database id (resolved from useUserProvider). */
   userId: string | null;
   /** The currently-authenticated user's database id. */

@@ -258,7 +258,7 @@ type SettingsShellProps = {
 };
 ```
 
-The view never knows about route paths — `onTabSelect` is a callback the integration layer wires to `useNavigate(...)` (`/user/<slug>/settings/<id>` or `/organization/<slug>/settings/<id>`).
+The view never knows about route paths — `onTabSelect` is a callback the integration layer wires to `useNavigate(buildSettingsTabUrl(profileUrl, tabId))` from `@/main/routing/urlBuilders`. The integration hook receives `profileUrl` from the actor's context (`useUserPageRouteContext().profileUrl` on the User side, `organization.profile.url` on the Org side) — never an inline `/user/...` / `/organization/...` template. See `docs/crd/migration-guide.md` ("URL Construction") for the project-wide convention.
 
 **Rationale**: One shell primitive for both actors satisfies DRY and keeps behavior parity (responsive horizontal scroll, auto-scroll active into view, keyboard navigation). The `hidden` flag handles FR-083 (Security tab hidden for non-owner) without a special-case branch in the primitive.
 

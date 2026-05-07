@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 
 export const USER_SETTINGS_TAB_IDS = [
   'profile',
@@ -20,11 +21,15 @@ const isUserSettingsTabId = (value: string): value is UserSettingsTabId =>
 
 /**
  * Resolves the active User Settings tab from the URL and exposes a navigation
- * handler that pushes `/user/<slug>/settings/<id>`. The slug is supplied by
- * the caller (from `useUserPageRouteContext().userSlug`) so the hook stays
- * agnostic to how the user is identified.
+ * handler that pushes the tab URL via `buildSettingsTabUrl` (from
+ * `@/main/routing/urlBuilders`) — never an inline `/user/<nameId>/...`
+ * template, per the URL Construction rule in `docs/crd/migration-guide.md`.
+ *
+ * `profileUrl` is supplied by the caller (from
+ * `useUserPageRouteContext().profileUrl`) so the hook stays agnostic to how
+ * the user is identified.
  */
-export const useUserSettingsTab = (params: { userSlug: string | undefined }) => {
+export const useUserSettingsTab = (params: { profileUrl: string | undefined }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -35,8 +40,9 @@ export const useUserSettingsTab = (params: { userSlug: string | undefined }) => 
   const activeTabId: UserSettingsTabId = isUserSettingsTabId(tabSegment) ? tabSegment : DEFAULT_TAB;
 
   const onTabSelect = (next: UserSettingsTabId) => {
-    if (!params.userSlug) return;
-    navigate(`/user/${params.userSlug}/settings/${next}`);
+    const target = buildSettingsTabUrl(params.profileUrl, next);
+    if (!target) return;
+    navigate(target);
   };
 
   return { activeTabId, onTabSelect };

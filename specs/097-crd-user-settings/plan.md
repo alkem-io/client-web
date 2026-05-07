@@ -208,8 +208,8 @@ src/
 │   │       │   └── settings/                             # NEW — User Settings integration subtree
 │   │       │       ├── CrdUserSettingsRoutes.tsx         # 7-tab Routes for the User shell; redirects on canEditUserSettings false
 │   │       │       ├── CrdUserSettingsPage.tsx           # Hosts SettingsShell with the User tab list; routes the active tab body
-│   │       │       ├── useUserSettingsAccessGuard.ts     # Wraps useCanEditUserSettings; redirects to /user/<slug> when false
-│   │       │       ├── useUserSettingsTab.ts             # Resolves active tab from URL; provides onTabSelect that pushes /user/<slug>/settings/<id>
+│   │       │       ├── useUserSettingsAccessGuard.ts     # Wraps useCanEditUserSettings; redirects to the user's profileUrl (from useUserPageRouteContext) when false
+│   │       │       ├── useUserSettingsTab.ts             # Resolves active tab from URL; provides onTabSelect that pushes buildSettingsTabUrl(profileUrl, tabId) — see urlBuilders rule
 │   │       │       ├── profile/
 │   │       │       │   ├── CrdUserProfileTab.tsx
 │   │       │       │   ├── useUserProfileTabData.ts      # 045-style per-section save hook (status by section + onSaveSection per section)
@@ -240,8 +240,8 @@ src/
 │   │           └── settings/                             # NEW — Org Settings integration subtree
 │   │               ├── CrdOrgSettingsRoutes.tsx          # 5-tab Routes for the Org shell; redirects on canEditOrganizationSettings false
 │   │               ├── CrdOrgSettingsPage.tsx            # Hosts SettingsShell with the Org tab list
-│   │               ├── useOrgSettingsAccessGuard.ts      # Wraps useCanEditOrganizationSettings (Decision #7)
-│   │               ├── useOrgSettingsTab.ts              # Active tab from URL + onTabSelect
+│   │               ├── useOrgSettingsAccessGuard.ts      # Wraps useCanEditOrganizationSettings (Decision #7); redirects to the org's profileUrl (organization.profile.url) when false
+│   │               ├── useOrgSettingsTab.ts              # Active tab from URL + onTabSelect routed via buildSettingsTabUrl(profileUrl, tabId) — see urlBuilders rule
 │   │               ├── profile/
 │   │               │   ├── CrdOrgProfileTab.tsx
 │   │               │   ├── useOrgProfileTabData.ts       # 045-style per-section save hook (parallel to user version)
@@ -273,6 +273,8 @@ src/
 **Structure Decision**: Presentational CRD components live under `src/crd/components/{contributor,user,organization}/settings/`. Per-tab integration (route entries, per-tab pages, integration hooks, mappers) lives under two parallel sibling subtrees: `src/main/crdPages/topLevelPages/userPages/settings/` and `src/main/crdPages/topLevelPages/organizationPages/settings/`. Each tab has its own subfolder (`<tab>/`) with `Crd<Actor><Tab>Tab.tsx`, `use<Actor><Tab>TabData.ts` (where applicable), and `<actor><Tab>Mapper.ts`. The User shell's settings subtree is hosted by an extension to the existing 096 `CrdUserRoutes.tsx` (the `settings/*` route delegates to the new `CrdUserSettingsRoutes`). The Org shell's settings dispatch extends 096's existing `CrdOrganizationRoutes.tsx` (the `settings/*` route inside that file gains a `useCrdEnabled()`-gated branch). The existing MUI files under `src/domain/community/{user,organization}Admin/` stay intact and continue to serve users when `useCrdEnabled()` returns `false`. No GraphQL changes.
 
 **TopLevelRoutes wiring**: The User shell dispatch lives in `TopLevelRoutes.tsx` (mirrors the 096 pattern for `/user/*`). The Org shell dispatch lives in 096's `CrdOrganizationRoutes.tsx`'s existing `settings/*` route — `useCrdEnabled() ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />`. Both dispatches preserve the route's existing wrappers (NoIdentityRedirect on User, the Org route's existing wrappers).
+
+**Identifier + URL convention.** The settings shells use the entity's canonical **`profile.url`** field as the navigation root — never a hand-built `/user/<nameId>/...` template. On the User side this is read from `useUserPageRouteContext().profileUrl` (which already collapses `/user/me` correctly via `getProfileUrl`); on the Org side it is `organization.profile.url`. Tab navigation, access-guard redirects, and any cross-tab links go through the **`@/main/routing/urlBuilders`** module — this spec adds `buildSettingsTabUrl(profileUrl, tabId)` (composed on top of the existing `buildSettingsUrl`). New URL shapes get a new builder rather than an inline template. Rationale documented in `docs/crd/migration-guide.md` ("URL Construction"). This is the canonical CRD pattern from this spec onwards; the previously-drafted `userSlug` field on `UserPageRouteContext` is removed (`contracts/data-mapper.ts` updated to expose `profileUrl` instead).
 
 **`/user/me/settings/*` resolution**: handled by the existing 096 `/me` route in `CrdUserRoutes.tsx`. The `settings/*` subtree under `/me` resolves to the current user's settings via the same `MeUserProvider` analog 096 wires.
 

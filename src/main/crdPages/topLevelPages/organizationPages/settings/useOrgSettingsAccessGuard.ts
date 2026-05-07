@@ -5,8 +5,12 @@ import useCanEditOrganizationSettings, {
 } from '../useCanEditOrganizationSettings';
 
 export type UseOrgSettingsAccessGuardArgs = {
-  /** The slug used to build the public-profile redirect URL. */
-  organizationSlug: string | undefined;
+  /**
+   * The organization's canonical public-profile URL (`organization.profile.url`).
+   * Used directly as the redirect target on access denial — never built from a
+   * `nameID` here. See `docs/crd/migration-guide.md` "URL Construction".
+   */
+  profileUrl: string | undefined;
 };
 
 /**
@@ -14,11 +18,11 @@ export type UseOrgSettingsAccessGuardArgs = {
  * boundary (FR-011 / SC-009).
  *
  * When the predicate resolves to `canEditSettings === false`, navigates the
- * viewer to `/organization/<orgSlug>` (the public profile owned by sibling
- * spec 096) — no read-only fallback.
+ * viewer to the organization's public profile (owned by sibling spec 096) —
+ * no read-only fallback.
  */
 const useOrgSettingsAccessGuard = ({
-  organizationSlug,
+  profileUrl,
 }: UseOrgSettingsAccessGuardArgs): UseCanEditOrganizationSettingsResult => {
   const navigate = useNavigate();
   const result = useCanEditOrganizationSettings();
@@ -26,9 +30,9 @@ const useOrgSettingsAccessGuard = ({
   useEffect(() => {
     if (result.loading) return;
     if (result.canEditSettings) return;
-    if (!organizationSlug) return;
-    navigate(`/organization/${organizationSlug}`, { replace: true });
-  }, [result.loading, result.canEditSettings, organizationSlug, navigate]);
+    if (!profileUrl) return;
+    navigate(profileUrl, { replace: true });
+  }, [result.loading, result.canEditSettings, profileUrl, navigate]);
 
   return result;
 };

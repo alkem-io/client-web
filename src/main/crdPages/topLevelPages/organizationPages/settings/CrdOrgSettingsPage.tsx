@@ -1,12 +1,11 @@
 import { Briefcase, Cog, Shield, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import { nameOfUrl } from '@/main/routing/urlParams';
 import useOrgSettingsAccessGuard from './useOrgSettingsAccessGuard';
 import useOrgSettingsTab, { type OrgSettingsTabId } from './useOrgSettingsTab';
 
@@ -24,12 +23,11 @@ const computeFallback = (displayName: string | undefined): string => {
  */
 const CrdOrgSettingsPage = () => {
   const { t } = useTranslation('crd-contributorSettings');
-  const params = useParams();
-  const organizationSlug = params[nameOfUrl.organizationNameId as keyof typeof params] as string | undefined;
   const { organizationId, organization } = useOrganizationContext();
+  const profileUrl = organization?.profile?.url;
 
-  useOrgSettingsAccessGuard({ organizationSlug });
-  const { activeTabId, onTabSelect } = useOrgSettingsTab({ organizationSlug });
+  useOrgSettingsAccessGuard({ profileUrl });
+  const { activeTabId, onTabSelect } = useOrgSettingsTab({ profileUrl });
 
   usePageTitle(t('org.profile.pageTitle'));
 

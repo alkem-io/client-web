@@ -315,6 +315,35 @@ i18n keys live in `src/crd/i18n/common/common.<lang>.json` under `share.*` and `
 
 The GraphQL data layer doesn't change. Existing hooks from MUI pages can be reused directly. Only the view layer is replaced.
 
+### URL Construction
+
+Every URL the CRD layer hands to `useNavigate`, an `<a href>`, or any other navigation API **must** come from `@/main/routing/urlBuilders`. Do not template paths inline in CRD pages, integration hooks, or data mappers.
+
+**The rule, in three parts:**
+
+1. **Read URLs off the entity.** Every primary entity (`User`, `Organization`, `Space`, `VirtualContributor`, …) exposes a canonical `profile.url` field. That is the public-profile URL for that entity. Use it directly — don't reconstruct it from `nameID` / slug fragments. On the User side, prefer `useUserPageRouteContext().profileUrl`, which already collapses `/user/me` → `/user/me` correctly via `getProfileUrl`. On the Org side, read `organization.profile.url`.
+
+2. **Compose with a builder.** When you need a derived URL (a settings tab, an account sub-page, a community link), call a builder from `urlBuilders.ts` rather than concatenating strings yourself:
+
+   ```typescript
+   // GOOD
+   import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+   navigate(buildSettingsTabUrl(profileUrl, 'profile'));
+
+   // BAD — inline template, hand-built nameID path
+   navigate(`/user/${userSlug}/settings/profile`);
+   navigate(`${profileUrl}/settings/profile`); // also bad — bypasses the central seam
+   ```
+
+3. **Add a builder when none fits.** If the URL shape you need isn't covered, add a new exported function to `urlBuilders.ts` (or extend an existing one) and use that. One central place, one diff to find on rename, one place tests can stub. New shapes earn a new builder — never a one-off inline template "just here".
+
+**Why this matters.** URL shapes change (the `nameID` → slug rename is exactly this kind of change in flight on the User vertical). Inline templates scatter the rename across every page; a centralized builder limits the blast radius to one file. The same applies to subdomain handling, query-param conventions, and `/me` redirection — all already live in `urlBuilders.ts` and `useUserRouteContext`. Don't reinvent them.
+
+**Anti-patterns to flag in review:**
+- `\`/user/${something}/...\`` or `\`/organization/${something}/...\`` anywhere outside `src/main/routing/`
+- A locally-named `userSlug` / `organizationSlug` variable held only to plug into a template — usually a sign the call site should be reading `profile.url` instead
+- A `profileSlug` / `userNameId` parameter on a hook whose only purpose is URL building — pass `profileUrl` and route through a builder
+
 ### Standalone Preview
 
 Run `pnpm crd:dev` to see CRD components with mock data on `localhost:5200`. No backend needed. Useful for iterating on design without the full app running.

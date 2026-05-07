@@ -25,9 +25,9 @@ const computeFallback = (displayName: string | undefined): string => {
  */
 const CrdUserSettingsPage = () => {
   const { t } = useTranslation('crd-contributorSettings');
-  const { userId, userModel, userSlug } = useUserPageRouteContext();
-  const { isOwner } = useUserSettingsAccessGuard({ profileUserId: userId, profileSlug: userSlug });
-  const { activeTabId, onTabSelect } = useUserSettingsTab({ userSlug });
+  const { userId, userModel, profileUrl } = useUserPageRouteContext();
+  const { isOwner } = useUserSettingsAccessGuard({ profileUserId: userId, profileUrl });
+  const { activeTabId, onTabSelect } = useUserSettingsTab({ profileUrl });
 
   usePageTitle(t('user.profile.pageTitle'));
 
