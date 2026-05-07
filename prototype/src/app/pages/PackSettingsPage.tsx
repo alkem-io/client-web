@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { useParams, Link, Navigate } from "react-router";
-import { Info, Lightbulb, Plus, MoreHorizontal, Trash2, Eye, Search, ChevronDown, ChevronRight, Check, Loader2, Pencil, Upload, X } from "lucide-react";
+import { useParams } from "react-router";
+import { Lightbulb, Plus, MoreHorizontal, Trash2, Eye, Search, ChevronDown, ChevronRight, Check, Loader2, Pencil, Upload, X } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
@@ -27,7 +27,7 @@ import {
 } from "@/app/components/ui/collapsible";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { cn } from "@/lib/utils";
+
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -510,26 +510,16 @@ function PackSettingsTemplates() {
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function PackSettingsPage() {
-  const { packSlug, tab } = useParams<{ packSlug: string; tab: string }>();
-
-  // Redirect to /about if no tab
-  if (!tab) {
-    return <Navigate to={`/templates/packs/${packSlug}/settings/about`} replace />;
-  }
-
-  const tabs = [
-    { label: "About", icon: Info, id: "about" },
-    { label: "Templates", icon: Lightbulb, id: "templates" },
-  ];
+  const { packSlug } = useParams<{ packSlug: string }>();
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      {/* Sticky header with title + tabs */}
+      {/* Sticky header with title */}
       <div className="sticky top-16 z-20 border-b border-border bg-card">
-        <div className="px-6 md:px-8 pt-8 pb-0">
+        <div className="px-6 md:px-8 pt-8 pb-6">
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-border shrink-0">
                   {PACK_DATA.avatar ? (
                     <img src={PACK_DATA.avatar} alt={PACK_DATA.name} className="w-full h-full object-cover" />
@@ -544,27 +534,6 @@ export default function PackSettingsPage() {
                   <p className="text-muted-foreground text-sm mt-0.5">{PACK_DATA.provider}</p>
                 </div>
               </div>
-
-              <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
-                {tabs.map((item) => {
-                  const isActive = tab === item.id;
-                  return (
-                    <Link
-                      key={item.id}
-                      to={`/templates/packs/${packSlug}/settings/${item.id}`}
-                      className={cn(
-                        "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                        isActive
-                          ? "border-primary text-primary"
-                          : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
-                      )}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
             </div>
           </div>
         </div>
@@ -575,22 +544,18 @@ export default function PackSettingsPage() {
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
             <div
-              className="w-full min-h-[500px] p-6 md:p-8 shadow-sm"
+              className="w-full p-6 md:p-8 shadow-sm"
               style={{
                 background: "var(--card)",
                 border: "1px solid var(--border)",
                 borderRadius: "var(--radius)",
               }}
             >
-              {tab === "about" ? (
+              <div className="space-y-10">
                 <PackSettingsAbout />
-              ) : tab === "templates" ? (
+                <Separator />
                 <PackSettingsTemplates />
-              ) : (
-                <div className="flex flex-col justify-center h-full min-h-[300px] space-y-4">
-                  <p className="text-muted-foreground">Unknown tab.</p>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
