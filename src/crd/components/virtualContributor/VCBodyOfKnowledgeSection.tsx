@@ -51,7 +51,7 @@ export function VCBodyOfKnowledgeSection({ bodyOfKnowledge, labels }: VCBodyOfKn
 
   return (
     <section>
-      <h3 className="text-section-title mb-3">{labels.title}</h3>
+      <h3 className="text-section-title mb-4">{labels.title}</h3>
       {bodyOfKnowledge.kind === 'space' ? (
         <SpaceBoK bok={bodyOfKnowledge} />
       ) : bodyOfKnowledge.kind === 'knowledgeBase' ? (
