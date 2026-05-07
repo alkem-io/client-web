@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { toast } from "sonner";
 import { 
-  ArrowLeft, Share2, Heart, Check, ChevronDown, ChevronRight, 
-  Layers, Info, Calendar, Users, BarChart, FileText, Monitor, 
+  ArrowLeft, Share2, ChevronDown, ChevronRight, 
+  Layers, Info, Users, FileText, Monitor, 
   MessageSquare, Home, Zap, StickyNote, Layout as LayoutIcon, Image as ImageIcon,
   BookOpen, List, Shield, ExternalLink, Grid, Paperclip, Settings, PenTool, MoreHorizontal
 } from "lucide-react";
@@ -45,7 +45,6 @@ const MOCK_SPACES = [
 // --- Header Component ---
 
 function TemplateHeader({ template, onBack, onApply, packSlug, templateId }: { template: any, onBack: () => void, onApply: () => void, packSlug?: string, templateId?: string }) {
-  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
 
   // Determine icon based on type
@@ -129,17 +128,6 @@ function TemplateHeader({ template, onBack, onApply, packSlug, templateId }: { t
           </Button>
           
           <div className="flex items-center gap-2 justify-center sm:justify-start">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setIsFavorite(!isFavorite)}>
-                    <Heart className={cn("w-4 h-4", isFavorite ? "fill-destructive text-destructive" : "text-muted-foreground")} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Favorite</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -670,86 +658,33 @@ function MetadataPanel({ template }: { template: any }) {
       {/* About Section */}
       <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-sm">
         <h3 className="font-semibold text-foreground">About This Template</h3>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-2">
-              <Users className="w-4 h-4" /> Usage
-            </span>
-            <span className="font-medium">{template.usageCount || 120} members</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-2">
-              <Calendar className="w-4 h-4" /> Updated
-            </span>
-            <span className="font-medium">{template.lastUpdated || "Recently"}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-2">
-              <BarChart className="w-4 h-4" /> Complexity
-            </span>
-            <Badge variant="outline" className="font-normal text-xs">{template.complexity || "Intermediate"}</Badge>
-          </div>
-        </div>
+        <p className="text-sm text-muted-foreground">{template.description}</p>
         
-        <Separator />
-        
-        <div>
-           <h4 className="text-sm font-medium mb-3">What's Included</h4>
-           <div className="space-y-2">
-              {template.type === "Collaboration Tool" && template.structure?.component ? (
-                <>
-                  <div className="text-sm text-muted-foreground flex items-start gap-2 bg-muted/50 p-2 rounded">
-                     <Check className="w-4 h-4 text-success shrink-0 mt-0.5" /> 
-                     <span><strong>1 Post Template:</strong> {template.structure.post?.title || "Standard Post"}</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground flex items-start gap-2 bg-muted/50 p-2 rounded">
-                     <Check className="w-4 h-4 text-success shrink-0 mt-0.5" /> 
-                     <span><strong>1 Attached Tool:</strong> {template.structure.component.name} ({template.structure.component.type})</span>
-                  </div>
-                </>
-              ) : template.type === "Space" ? (
-                <>
-                   <div className="text-sm text-muted-foreground flex items-start gap-2">
-                     <Check className="w-4 h-4 text-success shrink-0 mt-0.5" /> 
-                     <span>{template.structure?.subspaces?.length || 0} Subspaces</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground flex items-start gap-2">
-                     <Check className="w-4 h-4 text-success shrink-0 mt-0.5" /> 
-                     <span>{template.structure?.templates?.length || 0} Pre-configured Templates</span>
-                  </div>
-                </>
-              ) : (
-                <div className="text-sm text-muted-foreground flex items-start gap-2">
-                   <Check className="w-4 h-4 text-success shrink-0 mt-0.5" /> 
-                   <span>Standard {template.type} Structure</span>
-                </div>
-              )}
-           </div>
-        </div>
-      </div>
+        {template.tags && template.tags.length > 0 && (
+          <>
+            <Separator />
+            <div>
+              <h4 className="text-sm font-medium mb-2">Tags</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {template.tags.map((tag: string) => (
+                  <Badge key={tag} variant="secondary" className="text-xs font-normal">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
-      {/* Related Templates */}
-      <div>
-         <h3 className="font-semibold text-foreground mb-3">Related Templates</h3>
-         <div className="space-y-3">
-            {ALL_TEMPLATES
-              .filter(t => t.type === template.type && t.id !== template.id)
-              .slice(0, 3)
-              .map(related => (
-                <Link 
-                  key={related.id} 
-                  to={`/templates/${related.id}`}
-                  className="block group bg-card border border-border rounded-lg p-3 hover:border-primary/50 transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                     <Badge variant="secondary" className="text-[10px] h-4 px-1">{related.type}</Badge>
-                     <span className="text-[10px] text-muted-foreground">{related.usageCount || 45} uses</span>
-                  </div>
-                  <h4 className="text-sm font-medium group-hover:text-primary transition-colors truncate">{related.name}</h4>
-                </Link>
-              ))
-            }
-         </div>
+        {template.author && (
+          <>
+            <Separator />
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Created by</span>
+              <span className="font-medium">{template.author}</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

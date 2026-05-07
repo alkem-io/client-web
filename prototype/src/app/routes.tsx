@@ -28,9 +28,11 @@ import BrowseSpacesPage from "./pages/BrowseSpacesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminPage from "./pages/AdminPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import AuthPage from "./pages/AuthPage";
 import PackSettingsPage from "./pages/PackSettingsPage";
 import TemplateSettingsPage from "./pages/TemplateSettingsPage";
 import VCProfilePage from "./pages/VCProfilePage";
+import ForumPage from "./pages/ForumPage";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,9 @@ export const router = createBrowserRouter([
       { path: "/typography", Component: TypographySystemPage },
       { path: "/analytics", Component: EcosystemAnalyticsPage },
       { path: "/onboarding", Component: OnboardingPage },
+      { path: "/sign-in", Component: AuthPage },
+      { path: "/sign-up", Component: AuthPage },
+      { path: "/password-recovery", Component: AuthPage },
 
       /* ─── Pages WITH app sidebar (MainLayout) ─── */
       {
@@ -53,16 +58,16 @@ export const router = createBrowserRouter([
           /* Browse Spaces */
           { path: "spaces", Component: BrowseSpacesPage },
 
+          /* Forum */
+          { path: "forum", Component: ForumPage },
+
           /* Template Library */
           { path: "templates", Component: TemplateLibraryPage },
           { path: "templates/:templateId", Component: TemplateDetailPage },
           { path: "templates/:templateId/settings", Component: TemplateSettingsPage },
-          { path: "templates/:templateId/settings/:tab", Component: TemplateSettingsPage },
           { path: "templates/packs/:packSlug", Component: TemplatePackDetailPage },
           { path: "templates/packs/:packSlug/settings", Component: PackSettingsPage },
-          { path: "templates/packs/:packSlug/settings/:tab", Component: PackSettingsPage },
           { path: "templates/packs/:packSlug/settings/templates/:templateId", Component: TemplateSettingsPage },
-          { path: "templates/packs/:packSlug/settings/templates/:templateId/:tab", Component: TemplateSettingsPage },
           { path: "templates/packs/:packSlug/:templateId", Component: TemplateDetailPage },
 
           /* Platform Admin */
