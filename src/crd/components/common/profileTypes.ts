@@ -17,6 +17,7 @@ export type VirtualContributorCardItem = {
   description: string | null;
   type: string;
   href: string;
+  avatarImageUrl: string | null;
 };
 
 export type SimpleResourceCardItem = {
