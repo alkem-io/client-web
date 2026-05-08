@@ -9,6 +9,7 @@ import {
   type UpdateReferenceInput,
 } from '@/core/apollo/generated/graphql-schema';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraDocumentDisplayName';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
@@ -29,7 +30,7 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   none: CalloutFramingType.None,
   whiteboard: CalloutFramingType.Whiteboard,
   memo: CalloutFramingType.Memo,
-  document: CalloutFramingType.None, // disabled chip — never reaches submit
+  document: CalloutFramingType.CollaboraDocument,
   cta: CalloutFramingType.Link,
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
@@ -41,7 +42,6 @@ const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionTyp
   post: CalloutContributionType.Post,
   memo: CalloutContributionType.Memo,
   whiteboard: CalloutContributionType.Whiteboard,
-  document: undefined, // disabled chip — never reaches submit
 };
 
 export const framingChipToServer = (chip: FramingChip): CalloutFramingType => FRAMING_CHIP_TO_SERVER[chip];
@@ -93,6 +93,8 @@ export type MapFormOptions = {
   visibility: CalloutVisibility;
   /** i18n-resolved fallback used when the framing has no title. */
   whiteboardFallbackDisplayName: string;
+  /** i18n-resolved fallback used when a Collabora document framing has no title. */
+  collaboraFallbackDisplayName: string;
 };
 
 /**
@@ -118,6 +120,15 @@ export type MapFormResult = {
    * mutation resolves.
    */
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
+  /**
+   * File staged for upload as the Collabora document framing's bytes. Set only
+   * when `framingChip === 'document'` AND `values.collaboraUploadFile` is non-null.
+   * The connector passes this as the second argument to `handleCreateCallout`.
+   * On the upload path, `input.framing.collaboraDocument` is `{}` or `{ displayName }`
+   * depending on the typed-vs-prefill comparison; `documentType` is server-derived
+   * from the file's MIME and never sent.
+   */
+  collaboraUploadFile?: File;
 };
 
 /**
@@ -254,6 +265,32 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     };
   }
 
+  // Collabora document framing has two creation paths:
+  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  //   - Upload: send `{}` or `{ displayName }` (per the typed-vs-prefill rule)
+  //     plus the `file` separately to `handleCreateCallout`. `documentType` is
+  //     server-derived from the file's sniffed MIME and MUST NOT be sent.
+  // There is no edit-time counterpart on either branch; the document body is
+  // edited through the Collabora overlay against the already-created document.
+  if (framingType === CalloutFramingType.CollaboraDocument) {
+    const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
+    if (values.collaboraUploadFile) {
+      const decision = deriveCollaboraDocumentDisplayName({
+        mode: 'upload',
+        postTitle,
+        autoPrefilledTitle: values.collaboraAutoPrefilledTitle,
+      });
+      callout.framing.collaboraDocument = decision;
+    } else {
+      const decision = deriveCollaboraDocumentDisplayName({
+        mode: 'blank-create',
+        postTitle,
+        documentType: values.collaboraDocumentType,
+      });
+      callout.framing.collaboraDocument = decision;
+    }
+  }
+
   if (framingType === CalloutFramingType.Poll && values.pollQuestion) {
     callout.framing.poll = {
       title: values.pollQuestion,
@@ -275,6 +312,10 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     whiteboardPreviewImages:
       framingType === CalloutFramingType.Whiteboard && values.whiteboardPreviewImages.length > 0
         ? values.whiteboardPreviewImages
+        : undefined,
+    collaboraUploadFile:
+      framingType === CalloutFramingType.CollaboraDocument && values.collaboraUploadFile
+        ? values.collaboraUploadFile
         : undefined,
   };
 };

@@ -44,8 +44,6 @@ export function ResponsePanel(props: ResponsePanelProps) {
       return <SimpleContributionPanel {...props} />;
     case 'whiteboard':
       return <SimpleContributionPanel {...props} />;
-    case 'document':
-      return <DocumentsPanel />;
     default:
       return null;
   }
@@ -105,15 +103,6 @@ function SimpleContributionPanel(props: ResponsePanelProps) {
     <PanelWrapper>
       <ActorSwitches value={allowedActors} onChange={onAllowedActorsChange} disabled={disabled} />
       {onSetDefaults && <SetDefaultsButton onClick={onSetDefaults} disabled={disabled} />}
-    </PanelWrapper>
-  );
-}
-
-function DocumentsPanel() {
-  const { t } = useTranslation('crd-space');
-  return (
-    <PanelWrapper>
-      <p className="text-caption text-muted-foreground italic">{t('framing.comingSoon')}</p>
     </PanelWrapper>
   );
 }
