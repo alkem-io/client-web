@@ -1,10 +1,12 @@
 import { useLayoutEffect } from 'react';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
-// TODO: we should not allow space names starting with these values
+// `/login` and `/logout` removed: with the OIDC BFF on the apex
+// (`/api/auth/oidc/*` routes to alkemio-server only on `sandbox-alkem.io`),
+// the login/logout UI must stay on the apex. Bouncing to the identity
+// subdomain caused LoginPage's relative `window.location.replace`
+// (`/api/auth/oidc/login`) to 404 there.
 const IdentityLocations = [
-  '/login',
-  '/logout',
   '/sign_up',
   '/registration',
   '/verify',
