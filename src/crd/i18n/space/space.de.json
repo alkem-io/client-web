@@ -152,6 +152,24 @@
     "collapse": "Weniger anzeigen",
     "openWhiteboard": "Whiteboard öffnen",
     "openMemo": "Memo öffnen",
+    "openDocument": "Dokument öffnen",
+    "document": "Dokument",
+    "documentText": "Word-Dokument",
+    "documentSpreadsheet": "Tabellenkalkulation",
+    "documentPresentation": "Präsentation",
+    "addDocument": "Dokument hinzufügen",
+    "defaultDocumentName": "Neues Dokument",
+    "documentTypeLabel": "Dokumenttyp",
+    "createNew": "Neu erstellen",
+    "documentImportOr": "oder",
+    "documentImportHint": "Datei hierher ziehen oder klicken zum Hochladen",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx bis zu {{cap}} MB",
+    "documentImportRemoveFile": "Datei entfernen",
+    "documentImportErrorUnsupported": "Dieser Dateityp wird nicht unterstützt. Probieren Sie {{formats}}.",
+    "documentImportErrorTooLarge": "Datei ist zu groß. Maximale Größe: {{cap}} MB.",
+    "documentImportErrorMultiple": "Bitte nur eine Datei gleichzeitig hochladen.",
+    "documentImportErrorFolder": "Bitte eine Datei hochladen, keinen Ordner.",
+    "documentImportErrorServiceUnavailable": "Der Dokumentendienst ist vorübergehend nicht verfügbar. Bitte gleich noch einmal versuchen.",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
     "expandComments": "Kommentare ausklappen",
@@ -165,7 +183,6 @@
     "callToAction": "Handlungsaufforderung",
     "mediaGallery": "Mediengalerie",
     "memo": "Notiz",
-    "document": "Dokument",
     "moreWhiteboards": "+{{count}} weitere",
     "moreContributions": "+{{count}} mehr",
     "vote": "Abstimmen",
@@ -223,7 +240,8 @@
     "memoOpenHint": "Der Memo-Inhalt wird in einem eigenen Dialog bearbeitet.",
     "openMemo": "Memo öffnen",
     "openWhiteboard": "Whiteboard öffnen",
-    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet."
+    "openWhiteboardHint": "Der Whiteboard-Inhalt wird in einem eigenen Dialog bearbeitet.",
+    "officeDocumentsNotEnabled": "Office-Dokumente sind für diesen Space nicht aktiviert."
   },
   "members": {
     "title": "Community",
@@ -553,6 +571,36 @@
     "linkAriaLabelExternal": "{{displayName}} (öffnet {{url}} in einem neuen Tab)",
     "validation": {
       "invalidUrl": "Ungültige URL"
+    }
+  },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Collabora-Fehler: {{message}}",
+        "sessionClosed": "Die Zusammenarbeitssitzung wurde geschlossen."
+      }
+    },
+    "footer": {
+      "connected": "Verbunden",
+      "connecting": "Verbinden…",
+      "disconnected": "Getrennt",
+      "saved": "Gespeichert",
+      "saving": "Wird gespeichert…",
+      "unsaved": "Ungespeicherte Änderungen",
+      "error": "Fehler beim Speichern",
+      "membersOnline_one": "1 Mitglied online",
+      "membersOnline_other": "{{count}} Mitglieder online",
+      "connectedUsersLabel": "Verbundene Benutzer",
+      "moreConnectedUsers_one": "{{count}} weiterer verbundener Benutzer",
+      "moreConnectedUsers_other": "{{count}} weitere verbundene Benutzer",
+      "guestWarning": "Du bearbeitest als Gast",
+      "delete": "Dokument löschen",
+      "readonlyReason": {
+        "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
+        "unauthenticated": "Melde dich an, um dieses Dokument zu bearbeiten.",
+        "contentUpdatePolicy": "Du hast keine Berechtigung, dieses Dokument zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
+        "noMembership": "Nur Mitglieder dieses Space können dieses Dokument bearbeiten. Tritt bei, um mitzuwirken."
+      }
     }
   },
   "mediaGallery": {

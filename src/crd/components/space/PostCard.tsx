@@ -10,6 +10,10 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  CalloutCollaboraPreview,
+  type CollaboraDocumentPreviewType,
+} from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import {
@@ -24,7 +28,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'callToAction';
+export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'document' | 'callToAction';
 
 export type PostCardData = {
   id: string;
@@ -49,6 +53,8 @@ export type PostCardData = {
    * reorders / deletions even when image URLs change.
    */
   framingMediaGallery?: { thumbnails: MediaGalleryFeedThumbnail[]; totalCount: number };
+  /** Framing-level Collabora document type (document framing only) — drives the icon + label in the feed preview */
+  framingDocumentType?: CollaboraDocumentPreviewType;
   /** Framing-level call-to-action link (Link framing only). `isValid` is false for non-http(s) or malformed URIs. */
   framingCallToAction?: { uri: string; displayName: string; isExternal: boolean; isValid: boolean };
   commentCount?: number;
@@ -80,6 +86,9 @@ type PostCardProps = {
    */
   settingsSlot?: ReactNode;
   onExpandClick?: () => void;
+  /** Opens the Collabora editor directly from the feed preview (document framing only).
+   *  Distinct from `onClick`, which opens the callout dialog via the title link. */
+  onOpenFramingDocument?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
@@ -109,6 +118,7 @@ const typeIcons: Record<PostType, typeof FileText> = {
   whiteboard: Presentation,
   memo: StickyNote,
   mediaGallery: Images,
+  document: FileText,
   callToAction: Megaphone,
 };
 
@@ -117,6 +127,7 @@ const typeLabels = {
   whiteboard: 'callout.whiteboard',
   memo: 'callout.memo',
   mediaGallery: 'callout.mediaGallery',
+  document: 'callout.document',
   callToAction: 'callout.callToAction',
 } as const;
 
@@ -127,6 +138,7 @@ export function PostCard({
   onCommentsClick,
   settingsSlot,
   onExpandClick,
+  onOpenFramingDocument,
   contributionsPreview,
   children,
   commentsSlot,
@@ -260,6 +272,15 @@ export function PostCard({
             thumbnails={post.framingMediaGallery.thumbnails}
             totalCount={post.framingMediaGallery.totalCount}
             onOpenAt={onClick}
+          />
+        )}
+
+        {/* Collabora document framing preview — compact variant for the feed */}
+        {post.type === 'document' && post.framingDocumentType && (
+          <CalloutCollaboraPreview
+            documentType={post.framingDocumentType}
+            onOpen={onOpenFramingDocument ?? onClick ?? (() => {})}
+            size="compact"
           />
         )}
 

@@ -15,9 +15,10 @@ export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 
 /**
  * Response-type chip id. Maps to the server enum `CalloutContributionType`
  * (single value, not an array) at submit time via the calloutFormMapper.
- * `'document'` is a disabled placeholder chip.
+ * Documents are scoped to post-level framing only in P1 — they MUST NOT
+ * appear among Response Options (FR-015, FR-016).
  */
-export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
+export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard';
 
 export type AllowedActors = {
   members: boolean;
