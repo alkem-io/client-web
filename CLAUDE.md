@@ -361,6 +361,7 @@ Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing 
 ## Recent Changes
 - 095-collabora-import: Added TypeScript 5.x, React 19, Node ≥ 22 (Volta-pinned 24.14.0) + `@apollo/client` (existing), `apollo-upload-client` ^18 (already wired in `httpLink.ts`), `react-i18next` (existing), Formik (existing form state), MUI for the production-default form surface, CRD (shadcn/ui + Tailwind v4) for the new design-system surface, `lucide-react` for CRD icons, `@mui/icons-material` for the MUI surface
 - 085-collabora-callout: Added TypeScript 5.x, React 19, Node >= 22.0.0 + MUI (existing callout components), Apollo Client, react-i18next, lucide-react (for icons if MUI lacks appropriate ones)
+- 095-crd-auth-error-page: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), `lucide-react`, `react-i18next` (existing), `react-router-dom` (existing — used only in the integration layer, never in `src/crd/`), `class-variance-authority` (existing). No new dependencies.
 - 094-crd-member-settings-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `alert-dialog`, `checkbox`, `label`, `button`, `avatar`, `dropdown-menu`; `lucide-react` (Trash2, MoreHorizontal, X icons); `react-i18next` (existing); Apollo Client (existing, unchanged — reused via `useCommunityAdmin` and generated mutation hooks); React Compiler (`babel-plugin-react-compiler`)
 
 

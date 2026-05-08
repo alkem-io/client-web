@@ -1,6 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ReferenceRow } from '@/crd/forms/callout/types';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 
@@ -42,6 +43,7 @@ export function ReferencesEditor({ rows, onChange, errors, disabled }: Reference
 
       {rows.map((row, index) => {
         const titleError = errors?.[`referenceRows.${index}.title`];
+        const urlError = errors?.[`referenceRows.${index}.url`];
         return (
           // biome-ignore lint/suspicious/noArrayIndexKey: rows are append-and-delete; no stable id exists in the row model
           <div key={index} className="border border-border rounded-lg p-3 space-y-2">
@@ -67,11 +69,22 @@ export function ReferencesEditor({ rows, onChange, errors, disabled }: Reference
                   type="url"
                   value={row.url}
                   onChange={e => updateRow(index, { url: e.target.value })}
+                  onBlur={e => {
+                    const normalized = ensureHttps(e.target.value);
+                    if (normalized !== e.target.value) updateRow(index, { url: normalized });
+                  }}
                   placeholder={t('references.urlPlaceholder')}
                   disabled={disabled}
                   aria-label={t('references.urlLabel')}
+                  aria-invalid={!!urlError}
+                  aria-describedby={urlError ? `ref-row-${index}-url-error` : undefined}
                   className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
+                {urlError && (
+                  <p id={`ref-row-${index}-url-error`} className="text-caption text-destructive" aria-live="polite">
+                    {urlError}
+                  </p>
+                )}
                 <input
                   type="text"
                   value={row.description}
