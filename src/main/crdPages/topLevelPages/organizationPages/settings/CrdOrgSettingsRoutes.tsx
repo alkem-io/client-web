@@ -1,14 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import Loading from '@/core/ui/loading/Loading';
 import { PlaceholderTab } from './_placeholder/PlaceholderTab';
 import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 
-type OrgPlaceholderKey =
-  | 'shell.tabs.org.profile'
-  | 'shell.tabs.org.account'
-  | 'shell.tabs.org.community'
-  | 'shell.tabs.org.authorization'
-  | 'shell.tabs.org.settings';
+const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
+const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
+const CrdOrgCommunityTab = lazy(() => import('./community/CrdOrgCommunityTab'));
+
+type OrgPlaceholderKey = 'shell.tabs.org.authorization' | 'shell.tabs.org.settings';
 
 const PlaceholderRoute = ({ labelKey }: { labelKey: OrgPlaceholderKey }) => {
   const { t } = useTranslation('crd-contributorSettings');
@@ -26,9 +27,30 @@ export const CrdOrgSettingsRoutes = () => (
   <Routes>
     <Route path="" element={<CrdOrgSettingsPage />}>
       <Route index={true} element={<Navigate to="profile" replace={true} />} />
-      <Route path="profile" element={<PlaceholderRoute labelKey="shell.tabs.org.profile" />} />
-      <Route path="account" element={<PlaceholderRoute labelKey="shell.tabs.org.account" />} />
-      <Route path="community" element={<PlaceholderRoute labelKey="shell.tabs.org.community" />} />
+      <Route
+        path="profile"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgProfileTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="account"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgAccountTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="community"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgCommunityTab />
+          </Suspense>
+        }
+      />
       <Route path="authorization" element={<PlaceholderRoute labelKey="shell.tabs.org.authorization" />} />
       <Route path="settings" element={<PlaceholderRoute labelKey="shell.tabs.org.settings" />} />
       <Route path="*" element={<Navigate to="profile" replace={true} />} />

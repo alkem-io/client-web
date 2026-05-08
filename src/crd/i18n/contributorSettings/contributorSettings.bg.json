@@ -332,13 +332,106 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Профил"
+      "pageTitle": "Профил",
+      "identity": {
+        "title": "Идентичност",
+        "displayName": {
+          "label": "Име",
+          "hint": "Как организацията ви се показва в Alkemio.",
+          "required": "Името е задължително"
+        },
+        "nameID": { "label": "Name ID", "caption": "Не може да бъде променяно след създаването." },
+        "tagline": { "label": "Слоган", "hint": "Кратък ред до името на организацията ви." }
+      },
+      "about": {
+        "title": "Информация",
+        "description": { "label": "Описание", "hint": "Поддържа се Markdown." },
+        "location": {
+          "title": "Местоположение",
+          "city": "Град",
+          "country": "Държава",
+          "countryPlaceholder": "Изберете държава"
+        },
+        "keywords": {
+          "label": "Ключови думи",
+          "hint": "Теми, по които работи вашата организация. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. климат, управление, отворен код"
+        },
+        "capabilities": {
+          "label": "Възможности",
+          "hint": "Какво може или предлага вашата организация. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. изследвания, финансиране, обучение"
+        }
+      },
+      "contactLegal": {
+        "title": "Контакт и правни данни",
+        "contactEmail": {
+          "label": "Имейл за контакт",
+          "hint": "Публичен имейл за контакт с организацията.",
+          "invalidFormat": "Въведете валиден имейл адрес"
+        },
+        "domain": { "label": "Домейн", "hint": "Уеб домейнът на организацията (без протокол)." },
+        "legalEntityName": { "label": "Юридическо име", "hint": "Официално регистрираното име." },
+        "website": {
+          "label": "Уебсайт",
+          "hint": "Пълен URL, включително https://",
+          "invalidFormat": "Въведете валиден URL"
+        }
+      },
+      "socialLinks": {
+        "title": "Социални връзки",
+        "linkedinPlaceholder": "https://linkedin.com/company/your-org",
+        "bskyPlaceholder": "https://bsky.app/profile/your-handle",
+        "githubPlaceholder": "https://github.com/your-org",
+        "addAnother": "Добавяне на друга референция",
+        "namePlaceholder": "Име на референцията",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "deleteDialog": {
+          "title": "Премахване на референция?",
+          "description": "Премахването на тази референция ще я изтрие и от публичния профил след запазване.",
+          "confirm": "Премахване"
+        }
+      },
+      "logo": {
+        "title": "Лого",
+        "changeButton": "Смяна на лого",
+        "helperText": "Препоръчително: 400×400 px. JPG, PNG или GIF.",
+        "uploading": "Качване…"
+      },
+      "verification": { "verified": "Потвърдена", "pending": "Очаква проверка", "notVerified": "Непотвърдена" }
     },
     "account": {
-      "pageTitle": "Акаунт"
+      "pageTitle": "Акаунт",
+      "helpBanner": "Тук можете да видите активните ресурси на организацията и да управлявате лимитите на акаунта.",
+      "spaces": { "title": "Хоствани Spaces", "createButton": "Създаване на Space" },
+      "virtualContributors": { "title": "Виртуални сътрудници", "createButton": "Добавяне на сътрудник" },
+      "innovationPacks": { "title": "Шаблонни пакети", "createButton": "Нов пакет" },
+      "innovationHubs": { "title": "Персонализирани начални страници", "createButton": "Нова страница" },
+      "actions": { "view": "Преглед", "manage": "Управление", "transfer": "Прехвърляне", "delete": "Изтриване" },
+      "deleteDialog": {
+        "title": "Изтриване на този ресурс?",
+        "description": "Това ще премахне „{{name}}“ завинаги. Действието не може да се отмени.",
+        "confirm": "Изтриване"
+      }
     },
     "community": {
-      "pageTitle": "Общност"
+      "pageTitle": "Общност",
+      "title": "Асоциирани",
+      "description": "Управлявайте кой е асоцииран с тази организация. Добавяйте нови асоциирани от списъка с налични потребители; премахването на асоцииран отнема ролята му в организацията.",
+      "currentAssociatesTitle": "Текущи асоциирани",
+      "availableUsersTitle": "Налични потребители",
+      "searchPlaceholder": "Търсене на потребители по име…",
+      "addAriaLabel": "Добавяне на {name} като асоцииран",
+      "removeAriaLabel": "Премахване на {name} като асоцииран",
+      "loadMore": "Зареди още",
+      "emptyCurrent": "Все още няма асоциирани.",
+      "emptyAvailable": "Няма намерени потребители.",
+      "removeDialogTitle": "Премахване на този асоцииран?",
+      "removeDialogDescription": "{{name}} ще загуби ролята си на асоцииран и всички свързани права.",
+      "removeConfirmAssociate": "Премахване на {{name}} като асоцииран",
+      "removeSuccess": "Асоциираният е премахнат",
+      "removeError": "Премахването не успя — опитайте отново"
     },
     "authorization": {
       "pageTitle": "Оторизация"

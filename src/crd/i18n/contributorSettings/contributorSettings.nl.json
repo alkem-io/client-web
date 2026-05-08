@@ -332,13 +332,105 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profiel"
+      "pageTitle": "Profiel",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe je organisatie verschijnt op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "nameID": { "label": "Name ID", "caption": "Kan niet worden gewijzigd na aanmaken." },
+        "tagline": { "label": "Slogan", "hint": "Een korte zin naast je organisatienaam." }
+      },
+      "about": {
+        "title": "Over",
+        "description": { "label": "Beschrijving", "hint": "Markdown wordt ondersteund." },
+        "location": { "title": "Locatie", "city": "Plaats", "country": "Land", "countryPlaceholder": "Kies een land" },
+        "keywords": {
+          "label": "Trefwoorden",
+          "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. klimaat, governance, open source"
+        },
+        "capabilities": {
+          "label": "Capaciteiten",
+          "hint": "Wat je organisatie kan of biedt. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. onderzoek, financiering, training"
+        }
+      },
+      "contactLegal": {
+        "title": "Contact en juridisch",
+        "contactEmail": {
+          "label": "Contact-e-mail",
+          "hint": "Openbaar contactadres voor de organisatie.",
+          "invalidFormat": "Voer een geldig e-mailadres in"
+        },
+        "domain": { "label": "Domein", "hint": "Het webdomein van je organisatie (zonder protocol)." },
+        "legalEntityName": { "label": "Juridische naam", "hint": "De officieel geregistreerde naam." },
+        "website": {
+          "label": "Website",
+          "hint": "Volledige URL inclusief https://",
+          "invalidFormat": "Voer een geldige URL in"
+        }
+      },
+      "socialLinks": {
+        "title": "Sociale links",
+        "linkedinPlaceholder": "https://linkedin.com/company/jouw-org",
+        "bskyPlaceholder": "https://bsky.app/profile/jouw-naam",
+        "githubPlaceholder": "https://github.com/jouw-org",
+        "addAnother": "Andere referentie toevoegen",
+        "namePlaceholder": "Naam van de referentie",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op het openbare profiel na opslaan.",
+          "confirm": "Referentie verwijderen"
+        }
+      },
+      "logo": {
+        "title": "Logo",
+        "changeButton": "Logo wijzigen",
+        "helperText": "Aanbevolen: 400×400 px. JPG, PNG of GIF.",
+        "uploading": "Uploaden…"
+      },
+      "verification": {
+        "verified": "Geverifieerd",
+        "pending": "Verificatie in behandeling",
+        "notVerified": "Niet geverifieerd"
+      }
     },
     "account": {
-      "pageTitle": "Account"
+      "pageTitle": "Account",
+      "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
+      "spaces": { "title": "Gehoste Spaces", "createButton": "Space aanmaken" },
+      "virtualContributors": { "title": "Virtuele bijdragers", "createButton": "Bijdrager toevoegen" },
+      "innovationPacks": { "title": "Sjabloonpakketten", "createButton": "Nieuw pakket" },
+      "innovationHubs": { "title": "Aangepaste startpagina's", "createButton": "Nieuwe pagina" },
+      "actions": { "view": "Bekijken", "manage": "Beheren", "transfer": "Overdragen", "delete": "Verwijderen" },
+      "deleteDialog": {
+        "title": "Deze resource verwijderen?",
+        "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Verwijderen"
+      }
     },
     "community": {
-      "pageTitle": "Gemeenschap"
+      "pageTitle": "Gemeenschap",
+      "title": "Geassocieerden",
+      "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
+      "currentAssociatesTitle": "Huidige geassocieerden",
+      "availableUsersTitle": "Beschikbare gebruikers",
+      "searchPlaceholder": "Zoek gebruikers op naam…",
+      "addAriaLabel": "{name} toevoegen als geassocieerde",
+      "removeAriaLabel": "{name} verwijderen als geassocieerde",
+      "loadMore": "Meer laden",
+      "emptyCurrent": "Nog geen geassocieerden.",
+      "emptyAvailable": "Geen overeenkomende gebruikers gevonden.",
+      "removeDialogTitle": "Deze geassocieerde verwijderen?",
+      "removeDialogDescription": "{{name}} verliest de rol van geassocieerde en alle bijbehorende rechten.",
+      "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
+      "removeSuccess": "Geassocieerde verwijderd",
+      "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "authorization": {
       "pageTitle": "Autorisatie"

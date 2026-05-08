@@ -332,13 +332,106 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profil"
+      "pageTitle": "Profil",
+      "identity": {
+        "title": "Identité",
+        "displayName": {
+          "label": "Nom d'affichage",
+          "hint": "Comment votre organisation apparaît sur Alkemio.",
+          "required": "Le nom d'affichage est requis"
+        },
+        "nameID": { "label": "Name ID", "caption": "Non modifiable après la création." },
+        "tagline": { "label": "Slogan", "hint": "Une courte phrase à côté du nom de votre organisation." }
+      },
+      "about": {
+        "title": "À propos",
+        "description": { "label": "Description", "hint": "Markdown supporté." },
+        "location": {
+          "title": "Emplacement",
+          "city": "Ville",
+          "country": "Pays",
+          "countryPlaceholder": "Choisir un pays"
+        },
+        "keywords": {
+          "label": "Mots-clés",
+          "hint": "Sujets sur lesquels votre organisation travaille. Appuyez sur Entrée pour ajouter.",
+          "placeholder": "ex. climat, gouvernance, open source"
+        },
+        "capabilities": {
+          "label": "Capacités",
+          "hint": "Ce que votre organisation peut faire ou proposer. Appuyez sur Entrée pour ajouter.",
+          "placeholder": "ex. recherche, financement, formation"
+        }
+      },
+      "contactLegal": {
+        "title": "Contact et mentions légales",
+        "contactEmail": {
+          "label": "E-mail de contact",
+          "hint": "E-mail public de contact pour l'organisation.",
+          "invalidFormat": "Entrez une adresse e-mail valide"
+        },
+        "domain": { "label": "Domaine", "hint": "Le domaine web de votre organisation (sans protocole)." },
+        "legalEntityName": { "label": "Raison sociale", "hint": "Le nom officiellement enregistré." },
+        "website": {
+          "label": "Site web",
+          "hint": "URL complète, y compris https://",
+          "invalidFormat": "Entrez une URL valide"
+        }
+      },
+      "socialLinks": {
+        "title": "Liens sociaux",
+        "linkedinPlaceholder": "https://linkedin.com/company/votre-org",
+        "bskyPlaceholder": "https://bsky.app/profile/votre-handle",
+        "githubPlaceholder": "https://github.com/votre-org",
+        "addAnother": "Ajouter une autre référence",
+        "namePlaceholder": "Nom de la référence",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Description (optionnelle)",
+        "deleteDialog": {
+          "title": "Supprimer la référence ?",
+          "description": "La suppression de cette référence l'enlèvera également du profil public après l'enregistrement.",
+          "confirm": "Supprimer la référence"
+        }
+      },
+      "logo": {
+        "title": "Logo",
+        "changeButton": "Changer le logo",
+        "helperText": "Recommandé : 400×400 px. JPG, PNG ou GIF.",
+        "uploading": "Téléversement…"
+      },
+      "verification": { "verified": "Vérifiée", "pending": "Vérification en attente", "notVerified": "Non vérifiée" }
     },
     "account": {
-      "pageTitle": "Compte"
+      "pageTitle": "Compte",
+      "helpBanner": "Vous pouvez voir les ressources actives de votre organisation et gérer les limites d'allocation.",
+      "spaces": { "title": "Spaces hébergés", "createButton": "Créer un Space" },
+      "virtualContributors": { "title": "Contributeurs virtuels", "createButton": "Ajouter un contributeur" },
+      "innovationPacks": { "title": "Packs de modèles", "createButton": "Nouveau pack" },
+      "innovationHubs": { "title": "Pages d'accueil personnalisées", "createButton": "Nouvelle page" },
+      "actions": { "view": "Voir", "manage": "Gérer", "transfer": "Transférer", "delete": "Supprimer" },
+      "deleteDialog": {
+        "title": "Supprimer cette ressource ?",
+        "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",
+        "confirm": "Supprimer"
+      }
     },
     "community": {
-      "pageTitle": "Communauté"
+      "pageTitle": "Communauté",
+      "title": "Associés",
+      "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
+      "currentAssociatesTitle": "Associés actuels",
+      "availableUsersTitle": "Utilisateurs disponibles",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+      "addAriaLabel": "Ajouter {name} comme associé",
+      "removeAriaLabel": "Retirer {name} en tant qu'associé",
+      "loadMore": "Charger plus",
+      "emptyCurrent": "Aucun associé pour l'instant.",
+      "emptyAvailable": "Aucun utilisateur correspondant.",
+      "removeDialogTitle": "Retirer cet associé ?",
+      "removeDialogDescription": "{{name}} perdra son rôle d'associé et les permissions associées.",
+      "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
+      "removeSuccess": "Associé retiré",
+      "removeError": "Échec — réessayez"
     },
     "authorization": {
       "pageTitle": "Autorisation"
