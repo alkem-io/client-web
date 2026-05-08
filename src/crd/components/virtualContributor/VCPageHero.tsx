@@ -1,5 +1,6 @@
 import { Bot, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TruncatedTag } from '@/crd/components/common/TruncatedTag';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -42,9 +43,7 @@ export function VCPageHero({ avatarImageUrl, displayName, settingsUrl, typeBadge
               {keywords.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {keywords.map(keyword => (
-                    <Badge key={keyword} variant="outline">
-                      {keyword}
-                    </Badge>
+                    <TruncatedTag key={keyword} text={keyword} variant="outline" />
                   ))}
                 </div>
               ) : null}

@@ -1,7 +1,6 @@
 import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
@@ -13,10 +12,10 @@ import {
   type MessageReceiverChipData,
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
-import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
+import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
@@ -112,9 +111,7 @@ export default function CrdSpaceCommunityPage() {
         />
       )}
 
-      {canInvite && (
-        <InviteContributorsDialog type={ActorType.User} open={inviteOpen} onClose={() => setInviteOpen(false)} />
-      )}
+      {canInvite && <InviteMembersDialogConnector open={inviteOpen} onClose={() => setInviteOpen(false)} />}
 
       {canContactLeads && (
         <DirectMessageDialog

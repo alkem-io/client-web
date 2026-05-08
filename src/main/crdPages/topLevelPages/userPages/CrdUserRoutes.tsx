@@ -12,6 +12,7 @@ import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdUserProfilePage from './publicProfile/CrdUserProfilePage';
 
 const CrdUserSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdUserSettingsRoutes'));
+
 const MuiUserAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/userAdmin/routing/UserAdminRoute')
 );

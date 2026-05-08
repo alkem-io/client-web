@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Andere zu \"{{spaceName}}\" einladen",
+      "searchHint": "Suche unten nach Personen oder füge direkt ihre E-Mail-Adresse hinzu",
+      "searchPlaceholder": "Benutzername oder E-Mail…",
+      "searchAriaLabel": "Benutzer nach Name oder E-Mail suchen",
+      "noResultsLabel": "Keine passenden Benutzer",
+      "loadingLabel": "Benutzer werden geladen…",
+      "loadMoreLabel": "Mehr laden…",
+      "removeAriaLabel": "{{label}} entfernen",
+      "welcomeMessageLabel": "Einladungsnachricht",
+      "welcomeMessagePlaceholder": "Schreibe eine kurze Nachricht, die mit der Einladung verschickt wird",
+      "defaultWelcomeMessage": "Hi, ich möchte dich zu {{spaceName}} einladen. Sieh dir den Space an oder klicke auf den Button unten, um die Einladung anzunehmen oder abzulehnen.",
+      "emailVisibilityNote": "Bitte beachte, dass deine persönliche E-Mail-Adresse für jeden sichtbar ist, den du einlädst.",
+      "inviteToRoleLabel": "Einladen als:",
+      "rolePopoverHelper": "Member wird beim Annehmen der Einladung immer vergeben.",
+      "rolePopoverAriaLabel": "Rollen für die Eingeladenen wählen",
+      "sendButtonLabel": "Senden",
+      "sendingButtonLabel": "Wird gesendet…",
+      "backButtonLabel": "Zurück",
+      "closeButtonLabel": "Schließen",
+      "closeAriaLabel": "Einladungsdialog schließen"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Das ist keine gültige E-Mail-Adresse.",
+      "duplicateEmail": "Diese E-Mail-Adresse ist bereits in der Liste.",
+      "networkFailure": "Die Einladungen konnten nicht gesendet werden. Bitte versuche es erneut."
+    },
+    "results": {
+      "sent": "Einladung gesendet",
+      "alreadyMember": "Bereits Mitglied",
+      "error": "Fehlgeschlagen: {{message}}"
+    }
+  }
+}
