@@ -1,10 +1,5 @@
-import { createContext, type PropsWithChildren, useEffect } from 'react';
-import {
-  refetchCurrentUserLightQuery,
-  useCreateUserNewRegistrationMutation,
-  useCurrentUserLightQuery,
-  usePlatformLevelAuthorizationQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { createContext, type PropsWithChildren } from 'react';
+import { useCurrentUserLightQuery, usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import type { CurrentUserModel } from '../model/CurrentUserModel';
@@ -24,7 +19,7 @@ const CurrentUserContext = createContext<CurrentUserModel>({
 });
 
 const CurrentUserProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, loading: loadingAuthentication, verified, session } = useAuthenticationContext();
+  const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const {
     data: meData,
@@ -37,29 +32,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
 
-  const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchCurrentUserLightQuery()],
-    awaitRefetchQueries: true,
-    onCompleted: () => {},
-  });
-
-  useEffect(() => {
-    const email = (session?.identity?.traits as Record<string, unknown> | undefined)?.email as string | undefined;
-    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError && email) {
-      createUserProfile({
-        variables: {
-          userData: {
-            email,
-            profileData: {
-              displayName: email,
-            },
-          },
-        },
-      });
-    }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error, session]);
-
-  const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
+  const loading = loadingAuthentication || loadingMe || isLoadingPlatformLevelAuthorization;
 
   const platformPrivilegeWrapper = (() => {
     if (!meData?.me) {
@@ -88,10 +61,8 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     accountEntitlements,
   };
 
-  const criticalError = error ?? userProviderError;
-
-  return criticalError ? (
-    <ErrorPage error={criticalError} />
+  return userProviderError ? (
+    <ErrorPage error={userProviderError} />
   ) : (
     <CurrentUserContext value={providedValue}>{children}</CurrentUserContext>
   );
