@@ -5,6 +5,7 @@ import type {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CollaboraDocumentType,
   CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
@@ -31,6 +32,15 @@ export interface CalloutCreationType {
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
+    /**
+     * Collabora-document framing input. On the blank-create path, both fields are sent.
+     * On the upload path, both are omitted (server derives `documentType` from the
+     * uploaded file's MIME and defaults `displayName` from the filename when absent).
+     */
+    collaboraDocument?: {
+      displayName?: string;
+      documentType?: CollaboraDocumentType;
+    };
     tags?: string[];
     link?: LinkFramingFieldSubmittedValues;
     mediaGallery?: {
@@ -72,7 +82,8 @@ export interface CalloutCreationParams {
 
 export interface CalloutCreationUtils {
   handleCreateCallout: (
-    callout: CalloutCreationType
+    callout: CalloutCreationType,
+    file?: File
   ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
   loading: boolean;
   canCreateCallout: boolean;
@@ -116,7 +127,7 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
     refetchQueries: ['CalloutsSetTags'],
   });
 
-  const handleCreateCallout = async (callout: CalloutCreationType) => {
+  const handleCreateCallout = async (callout: CalloutCreationType, file?: File) => {
     if (!calloutsSetId) {
       return;
     }
@@ -130,9 +141,7 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
 
     try {
       const result = await createCallout({
-        variables: {
-          calloutData,
-        },
+        variables: file ? { calloutData, file } : { calloutData },
       });
 
       return result.data?.createCalloutOnCalloutsSet;
