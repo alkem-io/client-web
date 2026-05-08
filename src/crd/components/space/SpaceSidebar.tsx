@@ -143,9 +143,13 @@ export function SpaceSidebar({
       {variant === 'community' && (
         <>
           {(canContactLeads || (canInvite && onInvite)) && (
-            <div className="flex gap-2">
+            // Stack vertically — the sidebar column is `lg:col-span-2` (~150–200px
+            // at typical desktop widths) and two horizontal buttons with these
+            // labels overflow into the main content. Each button is `w-full` so
+            // the row width never exceeds the sidebar column.
+            <div className="flex flex-col gap-2">
               {canContactLeads && onContactLead && (
-                <Button variant="outline" className="flex-1 gap-2 text-body-emphasis" onClick={onContactLead}>
+                <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={onContactLead}>
                   <Mail className="w-4 h-4" aria-hidden="true" />
                   {t('sidebar.contactLead')}
                 </Button>
@@ -157,7 +161,7 @@ export function SpaceSidebar({
                 // any cascade keeps the label legible regardless of ancestor `.dark`
                 // contexts or token redefinitions.
                 <Button
-                  className="flex-1 gap-2 text-body-emphasis bg-primary !text-white hover:bg-primary/90"
+                  className="w-full gap-2 text-body-emphasis bg-primary !text-white hover:bg-primary/90"
                   onClick={onInvite}
                 >
                   <UserPlus className="w-4 h-4" aria-hidden="true" />

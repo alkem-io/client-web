@@ -16,6 +16,15 @@
  */
 
 @theme inline {
+  /* Profile title — public-profile hero name (User / Organization / VC heroes).
+     Intentionally larger than every other page heading on the platform so the
+     actor identity reads as the page's strongest visual anchor. Reserved for
+     the public-profile hero slot — do NOT use for ordinary page titles. */
+  --text-profile-title: 36px;
+  --text-profile-title--line-height: 1.15;
+  --text-profile-title--font-weight: 700;
+  --text-profile-title--letter-spacing: -0.025em;
+
   /* Page title — main page headings (h1) */
   --text-page-title: 30px;
   --text-page-title--line-height: 1.2;
