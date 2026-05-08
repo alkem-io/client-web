@@ -52,7 +52,10 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 
 ### User Story 1 — User Profile
 
-- [ ] Open `/user/<self>/settings/profile`. Sticky header shows avatar + name + 7-tab strip; Profile is highlighted with `border-primary` underline.
+- [ ] Open `/user/<self>/settings/profile`. Sticky header (`top-16 z-20`, `bg-card border-b`) shows avatar + name + 7-tab strip; Profile is highlighted with `border-primary text-primary` underline. Body content centered via 12-col grid (`col-start-2 col-span-10` on `lg+`).
+- [ ] **Identity card layout** — Display Name on its own row (full-width); First Name + Last Name in a 2-col `FieldPairRow` on `md+` (stacked below `md`); Email + Phone in a 2-col `FieldPairRow` on `md+`. Email field is a styled read-only `<Input>` with `cursor-not-allowed bg-muted/50 pl-9` and a `Mail` lucide icon prefix (no plain-text rendering).
+- [ ] **Social Links card** — LinkedIn / Bluesky / GitHub rows each render with a brand-tinted rounded-full icon tile (`size-10 rounded-full bg-{brand}/10 text-{brand}`) sourcing the brand SVG from `@/crd/components/common/icons/social/*.svg?react` (icons use `fill="currentColor"`). No separate `<Label>` above the input — the icon tile is the visual identifier.
+- [ ] **About You card** — Skills and Keywords are rendered as **two independent** tagset sections (each with its own `FieldFooter` + Save). There is NO single unified "Tags" field. Saving Skills MUST NOT touch Keywords and vice versa.
 - [ ] Edit **First Name** in its inline input — the section's `FieldFooter` shows a dirty indicator and the Save button enables. **No per-field pencil / check / × icons anywhere on the tab.**
 - [ ] Click the section's **Save** button — value persists; "Saved!" indicator flashes adjacent to the Save button for **~1.8 s** (`SAVED_FLASH_MS = 1800`) and the section returns to idle.
 - [ ] Edit Phone with an invalid format — the section's Save button is disabled while the value is format-invalid (live URL/email/phone validation per FR-023).
@@ -76,7 +79,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 
 ### User Story 3 — User Membership
 
-- [ ] Open `/user/<self>/settings/membership`. Home Space card + Memberships table + Pending Applications visible.
+- [ ] Open `/user/<self>/settings/membership`. Three sections visible: Home Space card on top, Memberships card grid (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3`) in the middle, Pending Applications list at the bottom. Each membership card shows: aspect-video banner (cardBanner image, or deterministic gradient when absent), Type badge (Space / Subspace) bottom-left of banner, kebab top-right with two items only ("View Space" / "View Subspace" + "Leave Space" / "Leave Subspace" — no Options label), title, role badge, tagline body, and a "Led by:" footer with avatar stack when the space has community leads. Above the grid: search input, segmented "All / Spaces / Subspaces" filter, and "Showing X of Y memberships" caption.
 - [ ] Pick a Home Space — dropdown updates, mutation fires; Auto-redirect checkbox becomes enabled.
 - [ ] Tick Auto-redirect — change persists.
 - [ ] Type "Garden" in the memberships search — list filters client-side; pagination resets to page 1.

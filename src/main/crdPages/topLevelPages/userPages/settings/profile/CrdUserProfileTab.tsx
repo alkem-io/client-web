@@ -40,7 +40,6 @@ const CrdUserProfileTab = () => {
 
 const EMPTY_VALUES = {
   profileId: '',
-  tagsetId: null,
   displayName: '',
   firstName: '',
   lastName: '',
@@ -50,7 +49,8 @@ const EMPTY_VALUES = {
   city: '',
   country: '',
   bio: '',
-  tags: [] as string[],
+  skills: { id: undefined, tags: [] as string[] },
+  keywords: { id: undefined, tags: [] as string[] },
   avatar: { id: '', uri: null, altText: null },
   references: [] as never[],
   recognizedReferences: { linkedin: null, bsky: null, github: null },

@@ -19,7 +19,10 @@ const baseUser = {
       { id: 'ref-2', name: 'GitHub', uri: 'https://github.com/ada', description: '' },
       { id: 'ref-3', name: 'Personal site', uri: 'https://ada.example', description: 'Blog' },
     ],
-    tagsets: [{ id: 'tagset-1', name: 'default', tags: ['math', 'cs'] }],
+    tagsets: [
+      { id: 'tagset-skills', name: 'Skills', tags: ['typescript', 'react'] },
+      { id: 'tagset-keywords', name: 'Keywords', tags: ['math', 'cs'] },
+    ],
   },
 };
 
@@ -35,10 +38,34 @@ describe('mapUserToProfileFormValues', () => {
     expect(values.references[0]).toMatchObject({ name: 'Personal site', recognized: false });
   });
 
-  it('extracts the default tagset id and tags', () => {
+  it('extracts Skills and Keywords tagsets independently (case-insensitive name match)', () => {
     const values = mapUserToProfileFormValues(baseUser as never);
-    expect(values.tagsetId).toBe('tagset-1');
-    expect(values.tags).toEqual(['math', 'cs']);
+    expect(values.skills).toEqual({ id: 'tagset-skills', tags: ['typescript', 'react'] });
+    expect(values.keywords).toEqual({ id: 'tagset-keywords', tags: ['math', 'cs'] });
+  });
+
+  it('returns id-undefined Skills/Keywords when those tagsets do not exist on the profile', () => {
+    const values = mapUserToProfileFormValues({
+      ...baseUser,
+      profile: { ...baseUser.profile, tagsets: [] },
+    } as never);
+    expect(values.skills).toEqual({ id: undefined, tags: [] });
+    expect(values.keywords).toEqual({ id: undefined, tags: [] });
+  });
+
+  it('matches tagset name case-insensitively (parity with UserProfileView reader)', () => {
+    const values = mapUserToProfileFormValues({
+      ...baseUser,
+      profile: {
+        ...baseUser.profile,
+        tagsets: [
+          { id: 'tagset-skills', name: 'sKiLlS', tags: ['typescript'] },
+          { id: 'tagset-keywords', name: 'KEYWORDS', tags: ['cs'] },
+        ],
+      },
+    } as never);
+    expect(values.skills).toEqual({ id: 'tagset-skills', tags: ['typescript'] });
+    expect(values.keywords).toEqual({ id: 'tagset-keywords', tags: ['cs'] });
   });
 
   it('falls back to empty visual when avatar is missing', () => {

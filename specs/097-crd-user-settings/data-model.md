@@ -47,7 +47,8 @@ This document is **specification-side**: it lists field names, validation rules,
 | Tagline | `user.profile.tagline` | `tagline` | no | `textLengthValidator({ maxLength: ALT_TEXT_LENGTH })` | `tagline` | One-field section saved via `updateUser` |
 | City + Country | `user.profile.location.{city, country}` | `location: { city, country }` | no | `textLengthValidator()` (city); single-select against `COUNTRIES` (country) | `location` (compound) | Both fields share one Save button; one mutation patches both |
 | Bio | `user.profile.description` | `bio` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` | `bio` | One-field section; `MarkdownEditor` is the input; Enter inserts newline (no Enter-to-Save semantics — section Save is the only commit) |
-| Tags | `user.profile.tagsets[].tags[]` | `tags` | no | — | `tags` (list) | Whole list saved per click; first save fires `createTagsetOnProfile` if no default tagset exists |
+| Skills | `user.profile.tagsets[name='Skills'].tags[]` (case-insensitive lookup) | `skills: { id?: string; tags: string[] }` | no | — | `skills` (list) | Independent per-section save. `updateUser` patches `profileData.tagsets: [{ ID: <skills-id>, tags }]`. If the user has no `Skills` tagset yet, the first save fires `createTagsetOnProfile({ profileID, name: 'Skills', tags })` and adopts the returned id into the buffer. Mirrors the existing `UserProfileView` reader (`name.toLowerCase() === TagsetReservedName.Skills.toLowerCase()`). |
+| Keywords | `user.profile.tagsets[name='Keywords'].tags[]` (case-insensitive lookup) | `keywords: { id?: string; tags: string[] }` | no | — | `keywords` (list) | Independent per-section save (separate from Skills). Same `updateUser` patch shape; same lazy-create-on-first-save semantics if the `Keywords` tagset doesn't yet exist. |
 | Avatar | `user.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | — (immediate commit) | File picker IS the commit; no Save click; no debounce. On success the avatar slot's status flashes "Saved!" for 1800 ms (FR-024). |
 
 ### Entity: Reference (User social links + arbitrary references)
@@ -125,36 +126,39 @@ Mutation: `useUpdateUserSettingsMutation` (existing).
 
 ### Entity: Membership
 
-Rows in the My Memberships table.
+Cards in the My Memberships grid. Each row blends two query sources: `useUserContributionsQuery` (provides id/displayName/role from `rolesUser.spaces[]`, plus the L0/subspace flattening) and per-row `useSpaceContributionDetailsQuery({spaceId})` (provides the rich profile data — banner, tagline, leadUsers, roleSetID). The latter is fanned out by `useMembershipEnrichment` from the integration layer (mirrors the MUI `ContributionCard` pattern; Apollo dedupes / caches).
 
 | Field | GraphQL path | CRD prop | Notes |
 |---|---|---|---|
 | Membership id | `rolesUser.spaces[i].id` (or nested subspace id) | `id` | |
-| Display name | `rolesUser.spaces[i].displayName` | `displayName` | |
-| Avatar URL | `rolesUser.spaces[i].profile.avatar?.uri` | `avatarUrl` | |
-| Type | derived from `level` | `type` | `'Space'` (L0) or `'Subspace'` (L1+) |
-| Description | `rolesUser.spaces[i].profile.tagline ?? ''` | `description` | |
-| Role | derived from `roleNames[]` | `role` | First role of `[Admin, Lead, Member]` that matches |
-| Member count | `rolesUser.spaces[i].metrics[Member].value` | `memberCount` | Optional |
-| Status | derived from space lifecycle state | `status` | `'Active'` / `'Archived'` |
-| Space URL | `rolesUser.spaces[i].profile.url` | `spaceUrl` | Click on row name navigates here |
+| Space id (for Leave) | same as `id` for L0; subspace id for subspaces (NOT the L0 parent) | `spaceId` | Each subspace has its own role-set; Leave is scoped to the subspace itself |
+| Display name | `useSpaceContributionDetailsQuery.lookup.space.about.profile.displayName` (preferred) ?? `rolesUser.spaces[i].displayName` (fallback) | `displayName` | Subspaces only have `id` in `rolesUser`; the rich query supplies their displayName |
+| Tagline | `useSpaceContributionDetailsQuery.lookup.space.about.profile.tagline` | `tagline` | Rendered as `line-clamp-2` body text in the card |
+| Banner URL | `useSpaceContributionDetailsQuery.lookup.space.about.profile.cardBanner?.uri` | `bannerUrl` | When absent, the card renders a deterministic gradient from `pickColorFromId(id)` |
+| Color | derived from `pickColorFromId(id)` | `color` | Banner gradient + avatar fallback bg |
+| Type | derived from `level` (L0 → Space; L1/L2 → Subspace) | `type` | Drives the badge label and the View / Leave menu copy ("View Space" vs "View Subspace") |
+| Role | derived from `roles[]` precedence (Admin > Lead > Member) | `role` | Renders as a primary-tinted badge under the title |
+| Lead users | `useSpaceContributionDetailsQuery.lookup.space.about.membership.leadUsers[]` | `leadUsers: Array<{id, displayName, avatarUrl, profileUrl}>` | Card footer "Led by:" + avatar stack (up to 3 avatars + `+N` overflow). Hidden when empty |
+| Role-set id | `useSpaceContributionDetailsQuery.lookup.space.about.membership.roleSetID` | (not on the row directly; consumed by `useUserMembershipTabData.onConfirmLeave`) | Lazy-fetched when the user confirms Leave — used by `removeRoleFromUser` |
+| Space URL | `useSpaceContributionDetailsQuery.lookup.space.about.profile.url` | `spaceUrl` | "View Space" / "View Subspace" menu item navigates here. When absent (enrichment not yet resolved), the View entry is hidden |
 
 Filters (client-side):
 - Search input → filters by `displayName` substring (case-insensitive)
-- Filter dropdown → narrows by `type` (`Spaces` / `Subspaces`) + `status` (`Active` / `Archived`)
+- Segmented filter `All / Spaces / Subspaces` — type axis only. Status (`Active / Archived`) is intentionally NOT exposed (see FR-043 rationale).
 
-Pagination (client-side): ~10 rows per page. Resets to page 1 on search/filter change.
+Pagination: none. The grid renders every filtered row. A "Load More" cursor pattern can be added later when the backing query supports paginated cursors.
 
-Leave action: confirmation dialog → `useLeaveCommunityMutation` (existing).
+Leave action: confirmation dialog → `useSpaceContributionDetailsLazyQuery({spaceId})` to fetch `roleSetID` → `removeRoleFromUser({contributorId, roleSetId, role: Member})`.
 
 ### Entity: Pending Application
 
 | Field | GraphQL path | CRD prop | Notes |
 |---|---|---|---|
 | Application id | `me.communityApplications[i].id` | `id` | |
-| Space display name | `me.communityApplications[i].spacePendingMembershipInfo.displayName` | `displayName` | |
-| Application date | `me.communityApplications[i].createdDate` | `createdDate` | Formatted date string |
-| Status | `me.communityApplications[i].state` | `status` | |
+| Space display name | `me.communityApplications[i].spacePendingMembershipInfo.about.profile.displayName` | `displayName` | |
+| Space URL | `me.communityApplications[i].spacePendingMembershipInfo.about.profile.url` | `spaceUrl` | Click on the row name navigates here |
+
+Status renders as a static "Pending" badge. The entity is read-only (no actions, no kebab). `createdDate` is not surfaced — `UserPendingMembershipsQuery` does not currently return it; if future iterations add the field, it can be displayed alongside the Pending badge.
 
 Read-only: no kebab, no actions.
 
@@ -288,7 +292,8 @@ Visible only to the profile owner (FR-083 — even platform admins on other user
 | Description | `organization.profile.description` | `description` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` |
 | City | `organization.profile.location.city` | `city` | no | `textLengthValidator` |
 | Country | `organization.profile.location.country` | `country` | no | Single-select against `COUNTRIES` |
-| Tags (Keywords + Capabilities) | `organization.profile.tagsets[]` | `tags` | no | — |
+| Keywords | `organization.profile.tagsets[name='Keywords'].tags[]` (case-insensitive lookup) | `keywords: { id?: string; tags: string[] }` | no | — |
+| Capabilities | `organization.profile.tagsets[name='Capabilities'].tags[]` (case-insensitive lookup) | `capabilities: { id?: string; tags: string[] }` | no | — |
 | Contact Email | `organization.contactEmail` | `contactEmail` | no | `emailValidator({ maxLength: SMALL_TEXT_LENGTH })` |
 | Domain | `organization.domain` | `domain` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
 | Legal Entity Name | `organization.legalEntityName` | `legalEntityName` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
@@ -304,7 +309,7 @@ Same shape as User references (`linkedin`, `bsky`, `github` recognized). Same CR
 
 ### Entity: Tagset (Org)
 
-Two reserved tagsets: **Keywords** and **Capabilities**. Edited per-field same as User tagsets.
+Two reserved tagsets: **Keywords** and **Capabilities** — each surfaced as its own per-section editor with its own Save button (parity with the existing MUI `OrganizationForm` / `TagsetSegment`, which renders one labeled input per profile tagset). There is NO single "Tags" field on Org Profile. Each section's Save fires one `updateOrganization` mutation that patches **only that tagset's** entry in `profileData.tagsets`. Lazy-create on first save: if the Org has no `Keywords` (or `Capabilities`) tagset yet, the section's first Save fires `createTagsetOnProfile({ profileID, name: '<Keywords|Capabilities>', tags })` and adopts the returned id into the buffer. Tagset name lookup is case-insensitive (parity with `useOrganization.ts`).
 
 ---
 

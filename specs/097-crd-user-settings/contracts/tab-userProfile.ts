@@ -113,7 +113,21 @@ export type UserProfileSections = {
   /** Compound section: city + country share one Save button. */
   location: EditableSectionProps;
   bio: EditableSectionProps;
-  tags: EditableSectionProps;
+  /**
+   * `Skills` profile tagset. Independent per-section save — fires
+   * `updateUser` patching only `profileData.tagsets[ID=<skills-id>].tags`,
+   * or `createTagsetOnProfile({ name: 'Skills' })` on first save when the
+   * tagset doesn't yet exist on the profile. Mirrors the existing MUI
+   * `UserForm` + `TagsetSegment` pattern (one input per profile tagset)
+   * and the `UserProfileView` reader (case-insensitive `name` lookup).
+   */
+  skills: EditableSectionProps;
+  /**
+   * `Keywords` profile tagset. Same shape as `skills` but writes to a
+   * different tagset; saved independently — flipping Save on Skills MUST
+   * NOT touch Keywords and vice versa.
+   */
+  keywords: EditableSectionProps;
 
   // Social Links / References — one list-managed section
   references: ReferencesSectionProps;

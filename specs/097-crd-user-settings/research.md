@@ -56,14 +56,15 @@ type SectionState = {
 | `phone` | Phone |
 | `tagline` | Tagline |
 | `bio` | Bio (markdown) |
-| `tags` | Tags (whole list saved per click) |
+| `skills` | User profile `Skills` tagset (whole list saved per click; lazy-create-on-first-save if the tagset doesn't yet exist on the profile) |
+| `keywords` | User profile `Keywords` tagset (separate per-section save from Skills; same lazy-create semantics). Org Profile uses `keywords` + `capabilities` instead — see data-model.md User Story 8. |
 | `location` | City + Country (compound) |
 | `references` | Social Links + arbitrary references (whole list batched: patch-existing + create-new + delete-pending) |
 
 Avatar / logo upload is NOT a section — it commits IMMEDIATELY on upload completion (the file picker IS the commit, FR-024 / FR-093).
 
 **View binding** (per section):
-- `<InlineEditText value={values[k]} onChange={next => onChange({[k]: next})} />` (single-line) OR `<MarkdownEditor>` for Bio / Description OR `<CountryCombobox>` for Country OR `<TagsField>` for Tags.
+- `<InlineEditText value={values[k]} onChange={next => onChange({[k]: next})} />` (single-line) OR `<MarkdownEditor>` for Bio / Description OR `<CountryCombobox>` for Country OR one `<TagsField>` instance per profile tagset (User: `Skills` + `Keywords`; Org: `Keywords` + `Capabilities`) — never a single unified "Tags" input.
 - `<FieldFooter dirty={dirtyByField[k]} status={saveStatusByField[k] ?? {kind:'idle'}} onSave={() => onSaveSection(k)} />`.
 - The `FieldFooter` is the only commit affordance — there is no per-field pencil / check / × icon.
 
@@ -305,6 +306,50 @@ The badge has **no edit affordance** (FR-094). Mutating verification status is o
 
 **Alternatives considered**:
 - Hide the badge entirely — rejected; the current MUI `OrganizationForm` exposes it as a read-only field today, and removing it would lose information. CRD shows it read-only.
+
+---
+
+## Decision 13 — Per-row enrichment for the User Membership grid (post-implementation correction)
+
+**Decision**: The User Membership card grid enriches each row (banner / tagline / spaceUrl / leadUsers / roleSetID) by fanning out `useSpaceContributionDetailsQuery({spaceId})` calls — exactly the source the existing MUI `ContributionCard` reads. The fan-out lives in a `useMembershipEnrichment(spaceIds)` hook in the integration layer (`src/main/crdPages/topLevelPages/userPages/settings/membership/`), which uses `useApolloClient.query()` inside a `useEffect` keyed on the sorted id list and stores the result in a `Map<spaceId, MembershipEnrichment>`. Apollo dedupes / caches per-spaceId, so revisits and overlapping spaces are free.
+
+**Rationale**: An earlier draft used `useDashboardWithMembershipsQuery` (single query, returns banner/tagline through `me.spaceMembershipsHierarchical`). It was rejected after testing because:
+- The query is `me.*`-scoped, so it returns the **viewing** user's data — wrong when a platform admin is on `/user/<other>/settings/membership`.
+- In practice the banner / tagline fields didn't reliably surface through the recursive shape, so the cards rendered without enrichment even for self-views.
+
+The per-row `useSpaceContributionDetailsQuery` approach matches MUI's proven path, takes a `spaceId` only (so it works for any viewer without scoping issues), and benefits from Apollo's request deduplication. The N+1 round-trip cost is acceptable for the page's typical row count and is fully cached after the first visit.
+
+**Alternatives considered**:
+- A single new GraphQL query `userMembershipsWithDetails(userId)` returning rich data per row in one shot — rejected; would require schema work, which is Out of Scope ("no new GraphQL types").
+- A wrapper component per card that calls `useSpaceContributionDetailsQuery` itself — rejected; CRD components must not import Apollo (Constitution Principle I / `src/crd/CLAUDE.md`).
+- The `useDashboardWithMembershipsQuery` approach — rejected as documented above.
+
+---
+
+## Decision 14 — Membership card menu items (post-implementation correction)
+
+**Decision**: The kebab on each membership card has exactly **two items, no header**:
+- **View Space** / **View Subspace** (label switches by `row.type`) — anchor `<a href={row.spaceUrl}>` rendered via `DropdownMenuItem asChild`. Hidden when `spaceUrl` is empty (enrichment hasn't resolved yet).
+- **Leave Space** / **Leave Subspace** (label switches by `row.type`) — destructive variant, opens the destructive `ConfirmationDialog` (Rule #9).
+
+No `DropdownMenuLabel` ("Options"), no `DropdownMenuSeparator`, no third item.
+
+**Rationale**: The prototype shows "Options" + a separator + two items. Direct-and-typed labels are clearer than a generic "View Details" because they tell the user exactly what entity they'll act on. Dropping the header removes a row of chrome that doesn't carry any new information.
+
+---
+
+## Decision 15 — Membership card "Led by:" footer
+
+**Decision**: Each membership card renders a footer band (`bg-muted/30 border-t`, `text-caption text-muted-foreground`) with the label "Led by:" + an overlapping avatar stack rendered via the shared `@/crd/components/common/StackedPersonAvatars` primitive (max 3 avatars + `+N` overflow tile). Lead users are extracted from `useSpaceContributionDetailsQuery.lookup.space.about.membership.leadUsers[]`. The footer is hidden entirely when `leadUsers` is empty.
+
+**Rationale**: The prototype's footer shows a member count, but `useUserContributionsQuery` doesn't return one and adding it would require a new affordance. Lead users are already in the per-row enrichment payload (community admins / leads carry the same Profile shape we already use for avatars elsewhere in CRD), so surfacing them in the footer reuses existing data and gives each card a useful identity cue without inflating scope.
+
+**Reused primitive**: `StackedPersonAvatars` lives at `src/crd/components/common/StackedPersonAvatars.tsx` and is consumed by **two** call sites today — this Membership "Led by:" footer and the existing `CalloutPoll` poll-voter row (where it shows who voted on a given option). Both sites pass their own pre-localized labels (`groupAriaLabel`, `overflowTooltipLabel`) and `sizeClass` via props. The component itself never calls `useTranslation`, keeping it consumer-namespace-agnostic — the prior `PollVoterAvatars` wrapper that was hardcoded to `crd-space` is replaced by this generalization. This is recorded as part of the post-implementation corrections for US3.
+
+**Alternatives considered**:
+- Member count (prototype default) — rejected; not in the available query shape.
+- Status badge ("Active / Archived") in the footer — rejected for the same reason (not in `useUserContributionsQuery` and would surface a field we deliberately don't filter on; see FR-043 rationale).
+- Inlining a one-off `LeadAvatarStack` inside `UserMembershipTabView` (the original implementation choice) — rejected after spotting the existing `PollVoterAvatars` component; the visual and structural overlap makes a shared primitive the right call. The poll consumer was migrated and the deprecated file deleted in the same change.
 
 ---
 

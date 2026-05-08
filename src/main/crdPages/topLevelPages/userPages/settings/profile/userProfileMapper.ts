@@ -1,7 +1,8 @@
-import type { UserQuery } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName, type UserQuery } from '@/core/apollo/generated/graphql-schema';
 import type {
   UserProfileFormValues,
   UserProfileReference,
+  UserProfileTagset,
 } from '@/crd/components/user/settings/UserProfileTabView.types';
 
 export type UserProfileQueryUser = NonNullable<UserQuery['lookup']['user']>;
@@ -63,11 +64,11 @@ export const mapUserToProfileFormValues = (user: UserProfileQueryUser): UserProf
   };
 
   const tagsets = profile?.tagsets ?? [];
-  const defaultTagset = tagsets.find(t => (t.name ?? '').toLowerCase() === 'default') ?? tagsets[0] ?? null;
+  const skills = findTagset(tagsets, TagsetReservedName.Skills);
+  const keywords = findTagset(tagsets, TagsetReservedName.Keywords);
 
   return {
     profileId: profile?.id ?? '',
-    tagsetId: defaultTagset?.id ?? null,
     displayName: profile?.displayName ?? '',
     firstName: user.firstName ?? '',
     lastName: user.lastName ?? '',
@@ -77,7 +78,8 @@ export const mapUserToProfileFormValues = (user: UserProfileQueryUser): UserProf
     city: profile?.location?.city ?? '',
     country: profile?.location?.country ?? '',
     bio: profile?.description ?? '',
-    tags: defaultTagset?.tags ?? [],
+    skills,
+    keywords,
     avatar: profile?.avatar
       ? {
           id: profile.avatar.id,
@@ -88,6 +90,20 @@ export const mapUserToProfileFormValues = (user: UserProfileQueryUser): UserProf
     references: arbitraryReferences,
     recognizedReferences,
   };
+};
+
+/**
+ * Look up a profile tagset by reserved name, case-insensitively (parity with
+ * `UserProfileView.tsx` and `useOrganization.ts`). When the tagset doesn't
+ * yet exist on the profile, returns `{ id: undefined, tags: [] }` — the
+ * per-tab hook lazy-creates it on the section's first Save.
+ */
+const findTagset = (
+  tagsets: ReadonlyArray<{ id: string; name: string; tags: string[] }>,
+  reservedName: TagsetReservedName
+): UserProfileTagset => {
+  const found = tagsets.find(t => (t.name ?? '').toLowerCase() === reservedName.toLowerCase());
+  return found ? { id: found.id, tags: found.tags } : { id: undefined, tags: [] };
 };
 
 /** Phone-format validator. Mirrors the existing MUI `UserForm` regex. */

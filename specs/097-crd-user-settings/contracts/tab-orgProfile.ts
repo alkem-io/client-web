@@ -55,8 +55,21 @@ export type OrgProfileSections = {
   description: EditableSectionProps;
   /** Compound section: city + country share one Save button. */
   location: EditableSectionProps;
-  /** Single section covering Keywords + Capabilities tagsets. */
-  tags: EditableSectionProps;
+  /**
+   * `Keywords` profile tagset. Independent per-section save — fires
+   * `updateOrganization` patching only `profileData.tagsets[ID=<keywords-id>].tags`,
+   * or `createTagsetOnProfile({ name: 'Keywords' })` on first save when
+   * the tagset doesn't yet exist on the profile. Mirrors the existing
+   * MUI `OrganizationForm` + `TagsetSegment` (one labeled input per
+   * profile tagset) and `useOrganization.ts`'s case-insensitive name
+   * lookup.
+   */
+  keywords: EditableSectionProps;
+  /**
+   * `Capabilities` profile tagset. Same shape as `keywords` but writes
+   * to a different tagset; saved independently.
+   */
+  capabilities: EditableSectionProps;
 
   // Contact & Legal — each its own section; format validators run live
   contactEmail: EditableSectionProps;

@@ -1,37 +1,24 @@
 import { lazy, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
-import { PlaceholderTab } from './_placeholder/PlaceholderTab';
 import CrdUserSettingsPage from './CrdUserSettingsPage';
 
 const CrdUserProfileTab = lazy(() => import('./profile/CrdUserProfileTab'));
-
-type UserPlaceholderKey =
-  | 'shell.tabs.user.account'
-  | 'shell.tabs.user.membership'
-  | 'shell.tabs.user.organizations'
-  | 'shell.tabs.user.notifications'
-  | 'shell.tabs.user.settings'
-  | 'shell.tabs.user.security';
-
-/**
- * Renders a placeholder tab body with its label resolved via the
- * `crd-contributorSettings` namespace. The namespace is loaded lazily on
- * first use.
- */
-const PlaceholderRoute = ({ labelKey }: { labelKey: UserPlaceholderKey }) => {
-  const { t } = useTranslation('crd-contributorSettings');
-  return <PlaceholderTab tabLabelKey={t(labelKey)} />;
-};
+const CrdUserAccountTab = lazy(() => import('./account/CrdUserAccountTab'));
+const CrdUserMembershipTab = lazy(() => import('./membership/CrdUserMembershipTab'));
+const CrdUserOrganizationsTab = lazy(() => import('./organizations/CrdUserOrganizationsTab'));
+const CrdUserNotificationsTab = lazy(() => import('./notifications/CrdUserNotificationsTab'));
+const CrdUserSettingsTab = lazy(() => import('./settings/CrdUserSettingsTab'));
+const CrdUserSecurityTab = lazy(() => import('./security/CrdUserSecurityTab'));
 
 /**
  * Routes the User settings sub-tree (`/user/<slug>/settings/*`).
  *
  * The shell route resolves the URL → active tab id via
  * `useUserSettingsTab`, then renders `<Outlet />` for the active tab body.
- * Per-tab phases progressively replace the placeholder children with their
- * real views.
+ * Every tab now has a real implementation — the legacy `_placeholder/`
+ * folder can be removed once the broader CRD migration retires unused
+ * placeholders.
  */
 export const CrdUserSettingsRoutes = () => (
   <Routes>
@@ -45,12 +32,54 @@ export const CrdUserSettingsRoutes = () => (
           </Suspense>
         }
       />
-      <Route path="account" element={<PlaceholderRoute labelKey="shell.tabs.user.account" />} />
-      <Route path="membership" element={<PlaceholderRoute labelKey="shell.tabs.user.membership" />} />
-      <Route path="organizations" element={<PlaceholderRoute labelKey="shell.tabs.user.organizations" />} />
-      <Route path="notifications" element={<PlaceholderRoute labelKey="shell.tabs.user.notifications" />} />
-      <Route path="settings" element={<PlaceholderRoute labelKey="shell.tabs.user.settings" />} />
-      <Route path="security" element={<PlaceholderRoute labelKey="shell.tabs.user.security" />} />
+      <Route
+        path="account"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserAccountTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="membership"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserMembershipTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="organizations"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserOrganizationsTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="notifications"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserNotificationsTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="settings"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserSettingsTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="security"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserSecurityTab />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<Navigate to="profile" replace={true} />} />
     </Route>
   </Routes>

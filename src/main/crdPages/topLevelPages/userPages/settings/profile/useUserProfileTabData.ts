@@ -8,6 +8,7 @@ import {
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateProfileInput, UpdateUserInput } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import type {
   SectionSaveStatus,
@@ -132,7 +133,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
       tagline: values.tagline !== saved.tagline,
       location: values.city !== saved.city || values.country !== saved.country,
       bio: values.bio !== saved.bio,
-      tags: !arrayEq(values.tags, saved.tags),
+      skills: !arrayEq(values.skills.tags, saved.skills.tags),
+      keywords: !arrayEq(values.keywords.tags, saved.keywords.tags),
       references: !referencesEqual(values, saved),
     };
   })();
@@ -166,7 +168,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     if ('tagline' in patch) clearSectionErrorIfPresent('tagline');
     if ('city' in patch || 'country' in patch) clearSectionErrorIfPresent('location');
     if ('bio' in patch) clearSectionErrorIfPresent('bio');
-    if ('tags' in patch) clearSectionErrorIfPresent('tags');
+    if ('skills' in patch) clearSectionErrorIfPresent('skills');
+    if ('keywords' in patch) clearSectionErrorIfPresent('keywords');
     if ('references' in patch || 'recognizedReferences' in patch) clearSectionErrorIfPresent('references');
   };
 
@@ -330,21 +333,49 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
         };
       case 'bio':
         return { ...base, profileData: { description: current.bio } };
-      case 'tags':
-        if (!current.tagsetId) return null;
-        return {
-          ...base,
-          profileData: { tagsets: [{ ID: current.tagsetId, tags: current.tags }] },
-        };
+      case 'skills':
+      case 'keywords':
+        // Tagset sections take a separate path — they may need to lazy-create
+        // the tagset before the patch can be issued. See `saveTagsetSection`.
+        return null;
       case 'references':
         return null; // handled via the dedicated batch path
     }
   };
 
-  const ensureTagsetThenSave = async (current: UserProfileFormValues) => {
-    if (current.tagsetId || !current.profileId) return;
-    await createTagset({
-      variables: { input: { profileID: current.profileId, name: 'default', tags: current.tags } },
+  /**
+   * Save one named profile tagset (`Skills` / `Keywords`). When the tagset
+   * doesn't yet exist on the profile, fires `createTagsetOnProfile` first
+   * and adopts the returned id into the buffer; otherwise patches the
+   * tagset entry in `profileData.tagsets` via `updateUser`.
+   */
+  const saveTagsetSection = async (section: 'skills' | 'keywords', current: UserProfileFormValues): Promise<void> => {
+    if (!userId) return;
+    const tagset = current[section];
+    const reservedName = section === 'skills' ? TagsetReservedName.Skills : TagsetReservedName.Keywords;
+
+    if (!tagset.id) {
+      if (!current.profileId) return;
+      const result = await createTagset({
+        variables: { input: { profileID: current.profileId, name: reservedName, tags: tagset.tags } },
+      });
+      const newId = result.data?.createTagsetOnProfile?.id;
+      if (newId) {
+        // Adopt the newly-created id so future saves on this section patch
+        // the existing tagset rather than re-creating it.
+        setValues(prev => {
+          const base = prev ?? valuesRef.current;
+          if (!base) return prev;
+          const next = { ...base, [section]: { ...base[section], id: newId } };
+          valuesRef.current = next;
+          return next;
+        });
+      }
+      return;
+    }
+
+    await updateUser({
+      variables: { input: { ID: userId, profileData: { tagsets: [{ ID: tagset.id, tags: tagset.tags }] } } },
     });
   };
 
@@ -431,10 +462,9 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     setSectionStatus(section, { kind: 'saving' });
 
     try {
-      if (section === 'tags') {
-        await ensureTagsetThenSave(current);
-      }
-      if (section === 'references') {
+      if (section === 'skills' || section === 'keywords') {
+        await saveTagsetSection(section, current);
+      } else if (section === 'references') {
         await saveReferencesSection(current, savedNow);
       } else {
         const patch = buildUserPatch(section, current);
@@ -512,8 +542,10 @@ const mergeSavedSection = (
       return { ...buffer, city: fresh.city, country: fresh.country };
     case 'bio':
       return { ...buffer, bio: fresh.bio };
-    case 'tags':
-      return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
+    case 'skills':
+      return { ...buffer, skills: fresh.skills };
+    case 'keywords':
+      return { ...buffer, keywords: fresh.keywords };
     case 'references':
       return {
         ...buffer,

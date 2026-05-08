@@ -1,9 +1,12 @@
-import { Briefcase, Image as ImageIcon, Link2, Plus, Trash2, User as UserIcon } from 'lucide-react';
+import { Image as ImageIcon, Link2, Mail, Plus, Trash2, User as UserIcon } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
+import BlueSkyIcon from '@/crd/components/common/icons/social/BlueSky.svg?react';
+import GitHubIcon from '@/crd/components/common/icons/social/GitHub.svg?react';
+import LinkedInIcon from '@/crd/components/common/icons/social/LinkedIn.svg?react';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -84,7 +87,7 @@ export function UserProfileTabView(props: UserProfileViewProps) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
       <div className="space-y-6">
-        {/* Identity */}
+        {/* Identity — Display Name solo, then First/Last paired, then Email/Phone paired (mirrors prototype's 2-col rows) */}
         <SettingsCard icon={UserIcon} title={t('user.profile.identity.title')}>
           <SingleFieldSection
             label={t('user.profile.identity.displayName.label')}
@@ -101,53 +104,55 @@ export function UserProfileTabView(props: UserProfileViewProps) {
             labels={labels}
           />
           <Separator className="my-4 opacity-50" />
-          <SingleFieldSection
-            label={t('user.profile.identity.firstName.label')}
-            hint={t('user.profile.identity.firstName.hint')}
-            inputAriaLabel={t('user.profile.identity.firstName.label')}
-            placeholder={t('user.profile.identity.firstName.label')}
-            value={values.firstName}
-            required={true}
-            requiredError={t('user.profile.identity.firstName.required')}
-            onChange={next => onChange({ firstName: next })}
-            dirty={dirty('firstName')}
-            status={status('firstName')}
-            onSave={() => onSaveSection('firstName')}
-            labels={labels}
-          />
+          <FieldPairRow>
+            <SingleFieldSection
+              label={t('user.profile.identity.firstName.label')}
+              hint={t('user.profile.identity.firstName.hint')}
+              inputAriaLabel={t('user.profile.identity.firstName.label')}
+              placeholder={t('user.profile.identity.firstName.label')}
+              value={values.firstName}
+              required={true}
+              requiredError={t('user.profile.identity.firstName.required')}
+              onChange={next => onChange({ firstName: next })}
+              dirty={dirty('firstName')}
+              status={status('firstName')}
+              onSave={() => onSaveSection('firstName')}
+              labels={labels}
+            />
+            <SingleFieldSection
+              label={t('user.profile.identity.lastName.label')}
+              hint={t('user.profile.identity.lastName.hint')}
+              inputAriaLabel={t('user.profile.identity.lastName.label')}
+              placeholder={t('user.profile.identity.lastName.label')}
+              value={values.lastName}
+              required={true}
+              requiredError={t('user.profile.identity.lastName.required')}
+              onChange={next => onChange({ lastName: next })}
+              dirty={dirty('lastName')}
+              status={status('lastName')}
+              onSave={() => onSaveSection('lastName')}
+              labels={labels}
+            />
+          </FieldPairRow>
           <Separator className="my-4 opacity-50" />
-          <SingleFieldSection
-            label={t('user.profile.identity.lastName.label')}
-            hint={t('user.profile.identity.lastName.hint')}
-            inputAriaLabel={t('user.profile.identity.lastName.label')}
-            placeholder={t('user.profile.identity.lastName.label')}
-            value={values.lastName}
-            required={true}
-            requiredError={t('user.profile.identity.lastName.required')}
-            onChange={next => onChange({ lastName: next })}
-            dirty={dirty('lastName')}
-            status={status('lastName')}
-            onSave={() => onSaveSection('lastName')}
-            labels={labels}
-          />
-          <Separator className="my-4 opacity-50" />
-          <ReadOnlyEmailSection
-            label={t('user.profile.identity.email.label')}
-            value={values.email}
-            caption={t('user.profile.identity.email.readOnlyCaption')}
-          />
-          <Separator className="my-4 opacity-50" />
-          <PhoneSection
-            label={t('user.profile.identity.phone.label')}
-            hint={t('user.profile.identity.phone.hint')}
-            invalidMsg={t('user.profile.identity.phone.invalidFormat')}
-            value={values.phone}
-            onChange={next => onChange({ phone: next })}
-            dirty={dirty('phone')}
-            status={status('phone')}
-            onSave={() => onSaveSection('phone')}
-            labels={labels}
-          />
+          <FieldPairRow>
+            <ReadOnlyEmailSection
+              label={t('user.profile.identity.email.label')}
+              value={values.email}
+              caption={t('user.profile.identity.email.readOnlyCaption')}
+            />
+            <PhoneSection
+              label={t('user.profile.identity.phone.label')}
+              hint={t('user.profile.identity.phone.hint')}
+              invalidMsg={t('user.profile.identity.phone.invalidFormat')}
+              value={values.phone}
+              onChange={next => onChange({ phone: next })}
+              dirty={dirty('phone')}
+              status={status('phone')}
+              onSave={() => onSaveSection('phone')}
+              labels={labels}
+            />
+          </FieldPairRow>
         </SettingsCard>
 
         {/* About You */}
@@ -192,13 +197,26 @@ export function UserProfileTabView(props: UserProfileViewProps) {
           />
           <Separator className="my-4 opacity-50" />
           <TagsSection
-            label={t('user.profile.aboutYou.tags.label')}
-            hint={t('user.profile.aboutYou.tags.hint')}
-            value={values.tags}
-            onChange={next => onChange({ tags: next })}
-            dirty={dirty('tags')}
-            status={status('tags')}
-            onSave={() => onSaveSection('tags')}
+            label={t('user.profile.aboutYou.skills.label')}
+            hint={t('user.profile.aboutYou.skills.hint')}
+            placeholder={t('user.profile.aboutYou.skills.placeholder')}
+            value={values.skills.tags}
+            onChange={next => onChange({ skills: { ...values.skills, tags: next } })}
+            dirty={dirty('skills')}
+            status={status('skills')}
+            onSave={() => onSaveSection('skills')}
+            labels={labels}
+          />
+          <Separator className="my-4 opacity-50" />
+          <TagsSection
+            label={t('user.profile.aboutYou.keywords.label')}
+            hint={t('user.profile.aboutYou.keywords.hint')}
+            placeholder={t('user.profile.aboutYou.keywords.placeholder')}
+            value={values.keywords.tags}
+            onChange={next => onChange({ keywords: { ...values.keywords, tags: next } })}
+            dirty={dirty('keywords')}
+            status={status('keywords')}
+            onSave={() => onSaveSection('keywords')}
             labels={labels}
           />
         </SettingsCard>
@@ -289,6 +307,15 @@ export function UserProfileTabView(props: UserProfileViewProps) {
 
 // ────────────────── Sub-components ──────────────────
 
+/**
+ * Two-column wrapper for paired fields (First/Last Name, Email/Phone).
+ * Stacks vertically below `md`; side-by-side on `md+`. Each child keeps its
+ * own per-section `FieldFooter` + Save button.
+ */
+function FieldPairRow({ children }: { children: React.ReactNode }) {
+  return <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">{children}</div>;
+}
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <Label className="text-card-title">{children}</Label>;
 }
@@ -346,7 +373,10 @@ function ReadOnlyEmailSection({ label, value, caption }: { label: string; value:
   return (
     <div>
       <SectionLabel>{label}</SectionLabel>
-      <p className="mt-2 text-body text-muted-foreground">{value || '—'}</p>
+      <div className="relative mt-2">
+        <Mail aria-hidden="true" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input value={value} readOnly={true} aria-label={label} className="cursor-not-allowed bg-muted/50 pl-9" />
+      </div>
       <p className="mt-1.5 text-caption text-muted-foreground">{caption}</p>
     </div>
   );
@@ -464,6 +494,7 @@ function BioSection(p: BioSectionProps) {
 type TagsSectionProps = {
   label: string;
   hint: string;
+  placeholder: string;
   value: string[];
   onChange: (next: string[]) => void;
   dirty: boolean;
@@ -477,26 +508,45 @@ function TagsSection(p: TagsSectionProps) {
     <div>
       <SectionLabel>{p.label}</SectionLabel>
       <div className="mt-2">
-        <TagsInput value={p.value} onChange={p.onChange} placeholder={p.hint} />
+        <TagsInput value={p.value} onChange={p.onChange} placeholder={p.placeholder} />
       </div>
       <FF hint={p.hint} dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
     </div>
   );
 }
 
-// Lucide does not ship brand icons for LinkedIn / Bluesky / GitHub in the
-// version pinned to this repo. Use a neutral link tile + the recognized
-// brand label below — same UX shape as the existing MUI `SocialSegment`.
-const RECOGNIZED_ICON: Record<RecognizedKind, typeof Link2> = {
-  linkedin: Link2,
-  bsky: Briefcase,
-  github: Link2,
-};
-
-const RECOGNIZED_LABEL: Record<RecognizedKind, string> = {
-  linkedin: 'LinkedIn',
-  bsky: 'Bluesky',
-  github: 'GitHub',
+/**
+ * Brand-tinted icon tile + URL input — mirrors the prototype
+ * `UserProfileSettingsPage.tsx` social-row pattern (`size-10 rounded-full
+ * bg-{brand}/10 text-{brand}` + lucide / brand SVG inside). Uses the
+ * existing CRD social SVGs from `@/crd/components/common/icons/social/`,
+ * which use `fill="currentColor"` so they pick up the parent's `text-*`
+ * colour.
+ */
+const RECOGNIZED_CONFIG: Record<
+  RecognizedKind,
+  {
+    Icon: typeof LinkedInIcon;
+    label: string;
+    /** Tailwind classes for the round tile. Static strings only — Tailwind v4 needs them in source. */
+    tileClass: string;
+  }
+> = {
+  linkedin: {
+    Icon: LinkedInIcon,
+    label: 'LinkedIn',
+    tileClass: 'bg-[#0077b5]/10 text-[#0077b5]',
+  },
+  bsky: {
+    Icon: BlueSkyIcon,
+    label: 'Bluesky',
+    tileClass: 'bg-[#0085ff]/10 text-[#0085ff]',
+  },
+  github: {
+    Icon: GitHubIcon,
+    label: 'GitHub',
+    tileClass: 'bg-foreground/10 text-foreground',
+  },
 };
 
 function RecognizedReferenceRow({
@@ -510,22 +560,22 @@ function RecognizedReferenceRow({
   value: string;
   onUriChange: (uri: string) => void;
 }) {
-  const Icon = RECOGNIZED_ICON[kind];
+  const { Icon, label, tileClass } = RECOGNIZED_CONFIG[kind];
   return (
     <div className="flex items-center gap-3">
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-muted">
-        <Icon aria-hidden="true" className="size-4" />
+      <div
+        aria-hidden="true"
+        className={cn('flex size-10 shrink-0 items-center justify-center rounded-full', tileClass)}
+      >
+        <Icon className="size-5" />
       </div>
-      <div className="flex-1">
-        <Label className="text-caption text-muted-foreground">{RECOGNIZED_LABEL[kind]}</Label>
-        <Input
-          className="mt-1"
-          value={value}
-          onChange={e => onUriChange(e.target.value)}
-          placeholder={placeholder}
-          aria-label={RECOGNIZED_LABEL[kind]}
-        />
-      </div>
+      <Input
+        className="flex-1"
+        value={value}
+        onChange={e => onUriChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={label}
+      />
     </div>
   );
 }

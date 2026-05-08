@@ -65,9 +65,15 @@
           "label": "Biografie",
           "hint": "Markdown wordt ondersteund."
         },
-        "tags": {
-          "label": "Tags",
-          "hint": "Druk op Enter om een tag toe te voegen."
+        "skills": {
+          "label": "Vaardigheden",
+          "hint": "Vaardigheden die je kunt aanbieden. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. UX-onderzoek, TypeScript, facilitatie"
+        },
+        "keywords": {
+          "label": "Trefwoorden",
+          "hint": "Trefwoorden die je interesses beschrijven. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. klimaat, governance, open source"
         }
       },
       "socialLinks": {
@@ -90,6 +96,237 @@
         "changeButton": "Avatar wijzigen",
         "helperText": "Aanbevolen: 400×400 px. JPG, PNG of GIF.",
         "uploading": "Uploaden…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Lidmaatschap",
+      "homeSpace": {
+        "title": "Hoofd-Space",
+        "description": "Kies een Space waar je na inloggen op terechtkomt. Je kunt ook automatisch doorverwijzen inschakelen.",
+        "selectLabel": "Hoofd-Space",
+        "noSelection": "Geen hoofd-Space",
+        "autoRedirectLabel": "Automatisch doorverwijzen naar mijn hoofd-Space na inloggen",
+        "autoRedirectDisabledHint": "Kies een hoofd-Space om automatisch doorverwijzen in te schakelen."
+      },
+      "myMemberships": {
+        "title": "Mijn lidmaatschappen",
+        "searchPlaceholder": "Zoek lidmaatschappen...",
+        "empty": "Je bent nog geen lid van een Space.",
+        "summary": "{{shown}} van {{total}} lidmaatschappen weergegeven",
+        "filteredEmptyTitle": "Geen lidmaatschappen gevonden",
+        "filteredEmptyDescription": "Pas de filters of zoekterm aan.",
+        "clearFilters": "Filters wissen"
+      },
+      "menu": {
+        "viewByType": "{{type}} bekijken"
+      },
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Beheerder",
+        "lead": "Lead",
+        "member": "Lid"
+      },
+      "leave": {
+        "menuItem": "Verlaten",
+        "menuItemLabeled": "{{type}} verlaten",
+        "dialogTitle": "Dit lidmaatschap verlaten?",
+        "dialogDescription": "Je staat op het punt om \"{{spaceName}}\" te verlaten. Je verliest toegang tot inhoud voor leden en moet opnieuw aanmelden om terug te komen.",
+        "dialogConfirm": "Verlaten",
+        "success": "Lidmaatschap verlaten",
+        "error": "Verlaten mislukt — probeer opnieuw"
+      },
+      "pendingApplications": {
+        "title": "Openstaande aanvragen",
+        "empty": "Je hebt geen openstaande aanvragen.",
+        "statusPending": "In behandeling"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Geleid door:",
+      "ledByAria": "{{count}} community-leiders",
+      "leadsMore": "en nog {{count}}"
+    },
+    "security": {
+      "pageTitle": "Beveiliging",
+      "title": "Beveiliging",
+      "description": "Beheer passkeys en WebAuthn-aanmeldgegevens voor je account.",
+      "notEnabled": "WebAuthn / Passkey is niet ingeschakeld op dit account.",
+      "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen."
+    },
+    "settings": {
+      "pageTitle": "Instellingen",
+      "communication": {
+        "title": "Communicatie en privacy",
+        "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
+        "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
+        "error": "Voorkeur niet opgeslagen — probeer opnieuw"
+      },
+      "designSystem": {
+        "title": "Design System",
+        "description": "Schakel tussen het nieuwe (CRD) en het klassieke (MUI) ontwerp. Deze voorkeur wordt lokaal op dit apparaat opgeslagen.",
+        "toggleLabel": "Gebruik het nieuwe ontwerp (CRD)",
+        "reloadCaption": "De pagina wordt opnieuw geladen na de wijziging."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Meldingen",
+      "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
+      "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
+      "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
+      "columns": {
+        "activity": "Activiteit",
+        "inApp": "In-app",
+        "email": "E-mail",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push-meldingen",
+        "masterToggleDescription": "Schakel push-meldingen op dit apparaat in. Je kunt hieronder verfijnen welke gebeurtenissen ze activeren.",
+        "permissionDenied": "Toestemming voor meldingen werd geweigerd. Pas je browserinstellingen aan om push in te schakelen.",
+        "unavailable": "Push-meldingen zijn niet beschikbaar in deze browser.",
+        "requiresPwa": "Push-meldingen vereisen dat je deze app aan je beginscherm toevoegt.",
+        "error": "Push-abonnement bijwerken mislukt — probeer opnieuw"
+      },
+      "groups": {
+        "space": {
+          "title": "Space-meldingen",
+          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals berichten, reacties en community-updates."
+        },
+        "spaceAdmin": {
+          "title": "Space-beheerdermeldingen",
+          "description": "Meldingen voor Spaces waarvoor je beheerder of lead bent."
+        },
+        "user": {
+          "title": "Gebruikersmeldingen",
+          "description": "Personaliseer waarschuwingen voor interacties zoals antwoorden, vermeldingen en uitnodigingen."
+        },
+        "platform": {
+          "title": "Platformmeldingen",
+          "description": "Blijf op de hoogte van platformbrede discussies, nieuwe functies en aankondigingen."
+        },
+        "platformAdmin": {
+          "title": "Platformbeheerdermeldingen",
+          "description": "Meldingen voor platformbeheerders (gebruikersbeheer, aanmaken van Spaces)."
+        },
+        "organization": {
+          "title": "Organisatiemeldingen",
+          "description": "Beheer waarschuwingen voor vermeldingen, berichten en teamupdates van je organisatie."
+        },
+        "virtualContributor": {
+          "title": "Meldingen voor virtuele bijdragers",
+          "description": "Meldingen over activiteiten en toewijzingen van virtuele bijdragers."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
+          "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
+          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een bericht dat ik volg",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
+          "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",
+          "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",
+          "collaborationPollVoteCastOnOwnPoll": "Krijg een melding wanneer iemand op mijn poll stemt",
+          "collaborationPollVoteCastOnPollIVotedOn": "Krijg een melding wanneer iemand stemt op een poll waarop ik heb gestemd",
+          "collaborationPollModifiedOnPollIVotedOn": "Krijg een melding wanneer een poll waarop ik heb gestemd wordt gewijzigd",
+          "collaborationPollVoteAffectedByOptionChange": "Krijg een melding wanneer mijn stem wordt beïnvloed door een wijziging in een poll-optie"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
+          "communityNewMember": "Krijg een melding wanneer een nieuw lid zich bij de community aansluit",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
+          "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen"
+        },
+        "user": {
+          "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
+          "mentioned": "Krijg een melding wanneer ik word vermeld",
+          "messageReceived": "Krijg een melding wanneer iemand mij een direct bericht stuurt",
+          "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
+          "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een discussie die ik volg",
+          "forumDiscussionCreated": "Krijg een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Krijg een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
+          "userProfileRemoved": "Krijg een melding wanneer een gebruikersprofiel wordt verwijderd",
+          "userGlobalRoleChanged": "Krijg een melding wanneer de globale rol van een gebruiker verandert",
+          "spaceCreated": "Krijg een melding wanneer er een nieuwe Space wordt aangemaakt"
+        },
+        "organization": {
+          "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
+          "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organisaties",
+      "searchPlaceholder": "Zoek organisaties...",
+      "createButton": "Organisatie aanmaken",
+      "summary": "{{shown}} van {{total}} organisaties weergegeven",
+      "empty": "Je bent nog niet gelinkt aan een organisatie.",
+      "filteredEmptyTitle": "Geen organisaties gevonden",
+      "filteredEmptyDescription": "Probeer een andere naam of locatie te zoeken.",
+      "clearSearch": "Zoekopdracht wissen",
+      "verified": "Geverifieerd",
+      "associates": "Geassocieerden",
+      "associatesCount": "{{count}} geassocieerden",
+      "role": {
+        "admin": "Beheerder",
+        "associate": "Geassocieerd"
+      },
+      "menu": {
+        "viewProfile": "Profiel bekijken",
+        "disassociate": "Ontkoppelen"
+      },
+      "disassociate": {
+        "dialogTitle": "Ontkoppelen van deze organisatie?",
+        "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als geassocieerde en alle bijbehorende rechten.",
+        "dialogConfirm": "Ontkoppelen",
+        "success": "Succesvol ontkoppeld",
+        "error": "Ontkoppelen mislukt — probeer opnieuw"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Hier kun je je actieve resources bekijken en je accountlimieten beheren.",
+      "spaces": {
+        "title": "Gehoste Spaces",
+        "createButton": "Space aanmaken"
+      },
+      "virtualContributors": {
+        "title": "Virtuele bijdragers",
+        "createButton": "Bijdrager toevoegen"
+      },
+      "innovationPacks": {
+        "title": "Sjabloonpakketten",
+        "createButton": "Nieuw pakket"
+      },
+      "innovationHubs": {
+        "title": "Aangepaste startpagina's",
+        "createButton": "Nieuwe pagina"
+      },
+      "actions": {
+        "view": "Bekijken",
+        "manage": "Beheren",
+        "transfer": "Overdragen",
+        "delete": "Verwijderen"
+      },
+      "deleteDialog": {
+        "title": "Deze resource verwijderen?",
+        "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Verwijderen"
       }
     }
   },
@@ -120,6 +357,28 @@
     "remove": "Verwijderen",
     "delete": "Verwijderen",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "account": {
+      "activeCount": "{{count}} actief",
+      "kebabAriaLabel": "Meer acties",
+      "emptySlot": "Lege plek",
+      "createNewSpace": {
+        "ariaLabel": "Nieuwe space aanmaken",
+        "heading": "Nieuwe Space aanmaken",
+        "description": "Lanceer een nieuwe samenwerkingsomgeving voor je team."
+      },
+      "createNewVc": {
+        "ariaLabel": "Nieuwe bijdrager aanmaken",
+        "heading": "Nieuwe bijdrager aanmaken"
+      },
+      "customHomepages": {
+        "emptyHeading": "Geen aangepaste startpagina's",
+        "emptyDescription": "Maak een gepersonaliseerde landingspagina voor je account.",
+        "createCta": "Startpagina aanmaken",
+        "capacity": "Capaciteit: 0/1 gebruikt"
+      },
+      "deleteSuccess": "Resource verwijderd",
+      "deleteError": "Verwijderen mislukt — probeer opnieuw"
+    }
   }
 }

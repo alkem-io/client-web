@@ -19,11 +19,15 @@ type SettingsTabStripProps<TTabId extends string> = {
 
 /**
  * Actor-agnostic horizontal underlined tab strip for contributor settings
- * shells (User: 7 tabs; Org: 5 tabs). Mirrors the 045 SpaceSettingsTabStrip
- * aesthetic but accepts the generic `SettingsTabDescriptor` shape.
+ * shells (User: 7 tabs; Org: 5 tabs).
+ *
+ * Mirrors `prototype/src/app/pages/UserAccountPage.tsx` — tabs are bare
+ * `<button>` elements with bottom-border underlines, `gap-6` apart, no
+ * per-tab horizontal padding. Active state uses `border-primary text-primary`;
+ * inactive uses muted text + transparent border with hover lifts.
  *
  * On viewports below `md` the strip is horizontally scrollable; the active
- * tab is auto-scrolled into view on mount and on every tab change (FR-014).
+ * tab auto-scrolls into view on mount and on every tab change (FR-014).
  * Keyboard navigation is handled by the browser's default tab-order through
  * the buttons; arrow-key activation can be added later if needed.
  */
@@ -50,7 +54,7 @@ export function SettingsTabStrip<TTabId extends string>({
       ref={stripRef}
       role="tablist"
       className={cn(
-        'flex items-center gap-x-1 overflow-x-auto overflow-y-hidden',
+        'flex items-center gap-6 overflow-x-auto overflow-y-hidden',
         '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
         className
       )}
@@ -66,12 +70,12 @@ export function SettingsTabStrip<TTabId extends string>({
             aria-selected={isActive}
             onClick={() => onTabChange(id)}
             className={cn(
-              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-control transition-colors shrink-0',
-              'border-b-2 -mb-px outline-none',
-              'focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
+              'inline-flex shrink-0 items-center gap-2 whitespace-nowrap pb-4',
+              'text-control font-medium border-b-2 -mb-px transition-colors',
+              'outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
               isActive
-                ? 'border-primary text-foreground font-semibold'
-                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
             )}
           >
             <Icon aria-hidden="true" className="size-4 shrink-0" />

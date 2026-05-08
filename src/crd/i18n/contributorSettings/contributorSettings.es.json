@@ -65,9 +65,15 @@
           "label": "Biografía",
           "hint": "Compatible con Markdown."
         },
-        "tags": {
-          "label": "Etiquetas",
-          "hint": "Pulsa Enter para añadir una etiqueta."
+        "skills": {
+          "label": "Habilidades",
+          "hint": "Habilidades que puedes ofrecer. Pulsa Intro para añadir.",
+          "placeholder": "p. ej. investigación UX, TypeScript, facilitación"
+        },
+        "keywords": {
+          "label": "Palabras clave",
+          "hint": "Palabras clave que describen tus intereses. Pulsa Intro para añadir.",
+          "placeholder": "p. ej. clima, gobernanza, código abierto"
         }
       },
       "socialLinks": {
@@ -90,6 +96,237 @@
         "changeButton": "Cambiar avatar",
         "helperText": "Recomendado: 400×400 px. JPG, PNG o GIF.",
         "uploading": "Subiendo…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Membresía",
+      "homeSpace": {
+        "title": "Space principal",
+        "description": "Elige un Space al que ir tras iniciar sesión. También puedes activar la redirección automática.",
+        "selectLabel": "Space principal",
+        "noSelection": "Sin Space principal",
+        "autoRedirectLabel": "Redirigir automáticamente a mi Space principal tras iniciar sesión",
+        "autoRedirectDisabledHint": "Selecciona un Space principal para activar la redirección automática."
+      },
+      "myMemberships": {
+        "title": "Mis membresías",
+        "searchPlaceholder": "Buscar membresías...",
+        "empty": "Aún no eres miembro de ningún Space.",
+        "summary": "Mostrando {{shown}} de {{total}} membresías",
+        "filteredEmptyTitle": "No se encontraron membresías",
+        "filteredEmptyDescription": "Prueba a ajustar los filtros o el término de búsqueda.",
+        "clearFilters": "Limpiar filtros"
+      },
+      "menu": {
+        "viewByType": "Ver {{type}}"
+      },
+      "filter": {
+        "all": "Todas",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Administrador",
+        "lead": "Lead",
+        "member": "Miembro"
+      },
+      "leave": {
+        "menuItem": "Salir",
+        "menuItemLabeled": "Salir de {{type}}",
+        "dialogTitle": "¿Salir de esta membresía?",
+        "dialogDescription": "Estás a punto de salir de «{{spaceName}}». Perderás acceso al contenido exclusivo para miembros y tendrás que volver a solicitar la incorporación.",
+        "dialogConfirm": "Salir",
+        "success": "Has salido de la membresía",
+        "error": "No se pudo salir — inténtalo de nuevo"
+      },
+      "pendingApplications": {
+        "title": "Solicitudes pendientes",
+        "empty": "No tienes solicitudes pendientes.",
+        "statusPending": "Pendiente"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Liderado por:",
+      "ledByAria": "{{count}} líderes de comunidad",
+      "leadsMore": "y {{count}} más"
+    },
+    "security": {
+      "pageTitle": "Seguridad",
+      "title": "Seguridad",
+      "description": "Gestiona las claves de acceso y las credenciales WebAuthn de tu cuenta.",
+      "notEnabled": "WebAuthn / Passkey no está habilitado en esta cuenta.",
+      "errorDescription": "No se pudieron cargar los ajustes de seguridad — intenta recargar la página."
+    },
+    "settings": {
+      "pageTitle": "Ajustes",
+      "communication": {
+        "title": "Comunicación y privacidad",
+        "allowMessagesLabel": "Permitir que otros usuarios me envíen mensajes directos",
+        "allowMessagesDescription": "Cuando esté desactivado, otros usuarios no podrán iniciar una conversación de mensaje directo contigo.",
+        "error": "No se pudo guardar la preferencia — inténtalo de nuevo"
+      },
+      "designSystem": {
+        "title": "Sistema de diseño",
+        "description": "Cambia entre el nuevo diseño (CRD) y el clásico (MUI). Esta preferencia se guarda localmente en este dispositivo.",
+        "toggleLabel": "Usar el nuevo diseño (CRD)",
+        "reloadCaption": "La página se recargará después del cambio."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Notificaciones",
+      "helpBanner": "Edita tus preferencias de notificación. Los cambios se guardan automáticamente.",
+      "toggleAria": "Alternar notificación {{channel}} para: {{label}}",
+      "toggleError": "No se pudo guardar la preferencia — inténtalo de nuevo",
+      "columns": {
+        "activity": "Actividad",
+        "inApp": "En la app",
+        "email": "Correo",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Notificaciones push",
+        "masterToggleDescription": "Activa las notificaciones push en este dispositivo. Puedes ajustar abajo qué eventos las activan.",
+        "permissionDenied": "Se denegó el permiso de notificaciones. Cambia los ajustes del navegador para habilitar push.",
+        "unavailable": "Las notificaciones push no están disponibles en este navegador.",
+        "requiresPwa": "Las notificaciones push requieren instalar esta app en la pantalla de inicio.",
+        "error": "No se pudo actualizar la suscripción push — inténtalo de nuevo"
+      },
+      "groups": {
+        "space": {
+          "title": "Notificaciones de Space",
+          "description": "Gestiona las notificaciones de eventos relacionados con el Space, como publicaciones, comentarios y actualizaciones de la comunidad."
+        },
+        "spaceAdmin": {
+          "title": "Notificaciones de admin de Space",
+          "description": "Notificaciones para Spaces donde eres administrador o lead."
+        },
+        "user": {
+          "title": "Notificaciones de usuario",
+          "description": "Personaliza las alertas de interacciones como respuestas, menciones e invitaciones."
+        },
+        "platform": {
+          "title": "Notificaciones de plataforma",
+          "description": "Mantente al día con las discusiones de la plataforma, nuevas funciones y anuncios."
+        },
+        "platformAdmin": {
+          "title": "Notificaciones de admin de plataforma",
+          "description": "Notificaciones para administradores de la plataforma (ciclo de vida de usuarios, creación de Spaces)."
+        },
+        "organization": {
+          "title": "Notificaciones de organización",
+          "description": "Controla las alertas de menciones, mensajes y actualizaciones del equipo de tu organización."
+        },
+        "virtualContributor": {
+          "title": "Notificaciones de contribuidor virtual",
+          "description": "Notificaciones sobre actividades y asignaciones de contribuidores virtuales."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Recibir una notificación cuando se comparte una nueva comunicación en una comunidad",
+          "collaborationCalloutPublished": "Recibir una notificación cuando se publica una llamada en una comunidad de la que soy miembro",
+          "collaborationCalloutPostContributionComment": "Recibir una notificación cuando se comenta una publicación que sigo",
+          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
+          "collaborationCalloutComment": "Recibir una notificación cuando se añade un nuevo comentario a una llamada que sigo",
+          "communityCalendarEvents": "Recibir notificaciones de eventos del calendario de la comunidad",
+          "collaborationPollVoteCastOnOwnPoll": "Recibir una notificación cuando alguien vota en mi encuesta",
+          "collaborationPollVoteCastOnPollIVotedOn": "Recibir una notificación cuando alguien vota en una encuesta en la que voté",
+          "collaborationPollModifiedOnPollIVotedOn": "Recibir una notificación cuando se modifica una encuesta en la que voté",
+          "collaborationPollVoteAffectedByOptionChange": "Recibir una notificación cuando mi voto se ve afectado por un cambio en una opción de la encuesta"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
+          "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
+          "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
+          "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad"
+        },
+        "user": {
+          "commentReply": "Recibir una notificación cuando alguien responde a mi comentario",
+          "mentioned": "Recibir una notificación cuando soy mencionado",
+          "messageReceived": "Recibir una notificación cuando alguien me envía un mensaje directo",
+          "membershipInvitationReceived": "Recibir una notificación cuando alguien me invita a unirme a una comunidad",
+          "membershipCommunityJoined": "Recibir una notificación cuando me uno a un nuevo Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Recibir una notificación cuando se añade un nuevo comentario a una discusión que sigo",
+          "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en la plataforma"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Recibir una notificación cuando se crea un nuevo perfil de usuario",
+          "userProfileRemoved": "Recibir una notificación cuando se elimina un perfil de usuario",
+          "userGlobalRoleChanged": "Recibir una notificación cuando cambia el rol global de un usuario",
+          "spaceCreated": "Recibir una notificación cuando se crea un nuevo Space"
+        },
+        "organization": {
+          "adminMentioned": "Recibir una notificación cuando se menciona a mi organización",
+          "adminMessageReceived": "Recibir mensajes directos a mi organización"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Recibir una notificación cuando se invita a un gestor de VC a unirse a una comunidad"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organizaciones",
+      "searchPlaceholder": "Buscar organizaciones...",
+      "createButton": "Crear organización",
+      "summary": "Mostrando {{shown}} de {{total}} organizaciones",
+      "empty": "Aún no estás asociado a ninguna organización.",
+      "filteredEmptyTitle": "No se encontraron organizaciones",
+      "filteredEmptyDescription": "Prueba a buscar con un nombre o ubicación distintos.",
+      "clearSearch": "Limpiar búsqueda",
+      "verified": "Verificada",
+      "associates": "Asociados",
+      "associatesCount": "{{count}} asociados",
+      "role": {
+        "admin": "Administrador",
+        "associate": "Asociado"
+      },
+      "menu": {
+        "viewProfile": "Ver perfil",
+        "disassociate": "Desasociar"
+      },
+      "disassociate": {
+        "dialogTitle": "¿Desasociarse de esta organización?",
+        "dialogDescription": "Estás a punto de dejar «{{name}}». Perderás tu rol de asociado y los permisos asociados.",
+        "dialogConfirm": "Desasociar",
+        "success": "Desasociado correctamente",
+        "error": "No se pudo desasociar — inténtalo de nuevo"
+      }
+    },
+    "account": {
+      "pageTitle": "Cuenta",
+      "helpBanner": "Aquí puedes ver tus recursos activos y gestionar los límites de asignación de tu cuenta.",
+      "spaces": {
+        "title": "Espacios anfitriones",
+        "createButton": "Crear espacio"
+      },
+      "virtualContributors": {
+        "title": "Contribuidores virtuales",
+        "createButton": "Añadir contribuidor"
+      },
+      "innovationPacks": {
+        "title": "Paquetes de plantillas",
+        "createButton": "Nuevo paquete"
+      },
+      "innovationHubs": {
+        "title": "Páginas de inicio personalizadas",
+        "createButton": "Nueva página"
+      },
+      "actions": {
+        "view": "Ver",
+        "manage": "Gestionar",
+        "transfer": "Transferir",
+        "delete": "Eliminar"
+      },
+      "deleteDialog": {
+        "title": "¿Eliminar este recurso?",
+        "description": "Esto eliminará permanentemente «{{name}}». Esta acción no se puede deshacer.",
+        "confirm": "Eliminar"
       }
     }
   },
@@ -120,6 +357,28 @@
     "remove": "Quitar",
     "delete": "Eliminar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "account": {
+      "activeCount": "{{count}} activos",
+      "kebabAriaLabel": "Más acciones",
+      "emptySlot": "Espacio vacío",
+      "createNewSpace": {
+        "ariaLabel": "Crear nuevo espacio",
+        "heading": "Crear nuevo espacio",
+        "description": "Lanza un nuevo entorno colaborativo para tu equipo."
+      },
+      "createNewVc": {
+        "ariaLabel": "Crear nuevo contribuidor",
+        "heading": "Crear nuevo contribuidor"
+      },
+      "customHomepages": {
+        "emptyHeading": "Sin páginas de inicio personalizadas",
+        "emptyDescription": "Crea una página de aterrizaje personalizada para tu cuenta.",
+        "createCta": "Crear página de inicio",
+        "capacity": "Capacidad: 0/1 utilizada"
+      },
+      "deleteSuccess": "Recurso eliminado",
+      "deleteError": "No se pudo eliminar — inténtalo de nuevo"
+    }
   }
 }

@@ -65,9 +65,15 @@
           "label": "Bio",
           "hint": "Markdown supported."
         },
-        "tags": {
-          "label": "Tags",
-          "hint": "Press Enter to add a tag."
+        "skills": {
+          "label": "Skills",
+          "hint": "Skills you can offer. Press Enter to add.",
+          "placeholder": "e.g. UX research, TypeScript, facilitation"
+        },
+        "keywords": {
+          "label": "Keywords",
+          "hint": "Keywords describing your interests. Press Enter to add.",
+          "placeholder": "e.g. climate, governance, open source"
         }
       },
       "socialLinks": {
@@ -90,6 +96,237 @@
         "changeButton": "Change Avatar",
         "helperText": "Recommended: 400×400px. JPG, PNG or GIF.",
         "uploading": "Uploading…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Membership",
+      "homeSpace": {
+        "title": "Home Space",
+        "description": "Choose a Space to land on after sign-in. You can also enable auto-redirect.",
+        "selectLabel": "Home Space",
+        "noSelection": "No home space",
+        "autoRedirectLabel": "Auto-redirect to my Home Space after sign-in",
+        "autoRedirectDisabledHint": "Select a Home Space to enable auto-redirect."
+      },
+      "myMemberships": {
+        "title": "My Memberships",
+        "searchPlaceholder": "Search memberships...",
+        "empty": "You're not a member of any Spaces yet.",
+        "summary": "Showing {{shown}} of {{total}} memberships",
+        "filteredEmptyTitle": "No memberships found",
+        "filteredEmptyDescription": "Try adjusting your filters or search query.",
+        "clearFilters": "Clear Filters"
+      },
+      "menu": {
+        "viewByType": "View {{type}}"
+      },
+      "filter": {
+        "all": "All",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Admin",
+        "lead": "Lead",
+        "member": "Member"
+      },
+      "leave": {
+        "menuItem": "Leave",
+        "menuItemLabeled": "Leave {{type}}",
+        "dialogTitle": "Leave this membership?",
+        "dialogDescription": "You're about to leave \"{{spaceName}}\". You'll lose access to its members-only content and will need to re-apply to rejoin.",
+        "dialogConfirm": "Leave",
+        "success": "Membership left",
+        "error": "Couldn't leave — try again"
+      },
+      "pendingApplications": {
+        "title": "Pending Applications",
+        "empty": "You have no pending applications.",
+        "statusPending": "Pending"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Led by:",
+      "ledByAria": "{{count}} community leads",
+      "leadsMore": "and {{count}} more"
+    },
+    "security": {
+      "pageTitle": "Security",
+      "title": "Security",
+      "description": "Manage passkeys and WebAuthn credentials for your account.",
+      "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
+      "errorDescription": "Couldn't load security settings — try refreshing the page."
+    },
+    "settings": {
+      "pageTitle": "Settings",
+      "communication": {
+        "title": "Communication & Privacy",
+        "allowMessagesLabel": "Allow other users to send me direct messages",
+        "allowMessagesDescription": "When off, other users won't be able to start a direct-message conversation with you.",
+        "error": "Couldn't save preference — try again"
+      },
+      "designSystem": {
+        "title": "Design System",
+        "description": "Switch between the new (CRD) and the classic (MUI) design. This preference is stored locally on this device.",
+        "toggleLabel": "Use the new design (CRD)",
+        "reloadCaption": "The page will reload after the change."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Notifications",
+      "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
+      "toggleAria": "Toggle {{channel}} notification for: {{label}}",
+      "toggleError": "Couldn't save preference — try again",
+      "columns": {
+        "activity": "Activity",
+        "inApp": "In-App",
+        "email": "Email",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push notifications",
+        "masterToggleDescription": "Enable push notifications on this device. You can fine-tune which events trigger them below.",
+        "permissionDenied": "Notification permission was denied. Update browser settings to enable push.",
+        "unavailable": "Push notifications aren't available in this browser.",
+        "requiresPwa": "Push notifications require installing this app to your home screen.",
+        "error": "Couldn't update push subscription — try again"
+      },
+      "groups": {
+        "space": {
+          "title": "Space Notifications",
+          "description": "Manage notifications for space-related events like posts, comments, and community updates."
+        },
+        "spaceAdmin": {
+          "title": "Space Admin Notifications",
+          "description": "Notifications for spaces where you are an admin or lead."
+        },
+        "user": {
+          "title": "User Notifications",
+          "description": "Personalize alerts for interactions like replies, mentions, and invites."
+        },
+        "platform": {
+          "title": "Platform Notifications",
+          "description": "Stay updated on platform-level discussions, new features, and announcements."
+        },
+        "platformAdmin": {
+          "title": "Platform Admin Notifications",
+          "description": "Notifications for platform administrators (user lifecycle, space creation)."
+        },
+        "organization": {
+          "title": "Organization Notifications",
+          "description": "Control alerts for organization mentions, messaging, and team updates."
+        },
+        "virtualContributor": {
+          "title": "Virtual Contributor Notifications",
+          "description": "Notifications regarding virtual contributor activities and assignments."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Receive a notification when a new communication is shared on a community",
+          "collaborationCalloutPublished": "Receive a notification when a callout is published in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a post I follow",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
+          "collaborationCalloutComment": "Receive a notification when a new comment is added to a callout I follow",
+          "communityCalendarEvents": "Receive a notification for community calendar events",
+          "collaborationPollVoteCastOnOwnPoll": "Receive a notification when someone votes on my poll",
+          "collaborationPollVoteCastOnPollIVotedOn": "Receive a notification when someone votes on a poll I voted on",
+          "collaborationPollModifiedOnPollIVotedOn": "Receive a notification when a poll I voted on is modified",
+          "collaborationPollVoteAffectedByOptionChange": "Receive a notification when my vote is affected by a poll option change"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Receive a notification when a new community application is submitted",
+          "communityNewMember": "Receive a notification when a new member joins the community",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
+          "communicationMessageReceived": "Receive a notification when a community message is received"
+        },
+        "user": {
+          "commentReply": "Receive a notification when someone replies to my comment",
+          "mentioned": "Receive a notification when I am mentioned",
+          "messageReceived": "Receive a notification when someone sends me a direct message",
+          "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
+          "membershipCommunityJoined": "Receive a notification when I join a new Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Receive a notification when a new comment is added to a discussion I follow",
+          "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Receive a notification when a new user profile is created",
+          "userProfileRemoved": "Receive a notification when a user profile is removed",
+          "userGlobalRoleChanged": "Receive a notification when a user's global role changes",
+          "spaceCreated": "Receive a notification when a new space is created"
+        },
+        "organization": {
+          "adminMentioned": "Receive a notification when my organization is mentioned",
+          "adminMessageReceived": "Receive direct messages to my organization"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organizations",
+      "searchPlaceholder": "Search organizations...",
+      "createButton": "Create Organization",
+      "summary": "Showing {{shown}} of {{total}} organizations",
+      "empty": "You're not associated with any organizations yet.",
+      "filteredEmptyTitle": "No organizations found",
+      "filteredEmptyDescription": "Try searching for a different name or location.",
+      "clearSearch": "Clear Search",
+      "verified": "Verified",
+      "associates": "Associates",
+      "associatesCount": "{{count}} Associates",
+      "role": {
+        "admin": "Admin",
+        "associate": "Associate"
+      },
+      "menu": {
+        "viewProfile": "View Profile",
+        "disassociate": "Disassociate"
+      },
+      "disassociate": {
+        "dialogTitle": "Disassociate from this organization?",
+        "dialogDescription": "You're about to leave \"{{name}}\". You'll lose your associate role and any related permissions.",
+        "dialogConfirm": "Disassociate",
+        "success": "Disassociated successfully",
+        "error": "Couldn't disassociate — try again"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Here you can view your active resources and manage your account allocation limits.",
+      "spaces": {
+        "title": "Hosted Spaces",
+        "createButton": "Create Space"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Add Contributor"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "New Pack"
+      },
+      "innovationHubs": {
+        "title": "Custom Homepages",
+        "createButton": "New Page"
+      },
+      "actions": {
+        "view": "View",
+        "manage": "Manage",
+        "transfer": "Transfer",
+        "delete": "Delete"
+      },
+      "deleteDialog": {
+        "title": "Delete this resource?",
+        "description": "This will permanently remove \"{{name}}\". This cannot be undone.",
+        "confirm": "Delete"
       }
     }
   },
@@ -120,6 +357,28 @@
     "remove": "Remove",
     "delete": "Delete",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "account": {
+      "activeCount": "{{count}} Active",
+      "kebabAriaLabel": "More actions",
+      "emptySlot": "Empty Slot",
+      "createNewSpace": {
+        "ariaLabel": "Create new space",
+        "heading": "Create New Space",
+        "description": "Launch a new collaborative environment for your team."
+      },
+      "createNewVc": {
+        "ariaLabel": "Create new contributor",
+        "heading": "Create New Contributor"
+      },
+      "customHomepages": {
+        "emptyHeading": "No Custom Homepages",
+        "emptyDescription": "Create a personalized landing page for your account.",
+        "createCta": "Create Homepage",
+        "capacity": "Capacity: 0/1 Used"
+      },
+      "deleteSuccess": "Resource deleted",
+      "deleteError": "Couldn't delete resource — try again"
+    }
   }
 }

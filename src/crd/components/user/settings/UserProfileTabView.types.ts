@@ -13,6 +13,11 @@ export type { SectionSaveStatus };
 /**
  * Logical "sections" of the User Profile tab. Each maps to ONE Save button
  * and ONE targeted mutation. `email` is read-only and not a section.
+ *
+ * `skills` and `keywords` are two **independent** tagset sections — each
+ * writes to its own named profile tagset (`Skills` / `Keywords`). There is
+ * no unified `tags` section; saving Skills MUST NOT touch Keywords and
+ * vice versa (parity with the existing MUI `UserForm` + `TagsetSegment`).
  */
 export type UserProfileSectionKey =
   | 'displayName'
@@ -22,8 +27,20 @@ export type UserProfileSectionKey =
   | 'tagline'
   | 'location'
   | 'bio'
-  | 'tags'
+  | 'skills'
+  | 'keywords'
   | 'references';
+
+/**
+ * One named profile tagset (Skills / Keywords for User; Keywords /
+ * Capabilities for Org). `id` is `undefined` when the tagset doesn't yet
+ * exist on the profile — the section's first Save lazy-creates it via
+ * `createTagsetOnProfile`.
+ */
+export type UserProfileTagset = {
+  id?: string;
+  tags: string[];
+};
 
 export type UserProfileVisual = {
   id: string;
@@ -58,8 +75,6 @@ export type UserProfileCountryOption = {
 export type UserProfileFormValues = {
   /** GraphQL profile id — used by reference create / tagset create mutations. */
   profileId: string;
-  /** First default tagset id, when one exists; otherwise null (the first save creates one). */
-  tagsetId: string | null;
   displayName: string;
   firstName: string;
   lastName: string;
@@ -70,7 +85,10 @@ export type UserProfileFormValues = {
   /** ISO code, never the localized country name. */
   country: string;
   bio: string;
-  tags: string[];
+  /** `Skills` profile tagset (case-insensitive `name` match). */
+  skills: UserProfileTagset;
+  /** `Keywords` profile tagset (case-insensitive `name` match). */
+  keywords: UserProfileTagset;
   avatar: UserProfileVisual;
   /** All non-recognized references (the Add-Another list). */
   references: UserProfileReference[];
