@@ -16,9 +16,6 @@ const CrdUserSecurityTab = lazy(() => import('./security/CrdUserSecurityTab'));
  *
  * The shell route resolves the URL → active tab id via
  * `useUserSettingsTab`, then renders `<Outlet />` for the active tab body.
- * Every tab now has a real implementation — the legacy `_placeholder/`
- * folder can be removed once the broader CRD migration retires unused
- * placeholders.
  */
 export const CrdUserSettingsRoutes = () => (
   <Routes>

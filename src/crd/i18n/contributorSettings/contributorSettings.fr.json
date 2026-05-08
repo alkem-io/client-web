@@ -434,10 +434,52 @@
       "removeError": "Échec — réessayez"
     },
     "authorization": {
-      "pageTitle": "Autorisation"
+      "pageTitle": "Autorisation",
+      "title": "Autorisation",
+      "description": "Attribuez les rôles Administrateur et Propriétaire pour cette organisation. Les administrateurs gèrent les paramètres quotidiens ; les propriétaires ont un contrôle total.",
+      "adminTabLabel": "Administrateur",
+      "ownerTabLabel": "Propriétaire",
+      "loadMore": "Charger plus",
+      "admin": {
+        "currentTitle": "Administrateurs actuels",
+        "availableTitle": "Utilisateurs disponibles",
+        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+        "addAriaLabel": "Ajouter {name} en tant qu'administrateur",
+        "removeAriaLabel": "Retirer {name} en tant qu'administrateur",
+        "emptyCurrent": "Aucun administrateur pour l'instant.",
+        "emptyAvailable": "Aucun utilisateur correspondant."
+      },
+      "owner": {
+        "currentTitle": "Propriétaires actuels",
+        "availableTitle": "Utilisateurs disponibles",
+        "searchPlaceholder": "Rechercher des utilisateurs par nom…",
+        "addAriaLabel": "Ajouter {name} en tant que propriétaire",
+        "removeAriaLabel": "Retirer {name} en tant que propriétaire",
+        "emptyCurrent": "Aucun propriétaire pour l'instant.",
+        "emptyAvailable": "Aucun utilisateur correspondant."
+      },
+      "removeDialogTitle": "Retirer ce rôle ?",
+      "removeDialogDescription": "{{name}} perdra ce rôle et les permissions associées.",
+      "removeConfirmAdmin": "Retirer {{name}} en tant qu'administrateur",
+      "removeConfirmOwner": "Retirer {{name}} en tant que propriétaire",
+      "removeSuccessAdmin": "Rôle d'administrateur retiré",
+      "removeSuccessOwner": "Rôle de propriétaire retiré",
+      "removeError": "Échec du retrait du rôle — réessayez"
     },
     "settings": {
-      "pageTitle": "Paramètres"
+      "pageTitle": "Paramètres",
+      "title": "Paramètres de l'organisation",
+      "membership": {
+        "title": "Adhésion",
+        "allowDomainLabel": "Autoriser les utilisateurs ayant le domaine de l'organisation à rejoindre",
+        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation."
+      },
+      "privacy": {
+        "title": "Confidentialité",
+        "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
+        "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
+      },
+      "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
     }
   },
   "shared": {

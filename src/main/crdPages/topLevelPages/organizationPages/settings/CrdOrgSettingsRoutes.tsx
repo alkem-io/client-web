@@ -1,27 +1,20 @@
 import { lazy, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
-import { PlaceholderTab } from './_placeholder/PlaceholderTab';
 import CrdOrgSettingsPage from './CrdOrgSettingsPage';
 
 const CrdOrgProfileTab = lazy(() => import('./profile/CrdOrgProfileTab'));
 const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
 const CrdOrgCommunityTab = lazy(() => import('./community/CrdOrgCommunityTab'));
-
-type OrgPlaceholderKey = 'shell.tabs.org.authorization' | 'shell.tabs.org.settings';
-
-const PlaceholderRoute = ({ labelKey }: { labelKey: OrgPlaceholderKey }) => {
-  const { t } = useTranslation('crd-contributorSettings');
-  return <PlaceholderTab tabLabelKey={t(labelKey)} />;
-};
+const CrdOrgAuthorizationTab = lazy(() => import('./authorization/CrdOrgAuthorizationTab'));
+const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
 
 /**
  * Routes the Org settings sub-tree (`/organization/<orgSlug>/settings/*`).
  *
- * MVP-first: every tab body is a placeholder until per-story phases land
- * (US8–US12). The shell + tab strip are fully wired so all 5 settings URLs
- * resolve correctly with the right active highlight.
+ * All five tabs (Profile, Account, Community, Authorization, Settings) are
+ * wired with their CRD per-tab components. The shell + tab strip live in
+ * `CrdOrgSettingsPage`.
  */
 export const CrdOrgSettingsRoutes = () => (
   <Routes>
@@ -51,8 +44,22 @@ export const CrdOrgSettingsRoutes = () => (
           </Suspense>
         }
       />
-      <Route path="authorization" element={<PlaceholderRoute labelKey="shell.tabs.org.authorization" />} />
-      <Route path="settings" element={<PlaceholderRoute labelKey="shell.tabs.org.settings" />} />
+      <Route
+        path="authorization"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgAuthorizationTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="settings"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdOrgSettingsTab />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<Navigate to="profile" replace={true} />} />
     </Route>
   </Routes>

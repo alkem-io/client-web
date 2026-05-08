@@ -433,10 +433,52 @@
       "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
     },
     "authorization": {
-      "pageTitle": "Autorisierung"
+      "pageTitle": "Autorisierung",
+      "title": "Autorisierung",
+      "description": "Weisen Sie die Rollen Administrator und Eigentümer für diese Organisation zu. Administratoren verwalten den täglichen Betrieb; Eigentümer haben volle Kontrolle.",
+      "adminTabLabel": "Administrator",
+      "ownerTabLabel": "Eigentümer",
+      "loadMore": "Mehr laden",
+      "admin": {
+        "currentTitle": "Aktuelle Administratoren",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Administrator hinzufügen",
+        "removeAriaLabel": "{name} als Administrator entfernen",
+        "emptyCurrent": "Noch keine Administratoren.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "owner": {
+        "currentTitle": "Aktuelle Eigentümer",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Eigentümer hinzufügen",
+        "removeAriaLabel": "{name} als Eigentümer entfernen",
+        "emptyCurrent": "Noch keine Eigentümer.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "removeDialogTitle": "Diese Rolle entfernen?",
+      "removeDialogDescription": "{{name}} verliert diese Rolle und alle zugehörigen Rechte.",
+      "removeConfirmAdmin": "{{name}} als Administrator entfernen",
+      "removeConfirmOwner": "{{name}} als Eigentümer entfernen",
+      "removeSuccessAdmin": "Administrator-Rolle entfernt",
+      "removeSuccessOwner": "Eigentümer-Rolle entfernt",
+      "removeError": "Rolle konnte nicht entfernt werden — bitte erneut versuchen"
     },
     "settings": {
-      "pageTitle": "Einstellungen"
+      "pageTitle": "Einstellungen",
+      "title": "Organisationseinstellungen",
+      "membership": {
+        "title": "Mitgliedschaft",
+        "allowDomainLabel": "Nutzer mit passender Domain dürfen beitreten",
+        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten."
+      },
+      "privacy": {
+        "title": "Privatsphäre",
+        "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
+        "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
+      },
+      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
     }
   },
   "shared": {

@@ -453,10 +453,52 @@
       "removeError": "Couldn't remove associate — try again"
     },
     "authorization": {
-      "pageTitle": "Authorization"
+      "pageTitle": "Authorization",
+      "title": "Authorization",
+      "description": "Assign Admin and Owner roles for this organization. Admins can manage day-to-day settings; Owners have full control over the organization.",
+      "adminTabLabel": "Admin",
+      "ownerTabLabel": "Owner",
+      "loadMore": "Load more",
+      "admin": {
+        "currentTitle": "Current Admins",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Admin",
+        "removeAriaLabel": "Remove {name} as Admin",
+        "emptyCurrent": "No admins yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "owner": {
+        "currentTitle": "Current Owners",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Owner",
+        "removeAriaLabel": "Remove {name} as Owner",
+        "emptyCurrent": "No owners yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "removeDialogTitle": "Remove this role?",
+      "removeDialogDescription": "{{name}} will lose this role and any related permissions.",
+      "removeConfirmAdmin": "Remove {{name}} as Admin",
+      "removeConfirmOwner": "Remove {{name}} as Owner",
+      "removeSuccessAdmin": "Admin role removed",
+      "removeSuccessOwner": "Owner role removed",
+      "removeError": "Couldn't remove role — try again"
     },
     "settings": {
-      "pageTitle": "Settings"
+      "pageTitle": "Settings",
+      "title": "Organization Settings",
+      "membership": {
+        "title": "Membership",
+        "allowDomainLabel": "Allow users matching the organization's domain to join",
+        "allowDomainCaption": "When enabled, users whose email domain matches this organization can self-join without an invitation."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "contributionRolesLabel": "Show contribution roles publicly",
+        "contributionRolesCaption": "When enabled, the organization's role assignments (Admin, Owner, Associate) are visible on its public profile."
+      },
+      "errorToast": "Couldn't save preference — try again"
     }
   },
   "shared": {

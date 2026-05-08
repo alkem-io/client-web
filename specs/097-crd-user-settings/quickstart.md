@@ -142,25 +142,27 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 
 - [ ] Open `/organization/<orgSlug>/settings/community` as an org admin. Two columns: current Associates + Available Users.
 - [ ] Type "Maria" in search — Available Users filters.
-- [ ] Click + on an available user — they move to Associates list (mutation fires immediately).
-- [ ] Click × on an existing Associate — they're removed.
+- [ ] Click + on an available user — they move to Associates list (mutation fires immediately, no dialog per FR-110).
+- [ ] Click × on an existing Associate — `ConfirmationDialog` (destructive variant) opens with copy "Remove {{name}} as Associate" (Rule #9 / FR-112). **Cancel** dismisses with no mutation. **Confirm** fires `removeRoleFromUser` and the row disappears with a success toast.
 - [ ] Scroll the Available Users column — load-more triggers, additional users appear.
 
 ### User Story 11 — Org Authorization
 
 - [ ] Open `/organization/<orgSlug>/settings/authorization` as an org admin. Two sub-tabs (Admin / Owner).
 - [ ] Admin sub-tab is selected by default — Admin role-assignment view renders.
-- [ ] Click + on an available user — added to Admins.
-- [ ] Switch to Owner sub-tab — Owner role-assignment view renders.
-- [ ] Click × on an Owner — removed.
-- [ ] Switch sub-tabs back and forth — local state, no URL change.
+- [ ] Click + on an available user — added to Admins (no dialog per FR-110).
+- [ ] Click × on a current Admin — `ConfirmationDialog` opens with role-aware copy "Remove {{name}} as Admin" (Rule #9 / FR-121). Confirm fires `removeRoleFromUser` against the Admin role.
+- [ ] Switch to Owner sub-tab — Owner role-assignment view renders. Each sub-tab keeps its own search term and pendingRemove state independently.
+- [ ] Click × on an Owner — `ConfirmationDialog` opens with role-aware copy "Remove {{name}} as Owner". Confirm fires the mutation against the Owner role.
+- [ ] Switch sub-tabs back and forth — local React state, no URL change (FR-120). Sub-tab strip is keyboard-navigable per FR-152.
 
 ### User Story 12 — Org Settings
 
-- [ ] Open `/organization/<orgSlug>/settings/settings` as an org admin. Card with two switches.
-- [ ] Flip "Allow users matching domain to join" — change persists after reload.
-- [ ] Flip "Contribution roles publicly visible" — change persists.
-- [ ] Confirm there is **no** Design System toggle on this tab (FR-132).
+- [ ] Open `/organization/<orgSlug>/settings/settings` as an org admin. Two cards (Membership + Privacy), each with a single switch.
+- [ ] Flip "Allow users matching domain to join" — switch flips optimistically; mutation fires; change persists after reload.
+- [ ] Flip "Contribution roles publicly visible" — switch flips optimistically; mutation fires; change persists.
+- [ ] Confirm there is **no** Design System toggle on this tab (FR-132 — User-only).
+- [ ] **Hard-failure smoke**: kill backend connection (DevTools → Network → Offline) → flip either switch — switch flips optimistically, then **reverts** when the mutation fails, accompanied by an inline error toast (FR-133, parity with User Notifications + User Settings).
 
 ## Cross-cutting smoke
 

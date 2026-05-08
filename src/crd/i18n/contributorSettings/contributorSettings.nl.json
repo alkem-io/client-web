@@ -433,10 +433,52 @@
       "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "authorization": {
-      "pageTitle": "Autorisatie"
+      "pageTitle": "Autorisatie",
+      "title": "Autorisatie",
+      "description": "Wijs de rollen Beheerder en Eigenaar voor deze organisatie toe. Beheerders kunnen de dagelijkse instellingen beheren; Eigenaren hebben volledige controle over de organisatie.",
+      "adminTabLabel": "Beheerder",
+      "ownerTabLabel": "Eigenaar",
+      "loadMore": "Meer laden",
+      "admin": {
+        "currentTitle": "Huidige Beheerders",
+        "availableTitle": "Beschikbare Gebruikers",
+        "searchPlaceholder": "Zoek gebruikers op naam…",
+        "addAriaLabel": "{name} toevoegen als Beheerder",
+        "removeAriaLabel": "{name} verwijderen als Beheerder",
+        "emptyCurrent": "Nog geen beheerders.",
+        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
+      },
+      "owner": {
+        "currentTitle": "Huidige Eigenaren",
+        "availableTitle": "Beschikbare Gebruikers",
+        "searchPlaceholder": "Zoek gebruikers op naam…",
+        "addAriaLabel": "{name} toevoegen als Eigenaar",
+        "removeAriaLabel": "{name} verwijderen als Eigenaar",
+        "emptyCurrent": "Nog geen eigenaren.",
+        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
+      },
+      "removeDialogTitle": "Deze rol verwijderen?",
+      "removeDialogDescription": "{{name}} verliest deze rol en alle bijbehorende rechten.",
+      "removeConfirmAdmin": "{{name}} verwijderen als Beheerder",
+      "removeConfirmOwner": "{{name}} verwijderen als Eigenaar",
+      "removeSuccessAdmin": "Beheerdersrol verwijderd",
+      "removeSuccessOwner": "Eigenaarsrol verwijderd",
+      "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "settings": {
-      "pageTitle": "Instellingen"
+      "pageTitle": "Instellingen",
+      "title": "Organisatie-instellingen",
+      "membership": {
+        "title": "Lidmaatschap",
+        "allowDomainLabel": "Sta gebruikers met het domein van deze organisatie toe lid te worden",
+        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "contributionRolesLabel": "Toon bijdragerollen openbaar",
+        "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Geassocieerde) zichtbaar op het openbare profiel."
+      },
+      "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     }
   },
   "shared": {
