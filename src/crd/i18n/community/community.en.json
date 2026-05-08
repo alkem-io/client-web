@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Invite others to join \"{{spaceName}}\"",
+      "searchHint": "Search for people below or directly add their email address",
+      "searchPlaceholder": "Username or email…",
+      "searchAriaLabel": "Search for users by name or email",
+      "noResultsLabel": "No matching users",
+      "loadingLabel": "Loading users…",
+      "loadMoreLabel": "Loading more…",
+      "removeAriaLabel": "Remove {{label}}",
+      "welcomeMessageLabel": "Invitation message",
+      "welcomeMessagePlaceholder": "Write a short message that will go out with the invitation",
+      "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click the button below to accept or decline the invitation.",
+      "emailVisibilityNote": "Keep in mind that your personal email address will be visible to anyone you invite.",
+      "inviteToRoleLabel": "Invite to be a:",
+      "rolePopoverHelper": "Member is always granted on accepting the invitation.",
+      "rolePopoverAriaLabel": "Choose roles for the invitees",
+      "sendButtonLabel": "Send",
+      "sendingButtonLabel": "Sending…",
+      "backButtonLabel": "Back",
+      "closeButtonLabel": "Close",
+      "closeAriaLabel": "Close invite dialog"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "This isn't a valid email address.",
+      "duplicateEmail": "This email is already in the list.",
+      "networkFailure": "Couldn't send the invitations. Please try again."
+    },
+    "results": {
+      "sent": "Invitation sent",
+      "alreadyMember": "Already a member",
+      "error": "Failed: {{message}}"
+    }
+  }
+}

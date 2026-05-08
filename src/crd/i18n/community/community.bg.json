@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Поканете други да се присъединят към \"{{spaceName}}\"",
+      "searchHint": "Потърсете хора по-долу или директно добавете техния имейл адрес",
+      "searchPlaceholder": "Потребителско име или имейл…",
+      "searchAriaLabel": "Търсене на потребители по име или имейл",
+      "noResultsLabel": "Няма съответстващи потребители",
+      "loadingLabel": "Зареждане на потребители…",
+      "loadMoreLabel": "Зареждане на още…",
+      "removeAriaLabel": "Премахване на {{label}}",
+      "welcomeMessageLabel": "Съобщение към поканата",
+      "welcomeMessagePlaceholder": "Напишете кратко съобщение, което ще бъде изпратено с поканата",
+      "defaultWelcomeMessage": "Здравей, бих искал/а да те поканя в {{spaceName}}. Разгледай Space-а или щракни бутона по-долу, за да приемеш или отхвърлиш поканата.",
+      "emailVisibilityNote": "Имайте предвид, че личният Ви имейл адрес ще бъде видим за всички, които поканите.",
+      "inviteToRoleLabel": "Покани като:",
+      "rolePopoverHelper": "Member се предоставя винаги при приемане на поканата.",
+      "rolePopoverAriaLabel": "Изберете роли за поканените",
+      "sendButtonLabel": "Изпрати",
+      "sendingButtonLabel": "Изпращане…",
+      "backButtonLabel": "Назад",
+      "closeButtonLabel": "Затвори",
+      "closeAriaLabel": "Затваряне на диалога за покана"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Това не е валиден имейл адрес.",
+      "duplicateEmail": "Този имейл вече е в списъка.",
+      "networkFailure": "Поканите не можаха да бъдат изпратени. Моля, опитайте отново."
+    },
+    "results": {
+      "sent": "Поканата е изпратена",
+      "alreadyMember": "Вече е член",
+      "error": "Неуспех: {{message}}"
+    }
+  }
+}

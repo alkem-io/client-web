@@ -76,6 +76,16 @@ export function MessagePopover({
         <Textarea
           value={draft}
           onChange={e => setDraft(e.target.value)}
+          onKeyDown={e => {
+            // Cmd+Enter on macOS, Ctrl+Enter elsewhere — same key event in
+            // both cases (metaKey on mac, ctrlKey otherwise). Submitting on
+            // a chord rather than plain Enter lets the user keep typing
+            // multi-line drafts without an accidental send.
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
           placeholder={t('common.messagePopover.placeholder')}
           className="min-h-24"
           disabled={sending}
