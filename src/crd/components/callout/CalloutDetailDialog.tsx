@@ -41,6 +41,8 @@ type CalloutDetailDialogProps = {
   memoFramingSlot?: ReactNode;
   /** Media gallery inline carousel rendered below description (e.g. CalloutMediaGalleryCarousel) */
   mediaGalleryFramingSlot?: ReactNode;
+  /** Collabora document framing preview rendered below description (e.g. CalloutCollaboraPreview) */
+  collaboraFramingSlot?: ReactNode;
   /** Call-to-action link button rendered below description (e.g. CalloutLinkAction) */
   callToActionFramingSlot?: ReactNode;
   onShareClick?: () => void;
@@ -72,6 +74,7 @@ export function CalloutDetailDialog({
   whiteboardFramingSlot,
   memoFramingSlot,
   mediaGalleryFramingSlot,
+  collaboraFramingSlot,
   callToActionFramingSlot,
   onShareClick,
   settingsSlot,
@@ -157,6 +160,7 @@ export function CalloutDetailDialog({
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
               {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
+              {collaboraFramingSlot && <div className="pt-2">{collaboraFramingSlot}</div>}
               {callToActionFramingSlot && <div className="pt-2">{callToActionFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>

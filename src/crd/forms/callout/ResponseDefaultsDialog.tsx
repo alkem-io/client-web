@@ -88,8 +88,6 @@ export function ResponseDefaultsDialog({
         return t('responseDefaults.title.memo');
       case 'whiteboard':
         return t('responseDefaults.title.whiteboard');
-      case 'document':
-        return t('responseDefaults.title.document');
       default:
         return t('responseDefaults.title.generic');
     }
@@ -115,22 +113,20 @@ export function ResponseDefaultsDialog({
         <div className="space-y-4 min-w-0">
           {(type === 'post' || type === 'whiteboard') && templateSlot}
 
-          {type !== 'document' && (
-            <div className="space-y-1.5">
-              <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
-                {t('responseDefaults.defaultTitle')}
-              </Label>
-              <input
-                id="response-defaults-display-name"
-                type="text"
-                value={draft.defaultDisplayName}
-                onChange={e => setDraft(prev => ({ ...prev, defaultDisplayName: e.target.value }))}
-                placeholder={t('responseDefaults.defaultTitlePlaceholder')}
-                disabled={disabled}
-                className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-              />
-            </div>
-          )}
+          <div className="space-y-1.5">
+            <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
+              {t('responseDefaults.defaultTitle')}
+            </Label>
+            <input
+              id="response-defaults-display-name"
+              type="text"
+              value={draft.defaultDisplayName}
+              onChange={e => setDraft(prev => ({ ...prev, defaultDisplayName: e.target.value }))}
+              placeholder={t('responseDefaults.defaultTitlePlaceholder')}
+              disabled={disabled}
+              className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+            />
+          </div>
 
           {(type === 'post' || type === 'memo') && (
             <div className="space-y-1.5">
@@ -149,10 +145,6 @@ export function ResponseDefaultsDialog({
               <Label className="text-body text-foreground">{t('responseDefaults.defaultWhiteboard')}</Label>
               {whiteboardSlot}
             </div>
-          )}
-
-          {type === 'document' && (
-            <p className="text-caption text-muted-foreground italic">{t('framing.comingSoon')}</p>
           )}
         </div>
 

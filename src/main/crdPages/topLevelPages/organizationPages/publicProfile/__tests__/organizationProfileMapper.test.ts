@@ -117,13 +117,35 @@ describe('mapOrgHostedResources', () => {
   it('maps virtual contributors with the provided vcType label', () => {
     const resources: AccountResourcesShape = {
       virtualContributors: [
-        { id: 'vc-1', profile: { displayName: 'VC One', url: '/vc/1', tagline: 'first' } },
+        {
+          id: 'vc-1',
+          profile: {
+            displayName: 'VC One',
+            url: '/vc/1',
+            tagline: 'first',
+            avatar: { uri: 'https://cdn.example/vc.jpg' },
+          },
+        },
         { id: 'vc-2', profile: { displayName: 'VC Two', url: '/vc/2' } },
       ],
     };
     expect(mapOrgHostedResources(resources, vcType).hostedVirtualContributors).toEqual([
-      { id: 'vc-1', displayName: 'VC One', description: 'first', type: 'Virtual Contributor', href: '/vc/1' },
-      { id: 'vc-2', displayName: 'VC Two', description: null, type: 'Virtual Contributor', href: '/vc/2' },
+      {
+        id: 'vc-1',
+        displayName: 'VC One',
+        description: 'first',
+        type: 'Virtual Contributor',
+        href: '/vc/1',
+        avatarImageUrl: 'https://cdn.example/vc.jpg',
+      },
+      {
+        id: 'vc-2',
+        displayName: 'VC Two',
+        description: null,
+        type: 'Virtual Contributor',
+        href: '/vc/2',
+        avatarImageUrl: null,
+      },
     ]);
   });
 

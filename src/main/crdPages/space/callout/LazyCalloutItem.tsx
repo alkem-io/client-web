@@ -17,7 +17,9 @@ import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -77,6 +79,7 @@ function LazyCalloutItemContent({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
+  const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   // Framing-direct-open state: clicking "Open Memo" / "Open Whiteboard" in the
@@ -158,6 +161,7 @@ function LazyCalloutItemContent({
     });
 
   const contributionsEnabled = callout.settings.contribution.enabled;
+  const collaboraDocumentId = callout.framing.collaboraDocument?.id;
 
   const contributionsPreview = contributionsEnabled ? (
     <ContributionsPreviewConnector
@@ -205,6 +209,7 @@ function LazyCalloutItemContent({
                 />
               }
               onExpandClick={onExpandClick}
+              onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
               commentsSlot={thread}
               commentInputSlot={commentsEnabled ? commentInput : null}
               onCommentsExpandedChange={setCommentsExpanded}
@@ -228,6 +233,7 @@ function LazyCalloutItemContent({
             <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
           }
           onExpandClick={onExpandClick}
+          onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
           contributionsPreview={contributionsPreview}
         >
           {pollPreview}
@@ -244,6 +250,15 @@ function LazyCalloutItemContent({
         initialMemoId={initialMemoId}
       />
 
+      {collaboraDocumentId && (
+        <CollaboraFramingEditorOverlay
+          open={collaboraEditorOpen}
+          collaboraDocumentId={collaboraDocumentId}
+          title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
+          documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}
+          onClose={() => setCollaboraEditorOpen(false)}
+        />
+      )}
       {framingMemoOpen && framingMemoId && (
         <CrdMemoDialog open={true} memoId={framingMemoId} isContribution={false} onClose={handleFramingMemoClose} />
       )}
