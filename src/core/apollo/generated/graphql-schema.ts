@@ -24332,29 +24332,6 @@ export type UpdateInnovationHubMutation = {
   };
 };
 
-export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubAvailableSpacesQuery = {
-  __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    visibility: SpaceVisibility;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      provider?:
-        | {
-            __typename?: 'Actor';
-            id: string;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-          }
-        | undefined;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
-    };
-  }>;
-};
-
 export type InnovationHubSpaceFragment = {
   __typename?: 'Space';
   id: string;

@@ -27,7 +27,7 @@ This is a single Vite SPA. New code lives under `src/domain/innovationHub/Innova
 
 **Purpose**: Confirm clean baseline before changes.
 
-- [ ] T001 Confirm baseline: run `pnpm install`, `pnpm codegen`, `pnpm lint`, and `pnpm vitest run` from repo root and verify they all pass and produce no uncommitted diff. This anchors the change set so generated-file diffs in T004 are unambiguous.
+- [X] T001 Confirm baseline: run `pnpm install`, `pnpm codegen`, `pnpm lint`, and `pnpm vitest run` from repo root and verify they all pass and produce no uncommitted diff. This anchors the change set so generated-file diffs in T004 are unambiguous.
 
 ---
 
@@ -37,9 +37,9 @@ This is a single Vite SPA. New code lives under `src/domain/innovationHub/Innova
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 [P] Add 8 new i18n keys under `pages.admin.innovationHub.spaceListFilter.addByUrl.*` in `src/core/i18n/en/translation.en.json`: `dialogTitle`, `urlInputLabel`, `urlInputPlaceholder`, `submit`, `cancel`, `validating`, `invalidSpaceUrl` (value: "URL is not a valid top level space"), `alreadyAdded`. Edit only the English source file; per CLAUDE.md the other locale files are managed by Crowdin.
-- [ ] T003 [P] Delete `src/domain/innovationHub/InnovationHubsSettings/InnovationHubAvailableSpaces.graphql` — the obsolete candidate-list query. Do not leave a stub.
-- [ ] T004 Run `pnpm codegen` (requires backend at `localhost:4000/graphql`) and commit the regenerated `src/core/apollo/generated/apollo-hooks.ts` and `src/core/apollo/generated/graphql.ts`. The diff should remove `useInnovationHubAvailableSpacesQuery` and its types; nothing else should change.
+- [X] T002 [P] Add 8 new i18n keys under `pages.admin.innovationHub.spaceListFilter.addByUrl.*` in `src/core/i18n/en/translation.en.json`: `dialogTitle`, `urlInputLabel`, `urlInputPlaceholder`, `submit`, `cancel`, `validating`, `invalidSpaceUrl` (value: "URL is not a valid top level space"), `alreadyAdded`. Edit only the English source file; per CLAUDE.md the other locale files are managed by Crowdin.
+- [X] T003 [P] Delete `src/domain/innovationHub/InnovationHubsSettings/InnovationHubAvailableSpaces.graphql` — the obsolete candidate-list query. Do not leave a stub.
+- [X] T004 Run `pnpm codegen` (requires backend at `localhost:4000/graphql`) and commit the regenerated `src/core/apollo/generated/apollo-hooks.ts` and `src/core/apollo/generated/graphql.ts`. The diff should remove `useInnovationHubAvailableSpacesQuery` and its types; nothing else should change.
 
 **Checkpoint**: i18n keys exist, dead query gone, codegen clean. User stories can begin.
 
@@ -53,8 +53,8 @@ This is a single Vite SPA. New code lives under `src/domain/innovationHub/Innova
 
 ### Implementation for User Story 1
 
-- [ ] T005 [P] [US1] Create `src/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl.ts` — a hook that wraps `useUrlResolverLazyQuery` (from `src/core/apollo/generated/apollo-hooks.ts`) and exposes `{ resolve(url: string): Promise<{ kind: 'ok'; spaceId: string } | { kind: 'invalid' }> }`. Return `{ kind: 'ok', spaceId }` iff Apollo returns no error AND `data.urlResolver.state === UrlResolverResultState.Resolved` AND `data.urlResolver.type === UrlType.Space` AND `data.urlResolver.space?.level === 0` AND `data.urlResolver.space?.id` is truthy. In every other case (Apollo error, `Forbidden`, `NotFound`, non-`Space` type, `level !== 0`, missing id) return `{ kind: 'invalid' }`. Trim the URL before passing to the resolver. Catch any thrown errors from the lazy query call so the hook never rejects.
-- [ ] T006 [US1] Create `src/domain/innovationHub/InnovationHubsSettings/AddSpaceByUrlDialog.tsx` — a presentational MUI dialog with props `{ open: boolean; onClose: () => void; onAdd: (spaceId: string) => Promise<void>; existingSpaceIds: string[] }`. Implementation requirements:
+- [X] T005 [P] [US1] Create `src/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl.ts` — a hook that wraps `useUrlResolverLazyQuery` (from `src/core/apollo/generated/apollo-hooks.ts`) and exposes `{ resolve(url: string): Promise<{ kind: 'ok'; spaceId: string } | { kind: 'invalid' }> }`. Return `{ kind: 'ok', spaceId }` iff Apollo returns no error AND `data.urlResolver.state === UrlResolverResultState.Resolved` AND `data.urlResolver.type === UrlType.Space` AND `data.urlResolver.space?.level === 0` AND `data.urlResolver.space?.id` is truthy. In every other case (Apollo error, `Forbidden`, `NotFound`, non-`Space` type, `level !== 0`, missing id) return `{ kind: 'invalid' }`. Trim the URL before passing to the resolver. Catch any thrown errors from the lazy query call so the hook never rejects.
+- [X] T006 [US1] Create `src/domain/innovationHub/InnovationHubsSettings/AddSpaceByUrlDialog.tsx` — a presentational MUI dialog with props `{ open: boolean; onClose: () => void; onAdd: (spaceId: string) => Promise<void>; existingSpaceIds: string[] }`. Implementation requirements:
   - Use the existing MUI primitives `DialogWithGrid` and `DialogHeader` from `@/core/ui/dialog/*` to match the surrounding admin styling.
   - Local state machine per `data-model.md`: `{ url: string, status: { kind: 'idle' | 'validating' | 'invalid' | 'duplicate' } }`.
   - Submit button is disabled when `url.trim() === ''` OR when `new URL(url.trim())` throws. Wrap in `try { new URL(value) } catch {}` — do not import a regex.
@@ -71,13 +71,13 @@ This is a single Vite SPA. New code lives under `src/domain/innovationHub/Innova
   - Title from `dialogTitle`, URL field label from `urlInputLabel`, placeholder from `urlInputPlaceholder`, submit button label from `submit`, cancel button label from `cancel`.
   - Do NOT use `useMemo`/`useCallback`/`React.memo` (CLAUDE.md / React Compiler rule).
   - Do NOT import any GraphQL generated types into the dialog's prop interface — keep props as plain TS strings/booleans/callbacks.
-- [ ] T007 [US1] Modify `src/domain/innovationHub/InnovationHubsSettings/InnovationHubSpacesField.tsx`:
+- [X] T007 [US1] Modify `src/domain/innovationHub/InnovationHubsSettings/InnovationHubSpacesField.tsx`:
   - Remove the import of `useInnovationHubAvailableSpacesQuery`, the `Search` icon, `AddIcon`, `TextField`, `LoadingIconButton`, `DataGridTable`, and any `GridColDef`/`GridRenderCellParams` types only used by the search dialog.
   - Remove the `availableSpacesData` query call, the `filter` state, the `filteredAvailableSpaces`/`sortedAvailableSpaces`/`columns`/`loadingItemId` declarations, the `handleAdd` helper, and the `<DialogWithGrid>` block (currently around lines 176–224 of the existing file).
   - Keep `isAddDialogOpen` state and the `<Button onClick={() => setIsAddDialogOpen(true)}>` action.
   - Render `<AddSpaceByUrlDialog open={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)} existingSpaceIds={itemIds} onAdd={async (spaceId) => { await onChange?.([...itemIds, spaceId]); }} />` in place of the removed dialog.
   - Keep the existing sortable list (`DndContext`/`SortableContext`/`SortableSpaceRow`) untouched.
-- [ ] T008 [P] [US1] Create `src/domain/innovationHub/InnovationHubsSettings/AddSpaceByUrlDialog.test.tsx` covering the happy-path subset of the dialog's contract: (a) submit button is disabled when the input is empty; (b) submit button is disabled when the input is `not a url`; (c) submit button becomes enabled when the input is `https://example.com/abc`; (d) clicking submit while `useResolveSpaceUrl` (mocked) returns `{ kind: 'ok', spaceId: 'space-xyz' }` and `existingSpaceIds={[]}` calls `onAdd('space-xyz')` exactly once and then calls `onClose`; (e) the validating status text appears while the resolver promise is pending. Use `vi.mock('@/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl', ...)` to stub the hook.
+- [X] T008 [P] [US1] Create `src/domain/innovationHub/InnovationHubsSettings/AddSpaceByUrlDialog.test.tsx` covering the happy-path subset of the dialog's contract: (a) submit button is disabled when the input is empty; (b) submit button is disabled when the input is `not a url`; (c) submit button becomes enabled when the input is `https://example.com/abc`; (d) clicking submit while `useResolveSpaceUrl` (mocked) returns `{ kind: 'ok', spaceId: 'space-xyz' }` and `existingSpaceIds={[]}` calls `onAdd('space-xyz')` exactly once and then calls `onClose`; (e) the validating status text appears while the resolver promise is pending. Use `vi.mock('@/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl', ...)` to stub the hook.
 - [ ] T009 [US1] Manual verification: run `pnpm start` against a live backend, sign in as a Hub admin, navigate to **Admin → Innovation Hubs → \<your hub> → Settings**, and execute quickstart **TC-1**, **TC-7**, **TC-9**. Capture a brief screenshot for the PR description per the constitution's evidence requirement.
 
 **Checkpoint**: US1 functional. Happy path works; the dialog renders the generic-error and duplicate slots even though their classifications are tested in US2/US3.
@@ -94,8 +94,8 @@ This story adds **no new component code** beyond US1 — the `'invalid'` branch 
 
 ### Tests for User Story 2
 
-- [ ] T010 [P] [US2] Create `src/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl.test.tsx` covering hook classification by mocking `useUrlResolverLazyQuery`. Assert that `resolve` returns `{ kind: 'invalid' }` when: (i) the lazy query rejects / returns `error`, (ii) `state === UrlResolverResultState.Forbidden`, (iii) `state === UrlResolverResultState.NotFound`, (iv) `type !== UrlType.Space`, (v) `space.level !== 0`, (vi) `space.id` is missing. Assert it returns `{ kind: 'ok', spaceId }` only when `state === Resolved && type === Space && space.level === 0 && space.id` is truthy.
-- [ ] T011 [P] [US2] Extend `AddSpaceByUrlDialog.test.tsx` (created in T008): mock `useResolveSpaceUrl` to return `{ kind: 'invalid' }` and assert (a) the inline error renders with the text from i18n key `pages.admin.innovationHub.spaceListFilter.addByUrl.invalidSpaceUrl`, (b) `onAdd` is NOT called, (c) the dialog does NOT call `onClose`, (d) firing an `onChange` on the URL input clears the inline error.
+- [X] T010 [P] [US2] Create `src/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl.test.tsx` covering hook classification by mocking `useUrlResolverLazyQuery`. Assert that `resolve` returns `{ kind: 'invalid' }` when: (i) the lazy query rejects / returns `error`, (ii) `state === UrlResolverResultState.Forbidden`, (iii) `state === UrlResolverResultState.NotFound`, (iv) `type !== UrlType.Space`, (v) `space.level !== 0`, (vi) `space.id` is missing. Assert it returns `{ kind: 'ok', spaceId }` only when `state === Resolved && type === Space && space.level === 0 && space.id` is truthy.
+- [X] T011 [P] [US2] Extend `AddSpaceByUrlDialog.test.tsx` (created in T008): mock `useResolveSpaceUrl` to return `{ kind: 'invalid' }` and assert (a) the inline error renders with the text from i18n key `pages.admin.innovationHub.spaceListFilter.addByUrl.invalidSpaceUrl`, (b) `onAdd` is NOT called, (c) the dialog does NOT call `onClose`, (d) firing an `onChange` on the URL input clears the inline error.
 
 ### Manual verification for User Story 2
 
@@ -115,7 +115,7 @@ The duplicate branch (`status.kind === 'duplicate'`) and the post-resolution `ex
 
 ### Tests for User Story 3
 
-- [ ] T013 [P] [US3] Extend `AddSpaceByUrlDialog.test.tsx` with the duplicate case: mock `useResolveSpaceUrl` to return `{ kind: 'ok', spaceId: 'space-xyz' }`, render the dialog with `existingSpaceIds={['space-xyz']}`, click submit, then assert (a) the inline message renders with the text from i18n key `pages.admin.innovationHub.spaceListFilter.addByUrl.alreadyAdded`, (b) `onAdd` is NOT called, (c) `onClose` is NOT called, (d) editing the input clears the message.
+- [X] T013 [P] [US3] Extend `AddSpaceByUrlDialog.test.tsx` with the duplicate case: mock `useResolveSpaceUrl` to return `{ kind: 'ok', spaceId: 'space-xyz' }`, render the dialog with `existingSpaceIds={['space-xyz']}`, click submit, then assert (a) the inline message renders with the text from i18n key `pages.admin.innovationHub.spaceListFilter.addByUrl.alreadyAdded`, (b) `onAdd` is NOT called, (c) `onClose` is NOT called, (d) editing the input clears the message.
 
 ### Manual verification for User Story 3
 
@@ -129,9 +129,9 @@ The duplicate branch (`status.kind === 'duplicate'`) and the post-resolution `ex
 
 **Purpose**: Quality gates before opening the PR.
 
-- [ ] T015 [P] Run `pnpm lint` and resolve any new findings introduced by this change set.
-- [ ] T016 [P] Run `pnpm vitest run` and confirm the suite is green; verify the two new test files (`AddSpaceByUrlDialog.test.tsx`, `useResolveSpaceUrl.test.tsx`) are picked up and that the deletion of `InnovationHubAvailableSpaces.graphql` produced no orphan test references.
-- [ ] T017 Run `pnpm codegen` once more and confirm a clean diff (no further generated changes after T004).
+- [X] T015 [P] Run `pnpm lint` and resolve any new findings introduced by this change set.
+- [X] T016 [P] Run `pnpm vitest run` and confirm the suite is green; verify the two new test files (`AddSpaceByUrlDialog.test.tsx`, `useResolveSpaceUrl.test.tsx`) are picked up and that the deletion of `InnovationHubAvailableSpaces.graphql` produced no orphan test references.
+- [X] T017 Run `pnpm codegen` once more and confirm a clean diff (no further generated changes after T004).
 - [ ] T018 A11y pass — execute quickstart **TC-10** (keyboard-only operation): Tab to **Add**, Enter opens the dialog with focus on the input, type a URL, Tab to submit, Enter submits, Esc closes. Confirm the inline error is announced (visible focus or `aria-live` works in a screen reader / VoiceOver test).
 - [ ] T019 i18n smoke pass — execute quickstart **TC-11**: switch the app locale, confirm the dialog title, input label, placeholder, button labels, status text, error message, and duplicate message all flow through `t()`. English source is the only file edited; non-English fallbacks are expected until Crowdin runs.
 - [ ] T020 Regression check on the surrounding component: confirm the existing sortable list still drag-reorders, the per-row remove button still works, and saving a reordered list still triggers `pages.admin.innovationHubs.saved`. The change set must not have regressed any of `InnovationHubSpacesField.tsx`'s pre-existing behaviour.
