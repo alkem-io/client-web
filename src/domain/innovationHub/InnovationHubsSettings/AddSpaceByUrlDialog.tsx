@@ -91,7 +91,9 @@ const AddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds }: AddSpac
             value={url}
             onChange={handleUrlChange}
             label={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputLabel')}
-            placeholder={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputPlaceholder')}
+            placeholder={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputPlaceholder', {
+              origin: window.location.origin,
+            })}
             error={Boolean(errorMessage)}
             fullWidth={true}
             autoFocus={true}

@@ -3197,7 +3197,7 @@
           "addByUrl": {
             "dialogTitle": "Add $t(common.space) by URL",
             "urlInputLabel": "$t(common.space) URL",
-            "urlInputPlaceholder": "https://alkem.io/space-name",
+            "urlInputPlaceholder": "{{origin}}/space-name",
             "submit": "Add",
             "cancel": "$t(buttons.cancel)",
             "validating": "URL is being validated…",
