@@ -1,0 +1,9 @@
+mutation UpdateCollaboraDocument($updateData: UpdateCollaboraDocumentInput!) {
+  updateCollaboraDocument(updateData: $updateData) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

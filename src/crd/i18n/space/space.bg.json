@@ -152,6 +152,24 @@
     "collapse": "Покажи по-малко",
     "openWhiteboard": "Отвори дъска",
     "openMemo": "Отвори бележка",
+    "openDocument": "Отвори документ",
+    "document": "Документ",
+    "documentText": "Word документ",
+    "documentSpreadsheet": "Електронна таблица",
+    "documentPresentation": "Презентация",
+    "addDocument": "Добави документ",
+    "defaultDocumentName": "Нов документ",
+    "documentTypeLabel": "Тип документ",
+    "createNew": "Създай нов",
+    "documentImportOr": "или",
+    "documentImportHint": "Плъзнете файл или щракнете, за да качите",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentImportRemoveFile": "Премахни файла",
+    "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
+    "documentImportErrorTooLarge": "Файлът е твърде голям. Максималният размер е {{cap}} MB.",
+    "documentImportErrorMultiple": "Качвайте само по един файл.",
+    "documentImportErrorFolder": "Качете файл, а не папка.",
+    "documentImportErrorServiceUnavailable": "Услугата за документи временно не е налична. Моля, опитайте отново след малко.",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
     "expandComments": "Разгъни коментарите",
@@ -165,7 +183,6 @@
     "callToAction": "Призив за действие",
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
-    "document": "Документ",
     "moreWhiteboards": "+{{count}} още",
     "moreContributions": "+{{count}} още",
     "vote": "Гласувай",
@@ -223,7 +240,8 @@
     "memoOpenHint": "Съдържанието на бележката се редактира в отделен диалог.",
     "openMemo": "Отвори бележка",
     "openWhiteboard": "Отвори дъска",
-    "openWhiteboardHint": "Съдържанието на дъската се редактира в отделен диалог."
+    "openWhiteboardHint": "Съдържанието на дъската се редактира в отделен диалог.",
+    "officeDocumentsNotEnabled": "Офис документите не са активирани за това пространство."
   },
   "members": {
     "title": "Общност",
@@ -392,13 +410,16 @@
   "validation": {
     "titleRequired": "Заглавието е задължително",
     "urlRequired": "URL адресът е задължителен",
-    "urlInvalid": "URL адресът трябва да започва с http:// или https://",
+    "urlInvalid": "Моля, въведете валиден URL адрес",
     "displayNameRequired": "Показваното име е задължително",
     "questionRequired": "Въпросът е задължителен",
     "required": "Това поле е задължително",
+    "minDisplayName": "Трябва да е поне {{count}} знака",
     "maxSmall": "Трябва да е {{count}} знака или по-малко",
+    "maxMid": "Трябва да е {{count}} знака или по-малко",
     "maxMarkdown": "Трябва да е {{count}} знака или по-малко",
     "minPollOptions": "Изискват се поне {{count}} опции",
+    "maxPollOptions": "Допускат се най-много {{count}} опции",
     "pollOptionRequired": "Текстът на опцията е задължителен",
     "referenceTitleRequired": "Заглавието е задължително, когато е предоставен URL",
     "linkRowTitleRequired": "Заглавието е задължително, когато е предоставен URL"
@@ -555,6 +576,36 @@
       "invalidUrl": "Невалиден URL адрес"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Грешка в Collabora: {{message}}",
+        "sessionClosed": "Сесията за съвместна работа беше прекратена."
+      }
+    },
+    "footer": {
+      "connected": "Свързано",
+      "connecting": "Свързване…",
+      "disconnected": "Прекъснато",
+      "saved": "Запазено",
+      "saving": "Запазване…",
+      "unsaved": "Незапазени промени",
+      "error": "Грешка при запазване",
+      "membersOnline_one": "1 онлайн член",
+      "membersOnline_other": "{{count}} онлайн членове",
+      "connectedUsersLabel": "Свързани потребители",
+      "moreConnectedUsers_one": "още {{count}} свързан потребител",
+      "moreConnectedUsers_other": "още {{count}} свързани потребители",
+      "guestWarning": "Редактирате като гост",
+      "delete": "Изтриване на документа",
+      "readonlyReason": {
+        "connecting": "Свързване с услугата за съвместна работа…",
+        "unauthenticated": "Влезте, за да редактирате този документ.",
+        "contentUpdatePolicy": "Нямате права да редактирате този документ. Помолете собственика да промени настройките за споделяне.",
+        "noMembership": "Само членовете на това пространство могат да редактират този документ. Присъединете се, за да допринасяте."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Отвори изображение",
     "more_one": "+{{count}} още",
@@ -581,6 +632,10 @@
       "tooLarge": "Изображението е твърде голямо"
     }
   },
+  "postSnippet": {
+    "readMore": "… Прочети повече",
+    "readLess": "Прочети по-малко"
+  },
   "comments": {
     "title": "Дискусия",
     "showMore": "Показване на повече",
@@ -588,6 +643,8 @@
     "reply": "Отговор",
     "delete": "Изтриване",
     "deleted": "Този коментар беше изтрит",
+    "deleteConfirmTitle": "Изтриване на коментара?",
+    "deleteConfirmDescription": "Сигурни ли сте, че искате да изтриете този коментар?",
     "addComment": "Добавете коментар...",
     "mention": "Споменаване на потребител",
     "mentionVirtualContributor": "AI",
@@ -674,6 +731,11 @@
       "title": "Отваряне отново на тази анкета?",
       "description": "Отварянето отново на анкетата ще позволи нови гласове и редактиране.",
       "confirm": "Отвори отново анкетата"
+    },
+    "deleteOptionConfirm": {
+      "title": "Изтриване на опцията?",
+      "description": "Тази опция ще бъде премахната от анкетата.",
+      "descriptionWithText": "„{{text}}“ ще бъде премахната от анкетата."
     },
     "dragHandle": "Плъзнете за пренареждане"
   },

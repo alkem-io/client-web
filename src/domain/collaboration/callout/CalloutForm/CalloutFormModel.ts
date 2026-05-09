@@ -2,6 +2,7 @@ import {
   CalloutAllowedActors,
   CalloutFramingType,
   CalloutVisibility,
+  type CollaboraDocumentType,
   type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
@@ -51,6 +52,12 @@ export interface CalloutFormSubmittedValues {
       }[];
     };
     poll?: PollFormValues;
+    collaboraDocument?: {
+      displayName: string;
+      documentType: CollaboraDocumentType;
+      uploadFile?: File;
+      autoPrefilledTitle?: string;
+    };
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {

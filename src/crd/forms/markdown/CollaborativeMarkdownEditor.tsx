@@ -40,6 +40,11 @@ function CollaborativeMarkdownEditorLazy({
 }: CollaborativeMarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
+  // Mirrors MUI's `useEditorConfig` (src/core/ui/forms/MarkdownInput/hooks/useEditorConfig.ts):
+  // the editor is rebuilt whenever the editable state flips. With the collaboration
+  // extensions, `setEditable` after-the-fact doesn't always re-engage typing — recreating
+  // the editor is the path the legacy MUI memo dialog has used reliably for both first-load
+  // and reconnect transitions. Content lives in the ydoc, so a rebuild is non-lossy.
   const editorOptions = buildCrdMarkdownExtensions({
     collaborative: true,
     ydoc,
@@ -49,14 +54,7 @@ function CollaborativeMarkdownEditorLazy({
     ariaLabel: placeholder ?? t('editor.toolbar'),
   });
 
-  const editor = useEditor(editorOptions, [ydoc, provider]);
-
-  // useEditor only reads options on mount; update editable when `disabled` changes at runtime
-  // (e.g. when Hocuspocus finishes initial sync and `synced` flips true → editorDisabled becomes false).
-  useEffect(() => {
-    if (!editor) return;
-    editor.setEditable(!disabled);
-  }, [editor, disabled]);
+  const editor = useEditor(editorOptions, [editorOptions]);
 
   useEffect(() => {
     if (editor && onReady) {

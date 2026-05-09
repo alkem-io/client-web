@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
@@ -15,7 +19,10 @@ import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
+import { CollaboraFramingConnector } from './CollaboraFramingConnector';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { MemoContributionConnector } from './MemoContributionConnector';
@@ -134,6 +141,7 @@ export function CalloutDetailDialogConnector({
   );
   const [postId, setPostId] = useState<string | undefined>(initialPostId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -196,9 +204,21 @@ export function CalloutDetailDialogConnector({
 
   const hasMediaGalleryFraming =
     callout.framing.type === CalloutFramingType.MediaGallery && !!callout.framing.mediaGallery;
+  // MUI parity (CalloutFramingMediaGallery): when the user has Update on the callout
+  // the connector owns the file picker + upload mutation directly — clicking
+  // "Add images" goes straight to the OS file picker, not through the edit dialog.
+  const canEditMediaGallery = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
-    <MediaGalleryFramingConnector callout={callout} />
+    <MediaGalleryFramingConnector callout={callout} canEdit={canEditMediaGallery} />
   ) : undefined;
+
+  const hasCollaboraFraming =
+    callout.framing.type === CalloutFramingType.CollaboraDocument && !!callout.framing.collaboraDocument;
+  const collaboraFramingSlot = hasCollaboraFraming ? (
+    <CollaboraFramingConnector callout={callout} onOpen={() => setFramingCollaboraOpen(true)} />
+  ) : undefined;
+  const framingCollaboraDocument = callout.framing.collaboraDocument;
+  const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
@@ -266,6 +286,16 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  const framingCollaboraOverlay = framingCollaboraDocument ? (
+    <CollaboraFramingEditorOverlay
+      open={framingCollaboraOpen}
+      collaboraDocumentId={framingCollaboraDocument.id}
+      title={framingCollaboraTitle}
+      documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
+      onClose={() => setFramingCollaboraOpen(false)}
+    />
+  ) : null;
+
   const handleShareClick = () => setShareOpen(true);
   const settingsSlot = (
     <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
@@ -291,6 +321,7 @@ export function CalloutDetailDialogConnector({
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          collaboraFramingSlot={collaboraFramingSlot}
           callToActionFramingSlot={callToActionFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
@@ -302,6 +333,7 @@ export function CalloutDetailDialogConnector({
         {memoOverlay}
         {postOverlay}
         {framingMemoOverlay}
+        {framingCollaboraOverlay}
         {shareDialog}
       </>
     );
@@ -328,6 +360,7 @@ export function CalloutDetailDialogConnector({
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            collaboraFramingSlot={collaboraFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
@@ -338,6 +371,7 @@ export function CalloutDetailDialogConnector({
       {memoOverlay}
       {postOverlay}
       {framingMemoOverlay}
+      {framingCollaboraOverlay}
       {shareDialog}
     </>
   );

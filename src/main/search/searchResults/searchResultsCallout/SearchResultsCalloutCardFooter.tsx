@@ -28,6 +28,7 @@ interface CalloutContribution {
   post?: Identifiable;
   whiteboard?: Identifiable;
   memo?: Identifiable;
+  collaboraDocument?: Identifiable;
 }
 
 interface CalloutContributionsProps {
@@ -44,6 +45,7 @@ const calloutContributionField: Record<CalloutContributionType, keyof CalloutCon
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
   [CalloutContributionType.Memo]: 'memo',
+  [CalloutContributionType.CollaboraDocument]: 'collaboraDocument',
 };
 
 const CalloutContributions = ({ callout }: CalloutContributionsProps) => {

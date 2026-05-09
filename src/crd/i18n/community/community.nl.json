@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Anderen uitnodigen voor \"{{spaceName}}\"",
+      "searchHint": "Zoek hieronder naar mensen of voeg hun e-mailadres direct toe",
+      "searchPlaceholder": "Gebruikersnaam of e-mail…",
+      "searchAriaLabel": "Zoek gebruikers op naam of e-mailadres",
+      "noResultsLabel": "Geen overeenkomende gebruikers",
+      "loadingLabel": "Gebruikers laden…",
+      "loadMoreLabel": "Meer laden…",
+      "removeAriaLabel": "{{label}} verwijderen",
+      "welcomeMessageLabel": "Uitnodigingsbericht",
+      "welcomeMessagePlaceholder": "Schrijf een korte boodschap die met de uitnodiging meegestuurd wordt",
+      "defaultWelcomeMessage": "Hoi, ik wil je uitnodigen voor {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
+      "emailVisibilityNote": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor iedereen die je uitnodigt.",
+      "inviteToRoleLabel": "Uitnodigen als:",
+      "rolePopoverHelper": "Member wordt altijd toegekend bij het accepteren van de uitnodiging.",
+      "rolePopoverAriaLabel": "Kies rollen voor de genodigden",
+      "sendButtonLabel": "Verstuur",
+      "sendingButtonLabel": "Versturen…",
+      "backButtonLabel": "Terug",
+      "closeButtonLabel": "Sluiten",
+      "closeAriaLabel": "Uitnodigingsdialoog sluiten"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Dit is geen geldig e-mailadres.",
+      "duplicateEmail": "Dit e-mailadres staat al in de lijst.",
+      "networkFailure": "Kon de uitnodigingen niet versturen. Probeer het opnieuw."
+    },
+    "results": {
+      "sent": "Uitnodiging verstuurd",
+      "alreadyMember": "Is al lid",
+      "error": "Mislukt: {{message}}"
+    }
+  }
+}

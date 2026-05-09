@@ -152,6 +152,24 @@
     "collapse": "Afficher moins",
     "openWhiteboard": "Ouvrir le tableau blanc",
     "openMemo": "Ouvrir le mémo",
+    "openDocument": "Ouvrir le document",
+    "document": "Document",
+    "documentText": "Document Word",
+    "documentSpreadsheet": "Feuille de calcul",
+    "documentPresentation": "Présentation",
+    "addDocument": "Ajouter un document",
+    "defaultDocumentName": "Nouveau document",
+    "documentTypeLabel": "Type de document",
+    "createNew": "Créer nouveau",
+    "documentImportOr": "ou",
+    "documentImportHint": "Glissez un fichier ou cliquez pour téléverser",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx jusqu'à {{cap}} Mo",
+    "documentImportRemoveFile": "Supprimer le fichier",
+    "documentImportErrorUnsupported": "Ce type de fichier n'est pas pris en charge. Essayez {{formats}}.",
+    "documentImportErrorTooLarge": "Le fichier est trop volumineux. Taille maximale : {{cap}} Mo.",
+    "documentImportErrorMultiple": "Téléversez un seul fichier à la fois.",
+    "documentImportErrorFolder": "Téléversez un fichier, pas un dossier.",
+    "documentImportErrorServiceUnavailable": "Le service documentaire est temporairement indisponible. Réessayez dans un instant.",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
     "expandComments": "Afficher les commentaires",
@@ -165,7 +183,6 @@
     "callToAction": "Appel à l'action",
     "mediaGallery": "Galerie multimédia",
     "memo": "Mémo",
-    "document": "Document",
     "moreWhiteboards": "+{{count}} de plus",
     "moreContributions": "+{{count}} de plus",
     "vote": "Voter",
@@ -223,7 +240,8 @@
     "memoOpenHint": "Le contenu du mémo se modifie dans sa propre fenêtre.",
     "openMemo": "Ouvrir le mémo",
     "openWhiteboard": "Ouvrir le tableau blanc",
-    "openWhiteboardHint": "Le contenu du tableau blanc se modifie dans sa propre fenêtre."
+    "openWhiteboardHint": "Le contenu du tableau blanc se modifie dans sa propre fenêtre.",
+    "officeDocumentsNotEnabled": "Les documents bureautiques ne sont pas activés pour cet espace."
   },
   "members": {
     "title": "Communauté",
@@ -392,13 +410,16 @@
   "validation": {
     "titleRequired": "Le titre est obligatoire",
     "urlRequired": "L'URL est obligatoire",
-    "urlInvalid": "L'URL doit commencer par http:// ou https://",
+    "urlInvalid": "Veuillez saisir une URL valide",
     "displayNameRequired": "Le nom d'affichage est obligatoire",
     "questionRequired": "La question est obligatoire",
     "required": "Ce champ est obligatoire",
+    "minDisplayName": "Doit contenir au moins {{count}} caractères",
     "maxSmall": "Doit contenir au maximum {{count}} caractères",
+    "maxMid": "Doit contenir au maximum {{count}} caractères",
     "maxMarkdown": "Doit contenir au maximum {{count}} caractères",
     "minPollOptions": "Au moins {{count}} options sont requises",
+    "maxPollOptions": "Au maximum {{count}} options sont autorisées",
     "pollOptionRequired": "Le texte de l'option est obligatoire",
     "referenceTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
     "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie"
@@ -555,6 +576,36 @@
       "invalidUrl": "URL non valide"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Erreur Collabora : {{message}}",
+        "sessionClosed": "La session de collaboration a été fermée."
+      }
+    },
+    "footer": {
+      "connected": "Connecté",
+      "connecting": "Connexion…",
+      "disconnected": "Déconnecté",
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "unsaved": "Modifications non enregistrées",
+      "error": "Erreur d'enregistrement",
+      "membersOnline_one": "1 membre en ligne",
+      "membersOnline_other": "{{count}} membres en ligne",
+      "connectedUsersLabel": "Utilisateurs connectés",
+      "moreConnectedUsers_one": "{{count}} utilisateur connecté supplémentaire",
+      "moreConnectedUsers_other": "{{count}} utilisateurs connectés supplémentaires",
+      "guestWarning": "Vous modifiez en tant qu'invité",
+      "delete": "Supprimer le document",
+      "readonlyReason": {
+        "connecting": "Connexion au service de collaboration…",
+        "unauthenticated": "Connectez-vous pour modifier ce document.",
+        "contentUpdatePolicy": "Vous n'avez pas l'autorisation de modifier ce document. Demandez au propriétaire de changer les paramètres de partage.",
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce document. Rejoignez l'espace pour contribuer."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Ouvrir l'image",
     "more_one": "+{{count}} de plus",
@@ -581,6 +632,10 @@
       "tooLarge": "L'image est trop grande"
     }
   },
+  "postSnippet": {
+    "readMore": "… Lire la suite",
+    "readLess": "Réduire"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",
@@ -588,6 +643,8 @@
     "reply": "Répondre",
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
+    "deleteConfirmTitle": "Supprimer le commentaire ?",
+    "deleteConfirmDescription": "Voulez-vous vraiment supprimer ce commentaire ?",
     "addComment": "Ajouter un commentaire...",
     "mention": "Mentionner quelqu'un",
     "mentionVirtualContributor": "IA",
@@ -674,6 +731,11 @@
       "title": "Rouvrir ce sondage ?",
       "description": "La réouverture du sondage permettra de nouveaux votes et l'édition.",
       "confirm": "Rouvrir le sondage"
+    },
+    "deleteOptionConfirm": {
+      "title": "Supprimer l'option ?",
+      "description": "Cette option sera retirée du sondage.",
+      "descriptionWithText": "« {{text}} » sera retirée du sondage."
     },
     "dragHandle": "Glisser pour réorganiser"
   },

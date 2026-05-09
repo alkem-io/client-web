@@ -49,6 +49,7 @@ import { useTemplatesTabData } from './templates/useTemplatesTabData';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
 import { useDirtyTabGuard } from './useDirtyTabGuard';
 import { useSettingsScope } from './useSettingsScope';
+import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
 import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
 
@@ -63,6 +64,12 @@ export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
+
+  // Gate the page on the user's Update privilege for this space. The hook
+  // throws NotAuthorizedError (or signals a sign-in redirect) for anyone who
+  // shouldn't see settings; otherwise it's a no-op and the page renders.
+  useSpaceSettingsAccessGuard(spaceId, scopeLoading);
+
   const visibleTabs = getVisibleSettingsTabs(level);
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
   const guard = useDirtyTabGuard();

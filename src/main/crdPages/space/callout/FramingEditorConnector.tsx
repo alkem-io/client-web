@@ -1,9 +1,14 @@
 import { Presentation, Settings, StickyNote } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { DocumentFramingPlaceholder } from '@/crd/forms/callout/DocumentFramingPlaceholder';
+import {
+  CollaboraDocumentTypePicker,
+  type CollaboraDocumentTypeValue,
+} from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
@@ -58,6 +63,7 @@ type FramingEditorConnectorProps = {
   pollQuestionError?: string;
   pollOptions: PollOptionValue[];
   onPollOptionsChange: (options: PollOptionValue[]) => void;
+  pollOptionsError?: string;
   // Poll settings
   pollAllowMultiple?: boolean;
   onPollAllowMultipleChange?: (value: boolean) => void;
@@ -88,6 +94,29 @@ type FramingEditorConnectorProps = {
   // user-selected files when `framingType === 'image'`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   onMediaGalleryVisualsChange: (next: MediaGalleryFieldVisual[]) => void;
+  // Collabora document framing — drives the document-type picker shown when
+  // `framingType === 'document'`. The picked type is sent inline with the
+  // create-callout mutation and cannot change after the document is created.
+  collaboraDocumentType: CollaboraDocumentType;
+  onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
+  /**
+   * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
+   * Omitted in edit mode — once a Collabora document exists, replacing its bytes
+   * is out of P1 scope.
+   */
+  collaboraUpload?: {
+    acceptAttr: string;
+    file: File | null;
+    onFileChange: (file: File | null) => void;
+    error: DocumentImportError | null;
+    onError: (error: DocumentImportError | null) => void;
+    errorMessage: string | null;
+    busy?: boolean;
+    labelHint: string;
+    labelMaxSize: string;
+    labelRemoveFile: string;
+    labelOr: string;
+  };
 };
 
 export function FramingEditorConnector({
@@ -107,6 +136,7 @@ export function FramingEditorConnector({
   pollQuestionError,
   pollOptions,
   onPollOptionsChange,
+  pollOptionsError,
   pollAllowMultiple = false,
   onPollAllowMultipleChange,
   pollAllowCustomOptions = false,
@@ -126,6 +156,9 @@ export function FramingEditorConnector({
   onMemoMarkdownChange,
   mediaGalleryVisuals,
   onMediaGalleryVisualsChange,
+  collaboraDocumentType,
+  onCollaboraDocumentTypeChange,
+  collaboraUpload,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -287,7 +320,19 @@ export function FramingEditorConnector({
       return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
 
     case 'document':
-      return <DocumentFramingPlaceholder />;
+      // Collabora document framing — type is fixed at creation time (Collabora
+      // has no server-side conversion path between text/spreadsheet/presentation),
+      // so in edit mode the picker is shown read-only as a reminder of which
+      // type was provisioned. The actual document body is edited from the post
+      // card / detail dialog via `CollaboraFramingEditorOverlay`.
+      return (
+        <CollaboraDocumentTypePicker
+          value={collaboraDocumentType as CollaboraDocumentTypeValue}
+          onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
+          readOnly={mode === 'edit'}
+          upload={collaboraUpload}
+        />
+      );
 
     case 'image':
       return (
@@ -315,6 +360,7 @@ export function FramingEditorConnector({
             questionError={pollQuestionError}
             options={pollOptions}
             onOptionsChange={onPollOptionsChange}
+            optionsError={pollOptionsError}
             pollStatus={pollStatus}
             onStatusChange={status => {
               setPendingStatus(status);
@@ -344,7 +390,10 @@ export function FramingEditorConnector({
             onHideResultsUntilVotedChange={v => onPollHideResultsUntilVotedChange?.(v)}
             showVoterAvatars={pollShowVoterAvatars}
             onShowVoterAvatarsChange={v => onPollShowVoterAvatarsChange?.(v)}
-            readOnly={pollStatus === 'closed'}
+            // MUI parity (CalloutForm): poll settings are immutable once the poll is
+            // created — the server's `UpdatePollInput` only allows updating `title`.
+            // Show them as disabled in edit mode and when the poll is closed.
+            readOnly={mode === 'edit' || pollStatus === 'closed'}
           />
           {pendingStatus && (
             <ConfirmationDialog

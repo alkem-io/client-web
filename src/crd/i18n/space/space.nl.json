@@ -152,6 +152,24 @@
     "collapse": "Minder tonen",
     "openWhiteboard": "Whiteboard openen",
     "openMemo": "Memo openen",
+    "openDocument": "Document openen",
+    "document": "Document",
+    "documentText": "Word-document",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentatie",
+    "addDocument": "Document toevoegen",
+    "defaultDocumentName": "Nieuw document",
+    "documentTypeLabel": "Documenttype",
+    "createNew": "Nieuw maken",
+    "documentImportOr": "of",
+    "documentImportHint": "Sleep een bestand of klik om te uploaden",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+    "documentImportRemoveFile": "Bestand verwijderen",
+    "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
+    "documentImportErrorTooLarge": "Bestand is te groot. Maximale grootte is {{cap}} MB.",
+    "documentImportErrorMultiple": "Sleep één bestand per keer.",
+    "documentImportErrorFolder": "Sleep een bestand, geen map.",
+    "documentImportErrorServiceUnavailable": "De documentservice is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
     "expandComments": "Reacties uitvouwen",
@@ -165,7 +183,6 @@
     "callToAction": "Oproep tot actie",
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
-    "document": "Document",
     "moreWhiteboards": "+{{count}} meer",
     "moreContributions": "+{{count}} meer",
     "vote": "Stemmen",
@@ -223,7 +240,8 @@
     "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
     "openMemo": "Memo openen",
     "openWhiteboard": "Whiteboard openen",
-    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt."
+    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt.",
+    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
   },
   "members": {
     "title": "Community",
@@ -392,13 +410,16 @@
   "validation": {
     "titleRequired": "Titel is verplicht",
     "urlRequired": "URL is verplicht",
-    "urlInvalid": "URL moet beginnen met http:// of https://",
+    "urlInvalid": "Voer een geldige URL in",
     "displayNameRequired": "Weergavenaam is verplicht",
     "questionRequired": "Vraag is verplicht",
     "required": "Dit veld is verplicht",
+    "minDisplayName": "Moet minimaal {{count}} tekens zijn",
     "maxSmall": "Moet {{count}} tekens of minder zijn",
+    "maxMid": "Moet {{count}} tekens of minder zijn",
     "maxMarkdown": "Moet {{count}} tekens of minder zijn",
     "minPollOptions": "Minimaal {{count}} opties zijn vereist",
+    "maxPollOptions": "Maximaal {{count}} opties zijn toegestaan",
     "pollOptionRequired": "Optietekst is verplicht",
     "referenceTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
     "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven"
@@ -555,6 +576,36 @@
       "invalidUrl": "Ongeldige URL"
     }
   },
+  "collabora": {
+    "editor": {
+      "error": {
+        "runtime": "Collabora-fout: {{message}}",
+        "sessionClosed": "De samenwerkingssessie is gesloten."
+      }
+    },
+    "footer": {
+      "connected": "Verbonden",
+      "connecting": "Verbinden…",
+      "disconnected": "Verbinding verbroken",
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "unsaved": "Niet-opgeslagen wijzigingen",
+      "error": "Fout bij opslaan",
+      "membersOnline_one": "1 lid online",
+      "membersOnline_other": "{{count}} leden online",
+      "connectedUsersLabel": "Verbonden gebruikers",
+      "moreConnectedUsers_one": "{{count}} andere verbonden gebruiker",
+      "moreConnectedUsers_other": "{{count}} andere verbonden gebruikers",
+      "guestWarning": "Je bewerkt als gast",
+      "delete": "Document verwijderen",
+      "readonlyReason": {
+        "connecting": "Verbinden met de samenwerkingsdienst…",
+        "unauthenticated": "Meld je aan om dit document te bewerken.",
+        "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
+        "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      }
+    }
+  },
   "mediaGallery": {
     "openImage": "Afbeelding openen",
     "more_one": "+{{count}} meer",
@@ -581,6 +632,10 @@
       "tooLarge": "Afbeelding is te groot"
     }
   },
+  "postSnippet": {
+    "readMore": "… Lees meer",
+    "readLess": "Lees minder"
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
@@ -588,6 +643,8 @@
     "reply": "Antwoorden",
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
+    "deleteConfirmTitle": "Opmerking verwijderen?",
+    "deleteConfirmDescription": "Weet je zeker dat je deze opmerking wilt verwijderen?",
     "addComment": "Voeg een opmerking toe...",
     "mention": "Iemand noemen",
     "mentionVirtualContributor": "AI",
@@ -674,6 +731,11 @@
       "title": "Deze peiling heropenen?",
       "description": "Het heropenen van de peiling staat nieuwe stemmen en bewerking weer toe.",
       "confirm": "Peiling heropenen"
+    },
+    "deleteOptionConfirm": {
+      "title": "Optie verwijderen?",
+      "description": "Deze optie wordt uit de peiling verwijderd.",
+      "descriptionWithText": "“{{text}}” wordt uit de peiling verwijderd."
     },
     "dragHandle": "Slepen om te herordenen"
   },

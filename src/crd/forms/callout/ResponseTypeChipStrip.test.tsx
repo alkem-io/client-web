@@ -16,12 +16,12 @@ describe('ResponseTypeChipStrip', () => {
     expect(group).toBeInTheDocument();
   });
 
-  test('renders 5 chips with Document disabled via aria-disabled', () => {
+  test('renders the four P1 response chips (Documents are framing-only — FR-015)', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
     const chips = screen.getAllByRole('radio');
-    expect(chips).toHaveLength(5);
-    const doc = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
-    expect(doc).toHaveAttribute('aria-disabled', 'true');
+    expect(chips).toHaveLength(4);
+    // Documents must NOT appear among Response Options in P1.
+    expect(screen.queryByRole('radio', { name: /contributionSettings.types.document/i })).toBeNull();
   });
 
   test('clicking an inactive chip selects it', async () => {
@@ -38,14 +38,6 @@ describe('ResponseTypeChipStrip', () => {
     const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
     await userEvent.click(memo);
     expect(onChange).toHaveBeenCalledWith('none');
-  });
-
-  test('clicking the disabled document chip is a no-op', async () => {
-    const onChange = vi.fn();
-    render(<ResponseTypeChipStrip value="none" onChange={onChange} />);
-    const doc = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
-    await userEvent.click(doc);
-    expect(onChange).not.toHaveBeenCalled();
   });
 
   test('locked mode: non-active chips are no-ops; active chip deselects', async () => {

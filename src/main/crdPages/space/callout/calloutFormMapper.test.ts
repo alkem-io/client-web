@@ -4,6 +4,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CollaboraDocumentType,
   PollResultsDetail,
   PollResultsVisibility,
   VisualType,
@@ -30,6 +31,7 @@ const baseValues = (overrides: Partial<CalloutFormValues> = {}): CalloutFormValu
 const createOptions = {
   visibility: CalloutVisibility.Published,
   whiteboardFallbackDisplayName: 'Untitled whiteboard',
+  collaboraFallbackDisplayName: 'Untitled document',
 };
 
 const updateOptions = { calloutId: 'callout-1' };
@@ -40,21 +42,20 @@ const previewBlob: WhiteboardPreviewImage = {
 };
 
 describe('framingChipToServer', () => {
-  it('maps every chip including the disabled "document" → None', () => {
+  it('maps every chip to its server framing type', () => {
     expect(framingChipToServer('none')).toBe(CalloutFramingType.None);
     expect(framingChipToServer('whiteboard')).toBe(CalloutFramingType.Whiteboard);
     expect(framingChipToServer('memo')).toBe(CalloutFramingType.Memo);
     expect(framingChipToServer('cta')).toBe(CalloutFramingType.Link);
     expect(framingChipToServer('image')).toBe(CalloutFramingType.MediaGallery);
     expect(framingChipToServer('poll')).toBe(CalloutFramingType.Poll);
-    expect(framingChipToServer('document')).toBe(CalloutFramingType.None);
+    expect(framingChipToServer('document')).toBe(CalloutFramingType.CollaboraDocument);
   });
 });
 
 describe('responseTypeToServer', () => {
-  it('maps active types and collapses none/document to undefined', () => {
+  it('maps active types and collapses none to undefined', () => {
     expect(responseTypeToServer('none')).toBeUndefined();
-    expect(responseTypeToServer('document')).toBeUndefined();
     expect(responseTypeToServer('link')).toBe(CalloutContributionType.Link);
     expect(responseTypeToServer('post')).toBe(CalloutContributionType.Post);
     expect(responseTypeToServer('memo')).toBe(CalloutContributionType.Memo);
@@ -210,9 +211,79 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect(result.input.framing.poll).toBeUndefined();
   });
 
-  it('"document" disabled chip is mapped to None framing', () => {
-    const result = mapFormToCalloutCreationInput(baseValues({ framingChip: 'document' }), createOptions);
-    expect(result.input.framing.type).toBe(CalloutFramingType.None);
+  it('"document" chip is mapped to CollaboraDocument framing with the chosen documentType', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'document', collaboraDocumentType: CollaboraDocumentType.Spreadsheet, title: 'Q1' }),
+      createOptions
+    );
+    expect(result.input.framing.type).toBe(CalloutFramingType.CollaboraDocument);
+    expect(result.input.framing.collaboraDocument).toEqual({
+      displayName: 'Q1',
+      documentType: CollaboraDocumentType.Spreadsheet,
+    });
+  });
+
+  it('"document" chip without uploadFile produces NO file in the result (blank-create regression — T014)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'document', collaboraDocumentType: CollaboraDocumentType.Wordprocessing, title: 'Q1' }),
+      createOptions
+    );
+    expect(result.collaboraUploadFile).toBeUndefined();
+    expect(result.input.framing.collaboraDocument).toEqual({
+      displayName: 'Q1',
+      documentType: CollaboraDocumentType.Wordprocessing,
+    });
+  });
+
+  it('"document" chip with uploadFile + post title equal to auto-prefill emits empty {} and propagates the file', () => {
+    const stagedFile = new File([new Uint8Array(10)], 'Q3-Plan-final.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'Q3-Plan-final', // matches auto-prefill, so server should derive from filename
+        collaboraUploadFile: stagedFile,
+        collaboraAutoPrefilledTitle: 'Q3-Plan-final',
+      }),
+      createOptions
+    );
+    expect(result.input.framing.type).toBe(CalloutFramingType.CollaboraDocument);
+    expect(result.input.framing.collaboraDocument).toEqual({});
+    expect(result.collaboraUploadFile).toBe(stagedFile);
+  });
+
+  it('"document" chip with uploadFile + post title typed-over auto-prefill emits { displayName } and propagates the file', () => {
+    const stagedFile = new File([new Uint8Array(10)], 'Q3-Plan-final.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'My Q3 Doc', // typed over the prefill
+        collaboraUploadFile: stagedFile,
+        collaboraAutoPrefilledTitle: 'Q3-Plan-final',
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({ displayName: 'My Q3 Doc' });
+    expect(result.collaboraUploadFile).toBe(stagedFile);
+  });
+
+  it('"document" chip without uploadFile but with a wiped framing-type-switch leaves no orphan file (regression — Edge Case)', () => {
+    // Simulating the state after the connector cleared `collaboraUploadFile` on chip-switch.
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'memo', // user switched to Memo
+        collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
+        collaboraUploadFile: null,
+        collaboraAutoPrefilledTitle: undefined,
+        memoMarkdown: 'note',
+      }),
+      createOptions
+    );
+    expect(result.collaboraUploadFile).toBeUndefined();
+    expect(result.input.framing.type).toBe(CalloutFramingType.Memo);
   });
 });
 

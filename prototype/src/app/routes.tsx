@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { RootWrapper } from "./layouts/RootWrapper";
 import { MainLayout } from "./layouts/MainLayout";
 import { SpaceLayout } from "./layouts/SpaceLayout";
@@ -10,6 +10,7 @@ import { SpaceSubspaces } from "./pages/SpaceSubspaces";
 import { SpaceKnowledgeBase } from "./pages/SpaceKnowledgeBase";
 import { SpaceSettingsPage } from "./pages/SpaceSettingsPage";
 import SubspacePage from "./pages/SubspacePage";
+import SubspaceSettingsPage from "./pages/SubspaceSettingsPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import UserAccountPage from "./pages/UserAccountPage";
 import UserProfileSettingsPage from "./pages/UserProfileSettingsPage";
@@ -21,13 +22,17 @@ import TemplateLibraryPage from "./pages/TemplateLibraryPage";
 import TemplatePackDetailPage from "./pages/TemplatePackDetailPage";
 import TemplateDetailPage from "./pages/TemplateDetailPage";
 import DesignSystemPage from "./pages/DesignSystemPage";
+import TypographySystemPage from "./pages/TypographySystemPage";
 import EcosystemAnalyticsPage from "./pages/analytics/EcosystemAnalyticsPage";
 import BrowseSpacesPage from "./pages/BrowseSpacesPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import NotificationsPage from "./pages/NotificationsPage";
-import MessagesPage from "./pages/MessagesPage";
 import AdminPage from "./pages/AdminPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import AuthPage from "./pages/AuthPage";
+import PackSettingsPage from "./pages/PackSettingsPage";
+import TemplateSettingsPage from "./pages/TemplateSettingsPage";
+import VCProfilePage from "./pages/VCProfilePage";
+import ForumPage from "./pages/ForumPage";
 
 export const router = createBrowserRouter([
   {
@@ -36,8 +41,12 @@ export const router = createBrowserRouter([
     children: [
       /* ─── Standalone pages (no layout) ─── */
       { path: "/design-system", Component: DesignSystemPage },
+      { path: "/typography", Component: TypographySystemPage },
       { path: "/analytics", Component: EcosystemAnalyticsPage },
       { path: "/onboarding", Component: OnboardingPage },
+      { path: "/sign-in", Component: AuthPage },
+      { path: "/sign-up", Component: AuthPage },
+      { path: "/password-recovery", Component: AuthPage },
 
       /* ─── Pages WITH app sidebar (MainLayout) ─── */
       {
@@ -49,17 +58,17 @@ export const router = createBrowserRouter([
           /* Browse Spaces */
           { path: "spaces", Component: BrowseSpacesPage },
 
+          /* Forum */
+          { path: "forum", Component: ForumPage },
+
           /* Template Library */
           { path: "templates", Component: TemplateLibraryPage },
           { path: "templates/:templateId", Component: TemplateDetailPage },
+          { path: "templates/:templateId/settings", Component: TemplateSettingsPage },
           { path: "templates/packs/:packSlug", Component: TemplatePackDetailPage },
+          { path: "templates/packs/:packSlug/settings", Component: PackSettingsPage },
+          { path: "templates/packs/:packSlug/settings/templates/:templateId", Component: TemplateSettingsPage },
           { path: "templates/packs/:packSlug/:templateId", Component: TemplateDetailPage },
-
-          /* Notifications (full page) */
-          { path: "notifications", Component: NotificationsPage },
-
-          /* Messages (full-page inbox) */
-          { path: "messages", Component: MessagesPage },
 
           /* Platform Admin */
           { path: "admin", Component: AdminPage },
@@ -67,6 +76,13 @@ export const router = createBrowserRouter([
 
           /* ─── User Routes ─── */
           { path: "user/:userSlug", Component: UserProfilePage },
+
+          /* ─── Virtual Contributor Routes ─── */
+          { path: "vc/:vcSlug", Component: VCProfilePage },
+          {
+            path: "user/:userSlug/settings",
+            element: <Navigate to="profile" replace />,
+          },
           { path: "user/:userSlug/settings/profile", Component: UserProfileSettingsPage },
           { path: "user/:userSlug/settings/account", Component: UserAccountPage },
           { path: "user/:userSlug/settings/membership", Component: UserMembershipPage },
@@ -108,6 +124,10 @@ export const router = createBrowserRouter([
 
           /* Subspace pages — dedicated layout with channel tabs & collapsible sidebar */
           { path: "/space/:spaceSlug/subspaces/:subspaceSlug", Component: SubspacePage },
+
+          /* Subspace settings */
+          { path: "/space/:spaceSlug/subspaces/:subspaceSlug/settings", Component: SubspaceSettingsPage },
+          { path: "/space/:spaceSlug/subspaces/:subspaceSlug/settings/:tab", Component: SubspaceSettingsPage },
         ],
       },
     ],
