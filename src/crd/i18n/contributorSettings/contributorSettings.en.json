@@ -514,6 +514,12 @@
     "delete": "Delete",
     "yes": "Yes",
     "no": "No",
+    "avatarCropDialog": {
+      "title": "Crop avatar",
+      "description": "Drag to reposition. The image will be cropped and resized before upload.",
+      "altTextLabel": "Alt text",
+      "altTextPlaceholder": "Describe the image (optional)"
+    },
     "account": {
       "capacity": {
         "label": "{{usage}}/{{limit}}",

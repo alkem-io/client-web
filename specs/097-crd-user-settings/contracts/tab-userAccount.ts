@@ -38,6 +38,37 @@ export type AccountResourceCardItem = {
   actions: AccountKebabAction[];
 };
 
+/**
+ * Per-plan capacity breakdown — populated only for the `spaces` group.
+ * Drives the multi-line per-plan hover tooltip (FR-034a — Spaces variant).
+ */
+export type AccountSpacePlanCapacity = {
+  free: { usage: number; limit: number };
+  plus: { usage: number; limit: number };
+  premium: { usage: number; limit: number };
+};
+
+/**
+ * Per-group capacity for the section header's `X/Y` badge + hover tooltip
+ * (FR-034a). Source data: `account.license.entitlements[]` + the actor's
+ * `canCreate*` authorization privilege.
+ */
+export type AccountCapacity = {
+  /** Sum across Free/Plus/Premium for Spaces; single-entitlement usage for the other groups. */
+  usage: number;
+  /** Same — sum across plans for Spaces; single-entitlement limit for the other groups. */
+  limit: number;
+  /**
+   * Mirror of MUI `BlockHeader`'s `isAvailable` — when `false` AND
+   * `usage === 0`, the badge renders "Not available" with the
+   * contact-team tooltip. Source: the actor's `canCreate*` privilege
+   * (NOT `availableEntitlements` — the two diverge in practice).
+   */
+  isAvailable: boolean;
+  /** Present only for `groupId === 'spaces'`. */
+  perPlan?: AccountSpacePlanCapacity;
+};
+
 export type AccountResourceGroup = {
   /** Group key for stable iteration. */
   groupId: 'spaces' | 'virtualContributors' | 'innovationPacks' | 'innovationHubs';
@@ -48,6 +79,8 @@ export type AccountResourceGroup = {
   onCreate: () => void;
   items: AccountResourceCardItem[];
   emptyStateLabel: string; // i18n — shown when items.length === 0 and the section isn't omitted
+  /** Section-header `X/Y` badge + hover tooltip (FR-034a). Absent during loading or when the license is missing. */
+  capacity?: AccountCapacity;
 };
 
 /** The shared contributor-account view shape. Both User Account and Org Account map to this. */

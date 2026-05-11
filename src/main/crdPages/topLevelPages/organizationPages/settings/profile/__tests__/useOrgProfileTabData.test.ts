@@ -452,23 +452,48 @@ describe('useOrgProfileTabData — pendingReferenceDelete state machine (Rule #9
   });
 });
 
-describe('useOrgProfileTabData — logo upload (FR-093 immediate commit)', () => {
-  it('fires uploadVisual immediately on file select, no Save click', async () => {
+describe('useOrgProfileTabData — logo upload (FR-093, crop-then-commit)', () => {
+  it('opens the crop dialog on file pick — does NOT fire uploadVisual immediately', () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
 
     const file = new File(['logo-bytes'], 'logo.png', { type: 'image/png' });
+    act(() => result.current.onUploadAvatar(file));
+
+    expect(result.current.pendingAvatarCrop?.file).toBe(file);
+    expect(result.current.pendingAvatarCrop?.config.aspectRatio).toBeGreaterThan(0);
+    expect(mockUploadVisual).not.toHaveBeenCalled();
+  });
+
+  it('cancel clears pendingAvatarCrop and fires no upload', () => {
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+
+    const file = new File(['logo-bytes'], 'logo.png', { type: 'image/png' });
+    act(() => result.current.onUploadAvatar(file));
+    act(() => result.current.onAvatarCropCancel());
+
+    expect(result.current.pendingAvatarCrop).toBeNull();
+    expect(mockUploadVisual).not.toHaveBeenCalled();
+  });
+
+  it('crop save fires uploadVisual with the cropped file + alt text and updates the buffer', async () => {
+    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
+
+    const original = new File(['logo-bytes'], 'logo.png', { type: 'image/png' });
+    act(() => result.current.onUploadAvatar(original));
+
+    const cropped = new File(['cropped-bytes'], 'logo.png', { type: 'image/png' });
     await act(async () => {
-      result.current.onUploadAvatar(file);
+      result.current.onAvatarCropComplete(cropped, 'Org logo');
       await waitFor(() => expect(result.current.uploadingAvatar).toBe(false));
     });
 
+    expect(result.current.pendingAvatarCrop).toBeNull();
     expect(mockUploadVisual).toHaveBeenCalledWith({
       variables: {
-        file,
-        uploadData: { visualID: 'visual-avatar', alternativeText: undefined },
+        file: cropped,
+        uploadData: { visualID: 'visual-avatar', alternativeText: 'Org logo' },
       },
     });
-    // Buffer reflects the freshly-uploaded URI.
     expect(result.current.values?.avatar.uri).toBe('https://example.test/new-logo.png');
   });
 });

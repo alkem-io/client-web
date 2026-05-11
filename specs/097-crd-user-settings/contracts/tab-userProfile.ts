@@ -47,8 +47,28 @@ export type AvatarColumnProps = {
   uploading: boolean;
   uploadHelperText: string; // i18n: "Recommended: 400x400px. JPG, PNG or GIF."
   changeButtonLabel: string;
-  /** File-pick commits immediately on file-select (FR-024). */
-  onAvatarFilePicked: (file: File) => Promise<void>;
+  /**
+   * Raised when the user picks a file. The integration hook opens the CRD
+   * `ImageCropDialog` (FR-024 — crop-then-commit). The actual upload fires
+   * only when the dialog's onSave delivers the cropped file + alt text.
+   */
+  onAvatarFilePicked: (file: File) => void;
+};
+
+/**
+ * Per-tab crop dialog state — owned by the integration hook, rendered at the
+ * integration page level via `@/crd/components/common/ImageCropDialog`. Same
+ * primitive the 045 About branding flow uses (Decision #10).
+ */
+export type PendingAvatarCrop = {
+  file: File;
+  config: {
+    aspectRatio?: number;
+    maxWidth?: number;
+    minWidth?: number;
+    maxHeight?: number;
+    minHeight?: number;
+  };
 };
 
 /** A single reference row inside the References section buffer. */

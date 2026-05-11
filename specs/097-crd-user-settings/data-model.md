@@ -50,7 +50,7 @@ This document is **specification-side**: it lists field names, validation rules,
 | Bio | `user.profile.description` | `bio` | no | `MarkdownValidator(MARKDOWN_TEXT_LENGTH)` | `bio` | One-field section; `MarkdownEditor` is the input; Enter inserts newline (no Enter-to-Save semantics — section Save is the only commit) |
 | Skills | `user.profile.tagsets[name='Skills'].tags[]` (case-insensitive lookup) | `skills: { id?: string; tags: string[] }` | no | — | `skills` (list) | Independent per-section save. `updateUser` patches `profileData.tagsets: [{ ID: <skills-id>, tags }]`. If the user has no `Skills` tagset yet, the first save fires `createTagsetOnProfile({ profileID, name: 'Skills', tags })` and adopts the returned id into the buffer. Mirrors the existing `UserProfileView` reader (`name.toLowerCase() === TagsetReservedName.Skills.toLowerCase()`). |
 | Keywords | `user.profile.tagsets[name='Keywords'].tags[]` (case-insensitive lookup) | `keywords: { id?: string; tags: string[] }` | no | — | `keywords` (list) | Independent per-section save (separate from Skills). Same `updateUser` patch shape; same lazy-create-on-first-save semantics if the `Keywords` tagset doesn't yet exist. |
-| Avatar | `user.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | — (immediate commit) | File picker IS the commit; no Save click; no debounce. On success the avatar slot's status flashes "Saved!" for 1800 ms (FR-024). |
+| Avatar | `user.profile.avatar.uri` + `aspectRatio` + `min/maxWidth` + `min/maxHeight` (the full `VisualModelFull` selection) | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` | — (crop dialog is the commit) | File pick opens the CRD `ImageCropDialog` seeded with the visual's constraints (Decision #10). The dialog's Save delivers `(croppedFile, altText)`; only then does `uploadImageOnVisual` fire. On success the avatar slot's status flashes "Saved!" for 1800 ms (FR-024). |
 
 ### Entity: Reference (User social links + arbitrary references)
 
@@ -96,6 +96,17 @@ Renders four card groups. The CRD view is the **shared** `ContributorAccountView
 | Custom Homepages | When ≥1 page → renders cards. When 0 pages → centered full empty-state with a circular icon tile + *"No Custom Homepages"* heading + *"Create a personalized landing page for your account."* descriptive copy + a **Create Homepage** CTA + a *"Capacity: 0/1 Used"* indicator below the CTA. |
 
 Every "Create" / "+" affordance on this tab opens a CRD creation dialog/wizard (FR-034 / Decision #3) — none navigates to a route. The "Create New Space" / "Create New Contributor" dashed cards and the "Empty Slot" `+` tiles and the "Create Homepage" empty-state CTA all map onto the four `onCreate*` callbacks the `ContributorAccountView` exposes; the integration page (`CrdUserAccountTab`) mounts the dialogs and owns their Apollo wiring. See "Account-tab creation dialogs" below.
+
+**Capacity badge per section (FR-034a / Decision #16)**: each of the four section headers renders a `X/Y` badge next to the title with a hover tooltip. Numeric source: `account.license.entitlements[]` (`{ type, limit, usage }`, already selected by `AccountInformation.graphql`).
+
+| Group | `usage` / `limit` derivation | Tooltip body |
+|---|---|---|
+| Hosted Spaces | sum of three entitlements: `AccountSpaceFree` + `AccountSpacePlus` + `AccountSpacePremium` | Three lines: `{{freeUsage}} out of {{freeLimit}} Free Spaces`, `{{plusUsage}} out of {{plusLimit}} Plus Spaces`, `{{premiumUsage}} out of {{premiumLimit}} Premium Spaces` |
+| Virtual Contributors | `AccountVirtualContributor` `{ usage, limit }` | Single line: `You have created {{usage}} out of your {{limit}} available Virtual Contributors in your account.` |
+| Innovation Packs | `AccountInnovationPack` `{ usage, limit }` | Same single-line shape |
+| Innovation Hubs | `AccountInnovationHub` `{ usage, limit }` | Same single-line shape |
+
+When the actor lacks the corresponding `canCreate*` privilege AND `usage === 0`, the badge renders `"Not available"` with the contact-team tooltip — `isAvailable` is derived from the privilege (NOT `availableEntitlements`). The Custom Homepages empty-state's `Capacity: X/Y Used` caption reads from the same data — no hard-coded `"0/1"` literal.
 
 ### Entity: AccountResource (Space / VC / Innovation Pack / Innovation Hub)
 
@@ -362,10 +373,10 @@ Visible only to the profile owner (FR-083 — even platform admins on other user
 | Domain | `organization.domain` | `domain` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
 | Legal Entity Name | `organization.legalEntityName` | `legalEntityName` | no | `textLengthValidator({ maxLength: SMALL_TEXT_LENGTH })` |
 | Website | `organization.website` | `website` | no | `urlValidator({ maxLength: SMALL_TEXT_LENGTH })` |
-| Avatar/logo | `organization.profile.avatar.uri` | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` |
+| Avatar/logo | `organization.profile.visuals` (the `AVATAR`-named entry with full `VisualModelFull` constraints — `aspectRatio`, `min/maxWidth`, `min/maxHeight`) | `avatarUrl` | no | `image/jpeg` `image/png` `image/gif` |
 | Verification status | `organization.verification.status` | `verifiedStatus` | n/a (read-only) | — |
 
-Mutation: `updateOrganization` (existing) for every editable field except references / tagsets / avatar (which use their own existing mutations).
+Mutation: `updateOrganization` (existing) for every editable field except references / tagsets / avatar (which use their own existing mutations). The avatar/logo upload goes through the CRD `ImageCropDialog` (Decision #10 / FR-093): file pick → crop dialog seeded with the visual's constraints → on Save the cropped/resized file fires `uploadImageOnVisual` with the supplied `alternativeText`.
 
 ### Entity: Reference (Org social links + arbitrary references)
 

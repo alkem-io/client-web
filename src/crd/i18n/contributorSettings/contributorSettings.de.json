@@ -494,6 +494,12 @@
     "delete": "Löschen",
     "yes": "Ja",
     "no": "Nein",
+    "avatarCropDialog": {
+      "title": "Avatar zuschneiden",
+      "description": "Ziehe, um zu positionieren. Das Bild wird vor dem Hochladen zugeschnitten und verkleinert.",
+      "altTextLabel": "Alternativtext",
+      "altTextPlaceholder": "Beschreibe das Bild (optional)"
+    },
     "account": {
       "capacity": {
         "label": "{{usage}}/{{limit}}",

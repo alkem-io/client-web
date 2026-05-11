@@ -271,20 +271,26 @@ The view never knows about route paths — `onTabSelect` is a callback the integ
 
 ---
 
-## Decision 10 — Avatar / logo upload commit-on-file-select semantics
+## Decision 10 — Avatar / logo upload: crop-then-commit via `ImageCropDialog`
 
-**Decision**: Uploads commit immediately on file-select on both User My Profile (FR-024) and Org Profile (FR-093). The file-picker dialog itself is the explicit confirmation — no separate Save click. The integration hook (`useUserAvatarUpload` / `useOrgAvatarUpload`) wraps the same upload mutation the existing MUI uploaders use and exposes:
+**Decision**: On both User Profile (FR-024) and Org Profile (FR-093) the file picker raises an `onUploadAvatar(file)` callback on the integration hook (`useUserProfileTabData` / `useOrgProfileTabData`); the hook does NOT upload immediately. Instead it sets a `pendingAvatarCrop` state (the file plus the avatar's `VisualModelFull` constraints — `aspectRatio`, `minWidth/maxWidth`, `minHeight/maxHeight`, read from the raw GraphQL avatar visual). The integration page (`CrdUserProfileTab` / `CrdOrgProfileTab`) mounts the SAME `ImageCropDialog` primitive 045 About uses — `@/crd/components/common/ImageCropDialog` — driven by `pendingAvatarCrop`. The dialog's onSave delivers `(croppedFile, altText)`; only then does the hook fire `uploadImageOnVisual` with the cropped file and the supplied `alternativeText`. Cancel clears `pendingAvatarCrop` with no side effect.
+
+Hook surface:
 
 ```typescript
-{ onAvatarFilePicked: (file: File) => Promise<void>; uploading: boolean }
+{
+  pendingAvatarCrop: { file: File; config: ImageCropConfig } | null;
+  uploadingAvatar: boolean;
+  onUploadAvatar: (file: File) => void;          // file pick → open dialog
+  onAvatarCropComplete: (croppedFile: File, altText: string) => void; // dialog Save → upload
+  onAvatarCropCancel: () => void;                 // dialog Cancel
+}
 ```
 
-On error, surfaces a CRD `Toast` and reverts the visual avatar via refetch.
-
-**Rationale**: Direct parity with current MUI behavior. The `VisualUpload` component in MUI already commits immediately on file-select — there's no "preview + Save" flow today, so CRD doesn't introduce one.
+**Rationale**: Direct parity with the old MUI Profile flow, which already wrapped avatar uploads in an image-crop dialog (`src/domain/community/profile/ProfileForm`/`VisualUpload` opens a crop modal before submitting). The 045 About branding flow (`useAboutTabData.ts`) implements the same pattern with the CRD `ImageCropDialog`, so the User/Org Profile hooks adopt that pattern verbatim — same primitive, same `aspectRatio`/min/max sourcing, same i18n key shape (`shared.avatarCropDialog.*` in the `crd-contributorSettings` namespace).
 
 **Alternatives considered**:
-- Preview-then-Save flow — rejected (would be a new affordance, violating Out of Scope).
+- Commit immediately on file-select (the earlier 097 draft did this) — rejected: it skipped the crop + resize step the MUI flow already provided, so users on the CRD path uploaded raw originals.
 
 ---
 
@@ -353,6 +359,20 @@ No `DropdownMenuLabel` ("Options"), no `DropdownMenuSeparator`, no third item.
 - Member count (prototype default) — rejected; not in the available query shape.
 - Status badge ("Active / Archived") in the footer — rejected for the same reason (not in `useUserContributionsQuery` and would surface a field we deliberately don't filter on; see FR-043 rationale).
 - Inlining a one-off `LeadAvatarStack` inside `UserMembershipTabView` (the original implementation choice) — rejected after spotting the existing `PollVoterAvatars` component; the visual and structural overlap makes a shared primitive the right call. The poll consumer was migrated and the deprecated file deleted in the same change.
+
+---
+
+## Decision 16 — Account-tab capacity badge + per-plan tooltip (post-implementation correction)
+
+**Decision**: Each of the four Account-tab section headers (Hosted Spaces, Virtual Contributors, Innovation Packs / Template Packs, Innovation Hubs / Custom Homepages) renders a `"{{usage}}/{{limit}}"` badge next to its title, with a hover tooltip mirroring the MUI `BlockHeader` body. Source data: `account.license.entitlements[]` (already selected by `AccountInformation.graphql` — no GraphQL change). For **Spaces** the tooltip lists three per-plan rows (Free / Plus / Premium); for the other three groups a single-line "You have created {{usage}} out of your {{limit}} available …". When the actor lacks the corresponding `canCreate*` privilege AND `usage === 0`, the badge reads "Not available" with the contact-team tooltip — exactly matching the MUI `BlockHeader` `isAvailable` branch. The Custom Homepages empty-state caption (FR-033) is also rewired to read from this capacity data (no hard-coded `"0/1"` literal).
+
+The hook (`mapAccountToViewProps` in `src/main/crdPages/topLevelPages/contributorAccountMapper.ts`) sums Spaces' Free + Plus + Premium entitlements for `usage`/`limit` and emits a `perPlan` breakdown only for that group. The badge component (`CapacityBadge` inside `ContributorAccountView.tsx`) consumes `groupId` to pick the right tooltip i18n key (`shared.account.capacity.{spaces|virtualContributors|innovationPacks|innovationHubs}Tooltip`).
+
+**Rationale**: The earlier 097 implementation rendered a plain "X Active" count badge on Spaces / VCs only, with nothing on Packs / Hubs, and dropped the per-plan breakdown entirely. Users who had Free/Plus/Premium quotas lost the ability to see remaining capacity. Reinstating the MUI behavior — same wording, same data path — restores parity.
+
+**Important detail**: `isAvailable` is derived from the authorization privilege (`canCreate*`), NOT from `account.license.availableEntitlements`. In practice the two lists diverge — an account can have a positive `limit` for a resource type but the type may still not appear in `availableEntitlements`. The MUI `BlockHeader` uses `canCreate*`, so the CRD does the same.
+
+**i18n**: Keys live under `shared.account.capacity.*` in `crd-contributorSettings` (parity across en/nl/es/bg/de/fr). The obsolete `shared.account.activeCount` is removed. The `shared.account.customHomepages.capacity` key is rewritten to take `{{usage}}/{{limit}}` interpolations.
 
 ---
 

@@ -495,6 +495,12 @@
     "delete": "Eliminar",
     "yes": "Sí",
     "no": "No",
+    "avatarCropDialog": {
+      "title": "Recortar avatar",
+      "description": "Arrastra para reposicionar. La imagen se recortará y redimensionará antes de subirla.",
+      "altTextLabel": "Texto alternativo",
+      "altTextPlaceholder": "Describe la imagen (opcional)"
+    },
     "account": {
       "capacity": {
         "label": "{{usage}}/{{limit}}",

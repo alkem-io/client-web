@@ -20,6 +20,19 @@ import {
 const TEMP_PREFIX = 'temp-';
 const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
 
+export type AvatarCropConfig = {
+  aspectRatio?: number;
+  maxWidth?: number;
+  minWidth?: number;
+  maxHeight?: number;
+  minHeight?: number;
+};
+
+export type PendingAvatarCrop = {
+  file: File;
+  config: AvatarCropConfig;
+};
+
 export type UseOrgProfileTabDataResult = {
   values: OrgProfileFormValues | null;
   loading: boolean;
@@ -28,6 +41,7 @@ export type UseOrgProfileTabDataResult = {
   saveStatusByField: Partial<Record<OrgProfileSectionKey, SectionSaveStatus>>;
   pendingReferenceDelete: { id: string; name: string } | null;
   uploadingAvatar: boolean;
+  pendingAvatarCrop: PendingAvatarCrop | null;
 
   onChange: (patch: Partial<OrgProfileFormValues>) => void;
   onAddReference: () => void;
@@ -37,6 +51,8 @@ export type UseOrgProfileTabDataResult = {
   onConfirmRemoveReference: () => void;
   onCancelRemoveReference: () => void;
   onUploadAvatar: (file: File) => void;
+  onAvatarCropComplete: (croppedFile: File, altText: string) => void;
+  onAvatarCropCancel: () => void;
   onSaveSection: (section: OrgProfileSectionKey) => Promise<void>;
 };
 
@@ -87,6 +103,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
 
   const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; name: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
   const [updateOrganization] = useUpdateOrganizationMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
@@ -251,17 +268,55 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
 
   const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
+  /**
+   * Avatar upload (FR-093). Picking a file does NOT commit immediately —
+   * we open the CRD `ImageCropDialog` first (parity with the MUI Org admin
+   * profile + 045 About branding flow). The dialog's onSave delivers the
+   * cropped/resized file + alt text; only then does `uploadImageOnVisual`
+   * fire. Constraints (aspect ratio, min/max dimensions) come from the raw
+   * `VisualModelFull` selection on `profile.visuals[name='AVATAR']`.
+   */
   const onUploadAvatar = (file: File) => {
     const current = valuesRef.current;
-    const visual = current?.avatar;
-    if (!visual?.id) return;
+    if (!current?.avatar.id) return; // No avatar slot yet — backend hasn't seeded one.
+    const visualRaw = (org?.profile?.visuals ?? []).find(v => v.name === 'AVATAR');
+    setPendingAvatarCrop({
+      file,
+      config: {
+        aspectRatio: visualRaw?.aspectRatio ?? 1,
+        maxWidth: visualRaw?.maxWidth,
+        minWidth: visualRaw?.minWidth,
+        maxHeight: visualRaw?.maxHeight,
+        minHeight: visualRaw?.minHeight,
+      },
+    });
+  };
+
+  const onAvatarCropCancel = () => setPendingAvatarCrop(null);
+
+  const onAvatarCropComplete = (croppedFile: File, altText: string) => {
+    const current = valuesRef.current;
+    if (!current?.avatar.id) {
+      setPendingAvatarCrop(null);
+      return;
+    }
+    const visualId = current.avatar.id;
+    setPendingAvatarCrop(null);
+    // Optimistically reflect the user-provided alt text in the local buffer.
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const next = { ...base, avatar: { ...base.avatar, altText } };
+      valuesRef.current = next;
+      return next;
+    });
     setUploadingAvatar(true);
     void uploadVisual({
       variables: {
-        file,
+        file: croppedFile,
         uploadData: {
-          visualID: visual.id,
-          alternativeText: visual.altText ?? undefined,
+          visualID: visualId,
+          alternativeText: altText || undefined,
         },
       },
     })
@@ -498,6 +553,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     saveStatusByField,
     pendingReferenceDelete,
     uploadingAvatar,
+    pendingAvatarCrop,
     onChange,
     onAddReference,
     onUpdateReference,
@@ -506,6 +562,8 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     onConfirmRemoveReference,
     onCancelRemoveReference,
     onUploadAvatar,
+    onAvatarCropComplete,
+    onAvatarCropCancel,
     onSaveSection,
   };
 };

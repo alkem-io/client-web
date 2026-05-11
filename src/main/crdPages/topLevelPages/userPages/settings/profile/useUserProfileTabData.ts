@@ -21,6 +21,19 @@ import { mapUserToProfileFormValues } from './userProfileMapper';
 const TEMP_PREFIX = 'temp-';
 const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
 
+export type AvatarCropConfig = {
+  aspectRatio?: number;
+  maxWidth?: number;
+  minWidth?: number;
+  maxHeight?: number;
+  minHeight?: number;
+};
+
+export type PendingAvatarCrop = {
+  file: File;
+  config: AvatarCropConfig;
+};
+
 export type UseUserProfileTabDataResult = {
   values: UserProfileFormValues | null;
   loading: boolean;
@@ -29,6 +42,7 @@ export type UseUserProfileTabDataResult = {
   saveStatusByField: Partial<Record<UserProfileSectionKey, SectionSaveStatus>>;
   pendingReferenceDelete: { id: string; name: string } | null;
   uploadingAvatar: boolean;
+  pendingAvatarCrop: PendingAvatarCrop | null;
 
   onChange: (patch: Partial<UserProfileFormValues>) => void;
   onAddReference: () => void;
@@ -38,6 +52,8 @@ export type UseUserProfileTabDataResult = {
   onConfirmRemoveReference: () => void;
   onCancelRemoveReference: () => void;
   onUploadAvatar: (file: File) => void;
+  onAvatarCropComplete: (croppedFile: File, altText: string) => void;
+  onAvatarCropCancel: () => void;
   onSaveSection: (section: UserProfileSectionKey) => Promise<void>;
 };
 
@@ -81,6 +97,7 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
 
   const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; name: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
   const [updateUser] = useUpdateUserMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
@@ -254,19 +271,53 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
 
   const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
-  // ────────────────── Avatar (immediate commit per FR-024) ──────────────────
+  // ────────────────── Avatar (FR-024 — crop + commit) ──────────────────
+  // Picking a file opens the CRD `ImageCropDialog` first. Only the dialog's
+  // onSave (cropped/resized file + alt text) triggers `uploadImageOnVisual`.
+  // Constraints (aspect ratio + min/max dimensions) come from the raw
+  // `VisualModelFull` selection on `user.profile.avatar`.
 
   const onUploadAvatar = (file: File) => {
     const current = valuesRef.current;
-    const visual = current?.avatar;
-    if (!visual?.id) return; // No avatar slot yet — backend hasn't seeded one.
+    if (!current?.avatar.id) return; // No avatar slot yet — backend hasn't seeded one.
+    const visualRaw = user?.profile?.avatar;
+    setPendingAvatarCrop({
+      file,
+      config: {
+        aspectRatio: visualRaw?.aspectRatio ?? 1,
+        maxWidth: visualRaw?.maxWidth,
+        minWidth: visualRaw?.minWidth,
+        maxHeight: visualRaw?.maxHeight,
+        minHeight: visualRaw?.minHeight,
+      },
+    });
+  };
+
+  const onAvatarCropCancel = () => setPendingAvatarCrop(null);
+
+  const onAvatarCropComplete = (croppedFile: File, altText: string) => {
+    const current = valuesRef.current;
+    if (!current?.avatar.id) {
+      setPendingAvatarCrop(null);
+      return;
+    }
+    const visualId = current.avatar.id;
+    setPendingAvatarCrop(null);
+    // Optimistically reflect the user-provided alt text in the local buffer.
+    setValues(prev => {
+      const base = prev ?? valuesRef.current;
+      if (!base) return prev;
+      const next = { ...base, avatar: { ...base.avatar, altText } };
+      valuesRef.current = next;
+      return next;
+    });
     setUploadingAvatar(true);
     void uploadVisual({
       variables: {
-        file,
+        file: croppedFile,
         uploadData: {
-          visualID: visual.id,
-          alternativeText: visual.altText ?? undefined,
+          visualID: visualId,
+          alternativeText: altText || undefined,
         },
       },
     })
@@ -505,6 +556,7 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     saveStatusByField,
     pendingReferenceDelete,
     uploadingAvatar,
+    pendingAvatarCrop,
     onChange,
     onAddReference,
     onUpdateReference,
@@ -513,6 +565,8 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     onConfirmRemoveReference,
     onCancelRemoveReference,
     onUploadAvatar,
+    onAvatarCropComplete,
+    onAvatarCropCancel,
     onSaveSection,
   };
 };

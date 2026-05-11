@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { OrgProfileTabView } from '@/crd/components/organization/settings/OrgProfileTabView';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
@@ -35,28 +37,45 @@ const EMPTY_VALUES = {
  * CRD components never import that module directly per FR-006.
  */
 const CrdOrgProfileTab = () => {
+  const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
 
   return (
-    <OrgProfileTabView
-      values={data.values ?? EMPTY_VALUES}
-      countries={COUNTRIES}
-      loading={data.loading}
-      dirtyByField={data.dirtyByField}
-      saveStatusByField={data.saveStatusByField}
-      onChange={data.onChange}
-      onAddReference={data.onAddReference}
-      onUpdateReference={data.onUpdateReference}
-      onUpdateRecognizedReference={data.onUpdateRecognizedReference}
-      onRequestRemoveReference={data.onRequestRemoveReference}
-      onUploadAvatar={data.onUploadAvatar}
-      uploadingAvatar={data.uploadingAvatar}
-      onSaveSection={data.onSaveSection}
-      pendingReferenceDelete={data.pendingReferenceDelete}
-      onConfirmRemoveReference={data.onConfirmRemoveReference}
-      onCancelRemoveReference={data.onCancelRemoveReference}
-    />
+    <>
+      <OrgProfileTabView
+        values={data.values ?? EMPTY_VALUES}
+        countries={COUNTRIES}
+        loading={data.loading}
+        dirtyByField={data.dirtyByField}
+        saveStatusByField={data.saveStatusByField}
+        onChange={data.onChange}
+        onAddReference={data.onAddReference}
+        onUpdateReference={data.onUpdateReference}
+        onUpdateRecognizedReference={data.onUpdateRecognizedReference}
+        onRequestRemoveReference={data.onRequestRemoveReference}
+        onUploadAvatar={data.onUploadAvatar}
+        uploadingAvatar={data.uploadingAvatar}
+        onSaveSection={data.onSaveSection}
+        pendingReferenceDelete={data.pendingReferenceDelete}
+        onConfirmRemoveReference={data.onConfirmRemoveReference}
+        onCancelRemoveReference={data.onCancelRemoveReference}
+      />
+      <ImageCropDialog
+        open={data.pendingAvatarCrop !== null}
+        file={data.pendingAvatarCrop?.file}
+        config={data.pendingAvatarCrop?.config ?? {}}
+        onSave={({ file, altText }) => data.onAvatarCropComplete(file, altText)}
+        onCancel={data.onAvatarCropCancel}
+        title={t('shared.avatarCropDialog.title')}
+        description={t('shared.avatarCropDialog.description')}
+        altTextLabel={t('shared.avatarCropDialog.altTextLabel')}
+        altTextPlaceholder={t('shared.avatarCropDialog.altTextPlaceholder')}
+        saveLabel={t('shared.save')}
+        savingLabel={t('shared.saving')}
+        cancelLabel={t('shared.cancel')}
+      />
+    </>
   );
 };
 

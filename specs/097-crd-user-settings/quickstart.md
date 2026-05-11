@@ -64,7 +64,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 - [ ] Add a new LinkedIn URL via the recognized Social Links row — the row appears as unsaved (temp-id) in the local References-section buffer; nothing fires server-side until the section's Save click. Click the **References-section Save** — the mutation batch fires (createReferenceOnProfile) and the reference appears on `/user/<self>` (public profile, sibling 096) after reload.
 - [ ] Click trash on a saved reference — a `ConfirmationDialog` (`AlertDialog`, destructive variant) opens (Rule #9 / FR-025). **Cancel** dismisses with no change. **Confirm** queues the row for deletion in the section buffer (still local). Click the References-section Save — the mutation batch (`deleteReference`) fires and the row disappears.
 - [ ] Click "Add Another Reference" — a new arbitrary row appears in the buffer; fill name + URL + description; click the References-section Save — created.
-- [ ] Click "Change Avatar" → pick a JPG → preview updates **immediately**, no Save click needed (FR-024 — file picker IS the commit). On success the avatar slot's status flashes "Saved!" for ~1.8 s.
+- [ ] Click "Change Avatar" → pick a JPG → the CRD `ImageCropDialog` opens with the avatar's aspect ratio + size constraints (FR-024 — crop-then-commit). Drag to reposition; optionally fill the alt-text field; click **Save** → the dialog closes, the cropped image uploads, and the avatar slot's status flashes "Saved!" for ~1.8 s. Repeat once and click **Cancel** in the crop dialog instead — the avatar stays unchanged and no network call fires.
 - [ ] Edit any field, click another tab without saving — navigation completes immediately, the in-progress edit is silently dropped, no confirmation dialog (FR-016).
 - [ ] **Failure smoke (per-section)**: temporarily kill backend connection (DevTools → Network → Offline) → edit a field → click the section's Save — the section stays dirty with the typed value preserved + an inline error message persists in the section. Re-enable network → edit any field in the section (clears the error and re-enables Save) → click Save — succeeds without retyping. There is no auto-retry and no auto-revert.
 - [ ] As a platform admin viewer: open `/user/<otherUser>/settings/profile` — page is fully editable, per-section saves persist against the target user.
@@ -73,6 +73,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 ### User Story 2 — User Account
 
 - [ ] Open `/user/<self>/settings/account`. Help banner + 4 card groups visible.
+- [ ] Each of the 4 section headings shows a `X/Y` capacity badge (FR-034a). Hover the **Hosted Spaces** badge → the tooltip lists three per-plan rows ("X out of Y Free Spaces / Plus Spaces / Premium Spaces"). Hover each of the other three → single-line "You have created X out of your Y available …" tooltip. As a user without any space entitlement, the Spaces badge reads "Not available" with the contact-team tooltip. The Custom Homepages empty-state caption "Capacity: X/Y Used" matches the same numbers (no hard-coded `0/1`).
 - [ ] Click "Create New Space" (dashed card) — the CRD `CrdCreateSpaceDialog` opens (no route navigation). Complete it; the new space appears in the Hosted Spaces grid and is reachable on reload.
 - [ ] Click "Create Virtual Contributor" — the CRD VC wizard opens at its first step. Walk the **create-knowledge** branch (add a post + a document, then pick/create a community space); the VC appears in the Virtual Contributors group. Repeat for the **use-existing-space** and **external-AI** branches (the external branch ends straight on the VC profile).
 - [ ] Click "Empty Slot" `+` (Template Packs) — `CrdCreateInnovationPackDialog` opens; submit it; the new pack appears in the Innovation Packs group.
@@ -130,7 +131,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 - [ ] Edit Contact Email / Domain / Website to an invalid format — that section's Save is disabled live (FR-023). Re-enter a valid value — Save re-enables.
 - [ ] Click Save with Display Name (or Description) empty — inline error appears beneath the input; section stays dirty; no mutation fires.
 - [ ] Trash a saved reference (Social Links / References section) — `ConfirmationDialog` (destructive variant) opens (Rule #9 / FR-025 / FR-092). Confirm queues the row for deletion in the buffer; only the References-section Save click fires the actual `deleteReference` mutation in the batch. Cancel dismisses with no change.
-- [ ] Upload a new logo — preview updates **immediately**, no Save click (FR-093 — file picker IS the commit).
+- [ ] Upload a new logo — the CRD `ImageCropDialog` opens with the logo's aspect ratio + size constraints (FR-093 — crop-then-commit). Click **Save** in the dialog → cropped image uploads, preview updates. Click **Cancel** in a second attempt → logo stays unchanged.
 - [ ] **Verified badge** displays current `verification.status` read-only — click does nothing (FR-094 — there is no edit affordance).
 - [ ] **Mid-edit tab switch**: edit any field, click another tab — navigation completes, the in-progress edit is silently dropped, no confirmation dialog (FR-016).
 - [ ] **Failure smoke (per-section)**: kill network → edit a field → click Save — section stays dirty with typed values preserved + inline error. Re-enable network, edit any field (clears the error), click Save — succeeds.
@@ -139,6 +140,7 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 ### User Story 9 — Org Account
 
 - [ ] Open `/organization/<orgSlug>/settings/account` as an org admin. 4 card groups render with the org's resources.
+- [ ] Each of the 4 section headings shows a `X/Y` capacity badge (FR-034a) with the same hover-tooltip wording as User Account (per-plan breakdown on Spaces, single-line on the other three). If the org lacks `CreateInnovationHub` privilege, that section's badge reads "Not available".
 - [ ] Click Create Innovation Pack — the CRD `CrdCreateInnovationPackDialog` opens (the **same** dialog as User Account, just targeting `organization.account.id`); submit it; the new pack appears in the Innovation Packs group.
 - [ ] Click Create Virtual Contributor — the CRD VC wizard opens; the create mutation runs against `organization.account.id`.
 - [ ] Click Create New Space / Create Homepage — the CRD `CrdCreateSpaceDialog` / `CrdCreateInnovationHubDialog` open; submit; the resource appears.

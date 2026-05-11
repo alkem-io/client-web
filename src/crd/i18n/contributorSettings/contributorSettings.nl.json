@@ -494,6 +494,12 @@
     "delete": "Verwijderen",
     "yes": "Ja",
     "no": "Nee",
+    "avatarCropDialog": {
+      "title": "Avatar bijsnijden",
+      "description": "Sleep om de positie aan te passen. De afbeelding wordt bijgesneden en verkleind vóór de upload.",
+      "altTextLabel": "Alternatieve tekst",
+      "altTextPlaceholder": "Beschrijf de afbeelding (optioneel)"
+    },
     "account": {
       "capacity": {
         "label": "{{usage}}/{{limit}}",
