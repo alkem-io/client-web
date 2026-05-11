@@ -1,10 +1,11 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -84,42 +85,68 @@ export function useCrdRoomComments({
   // so the user only sees the slot once the query has resolved).
   const loading = postingMessage || postingReply || deletingMessage;
 
-  const handleDelete = async (commentId: string) => {
-    await deleteMessage({
-      variables: {
-        messageData: {
-          roomID: roomId,
-          messageID: commentId,
+  // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
+  // delete in a separate dialog before the mutation fires. `pendingDeleteId`
+  // holds the comment id while the dialog is open.
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | undefined>(undefined);
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    try {
+      await deleteMessage({
+        variables: {
+          messageData: {
+            roomID: roomId,
+            messageID: pendingDeleteId,
+          },
         },
-      },
-    });
+      });
+    } finally {
+      setPendingDeleteId(undefined);
+    }
   };
 
   const thread = (
-    <CommentThread
-      loading={loading}
-      comments={comments}
-      currentUser={currentUser}
-      mentionSearch={mentionSearch}
-      onReply={(parentId, content) => {
-        void postReply({ messageText: content, threadId: parentId });
-      }}
-      onDelete={commentId => {
-        void handleDelete(commentId);
-      }}
-      onAddReaction={(commentId, emoji) => {
-        void addReaction({ messageId: commentId, emoji });
-      }}
-      onRemoveReaction={(commentId, emoji) => {
-        const reactionId = messagesLookup
-          .get(commentId)
-          ?.reactions.find(reaction => reaction.emoji === emoji && reaction.sender?.id === userModel?.id)?.id;
+    <>
+      <CommentThread
+        loading={loading}
+        comments={comments}
+        currentUser={currentUser}
+        mentionSearch={mentionSearch}
+        onReply={(parentId, content) => {
+          void postReply({ messageText: content, threadId: parentId });
+        }}
+        onDelete={commentId => {
+          setPendingDeleteId(commentId);
+        }}
+        onAddReaction={(commentId, emoji) => {
+          void addReaction({ messageId: commentId, emoji });
+        }}
+        onRemoveReaction={(commentId, emoji) => {
+          const reactionId = messagesLookup
+            .get(commentId)
+            ?.reactions.find(reaction => reaction.emoji === emoji && reaction.sender?.id === userModel?.id)?.id;
 
-        if (!reactionId) return;
+          if (!reactionId) return;
 
-        void removeReaction(reactionId);
-      }}
-    />
+          void removeReaction(reactionId);
+        }}
+      />
+      <ConfirmationDialog
+        open={Boolean(pendingDeleteId)}
+        onOpenChange={open => {
+          if (!open) setPendingDeleteId(undefined);
+        }}
+        title={t('comments.deleteConfirmTitle')}
+        description={t('comments.deleteConfirmDescription')}
+        confirmLabel={t('comments.delete')}
+        variant="destructive"
+        loading={deletingMessage}
+        onConfirm={() => {
+          void confirmDelete();
+        }}
+      />
+    </>
   );
 
   const commentInput = canComment ? (

@@ -44,31 +44,44 @@ export function MediaGalleryField({
   const inputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<FieldError[]>([]);
 
-  // Object URLs are created once per File and revoked when the file is removed or the
-  // component unmounts. Creating them in render would leak a fresh blob URL on every
-  // re-render. Keyed by the visual's stable client/server key.
-  const previewUrlsRef = useRef(new Map<string, string>());
+  // Object URLs are created once per File, kept in component state so they
+  // trigger a re-render on creation, and revoked when the file is removed or
+  // the component unmounts. (Earlier this lived in a ref, which never
+  // re-rendered after the first paint — the user saw a blank tile until some
+  // unrelated state change refreshed the view.)
+  const [previewUrls, setPreviewUrls] = useState<Map<string, string>>(() => new Map());
+  // Mirror of the latest map for the unmount cleanup. Refs survive across renders
+  // and let the cleanup revoke whatever URLs are live at the moment of unmount,
+  // without re-running the effect on every state change (which would revoke
+  // in-flight previews).
+  const previewUrlsRef = useRef(previewUrls);
+  previewUrlsRef.current = previewUrls;
   useEffect(() => {
-    const cache = previewUrlsRef.current;
-    const liveKeys = new Set<string>();
-    for (const visual of visuals) {
-      if (!visual.file) continue;
-      const key = visualKey(visual);
-      liveKeys.add(key);
-      if (!cache.has(key)) cache.set(key, window.URL.createObjectURL(visual.file));
-    }
-    for (const [key, url] of cache) {
-      if (!liveKeys.has(key)) {
-        window.URL.revokeObjectURL(url);
-        cache.delete(key);
+    setPreviewUrls(prev => {
+      const liveKeys = new Set<string>();
+      let next: Map<string, string> | null = null;
+      const ensureNext = () => {
+        if (!next) next = new Map(prev);
+        return next;
+      };
+      for (const visual of visuals) {
+        if (!visual.file) continue;
+        const key = visualKey(visual);
+        liveKeys.add(key);
+        if (!prev.has(key)) ensureNext().set(key, window.URL.createObjectURL(visual.file));
       }
-    }
+      for (const [key, url] of prev) {
+        if (!liveKeys.has(key)) {
+          window.URL.revokeObjectURL(url);
+          ensureNext().delete(key);
+        }
+      }
+      return next ?? prev;
+    });
   }, [visuals]);
   useEffect(() => {
-    const cache = previewUrlsRef.current;
     return () => {
-      for (const url of cache.values()) URL.revokeObjectURL(url);
-      cache.clear();
+      for (const url of previewUrlsRef.current.values()) URL.revokeObjectURL(url);
     };
   }, []);
 
@@ -122,7 +135,7 @@ export function MediaGalleryField({
   };
 
   const getPreviewUrl = (visual: MediaGalleryFieldVisual): string | undefined => {
-    if (visual.file) return previewUrlsRef.current.get(visualKey(visual));
+    if (visual.file) return previewUrls.get(visualKey(visual));
     return visual.uri;
   };
 

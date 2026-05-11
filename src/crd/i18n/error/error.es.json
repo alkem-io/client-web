@@ -1,0 +1,20 @@
+{
+  "forbidden": {
+    "title": "Acceso restringido",
+    "description": "La página a la que intentas acceder no está disponible para ti.",
+    "actions": {
+      "goHome": "Ir al inicio",
+      "goBack": "Atrás"
+    }
+  },
+  "authRequired": {
+    "title": "Acceso restringido",
+    "description": "La página a la que intentas acceder solo está disponible para usuarios registrados.",
+    "descriptionContinued": "Inicia sesión para continuar. ¿No tienes cuenta? Regístrate gratis.",
+    "actions": {
+      "signIn": "Iniciar sesión / Registrarse",
+      "or": "O",
+      "returnAsGuest": "Volver al panel como invitado"
+    }
+  }
+}

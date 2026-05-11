@@ -76,12 +76,13 @@ export function SpaceSettingsSettings() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-4xl mx-auto">
+    <div className="space-y-6 animate-in fade-in duration-500">
       {/* 1. Page Title & Description */}
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
         <p className="text-muted-foreground mt-2">
           Configure your space's visibility, membership policies, and allowed member actions.
+          {" "}<span className="text-xs text-muted-foreground/70 italic">Changes are saved automatically.</span>
         </p>
       </div>
 

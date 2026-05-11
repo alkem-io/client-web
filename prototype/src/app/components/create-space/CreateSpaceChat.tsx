@@ -353,8 +353,8 @@ const SummaryView = ({ config, onBack, onCreate }: { config: SpaceConfig, onBack
          <div className="w-24"></div> 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
-         <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-10">
+         <div className="lg:col-span-2 space-y-6">
             <Card>
                <CardHeader>
                   <CardTitle className="text-[length:var(--text-lg)]">General Details</CardTitle>

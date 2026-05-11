@@ -1,11 +1,13 @@
-import { Check, ImageIcon, Loader2, Plus, Trash2 } from 'lucide-react';
+import { ImageIcon, Plus, Trash2 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
+import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
@@ -83,7 +85,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     <div className={cn('flex flex-col gap-0', className)}>
       <div className="mb-6">
         <h2 className="text-page-title">{t('about.pageHeader.title')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{t('about.pageHeader.subtitle')}</p>
+        <p className="text-body text-muted-foreground mt-1">{t('about.pageHeader.subtitle')}</p>
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:gap-8">
@@ -294,7 +296,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             </div>
             <div className="flex flex-col gap-3 mt-3">
               {references.length === 0 && (
-                <p className="text-sm text-muted-foreground italic">{t('about.references.empty')}</p>
+                <p className="text-body text-muted-foreground italic">{t('about.references.empty')}</p>
               )}
               {references.map(ref => (
                 <ReferenceRow
@@ -365,6 +367,13 @@ function FieldHint({ children }: { children: React.ReactNode }) {
 
 type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
 
+/**
+ * Thin wrapper around the shared `FieldFooter` (extracted to
+ * `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse). Keeps
+ * the local `t`-based call sites unchanged. The shared status type
+ * (`SectionSaveStatus`) is structurally compatible with 045's
+ * `AboutSectionSaveStatus` (the `at` field is now optional).
+ */
 function FieldFooter({
   hint,
   dirty,
@@ -379,56 +388,18 @@ function FieldFooter({
   t: TFn;
 }) {
   return (
-    <div className="mt-1.5 flex items-start justify-between gap-3">
-      <p className="text-xs text-muted-foreground">{hint}</p>
-      <InlineSaveButton dirty={dirty} status={status} onSave={onSave} t={t} />
-    </div>
-  );
-}
-
-function InlineSaveButton({
-  dirty,
-  status,
-  onSave,
-  t,
-}: {
-  dirty: boolean;
-  status: AboutSectionSaveStatus;
-  onSave: () => void;
-  t: TFn;
-}) {
-  if (status.kind === 'saving') {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-        <Loader2 aria-hidden="true" className="size-3 animate-spin" />
-        {t('about.inlineSave.saving')}
-      </span>
-    );
-  }
-  if (status.kind === 'saved') {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
-        <Check aria-hidden="true" className="size-3" />
-        {t('about.inlineSave.saved')}
-      </span>
-    );
-  }
-  if (status.kind === 'error') {
-    return (
-      <button type="button" onClick={onSave} className="text-caption font-semibold text-destructive hover:underline">
-        {t('about.inlineSave.retry')}
-      </button>
-    );
-  }
-  if (!dirty) return null;
-  return (
-    <button
-      type="button"
-      onClick={onSave}
-      className="text-caption font-semibold text-foreground px-2 py-0.5 rounded hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      {t('about.inlineSave.save')}
-    </button>
+    <SharedFieldFooter
+      hint={hint}
+      dirty={dirty}
+      status={status as SectionSaveStatus}
+      onSave={onSave}
+      labels={{
+        save: t('about.inlineSave.save'),
+        saving: t('about.inlineSave.saving'),
+        saved: t('about.inlineSave.saved'),
+        retry: t('about.inlineSave.retry'),
+      }}
+    />
   );
 }
 
@@ -473,19 +444,12 @@ function BannerUpload({
           className="flex h-full w-full items-center justify-center border border-dashed rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
         >
           <ImageIcon aria-hidden="true" className="mr-2 size-4" />
-          <span className="text-sm">{t('about.branding.upload')}</span>
+          <span className="text-control">{t('about.branding.upload')}</span>
         </button>
       )}
       <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />
     </div>
   );
-}
-
-function ensureHttps(url: string): string {
-  const trimmed = url.trim();
-  if (!trimmed) return trimmed;
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
 }
 
 function ReferenceRow({
@@ -521,7 +485,7 @@ function ReferenceRow({
           ariaLabel="Reference URL"
           editAriaLabel="Edit URL"
           placeholder="https://…"
-          className="text-sm text-muted-foreground"
+          className="text-control text-muted-foreground"
         />
       </div>
       <Separator className="my-1 opacity-30" />
@@ -533,7 +497,7 @@ function ReferenceRow({
           editAriaLabel="Edit description"
           placeholder="Description (optional)"
           multiline={true}
-          className="text-sm text-muted-foreground"
+          className="text-body text-muted-foreground"
         />
       </div>
     </div>
