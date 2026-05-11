@@ -1,0 +1,63 @@
+{
+  "banner": {
+    "title": "Bienvenue sur le Forum Alkemio",
+    "subtitle": "Échangez avec d'autres, posez vos questions et suivez les notes de version d'Alkemio",
+    "iconLabel": "Forum"
+  },
+  "categories": {
+    "all": "Tout afficher",
+    "sectionLabel": "Catégories",
+    "selectAriaLabel": "Filtrer par catégorie"
+  },
+  "list": {
+    "headerCount_one": "Discussions ({{count}})",
+    "headerCount_other": "Discussions ({{count}})",
+    "initiate": "Lancer une discussion",
+    "searchPlaceholder": "Rechercher",
+    "searchAriaLabel": "Rechercher des discussions",
+    "itemAriaLabel_one": "{{title}} par {{author}}, {{date}}, {{count}} commentaire",
+    "itemAriaLabel_other": "{{title}} par {{author}}, {{date}}, {{count}} commentaires",
+    "metaLine_one": "{{author}} le {{date}} · {{count}} commentaire",
+    "metaLine_other": "{{author}} le {{date}} · {{count}} commentaires",
+    "sort": {
+      "ariaLabel": "Trier les discussions",
+      "newest": "Plus récentes",
+      "oldest": "Plus anciennes"
+    },
+    "empty": {
+      "title": "Aucune discussion trouvée",
+      "subtitle": "Essayez d'ajuster votre recherche ou le filtre par catégorie"
+    },
+    "loading": "Chargement des discussions"
+  },
+  "detail": {
+    "back": "Voir toutes les discussions de cette catégorie",
+    "share": "Partager",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "loading": "Chargement de la discussion"
+  },
+  "dialog": {
+    "create": {
+      "title": "Créer une discussion",
+      "submit": "Créer la discussion"
+    },
+    "update": {
+      "title": "Modifier la discussion",
+      "submit": "Enregistrer les modifications"
+    },
+    "fields": {
+      "title": "Titre",
+      "category": "Catégorie *",
+      "tags": "Tags",
+      "tagsPlaceholder": "Ajoutez des tags séparés par des virgules...",
+      "body": "Partagez vos idées..."
+    },
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "delete": {
+      "description": "Cette action est irréversible.",
+      "confirm": "Supprimer"
+    }
+  }
+}

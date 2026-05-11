@@ -1,0 +1,63 @@
+{
+  "banner": {
+    "title": "Willkommen im Alkemio-Forum",
+    "subtitle": "Tausche dich mit anderen aus, stelle Fragen und bleib über die Release-Notes von Alkemio auf dem Laufenden",
+    "iconLabel": "Forum"
+  },
+  "categories": {
+    "all": "Alle anzeigen",
+    "sectionLabel": "Kategorien",
+    "selectAriaLabel": "Nach Kategorie filtern"
+  },
+  "list": {
+    "headerCount_one": "Diskussionen ({{count}})",
+    "headerCount_other": "Diskussionen ({{count}})",
+    "initiate": "Diskussion starten",
+    "searchPlaceholder": "Suche",
+    "searchAriaLabel": "Diskussionen durchsuchen",
+    "itemAriaLabel_one": "{{title}} von {{author}}, {{date}}, {{count}} Kommentar",
+    "itemAriaLabel_other": "{{title}} von {{author}}, {{date}}, {{count}} Kommentare",
+    "metaLine_one": "{{author}} am {{date}} · {{count}} Kommentar",
+    "metaLine_other": "{{author}} am {{date}} · {{count}} Kommentare",
+    "sort": {
+      "ariaLabel": "Diskussionen sortieren",
+      "newest": "Neueste",
+      "oldest": "Älteste"
+    },
+    "empty": {
+      "title": "Keine Diskussionen gefunden",
+      "subtitle": "Versuche, deine Suche oder den Kategoriefilter anzupassen"
+    },
+    "loading": "Diskussionen werden geladen"
+  },
+  "detail": {
+    "back": "Alle Diskussionen in dieser Kategorie ansehen",
+    "share": "Teilen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "loading": "Diskussion wird geladen"
+  },
+  "dialog": {
+    "create": {
+      "title": "Diskussion erstellen",
+      "submit": "Diskussion erstellen"
+    },
+    "update": {
+      "title": "Diskussion bearbeiten",
+      "submit": "Änderungen speichern"
+    },
+    "fields": {
+      "title": "Titel",
+      "category": "Kategorie *",
+      "tags": "Tags",
+      "tagsPlaceholder": "Tags durch Kommas getrennt hinzufügen...",
+      "body": "Teile deine Gedanken..."
+    },
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "delete": {
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Löschen"
+    }
+  }
+}

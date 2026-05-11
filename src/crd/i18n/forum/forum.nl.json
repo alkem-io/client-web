@@ -1,0 +1,63 @@
+{
+  "banner": {
+    "title": "Welkom op het Alkemio Forum",
+    "subtitle": "Verbind met anderen, stel vragen en blijf op de hoogte van de release notes van Alkemio",
+    "iconLabel": "Forum"
+  },
+  "categories": {
+    "all": "Alles tonen",
+    "sectionLabel": "Categorieën",
+    "selectAriaLabel": "Filteren op categorie"
+  },
+  "list": {
+    "headerCount_one": "Discussies ({{count}})",
+    "headerCount_other": "Discussies ({{count}})",
+    "initiate": "Discussie starten",
+    "searchPlaceholder": "Zoeken",
+    "searchAriaLabel": "Discussies zoeken",
+    "itemAriaLabel_one": "{{title}} door {{author}}, {{date}}, {{count}} reactie",
+    "itemAriaLabel_other": "{{title}} door {{author}}, {{date}}, {{count}} reacties",
+    "metaLine_one": "{{author}} op {{date}} · {{count}} reactie",
+    "metaLine_other": "{{author}} op {{date}} · {{count}} reacties",
+    "sort": {
+      "ariaLabel": "Discussies sorteren",
+      "newest": "Nieuwste",
+      "oldest": "Oudste"
+    },
+    "empty": {
+      "title": "Geen discussies gevonden",
+      "subtitle": "Probeer je zoekopdracht of categoriefilter aan te passen"
+    },
+    "loading": "Discussies laden"
+  },
+  "detail": {
+    "back": "Alle discussies in deze categorie bekijken",
+    "share": "Delen",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "loading": "Discussie laden"
+  },
+  "dialog": {
+    "create": {
+      "title": "Discussie aanmaken",
+      "submit": "Discussie aanmaken"
+    },
+    "update": {
+      "title": "Discussie bewerken",
+      "submit": "Wijzigingen opslaan"
+    },
+    "fields": {
+      "title": "Titel",
+      "category": "Categorie *",
+      "tags": "Tags",
+      "tagsPlaceholder": "Voeg tags toe, gescheiden door komma's...",
+      "body": "Deel je gedachten..."
+    },
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "delete": {
+      "description": "Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    }
+  }
+}

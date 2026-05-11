@@ -88,6 +88,17 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
                 },
               },
             });
+            // Keep Room.messagesCount aligned with Room.messages so the
+            // discussion-list count stays accurate (both queries resolve
+            // to the same normalized Room object).
+            client.cache.modify({
+              id: roomRefId,
+              fields: {
+                messagesCount(_existing, { readField }) {
+                  return (readField('messages') as { length?: number } | undefined)?.length ?? 0;
+                },
+              },
+            });
             break;
           }
           case MutationType.Delete: {
@@ -96,6 +107,14 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
               fields: {
                 messages(existingMessages = []) {
                   return existingMessages.filter(message => message.__ref !== messageRefId);
+                },
+              },
+            });
+            client.cache.modify({
+              id: roomRefId,
+              fields: {
+                messagesCount(_existing, { readField }) {
+                  return (readField('messages') as { length?: number } | undefined)?.length ?? 0;
                 },
               },
             });

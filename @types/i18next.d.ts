@@ -13,6 +13,8 @@ import type crdMarkdownTranslation from '@/crd/i18n/markdown/markdown.en.json';
 import type crdSpaceSettingsTranslation from '@/crd/i18n/spaceSettings/spaceSettings.en.json';
 import type crdSubspaceTranslation from '@/crd/i18n/subspace/subspace.en.json';
 import type crdWhiteboardTranslation from '@/crd/i18n/whiteboard/whiteboard.en.json';
+import type crdForumTranslation from '@/crd/i18n/forum/forum.en.json';
+import type crdDocumentationTranslation from '@/crd/i18n/documentation/documentation.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -31,6 +33,8 @@ declare module 'i18next' {
       'crd-spaceSettings': typeof crdSpaceSettingsTranslation;
       'crd-subspace': typeof crdSubspaceTranslation;
       'crd-whiteboard': typeof crdWhiteboardTranslation;
+      'crd-forum': typeof crdForumTranslation;
+      'crd-documentation': typeof crdDocumentationTranslation;
     };
   }
 }

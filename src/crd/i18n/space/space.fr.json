@@ -610,7 +610,9 @@
     "count_one": "1 commentaire",
     "loading": "Chargement des commentaires...",
     "empty": "Pas encore de commentaires",
-    "unknownUser": "Utilisateur inconnu"
+    "unknownUser": "Utilisateur inconnu",
+    "signInToComment": "Connectez-vous pour commenter, répondre ou réagir.",
+    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici."
   },
   "dialogs": {
     "cancel": "Annuler",
