@@ -1,9 +1,9 @@
-import { FileText, Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
+import { Link as LinkIcon, MessageSquare, Presentation, StickyNote, X } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
-export type ResponseTypeChipId = 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
+export type ResponseTypeChipId = 'link' | 'post' | 'memo' | 'whiteboard';
 
 type Chip = {
   id: ResponseTypeChipId;
@@ -17,7 +17,6 @@ const CHIPS: Chip[] = [
   { id: 'post', labelKey: 'contributionSettings.types.post', icon: MessageSquare },
   { id: 'memo', labelKey: 'contributionSettings.types.memo', icon: StickyNote },
   { id: 'whiteboard', labelKey: 'contributionSettings.types.whiteboard', icon: Presentation },
-  { id: 'document', labelKey: 'contributionSettings.types.document', icon: FileText, disabled: true },
 ];
 
 export type ResponseTypeChipStripProps = {

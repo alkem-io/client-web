@@ -164,6 +164,7 @@ const startOfToday = dayjs().startOf('day');
 
 | Token | Size | Weight | Purpose | HTML |
 |-------|------|--------|---------|------|
+| `text-profile-title` | 36px | 700 | Public-profile hero names (User / Organization / VC). Reserved for the actor-identity slot — strongest heading on the platform. Not for ordinary page titles. | `<h1>` |
 | `text-page-title` | 30px | 700 | Main page headings | `<h1>` |
 | `text-section-title` | 20px | 700 | Section headings within a page | `<h2>` |
 | `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles | `<h3>` |

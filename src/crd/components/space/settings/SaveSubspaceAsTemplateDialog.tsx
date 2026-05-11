@@ -32,9 +32,16 @@ export type SaveAsTemplatePreviewState = {
  * layer (CRD must not import from `@/core/apollo`). Consumers map their
  * generated types to these string literals.
  */
-export type SaveAsTemplateCalloutFramingType = 'NONE' | 'MEMO' | 'WHITEBOARD' | 'LINK' | 'MEDIA_GALLERY' | 'POLL';
+export type SaveAsTemplateCalloutFramingType =
+  | 'NONE'
+  | 'MEMO'
+  | 'WHITEBOARD'
+  | 'LINK'
+  | 'MEDIA_GALLERY'
+  | 'POLL'
+  | 'COLLABORA_DOCUMENT';
 
-export type SaveAsTemplateCalloutContributionType = 'LINK' | 'POST' | 'MEMO' | 'WHITEBOARD';
+export type SaveAsTemplateCalloutContributionType = 'LINK' | 'POST' | 'MEMO' | 'WHITEBOARD' | 'COLLABORA_DOCUMENT';
 
 export type SaveAsTemplatePreviewCallout = {
   id: string;

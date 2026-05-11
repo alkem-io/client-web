@@ -58,6 +58,7 @@ const CalloutContributionPreview = ({
       includePost: allowedTypes.includes(CalloutContributionType.Post),
       includeWhiteboard: allowedTypes.includes(CalloutContributionType.Whiteboard),
       includeMemo: allowedTypes.includes(CalloutContributionType.Memo),
+      includeCollaboraDocument: allowedTypes.includes(CalloutContributionType.CollaboraDocument),
     },
     skip: !contributionId,
   });
@@ -71,20 +72,25 @@ const CalloutContributionPreview = ({
         ? CalloutContributionType.Whiteboard
         : contribution?.memo
           ? CalloutContributionType.Memo
-          : undefined;
+          : contribution?.collaboraDocument
+            ? CalloutContributionType.CollaboraDocument
+            : undefined;
 
   const displayName = loading ? (
     <Skeleton variant="text" width={gutters(12)(theme)} />
   ) : (
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName) ||
-    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.displayName)
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.displayName) ||
+    (contributionType === CalloutContributionType.CollaboraDocument &&
+      contribution?.collaboraDocument?.profile?.displayName)
   );
 
   const author =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdBy) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdBy) ||
     (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdBy) ||
+    (contributionType === CalloutContributionType.CollaboraDocument && contribution?.collaboraDocument?.createdBy) ||
     undefined;
 
   const authorAvatar = author?.profile?.avatar?.uri ? (
@@ -96,14 +102,16 @@ const CalloutContributionPreview = ({
   const createdDate =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdDate) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate) ||
-    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdDate);
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdDate) ||
+    (contributionType === CalloutContributionType.CollaboraDocument && contribution?.collaboraDocument?.createdDate);
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url) ||
-    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url);
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url) ||
+    (contributionType === CalloutContributionType.CollaboraDocument && contribution?.collaboraDocument?.profile?.url);
 
   const handleContributionDeleted = (deletedContributionId: string) => {
     if (contributionId === deletedContributionId) {
@@ -115,7 +123,7 @@ const CalloutContributionPreview = ({
 
   const calloutContributionTypeToShareDialogKey = (
     type: CalloutContributionType
-  ): 'post' | 'whiteboard' | 'memo' | 'link' => {
+  ): 'post' | 'whiteboard' | 'memo' | 'link' | 'collaboraDocument' => {
     switch (type) {
       case CalloutContributionType.Post:
         return 'post';
@@ -125,6 +133,8 @@ const CalloutContributionPreview = ({
         return 'link';
       case CalloutContributionType.Memo:
         return 'memo';
+      case CalloutContributionType.CollaboraDocument:
+        return 'collaboraDocument';
     }
   };
 

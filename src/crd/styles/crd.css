@@ -41,4 +41,23 @@
   .crd-root * {
     @apply border-border outline-ring/50;
   }
+
+  /*
+   * Tailwind preflight removes the browser default `cursor: pointer` on
+   * <button> and other interactive elements. Restore it inside .crd-root so
+   * every clickable affordance — native buttons, role="button"/role="tab"
+   * wrappers, and <label>s for checkboxes/radios — gets the pointer cursor.
+   * Disabled / aria-disabled elements stay on the default cursor so the
+   * "not clickable" affordance reads correctly.
+   */
+  .crd-root button:not(:disabled):not([aria-disabled='true']),
+  .crd-root [role='button']:not([aria-disabled='true']),
+  .crd-root [role='tab']:not([aria-disabled='true']),
+  .crd-root [role='menuitem']:not([aria-disabled='true']),
+  .crd-root [role='option']:not([aria-disabled='true']),
+  .crd-root summary,
+  .crd-root label:has(> input[type='checkbox']:not(:disabled)),
+  .crd-root label:has(> input[type='radio']:not(:disabled)) {
+    cursor: pointer;
+  }
 }
