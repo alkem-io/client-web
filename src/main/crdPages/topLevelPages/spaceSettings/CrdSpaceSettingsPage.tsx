@@ -315,6 +315,14 @@ export default function CrdSpaceSettingsPage() {
               />
             )}
             {activeTab === 'templates' && isTabVisible('templates') && (
+              // TODO(098-crd-templates / US1): cut this over to the holder-agnostic
+              // `TemplatesManagerView` (`@/crd/components/templates/TemplatesManagerView`) driven by
+              // `useTemplatesManager` (`@/main/crdPages/templates/useTemplatesManager`) — with
+              // `canCreate/canEdit/canDelete = () => true`, `canImport = () => true`, the native
+              // `TemplateFormDialog`, the unified `TemplatePicker` (mode='import'), and `SetDefaultTemplateDialog`.
+              // The new kit is in place; this swap (+ deleting the superseded `045` dialogs) was not done in the
+              // unattended implementation session because of the "modify, never delete" constraint. See
+              // `specs/098-crd-templates/incongruencies.md` §5/§6.
               <SpaceSettingsTemplatesView
                 categories={templatesTab.categories}
                 loading={templatesTab.loading}

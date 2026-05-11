@@ -10,6 +10,7 @@ import crdSubspaceEN from '@/crd/i18n/subspace/subspace.en.json';
 import crdMarkdownEN from '@/crd/i18n/markdown/markdown.en.json';
 import crdNotificationsEN from '@/crd/i18n/notifications/notifications.en.json';
 import crdProfilePagesEN from '@/crd/i18n/profilePages/profilePages.en.json';
+import crdTemplatesEN from '@/crd/i18n/templates/templates.en.json';
 import '@/crd/styles/crd.css';
 import { CrdApp } from './CrdApp';
 
@@ -25,6 +26,7 @@ i18n.use(initReactI18next).init({
       'crd-markdown': crdMarkdownEN,
       'crd-notifications': crdNotificationsEN,
       'crd-profilePages': crdProfilePagesEN,
+      'crd-templates': crdTemplatesEN,
     },
   },
   lng: 'en',
@@ -38,6 +40,7 @@ i18n.use(initReactI18next).init({
     'crd-markdown',
     'crd-notifications',
     'crd-profilePages',
+    'crd-templates',
   ],
   defaultNS: 'crd-layout',
   fallbackLng: 'en',

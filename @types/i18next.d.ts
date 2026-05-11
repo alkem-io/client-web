@@ -15,6 +15,7 @@ import type crdSubspaceTranslation from '@/crd/i18n/subspace/subspace.en.json';
 import type crdWhiteboardTranslation from '@/crd/i18n/whiteboard/whiteboard.en.json';
 import type crdProfilePagesTranslation from '@/crd/i18n/profilePages/profilePages.en.json';
 import type crdCommunityTranslation from '@/crd/i18n/community/community.en.json';
+import type crdTemplatesTranslation from '@/crd/i18n/templates/templates.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -35,6 +36,7 @@ declare module 'i18next' {
       'crd-whiteboard': typeof crdWhiteboardTranslation;
       'crd-profilePages': typeof crdProfilePagesTranslation;
       'crd-community': typeof crdCommunityTranslation;
+      'crd-templates': typeof crdTemplatesTranslation;
     };
   }
 }

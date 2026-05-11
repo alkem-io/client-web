@@ -2730,6 +2730,17 @@ export const CalloutTemplateContentFragmentDoc = gql`
     mediaGallery {
       ...MediaGalleryVisuals
     }
+    poll {
+      ...PollDetails
+    }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+      }
+    }
   }
   settings {
     ...CalloutSettingsFull
@@ -2747,6 +2758,7 @@ ${WhiteboardDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MemoTemplateDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
+${PollDetailsFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
     fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
