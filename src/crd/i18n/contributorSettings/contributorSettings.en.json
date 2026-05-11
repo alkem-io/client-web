@@ -85,6 +85,7 @@
         "namePlaceholder": "Reference name",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
         "deleteDialog": {
           "title": "Remove reference?",
           "description": "Removing this reference will also delete it from your public profile after you save.",
@@ -402,6 +403,7 @@
         "namePlaceholder": "Reference name",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
         "deleteDialog": {
           "title": "Remove reference?",
           "description": "Removing this reference will also delete it from the public profile after you save.",

@@ -275,7 +275,7 @@ Each leaf property is an object `{ inApp: boolean, email: boolean, push: boolean
 | Group label (i18n) | `groupLabel` |
 | Property label (i18n) | `propertyLabel` |
 | Channel switches | `{ inApp, email, push }` (each is `{ value: boolean, saving: boolean }` or `null` for hidden push) |
-| Toggle handler | `(channel: 'inApp' | 'email' | 'push', next: boolean) => void` |
+| Toggle handler | `(channel: 'inApp' \| 'email' \| 'push', next: boolean) => void` |
 
 Mutation: `useUpdateUserSettingsMutation` (existing). Optimistic-overrides pattern (Decision #4 in research.md).
 

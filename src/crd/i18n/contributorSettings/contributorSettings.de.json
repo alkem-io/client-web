@@ -85,6 +85,7 @@
         "namePlaceholder": "Name der Referenz",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
         "deleteDialog": {
           "title": "Referenz entfernen?",
           "description": "Beim Entfernen wird die Referenz nach dem Speichern auch von deinem öffentlichen Profil entfernt.",
@@ -382,6 +383,7 @@
         "namePlaceholder": "Name der Referenz",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
         "deleteDialog": {
           "title": "Referenz entfernen?",
           "description": "Das Entfernen dieser Referenz löscht sie nach dem Speichern auch aus dem öffentlichen Profil.",

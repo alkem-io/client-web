@@ -85,6 +85,7 @@
         "namePlaceholder": "Nombre de la referencia",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Descripción (opcional)",
+        "removeAriaLabel": "Eliminar referencia",
         "deleteDialog": {
           "title": "¿Eliminar referencia?",
           "description": "Al eliminarla también desaparecerá de tu perfil público tras guardar.",
@@ -387,6 +388,7 @@
         "namePlaceholder": "Nombre de la referencia",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Descripción (opcional)",
+        "removeAriaLabel": "Eliminar referencia",
         "deleteDialog": {
           "title": "¿Quitar referencia?",
           "description": "Al quitar esta referencia también se eliminará del perfil público después de guardar.",

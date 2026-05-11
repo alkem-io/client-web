@@ -363,6 +363,7 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
                 namePlaceholder={t('org.profile.socialLinks.namePlaceholder')}
                 urlPlaceholder={t('org.profile.socialLinks.urlPlaceholder')}
                 descriptionPlaceholder={t('org.profile.socialLinks.descriptionPlaceholder')}
+                removeAriaLabel={t('org.profile.socialLinks.removeAriaLabel')}
               />
             ))}
           </div>
@@ -655,6 +656,7 @@ function ArbitraryReferenceRow({
   namePlaceholder,
   urlPlaceholder,
   descriptionPlaceholder,
+  removeAriaLabel,
 }: {
   reference: OrgProfileReferenceData;
   onPatch: (patch: Partial<Omit<OrgProfileReferenceData, 'id' | 'recognized'>>) => void;
@@ -662,6 +664,7 @@ function ArbitraryReferenceRow({
   namePlaceholder: string;
   urlPlaceholder: string;
   descriptionPlaceholder: string;
+  removeAriaLabel: string;
 }) {
   return (
     <div className="rounded-lg border bg-card p-3">
@@ -673,7 +676,7 @@ function ArbitraryReferenceRow({
           aria-label={namePlaceholder}
           className="flex-1"
         />
-        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={namePlaceholder}>
+        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={removeAriaLabel}>
           <Trash2 aria-hidden="true" className="size-4 text-destructive" />
         </Button>
       </div>

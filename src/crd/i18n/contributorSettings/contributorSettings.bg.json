@@ -85,6 +85,7 @@
         "namePlaceholder": "Име на препратката",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
         "deleteDialog": {
           "title": "Премахване на препратката?",
           "description": "Премахването на тази препратка ще я изтрие и от публичния ви профил след запис.",
@@ -387,6 +388,7 @@
         "namePlaceholder": "Име на референцията",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
         "deleteDialog": {
           "title": "Премахване на референция?",
           "description": "Премахването на тази референция ще я изтрие и от публичния профил след запазване.",

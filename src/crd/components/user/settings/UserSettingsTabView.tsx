@@ -13,7 +13,7 @@ export type UserSettingsTabViewProps = {
   communicationSaving: boolean;
   onToggleAllowMessages: (next: boolean) => void;
   // Design System (localStorage; reload on change)
-  isCrdEnabled: boolean;
+  crdEnabled: boolean;
   onToggleCrdDesign: (next: boolean) => void;
 };
 
@@ -72,7 +72,7 @@ export function UserSettingsTabView(props: UserSettingsTabViewProps) {
             <p className="mt-0.5 text-caption text-muted-foreground">{t('user.settings.designSystem.reloadCaption')}</p>
           </div>
           <Switch
-            checked={props.isCrdEnabled}
+            checked={props.crdEnabled}
             onCheckedChange={props.onToggleCrdDesign}
             aria-label={t('user.settings.designSystem.toggleLabel')}
           />

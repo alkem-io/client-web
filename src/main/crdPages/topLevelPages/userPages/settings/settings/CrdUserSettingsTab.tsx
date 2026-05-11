@@ -89,7 +89,7 @@ const CrdUserSettingsTab = () => {
       allowOtherUsersToSendMessages={allowMessages}
       communicationSaving={communicationSaving}
       onToggleAllowMessages={onToggleAllowMessages}
-      isCrdEnabled={isCrdEnabled}
+      crdEnabled={isCrdEnabled}
       onToggleCrdDesign={onToggleCrdDesign}
     />
   );

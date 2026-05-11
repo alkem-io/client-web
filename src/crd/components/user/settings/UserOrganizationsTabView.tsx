@@ -97,11 +97,17 @@ export function UserOrganizationsTabView(props: UserOrganizationsTabViewProps) {
       {props.rows.length === 0 ? (
         <FilteredEmptyState onClear={props.onClearFilters} />
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {props.rows.map(row => (
-            <OrganizationCard key={row.id} row={row} onDisassociate={() => props.onDisassociate(row)} />
-          ))}
-        </div>
+        <>
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
+            {props.rows.map(row => (
+              <li key={row.id}>
+                <OrganizationCard row={row} onDisassociate={() => props.onDisassociate(row)} />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

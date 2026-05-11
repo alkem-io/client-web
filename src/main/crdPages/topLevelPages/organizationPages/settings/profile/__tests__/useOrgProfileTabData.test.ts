@@ -366,8 +366,10 @@ describe('useOrgProfileTabData — references batch', () => {
     // 2) Add a new arbitrary row.
     act(() => result.current.onAddReference());
     const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
+    expect(tempId).toBeDefined();
     act(() => {
-      result.current.onUpdateReference(tempId ?? '', { name: 'Bluesky', uri: 'https://bsky.app/profile/alkemio' });
+      // biome-ignore lint/style/noNonNullAssertion: asserted defined above
+      result.current.onUpdateReference(tempId!, { name: 'Bluesky', uri: 'https://bsky.app/profile/alkemio' });
     });
 
     // 3) Edit the recognized LinkedIn row's URI.
@@ -439,10 +441,13 @@ describe('useOrgProfileTabData — pendingReferenceDelete state machine (Rule #9
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
     act(() => result.current.onAddReference());
     const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
+    expect(tempId).toBeDefined();
     act(() => {
-      result.current.onUpdateReference(tempId ?? '', { uri: 'https://blank-name.example' });
+      // biome-ignore lint/style/noNonNullAssertion: asserted defined above
+      result.current.onUpdateReference(tempId!, { uri: 'https://blank-name.example' });
     });
-    act(() => result.current.onRequestRemoveReference(tempId ?? ''));
+    // biome-ignore lint/style/noNonNullAssertion: asserted defined above
+    act(() => result.current.onRequestRemoveReference(tempId!));
     expect(result.current.pendingReferenceDelete?.name).toBe('https://blank-name.example');
   });
 });

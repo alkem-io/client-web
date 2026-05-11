@@ -85,6 +85,7 @@
         "namePlaceholder": "Nom de la référence",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Description (optionnel)",
+        "removeAriaLabel": "Supprimer la référence",
         "deleteDialog": {
           "title": "Supprimer la référence ?",
           "description": "La supprimer la retirera également de votre profil public après l'enregistrement.",
@@ -387,6 +388,7 @@
         "namePlaceholder": "Nom de la référence",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Description (optionnelle)",
+        "removeAriaLabel": "Supprimer la référence",
         "deleteDialog": {
           "title": "Supprimer la référence ?",
           "description": "La suppression de cette référence l'enlèvera également du profil public après l'enregistrement.",

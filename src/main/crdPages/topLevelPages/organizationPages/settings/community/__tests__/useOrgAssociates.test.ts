@@ -101,7 +101,7 @@ describe('useOrgAssociates — Remove with confirmation (Q2 / Rule #9 / FR-112)'
 describe('useOrgAssociates — search & pagination passthrough', () => {
   it('uses mode: "platform" (US10) — Associates can be onboarded from any platform user', () => {
     renderHook(() => useOrgAssociates('rs-1'));
-    const last = lastAvailableArgs.at(-1) as { mode: string };
+    const last = lastAvailableArgs[lastAvailableArgs.length - 1] as { mode: string };
     expect(last.mode).toBe('platform');
   });
 

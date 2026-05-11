@@ -5,7 +5,7 @@ import {
   type AccountResourceKind,
   type ContributorAccountCallbacks,
   mapAccountToViewProps,
-} from '../../../contributorAccountMapper';
+} from '@/main/crdPages/topLevelPages/contributorAccountMapper';
 
 export type ContributorSettingsTranslator = TFunction<'crd-contributorSettings'>;
 

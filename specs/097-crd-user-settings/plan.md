@@ -65,7 +65,7 @@ Migrate the **User Settings shell** (`/user/:userSlug/settings/{profile,account,
 - New backend capabilities — no new GraphQL types, mutations, or permission semantics.
 - New affordances on Account tabs — hosted resources keep the same create / edit / delete flows the current MUI exposes.
 - Restyle of identity-provider rendered form fields inside User Security — only the surrounding shell is restyled.
-- Restyle of the existing MUI heavy-flow dialogs (Create VC / Pack / Hub) — Account-tab kebabs navigate to those.
+- Restyle of the existing MUI heavy-flow dialogs — superseded: the CRD parity-port dialogs (`CrdCreateSpaceDialog`, `CrdCreateVirtualContributorWizard`, `CrdCreateInnovationPackDialog`, `CrdCreateInnovationHubDialog`) replace them on Account-tab "Create" affordances (FR-034 / Decision #3). `Manage` still navigates to each resource's existing settings URL; `Delete` is owned by the integration page via a CRD `ConfirmationDialog`.
 - Mutation of `Organization.verification.status` — read-only on the Org Profile tab; verification is managed by platform admins via a separate flow.
 - Tab-wide dirty buffer / discard-confirm dialogs — every settings tab commits per-control (or per-section on Profile tabs); switching tabs never blocks navigation.
 
@@ -189,18 +189,16 @@ src/
 │   │   │           ├── ExternalAiStep.tsx               # engine + apiKey + conditional assistantId
 │   │   │           └── TryVcInfoStep.tsx                # success info screen
 │   │   ├── user/
-│   │   │   └── settings/                                 # NEW — User-specific tab views (7 files mirroring tabs)
+│   │   │   └── settings/                                 # NEW — User-specific tab views (6 files; Account tab consumes shared ContributorAccountView directly with no per-actor wrapper)
 │   │   │       ├── UserProfileTabView.tsx                # Per-section save (045 pattern)
-│   │   │       ├── UserAccountTabView.tsx                # Composes ContributorAccountView with per-actor labels + callbacks
 │   │   │       ├── UserMembershipTabView.tsx             # Home Space card + Memberships card grid + Pending Applications list
 │   │   │       ├── UserOrganizationsTabView.tsx          # Associated organizations table
 │   │   │       ├── UserNotificationsTabView.tsx          # Push master + 7 cards (gated by privilege)
 │   │   │       ├── UserSettingsTabView.tsx               # Communication switch + Design System toggle
 │   │   │       └── UserSecurityTabView.tsx               # Identity-provider settings flow
 │   │   └── organization/
-│   │       └── settings/                                 # NEW — Org-specific tab views (5 files)
+│   │       └── settings/                                 # NEW — Org-specific tab views (4 files; Account tab consumes shared ContributorAccountView directly with no per-actor wrapper)
 │   │           ├── OrgProfileTabView.tsx                 # Per-section save (045 pattern); read-only Verified badge
-│   │           ├── OrgAccountTabView.tsx                 # Composes ContributorAccountView
 │   │           ├── OrgCommunityTabView.tsx               # Composes RoleAssignmentView for Associate role
 │   │           ├── OrgAuthorizationTabView.tsx           # Two sub-tabs (Admin / Owner); each composes RoleAssignmentView
 │   │           └── OrgSettingsTabView.tsx                # Two switches

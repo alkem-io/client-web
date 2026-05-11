@@ -85,6 +85,7 @@
         "namePlaceholder": "Naam van de referentie",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
         "deleteDialog": {
           "title": "Referentie verwijderen?",
           "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op je openbare profiel na opslaan.",
@@ -382,6 +383,7 @@
         "namePlaceholder": "Naam van de referentie",
         "urlPlaceholder": "https://…",
         "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
         "deleteDialog": {
           "title": "Referentie verwijderen?",
           "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op het openbare profiel na opslaan.",

@@ -26,7 +26,7 @@ import type {
 /** Read-only verification status badge (FR-094). No edit affordance. */
 export type OrgVerifiedBadgeProps = {
   /** Display label resolved from `Organization.verification.status`. */
-  status: 'Verified' | 'Pending' | 'NotVerified';
+  status: 'verified' | 'pending' | 'notVerified';
   /** Localized label rendered next to the badge icon. */
   label: string;
 };

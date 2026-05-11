@@ -290,7 +290,7 @@ On error, surfaces a CRD `Toast` and reverts the visual avatar via refetch.
 
 ## Decision 11 — Reference (social link) URL validation
 
-**Decision**: Reuses the existing `referenceSegmentSchema` URL validator from `src/domain/common/reference/`. The per-row Save button on `EditableReferenceRow` is **disabled** while the URL is invalid (FR + edge case: "malformed URLs surface an inline error on the URL input; the per-row Save button is disabled while the URL is invalid"). Validation error message uses the global `translation` key `forms.validations.elementMustBeValidUrl` (per FR-142).
+**Decision**: Reuses the existing `referenceSegmentSchema` URL validator from `src/domain/common/reference/`. `EditableReferenceRow` validates each row's URL inline (per FR-142, validation error message uses the global `translation` key `forms.validations.elementMustBeValidUrl`) but defers persistence to the References-section batch Save defined in Decision #2 — the section's Save button is **disabled** while any row's URL is invalid. There is no per-row Save button.
 
 **Rationale**: Parity with current MUI `UserForm` / `OrganizationForm` reference editing. No new validators introduced.
 
