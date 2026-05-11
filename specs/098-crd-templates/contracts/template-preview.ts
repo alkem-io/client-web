@@ -16,7 +16,13 @@
 
 import type { TemplateCardData } from './templates-manager';
 
-export type FramingKind = 'text' | 'whiteboard' | 'memo' | 'link' | 'mediaGallery';
+/**
+ * Re-use the existing CRD callout-layer `FramingChip` union (`src/crd/forms/callout/types.ts`) —
+ * `types.ts` re-exports it; do NOT define a parallel set of names. Mapping to the server enum `CalloutFramingType`:
+ *   'none' ⇄ None (plain text) · 'whiteboard' ⇄ Whiteboard · 'memo' ⇄ Memo · 'document' ⇄ CollaboraDocument (FR-020/FR-030 — V1) ·
+ *   'cta' ⇄ Link · 'image' ⇄ MediaGallery · 'poll' ⇄ Poll (in scope, FR-020/FR-030 — V2 adds poll framing content to the `CalloutTemplateContent` fragment in-PR).
+ */
+export type FramingKind = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
 
 export type TemplateContent =
   | {
@@ -29,10 +35,14 @@ export type TemplateContent =
       framingWhiteboardContent?: string;
       /** markdown — when framingKind === 'memo' */
       framingMemoContent?: string;
-      /** when framingKind === 'link' */
+      /** when framingKind === 'document' — read-only title/placeholder (the live Collabora service is not embedded in a preview) */
+      framingCollaboraDoc?: { displayName: string; documentType?: string };
+      /** when framingKind === 'cta' (link) */
       framingLinks?: { name: string; uri: string }[];
-      /** when framingKind === 'mediaGallery' */
+      /** when framingKind === 'image' (media-gallery) */
       framingMediaImages?: { uri: string; alt?: string }[];
+      /** when framingKind === 'poll' — in scope (FR-020/FR-030, V2); rendered read-only in the preview */
+      framingPoll?: { question: string; options?: string[] };
       allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
       commentsEnabled: boolean;
       /** markdown */
@@ -60,6 +70,8 @@ export type TemplateContent =
     }
   | {
       type: 'communityGuidelines';
+      /** the guidelines' displayName — a distinct field, V5 (FR-020/FR-038) */
+      title: string;
       /** markdown */
       guidelinesMarkdown: string;
       references: { id: string; name: string; uri: string; description?: string }[];

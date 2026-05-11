@@ -1,18 +1,24 @@
 /**
  * Contract: per-type create/edit template forms + the form dialog shell.
  *
- * CRD components:
- *  - `src/crd/components/templates/TemplateFormDialog.tsx` — title + common fields (name/description/tags/banner)
- *    + a slot for the per-type content form + Save/Cancel; discard-guard via ConfirmationDialog.
- *  - `src/crd/components/templates/forms/{Callout,Whiteboard,Post,Space,CommunityGuidelines}TemplateForm.tsx`
+ * Components / placement:
+ *  - `src/crd/components/templates/TemplateFormDialog.tsx` — a PURE `src/crd/` shell: title + common fields
+ *    (name/description/tags/banner) + a `perTypeFormSlot: ReactNode` the consumer fills (the ShareDialog
+ *    `shareOnAlkemioSlot` pattern) + Save/Cancel; discard-guard via ConfirmationDialog. It does NOT import any
+ *    per-type form (so it never transitively imports Apollo/`@/domain/*`/MUI).
+ *  - `src/crd/components/templates/forms/{Whiteboard,Post,CommunityGuidelines}TemplateForm.tsx` + the
+ *    presentational `SpaceTemplateForm.tsx` — pure CRD-layer (reuse `MarkdownEditor`, `tags-input`,
+ *    `WhiteboardEditorShell`, the CRD references-list editor). Mounted by the integration layer into `perTypeFormSlot`.
+ *  - **`src/main/crdPages/templates/CalloutTemplateForm.tsx`** — the callout per-type form is in the INTEGRATION
+ *    layer, not `src/crd/`, because it composes the callout-authoring connectors (Apollo/`@/domain/*`-bound).
+ *    It's mounted into `perTypeFormSlot` for `type: 'callout'`. The Apollo space-search for the Space form also
+ *    lives in the integration layer (`useTemplateForms` / a small `SpaceSourcePicker` connector).
  *
  * Forms are CONTROLLED — `value` / `onChange` / `errors` come from the integration layer
- * (`src/main/crdPages/templates/useTemplateForms.ts`). No Formik/RHF inside src/crd/.
- * Reuse existing CRD building blocks: `MarkdownEditor` (post description / guidelines / callout framing memo),
- * `tags-input` (tags), the CRD whiteboard editor (whiteboard content / callout default whiteboard),
- * the CRD references-list editor (callout link framing / guidelines references / pack references).
+ * (`src/main/crdPages/templates/useTemplateForms.ts`, which also assembles the slot per type). No Formik/RHF inside src/crd/.
  */
 
+import type { ReactNode } from 'react';
 import type { FramingKind } from './template-preview';
 import type { TemplateType } from './templates-manager';
 
@@ -27,6 +33,12 @@ export type TemplateCommonValues = {
 
 export type ReferenceRow = { id?: string; name: string; uri: string; description?: string };
 
+// NOTE: the Callout template form is a thin shell over the EXISTING CRD callout-authoring connectors
+// (`FramingEditorConnector` + the per-kind framing connectors + the callout-settings *controls* + `ResponseDefaultsConnector`,
+// + `calloutFormMapper.ts`). So `CalloutTemplateValues` mirrors that layer's value shape; `framingKind` is the existing
+// `FramingChip` union (`src/crd/forms/callout/types.ts`, re-exported here as `FramingKind`), covering 'none'/'whiteboard'/'memo'/'document'(Collabora)/'cta'(link)/'image'(media-gallery)/'poll'.
+// The form covers EVERY framing kind incl. Collabora-document (V1) and poll (V2 — poll content persists).
+// Per-kind content fields below are illustrative — defer to the actual connectors' value shape during implementation.
 export type CalloutTemplateValues = TemplateCommonValues & {
   type: 'callout';
   framingKind: FramingKind;
@@ -34,8 +46,10 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   framingDescription: string;
   framingWhiteboardContent?: string;
   framingMemoContent?: string;
+  framingCollaboraDoc?: { displayName?: string; documentType?: string; uploadFile?: File };
   framingLinks?: { name: string; uri: string }[];
   framingMediaFiles?: File[];
+  framingPoll?: { question?: string; options?: string[] };
   allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
   commentsEnabled: boolean;
   defaultPostDescription?: string;
@@ -45,8 +59,13 @@ export type CalloutTemplateValues = TemplateCommonValues & {
 export type WhiteboardTemplateValues = TemplateCommonValues & {
   type: 'whiteboard';
   whiteboardContent: string;
+  /** full preview-settings (the crop/region the live whiteboard editor's PreviewSettingsDialog/PreviewCropDialog produce) — FR-020; not just an image */
+  previewSettings?: WhiteboardPreviewSettings;
   previewImageFile?: File;
 };
+
+/** Mirrors the live whiteboard editor's preview-settings shape — defer to `src/crd/components/whiteboard/PreviewSettingsDialog`/`PreviewCropDialog` during implementation. */
+export type WhiteboardPreviewSettings = Record<string, unknown>;
 
 export type PostTemplateValues = TemplateCommonValues & {
   type: 'post';
@@ -63,6 +82,8 @@ export type SpaceTemplateValues = TemplateCommonValues & {
 
 export type CommunityGuidelinesTemplateValues = TemplateCommonValues & {
   type: 'communityGuidelines';
+  /** the guidelines' displayName — a distinct field, required (V5 / FR-020 / FR-038) — separate from `name` (the template's own name) */
+  title: string;
   guidelinesMarkdown: string;
   references: ReferenceRow[];
 };
@@ -79,20 +100,25 @@ export type TemplateFormErrors = Partial<Record<string, string>>;
 
 export type TemplateFormDialogProps = {
   open: boolean;
-  /** 'create' shows the type fixed (chosen before opening) or a type picker if launched generically; 'edit' loads existing values. */
+  /** 'create' shows the type fixed (chosen before opening); 'edit' loads existing values. */
   intent: 'create' | 'edit';
+  /** Drives the title only — the body is `perTypeFormSlot`. */
   type: TemplateType;
-  value: TemplateFormValues;
-  errors: TemplateFormErrors;
+  /** Common-fields value (name/description/tags/bannerFile). The per-type values live in the slot's own controlled state. */
+  commonValue: TemplateCommonValues;
+  commonErrors: TemplateFormErrors;
+  onCommonChange: (next: TemplateCommonValues) => void;
+  /** The per-type form, assembled by the integration layer (`useTemplateForms`): pure `src/crd/.../forms/*` for
+   *  whiteboard/post/guidelines/space, `crdPages/templates/CalloutTemplateForm` for callout. The dialog renders it as-is. */
+  perTypeFormSlot: ReactNode;
   /** True while the create/update mutation (+ any uploads) is in flight — disables Save, shows aria-busy. */
   submitting: boolean;
-  onChange: (next: TemplateFormValues) => void;
   onSubmit: () => void;
   /** Closing with unsaved changes triggers the consumer's DiscardChangesDialog before this fires. */
   onCancel: () => void;
 };
 
-/** Each per-type form component receives a narrowed value + onChange + errors. Example: */
+/** Each per-type form component receives a narrowed value + onChange + errors. Example (callout — lives in `crdPages/templates/`, not `src/crd/`): */
 export type CalloutTemplateFormProps = {
   value: CalloutTemplateValues;
   errors: TemplateFormErrors;

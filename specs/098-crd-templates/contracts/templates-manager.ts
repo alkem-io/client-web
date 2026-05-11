@@ -57,10 +57,14 @@ export type TemplatesManagerViewProps = {
   duplicatingId?: string | null;
   /** Id of the template currently mid-delete — shows a "Deleting…" spinner and hides the row optimistically. */
   deletingId?: string | null;
+  // The legacy templates-management surfaces (SpaceAdminTemplatesPage / AdminInnovationPackPage) do NO per-type
+  // authorisation — they hard-code "all five types" creatable/editable/deletable; the gate is page access.
+  // So in a MANAGEMENT context the consumer wires these as `() => true`; in a READ-ONLY context (pack public
+  // profile) as `() => false`. There is NO `isCustom` gate (the legacy `TemplatesAdmin` has none). FR-014.
   canCreate: (type: TemplateType) => boolean;
   canEdit: (type: TemplateType) => boolean;
   canDelete: (type: TemplateType) => boolean;
-  /** Consumer wires `() => false` when holderKind === 'innovationPack'. */
+  /** Consumer wires `() => true` for a Space holder in a management context, `() => false` for an Innovation Pack and for read-only contexts (Import is Space-only). */
   canImport: (type: TemplateType) => boolean;
   onCreate: (type: TemplateType) => void;
   onImport: (type: TemplateType) => void;

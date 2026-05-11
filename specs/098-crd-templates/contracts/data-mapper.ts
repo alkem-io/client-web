@@ -21,6 +21,7 @@ import type {
   InnovationPackFormValues,
   InnovationPackProfileViewProps,
 } from './innovation-pack';
+import type { CommunityGuidelinesEditorProps, CommunityGuidelinesEditorValue } from './community-guidelines-editor';
 
 // ---------- pure mappers ----------
 
@@ -50,6 +51,9 @@ export type MapInnovationPackToProfileViewProps = (gqlPack: unknown, canManage: 
 /** GraphQL `InnovationPack` → editable form values. */
 export type MapInnovationPackToFormValues = (gqlPack: unknown) => InnovationPackFormValues;
 
+/** GraphQL `CommunityGuidelines` (`profile.{displayName, description, references}`) → the CRD editor value (FR-038). */
+export type MapCommunityGuidelinesToEditorValue = (gqlCommunityGuidelines: unknown) => CommunityGuidelinesEditorValue;
+
 // ---------- integration hooks (shapes) ----------
 
 /**
@@ -72,8 +76,11 @@ export type UseTemplatesManager = (args: {
   onTemplateAction: (id: string, action: TemplateAction) => void;
   // dialog state surfaced for the page to render the CRD dialogs:
   preview: { open: boolean; header?: TemplateCardData; content?: TemplateContent; contentLoading: boolean; canEdit: boolean; onClose: () => void; onEdit: () => void };
-  form: { open: boolean; intent: 'create' | 'edit'; type: TemplateType; value: TemplateFormValues; errors: Record<string, string>; submitting: boolean; onChange: (v: TemplateFormValues) => void; onSubmit: () => void; onCancel: () => void };
-  picker: { open: boolean; sources: TemplatePickerSource[]; alreadyInSet: ReadonlySet<string>; loading: boolean; onClose: () => void; onImport: (id: string) => void; onRemoveFromSet: (id: string) => void; onPreview: (id: string) => void; previewContent?: TemplateContent; previewLoading: boolean };
+  // `form` exposes the common-fields state + `submitting`/`onSubmit`/`onCancel`; the per-type form is rendered by
+  // `useTemplateForms` into `perTypeFormSlot` (pure src/crd/.../forms/* for whiteboard/post/guidelines/space,
+  // crdPages/templates/CalloutTemplateForm for callout) — see contracts/template-forms.ts `TemplateFormDialogProps`.
+  form: { open: boolean; intent: 'create' | 'edit'; type: TemplateType; commonValue: unknown; commonErrors: Record<string, string>; perTypeFormSlot: unknown /* ReactNode */; submitting: boolean; onCommonChange: (v: unknown) => void; onSubmit: () => void; onCancel: () => void };
+  picker: { open: boolean; sources: TemplatePickerSource[]; alreadyInSet: ReadonlySet<string>; search: string; onSearchChange: (s: string) => void; loading: boolean; onClose: () => void; onImport: (id: string) => void; onRemoveFromSet: (id: string) => void; onPreview: (id: string) => void; previewContent?: TemplateContent; previewLoading: boolean };
   pendingDelete: { id: string; name: string; isUsedAsDefault: boolean } | null;
   confirmDelete: () => Promise<void>;
   cancelDelete: () => void;
@@ -97,3 +104,12 @@ export type UseTemplatePicker = (args: {
   selectedTemplateContent: TemplateContent | null;
   clearSelection: () => void;
 };
+
+/**
+ * The CRD community-guidelines editor host integration hook (FR-038). Loads the live `CommunityGuidelines`, maps it to
+ * `CommunityGuidelinesEditorValue`, saves via `useUpdateCommunityGuidelinesMutation` (in `useTransition`), and wires
+ * the apply-template (`useTemplatePicker({allowedTypes:['communityGuidelines']})`, replacement behind a ConfirmationDialog
+ * when there is content) and save-as-template (`useSaveAsTemplate({sourceKind:'communityGuidelines'})`, save-or-discard
+ * prompt when there are unsaved edits) sub-flows. Returns the props the CRD `CommunityGuidelinesEditor` component needs.
+ */
+export type UseCommunityGuidelinesEditor = (args: { communityGuidelinesId: string | undefined }) => CommunityGuidelinesEditorProps & { loading: boolean };

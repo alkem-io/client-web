@@ -7,14 +7,22 @@
  *  - `mode: 'import'`  — persistent library manager. Used ONLY by the Space Settings → Templates tab
  *                        (a Space holder importing into its set). Dialog stays open after each import;
  *                        templates already in the set are marked and removable from within the dialog.
+ *                        **Sources here are Account + Platform ONLY** — the Space's own set is not a source
+ *                        for importing into itself (matches the legacy `disableSpaceTemplates: true`). This
+ *                        is a deliberate consolidation of the two legacy import surfaces (the Space-templates
+ *                        import dialog, which closed after each import, + the default-template selector,
+ *                        which had the mark/remove behaviour) — not a 1:1 re-implementation of either.
  *  - `mode: 'select'`  — single-pick-then-apply. Used by every CONSUMPTION flow (callout creation,
  *                        whiteboard creation, space/subspace creation, community guidelines, innovation-flow
  *                        phase default, callout contribution-defaults post template) and internally by
- *                        SetDefaultTemplateDialog / SaveAsTemplateDialog. Selecting closes the dialog;
- *                        a persistent "no template / start blank" affordance clears the selection.
+ *                        SetDefaultTemplateDialog (`flowStateDefaultCalloutTemplate` only) / SaveAsTemplateDialog.
+ *                        Selecting closes the dialog; a persistent "no template / start blank" affordance clears it.
+ *                        Sources: Account + Platform always, **Space when there is a Space context** (it's a valid
+ *                        source for, e.g., callout creation).
  *
- * Sources are always grouped Space / Account / Platform; an empty source section is omitted; if every
- * source is empty the picker shows a "no templates available" message (not an empty dialog).
+ * Both modes: an empty source section is omitted; if every source is empty the picker shows a "no templates
+ * available" message (not an empty dialog); a **free-text search filter** over name/description/tags is shown
+ * when any source is non-empty (mirrors the legacy `ImportTemplatesDialogGallery` search box).
  */
 
 import type { TemplateCardData, TemplateType } from './templates-manager';
@@ -33,7 +41,11 @@ export type TemplatePickerSource = {
 type TemplatePickerCommon = {
   open: boolean;
   onClose: () => void;
+  /** Source sections in render order. In 'import' mode this never includes a 'space' source. */
   sources: TemplatePickerSource[];
+  /** Free-text filter value over name/description/tags (controlled). */
+  search: string;
+  onSearchChange: (next: string) => void;
   /** Overall loading (e.g. resolving the destination templates set id). */
   loading?: boolean;
   /** Ask the consumer to lazy-load the full content of `templateId` for the preview pane. */
