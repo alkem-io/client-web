@@ -163,6 +163,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/profilePages/profilePages.de.json'),
     fr: () => import('@/crd/i18n/profilePages/profilePages.fr.json'),
   },
+  'crd-contributorSettings': {
+    en: () => import('@/crd/i18n/contributorSettings/contributorSettings.en.json'),
+    es: () => import('@/crd/i18n/contributorSettings/contributorSettings.es.json'),
+    nl: () => import('@/crd/i18n/contributorSettings/contributorSettings.nl.json'),
+    bg: () => import('@/crd/i18n/contributorSettings/contributorSettings.bg.json'),
+    de: () => import('@/crd/i18n/contributorSettings/contributorSettings.de.json'),
+    fr: () => import('@/crd/i18n/contributorSettings/contributorSettings.fr.json'),
+  },
 };
 
 // Cache for loaded translations

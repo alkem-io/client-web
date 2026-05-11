@@ -1,7 +1,7 @@
 import { Check, Loader2, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollVoterAvatars } from '@/crd/components/common/PollVoterAvatars';
+import { StackedPersonAvatars } from '@/crd/components/common/StackedPersonAvatars';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Checkbox } from '@/crd/primitives/checkbox';
@@ -64,6 +64,7 @@ function OptionLabel({
   showResults: boolean;
   resultsDetail: 'full' | 'count' | 'percentage';
 }) {
+  const { t } = useTranslation('crd-space');
   const showCount = showResults && option.voteCount != null && resultsDetail !== 'percentage';
   const showPercentage = showResults && option.votePercentage != null && resultsDetail !== 'count';
   const showBar = showResults && option.votePercentage != null;
@@ -91,7 +92,16 @@ function OptionLabel({
             {showCount && <span>({option.voteCount})</span>}
           </span>
         </div>
-        {showVoters && option.voters && <PollVoterAvatars voters={option.voters} className="mt-1" />}
+        {showVoters && option.voters ? (
+          <StackedPersonAvatars
+            people={option.voters}
+            className="mt-1"
+            groupAriaLabel={t('poll.results.totalVotes', { count: option.voters.length })}
+            overflowTooltipLabel={
+              option.voters.length > 10 ? t('poll.results.votersMore', { count: option.voters.length - 10 }) : undefined
+            }
+          />
+        ) : null}
       </div>
     </div>
   );
