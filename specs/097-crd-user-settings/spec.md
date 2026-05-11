@@ -1,9 +1,9 @@
-# Feature Specification: CRD Contributor Settings (User + Organization)
+# Feature Specification: CRD Contributor Settings (User + Organization + Virtual Contributor)
 
 **Feature Branch**: `097-crd-user-settings`
-**Created**: 2026-04-30 (rewritten 2026-05-06 to expand scope from User-only to User + Organization)
+**Created**: 2026-04-30 (rewritten 2026-05-06 to expand scope from User-only to User + Organization; extended 2026-05-11 to fold in the Virtual Contributor settings shell)
 **Status**: Draft
-**Input**: Migrate the **Settings shells for both User and Organization** to the CRD design system (shadcn/ui + Tailwind). VC settings remain in MUI and are explicitly out of scope (deferred to a future spec). The branch name remains `097-crd-user-settings` for git continuity, but the spec scope is **contributor settings** — both User and Organization actors. Sibling spec `096-crd-user-pages` covers the public-profile views that the Settings (gear) icon links into; that spec line 282–283 explicitly defers the Org admin shell to "a future spec" — **this spec is that future spec**, expanded to also cover the User admin shell so both actor verticals migrate in lockstep.
+**Input**: Migrate the **Settings shells for User, Organization, and Virtual Contributor** to the CRD design system (shadcn/ui + Tailwind). The branch name remains `097-crd-user-settings` for git continuity, but the spec scope is **contributor settings** — all three actors. Sibling spec `096-crd-user-pages` covers the public-profile views that the Settings (gear) icon links into. The User + Org shells shipped in the first 097 PR (merged into `develop`); the VC shell is added by this extension, folding in the scope the original 097 explicitly deferred.
 
 ## Clarifications
 
@@ -322,6 +322,74 @@ Each toggle commits its change via `updateOrganizationSettings` immediately. The
 
 ---
 
+### User Story 13 - VC Profile Tab (Priority: P1)
+
+A VC host opens `/vc/<vcNameId>/settings/profile` and sees a CRD restyle of the current MUI `VirtualContributorForm` (`src/domain/community/virtualContributorAdmin/vcSettingsPage/VirtualContributorForm.tsx`). The tab renders the same per-section save model as User Profile (US1) and Org Profile (US8):
+
+- **Identity** — Display Name, Tagline, Description (each its own labeled section with `FieldFooter`).
+- **Keywords** — single `Keywords` profile tagset editor (per-section save with lazy-create on first save — same shape as `keywords` on User / Org Profile).
+- **Social Links / References** — list-managed section with the recognized social tiles (LinkedIn, Bluesky, GitHub) + an arbitrary references list using `ArbitraryReferenceRow`; **Add another reference** appends a temp-id row; the trash button opens the destructive `ConfirmationDialog` (Rule #9 / FR-025); the section's Save fires the same `createReferenceOnProfile × N + updateReference × M + deleteReference × P` batch the User / Org References sections use.
+- **Avatar column** — the same CRD `ImageCropDialog` flow added for User / Org avatars (file pick → crop dialog with the visual's `VisualModelFull` constraints → Save uploads the cropped file via `uploadImageOnVisual`).
+- **Read-only metadata rows** — Host display name and Body-of-Knowledge name render under the form as informational rows (no edit affordance) — same wording the MUI form shows today.
+
+Save mutations: `updateVirtualContributor` (single sections), `createTagsetOnProfile` / `updateVirtualContributor` (Keywords tagset), references batch (`createReferenceOnProfile` / `updateReference` / `deleteReference`), `uploadImageOnVisual` (avatar). All exist today and are reused unchanged.
+
+**Access**: viewers with `Update` privilege on the VC.
+
+**Independent Test**: Open `/vc/<myVc>/settings/profile` as the VC host. Edit Display Name → per-section Save flashes "Saved!"; pick a new avatar → `ImageCropDialog` opens with the avatar's constraints, crop + Save uploads; add a reference → References-section Save persists it. Open the same URL as a non-host → redirected to the public profile.
+
+**Acceptance Scenarios**:
+
+1. **Given** a VC host opens the Profile tab, **When** they edit Display Name and click that section's Save, **Then** `updateVirtualContributor` fires patching only that field and the "Saved!" indicator flashes for 1800 ms.
+2. **Given** a VC host picks a new avatar, **When** the crop dialog's Save delivers the cropped file, **Then** `uploadImageOnVisual` fires with the cropped file + alt text and the avatar slot updates on success.
+3. **Given** a VC host trashes a reference, **When** they Confirm in the `ConfirmationDialog`, **Then** the row is queued for deletion in the section buffer; **only** the References-section Save fires the actual `deleteReference` (in the batch).
+
+---
+
+### User Story 14 - VC Membership Tab (Priority: P1)
+
+A VC host opens `/vc/<vcNameId>/settings/membership` and sees a CRD restyle of the current MUI `VCMembershipPage` (`src/domain/community/virtualContributor/vcMembershipPage/`). Two stacked sections:
+
+- **Confirmed memberships** — a card grid of spaces / subspaces the VC is a member of. Each card shows banner + display name + tagline + type badge + kebab with two items: **View Space** (anchor to `space.url`) and **Leave Space** (destructive `ConfirmationDialog` per Rule #9 / FR-112).
+- **Pending invitations** — separate card list under the grid; each row shows the inviting space + optional welcome message + an **Accept invitation** button that opens a `ConfirmationDialog` before firing the existing accept-invitation mutation. The list is hidden when empty (no invitations).
+
+No Home Space selector, no search/filter — the VC has no preferred-space concept. Empty-state for confirmed memberships is a single muted caption line (FR-018 pattern).
+
+**Access**: viewers with `Update` privilege on the VC (Leave requires `Grant` on the target community per the MUI `VCMembershipPage` gate).
+
+**Independent Test**: As a VC host with at least one space membership, open `/vc/<myVc>/settings/membership`. The membership card renders. Open kebab → Leave → ConfirmationDialog → Confirm fires `removeRoleFromVirtualContributor` and the card disappears.
+
+**Acceptance Scenarios**:
+
+1. **Given** a VC has 2 confirmed memberships, **When** the host opens the tab, **Then** 2 cards render.
+2. **Given** the host clicks Leave on a card, **When** they Confirm in the dialog, **Then** the leave mutation fires and the row is removed after refetch.
+3. **Given** the VC has 1 pending invitation, **When** the host clicks Accept, **Then** the confirmation dialog opens; on Confirm the accept-invitation mutation fires and the invitation moves out of the pending list.
+
+---
+
+### User Story 15 - VC Settings Tab (Priority: P1)
+
+A VC host opens `/vc/<vcNameId>/settings/settings` and sees a CRD restyle of the current MUI `VirtualContributorSettingsPage`. The tab renders **engine-conditional sub-sections** (per research.md Decision #17):
+
+- **Visibility** (always) — `searchVisibility` radio (Public / Account / Hidden) + `listedInStore` toggle (disabled unless `searchVisibility === 'public'`). Each control commits immediately on change via `updateVirtualContributor`. Hard failure reverts with an inline toast (same pattern as User Notifications / Org Settings).
+- **Body of Knowledge** — privacy toggle (`settings.privacy.knowledgeBaseContentVisible` via `updateVirtualContributorSettings`), "Refresh Knowledge" button (`refreshBodyOfKnowledge`), last-updated timestamp. Rendered when `bodyOfKnowledgeType` ∈ {`AlkemioSpace`, `AlkemioKnowledgeBase`} OR `engine === 'Guidance'`.
+- **Prompt** — `MarkdownEditor` for `aiPersona.prompt[0]` with `MARKDOWN_TEXT_LENGTH` (10k) cap; per-section save fires `updateAiPersona`. Help text lists available variables (`duration`, `audience`, `workshop_type`, `role`, `purpose`). Rendered when `engine` ∈ {`GenericOpenai`, `LibraFlow`}.
+- **External Config** — `apiKey` (Input, **always rendered empty** — the input only sends NEW values, parity with MUI `ExternalConfig.tsx:72`), conditional `assistantId` (required when `engine === 'OpenaiAssistant'`), `model` Select (`OpenAiModel` enum). Per-section save fires `updateAiPersona`. Rendered when `engine` ∈ {`LibraFlow`, `OpenaiAssistant`, `GenericOpenai`}.
+- **Prompt Graph fallback** — small read-only tile linking to the legacy MUI Settings page. Rendered when `engine === 'Expert'` AND (`platformAdmin` OR `platformSettings.promptGraphEditingEnabled`). The full node/edge editor is **deferred to a follow-up spec** — Decision #17 records the rationale.
+
+**Access**: viewers with `Update` privilege on the VC. Prompt Graph fallback is additionally gated by `platformSettings.promptGraphEditingEnabled` and platform-admin role.
+
+**Independent Test**: As a VC host on a `GenericOpenai`-engine VC, open `/vc/<myVc>/settings/settings`. Flip the Visibility radio → change persists after reload. Refresh Knowledge → the last-updated timestamp updates. Edit the Prompt and Save → `updateAiPersona` fires; reload preserves the change. Open the same page on an Expert-engine VC with the admin flag on → the Prompt Graph fallback tile renders with a link to `/vc/<myVc>/settings` (MUI legacy URL).
+
+**Acceptance Scenarios**:
+
+1. **Given** the host flips `searchVisibility` from Hidden → Public, **When** the radio changes, **Then** `updateVirtualContributor` fires with the new value; on success the `listedInStore` toggle becomes enabled.
+2. **Given** the engine is `GenericOpenai`, **When** the tab renders, **Then** the Prompt + External Config cards are visible.
+3. **Given** the engine is `Expert` and the admin flag is on, **When** the tab renders, **Then** the Prompt Graph fallback tile renders with a link to the legacy MUI Settings page (no inline editor).
+4. **Given** the host clicks Refresh Knowledge, **When** the mutation resolves, **Then** the last-updated timestamp re-renders with the new ISO value.
+
+---
+
 ### Edge Cases
 
 - **Unauthenticated viewer hits a User settings URL**: every user settings route is wrapped by the existing `NoIdentityRedirect`, which redirects to login. Once authenticated, the user lands back on the requested settings tab if they are the owner or platform admin, and on the public profile otherwise.
@@ -482,6 +550,37 @@ Each toggle commits its change via `updateOrganizationSettings` immediately. The
 - **FR-132**: The Org Settings tab MUST NOT surface a Design System toggle. The Design System toggle is User-only because it is a viewer-scoped browser preference, not an org attribute.
 - **FR-133**: On mutation failure, the switch MUST revert to its prior state and surface an inline toast with the error message.
 
+#### VC Profile tab (User Story 13)
+
+- **FR-160**: The VC Profile tab MUST render the editable fields mirroring the current MUI `VirtualContributorForm` exactly: Identity (Display Name, Tagline, Description — each its own section); Keywords (single `Keywords` profile tagset editor); Social Links (LinkedIn, Bluesky, GitHub recognized references + arbitrary references list with **Add another reference**). The system MUST NOT add a `Skills` tagset (User-only), an `Email` / `Phone` field (User-only), or any Capabilities tagset (Org-only) to this tab.
+- **FR-161**: Each per-section Save click MUST fire one targeted mutation that patches ONLY that section's fields, then flash a "Saved!" indicator for 1800 ms before returning to idle. On failure the section stays dirty with typed values preserved + an inline error message that persists until the admin edits any field in the section again. (Parity with FR-022 / FR-090.)
+- **FR-162**: Validation timing — URL pattern (References) runs **live** and disables that section's Save while invalid; required-field empty checks (Display Name) fire on Save click with an inline error beneath the input. (Parity with FR-023 / FR-091.)
+- **FR-163**: Avatar uploads MUST route the picked file through the CRD `ImageCropDialog` (parity with FR-024 / FR-093 — file pick → crop dialog seeded with the avatar's `VisualModelFull` constraints → on Save the cropped/resized file fires `uploadImageOnVisual` with the supplied `alternativeText`).
+- **FR-164**: Reference list management mirrors FR-025 / FR-092 — Add appends a temp-id row; trash opens the destructive `ConfirmationDialog` (Rule #9); the mutation batch (patch existing + create new + delete pending) fires only on the References-section Save.
+- **FR-165**: Read-only metadata rows render Host display name and Body-of-Knowledge name below the form. Neither is editable on this tab — host changes happen elsewhere; BoK changes happen on the Settings tab (US15).
+- **FR-166**: There is no read-only mode on the VC Profile tab — the shell either renders fully editable Profile fields (when `canEditVcSettings` is true) or has redirected the viewer to the public profile (parity with FR-026 / FR-095).
+
+#### VC Membership tab (User Story 14)
+
+- **FR-170**: The VC Membership tab MUST render two stacked sections — **Confirmed memberships** (card grid of the spaces / subspaces the VC belongs to) + **Pending invitations** (list of invites the VC has not yet accepted). Confirmed-memberships data comes from `useVcMembershipsQuery`'s `memberships` slice; pending-invitations data comes from the same query's `invitations` slice. No new GraphQL query is introduced.
+- **FR-171**: Each confirmed-membership card MUST expose a kebab with exactly two items: **View Space** / **View Subspace** (anchor to `space.url`, hidden when the URL is empty) and **Leave Space** / **Leave Subspace** (destructive `ConfirmationDialog` per Rule #9 / FR-112 — the actual `removeRoleFromVirtualContributor` mutation fires only on Confirm). Label switches by `row.type`.
+- **FR-172**: Each pending-invitation row MUST expose an **Accept invitation** action that opens a `ConfirmationDialog` before firing the existing accept-invitation mutation. Decline (where present in MUI) is treated symmetrically.
+- **FR-173**: There is no Home Space selector on the VC Membership tab (the VC has no preferred-space concept). There is no search / filter input. Confirmed-memberships empty-state is a single muted caption (FR-018 pattern). Pending-invitations list is hidden entirely when there are zero invitations.
+
+#### VC Settings tab (User Story 15)
+
+- **FR-180**: The VC Settings tab MUST render engine-conditional sub-sections (Decision #17), mirroring the MUI `VirtualContributorSettingsPage` orchestration verbatim:
+  - **Visibility** — always rendered.
+  - **Body of Knowledge** — rendered when `bodyOfKnowledgeType` ∈ {`AlkemioSpace`, `AlkemioKnowledgeBase`} OR `engine === 'Guidance'`.
+  - **Prompt** — rendered when `engine` ∈ {`GenericOpenai`, `LibraFlow`}.
+  - **External Config** — rendered when `engine` ∈ {`LibraFlow`, `OpenaiAssistant`, `GenericOpenai`}.
+  - **Prompt Graph fallback tile** — rendered when `engine === 'Expert'` AND (`platformAdmin` OR `platformSettings.promptGraphEditingEnabled`).
+- **FR-181**: The Visibility card MUST commit each control immediately on change — `searchVisibility` radio (Public / Account / Hidden) and `listedInStore` toggle (disabled unless `searchVisibility === 'public'`). On hard failure the control reverts and an inline toast surfaces the error. (Parity with FR-133 / FR-064.)
+- **FR-182**: The Body of Knowledge card MUST expose: the privacy toggle (`settings.privacy.knowledgeBaseContentVisible` via `updateVirtualContributorSettings`), a Refresh Knowledge button (`refreshBodyOfKnowledge`), and a last-updated timestamp read from `useVirtualContributorKnowledgeBaseLastUpdatedQuery`. The Refresh button surfaces `aria-busy` while pending.
+- **FR-183**: The Prompt card MUST render a `MarkdownEditor` for `aiPersona.prompt[0]` with the existing `MARKDOWN_TEXT_LENGTH` (10k) cap. Per-section Save fires `updateAiPersona`. Help text below the editor enumerates the available template variables (`duration`, `audience`, `workshop_type`, `role`, `purpose`) — same wording as the MUI `PromptConfig`.
+- **FR-184**: The External Config card MUST keep MUI's empty-on-render `apiKey` semantics — the input renders empty regardless of server state and only NEW values are sent. The `assistantId` field is required when `engine === 'OpenaiAssistant'`. The `model` Select offers values from `OpenAiModel` enum. Per-section Save fires `updateAiPersona`.
+- **FR-185**: The Prompt Graph fallback tile MUST render only a heading + descriptive copy + a CTA link to the legacy MUI Settings page (`/vc/<nameId>/settings` with CRD toggle off, or its absolute equivalent). The fallback tile MUST NOT inline the node/edge editor — the full editor is out of scope.
+
 #### Internationalization
 
 - **FR-140**: All user-visible strings on CRD contributor settings tabs MUST live in `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json` — a single combined namespace covering both User and Organization tabs. The namespace key registered in `src/core/i18n/config.ts` and `@types/i18next.d.ts` is `crd-contributorSettings`.
@@ -543,8 +642,8 @@ Each toggle commits its change via `updateOrganizationSettings` immediately. The
 
 ## Out of Scope
 
-- **VC settings shell** (`/vc/:vcSlug/settings/*`) is explicitly deferred to a future spec. The Settings (gear) icon on the VC public-profile hero (per 096 FR-031) continues to link to the existing MUI VC admin shell.
 - **Public profile pages** (`/user/:userSlug`, `/organization/:orgSlug`, `/vc/:vcSlug`) without `/settings` — owned by sibling spec `096-crd-user-pages`.
+- **Prompt Graph editor on the VC Settings tab** — the multi-node flow editor (rendered today by MUI `PromptGraphConfig`) is intentionally deferred to a follow-up spec. On Expert-engine VCs where the platform-admin flag is on, the CRD Settings tab renders a small "Prompt Graph editing remains in MUI" fallback tile that links to the legacy URL.
 - **No new backend capabilities.** This migration is a presentation-layer port. No new GraphQL types, no new mutations, no new role gating, no new permission semantics.
 - **No new affordances on Account tabs** (User or Org). Hosted spaces, VCs, packs, and hubs remain editable / creatable / deletable through the same flows the current MUI exposes — not a single button is added or removed. The Account-tab "Create" buttons are restyled in CRD (FR-034) but expose exactly the same fields / steps / mutations as the MUI dialogs they port.
 - **No restyle of identity-provider rendered form fields** inside the User Security tab. Only the surrounding card / heading wrapper is restyled.

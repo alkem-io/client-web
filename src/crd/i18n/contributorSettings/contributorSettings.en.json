@@ -16,6 +16,11 @@
         "community": "Community",
         "authorization": "Authorization",
         "settings": "Settings"
+      },
+      "vc": {
+        "profile": "Profile",
+        "membership": "Membership",
+        "settings": "Settings"
       }
     }
   },
@@ -501,6 +506,116 @@
         "contributionRolesCaption": "When enabled, the organization's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
       "errorToast": "Couldn't save preference — try again"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Settings",
+      "identity": {
+        "title": "Identity",
+        "displayName": {
+          "label": "Display Name",
+          "hint": "How this Virtual Contributor appears across Alkemio.",
+          "required": "Display Name is required"
+        },
+        "tagline": {
+          "label": "Tagline",
+          "hint": "A short line shown on the contributor's profile."
+        },
+        "description": {
+          "label": "Description",
+          "hint": "Explain what this Virtual Contributor does and how to work with it."
+        }
+      },
+      "keywords": {
+        "label": "Keywords",
+        "hint": "Add keywords to help users discover this Virtual Contributor.",
+        "placeholder": "Add a keyword and press Enter"
+      },
+      "socialLinks": {
+        "title": "References",
+        "addAnother": "Add another reference",
+        "namePlaceholder": "Name",
+        "urlPlaceholder": "https://example.com",
+        "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
+        "empty": "No references yet.",
+        "deleteDialog": {
+          "title": "Remove reference?",
+          "description": "This reference will be removed when you save the section. You can undo before saving.",
+          "confirm": "Remove"
+        }
+      },
+      "metadata": {
+        "title": "About this Virtual Contributor",
+        "hostLabel": "Hosted by",
+        "bodyOfKnowledgeLabel": "Body of Knowledge"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Change Avatar",
+        "uploading": "Uploading…",
+        "helperText": "Square JPEG or PNG, up to 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Memberships"
+      },
+      "empty": "This Virtual Contributor isn't a member of any space yet.",
+      "spaceBadge": "Space",
+      "subspaceBadge": "Subspace",
+      "viewLabel": "View",
+      "leaveLabel": "Leave",
+      "leaveSpaceConfirmTitle": "Leave this space?",
+      "leaveSubspaceConfirmTitle": "Leave this subspace?",
+      "leaveConfirmBody": "Remove this Virtual Contributor from {{name}}? This can be reversed by re-applying for membership.",
+      "leaveConfirmAction": "Leave",
+      "pendingInvitationsHeading": "Pending Invitations",
+      "acceptLabel": "Accept",
+      "declineLabel": "Decline",
+      "acceptInvitationConfirmTitle": "Accept invitation?",
+      "acceptInvitationConfirmBody": "Accept the invitation to join {{name}}?",
+      "acceptInvitationConfirmAction": "Accept"
+    },
+    "visibility": {
+      "title": "Visibility",
+      "helper": "Controls who can discover this Virtual Contributor.",
+      "publicLabel": "Public",
+      "publicDescription": "Everyone, including anonymous visitors, can find this Virtual Contributor.",
+      "accountLabel": "Account",
+      "accountDescription": "Only members of the host account can find this Virtual Contributor.",
+      "hiddenLabel": "Hidden",
+      "hiddenDescription": "This Virtual Contributor is hidden from search.",
+      "listedInStoreLabel": "Listed in the Alkemio store",
+      "listedInStoreHelper": "Only available when Visibility is Public."
+    },
+    "bodyOfKnowledge": {
+      "title": "Body of Knowledge",
+      "helper": "Manage how this Virtual Contributor's knowledge base is exposed.",
+      "privacyToggleLabel": "Hide knowledge-base content from non-members",
+      "privacyToggleHelper": "When enabled, the underlying content is hidden from users without access.",
+      "refreshLabel": "Refresh Knowledge",
+      "lastUpdated": "Last updated:",
+      "never": "never"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Available variables: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "External AI Configuration",
+      "helper": "Connect this Virtual Contributor to an external AI provider.",
+      "apiKeyLabel": "API Key",
+      "apiKeyPlaceholder": "Enter a new API key",
+      "apiKeyHelper": "Existing keys are never echoed back. Leave blank to keep the current key.",
+      "assistantIdLabel": "Assistant ID",
+      "modelLabel": "Model"
+    },
+    "promptGraphFallback": {
+      "heading": "Prompt Graph editing remains in MUI",
+      "description": "The flow editor is being migrated. Open the legacy settings page to edit the prompt graph.",
+      "ctaLabel": "Open in legacy view"
     }
   },
   "shared": {

@@ -16,6 +16,11 @@
         "community": "Gemeinschaft",
         "authorization": "Autorisierung",
         "settings": "Einstellungen"
+      },
+      "vc": {
+        "profile": "Profil",
+        "membership": "Mitgliedschaft",
+        "settings": "Einstellungen"
       }
     }
   },
@@ -481,6 +486,116 @@
         "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
       },
       "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Einstellungen",
+      "identity": {
+        "title": "Identität",
+        "displayName": {
+          "label": "Anzeigename",
+          "hint": "Wie dieser Virtuelle Mitwirkende auf Alkemio erscheint.",
+          "required": "Anzeigename ist erforderlich"
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Eine kurze Zeile, die im Profil des Mitwirkenden angezeigt wird."
+        },
+        "description": {
+          "label": "Beschreibung",
+          "hint": "Erklären Sie, was dieser Virtuelle Mitwirkende tut und wie damit zu arbeiten ist."
+        }
+      },
+      "keywords": {
+        "label": "Schlüsselwörter",
+        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können.",
+        "placeholder": "Schlüsselwort hinzufügen und Enter drücken"
+      },
+      "socialLinks": {
+        "title": "Referenzen",
+        "addAnother": "Weitere Referenz hinzufügen",
+        "namePlaceholder": "Name",
+        "urlPlaceholder": "https://beispiel.com",
+        "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
+        "empty": "Noch keine Referenzen.",
+        "deleteDialog": {
+          "title": "Referenz entfernen?",
+          "description": "Diese Referenz wird beim Speichern des Abschnitts entfernt. Sie können den Vorgang vor dem Speichern rückgängig machen.",
+          "confirm": "Entfernen"
+        }
+      },
+      "metadata": {
+        "title": "Über diesen Virtuellen Mitwirkenden",
+        "hostLabel": "Gehostet von",
+        "bodyOfKnowledgeLabel": "Wissensbasis"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Avatar ändern",
+        "uploading": "Wird hochgeladen…",
+        "helperText": "Quadratisches JPEG oder PNG, bis zu 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Mitgliedschaften"
+      },
+      "empty": "Dieser Virtuelle Mitwirkende ist noch kein Mitglied eines Bereichs.",
+      "spaceBadge": "Bereich",
+      "subspaceBadge": "Unterbereich",
+      "viewLabel": "Anzeigen",
+      "leaveLabel": "Verlassen",
+      "leaveSpaceConfirmTitle": "Diesen Bereich verlassen?",
+      "leaveSubspaceConfirmTitle": "Diesen Unterbereich verlassen?",
+      "leaveConfirmBody": "Diesen Virtuellen Mitwirkenden aus {{name}} entfernen? Dies kann durch erneutes Beantragen der Mitgliedschaft rückgängig gemacht werden.",
+      "leaveConfirmAction": "Verlassen",
+      "pendingInvitationsHeading": "Ausstehende Einladungen",
+      "acceptLabel": "Annehmen",
+      "declineLabel": "Ablehnen",
+      "acceptInvitationConfirmTitle": "Einladung annehmen?",
+      "acceptInvitationConfirmBody": "Möchten Sie die Einladung annehmen, {{name}} beizutreten?",
+      "acceptInvitationConfirmAction": "Annehmen"
+    },
+    "visibility": {
+      "title": "Sichtbarkeit",
+      "helper": "Steuert, wer diesen Virtuellen Mitwirkenden entdecken kann.",
+      "publicLabel": "Öffentlich",
+      "publicDescription": "Alle, einschließlich anonymer Besucher, können diesen Virtuellen Mitwirkenden finden.",
+      "accountLabel": "Konto",
+      "accountDescription": "Nur Mitglieder des Host-Kontos können diesen Virtuellen Mitwirkenden finden.",
+      "hiddenLabel": "Verborgen",
+      "hiddenDescription": "Dieser Virtuelle Mitwirkende ist in der Suche verborgen.",
+      "listedInStoreLabel": "Im Alkemio-Store gelistet",
+      "listedInStoreHelper": "Nur verfügbar, wenn die Sichtbarkeit auf Öffentlich gesetzt ist."
+    },
+    "bodyOfKnowledge": {
+      "title": "Wissensbasis",
+      "helper": "Verwalten Sie, wie die Wissensbasis dieses Virtuellen Mitwirkenden offengelegt wird.",
+      "privacyToggleLabel": "Wissensbasis-Inhalte für Nicht-Mitglieder verbergen",
+      "privacyToggleHelper": "Wenn aktiviert, werden die zugrunde liegenden Inhalte vor Benutzern ohne Zugriff verborgen.",
+      "refreshLabel": "Wissen aktualisieren",
+      "lastUpdated": "Zuletzt aktualisiert:",
+      "never": "nie"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Verfügbare Variablen: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Externe KI-Konfiguration",
+      "helper": "Verbinden Sie diesen Virtuellen Mitwirkenden mit einem externen KI-Anbieter.",
+      "apiKeyLabel": "API-Schlüssel",
+      "apiKeyPlaceholder": "Geben Sie einen neuen API-Schlüssel ein",
+      "apiKeyHelper": "Vorhandene Schlüssel werden nie zurückgegeben. Lassen Sie das Feld leer, um den aktuellen Schlüssel beizubehalten.",
+      "assistantIdLabel": "Assistant-ID",
+      "modelLabel": "Modell"
+    },
+    "promptGraphFallback": {
+      "heading": "Die Bearbeitung des Prompt Graph bleibt in MUI",
+      "description": "Der Flow-Editor wird migriert. Öffnen Sie die alte Einstellungsseite, um den Prompt Graph zu bearbeiten.",
+      "ctaLabel": "In alter Ansicht öffnen"
     }
   },
   "shared": {

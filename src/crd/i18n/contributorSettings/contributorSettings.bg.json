@@ -16,6 +16,11 @@
         "community": "Общност",
         "authorization": "Оторизация",
         "settings": "Настройки"
+      },
+      "vc": {
+        "profile": "Профил",
+        "membership": "Членство",
+        "settings": "Настройки"
       }
     }
   },
@@ -482,6 +487,116 @@
         "contributionRolesCaption": "Когато е активирано, ролите на организацията (Администратор, Собственик, Асоцииран) се виждат на публичния профил."
       },
       "errorToast": "Запазването на предпочитанието не успя — опитайте отново"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Настройки",
+      "identity": {
+        "title": "Самоличност",
+        "displayName": {
+          "label": "Показвано име",
+          "hint": "Как този Виртуален Сътрудник се появява в Alkemio.",
+          "required": "Показваното име е задължително"
+        },
+        "tagline": {
+          "label": "Слоган",
+          "hint": "Кратък ред, показан в профила на сътрудника."
+        },
+        "description": {
+          "label": "Описание",
+          "hint": "Обяснете какво прави този Виртуален Сътрудник и как да работите с него."
+        }
+      },
+      "keywords": {
+        "label": "Ключови думи",
+        "hint": "Добавете ключови думи, за да помогнете на потребителите да открият този Виртуален Сътрудник.",
+        "placeholder": "Добавете ключова дума и натиснете Enter"
+      },
+      "socialLinks": {
+        "title": "Препратки",
+        "addAnother": "Добавяне на друга препратка",
+        "namePlaceholder": "Име",
+        "urlPlaceholder": "https://example.com",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
+        "empty": "Все още няма препратки.",
+        "deleteDialog": {
+          "title": "Премахване на препратката?",
+          "description": "Тази препратка ще бъде премахната при запазване на секцията. Можете да отмените, преди да запазите.",
+          "confirm": "Премахване"
+        }
+      },
+      "metadata": {
+        "title": "За този Виртуален Сътрудник",
+        "hostLabel": "Хостван от",
+        "bodyOfKnowledgeLabel": "База от знания"
+      },
+      "avatar": {
+        "title": "Аватар",
+        "changeButton": "Промяна на аватара",
+        "uploading": "Качване…",
+        "helperText": "Квадратно JPEG или PNG, до 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Членства"
+      },
+      "empty": "Този Виртуален Сътрудник все още не е член на никое пространство.",
+      "spaceBadge": "Пространство",
+      "subspaceBadge": "Подпространство",
+      "viewLabel": "Преглед",
+      "leaveLabel": "Напускане",
+      "leaveSpaceConfirmTitle": "Напускане на това пространство?",
+      "leaveSubspaceConfirmTitle": "Напускане на това подпространство?",
+      "leaveConfirmBody": "Премахване на този Виртуален Сътрудник от {{name}}? Това може да се отмени чрез повторно кандидатстване за членство.",
+      "leaveConfirmAction": "Напускане",
+      "pendingInvitationsHeading": "Изчакващи покани",
+      "acceptLabel": "Приемане",
+      "declineLabel": "Отказ",
+      "acceptInvitationConfirmTitle": "Приемане на поканата?",
+      "acceptInvitationConfirmBody": "Приемате ли поканата да се присъедините към {{name}}?",
+      "acceptInvitationConfirmAction": "Приемане"
+    },
+    "visibility": {
+      "title": "Видимост",
+      "helper": "Контролира кой може да открие този Виртуален Сътрудник.",
+      "publicLabel": "Публично",
+      "publicDescription": "Всички, включително анонимни посетители, могат да намерят този Виртуален Сътрудник.",
+      "accountLabel": "Акаунт",
+      "accountDescription": "Само членовете на хостинг акаунта могат да намерят този Виртуален Сътрудник.",
+      "hiddenLabel": "Скрит",
+      "hiddenDescription": "Този Виртуален Сътрудник е скрит от търсенето.",
+      "listedInStoreLabel": "В каталога на Alkemio",
+      "listedInStoreHelper": "Достъпно само когато видимостта е Публично."
+    },
+    "bodyOfKnowledge": {
+      "title": "База от знания",
+      "helper": "Управлявайте начина, по който се представя базата от знания на този Виртуален Сътрудник.",
+      "privacyToggleLabel": "Скриване на съдържанието на базата от знания от нечленове",
+      "privacyToggleHelper": "Когато е включено, основното съдържание е скрито от потребителите без достъп.",
+      "refreshLabel": "Обновяване на знанията",
+      "lastUpdated": "Последна актуализация:",
+      "never": "никога"
+    },
+    "prompt": {
+      "title": "Промпт",
+      "helpText": "Налични променливи: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Конфигурация на външен ИИ",
+      "helper": "Свържете този Виртуален Сътрудник с външен ИИ доставчик.",
+      "apiKeyLabel": "API ключ",
+      "apiKeyPlaceholder": "Въведете нов API ключ",
+      "apiKeyHelper": "Съществуващите ключове никога не се връщат. Оставете празно, за да запазите текущия ключ.",
+      "assistantIdLabel": "ID на асистент",
+      "modelLabel": "Модел"
+    },
+    "promptGraphFallback": {
+      "heading": "Редактирането на Prompt Graph остава в MUI",
+      "description": "Редакторът на потока се мигрира. Отворете старата страница с настройки, за да редактирате prompt graph.",
+      "ctaLabel": "Отваряне в стар изглед"
     }
   },
   "shared": {
