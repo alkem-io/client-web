@@ -32,6 +32,27 @@ export type AccountResourceCardItem = {
   actions: AccountKebabAction[];
 };
 
+/** Per-plan capacity breakdown — populated only for the spaces group (FR-033 / MUI parity). */
+export type AccountSpacePlanCapacity = {
+  free: { usage: number; limit: number };
+  plus: { usage: number; limit: number };
+  premium: { usage: number; limit: number };
+};
+
+export type AccountCapacity = {
+  /** Sum across plans for Spaces; single-entitlement usage for the other groups. */
+  usage: number;
+  /** Sum across plans for Spaces; single-entitlement limit for the other groups. */
+  limit: number;
+  /**
+   * When false AND usage === 0, the badge renders "Not available" with its
+   * own tooltip. Matches the MUI `BlockHeader` `isAvailable` branch.
+   */
+  isAvailable: boolean;
+  /** Spaces-only — drives the multi-line per-plan tooltip. */
+  perPlan?: AccountSpacePlanCapacity;
+};
+
 export type AccountResourceGroup = {
   /**
    * Group key — drives layout variant (banner card grid for Spaces / VCs,
@@ -47,6 +68,8 @@ export type AccountResourceGroup = {
   createButtonLabel: string;
   onCreate: () => void;
   items: AccountResourceCardItem[];
+  /** Per-group capacity for the hover-tooltip badge; absent during loading or when the license is missing. */
+  capacity?: AccountCapacity;
 };
 
 /** The shared contributor-account view shape. Both User Account and Org Account map to this. */

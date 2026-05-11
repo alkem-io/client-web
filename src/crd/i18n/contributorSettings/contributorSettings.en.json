@@ -515,7 +515,15 @@
     "yes": "Yes",
     "no": "No",
     "account": {
-      "activeCount": "{{count}} Active",
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Not available",
+        "notAvailableTooltip": "Contact the Alkemio team to enable this feature on your account.",
+        "spacesTooltip": "From the available Spaces in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free Spaces\n{{plusUsage}} out of {{plusLimit}} Plus Spaces\n{{premiumUsage}} out of {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "You have created {{usage}} out of your {{limit}} available Virtual Contributors in your account.",
+        "innovationPacksTooltip": "You have created {{usage}} out of your {{limit}} available Template Packs in your account.",
+        "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
+      },
       "kebabAriaLabel": "More actions",
       "emptySlot": "Empty Slot",
       "createNewSpace": {
@@ -531,7 +539,7 @@
         "emptyHeading": "No Custom Homepages",
         "emptyDescription": "Create a personalized landing page for your account.",
         "createCta": "Create Homepage",
-        "capacity": "Capacity: 0/1 Used"
+        "capacity": "Capacity: {{usage}}/{{limit}} Used"
       },
       "deleteSuccess": "Resource deleted",
       "deleteError": "Couldn't delete resource — try again"

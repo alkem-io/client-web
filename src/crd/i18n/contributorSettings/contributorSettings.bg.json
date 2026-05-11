@@ -496,7 +496,15 @@
     "yes": "Да",
     "no": "Не",
     "account": {
-      "activeCount": "{{count}} активни",
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Не е налично",
+        "notAvailableTooltip": "Свържете се с екипа на Alkemio, за да активирате тази функция за акаунта си.",
+        "spacesTooltip": "От наличните Spaces във вашия акаунт сте създали:\n{{freeUsage}} от {{freeLimit}} Free Spaces\n{{plusUsage}} от {{plusLimit}} Plus Spaces\n{{premiumUsage}} от {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "Създали сте {{usage}} от {{limit}} налични Виртуални сътрудници във вашия акаунт.",
+        "innovationPacksTooltip": "Създали сте {{usage}} от {{limit}} налични Template Packs във вашия акаунт.",
+        "innovationHubsTooltip": "Създали сте {{usage}} от {{limit}} налични персонализирани начални страници във вашия акаунт."
+      },
       "kebabAriaLabel": "Още действия",
       "emptySlot": "Празен слот",
       "createNewSpace": {
@@ -512,7 +520,7 @@
         "emptyHeading": "Няма персонализирани начални страници",
         "emptyDescription": "Създайте персонализирана начална страница за акаунта си.",
         "createCta": "Създаване на начална страница",
-        "capacity": "Капацитет: 0/1 използвани"
+        "capacity": "Капацитет: {{usage}}/{{limit}} използвани"
       },
       "deleteSuccess": "Ресурсът е изтрит",
       "deleteError": "Изтриването не успя — опитайте отново"

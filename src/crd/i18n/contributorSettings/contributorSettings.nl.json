@@ -495,7 +495,15 @@
     "yes": "Ja",
     "no": "Nee",
     "account": {
-      "activeCount": "{{count}} actief",
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Niet beschikbaar",
+        "notAvailableTooltip": "Neem contact op met het Alkemio-team om deze functie voor je account in te schakelen.",
+        "spacesTooltip": "Van de beschikbare Spaces in je account heb je aangemaakt:\n{{freeUsage}} van de {{freeLimit}} Free Spaces\n{{plusUsage}} van de {{plusLimit}} Plus Spaces\n{{premiumUsage}} van de {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Virtuele Bijdragers in je account aangemaakt.",
+        "innovationPacksTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Template Packs in je account aangemaakt.",
+        "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
+      },
       "kebabAriaLabel": "Meer acties",
       "emptySlot": "Lege plek",
       "createNewSpace": {
@@ -511,7 +519,7 @@
         "emptyHeading": "Geen aangepaste startpagina's",
         "emptyDescription": "Maak een gepersonaliseerde landingspagina voor je account.",
         "createCta": "Startpagina aanmaken",
-        "capacity": "Capaciteit: 0/1 gebruikt"
+        "capacity": "Capaciteit: {{usage}}/{{limit}} gebruikt"
       },
       "deleteSuccess": "Resource verwijderd",
       "deleteError": "Verwijderen mislukt — probeer opnieuw"

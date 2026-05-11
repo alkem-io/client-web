@@ -12,7 +12,9 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { Skeleton } from '@/crd/primitives/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
+  AccountCapacity,
   AccountResourceCardItem,
   AccountResourceGroup,
   ContributorAccountViewProps,
@@ -94,7 +96,8 @@ function BannerCardGroup({
     <section>
       <SectionHeader
         title={group.title}
-        count={group.items.length}
+        groupId={group.groupId}
+        capacity={group.capacity}
         canCreate={group.canCreate}
         createButtonLabel={group.createButtonLabel}
         onCreate={group.onCreate}
@@ -239,6 +242,8 @@ function TemplatePackList({ group }: { group: AccountResourceGroup }) {
     <section>
       <SectionHeader
         title={group.title}
+        groupId={group.groupId}
+        capacity={group.capacity}
         canCreate={group.canCreate}
         createButtonLabel={group.createButtonLabel}
         onCreate={group.onCreate}
@@ -287,6 +292,8 @@ function CustomHomepagesGroup({ group }: { group: AccountResourceGroup }) {
     <section>
       <SectionHeader
         title={group.title}
+        groupId={group.groupId}
+        capacity={group.capacity}
         // Top section button stays visible regardless of items count — the
         // empty-state CTA inside the dashed tile is additional, mirroring
         // the prototype's layout exactly.
@@ -309,7 +316,12 @@ function CustomHomepagesGroup({ group }: { group: AccountResourceGroup }) {
               {t('shared.account.customHomepages.createCta')}
             </Button>
           ) : null}
-          <p className="mt-4 text-badge text-muted-foreground">{t('shared.account.customHomepages.capacity')}</p>
+          <p className="mt-4 text-badge text-muted-foreground">
+            {t('shared.account.customHomepages.capacity', {
+              usage: group.capacity?.usage ?? 0,
+              limit: group.capacity?.limit ?? 0,
+            })}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -342,29 +354,26 @@ function CustomHomepagesGroup({ group }: { group: AccountResourceGroup }) {
 
 function SectionHeader({
   title,
-  count,
+  groupId,
+  capacity,
   canCreate,
   createButtonLabel,
   onCreate,
   createVariant = 'outline',
 }: {
   title: string;
-  count?: number;
+  groupId: AccountResourceGroup['groupId'];
+  capacity?: AccountCapacity;
   canCreate: boolean;
   createButtonLabel: string;
   onCreate: () => void;
   createVariant?: 'default' | 'outline';
 }) {
-  const { t } = useTranslation(NS);
   return (
     <div className="mb-6 flex items-center justify-between">
       <h2 className="flex items-center gap-2 text-section-title">
         {title}
-        {count !== undefined ? (
-          <Badge variant="secondary" className="ml-2 font-normal text-caption">
-            {t('shared.account.activeCount', { count })}
-          </Badge>
-        ) : null}
+        <CapacityBadge groupId={groupId} capacity={capacity} />
       </h2>
       {canCreate ? (
         <Button size="sm" variant={createVariant} onClick={onCreate}>
@@ -373,6 +382,61 @@ function SectionHeader({
         </Button>
       ) : null}
     </div>
+  );
+}
+
+function CapacityBadge({
+  groupId,
+  capacity,
+}: {
+  groupId: AccountResourceGroup['groupId'];
+  capacity?: AccountCapacity;
+}) {
+  const { t } = useTranslation(NS);
+  if (!capacity) return null;
+
+  // "Not available" branch — entitlement absent and nothing created. Mirrors
+  // the MUI `BlockHeader` `isAvailable` branch in
+  // src/domain/community/contributor/Account/ContributorAccountView.tsx.
+  if (!capacity.isAvailable && capacity.usage === 0) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild={true}>
+            <Badge variant="secondary" className="ml-2 cursor-help font-normal text-caption">
+              {t('shared.account.capacity.notAvailable')}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs whitespace-pre-line">
+            {t('shared.account.capacity.notAvailableTooltip')}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  const tooltipText = capacity.perPlan
+    ? t('shared.account.capacity.spacesTooltip', {
+        freeUsage: capacity.perPlan.free.usage,
+        freeLimit: capacity.perPlan.free.limit,
+        plusUsage: capacity.perPlan.plus.usage,
+        plusLimit: capacity.perPlan.plus.limit,
+        premiumUsage: capacity.perPlan.premium.usage,
+        premiumLimit: capacity.perPlan.premium.limit,
+      })
+    : t(`shared.account.capacity.${groupId}Tooltip`, { usage: capacity.usage, limit: capacity.limit });
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild={true}>
+          <Badge variant="secondary" className="ml-2 cursor-help font-normal text-caption">
+            {t('shared.account.capacity.label', { usage: capacity.usage, limit: capacity.limit })}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs whitespace-pre-line">{tooltipText}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

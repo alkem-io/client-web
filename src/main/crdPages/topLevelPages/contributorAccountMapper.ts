@@ -1,7 +1,8 @@
 import { Settings, Trash2 } from 'lucide-react';
 import type { AccountInformationQuery } from '@/core/apollo/generated/graphql-schema';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import type {
+  AccountCapacity,
   AccountKebabAction,
   AccountResourceCardItem,
   AccountResourceGroup,
@@ -69,6 +70,37 @@ export function mapAccountToViewProps(
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const canDelete = privileges.includes(AuthorizationPrivilege.Delete);
 
+  // Capacity readouts from the account's license entitlements — drives the
+  // X/Y badge + per-plan tooltip on each section header. Matches MUI parity
+  // (`ContributorAccountView.tsx:208-230` + BlockHeader call sites in
+  // src/domain/community/contributor/Account/). `isAvailable` is the
+  // privilege-to-create flag (NOT `availableEntitlements`) — same as MUI's
+  // `isAvailable={canCreate*}` on each BlockHeader.
+  const entitlements = account?.license?.entitlements ?? [];
+  const findEnt = (type: LicenseEntitlementType) => entitlements.find(e => e.type === type) ?? { limit: 0, usage: 0 };
+
+  const spaceFree = findEnt(LicenseEntitlementType.AccountSpaceFree);
+  const spacePlus = findEnt(LicenseEntitlementType.AccountSpacePlus);
+  const spacePremium = findEnt(LicenseEntitlementType.AccountSpacePremium);
+  const spacesCapacity: AccountCapacity = {
+    usage: spaceFree.usage + spacePlus.usage + spacePremium.usage,
+    limit: spaceFree.limit + spacePlus.limit + spacePremium.limit,
+    isAvailable: canCreateSpace,
+    perPlan: {
+      free: { usage: spaceFree.usage, limit: spaceFree.limit },
+      plus: { usage: spacePlus.usage, limit: spacePlus.limit },
+      premium: { usage: spacePremium.usage, limit: spacePremium.limit },
+    },
+  };
+
+  const buildSimpleCapacity = (type: LicenseEntitlementType, canCreate: boolean): AccountCapacity => {
+    const e = findEnt(type);
+    return { usage: e.usage, limit: e.limit, isAvailable: canCreate };
+  };
+  const vcCapacity = buildSimpleCapacity(LicenseEntitlementType.AccountVirtualContributor, canCreateVc);
+  const packCapacity = buildSimpleCapacity(LicenseEntitlementType.AccountInnovationPack, canCreateInnovationPack);
+  const hubCapacity = buildSimpleCapacity(LicenseEntitlementType.AccountInnovationHub, canCreateInnovationHub);
+
   const buildKebab = (
     kind: AccountResourceKind,
     id: string,
@@ -101,6 +133,7 @@ export function mapAccountToViewProps(
     canCreate: canCreateSpace,
     createButtonLabel: labels.spaces.createButton,
     onCreate: callbacks.onCreateSpace,
+    capacity: spacesCapacity,
     items:
       account?.spaces.map<AccountResourceCardItem>(space => {
         const profile = space.about.profile;
@@ -122,6 +155,7 @@ export function mapAccountToViewProps(
     canCreate: canCreateVc,
     createButtonLabel: labels.virtualContributors.createButton,
     onCreate: callbacks.onCreateVc,
+    capacity: vcCapacity,
     items:
       account?.virtualContributors.map<AccountResourceCardItem>(vc => {
         const profile = vc.profile;
@@ -143,6 +177,7 @@ export function mapAccountToViewProps(
     canCreate: canCreateInnovationPack,
     createButtonLabel: labels.innovationPacks.createButton,
     onCreate: callbacks.onCreateInnovationPack,
+    capacity: packCapacity,
     items:
       account?.innovationPacks.map<AccountResourceCardItem>(pack => ({
         id: pack.id,
@@ -161,6 +196,7 @@ export function mapAccountToViewProps(
     canCreate: canCreateInnovationHub,
     createButtonLabel: labels.innovationHubs.createButton,
     onCreate: callbacks.onCreateInnovationHub,
+    capacity: hubCapacity,
     items:
       account?.innovationHubs.map<AccountResourceCardItem>(hub => ({
         id: hub.id,

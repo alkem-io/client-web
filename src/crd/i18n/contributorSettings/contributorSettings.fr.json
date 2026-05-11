@@ -496,7 +496,15 @@
     "yes": "Oui",
     "no": "Non",
     "account": {
-      "activeCount": "{{count}} actifs",
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Non disponible",
+        "notAvailableTooltip": "Contactez l'équipe Alkemio pour activer cette fonctionnalité sur votre compte.",
+        "spacesTooltip": "Sur les Spaces disponibles dans votre compte, vous avez créé :\n{{freeUsage}} sur {{freeLimit}} Spaces Free\n{{plusUsage}} sur {{plusLimit}} Spaces Plus\n{{premiumUsage}} sur {{premiumLimit}} Spaces Premium",
+        "virtualContributorsTooltip": "Vous avez créé {{usage}} sur les {{limit}} Contributeurs Virtuels disponibles dans votre compte.",
+        "innovationPacksTooltip": "Vous avez créé {{usage}} sur les {{limit}} Template Packs disponibles dans votre compte.",
+        "innovationHubsTooltip": "Vous avez créé {{usage}} sur les {{limit}} pages d'accueil personnalisées disponibles dans votre compte."
+      },
       "kebabAriaLabel": "Plus d'actions",
       "emptySlot": "Emplacement vide",
       "createNewSpace": {
@@ -512,7 +520,7 @@
         "emptyHeading": "Aucune page d'accueil personnalisée",
         "emptyDescription": "Créez une page d'accueil personnalisée pour votre compte.",
         "createCta": "Créer une page d'accueil",
-        "capacity": "Capacité : 0/1 utilisé"
+        "capacity": "Capacité : {{usage}}/{{limit}} utilisé"
       },
       "deleteSuccess": "Ressource supprimée",
       "deleteError": "Échec de la suppression — réessayez"
