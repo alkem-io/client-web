@@ -25311,6 +25311,30 @@ export type ConvertSpaceL2ToL1Mutation = {
   convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
 };
 
+export type MoveSpaceL1ToL0MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL0ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToL0Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+};
+
+export type MoveSpaceL1ToL2MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL1ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToL2Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
+};
+
 export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
