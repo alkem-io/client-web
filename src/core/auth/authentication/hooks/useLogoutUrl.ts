@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { AUTH_LOGOUT_PATH, OIDC_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useIdTokenHint } from './useIdTokenHint';
 
 type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
@@ -20,14 +20,14 @@ export const useLogoutUrl = () => {
         post_logout_redirect_uri: postLogoutRedirectUri,
       });
       // Hintful path — full RP-initiated logout via Hydra, then back to /logout.
-      setOutcome({ kind: 'redirect', url: `/api/auth/oidc/logout?${params.toString()}` });
+      setOutcome({ kind: 'redirect', url: `${OIDC_LOGOUT_PATH}?${params.toString()}` });
     } catch {
       // No hint available — session is already gone. Call BFF hintless to
       // sweep any stale cookie. We use fetch (not navigation) so the page
       // does not reload; this avoids a redirect loop when /logout itself is
       // the post-logout target.
       try {
-        await fetch('/api/auth/oidc/logout', {
+        await fetch(OIDC_LOGOUT_PATH, {
           credentials: 'include',
           redirect: 'manual',
         });
