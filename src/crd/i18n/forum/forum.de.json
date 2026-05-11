@@ -49,8 +49,6 @@
     "fields": {
       "title": "Titel",
       "category": "Kategorie *",
-      "tags": "Tags",
-      "tagsPlaceholder": "Tags durch Kommas getrennt hinzufügen...",
       "body": "Teile deine Gedanken..."
     },
     "cancel": "Abbrechen",

@@ -1,5 +1,4 @@
 import { Formik, useFormikContext } from 'formik';
-import { Tag } from 'lucide-react';
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -15,18 +14,23 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
-import { TagsInput } from '@/crd/forms/tags-input';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 export type ForumDiscussionFormMode = 'initiate' | 'update';
 
+// Mirrors the legacy `DiscussionFormValues` (src/domain/communication/discussion/forms/DiscussionForm.tsx):
+// title, category, description — no tags. The CreateDiscussion mutation does
+// accept an optional `tags` array, but the MUI form never exposes it, the
+// UpdateDiscussion mutation has no `tags` field at all, and discussion reads
+// don't surface tags either — so adding tags here would be CRD-only chrome
+// without round-trip parity. Removed.
 type ForumDiscussionFormValues = {
   title: string;
   category: ForumDiscussionCategory | '';
   description: string;
-  tags: string[];
 };
 
 /**
@@ -61,7 +65,6 @@ type ForumDiscussionFormUpdateProps = {
     title: string;
     description: string;
     category: ForumDiscussionCategory;
-    tags?: string[];
   };
   availableCategories: ForumDiscussionCategory[];
   onStateChange: (state: ForumDiscussionFormState) => void;
@@ -77,7 +80,6 @@ const validationSchema = yup.object().shape({
     .oneOf(Object.values(ForumDiscussionCategory))
     .required('forms.validations.required'),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
-  tags: yup.array().of(yup.string().required()),
 });
 
 export function ForumDiscussionFormConnector(props: ForumDiscussionFormConnectorProps) {
@@ -94,9 +96,8 @@ export function ForumDiscussionFormConnector(props: ForumDiscussionFormConnector
           title: props.discussion.title,
           category: props.discussion.category,
           description: props.discussion.description,
-          tags: props.discussion.tags ?? [],
         }
-      : { title: '', category: '', description: '', tags: [] };
+      : { title: '', category: '', description: '' };
 
   const handleSubmit = async (values: ForumDiscussionFormValues): Promise<void> => {
     if (!values.category) return;
@@ -107,7 +108,6 @@ export function ForumDiscussionFormConnector(props: ForumDiscussionFormConnector
             forumID: props.forumId,
             profile: { displayName: values.title, description: values.description },
             category: values.category,
-            tags: values.tags.length > 0 ? values.tags : undefined,
           },
         },
       });
@@ -160,6 +160,10 @@ type FormBodyProps = {
 function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, onStateChange }: FormBodyProps) {
   const { t } = useTranslation('crd-forum');
   const { t: tDefault } = useTranslation();
+  // The validators return either a plain TranslationKey string or a
+  // `{ message, ...payload }` object — passing the latter through `String()`
+  // yields "[object Object]". This hook handles both shapes correctly.
+  const translateValidationMessage = useValidationMessageTranslation();
   const titleId = useId();
   const categoryId = useId();
 
@@ -188,9 +192,14 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
     });
   }, [onStateChange, submitDisabled, busy]);
 
-  const titleError = touched.title && errors.title ? String(errors.title) : undefined;
-  const descriptionError = touched.description && errors.description ? String(errors.description) : undefined;
-  const categoryError = touched.category && errors.category ? String(errors.category) : undefined;
+  // Pass the raw Formik error value (string OR ValidationMessageWithPayload)
+  // straight into the hook — it does the i18n + payload interpolation.
+  // Cast to `never` because Formik types errors as plain `string`, but our
+  // validators actually return `ValidationMessageWithPayload` objects too —
+  // the hook discriminates at runtime.
+  const titleError = touched.title ? translateValidationMessage(errors.title as never) : undefined;
+  const descriptionError = touched.description ? translateValidationMessage(errors.description as never) : undefined;
+  const categoryError = touched.category ? translateValidationMessage(errors.category as never) : undefined;
 
   return (
     <div className="space-y-5">
@@ -211,7 +220,7 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
         />
         {titleError ? (
           <p id={`${titleId}-error`} className="text-caption text-destructive">
-            {tDefault(titleError as never)}
+            {titleError}
           </p>
         ) : null}
       </div>
@@ -245,29 +254,15 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
         </Select>
         {categoryError ? (
           <p id={`${categoryId}-error`} className="text-caption text-destructive">
-            {tDefault(categoryError as never)}
+            {categoryError}
           </p>
         ) : null}
       </div>
 
-      {/* Tags. The Label intentionally omits `htmlFor` — TagsInput is a custom
-          composite whose focusable child is an inner `<input>` we can't address
-          from here without widening the primitive's API. The visible Label still
-          conveys association sighted-side; the inner input already carries
-          `aria-label={placeholder}` for screen readers. */}
-      <div className="space-y-1.5">
-        <Label className="text-body-emphasis">{t('dialog.fields.tags')}</Label>
-        <TagsInput
-          value={values.tags}
-          onChange={next => setFieldValue('tags', next)}
-          placeholder={t('dialog.fields.tagsPlaceholder')}
-          icon={<Tag aria-hidden="true" className="size-4 text-muted-foreground" />}
-        />
-      </div>
-
-      {/* Body / description. Same reasoning as Tags above — MarkdownEditor's
-          focusable target is a Tiptap contenteditable inside a Suspense
-          boundary, addressed via `placeholder`-as-ariaLabel internally. */}
+      {/* Body / description. The Label intentionally omits `htmlFor` —
+          MarkdownEditor's focusable target is a Tiptap contenteditable inside
+          a Suspense boundary, addressed via `placeholder`-as-ariaLabel
+          internally rather than via an id we could reference from here. */}
       <div className="space-y-1.5">
         <Label className="text-body-emphasis">{t('dialog.fields.body')}</Label>
         <MarkdownEditor
@@ -277,9 +272,7 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
           disabled={isSubmitting}
           placeholder={t('dialog.fields.body')}
         />
-        {descriptionError ? (
-          <p className="text-caption text-destructive">{tDefault(descriptionError as never)}</p>
-        ) : null}
+        {descriptionError ? <p className="text-caption text-destructive">{descriptionError}</p> : null}
       </div>
     </div>
   );

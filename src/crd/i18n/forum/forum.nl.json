@@ -49,8 +49,6 @@
     "fields": {
       "title": "Titel",
       "category": "Categorie *",
-      "tags": "Tags",
-      "tagsPlaceholder": "Voeg tags toe, gescheiden door komma's...",
       "body": "Deel je gedachten..."
     },
     "cancel": "Annuleren",

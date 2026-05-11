@@ -49,8 +49,6 @@
     "fields": {
       "title": "Title",
       "category": "Category *",
-      "tags": "Tags",
-      "tagsPlaceholder": "Add tags separated by commas...",
       "body": "Share your thoughts..."
     },
     "cancel": "Cancel",

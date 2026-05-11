@@ -49,8 +49,6 @@
     "fields": {
       "title": "Titre",
       "category": "Catégorie *",
-      "tags": "Tags",
-      "tagsPlaceholder": "Ajoutez des tags séparés par des virgules...",
       "body": "Partagez vos idées..."
     },
     "cancel": "Annuler",

@@ -49,8 +49,6 @@
     "fields": {
       "title": "Título",
       "category": "Categoría *",
-      "tags": "Etiquetas",
-      "tagsPlaceholder": "Añade etiquetas separadas por comas...",
       "body": "Comparte tus ideas..."
     },
     "cancel": "Cancelar",

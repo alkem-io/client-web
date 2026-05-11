@@ -127,12 +127,19 @@ export const mapDiscussionToDetailData = (
   const description = discussion.profile.description ?? '';
   const bodyContent: ReactNode = description ? <MarkdownContent content={description} /> : null;
 
+  // The backend returns `profile.url` as either an absolute URL (e.g.
+  // `http://localhost:3000/forum/discussion/foo` in dev) or — historically —
+  // as a root-relative path. Only prepend the origin when the URL is
+  // path-only, otherwise it gets doubled (`http://localhost:3000http://...`).
+  const profileUrl = discussion.profile.url ?? '';
+  const shareUrl = /^https?:\/\//i.test(profileUrl) ? profileUrl : `${window.location.origin}${profileUrl}`;
+
   return {
     id: discussion.id,
     iconNode: renderCategoryIcon(discussion.category),
     title: discussion.profile.displayName,
     categorySlug: slugFor(discussion.category),
-    shareUrl: `${window.location.origin}${discussion.profile.url}`,
+    shareUrl,
     body: { contentNode: bodyContent },
     author: {
       id: authorId,
