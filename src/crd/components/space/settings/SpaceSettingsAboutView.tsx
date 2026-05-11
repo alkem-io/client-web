@@ -1,7 +1,8 @@
-import { Check, ImageIcon, Loader2, Plus, Trash2 } from 'lucide-react';
+import { ImageIcon, Plus, Trash2 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
+import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -366,6 +367,13 @@ function FieldHint({ children }: { children: React.ReactNode }) {
 
 type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
 
+/**
+ * Thin wrapper around the shared `FieldFooter` (extracted to
+ * `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse). Keeps
+ * the local `t`-based call sites unchanged. The shared status type
+ * (`SectionSaveStatus`) is structurally compatible with 045's
+ * `AboutSectionSaveStatus` (the `at` field is now optional).
+ */
 function FieldFooter({
   hint,
   dirty,
@@ -380,56 +388,18 @@ function FieldFooter({
   t: TFn;
 }) {
   return (
-    <div className="mt-1.5 flex items-start justify-between gap-3">
-      <p className="text-caption text-muted-foreground">{hint}</p>
-      <InlineSaveButton dirty={dirty} status={status} onSave={onSave} t={t} />
-    </div>
-  );
-}
-
-function InlineSaveButton({
-  dirty,
-  status,
-  onSave,
-  t,
-}: {
-  dirty: boolean;
-  status: AboutSectionSaveStatus;
-  onSave: () => void;
-  t: TFn;
-}) {
-  if (status.kind === 'saving') {
-    return (
-      <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
-        <Loader2 aria-hidden="true" className="size-3 animate-spin" />
-        {t('about.inlineSave.saving')}
-      </span>
-    );
-  }
-  if (status.kind === 'saved') {
-    return (
-      <span className="inline-flex items-center gap-1 text-caption text-emerald-600">
-        <Check aria-hidden="true" className="size-3" />
-        {t('about.inlineSave.saved')}
-      </span>
-    );
-  }
-  if (status.kind === 'error') {
-    return (
-      <button type="button" onClick={onSave} className="text-caption font-semibold text-destructive hover:underline">
-        {t('about.inlineSave.retry')}
-      </button>
-    );
-  }
-  if (!dirty) return null;
-  return (
-    <button
-      type="button"
-      onClick={onSave}
-      className="text-caption font-semibold text-foreground px-2 py-0.5 rounded hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      {t('about.inlineSave.save')}
-    </button>
+    <SharedFieldFooter
+      hint={hint}
+      dirty={dirty}
+      status={status as SectionSaveStatus}
+      onSave={onSave}
+      labels={{
+        save: t('about.inlineSave.save'),
+        saving: t('about.inlineSave.saving'),
+        saved: t('about.inlineSave.saved'),
+        retry: t('about.inlineSave.retry'),
+      }}
+    />
   );
 }
 
