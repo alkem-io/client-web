@@ -24,6 +24,7 @@ This document is **specification-side**: it lists field names, validation rules,
 | NotificationSettings | `User.settings.notification` (via `useUserSettingsQuery`) | User Notifications | this spec |
 | HomeSpace | `User.settings.homeSpace` | User Membership | this spec |
 | AccountResource (Space / VC / Innovation Pack / Innovation Hub) | `useUserAccountQuery` / `useOrganizationAccountQuery` + `useAccountInformationQuery` | User Account, Org Account | this spec |
+| AccountCreateRequest (the four Account-tab creation dialogs' payloads — `CrdCreateSpaceDialog` / `CrdCreateVirtualContributorWizard` / `CrdCreateInnovationPackDialog` / `CrdCreateInnovationHubDialog`) | maps onto the existing create mutations: `useCreateSpaceMutation` / `useCreateVirtualContributorOnAccountMutation` (+ `useUploadVisualMutation`, `useRefreshBodyOfKnowledgeMutation`, `useCreateLinkOnCalloutMutation`, `useCreateSpaceMutation`, `useAssignRoleToVirtualContributorMutation`) / `useCreateInnovationPackMutation` / `useCreateInnovationHubMutation` | User Account, Org Account | this spec |
 | Associate (member of an org in `Associate` role) | `useRoleSetManager(roleSet, [Associate])` | Org Community | this spec |
 | RoleAssignment (Admin / Owner) | `useRoleSetManager(roleSet, [Admin])` / `(roleSet, [Owner])` | Org Authorization | this spec |
 | OrganizationSettings | `useOrganizationSettingsQuery` | Org Settings | this spec |
@@ -94,7 +95,7 @@ Renders four card groups. The CRD view is the **shared** `ContributorAccountView
 | Template Packs | Renders existing pack cards followed by up to 3 dashed "Empty Slot" placeholders (`Math.max(0, 3 − packs.length)`), each with a `+` icon. |
 | Custom Homepages | When ≥1 page → renders cards. When 0 pages → centered full empty-state with a circular icon tile + *"No Custom Homepages"* heading + *"Create a personalized landing page for your account."* descriptive copy + a **Create Homepage** CTA + a *"Capacity: 0/1 Used"* indicator below the CTA. |
 
-All "Create" / "+" affordances on this tab navigate to existing MUI admin creation flows via callback props (FR-032 / Decision #3) — no new CRD creation dialogs introduced.
+Every "Create" / "+" affordance on this tab opens a CRD creation dialog/wizard (FR-034 / Decision #3) — none navigates to a route. The "Create New Space" / "Create New Contributor" dashed cards and the "Empty Slot" `+` tiles and the "Create Homepage" empty-state CTA all map onto the four `onCreate*` callbacks the `ContributorAccountView` exposes; the integration page (`CrdUserAccountTab`) mounts the dialogs and owns their Apollo wiring. See "Account-tab creation dialogs" below.
 
 ### Entity: AccountResource (Space / VC / Innovation Pack / Innovation Hub)
 
@@ -106,10 +107,73 @@ Each card group's row shape:
 | Display name | `account.<group>[i].profile.displayName` | `displayName` | |
 | Description | `account.<group>[i].profile.tagline ?? account.<group>[i].profile.description` | `description` | Tagline preferred for brevity |
 | Avatar URL | `account.<group>[i].profile.avatar?.uri` | `avatarUrl` | Falls back to `pickColorFromId` deterministic color (per migration-guide.md) |
-| Resource URL | `account.<group>[i].profile.url` | `href` | Used by the row name link |
+| Resource URL | `account.<group>[i].profile.url` | `href` | Used by the row name link. The kebab **Manage** action navigates here (`<resource>/settings`); the **Delete** action opens a CRD `ConfirmationDialog` then fires the existing delete mutation |
 | Kebab actions | derived from privileges + group type | `actions: KebabAction[]` | View / Manage / Transfer / Delete per existing MUI behavior |
 
 Source query: `useUserAccountQuery` → `account.id` → `useAccountInformationQuery({ accountId })`.
+
+### Account-tab creation dialogs (shared by User Story 2 and User Story 9)
+
+Each of the four "Create" affordances opens a CRD (shadcn) dialog/wizard that is a **parity port of the corresponding current-MUI dialog** (FR-034 / research Decision #3). The presentational components live under `src/crd/components/contributor/settings/create/` (single-step) and `src/crd/components/contributor/settings/createVc/` (the VC wizard shell + step components); the Apollo wiring lives in shared per-flow integration hooks under `src/main/crdPages/topLevelPages/account/` (`useCrdCreateSpace`, `useCrdCreateVirtualContributorWizard`, `useCrdCreateInnovationPack`, `useCrdCreateInnovationHub`). Both `CrdUserAccountTab` and `CrdOrgAccountTab` mount the same dialogs, passing the actor's `account.id` as the creation target. No new GraphQL types or mutations are introduced — only the existing ones below.
+
+#### Create Space → `CrdCreateSpaceDialog` (← MUI `CreateSpace` / `CreateSpaceForm` / `useSpaceCreation`)
+
+| Field | Required | Validation | Maps to mutation variable |
+|---|---|---|---|
+| `displayName` | yes | min 3, max `SMALL_TEXT_LENGTH` | `spaceData.about.profileData.displayName` |
+| `nameID` | yes | auto-generated from `displayName`; editable; alphanumeric + hyphens; unique within the account | `spaceData.nameID` |
+| `tagline` | no | min 3, max `SMALL_TEXT_LENGTH` | `spaceData.about.profileData.tagline` |
+| `description` | no | markdown, max `MARKDOWN_TEXT_LENGTH` | `spaceData.about.profileData.description` |
+| `tags` | no | per-tag min 2, max `SMALL_TEXT_LENGTH` | `spaceData.about.profileData.tags` |
+| `spaceTemplateId` | no | UUID; template must have exactly 4 innovation-flow states (parity with MUI) | `spaceData.spaceTemplateID` |
+| `addTutorialCallouts` | no | — | `spaceData.collaborationData.addTutorialCallouts` |
+| `banner` (visual upload) | no | `Visual.Banner` constraints (allowedTypes/min/max/aspectRatio from the `Visual` type) | uploaded after the mutation via `useUploadVisualMutation` |
+| `cardBanner` (visual upload) | no | `Visual.Card` constraints | uploaded after the mutation via `useUploadVisualMutation` |
+| `acceptedTerms` | yes | must be `true`; checkbox with a link to the terms dialog | gates submit (not sent to the server) |
+
+- Mutation: `useCreateSpaceMutation` (via the existing `useSpaceCreation` hook). `spaceData.accountID` = the actor's account id; `spaceData.licensePlanID` = the account's first available plan (auto-picked, parity with MUI); `includeVisuals` = true when a banner or cardBanner file is present.
+- Refetches: `AccountInformation` (+ dashboard spaces, parity with MUI). On success closes the dialog and the new space appears in the Hosted Spaces group.
+
+#### Create Virtual Contributor → `CrdCreateVirtualContributorWizard` (← MUI `useVirtualContributorWizard`) — full parity port
+
+The multi-step wizard. `startWizard` input ≈ `{ accountId, accountHostName? }`. Steps and per-step fields:
+
+| Step | Fields | What it does |
+|---|---|---|
+| 1. Initial profile | `name` (req, min 3), `tagline` (opt, max `MID_TEXT_LENGTH`), `description` (opt, markdown), `avatar` (opt visual upload, `Visual.Avatar`), `engine` (req — `AiPersonaEngine.Expert` default), `bodyOfKnowledgeType` (req — `AlkemioKnowledgeBase` default), **source selector** (req — `createSpace` → step 2 / `existingSpace` → step 4 / `external` → step 5) | Captures profile + routes to the chosen knowledge source |
+| 2. Add knowledge content | `posts[]` (req, 1–25; each `title` req min 3 max `SMALL_TEXT_LENGTH`, `description` opt markdown max `LONG_MARKDOWN_TEXT_LENGTH`), `documents[]` (opt; each `name` req min 3 max `SMALL_TEXT_LENGTH`, `url` req max `MID_TEXT_LENGTH`) | Builds the `knowledgeBaseData.calloutsSetData.calloutsData` (posts → Post callouts, documents → a Link callout collection); after the create mutation, uploads avatar, adds document links via `useCreateLinkOnCalloutMutation`, refreshes the BoK |
+| 3. Choose community | `spaceId` (opt — pick an existing space; if none, a new space is created for the VC) | Adds the VC to the chosen space's community (`useAssignRoleToVirtualContributorMutation`, `RoleName.Member`) or creates a space via `useCreateSpaceMutation` then adds the VC; then navigates to the space or VC profile |
+| 4. Use existing space | `subspaceId` (req — pick a space/subspace) | Creates the VC with `bodyOfKnowledgeType = AlkemioSpace` and `bodyOfKnowledgeID = subspaceId`; uploads avatar; refreshes BoK; → step 3 or step 6 |
+| 5. External AI | `engine` (req — `GenericOpenai` default / `OpenaiAssistant`), `apiKey` (req), `assistantId` (req only when `engine === OpenaiAssistant`) | Creates the VC with `bodyOfKnowledgeType = None` and `aiPersona.externalConfig = { apiKey, assistantId? }`; uploads avatar; navigates straight to the VC profile (bypasses community selection) |
+| 6. Try-VC info | — (display only: `vcName`, `url`) | Success screen |
+
+- Mutations (same as MUI, same order): `useCreateVirtualContributorOnAccountMutation` (main create — `virtualContributorData.{accountID, bodyOfKnowledgeType, bodyOfKnowledgeID?, profileData, aiPersona.{engine, externalConfig?}, knowledgeBaseData}`), `useUploadVisualMutation` (avatar), `useRefreshBodyOfKnowledgeMutation` (`refreshData.virtualContributorID`), `useCreateLinkOnCalloutMutation` (per document), `useCreateSpaceMutation` (when a space is created for the VC), `useAssignRoleToVirtualContributorMutation` (`{roleSetId, contributorId, role: RoleName.Member}`).
+- Refetches: `MyAccount`, `AccountInformation`, the account-resources query, `LatestContributionsSpacesFlat`.
+
+#### Create Innovation Pack → `CrdCreateInnovationPackDialog` (← MUI `CreateInnovationPackDialog` / `InnovationPackForm` create variant)
+
+| Field | Required | Validation | Maps to mutation variable |
+|---|---|---|---|
+| `profile.displayName` | yes | `displayNameValidator` | `packData.profileData.displayName` |
+| `profile.description` | yes | markdown, max `MARKDOWN_TEXT_LENGTH` | `packData.profileData.description` |
+
+- Mutation: `useCreateInnovationPackMutation`; `packData.accountID` = the actor's account id. Refetches: `AdminInnovationPacksList`, `AccountInformation`, `InnovationLibrary`. On success: success toast + close dialog.
+
+#### Create Innovation Hub (Custom Homepage) → `CrdCreateInnovationHubDialog` (← MUI `CreateInnovationHubDialog` / `InnovationHubForm` create variant)
+
+| Field | Required | Validation | Maps to mutation variable |
+|---|---|---|---|
+| `subdomain` | yes | `subdomainValidator`; alphanumeric + hyphens; unique | `hubData.subdomain` |
+| `profile.displayName` | yes | `displayNameValidator` | `hubData.profileData.displayName` |
+| `profile.tagline` | no | max `MID_TEXT_LENGTH` | `hubData.profileData.tagline` |
+| `profile.description` | yes | markdown, max `MARKDOWN_TEXT_LENGTH` | `hubData.profileData.description` |
+
+- Mutation: `useCreateInnovationHubMutation`; `hubData.accountID` = the actor's account id; `hubData.type = InnovationHubType.List` (fixed); `hubData.spaceListFilter = []` (fixed on create). Refetches: `AdminInnovationHubsList`, `AccountInformation`. On success: success toast + close dialog.
+
+#### Failure / cancel semantics (all four)
+
+- Cancel / Escape / backdrop → dialog closes, no mutation, no navigation.
+- Mutation hard-failure → dialog stays open, input preserved, inline error toast, submit re-enables. (For the VC wizard, a partial create that already succeeded before a later step's failure leaves whatever was created — same as MUI; the wizard does not roll back.)
 
 ---
 
@@ -315,7 +379,7 @@ Two reserved tagsets: **Keywords** and **Capabilities** — each surfaced as its
 
 ## User Story 9 — Org Account
 
-Same entity (`AccountResource`) as User Account. Shared CRD view. Per-actor mapper feeds the org's `account.id` instead of the user's. **Empty-state UX is identical to User Account** (FR-103) — the same `ContributorAccountView` renders the prototype-faithful per-sub-section affordances; the per-actor mapper supplies the labels and `onCreate*` callbacks.
+Same entity (`AccountResource`) as User Account. Shared CRD view. Per-actor mapper feeds the org's `account.id` instead of the user's. **Empty-state UX is identical to User Account** (FR-103) — the same `ContributorAccountView` renders the prototype-faithful per-sub-section affordances; the per-actor mapper supplies the labels and `onCreate*` callbacks. The four "Create" affordances open the **same** four CRD creation dialogs documented under User Story 2 → "Account-tab creation dialogs" (FR-034); `CrdOrgAccountTab` mounts them via the shared `useCrdCreate*` integration hooks, passing `organization.account.id` as the creation target. **Manage** navigates to the resource's existing settings URL; **Delete** uses a CRD `ConfirmationDialog` + the existing delete mutation.
 
 Source: `useOrganizationAccountQuery` → `account.id` → `useAccountInformationQuery({ accountId })`.
 

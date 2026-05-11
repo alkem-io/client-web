@@ -73,9 +73,13 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 ### User Story 2 — User Account
 
 - [ ] Open `/user/<self>/settings/account`. Help banner + 4 card groups visible.
-- [ ] Click "Create Virtual Contributor" — navigates to existing MUI VC creation flow.
-- [ ] Click a hosted space's kebab → Manage — navigates to existing MUI manage flow.
-- [ ] Click a hosted resource's kebab → Delete — opens confirmation dialog; on confirm, existing delete mutation fires.
+- [ ] Click "Create New Space" (dashed card) — the CRD `CrdCreateSpaceDialog` opens (no route navigation). Complete it; the new space appears in the Hosted Spaces grid and is reachable on reload.
+- [ ] Click "Create Virtual Contributor" — the CRD VC wizard opens at its first step. Walk the **create-knowledge** branch (add a post + a document, then pick/create a community space); the VC appears in the Virtual Contributors group. Repeat for the **use-existing-space** and **external-AI** branches (the external branch ends straight on the VC profile).
+- [ ] Click "Empty Slot" `+` (Template Packs) — `CrdCreateInnovationPackDialog` opens; submit it; the new pack appears in the Innovation Packs group.
+- [ ] With 0 Custom Homepages — the centered empty-state shows ("No Custom Homepages" + "Capacity: 0/1 Used" + CTA); click the CTA — `CrdCreateInnovationHubDialog` opens; submit it; the new homepage appears.
+- [ ] Open any CRD creation dialog and Cancel/Escape — nothing is created, no navigation. With DevTools → Network → Offline, submit a creation dialog — the dialog stays open with an inline error toast.
+- [ ] Click a hosted space's kebab → Manage — the app navigates to that resource's settings URL.
+- [ ] Click a hosted resource's kebab → Delete — opens the CRD `ConfirmationDialog`; on confirm, the existing delete mutation fires and the card disappears.
 
 ### User Story 3 — User Membership
 
@@ -135,8 +139,10 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 ### User Story 9 — Org Account
 
 - [ ] Open `/organization/<orgSlug>/settings/account` as an org admin. 4 card groups render with the org's resources.
-- [ ] Click Create Innovation Pack — existing creation flow runs.
-- [ ] Click a resource's kebab → Manage — existing manage flow runs.
+- [ ] Click Create Innovation Pack — the CRD `CrdCreateInnovationPackDialog` opens (the **same** dialog as User Account, just targeting `organization.account.id`); submit it; the new pack appears in the Innovation Packs group.
+- [ ] Click Create Virtual Contributor — the CRD VC wizard opens; the create mutation runs against `organization.account.id`.
+- [ ] Click Create New Space / Create Homepage — the CRD `CrdCreateSpaceDialog` / `CrdCreateInnovationHubDialog` open; submit; the resource appears.
+- [ ] Click a resource's kebab → Manage — the app navigates to that resource's settings URL. → Delete — opens the CRD `ConfirmationDialog`; on confirm, the existing delete mutation fires.
 
 ### User Story 10 — Org Community (Associates)
 
