@@ -12,9 +12,14 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import type {
   SectionSaveStatus,
+  VcBodyOfKnowledgeCardProps,
+  VcExternalConfigCardProps,
+  VcPromptCardProps,
   VcSearchVisibility,
+  VcVisibilityCardProps,
 } from '@/crd/components/virtualContributor/settings/VCSettingsTabView.types';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import {
   computeEngineCardVisibility,
   mapBokTypeToView,
@@ -24,48 +29,19 @@ import {
   OPENAI_MODEL_OPTIONS,
 } from './vcSettingsMapper';
 
+/**
+ * The hook's result reuses the CRD view contract types — the integration
+ * page adds the i18n-resolved `refreshLabel` / `helpText` / fallback copy
+ * before passing them into the view (parity with the User Profile +
+ * Membership integration pages). Cards the engine doesn't expose are `undefined`.
+ */
 type UseVcSettingsTabDataResult = {
   loading: boolean;
-  visibility: {
-    searchVisibility: VcSearchVisibility;
-    onChangeSearchVisibility: (next: VcSearchVisibility) => Promise<void>;
-    searchVisibilitySaving: boolean;
-    listedInStore: boolean;
-    onToggleListedInStore: (next: boolean) => Promise<void>;
-    listedInStoreSaving: boolean;
-  };
-  bodyOfKnowledge?: {
-    bodyOfKnowledgeType: 'alkemioSpace' | 'alkemioKnowledgeBase' | 'external';
-    contentVisible: boolean;
-    onToggleContentVisible: (next: boolean) => Promise<void>;
-    contentVisibleSaving: boolean;
-    lastUpdatedIso?: string;
-    onRefresh: () => Promise<void>;
-    refreshing: boolean;
-  };
-  prompt?: {
-    value: string;
-    onChange: (next: string) => void;
-    dirty: boolean;
-    status: SectionSaveStatus;
-    onSave: () => Promise<void>;
-  };
-  externalConfig?: {
-    engine: 'libraFlow' | 'openaiAssistant' | 'genericOpenai';
-    apiKey: string;
-    onChangeApiKey: (next: string) => void;
-    assistantId?: string;
-    onChangeAssistantId?: (next: string) => void;
-    modelOptions: Array<{ value: string; label: string }>;
-    modelValue: string;
-    onChangeModel: (next: string) => void;
-    dirty: boolean;
-    status: SectionSaveStatus;
-    onSave: () => Promise<void>;
-  };
-  promptGraphFallback?: {
-    legacyHref: string;
-  };
+  visibility: VcVisibilityCardProps;
+  bodyOfKnowledge?: Omit<VcBodyOfKnowledgeCardProps, 'refreshLabel'>;
+  prompt?: Omit<VcPromptCardProps, 'helpText'>;
+  externalConfig?: VcExternalConfigCardProps;
+  promptGraphFallback?: { legacyHref: string };
 };
 
 /**
@@ -315,8 +291,9 @@ export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTab
   };
 
   const profileUrl = vc?.profile?.url;
+  const legacySettingsUrl = profileUrl ? buildSettingsUrl(profileUrl) : undefined;
   const promptGraphFallback =
-    cards.showPromptGraphFallback && profileUrl ? { legacyHref: `${profileUrl}/settings` } : undefined;
+    cards.showPromptGraphFallback && legacySettingsUrl ? { legacyHref: legacySettingsUrl } : undefined;
 
   return {
     loading: vcLoading || aiPersonaLoading,
