@@ -19,6 +19,7 @@ export function useCrdNotifications(userProfileUrl?: string) {
   const {
     notificationsInApp,
     unreadCount: notificationsUnreadCount,
+    unreadCountsByFilter,
     isLoading: isLoadingNotifications,
     updateNotificationState,
     markNotificationsAsRead,
@@ -33,13 +34,26 @@ export function useCrdNotifications(userProfileUrl?: string) {
   );
 
   const notificationFilters = [
-    { key: NotificationFilterType.All, label: t('components.inAppNotifications.filters.all') },
+    {
+      key: NotificationFilterType.All,
+      label: t('components.inAppNotifications.filters.all'),
+      hasUnread: unreadCountsByFilter[NotificationFilterType.All] > 0,
+    },
     {
       key: NotificationFilterType.MessagesAndReplies,
       label: t('components.inAppNotifications.filters.messagesAndReplies'),
+      hasUnread: unreadCountsByFilter[NotificationFilterType.MessagesAndReplies] > 0,
     },
-    { key: NotificationFilterType.Space, label: t('components.inAppNotifications.filters.space') },
-    { key: NotificationFilterType.Platform, label: t('components.inAppNotifications.filters.platform') },
+    {
+      key: NotificationFilterType.Space,
+      label: t('components.inAppNotifications.filters.space'),
+      hasUnread: unreadCountsByFilter[NotificationFilterType.Space] > 0,
+    },
+    {
+      key: NotificationFilterType.Platform,
+      label: t('components.inAppNotifications.filters.platform'),
+      hasUnread: unreadCountsByFilter[NotificationFilterType.Platform] > 0,
+    },
   ];
 
   const notificationSettingsHref = userProfileUrl ? buildNotificationSettingsUrl(userProfileUrl) : undefined;
