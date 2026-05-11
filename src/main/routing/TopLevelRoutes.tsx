@@ -58,6 +58,11 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 const HubRoute = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/routing/HubRoute'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 const CrdSpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/routing/CrdSpaceRoutes'));
+const CrdUserRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/userPages/CrdUserRoutes'));
+const CrdOrganizationRoutes = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes')
+);
+const CrdVCRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/vcPages/CrdVCRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -238,9 +243,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
                         <NoIdentityRedirect>
-                          <Suspense fallback={<Loading />}>
-                            <UserRoute />
-                          </Suspense>
+                          <Suspense fallback={<Loading />}>{crdEnabled ? <CrdUserRoutes /> : <UserRoute />}</Suspense>
                         </NoIdentityRedirect>
                       </WithApmTransaction>
                     }
@@ -250,9 +253,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
                         <NonIdentity>
-                          <Suspense fallback={<Loading />}>
-                            <VCRoute />
-                          </Suspense>
+                          <Suspense fallback={<Loading />}>{crdEnabled ? <CrdVCRoutes /> : <VCRoute />}</Suspense>
                         </NonIdentity>
                       </WithApmTransaction>
                     }
@@ -262,7 +263,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
                         <Suspense fallback={<Loading />}>
-                          <OrganizationRoute />
+                          {crdEnabled ? <CrdOrganizationRoutes /> : <OrganizationRoute />}
                         </Suspense>
                       </WithApmTransaction>
                     }

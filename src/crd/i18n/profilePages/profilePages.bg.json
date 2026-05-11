@@ -1,0 +1,173 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Напишете съобщение…",
+      "send": "Изпрати",
+      "cancel": "Отмяна",
+      "sending": "Изпращане…",
+      "errorTitle": "Съобщението не може да бъде изпратено",
+      "ariaLabel": "Съставяне на съобщение"
+    },
+    "resourceTabsAriaLabel": "Раздели с ресурси",
+    "loading": {
+      "hero": "Зареждане на заглавието на профила",
+      "sidebar": "Зареждане на детайлите на профила",
+      "organizations": "Зареждане на организациите",
+      "hostedResources": "Зареждане на хостваните ресурси",
+      "memberships": "Зареждане на членствата",
+      "contentView": "Зареждане на съдържанието",
+      "bodyOfKnowledge": "Зареждане на базата от знания"
+    },
+    "spacePrivacy": {
+      "private": "Частно пространство",
+      "public": "Публично пространство"
+    }
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Настройки на потребителя",
+      "messageButton": "Съобщение",
+      "settingsAriaLabel": "Отвори потребителските настройки"
+    },
+    "tabs": {
+      "resourcesHosted": "Хоствани ресурси",
+      "leading": "Водещ",
+      "memberOf": "Член на"
+    },
+    "sections": {
+      "spacesSubsection": "Пространства",
+      "virtualContributorsSubsection": "Виртуални сътрудници",
+      "spacesLeading": "Пространства, които водя",
+      "memberOf": "Член на"
+    },
+    "sidebar": {
+      "aboutTitle": "Относно",
+      "organizationsTitle": "Организации",
+      "socialLinksTitle": "Социални",
+      "bioEmpty": "Все още няма биография.",
+      "organizationsEmpty": "Все още не е част от организация.",
+      "memberCountLine_one": "{{count}} член",
+      "memberCountLine_other": "{{count}} члена"
+    },
+    "empty": {
+      "leading": "Все още не води пространства.",
+      "membership": "Все още няма членства."
+    },
+    "vcType": "Виртуален сътрудник"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Настройки на организацията",
+      "settingsAriaLabel": "Отвори настройките на организацията",
+      "messageButton": "Съобщение",
+      "verifiedBadge": "Потвърдена",
+      "verifiedTooltip": "Тази организация е потвърдена от Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Биография",
+      "bioEmpty": "Все още няма биография.",
+      "tagsetKeywords": "Ключови думи",
+      "tagsetCapabilities": "Възможности",
+      "referencesTitle": "Връзки",
+      "referencesEmpty": "Все още няма връзки.",
+      "associatesTitle": "Сътрудници",
+      "associatesCount_one": "{{count}} сътрудник",
+      "associatesCount_other": "{{count}} сътрудника",
+      "socialLinksTitle": "Социални"
+    },
+    "tabs": {
+      "resourcesHosted": "Хоствани ресурси",
+      "leading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "sections": {
+      "spacesSubsection": "Пространства",
+      "virtualContributorsSubsection": "Виртуални сътрудници",
+      "spacesLeading": "Пространства, които водя",
+      "memberOf": "Всички членства"
+    },
+    "empty": {
+      "leading": "Все още не води пространства."
+    },
+    "vcType": "Виртуален сътрудник"
+  },
+  "vcProfile": {
+    "typeBadge": "Виртуален сътрудник",
+    "hero": {
+      "settingsTooltip": "Настройки на виртуалния сътрудник",
+      "settingsAriaLabel": "Отвори настройките на виртуалния сътрудник"
+    },
+    "sidebar": {
+      "descriptionTitle": "Описание",
+      "descriptionEmpty": "Няма описание.",
+      "hostTitle": "Домакин",
+      "hostEmpty": "Няма домакин."
+    },
+    "functionality": {
+      "heading": "Функционалност",
+      "capabilities": {
+        "title": "Функционални възможности",
+        "tagging": "Отговаряне на въпроси в коментарите",
+        "createContent": "Създаване на нови публикации",
+        "communityManagement": "Покана на други сътрудници"
+      },
+      "dataAccess": {
+        "title": "Достъп до данни от Space, в който е член",
+        "about": "Страница „Относно“",
+        "content": "Публикации и приноси",
+        "subspaces": "Подпространства"
+      },
+      "roleRequirements": {
+        "title": "Изисквания за роля",
+        "memberRequired": "Този VC се нуждае от <strong>права на член</strong>, за да функционира правилно",
+        "noneRequired": "Не се изискват специални права на член"
+      }
+    },
+    "aiEngine": {
+      "heading": "AI двигател: {{engineName}}",
+      "engineName": {
+        "alkemio": "AI на Alkemio",
+        "assistant": "Външен AI асистент",
+        "external": "Външен AI"
+      },
+      "seeDocumentation": "ВИЖ ДОКУМЕНТАЦИЯТА",
+      "notAvailable": "Не е налично",
+      "unknown": "Неизвестно",
+      "yes": "Да",
+      "no": "Не",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Прозрачност на отворения модел",
+          "description": "Използва ли VC модел с отворени тегла?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Разкриване на употребата на данни",
+          "description": "Използват ли се данните от взаимодействие по някакъв начин за обучение на модела?"
+        },
+        "knowledgeRestriction": {
+          "title": "Ограничаване на знанията",
+          "description": "Подканен ли е VC да ограничи отговорите до конкретен корпус от знания?"
+        },
+        "webAccess": {
+          "title": "Достъп до интернет",
+          "description": "Може ли VC да получава достъп или да търси в интернет?"
+        },
+        "physicalLocation": {
+          "title": "Физическо местоположение",
+          "description": "Къде се хоства AI услугата?"
+        },
+        "technicalReferences": {
+          "title": "Технически справки",
+          "description": "Достъп до подробна информация за спецификациите на основните модели"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Наблюдение от Alkemio",
+      "body": "Тъй като Alkemio улеснява взаимодействието с външния доставчик, тя носи оперативна отговорност да наблюдава услугата. Както всички данни и взаимодействия в платформата, те се уреждат от нашите <a>Общи условия</a>."
+    }
+  }
+}

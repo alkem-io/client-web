@@ -34,16 +34,19 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, CalloutFormValues['framin
   [CalloutFramingType.None]: 'none',
   [CalloutFramingType.Whiteboard]: 'whiteboard',
   [CalloutFramingType.Memo]: 'memo',
+  [CalloutFramingType.CollaboraDocument]: 'document',
   [CalloutFramingType.Link]: 'cta',
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
 };
 
-const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, CalloutFormValues['responseType']> = {
+// Documents are framing-only in P1 — see `mapCalloutDetailsToFormValues.ts`.
+const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, CalloutFormValues['responseType'] | 'none'> = {
   [CalloutContributionType.Link]: 'link',
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Memo]: 'memo',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
+  [CalloutContributionType.CollaboraDocument]: 'none',
 };
 
 const findDefaultTagset = (tagsets: TemplateCallout['framing']['profile']['tagsets']): string => {

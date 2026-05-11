@@ -16,9 +16,13 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import type CalloutContributionModel from '../../calloutContributions/CalloutContributionModel';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
+import CalloutContributionDialogCollaboraDocument from '../../calloutContributions/collaboraDocument/CalloutContributionDialogCollaboraDocument';
+import CollaboraDocumentCard from '../../calloutContributions/collaboraDocument/CollaboraDocumentCard';
+import CreateContributionButtonCollaboraDocument from '../../calloutContributions/collaboraDocument/CreateContributionButtonCollaboraDocument';
 import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
 import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
 import type { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
@@ -35,6 +39,7 @@ import CalloutContributionDialogWhiteboard from '../../calloutContributions/whit
 import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
+import CalloutFramingCollaboraDocument from '../CalloutFramings/CalloutFramingCollaboraDocument';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import CalloutFramingMediaGallery from '../CalloutFramings/CalloutFramingMediaGallery';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
@@ -104,6 +109,9 @@ const CalloutView = ({
   const isContributionCommentsLoading = Boolean(contributionForComments && contributionComments.loading);
 
   const [commentsCollapsed, setCommentsCollapsed] = useState(true);
+  const [selectedCollaboraContribution, setSelectedCollaboraContribution] = useState<
+    CalloutContributionModel | undefined
+  >();
 
   useEffect(() => {
     setCommentsCollapsed(true);
@@ -139,7 +147,10 @@ const CalloutView = ({
     };
     // TODO: When contribution.type is available, use it to decide which url to use
     const url =
-      contribution.whiteboard?.profile.url ?? contribution.post?.profile.url ?? contribution.memo?.profile.url;
+      contribution.whiteboard?.profile.url ??
+      contribution.post?.profile.url ??
+      contribution.memo?.profile.url ??
+      contribution.collaboraDocument?.profile?.url;
     if (url) {
       navigate(url, { state });
     }
@@ -178,6 +189,11 @@ const CalloutView = ({
 
         {/* Poll framing */}
         {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
+
+        {/* Collabora Document framing */}
+        {callout.framing.type === CalloutFramingType.CollaboraDocument && (
+          <CalloutFramingCollaboraDocument callout={callout} />
+        )}
 
         {/* Collaborate with links */}
         {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
@@ -333,6 +349,52 @@ const CalloutView = ({
                 onCalloutUpdate={onCalloutUpdate}
                 contributionCardComponent={MemoCard}
                 onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+          </CalloutContributionsBlock>
+        )}
+
+        {/* Collaborate with Collabora Documents */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.CollaboraDocument) && (
+          <CalloutContributionsBlock
+            callout={callout}
+            contributionType={CalloutContributionType.CollaboraDocument}
+            createContributionButtonComponent={CreateContributionButtonCollaboraDocument}
+            calloutRestrictions={calloutRestrictions}
+            onCalloutContributionsUpdate={onCalloutUpdate}
+          >
+            <ContributionsCardsExpandable
+              callout={callout}
+              loading={loading}
+              contributionType={CalloutContributionType.CollaboraDocument}
+              expanded={expanded}
+              onExpand={onExpand}
+              onCollapse={onCollapse}
+              onCalloutUpdate={onCalloutUpdate}
+              contributionCardComponent={CollaboraDocumentCard}
+              onClickOnContribution={contribution => {
+                if (contribution.collaboraDocument?.id) {
+                  // The Collabora dialog only reads `id`, `authorization`, and
+                  // `collaboraDocument` — all present on both shapes. Other
+                  // fields (e.g. whiteboard) diverge between the two types but
+                  // are unused here, so narrow once at the storage boundary.
+                  setSelectedCollaboraContribution(contribution as unknown as CalloutContributionModel);
+                }
+              }}
+            />
+            {selectedCollaboraContribution && (
+              <CalloutContributionDialogCollaboraDocument
+                calloutsSetId={callout.calloutsSetId}
+                calloutId={callout.id}
+                contribution={selectedCollaboraContribution}
+                open={true}
+                onClose={() => setSelectedCollaboraContribution(undefined)}
+                onCalloutUpdate={onCalloutUpdate}
+                onContributionDeleted={() => {
+                  setSelectedCollaboraContribution(undefined);
+                  onCalloutUpdate?.();
+                }}
+                calloutRestrictions={calloutRestrictions}
               />
             )}
           </CalloutContributionsBlock>
