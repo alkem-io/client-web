@@ -33,13 +33,13 @@ export function ForumDiscussionListHeader({
   className,
 }: ForumDiscussionListHeaderProps) {
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-center justify-between gap-2">
+    <div className={cn('flex flex-col gap-3 md:flex-row md:items-center md:justify-between', className)}>
+      <div className="flex items-center justify-between gap-2 md:justify-start">
         <h2 className="text-card-title font-bold text-foreground">{countLabel}</h2>
         {initiateSlot ? <div className="flex items-center gap-2">{initiateSlot}</div> : null}
       </div>
-      <div className="flex items-center gap-3">
-        <div className="relative flex-1">
+      <div className="flex items-center gap-3 md:flex-1 md:justify-end">
+        <div className="relative flex-1 md:max-w-md">
           <Search
             aria-hidden="true"
             className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -53,7 +53,7 @@ export function ForumDiscussionListHeader({
           />
         </div>
         <Select value={sortValue} onValueChange={value => onSortChange(value as ForumSortOrder)}>
-          <SelectTrigger aria-label={sortAriaLabel} className="h-9 w-full text-control sm:w-28">
+          <SelectTrigger aria-label={sortAriaLabel} className="h-9 w-full text-control md:w-28">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

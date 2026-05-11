@@ -75,14 +75,14 @@ export function CommentThread({
       ) : comments.length === 0 ? (
         <p className="text-body text-muted-foreground py-4">{t('comments.empty')}</p>
       ) : (
-        <div className="space-y-4">
+        <ul className="space-y-4">
           {sortedTopLevel.map(comment => {
             const replies = repliesByParent.get(comment.id) ?? [];
             const isReplyOpen = replyingToCommentId === comment.id;
             const replyInputId = `comment-reply-input-${comment.id}`;
 
             return (
-              <div key={comment.id} className="space-y-3">
+              <li key={comment.id} className="space-y-3">
                 <CommentItem
                   comment={comment}
                   canComment={canComment}
@@ -98,17 +98,22 @@ export function CommentThread({
                   onRemoveReaction={onRemoveReaction}
                 />
 
-                {replies.map(reply => (
-                  <CommentItem
-                    key={reply.id}
-                    comment={reply}
-                    canComment={canComment}
-                    isReply={true}
-                    onDelete={onDelete}
-                    onAddReaction={onAddReaction}
-                    onRemoveReaction={onRemoveReaction}
-                  />
-                ))}
+                {replies.length > 0 && (
+                  <ul className="space-y-3">
+                    {replies.map(reply => (
+                      <li key={reply.id}>
+                        <CommentItem
+                          comment={reply}
+                          canComment={canComment}
+                          isReply={true}
+                          onDelete={onDelete}
+                          onAddReaction={onAddReaction}
+                          onRemoveReaction={onRemoveReaction}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {isReplyOpen && !comment.isDeleted && (
                   <div id={replyInputId} className="ml-6 md:ml-10">
@@ -122,10 +127,10 @@ export function CommentThread({
                     />
                   </div>
                 )}
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </div>
   );

@@ -195,7 +195,7 @@ The English source was authored in T003. These five tasks bring `forum.<lang>.js
 - T023 depends on T007 + T009 (data mapper consumes types and slug map).
 - T026 depends on T010 + T011 + T012 + T014 + T015 + T016 + T023 + T024.
 - T027 depends on T017 + T023 + T025.
-- T028a is independent of T028 (different files; both can be authored in parallel). T028a depends only on the regenerated `apollo-hooks.ts` after the `LatestReleaseDiscussion.graphql` edit lands.
+- T028a is independent of T028 (different files; both can be authored in parallel). No GraphQL edits or codegen of `apollo-hooks.ts` are required for T028a — `LatestReleaseDiscussion.graphql` is unchanged; the component chains the already-generated `useLatestReleaseDiscussionQuery` and `usePlatformDiscussionQuery` hooks (see the schema-correction note on T028a above).
 - T029 modifies the routes file; T038 also modifies it — sequence them.
 - T036 depends on the docs route enum value being unchanged in `TopLevelRoutePath` (no task needed; `TopLevelRoutePath.Docs` already exists).
 - T041, T042, T043, T044 depend on US1 components being in place (extend rather than replace).

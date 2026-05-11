@@ -17,7 +17,7 @@ export function ForumBanner({ titleNode, subtitleNode, iconNode, className }: Fo
       )}
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30">
-        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation">
+        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <pattern id="forum-banner-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1.5" fill="white" />

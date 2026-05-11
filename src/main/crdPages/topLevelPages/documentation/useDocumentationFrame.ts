@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
@@ -19,7 +19,7 @@ const getCurrentOriginWithoutPort = () => {
 
 type DocumentationFrameHookResult = {
   src: string;
-  iframeRef: React.RefObject<HTMLIFrameElement | null>;
+  iframeRef: RefObject<HTMLIFrameElement | null>;
   initialHeight: string;
 };
 
@@ -40,7 +40,15 @@ export function useDocumentationFrame(): DocumentationFrameHookResult {
     }
 
     const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
+      // Compare protocol + hostname exactly (port intentionally ignored —
+      // the docs iframe runs on a different port locally). A `startsWith`
+      // check is dangerous because e.g. `https://evil.com.example.com`
+      // starts with `https://evil.com`; explicit parsing rejects that.
+      const expected = getCurrentOriginWithoutPort();
+      try {
+        const incoming = new URL(event.origin);
+        if (`${incoming.protocol}//${incoming.hostname}` !== expected) return;
+      } catch {
         return;
       }
 

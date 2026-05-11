@@ -17,7 +17,7 @@ Routing is wired in `src/main/routing/TopLevelRoutes.tsx`: both CRD and MUI vari
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x / React 19 / Node ≥22.0.0 (Volta-pinned to 24.14.0)
+**Language/Version**: TypeScript 5.x / React 19 / Node ≥24.0.0 (Volta-pinned to 24.14.0); pnpm ≥10.17.1
 **Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `card`, `input`, `select`, `separator`, `tooltip`, `avatar`, `button`, `skeleton`; existing CRD composites `ShareDialog`/`ShareButton`, `ConfirmationDialog`, `CommentThread`/`CommentInput`/`CommentItem`, `MarkdownEditor`, `TagsInput`, `MarkdownContent` / `InlineMarkdown`; `lucide-react` (MessageSquare, Rocket, Settings, Users, Building2, HelpCircle, MoreHorizontal, Search, ArrowLeft, Plus, Share2, Pencil, Trash2, Send, Smile); Apollo Client (existing — unchanged); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`); Formik (integration layer only; never inside `src/crd/`)
 **Storage**: N/A (frontend SPA; data via existing GraphQL queries / mutations / subscriptions — no schema changes)
 **Testing**: Vitest with jsdom (existing suite continues to pass)

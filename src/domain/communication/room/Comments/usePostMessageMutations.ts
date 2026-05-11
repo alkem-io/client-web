@@ -1,4 +1,4 @@
-import type { ApolloCache, Reference } from '@apollo/client';
+import type { Reference } from '@apollo/client';
 import {
   MessageDetailsFragmentDoc,
   useRemoveMessageOnRoomMutation,
@@ -7,23 +7,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-
-// Refresh Room.messagesCount from the current Room.messages array length
-// so the discussion-list count stays in sync after add/remove. Both the
-// list query (DiscussionCard) and the detail query (DiscussionDetails)
-// resolve `comments` to the same normalized Room object, so updating
-// messagesCount here keeps the count consistent across every consumer.
-function refreshRoomMessagesCount(cache: ApolloCache<unknown>, roomCacheId: string) {
-  cache.modify({
-    id: roomCacheId,
-    fields: {
-      messagesCount(_existing, { readField }) {
-        const messages = readField<readonly Reference[]>('messages');
-        return messages?.length ?? 0;
-      },
-    },
-  });
-}
+import { refreshRoomMessagesCount } from './refreshRoomMessagesCount';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;

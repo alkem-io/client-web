@@ -72,8 +72,17 @@ export function ForumInitiateDiscussionDialog({
             <button
               type="button"
               aria-label={closeLabel ?? cancelLabel}
-              onClick={() => onOpenChange(false)}
-              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-disabled={busy}
+              disabled={busy}
+              onClick={() => {
+                if (busy) return;
+                onOpenChange(false);
+              }}
+              className={cn(
+                'inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                busy ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-muted hover:text-foreground'
+              )}
             >
               <X aria-hidden="true" className="size-4" />
             </button>

@@ -17,7 +17,11 @@ export type ForumDiscussionListItemData = {
     displayName: string;
     avatarUrl?: string;
   };
+  /** Localised display string (e.g. `Wed, 25/06/2025`). */
   formattedDate: string;
+  /** Raw numeric epoch-ms used for sorting (so newest/oldest sort by actual
+   *  creation time, not by lexical id order). */
+  timestamp: number;
   commentCount: number;
   href: string;
   ariaLabel: string;

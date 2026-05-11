@@ -102,6 +102,10 @@ export const mapDiscussionsToListData = (
           avatarUrl: author?.avatarUrl,
         },
         formattedDate,
+        // GraphQL returns the creation epoch in seconds (`Float`). Carry the
+        // raw value through to the page so sorting is by real creation time,
+        // not by lexical id order.
+        timestamp: discussion.timestamp ?? 0,
         commentCount,
         href: discussion.profile.url,
         ariaLabel,

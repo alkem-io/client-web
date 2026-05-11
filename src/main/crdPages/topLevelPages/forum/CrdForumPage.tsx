@@ -101,8 +101,12 @@ const CrdForumPage = () => {
   });
 
   const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOrder === 'oldest') return a.id.localeCompare(b.id);
-    return b.id.localeCompare(a.id);
+    // Sort by real creation timestamp (not by lexical id order). When two
+    // discussions share a timestamp — or both are 0 because the timestamp
+    // is missing — fall back to id so the order is still deterministic.
+    const delta = a.timestamp - b.timestamp;
+    if (delta !== 0) return sortOrder === 'oldest' ? delta : -delta;
+    return sortOrder === 'oldest' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
   });
 
   const loading = loadingDiscussions || loadingUser;

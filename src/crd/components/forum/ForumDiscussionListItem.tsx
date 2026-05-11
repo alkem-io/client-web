@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import type { ForumDiscussionListItemData } from '@/crd/components/forum/forumTypes';
 import { cn } from '@/crd/lib/utils';
 
@@ -9,8 +10,12 @@ type ForumDiscussionListItemProps = {
 };
 
 export function ForumDiscussionListItem({ data, metaLine, isLast, onActivate }: ForumDiscussionListItemProps) {
+  // Mirror ForumDiscussionDetail's back-link pattern: only intercept primary
+  // unmodified clicks. Cmd / Ctrl / Shift / Alt / middle-click fall through
+  // to the native `<a href>` so users can open the discussion in a new tab.
   const handleClick = onActivate
-    ? (event: React.MouseEvent<HTMLAnchorElement>) => {
+    ? (event: MouseEvent<HTMLAnchorElement>) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
         onActivate(data.id);
       }

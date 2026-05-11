@@ -162,8 +162,6 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
   const { t: tDefault } = useTranslation();
   const titleId = useId();
   const categoryId = useId();
-  const tagsId = useId();
-  const bodyId = useId();
 
   const { values, errors, touched, isValid, dirty, isSubmitting, setFieldValue, setFieldTouched, submitForm } =
     useFormikContext<ForumDiscussionFormValues>();
@@ -227,7 +225,6 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
           value={values.category || undefined}
           onValueChange={value => {
             void setFieldValue('category', value as ForumDiscussionCategory);
-            void setFieldTouched('category', true);
           }}
           disabled={editing || isSubmitting}
         >
@@ -253,11 +250,13 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
         ) : null}
       </div>
 
-      {/* Tags */}
+      {/* Tags. The Label intentionally omits `htmlFor` — TagsInput is a custom
+          composite whose focusable child is an inner `<input>` we can't address
+          from here without widening the primitive's API. The visible Label still
+          conveys association sighted-side; the inner input already carries
+          `aria-label={placeholder}` for screen readers. */}
       <div className="space-y-1.5">
-        <Label htmlFor={tagsId} className="text-body-emphasis">
-          {t('dialog.fields.tags')}
-        </Label>
+        <Label className="text-body-emphasis">{t('dialog.fields.tags')}</Label>
         <TagsInput
           value={values.tags}
           onChange={next => setFieldValue('tags', next)}
@@ -266,11 +265,11 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
         />
       </div>
 
-      {/* Body / description */}
+      {/* Body / description. Same reasoning as Tags above — MarkdownEditor's
+          focusable target is a Tiptap contenteditable inside a Suspense
+          boundary, addressed via `placeholder`-as-ariaLabel internally. */}
       <div className="space-y-1.5">
-        <Label htmlFor={bodyId} className="text-body-emphasis">
-          {t('dialog.fields.body')}
-        </Label>
+        <Label className="text-body-emphasis">{t('dialog.fields.body')}</Label>
         <MarkdownEditor
           value={values.description}
           onChange={next => setFieldValue('description', next)}
