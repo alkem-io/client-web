@@ -17,6 +17,7 @@ import KratosUI from '../components/KratosUI';
 import {
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
+  OIDC_LOGIN_PATH,
   PARAM_NAME_RETURN_URL,
 } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
@@ -70,7 +71,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         return raw.startsWith('/') ? raw : '/';
       }
     })();
-    window.location.replace(`/api/auth/oidc/login?returnTo=${encodeURIComponent(returnTo)}`);
+    window.location.replace(`${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
   }, [isOidcEntry, returnUrlFromParam]);
 
   const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);

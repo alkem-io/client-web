@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 interface IdTokenHintResponse {
   id_token: string;
@@ -20,7 +21,7 @@ export const useIdTokenHint = (): UseIdTokenHint => {
     setLoading(true);
     setError(undefined);
     try {
-      const response = await fetch('/api/auth/oidc/id-token-hint', {
+      const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
         credentials: 'include',
         headers: { Accept: 'application/json' },
       });

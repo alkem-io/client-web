@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 // Probes the BFF for an active OIDC (alkemio_session) session by hitting
-// /api/auth/oidc/id-token-hint. Status 200 implies a live session; 401 means
+// the id-token-hint endpoint. Status 200 implies a live session; 401 means
 // the BFF cookie/session is gone, regardless of whether Kratos SSO is still
 // alive in parallel. Used to gate `isAuthenticated` on the OIDC layer rather
 // than the upstream Kratos session, so post-logout state is consistent.
@@ -13,7 +14,7 @@ export const useOidcSessionStatus = () => {
     let cancelled = false;
     (async () => {
       try {
-        const response = await fetch('/api/auth/oidc/id-token-hint', {
+        const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
           credentials: 'include',
           headers: { Accept: 'application/json' },
         });
