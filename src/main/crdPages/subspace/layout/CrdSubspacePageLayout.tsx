@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
-import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
@@ -18,6 +17,7 @@ import {
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
@@ -133,8 +133,6 @@ export default function CrdSubspacePageLayout() {
     content: mobileMenuContent,
   };
 
-  const showApplyCta = !data.applicationButtonProps.isMember && !data.applicationLoading;
-
   if (isOnSettings) {
     return (
       <>
@@ -194,22 +192,12 @@ export default function CrdSubspacePageLayout() {
 
             {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
             <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
-              {showApplyCta && (
-                <SpaceAboutApplyButton
-                  isAuthenticated={data.applicationButtonProps.isAuthenticated}
-                  isMember={data.applicationButtonProps.isMember}
-                  isParentMember={data.applicationButtonProps.isParentMember}
-                  applicationState={data.applicationButtonProps.applicationState}
-                  userInvitation={data.applicationButtonProps.userInvitation}
-                  parentApplicationState={data.applicationButtonProps.parentApplicationState}
-                  canJoinCommunity={data.applicationButtonProps.canJoinCommunity}
-                  canAcceptInvitation={data.applicationButtonProps.canAcceptInvitation}
-                  canApplyToCommunity={data.applicationButtonProps.canApplyToCommunity}
-                  canJoinParentCommunity={data.applicationButtonProps.canJoinParentCommunity}
-                  canApplyToParentCommunity={data.applicationButtonProps.canApplyToParentCommunity}
-                  loading={data.applicationButtonProps.loading || data.applicationLoading}
-                />
-              )}
+              <SpaceApplyButtonConnector
+                spaceId={data.subspaceId}
+                spaceProfileUrl={data.subspaceUrl}
+                communityName={data.subspaceName}
+                parentSpaceId={data.parentSpaceId}
+              />
 
               <Suspense fallback={<LoadingSpinner />}>
                 <Outlet context={{ data, mobileMenu }} />

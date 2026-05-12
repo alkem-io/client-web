@@ -79,7 +79,12 @@ export default function CrdSpaceDashboardPage() {
         />
       </SpaceSidebarPortal>
 
-      <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
+      <SpaceApplyButtonConnector
+        spaceId={space.id}
+        spaceProfileUrl={space.about.profile.url}
+        communityName={space.about.profile.displayName}
+        className="mb-6"
+      />
 
       <TabStateHeader
         description={tabDescription}
