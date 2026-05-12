@@ -73,8 +73,13 @@ export type VcPromptGraphFallbackProps = {
   description: string;
   /** Pre-localized CTA label. */
   ctaLabel: string;
-  /** Legacy MUI Settings page URL. */
-  legacyHref: string;
+  /**
+   * Invoked when the user clicks the CTA. The integration layer is
+   * responsible for navigating to the legacy MUI page — usually via
+   * `disableCrdAndNavigate(...)` so the CRD toggle is cleared first and the
+   * MUI shell actually renders.
+   */
+  onCtaClick: () => void;
 };
 
 export type VcSettingsViewProps = {

@@ -122,8 +122,16 @@ export type VcPromptGraphFallbackProps = {
   description: string;
   /** Pre-localized CTA label ("Open Prompt Graph editor in legacy view"). */
   ctaLabel: string;
-  /** Legacy MUI Settings page URL — e.g. `/vc/<nameId>/settings` (when CRD off). */
-  legacyHref: string;
+  /**
+   * Invoked when the user clicks the CTA. The integration layer is
+   * responsible for navigating to the legacy MUI page. Because the same URL
+   * is served by the CRD shell while `useCrdEnabled()` is `true`, the
+   * integration MUST first clear the CRD localStorage toggle and hard-reload
+   * — the shared helper `disableCrdAndNavigate(targetUrl)` from
+   * `@/main/crdPages/useCrdEnabled` does exactly that and is the canonical
+   * way for any CRD fallback CTA to hand off to a still-MUI page.
+   */
+  onCtaClick: () => void;
 };
 
 /** Top-level view contract for the VC Settings tab. */

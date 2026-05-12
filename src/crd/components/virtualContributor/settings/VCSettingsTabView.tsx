@@ -240,11 +240,9 @@ function VCPromptGraphFallbackCard(p: VcPromptGraphFallbackProps) {
     <SettingsCard icon={Info} title={p.heading}>
       <p className="text-body text-muted-foreground">{p.description}</p>
       <div className="mt-4">
-        <Button asChild={true} variant="outline">
-          <a href={p.legacyHref} target="_blank" rel="noreferrer">
-            <ExternalLink aria-hidden="true" className="mr-2 size-4" />
-            {p.ctaLabel}
-          </a>
+        <Button type="button" variant="outline" onClick={p.onCtaClick}>
+          <ExternalLink aria-hidden="true" className="mr-2 size-4" />
+          {p.ctaLabel}
         </Button>
       </div>
     </SettingsCard>

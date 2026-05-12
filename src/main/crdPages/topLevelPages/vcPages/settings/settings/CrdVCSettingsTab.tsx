@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { VCSettingsTabView } from '@/crd/components/virtualContributor/settings/VCSettingsTabView';
+import { disableCrdAndNavigate } from '@/main/crdPages/useCrdEnabled';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcSettingsTabData from './useVcSettingsTabData';
 
@@ -35,12 +36,15 @@ const CrdVCSettingsTab = () => {
       externalConfig={data.externalConfig}
       promptGraphFallback={
         data.promptGraphFallback
-          ? {
-              heading: t('vc.promptGraphFallback.heading'),
-              description: t('vc.promptGraphFallback.description'),
-              ctaLabel: t('vc.promptGraphFallback.ctaLabel'),
-              legacyHref: data.promptGraphFallback.legacyHref,
-            }
+          ? (() => {
+              const legacyHref = data.promptGraphFallback.legacyHref;
+              return {
+                heading: t('vc.promptGraphFallback.heading'),
+                description: t('vc.promptGraphFallback.description'),
+                ctaLabel: t('vc.promptGraphFallback.ctaLabel'),
+                onCtaClick: () => disableCrdAndNavigate(legacyHref),
+              };
+            })()
           : undefined
       }
     />
