@@ -21,11 +21,10 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
-import { Error40X } from './core/pages/Errors/Error40X';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
@@ -162,11 +161,7 @@ const Root: FC = () => {
                                         <VersionHandling />
                                         <OnlineStatusNotification />
                                         <Error40XBoundary
-                                          errorComponent={errorState => (
-                                            <TopLevelLayout>
-                                              <Error40X {...errorState} />
-                                            </TopLevelLayout>
-                                          )}
+                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                         >
                                           <TopLevelRoutes />
                                           <Suspense fallback={null}>

@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { CrdRestrictedRoute } from '@/main/crdPages/error/CrdRestrictedRoute';
 import { useCrdEnabled } from '../crdPages/useCrdEnabled';
 import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
@@ -53,6 +54,11 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 const HubRoute = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/routing/HubRoute'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 const CrdSpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/routing/CrdSpaceRoutes'));
+const CrdUserRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/userPages/CrdUserRoutes'));
+const CrdOrganizationRoutes = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/organizationPages/CrdOrganizationRoutes')
+);
+const CrdVCRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/vcPages/CrdVCRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -184,7 +190,7 @@ export const TopLevelRoutes = () => {
           path={`/${TopLevelRoutePath.Restricted}`}
           element={
             <WithApmTransaction path={`/${TopLevelRoutePath.Restricted}`}>
-              <Restricted />
+              {crdEnabled ? <CrdRestrictedRoute /> : <Restricted />}
             </WithApmTransaction>
           }
         />
@@ -211,9 +217,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
                         <NoIdentityRedirect>
-                          <Suspense fallback={<Loading />}>
-                            <UserRoute />
-                          </Suspense>
+                          <Suspense fallback={<Loading />}>{crdEnabled ? <CrdUserRoutes /> : <UserRoute />}</Suspense>
                         </NoIdentityRedirect>
                       </WithApmTransaction>
                     }
@@ -223,9 +227,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
                         <NonIdentity>
-                          <Suspense fallback={<Loading />}>
-                            <VCRoute />
-                          </Suspense>
+                          <Suspense fallback={<Loading />}>{crdEnabled ? <CrdVCRoutes /> : <VCRoute />}</Suspense>
                         </NonIdentity>
                       </WithApmTransaction>
                     }
@@ -235,7 +237,7 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
                         <Suspense fallback={<Loading />}>
-                          <OrganizationRoute />
+                          {crdEnabled ? <CrdOrganizationRoutes /> : <OrganizationRoute />}
                         </Suspense>
                       </WithApmTransaction>
                     }

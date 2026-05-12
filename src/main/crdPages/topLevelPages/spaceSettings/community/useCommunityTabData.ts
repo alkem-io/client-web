@@ -119,7 +119,13 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
   const [pendingRemoval, setPendingRemoval] = useState<CommunityPendingRemoval | null>(null);
 
   const members: CommunityMember[] = community.userAdmin.members.map(u => {
-    const roleLabel = u.isAdmin ? 'Admin' : u.isLead ? 'Lead' : 'Member';
+    // Show every role the user actually holds — Admin AND Lead together when
+    // both apply, instead of the previous Admin-wins-over-Lead picking. Member
+    // is the implicit baseline shown only when the user holds no other role.
+    const heldRoles: string[] = [];
+    if (u.isAdmin) heldRoles.push('Admin');
+    if (u.isLead) heldRoles.push('Lead');
+    const roleLabel = heldRoles.length > 0 ? heldRoles.join(', ') : 'Member';
     return {
       id: u.id,
       displayName: u.profile?.displayName ?? '',

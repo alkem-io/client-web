@@ -63,6 +63,7 @@ type FramingEditorConnectorProps = {
   pollQuestionError?: string;
   pollOptions: PollOptionValue[];
   onPollOptionsChange: (options: PollOptionValue[]) => void;
+  pollOptionsError?: string;
   // Poll settings
   pollAllowMultiple?: boolean;
   onPollAllowMultipleChange?: (value: boolean) => void;
@@ -135,6 +136,7 @@ export function FramingEditorConnector({
   pollQuestionError,
   pollOptions,
   onPollOptionsChange,
+  pollOptionsError,
   pollAllowMultiple = false,
   onPollAllowMultipleChange,
   pollAllowCustomOptions = false,
@@ -358,6 +360,7 @@ export function FramingEditorConnector({
             questionError={pollQuestionError}
             options={pollOptions}
             onOptionsChange={onPollOptionsChange}
+            optionsError={pollOptionsError}
             pollStatus={pollStatus}
             onStatusChange={status => {
               setPendingStatus(status);
@@ -387,7 +390,10 @@ export function FramingEditorConnector({
             onHideResultsUntilVotedChange={v => onPollHideResultsUntilVotedChange?.(v)}
             showVoterAvatars={pollShowVoterAvatars}
             onShowVoterAvatarsChange={v => onPollShowVoterAvatarsChange?.(v)}
-            readOnly={pollStatus === 'closed'}
+            // MUI parity (CalloutForm): poll settings are immutable once the poll is
+            // created — the server's `UpdatePollInput` only allows updating `title`.
+            // Show them as disabled in edit mode and when the poll is closed.
+            readOnly={mode === 'edit' || pollStatus === 'closed'}
           />
           {pendingStatus && (
             <ConfirmationDialog

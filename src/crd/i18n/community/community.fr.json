@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Inviter d'autres personnes à rejoindre \"{{spaceName}}\"",
+      "searchHint": "Recherche des personnes ci-dessous ou ajoute directement leur adresse e-mail",
+      "searchPlaceholder": "Nom d'utilisateur ou e-mail…",
+      "searchAriaLabel": "Rechercher des utilisateurs par nom ou e-mail",
+      "noResultsLabel": "Aucun utilisateur correspondant",
+      "loadingLabel": "Chargement des utilisateurs…",
+      "loadMoreLabel": "Chargement…",
+      "removeAriaLabel": "Retirer {{label}}",
+      "welcomeMessageLabel": "Message d'invitation",
+      "welcomeMessagePlaceholder": "Écris un court message qui sera envoyé avec l'invitation",
+      "defaultWelcomeMessage": "Bonjour, j'aimerais t'inviter à rejoindre {{spaceName}}. Jette un œil au Space ou clique sur le bouton ci-dessous pour accepter ou refuser l'invitation.",
+      "emailVisibilityNote": "Garde à l'esprit que ton adresse e-mail personnelle sera visible par toutes les personnes que tu invites.",
+      "inviteToRoleLabel": "Inviter comme :",
+      "rolePopoverHelper": "Member est toujours accordé à l'acceptation de l'invitation.",
+      "rolePopoverAriaLabel": "Choisir les rôles pour les invités",
+      "sendButtonLabel": "Envoyer",
+      "sendingButtonLabel": "Envoi…",
+      "backButtonLabel": "Retour",
+      "closeButtonLabel": "Fermer",
+      "closeAriaLabel": "Fermer la boîte de dialogue d'invitation"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Ce n'est pas une adresse e-mail valide.",
+      "duplicateEmail": "Cet e-mail est déjà dans la liste.",
+      "networkFailure": "Impossible d'envoyer les invitations. Veuillez réessayer."
+    },
+    "results": {
+      "sent": "Invitation envoyée",
+      "alreadyMember": "Déjà membre",
+      "error": "Échec : {{message}}"
+    }
+  }
+}

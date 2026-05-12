@@ -122,6 +122,13 @@ export const buildMembershipSettingsUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
 };
 
+// Generic per-tab settings URL composer used by the CRD contributor settings
+// shells (User + Organization). Caller passes the entity's `profile.url` and a
+// tab id; never call sites template `/user/<nameId>/settings/<tab>` by hand.
+export const buildSettingsTabUrl = (profileUrl: string | undefined, tabId: string) => {
+  return profileUrl ? `${buildSettingsUrl(profileUrl)}/${tabId}` : '';
+};
+
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
 
 export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;

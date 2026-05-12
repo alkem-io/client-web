@@ -1,0 +1,20 @@
+{
+  "forbidden": {
+    "title": "Access Restricted",
+    "description": "The page you're trying to access is not available for you.",
+    "actions": {
+      "goHome": "Go to Home",
+      "goBack": "Go back"
+    }
+  },
+  "authRequired": {
+    "title": "Access Restricted",
+    "description": "The page you're trying to access is only available to registered users.",
+    "descriptionContinued": "Please sign in to continue. Don't have an account? Sign up for free.",
+    "actions": {
+      "signIn": "Sign in / Sign up",
+      "or": "Or",
+      "returnAsGuest": "Return to dashboard as guest"
+    }
+  }
+}

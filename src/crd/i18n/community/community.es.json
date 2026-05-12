@@ -1,0 +1,41 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Invitar a otros a unirse a \"{{spaceName}}\"",
+      "searchHint": "Busca personas a continuación o añade directamente su dirección de correo electrónico",
+      "searchPlaceholder": "Nombre de usuario o correo electrónico…",
+      "searchAriaLabel": "Buscar usuarios por nombre o correo electrónico",
+      "noResultsLabel": "No hay usuarios que coincidan",
+      "loadingLabel": "Cargando usuarios…",
+      "loadMoreLabel": "Cargando más…",
+      "removeAriaLabel": "Quitar {{label}}",
+      "welcomeMessageLabel": "Mensaje de invitación",
+      "welcomeMessagePlaceholder": "Escribe un mensaje breve que se enviará con la invitación",
+      "defaultWelcomeMessage": "Hola, me gustaría invitarte a {{spaceName}}. Echa un vistazo al Space o haz clic en el botón siguiente para aceptar o rechazar la invitación.",
+      "emailVisibilityNote": "Ten en cuenta que tu dirección de correo electrónico personal será visible para cualquier persona a la que invites.",
+      "inviteToRoleLabel": "Invitar como:",
+      "rolePopoverHelper": "Member siempre se concede al aceptar la invitación.",
+      "rolePopoverAriaLabel": "Elegir roles para los invitados",
+      "sendButtonLabel": "Enviar",
+      "sendingButtonLabel": "Enviando…",
+      "backButtonLabel": "Atrás",
+      "closeButtonLabel": "Cerrar",
+      "closeAriaLabel": "Cerrar el diálogo de invitación"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "No es una dirección de correo electrónico válida.",
+      "duplicateEmail": "Este correo electrónico ya está en la lista.",
+      "networkFailure": "No se han podido enviar las invitaciones. Por favor, inténtalo de nuevo."
+    },
+    "results": {
+      "sent": "Invitación enviada",
+      "alreadyMember": "Ya es miembro",
+      "error": "Falló: {{message}}"
+    }
+  }
+}

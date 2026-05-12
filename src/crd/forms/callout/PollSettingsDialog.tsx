@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/crd/primitives/button';
-import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -36,14 +35,9 @@ export function PollSettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <div className="flex items-center justify-between">
-          <DialogTitle className="text-subsection-title">{t('pollForm.settings.title')}</DialogTitle>
-          <DialogClose asChild={true}>
-            <Button variant="ghost" size="sm" aria-label={t('pollForm.settings.close')}>
-              {t('pollForm.settings.close')}
-            </Button>
-          </DialogClose>
-        </div>
+        {/* DialogContent already renders a top-right "X" close button — no extra
+            "Close" button needed. */}
+        <DialogTitle className="text-subsection-title">{t('pollForm.settings.title')}</DialogTitle>
 
         <Separator />
 
