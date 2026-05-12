@@ -754,5 +754,8 @@
     "moreActionsDrawer": "Допълнителни действия",
     "close": "Затвори",
     "loadingPost": "Зареждане на публикация"
+  },
+  "activity": {
+    "dialogTitle": "Скорошна активност"
   }
 }

@@ -754,5 +754,8 @@
     "moreActionsDrawer": "Weitere Aktionen",
     "close": "Schließen",
     "loadingPost": "Beitrag wird geladen"
+  },
+  "activity": {
+    "dialogTitle": "Letzte Aktivität"
   }
 }
