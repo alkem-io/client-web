@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -106,7 +107,7 @@ export function TemplateCard({
         <div className="min-w-0">
           <h4 className="text-card-title leading-none mb-1.5 truncate">{template.name}</h4>
           {template.description && (
-            <p className="text-body text-muted-foreground line-clamp-2">{template.description}</p>
+            <InlineMarkdown content={template.description} clampLines={2} className="text-body text-muted-foreground" />
           )}
           {template.ownerLabel && (
             <p className="text-caption text-muted-foreground mt-1 truncate">{template.ownerLabel}</p>

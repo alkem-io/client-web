@@ -58,11 +58,9 @@
         "set": "Marcar como fase activa",
         "current": "Fase activa (actual)"
       },
-      "defaultPostTemplate": {
-        "label": "Plantilla de publicación predeterminada",
-        "header": "Elige una plantilla",
-        "clear": "Borrar predeterminada",
-        "none": "No hay plantillas disponibles"
+      "defaultCalloutTemplate": {
+        "set": "Establecer plantilla de callout predeterminada…",
+        "clear": "Quitar la plantilla de callout predeterminada"
       },
       "editDetails": {
         "menuLabel": "Editar detalles",
@@ -245,6 +243,17 @@
       "description": "Establece reglas y expectativas sobre el comportamiento de los miembros.",
       "hint": "Se muestran a los nuevos miembros al unirse.",
       "placeholder": "Describe el código de conducta de tu espacio…",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Pon un nombre a tus normas de la comunidad",
+      "referencesLabel": "Enlaces relacionados",
+      "applyTemplate": "Usar una plantilla",
+      "saveAsTemplate": "Guardar como plantilla",
+      "applyConfirm": {
+        "title": "¿Reemplazar las normas actuales?",
+        "description": "Aplicar una plantilla sobrescribe el título, el contenido y los enlaces actuales. Esta acción no se puede deshacer.",
+        "confirm": "Reemplazar",
+        "cancel": "Cancelar"
+      },
       "save": "Guardar normas",
       "saving": "Guardando…"
     },

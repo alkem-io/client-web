@@ -1,41 +1,68 @@
 import { useEffect, useState } from 'react';
+import type {
+  CommunityGuidelinesEditorValue,
+  CommunityGuidelinesReferenceRow,
+} from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import useCommunityGuidelines from '@/domain/community/community/CommunityGuidelines/useCommunityGuidelines';
 
 export type UseCommunityGuidelinesDataResult = {
-  description: string;
+  value: CommunityGuidelinesEditorValue;
   loading: boolean;
   submitting: boolean;
   isDirty: boolean;
   canSave: boolean;
-  onDescriptionChange: (next: string) => void;
+  onChange: (patch: Partial<CommunityGuidelinesEditorValue>) => void;
   onSave: () => Promise<void>;
+  /** Apply a community-guidelines template (id) to the live guidelines — overwrites title/body/references on the server. */
+  onApplyTemplate: (templateId: string) => Promise<void>;
+  /** True when there is any user-authored content (title / body / a link) — used to gate the apply-template confirm. */
+  hasContent: boolean;
 };
 
+const toEditorReferences = (
+  refs: ReadonlyArray<{ id: string; name: string; description?: string; uri: string }>
+): CommunityGuidelinesReferenceRow[] =>
+  refs.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }));
+
+const EMPTY_VALUE: CommunityGuidelinesEditorValue = { title: '', body: '', references: [] };
+
 /**
- * Drives the CRD `CommunityGuidelinesEditor`. Wraps the existing domain
- * `useCommunityGuidelines` hook so the CRD consumer only deals with plain
- * fields. `isDirty` flips true once the local value diverges from the
- * server value, and `onSave` posts the update.
+ * Drives the CRD `CommunityGuidelinesEditor` (FR-038). Wraps the domain `useCommunityGuidelines`
+ * hook: maps `CommunityGuidelines.profile.{displayName,description,references}` ⇄ the editor value,
+ * tracks local edits, and forwards save / apply-template. `apply-template` delegates to the domain
+ * hook's `onSelectCommunityGuidelinesTemplate` (which handles the reference remove/recreate cascade
+ * server-side).
  */
 export function useCommunityGuidelinesData(
   communityGuidelinesId: string | undefined
 ): UseCommunityGuidelinesDataResult {
-  const { communityGuidelines, loading, onUpdateCommunityGuidelines } = useCommunityGuidelines(communityGuidelinesId);
+  const { communityGuidelines, loading, onUpdateCommunityGuidelines, onSelectCommunityGuidelinesTemplate } =
+    useCommunityGuidelines(communityGuidelinesId);
 
-  const serverDescription = communityGuidelines?.description ?? '';
-  const [localDescription, setLocalDescription] = useState<string | null>(null);
+  const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
+    ? {
+        title: communityGuidelines.displayName,
+        body: communityGuidelines.description ?? '',
+        references: toEditorReferences(communityGuidelines.references),
+      }
+    : EMPTY_VALUE;
+  // A stable signature of the server value so the local buffer resets when the server data actually changes.
+  const serverSignature = JSON.stringify(serverValue);
+
+  const [localValue, setLocalValue] = useState<CommunityGuidelinesEditorValue | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Reset local state whenever the guidelines id or the server value changes.
+  // Reset the local edit buffer whenever the guidelines id or the server data changes.
   useEffect(() => {
-    setLocalDescription(null);
-  }, [communityGuidelinesId, serverDescription]);
+    setLocalValue(null);
+  }, [communityGuidelinesId, serverSignature]);
 
-  const description = localDescription ?? serverDescription;
-  const isDirty = localDescription !== null && localDescription !== serverDescription;
+  const value = localValue ?? serverValue;
+  const isDirty = localValue !== null && JSON.stringify(localValue) !== serverSignature;
+  const hasContent = value.title.trim().length > 0 || value.body.trim().length > 0 || value.references.length > 0;
 
-  const onDescriptionChange = (next: string) => {
-    setLocalDescription(next);
+  const onChange = (patch: Partial<CommunityGuidelinesEditorValue>) => {
+    setLocalValue({ ...value, ...patch });
   };
 
   const onSave = async () => {
@@ -43,23 +70,40 @@ export function useCommunityGuidelinesData(
     setSubmitting(true);
     try {
       await onUpdateCommunityGuidelines({
-        displayName: communityGuidelines.displayName,
-        description,
-        references: communityGuidelines.references,
+        displayName: value.title,
+        description: value.body,
+        // Only existing references can travel through the bulk update (the input keys on `ID`); new rows
+        // need the dedicated `createReferenceOnProfile` path, which the live-guidelines flow doesn't expose
+        // here — so a newly-added row is dropped on save (TODO 098, mirrors the CG-template edit limitation).
+        references: value.references.flatMap(r =>
+          r.id ? [{ id: r.id, name: r.name, uri: r.uri, description: r.description }] : []
+        ),
       });
-      setLocalDescription(null);
+      setLocalValue(null);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onApplyTemplate = async (templateId: string) => {
+    setSubmitting(true);
+    try {
+      await onSelectCommunityGuidelinesTemplate({ id: templateId });
+      setLocalValue(null);
     } finally {
       setSubmitting(false);
     }
   };
 
   return {
-    description,
+    value,
     loading: loading && !communityGuidelines,
     submitting,
     isDirty,
     canSave: !!communityGuidelinesId && isDirty && !submitting,
-    onDescriptionChange,
+    onChange,
     onSave,
+    onApplyTemplate,
+    hasContent,
   };
 }

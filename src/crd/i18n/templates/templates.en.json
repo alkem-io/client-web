@@ -141,6 +141,8 @@
     },
     "whiteboard": {
       "drawing": "Whiteboard",
+      "editDrawing": "Edit drawing",
+      "startDrawing": "Start drawing",
       "previewSettings": "Preview settings",
       "editPreview": "Edit preview",
       "previewImage": "Preview image",

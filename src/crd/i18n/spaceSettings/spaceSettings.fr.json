@@ -58,11 +58,9 @@
         "set": "Marquer comme phase active",
         "current": "Phase active (actuelle)"
       },
-      "defaultPostTemplate": {
-        "label": "Modèle de publication par défaut",
-        "header": "Choisissez un modèle",
-        "clear": "Effacer le défaut",
-        "none": "Aucun modèle disponible"
+      "defaultCalloutTemplate": {
+        "set": "Définir le modèle de callout par défaut…",
+        "clear": "Effacer le modèle de callout par défaut"
       },
       "editDetails": {
         "menuLabel": "Modifier les détails",
@@ -245,6 +243,17 @@
       "description": "Établissez des règles et des attentes concernant le comportement des membres.",
       "hint": "Affichées aux nouveaux membres lors de leur adhésion.",
       "placeholder": "Décrivez le code de conduite de votre espace…",
+      "titleLabel": "Titre",
+      "titlePlaceholder": "Nommez vos règles de la communauté",
+      "referencesLabel": "Liens connexes",
+      "applyTemplate": "Utiliser un modèle",
+      "saveAsTemplate": "Enregistrer comme modèle",
+      "applyConfirm": {
+        "title": "Remplacer les règles actuelles ?",
+        "description": "Appliquer un modèle écrase le titre, le contenu et les liens actuels. Cette action est irréversible.",
+        "confirm": "Remplacer",
+        "cancel": "Annuler"
+      },
       "save": "Enregistrer les règles",
       "saving": "Enregistrement…"
     },

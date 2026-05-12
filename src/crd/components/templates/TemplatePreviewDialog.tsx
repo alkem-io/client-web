@@ -1,5 +1,6 @@
 import { Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -42,7 +43,9 @@ export function TemplatePreviewDialog({
           )}
         </div>
 
-        {header.description && <p className="text-body text-muted-foreground">{header.description}</p>}
+        {header.description && (
+          <MarkdownContent content={header.description} className="text-body text-muted-foreground" />
+        )}
 
         {content ? (
           <TemplateContentPreview content={content} loading={contentLoading} />

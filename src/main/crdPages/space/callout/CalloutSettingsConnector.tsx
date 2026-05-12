@@ -3,26 +3,27 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
   useCalloutContributionsSortOrderQuery,
+  useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutContextMenu } from '@/crd/components/callout/CalloutContextMenu';
 import { CalloutContributionsSortDialog } from '@/crd/components/callout/CalloutContributionsSortDialog';
 import { CalloutVisibilityChangeDialog } from '@/crd/components/callout/CalloutVisibilityChangeDialog';
 import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialog';
+import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
+import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
+import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
-
-/** Plan D12 kill-switch for the Save-as-Template flow. When false, the menu item is hidden. */
-const CRD_SAVE_AS_TEMPLATE_ENABLED = true;
 
 type CalloutSettingsConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -39,19 +40,18 @@ type CalloutSettingsConnectorProps = {
 
 /**
  * Hosts the 3-dots menu for a single callout, plus the lifecycle dialogs it
- * triggers: visibility change, delete, sort contributions (plan T062).
- * Rendered inside `LazyCalloutItem` (feed 3-dots) and
- * `CalloutDetailDialogConnector` (sticky-header 3-dots).
+ * triggers: visibility change, delete, sort contributions, and "Save as
+ * template" (plan T062 / T069). Rendered inside `LazyCalloutItem` (feed 3-dots)
+ * and `CalloutDetailDialogConnector` (sticky-header 3-dots).
  *
- * Permissions are derived via `deriveCalloutMenuVisibility` (pure helper
- * unit-tested in T099). Mutations flow through `useCalloutManager`
- * (`changeCalloutVisibility`, `deleteCallout`) + the callouts sort-order
- * mutation exposed via `moveActions`.
+ * Permissions are derived via `deriveCalloutMenuVisibility` (pure helper).
+ * Mutations flow through `useCalloutManager` (`changeCalloutVisibility`,
+ * `deleteCallout`) + the callouts sort-order mutation exposed via `moveActions`.
+ * Save-as-Template now goes through the CRD `useSaveAsTemplate` flow (the legacy
+ * MUI `CreateTemplateDialog` bridge was removed in T036/T025).
  *
  * Share is owned by the parent connector via `onShare` (so the detail dialog's
  * header / reactions-bar Share buttons share state with the menu's Share item).
- * Save-as-Template is hidden behind `CRD_SAVE_AS_TEMPLATE_ENABLED` until its
- * MUI portal is wired (plan D12 / T082).
  */
 export function CalloutSettingsConnector({ callout, moveActions, onShare }: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -63,12 +63,18 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [saveAsTemplateOpen, setSaveAsTemplateOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
-  const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
+
+  // Save-as-template — the level-zero space owns the templates set.
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !levelZeroSpaceId,
+  });
+  const saveAsTemplatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const saveAs = useSaveAsTemplate({ templatesSetId: saveAsTemplatesSetId, spaceId: levelZeroSpaceId });
 
   // Contributions sort — fetched only while the dialog is open.
   const { data: sortData, loading: sortLoading } = useCalloutContributionsSortOrderQuery({
@@ -102,7 +108,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     contributionsEnabled: callout.settings.contribution.enabled,
     contributionsCount: callout.contributions.length,
     canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
-    saveAsTemplateFeatureEnabled: CRD_SAVE_AS_TEMPLATE_ENABLED,
+    saveAsTemplateFeatureEnabled: true,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
@@ -147,6 +153,23 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     }
   };
 
+  // Fetch the callout's full content, map it to CRD callout-form values (incl. the whiteboard / memo
+  // body, which the live-edit prefill omits but a template stores statically), then open the dialog.
+  const handleSaveAsTemplate = async () => {
+    const { data } = await fetchCalloutContent({ variables: { calloutId: callout.id } });
+    const loaded = data?.lookup.callout;
+    const body: Partial<CalloutFormValues> = mapCalloutDetailsToFormValues(data);
+    if (loaded?.framing.whiteboard?.content) body.whiteboardContent = loaded.framing.whiteboard.content;
+    else if (body.whiteboardConfigured) body.whiteboardContent = EmptyWhiteboardString;
+    body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
+    saveAs.openSaveAs({
+      kind: 'callout',
+      name: callout.framing.profile.displayName,
+      description: callout.framing.profile.description ?? undefined,
+      calloutBody: body,
+    });
+  };
+
   return (
     <>
       <CalloutContextMenu
@@ -159,7 +182,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
         onSortContributions={perms.showSortContributions ? () => setSortOpen(true) : undefined}
-        onSaveAsTemplate={perms.showSaveAsTemplate ? () => setSaveAsTemplateOpen(true) : undefined}
+        onSaveAsTemplate={perms.showSaveAsTemplate ? () => void handleSaveAsTemplate() : undefined}
         onShare={perms.showShare && onShare ? onShare : undefined}
         onMoveTop={moveActions?.onMoveToTop}
         onMoveUp={moveActions?.onMoveUp}
@@ -201,30 +224,19 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         onConfirm={handleSortConfirm}
       />
 
-      {saveAsTemplateOpen && (
-        <CreateTemplateDialog
-          open={saveAsTemplateOpen}
-          onClose={() => setSaveAsTemplateOpen(false)}
-          templateType={TemplateType.Callout}
-          onSubmit={async values => {
-            if (!levelZeroSpaceId) return;
-            try {
-              await handleCreateCalloutTemplate(values, levelZeroSpaceId);
-              setSaveAsTemplateOpen(false);
-            } catch (err) {
-              logError(new Error('Save as template failed', { cause: err as Error }));
-              notify(t('saveAsTemplate.saveFailed'), 'error');
-            }
-          }}
-          getDefaultValues={async () => {
-            const { data } = await fetchCalloutContent({ variables: { calloutId: callout.id } });
-            return {
-              type: TemplateType.Callout,
-              callout: data?.lookup.callout,
-            };
-          }}
-        />
-      )}
+      <TemplateFormDialog
+        open={saveAs.form.open}
+        intent={saveAs.form.intent}
+        type={saveAs.form.type}
+        commonValue={saveAs.form.commonValue}
+        commonErrors={saveAs.form.commonErrors}
+        onCommonChange={saveAs.form.onCommonChange}
+        perTypeFormSlot={saveAs.form.perTypeFormSlot}
+        submitting={saveAs.form.submitting}
+        onSubmit={saveAs.form.onSubmit}
+        onCancel={saveAs.form.onCancel}
+        isDirty={saveAs.form.isDirty}
+      />
     </>
   );
 }

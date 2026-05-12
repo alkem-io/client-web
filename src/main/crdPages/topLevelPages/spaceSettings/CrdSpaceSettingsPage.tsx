@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -21,12 +22,12 @@ import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSe
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { SpaceSettingsStorageView } from '@/crd/components/space/settings/SpaceSettingsStorageView';
 import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
-import { SpaceSettingsTemplatesView } from '@/crd/components/space/settings/SpaceSettingsTemplatesView';
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
-import { TemplateEditDialog } from '@/crd/components/space/settings/TemplateEditDialog';
-import { TemplateLibraryDialog } from '@/crd/components/space/settings/TemplateLibraryDialog';
-import { TemplatePreviewDialog } from '@/crd/components/space/settings/TemplatePreviewDialog';
+import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import {
@@ -45,7 +46,7 @@ import { useStorageTabData } from './storage/useStorageTabData';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSaveSubspaceAsTemplate } from './subspaces/useSaveSubspaceAsTemplate';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
-import { useTemplatesTabData } from './templates/useTemplatesTabData';
+import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
 import { useDirtyTabGuard } from './useDirtyTabGuard';
 import { useSettingsScope } from './useSettingsScope';
@@ -85,7 +86,6 @@ export default function CrdSpaceSettingsPage() {
     templatesSetId: subspacesTab.templatesSetId,
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
   });
-  const templatesTab = useTemplatesTabData(isTabVisible('templates') ? spaceId : '', accountId || undefined);
   const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
   const settingsTab = useSettingsTabData(spaceId);
   const applicationForm = useApplicationFormData(settingsTab.roleSetId);
@@ -93,6 +93,43 @@ export default function CrdSpaceSettingsPage() {
   const updatesTab = useUpdatesTabData(communityId || undefined);
   const communityGuidelinesId = scope.guidelinesId;
   const communityGuidelines = useCommunityGuidelinesData(communityGuidelinesId);
+
+  // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
+  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache).
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({ variables: { spaceId }, skip: !spaceId });
+  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const guidelinesTemplatePicker = useTemplatePicker({
+    allowedTypes: ['communityGuidelines'],
+    accountId,
+    spaceTemplatesSetId: templatesSetId,
+  });
+  const guidelinesSaveAs = useSaveAsTemplate({ templatesSetId, spaceId });
+  const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
+  const [appliedGuidelinesTemplateId, setAppliedGuidelinesTemplateId] = useState<string | null>(null);
+  const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
+  useEffect(() => {
+    if (!selectedGuidelinesTemplateId || appliedGuidelinesTemplateId === selectedGuidelinesTemplateId) return;
+    setAppliedGuidelinesTemplateId(selectedGuidelinesTemplateId);
+    void communityGuidelines.onApplyTemplate(selectedGuidelinesTemplateId);
+  }, [selectedGuidelinesTemplateId, appliedGuidelinesTemplateId, communityGuidelines]);
+  const openGuidelinesTemplatePicker = () => {
+    if (communityGuidelines.hasContent) setConfirmReplaceGuidelinesOpen(true);
+    else guidelinesTemplatePicker.openPicker();
+  };
+
+  // Layout-tab: per-flow-state default Callout template (T058) — the column kebab opens this picker.
+  const [defaultCalloutTemplateColumnId, setDefaultCalloutTemplateColumnId] = useState<string | null>(null);
+  const [appliedDefaultCalloutTemplateKey, setAppliedDefaultCalloutTemplateKey] = useState<string | null>(null);
+  const defaultCalloutTemplatePicker = useTemplatePicker({
+    allowedTypes: ['callout'],
+    accountId,
+    spaceTemplatesSetId: templatesSetId,
+  });
+  const openDefaultCalloutTemplatePicker = (columnId: string) => {
+    setDefaultCalloutTemplateColumnId(columnId);
+    defaultCalloutTemplatePicker.openPicker();
+  };
+
   const addOrgDialog = useAddOrganizationDialog({ community: community._adminRef });
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
@@ -107,7 +144,7 @@ export default function CrdSpaceSettingsPage() {
   const inviteDialog = useInviteUsersDialog({ community: community._adminRef });
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
-    availablePostTemplates: [],
+    onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
       col.callouts.map(c => ({ id: c.id, flowStateTagsetId: c.flowStateTagsetId, currentStateName: col.title }))
     ),
@@ -119,6 +156,16 @@ export default function CrdSpaceSettingsPage() {
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
   });
+  // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
+  const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
+  useEffect(() => {
+    if (!selectedDefaultCalloutTemplateId || !defaultCalloutTemplateColumnId) return;
+    const key = `${defaultCalloutTemplateColumnId}:${selectedDefaultCalloutTemplateId}`;
+    if (appliedDefaultCalloutTemplateKey === key) return;
+    setAppliedDefaultCalloutTemplateKey(key);
+    columnMenu.onSetAsDefaultCalloutTemplate(defaultCalloutTemplateColumnId, selectedDefaultCalloutTemplateId);
+    setDefaultCalloutTemplateColumnId(null);
+  }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, appliedDefaultCalloutTemplateKey, columnMenu]);
 
   // About uses per-section inline Save, so it does NOT participate in the
   // tab-switch guard. Only Layout and the Application Form can enter a
@@ -279,12 +326,21 @@ export default function CrdSpaceSettingsPage() {
                 communityGuidelinesSlot={
                   communityGuidelinesId ? (
                     <CommunityGuidelinesEditor
-                      value={communityGuidelines.description}
+                      value={communityGuidelines.value}
                       loading={communityGuidelines.loading}
                       submitting={communityGuidelines.submitting}
                       canSave={communityGuidelines.canSave}
-                      onChange={communityGuidelines.onDescriptionChange}
+                      onChange={communityGuidelines.onChange}
                       onSave={() => void communityGuidelines.onSave()}
+                      onApplyTemplate={openGuidelinesTemplatePicker}
+                      onSaveAsTemplate={() =>
+                        guidelinesSaveAs.openSaveAs({
+                          kind: 'communityGuidelines',
+                          title: communityGuidelines.value.title,
+                          bodyMarkdown: communityGuidelines.value.body,
+                          references: communityGuidelines.value.references,
+                        })
+                      }
                     />
                   ) : undefined
                 }
@@ -315,22 +371,7 @@ export default function CrdSpaceSettingsPage() {
               />
             )}
             {activeTab === 'templates' && isTabVisible('templates') && (
-              // TODO(098-crd-templates / US1): cut this over to the holder-agnostic
-              // `TemplatesManagerView` (`@/crd/components/templates/TemplatesManagerView`) driven by
-              // `useTemplatesManager` (`@/main/crdPages/templates/useTemplatesManager`) — with
-              // `canCreate/canEdit/canDelete = () => true`, `canImport = () => true`, the native
-              // `TemplateFormDialog`, the unified `TemplatePicker` (mode='import'), and `SetDefaultTemplateDialog`.
-              // The new kit is in place; this swap (+ deleting the superseded `045` dialogs) was not done in the
-              // unattended implementation session because of the "modify, never delete" constraint. See
-              // `specs/098-crd-templates/incongruencies.md` §5/§6.
-              <SpaceSettingsTemplatesView
-                categories={templatesTab.categories}
-                loading={templatesTab.loading}
-                duplicatingCategory={templatesTab.actions.duplicatingCategory ?? templatesTab.library.importingCategory}
-                onCreateTemplate={templatesTab.onCreateTemplate}
-                onImportTemplate={templatesTab.onImportTemplate}
-                onTemplateAction={templatesTab.onTemplateAction}
-              />
+              <CrdSpaceTemplatesTab spaceId={spaceId} accountId={accountId || undefined} />
             )}
             {activeTab === 'updates' && (
               <SpaceSettingsUpdatesView
@@ -456,52 +497,6 @@ export default function CrdSpaceSettingsPage() {
         saving={subspacesTab.subspaceTemplatesSaving}
       />
 
-      <TemplatePreviewDialog
-        open={templatesTab.actions.previewOpen}
-        onOpenChange={open => {
-          if (!open) templatesTab.actions.onClosePreview();
-        }}
-        loading={templatesTab.actions.previewLoading}
-        template={templatesTab.actions.previewData}
-        canEdit={true}
-        canDuplicate={true}
-        onEdit={templatesTab.actions.onSwitchPreviewToEdit}
-        onDuplicate={() => void templatesTab.actions.onDuplicateFromPreview()}
-        duplicating={templatesTab.actions.duplicating}
-      />
-
-      <TemplateEditDialog
-        open={templatesTab.actions.editOpen}
-        onOpenChange={open => {
-          if (!open) templatesTab.actions.onCloseEdit();
-        }}
-        loading={templatesTab.actions.editLoading}
-        submitting={templatesTab.actions.editSubmitting}
-        values={templatesTab.actions.editValues}
-        errors={templatesTab.actions.editErrors}
-        isPostTemplate={templatesTab.actions.editIsPost}
-        advancedContentNotice={templatesTab.actions.editAdvancedNotice}
-        onChange={templatesTab.actions.onEditChange}
-        onSubmit={() => void templatesTab.actions.onEditSave()}
-        canSubmit={
-          !templatesTab.actions.editSubmitting && templatesTab.actions.editValues.displayName.trim().length >= 3
-        }
-      />
-
-      <TemplateLibraryDialog
-        open={templatesTab.library.open}
-        onOpenChange={open => {
-          if (!open) templatesTab.library.close();
-        }}
-        templateTypeLabel={templatesTab.library.templateTypeLabel}
-        sections={templatesTab.library.sections}
-        canLoadPlatform={templatesTab.library.canLoadPlatform}
-        platformLoaded={templatesTab.library.platformLoaded}
-        onLoadPlatform={templatesTab.library.onLoadPlatform}
-        onSelect={tmpl => void templatesTab.library.onSelect(tmpl)}
-        loadingSelect={templatesTab.library.loadingSelect}
-      />
-
       <ImageCropDialog
         open={about.pendingCrop !== null}
         file={about.pendingCrop?.file}
@@ -528,21 +523,6 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={subspacesTab.confirmDelete}
         onCancel={subspacesTab.cancelDelete}
-      />
-
-      <ConfirmationDialog
-        open={templatesTab.pendingDelete !== null}
-        onOpenChange={open => {
-          if (!open && !templatesTab.deleting) templatesTab.cancelDelete();
-        }}
-        variant="destructive"
-        title={t('templates.deleteDialog.title')}
-        description={t('templates.deleteDialog.description', { name: templatesTab.pendingDelete?.name ?? '' })}
-        confirmLabel={t('templates.deleteDialog.confirm')}
-        cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={templatesTab.confirmDelete}
-        onCancel={templatesTab.cancelDelete}
-        loading={templatesTab.deleting}
       />
 
       <ConfirmationDialog
@@ -789,6 +769,39 @@ export default function CrdSpaceSettingsPage() {
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}
+      />
+
+      {/* Community-guidelines: apply-a-template picker + save-as dialog (FR-038 / T070). */}
+      <TemplatePicker {...guidelinesTemplatePicker.pickerProps} />
+      <TemplatePicker {...defaultCalloutTemplatePicker.pickerProps} />
+      <TemplateFormDialog
+        open={guidelinesSaveAs.form.open}
+        intent={guidelinesSaveAs.form.intent}
+        type={guidelinesSaveAs.form.type}
+        commonValue={guidelinesSaveAs.form.commonValue}
+        commonErrors={guidelinesSaveAs.form.commonErrors}
+        onCommonChange={guidelinesSaveAs.form.onCommonChange}
+        perTypeFormSlot={guidelinesSaveAs.form.perTypeFormSlot}
+        submitting={guidelinesSaveAs.form.submitting}
+        onSubmit={guidelinesSaveAs.form.onSubmit}
+        onCancel={guidelinesSaveAs.form.onCancel}
+        isDirty={guidelinesSaveAs.form.isDirty}
+      />
+      <ConfirmationDialog
+        open={confirmReplaceGuidelinesOpen}
+        onOpenChange={open => {
+          if (!open) setConfirmReplaceGuidelinesOpen(false);
+        }}
+        variant="destructive"
+        title={t('community.guidelines.applyConfirm.title')}
+        description={t('community.guidelines.applyConfirm.description')}
+        confirmLabel={t('community.guidelines.applyConfirm.confirm')}
+        cancelLabel={t('community.guidelines.applyConfirm.cancel')}
+        onConfirm={() => {
+          setConfirmReplaceGuidelinesOpen(false);
+          guidelinesTemplatePicker.openPicker();
+        }}
+        onCancel={() => setConfirmReplaceGuidelinesOpen(false)}
       />
     </div>
   );

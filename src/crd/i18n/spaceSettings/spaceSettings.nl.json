@@ -58,11 +58,9 @@
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)"
       },
-      "defaultPostTemplate": {
-        "label": "Standaard publicatiesjabloon",
-        "header": "Kies een sjabloon",
-        "clear": "Standaard wissen",
-        "none": "Geen sjablonen beschikbaar"
+      "defaultCalloutTemplate": {
+        "set": "Standaard callout-sjabloon instellen…",
+        "clear": "Standaard callout-sjabloon wissen"
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
@@ -245,6 +243,17 @@
       "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je ruimte…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Geef je communityrichtlijnen een naam",
+      "referencesLabel": "Gerelateerde links",
+      "applyTemplate": "Een sjabloon gebruiken",
+      "saveAsTemplate": "Opslaan als sjabloon",
+      "applyConfirm": {
+        "title": "De huidige richtlijnen vervangen?",
+        "description": "Het toepassen van een sjabloon overschrijft de huidige titel, tekst en links. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Vervangen",
+        "cancel": "Annuleren"
+      },
       "save": "Richtlijnen opslaan",
       "saving": "Opslaan…"
     },

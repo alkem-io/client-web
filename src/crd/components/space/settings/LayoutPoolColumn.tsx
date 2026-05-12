@@ -14,11 +14,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
@@ -153,24 +149,12 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflo
           {t('layout.column.editDetails.menuLabel')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>{t('layout.column.defaultPostTemplate.label')}</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuLabel>{t('layout.column.defaultPostTemplate.header')}</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => actions.onSetAsDefaultPostTemplate(column.id, null)}>
-              {t('layout.column.defaultPostTemplate.clear')}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {actions.availablePostTemplates.length === 0 && (
-              <DropdownMenuItem disabled={true}>{t('layout.column.defaultPostTemplate.none')}</DropdownMenuItem>
-            )}
-            {actions.availablePostTemplates.map(tpl => (
-              <DropdownMenuItem key={tpl.id} onClick={() => actions.onSetAsDefaultPostTemplate(column.id, tpl.id)}>
-                {tpl.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        <DropdownMenuItem onClick={() => actions.onOpenDefaultCalloutTemplatePicker(column.id)}>
+          {t('layout.column.defaultCalloutTemplate.set')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => actions.onSetAsDefaultCalloutTemplate(column.id, null)}>
+          {t('layout.column.defaultCalloutTemplate.clear')}
+        </DropdownMenuItem>
         {actions.onDeletePhase && (
           <>
             <DropdownMenuSeparator />

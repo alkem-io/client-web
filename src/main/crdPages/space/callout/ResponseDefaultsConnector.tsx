@@ -1,10 +1,9 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useSpaceContentTemplatesOnSpaceQuery,
-  useTemplateContentLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Loading } from '@/crd/components/common/Loading';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import type { TemplateType } from '@/crd/components/templates/types';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
@@ -13,7 +12,9 @@ import {
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { useSpace } from '@/domain/space/context/useSpace';
 import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
@@ -31,13 +32,10 @@ type ResponseDefaultsConnectorProps = {
 
 /**
  * Wraps `ResponseDefaultsDialog` and provides the two integration-only slots:
- * the template picker (fetches `useSpaceContentTemplatesOnSpaceQuery` and uses
- * `useTemplateContentLazyQuery` to load the picked template's content), and
- * the whiteboard-default launcher that opens `CrdSingleUserWhiteboardDialog`.
- *
- * The template picker is a minimal select-style list for now — the popover +
- * search pattern from the prototype (spec T026) can be refined without
- * changing the prop contract.
+ * the template picker (the shared CRD `TemplatePicker` in `mode:'select'` — a **Post** template for
+ * the post/memo default description, a **Whiteboard** template for the default whiteboard — sourced
+ * from the space's templates set + its account + the platform library), and the whiteboard-default
+ * launcher that opens `CrdSingleUserWhiteboardDialog`.
  */
 export function ResponseDefaultsConnector({
   open,
@@ -48,6 +46,9 @@ export function ResponseDefaultsConnector({
   onSave,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const {
+    space: { accountId },
+  } = useSpace();
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [whiteboardPreviewSettings, setWhiteboardPreviewSettings] = useState<WhiteboardPreviewSettings>(
     DefaultWhiteboardPreviewSettings
@@ -57,59 +58,35 @@ export function ResponseDefaultsConnector({
   // visible to the editor, instead of being shadowed by stale local state.
   const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
 
-  const needsTemplates = (type === 'post' || type === 'whiteboard') && Boolean(spaceId) && open;
-  const { data: templatesData, loading: templatesLoading } = useSpaceContentTemplatesOnSpaceQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: !needsTemplates,
-  });
+  // Resolve the space's templates set so the picker can offer the Space source section.
+  const { data: tmData } = useSpaceTemplatesManagerQuery({ variables: { spaceId: spaceId ?? '' }, skip: !spaceId });
+  const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const pickerType: TemplateType = type === 'whiteboard' ? 'whiteboard' : 'post';
+  const picker = useTemplatePicker({ allowedTypes: [pickerType], spaceTemplatesSetId, accountId });
 
-  const templates =
-    templatesData?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(tmpl => ({
-      id: tmpl.id,
-      name: tmpl.profile.displayName,
-    })) ?? [];
+  // Apply the picked template's content to the matching contribution default.
+  const selectedContent = picker.selectedTemplateContent;
+  const selectedId = picker.selectedTemplateId;
+  const [appliedFor, setAppliedFor] = useState<string | null>(null);
+  useEffect(() => {
+    if (!selectedContent || !selectedId || appliedFor === selectedId) return;
+    setAppliedFor(selectedId);
+    if (selectedContent.type === 'post') {
+      onSave({ ...values, postDescription: selectedContent.defaultDescription });
+    } else if (selectedContent.type === 'whiteboard') {
+      onSave({ ...values, whiteboardContent: selectedContent.whiteboardContent });
+    }
+  }, [selectedContent, selectedId, appliedFor, values, onSave]);
 
-  const [getTemplateContent] = useTemplateContentLazyQuery();
-
-  const applyTemplate = async (templateId: string) => {
-    if (!templateId) return;
-    const { data } = await getTemplateContent({ variables: { templateId, includeCallout: true } });
-    const callout = data?.lookup.template?.callout;
-    if (!callout) return;
-    // Pre-fill contribution defaults from the template's contributionDefaults.
-    const defaults = callout.contributionDefaults;
-    if (!defaults) return;
-    onSave({
-      defaultDisplayName: defaults.defaultDisplayName ?? values.defaultDisplayName,
-      postDescription: defaults.postDescription ?? values.postDescription,
-      whiteboardContent: defaults.whiteboardContent ?? values.whiteboardContent,
-    });
-  };
-
-  const templateSlot =
-    type === 'post' || type === 'whiteboard' ? (
-      <div className="space-y-1.5">
-        <Label htmlFor="response-defaults-template" className="text-body text-foreground">
-          {t('responseDefaults.template')}
-        </Label>
-        <select
-          id="response-defaults-template"
-          className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-          disabled={templatesLoading || templates.length === 0}
-          onChange={e => void applyTemplate(e.target.value)}
-          defaultValue=""
-        >
-          <option value="" disabled={true}>
-            {templatesLoading ? t('responseDefaults.templateLoading') : t('responseDefaults.templatePlaceholder')}
-          </option>
-          {templates.map(tmpl => (
-            <option key={tmpl.id} value={tmpl.id}>
-              {tmpl.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    ) : null;
+  const supportsTemplate = type === 'post' || type === 'whiteboard';
+  const templateSlot = supportsTemplate ? (
+    <div className="space-y-1.5">
+      <Label className="text-body text-foreground">{t('responseDefaults.template')}</Label>
+      <Button variant="outline" size="sm" onClick={picker.openPicker}>
+        {t('responseDefaults.templatePlaceholder')}
+      </Button>
+    </div>
+  ) : null;
 
   const whiteboardSlot =
     type === 'whiteboard' ? (
@@ -155,14 +132,17 @@ export function ResponseDefaultsConnector({
     ) : null;
 
   return (
-    <ResponseDefaultsDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      type={type}
-      values={values}
-      onSave={onSave}
-      templateSlot={templateSlot}
-      whiteboardSlot={whiteboardSlot}
-    />
+    <>
+      <ResponseDefaultsDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        type={type}
+        values={values}
+        onSave={onSave}
+        templateSlot={templateSlot}
+        whiteboardSlot={whiteboardSlot}
+      />
+      <TemplatePicker {...picker.pickerProps} />
+    </>
   );
 }

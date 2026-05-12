@@ -182,8 +182,6 @@ export type TemplateCommonValues = {
   name: string;
   description: string;
   tags: string[];
-  /** optional new banner/visual upload (the integration layer performs the upload on save) */
-  bannerFile?: File;
 };
 
 export type CalloutTemplateValues = TemplateCommonValues & {
@@ -210,7 +208,6 @@ export type WhiteboardTemplateValues = TemplateCommonValues & {
   type: 'whiteboard';
   whiteboardContent: string;
   previewSettings?: WhiteboardPreviewSettings;
-  previewImageFile?: File;
 };
 
 export type PostTemplateValues = TemplateCommonValues & {
@@ -250,7 +247,7 @@ export type TemplateFormDialogProps = {
   intent: 'create' | 'edit';
   /** Drives the title only — the body is `perTypeFormSlot`. */
   type: TemplateType;
-  /** Common-fields value (name/description/tags/bannerFile). The per-type values live in the slot's own controlled state. */
+  /** Common-fields value (name/description/tags). The per-type values live in the slot's own controlled state. */
   commonValue: TemplateCommonValues;
   commonErrors: TemplateFormErrors;
   onCommonChange: (next: TemplateCommonValues) => void;

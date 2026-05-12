@@ -2,7 +2,10 @@ import { useState } from 'react';
 import {
   refetchAllTemplatesInTemplatesSetQuery,
   useAllTemplatesInTemplatesSetQuery,
+  useCreateTemplateFromContentSpaceMutation,
   useDeleteTemplateMutation,
+  useImportTemplateDialogAccountTemplatesQuery,
+  useImportTemplateDialogPlatformTemplatesQuery,
   useTemplateContentLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import type {
@@ -10,16 +13,25 @@ import type {
   TemplateCardData,
   TemplateCategorySection,
   TemplateContent,
+  TemplatePickerImportProps,
+  TemplatePickerSource,
   TemplateType,
 } from '@/crd/components/templates/types';
-import { mapTemplateContent, templateContentIncludeVars } from './templateContentMapper';
+import { calloutTemplateContentToFormValues } from './calloutTemplateMapper';
+import { mapGqlTemplateType, mapTemplateToCardData, toGqlTemplateType } from './templateCardMapper';
+import { mapTemplateContent, templateContentIncludeVars, templateContentToFormValues } from './templateContentMapper';
 import { mapTemplatesSetToCategories } from './templatesManagerMapper';
+import { type UseTemplateFormsResult, useTemplateForms } from './useTemplateForms';
+
+const EMPTY_STRING_SET: ReadonlySet<string> = new Set();
 
 export type UseTemplatesManagerArgs = {
   templatesSetId: string | undefined;
   holderKind: 'space' | 'innovationPack';
   /** account id — used only when holderKind === 'space' to populate the import picker's Account source (wired by the page). */
   accountId?: string;
+  /** Parent space id — threaded through the Callout template form's `ResponseDefaultsConnector`. */
+  spaceId?: string;
 };
 
 export type TemplatesManagerPreviewState = {
@@ -39,20 +51,20 @@ export type UseTemplatesManagerResult = {
   loading: boolean;
   duplicatingId: string | null;
   deletingId: string | null;
-  /** Surfaces the requested type for the page to host the create dialog. (Per-type form lifecycle = `useTemplateForms`, not yet wired — see `specs/098-crd-templates/assumptions.md` F3.) */
+  /** Opens the CRD-native `TemplateFormDialog` (create mode) for a type — see `form`. */
   onCreate: (type: TemplateType) => void;
   /** Surfaces the requested type for the page to host the import-from-library picker (Space holder only). */
   onImport: (type: TemplateType) => void;
-  /** preview / duplicate / delete now; edit is `TODO(098)` (needs `useTemplateForms`). */
+  /** preview / duplicate / delete now; edit is `TODO(098)` (needs `useTemplateForms` edit support). */
   onTemplateAction: (id: string, action: TemplateAction) => void;
   preview: TemplatesManagerPreviewState;
+  /** The create/edit form-dialog state — the page renders `<TemplateFormDialog {...form} />`. */
+  form: UseTemplateFormsResult;
+  /** Import-from-library picker (Space holder only) — the page renders `<TemplatePicker {...importPicker} />`. */
+  importPicker: TemplatePickerImportProps;
   pendingDelete: { id: string; name: string; isUsedAsDefault: boolean } | null;
   confirmDelete: () => Promise<void>;
   cancelDelete: () => void;
-  pendingCreateType: TemplateType | null;
-  clearPendingCreateType: () => void;
-  pendingImportType: TemplateType | null;
-  clearPendingImportType: () => void;
 };
 
 /**
@@ -64,6 +76,8 @@ export type UseTemplatesManagerResult = {
 export function useTemplatesManager({
   templatesSetId,
   holderKind,
+  accountId,
+  spaceId,
 }: UseTemplatesManagerArgs): UseTemplatesManagerResult {
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
     variables: { templatesSetId: templatesSetId ?? '' },
@@ -73,8 +87,53 @@ export function useTemplatesManager({
   const allCards = categories.flatMap(c => c.templates);
   const findCard = (id: string) => allCards.find(c => c.id === id);
 
-  // ── preview ──
+  // ── create/edit form lifecycle ──
+  const form = useTemplateForms({ templatesSetId, spaceId });
   const [getTemplateContent] = useTemplateContentLazyQuery();
+  const [createTemplateFromContentSpace] = useCreateTemplateFromContentSpaceMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet'],
+  });
+
+  /** Create a copy of an existing template (used by Duplicate and import-from-library). */
+  const createTemplateCopy = async (card: TemplateCardData) => {
+    if (!templatesSetId) return;
+    const { data: contentData } = await getTemplateContent({
+      variables: { templateId: card.id, ...templateContentIncludeVars(card.type) },
+    });
+    const fetched = contentData?.lookup.template;
+    if (!fetched) return;
+    if (card.type === 'callout') {
+      if (!fetched.callout) return;
+      await form.submitCalloutCopy(
+        { name: card.name, description: card.description, tags: card.tags },
+        calloutTemplateContentToFormValues(fetched.callout)
+      );
+      return;
+    }
+    if (card.type === 'space') {
+      const contentSpaceId = fetched.contentSpace?.id;
+      if (!contentSpaceId) return;
+      await createTemplateFromContentSpace({
+        variables: {
+          templatesSetId,
+          contentSpaceId,
+          profileData: { displayName: card.name, description: card.description || undefined },
+          tags: card.tags.length > 0 ? card.tags : undefined,
+        },
+      });
+      return;
+    }
+    const formValues = templateContentToFormValues(
+      mapTemplateContent(fetched, card.type),
+      card.name,
+      card.description,
+      card.tags
+    );
+    if (!formValues) return; // (space + callout are handled above)
+    await form.submitValues(formValues);
+  };
+
+  // ── preview ──
   const [preview, setPreview] = useState<{
     open: boolean;
     header?: TemplateCardData;
@@ -98,13 +157,71 @@ export function useTemplatesManager({
   };
   const closePreview = () => setPreview(p => ({ ...p, open: false }));
 
-  // ── duplicate (TODO(098): the create-mutation-input mapping comes from `useTemplateForms`) ──
+  // ── edit (all five types) ──
+  const isEditable = (_type: TemplateType) => true;
+  const openEditFromCard = async (card: TemplateCardData) => {
+    const { data: contentData } = await getTemplateContent({
+      variables: { templateId: card.id, ...templateContentIncludeVars(card.type) },
+    });
+    const fetched = contentData?.lookup.template;
+    if (!fetched) return;
+    if (card.type === 'callout') {
+      if (!fetched.callout) return;
+      form.openEditCallout(
+        card.id,
+        fetched.callout.id,
+        { name: card.name, description: card.description, tags: card.tags },
+        calloutTemplateContentToFormValues(fetched.callout)
+      );
+      return;
+    }
+    if (card.type === 'space') {
+      // Space template edit (profile-only — the source space is shown but re-capture isn't wired here).
+      form.openEdit(card.id, {
+        type: 'space',
+        name: card.name,
+        description: card.description,
+        tags: card.tags,
+        recursive: true,
+        sourceSpaceId: fetched.contentSpace?.id,
+      });
+      return;
+    }
+    const formValues = templateContentToFormValues(
+      mapTemplateContent(fetched, card.type),
+      card.name,
+      card.description,
+      card.tags
+    );
+    if (!formValues) return;
+    const subEntityId = card.type === 'communityGuidelines' ? fetched.communityGuidelines?.id : undefined;
+    form.openEdit(card.id, formValues, subEntityId);
+  };
+  const requestEdit = async (id: string) => {
+    const card = findCard(id);
+    if (card) await openEditFromCard(card);
+  };
+  const editFromPreview = () => {
+    const card = preview.header;
+    if (!card || !isEditable(card.type)) return;
+    closePreview();
+    void openEditFromCard(card);
+  };
+
+  // ── duplicate (all five types via `createTemplateCopy`) ──
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
-  const duplicate = (_id: string) => {
-    // TODO(098): fetch the template content, build the matching create input via `useTemplateForms`'
-    // form↔input mapping, fire `useCreateTemplateMutation` / `useCreateTemplateFromContentSpaceMutation`,
-    // and toggle `duplicatingId` around the call.
-    void setDuplicatingId;
+  const duplicate = async (id: string) => {
+    const card = findCard(id);
+    if (!card) return;
+    setDuplicatingId(id);
+    try {
+      // Space → create-from-content-space; Callout → create-callout-template; Post/CG/Whiteboard → create-a-copy from form values.
+      await createTemplateCopy(card);
+    } catch {
+      // surfaced by the Apollo error link / global handler
+    } finally {
+      setDuplicatingId(null);
+    }
   };
 
   // ── delete ──
@@ -143,9 +260,91 @@ export function useTemplatesManager({
   };
   const cancelDelete = () => setPendingDelete(null);
 
-  // ── create / import: surface the requested type for the page to host the right dialog ──
-  const [pendingCreateType, setPendingCreateType] = useState<TemplateType | null>(null);
-  const [pendingImportType, setPendingImportType] = useState<TemplateType | null>(null);
+  // ── import-from-library picker (Space holder only) ──
+  const isSpaceHolder = holderKind === 'space';
+  const [importType, setImportType] = useState<TemplateType | null>(null);
+  const [importSearch, setImportSearch] = useState('');
+  const [importPreviewId, setImportPreviewId] = useState<string | null>(null);
+  const [importPreviewContent, setImportPreviewContent] = useState<TemplateContent | undefined>(undefined);
+  const [importPreviewLoading, setImportPreviewLoading] = useState(false);
+  const importOpen = importType !== null;
+
+  const { data: importAccountData, loading: importAccountLoading } = useImportTemplateDialogAccountTemplatesQuery({
+    variables: { accountId: accountId ?? '', includeCallout: false, includeSpace: false },
+    skip: !isSpaceHolder || !accountId || !importOpen,
+  });
+  const { data: importPlatformData, loading: importPlatformLoading } = useImportTemplateDialogPlatformTemplatesQuery({
+    variables: {
+      templateTypes: importType ? [toGqlTemplateType(importType)] : [],
+      includeCallout: false,
+      includeSpace: false,
+    },
+    skip: !isSpaceHolder || !importOpen,
+  });
+
+  const matchesImportType = (gqlType: unknown) =>
+    importType !== null && mapGqlTemplateType(gqlType as never) === importType;
+  const importAccountCards: TemplateCardData[] = (importAccountData?.lookup.account?.innovationPacks ?? []).flatMap(
+    pack =>
+      (pack.templatesSet?.templates ?? [])
+        .filter(tpl => matchesImportType(tpl.type))
+        .map(tpl => mapTemplateToCardData(tpl, pack.profile.displayName))
+  );
+  const importPlatformCards: TemplateCardData[] = (importPlatformData?.platform.library.templates ?? [])
+    .filter(r => matchesImportType(r.template.type))
+    .map(r =>
+      mapTemplateToCardData(
+        r.template,
+        r.innovationPack.provider.profile?.displayName ?? r.innovationPack.profile.displayName
+      )
+    );
+  const importSources: TemplatePickerSource[] = [
+    { key: 'account', templates: importAccountCards, loading: importAccountLoading },
+    { key: 'platform', templates: importPlatformCards, loading: importPlatformLoading },
+  ];
+  const findImportCard = (id: string) => [...importAccountCards, ...importPlatformCards].find(c => c.id === id);
+
+  const onImportPreview = (id: string) => {
+    if (importType === null) return;
+    setImportPreviewId(id);
+    setImportPreviewContent(undefined);
+    setImportPreviewLoading(true);
+    void getTemplateContent({ variables: { templateId: id, ...templateContentIncludeVars(importType) } })
+      .then(({ data: contentData }) => {
+        const fetched = contentData?.lookup.template;
+        setImportPreviewContent(fetched ? mapTemplateContent(fetched, importType) : undefined);
+      })
+      .finally(() => setImportPreviewLoading(false));
+  };
+
+  const handleImport = async (id: string) => {
+    const card = findImportCard(id);
+    if (card) await createTemplateCopy(card);
+  };
+
+  const closeImport = () => {
+    setImportType(null);
+    setImportSearch('');
+    setImportPreviewId(null);
+    setImportPreviewContent(undefined);
+  };
+
+  const importPicker: TemplatePickerImportProps = {
+    mode: 'import',
+    open: importOpen,
+    onClose: closeImport,
+    sources: importSources,
+    search: importSearch,
+    onSearchChange: setImportSearch,
+    loading: importAccountLoading && importPlatformLoading,
+    onPreview: onImportPreview,
+    previewContent: importPreviewId ? importPreviewContent : undefined,
+    previewLoading: importPreviewLoading,
+    alreadyInSet: EMPTY_STRING_SET,
+    onImport: id => void handleImport(id),
+    // TODO(098): remove-from-set within the picker (the picker shows source — not destination — templates).
+    onRemoveFromSet: () => {},
+  };
 
   const onTemplateAction = (id: string, action: TemplateAction) => {
     switch (action) {
@@ -153,13 +352,13 @@ export function useTemplatesManager({
         openPreview(id);
         return;
       case 'duplicate':
-        duplicate(id);
+        void duplicate(id);
         return;
       case 'delete':
         requestDelete(id);
         return;
       case 'edit':
-        // TODO(098): open the per-type TemplateFormDialog (edit mode) via `useTemplateForms`.
+        void requestEdit(id);
         return;
     }
   };
@@ -170,9 +369,13 @@ export function useTemplatesManager({
     loading,
     duplicatingId,
     deletingId,
-    onCreate: type => setPendingCreateType(type),
+    onCreate: form.openCreate,
     onImport: type => {
-      if (holderKind === 'space') setPendingImportType(type);
+      if (!isSpaceHolder) return;
+      setImportSearch('');
+      setImportPreviewId(null);
+      setImportPreviewContent(undefined);
+      setImportType(type);
     },
     onTemplateAction,
     preview: {
@@ -180,18 +383,14 @@ export function useTemplatesManager({
       header: preview.header,
       content: preview.content,
       contentLoading: preview.contentLoading,
-      canEdit: false,
+      canEdit: preview.header ? isEditable(preview.header.type) : false,
       onClose: closePreview,
-      onEdit: () => {
-        // TODO(098): switch from preview to edit for `preview.header.id`.
-      },
+      onEdit: editFromPreview,
     },
+    form,
+    importPicker,
     pendingDelete,
     confirmDelete,
     cancelDelete,
-    pendingCreateType,
-    clearPendingCreateType: () => setPendingCreateType(null),
-    pendingImportType,
-    clearPendingImportType: () => setPendingImportType(null),
   };
 }

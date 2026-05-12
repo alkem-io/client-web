@@ -38,8 +38,7 @@ import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidra
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
 
 export interface WhiteboardDetails {
@@ -201,10 +200,10 @@ const CrdWhiteboardDialog = ({
     actions.onCancel();
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
+  const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI) {
       try {
-        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -312,11 +311,9 @@ const CrdWhiteboardDialog = ({
                     />
                   }
                   titleExtra={
-                    <WhiteboardDialogTemplatesLibrary
-                      editModeEnabled={!!editModeEnabled && mode === 'write'}
-                      disabled={!isSceneInitialized}
-                      onImportTemplate={handleImportTemplate}
-                    />
+                    editModeEnabled && mode === 'write' ? (
+                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
+                    ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
                   footer={

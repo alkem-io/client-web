@@ -58,11 +58,9 @@
         "set": "Mark as active phase",
         "current": "Active phase (current)"
       },
-      "defaultPostTemplate": {
-        "label": "Default post template",
-        "header": "Pick a template",
-        "clear": "Clear default",
-        "none": "No templates available"
+      "defaultCalloutTemplate": {
+        "set": "Set default callout template…",
+        "clear": "Clear default callout template"
       },
       "editDetails": {
         "menuLabel": "Edit Details",
@@ -245,6 +243,17 @@
       "description": "Establish rules and expectations for member behavior.",
       "hint": "Displayed to new members upon joining.",
       "placeholder": "Describe your space's code of conduct…",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Name your community guidelines",
+      "referencesLabel": "Related links",
+      "applyTemplate": "Use a template",
+      "saveAsTemplate": "Save as a template",
+      "applyConfirm": {
+        "title": "Replace the current guidelines?",
+        "description": "Applying a template overwrites the current title, body and links. This can't be undone.",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
       "save": "Save Guidelines",
       "saving": "Saving…"
     },

@@ -13,7 +13,13 @@ import {
   CalloutFramingType,
   type TemplateContentQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import type { FramingKind, ReferenceRow, TemplateContent, TemplateType } from '@/crd/components/templates/types';
+import type {
+  FramingKind,
+  ReferenceRow,
+  TemplateContent,
+  TemplateFormValues,
+  TemplateType,
+} from '@/crd/components/templates/types';
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
@@ -174,4 +180,36 @@ export function templateContentIncludeVars(type: TemplateType) {
     includeSpace: type === 'space',
     includeCommunityGuidelines: type === 'communityGuidelines',
   };
+}
+
+/**
+ * Render-ready `TemplateContent` → editable `TemplateFormValues` (used by Duplicate and "save X as a
+ * template"). Returns `null` for `space` (the captured-structure preview doesn't carry the source
+ * `contentSpace.id`, which the create-from-content-space mutation needs — caller must supply it) and
+ * `callout` (needs the callout-form value shape — T025). `name`/`description`/`tags` come from the caller.
+ */
+export function templateContentToFormValues(
+  content: TemplateContent,
+  name: string,
+  description = '',
+  tags: string[] = []
+): TemplateFormValues | null {
+  const common = { name, description, tags };
+  switch (content.type) {
+    case 'post':
+      return { ...common, type: 'post', defaultDescription: content.defaultDescription };
+    case 'whiteboard':
+      return { ...common, type: 'whiteboard', whiteboardContent: content.whiteboardContent };
+    case 'communityGuidelines':
+      return {
+        ...common,
+        type: 'communityGuidelines',
+        title: content.title,
+        guidelinesMarkdown: content.guidelinesMarkdown,
+        references: content.references,
+      };
+    case 'space':
+    case 'callout':
+      return null;
+  }
 }

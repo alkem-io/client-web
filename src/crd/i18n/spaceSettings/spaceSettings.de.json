@@ -58,11 +58,9 @@
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)"
       },
-      "defaultPostTemplate": {
-        "label": "Standard-Beitragsvorlage",
-        "header": "Vorlage auswählen",
-        "clear": "Standard löschen",
-        "none": "Keine Vorlagen verfügbar"
+      "defaultCalloutTemplate": {
+        "set": "Standard-Callout-Vorlage festlegen…",
+        "clear": "Standard-Callout-Vorlage entfernen"
       },
       "editDetails": {
         "menuLabel": "Details bearbeiten",
@@ -245,6 +243,17 @@
       "description": "Legen Sie Regeln und Erwartungen für das Verhalten der Mitglieder fest.",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Benennen Sie Ihre Community-Richtlinien",
+      "referencesLabel": "Verwandte Links",
+      "applyTemplate": "Vorlage verwenden",
+      "saveAsTemplate": "Als Vorlage speichern",
+      "applyConfirm": {
+        "title": "Aktuelle Richtlinien ersetzen?",
+        "description": "Beim Anwenden einer Vorlage werden der aktuelle Titel, der Inhalt und die Links überschrieben. Dies kann nicht rückgängig gemacht werden.",
+        "confirm": "Ersetzen",
+        "cancel": "Abbrechen"
+      },
       "save": "Richtlinien speichern",
       "saving": "Speichern…"
     },

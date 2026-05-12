@@ -1,4 +1,4 @@
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -39,12 +39,12 @@ export function TemplateFormDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={isOpen => !isOpen && requestClose()}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="w-full sm:max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-4 pr-12 border-b">
             <DialogTitle>{t(`${titleKey}.${type}`)}</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="tpl-name">{t('form.common.name')}</Label>
               <Input
@@ -82,32 +82,10 @@ export function TemplateFormDialog({
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="tpl-banner">{t('form.common.banner')}</Label>
-              <div className="flex items-center gap-2">
-                <input
-                  id="tpl-banner"
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={e => onCommonChange({ ...commonValue, bannerFile: e.target.files?.[0] })}
-                />
-                <Button asChild={true} variant="outline" size="sm">
-                  <label htmlFor="tpl-banner" className="cursor-pointer">
-                    <Upload aria-hidden="true" className="size-4 mr-2" />
-                    {t('form.common.uploadBanner')}
-                  </label>
-                </Button>
-                {commonValue.bannerFile && (
-                  <span className="text-caption text-muted-foreground truncate">{commonValue.bannerFile.name}</span>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-2 border-t">{perTypeFormSlot}</div>
+            <div className="pt-4 border-t">{perTypeFormSlot}</div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t">
             <Button variant="outline" onClick={requestClose} disabled={submitting}>
               {t('form.cancel')}
             </Button>

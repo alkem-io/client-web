@@ -1,5 +1,6 @@
 import { Check, Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -56,7 +57,11 @@ export function TemplatePickerCard(props: TemplatePickerCardProps) {
         <div className="min-w-0">
           <p className="text-card-title truncate">{template.name}</p>
           {template.description && (
-            <p className="text-caption text-muted-foreground line-clamp-2">{template.description}</p>
+            <InlineMarkdown
+              content={template.description}
+              clampLines={2}
+              className="text-caption text-muted-foreground"
+            />
           )}
           {template.ownerLabel && <p className="text-caption text-muted-foreground truncate">{template.ownerLabel}</p>}
         </div>
