@@ -9687,6 +9687,8 @@ export type VirtualContributor = ActorFull & {
   bodyOfKnowledgeDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
+  /** The date when the body of knowledge was last successfully ingested. */
+  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']['output']>;
   /** The type of body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -23885,7 +23887,12 @@ export type VirtualContributorUpdatesSubscription = {
   __typename?: 'Subscription';
   virtualContributorUpdated: {
     __typename?: 'VirtualContributorUpdatedSubscriptionResult';
-    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
+    virtualContributor: {
+      __typename?: 'VirtualContributor';
+      id: string;
+      status: VirtualContributorStatus;
+      aiPersona?: { __typename?: 'AiPersona'; id: string; bodyOfKnowledgeLastUpdated?: Date | undefined } | undefined;
+    };
   };
 };
 

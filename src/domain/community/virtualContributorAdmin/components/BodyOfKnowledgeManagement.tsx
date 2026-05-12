@@ -1,4 +1,5 @@
 import { Box, Button, Tooltip } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useRefreshBodyOfKnowledgeMutation,
@@ -15,6 +16,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
+import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
 
 interface BodyOfKnowledgeManagementProps {
   vc: {
@@ -47,7 +49,25 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   });
   const lastUpdated = data?.virtualContributor?.aiPersona?.bodyOfKnowledgeLastUpdated;
 
+  const [isIngesting, setIsIngesting] = useState(false);
+  const baselineLastUpdatedRef = useRef<typeof lastUpdated>(undefined);
+
+  useSubscribeOnVirtualContributorEvents(vcId, !isIngesting);
+
+  useEffect(() => {
+    if (!isIngesting) {
+      return;
+    }
+    const baseline = baselineLastUpdatedRef.current;
+    const baselineTime = baseline ? new Date(baseline).getTime() : 0;
+    const currentTime = lastUpdated ? new Date(lastUpdated).getTime() : 0;
+    if (currentTime > baselineTime) {
+      setIsIngesting(false);
+    }
+  }, [isIngesting, lastUpdated]);
+
   const refreshIngestion = () => {
+    baselineLastUpdatedRef.current = lastUpdated;
     updateBodyOfKnowledge({
       variables: {
         refreshData: {
@@ -55,6 +75,7 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
         },
       },
       onCompleted: () => {
+        setIsIngesting(true);
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
     });
@@ -137,7 +158,12 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
                 ? formatDateTime(lastUpdated)
                 : t('pages.virtualContributorProfile.settings.ingestion.never')}
             </Box>
-            <Button variant="contained" loading={updateLoading} onClick={refreshIngestion}>
+            <Button
+              variant="contained"
+              loading={updateLoading || isIngesting}
+              disabled={updateLoading || isIngesting}
+              onClick={refreshIngestion}
+            >
               {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
             </Button>
           </Actions>
