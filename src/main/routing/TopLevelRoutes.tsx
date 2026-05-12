@@ -50,6 +50,10 @@ const OrganizationRoute = lazyWithGlobalErrorHandler(
 );
 const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
 const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
+const CrdForumRoute = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/forum/CrdForumRoute'));
+const CrdDocumentationPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/documentation/CrdDocumentationPage')
+);
 const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
@@ -126,14 +130,36 @@ export const TopLevelRoutes = () => {
             }
           />
         )}
-        <Route
-          path={`${TopLevelRoutePath.Docs}/*`}
-          element={
-            <Suspense fallback={<Loading />}>
-              <DocumentationPage />
-            </Suspense>
-          }
-        />
+        {/* Documentation page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {crdEnabled ? (
+          <Route
+            element={
+              <NonIdentity>
+                <CrdLayoutWrapper />
+              </NonIdentity>
+            }
+          >
+            <Route
+              path={`${TopLevelRoutePath.Docs}/*`}
+              element={
+                <WithApmTransaction path={`/${TopLevelRoutePath.Docs}`}>
+                  <Suspense fallback={<Loading />}>
+                    <CrdDocumentationPage />
+                  </Suspense>
+                </WithApmTransaction>
+              }
+            />
+          </Route>
+        ) : (
+          <Route
+            path={`${TopLevelRoutePath.Docs}/*`}
+            element={
+              <Suspense fallback={<Loading />}>
+                <DocumentationPage />
+              </Suspense>
+            }
+          />
+        )}
         <Route
           path={`${TopLevelRoutePath.Documentation}/*`}
           element={
@@ -300,16 +326,32 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`/${TopLevelRoutePath.Forum}/*`}
-                    element={
-                      <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
-                        <Suspense fallback={<Loading />}>
-                          <ForumRoute />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {/* Forum page — toggleable between CRD (new) and MUI (old) via localStorage */}
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`/${TopLevelRoutePath.Forum}/*`}
+                        element={
+                          <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdForumRoute />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`/${TopLevelRoutePath.Forum}/*`}
+                      element={
+                        <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                          <Suspense fallback={<Loading />}>
+                            <ForumRoute />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   {/* Space page — toggleable between CRD (new) and MUI (old) via localStorage */}
                   {crdEnabled ? (
                     <Route element={<CrdLayoutWrapper />}>

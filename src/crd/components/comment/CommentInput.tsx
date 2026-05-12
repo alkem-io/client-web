@@ -66,9 +66,17 @@ const mentionsInputStyle = {
   },
 };
 
+// `react-mentions` paints the styled mention chip in an overlay layer on top
+// of the underlying textarea, and BOTH layers paint their text (it relies on
+// pixel-perfect alignment to look like one). Any property that changes glyph
+// width on the overlay but not on the textarea — font-weight, font-size,
+// font-family — desyncs the two layers and the typed mention shows up
+// blurry/doubled. Keep this to non-metric-affecting properties only
+// (color + background-color are safe).
 const mentionStyle: CSSProperties = {
   color: 'var(--primary)',
-  fontWeight: 500,
+  backgroundColor: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+  borderRadius: 4,
 };
 
 export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000, mentionSearch }: CommentInputProps) {
