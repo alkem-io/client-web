@@ -411,7 +411,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
           >
             <Network style={{ width: 16, height: 16 }} />
           </div>
-          <div className="flex items-center text-body" style={{ color: 'var(--muted-foreground)' }}>
+          <div className="flex items-center" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
             <span className="cursor-pointer" style={{ transition: 'color 0.15s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--foreground)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted-foreground)')}>
               Ecosystem Analytics
             </span>
@@ -475,7 +475,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 const defs = SPACE_DEFS[id];
                 const name = defs ? defs[0].name : `Space ${id}`;
                 return (
-                  <Badge key={id} variant="secondary" className="text-caption font-medium cursor-pointer" onClick={() => toggleSpace(id)}>
+                  <Badge key={id} variant="secondary" className="text-xs font-medium cursor-pointer" onClick={() => toggleSpace(id)}>
                     {name} <X style={{ width: 10, height: 10, marginLeft: 4, cursor: 'pointer', opacity: 0.5 }} />
                   </Badge>
                 );
@@ -510,7 +510,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
             <h3 style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted-foreground)' }}>Filters</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-body" style={{ color: 'var(--foreground)' }}>
+                <div className="flex items-center gap-2" style={{ fontSize: 'var(--text-sm)', color: 'var(--foreground)' }}>
                   <Users style={{ width: 14, height: 14, color: 'var(--muted-foreground)' }} />
                   <span>People</span>
                   <span style={{ fontSize: '10px', color: 'var(--muted-foreground)', marginLeft: 2 }}>({typeCounts.person})</span>
@@ -518,7 +518,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 <Switch checked={showPeople} onCheckedChange={setShowPeople} className="scale-75 origin-right" />
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-body" style={{ color: 'var(--foreground)' }}>
+                <div className="flex items-center gap-2" style={{ fontSize: 'var(--text-sm)', color: 'var(--foreground)' }}>
                   <Building style={{ width: 14, height: 14, color: 'var(--muted-foreground)' }} />
                   <span>Organizations</span>
                   <span style={{ fontSize: '10px', color: 'var(--muted-foreground)', marginLeft: 2 }}>({typeCounts.org})</span>
@@ -623,7 +623,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                   <div className="absolute inset-0 rounded-full" style={{ border: '3px solid var(--muted)' }} />
                   <div className="absolute inset-0 rounded-full animate-spin" style={{ border: '3px solid transparent', borderTopColor: 'var(--primary)' }} />
                 </div>
-                <h3 className="text-subheader font-semibold" style={{ marginBottom: 4, color: 'var(--foreground)' }}>
+                <h3 style={{ fontWeight: 600, fontSize: 'var(--text-base)', marginBottom: 4, color: 'var(--foreground)' }}>
                   {loadingStep === 1 ? "Acquiring Data" : loadingStep === 2 ? "Clustering Entities" : "Rendering Graph"}
                 </h3>
                 <p style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
@@ -684,11 +684,11 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                     {selectedNode.imageUrl ? (
                       <img src={selectedNode.imageUrl} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-section-title font-bold">{selectedNode.label.charAt(0)}</span>
+                      <span style={{ fontWeight: 700, fontSize: 'var(--text-xl)' }}>{selectedNode.label.charAt(0)}</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0" style={{ paddingTop: 2 }}>
-                    <h2 className="text-subheader font-bold truncate" style={{ color: 'var(--foreground)' }}>{selectedNode.label}</h2>
+                    <h2 className="truncate" style={{ fontWeight: 700, fontSize: 'var(--text-base)', lineHeight: 1.3, color: 'var(--foreground)' }}>{selectedNode.label}</h2>
                     <div className="flex items-center gap-1.5" style={{ marginTop: 6 }}>
                     </div>
                   </div>
@@ -712,7 +712,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                           <React.Fragment key={stat.label}>
                             {i > 0 && <div style={{ width: 1, background: 'var(--border)' }} />}
                             <div className="text-center flex-1">
-                              <div className="text-section-title font-bold" style={{ color: 'var(--foreground)' }}>{stat.count}</div>
+                              <div style={{ fontWeight: 700, fontSize: 'var(--text-xl)', color: 'var(--foreground)' }}>{stat.count}</div>
                               <div style={{ fontSize: '10px', color: 'var(--muted-foreground)' }}>{stat.label}</div>
                             </div>
                           </React.Fragment>
@@ -723,7 +723,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
 
                   {/* Connected Entities */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <h3 className="text-card-title" style={{ color: 'var(--foreground)' }}>Direct Connections</h3>
+                    <h3 style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--foreground)' }}>Direct Connections</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       {data.links
                         .filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
@@ -765,7 +765,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                               <div className="flex-1 min-w-0">
                                 <div className="truncate" style={{ fontWeight: 500, color: 'var(--foreground)', fontSize: '12px' }}>{otherNode.label}</div>
                               </div>
-                              <Badge variant="outline" className="text-caption shrink-0">
+                              <Badge variant="outline" className="text-xs shrink-0">
                                 {link.type === 'parent-child' ? 'child' : link.type}
                               </Badge>
                             </div>
@@ -776,7 +776,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
 
                   {/* Suggested Related Spaces */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <h3 className="text-card-title" style={{ color: 'var(--foreground)' }}>Suggested to Add</h3>
+                    <h3 style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--foreground)' }}>Suggested to Add</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       {SUGGESTED_SPACES.map(space => (
                         <div 
@@ -811,7 +811,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                               <Plus style={{ width: 10, height: 10 }} /> Add
                             </Button>
                           ) : (
-                            <Button size="sm" variant="outline" disabled className="text-caption">
+                            <Button size="sm" variant="outline" disabled className="text-xs">
                               Locked
                             </Button>
                           )}
@@ -822,7 +822,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
 
                   {/* Metadata */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <h3 className="text-card-title" style={{ color: 'var(--foreground)' }}>Metadata</h3>
+                    <h3 style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--foreground)' }}>Metadata</h3>
                     <div style={{ background: 'var(--muted)', borderRadius: 'var(--radius)', padding: 10, fontSize: 'var(--text-sm)' }}>
                       {[
                         { label: 'ID', value: selectedNode.id },

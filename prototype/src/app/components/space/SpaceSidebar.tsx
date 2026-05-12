@@ -92,7 +92,11 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
           {/* Contact Lead */}
           <Button
             variant="outline"
-            className="w-full gap-2 text-control"
+            className="w-full gap-2"
+            style={{
+              fontSize: "var(--text-sm)",
+              fontWeight: "var(--font-weight-medium)" as any,
+            }}
           >
             <Mail className="w-4 h-4" />
             Contact Lead
@@ -131,8 +135,9 @@ function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
       <div className="mb-3">
         <ReadMoreText
           maxLines={3}
-          className="text-body"
           style={{
+            fontSize: "var(--text-sm)",
+            lineHeight: 1.6,
             opacity: 0.9,
           }}
           toggleColor="var(--primary-foreground)"
@@ -150,8 +155,13 @@ function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
         style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
       >
         <p
-          className="text-sidebar-label uppercase mb-2"
-          style={{ opacity: 0.6 }}
+          className="uppercase tracking-wider mb-2"
+          style={{
+            fontSize: "10px",
+            fontWeight: 700,
+            opacity: 0.6,
+            letterSpacing: "0.04em",
+          }}
         >
           Lead
         </p>
@@ -176,7 +186,7 @@ function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-card-title">
+            <p style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
               Elena Martinez
             </p>
             <p
@@ -193,9 +203,11 @@ function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
       {/* About this Space */}
       <button
         onClick={onAboutClick}
-        className="w-full flex items-center justify-center gap-2 pt-3 mt-3 hover:underline cursor-pointer text-control"
+        className="w-full flex items-center justify-center gap-2 pt-3 mt-3 hover:underline cursor-pointer"
         style={{
           borderTop: "1px solid rgba(255,255,255,0.15)",
+          fontSize: "var(--text-sm)",
+          fontWeight: "var(--font-weight-medium)" as any,
           color: "var(--primary-foreground)",
           opacity: 0.8,
           background: "none",
@@ -231,8 +243,10 @@ function VirtualContributorsSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="text-sidebar-label uppercase"
+          className="uppercase tracking-wider"
           style={{
+            fontSize: "11px",
+            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -261,17 +275,20 @@ function VirtualContributorsSection() {
             </Avatar>
             <div className="min-w-0">
               <p
-                className="text-body-emphasis"
                 style={{
+                  fontSize: "var(--text-sm)",
+                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                 }}
               >
                 {vc.name}
               </p>
               <p
-                className="line-clamp-2 text-caption"
+                className="line-clamp-2"
                 style={{
+                  fontSize: "12px",
                   color: "var(--muted-foreground)",
+                  lineHeight: 1.4,
                   marginTop: 2,
                 }}
               >
@@ -294,8 +311,10 @@ function CommunityGuidelinesSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="text-sidebar-label uppercase"
+          className="uppercase tracking-wider"
           style={{
+            fontSize: "11px",
+            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -310,9 +329,10 @@ function CommunityGuidelinesSection() {
               style={{ color: "var(--success)" }}
             />
             <span
-              className="text-body"
               style={{
+                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
+                lineHeight: 1.5,
               }}
             >
               {guideline}
@@ -334,8 +354,10 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
     <div>
       <div className="flex items-center justify-between mb-3 px-1">
         <h3
-          className="text-sidebar-label uppercase"
+          className="uppercase tracking-wider"
           style={{
+            fontSize: "11px",
+            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -345,9 +367,11 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
           {!showAll && (
             <Link
               to={`/space/${spaceSlug}/subspaces`}
-              className="hover:underline text-caption font-medium"
+              className="hover:underline"
               style={{
+                fontSize: "12px",
                 color: "var(--primary)",
+                fontWeight: "var(--font-weight-medium)" as any,
               }}
             >
               Show all
@@ -380,8 +404,9 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
                 </AvatarFallback>
               </Avatar>
               <span
-                className="text-control"
                 style={{
+                  fontSize: "var(--text-sm)",
+                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                 }}
               >
@@ -402,8 +427,10 @@ function EventsSection() {
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-1.5">
           <h3
-            className="text-sidebar-label uppercase"
+            className="uppercase tracking-wider"
             style={{
+              fontSize: "11px",
+              fontWeight: 600,
               color: "var(--muted-foreground)",
             }}
           >
@@ -425,16 +452,19 @@ function EventsSection() {
         </Button>
       </div>
       <p
-        className="px-3 text-body"
+        className="px-3"
         style={{
+          fontSize: "var(--text-sm)",
           color: "var(--muted-foreground)",
         }}
       >
         No upcoming events
       </p>
       <button
-        className="px-3 mt-2 hover:underline text-control"
+        className="px-3 mt-2 hover:underline"
         style={{
+          fontSize: "var(--text-sm)",
+          fontWeight: "var(--font-weight-medium)" as any,
           color: "var(--primary)",
         }}
       >
@@ -468,8 +498,10 @@ function CommunityMembersWidget() {
         <div className="flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5" style={{ color: "var(--muted-foreground)" }} />
           <h3
-            className="text-sidebar-label uppercase"
+            className="uppercase tracking-wider"
             style={{
+              fontSize: "11px",
+              fontWeight: 600,
               color: "var(--muted-foreground)",
             }}
           >
@@ -521,7 +553,8 @@ function CommunityMembersWidget() {
       <Button
         variant="outline"
         size="sm"
-        className="w-full gap-1.5 text-control"
+        className="w-full gap-1.5"
+        style={{ fontSize: "var(--text-sm)" }}
       >
         <Users className="w-3.5 h-3.5" />
         View all members
@@ -548,8 +581,10 @@ function KnowledgeIndexSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="text-sidebar-label uppercase"
+          className="uppercase tracking-wider"
           style={{
+            fontSize: "11px",
+            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -576,8 +611,10 @@ function KnowledgeIndexSection() {
               }}
             />
             <span
-              className="line-clamp-1 text-control"
+              className="line-clamp-1"
               style={{
+                fontSize: "var(--text-sm)",
+                fontWeight: "var(--font-weight-medium)" as any,
                 color: "var(--foreground)",
               }}
             >

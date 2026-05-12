@@ -86,7 +86,7 @@ export default function UserProfileSettingsPage() {
               <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
-
+          
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <Link
