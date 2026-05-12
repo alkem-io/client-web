@@ -745,5 +745,8 @@
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
     "loadingPost": "Loading $t(common.callout)"
+  },
+  "activity": {
+    "dialogTitle": "Recent Activity"
   }
 }

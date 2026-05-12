@@ -222,7 +222,7 @@ export default function CrdSubspacePageLayout() {
       <CrdSubspaceActivityDialogConnector
         open={activeDialog === 'activity'}
         onOpenChange={open => setActiveDialog(open ? 'activity' : null)}
-        subspaceId={data.subspaceId}
+        collaborationId={data.collaborationId}
       />
 
       <CrdSubspaceIndexDialogConnector
