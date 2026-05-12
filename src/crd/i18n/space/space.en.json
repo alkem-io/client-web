@@ -649,7 +649,9 @@
     "count_one": "1 comment",
     "loading": "Loading comments...",
     "empty": "No comments yet",
-    "unknownUser": "Unknown user"
+    "unknownUser": "Unknown user",
+    "signInToComment": "Sign in to comment, reply or react.",
+    "cantComment": "You don't have permission to comment, reply or react here."
   },
   "dialogs": {
     "cancel": "Cancel",

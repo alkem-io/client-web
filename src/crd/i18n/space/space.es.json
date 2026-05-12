@@ -658,7 +658,9 @@
     "count_one": "1 comentario",
     "loading": "Cargando comentarios...",
     "empty": "Sin comentarios aún",
-    "unknownUser": "Usuario desconocido"
+    "unknownUser": "Usuario desconocido",
+    "signInToComment": "Inicia sesión para comentar, responder o reaccionar.",
+    "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí."
   },
   "dialogs": {
     "cancel": "Cancelar",
