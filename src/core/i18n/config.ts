@@ -155,6 +155,22 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/whiteboard/whiteboard.de.json'),
     fr: () => import('@/crd/i18n/whiteboard/whiteboard.fr.json'),
   },
+  'crd-forum': {
+    en: () => import('@/crd/i18n/forum/forum.en.json'),
+    es: () => import('@/crd/i18n/forum/forum.es.json'),
+    nl: () => import('@/crd/i18n/forum/forum.nl.json'),
+    bg: () => import('@/crd/i18n/forum/forum.bg.json'),
+    de: () => import('@/crd/i18n/forum/forum.de.json'),
+    fr: () => import('@/crd/i18n/forum/forum.fr.json'),
+  },
+  'crd-documentation': {
+    en: () => import('@/crd/i18n/documentation/documentation.en.json'),
+    es: () => import('@/crd/i18n/documentation/documentation.es.json'),
+    nl: () => import('@/crd/i18n/documentation/documentation.nl.json'),
+    bg: () => import('@/crd/i18n/documentation/documentation.bg.json'),
+    de: () => import('@/crd/i18n/documentation/documentation.de.json'),
+    fr: () => import('@/crd/i18n/documentation/documentation.fr.json'),
+  },
   'crd-profilePages': {
     en: () => import('@/crd/i18n/profilePages/profilePages.en.json'),
     es: () => import('@/crd/i18n/profilePages/profilePages.es.json'),

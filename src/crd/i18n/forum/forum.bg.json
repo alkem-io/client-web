@@ -1,0 +1,61 @@
+{
+  "banner": {
+    "title": "Добре дошли във Форума на Alkemio",
+    "subtitle": "Свържете се с други, задавайте въпроси и следете обновленията на Alkemio",
+    "iconLabel": "Форум"
+  },
+  "categories": {
+    "all": "Покажи всички",
+    "sectionLabel": "Категории",
+    "selectAriaLabel": "Филтриране по категория"
+  },
+  "list": {
+    "headerCount_one": "Дискусии ({{count}})",
+    "headerCount_other": "Дискусии ({{count}})",
+    "initiate": "Започни дискусия",
+    "searchPlaceholder": "Търсене",
+    "searchAriaLabel": "Търсене на дискусии",
+    "itemAriaLabel_one": "{{title}} от {{author}}, {{date}}, {{count}} коментар",
+    "itemAriaLabel_other": "{{title}} от {{author}}, {{date}}, {{count}} коментара",
+    "metaLine_one": "{{author}} на {{date}} · {{count}} коментар",
+    "metaLine_other": "{{author}} на {{date}} · {{count}} коментара",
+    "sort": {
+      "ariaLabel": "Сортиране на дискусии",
+      "newest": "Най-нови",
+      "oldest": "Най-стари"
+    },
+    "empty": {
+      "title": "Няма намерени дискусии",
+      "subtitle": "Опитайте да промените търсенето или филтъра по категория"
+    },
+    "loading": "Зареждане на дискусии"
+  },
+  "detail": {
+    "back": "Виж всички дискусии в тази категория",
+    "share": "Сподели",
+    "edit": "Редактиране",
+    "delete": "Изтриване",
+    "loading": "Зареждане на дискусия"
+  },
+  "dialog": {
+    "create": {
+      "title": "Създаване на дискусия",
+      "submit": "Създай дискусия"
+    },
+    "update": {
+      "title": "Редактиране на дискусия",
+      "submit": "Запази промените"
+    },
+    "fields": {
+      "title": "Заглавие",
+      "category": "Категория *",
+      "body": "Споделете вашите мисли..."
+    },
+    "cancel": "Отказ",
+    "close": "Затвори",
+    "delete": {
+      "description": "Това действие не може да бъде отменено.",
+      "confirm": "Изтрий"
+    }
+  }
+}

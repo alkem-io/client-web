@@ -658,7 +658,9 @@
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
     "empty": "Nog geen opmerkingen",
-    "unknownUser": "Onbekende gebruiker"
+    "unknownUser": "Onbekende gebruiker",
+    "signInToComment": "Log in om te reageren, antwoorden of een reactie te geven.",
+    "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven."
   },
   "dialogs": {
     "cancel": "Annuleren",
@@ -752,5 +754,8 @@
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
     "loadingPost": "Bericht laden"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
   }
 }
