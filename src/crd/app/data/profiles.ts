@@ -120,6 +120,7 @@ export const MOCK_ALEX_RIVERA = {
       description: 'Generates synthetic datasets for urban modeling.',
       type: 'AI Model',
       href: '/vc/datasynth-bot',
+      avatarImageUrl: null,
     },
     {
       id: 'vc-policyscanner',
@@ -127,6 +128,7 @@ export const MOCK_ALEX_RIVERA = {
       description: 'Scans municipal meeting minutes for keywords.',
       type: 'Scraper',
       href: '/vc/policyscanner',
+      avatarImageUrl: null,
     },
   ] satisfies VirtualContributorCardItem[],
   // Backend field: account.innovationPacks. UI label: "Template Packs".
@@ -351,6 +353,7 @@ export const MOCK_ORG_ALKEMIO = {
       description: 'Surveys municipal policy texts for sustainability commitments.',
       type: 'AI Model',
       href: '/vc/foundation-policyscanner',
+      avatarImageUrl: null,
     },
   ] satisfies VirtualContributorCardItem[],
   hostedInnovationPacks: [

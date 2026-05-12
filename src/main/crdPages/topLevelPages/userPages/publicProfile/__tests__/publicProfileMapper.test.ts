@@ -149,7 +149,12 @@ describe('mapHostedSpacesToCardData', () => {
       virtualContributors: [
         {
           id: 'vc-1',
-          profile: { displayName: 'AI Helper', url: '/vc/helper', tagline: 'Helps you' },
+          profile: {
+            displayName: 'AI Helper',
+            url: '/vc/helper',
+            tagline: 'Helps you',
+            avatar: { uri: 'https://cdn.example/vc.jpg' },
+          },
         },
         {
           id: 'vc-2',
@@ -165,8 +170,16 @@ describe('mapHostedSpacesToCardData', () => {
         description: 'Helps you',
         type: 'Virtual Contributor',
         href: '/vc/helper',
+        avatarImageUrl: 'https://cdn.example/vc.jpg',
       },
-      { id: 'vc-2', displayName: 'No Tagline', description: null, type: 'Virtual Contributor', href: '/vc/notagline' },
+      {
+        id: 'vc-2',
+        displayName: 'No Tagline',
+        description: null,
+        type: 'Virtual Contributor',
+        href: '/vc/notagline',
+        avatarImageUrl: null,
+      },
     ]);
   });
 

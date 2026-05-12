@@ -6,13 +6,21 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
 import { MeUserProvider } from '@/domain/community/user/routing/MeUserContext';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdUserProfilePage from './publicProfile/CrdUserProfilePage';
 
+const CrdUserSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdUserSettingsRoutes'));
+
 const MuiUserAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/userAdmin/routing/UserAdminRoute')
 );
+
+const UserSettingsDispatch = () => {
+  const crdEnabled = useCrdEnabled();
+  return <Suspense fallback={<Loading />}>{crdEnabled ? <CrdUserSettingsRoutes /> : <MuiUserAdminRoute />}</Suspense>;
+};
 
 const CrdMeUserRoute = () => {
   const { t } = useTranslation();
@@ -44,27 +52,13 @@ export const CrdUserRoutes = () => (
     <Route path="me/*" element={<CrdMeUserRoute />}>
       <Route path="" element={<CrdLayoutWrapper />}>
         <Route index={true} element={<CrdUserProfilePage />} />
-        <Route
-          path="settings/*"
-          element={
-            <Suspense fallback={<Loading />}>
-              <MuiUserAdminRoute />
-            </Suspense>
-          }
-        />
+        <Route path="settings/*" element={<UserSettingsDispatch />} />
       </Route>
     </Route>
     <Route path={`:${nameOfUrl.userNameId}/*`}>
       <Route path="" element={<CrdLayoutWrapper />}>
         <Route index={true} element={<CrdUserProfilePage />} />
-        <Route
-          path="settings/*"
-          element={
-            <Suspense fallback={<Loading />}>
-              <MuiUserAdminRoute />
-            </Suspense>
-          }
-        />
+        <Route path="settings/*" element={<UserSettingsDispatch />} />
       </Route>
     </Route>
     <Route
