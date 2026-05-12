@@ -179,7 +179,7 @@ Returns `{ kind: 'loading' | 'error' | 'noWebauthn' | 'ready', flow?, error? }` 
 
 ## Decision 7 — Per-actor authorization predicate sources
 
-**Decision**: Two sibling hooks:
+**Decision**: Three sibling hooks (one per actor), each colocated with its actor-specific integration subtree:
 
 **`useCanEditUserSettings(profileUserId: string)`** — returns `{ canEditSettings, isOwner, isPlatformAdmin }`:
 - `isOwner = currentUser.id === profileUserId`
@@ -191,18 +191,23 @@ Returns `{ kind: 'loading' | 'error' | 'noWebauthn' | 'ready', flow?, error? }` 
 - `hasUpdatePrivilege = permissions.canEdit`
 - `canEditSettings = hasUpdatePrivilege`
 
-Both are pure custom hooks colocated with their actor-specific integration subtree. Both are unit-tested for true/false branches and the loading state.
+**`useCanEditVcSettings(vcId: string)`** — returns `{ canEditSettings, hasUpdatePrivilege }` (VC extension):
+- Reads `virtualContributor.authorization.myPrivileges.includes(AuthorizationPrivilege.Update)` via the VC route context already exposed by `useUrlResolver().vcId` and the VC query the public CRD VC profile already issues (parity with how MUI `VirtualContributorSettingsPage` gates).
+- `hasUpdatePrivilege = privileges.includes(Update)`
+- `canEditSettings = hasUpdatePrivilege`
 
-**Rationale**: The two sources are fundamentally different (User: platform-level privilege OR self; Org: per-organization Update privilege). Collapsing into a discriminated union helper would obscure the two distinct authorization domains. Two named hooks make the per-actor predicate explicit at every consumption site.
+All three are pure custom hooks unit-tested for true / false / anonymous branches and the loading state.
+
+**Rationale**: The three sources are fundamentally different (User: platform-level privilege OR self; Org: per-organization Update privilege; VC: per-VC Update privilege on the VC authorization object). Collapsing into a discriminated union helper would obscure three distinct authorization domains. Three named hooks make the per-actor predicate explicit at every consumption site.
 
 **Alternatives considered**:
-- One generic `useCanEditSettings(actor)` discriminated helper — rejected; the call sites are static (User route guard always uses User predicate; Org route guard always uses Org predicate), so discrimination at call time is unnecessary.
+- One generic `useCanEditSettings(actor)` discriminated helper — rejected; the call sites are static (User route guard always uses User predicate; Org route guard always uses Org predicate; VC route guard always uses VC predicate), so discrimination at call time is unnecessary.
 
 ---
 
 ## Decision 8 — i18n namespace
 
-**Decision**: Single combined namespace `crd-contributorSettings` covering both User and Org tabs. Files at `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`, all six languages maintained manually (no Crowdin), all edited in the same PR that introduces or removes a key (FR-141).
+**Decision**: Single combined namespace `crd-contributorSettings` covering User, Org, and VC tabs (the VC extension reuses the same namespace; no new namespace introduced). Files at `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`, all six languages maintained manually (no Crowdin), all edited in the same PR that introduces or removes a key (FR-141).
 
 Top-level key structure:
 ```json
@@ -210,7 +215,8 @@ Top-level key structure:
   "shell": {
     "tabs": {
       "user": { "profile": "...", "account": "...", ... },
-      "org":  { "profile": "...", "account": "...", ... }
+      "org":  { "profile": "...", "account": "...", ... },
+      "vc":   { "profile": "...", "membership": "...", "settings": "..." }
     }
   },
   "user": {
@@ -224,6 +230,15 @@ Top-level key structure:
     "community":     { ... },
     "authorization": { ... },
     "settings":      { ... }
+  },
+  "vc": {
+    "profile":            { "identity": { ... }, "keywords": { ... }, "socialLinks": { ... }, "metadata": { ... } },
+    "membership":         { "confirmed": { ... }, "pendingInvitations": { ... } },
+    "visibility":         { "title": "...", "publicLabel": "...", "accountLabel": "...", "hiddenLabel": "...", "listedInStoreLabel": "..." },
+    "bodyOfKnowledge":    { "title": "...", "privacyToggleLabel": "...", "refreshLabel": "...", "lastUpdated": "..." },
+    "prompt":             { "title": "...", "helpText": "..." },
+    "externalConfig":     { "title": "...", "apiKeyLabel": "...", "assistantIdLabel": "...", "modelLabel": "..." },
+    "promptGraphFallback":{ "heading": "...", "description": "...", "ctaLabel": "..." }
   },
   "shared": {
     "saved": "Saved",
@@ -243,31 +258,32 @@ Top-level key structure:
 
 ## Decision 9 — Shell + tab strip primitive shape
 
-**Decision**: `SettingsShell` and `SettingsTabStrip` are actor-agnostic. Both accept a `tabs: SettingsTab[]` prop (User integration passes 7, Org integration passes 5).
+**Decision**: `SettingsShell` and `SettingsTabStrip` are actor-agnostic. The shell is **generic over `TTabId extends string`** so each actor's concrete tab-id union (`UserTabId` | `OrgTabId` | `VcTabId`) flows through without a primitive change. User integration passes 7 tabs, Org integration passes 5, VC integration passes 3 (Profile / Membership / Settings).
 
 ```typescript
-type SettingsTab = {
-  id: string;            // 'profile' | 'account' | ...
+type SettingsTab<TTabId extends string = string> = {
+  id: TTabId;            // 'profile' | 'account' | ...   (per-actor union)
   label: string;         // i18n-resolved
   icon: LucideIcon;      // lucide-react component
   hidden?: boolean;      // optional — User Security uses this for non-owner viewers
 };
 
-type SettingsShellProps = {
+type SettingsShellProps<TTabId extends string = string> = {
   header: { avatarUrl?: string; displayName: string; };
-  tabs: SettingsTab[];
-  activeTabId: string;
-  onTabSelect: (id: string) => void;
+  tabs: SettingsTab<TTabId>[];
+  activeTabId: TTabId;
+  onTabSelect: (id: TTabId) => void;
   children: React.ReactNode;  // The active tab body
 };
 ```
 
-The view never knows about route paths — `onTabSelect` is a callback the integration layer wires to `useNavigate(buildSettingsTabUrl(profileUrl, tabId))` from `@/main/routing/urlBuilders`. The integration hook receives `profileUrl` from the actor's context (`useUserPageRouteContext().profileUrl` on the User side, `organization.profile.url` on the Org side) — never an inline `/user/...` / `/organization/...` template. See `docs/crd/migration-guide.md` ("URL Construction") for the project-wide convention.
+The view never knows about route paths — `onTabSelect` is a callback the integration layer wires to `useNavigate(buildSettingsTabUrl(profileUrl, tabId))` from `@/main/routing/urlBuilders`. The integration hook receives `profileUrl` from the actor's context (`useUserPageRouteContext().profileUrl` on the User side, `organization.profile.url` on the Org side, `virtualContributor.profile.url` on the VC side) — never an inline `/user/...` / `/organization/...` / `/vc/...` template. See `docs/crd/migration-guide.md` ("URL Construction") for the project-wide convention.
 
-**Rationale**: One shell primitive for both actors satisfies DRY and keeps behavior parity (responsive horizontal scroll, auto-scroll active into view, keyboard navigation). The `hidden` flag handles FR-083 (Security tab hidden for non-owner) without a special-case branch in the primitive.
+**Rationale**: One generic shell primitive for all three actors satisfies DRY and keeps behavior parity (responsive horizontal scroll, auto-scroll active into view, keyboard navigation). The `hidden` flag handles FR-083 (Security tab hidden for non-owner) without a special-case branch in the primitive. The VC extension confirms the original generic-shell choice was correct: adding the third actor required zero primitive changes — only a new tab-id union on the consumer side.
 
 **Alternatives considered**:
 - Hard-coded 7-tab User shell + hard-coded 5-tab Org shell — rejected (the prior 097 did this; bad for consistency and maintenance).
+- A separate `VcSettingsShell` primitive for the VC actor — rejected; doubles the maintenance surface with zero behavioral difference. The generic shell handles it.
 
 ---
 
@@ -373,6 +389,35 @@ The hook (`mapAccountToViewProps` in `src/main/crdPages/topLevelPages/contributo
 **Important detail**: `isAvailable` is derived from the authorization privilege (`canCreate*`), NOT from `account.license.availableEntitlements`. In practice the two lists diverge — an account can have a positive `limit` for a resource type but the type may still not appear in `availableEntitlements`. The MUI `BlockHeader` uses `canCreate*`, so the CRD does the same.
 
 **i18n**: Keys live under `shared.account.capacity.*` in `crd-contributorSettings` (parity across en/nl/es/bg/de/fr). The obsolete `shared.account.activeCount` is removed. The `shared.account.customHomepages.capacity` key is rewritten to take `{{usage}}/{{limit}}` interpolations.
+
+---
+
+## Decision 17 — VC Settings tab: engine-conditional sub-sections + Prompt Graph deferred (VC extension, 2026-05-11)
+
+**Decision**: The VC Settings tab orchestrates **five** engine-conditional sub-section cards. The orchestrator (`VCSettingsTabView`) inspects two pieces of mapped state — `engine` (the `AiPersona.engine` enum) and `bodyOfKnowledgeType` — plus two viewer-scoped booleans (`platformAdmin`, `platformSettings.promptGraphEditingEnabled`) and conditionally renders:
+
+| Card | Render condition | Source / Mutation |
+|------|------------------|-------------------|
+| **VCVisibilityCard** | Always | `searchVisibility` + `listedInStore` ↔ `updateVirtualContributorSettings` |
+| **VCBodyOfKnowledgeCard** | `bodyOfKnowledgeType ∈ {AlkemioSpace, AlkemioKnowledgeBase}` OR `engine === Guidance` | `settings.privacy.knowledgeBaseContentVisible` ↔ `updateVirtualContributorSettings`; "Refresh Knowledge" ↔ `refreshBodyOfKnowledge` |
+| **VCPromptCard** | `engine ∈ {GenericOpenai, LibraFlow}` | `aiPersona.prompt[0]` ↔ `updateAiPersona` |
+| **VCExternalConfigCard** | `engine ∈ {LibraFlow, OpenaiAssistant, GenericOpenai}` | `aiPersona.externalConfig` ↔ `updateAiPersona` |
+| **VCPromptGraphFallbackCard** | `engine === Expert` AND (`platformAdmin` OR `platformSettings.promptGraphEditingEnabled`) | Read-only — link to legacy MUI Settings page |
+
+The condition tables are pure functions on the mapped view state. The orchestrator never reads `currentUser` / `platformSettings` directly — those flow in through the integration hook (`useVcSettingsTabData`) and the mapper (`vcSettingsMapper`).
+
+**Prompt Graph deferral.** The full Prompt Graph node/edge editor — the largest single piece of the MUI VC Settings tab today — is **deferred to a follow-up spec**. On Expert-engine VCs where the platform admin flag is on, the CRD Settings tab renders a small read-only `VCPromptGraphFallbackCard` linking the admin to the legacy MUI Settings page (`/vc/<nameId>/settings` with CRD off — the user temporarily disables the toggle, edits the graph in MUI, re-enables CRD). This is the same pattern 045 used for components-not-yet-ported. The fallback tile is a permanent part of this spec — the follow-up will replace it with the actual CRD graph editor.
+
+**External Config `apiKey` semantics.** `apiKey` is **never echoed back** to the client — the field is rendered empty regardless of server state. Only NEW values are sent on save (the integration hook reads the current value off the form ref; on save it includes `apiKey` in the mutation payload only if the field is non-empty). This matches MUI semantics exactly (`ExternalConfig.tsx` line 72). The mapper does not surface the existing key on load.
+
+**Save model parity with Profile tabs.** Per-control sub-sections (Visibility) commit immediately on change (parity with User Notifications optimistic-revert pattern: visual flip first, mutation second, revert + toast on hard failure). Per-section sub-sections (Prompt, External Config) use the same `FieldFooter` (dirty indicator + Save button + idle/saving/saved/error status, `SAVED_FLASH_MS = 1800`) the Profile tabs use — fully reused from 045.
+
+**Rationale**: The MUI `VirtualContributorSettingsPage` already implements this exact engine-conditional rendering; mirroring its truth table verbatim keeps parity and lets the CRD shell ship without rebuilding either the AI engine semantics or the BoK refresh flow. Deferring Prompt Graph trims the scope of this spec by the single largest piece of MUI logic without losing functionality — admins still have a clear path back to the legacy editor while the CRD version is built.
+
+**Alternatives considered**:
+- Ship a CRD Prompt Graph editor in this spec — rejected; the node/edge editor is a substantial component on its own and would more than double the spec's surface. A standalone follow-up is cleaner.
+- Hide the Prompt Graph affordance entirely when CRD is on — rejected; admins on Expert-engine VCs would lose access to a feature that currently works in MUI. The fallback tile preserves the path.
+- Render every card unconditionally with disabled controls when not applicable — rejected; conditional rendering matches MUI exactly and avoids visual noise on engines that don't expose those concepts at all.
 
 ---
 

@@ -29,6 +29,10 @@ This document is **specification-side**: it lists field names, validation rules,
 | RoleAssignment (Admin / Owner) | `useRoleSetManager(roleSet, [Admin])` / `(roleSet, [Owner])` | Org Authorization | this spec |
 | OrganizationSettings | `useOrganizationSettingsQuery` | Org Settings | this spec |
 | Verification | `Organization.verification.status` | Org Profile (read-only) | this spec |
+| VirtualContributor | `useVirtualContributorQuery` + `useUrlResolver().vcId` | VC: Profile, Settings | this spec (VC extension) |
+| AiPersona | `VirtualContributor.aiPersona` (engine, prompt, externalConfig, bodyOfKnowledgeID) | VC Settings | this spec (VC extension) |
+| BodyOfKnowledge | resolved from `aiPersona.bodyOfKnowledgeID` (existing helper) | VC Settings | this spec (VC extension) |
+| VC Membership | `useVcMembershipsQuery` (confirmed `community.communities[]` + pending `community.invitations[]`) | VC Membership | this spec (VC extension) |
 
 ---
 
@@ -449,6 +453,105 @@ Empty-state: when an Admin / Owner list is empty, render a single muted caption 
 Mutation: `useUpdateOrganizationSettingsMutation` (existing).
 
 **There is no Design System switch on this tab** (FR-132).
+
+---
+
+## User Story 13 — VC Profile
+
+### Entity: VirtualContributor (Profile fields)
+
+VC reuses the existing `Profile` shape (same as User and Org) — no schema changes. Compared to User Profile: VC has **no** `firstName` / `lastName` / `email` / `phone` / `skills` (single Keywords tagset only). Compared to Org Profile: VC has **no** `country` / `city` (no location), no `contactEmail`, no `domain`, no `legalEntityName`, no `website` (Web URLs surface only via References), no `capabilities` tagset.
+
+| Field | GraphQL path | CRD prop section | Mutation |
+|---|---|---|---|
+| Display name | `virtualContributor.profile.displayName` | `displayName` | `useUpdateVirtualContributorMutation` (patches `profileData.displayName`) |
+| Tagline | `virtualContributor.profile.tagline` | `tagline` | `useUpdateVirtualContributorMutation` |
+| Description | `virtualContributor.profile.description` | `description` | `useUpdateVirtualContributorMutation` (patches `profileData.description`) |
+| Keywords | `virtualContributor.profile.tagsets[?(@.name=='Keywords')].tags` | `keywords` | `useUpdateVirtualContributorMutation` (patches one tagset entry) OR `useCreateTagsetOnProfileMutation` on first save when the tagset doesn't yet exist (lazy-create — same pattern User Skills/Keywords uses) |
+| References (Social Links) | `virtualContributor.profile.references[]` | `references` (one per-section list) | Per-section Save fires a batch: `useUpdateReferenceMutation` for changed rows + `useCreateReferenceOnProfileMutation` for new rows + `useDeleteReferenceMutation` for removed rows. Delete gated by `ConfirmationDialog` (Rule #9). |
+| Avatar | `virtualContributor.profile.visual` (Avatar variant) | `avatarColumn` | File pick → `ImageCropDialog` with `VisualModelFull` constraints → on Save the cropped file → `useUploadImageOnVisualMutation` (same flow as User / Org Profile) |
+
+### Read-only metadata rows
+
+| Field | GraphQL path | CRD prop |
+|---|---|---|
+| Host organization | `virtualContributor.account.host.profile.{displayName,url}` | `metadata.host = { label, value, href }` |
+| Body of Knowledge | `virtualContributor.aiPersona.bodyOfKnowledgeID` resolved name (existing helper) | `metadata.bodyOfKnowledge = { label, value }` |
+
+Both rows are hidden when the underlying field is absent (`virtualContributor.account == null` for some VCs; some engines have no BoK).
+
+**Empty-state UX**: No empty state needed — every VC has at minimum a display name. References-list empty state mirrors User Profile (muted caption + "Add another reference" button).
+
+---
+
+## User Story 14 — VC Membership
+
+### Entity: VirtualContributor.memberships + pending invitations
+
+Apollo source: existing `useVcMembershipsQuery` (no schema change). Confirmed memberships and pending invitations are returned by the same query.
+
+| CRD prop section | GraphQL path | Notes |
+|---|---|---|
+| `memberships[]` | `virtualContributor.community.communities[].space.{id, profile.{displayName, tagline, url, cardBanner}, level}` | `level === 0` → `type: 'space'`; `level >= 1` → `type: 'subspace'` — drives the badge label and the Leave-dialog copy. `color` derives from `pickColorFromId(spaceId)` (same helper User Membership uses) for fallback gradient. |
+| `pendingInvitations[]` | `virtualContributor.community.invitations[].{id, space.{profile.{displayName, cardBanner}}, welcomeMessage}` | Welcome message renders in the Accept-confirmation dialog body. |
+
+### Actions
+
+| Action | CRD callback | Mutation | Confirmation? |
+|---|---|---|---|
+| Leave a space/subspace | `onRequestLeave(membershipId)` raises pending state → `leaveConfirm.onConfirm()` fires | `useRemoveRoleFromVirtualContributorMutation` (existing) | Yes — `ConfirmationDialog` per Rule #9 / FR-172 |
+| Accept invitation | `onRequestAccept(invitationId)` raises pending state → `acceptConfirm.onConfirm()` fires | Existing accept-invitation mutation (reused from MUI) | Yes — `ConfirmationDialog` (welcome message in dialog body) per FR-173 |
+| Decline invitation | (symmetric to Accept) | Existing decline-invitation mutation | Yes — `ConfirmationDialog` |
+
+### Differences vs. User Membership
+
+- **No Home Space dropdown** — VCs don't have a "preferred space" concept.
+- **No Auto-redirect checkbox** — same.
+- **No search input / filter strip** — surface is small enough (typically ≤ a handful of memberships).
+- **No "Led by:" footer** — VC memberships don't surface lead users (would be redundant — the VC is itself the contributor).
+
+### Empty-state UX
+
+- No confirmed memberships → muted caption ("This Virtual Contributor isn't a member of any space yet.") — same shape as User Membership empty state.
+- No pending invitations → the Pending Invitations section is hidden entirely (no empty state in that block).
+
+---
+
+## User Story 15 — VC Settings
+
+### Entity: VirtualContributor + AiPersona + BodyOfKnowledge
+
+| CRD prop section | GraphQL path | Mutation |
+|---|---|---|
+| `visibility.searchVisibility` | `virtualContributor.searchVisibility` (enum: `public` / `account` / `hidden`) | `useUpdateVirtualContributorSettingsMutation` — commit-on-change with optimistic-revert pattern (parity with User Notifications FR-064) |
+| `visibility.listedInStore` | `virtualContributor.listedInStore` | `useUpdateVirtualContributorSettingsMutation` — commit-on-change; disabled unless `searchVisibility === 'public'` |
+| `bodyOfKnowledge.contentVisible` | `virtualContributor.settings.privacy.knowledgeBaseContentVisible` | `useUpdateVirtualContributorSettingsMutation` — commit-on-change |
+| `bodyOfKnowledge.lastUpdatedIso` | derived — ISO timestamp captured after `refreshBodyOfKnowledge` mutation success | (read-only display) |
+| `bodyOfKnowledge.onRefresh` | (button) | `useRefreshBodyOfKnowledgeMutation` (existing) |
+| `prompt.value` | `virtualContributor.aiPersona.prompt[0]` | `useUpdateAiPersonaMutation` — per-section Save via FieldFooter |
+| `externalConfig.apiKey` | **NEVER read from server** — always rendered empty | `useUpdateAiPersonaMutation` — only included in payload when non-empty (matches MUI semantics) |
+| `externalConfig.assistantId` | `virtualContributor.aiPersona.externalConfig.assistantId` | `useUpdateAiPersonaMutation` — required when `engine === 'openaiAssistant'` |
+| `externalConfig.modelValue` | `virtualContributor.aiPersona.externalConfig.model` | `useUpdateAiPersonaMutation`; `modelOptions[]` sourced from existing `OpenAiModel` enum |
+
+### Engine-conditional sub-section presence
+
+The orchestrator (`VCSettingsTabView`) inspects `engine` (`AiPersona.engine`) and `bodyOfKnowledgeType` (`BodyOfKnowledge.type`) plus two viewer-scoped booleans (`platformAdmin`, `platformSettings.promptGraphEditingEnabled`) and renders each card conditionally — see Decision #17 in `research.md` for the truth table.
+
+| Card | Condition for inclusion in `VcSettingsViewProps` |
+|---|---|
+| `visibility` | Always |
+| `bodyOfKnowledge` | `bodyOfKnowledgeType ∈ {AlkemioSpace, AlkemioKnowledgeBase}` OR `engine === 'guidance'` |
+| `prompt` | `engine ∈ {'genericOpenai', 'libraFlow'}` |
+| `externalConfig` | `engine ∈ {'libraFlow', 'openaiAssistant', 'genericOpenai'}` |
+| `promptGraphFallback` | `engine === 'expert'` AND (`platformAdmin` OR `platformSettings.promptGraphEditingEnabled`) — read-only tile linking to legacy MUI (Decision #17) |
+
+### Empty-state UX
+
+No empty state needed — Visibility is always present; the other cards either render or are omitted entirely from the view.
+
+### Save state for Prompt and External Config sub-sections
+
+Per-section state machine identical to Profile tabs — `idle | saving | saved | error` with `SAVED_FLASH_MS = 1800` — managed by `useVcSettingsTabData`. Visibility and BoK privacy use the optimistic-revert pattern instead (parity with User Notifications, Decision #4).
 
 ---
 

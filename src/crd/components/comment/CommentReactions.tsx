@@ -1,19 +1,28 @@
-import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
-import { Button } from '@/crd/primitives/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 import type { CommentReaction } from './types';
 
+// The add-NEW-reaction picker (smiley used to pick an emoji that isn't yet
+// on this comment) now lives in CommentItem's action row next to Reply /
+// Delete, so it is always reachable — including for comments with zero
+// existing reactions. This component renders only:
+//   - the reaction-count pills (clicking a pill toggles the viewer's
+//     reaction for that emoji on or off),
+//   - and the overflow popover for the 6th+ reaction kinds.
+// When there are no reactions the row hides itself entirely (no empty row).
 type CommentReactionsProps = {
   reactions: CommentReaction[];
+  /** When false, pills are rendered as non-interactive labels — viewers
+   *  who aren't allowed to react can still see who reacted, but can't
+   *  toggle anything. Defaults to true. */
+  canReact?: boolean;
   onAdd: (emoji: string) => void;
   onRemove: (emoji: string) => void;
 };
 
 const MAX_VISIBLE_REACTIONS = 5;
 
-export function CommentReactions({ reactions, onAdd, onRemove }: CommentReactionsProps) {
+export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }: CommentReactionsProps) {
   const { t } = useTranslation('crd-space');
 
   if (reactions.length === 0) return null;
@@ -27,14 +36,21 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
         <button
           key={reaction.emoji}
           type="button"
+          disabled={!canReact}
           className={[
             'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-caption transition-colors',
+            canReact ? 'cursor-pointer' : 'cursor-default',
             reaction.hasReacted
               ? 'border-primary/50 bg-primary/10 text-primary'
-              : 'border-border bg-background text-muted-foreground hover:bg-muted',
+              : canReact
+                ? 'border-border bg-background text-muted-foreground hover:bg-muted'
+                : 'border-border bg-background text-muted-foreground',
           ].join(' ')}
           aria-pressed={reaction.hasReacted}
-          onClick={() => (reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji))}
+          onClick={() => {
+            if (!canReact) return;
+            return reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji);
+          }}
         >
           <span>{reaction.emoji}</span>
           <span>{reaction.count}</span>
@@ -46,7 +62,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverTrigger asChild={true}>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-caption text-muted-foreground hover:bg-muted"
+              className="inline-flex cursor-pointer items-center rounded-full border border-border px-2 py-0.5 text-caption text-muted-foreground hover:bg-muted"
               aria-label={t('comments.reactions.overflow', { count: hiddenReactions.length })}
             >
               {t('comments.reactions.overflow', { count: hiddenReactions.length })}
@@ -70,21 +86,6 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           </PopoverContent>
         </Popover>
       )}
-
-      <EmojiPicker
-        onSelect={onAdd}
-        trigger={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 rounded-full border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label={t('comments.reactions.add')}
-          >
-            <Smile className="h-3.5 w-3.5" aria-hidden="true" />
-          </Button>
-        }
-      />
     </div>
   );
 }
