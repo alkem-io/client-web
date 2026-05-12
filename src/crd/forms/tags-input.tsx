@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { type KeyboardEvent, useRef } from 'react';
+import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 
 type TagsInputProps = {
@@ -12,27 +12,73 @@ type TagsInputProps = {
 
 export function TagsInput({ value, onChange, placeholder, className, icon }: TagsInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const internalRef = useRef('');
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+
+  useEffect(() => {
+    if (editingIndex !== null && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingIndex]);
+
+  const normalize = (raw: string) => raw.trim().toLowerCase();
 
   const addTag = (raw: string) => {
-    const tag = raw.trim().toLowerCase();
+    const tag = normalize(raw);
     if (tag && !value.includes(tag)) {
       onChange([...value, tag]);
     }
-    internalRef.current = '';
-    if (inputRef.current) inputRef.current.value = '';
+    setInputValue('');
   };
 
   const removeTag = (tag: string) => {
     onChange(value.filter(t => t !== tag));
   };
 
+  const startEditing = (index: number) => {
+    setEditingIndex(index);
+    setEditingValue(value[index]);
+  };
+
+  const commitEdit = () => {
+    if (editingIndex === null) return;
+    const next = normalize(editingValue);
+    const original = value[editingIndex];
+    if (!next) {
+      onChange(value.filter((_, i) => i !== editingIndex));
+    } else if (next !== original && value.includes(next)) {
+      onChange(value.filter((_, i) => i !== editingIndex));
+    } else {
+      onChange(value.map((t, i) => (i === editingIndex ? next : t)));
+    }
+    setEditingIndex(null);
+    setEditingValue('');
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+    setEditingValue('');
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && internalRef.current.trim()) {
+    if (e.key === 'Enter' && inputValue.trim()) {
       e.preventDefault();
-      addTag(internalRef.current);
-    } else if (e.key === 'Backspace' && !internalRef.current && value.length > 0) {
+      addTag(inputValue);
+    } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
       removeTag(value[value.length - 1]);
+    }
+  };
+
+  const handleEditKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
     }
   };
 
@@ -44,39 +90,72 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
         'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border border-border bg-background',
         className
       )}
-      onClick={() => inputRef.current?.focus()}
+      onClick={() => {
+        if (editingIndex === null) inputRef.current?.focus();
+      }}
     >
       {icon}
-      {value.map(tag => (
-        <span
-          key={tag}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary"
-          style={{
-            background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
-          }}
-        >
-          {tag}
-          <button
-            type="button"
-            onClick={e => {
-              e.stopPropagation();
-              removeTag(tag);
+      {value.map((tag, index) => {
+        if (editingIndex === index) {
+          return (
+            <input
+              key={tag}
+              ref={editInputRef}
+              type="text"
+              value={editingValue}
+              onChange={e => setEditingValue(e.target.value)}
+              onKeyDown={handleEditKeyDown}
+              onBlur={commitEdit}
+              aria-label={`Edit tag ${tag}`}
+              className="px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-background outline-none focus:ring-2 focus:ring-ring min-w-[60px]"
+              style={{
+                width: `${Math.max(editingValue.length, 4) + 2}ch`,
+              }}
+            />
+          );
+        }
+        return (
+          <span
+            key={tag}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary"
+            style={{
+              background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
             }}
-            className="hover:opacity-70"
-            aria-label={`Remove ${tag}`}
           >
-            <X className="size-3" />
-          </button>
-        </span>
-      ))}
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                startEditing(index);
+              }}
+              className="bg-transparent border-none p-0 text-inherit font-inherit cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+              aria-label={`Edit ${tag}`}
+            >
+              {tag}
+            </button>
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                removeTag(tag);
+              }}
+              className="hover:opacity-70 cursor-pointer"
+              aria-label={`Remove ${tag}`}
+            >
+              <X className="size-3" />
+            </button>
+          </span>
+        );
+      })}
       <input
         ref={inputRef}
         type="text"
-        defaultValue=""
-        onChange={e => {
-          internalRef.current = e.target.value;
-        }}
+        value={inputValue}
+        onChange={e => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
+        onBlur={() => {
+          if (inputValue.trim()) addTag(inputValue);
+        }}
         placeholder={value.length === 0 ? placeholder : ''}
         aria-label={placeholder}
         className="flex-1 min-w-[120px] border-0 bg-transparent text-control outline-none text-foreground"
