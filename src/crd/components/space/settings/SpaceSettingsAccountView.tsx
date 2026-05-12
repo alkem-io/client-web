@@ -71,21 +71,19 @@ export function SpaceSettingsAccountView({
       {/* Page header */}
       <div>
         <h2 className="text-page-title">{t('account.pageHeader.title')}</h2>
-        <p className="text-sm text-muted-foreground mt-2">{t('account.pageHeader.subtitle')}</p>
+        <p className="text-body text-muted-foreground mt-2">{t('account.pageHeader.subtitle')}</p>
       </div>
 
       <Separator />
 
       {/* URL */}
       <div className="grid gap-2">
-        <Label htmlFor="space-url" className="text-base">
-          {t('account.url.title')}
-        </Label>
+        <Label htmlFor="space-url">{t('account.url.title')}</Label>
         <div className="flex items-center gap-2 max-w-xl">
-          <Input id="space-url" value={url} readOnly={true} className="bg-muted/20 font-mono text-sm flex-1" />
+          <Input id="space-url" value={url} readOnly={true} className="bg-muted/20 font-mono text-control flex-1" />
           <CopyUrlButton onCopyUrl={onCopyUrl} />
         </div>
-        <p className="text-sm text-muted-foreground italic">{t('account.url.hint')}</p>
+        <p className="text-body text-muted-foreground italic">{t('account.url.hint')}</p>
       </div>
 
       {/* License */}
@@ -95,7 +93,7 @@ export function SpaceSettingsAccountView({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CreditCard aria-hidden="true" className="size-5 text-primary" />
-                <CardTitle className="text-lg">{t('account.plan.title')}</CardTitle>
+                <CardTitle className="text-subsection-title">{t('account.plan.title')}</CardTitle>
               </div>
               <Badge variant="secondary" className="px-3 py-1 font-semibold text-primary bg-primary/10">
                 {plan.name}
@@ -107,7 +105,7 @@ export function SpaceSettingsAccountView({
             {plan.features.length > 0 && (
               <div className="space-y-3">
                 <p className="text-body-emphasis text-muted-foreground">{t('account.plan.featuresHeading')}</p>
-                <ul className="space-y-2 text-sm">
+                <ul className="space-y-2 text-body">
                   {plan.features.map(f => (
                     <li key={f} className="flex items-center gap-2">
                       <Check aria-hidden="true" className="size-4 text-emerald-600 shrink-0" />
@@ -118,12 +116,14 @@ export function SpaceSettingsAccountView({
               </div>
             )}
             {plan.daysLeft !== null && (
-              <p className="text-xs text-muted-foreground">{t('account.plan.daysLeft', { count: plan.daysLeft })}</p>
+              <p className="text-caption text-muted-foreground">
+                {t('account.plan.daysLeft', { count: plan.daysLeft })}
+              </p>
             )}
           </CardContent>
           {changeLicenseHref && (
             <CardFooter className="flex flex-col sm:flex-row gap-3 pt-4 border-t bg-muted/20 rounded-b-xl">
-              <Button variant="outline" className="w-full sm:w-auto text-sm" asChild={true}>
+              <Button variant="outline" className="w-full sm:w-auto" asChild={true}>
                 <a
                   href={changeLicenseHref}
                   target="_blank"
@@ -141,16 +141,16 @@ export function SpaceSettingsAccountView({
 
       {/* Visibility */}
       <div className="grid gap-2 p-4 border rounded-lg bg-card">
-        <Label className="text-base flex items-center gap-2">
+        <Label className="flex items-center gap-2">
           <Activity aria-hidden="true" className="size-4 text-primary" />
           {t('account.visibility.title')}
         </Label>
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          <p className="text-sm">{t('account.visibility.prefix')}</p>
+          <p className="text-body">{t('account.visibility.prefix')}</p>
           <Badge className="bg-primary/15 text-primary hover:bg-primary/25 border-primary/20">{visibility}</Badge>
-          <p className="text-sm">{t('account.visibility.suffix')}</p>
+          <p className="text-body">{t('account.visibility.suffix')}</p>
         </div>
-        <p className="text-xs text-muted-foreground italic pt-1">{t('account.visibility.contact')}</p>
+        <p className="text-caption text-muted-foreground italic pt-1">{t('account.visibility.contact')}</p>
       </div>
 
       {/* Host */}
@@ -159,7 +159,7 @@ export function SpaceSettingsAccountView({
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
               <Shield aria-hidden="true" className="size-5 text-primary" />
-              <CardTitle className="text-lg">{t('account.host.title')}</CardTitle>
+              <CardTitle className="text-subsection-title">{t('account.host.title')}</CardTitle>
             </div>
             <CardDescription>{t('account.host.description')}</CardDescription>
           </CardHeader>
@@ -170,8 +170,8 @@ export function SpaceSettingsAccountView({
                 <AvatarFallback>{host.displayName.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="space-y-1">
-                <p className="font-medium text-base">{host.displayName}</p>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <p className="text-card-title">{host.displayName}</p>
+                <div className="flex items-center gap-3 text-body text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
                     {host.type.toLowerCase().includes('org') ? (
                       <Building aria-hidden="true" className="size-3" />
@@ -189,7 +189,7 @@ export function SpaceSettingsAccountView({
 
       {/* Support / Contact */}
       <div className="flex flex-col items-center justify-center p-6 rounded-lg bg-muted/30 border border-dashed text-center gap-4">
-        <p className="text-sm text-muted-foreground">{t('account.support.message')}</p>
+        <p className="text-body text-muted-foreground">{t('account.support.message')}</p>
         <Button variant="default" className="gap-2" asChild={true}>
           <a href={contactSupportHref} target="_blank" rel="noopener noreferrer">
             {t('account.support.contact')}
@@ -205,7 +205,7 @@ export function SpaceSettingsAccountView({
             <AlertTriangle aria-hidden="true" className="size-4" />
             {t('account.dangerZone.title')}
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">{t('account.dangerZone.description')}</p>
+          <p className="text-body text-muted-foreground mt-1">{t('account.dangerZone.description')}</p>
           <Button type="button" variant="destructive" size="sm" className="mt-3" onClick={onDeleteSpace}>
             <Trash2 aria-hidden="true" className="mr-1.5 size-3.5" />
             {t('account.dangerZone.delete')}

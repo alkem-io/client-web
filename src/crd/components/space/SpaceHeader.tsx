@@ -13,11 +13,9 @@ type MemberAvatar = {
 };
 
 type SpaceHeaderActions = {
-  showDocuments?: boolean;
   showVideoCall?: boolean;
   showShare?: boolean;
   showSettings?: boolean;
-  onDocumentsClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
   videoCallUrl?: string;
@@ -86,21 +84,6 @@ export function SpaceHeader({
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
               <div className="flex items-center gap-2">
-                {/* TODO: Documents action is not yet supported by the platform — re-enable
-                    once the activity/documents feature is wired up. Restore the `FileText`
-                    import from `lucide-react` at the top of this file when re-enabling.
-                {actions.showDocuments && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
-                    onClick={actions.onDocumentsClick}
-                    aria-label={t('mobile.activity')}
-                  >
-                    <FileText className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
-                */}
                 {actions.showVideoCall &&
                   (safeVideoCallUrl ? (
                     <Button

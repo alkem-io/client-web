@@ -54,7 +54,6 @@ export default function CrdSpacePageLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [communityOpen, setCommunityOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
@@ -112,13 +111,11 @@ export default function CrdSpacePageLayout() {
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
 
   const headerActions = {
-    showDocuments: true,
     showVideoCall: isVideoCallEnabled && !!videoCallUrl,
     videoCallUrl: videoCallUrl || undefined,
     showShare: true,
     showSettings,
     settingsHref,
-    onDocumentsClick: () => setActivityDialogOpen(true),
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };

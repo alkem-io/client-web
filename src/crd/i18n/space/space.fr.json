@@ -347,9 +347,7 @@
     }
   },
   "mobile": {
-    "more": "Plus",
     "menu": "Menu",
-    "activity": "Activité",
     "videoCall": "Appel vidéo",
     "share": "Partager",
     "settings": "Paramètres"

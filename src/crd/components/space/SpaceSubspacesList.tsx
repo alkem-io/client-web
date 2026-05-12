@@ -1,5 +1,5 @@
 import { Folder, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -62,7 +62,7 @@ export function SpaceSubspacesList({
 
   // Show status filter pills only when subspaces carry status data and at least
   // one subspace has a non-active status (otherwise the pills add no value).
-  const hasStatusVariety = useMemo(() => subspaces.some(s => s.status && s.status !== 'active'), [subspaces]);
+  const hasStatusVariety = subspaces.some(s => s.status && s.status !== 'active');
 
   const STATUS_OPTIONS: StatusFilter[] = ['all', 'active', 'archived'];
 

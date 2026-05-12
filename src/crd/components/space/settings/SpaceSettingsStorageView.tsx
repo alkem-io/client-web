@@ -50,13 +50,13 @@ export function SpaceSettingsStorageView({
     <div className={cn('flex flex-col gap-6', className)}>
       <div>
         <h2 className="text-page-title">{t('storage.pageHeader.title')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{t('storage.pageHeader.subtitle')}</p>
+        <p className="text-body text-muted-foreground mt-1">{t('storage.pageHeader.subtitle')}</p>
       </div>
 
       {loading ? (
         <StorageSkeletons />
       ) : rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+        <div className="rounded-xl border border-dashed p-8 text-center text-body text-muted-foreground">
           {t('storage.empty')}
         </div>
       ) : (
@@ -154,19 +154,19 @@ function StorageRow({
             href={node.openHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm hover:underline truncate"
+            className="text-body hover:underline truncate"
           >
             {node.name}
           </a>
         </div>
       </TableCell>
-      <TableCell className="text-sm text-muted-foreground">{node.sizeFormatted}</TableCell>
+      <TableCell className="text-body text-muted-foreground">{node.sizeFormatted}</TableCell>
       <TableCell>
-        <a href={node.uploaderHref} className="text-sm hover:underline text-muted-foreground">
+        <a href={node.uploaderHref} className="text-body hover:underline text-muted-foreground">
           {node.uploaderName}
         </a>
       </TableCell>
-      <TableCell className="text-sm text-muted-foreground">{node.uploadedAt}</TableCell>
+      <TableCell className="text-body text-muted-foreground">{node.uploadedAt}</TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
           <a
