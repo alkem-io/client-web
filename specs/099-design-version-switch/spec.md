@@ -97,6 +97,7 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 - **FR-014**: Interacting with the toggle within the open menu MUST NOT cause the menu to close before the user has confirmed the change, and MUST NOT navigate the user away from their current page on its own.
 - **FR-015**: The toggle and its caption MUST be available in every language the platform's user menu otherwise supports.
 - **FR-016**: Every successful toggle interaction MUST emit an info-level observability log event capturing the resulting design version (and any context the existing logging helper already includes, such as user id). Reconciliation reloads MUST NOT emit a corresponding event.
+- **FR-017**: The toggle and its caption MUST meet WCAG 2.1 AA: keyboard-reachable via Tab and operable via Space/Enter, focus state visible against both menus' backgrounds, the switch's role and on/off state announced by assistive technology, and the beta caption programmatically associated with the switch (e.g. via `aria-describedby`) so it is read alongside the control.
 
 ### Key Entities
 

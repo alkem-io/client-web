@@ -72,6 +72,7 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
    - On mutation success: LS is set to `'true'`, a Sentry breadcrumb / event labeled `DESIGN_VERSION_SWITCH` is emitted with the new value (visible in DevTools console if Sentry's `debug` mode is on).
    - The page reloads.
    - The CRD shell loads. Every page (`/`, `/forum`, `/space/X`, `/admin/something`) renders in the new design — verified by clicking through 3–4 routes.
+   - **Auth survives the reload**: after the reload, the user avatar is still present in the top nav, no sign-in prompt is shown, and `CurrentUserLight` returns the same user id as before the toggle. (Verifies FR-013.)
 
 ### Scenario E — toggle OFF from the CRD menu (inverse of D)
 

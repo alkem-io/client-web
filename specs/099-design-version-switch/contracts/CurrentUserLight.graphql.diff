@@ -12,6 +12,7 @@
      user {
        ...UserDetailsLight
 +      settings {
++        id
 +        designVersion
 +      }
        account {
@@ -61,7 +62,7 @@ Any unrecognized value normalizes to `undefined` (treated as "not set" per FR-00
 
 ## Cache normalization
 
-The Apollo cache normalizes by `UserSettings.id`. Since `UserSettings` already has an `id` selected elsewhere (e.g. by the heavier `userSettings` query in `userSettingsFragment`), the new `designVersion` field will merge cleanly into the existing cache entry. Selecting `settings { designVersion }` without `settings { id }` may cause Apollo to use a synthetic object identity for that nested object — acceptable because nothing else queries `settings` via `CurrentUserLight`, but if the cache complains during dev, add `id` to the selection.
+The Apollo cache normalizes by `UserSettings.id`. We select `settings { id designVersion }` (rather than just `designVersion`) so the new field merges cleanly into the same cache entry already populated by the heavier `userSettings` query in `userSettingsFragment`. Without the `id`, Apollo would synthesize an object identity for the `settings` object and emit dev warnings when the two queries' results meet in the cache.
 
 ## Codegen step
 
