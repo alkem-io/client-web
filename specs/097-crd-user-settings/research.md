@@ -238,7 +238,7 @@ Top-level key structure:
     "bodyOfKnowledge":    { "title": "...", "privacyToggleLabel": "...", "refreshLabel": "...", "lastUpdated": "..." },
     "prompt":             { "title": "...", "helpText": "..." },
     "externalConfig":     { "title": "...", "apiKeyLabel": "...", "assistantIdLabel": "...", "modelLabel": "..." },
-    "promptGraphFallback":{ "title": "...", "description": "...", "ctaLabel": "..." }
+    "promptGraphFallback":{ "heading": "...", "description": "...", "ctaLabel": "..." }
   },
   "shared": {
     "saved": "Saved",

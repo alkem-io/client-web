@@ -597,6 +597,9 @@
       "heading": "L'édition du Prompt Graph reste dans MUI",
       "description": "L'éditeur de flux est en cours de migration. Ouvrez l'ancienne page de paramètres pour modifier le prompt graph.",
       "ctaLabel": "Ouvrir dans l'ancienne vue"
+    },
+    "settings": {
+      "commitErrorToast": "Échec de l'enregistrement de la préférence — réessayez"
     }
   },
   "shared": {

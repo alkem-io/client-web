@@ -76,6 +76,13 @@ export type VcMembershipViewProps = {
   pendingInvitations: VcPendingInvitationRow[];
   /** Per-row Accept action — raises pending state. */
   onRequestAccept: (id: string) => void;
+  /**
+   * Per-row Decline action. Symmetric to Accept but fires the invitation
+   * `REJECT` event directly (no confirmation dialog) — declining is
+   * non-destructive (the VC simply doesn't join; the invitation can be
+   * re-issued).
+   */
+  onRequestDecline: (id: string) => void;
   pendingInvitationsHeading: string;
   /** Optional copy / icon under the pending-invitations heading. */
   pendingInvitationsHelp?: ReactNode;

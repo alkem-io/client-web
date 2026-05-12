@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useVirtualContributorProviderQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { VCProfileTabView } from '@/crd/components/virtualContributor/settings/VCProfileTabView';
-import type { VcReadOnlyMetadataRow } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
+import type {
+  VcProfileFormValues,
+  VcReadOnlyMetadataRow,
+} from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcProfileTabData from './useVcProfileTabData';
 
@@ -88,14 +91,14 @@ const CrdVCProfileTab = () => {
   );
 };
 
-const EMPTY_VALUES = {
+const EMPTY_VALUES: VcProfileFormValues = {
   profileId: '',
   displayName: '',
   tagline: '',
   description: '',
-  keywords: { id: undefined, tags: [] as string[] },
+  keywords: { id: undefined, tags: [] },
   avatar: { id: '', uri: null, altText: null },
-  references: [] as never[],
+  references: [],
 };
 
 export default CrdVCProfileTab;

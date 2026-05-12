@@ -1,8 +1,10 @@
+import { format } from 'date-fns';
 import { ExternalLink, Globe, Info, Key, MessageSquare, RefreshCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
@@ -129,7 +131,11 @@ function RadioOption({ value, label, description }: { value: string; label: stri
 }
 
 function VCBodyOfKnowledgeCard(p: VcBodyOfKnowledgeCardProps) {
-  const { t } = useTranslation('crd-contributorSettings');
+  const { t, i18n } = useTranslation('crd-contributorSettings');
+  const locale = resolveDateFnsLocale(i18n.language);
+  const lastUpdatedDisplay = p.lastUpdatedIso
+    ? format(new Date(p.lastUpdatedIso), 'PPpp', { locale })
+    : t('vc.bodyOfKnowledge.never');
   return (
     <SettingsCard icon={Info} title={t('vc.bodyOfKnowledge.title')} description={t('vc.bodyOfKnowledge.helper')}>
       <div className="flex items-start justify-between gap-4">
@@ -150,10 +156,7 @@ function VCBodyOfKnowledgeCard(p: VcBodyOfKnowledgeCardProps) {
 
       <div className="flex items-center justify-between gap-4">
         <p className="text-caption text-muted-foreground">
-          {t('vc.bodyOfKnowledge.lastUpdated')}{' '}
-          <span className="text-foreground">
-            {p.lastUpdatedIso ? new Date(p.lastUpdatedIso).toLocaleString() : t('vc.bodyOfKnowledge.never')}
-          </span>
+          {t('vc.bodyOfKnowledge.lastUpdated')} <span className="text-foreground">{lastUpdatedDisplay}</span>
         </p>
         <Button type="button" variant="outline" onClick={p.onRefresh} disabled={p.refreshing} aria-busy={p.refreshing}>
           <RefreshCcw aria-hidden="true" className="mr-2 size-4" />

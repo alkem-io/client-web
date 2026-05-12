@@ -55,7 +55,18 @@ type UseVcSettingsTabDataResult = {
  * of server state. Only NEW values are sent in the mutation payload (matches
  * MUI semantics in `ExternalConfig.tsx`).
  */
-export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTabDataResult => {
+/**
+ * Hook arguments. `onCommitError` is invoked when an immediate-commit
+ * mutation (Visibility radio, listed-in-store, BoK privacy) fails — the
+ * page wires this to a toast so failures aren't silent (FR-181, parity
+ * with FR-064 / FR-133).
+ */
+export type UseVcSettingsTabDataArgs = {
+  vcId: string | undefined;
+  onCommitError?: () => void;
+};
+
+export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDataArgs): UseVcSettingsTabDataResult => {
   const {
     data: vcData,
     loading: vcLoading,
@@ -125,6 +136,7 @@ export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTab
       setOverrideSearchVisibility(null);
     } catch {
       setOverrideSearchVisibility(null); // revert
+      onCommitError?.();
     } finally {
       setSearchVisibilitySaving(false);
     }
@@ -142,6 +154,7 @@ export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTab
       setOverrideListedInStore(null);
     } catch {
       setOverrideListedInStore(null); // revert
+      onCommitError?.();
     } finally {
       setListedInStoreSaving(false);
     }
@@ -156,9 +169,22 @@ export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTab
 
   const contentVisible = overrideContentVisible ?? serverContentVisible;
   const lastUpdatedFromServer = bokData?.virtualContributor?.aiPersona?.bodyOfKnowledgeLastUpdated;
-  const lastUpdatedIso: string | undefined =
-    lastRefreshedAt ??
-    (lastUpdatedFromServer ? new Date(lastUpdatedFromServer as unknown as string | number).toISOString() : undefined);
+  const serverLastUpdatedIso = lastUpdatedFromServer
+    ? new Date(lastUpdatedFromServer as unknown as string | number).toISOString()
+    : undefined;
+
+  // The local timestamp is only a transient optimistic value. As soon as the
+  // server returns a fresher (or any) timestamp we clear it so the card
+  // reflects the backend value going forward.
+  useEffect(() => {
+    if (!lastRefreshedAt) return;
+    if (!serverLastUpdatedIso) return;
+    if (serverLastUpdatedIso >= lastRefreshedAt) {
+      setLastRefreshedAt(undefined);
+    }
+  }, [lastRefreshedAt, serverLastUpdatedIso]);
+
+  const lastUpdatedIso: string | undefined = lastRefreshedAt ?? serverLastUpdatedIso;
 
   const onToggleContentVisible = async (next: boolean) => {
     if (!vcId) return;
@@ -177,6 +203,7 @@ export const useVcSettingsTabData = (vcId: string | undefined): UseVcSettingsTab
       setOverrideContentVisible(null);
     } catch {
       setOverrideContentVisible(null);
+      onCommitError?.();
     } finally {
       setContentVisibleSaving(false);
     }

@@ -350,7 +350,7 @@ Save mutations: `updateVirtualContributor` (single sections), `createTagsetOnPro
 
 A VC host opens `/vc/<vcNameId>/settings/membership` and sees a CRD restyle of the current MUI `VCMembershipPage` (`src/domain/community/virtualContributor/vcMembershipPage/`). Two stacked sections:
 
-- **Confirmed memberships** — a card grid of spaces / subspaces the VC is a member of. Each card shows banner + display name + tagline + type badge + kebab with two items: **View Space** (anchor to `space.url`) and **Leave Space** (destructive `ConfirmationDialog` per Rule #9 / FR-112).
+- **Confirmed memberships** — a card grid of spaces / subspaces the VC is a member of. Each card shows banner + display name + tagline + type badge + kebab with two items: **View Space** (anchor to `space.url`) and **Leave Space** (destructive `ConfirmationDialog` per Rule #9 / FR-172).
 - **Pending invitations** — separate card list under the grid; each row shows the inviting space + optional welcome message + an **Accept invitation** button that opens a `ConfirmationDialog` before firing the existing accept-invitation mutation. The list is hidden when empty (no invitations).
 
 No Home Space selector, no search/filter — the VC has no preferred-space concept. Empty-state for confirmed memberships is a single muted caption line (FR-018 pattern).

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { VCSettingsTabView } from '@/crd/components/virtualContributor/settings/VCSettingsTabView';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcSettingsTabData from './useVcSettingsTabData';
@@ -15,7 +16,11 @@ import useVcSettingsTabData from './useVcSettingsTabData';
 const CrdVCSettingsTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
-  const data = useVcSettingsTabData(vcId);
+  const notify = useNotification();
+  const data = useVcSettingsTabData({
+    vcId,
+    onCommitError: () => notify(t('vc.settings.commitErrorToast'), 'error'),
+  });
 
   return (
     <VCSettingsTabView
