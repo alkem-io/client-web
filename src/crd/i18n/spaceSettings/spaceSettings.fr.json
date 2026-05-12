@@ -423,7 +423,18 @@
         "hint": "Optionnel — choisissez un modèle de sous-espace pour pré-remplir le contenu.",
         "loading": "Chargement des modèles…",
         "placeholder": "Sélectionnez un modèle (optionnel)",
-        "none": "Aucun modèle"
+        "none": "Aucun modèle",
+        "choose": "Choisir un modèle",
+        "change": "Changer",
+        "clear": "Utiliser vierge",
+        "selectedLabel": "Modèle sélectionné",
+        "loadingPreview": "Chargement de l'aperçu du modèle…",
+        "overwriteConfirm": {
+          "title": "Remplacer le contenu du formulaire ?",
+          "description": "L'application de ce modèle écrasera le nom, l'accroche, la description et les étiquettes que vous avez déjà saisis.",
+          "confirm": "Appliquer le modèle",
+          "cancel": "Conserver mes modifications"
+        }
       },
       "displayName": {
         "label": "Nom",

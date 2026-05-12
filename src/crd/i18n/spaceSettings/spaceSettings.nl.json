@@ -423,7 +423,18 @@
         "hint": "Optioneel — kies een subspace-sjabloon om inhoud vooraf in te vullen.",
         "loading": "Sjablonen laden…",
         "placeholder": "Selecteer een sjabloon (optioneel)",
-        "none": "Geen sjabloon"
+        "none": "Geen sjabloon",
+        "choose": "Kies een sjabloon",
+        "change": "Wijzigen",
+        "clear": "Leeg gebruiken",
+        "selectedLabel": "Geselecteerd sjabloon",
+        "loadingPreview": "Sjabloonvoorbeeld laden…",
+        "overwriteConfirm": {
+          "title": "Formulierinhoud vervangen?",
+          "description": "Door dit sjabloon toe te passen worden de naam, tagline, beschrijving en tags die je al hebt ingevuld overschreven.",
+          "confirm": "Sjabloon toepassen",
+          "cancel": "Mijn wijzigingen behouden"
+        }
       },
       "displayName": {
         "label": "Naam",

@@ -81,7 +81,11 @@ export default function CrdSpaceSettingsPage() {
   const layout = useLayoutTabData(spaceId);
   const community = useCommunityTabData(roleSetId);
   const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
-  const createSubspace = useCreateSubspace(spaceId);
+  const createSubspace = useCreateSubspace(spaceId, {
+    accountId,
+    templatesSetId: subspacesTab.templatesSetId,
+    defaultTemplateId: subspacesTab.defaultTemplateId,
+  });
   const saveAsTemplate = useSaveSubspaceAsTemplate({
     templatesSetId: subspacesTab.templatesSetId,
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
@@ -474,14 +478,30 @@ export default function CrdSpaceSettingsPage() {
         }}
         values={createSubspace.values}
         errors={createSubspace.errors}
-        templates={createSubspace.templates}
-        templatesLoading={createSubspace.templatesLoading}
+        selectedTemplateName={createSubspace.selectedTemplateName}
+        selectedTemplateContent={createSubspace.selectedTemplateContent}
+        selectedTemplateLoading={createSubspace.selectedTemplateLoading}
+        onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
+        onClearTemplate={createSubspace.onClearTemplate}
         submitting={createSubspace.submitting}
         canSubmit={createSubspace.canSubmit}
         avatarConstraints={createSubspace.avatarConstraints}
         cardBannerConstraints={createSubspace.cardBannerConstraints}
         onChange={createSubspace.onChange}
         onSubmit={() => void createSubspace.onSubmit()}
+      />
+      <TemplatePicker {...createSubspace.picker} />
+      <ConfirmationDialog
+        open={createSubspace.overwriteConfirmOpen}
+        onOpenChange={open => {
+          if (!open) createSubspace.onCancelOverwriteTemplate();
+        }}
+        title={t('subspaces.createDialog.template.overwriteConfirm.title')}
+        description={t('subspaces.createDialog.template.overwriteConfirm.description')}
+        confirmLabel={t('subspaces.createDialog.template.overwriteConfirm.confirm')}
+        cancelLabel={t('subspaces.createDialog.template.overwriteConfirm.cancel')}
+        onConfirm={createSubspace.onConfirmOverwriteTemplate}
+        onCancel={createSubspace.onCancelOverwriteTemplate}
       />
 
       <ChangeDefaultSubspaceTemplateDialog

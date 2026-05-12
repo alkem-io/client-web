@@ -67,7 +67,7 @@ export function TemplateCard({
   return (
     <div
       className={cn(
-        'group relative flex flex-col border rounded-lg overflow-hidden bg-card transition-all duration-200 hover:shadow-md',
+        'group relative flex h-full flex-col border rounded-lg overflow-hidden bg-card transition-all duration-200 hover:shadow-md',
         deleting && 'opacity-50 pointer-events-none',
         className
       )}

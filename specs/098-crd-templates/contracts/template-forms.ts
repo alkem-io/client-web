@@ -9,6 +9,9 @@
  *  - `src/crd/components/templates/forms/{Whiteboard,Post,CommunityGuidelines}TemplateForm.tsx` + the
  *    presentational `SpaceTemplateForm.tsx` — pure CRD-layer (reuse `MarkdownEditor`, `tags-input`,
  *    `WhiteboardEditorShell`, the CRD references-list editor). Mounted by the integration layer into `perTypeFormSlot`.
+ *    `WhiteboardTemplateForm` renders the shared `WhiteboardConfigCard` (`src/crd/components/whiteboard/`) for the
+ *    "configure / edit drawing" row — the same component the callout whiteboard-framing editor (`FramingEditorConnector`)
+ *    uses — and the integration-layer connector (`WhiteboardTemplateFormConnector`) wires it to the live editor dialog.
  *  - **`src/main/crdPages/templates/CalloutTemplateForm.tsx`** — the callout per-type form is in the INTEGRATION
  *    layer, not `src/crd/`, because it composes the callout-authoring connectors (Apollo/`@/domain/*`-bound).
  *    It's mounted into `perTypeFormSlot` for `type: 'callout'`. The Apollo space-search for the Space form also

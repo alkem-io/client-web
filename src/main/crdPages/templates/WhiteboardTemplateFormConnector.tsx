@@ -1,19 +1,17 @@
 /**
- * WhiteboardTemplateFormConnector — the integration-layer wrapper around the CRD-pure
- * `WhiteboardTemplateForm` (T026). The pure form can't host the live Excalidraw editor (it needs
- * Apollo / the whiteboard stack), so this connector adds an "Edit drawing" button that opens
- * `CrdSingleUserWhiteboardDialog` against a synthetic in-memory whiteboard and writes the result
- * back through `onChange` (`value.whiteboardContent` / `value.previewSettings`). Same pattern the
- * Callout-template form uses for whiteboard framing, and `ResponseDefaultsConnector` uses for the
- * default whiteboard.
+ * WhiteboardTemplateFormConnector — the integration-layer wrapper for the whiteboard-template form.
+ * A pure `src/crd/` component can't host the live Excalidraw editor (it needs Apollo / the whiteboard
+ * stack), so this connector renders the shared `WhiteboardConfigCard` ("Whiteboard · Edit drawing" — the
+ * same row the callout whiteboard-framing editor uses) and opens `CrdSingleUserWhiteboardDialog` against
+ * a synthetic in-memory whiteboard, writing the result back through `onChange` (`value.whiteboardContent` /
+ * `value.previewSettings`). Same pattern `FramingEditorConnector` uses for whiteboard framing, and
+ * `ResponseDefaultsConnector` uses for the default whiteboard.
  */
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '@/crd/components/common/Loading';
-import { WhiteboardTemplateForm } from '@/crd/components/templates/forms/WhiteboardTemplateForm';
 import type { WhiteboardTemplateValues } from '@/crd/components/templates/types';
-import { Button } from '@/crd/primitives/button';
-import { Label } from '@/crd/primitives/label';
+import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
@@ -56,14 +54,13 @@ export function WhiteboardTemplateFormConnector({
 
   return (
     <div className="space-y-4">
-      <WhiteboardTemplateForm value={value} errors={{}} onChange={onChange} />
-
-      <div className="space-y-1.5">
-        <Label>{t('form.whiteboard.editDrawing')}</Label>
-        <Button variant="outline" size="sm" disabled={disabled} onClick={() => setEditorOpen(true)}>
-          {hasDrawing ? t('form.whiteboard.editDrawing') : t('form.whiteboard.startDrawing')}
-        </Button>
-      </div>
+      <WhiteboardConfigCard
+        title={t('form.whiteboard.drawing')}
+        status={hasDrawing ? undefined : t('preview.whiteboard.empty')}
+        actionLabel={hasDrawing ? t('form.whiteboard.editDrawing') : t('form.whiteboard.startDrawing')}
+        onAction={() => setEditorOpen(true)}
+        disabled={disabled}
+      />
 
       <Suspense fallback={<Loading />}>
         <CrdSingleUserWhiteboardDialog

@@ -38,7 +38,9 @@ export function TemplatePicker(props: TemplatePickerProps) {
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className={cn('max-w-4xl', props.className)}>
+      {/* `sm:` prefix is required: DialogContent's own `sm:max-w-lg` beats an unprefixed `max-w-*`
+          at ≥sm (tailwind-merge keeps both, the responsive one wins) — same gotcha as TemplateFormDialog. */}
+      <DialogContent className={cn('sm:max-w-6xl', props.className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

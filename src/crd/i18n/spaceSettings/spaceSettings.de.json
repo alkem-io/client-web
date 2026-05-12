@@ -423,7 +423,18 @@
         "hint": "Optional — wählen Sie eine Subspace-Vorlage aus, um Inhalte vorab zu füllen.",
         "loading": "Vorlagen laden…",
         "placeholder": "Vorlage auswählen (optional)",
-        "none": "Keine Vorlage"
+        "none": "Keine Vorlage",
+        "choose": "Vorlage auswählen",
+        "change": "Ändern",
+        "clear": "Leer verwenden",
+        "selectedLabel": "Ausgewählte Vorlage",
+        "loadingPreview": "Vorlagenvorschau wird geladen…",
+        "overwriteConfirm": {
+          "title": "Formularinhalt ersetzen?",
+          "description": "Durch das Anwenden dieser Vorlage werden der Name, der Slogan, die Beschreibung und die Tags überschrieben, die Sie bereits eingegeben haben.",
+          "confirm": "Vorlage anwenden",
+          "cancel": "Meine Änderungen behalten"
+        }
       },
       "displayName": {
         "label": "Name",

@@ -1,6 +1,8 @@
-import { ImageIcon, Loader2, X } from 'lucide-react';
+import { ImageIcon, LayoutTemplate, Loader2, X } from 'lucide-react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TemplateContentPreview } from '@/crd/components/templates/TemplateContentPreview';
+import type { TemplateContent } from '@/crd/components/templates/types';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
@@ -15,7 +17,6 @@ import {
 } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
 export type CreateSubspaceFormValues = {
   displayName: string;
@@ -28,11 +29,6 @@ export type CreateSubspaceFormValues = {
 };
 
 export type CreateSubspaceFieldErrors = Partial<Record<keyof CreateSubspaceFormValues, string | undefined>>;
-
-export type CreateSubspaceTemplateChoice = {
-  id: string;
-  name: string;
-};
 
 export type CreateSubspaceVisualConstraints = {
   maxWidth: number;
@@ -48,8 +44,16 @@ export type CreateSubspaceDialogProps = {
   onOpenChange: (open: boolean) => void;
   values: CreateSubspaceFormValues;
   errors: CreateSubspaceFieldErrors;
-  templates: CreateSubspaceTemplateChoice[];
-  templatesLoading: boolean;
+  /** Display name of the currently selected Space template, if any. */
+  selectedTemplateName?: string;
+  /** Mapped content of the selected Space template — rendered as a preview below the selector. */
+  selectedTemplateContent?: TemplateContent;
+  /** True while the selected template's content is being fetched. */
+  selectedTemplateLoading?: boolean;
+  /** Opens the shared template picker (rendered by the consumer). */
+  onOpenTemplatePicker: () => void;
+  /** Clears the selected template — the subspace is then created blank / from scratch. */
+  onClearTemplate: () => void;
   submitting: boolean;
   canSubmit: boolean;
   avatarConstraints: CreateSubspaceVisualConstraints | null;
@@ -68,8 +72,11 @@ export function CreateSubspaceDialog({
   onOpenChange,
   values,
   errors,
-  templates,
-  templatesLoading,
+  selectedTemplateName,
+  selectedTemplateContent,
+  selectedTemplateLoading,
+  onOpenTemplatePicker,
+  onClearTemplate,
   submitting,
   canSubmit,
   avatarConstraints,
@@ -99,29 +106,42 @@ export function CreateSubspaceDialog({
             label={t('subspaces.createDialog.template.label')}
             hint={t('subspaces.createDialog.template.hint')}
           >
-            <Select
-              value={values.spaceTemplateId || 'none'}
-              onValueChange={next => onChange({ spaceTemplateId: next === 'none' ? '' : next })}
-              disabled={submitting}
-            >
-              <SelectTrigger id="subspace-template">
-                <SelectValue
-                  placeholder={
-                    templatesLoading
-                      ? t('subspaces.createDialog.template.loading')
-                      : t('subspaces.createDialog.template.placeholder')
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">{t('subspaces.createDialog.template.none')}</SelectItem>
-                {templates.map(tmpl => (
-                  <SelectItem key={tmpl.id} value={tmpl.id}>
-                    {tmpl.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {values.spaceTemplateId ? (
+              <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2">
+                {selectedTemplateLoading ? (
+                  <span className="text-control text-muted-foreground inline-flex flex-1 items-center gap-2">
+                    <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                    {t('subspaces.createDialog.template.loadingPreview')}
+                  </span>
+                ) : (
+                  <span className="text-control flex-1 truncate">
+                    {selectedTemplateName ?? t('subspaces.createDialog.template.selectedLabel')}
+                  </span>
+                )}
+                <Button type="button" variant="ghost" size="sm" onClick={onOpenTemplatePicker} disabled={submitting}>
+                  {t('subspaces.createDialog.template.change')}
+                </Button>
+                <Button type="button" variant="ghost" size="sm" onClick={onClearTemplate} disabled={submitting}>
+                  {t('subspaces.createDialog.template.clear')}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onOpenTemplatePicker}
+                disabled={submitting}
+                className="justify-start"
+              >
+                <LayoutTemplate aria-hidden="true" className="mr-2 size-4" />
+                {t('subspaces.createDialog.template.choose')}
+              </Button>
+            )}
+            {values.spaceTemplateId && !selectedTemplateLoading && selectedTemplateContent ? (
+              <div className="mt-2 rounded-md border bg-muted/20 p-3">
+                <TemplateContentPreview content={selectedTemplateContent} />
+              </div>
+            ) : null}
           </FieldShell>
 
           {/* Display Name */}

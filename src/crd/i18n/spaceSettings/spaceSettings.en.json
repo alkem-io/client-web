@@ -423,7 +423,18 @@
         "hint": "Optional — pick a subspace template to pre-fill content.",
         "loading": "Loading templates…",
         "placeholder": "Select a template (optional)",
-        "none": "No template"
+        "none": "No template",
+        "choose": "Choose a template",
+        "change": "Change",
+        "clear": "Use blank",
+        "selectedLabel": "Selected template",
+        "loadingPreview": "Loading template preview…",
+        "overwriteConfirm": {
+          "title": "Replace form contents?",
+          "description": "Applying this template will overwrite the name, tagline, description and tags you've already entered.",
+          "confirm": "Apply template",
+          "cancel": "Keep my changes"
+        }
       },
       "displayName": {
         "label": "Name",

@@ -22,7 +22,8 @@ export function TemplatePreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className="max-w-2xl">
+      {/* `sm:` prefix required — DialogContent's own `sm:max-w-lg` beats an unprefixed `max-w-*` at ≥sm. */}
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <TypeIcon aria-hidden="true" className="size-5 text-muted-foreground" />
@@ -33,25 +34,32 @@ export function TemplatePreviewDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="aspect-video w-full overflow-hidden rounded-md border">
-          {header.bannerUrl ? (
-            <img src={header.bannerUrl} alt="" className="size-full object-cover" />
-          ) : (
-            <div className="size-full flex items-center justify-center" style={backgroundGradient(header.color)}>
-              <TypeIcon aria-hidden="true" className="size-10 text-white/70" />
+        {/* Single column on mobile; on md+ the template content sits to the right of the banner + description. */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-4">
+            <div className="aspect-video w-full overflow-hidden rounded-md border">
+              {header.bannerUrl ? (
+                <img src={header.bannerUrl} alt="" className="size-full object-cover" />
+              ) : (
+                <div className="size-full flex items-center justify-center" style={backgroundGradient(header.color)}>
+                  <TypeIcon aria-hidden="true" className="size-10 text-white/70" />
+                </div>
+              )}
             </div>
-          )}
+
+            {header.description && (
+              <MarkdownContent content={header.description} className="text-body text-muted-foreground" />
+            )}
+          </div>
+
+          <div className="min-w-0">
+            {content ? (
+              <TemplateContentPreview content={content} loading={contentLoading} />
+            ) : (
+              <TemplateContentPreview content={{ type: 'post', defaultDescription: '' }} loading={true} />
+            )}
+          </div>
         </div>
-
-        {header.description && (
-          <MarkdownContent content={header.description} className="text-body text-muted-foreground" />
-        )}
-
-        {content ? (
-          <TemplateContentPreview content={content} loading={contentLoading} />
-        ) : (
-          <TemplateContentPreview content={{ type: 'post', defaultDescription: '' }} loading={true} />
-        )}
 
         <DialogFooter>
           {onEdit && (
