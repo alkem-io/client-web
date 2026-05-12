@@ -5879,31 +5879,24 @@ export type NotificationSettingInput = {
 };
 
 export enum OpenAiModel {
-  Babbage_002 = 'BABBAGE_002',
-  DallE_2 = 'DALL_E_2',
-  DallE_3 = 'DALL_E_3',
-  Davinci_002 = 'DAVINCI_002',
-  Gpt_3_5Turbo = 'GPT_3_5_TURBO',
-  Gpt_4 = 'GPT_4',
-  Gpt_4O = 'GPT_4O',
-  Gpt_4OAudioPreview = 'GPT_4O_AUDIO_PREVIEW',
-  Gpt_4OMini = 'GPT_4O_MINI',
-  Gpt_4OMiniAudioPreview = 'GPT_4O_MINI_AUDIO_PREVIEW',
-  Gpt_4OMiniRealtimePreview = 'GPT_4O_MINI_REALTIME_PREVIEW',
-  Gpt_4ORealtimePreview = 'GPT_4O_REALTIME_PREVIEW',
-  Gpt_4_5Preview = 'GPT_4_5_PREVIEW',
-  Gpt_4Turbo = 'GPT_4_TURBO',
-  O1 = 'O1',
-  O1Mini = 'O1_MINI',
+  Gpt_5 = 'GPT_5',
+  Gpt_5_1 = 'GPT_5_1',
+  Gpt_5_1Mini = 'GPT_5_1_MINI',
+  Gpt_5_2 = 'GPT_5_2',
+  Gpt_5_2Pro = 'GPT_5_2_PRO',
+  Gpt_5_4 = 'GPT_5_4',
+  Gpt_5_4Mini = 'GPT_5_4_MINI',
+  Gpt_5_4Nano = 'GPT_5_4_NANO',
+  Gpt_5_4Pro = 'GPT_5_4_PRO',
+  Gpt_5_5 = 'GPT_5_5',
+  Gpt_5_5Pro = 'GPT_5_5_PRO',
+  Gpt_5Mini = 'GPT_5_MINI',
+  Gpt_5Nano = 'GPT_5_NANO',
+  Gpt_5Pro = 'GPT_5_PRO',
+  O3 = 'O3',
   O3Mini = 'O3_MINI',
-  OmniModerationLatest = 'OMNI_MODERATION_LATEST',
-  TextEmbedding_3Large = 'TEXT_EMBEDDING_3_LARGE',
-  TextEmbedding_3Small = 'TEXT_EMBEDDING_3_SMALL',
-  TextEmbeddingAda_002 = 'TEXT_EMBEDDING_ADA_002',
-  TextModerationLatest = 'TEXT_MODERATION_LATEST',
-  Tts_1 = 'TTS_1',
-  Tts_1Hd = 'TTS_1_HD',
-  Whisper_1 = 'WHISPER_1',
+  O3Pro = 'O3_PRO',
+  O4Mini = 'O4_MINI',
 }
 
 export type Organization = ActorFull &
@@ -9694,6 +9687,8 @@ export type VirtualContributor = ActorFull & {
   bodyOfKnowledgeDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
+  /** The date when the body of knowledge was last successfully ingested. */
+  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']['output']>;
   /** The type of body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -23892,7 +23887,12 @@ export type VirtualContributorUpdatesSubscription = {
   __typename?: 'Subscription';
   virtualContributorUpdated: {
     __typename?: 'VirtualContributorUpdatedSubscriptionResult';
-    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
+    virtualContributor: {
+      __typename?: 'VirtualContributor';
+      id: string;
+      status: VirtualContributorStatus;
+      aiPersona?: { __typename?: 'AiPersona'; id: string; bodyOfKnowledgeLastUpdated?: Date | undefined } | undefined;
+    };
   };
 };
 
@@ -25309,6 +25309,30 @@ export type ConvertSpaceL2ToL1MutationVariables = Exact<{
 export type ConvertSpaceL2ToL1Mutation = {
   __typename?: 'Mutation';
   convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
+};
+
+export type MoveSpaceL1ToL0MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL0ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToL0Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+};
+
+export type MoveSpaceL1ToL2MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL1ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToL2Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
 };
 
 export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
