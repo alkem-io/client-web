@@ -91,21 +91,28 @@ export const PromptConfig = ({ vc }: PromptConfigProps) => {
             validateOnMount={true}
             onSubmit={() => {}}
           >
-            <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
-            <OutlinedInput
-              name="prompt"
-              value={prompt}
-              title={t('pages.virtualContributorProfile.settings.prompt.title')}
-              onChange={e => setPrompt(e.target.value)}
-              multiline={true}
-              minRows={10}
-              maxRows={35}
-            />
-            <Actions>
-              <Button variant="contained" loading={loading || updateLoading} disabled={!isValid} onClick={handleSubmit}>
-                {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
-              </Button>
-            </Actions>
+            <>
+              <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
+              <OutlinedInput
+                name="prompt"
+                value={prompt}
+                title={t('pages.virtualContributorProfile.settings.prompt.title')}
+                onChange={e => setPrompt(e.target.value)}
+                multiline={true}
+                minRows={10}
+                maxRows={35}
+              />
+              <Actions>
+                <Button
+                  variant="contained"
+                  loading={loading || updateLoading}
+                  disabled={!isValid}
+                  onClick={handleSubmit}
+                >
+                  {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
+                </Button>
+              </Actions>
+            </>
           </Formik>
         </PageContentBlock>
       </PageContentColumn>
