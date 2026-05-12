@@ -5289,6 +5289,7 @@ export type VirtualContributorKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeDescription'
   | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeLastUpdated'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'credentials'
@@ -5320,6 +5321,7 @@ export type VirtualContributorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;

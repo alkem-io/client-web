@@ -17237,6 +17237,10 @@ export const VirtualContributorUpdatesDocument = gql`
     virtualContributor {
       id
       status
+      aiPersona {
+        id
+        bodyOfKnowledgeLastUpdated
+      }
     }
   }
 }
