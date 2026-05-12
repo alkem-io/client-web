@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import {
   Search,
   MessageSquare,
@@ -60,6 +60,21 @@ export function Header({
   const { openNotifications } = useNotifications();
   const { openMessages } = useMessages();
 
+  // Transparent header overlay on space/subspace pages (banner visible)
+  const location = useLocation();
+  const hasBanner = location.pathname.startsWith("/space");
+  const [scrolledPastBanner, setScrolledPastBanner] = useState(false);
+
+  useEffect(() => {
+    if (!hasBanner) return;
+    const onScroll = () => setScrolledPastBanner(window.scrollY > 120);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [hasBanner]);
+
+  const headerTransparent = hasBanner && !scrolledPastBanner;
+
   // Cmd+K / Ctrl+K to open search
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -72,17 +87,31 @@ export function Header({
     return () => window.removeEventListener("keydown", handler);
   }, [openSearch]);
 
+  // Frosted glass pill style for items over transparent header
+  const frostedPill = headerTransparent
+    ? {
+        background: "rgba(255,255,255,0.75)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderRadius: "8px",
+        padding: "4px 12px",
+      }
+    : undefined;
+
   return (
     <header
       className={cn(
-        "h-16 border-b border-border bg-background sticky top-0 z-50 px-6 md:px-8",
+        "h-16 sticky top-0 z-50 px-6 md:px-8 transition-colors duration-300",
+        headerTransparent
+          ? "bg-transparent border-b border-transparent"
+          : "bg-background border-b border-border",
         className
       )}
     >
       <div className="grid grid-cols-12 gap-6 h-full items-center">
         <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between">
       {/* ─── Left: Logo + mobile menu ─── */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4" style={frostedPill}>
         <button
           onClick={onMenuClick}
           className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
@@ -97,12 +126,12 @@ export function Header({
           </div>
         </Link>
 
-        {/* Universal breadcrumb trail (with leading separator) */}
-        <AppBreadcrumb className="ml-1" showLeadingSeparator />
+        {/* Universal breadcrumb trail */}
+        <AppBreadcrumb className="ml-1" />
       </div>
 
       {/* ─── Right: icon row ─── */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1" style={frostedPill}>
         {/* Search icon button */}
         <Button
           variant="ghost"

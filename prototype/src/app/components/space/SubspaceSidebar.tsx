@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
+import { ReadMoreText } from "@/app/components/ui/ReadMoreText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { SpaceCard, type SpaceCardData } from "@/app/components/space/SpaceCard";
 import {
@@ -19,7 +20,6 @@ import {
   Layers,
   MapPin,
   Bot,
-  ExternalLink,
   Clock,
   MessageSquare,
   FileText,
@@ -112,15 +112,6 @@ export function SubspaceSidebar({
   className,
 }: SubspaceSidebarProps) {
   const [openDialog, setOpenDialog] = useState<string | null>(null);
-  const challengeRef = useRef<HTMLParagraphElement>(null);
-  const [isChallengesTruncated, setIsChallengesTruncated] = useState(false);
-
-  useEffect(() => {
-    const el = challengeRef.current;
-    if (el) {
-      setIsChallengesTruncated(el.scrollHeight > el.clientHeight);
-    }
-  }, []);
 
   return (
     <div
@@ -179,38 +170,20 @@ export function SubspaceSidebar({
               Challenge Statement
             </span>
           </div>
-          <p
-            ref={challengeRef}
-            className="line-clamp-4"
+          <ReadMoreText
+            maxLines={3}
             style={{
               fontSize: "var(--text-sm)",
               lineHeight: 1.6,
               opacity: 0.92,
             }}
+            toggleColor="var(--primary-foreground)"
+            toggleOpacity={0.8}
           >
             How might we design a collaborative platform that empowers
             distributed teams to innovate effectively while maintaining social
             connection?
-          </p>
-          {isChallengesTruncated && (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full mt-4 gap-2"
-              onClick={() => setOpenDialog("activity")}
-              style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: "var(--font-weight-medium)" as any,
-                background:
-                  "color-mix(in srgb, var(--primary-foreground) 15%, transparent)",
-                color: "var(--primary-foreground)",
-                border: "none",
-              }}
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Read Full Brief
-            </Button>
-          )}
+          </ReadMoreText>
 
           {/* Subspace Lead */}
           <div
@@ -259,6 +232,84 @@ export function SubspaceSidebar({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ── Community Members ── */}
+        <div
+          className="p-4"
+          style={{
+            background: "var(--card)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius)",
+          }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5" style={{ color: "var(--muted-foreground)" }} />
+              <h3
+                className="uppercase tracking-wider"
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "var(--muted-foreground)",
+                }}
+              >
+                Community
+              </h3>
+            </div>
+            <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
+              16 members
+            </span>
+          </div>
+          <div className="flex -space-x-2 mb-3">
+            {[
+              { name: "Sarah Chen", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "SC" },
+              { name: "David Kim", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "DK" },
+              { name: "Emily Davis", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "ED" },
+              { name: "Marc Johnson", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=128", initials: "MJ" },
+              { name: "Lisa Wang", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "LW" },
+            ].map((m) => (
+              <Avatar
+                key={m.initials}
+                className="w-8 h-8 transition-transform hover:z-10 hover:scale-110"
+                style={{ border: "2px solid var(--card)" }}
+              >
+                <AvatarImage src={m.avatar} alt={m.name} />
+                <AvatarFallback
+                  style={{
+                    background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+                    color: "var(--primary)",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                  }}
+                >
+                  {m.initials}
+                </AvatarFallback>
+              </Avatar>
+            ))}
+            <div
+              className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-colors"
+              style={{
+                background: "color-mix(in srgb, var(--primary) 10%, transparent)",
+                color: "var(--primary)",
+                fontSize: "11px",
+                fontWeight: 600,
+                border: "2px solid var(--card)",
+              }}
+            >
+              +11
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full gap-1.5"
+            style={{ fontSize: "var(--text-sm)" }}
+            onClick={() => setOpenDialog("community")}
+          >
+            <Users className="w-3.5 h-3.5" />
+            View all members
+          </Button>
         </div>
 
         {/* ── Quick Actions ── */}

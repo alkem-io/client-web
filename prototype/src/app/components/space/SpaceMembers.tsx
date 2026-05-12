@@ -236,23 +236,6 @@ export function SpaceMembers() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <p
-          style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--muted-foreground)",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          {totalUsers} members and {totalOrgs} organizations in this space.
-        </p>
-        <Button className="shrink-0">
-          <UserPlus className="w-4 h-4 mr-2" />
-          Invite Member
-        </Button>
-      </div>
-
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">

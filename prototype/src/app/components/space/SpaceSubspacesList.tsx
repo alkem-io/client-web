@@ -155,22 +155,6 @@ export function SpaceSubspacesList() {
 
   return (
     <div className="space-y-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <p
-          style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--muted-foreground)",
-          }}
-        >
-          Explore focused workstreams and challenges within this space.
-        </p>
-        <Button className="shrink-0 gap-2">
-          <Plus className="w-4 h-4" />
-          Create Subspace
-        </Button>
-      </div>
-
       {/* Filters */}
       <div className="flex items-center gap-2">
         {["All", "Active", "Archived"].map((status) => (
