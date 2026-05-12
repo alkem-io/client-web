@@ -754,5 +754,8 @@
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
     "loadingPost": "Bericht laden"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
   }
 }

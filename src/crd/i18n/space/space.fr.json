@@ -754,5 +754,8 @@
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
     "loadingPost": "Chargement de la publication"
+  },
+  "activity": {
+    "dialogTitle": "Activité récente"
   }
 }
