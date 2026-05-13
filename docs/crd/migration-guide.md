@@ -24,14 +24,14 @@ root.tsx
 
 CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
 
-During migration, CRD routes are gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; default `1`). Deployed environments always render the old MUI pages until the user opts in. Authenticated users flip the **Design Version switch in the CRD user menu** (top-right header). Developers/QA can also seed the toggle from the browser console.
+During migration, CRD routes are gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; default `1`). Deployed environments always render the old MUI pages until the user opts in. The **Design Version switch lives in the user menu of both shells** — `PlatformNavigationUserMenu` (MUI) and `UserMenu` (CRD) — so a user starting on MUI can flip to CRD from their avatar dropdown without leaving the app. Developers/QA can also seed the toggle from the browser console.
 
 ## Feature Toggle
 
 The toggle is read at boot from `localStorage('alkemio-design-version')` in `src/main/crdPages/useCrdEnabled.ts` and consumed by route dispatchers (`TopLevelRoutes.tsx`). The localStorage value is kept in sync with the server-side `UserSettings.designVersion` by `useDesignVersionSync.ts`; the user-menu switch (`useDesignVersionToggle.ts`) writes both the server preference and the localStorage mirror, then hard-reloads so the boot path picks up the new shell.
 
 **Enable CRD pages via the UI:**
-Click your avatar in the top-right of the CRD header → toggle the **Design Version** switch. The page reloads and the preference persists to your account.
+Click your avatar in the top-right header (available in both the MUI and CRD shells) → flip the **Design Version** switch. The page reloads and the preference persists to your account.
 
 **Enable via browser console** (dev / QA seed):
 ```js
