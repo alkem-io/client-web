@@ -144,6 +144,16 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
               : undefined;
           })()
         : undefined,
+    // User-authored tags (default tagset) and external references — surfaced
+    // on the feed card by `ReferencesAndTagsStrip` (the same component the
+    // detail dialog uses). MUI parity: `CalloutHeader`.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(ref => ({
+      id: ref.id,
+      name: ref.name,
+      uri: ref.uri,
+      description: ref.description ?? undefined,
+    })),
   };
 }
 
@@ -184,5 +194,15 @@ export function mapCalloutDetailsToDialogData(
     author,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     reactionCount: 0,
+    // `framing.profile.tagset` is the default (single) tagset for the
+    // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a
+    // separate `classification.tagsets` field and don't surface in this strip.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(ref => ({
+      id: ref.id,
+      name: ref.name,
+      uri: ref.uri,
+      description: ref.description ?? undefined,
+    })),
   };
 }

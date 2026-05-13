@@ -1,6 +1,6 @@
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
+import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
@@ -50,7 +50,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const breadcrumbItems = useBreadcrumbs();
 
   const handleLogout = () => {
-    navigate(IdentityRoutes.Logout);
+    navigate(AUTH_LOGOUT_PATH);
   };
 
   const handlePendingMembershipsClick = () => {

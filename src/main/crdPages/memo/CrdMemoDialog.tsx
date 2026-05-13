@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
@@ -163,9 +164,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     <>
       <MemoEditorShell open={open} onClose={handleClose} title={title} footer={<MemoCollabFooter {...footerProps} />}>
         {showLoadingState ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-body">
-            {t('memo.errors.loading')}
-          </div>
+          <Loading text={t('memo.errors.loading')} />
         ) : (
           <div className="h-full p-3 relative">
             {/* The collaborative editor is only mounted once the Hocuspocus
@@ -188,13 +187,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 className="h-full"
               />
             ) : (
-              <output
-                aria-live="polite"
-                aria-busy={true}
-                className="flex items-center justify-center h-full text-muted-foreground text-body"
-              >
-                {t('memo.footer.readonlyReason.connecting')}
-              </output>
+              <Loading text={t('memo.footer.readonlyReason.connecting')} />
             )}
           </div>
         )}

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { CrdCalloutDialogFromUrl } from '../space/callout/CrdCalloutDialogFromUrl';
 import CrdSubspaceCalloutsPage from './tabs/CrdSubspaceCalloutsPage';
@@ -17,7 +18,9 @@ export default function CrdSubspaceCalloutPage() {
     <>
       <CrdSubspaceCalloutsPage />
       <CrdCalloutDialogFromUrl
-        onClose={() => navigate(subspace?.about.profile.url ?? '.', { replace: true, state: { keepScroll: true } })}
+        onClose={() =>
+          navigate(toRoutePath(subspace?.about.profile.url), { replace: true, state: { keepScroll: true } })
+        }
       />
     </>
   );

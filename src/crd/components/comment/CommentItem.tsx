@@ -2,6 +2,8 @@ import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatRelativeOrAbsolute } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -43,7 +45,8 @@ export function CommentItem({
   onToggleReply,
   replyInputId,
 }: CommentItemProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
 
   // Guard against duplicate reactions. The legacy MUI picker silently no-ops
   // when the user picks an emoji they already reacted with; the backend
@@ -73,7 +76,7 @@ export function CommentItem({
               <div className="flex items-center gap-2">
                 <span className="text-body-emphasis text-foreground">{comment.author.name}</span>
                 <span className="text-caption text-muted-foreground">
-                  {new Date(comment.timestamp).toLocaleString()}
+                  {formatRelativeOrAbsolute(comment.timestamp, locale)}
                 </span>
               </div>
 

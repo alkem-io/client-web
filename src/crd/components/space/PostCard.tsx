@@ -18,6 +18,10 @@ import {
   type CollaboraDocumentPreviewType,
 } from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
+import {
+  ReferencesAndTagsStrip,
+  type ReferencesAndTagsStripReference,
+} from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { ExpandableMarkdown } from '@/crd/components/common/ExpandableMarkdown';
 import {
   MediaGalleryFeedGrid,
@@ -101,6 +105,10 @@ export type PostCardData = {
    * effect when the snippet actually overflows the clamp height.
    */
   descriptionExpanded?: boolean;
+  /** External references attached to the callout — each rendered on its own line as a link. */
+  references?: ReferencesAndTagsStripReference[];
+  /** Default-tagset tags — rendered as a wrap-row of pills below the references (MUI parity). */
+  tags?: string[];
 };
 
 type PostCardProps = {
@@ -274,6 +282,9 @@ export function PostCard({
             className="mb-4"
           />
         )}
+
+        {/* References + tags row — same component as the detail dialog (DRY). */}
+        <ReferencesAndTagsStrip references={post.references} tags={post.tags} className="mb-4" />
 
         {/* Whiteboard framing preview — always render (even when empty), MUI parity. */}
         {post.type === 'whiteboard' && (

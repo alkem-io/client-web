@@ -5,17 +5,24 @@ import { ValidationError } from 'yup';
 import {
   useCalloutContributionCommentsQuery,
   useCreatePostOnCalloutMutation,
+  useCreateReferenceOnProfileMutation,
   useDeleteContributionMutation,
+  useDeleteReferenceMutation,
+  useMoveContributionToCalloutMutation,
+  usePostCalloutsInCalloutSetQuery,
   usePostSettingsQuery,
   useUpdatePostMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 // MarkdownEditor lives at @/crd/forms/markdown/MarkdownEditor — non-collaborative editor (single-author posts).
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -27,6 +34,7 @@ import {
 } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
@@ -43,6 +51,8 @@ type CrdPostContributionDialogProps = {
   mode: 'create' | 'edit';
   /** Required in both modes. The callout the post belongs to. */
   calloutId: string;
+  /** edit mode only: drives the "Post location" dropdown (sibling-callout list). */
+  calloutsSetId?: string;
   /** edit mode: the underlying Post id (from `ContributionCardData.postId`). */
   postId?: string;
   /** edit mode: the wrapping Contribution id, used for delete via `useDeleteContributionMutation`. */
@@ -61,6 +71,7 @@ export function CrdPostContributionDialog({
   onOpenChange,
   mode,
   calloutId,
+  calloutsSetId,
   postId,
   contributionId,
   defaultDisplayName,
@@ -97,6 +108,25 @@ export function CrdPostContributionDialog({
   const post = data?.lookup.post;
   const tagsetId = post?.profile.tagset?.id;
   const canDelete = (post?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Delete);
+  const canMove = (post?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.MovePost);
+
+  // "Post location" dropdown — lets the user move this contribution to a
+  // different POST-type callout in the same callouts-set. Mirrors MUI
+  // `CalloutContributionDialogPost` (uses the same `PostCalloutsInCalloutSet`
+  // query + `moveContributionToCallout` mutation).
+  const { data: siblingCalloutsData, refetch: refetchSiblingCallouts } = usePostCalloutsInCalloutSetQuery({
+    variables: { calloutsSetId: calloutsSetId ?? '' },
+    skip: mode !== 'edit' || !calloutsSetId || !open || !canMove,
+  });
+  const siblingCallouts = siblingCalloutsData?.lookup.calloutsSet?.callouts ?? [];
+  const [targetCalloutId, setTargetCalloutId] = useState<string>(calloutId);
+  // Reset the dropdown to the current callout whenever the dialog opens against a fresh post.
+  useEffect(() => {
+    if (open) setTargetCalloutId(calloutId);
+  }, [open, calloutId]);
+  const isMoveTargetChanged = targetCalloutId !== calloutId;
+
+  const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
 
   // Comments live on a separate query that follows the contribution → post.comments path.
   // The connector also fetches this internally; we fetch here to know the roomId up-front
@@ -134,7 +164,12 @@ export function CrdPostContributionDialog({
       displayName: post.profile.displayName,
       description: post.profile.description ?? '',
       tags: post.profile.tagset?.tags ?? [],
-      references: [],
+      references: (post.profile.references ?? []).map(ref => ({
+        id: ref.id,
+        title: ref.name,
+        url: ref.uri,
+        description: ref.description ?? '',
+      })),
     });
     setIsDirty(false);
     setErrors({});
@@ -152,6 +187,8 @@ export function CrdPostContributionDialog({
   const [createPost, { loading: creating }] = useCreatePostOnCalloutMutation();
   const [updatePost, { loading: updating }] = useUpdatePostMutation();
   const [deleteContribution] = useDeleteContributionMutation();
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
 
   const validate = (): boolean => {
     try {
@@ -198,6 +235,37 @@ export function CrdPostContributionDialog({
       if (created) onCreated?.({ id: created.id });
       onOpenChange(false);
     } else if (mode === 'edit' && post) {
+      // References — diff the form's `references` against the server's
+      // `post.profile.references`. Rows without an `id` are brand-new and need
+      // `createReferenceOnProfile`; original rows missing from the form are
+      // deletions. Update-in-place isn't supported here (matches MUI's
+      // post-edit dialog, which also relies on remove + re-add for changes).
+      const originalReferences = post.profile.references ?? [];
+      const currentIds = new Set(values.references.map(r => r.id).filter(Boolean) as string[]);
+      const removedIds = originalReferences.map(r => r.id).filter(id => !currentIds.has(id));
+      const newRows = values.references.filter(r => !r.id && r.title.trim() && r.url.trim());
+
+      try {
+        for (const refId of removedIds) {
+          await deleteReference({ variables: { input: { ID: refId } } });
+        }
+        for (const row of newRows) {
+          await createReferenceOnProfile({
+            variables: {
+              input: {
+                profileID: post.profile.id,
+                name: row.title.trim(),
+                uri: ensureHttps(row.url),
+                description: row.description.trim() || undefined,
+              },
+            },
+          });
+        }
+      } catch (err) {
+        logError(new Error('Post reference CRUD failed', { cause: err as Error }));
+        notify(t('callout.referencesSaveFailed'), 'error');
+      }
+
       await updatePost({
         variables: {
           input: {
@@ -209,7 +277,27 @@ export function CrdPostContributionDialog({
             },
           },
         },
+        refetchQueries: ['PostSettings'],
       });
+
+      // Post-location move — runs AFTER the in-place update so the new
+      // callout doesn't receive a stale-content version. MUI parity:
+      // `CalloutContributionDialogPost` calls `moveContributionToCallout`
+      // when the target callout differs from the current one.
+      if (isMoveTargetChanged && contributionId && canMove) {
+        try {
+          await moveContributionToCallout({
+            variables: { contributionId, calloutId: targetCalloutId },
+            refetchQueries: ['CalloutContributions', 'CalloutDetails'],
+          });
+          await refetchSiblingCallouts();
+          notify(t('postLocation.moved'), 'success');
+        } catch (err) {
+          logError(new Error('Post move failed', { cause: err as Error }));
+          notify(t('postLocation.moveFailed'), 'error');
+        }
+      }
+
       notify(t('contribution.edit'), 'success');
       setIsDirty(false);
       onUpdated?.();
@@ -301,8 +389,51 @@ export function CrdPostContributionDialog({
                   <Label htmlFor={tagsFieldId} className="text-body text-foreground">
                     {t('callout.postTagsLabel')}
                   </Label>
-                  <TagsInput value={values.tags} onChange={tags => updateField('tags', tags)} />
+                  <TagsInput
+                    value={values.tags}
+                    onChange={tags => updateField('tags', tags)}
+                    placeholder={t('forms.tagsPlaceholder')}
+                  />
                 </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-body text-foreground">{t('postPreview.references')}</Label>
+                  <ReferencesEditor
+                    rows={values.references}
+                    onChange={rows => updateField('references', rows)}
+                    disabled={submitting}
+                  />
+                </div>
+
+                {/* Post location — MUI parity (`post-edit.postLocation.*`). Rendered only
+                    in edit mode when the user has `MovePost` privilege AND the parent
+                    callouts-set has more than one post-collecting callout. The actual
+                    move happens on Save (see `handleSubmit`). */}
+                {mode === 'edit' && canMove && siblingCallouts.length > 1 && (
+                  <div className="space-y-1.5">
+                    <Label className="text-body text-foreground">{t('postLocation.label')}</Label>
+                    <Select
+                      value={targetCalloutId}
+                      onValueChange={value => {
+                        setTargetCalloutId(value);
+                        setIsDirty(true);
+                      }}
+                      disabled={submitting}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {siblingCallouts.map(sibling => (
+                          <SelectItem key={sibling.id} value={sibling.id}>
+                            {sibling.framing.profile.displayName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-caption text-muted-foreground">{t('postLocation.warning')}</p>
+                  </div>
+                )}
               </>
             )}
           </div>

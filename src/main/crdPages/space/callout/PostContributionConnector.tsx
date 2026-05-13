@@ -3,6 +3,9 @@ import { CrdPostContributionDialog } from '@/main/crdPages/post/CrdPostContribut
 type PostContributionConnectorProps = {
   open: boolean;
   calloutId: string;
+  /** Threaded through so the edit dialog can list sibling callouts in the same
+   *  set as "Post location" move targets (MUI parity — `PostCalloutsInCalloutSet`). */
+  calloutsSetId?: string;
   contributionId: string;
   postId: string;
   onClose: () => void;
@@ -11,6 +14,7 @@ type PostContributionConnectorProps = {
 export function PostContributionConnector({
   open,
   calloutId,
+  calloutsSetId,
   contributionId,
   postId,
   onClose,
@@ -24,6 +28,7 @@ export function PostContributionConnector({
       }}
       mode="edit"
       calloutId={calloutId}
+      calloutsSetId={calloutsSetId}
       postId={postId}
       contributionId={contributionId}
       onDeleted={onClose}

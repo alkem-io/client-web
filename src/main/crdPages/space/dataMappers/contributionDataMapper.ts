@@ -1,3 +1,5 @@
+import { formatShortDate } from '@/crd/lib/dateTimeFormat';
+
 type ContributionCardData = {
   id: string;
   type: 'post' | 'memo' | 'whiteboard' | 'link';
@@ -121,8 +123,9 @@ type AnyContributionItem = {
 };
 
 function toDateString(date: Date | string | undefined): string | undefined {
-  if (!date) return undefined;
-  return date instanceof Date ? date.toISOString() : date;
+  // Short localized date (e.g. `05/13/2026` in en-US) — the contribution-card
+  // surface only needs the day, not the precise timestamp the server returns.
+  return formatShortDate(date);
 }
 
 function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {

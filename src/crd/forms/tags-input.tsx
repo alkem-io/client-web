@@ -44,13 +44,27 @@ export function TagsInput({
 
   const normalize = (raw: string) => raw.trim().toLowerCase();
 
-  const addTag = (raw: string) => {
-    const tag = normalize(raw);
-    if (tag && !value.includes(tag)) {
-      onChange([...value, tag]);
+  const addTags = (raw: string) => {
+    // Mirrors MUI's `Comma-separated tags` input — `"foo, bar"` or a single
+    // `"foo"` both work, and pasting a list adds each entry as its own chip
+    // in one pass. Dedupe against existing values so re-entering a tag is a no-op.
+    const parts = raw
+      .split(',')
+      .map(part => normalize(part))
+      .filter(Boolean);
+    if (parts.length === 0) {
+      setInputValue('');
+      return;
     }
+    const next = [...value];
+    for (const tag of parts) {
+      if (!next.includes(tag)) next.push(tag);
+    }
+    if (next.length !== value.length) onChange(next);
     setInputValue('');
   };
+
+  const addTag = (raw: string) => addTags(raw);
 
   const removeTag = (tag: string) => {
     onChange(value.filter(t => t !== tag));
@@ -82,11 +96,19 @@ export function TagsInput({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
+    if ((e.key === 'Enter' || e.key === ',') && inputValue.trim()) {
       e.preventDefault();
       addTag(inputValue);
     } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
       removeTag(value[value.length - 1]);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData('text');
+    if (text.includes(',')) {
+      e.preventDefault();
+      addTags(text);
     }
   };
 
@@ -168,6 +190,7 @@ export function TagsInput({
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         onBlur={() => {
           if (inputValue.trim()) addTag(inputValue);
         }}

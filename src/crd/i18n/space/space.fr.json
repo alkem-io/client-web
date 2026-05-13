@@ -185,6 +185,7 @@
     "memo": "Mémo",
     "moreWhiteboards": "+{{count}} de plus",
     "moreContributions": "+{{count}} de plus",
+    "contributionsHeader": "Contributions ({{count}})",
     "vote": "Voter",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} votes au total",
@@ -218,7 +219,12 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "clearTypeConfirm": {
+      "title": "Supprimer ce type de contenu ?",
+      "description": "Une fois enregistré, le contenu existant sera supprimé et vous ne pourrez plus rattacher un autre type à cette publication. Cette action est irréversible.",
+      "confirm": "Supprimer"
+    }
   },
   "contribution": {
     "edit": "Modifier",
@@ -430,7 +436,7 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Écrivez quelque chose...",
     "tagsLabel": "Étiquettes",
-    "tagsPlaceholder": "Étiquettes séparées par des virgules",
+    "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
     "framingType": "Ajouter à la publication",
     "visibility": "Visibilité",
     "publishedLabel": "Publié",
@@ -494,7 +500,13 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Description facultative",
     "addRow": "Ajouter une autre référence",
-    "removeRow": "Supprimer la référence"
+    "removeRow": "Supprimer la référence",
+    "removeConfirm": {
+      "title": "Supprimer cette référence ?",
+      "description": "« {{name}} » sera supprimé lors de l’enregistrement. Cette action est irréversible.",
+      "confirm": "Supprimer",
+      "unnamed": "cette référence"
+    }
   },
   "responseDefaults": {
     "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de ce $t(common.callout).",
@@ -643,6 +655,19 @@
     "emptyDescription": "Aucune description",
     "references": "Références"
   },
+  "postLocation": {
+    "label": "Emplacement du post",
+    "warning": "Soyez prudent en modifiant l'emplacement de la réponse. La déplacer vers un autre post la fera disparaître du post actuel. Cela peut compliquer la récupération pour les utilisateurs — y compris l'auteur de la réponse. Vous ne pouvez déplacer les réponses qu'au sein du même Espace ou Sous-espace.",
+    "moved": "Réponse déplacée avec succès.",
+    "moveFailed": "Impossible de déplacer la réponse. Veuillez réessayer."
+  },
+  "whiteboardPreview": {
+    "label": "Aperçu du whiteboard sélectionné",
+    "edit": "Modifier le whiteboard",
+    "share": "Partager le whiteboard",
+    "close": "Fermer l'aperçu",
+    "openFull": "Cliquez pour voir le whiteboard complet"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",
@@ -683,6 +708,12 @@
       "description": "Le contenu de cadrage de ce $t(common.callout) va être supprimé. Cette action est irréversible.",
       "confirm": "Supprimer",
       "cancel": "Conserver"
+    },
+    "confirmClose": {
+      "title": "Fermer cette boîte de dialogue ?",
+      "description": "Tout commentaire non enregistré sera perdu.",
+      "confirm": "Fermer",
+      "cancel": "Garder ouvert"
     }
   },
   "poll": {

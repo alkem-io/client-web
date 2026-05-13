@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CrdCalloutDialogFromUrl } from './callout/CrdCalloutDialogFromUrl';
 import CrdSpaceTabbedPages from './tabs/CrdSpaceTabbedPages';
@@ -17,7 +18,7 @@ export default function CrdSpaceCalloutPage() {
     <>
       <CrdSpaceTabbedPages />
       <CrdCalloutDialogFromUrl
-        onClose={() => navigate(space.about.profile.url, { replace: true, state: { keepScroll: true } })}
+        onClose={() => navigate(toRoutePath(space.about.profile.url), { replace: true, state: { keepScroll: true } })}
       />
     </>
   );
