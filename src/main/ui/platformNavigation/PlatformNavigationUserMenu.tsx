@@ -9,7 +9,7 @@ import {
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Divider, Menu, MenuItem, MenuList, Typography } from '@mui/material';
+import { Box, Divider, FormControlLabel, Menu, MenuItem, MenuList, Switch, Typography } from '@mui/material';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
 import { type PropsWithChildren, type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ import { usePendingInvitationsCount } from '@/domain/community/pendingMembership
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { useDesignVersionToggle } from '@/main/crdPages/useDesignVersionToggle';
 import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
@@ -72,6 +73,8 @@ const PlatformNavigationUserMenu = ({
   const isAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
+
+  const designVersionToggle = useDesignVersionToggle();
 
   const {
     openSelect,
@@ -146,6 +149,27 @@ const PlatformNavigationUserMenu = ({
                   {t('topBar.sign-in')}
                 </Typography>
               </NavigatableMenuItem>
+            )}
+            {designVersionToggle.isVisible && (
+              <>
+                <Box sx={{ paddingX: gutters(1), paddingY: gutters(0.5) }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        size="small"
+                        checked={designVersionToggle.enabled}
+                        onChange={(_event, checked) => designVersionToggle.onChange(checked)}
+                        disabled={designVersionToggle.isPending}
+                      />
+                    }
+                    label={t('topBar.designVersion.label')}
+                    labelPlacement="start"
+                    sx={{ marginLeft: 0, marginRight: 0, width: '100%', justifyContent: 'space-between' }}
+                  />
+                  <Caption color="neutralMedium.main">{t('topBar.designVersion.caption')}</Caption>
+                </Box>
+                <UserMenuDivider />
+              </>
             )}
             <NavigatableMenuItem iconComponent={DashboardOutlined} route={homeUrl} onClick={onClose}>
               {t('pages.home.title')}

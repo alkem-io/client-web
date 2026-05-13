@@ -31,7 +31,7 @@
  }
 ```
 
-## Result shape (post-codegen)
+## Result shape (post-codegen, confirmed against deployed schema 2026-05-13)
 
 ```ts
 // Excerpt of the regenerated CurrentUserLightQuery type
@@ -39,8 +39,9 @@ me: {
   user: {
     // ...existing UserDetailsLight fields
     settings: {
-      designVersion: string | null; // server returns "1", "2", or null
-    } | null;
+      id: string;
+      designVersion: number; // server returns Int (non-null): 1 (old), 2 (new), 3+ reserved
+    };
     account: {
       // ...unchanged
     } | null;
@@ -50,15 +51,15 @@ me: {
 
 ## Consumer
 
-`CurrentUserProvider.tsx` exposes `designVersion: '1' | '2' | undefined` on its returned model. Mapping rule:
+`CurrentUserProvider.tsx` exposes `designVersion: 1 | 2 | undefined` on its returned model. Mapping rule:
 
 ```ts
-const raw = data?.me?.user?.settings?.designVersion ?? null;
-const designVersion: '1' | '2' | undefined =
-  raw === '1' || raw === '2' ? raw : undefined;
+const raw = data?.me?.user?.settings?.designVersion;
+const designVersion: 1 | 2 | undefined =
+  raw === 1 || raw === 2 ? raw : undefined;
 ```
 
-Any unrecognized value normalizes to `undefined` (treated as "not set" per FR-008).
+Values outside `{1, 2}` (e.g. `3+`, or absent because the user is unauthenticated and the query was skipped) collapse to `undefined` and are treated as "no preference" by `useDesignVersionSync` (no reconciliation).
 
 ## Cache normalization
 

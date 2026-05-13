@@ -26,6 +26,7 @@ import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAp
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
+import { useDesignVersionSync } from './main/crdPages/useDesignVersionSync';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
@@ -50,6 +51,11 @@ function NotificationsGate() {
       {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
     </Suspense>
   );
+}
+
+function DesignVersionSyncMount() {
+  useDesignVersionSync();
+  return null;
 }
 
 // MARKDOWN_CLASS_NAME used in the styles below
@@ -152,6 +158,7 @@ const Root: FC = () => {
                                       <UserMessagingProvider>
                                         <NavigationHistoryTracker />
                                         <ApmUserSetter />
+                                        <DesignVersionSyncMount />
                                         <ScrollToTop />
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />

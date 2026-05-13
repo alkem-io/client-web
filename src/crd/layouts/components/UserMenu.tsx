@@ -1,7 +1,8 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
-import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type { CrdDesignVersionSwitch, CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -17,6 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
+import { Switch } from '@/crd/primitives/switch';
 
 type UserMenuProps = {
   user?: CrdUserInfo;
@@ -31,6 +33,7 @@ type UserMenuProps = {
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
+  designVersionSwitch?: CrdDesignVersionSwitch;
 };
 
 export function UserMenu({
@@ -46,9 +49,11 @@ export function UserMenu({
   onHelpClick,
   onLanguageChange,
   showGridToggle,
+  designVersionSwitch,
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
+  const designVersionCaptionId = useId();
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
@@ -85,6 +90,38 @@ export function UserMenu({
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+
+        {designVersionSwitch && (
+          <>
+            <DropdownMenuItem
+              onSelect={e => {
+                e.preventDefault();
+                if (!designVersionSwitch.disabled) {
+                  designVersionSwitch.onChange(!designVersionSwitch.enabled);
+                }
+              }}
+              disabled={designVersionSwitch.disabled}
+              role="switch"
+              aria-checked={designVersionSwitch.enabled}
+              aria-describedby={designVersionCaptionId}
+              className="flex flex-col items-stretch gap-1 cursor-pointer"
+            >
+              <div className="flex w-full items-center justify-between gap-2">
+                <span className="text-control">{t('header.designVersion.label')}</span>
+                <Switch
+                  checked={designVersionSwitch.enabled}
+                  disabled={designVersionSwitch.disabled}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                />
+              </div>
+              <p id={designVersionCaptionId} className="text-caption text-muted-foreground">
+                {t('header.designVersion.caption')}
+              </p>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
 
         {/* Navigation items */}
         <DropdownMenuItem asChild={true}>

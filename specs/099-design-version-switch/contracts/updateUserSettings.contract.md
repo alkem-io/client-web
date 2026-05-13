@@ -12,7 +12,7 @@ await updateUserSettings({
     settingsData: {
       userID,                     // current user's ID from useCurrentUserContext()
       settings: {
-        designVersion: enabled ? '2' : '1',
+        designVersion: enabled ? 2 : 1,
       },
     },
   },
@@ -20,7 +20,7 @@ await updateUserSettings({
 ```
 
 - `userID` is the `id` from the current authenticated user (already exposed by `useCurrentUserContext`).
-- `settings.designVersion` is a string literal — strictly `"1"` (old design) or `"2"` (new design). Never `null` from the client; "no preference" is the absence of any client-initiated update.
+- `settings.designVersion` is an integer — strictly `1` (old design) or `2` (new design). Generated input type is `InputMaybe<Scalars['Int']['input']>`.
 - All other `settings.*` sub-objects are intentionally omitted. The server's update is field-level merge; sending only `designVersion` will not zero out `privacy`, `communication`, etc.
 
 ## Optimistic update / cache write
@@ -39,7 +39,7 @@ This is intentionally simpler than the typical Apollo optimistic-response patter
 try {
   await updateUserSettings({ /* ... */ });
   writeCrdEnabledToStorage(enabled);
-  logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
+  logInfo(`Design version changed to ${enabled ? 2 : 1}`, {
     label: 'DESIGN_VERSION_SWITCH',
     category: 'user-action',
   });

@@ -12,6 +12,7 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { useDesignVersionToggle } from '@/main/crdPages/useDesignVersionToggle';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -48,6 +49,14 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const breadcrumbItems = useBreadcrumbs();
+  const designVersionToggle = useDesignVersionToggle();
+  const designVersionSwitch = designVersionToggle.isVisible
+    ? {
+        enabled: designVersionToggle.enabled,
+        onChange: designVersionToggle.onChange,
+        disabled: designVersionToggle.isPending,
+      }
+    : undefined;
 
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
@@ -91,6 +100,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onHelpClick={() => setIsHelpDialogOpen(true)}
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
+        designVersionSwitch={designVersionSwitch}
       >
         {children ?? <Outlet />}
       </CrdLayout>
