@@ -155,13 +155,8 @@ function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
         style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
       >
         <p
-          className="uppercase tracking-wider mb-2"
-          style={{
-            fontSize: "10px",
-            fontWeight: 700,
-            opacity: 0.6,
-            letterSpacing: "0.04em",
-          }}
+          className="text-sidebar-label uppercase mb-2"
+          style={{ opacity: 0.6 }}
         >
           Lead
         </p>
@@ -243,10 +238,8 @@ function VirtualContributorsSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -311,10 +304,8 @@ function CommunityGuidelinesSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -354,10 +345,8 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
     <div>
       <div className="flex items-center justify-between mb-3 px-1">
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -427,10 +416,8 @@ function EventsSection() {
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-1.5">
           <h3
-            className="uppercase tracking-wider"
+            className="text-sidebar-label uppercase"
             style={{
-              fontSize: "11px",
-              fontWeight: 600,
               color: "var(--muted-foreground)",
             }}
           >
@@ -498,10 +485,8 @@ function CommunityMembersWidget() {
         <div className="flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5" style={{ color: "var(--muted-foreground)" }} />
           <h3
-            className="uppercase tracking-wider"
+            className="text-sidebar-label uppercase"
             style={{
-              fontSize: "11px",
-              fontWeight: 600,
               color: "var(--muted-foreground)",
             }}
           >
@@ -581,10 +566,8 @@ function KnowledgeIndexSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >

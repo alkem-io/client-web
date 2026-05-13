@@ -102,14 +102,14 @@ function useSectionSave() {
 function InlineSaveButton({ dirty, status, onSave }: { dirty: boolean; status: SaveStatus; onSave: () => void }) {
   if (status === "saved") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
+      <span className="inline-flex items-center gap-1 text-caption text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
         <Check className="w-3 h-3" /> Saved
       </span>
     );
   }
   if (status === "saving") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
         <Loader2 className="w-3 h-3 animate-spin" /> Saving…
       </span>
     );
@@ -120,7 +120,7 @@ function InlineSaveButton({ dirty, status, onSave }: { dirty: boolean; status: S
       variant="ghost"
       size="sm"
       onClick={onSave}
-      className="h-6 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
+      className="h-6 px-2 text-caption text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
     >
       Save
     </Button>
@@ -198,7 +198,7 @@ function PackSettingsAbout() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">About</h2>
+        <h2 className="text-page-title">About</h2>
         <p className="text-muted-foreground mt-2">
           Manage the profile and visibility of this template pack.
         </p>
@@ -209,7 +209,7 @@ function PackSettingsAbout() {
       {/* Avatar + Name */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Pack Identity</Label>
+          <Label className="text-label uppercase text-muted-foreground">Pack Identity</Label>
           <InlineSaveButton dirty={dirty.name} status={statuses["name"] || "idle"} onSave={() => saveSection("name")} />
         </div>
         <div className="flex items-center gap-4">
@@ -234,7 +234,7 @@ function PackSettingsAbout() {
               placeholder="Pack name"
               className="bg-muted/50 border-border"
             />
-            <p className="text-xs text-muted-foreground">Provider: {formData.provider}</p>
+            <p className="text-caption text-muted-foreground">Provider: {formData.provider}</p>
           </div>
         </div>
       </section>
@@ -244,14 +244,14 @@ function PackSettingsAbout() {
       {/* Visibility */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Visibility</Label>
+          <Label className="text-label uppercase text-muted-foreground">Visibility</Label>
           <InlineSaveButton dirty={dirty.visibility} status={statuses["visibility"] || "idle"} onSave={() => saveSection("visibility")} />
         </div>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium">Listed in Store</p>
-              <p className="text-xs text-muted-foreground">Make this pack discoverable in the template library</p>
+              <p className="text-body-emphasis">Listed in Store</p>
+              <p className="text-caption text-muted-foreground">Make this pack discoverable in the template library</p>
             </div>
             <Switch
               checked={formData.listedInStore}
@@ -259,7 +259,7 @@ function PackSettingsAbout() {
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-sm">Search Visibility</Label>
+            <Label className="text-body">Search Visibility</Label>
             <Select
               value={formData.searchVisibility}
               onValueChange={(value: "public" | "private") => setFormData(prev => ({ ...prev, searchVisibility: value }))}
@@ -281,7 +281,7 @@ function PackSettingsAbout() {
       {/* Description */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Description</Label>
+          <Label className="text-label uppercase text-muted-foreground">Description</Label>
           <InlineSaveButton dirty={dirty.description} status={statuses["description"] || "idle"} onSave={() => saveSection("description")} />
         </div>
         <div className="[&_.ql-editor]:min-h-[120px]">
@@ -299,7 +299,7 @@ function PackSettingsAbout() {
       {/* Tags */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Tags</Label>
+          <Label className="text-label uppercase text-muted-foreground">Tags</Label>
           <InlineSaveButton dirty={dirty.tags} status={statuses["tags"] || "idle"} onSave={() => saveSection("tags")} />
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -316,7 +316,7 @@ function PackSettingsAbout() {
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleAddTag}
             placeholder="Add tag…"
-            className="w-32 h-7 text-sm bg-muted/50 border-border"
+            className="w-32 h-7 text-body bg-muted/50 border-border"
           />
         </div>
       </section>
@@ -326,7 +326,7 @@ function PackSettingsAbout() {
       {/* References */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">References</Label>
+          <Label className="text-label uppercase text-muted-foreground">References</Label>
           <InlineSaveButton dirty={dirty.references} status={statuses["references"] || "idle"} onSave={() => saveSection("references")} />
         </div>
         <div className="space-y-3">
@@ -391,7 +391,7 @@ function PackSettingsTemplates() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Templates</h2>
+          <h2 className="text-page-title">Templates</h2>
           <p className="text-muted-foreground mt-2">
             Manage the templates included in this pack.
           </p>
@@ -424,8 +424,8 @@ function PackSettingsTemplates() {
             >
               <div className="flex items-center gap-2">
                 {isOpen ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
-                <h3 className="text-sm font-semibold">{section.title}</h3>
-                <span className="text-xs text-muted-foreground">({sectionTemplates.length})</span>
+                <h3 className="text-card-title">{section.title}</h3>
+                <span className="text-caption text-muted-foreground">({sectionTemplates.length})</span>
               </div>
               <Button
                 variant="outline"
@@ -440,7 +440,7 @@ function PackSettingsTemplates() {
             {isOpen && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pl-6">
                 {sectionTemplates.length === 0 ? (
-                  <div className="col-span-full py-8 text-center text-muted-foreground text-sm">
+                  <div className="col-span-full py-8 text-center text-muted-foreground text-body">
                     No templates in this section.
                     <Button variant="link" size="sm" className="ml-1" onClick={() => handleCreateNew(section.id)}>
                       Create one
@@ -465,10 +465,10 @@ function PackSettingsTemplates() {
                       </div>
                       {/* Info */}
                       <div className="p-3">
-                        <p className="text-sm font-medium truncate">{template.name}</p>
+                        <p className="text-body-emphasis truncate">{template.name}</p>
                         <div className="flex items-center gap-1 mt-1.5 flex-wrap">
                           {template.tags.slice(0, 2).map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 py-0">
+                            <Badge key={tag} variant="secondary" className="text-badge font-normal px-1.5 py-0">
                               {tag}
                             </Badge>
                           ))}
@@ -530,8 +530,8 @@ export default function PackSettingsPage() {
                   )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">{PACK_DATA.name}</h1>
-                  <p className="text-muted-foreground text-sm mt-0.5">{PACK_DATA.provider}</p>
+                  <h1 className="text-page-title">{PACK_DATA.name}</h1>
+                  <p className="text-muted-foreground text-body mt-0.5">{PACK_DATA.provider}</p>
                 </div>
               </div>
             </div>

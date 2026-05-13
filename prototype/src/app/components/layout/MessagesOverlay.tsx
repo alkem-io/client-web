@@ -174,7 +174,7 @@ export function MessagesOverlay() {
                 >
                   <MessageSquare className="w-5 h-5" style={{ color: "var(--muted-foreground)" }} />
                 </div>
-                <h2 className="text-lg font-semibold">Messages</h2>
+                <h2 className="text-subsection-title">Messages</h2>
               </div>
               <button
                 onClick={closeMessages}
@@ -204,7 +204,7 @@ export function MessagesOverlay() {
                       placeholder="Search conversations..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1 bg-transparent outline-none text-sm"
+                      className="flex-1 bg-transparent outline-none text-control"
                       style={{ color: "var(--foreground)" }}
                     />
                   </div>
@@ -225,21 +225,21 @@ export function MessagesOverlay() {
                       <div className="relative shrink-0">
                         <Avatar className="w-10 h-10" style={{ border: "1px solid var(--border)" }}>
                           <AvatarImage src={c.avatar} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                          <AvatarFallback className="bg-primary/10 text-primary text-caption">
                             {c.name.substring(0, 2)}
                           </AvatarFallback>
                         </Avatar>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium truncate">{c.name}</span>
-                          <span className="text-[11px] text-muted-foreground shrink-0">{c.time}</span>
+                          <span className="text-control truncate">{c.name}</span>
+                          <span className="text-caption text-muted-foreground shrink-0">{c.time}</span>
                         </div>
                         <div className="flex items-center justify-between mt-0.5">
-                          <p className="text-xs text-muted-foreground truncate">{c.lastMessage}</p>
+                          <p className="text-caption text-muted-foreground truncate">{c.lastMessage}</p>
                           {c.unread && c.unread > 0 && (
                             <span
-                              className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ml-2"
+                              className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-badge font-bold ml-2"
                               style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                             >
                               {c.unread}
@@ -276,13 +276,13 @@ export function MessagesOverlay() {
                       <div className="flex items-center gap-3">
                         <Avatar className="w-9 h-9" style={{ border: "1px solid var(--border)" }}>
                           <AvatarImage src={contact.avatar} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                          <AvatarFallback className="bg-primary/10 text-primary text-caption">
                             {contact.name.substring(0, 2)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <span className="text-sm font-semibold">{contact.name}</span>
-                          <p className="text-[11px] text-muted-foreground">Active now</p>
+                          <span className="text-card-title">{contact.name}</span>
+                          <p className="text-caption text-muted-foreground">Active now</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
@@ -321,7 +321,7 @@ export function MessagesOverlay() {
                                   : "var(--foreground)",
                             }}
                           >
-                            <p className="text-sm leading-relaxed">{m.text}</p>
+                            <p className="text-body">{m.text}</p>
                             <div
                               className="flex items-center justify-end mt-1"
                               style={{ fontSize: "10px", opacity: 0.7 }}
@@ -351,7 +351,7 @@ export function MessagesOverlay() {
                         placeholder="Type a message..."
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
-                        className="flex-1 h-10 px-4 rounded-lg bg-transparent outline-none text-sm"
+                        className="flex-1 h-10 px-4 rounded-lg bg-transparent outline-none text-control"
                         style={{
                           border: "1px solid var(--border)",
                           color: "var(--foreground)",
@@ -380,7 +380,7 @@ export function MessagesOverlay() {
                     >
                       <MessageSquare className="w-7 h-7" style={{ color: "var(--muted-foreground)", opacity: 0.5 }} />
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-body text-muted-foreground">
                       Select a conversation to start messaging
                     </p>
                   </div>

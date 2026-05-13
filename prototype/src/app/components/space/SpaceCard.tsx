@@ -196,12 +196,9 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
         <div className="flex flex-col flex-1" style={{ padding: "24px 16px 0" }}>
           {/* Name */}
           <h3
-            className="truncate transition-colors duration-200"
+            className="truncate transition-colors duration-200 text-card-title"
             style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
               color: "var(--card-foreground)",
-              lineHeight: 1.3,
             }}
           >
             {space.name}
@@ -234,12 +231,10 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
 
           {/* Description */}
           <p
-            className="line-clamp-2"
+            className="line-clamp-2 text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               marginTop: 8,
-              lineHeight: 1.5,
             }}
           >
             {space.description}
@@ -293,12 +288,9 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
           {/* Lead Avatars */}
           <div className="flex items-center gap-2">
             <span
+              className="text-badge uppercase"
               style={{
-                fontSize: "10px",
-                fontWeight: 600,
                 color: "var(--muted-foreground)",
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
               }}
             >
               {t("common.leads")}

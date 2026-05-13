@@ -118,15 +118,15 @@ export default function SubspaceSettingsPage() {
                   </div>
                 ) : (
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-card-title font-bold shrink-0"
                     style={{ backgroundColor: info.avatarColor }}
                   >
                     {info.initials}
                   </div>
                 )}
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">{info.title}</h1>
-                  <p className="text-muted-foreground text-sm mt-0.5">{info.description}</p>
+                  <h1 className="text-page-title">{info.title}</h1>
+                  <p className="text-muted-foreground text-body mt-0.5">{info.description}</p>
                 </div>
               </div>
 
@@ -138,7 +138,7 @@ export default function SubspaceSettingsPage() {
                       key={item.id}
                       to={`/space/${spaceSlug}/subspaces/${subspaceSlug}/settings/${item.id}`}
                       className={cn(
-                        "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                        "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                         isActive
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -203,18 +203,14 @@ export default function SubspaceSettingsPage() {
                     </div>
                     <div>
                       <h2
-                        className="capitalize"
-                        style={{
-                          fontSize: "var(--text-xl)",
-                          fontWeight: 600,
-                          color: "var(--foreground)",
-                        }}
+                        className="capitalize text-section-title"
+                        style={{ color: "var(--foreground)" }}
                       >
                         {tab}
                       </h2>
                       <p
+                        className="text-body"
                         style={{
-                          fontSize: "var(--text-sm)",
                           color: "var(--muted-foreground)",
                           marginTop: 4,
                         }}

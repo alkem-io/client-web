@@ -127,7 +127,7 @@ export function SubspaceSettingsUpdates() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <h2 className="text-page-title flex items-center gap-2">
             <Megaphone className="w-5 h-5" />
             Updates from the Leads
           </h2>
@@ -154,7 +154,7 @@ export function SubspaceSettingsUpdates() {
             border: "1px solid var(--border)",
           }}
         >
-          <h3 className="text-sm font-semibold">New Update</h3>
+          <h3 className="text-card-title">New Update</h3>
           <Input
             placeholder="Update title"
             value={newTitle}
@@ -194,7 +194,7 @@ export function SubspaceSettingsUpdates() {
       {/* Update List */}
       <div className="space-y-4">
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground text-sm">
+          <div className="text-center py-12 text-muted-foreground text-body">
             No updates yet. Click "New Update" to post the first one.
           </div>
         )}
@@ -223,7 +223,7 @@ export function SubspaceSettingsUpdates() {
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{update.author}</span>
+                    <span className="text-body-emphasis">{update.author}</span>
                     <Badge
                       variant="secondary"
                       className="text-[10px] px-1.5 py-0"
@@ -267,7 +267,7 @@ export function SubspaceSettingsUpdates() {
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-semibold">{update.title}</h3>
+            <h3 className="text-subheader font-semibold">{update.title}</h3>
 
             {/* Body */}
             <div

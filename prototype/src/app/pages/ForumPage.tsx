@@ -1119,24 +1119,19 @@ function ForumBanner() {
             <MessageSquare className="h-5 w-5 text-white" />
           </div>
           <h1
-            style={{
-              fontSize: "var(--text-xl)",
-              fontWeight: 700,
-              color: "white",
-              lineHeight: 1.3,
-            }}
+            className="text-section-title font-bold"
+            style={{ color: "white" }}
           >
             Welcome to the Alkemio Forum
           </h1>
         </div>
         <p
+          className="text-body"
           style={{
-            fontSize: "var(--text-sm)",
             color: "rgba(255, 255, 255, 0.75)",
             marginTop: 4,
             marginLeft: 49,
             maxWidth: 420,
-            lineHeight: 1.5,
           }}
         >
           Connect with others, ask questions, and stay updated with Alkemio's release notes
@@ -1156,10 +1151,8 @@ function ForumCategoryNav({
   return (
     <nav className="sticky top-20 space-y-0.5">
       <div
-        className="uppercase tracking-wider px-2 mb-2"
+        className="text-sidebar-label uppercase px-2 mb-2"
         style={{
-          fontSize: "11px",
-          fontWeight: 600,
           color: "var(--muted-foreground)",
           opacity: 0.6,
         }}
@@ -1174,14 +1167,14 @@ function ForumCategoryNav({
             key={cat.id}
             onClick={() => onCategoryChange(cat.id)}
             className={cn(
-              "flex items-center gap-2.5 rounded-md transition-colors h-9 w-full px-2 text-sm",
+              "flex items-center gap-2.5 rounded-md transition-colors h-9 w-full px-2 text-control font-normal",
               isActive
                 ? "bg-accent text-accent-foreground font-medium"
                 : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
             )}
           >
             <Icon className="w-4 h-4 shrink-0" />
-            <span className="truncate text-sm">{cat.label}</span>
+            <span className="truncate">{cat.label}</span>
           </button>
         );
       })}
@@ -1202,24 +1195,17 @@ function ForumDiscussionItem({
       className="flex items-start gap-3 w-full px-5 py-3.5 text-left hover:bg-accent/50 transition-colors"
       style={{ borderBottom: "1px solid var(--border)" }}
     >
-      <span className="text-base mt-0.5 shrink-0">{discussion.emoji}</span>
+      <span className="text-subheader font-normal mt-0.5 shrink-0">{discussion.emoji}</span>
       <div className="flex-1 min-w-0">
         <span
-          className="block leading-tight line-clamp-1"
-          style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: 600,
-            color: "var(--foreground)",
-          }}
+          className="block line-clamp-1 text-card-title"
+          style={{ color: "var(--foreground)" }}
         >
           {discussion.title}
         </span>
         <span
-          className="block mt-0.5"
-          style={{
-            fontSize: "12px",
-            color: "var(--muted-foreground)",
-          }}
+          className="block mt-0.5 text-caption"
+          style={{ color: "var(--muted-foreground)" }}
         >
           {discussion.author.name} on {discussion.date} · {discussion.commentCount} comment{discussion.commentCount !== 1 ? "s" : ""}
         </span>
@@ -1242,27 +1228,25 @@ function ForumReplyItem({ reply, depth = 0 }: { reply: ForumReply; depth?: numbe
         </Avatar>
         <div className="flex-1 min-w-0 space-y-1.5">
           <div className="flex items-center gap-2">
-            <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--foreground)" }}>
+            <span className="text-card-title" style={{ color: "var(--foreground)" }}>
               {reply.author.name}
             </span>
-            <span style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+            <span className="text-caption" style={{ color: "var(--muted-foreground)" }}>
               {reply.date}
             </span>
           </div>
-          <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", lineHeight: 1.5 }}>
+          <p className="text-body" style={{ color: "var(--foreground)" }}>
             {reply.content}
           </p>
           <div className="flex items-center gap-4 pt-0.5">
             <button
               onClick={() => setShowReplyInput(!showReplyInput)}
-              className="text-muted-foreground hover:text-primary transition-colors font-medium"
-              style={{ fontSize: "12px" }}
+              className="text-muted-foreground hover:text-primary transition-colors text-caption font-medium"
             >
               Reply
             </button>
             <button
-              className="text-muted-foreground hover:text-primary transition-colors font-medium"
-              style={{ fontSize: "12px" }}
+              className="text-muted-foreground hover:text-primary transition-colors text-caption font-medium"
             >
               Delete
             </button>
@@ -1271,8 +1255,7 @@ function ForumReplyItem({ reply, depth = 0 }: { reply: ForumReply; depth?: numbe
             <div className="flex items-center gap-2 pt-2">
               <Input
                 placeholder="Write a reply..."
-                className="h-8"
-                style={{ fontSize: "var(--text-sm)" }}
+                className="h-8 text-body"
               />
               <Button size="sm" variant="default" className="h-8 px-3">
                 <Send className="h-3.5 w-3.5" />
@@ -1299,8 +1282,7 @@ function ForumDiscussionDetail({
     <div className="col-span-12 md:col-span-9 lg:col-span-8">
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 mb-4 text-muted-foreground hover:text-foreground transition-colors"
-        style={{ fontSize: "var(--text-sm)", fontWeight: 500 }}
+        className="flex items-center gap-1.5 mb-4 text-muted-foreground hover:text-foreground transition-colors text-control"
       >
         <ArrowLeft className="h-4 w-4" />
         SEE ALL DISCUSSIONS
@@ -1309,7 +1291,7 @@ function ForumDiscussionDetail({
       <Card className="border-border/60" style={{ boxShadow: "var(--elevation-sm)" }}>
         <CardHeader className="px-6 pt-6 pb-0">
           <div className="flex items-start justify-between gap-4">
-            <h2 style={{ fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--foreground)", lineHeight: 1.3 }}>
+            <h2 className="text-section-title font-bold" style={{ color: "var(--foreground)" }}>
               {discussion.emoji} {discussion.title}
             </h2>
             <Tooltip>
@@ -1331,10 +1313,10 @@ function ForumDiscussionDetail({
               <AvatarFallback>{discussion.author.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--foreground)" }}>
+              <span className="text-card-title" style={{ color: "var(--foreground)" }}>
                 {discussion.author.name}
               </span>
-              <span className="block" style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+              <span className="block text-caption" style={{ color: "var(--muted-foreground)" }}>
                 {discussion.date}
               </span>
             </div>
@@ -1364,7 +1346,7 @@ function ForumDiscussionDetail({
               {discussion.content.split("\n\n").map((paragraph, i) => (
                 <div key={i} className="mb-3">
                   {paragraph.startsWith("- ") ? (
-                    <ul className="list-disc list-inside space-y-0.5" style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", lineHeight: 1.6 }}>
+                    <ul className="list-disc list-inside space-y-0.5 text-body" style={{ color: "var(--foreground)" }}>
                       {paragraph.split("\n").map((item, j) => (
                         <li key={j}>
                           {item.replace(/^- /, "").split("**").map((part, k) =>
@@ -1374,7 +1356,7 @@ function ForumDiscussionDetail({
                       ))}
                     </ul>
                   ) : (
-                    <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", lineHeight: 1.6 }}>
+                    <p className="text-body" style={{ color: "var(--foreground)" }}>
                       {paragraph.split("**").map((part, j) =>
                         j % 2 === 1 ? <strong key={j}>{part}</strong> : <span key={j}>{part}</span>
                       )}
@@ -1384,7 +1366,7 @@ function ForumDiscussionDetail({
               ))}
             </div>
           ) : (
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontStyle: "italic" }} className="mb-6">
+            <p className="text-body italic mb-6" style={{ color: "var(--muted-foreground)" }}>
               Discussion content preview not available.
             </p>
           )}
@@ -1396,7 +1378,7 @@ function ForumDiscussionDetail({
             {/* Comment count header */}
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
-              <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+              <span className="text-body" style={{ color: "var(--muted-foreground)" }}>
                 {SAMPLE_REPLIES.length + SAMPLE_REPLIES.reduce((acc, r) => acc + (r.replies?.length || 0), 0)} comments
               </span>
             </div>
@@ -1414,8 +1396,7 @@ function ForumDiscussionDetail({
                 <input
                   type="text"
                   placeholder="Add a comment..."
-                  className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-                  style={{ fontSize: "var(--text-sm)" }}
+                  className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground text-body"
                 />
                 <div className="flex items-center gap-1 ml-2">
                   <button className="text-muted-foreground hover:text-foreground transition-colors p-1">
@@ -1460,7 +1441,7 @@ function InitiateDiscussionDialog({
       <DialogContent className="w-full sm:max-w-4xl p-0 gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-background flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b bg-background/50 backdrop-blur-sm z-10">
-          <DialogTitle className="text-lg font-semibold tracking-tight">Create Discussion</DialogTitle>
+          <DialogTitle className="text-subsection-title">Create Discussion</DialogTitle>
           <button
             onClick={() => onOpenChange(false)}
             className="rounded-full p-2 hover:bg-muted transition-colors"
@@ -1477,7 +1458,7 @@ function InitiateDiscussionDialog({
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-xl md:text-2xl font-semibold border-none px-0 shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 h-auto"
+            className="text-section-title md:text-page-title font-semibold border-none px-0 shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 h-auto"
           />
 
           {/* Category */}
@@ -1505,15 +1486,14 @@ function InitiateDiscussionDialog({
               {["↩", "↪"].map((btn, i) => (
                 <button
                   key={`undo-${i}`}
-                  className="px-2 py-1 rounded hover:bg-accent transition-colors"
-                  style={{ fontSize: "var(--text-sm)" }}
+                  className="px-2 py-1 rounded hover:bg-accent transition-colors text-control font-normal"
                 >
                   {btn}
                 </button>
               ))}
               <Separator orientation="vertical" className="h-5 mx-1" />
-              <button className="px-2 py-1 rounded hover:bg-accent transition-colors font-bold" style={{ fontSize: "var(--text-sm)" }}>B</button>
-              <button className="px-2 py-1 rounded hover:bg-accent transition-colors italic" style={{ fontSize: "var(--text-sm)" }}>I</button>
+              <button className="px-2 py-1 rounded hover:bg-accent transition-colors text-control font-bold">B</button>
+              <button className="px-2 py-1 rounded hover:bg-accent transition-colors text-control font-normal italic">I</button>
               <button className="px-2 py-1 rounded hover:bg-accent transition-colors font-bold" style={{ fontSize: "18px" }}>T</button>
               <button className="px-2 py-1 rounded hover:bg-accent transition-colors font-bold" style={{ fontSize: "16px" }}>T</button>
               <button className="px-2 py-1 rounded hover:bg-accent transition-colors font-bold" style={{ fontSize: "14px" }}>T</button>
@@ -1522,15 +1502,14 @@ function InitiateDiscussionDialog({
               {["⋮⋮", "≡", "❝", "</>", "─", "⊞", "🔗", "🖼", "📹", "😊"].map((btn, i) => (
                 <button
                   key={`tool-${i}`}
-                  className="px-2 py-1 rounded hover:bg-accent transition-colors"
-                  style={{ fontSize: "var(--text-sm)" }}
+                  className="px-2 py-1 rounded hover:bg-accent transition-colors text-control font-normal"
                 >
                   {btn}
                 </button>
               ))}
             </div>
             <div style={{ minHeight: 240, padding: "16px 20px" }}>
-              <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+              <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
                 Share your thoughts...
               </p>
             </div>
@@ -1540,7 +1519,7 @@ function InitiateDiscussionDialog({
 
           {/* Tags */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tags</label>
+            <label className="text-label uppercase text-muted-foreground">Tags</label>
             <Input
               value={tags}
               onChange={(e) => setTags(e.target.value)}
@@ -1625,15 +1604,14 @@ export default function ForumPage() {
           <div className="col-span-12 md:col-span-9 lg:col-span-8">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-              <h2 style={{ fontSize: "var(--text-base)", fontWeight: 700, color: "var(--foreground)" }}>
+              <h2 className="text-subheader font-bold" style={{ color: "var(--foreground)" }}>
                 Discussions ({sortedDiscussions.length})
               </h2>
               <Button
                 variant="default"
                 size="sm"
                 onClick={() => setShowCreateDialog(true)}
-                className="gap-1.5"
-                style={{ fontSize: "var(--text-sm)", fontWeight: 500 }}
+                className="gap-1.5 text-control"
               >
                 <Plus className="h-4 w-4" />
                 Initiate Discussion
@@ -1651,12 +1629,11 @@ export default function ForumPage() {
                       placeholder="Search"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9"
-                      style={{ fontSize: "var(--text-sm)" }}
+                      className="pl-9 text-body"
                     />
                   </div>
                   <Select value={sortOrder} onValueChange={setSortOrder}>
-                    <SelectTrigger className="w-28 h-9" style={{ fontSize: "var(--text-sm)" }}>
+                    <SelectTrigger className="w-28 h-9 text-control">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1690,10 +1667,10 @@ export default function ForumPage() {
                         className="mx-auto mb-3"
                         style={{ width: 40, height: 40, color: "var(--muted-foreground)", opacity: 0.4 }}
                       />
-                      <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+                      <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
                         No discussions found
                       </p>
-                      <p style={{ fontSize: "12px", color: "var(--muted-foreground)", marginTop: 4 }}>
+                      <p className="text-caption" style={{ color: "var(--muted-foreground)", marginTop: 4 }}>
                         Try adjusting your search or category filter
                       </p>
                     </div>

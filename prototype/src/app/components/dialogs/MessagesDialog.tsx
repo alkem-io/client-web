@@ -71,7 +71,7 @@ export function MessagesDialog({ open, onOpenChange }: MessagesDialogProps) {
           {/* Sidebar */}
           <div className="w-80 border-r flex flex-col bg-muted/10 hidden md:flex">
             <div className="p-4 border-b flex items-center justify-between">
-              <DialogTitle className="font-semibold text-lg">Messages</DialogTitle>
+              <DialogTitle className="text-subsection-title">Messages</DialogTitle>
               <Button size="icon" variant="ghost" className="h-8 w-8">
                 <Plus className="w-5 h-5" />
               </Button>
@@ -103,9 +103,9 @@ export function MessagesDialog({ open, onOpenChange }: MessagesDialogProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <span className="font-medium truncate">{conv.user.name}</span>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">{conv.time}</span>
+                      <span className="text-caption text-muted-foreground whitespace-nowrap">{conv.time}</span>
                     </div>
-                    <p className={cn("text-xs truncate", conv.unread ? "font-semibold text-foreground" : "text-muted-foreground")}>
+                    <p className={cn("text-caption truncate", conv.unread ? "font-semibold text-foreground" : "text-muted-foreground")}>
                       {conv.lastMessage}
                     </p>
                   </div>
@@ -125,10 +125,10 @@ export function MessagesDialog({ open, onOpenChange }: MessagesDialogProps) {
                       <AvatarFallback>{selectedConversation.user.initials}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-semibold text-sm">{selectedConversation.user.name}</h3>
+                      <h3 className="text-card-title">{selectedConversation.user.name}</h3>
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ background: 'var(--chart-1)' }}></span>
-                        <span className="text-xs text-muted-foreground">Active now</span>
+                        <span className="text-caption text-muted-foreground">Active now</span>
                       </div>
                     </div>
                   </div>
@@ -143,9 +143,9 @@ export function MessagesDialog({ open, onOpenChange }: MessagesDialogProps) {
                   {messages.map((msg) => (
                     <div key={msg.id} className={cn("flex flex-col max-w-[70%]", msg.sender === 'me' ? "ml-auto items-end" : "items-start")}>
                       <div className={cn(
-                        "px-4 py-2 rounded-2xl text-sm",
-                        msg.sender === 'me' 
-                          ? "bg-primary text-primary-foreground rounded-br-none" 
+                        "px-4 py-2 rounded-2xl text-body",
+                        msg.sender === 'me'
+                          ? "bg-primary text-primary-foreground rounded-br-none"
                           : "bg-muted text-foreground rounded-bl-none"
                       )}>
                         {msg.text}

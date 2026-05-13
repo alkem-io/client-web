@@ -70,9 +70,9 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
       <DialogContent className="w-full sm:max-w-5xl p-0 gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-background flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b bg-background/50 backdrop-blur-sm z-10">
-          <DialogTitle className="text-lg font-semibold tracking-tight">Create Post</DialogTitle>
+          <DialogTitle className="text-subsection-title tracking-tight">Create Post</DialogTitle>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+            <Button variant="outline" size="sm" className="h-8 text-caption gap-1.5">
               <Lightbulb className="w-3.5 h-3.5" />
               Find Template
             </Button>
@@ -94,7 +94,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
               placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="text-xl md:text-2xl font-semibold border-none px-0 shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 h-auto"
+              className="text-section-title md:text-page-title md:font-semibold border-none px-0 shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 h-auto"
             />
             
             <MarkdownEditor
@@ -108,7 +108,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
 
           {/* ADD TO POST chip strip */}
           <div className="space-y-3">
-             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Add to post</Label>
+             <Label className="text-label uppercase text-muted-foreground">Add to post</Label>
              <div className="flex flex-wrap gap-2">
                 <TooltipProvider>
                   {[
@@ -124,7 +124,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                         <button
                           onClick={() => setActiveAttachment(activeAttachment === item.id ? 'none' : item.id as any)}
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-medium transition-all",
+                            "flex items-center gap-2 px-3 py-2 rounded-full border text-control transition-all",
                             activeAttachment === item.id 
                               ? "bg-primary text-primary-foreground border-primary"
                               : "bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -151,8 +151,8 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-primary/10 text-primary"><Presentation className="w-5 h-5" /></div>
                     <div>
-                      <p className="font-medium text-sm">New Whiteboard</p>
-                      <p className="text-xs text-muted-foreground">Ready to be created</p>
+                      <p className="text-body-emphasis">New Whiteboard</p>
+                      <p className="text-caption text-muted-foreground">Ready to be created</p>
                     </div>
                   </div>
                   <Button variant="outline" size="sm" className="h-8">Configure</Button>
@@ -179,8 +179,8 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 rounded-lg bg-chart-2/10 text-chart-2"><StickyNote className="w-5 h-5" /></div>
                     <div>
-                      <p className="font-medium text-sm">Memo</p>
-                      <p className="text-xs text-muted-foreground">Rich text memo</p>
+                      <p className="text-body-emphasis">Memo</p>
+                      <p className="text-caption text-muted-foreground">Rich text memo</p>
                     </div>
                   </div>
                   <MarkdownEditor
@@ -197,10 +197,10 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 <div className="mt-2 p-4 border rounded-xl bg-muted/30 space-y-3 animate-in fade-in slide-in-from-top-2">
                   <div className="border-2 border-dashed rounded-lg bg-background p-6 text-center cursor-pointer hover:bg-muted/50 transition-colors">
                     <Image className="w-6 h-6 text-muted-foreground/50 mx-auto mb-2" />
-                    <p className="text-xs text-muted-foreground">Drag & drop an image here, or click to browse</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-1">PNG, JPG, GIF up to 10 MB</p>
+                    <p className="text-caption text-muted-foreground">Drag & drop an image here, or click to browse</p>
+                    <p className="text-badge text-muted-foreground/60 mt-1">PNG, JPG, GIF up to 10 MB</p>
                   </div>
-                  <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  <button className="flex items-center gap-1.5 text-caption text-muted-foreground hover:text-foreground transition-colors">
                     <Plus className="w-3.5 h-3.5" /> Add another image
                   </button>
                 </div>
@@ -211,14 +211,14 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 rounded-lg bg-chart-4/10 text-chart-4"><BarChart3 className="w-5 h-5" /></div>
                     <div>
-                      <p className="font-medium text-sm">Poll</p>
-                      <p className="text-xs text-muted-foreground">Add poll options</p>
+                      <p className="text-body-emphasis">Poll</p>
+                      <p className="text-caption text-muted-foreground">Add poll options</p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Input placeholder="Option 1" className="h-8 bg-background" />
                     <Input placeholder="Option 2" className="h-8 bg-background" />
-                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">+ Add option</Button>
+                    <Button variant="ghost" size="sm" className="text-caption text-muted-foreground">+ Add option</Button>
                   </div>
                 </div>
              )}
@@ -238,20 +238,20 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                           className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-lg border bg-background hover:bg-muted transition-colors"
                         >
                           <span className="text-xl">{doc.icon}</span>
-                          <span className="text-xs text-muted-foreground">{doc.label}</span>
+                          <span className="text-caption text-muted-foreground">{doc.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
                   <div className="relative flex items-center gap-3">
                     <Separator className="flex-1" />
-                    <span className="text-xs text-muted-foreground">or</span>
+                    <span className="text-caption text-muted-foreground">or</span>
                     <Separator className="flex-1" />
                   </div>
                   <div className="border-2 border-dashed rounded-lg bg-background p-5 text-center cursor-pointer hover:bg-muted/50 transition-colors">
                     <Upload className="w-5 h-5 text-muted-foreground/50 mx-auto mb-1.5" />
-                    <p className="text-xs text-muted-foreground">Drag & drop a file, or click to upload</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-1">.docx, .xlsx, .pptx up to 25 MB</p>
+                    <p className="text-caption text-muted-foreground">Drag & drop a file, or click to upload</p>
+                    <p className="text-badge text-muted-foreground/60 mt-1">.docx, .xlsx, .pptx up to 25 MB</p>
                   </div>
                 </div>
              )}
@@ -261,7 +261,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
 
           {/* ─── Zone 2: Response type (always visible) ─── */}
           <div className="space-y-3">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Responses</Label>
+            <Label className="text-label uppercase text-muted-foreground">Responses</Label>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: 'links', label: 'Links & Files', icon: Link2 },
@@ -273,7 +273,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                   key={type.id}
                   onClick={() => setCollectionType(collectionType === type.id ? 'none' : type.id as any)}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-medium transition-all",
+                    "flex items-center gap-2 px-3 py-2 rounded-full border text-control transition-all",
                     collectionType === type.id
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -326,13 +326,13 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                         value={row.description}
                         onChange={e => { const next = [...linkRows]; next[i].description = e.target.value; setLinkRows(next); }}
                         placeholder="Description"
-                        className="h-7 bg-background text-xs"
+                        className="h-7 bg-background text-caption"
                       />
                     </div>
                   ))}
                   <button
                     onClick={() => setLinkRows([...linkRows, { title: "", url: "", description: "" }])}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex items-center gap-1.5 text-caption text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> Add another link
                   </button>
@@ -444,7 +444,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
           <Collapsible open={moreOptionsOpen} onOpenChange={setMoreOptionsOpen} className="space-y-2">
             <CollapsibleTrigger asChild>
               <button className="w-full flex items-center justify-between py-1 hover:opacity-80 transition-opacity">
-                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer">More options</Label>
+                <Label className="text-label uppercase text-muted-foreground cursor-pointer">More options</Label>
                 <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", moreOptionsOpen && "rotate-90")} />
               </button>
             </CollapsibleTrigger>
@@ -486,7 +486,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                               setReferences(updated);
                             }}
                             placeholder="Title"
-                            className="h-8 bg-background text-sm flex-1"
+                            className="h-8 bg-background text-body flex-1"
                           />
                           <div className="relative flex-1">
                             <Link2 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -498,7 +498,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                                 setReferences(updated);
                               }}
                               placeholder="https://..."
-                              className="pl-8 h-8 bg-background text-sm"
+                              className="pl-8 h-8 bg-background text-body"
                             />
                           </div>
                         </div>
@@ -510,7 +510,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                             setReferences(updated);
                           }}
                           placeholder="Short description (optional)"
-                          className="h-8 bg-background text-sm"
+                          className="h-8 bg-background text-body"
                         />
                       </div>
                       {references.length > 1 && (
@@ -529,7 +529,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full h-8 text-xs"
+                  className="w-full h-8 text-caption"
                   onClick={() => setReferences([...references, { title: "", url: "", description: "" }])}
                 >
                   <Plus className="w-3.5 h-3.5 mr-1.5" />
@@ -553,7 +553,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
       <Dialog open={defaultsDialogOpen} onOpenChange={setDefaultsDialogOpen}>
         <DialogContent className="sm:max-w-lg p-0 gap-0 rounded-xl border-0 shadow-2xl">
           <div className="flex items-center justify-between px-5 py-3.5 border-b">
-            <DialogTitle className="text-sm font-medium">
+            <DialogTitle className="text-body-emphasis">
               {collectionType === 'posts' && 'Post defaults'}
               {collectionType === 'memos' && 'Memo defaults'}
               {collectionType === 'whiteboards' && 'Whiteboard defaults'}
@@ -573,7 +573,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 <div className="relative">
                   <button
                     onClick={() => collectionType === 'posts' ? setPostTemplateOpen(!postTemplateOpen) : setWbTemplateOpen(!wbTemplateOpen)}
-                    className="flex items-center justify-between w-full h-9 px-3 rounded-md border bg-background text-sm text-muted-foreground hover:bg-muted transition-colors"
+                    className="flex items-center justify-between w-full h-9 px-3 rounded-md border bg-background text-control text-muted-foreground hover:bg-muted transition-colors"
                   >
                     <span className={
                       (collectionType === 'posts' ? selectedPostTemplate : selectedWbTemplate)
@@ -588,7 +588,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                       <div className="p-1.5 border-b">
                         <div className="relative">
                           <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                          <Input placeholder="Search…" className="h-7 pl-7 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0" />
+                          <Input placeholder="Search…" className="h-7 pl-7 text-body bg-transparent border-0 shadow-none focus-visible:ring-0" />
                         </div>
                       </div>
                       <div className="max-h-40 overflow-y-auto p-0.5">
@@ -604,7 +604,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                                 if (collectionType === 'posts') { setSelectedPostTemplate(t); setPostTemplateOpen(false); }
                                 else { setSelectedWbTemplate(t); setWbTemplateOpen(false); }
                               }}
-                              className="flex items-center gap-2 w-full px-2.5 py-1.5 text-sm rounded hover:bg-muted transition-colors"
+                              className="flex items-center gap-2 w-full px-2.5 py-1.5 text-control rounded hover:bg-muted transition-colors"
                             >
                               {selected && <Check className="w-3.5 h-3.5 text-primary" />}
                               <span className={selected ? "font-medium" : ""}>{t}</span>
