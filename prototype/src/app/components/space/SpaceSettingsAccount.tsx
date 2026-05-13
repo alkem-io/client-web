@@ -66,7 +66,7 @@ export function SpaceSettingsAccount() {
                 id="space-url" 
                 value={spaceUrl} 
                 readOnly 
-                className="bg-muted/20 font-mono text-sm pr-10"
+                className="bg-muted/20 font-mono text-body pr-10"
               />
             </div>
             <Button 
@@ -83,7 +83,7 @@ export function SpaceSettingsAccount() {
               )}
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground italic">
+          <p className="text-body text-muted-foreground italic">
             The unique URL for this space. Contact Alkemio to change this.
           </p>
         </div>

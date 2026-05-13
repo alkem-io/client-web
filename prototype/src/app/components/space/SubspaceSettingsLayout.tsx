@@ -269,7 +269,7 @@ const PhasePostCard = ({
       )}
     >
       <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 group-hover/post:text-muted-foreground/60 shrink-0" />
-      <span className="flex-1 min-w-0 text-xs font-medium leading-snug line-clamp-2 text-foreground">
+      <span className="flex-1 min-w-0 text-caption font-medium leading-snug line-clamp-2 text-foreground">
         {post.title}
       </span>
       <DropdownMenu>
@@ -440,7 +440,7 @@ const PhaseColumn = ({
           <div className="px-3 py-3 bg-muted/30 space-y-2">
             <div className="flex items-center gap-2">
               {/* Phase number badge */}
-              <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+              <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-caption font-bold shrink-0">
                 {phaseIndex + 1}
               </div>
 
@@ -473,7 +473,7 @@ const PhaseColumn = ({
                 )}
               </div>
 
-              <Badge variant="secondary" className="text-xs tabular-nums shrink-0">
+              <Badge variant="secondary" className="text-caption tabular-nums shrink-0">
                 {posts.length}
               </Badge>
 
@@ -517,13 +517,13 @@ const PhaseColumn = ({
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setIsEditingDescription(false);
                 }}
-                className="h-6 py-0 px-1.5 text-xs w-full"
+                className="h-6 py-0 px-1.5 text-caption w-full"
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
               <div className="group/desc flex items-start gap-1">
                 <p
-                  className="text-xs text-muted-foreground leading-relaxed line-clamp-2 cursor-pointer hover:underline decoration-dashed underline-offset-4"
+                  className="text-caption text-muted-foreground leading-relaxed line-clamp-2 cursor-pointer hover:underline decoration-dashed underline-offset-4"
                   onClick={() => {
                     setIsEditingDescription(true);
                     setTimeout(() => descInputRef.current?.focus(), 0);
@@ -554,7 +554,7 @@ const PhaseColumn = ({
             >
               {posts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-4">
-                  <span className="text-xs text-muted-foreground/50">
+                  <span className="text-caption text-muted-foreground/50">
                     No posts assigned
                   </span>
                 </div>
@@ -877,7 +877,7 @@ export function SubspaceSettingsLayout() {
               <div key={phase.id} className="flex items-center gap-1.5 shrink-0">
                 <div
                   className={cn(
-                    "px-3 py-1 rounded-full text-xs font-medium border transition-colors",
+                    "px-3 py-1 rounded-full text-caption font-medium border transition-colors",
                     "bg-primary/10 text-primary border-primary/20"
                   )}
                 >
@@ -956,7 +956,7 @@ export function SubspaceSettingsLayout() {
           {/* Save / Reset bar */}
           <div className="mt-10 flex items-center justify-end gap-3">
             {lastSaved && (
-              <span className="text-sm text-muted-foreground flex items-center gap-1.5 mr-auto">
+              <span className="text-body text-muted-foreground flex items-center gap-1.5 mr-auto">
                 <Check className="w-4 h-4 text-success" /> Saved
               </span>
             )}

@@ -479,7 +479,7 @@ export function ChatView({
                           }}
                           className="truncate text-caption"
                         >
-                          <span style={{ fontWeight: 600 }}>
+                          <span className="font-semibold">
                             {msg.replyTo.senderName}:
                           </span>{" "}
                           {msg.replyTo.content}
@@ -628,8 +628,8 @@ export function ChatView({
                             >
                               <span>{r.emoji}</span>
                               <span
+                                className="font-medium"
                                 style={{
-                                  fontWeight: 500,
                                   color: r.reacted
                                     ? "var(--primary)"
                                     : "var(--muted-foreground)",

@@ -206,7 +206,7 @@ function SectionHeader({
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground mt-1 pr-8">{description}</p>
+        <p className="text-body text-muted-foreground mt-1 pr-8">{description}</p>
       </div>
     </div>
   );
@@ -312,7 +312,7 @@ export function SubspaceSettingsCommunity() {
           >
             <div className="flex items-center gap-2 text-muted-foreground">
               <stat.icon className="w-4 h-4" />
-              <span className="text-xs font-medium">{stat.label}</span>
+              <span className="text-caption font-medium">{stat.label}</span>
             </div>
             <p className="text-2xl font-bold">{stat.value}</p>
           </div>
@@ -461,15 +461,15 @@ export function SubspaceSettingsCommunity() {
                           <AvatarFallback className="text-xs">{member.initials}</AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium text-sm">{member.name}</div>
-                          <div className="text-xs text-muted-foreground">{member.email}</div>
+                          <div className="text-body-emphasis">{member.name}</div>
+                          <div className="text-caption text-muted-foreground">{member.email}</div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium text-sm text-foreground">{member.role}</span>
+                      <span className="text-body-emphasis text-foreground">{member.role}</span>
                     </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
+                    <TableCell className="text-muted-foreground text-body">
                       {new Date(member.date).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
@@ -538,7 +538,7 @@ export function SubspaceSettingsCommunity() {
         {/* Pagination */}
         {filteredMembers.length > pageSize && (
           <div className="flex items-center justify-between py-2">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-body text-muted-foreground">
               Showing <span className="font-medium">{(page - 1) * pageSize + 1}</span> to{" "}
               <span className="font-medium">{Math.min(page * pageSize, filteredMembers.length)}</span>{" "}
               of <span className="font-medium">{filteredMembers.length}</span> members
@@ -594,7 +594,7 @@ export function SubspaceSettingsCommunity() {
             <div className="flex items-center justify-between p-3 bg-background border rounded-md">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded text-primary">
-                  <span className="font-bold text-xs">Q1</span>
+                  <span className="text-caption font-bold">Q1</span>
                 </div>
                 <span className="text-body-emphasis">Why do you want to join this subspace?</span>
               </div>
@@ -603,7 +603,7 @@ export function SubspaceSettingsCommunity() {
           </div>
           <div className="mt-4">
             <Button variant="outline" size="sm">Edit Application Form</Button>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-caption text-muted-foreground mt-2">
               This form is shown to users when they apply to join.
             </p>
           </div>
@@ -629,13 +629,13 @@ export function SubspaceSettingsCommunity() {
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-6 pl-[52px]">
           <div className="bg-muted/30 rounded-lg p-4 border border-border">
-            <p className="text-sm text-muted-foreground italic">
+            <p className="text-body text-muted-foreground italic">
               "Be respectful, share openly, and contribute constructively..."
             </p>
           </div>
           <div className="mt-4">
             <Button variant="outline" size="sm">Edit Guidelines</Button>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-caption text-muted-foreground mt-2">
               Displayed to new members upon joining.
             </p>
           </div>
@@ -668,8 +668,8 @@ export function SubspaceSettingsCommunity() {
                     {org.logo}
                   </div>
                   <div>
-                    <div className="font-medium text-sm">{org.name}</div>
-                    <div className="text-xs text-muted-foreground">{org.memberCount} members in subspace</div>
+                    <div className="text-body-emphasis">{org.name}</div>
+                    <div className="text-caption text-muted-foreground">{org.memberCount} members in subspace</div>
                   </div>
                 </div>
                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
@@ -682,7 +682,7 @@ export function SubspaceSettingsCommunity() {
             <Button variant="outline" size="sm" className="gap-2">
               <Plus className="w-4 h-4" /> Add Organization
             </Button>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-caption text-muted-foreground mt-2">
               Users from these organizations can join without admin approval.
             </p>
           </div>
@@ -721,7 +721,7 @@ export function SubspaceSettingsCommunity() {
                     <Bot className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-medium text-sm">{vc.name}</div>
+                    <div className="text-body-emphasis">{vc.name}</div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span
                         className={cn(
@@ -729,7 +729,7 @@ export function SubspaceSettingsCommunity() {
                           vc.status === "Active" ? "bg-primary" : "bg-muted-foreground/30"
                         )}
                       />
-                      <span className="text-xs text-muted-foreground">{vc.status}</span>
+                      <span className="text-caption text-muted-foreground">{vc.status}</span>
                     </div>
                   </div>
                 </div>

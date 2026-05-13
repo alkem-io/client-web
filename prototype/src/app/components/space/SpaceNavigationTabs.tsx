@@ -85,11 +85,10 @@ export function SpaceNavigationTabs({ spaceSlug, actionButton }: SpaceNavigation
         <div className="mt-3">
           <ReadMoreText
             maxLines={2}
+            className="text-control"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
-              lineHeight: 1.6,
             }}
             toggleColor="var(--muted-foreground)"
           >

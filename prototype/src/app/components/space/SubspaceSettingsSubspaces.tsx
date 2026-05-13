@@ -274,12 +274,12 @@ export function SubspaceSettingsSubspaces() {
                     <h4 className="text-subsection-title line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
                       {s.name}
                     </h4>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2 min-h-[40px]">
+                    <p className="text-body text-muted-foreground mt-1 line-clamp-2 min-h-[40px]">
                       {s.description}
                     </p>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border">
+                  <div className="mt-4 flex items-center justify-between text-caption text-muted-foreground pt-4 border-t border-border">
                     <div className="flex items-center gap-1.5" title={`${s.memberCount} members`}>
                       <Users className="w-3.5 h-3.5" /> {s.memberCount}
                     </div>
@@ -297,7 +297,7 @@ export function SubspaceSettingsSubspaces() {
                   <Search className="w-6 h-6 opacity-50" />
                 </div>
                 <h3 className="text-subsection-title font-medium text-foreground">No subspaces found</h3>
-                <p className="text-sm mt-1 mb-4">Try adjusting your search or filters.</p>
+                <p className="text-body mt-1 mb-4">Try adjusting your search or filters.</p>
                 <Button variant="outline" onClick={() => { setSearch(""); setStatusFilter("All"); }}>
                   Clear Filters
                 </Button>
@@ -326,14 +326,14 @@ export function SubspaceSettingsSubspaces() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-sm text-foreground truncate">{s.name}</h4>
+                    <h4 className="text-body-emphasis text-foreground truncate">{s.name}</h4>
                     {s.status === "Archived" && (
-                      <Badge variant="secondary" className="text-[10px] py-0 h-5">Archived</Badge>
+                      <Badge variant="secondary" className="text-badge py-0 h-5">Archived</Badge>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground truncate max-w-md">{s.description}</p>
+                  <p className="text-caption text-muted-foreground truncate max-w-md">{s.description}</p>
                 </div>
-                <div className="hidden sm:flex items-center gap-6 text-xs text-muted-foreground shrink-0">
+                <div className="hidden sm:flex items-center gap-6 text-caption text-muted-foreground shrink-0">
                   <div className="flex items-center gap-1.5 w-20">
                     <Users className="w-3.5 h-3.5" /> {s.memberCount}
                   </div>
@@ -364,7 +364,7 @@ export function SubspaceSettingsSubspaces() {
               </div>
             ))}
             {filtered.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground text-sm">
+              <div className="p-8 text-center text-muted-foreground text-body">
                 No subspaces found matching criteria.
               </div>
             )}

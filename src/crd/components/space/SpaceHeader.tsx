@@ -167,9 +167,7 @@ export function SpaceHeader({
             <div className="col-span-12 lg:col-start-2 lg:col-span-10">
               <div className="max-w-3xl text-primary-foreground">
                 <div className="flex items-center gap-2 mb-4">
-                  <h1 className="font-bold tracking-tight leading-tight" style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
-                    {title}
-                  </h1>
+                  <h1 className="text-hero">{title}</h1>
                   {isHomeSpace && (
                     <>
                       <Home className="h-5 w-5 text-primary-foreground/80 shrink-0" aria-hidden="true" />

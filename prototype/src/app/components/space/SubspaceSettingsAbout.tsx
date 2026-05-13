@@ -251,14 +251,14 @@ export function SubspaceSettingsAbout({
                   </span>
                 </div>
                 <div className="absolute inset-0 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                  <Button variant="secondary" size="sm" className="gap-1.5 text-xs h-7 px-2">
+                  <Button variant="secondary" size="sm" className="gap-1.5 text-caption h-7 px-2">
                     <Upload className="w-3.5 h-3.5" /> Change
                   </Button>
                 </div>
               </div>
               <div className="space-y-1 pt-1">
                 <Label className="text-subheader">Avatar</Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   Resolution: 410 width × 410 height (pixels)
                 </p>
               </div>
@@ -275,17 +275,17 @@ export function SubspaceSettingsAbout({
                   className="w-full h-full object-cover transition-opacity group-hover:opacity-75"
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                  <Button variant="secondary" size="sm" className="gap-1.5 text-xs h-7 px-2">
+                  <Button variant="secondary" size="sm" className="gap-1.5 text-caption h-7 px-2">
                     <Upload className="w-3.5 h-3.5" /> Change
                   </Button>
                 </div>
               </div>
               <div className="space-y-1 pt-1">
                 <Label className="text-subheader">Card Banner</Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   Resolution: 410 width × 256 height (pixels)
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   Shown in search results and Space overviews.
                 </p>
               </div>
@@ -320,7 +320,7 @@ export function SubspaceSettingsAbout({
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-muted-foreground">{hint}</p>
+                  <p className="text-caption text-muted-foreground">{hint}</p>
                   <InlineSaveButton dirty={dirty[field]} status={statuses[field]} onSave={() => saveSection(field as SectionId)} />
                 </div>
               </div>
@@ -339,7 +339,7 @@ export function SubspaceSettingsAbout({
             <div className="relative flex flex-wrap gap-2 p-3 pr-8 bg-background border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-h-[50px]">
               <EditPencil className="absolute right-2.5 top-3" />
               {formData.tags.map(tag => (
-                <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-xs font-medium">
+                <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-caption font-medium">
                   {tag}
                   <button onClick={() => removeTag(tag)} className="text-muted-foreground hover:text-foreground">
                     <X className="w-3 h-3" />
@@ -347,7 +347,7 @@ export function SubspaceSettingsAbout({
                 </span>
               ))}
               <input
-                className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px]"
+                className="flex-1 bg-transparent border-none outline-none text-body min-w-[120px]"
                 placeholder="Type a tag and press Enter…"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -355,7 +355,7 @@ export function SubspaceSettingsAbout({
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Tags help members discover your subspace.</p>
+              <p className="text-caption text-muted-foreground">Tags help members discover your subspace.</p>
               <InlineSaveButton dirty={dirty.tags} status={statuses.tags} onSave={() => saveSection("tags")} />
             </div>
           </div>
@@ -367,7 +367,7 @@ export function SubspaceSettingsAbout({
         <section>
           <div className="flex items-center justify-between">
             <Label>References & Links</Label>
-            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-7 text-xs">
+            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-7 text-caption">
               <Plus className="w-3 h-3" /> Add
             </Button>
           </div>
@@ -395,7 +395,7 @@ export function SubspaceSettingsAbout({
               </div>
             ))}
             {formData.references.length === 0 && (
-              <p className="text-sm text-muted-foreground italic">No references added yet. Click "Add" above.</p>
+              <p className="text-body text-muted-foreground italic">No references added yet. Click "Add" above.</p>
             )}
             <div className="flex items-center justify-end gap-2">
               <InlineSaveButton dirty={dirty.references} status={statuses.references} onSave={() => saveSection("references")} />
@@ -412,11 +412,11 @@ export function SubspaceSettingsAbout({
               Preview
             </h3>
             {Object.values(dirty).some(Boolean) ? (
-              <span className="text-xs text-amber-500 flex items-center gap-1.5">
+              <span className="text-caption text-amber-500 flex items-center gap-1.5">
                 Unsaved changes
               </span>
             ) : Object.values(statuses).some(s => s === "saved") ? (
-              <span className="text-xs text-success flex items-center gap-1.5">
+              <span className="text-caption text-success flex items-center gap-1.5">
                 <Check className="w-3 h-3" /> Saved
               </span>
             ) : null}
@@ -488,7 +488,7 @@ export function SubspaceSettingsAbout({
               <div className="space-y-1">
                 <p className="text-label uppercase font-medium text-muted-foreground">What</p>
                 <div
-                  className="text-sm text-card-foreground line-clamp-3 prose prose-sm max-w-none"
+                  className="text-body text-card-foreground line-clamp-3 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
                     __html:
                       formData.what ||
@@ -521,7 +521,7 @@ export function SubspaceSettingsAbout({
               </div>
 
               {/* Members */}
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
+              <div className="flex items-center gap-1.5 text-caption text-muted-foreground pt-1">
                 <Users className="w-3.5 h-3.5" />
                 <span>{memberCount} members</span>
               </div>
@@ -529,7 +529,7 @@ export function SubspaceSettingsAbout({
           </div>
 
           <div
-            className="rounded-lg p-4 text-xs space-y-2"
+            className="rounded-lg p-4 text-caption space-y-2"
             style={{
               background: "color-mix(in srgb, var(--primary) 5%, transparent)",
               border: "1px solid color-mix(in srgb, var(--primary) 10%, transparent)",

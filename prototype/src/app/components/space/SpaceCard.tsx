@@ -97,14 +97,12 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
           {/* Privacy badge */}
           <div className="absolute top-3 right-3" style={{ zIndex: 3 }}>
             <div
-              className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm"
+              className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-badge"
               style={{
                 background: space.isPrivate
                   ? "color-mix(in srgb, var(--foreground) 50%, transparent)"
                   : "color-mix(in srgb, var(--background) 85%, transparent)",
                 color: space.isPrivate ? "var(--primary-foreground)" : "var(--foreground)",
-                fontSize: "10px",
-                fontWeight: 600,
               }}
             >
               {space.isPrivate ? (
@@ -207,9 +205,8 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
           {/* Parent indicator for subspaces */}
           {space.parent && (
             <p
-              className="truncate"
+              className="truncate text-caption"
               style={{
-                fontSize: "11px",
                 color: "var(--muted-foreground)",
                 marginTop: 2,
               }}
@@ -246,9 +243,8 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
               {space.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
+                  className="text-badge"
                   style={{
-                    fontSize: "10px",
-                    fontWeight: 500,
                     padding: "2px 8px",
                     borderRadius: "999px",
                     background: "var(--secondary)",
@@ -260,9 +256,8 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
               ))}
               {space.tags.length > 3 && (
                 <span
+                  className="text-badge"
                   style={{
-                    fontSize: "10px",
-                    fontWeight: 500,
                     padding: "2px 8px",
                     borderRadius: "999px",
                     background: "var(--muted)",
@@ -341,9 +336,8 @@ export function SpaceCard({ space, className }: SpaceCardProps) {
 
           {/* Member Count */}
           <div
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 text-caption"
             style={{
-              fontSize: "11px",
               color: "var(--muted-foreground)",
             }}
           >

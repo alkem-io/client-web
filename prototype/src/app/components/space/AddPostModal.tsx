@@ -163,11 +163,11 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 <div className="mt-2 p-4 border rounded-xl bg-muted/30 space-y-3 animate-in fade-in slide-in-from-top-2">
                    <div className="grid grid-cols-2 gap-3">
                      <div className="space-y-1">
-                       <Label className="text-sm">Button Label</Label>
+                       <Label className="text-body-emphasis">Button Label</Label>
                        <Input value={ctaText} onChange={e => setCtaText(e.target.value)} placeholder="Button text" className="h-8 bg-background" />
                      </div>
                      <div className="space-y-1">
-                       <Label className="text-sm">Target URL</Label>
+                       <Label className="text-body-emphasis">Target URL</Label>
                        <Input value={ctaLink} onChange={e => setCtaLink(e.target.value)} placeholder="https://" className="h-8 bg-background" />
                      </div>
                    </div>
@@ -226,7 +226,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
              {activeAttachment === 'document' && (
                 <div className="mt-2 p-4 border rounded-xl bg-muted/30 space-y-4 animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
-                    <Label className="text-sm">Create new</Label>
+                    <Label className="text-body-emphasis">Create new</Label>
                     <div className="flex gap-2">
                       {[
                         { label: 'Word Document', icon: '📄' },
@@ -293,7 +293,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
               <div className="mt-2 px-4 pb-4 pt-6 border rounded-xl bg-muted/30 space-y-4 animate-in fade-in slide-in-from-top-2">
                 {/* Pre-populate links */}
                 <div className="space-y-2">
-                  <Label className="text-sm">Pre-populate collection</Label>
+                  <Label className="text-body-emphasis">Pre-populate collection</Label>
                   {linkRows.map((row, i) => (
                     <div key={i} className="space-y-1.5 pb-3 border-b border-border/50 last:border-0 last:pb-0">
                       <div className="flex items-center gap-2">
@@ -342,14 +342,14 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
                     <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                    <Label className="text-sm">Members can add</Label>
+                    <Label className="text-body-emphasis">Members can add</Label>
                   </div>
                   <Switch checked={membersCanAdd} onCheckedChange={setMembersCanAdd} />
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
                     <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                    <Label className="text-sm">Admins can add</Label>
+                    <Label className="text-body-emphasis">Admins can add</Label>
                   </div>
                   <Switch checked={adminsCanAdd} onCheckedChange={setAdminsCanAdd} />
                 </div>
@@ -363,21 +363,21 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Members can add</Label>
+                        <Label className="text-body-emphasis">Members can add</Label>
                       </div>
                       <Switch checked={membersCanAdd} onCheckedChange={setMembersCanAdd} />
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Admins can add</Label>
+                        <Label className="text-body-emphasis">Admins can add</Label>
                       </div>
                       <Switch checked={adminsCanAdd} onCheckedChange={setAdminsCanAdd} />
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <MessageSquare className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Enable comments</Label>
+                        <Label className="text-body-emphasis">Enable comments</Label>
                       </div>
                       <Switch checked={enableCollectionComments} onCheckedChange={setEnableCollectionComments} />
                     </div>
@@ -394,14 +394,14 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Members can add</Label>
+                        <Label className="text-body-emphasis">Members can add</Label>
                       </div>
                       <Switch checked={membersCanAdd} onCheckedChange={setMembersCanAdd} />
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Admins can add</Label>
+                        <Label className="text-body-emphasis">Admins can add</Label>
                       </div>
                       <Switch checked={adminsCanAdd} onCheckedChange={setAdminsCanAdd} />
                     </div>
@@ -418,14 +418,14 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Members can add</Label>
+                        <Label className="text-body-emphasis">Members can add</Label>
                       </div>
                       <Switch checked={membersCanAdd} onCheckedChange={setMembersCanAdd} />
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                        <Label className="text-sm">Admins can add</Label>
+                        <Label className="text-body-emphasis">Admins can add</Label>
                       </div>
                       <Switch checked={adminsCanAdd} onCheckedChange={setAdminsCanAdd} />
                     </div>
@@ -452,7 +452,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
               
               {/* Tags */}
               <div className="space-y-1.5">
-                <Label className="text-sm">Tags</Label>
+                <Label className="text-body-emphasis">Tags</Label>
                 <div className="relative">
                   <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                   <Input 
@@ -466,13 +466,13 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
 
               {/* Comments */}
               <div className="flex items-center gap-6 py-2">
-                <Label className="text-sm">Allow Comments</Label>
+                <Label className="text-body-emphasis">Allow Comments</Label>
                 <Switch checked={allowComments} onCheckedChange={setAllowComments} />
               </div>
 
               {/* References */}
               <div className="space-y-3">
-                <Label className="text-sm">References</Label>
+                <Label className="text-body-emphasis">References</Label>
                 {references.map((ref, index) => (
                   <div key={index} className="rounded-lg border bg-muted/30 p-3 space-y-2">
                     <div className="flex items-start gap-2">
@@ -569,7 +569,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
             {/* Template picker — Posts & Whiteboards only */}
             {(collectionType === 'posts' || collectionType === 'whiteboards') && (
               <div className="space-y-1.5">
-                <Label className="text-sm">Template</Label>
+                <Label className="text-body-emphasis">Template</Label>
                 <div className="relative">
                   <button
                     onClick={() => collectionType === 'posts' ? setPostTemplateOpen(!postTemplateOpen) : setWbTemplateOpen(!wbTemplateOpen)}
@@ -620,7 +620,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
 
             {/* Default title */}
             <div className="space-y-1.5">
-              <Label className="text-sm">Default title</Label>
+              <Label className="text-body-emphasis">Default title</Label>
               <Input
                 value={collectionDefaultTitle}
                 onChange={e => setCollectionDefaultTitle(e.target.value)}
@@ -632,7 +632,7 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
             {/* Default description — Posts & Memos */}
             {(collectionType === 'posts' || collectionType === 'memos') && (
               <div className="space-y-1.5">
-                <Label className="text-sm">Default description</Label>
+                <Label className="text-body-emphasis">Default description</Label>
                 <MarkdownEditor
                   value={collectionDefaultDescription}
                   onChange={setCollectionDefaultDescription}
@@ -646,10 +646,10 @@ export function AddPostModal({ open, onOpenChange }: AddPostModalProps) {
             {/* Whiteboard canvas preview */}
             {collectionType === 'whiteboards' && (
               <div className="space-y-1.5">
-                <Label className="text-sm">Default whiteboard</Label>
+                <Label className="text-body-emphasis">Default whiteboard</Label>
                 <div className="relative border rounded-lg bg-muted/30 min-h-[160px] flex items-center justify-center">
                   <Presentation className="w-10 h-10 text-muted-foreground/30" />
-                  <Button variant="default" size="sm" className="absolute bottom-3 right-3 h-7 text-xs gap-1.5">
+                  <Button variant="default" size="sm" className="absolute bottom-3 right-3 h-7 text-caption gap-1.5">
                     <Pencil className="w-3 h-3" /> Edit
                   </Button>
                 </div>

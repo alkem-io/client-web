@@ -240,11 +240,9 @@ export function AboutThisSpaceDialog({
                 {/* Description — full, not truncated, white text on dark blue */}
                 <div className={isAdmin ? "px-5 pb-5 pt-2" : "p-5"}>
                   <p
-                    className="mb-4"
+                    className="mb-4 text-body"
                     style={{
-                      fontSize: "var(--text-sm)",
                       color: "rgba(255,255,255,0.9)",
-                      lineHeight: 1.7,
                     }}
                   >
                     {SPACE_DATA.description}
@@ -253,9 +251,8 @@ export function AboutThisSpaceDialog({
                   {/* Meta row: location + members */}
                   <div className="flex items-center gap-4 mb-4">
                     <span
-                      className="flex items-center gap-1"
+                      className="flex items-center gap-1 text-caption"
                       style={{
-                        fontSize: "12px",
                         color: "rgba(255,255,255,0.7)",
                       }}
                     >
@@ -263,9 +260,8 @@ export function AboutThisSpaceDialog({
                       {SPACE_DATA.location}
                     </span>
                     <span
-                      className="flex items-center gap-1"
+                      className="flex items-center gap-1 text-caption"
                       style={{
-                        fontSize: "12px",
                         color: "rgba(255,255,255,0.7)",
                       }}
                     >
@@ -280,13 +276,9 @@ export function AboutThisSpaceDialog({
                     style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
                   >
                     <h4
-                      className="mb-3"
+                      className="mb-3 text-label uppercase"
                       style={{
-                        fontSize: "12px",
-                        fontWeight: 600,
                         color: "rgba(255,255,255,0.6)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
                       }}
                     >
                       Leads
@@ -318,18 +310,16 @@ export function AboutThisSpaceDialog({
                           </Avatar>
                           <div>
                             <p
+                              className="text-card-title"
                               style={{
-                                fontSize: "var(--text-sm)",
-                                fontWeight: 600,
                                 color: "white",
                               }}
                             >
                               {lead.name}
                             </p>
                             <p
-                              className="flex items-center gap-1"
+                              className="flex items-center gap-1 text-caption"
                               style={{
-                                fontSize: "12px",
                                 color: "rgba(255,255,255,0.6)",
                               }}
                             >
@@ -352,10 +342,9 @@ export function AboutThisSpaceDialog({
                 onEdit={() => goToSettings("about")}
               >
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
                   }}
                 >
                   {SPACE_DATA.whyText}
@@ -370,10 +359,9 @@ export function AboutThisSpaceDialog({
                 onEdit={() => goToSettings("about")}
               >
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
                   }}
                 >
                   {SPACE_DATA.whoText}
@@ -396,9 +384,8 @@ export function AboutThisSpaceDialog({
                         style={{ color: "var(--muted-foreground)" }}
                       />
                       <h3
+                        className="text-card-title"
                         style={{
-                          fontSize: "var(--text-sm)",
-                          fontWeight: 600,
                           color: "var(--foreground)",
                         }}
                       >
@@ -409,11 +396,9 @@ export function AboutThisSpaceDialog({
                   </div>
                   <div
                     ref={guidelinesRef}
-                    className="line-clamp-6 space-y-1"
+                    className="line-clamp-6 space-y-1 text-body"
                     style={{
-                      fontSize: "var(--text-sm)",
                       color: "var(--muted-foreground)",
-                      lineHeight: 1.6,
                     }}
                   >
                     {SPACE_DATA.guidelines.body
@@ -455,9 +440,8 @@ export function AboutThisSpaceDialog({
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-3">
                     <h3
+                      className="text-card-title"
                       style={{
-                        fontSize: "var(--text-sm)",
-                        fontWeight: 600,
                         color: "var(--foreground)",
                       }}
                     >
@@ -488,9 +472,8 @@ export function AboutThisSpaceDialog({
                         </div>
                         <div className="min-w-0 flex-1">
                           <p
+                            className="text-card-title"
                             style={{
-                              fontSize: "var(--text-sm)",
-                              fontWeight: 600,
                               color: "var(--foreground)",
                             }}
                           >
@@ -498,11 +481,9 @@ export function AboutThisSpaceDialog({
                           </p>
                           {ref.description && (
                             <p
-                              className="mt-0.5 line-clamp-2"
+                              className="mt-0.5 line-clamp-2 text-caption"
                               style={{
-                                fontSize: "12px",
                                 color: "var(--muted-foreground)",
-                                lineHeight: "1.5",
                               }}
                             >
                               {ref.description}
@@ -512,9 +493,8 @@ export function AboutThisSpaceDialog({
                             href={ref.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 mt-1 hover:underline"
+                            className="inline-flex items-center gap-1 mt-1 hover:underline text-caption"
                             style={{
-                              fontSize: "11px",
                               color: "var(--primary)",
                             }}
                             onClick={(e) => e.stopPropagation()}
@@ -539,10 +519,8 @@ export function AboutThisSpaceDialog({
               >
                 <div className="p-5">
                   <h3
-                    className="mb-3"
+                    className="mb-3 text-card-title"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 600,
                       color: "var(--foreground)",
                     }}
                   >
@@ -568,18 +546,16 @@ export function AboutThisSpaceDialog({
                     </Avatar>
                     <div>
                       <p
+                        className="text-card-title"
                         style={{
-                          fontSize: "var(--text-sm)",
-                          fontWeight: 600,
                           color: "var(--foreground)",
                         }}
                       >
                         {HOST.name}
                       </p>
                       <p
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-1 text-caption"
                         style={{
-                          fontSize: "12px",
                           color: "var(--muted-foreground)",
                         }}
                       >
@@ -599,10 +575,9 @@ export function AboutThisSpaceDialog({
                       />
                     </button>
                     <p
+                      className="text-body"
                       style={{
-                        fontSize: "var(--text-sm)",
                         color: "var(--muted-foreground)",
-                        lineHeight: 1.5,
                       }}
                     >
                       The hosts are responsible for the content of the Space. Any
@@ -635,11 +610,9 @@ export function AboutThisSpaceDialog({
           </DialogDescription>
           <ScrollArea className="flex-1 overflow-y-auto">
             <div
-              className="px-6 py-5 space-y-3"
+              className="px-6 py-5 space-y-3 text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
-                lineHeight: 1.7,
               }}
             >
               {SPACE_DATA.guidelines.body
@@ -700,17 +673,16 @@ export function AboutThisSpaceDialog({
               </Avatar>
               <div>
                 <p
+                  className="text-card-title"
                   style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: 600,
                     color: "var(--foreground)",
                   }}
                 >
                   To: {HOST.name}
                 </p>
                 <p
+                  className="text-caption"
                   style={{
-                    fontSize: "12px",
                     color: "var(--muted-foreground)",
                   }}
                 >
@@ -723,10 +695,8 @@ export function AboutThisSpaceDialog({
             <div>
               <label
                 htmlFor="contact-message"
-                className="block mb-1.5"
+                className="block mb-1.5 text-body-emphasis"
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: 500,
                   color: "var(--foreground)",
                 }}
               >
@@ -738,9 +708,8 @@ export function AboutThisSpaceDialog({
                 value={contactMessage}
                 onChange={(e) => setContactMessage(e.target.value)}
                 placeholder="Write your message..."
-                className="w-full rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2"
+                className="w-full rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   border: "1px solid var(--border)",
                   background: "var(--background)",
                   color: "var(--foreground)",
@@ -808,9 +777,8 @@ function ContextSection({
           <div className="flex items-center gap-2">
             <span style={{ color: "var(--muted-foreground)" }}>{icon}</span>
             <h3
+              className="text-card-title"
               style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: 600,
                 color: "var(--foreground)",
               }}
             >

@@ -309,10 +309,8 @@ export function Header({
               {/* Beta badge */}
               <Badge
                 variant="secondary"
-                className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border"
+                className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge"
                 style={{
-                  fontSize: "9px",
-                  fontWeight: 700,
                   fontFamily: "'Inter', sans-serif",
                   lineHeight: "14px",
                 }}

@@ -231,7 +231,7 @@ export function SubspaceSettingsUpdates() {
                       {update.role}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-caption text-muted-foreground">
                     <Calendar className="w-3 h-3" />
                     {update.date}
 
@@ -271,7 +271,7 @@ export function SubspaceSettingsUpdates() {
 
             {/* Body */}
             <div
-              className="text-sm text-muted-foreground prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground"
+              className="text-body text-muted-foreground prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground"
               dangerouslySetInnerHTML={{ __html: update.body }}
             />
           </div>

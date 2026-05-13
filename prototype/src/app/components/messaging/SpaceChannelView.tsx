@@ -670,7 +670,7 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                           }}
                           className="truncate text-caption"
                         >
-                          <span style={{ fontWeight: 600 }}>
+                          <span className="font-semibold">
                             {msg.replyTo.senderName}:
                           </span>{" "}
                           {msg.replyTo.content}
@@ -853,8 +853,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             >
                               <span>{r.emoji}</span>
                               <span
+                                className="font-medium"
                                 style={{
-                                  fontWeight: "var(--font-weight-medium)" as any,
                                   color: r.reacted
                                     ? "var(--primary)"
                                     : "var(--muted-foreground)",
