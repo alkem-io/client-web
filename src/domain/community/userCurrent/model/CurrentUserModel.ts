@@ -6,6 +6,7 @@ export interface CurrentUserModel {
   platformPrivilegeWrapper: PlatformPrivilegeWrapper | undefined;
   userModel: UserModel | undefined;
   accountId: string | undefined;
+  designVersion: 1 | 2 | undefined;
   loading: boolean;
   loadingMe: boolean;
   verified: boolean;

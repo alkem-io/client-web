@@ -20,7 +20,11 @@
     "changeLanguage": "Sprache ändern",
     "getHelp": "Hilfe erhalten",
     "showGrid": "Raster anzeigen",
-    "hideGrid": "Raster ausblenden"
+    "hideGrid": "Raster ausblenden",
+    "designVersion": {
+      "label": "Neues Design (Beta)",
+      "caption": "Das alte Design bleibt noch eine kurze Zeit verfügbar."
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

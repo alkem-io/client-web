@@ -20,7 +20,11 @@
     "changeLanguage": "Changer de langue",
     "getHelp": "Obtenir de l'aide",
     "showGrid": "Afficher la grille",
-    "hideGrid": "Masquer la grille"
+    "hideGrid": "Masquer la grille",
+    "designVersion": {
+      "label": "Nouveau design (bêta)",
+      "caption": "L'ancien design restera disponible pendant une courte période."
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

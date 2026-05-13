@@ -16024,6 +16024,10 @@ export const CurrentUserLightDocument = gql`
   me {
     user {
       ...UserDetailsLight
+      settings {
+        id
+        designVersion
+      }
       account {
         id
         authorization {

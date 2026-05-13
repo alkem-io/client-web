@@ -5,6 +5,7 @@ import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
+  CrdDesignVersionSwitch,
   CrdLanguageOption,
   CrdNavigationHrefs,
   CrdPlatformNavigationItem,
@@ -73,6 +74,7 @@ type HeaderProps = {
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
+  designVersionSwitch?: CrdDesignVersionSwitch;
   className?: string;
 };
 
@@ -97,6 +99,7 @@ export function Header({
   onHelpClick,
   onLanguageChange,
   showGridToggle,
+  designVersionSwitch,
   className,
 }: HeaderProps) {
   const { t } = useTranslation('crd-layout');
@@ -182,6 +185,7 @@ export function Header({
           onHelpClick={onHelpClick}
           onLanguageChange={onLanguageChange}
           showGridToggle={showGridToggle}
+          designVersionSwitch={designVersionSwitch}
         />
       </nav>
     </header>
