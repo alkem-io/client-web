@@ -377,7 +377,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
   }, [visibleNodes]);
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)', fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col h-full w-full">
       {/* Top Bar */}
       <header 
         className="h-12 flex items-center justify-between px-4 z-20 shrink-0"
@@ -398,7 +398,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
               fontSize: '12px', 
               gap: 6, 
               color: 'var(--muted-foreground)',
-              fontFamily: "'Inter', sans-serif",
             }}
             title="Return to Alkemio Platform"
           >
@@ -436,7 +435,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 background: 'var(--muted)',
                 border: '1px solid transparent',
                 color: 'var(--foreground)',
-                fontFamily: "'Inter', sans-serif",
               }}
             />
           </div>
@@ -477,7 +475,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 const defs = SPACE_DEFS[id];
                 const name = defs ? defs[0].name : `Space ${id}`;
                 return (
-                  <Badge key={id} variant="secondary" style={{ fontSize: '10px', padding: '2px 6px', background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--foreground)', fontFamily: "'Inter', sans-serif" }}>
+                  <Badge key={id} variant="secondary" className="text-xs font-medium cursor-pointer" onClick={() => toggleSpace(id)}>
                     {name} <X style={{ width: 10, height: 10, marginLeft: 4, cursor: 'pointer', opacity: 0.5 }} />
                   </Badge>
                 );
@@ -494,7 +492,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 variant={clusterMode === 'space' ? 'default' : 'outline'} 
                 size="sm" 
                 onClick={() => setClusterMode('space')}
-                style={{ fontSize: '11px', justifyContent: 'flex-start', height: 30, gap: 6, fontFamily: "'Inter', sans-serif" }}
               >
                 <LayoutGrid style={{ width: 12, height: 12 }} /> Space
               </Button>
@@ -502,7 +499,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 variant={clusterMode === 'org' ? 'default' : 'outline'} 
                 size="sm" 
                 onClick={() => setClusterMode('org')}
-                style={{ fontSize: '11px', justifyContent: 'flex-start', height: 30, gap: 6, fontFamily: "'Inter', sans-serif" }}
               >
                 <Building style={{ width: 12, height: 12 }} /> Org
               </Button>
@@ -575,7 +571,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
             </div>
             {mapMode && (
               <Select defaultValue="europe">
-                <SelectTrigger style={{ height: 30, fontSize: '11px', fontFamily: "'Inter', sans-serif" }}>
+                <SelectTrigger className="text-sm">
                   <SelectValue placeholder="Region" />
                 </SelectTrigger>
                 <SelectContent>
@@ -694,8 +690,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                   <div className="flex-1 min-w-0" style={{ paddingTop: 2 }}>
                     <h2 className="truncate" style={{ fontWeight: 700, fontSize: 'var(--text-base)', lineHeight: 1.3, color: 'var(--foreground)' }}>{selectedNode.label}</h2>
                     <div className="flex items-center gap-1.5" style={{ marginTop: 6 }}>
-                      <Badge variant="outline" style={{ fontSize: '10px', textTransform: 'capitalize', height: 20, padding: '0 6px', background: 'var(--background)', fontFamily: "'Inter', sans-serif" }}>{selectedNode.type}</Badge>
-                      {selectedNode.level && <Badge variant="secondary" style={{ fontSize: '10px', height: 20, padding: '0 6px', fontFamily: "'Inter', sans-serif" }}>{selectedNode.level}</Badge>}
                     </div>
                   </div>
                 </div>
@@ -771,7 +765,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                               <div className="flex-1 min-w-0">
                                 <div className="truncate" style={{ fontWeight: 500, color: 'var(--foreground)', fontSize: '12px' }}>{otherNode.label}</div>
                               </div>
-                              <Badge variant="outline" style={{ fontSize: '9px', height: 16, padding: '0 4px', fontFamily: "'Inter', sans-serif" }}>
+                              <Badge variant="outline" className="text-xs shrink-0">
                                 {link.type === 'parent-child' ? 'child' : link.type}
                               </Badge>
                             </div>
@@ -799,7 +793,6 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                           <div className="flex items-center gap-2">
                             <div 
                               className="rounded flex items-center justify-center"
-                              style={{ width: 24, height: 24, background: 'var(--muted)', fontSize: '9px', fontWeight: 700, color: 'var(--muted-foreground)', fontFamily: "'Inter', sans-serif" }}
                             >
                               {space.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
                             </div>
@@ -813,13 +806,12 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                           {space.access ? (
                             <Button 
                               size="sm" variant="secondary" 
-                              style={{ height: 24, fontSize: '10px', gap: 4, fontFamily: "'Inter', sans-serif" }}
                               onClick={() => handleAddRelatedSpace(space.id)}
                             >
                               <Plus style={{ width: 10, height: 10 }} /> Add
                             </Button>
                           ) : (
-                            <Button size="sm" variant="ghost" disabled style={{ height: 24, fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
+                            <Button size="sm" variant="outline" disabled className="text-xs">
                               Locked
                             </Button>
                           )}
@@ -852,7 +844,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                               {row.value}
                             </span>
                           ) : (
-                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--foreground)' }}>{row.value}</span>
+                            <span style={{ color: 'var(--foreground)', fontWeight: 500, fontSize: '12px' }}>{row.value}</span>
                           )}
                         </div>
                       ))}
@@ -864,11 +856,11 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
               {/* Footer Actions */}
               <div style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {selectedNode.type === 'space' && (
-                  <Button style={{ width: '100%', gap: 8, fontFamily: "'Inter', sans-serif" }} variant="default">
+                  <Button variant="outline" size="sm" className="w-full gap-2 text-sm">
                     <ExternalLink style={{ width: 14, height: 14 }} /> Open in Alkemio
                   </Button>
                 )}
-                <Button variant="outline" style={{ width: '100%', gap: 8, color: 'var(--muted-foreground)', fontFamily: "'Inter', sans-serif" }}>
+                <Button variant="ghost" size="sm" className="w-full gap-2 text-sm">
                   <Share2 style={{ width: 14, height: 14 }} /> Share Report
                 </Button>
               </div>

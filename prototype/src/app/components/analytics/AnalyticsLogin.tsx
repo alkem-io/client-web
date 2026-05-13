@@ -19,7 +19,7 @@ export function AnalyticsLogin({ onLogin }: AnalyticsLoginProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4" style={{ background: 'var(--background)', fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
       <div className="mb-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: 'var(--primary)', color: 'var(--primary-foreground)', boxShadow: 'var(--elevation-sm)' }}>
             <Network className="w-8 h-8" />
@@ -47,7 +47,6 @@ export function AnalyticsLogin({ onLogin }: AnalyticsLoginProps) {
           <Button 
             size="lg" 
             className="w-full gap-2" 
-            style={{ fontSize: 'var(--text-base)', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}
             onClick={handleLogin}
             disabled={isLoading}
           >
