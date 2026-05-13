@@ -437,6 +437,7 @@
     "descriptionPlaceholder": "Напишете нещо...",
     "tagsLabel": "Етикети",
     "tagsPlaceholder": "Добави етикет и натисни Enter",
+    "tagsTooShort": "Всеки етикет трябва да е поне {{min}} знака.",
     "framingType": "Добавяне към публикация",
     "visibility": "Видимост",
     "publishedLabel": "Публикувано",

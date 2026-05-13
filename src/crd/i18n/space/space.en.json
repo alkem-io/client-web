@@ -428,6 +428,7 @@
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
     "tagsPlaceholder": "Add a tag and press Enter",
+    "tagsTooShort": "Each tag must be at least {{min}} characters.",
     "framingType": "Add to post",
     "visibility": "Visibility",
     "publishedLabel": "Published",

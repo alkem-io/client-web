@@ -437,6 +437,7 @@
     "descriptionPlaceholder": "Escribe algo...",
     "tagsLabel": "Etiquetas",
     "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
+    "tagsTooShort": "Cada etiqueta debe tener al menos {{min}} caracteres.",
     "framingType": "Añadir a la publicación",
     "visibility": "Visibilidad",
     "publishedLabel": "Publicado",

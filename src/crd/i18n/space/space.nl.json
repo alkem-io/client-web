@@ -437,6 +437,7 @@
     "descriptionPlaceholder": "Schrijf iets...",
     "tagsLabel": "Tags",
     "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
+    "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
     "framingType": "Toevoegen aan bericht",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",

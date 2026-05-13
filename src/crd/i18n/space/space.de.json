@@ -437,6 +437,7 @@
     "descriptionPlaceholder": "Schreiben Sie etwas...",
     "tagsLabel": "Schlagwörter",
     "tagsPlaceholder": "Schlagwort eingeben und Enter drücken",
+    "tagsTooShort": "Jedes Schlagwort muss mindestens {{min}} Zeichen lang sein.",
     "framingType": "Zum Beitrag hinzufügen",
     "visibility": "Sichtbarkeit",
     "publishedLabel": "Veröffentlicht",

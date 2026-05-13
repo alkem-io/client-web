@@ -393,6 +393,8 @@ export function CrdPostContributionDialog({
                     value={values.tags}
                     onChange={tags => updateField('tags', tags)}
                     placeholder={t('forms.tagsPlaceholder')}
+                    minLength={2}
+                    formatTooShortErrorMessage={min => t('forms.tagsTooShort', { min })}
                   />
                 </div>
 

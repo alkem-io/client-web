@@ -651,6 +651,8 @@ export function CalloutFormConnector({
                 value={values.tags}
                 onChange={tags => setField('tags', tags)}
                 placeholder={t('forms.tagsPlaceholder')}
+                minLength={2}
+                formatTooShortErrorMessage={min => t('forms.tagsTooShort', { min })}
                 icon={<Hash className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />}
               />
             </div>
