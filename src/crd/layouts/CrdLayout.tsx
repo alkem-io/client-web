@@ -4,6 +4,7 @@ import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
+  CrdDesignVersionSwitch,
   CrdFooterLinks,
   CrdLanguageOption,
   CrdNavigationHrefs,
@@ -32,6 +33,7 @@ type CrdLayoutProps = {
   onHelpClick?: () => void;
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
+  designVersionSwitch?: CrdDesignVersionSwitch;
   children: ReactNode;
 };
 
@@ -56,6 +58,7 @@ export function CrdLayout({
   onHelpClick,
   footerLinks,
   showGridToggle,
+  designVersionSwitch,
   children,
 }: CrdLayoutProps) {
   const content = (
@@ -80,6 +83,7 @@ export function CrdLayout({
         onPendingMembershipsClick={onPendingMembershipsClick}
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
+        designVersionSwitch={designVersionSwitch}
       />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer

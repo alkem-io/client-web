@@ -5111,6 +5111,7 @@ export type UserSettingsKeySpecifier = (
   | 'authorization'
   | 'communication'
   | 'createdDate'
+  | 'designVersion'
   | 'homeSpace'
   | 'id'
   | 'notification'
@@ -5122,6 +5123,7 @@ export type UserSettingsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  designVersion?: FieldPolicy<any> | FieldReadFunction<any>;
   homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   notification?: FieldPolicy<any> | FieldReadFunction<any>;

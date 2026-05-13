@@ -65,3 +65,9 @@ export type CrdNotificationFilter = {
   label: string;
   hasUnread?: boolean;
 };
+
+export type CrdDesignVersionSwitch = {
+  enabled: boolean;
+  onChange: (enabled: boolean) => void;
+  disabled?: boolean;
+};

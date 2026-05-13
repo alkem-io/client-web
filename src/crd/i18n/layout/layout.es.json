@@ -20,7 +20,11 @@
     "changeLanguage": "Cambiar idioma",
     "getHelp": "Obtener ayuda",
     "showGrid": "Mostrar cuadrícula",
-    "hideGrid": "Ocultar cuadrícula"
+    "hideGrid": "Ocultar cuadrícula",
+    "designVersion": {
+      "label": "Nuevo diseño (beta)",
+      "caption": "El diseño anterior seguirá disponible durante un tiempo limitado."
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",
