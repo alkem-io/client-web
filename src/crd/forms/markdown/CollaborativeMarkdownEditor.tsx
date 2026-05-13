@@ -16,6 +16,10 @@ type CollaborativeMarkdownEditorProps = {
   placeholder?: string;
   onReady?: (editor: Editor) => void;
   className?: string;
+  onImageUpload?: (file: File) => Promise<string>;
+  iframeAllowedUrls?: string[];
+  onError?: (message: string) => void;
+  hideImageOptions?: boolean;
 };
 
 // Local Suspense boundary contains the lazy `crd-markdown` namespace load. Without it the
@@ -37,6 +41,10 @@ function CollaborativeMarkdownEditorLazy({
   placeholder,
   onReady,
   className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+  hideImageOptions,
 }: CollaborativeMarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
@@ -72,7 +80,15 @@ function CollaborativeMarkdownEditorLazy({
         className
       )}
     >
-      <MarkdownToolbar editor={editor} collaborative={true} className="border-b border-border bg-muted/30 shrink-0" />
+      <MarkdownToolbar
+        editor={editor}
+        collaborative={true}
+        className="border-b border-border bg-muted/30 shrink-0"
+        onImageUpload={onImageUpload}
+        iframeAllowedUrls={iframeAllowedUrls}
+        onError={onError}
+        hideImageOptions={hideImageOptions}
+      />
       <EditorContent
         editor={editor}
         className="flex-1 min-h-0 overflow-y-auto"

@@ -2,7 +2,6 @@ import type { Editor } from '@tiptap/react';
 import {
   Bold,
   Code,
-  Columns3,
   Heading1,
   Heading2,
   Heading3,
@@ -12,11 +11,7 @@ import {
   Minus,
   Quote,
   Redo2,
-  Rows3,
   Smile,
-  Table,
-  TableCellsMerge,
-  Trash2,
   Undo2,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -26,15 +21,31 @@ import { cn } from '@/crd/lib/utils';
 import { Separator } from '@/crd/primitives/separator';
 import { isEditorReady } from './isEditorReady';
 import { ToolbarButton } from './ToolbarButton';
+import { ToolbarEmbedDialog } from './ToolbarEmbedDialog';
+import { ToolbarImageDialog } from './ToolbarImageDialog';
 import { ToolbarLinkDialog } from './ToolbarLinkDialog';
+import { ToolbarTableOpsMenu } from './ToolbarTableOpsMenu';
+import { ToolbarTablePicker } from './ToolbarTablePicker';
 
 type MarkdownToolbarProps = {
   editor: Editor | null;
   className?: string;
   collaborative?: boolean;
+  onImageUpload?: (file: File) => Promise<string>;
+  iframeAllowedUrls?: string[];
+  onError?: (message: string) => void;
+  hideImageOptions?: boolean;
 };
 
-export function MarkdownToolbar({ editor, className, collaborative = false }: MarkdownToolbarProps) {
+export function MarkdownToolbar({
+  editor,
+  className,
+  collaborative = false,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+  hideImageOptions = false,
+}: MarkdownToolbarProps) {
   const { t } = useTranslation('crd-markdown');
   const [, setTick] = useState(0);
 
@@ -157,43 +168,27 @@ export function MarkdownToolbar({ editor, className, collaborative = false }: Ma
 
       <Separator orientation="vertical" className="mx-1 h-5" />
 
-      {/* Table operations */}
-      {!isInTable && (
-        <ToolbarButton
-          editor={editor}
-          icon={Table}
-          label={t('editor.insertTable')}
-          command={c => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true })}
-        />
-      )}
-      {isInTable && (
-        <>
-          <ToolbarButton
-            editor={editor}
-            icon={TableCellsMerge}
-            label={t('editor.deleteTable')}
-            command={c => c.deleteTable()}
-          />
-          <ToolbarButton
-            editor={editor}
-            icon={Columns3}
-            label={t('editor.addColumn')}
-            command={c => c.addColumnAfter()}
-          />
-          <ToolbarButton editor={editor} icon={Rows3} label={t('editor.addRow')} command={c => c.addRowAfter()} />
-          <ToolbarButton
-            editor={editor}
-            icon={Trash2}
-            label={t('editor.deleteColumn')}
-            command={c => c.deleteColumn()}
-          />
-        </>
-      )}
+      {/* Table — picker when outside, ops menu when inside */}
+      {!isInTable && <ToolbarTablePicker editor={editor} />}
+      {isInTable && <ToolbarTableOpsMenu editor={editor} />}
 
       <Separator orientation="vertical" className="mx-1 h-5" />
 
       {/* Link */}
       <ToolbarLinkDialog editor={editor} />
+
+      {/* Image */}
+      {!hideImageOptions && <ToolbarImageDialog editor={editor} onImageUpload={onImageUpload} onError={onError} />}
+
+      {/* Embed */}
+      {!hideImageOptions && (
+        <ToolbarEmbedDialog
+          editor={editor}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
+          disabled={isInTable}
+        />
+      )}
 
       {/* Emoji */}
       <EmojiPicker
