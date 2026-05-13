@@ -312,7 +312,7 @@ export function SpaceSettingsAbout() {
                 </span>
               ))}
               <input 
-                className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px]"
+                className="flex-1 bg-transparent border-none outline-none text-body min-w-[120px]"
                 placeholder="Type a tag and press Enter…"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}

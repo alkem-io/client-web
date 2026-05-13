@@ -168,9 +168,8 @@ export function SubspaceSidebar({
           </div>
           <ReadMoreText
             maxLines={3}
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
-              lineHeight: 1.6,
               opacity: 0.92,
             }}
             toggleColor="var(--primary-foreground)"

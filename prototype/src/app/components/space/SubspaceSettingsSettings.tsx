@@ -155,7 +155,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 </div>
               </div>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-4 italic">
+            <p className="text-caption text-muted-foreground mt-4 italic">
               Consider your subspace's purpose and audience when choosing visibility.
             </p>
           </AccordionContent>
@@ -198,7 +198,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     All parent space members can join directly without approval.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
                 </div>
               </div>
               <div
@@ -217,7 +217,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                     Members must submit an application that leads can approve or
                     reject.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
                 </div>
               </div>
               <div
@@ -235,7 +235,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Members can only join after being invited by a lead.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
                 </div>
               </div>
             </RadioGroup>
@@ -330,7 +330,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <FileBox className="w-5 h-5 mt-0.5 text-muted-foreground" />
                   <div>
                     <h4 className="font-semibold text-foreground">Save as Template</h4>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                    <p className="text-body text-muted-foreground mt-1 max-w-xl">
                       Turn this subspace into a template that can be used to create new subspaces with the same structure, innovation flow, and settings.
                     </p>
                   </div>
@@ -344,7 +344,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <Copy className="w-5 h-5 mt-0.5 text-muted-foreground" />
                   <div>
                     <h4 className="font-semibold text-foreground">Duplicate Subspace</h4>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                    <p className="text-body text-muted-foreground mt-1 max-w-xl">
                       Create a copy of this subspace including its structure, posts, and settings. Members will not be copied.
                     </p>
                   </div>
@@ -374,7 +374,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border border-destructive/20 rounded-md bg-background">
               <div>
                 <h4 className="font-semibold text-foreground">Delete this Subspace</h4>
-                <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                <p className="text-body text-muted-foreground mt-1 max-w-xl">
                   Deleting this subspace is permanent. All posts, content, and membership data will be permanently removed. Be careful, this action cannot be undone.
                 </p>
               </div>
@@ -421,7 +421,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 </DialogContent>
               </Dialog>
             </div>
-            <p className="text-xs text-muted-foreground mt-3 italic">
+            <p className="text-caption text-muted-foreground mt-3 italic">
               Please contact the Alkemio team if you need assistance with subspace deletion.
             </p>
           </AccordionContent>
@@ -454,7 +454,7 @@ function ActionToggle({
         </div>
         <div className="space-y-0.5">
           <Label htmlFor={id} className="text-subheader cursor-pointer">{label}</Label>
-          <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
+          <p className="text-caption text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
             {description}
           </p>
         </div>
