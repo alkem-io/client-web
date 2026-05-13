@@ -241,5 +241,37 @@
     "overwriteBody": "Selecting a template will overwrite what you've entered.",
     "overwriteConfirm": "Replace",
     "overwriteCancel": "Cancel"
+  },
+  "packAdmin": {
+    "subtitle": "Templates in this Innovation Pack"
+  },
+  "library": {
+    "title": "Innovation Library",
+    "subtitle": "Discover templates and innovation packs published across the platform.",
+    "pageTitle": "Innovation Library",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "No innovation packs available yet."
+    },
+    "templates": {
+      "heading": "Templates",
+      "empty": "No templates match the selected filters."
+    },
+    "filter": {
+      "label": "Filter by type",
+      "all": "All",
+      "types": {
+        "space": "Spaces",
+        "callout": "Collaboration tools",
+        "whiteboard": "Whiteboards",
+        "post": "Posts",
+        "communityGuidelines": "Community guidelines"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} template",
+    "templateCount_other": "{{count}} templates",
+    "byProvider": "by {{name}}"
   }
 }

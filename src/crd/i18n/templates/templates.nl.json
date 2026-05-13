@@ -259,5 +259,37 @@
     "overwriteBody": "Selecting a template will overwrite what you've entered.",
     "overwriteConfirm": "Replace",
     "overwriteCancel": "Cancel"
+  },
+  "packAdmin": {
+    "subtitle": "Sjablonen in dit Innovation Pack"
+  },
+  "library": {
+    "title": "Innovation Library",
+    "subtitle": "Ontdek sjablonen en innovation packs van het platform.",
+    "pageTitle": "Innovation Library",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Er zijn nog geen innovation packs beschikbaar."
+    },
+    "templates": {
+      "heading": "Sjablonen",
+      "empty": "Geen sjablonen voldoen aan de geselecteerde filters."
+    },
+    "filter": {
+      "label": "Filter op type",
+      "all": "Alle",
+      "types": {
+        "space": "Spaces",
+        "callout": "Samenwerkingstools",
+        "whiteboard": "Whiteboards",
+        "post": "Posts",
+        "communityGuidelines": "Communityrichtlijnen"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} sjabloon",
+    "templateCount_other": "{{count}} sjablonen",
+    "byProvider": "door {{name}}"
   }
 }

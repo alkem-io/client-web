@@ -259,5 +259,37 @@
     "overwriteBody": "Selecting a template will overwrite what you've entered.",
     "overwriteConfirm": "Replace",
     "overwriteCancel": "Cancel"
+  },
+  "packAdmin": {
+    "subtitle": "Шаблони в този Innovation Pack"
+  },
+  "library": {
+    "title": "Иновационна библиотека",
+    "subtitle": "Открийте шаблони и Innovation Packs от платформата.",
+    "pageTitle": "Иновационна библиотека",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Все още няма налични Innovation Packs."
+    },
+    "templates": {
+      "heading": "Шаблони",
+      "empty": "Няма шаблони, които отговарят на избраните филтри."
+    },
+    "filter": {
+      "label": "Филтриране по тип",
+      "all": "Всички",
+      "types": {
+        "space": "Пространства",
+        "callout": "Инструменти за сътрудничество",
+        "whiteboard": "Бели дъски",
+        "post": "Публикации",
+        "communityGuidelines": "Правила на общността"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} шаблон",
+    "templateCount_other": "{{count}} шаблона",
+    "byProvider": "от {{name}}"
   }
 }

@@ -39,8 +39,10 @@ export function TemplatePicker(props: TemplatePickerProps) {
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
       {/* `sm:` prefix is required: DialogContent's own `sm:max-w-lg` beats an unprefixed `max-w-*`
-          at ≥sm (tailwind-merge keeps both, the responsive one wins) — same gotcha as TemplateFormDialog. */}
-      <DialogContent className={cn('sm:max-w-6xl', props.className)}>
+          at ≥sm (tailwind-merge keeps both, the responsive one wins) — same gotcha as TemplateFormDialog.
+          `z-[70]` (content + overlay): the picker is opened on top of other dialogs — notably the
+          whiteboard editor shell, which is `z-[60]` — so it must out-stack them. */}
+      <DialogContent className={cn('z-[70] sm:max-w-6xl', props.className)} overlayClassName="z-[70]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

@@ -179,7 +179,11 @@ export function useTemplatePicker({
     previewContent: previewId ? previewContent : undefined,
     previewLoading,
     allowedTypes,
-    selectedId: selectedTemplateId ?? undefined,
+    // The "select" picker is single-pick-then-apply: the pick is transient — the caller consumes it
+    // once (via `selectedTemplateId` / `selectedTemplateContent`) and then it's done. The picker UI must
+    // not retain a "selected" state, so every "Use this template" button stays a plain action button and
+    // reopening the dialog shows nothing pre-selected.
+    selectedId: undefined,
     onSelect,
   };
 
