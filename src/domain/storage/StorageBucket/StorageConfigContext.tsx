@@ -16,14 +16,3 @@ export const useStorageConfigContext = () => {
   }
   return storageConfig.storageConfig;
 };
-
-/**
- * Non-throwing variant of `useStorageConfigContext` — returns `undefined` when no
- * `StorageConfigContextProvider` wraps the caller. Use this when the feature is
- * progressive-enhancement (e.g. the CRD MarkdownEditor's optional image upload):
- * the component still renders, the storage-dependent affordance is just absent.
- */
-export const useOptionalStorageConfigContext = () => {
-  const storageConfig = useContext(StorageConfigContext);
-  return storageConfig?.storageConfig;
-};
