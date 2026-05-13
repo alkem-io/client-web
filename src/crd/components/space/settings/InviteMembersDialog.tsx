@@ -123,7 +123,8 @@ export function InviteMembersDialog({
                 value={search}
                 onChange={e => onSearchChange(e.target.value)}
                 placeholder={t('community.invite.users.search')}
-                className="h-9 pl-9 text-sm"
+                aria-label={t('community.invite.users.search')}
+                className="h-9 pl-9 text-control"
               />
             </div>
             <div className="rounded-lg border bg-card overflow-hidden">

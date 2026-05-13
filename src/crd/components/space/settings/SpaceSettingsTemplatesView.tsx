@@ -179,18 +179,21 @@ export function SpaceSettingsTemplatesView({
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base">{t(`templates.categories.${section.category}`)}</h3>
-                        <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-[1.5rem] flex justify-center">
+                        <h3 className="text-card-title">{t(`templates.categories.${section.category}`)}</h3>
+                        <Badge
+                          variant="secondary"
+                          className="text-caption h-5 px-1.5 min-w-[1.5rem] flex justify-center"
+                        >
                           {allTemplates.length}
                         </Badge>
                         {duplicatingCategory === section.category && (
-                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
                             <Loader2 aria-hidden="true" className="size-3 animate-spin" />
                             {t('templates.duplicating')}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground hidden sm:block">{section.description}</p>
+                      <p className="text-body text-muted-foreground hidden sm:block">{section.description}</p>
                     </div>
                     {isOpen ? (
                       <ChevronDown className="size-4 text-muted-foreground ml-2" />
@@ -246,7 +249,7 @@ export function SpaceSettingsTemplatesView({
                     <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground border-2 border-dashed rounded-lg">
                       <SectionIcon className="size-10 mb-3 opacity-20" />
                       <p className="font-medium">{t('templates.noTemplates')}</p>
-                      <p className="text-sm">{t('templates.noTemplatesHint')}</p>
+                      <p className="text-body">{t('templates.noTemplatesHint')}</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -284,7 +287,7 @@ function TemplateCard({
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+          <div className="w-full h-full flex items-center justify-center text-caption text-muted-foreground">
             {t('templates.noPreview')}
           </div>
         )}
@@ -300,7 +303,7 @@ function TemplateCard({
       <div className="flex-1 p-4 flex flex-col gap-3">
         <div>
           <h4 className="font-semibold leading-none mb-1.5">{template.name}</h4>
-          <p className="text-sm text-muted-foreground line-clamp-2">{template.description}</p>
+          <p className="text-body text-muted-foreground line-clamp-2">{template.description}</p>
         </div>
 
         <div className="mt-auto flex items-center justify-end pt-2">

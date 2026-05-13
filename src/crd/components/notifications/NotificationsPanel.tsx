@@ -2,7 +2,6 @@ import { BellOff, MailOpen, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import type { CrdNotificationFilter, CrdNotificationItemData } from '@/crd/layouts/types';
-import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -63,7 +62,7 @@ export function NotificationsPanel({
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
       <DialogContent
-        className="max-w-none h-[100dvh] sm:h-auto sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
+        className="max-w-none h-[100dvh] sm:h-[560px] md:h-[600px] sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
         closeLabel={t('notifications.close')}
       >
         {/* Header */}
@@ -97,12 +96,10 @@ export function NotificationsPanel({
                 key={filter.key}
                 variant={selectedFilter === filter.key ? 'secondary' : 'ghost'}
                 size="sm"
-                className={cn(
-                  'h-7 text-caption rounded-full shrink-0',
-                  selectedFilter === filter.key && 'font-semibold'
-                )}
+                className="h-7 text-caption rounded-full shrink-0"
                 onClick={() => onFilterChange(filter.key)}
               >
+                {filter.hasUnread && <span aria-hidden="true" className="size-1.5 rounded-full bg-primary shrink-0" />}
                 {filter.label}
               </Button>
             ))}
@@ -110,7 +107,7 @@ export function NotificationsPanel({
         )}
 
         {/* Notification list */}
-        <div className="flex-1 overflow-y-auto sm:max-h-[60vh]">
+        <div className="flex-1 overflow-y-auto">
           {showSkeletons && (
             <output aria-label={t('notifications.loading')}>
               {Array.from({ length: 5 }).map((_, i) => (

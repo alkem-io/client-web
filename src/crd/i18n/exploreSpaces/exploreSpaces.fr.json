@@ -28,6 +28,7 @@
     "in": "dans",
     "loading": "Chargement des espaces",
     "moreLeads": "{{count}} responsables de plus",
+    "moreTags": "{{count}} étiquettes de plus",
     "removeFilter": "supprimer le filtre"
   }
 }

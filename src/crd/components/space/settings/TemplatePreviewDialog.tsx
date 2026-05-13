@@ -86,7 +86,7 @@ export function TemplatePreviewDialog({
               {template.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {template.tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
+                    <Badge key={tag} variant="secondary" className="text-caption">
                       {tag}
                     </Badge>
                   ))}
@@ -97,20 +97,20 @@ export function TemplatePreviewDialog({
             {/* Right column — name / description / body */}
             <div className="flex flex-col gap-4">
               <Section label={t('templates.preview.name')}>
-                <p className="text-base font-medium">{template.name}</p>
+                <p className="text-body-emphasis">{template.name}</p>
               </Section>
 
               {template.tagline ? (
                 <Section label={t('templates.preview.tagline')}>
-                  <p className="text-sm">{template.tagline}</p>
+                  <p className="text-body">{template.tagline}</p>
                 </Section>
               ) : null}
 
               <Section label={t('templates.preview.description')}>
                 {template.description ? (
-                  <pre className="whitespace-pre-wrap text-sm text-foreground font-sans">{template.description}</pre>
+                  <pre className="whitespace-pre-wrap text-body text-foreground font-sans">{template.description}</pre>
                 ) : (
-                  <p className="text-sm italic text-muted-foreground">{t('templates.preview.noDescription')}</p>
+                  <p className="text-body italic text-muted-foreground">{t('templates.preview.noDescription')}</p>
                 )}
               </Section>
 
@@ -119,11 +119,11 @@ export function TemplatePreviewDialog({
                   <Separator />
                   <Section label={template.bodyLabel ?? t('templates.preview.body')}>
                     {template.bodyMarkdown.trim() ? (
-                      <pre className="whitespace-pre-wrap text-sm text-foreground font-sans">
+                      <pre className="whitespace-pre-wrap text-body text-foreground font-sans">
                         {template.bodyMarkdown}
                       </pre>
                     ) : (
-                      <p className="text-sm italic text-muted-foreground">{t('templates.preview.noBody')}</p>
+                      <p className="text-body italic text-muted-foreground">{t('templates.preview.noBody')}</p>
                     )}
                   </Section>
                 </>
