@@ -5,9 +5,8 @@ export function SpaceSettingsStorage() {
     <div className="space-y-6">
       <div>
         <h2
+          className="text-section-title font-bold"
           style={{
-            fontSize: "var(--text-xl)",
-            fontWeight: 700,
             color: "var(--foreground)",
             fontFamily: "'Inter', sans-serif",
           }}
@@ -15,9 +14,8 @@ export function SpaceSettingsStorage() {
           Storage
         </h2>
         <p
-          className="mt-1"
+          className="mt-1 text-body"
           style={{
-            fontSize: "var(--text-sm)",
             color: "var(--muted-foreground)",
             fontFamily: "'Inter', sans-serif",
           }}
@@ -44,9 +42,8 @@ export function SpaceSettingsStorage() {
         </div>
         <div>
           <h3
+            className="text-card-title"
             style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
               color: "var(--foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -54,12 +51,10 @@ export function SpaceSettingsStorage() {
             Platform-Managed Storage
           </h3>
           <p
-            className="mt-1"
+            className="mt-1 text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
-              lineHeight: 1.6,
             }}
           >
             Documents, images, and whiteboards uploaded to this space are stored
@@ -70,10 +65,9 @@ export function SpaceSettingsStorage() {
       </div>
 
       <div
-        className="flex items-center gap-2 p-4 rounded-lg"
+        className="flex items-center gap-2 p-4 rounded-lg text-body"
         style={{
           background: "var(--muted)",
-          fontSize: "var(--text-sm)",
           color: "var(--muted-foreground)",
           fontFamily: "'Inter', sans-serif",
         }}

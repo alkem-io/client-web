@@ -227,8 +227,8 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
         <div className="p-6 border-b border-border bg-card/50 backdrop-blur-sm relative">
           <div className="flex items-start justify-between">
             <div>
-              <DialogTitle className="text-3xl font-bold tracking-tight">Explore All My Spaces</DialogTitle>
-              <DialogDescription className="text-muted-foreground mt-2 text-base max-w-2xl">
+              <DialogTitle className="text-hero">Explore All My Spaces</DialogTitle>
+              <DialogDescription className="text-muted-foreground mt-2 text-subheader font-normal max-w-2xl">
                 Browse all spaces and subspaces you're a member of. Click to navigate or expand to see subspaces.
               </DialogDescription>
             </div>
@@ -240,9 +240,9 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
             {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input 
-                placeholder="Search spaces and subspaces..." 
-                className="h-14 pl-12 text-lg bg-background border-input focus:ring-primary/20 transition-shadow shadow-sm"
+              <Input
+                placeholder="Search spaces and subspaces..."
+                className="h-14 pl-12 text-subsection-title font-normal bg-background border-input focus:ring-primary/20 transition-shadow shadow-sm"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -260,7 +260,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
             <div className="flex items-center gap-3 shrink-0">
                {/* Role Filter */}
                <Select value={roleFilter} onValueChange={(val) => setRoleFilter(val as any)}>
-                 <SelectTrigger className="w-[140px] sm:w-[160px] h-14 text-base">
+                 <SelectTrigger className="w-[140px] sm:w-[160px] h-14 text-subheader font-normal">
                    <SelectValue placeholder="All Roles" />
                  </SelectTrigger>
                  <SelectContent>
@@ -273,7 +273,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
 
                {/* Sort Filter */}
                <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-                 <SelectTrigger className="w-[140px] sm:w-[180px] h-14 text-base">
+                 <SelectTrigger className="w-[140px] sm:w-[180px] h-14 text-subheader font-normal">
                    <SelectValue placeholder="Sort By" />
                  </SelectTrigger>
                  <SelectContent>
@@ -287,7 +287,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
           </div>
           
           {hasActiveFilters && (
-             <div className="mt-3 text-sm text-muted-foreground font-medium animate-in fade-in">
+             <div className="mt-3 text-body-emphasis text-muted-foreground animate-in fade-in">
                {filteredSpaces.length} spaces match your filters
              </div>
           )}
@@ -299,7 +299,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
           {/* 4. Recent Spaces Section (Only show if no active search/filter) */}
           {!hasActiveFilters && RECENT_SPACES.length > 0 && (
             <div className="space-y-6">
-              <h3 className="text-base font-bold text-muted-foreground uppercase tracking-wider pl-1">
+              <h3 className="text-subheader font-bold text-muted-foreground uppercase tracking-wider pl-1">
                 Your Recent Spaces ({RECENT_SPACES.length})
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -312,17 +312,17 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                       <img src={space.image} alt={space.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                       <div className="absolute top-3 right-3 flex flex-col gap-1">
-                        <Badge variant={getRoleBadgeVariant(space.role)} className="shadow-sm bg-background/90 backdrop-blur text-foreground border-transparent hover:bg-background text-xs px-2 py-0.5">
+                        <Badge variant={getRoleBadgeVariant(space.role)} className="shadow-sm bg-background/90 backdrop-blur text-foreground border-transparent hover:bg-background text-caption px-2 py-0.5">
                           {space.role}
                         </Badge>
                       </div>
                       <div className="absolute bottom-3 left-3 text-white">
-                         <h4 className="font-bold text-base leading-tight drop-shadow-md">{space.name}</h4>
+                         <h4 className="text-subheader font-bold drop-shadow-md">{space.name}</h4>
                       </div>
                     </div>
                     <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm text-muted-foreground line-clamp-2 flex-1">{space.description}</p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border/50">
+                      <p className="text-body text-muted-foreground line-clamp-2 flex-1">{space.description}</p>
+                      <div className="flex items-center justify-between text-caption text-muted-foreground mt-2 pt-2 border-t border-border/50">
                         <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {space.members}</span>
                         <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {space.lastActive}</span>
                       </div>
@@ -335,7 +335,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
 
           {/* 5. All Spaces Section */}
           <div className="space-y-6">
-             <h3 className="text-base font-bold text-muted-foreground uppercase tracking-wider pl-1 flex items-center justify-between">
+             <h3 className="text-subheader font-bold text-muted-foreground uppercase tracking-wider pl-1 flex items-center justify-between">
                 <span>All Spaces ({filteredSpaces.length} total)</span>
              </h3>
 
@@ -345,8 +345,8 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6 text-muted-foreground">
                       <Search className="w-8 h-8" />
                    </div>
-                   <h3 className="text-xl font-semibold">No spaces match your search</h3>
-                   <p className="text-muted-foreground mt-2 text-base max-w-sm mx-auto">
+                   <h3 className="text-section-title">No spaces match your search</h3>
+                   <p className="text-muted-foreground mt-2 text-subheader font-normal max-w-sm mx-auto">
                      Try adjusting your filters or search terms. You can also create a new space.
                    </p>
                    <Button variant="outline" size="lg" className="mt-6" onClick={() => { setSearch(""); setRoleFilter("All"); }}>
@@ -380,18 +380,18 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                            <div className="flex-1 min-w-0 grid sm:grid-cols-[1fr_auto] gap-6 items-center">
                               <div className="space-y-3">
                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                                    <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
+                                    <h4 className="text-section-title font-bold text-foreground group-hover:text-primary transition-colors">
                                       {space.name}
                                     </h4>
                                     <div className="flex items-center gap-2">
                                       {space.isPrivate && <Lock className="w-4 h-4 text-muted-foreground" />}
-                                      <Badge variant={getRoleBadgeVariant(space.role)} className="h-6 text-xs px-2.5 font-medium">
+                                      <Badge variant={getRoleBadgeVariant(space.role)} className="h-6 text-caption font-medium px-2.5">
                                         {space.role}
                                       </Badge>
                                     </div>
                                  </div>
-                                 <p className="text-base text-muted-foreground line-clamp-2 leading-relaxed max-w-3xl">{space.description}</p>
-                                 <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground pt-1">
+                                 <p className="text-subheader font-normal text-muted-foreground line-clamp-2 max-w-3xl">{space.description}</p>
+                                 <div className="flex items-center gap-6 text-body-emphasis text-muted-foreground pt-1">
                                     <span className="flex items-center gap-2"><Users className="w-4 h-4" /> {space.members} members</span>
                                     <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> Active {space.lastActive}</span>
                                  </div>
@@ -419,7 +419,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                           <div className="bg-muted/30 border-t border-border animate-in slide-in-from-top-2 duration-200">
                              <div className="p-4 pl-6 sm:pl-32">
                                 <div className="flex items-center justify-between mb-3">
-                                   <h5 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                                   <h5 className="text-label uppercase text-muted-foreground flex items-center gap-1.5">
                                      <Briefcase className="w-3.5 h-3.5" /> Subspaces you're in
                                    </h5>
                                 </div>
@@ -441,28 +441,28 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
                                              className="w-10 h-10 rounded object-cover shrink-0 border border-border/50"
                                           />
                                           <div className="flex-1 min-w-0">
-                                             <h6 className="text-base font-medium text-foreground group-hover/sub:text-primary truncate">
+                                             <h6 className="text-subheader text-foreground group-hover/sub:text-primary truncate">
                                                {sub.name}
                                              </h6>
-                                             <p className="text-sm text-muted-foreground truncate">{sub.description}</p>
+                                             <p className="text-body text-muted-foreground truncate">{sub.description}</p>
                                           </div>
-                                          <div className="text-sm text-muted-foreground pr-2">
+                                          <div className="text-body text-muted-foreground pr-2">
                                              {sub.members} members
                                           </div>
                                        </div>
                                      ))}
                                   </div>
                                 ) : (
-                                  <div className="py-4 text-sm text-muted-foreground italic">
+                                  <div className="py-4 text-body text-muted-foreground italic">
                                     No subspaces found.
                                   </div>
                                 )}
                                 
                                 <div className="mt-4 pt-2 border-t border-border/50 flex justify-end gap-2">
-                                   <Button size="sm" variant="ghost" className="text-xs h-7 text-muted-foreground">
+                                   <Button size="sm" variant="ghost" className="text-caption h-7 text-muted-foreground">
                                       <LogOut className="w-3 h-3 mr-1.5" /> Leave Space
                                    </Button>
-                                   <Button size="sm" variant="ghost" className="text-xs h-7">
+                                   <Button size="sm" variant="ghost" className="text-caption h-7">
                                       <Settings className="w-3 h-3 mr-1.5" /> Settings
                                    </Button>
                                 </div>
@@ -479,7 +479,7 @@ export function ExploreSpacesDialog({ open, onOpenChange }: ExploreSpacesDialogP
 
         {/* 8. Footer */}
         <div className="p-4 border-t border-border bg-background flex items-center justify-between gap-4">
-           <p className="hidden sm:block text-xs text-muted-foreground">
+           <p className="hidden sm:block text-caption text-muted-foreground">
              Don't see what you're looking for? <a href="#" className="underline hover:text-primary">Contact support</a>.
            </p>
            <div className="flex items-center gap-3 w-full sm:w-auto">

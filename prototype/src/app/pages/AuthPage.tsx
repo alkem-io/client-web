@@ -87,12 +87,11 @@ function FloatingInput({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full bg-transparent outline-none"
+          className="w-full bg-transparent outline-none text-subheader font-normal"
           style={{
             height: "56px",
             padding: "20px 14px 8px",
             paddingRight: endIcon ? "48px" : "14px",
-            fontSize: "var(--text-base)",
             color: "var(--foreground)",
             fontFamily: "'Inter', sans-serif",
           }}
@@ -157,7 +156,7 @@ function OrDivider() {
   return (
     <div className="flex items-center gap-3 my-5">
       <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-      <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
+      <span className="text-body" style={{ color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
         or continue with
       </span>
       <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
@@ -197,23 +196,20 @@ function AuthCard({
             <AlkemioLogo />
           </div>
           <p
-            className="mt-1.5"
-            style={{
-              fontSize: "11px",
-              color: "var(--muted-foreground)",
-            }}
+            className="mt-1.5 text-caption"
+            style={{ color: "var(--muted-foreground)" }}
           >
             Safe Spaces for Collaboration
           </p>
         </div>
         {showSignUp && (
           <div className="text-right">
-            <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>No account?</span>
+            <span className="text-body" style={{ color: "var(--muted-foreground)" }}>No account?</span>
             <br />
             <button
               onClick={() => onNavigate("sign-up")}
-              className="font-semibold hover:underline"
-              style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}
+              className="font-semibold hover:underline text-body"
+              style={{ color: "var(--foreground)" }}
             >
               Sign up
             </button>
@@ -221,12 +217,12 @@ function AuthCard({
         )}
         {showSignIn && (
           <div className="text-right">
-            <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>Have an account?</span>
+            <span className="text-body" style={{ color: "var(--muted-foreground)" }}>Have an account?</span>
             <br />
             <button
               onClick={() => onNavigate("sign-in")}
-              className="font-semibold hover:underline"
-              style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}
+              className="font-semibold hover:underline text-body"
+              style={{ color: "var(--foreground)" }}
             >
               Sign in
             </button>
@@ -236,13 +232,8 @@ function AuthCard({
 
       {/* Title */}
       <h1
-        className="mb-6"
-        style={{
-          fontSize: "var(--text-3xl)",
-          fontWeight: 700,
-          color: "var(--foreground)",
-          lineHeight: 1.2,
-        }}
+        className="mb-6 text-hero"
+        style={{ color: "var(--foreground)" }}
       >
         {title}
       </h1>
@@ -536,19 +527,18 @@ export default function AuthPage() {
               />
               <button
                 onClick={() => setView("recovery")}
-                className="hover:underline"
-                style={{ fontSize: "var(--text-sm)", color: "var(--primary)" }}
+                className="hover:underline text-body"
+                style={{ color: "var(--primary)" }}
               >
                 Forgot password?
               </button>
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold"
+                className="w-full uppercase tracking-wider font-semibold text-control"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleSignIn}
@@ -564,7 +554,7 @@ export default function AuthPage() {
         {view === "sign-up" && (
           <AuthCard title="Sign up" showSignIn onNavigate={handleNavigate}>
             <div className="space-y-5">
-              <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+              <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
                 Alkemio is designed to benefit society. Please read and accept the{" "}
                 <a href="#" className="underline font-medium" style={{ color: "var(--foreground)" }}>Terms of Use</a>{" "}
                 and{" "}
@@ -578,7 +568,7 @@ export default function AuthPage() {
                   onCheckedChange={(v) => setTermsAccepted(!!v)}
                   className="mt-0.5"
                 />
-                <label style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", lineHeight: 1.5 }}>
+                <label className="text-body" style={{ color: "var(--foreground)" }}>
                   I accept the{" "}
                   <a href="#" className="underline font-medium">Terms of Use</a>{" "}
                   and{" "}
@@ -608,12 +598,11 @@ export default function AuthPage() {
 
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold"
+                className="w-full uppercase tracking-wider font-semibold text-control"
                 style={{
                   background: termsAccepted ? "var(--primary)" : "var(--muted)",
                   color: termsAccepted ? "var(--primary-foreground)" : "var(--muted-foreground)",
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                   cursor: termsAccepted ? "pointer" : "not-allowed",
                 }}
@@ -641,7 +630,7 @@ export default function AuthPage() {
                 }}
               >
                 <Info className="w-4 h-4 shrink-0" style={{ color: "var(--primary)" }} />
-                <span style={{ fontSize: "var(--text-sm)", color: "var(--primary)" }}>
+                <span className="text-body" style={{ color: "var(--primary)" }}>
                   Pick a password for your account
                 </span>
               </div>
@@ -661,12 +650,11 @@ export default function AuthPage() {
 
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold"
+                className="w-full uppercase tracking-wider font-semibold text-control"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleSignUpSubmit}
@@ -677,10 +665,9 @@ export default function AuthPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full uppercase tracking-wider font-semibold"
+                className="w-full uppercase tracking-wider font-semibold text-control"
                 style={{
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                   borderColor: "var(--primary)",
                   color: "var(--primary)",
@@ -695,12 +682,11 @@ export default function AuthPage() {
               {/* Passkey button */}
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold gap-2"
+                className="w-full uppercase tracking-wider font-semibold gap-2 text-control"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
               >
@@ -717,10 +703,10 @@ export default function AuthPage() {
         {view === "verify" && (
           <AuthCard title="Sign up" showSignIn onNavigate={handleNavigate}>
             <div className="space-y-6">
-              <p style={{ fontSize: "var(--text-base)", color: "var(--muted-foreground)", lineHeight: 1.7 }}>
+              <p className="text-subheader font-normal" style={{ color: "var(--muted-foreground)" }}>
                 The last step is to verify your email address. Please check your inbox for an email with instructions.
               </p>
-              <p style={{ fontSize: "var(--text-base)", color: "var(--foreground)", lineHeight: 1.7 }}>
+              <p className="text-subheader font-normal" style={{ color: "var(--foreground)" }}>
                 If you have not received an email,{" "}
                 <button className="underline font-medium hover:opacity-80">
                   click here to send it again.
@@ -733,7 +719,7 @@ export default function AuthPage() {
         {view === "recovery" && (
           <AuthCard title="Password recovery" showSignUp onNavigate={handleNavigate}>
             <div className="space-y-5">
-              <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+              <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
                 Please enter your email address below to receive a recovery link that will allow you to reset your password.
               </p>
               <FloatingInput
@@ -745,12 +731,11 @@ export default function AuthPage() {
               />
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold"
+                className="w-full uppercase tracking-wider font-semibold text-control"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
-                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleRecovery}

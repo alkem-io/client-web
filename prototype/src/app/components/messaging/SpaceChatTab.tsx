@@ -141,27 +141,25 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
           <div>
             <div className="flex items-center gap-2">
               <span
+                className="text-subheader font-semibold"
                 style={{
-                  fontSize: "var(--text-base)",
-                  fontWeight: 600,
                   color: "var(--foreground)",
                 }}
               >
                 {fallbackChannel.name}
               </span>
               <span
+                className="text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   color: "var(--muted-foreground)",
-                  fontWeight: 400,
                 }}
               >
                 — Channel
               </span>
             </div>
             <span
+              className="text-caption"
               style={{
-                fontSize: "12px",
                 color: "var(--muted-foreground)",
               }}
             >
@@ -210,12 +208,12 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
             <DropdownMenuContent align="end" style={{ minWidth: 180 }}>
               <DropdownMenuItem className="gap-2 cursor-pointer">
                 <BellOff style={{ width: 14, height: 14 }} />
-                <span style={{ fontSize: "var(--text-sm)" }}>Mute Notifications</span>
+                <span className="text-control">Mute Notifications</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="gap-2 cursor-pointer">
                 <Settings style={{ width: 14, height: 14 }} />
-                <span style={{ fontSize: "var(--text-sm)" }}>Channel Settings</span>
+                <span className="text-control">Channel Settings</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -246,16 +244,15 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             autoFocus
-            className="flex-1 bg-transparent outline-none"
+            className="flex-1 bg-transparent outline-none text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--foreground)",
             }}
           />
           {searchQuery && (
             <span
+              className="text-caption"
               style={{
-                fontSize: "11px",
                 color: "var(--muted-foreground)",
                 whiteSpace: "nowrap",
               }}
@@ -299,10 +296,9 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                   }}
                 />
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
                     maxWidth: 320,
                   }}
                 >
@@ -330,9 +326,8 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                   />
                 </div>
                 <h3
+                  className="text-subheader font-semibold"
                   style={{
-                    fontSize: "var(--text-base)",
-                    fontWeight: 600,
                     color: "var(--foreground)",
                     marginBottom: 8,
                   }}
@@ -340,10 +335,9 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                   This is the {fallbackChannel.name} channel
                 </h3>
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
                     maxWidth: 360,
                     marginBottom: 20,
                   }}
@@ -358,11 +352,9 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                       onClick={() => {
                         /* could pre-fill composer */
                       }}
-                      className="rounded-full transition-colors"
+                      className="rounded-full transition-colors text-control"
                       style={{
                         padding: "6px 16px",
-                        fontSize: "var(--text-sm)",
-                        fontWeight: 500,
                         background: "var(--secondary)",
                         color: "var(--foreground)",
                         border: "1px solid var(--border)",
@@ -396,9 +388,8 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                       style={{ padding: "20px 0 16px" }}
                     >
                       <span
+                        className="text-caption font-medium"
                         style={{
-                          fontSize: "11px",
-                          fontWeight: 500,
                           color: "var(--muted-foreground)",
                           background: "var(--secondary)",
                           padding: "4px 14px",
@@ -435,10 +426,7 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                           >
                             <AvatarImage src={msg.senderAvatar} alt={msg.senderName} />
                             <AvatarFallback
-                              style={{
-                                fontSize: "10px",
-                                fontWeight: 600,
-                              }}
+                              className="text-badge"
                             >
                               {msg.senderInitials}
                             </AvatarFallback>
@@ -458,9 +446,8 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                       {/* Sender name */}
                       {showSender && (
                         <span
+                          className="text-caption font-semibold"
                           style={{
-                            fontSize: "12px",
-                            fontWeight: 600,
                             color: "var(--foreground)",
                             marginBottom: 2,
                           }}
@@ -473,7 +460,6 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                       {msg.replyTo && (
                         <div
                           style={{
-                            fontSize: "12px",
                             color: "var(--muted-foreground)",
                             padding: "4px 12px",
                             borderRadius: "var(--radius)",
@@ -482,7 +468,7 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                             marginBottom: 4,
                             maxWidth: "100%",
                           }}
-                          className="truncate"
+                          className="truncate text-caption"
                         >
                           <span style={{ fontWeight: 600 }}>
                             {msg.replyTo.senderName}:
@@ -493,7 +479,7 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
 
                       {/* Bubble */}
                       <div
-                        className="relative"
+                        className="relative text-body"
                         style={{
                           padding: "10px 16px",
                           borderRadius: "calc(var(--radius) + 6px)",
@@ -508,9 +494,6 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                                 color: "var(--foreground)",
                                 borderBottomLeftRadius: "calc(var(--radius))",
                               }),
-                          fontSize: "var(--text-sm)",
-                          fontWeight: "var(--font-weight-normal)" as any,
-                          lineHeight: 1.6,
                           maxWidth: "100%",
                           wordBreak: "break-word" as const,
                         }}
@@ -530,13 +513,11 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                               border: msg.isOwn ? "none" : "1px solid var(--border)",
                             }}
                           >
-                            <span style={{ fontSize: "12px" }}>📄</span>
+                            <span className="text-caption">📄</span>
                             <div className="min-w-0 flex-1">
                               <p
-                                className="truncate"
+                                className="truncate text-caption font-medium"
                                 style={{
-                                  fontSize: "12px",
-                                  fontWeight: 500,
                                   margin: 0,
                                 }}
                               >
@@ -578,10 +559,9 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                             </button>
                           ))}
                           <button
-                            className="p-0.5 rounded-sm transition-colors"
+                            className="p-0.5 rounded-sm transition-colors text-caption"
                             style={{
                               color: "var(--muted-foreground)",
-                              fontSize: "12px",
                               lineHeight: 1,
                             }}
                             onClick={() =>
@@ -603,10 +583,9 @@ export function SpaceChatTab({ spaceSlug }: SpaceChatTabProps) {
                           {msg.reactions.map((r, ri) => (
                             <button
                               key={ri}
-                              className="flex items-center gap-1 rounded-full transition-colors"
+                              className="flex items-center gap-1 rounded-full transition-colors text-caption"
                               style={{
                                 padding: "2px 8px",
-                                fontSize: "12px",
                                 border: r.reacted
                                   ? "1px solid var(--primary)"
                                   : "1px solid var(--border)",

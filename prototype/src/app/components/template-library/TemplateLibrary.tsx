@@ -28,14 +28,14 @@ function PackCard({ pack, onClick }: { pack: typeof TEMPLATE_PACKS[0], onClick: 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-        <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur px-2 py-1 rounded text-xs font-semibold shadow-sm">
+        <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur px-2 py-1 rounded text-caption font-semibold shadow-sm">
           {pack.templateCount} Templates
         </div>
       </div>
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
           <div className="flex items-center gap-2">
-            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold", pack.color)}>
+            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center text-caption font-bold", pack.color)}>
               {pack.initials}
             </div>
             <div>
@@ -44,7 +44,7 @@ function PackCard({ pack, onClick }: { pack: typeof TEMPLATE_PACKS[0], onClick: 
             </div>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">{pack.description}</p>
+        <p className="text-caption text-muted-foreground line-clamp-2 mb-4 flex-1">{pack.description}</p>
         <div className="flex flex-wrap gap-1.5 mt-auto">
           {pack.tags.slice(0, 3).map((tag, idx) => (
             <Badge key={idx} variant="secondary" className="text-[10px] px-1.5 h-5 font-normal">
@@ -102,7 +102,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                     <div className="w-5 h-5 rounded bg-white/20 backdrop-blur flex items-center justify-center border border-white/30">
                         <Home className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[10px] font-medium text-white/90 shadow-sm tracking-wide">Space</span>
+                    <span className="text-badge text-white/90 shadow-sm">Space</span>
                 </div>
              </div>
          </div>
@@ -130,7 +130,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                     <div className="w-5 h-5 rounded bg-primary/20 backdrop-blur flex items-center justify-center border border-primary/30">
                         <Layers className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[10px] font-medium text-white/90 shadow-sm tracking-wide">{type}</span>
+                    <span className="text-badge text-white/90 shadow-sm">{type}</span>
                 </div>
              </div>
         </div>
@@ -164,25 +164,25 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
              if (isHeader) {
                  return (
                      <div key={i} className={cn(
-                         "font-semibold text-foreground",
-                         i === 0 ? "text-sm pb-1.5 border-b border-border flex items-center justify-between" : "text-xs mt-1"
+                         "text-foreground",
+                         i === 0 ? "text-card-title pb-1.5 border-b border-border flex items-center justify-between" : "text-caption font-semibold mt-1"
                      )}>
                          {line.replace(/^#+\s/, "")}
                      </div>
                  );
              }
-             
+
              if (isList) {
                  return (
                      <div key={i} className="flex items-start gap-2 pl-1">
                          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 mt-1.5 shrink-0" />
-                         <span className="text-[11px] text-muted-foreground leading-relaxed">{line.replace(/^[-*\[\] ]+/, "")}</span>
+                         <span className="text-caption text-muted-foreground">{line.replace(/^[-*\[\] ]+/, "")}</span>
                      </div>
                  );
              }
 
              return (
-                 <div key={i} className="text-[11px] text-muted-foreground leading-relaxed">
+                 <div key={i} className="text-caption text-muted-foreground">
                      {line}
                  </div>
              );
@@ -190,7 +190,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
           {!displayContent && (
               <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30">
                   <FileText className="w-10 h-10 mb-2 opacity-50" />
-                  <span className="text-xs">Preview unavailable</span>
+                  <span className="text-caption">Preview unavailable</span>
               </div>
           )}
        </div>
@@ -229,13 +229,13 @@ function TemplateCard({ template }: { template: typeof INDIVIDUAL_TEMPLATES[0] }
       
       <div className="p-4 flex flex-col flex-1">
         <div className="mb-2">
-           <h4 className="font-semibold text-foreground text-sm leading-tight group-hover:text-primary transition-colors line-clamp-1" title={template.name}>
+           <h4 className="text-card-title text-foreground group-hover:text-primary transition-colors line-clamp-1" title={template.name}>
              {template.name}
            </h4>
            <p className="text-[10px] text-muted-foreground mt-1">{template.category}</p>
         </div>
-        
-        <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
+
+        <p className="text-caption text-muted-foreground line-clamp-2 flex-1">
           {template.description}
         </p>
         
@@ -275,7 +275,7 @@ function Pagination({
         <ChevronLeft className="w-4 h-4" />
       </Button>
       
-      <div className="text-sm font-medium text-muted-foreground px-2">
+      <div className="text-body-emphasis text-muted-foreground px-2">
         Page {currentPage} of {totalPages}
       </div>
 
@@ -344,8 +344,8 @@ export function TemplateLibrary() {
             <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Template Library</h1>
-              <p className="text-sm text-muted-foreground mt-1">Explore curated template packs and individual templates to enhance your space.</p>
+              <h1 className="text-page-title">Template Library</h1>
+              <p className="text-body text-muted-foreground mt-1">Explore curated template packs and individual templates to enhance your space.</p>
             </div>
           </div>
 
@@ -374,11 +374,11 @@ export function TemplateLibrary() {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-semibold flex items-center gap-2">
-                    Template Packs 
+                  <h2 className="text-subsection-title flex items-center gap-2">
+                    Template Packs
                     <Badge variant="secondary" className="text-[10px] h-5">{filteredPacks.length}</Badge>
                   </h2>
-                  <p className="text-sm text-muted-foreground">Coherent sets of templates curated around specific themes.</p>
+                  <p className="text-body text-muted-foreground">Coherent sets of templates curated around specific themes.</p>
                 </div>
               </div>
               
@@ -406,11 +406,11 @@ export function TemplateLibrary() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-border pb-4 gap-4">
               <div>
-                <h2 className="text-lg font-semibold flex items-center gap-2">
+                <h2 className="text-subsection-title flex items-center gap-2">
                   Templates
                   <Badge variant="secondary" className="text-[10px] h-5">{filteredTemplates.length}</Badge>
                 </h2>
-                <p className="text-sm text-muted-foreground">Browse individual templates organized by type.</p>
+                <p className="text-body text-muted-foreground">Browse individual templates organized by type.</p>
               </div>
 
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide w-full md:w-auto">
@@ -419,7 +419,7 @@ export function TemplateLibrary() {
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     className={cn(
-                      "px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors border",
+                      "px-3 py-2 rounded-full text-caption font-medium whitespace-nowrap transition-colors border",
                       selectedCategory === cat 
                         ? "bg-primary text-primary-foreground border-primary" 
                         : "bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground"
@@ -429,9 +429,9 @@ export function TemplateLibrary() {
                   </button>
                 ))}
                 {searchQuery && (
-                  <button 
+                  <button
                     onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
-                    className="text-xs text-muted-foreground hover:text-foreground ml-2 whitespace-nowrap"
+                    className="text-caption text-muted-foreground hover:text-foreground ml-2 whitespace-nowrap"
                   >
                     Clear all
                   </button>
@@ -458,7 +458,7 @@ export function TemplateLibrary() {
                   <Search className="w-6 h-6 opacity-50" />
                 </div>
                 <p className="font-medium">No templates found</p>
-                <p className="text-sm">Try adjusting your search or filters.</p>
+                <p className="text-body">Try adjusting your search or filters.</p>
                 <Button 
                   variant="link" 
                   onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}

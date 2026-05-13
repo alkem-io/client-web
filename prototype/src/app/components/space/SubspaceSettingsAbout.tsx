@@ -63,14 +63,14 @@ function InlineSaveButton({
 }) {
   if (status === "saved") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
+      <span className="inline-flex items-center gap-1 text-caption text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
         <Check className="w-3 h-3" /> Saved
       </span>
     );
   }
   if (status === "saving") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
         <Loader2 className="w-3 h-3 animate-spin" /> Saving…
       </span>
     );
@@ -81,7 +81,7 @@ function InlineSaveButton({
       variant="ghost"
       size="sm"
       onClick={onSave}
-      className="h-6 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
+      className="h-6 px-2 text-caption text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
     >
       Save
     </Button>
@@ -194,7 +194,7 @@ export function SubspaceSettingsAbout({
       {/* LEFT — CONTENT */}
       <div className="xl:col-span-2 space-y-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">About</h2>
+          <h2 className="text-page-title">About</h2>
           <p className="text-muted-foreground mt-2">
             Define this subspace's purpose, motivation, and target audience.
           </p>
@@ -204,7 +204,7 @@ export function SubspaceSettingsAbout({
 
         {/* ── Subspace Name ── */}
         <section>
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Subspace Name</Label>
+          <Label className="text-label uppercase text-muted-foreground">Subspace Name</Label>
           <div className="mt-2 space-y-2">
             <div className="relative max-w-md">
               <Input
@@ -226,7 +226,7 @@ export function SubspaceSettingsAbout({
 
         {/* Branding */}
         <section className="space-y-6">
-          <h3 className="text-lg font-medium">Subspace Branding</h3>
+          <h3 className="text-subsection-title font-medium">Subspace Branding</h3>
 
           {/* Avatar */}
           <div className="space-y-3">
@@ -257,7 +257,7 @@ export function SubspaceSettingsAbout({
                 </div>
               </div>
               <div className="space-y-1 pt-1">
-                <Label className="text-base font-medium">Avatar</Label>
+                <Label className="text-subheader">Avatar</Label>
                 <p className="text-xs text-muted-foreground">
                   Resolution: 410 width × 410 height (pixels)
                 </p>
@@ -281,7 +281,7 @@ export function SubspaceSettingsAbout({
                 </div>
               </div>
               <div className="space-y-1 pt-1">
-                <Label className="text-base font-medium">Card Banner</Label>
+                <Label className="text-subheader">Card Banner</Label>
                 <p className="text-xs text-muted-foreground">
                   Resolution: 410 width × 256 height (pixels)
                 </p>
@@ -307,7 +307,7 @@ export function SubspaceSettingsAbout({
 
           return (
             <section key={field} className="space-y-1">
-              <Label className="text-base font-semibold">{title}</Label>
+              <Label className="text-subheader font-semibold">{title}</Label>
 
               <div className="space-y-2">
                 <div className="prose-editor">
@@ -479,14 +479,14 @@ export function SubspaceSettingsAbout({
 
             <div className="p-4 pt-8 space-y-3">
               <div>
-                <h4 className="font-semibold text-sm">
+                <h4 className="text-card-title">
                   {formData.name || "Untitled Subspace"}
                 </h4>
-                <p className="text-xs text-muted-foreground mt-0.5">Last active just now</p>
+                <p className="text-caption text-muted-foreground mt-0.5">Last active just now</p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase">What</p>
+                <p className="text-label uppercase font-medium text-muted-foreground">What</p>
                 <div
                   className="text-sm text-card-foreground line-clamp-3 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{

@@ -148,20 +148,20 @@ export default function UserNotificationsPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <Link
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -182,7 +182,7 @@ export default function UserNotificationsPage() {
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
         <div className="space-y-8">
           
-          <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg text-sm text-muted-foreground border">
+          <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg text-body text-muted-foreground border">
             <Info className="w-4 h-4 flex-shrink-0" />
             <p>Here you can edit your notification preferences. Changes are saved automatically.</p>
           </div>
@@ -190,8 +190,8 @@ export default function UserNotificationsPage() {
           {sections.map((section) => (
             <div key={section.id} className="space-y-4">
               <div className="flex flex-col gap-1">
-                <h2 className="text-xl font-semibold tracking-tight">{section.title}</h2>
-                <p className="text-sm text-muted-foreground">{section.description}</p>
+                <h2 className="text-section-title">{section.title}</h2>
+                <p className="text-body text-muted-foreground">{section.description}</p>
               </div>
 
               <Card>
@@ -201,11 +201,11 @@ export default function UserNotificationsPage() {
                     <div className="flex items-center gap-8 md:gap-16 pr-4">
                       <div className="flex flex-col items-center gap-1 w-12">
                         <Bell className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-[10px] uppercase font-bold text-muted-foreground">In-App</span>
+                        <span className="text-badge font-bold uppercase text-muted-foreground">In-App</span>
                       </div>
                       <div className="flex flex-col items-center gap-1 w-12">
                         <Mail className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-[10px] uppercase font-bold text-muted-foreground">Email</span>
+                        <span className="text-badge font-bold uppercase text-muted-foreground">Email</span>
                       </div>
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default function UserNotificationsPage() {
                         index !== section.items.length - 1 && "border-b border-border/50"
                       )}
                     >
-                      <div className="flex-1 text-sm font-medium leading-normal pr-4">
+                      <div className="flex-1 text-body-emphasis pr-4">
                         {item.label}
                       </div>
                       

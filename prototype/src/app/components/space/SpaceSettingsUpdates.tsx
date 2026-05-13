@@ -124,7 +124,7 @@ export function SpaceSettingsUpdates() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <h2 className="text-page-title flex items-center gap-2">
             <Megaphone className="w-5 h-5" />
             Updates from the Leads
           </h2>
@@ -151,7 +151,7 @@ export function SpaceSettingsUpdates() {
             border: "1px solid var(--border)",
           }}
         >
-          <h3 className="text-sm font-semibold">New Update</h3>
+          <h3 className="text-card-title">New Update</h3>
           <Input
             placeholder="Update title"
             value={newTitle}
@@ -189,7 +189,7 @@ export function SpaceSettingsUpdates() {
       {/* Update List */}
       <div className="space-y-4">
         {updates.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground text-sm">
+          <div className="text-center py-12 text-muted-foreground text-body">
             No updates yet. Click "New Update" to post the first one.
           </div>
         )}
@@ -212,21 +212,21 @@ export function SpaceSettingsUpdates() {
                   {update.authorAvatar && (
                     <AvatarImage src={update.authorAvatar} />
                   )}
-                  <AvatarFallback className="text-xs">
+                  <AvatarFallback className="text-caption">
                     {update.authorInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{update.author}</span>
+                    <span className="text-body-emphasis">{update.author}</span>
                     <Badge
                       variant="secondary"
-                      className="text-[10px] px-1.5 py-0"
+                      className="text-badge px-1.5 py-0"
                     >
                       {update.role}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-caption text-muted-foreground">
                     <Calendar className="w-3 h-3" />
                     {update.date}
                   </div>
@@ -261,11 +261,11 @@ export function SpaceSettingsUpdates() {
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-semibold">{update.title}</h3>
+            <h3 className="text-subheader font-semibold">{update.title}</h3>
 
             {/* Body */}
             <div
-              className="text-sm text-muted-foreground prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground"
+              className="text-body text-muted-foreground prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground"
               dangerouslySetInnerHTML={{ __html: update.body }}
             />
           </div>

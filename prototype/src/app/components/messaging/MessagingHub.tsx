@@ -131,9 +131,8 @@ export function MessagingHub({ open, onClose }: MessagingHubProps) {
             >
               <div className="flex items-center gap-2">
                 <h2
+                  className="text-subheader font-semibold"
                   style={{
-                    fontSize: "var(--text-base)",
-                    fontWeight: 600,
                     color: "var(--foreground)",
                     margin: 0,
                     fontFamily: "'Inter', sans-serif",
@@ -143,13 +142,11 @@ export function MessagingHub({ open, onClose }: MessagingHubProps) {
                 </h2>
                 {totalUnread > 0 && view === "list" && (
                   <span
-                    className="rounded-full flex items-center justify-center"
+                    className="rounded-full flex items-center justify-center text-caption font-bold"
                     style={{
                       minWidth: 20,
                       height: 20,
                       padding: "0 5px",
-                      fontSize: "11px",
-                      fontWeight: 700,
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                       fontFamily: "'Inter', sans-serif",

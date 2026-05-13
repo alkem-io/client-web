@@ -47,7 +47,7 @@ export function SpaceSettingsAccount() {
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* 1. Page Title & Description */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Account</h2>
+        <h2 className="text-page-title">Account</h2>
         <p className="text-muted-foreground mt-2">
           Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.
         </p>
@@ -59,7 +59,7 @@ export function SpaceSettingsAccount() {
         
         {/* 2. URL Section */}
         <div className="grid gap-2">
-          <Label htmlFor="space-url" className="text-base">URL</Label>
+          <Label htmlFor="space-url" className="text-subheader font-normal">URL</Label>
           <div className="flex items-center gap-2 max-w-xl">
             <div className="relative flex-1">
               <Input 
@@ -94,7 +94,7 @@ export function SpaceSettingsAccount() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">License</CardTitle>
+                <CardTitle className="text-subsection-title">License</CardTitle>
               </div>
               <Badge variant="secondary" className="px-3 py-1 font-semibold text-primary bg-primary/10">
                 Plus Plan
@@ -107,8 +107,8 @@ export function SpaceSettingsAccount() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Included Features</p>
-                <ul className="space-y-2 text-sm">
+                <p className="text-body-emphasis text-muted-foreground">Included Features</p>
+                <ul className="space-y-2 text-body">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-success" />
                     <span>Up to 50 active members</span>
@@ -124,9 +124,9 @@ export function SpaceSettingsAccount() {
                 </ul>
               </div>
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Usage</p>
+                <p className="text-body-emphasis text-muted-foreground">Usage</p>
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-body">
                     <span>Spaces Used</span>
                     <span className="font-medium">2 / 5</span>
                   </div>
@@ -138,14 +138,14 @@ export function SpaceSettingsAccount() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border/50 bg-muted/20 rounded-b-xl">
-             <Button variant="outline" className="w-full sm:w-auto text-sm" asChild>
+             <Button variant="outline" className="w-full sm:w-auto text-body" asChild>
                 <a href="#" className="flex items-center gap-2">
                   Change License
                   <ExternalLink className="w-3 h-3" />
                 </a>
              </Button>
              <div className="flex-1" />
-             <a href="#" className="text-xs text-muted-foreground hover:text-primary underline underline-offset-4 flex items-center gap-1">
+             <a href="#" className="text-caption text-muted-foreground hover:text-primary underline underline-offset-4 flex items-center gap-1">
                More about Alkemio licenses
                <ExternalLink className="w-3 h-3" />
              </a>
@@ -156,18 +156,18 @@ export function SpaceSettingsAccount() {
         <div className="grid gap-2 p-4 border rounded-lg bg-card">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <Label className="text-base flex items-center gap-2">
+              <Label className="text-subheader font-normal flex items-center gap-2">
                 <Activity className="w-4 h-4 text-info" />
                 Visibility Status
               </Label>
               <div className="flex items-center gap-2 pt-1">
-                <p className="text-sm">This Space is currently in</p>
+                <p className="text-body">This Space is currently in</p>
                 <Badge className="bg-primary/15 text-primary hover:bg-primary/25 border-primary/20">
                   Active
                 </Badge>
-                <p className="text-sm">mode</p>
+                <p className="text-body">mode</p>
               </div>
-              <p className="text-xs text-muted-foreground italic pt-1">
+              <p className="text-caption text-muted-foreground italic pt-1">
                 For status changes, contact the Alkemio team.
               </p>
             </div>
@@ -182,7 +182,7 @@ export function SpaceSettingsAccount() {
            <CardHeader className="pb-4">
              <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">Host Information</CardTitle>
+                <CardTitle className="text-subsection-title">Host Information</CardTitle>
              </div>
              <CardDescription>
                The host is the person who created this space
@@ -196,8 +196,8 @@ export function SpaceSettingsAccount() {
                    <AvatarFallback>SJ</AvatarFallback>
                  </Avatar>
                  <div className="space-y-1">
-                   <p className="font-medium text-base">Sarah Jenkins</p>
-                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                   <p className="text-subheader">Sarah Jenkins</p>
+                   <div className="flex items-center gap-3 text-body text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <User className="w-3 h-3" /> Space Host
                       </span>
@@ -217,7 +217,7 @@ export function SpaceSettingsAccount() {
 
         {/* 6. Support/Contact Section (Footer) */}
         <div className="flex flex-col items-center justify-center p-6 mt-8 rounded-lg bg-muted/30 border border-dashed text-center space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-body text-muted-foreground">
             If you want to change any of these settings, please contact the Alkemio team.
           </p>
           <Button variant="default" className="gap-2">

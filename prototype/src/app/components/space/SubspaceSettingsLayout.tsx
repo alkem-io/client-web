@@ -452,12 +452,12 @@ const PhaseColumn = ({
                     onChange={(e) => onRename(phase.id, e.target.value)}
                     onBlur={() => setEditingId(null)}
                     onKeyDown={handleKeyDown}
-                    className="h-6 py-0 px-1.5 text-sm font-semibold w-full max-w-[140px]"
+                    className="h-6 py-0 px-1.5 text-card-title w-full max-w-[140px]"
                     onClick={(e) => e.stopPropagation()}
                   />
                 ) : (
                   <span
-                    className="text-sm font-semibold text-foreground truncate cursor-pointer hover:underline decoration-dashed underline-offset-4"
+                    className="text-card-title text-foreground truncate cursor-pointer hover:underline decoration-dashed underline-offset-4"
                     onClick={() => setEditingId(phase.id)}
                   >
                     {phase.label}
@@ -865,7 +865,7 @@ export function SubspaceSettingsLayout() {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Innovation Flow</h2>
+            <h2 className="text-page-title text-foreground">Innovation Flow</h2>
             <p className="text-muted-foreground mt-2">
               Design your subspace's innovation flow. Add, remove, and reorder phases. Drag posts between phases.
             </p>
@@ -1005,14 +1005,14 @@ export function SubspaceSettingsLayout() {
                 className="w-full text-left p-4 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 transition-all group"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
+                  <span className="text-card-title text-foreground group-hover:text-primary transition-colors">
                     {template.name}
                   </span>
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-caption">
                     {template.phases.length} phases
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground">{template.description}</p>
+                <p className="text-caption text-muted-foreground">{template.description}</p>
                 <div className="flex items-center gap-1.5 mt-2">
                   {template.phases.map((p, i) => (
                     <div key={i} className="flex items-center gap-1 shrink-0">
@@ -1045,7 +1045,7 @@ export function SubspaceSettingsLayout() {
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
-              <label className="text-sm font-medium text-foreground">Template Name</label>
+              <label className="text-body-emphasis text-foreground">Template Name</label>
               <Input
                 className="mt-1.5"
                 placeholder="e.g. My Custom Innovation Flow"

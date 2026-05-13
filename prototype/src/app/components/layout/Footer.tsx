@@ -24,9 +24,8 @@ export function Footer({ className }: { className?: string }) {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Copyright */}
         <div
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-body"
           style={{
-            fontSize: "var(--text-sm)",
             color: "var(--muted-foreground)",
           }}
         >
@@ -35,9 +34,8 @@ export function Footer({ className }: { className?: string }) {
 
         {/* Links + centered logo */}
         <div
-          className="flex items-center gap-6"
+          className="flex items-center gap-6 text-body"
           style={{
-            fontSize: "var(--text-sm)",
             color: "var(--muted-foreground)",
           }}
         >
@@ -68,9 +66,8 @@ export function Footer({ className }: { className?: string }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors text-control"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
               }}
             >
@@ -88,7 +85,7 @@ export function Footer({ className }: { className?: string }) {
                   language === lang.code && "bg-accent"
                 )}
               >
-                <span style={{ fontSize: "var(--text-sm)" }}>
+                <span className="text-control">
                   {lang.nativeLabel}
                 </span>
                 {language === lang.code && (
