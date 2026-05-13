@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router";
-import { Plus, Layout } from "lucide-react";
+import { useParams, useNavigate, Link } from "react-router";
+import { Plus, Layout, Activity, Video, FileText, Share2, Settings } from "lucide-react";
+import { ReadMoreText } from "@/app/components/ui/ReadMoreText";
 import {
   Tooltip,
   TooltipContent,
@@ -18,8 +19,7 @@ import { SubspaceCommunityDialog } from "@/app/components/space/SubspaceCommunit
 /* ─── Mock subspace metadata ─── */
 
 // Parent space banner — subspaces always inherit their parent's banner
-const PARENT_SPACE_BANNER =
-  "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjBjaGFsbGVuZ2UlMjBjcmVhdGl2ZSUyMHdvcmtzaG9wJTIwdGVhbSUyMGNvbGxhYm9yYXRpb24lMjBpbm5vdmF0aW9uJTIwc3ByaW50JTIwZGVzaWduJTIwc3ByaW50fGVufDF8fHx8MTc2OTA5NDMxMHww&ixlib=rb-4.1.0&q=80&w=1080";
+const PARENT_SPACE_BANNER = "/banners/steward-ownership.png";
 
 interface SubspaceInfo {
   title: string;
@@ -47,8 +47,8 @@ const SUBSPACE_MAP: Record<string, SubspaceInfo> = {
     parentAvatarColor: "#2563eb",
     memberCount: 24,
     callouts: [
-      { id: "strategy", label: "Strategy Docs", description: "Core strategy documents and roadmaps for the 2030 transition.", count: 5, linkedToNext: true },
-      { id: "municipal", label: "Municipal Data", description: "Data sets and reports from participating municipalities.", linkedToNext: true },
+      { id: "strategy", label: "Strategy Docs", description: "Core strategy documents and roadmaps for the 2030 municipal energy transition. This collection includes multi-year planning frameworks, cost-benefit analyses for renewable infrastructure, stakeholder alignment reports, and phased deployment timelines developed in collaboration with regional energy authorities and academic research partners.", count: 5, linkedToNext: true },
+      { id: "municipal", label: "Municipal Data", description: "Data sets and reports from participating municipalities, including energy consumption baselines, renewable capacity assessments, grid infrastructure surveys, and quarterly progress metrics tracked across all pilot regions.", linkedToNext: true },
       { id: "policy", label: "Policy Drafts", description: "Draft policy frameworks and regulatory proposals.", count: 2, linkedToNext: false },
       { id: "stakeholders", label: "Stakeholders", description: "Stakeholder mapping, contacts, and engagement plans.", linkedToNext: false },
     ],
@@ -263,7 +263,6 @@ export default function SubspacePage() {
   return (
     <div
       className="min-h-screen bg-background flex flex-col"
-      style={{ fontFamily: "var(--font-family, 'Inter', sans-serif)" }}
     >
       {/* ── Subspace Banner Header ── */}
       <SubspaceHeader
@@ -284,7 +283,7 @@ export default function SubspacePage() {
       />
 
       {/* ── Main Content Area ── */}
-      <main className="flex-1 w-full px-6 md:px-8 py-8">
+      <main className="flex-1 w-full px-6 md:px-8 pt-0 pb-8">
         <div className="grid grid-cols-12 gap-6 items-start">
           {/* Left Sidebar — col 2-3 (2 columns, 1 col margin left) */}
           <div
@@ -302,12 +301,16 @@ export default function SubspacePage() {
           <div className="col-span-12 lg:col-span-8 min-w-0">
           {/* Sticky channel tabs bar */}
           <div
-            className="sticky top-16 z-10 pt-4 pb-3 mb-4 -mx-4 px-4 md:mx-0 md:px-0"
+            className="sticky top-16 z-10 pt-4 pb-3 mb-4"
             style={{
               background:
                 "color-mix(in srgb, var(--background) 95%, transparent)",
               backdropFilter: "blur(8px)",
               WebkitBackdropFilter: "blur(8px)",
+              paddingLeft: 10,
+              paddingRight: 10,
+              marginLeft: -10,
+              marginRight: -10,
             }}
           >
             <div className="flex items-center justify-between gap-4">
@@ -336,33 +339,65 @@ export default function SubspacePage() {
                 activeTab={activeCallout}
                 onTabChange={setActiveCallout}
               />
-              <Button
-                size="sm"
-                className="shrink-0 gap-2"
-                onClick={() => setIsPostModalOpen(true)}
-                style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
-                }}
-              >
-                <Plus className="w-4 h-4" />
-                Add Post
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5">
+                  {[
+                    { icon: Activity, title: "Recent Activity" },
+                    { icon: Video, title: "Video Call" },
+                    { icon: FileText, title: "Documents" },
+                    { icon: Share2, title: "Share" },
+                  ].map(({ icon: Icon, title }) => (
+                    <button
+                      key={title}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                      style={{
+                        background: "color-mix(in srgb, var(--foreground) 8%, transparent)",
+                        color: "var(--muted-foreground)",
+                      }}
+                      title={title}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </button>
+                  ))}
+                  <Link to={`/space/${spaceSlug}/subspaces/${subspaceSlug}/settings/about`}>
+                    <button
+                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                      style={{
+                        background: "color-mix(in srgb, var(--foreground) 8%, transparent)",
+                        color: "var(--muted-foreground)",
+                      }}
+                      title="Settings"
+                    >
+                      <Settings className="w-3.5 h-3.5" />
+                    </button>
+                  </Link>
+                </div>
+                <Button
+                  size="sm"
+                  className="shrink-0 gap-2"
+                  onClick={() => setIsPostModalOpen(true)}
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Post
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Tab description */}
           {info.callouts.find((c) => c.id === activeCallout)?.description && (
-            <p
-              className="mb-4"
-              style={{
-                fontSize: "var(--text-sm)",
-                color: "var(--muted-foreground)",
-                fontFamily: "'Inter', sans-serif",
-              }}
-            >
-              {info.callouts.find((c) => c.id === activeCallout)?.description}
-            </p>
+            <div className="mb-4">
+              <ReadMoreText
+                maxLines={2}
+                style={{
+                  color: "var(--muted-foreground)",
+                  lineHeight: 1.6
+                }}
+                toggleColor="var(--muted-foreground)"
+              >
+                {info.callouts.find((c) => c.id === activeCallout)?.description}
+              </ReadMoreText>
+            </div>
           )}
 
           {/* Feed */}
@@ -379,23 +414,20 @@ export default function SubspacePage() {
                 className="flex flex-col items-center justify-center py-16"
                 style={{
                   border: "2px dashed var(--border)",
-                  borderRadius: "var(--radius)",
+                  borderRadius: "var(--radius)"
                 }}
               >
                 <p
                   style={{
-                    fontSize: "var(--text-lg)",
-                    fontWeight: 500,
                     color: "var(--foreground)",
-                    marginBottom: 4,
+                    marginBottom: 4
                   }}
                 >
                   No posts in this phase yet
                 </p>
                 <p
                   style={{
-                    fontSize: "var(--text-sm)",
-                    color: "var(--muted-foreground)",
+                    color: "var(--muted-foreground)"
                   }}
                 >
                   Be the first to share something here.
