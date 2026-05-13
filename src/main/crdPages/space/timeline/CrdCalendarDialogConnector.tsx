@@ -140,6 +140,7 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
           highlightedDay={urlState.highlightedDay}
           onHighlightDay={urlState.navigateToHighlight}
           onEventClick={event => urlState.navigateToEvent(event.url)}
+          onCreateEvent={privileges.canCreateEvents ? urlState.navigateToCreate : undefined}
           loading={loading}
           exportSlot={<ExportEventsToIcsConnector events={futureListItems} />}
           locale={locale}
