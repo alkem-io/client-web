@@ -103,7 +103,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                     <div className="w-5 h-5 rounded bg-white/20 backdrop-blur flex items-center justify-center border border-white/30">
                         <Home className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[10px] font-medium text-white/90 shadow-sm tracking-wide">Space</span>
+                    <span className="text-badge text-white/90 shadow-sm">Space</span>
                 </div>
              </div>
          </div>
@@ -130,7 +130,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                     <div className="w-5 h-5 rounded bg-primary/20 backdrop-blur flex items-center justify-center border border-primary/30">
                         <Layers className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[10px] font-medium text-white/90 shadow-sm tracking-wide">{type}</span>
+                    <span className="text-badge text-white/90 shadow-sm">{type}</span>
                 </div>
              </div>
         </div>
@@ -161,7 +161,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
              
              if (isHeader) {
                  return (
-                     <div key={i} className={cn("font-semibold text-foreground", i === 0 ? "text-sm pb-1.5 border-b border-border flex items-center justify-between" : "text-xs mt-1")}>
+                     <div key={i} className={cn("text-foreground", i === 0 ? "text-card-title pb-1.5 border-b border-border flex items-center justify-between" : "text-caption font-semibold mt-1")}>
                          {line.replace(/^#+\s/, "")}
                      </div>
                  );
@@ -170,16 +170,16 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  return (
                      <div key={i} className="flex items-start gap-2 pl-1">
                          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 mt-1.5 shrink-0" />
-                         <span className="text-[11px] text-muted-foreground leading-relaxed">{line.replace(/^[-*\[\] ]+/, "")}</span>
+                         <span className="text-caption text-muted-foreground">{line.replace(/^[-*\[\] ]+/, "")}</span>
                      </div>
                  );
              }
-             return <div key={i} className="text-[11px] text-muted-foreground leading-relaxed">{line}</div>;
+             return <div key={i} className="text-caption text-muted-foreground">{line}</div>;
           })}
           {!displayContent && (
               <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30">
                   <FileText className="w-10 h-10 mb-2 opacity-50" />
-                  <span className="text-xs">Preview unavailable</span>
+                  <span className="text-caption">Preview unavailable</span>
               </div>
           )}
        </div>
@@ -220,10 +220,10 @@ function TemplateCard({ template, onApply }: { template: typeof PACK_TEMPLATES[0
         </div>
       </div>
       <div className="p-3 flex flex-col flex-1">
-        <h4 className="font-semibold text-foreground text-sm leading-tight group-hover:text-primary transition-colors line-clamp-1 mb-1">
+        <h4 className="text-card-title text-foreground group-hover:text-primary transition-colors line-clamp-1 mb-1">
              {template.name}
         </h4>
-        <p className="text-[11px] text-muted-foreground line-clamp-2 mb-3 flex-1">
+        <p className="text-caption text-muted-foreground line-clamp-2 mb-3 flex-1">
           {template.description}
         </p>
         
@@ -299,18 +299,18 @@ export function TemplatePackDetail() {
                         />
                      </div>
                      <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground">{PACK_DATA.name}</h1>
-                        <p className="text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+                        <h1 className="text-page-title text-foreground">{PACK_DATA.name}</h1>
+                        <p className="text-body text-muted-foreground mt-1 max-w-2xl">
                             {PACK_DATA.description}
                         </p>
                         <div className="flex flex-wrap items-center gap-3 mt-3">
-                            <Badge variant="secondary" className="font-normal text-xs">{PACK_DATA.templateCount} Templates</Badge>
+                            <Badge variant="secondary" className="text-caption">{PACK_DATA.templateCount} Templates</Badge>
                             <Separator orientation="vertical" className="h-4" />
-                            <span className="text-xs text-muted-foreground">by <span className="font-medium text-foreground">{PACK_DATA.author}</span></span>
+                            <span className="text-caption text-muted-foreground">by <span className="font-medium text-foreground">{PACK_DATA.author}</span></span>
                             <Separator orientation="vertical" className="h-4" />
                             <div className="flex gap-1.5">
                                 {PACK_DATA.tags.map(tag => (
-                                    <span key={tag} className="text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">
+                                    <span key={tag} className="text-caption text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">
                                         {tag}
                                     </span>
                                 ))}
@@ -351,8 +351,8 @@ export function TemplatePackDetail() {
                         <AccordionItem key={section.id} value={section.id} className="px-6 border-b last:border-b-0 border-border">
                             <AccordionTrigger className="py-6 hover:no-underline hover:text-primary transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-lg font-semibold text-foreground">{section.title}</span>
-                                    <Badge variant="secondary" className="text-xs px-2 h-5 rounded-full">{templates.length}</Badge>
+                                    <span className="text-subsection-title text-foreground">{section.title}</span>
+                                    <Badge variant="secondary" className="text-caption px-2 h-5 rounded-full">{templates.length}</Badge>
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent className="pb-8 pt-2">
@@ -372,11 +372,11 @@ export function TemplatePackDetail() {
          
          {/* Related Packs Preview (Optional) */}
          <div className="mt-12 pt-8 border-t border-border">
-             <h3 className="text-lg font-semibold mb-4">You might also like</h3>
+             <h3 className="text-subsection-title mb-4">You might also like</h3>
              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 opacity-60 hover:opacity-100 transition-opacity">
                  {/* Placeholder for related packs - using static simplified cards */}
                  {[1, 2, 3].map(i => (
-                     <div key={i} className="h-32 rounded-lg border border-border bg-muted/30 flex items-center justify-center text-sm text-muted-foreground cursor-pointer hover:bg-muted/50 transition-colors">
+                     <div key={i} className="h-32 rounded-lg border border-border bg-muted/30 flex items-center justify-center text-body text-muted-foreground cursor-pointer hover:bg-muted/50 transition-colors">
                          Related Pack {i}
                      </div>
                  ))}
@@ -397,7 +397,7 @@ export function TemplatePackDetail() {
           
           <div className="py-4">
              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                <label className="text-body-emphasis peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                    Target Space
                 </label>
                 <Select value={selectedSpace} onValueChange={setSelectedSpace}>

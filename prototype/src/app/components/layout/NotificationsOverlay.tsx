@@ -201,8 +201,8 @@ export function NotificationsOverlay() {
                   <Bell className="w-5 h-5" style={{ color: "var(--muted-foreground)" }} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Notifications</h2>
-                  <p className="text-sm text-muted-foreground">
+                  <h2 className="text-subsection-title">Notifications</h2>
+                  <p className="text-body text-muted-foreground">
                     {unreadCount > 0
                       ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
                       : "You're all caught up"}
@@ -253,7 +253,7 @@ export function NotificationsOverlay() {
                   key={f.key}
                   onClick={() => setFilter(f.key)}
                   className={cn(
-                    "px-3 py-1.5 rounded-md transition-colors whitespace-nowrap text-sm font-medium",
+                    "px-3 py-1.5 rounded-md transition-colors whitespace-nowrap text-control",
                     filter === f.key
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground hover:bg-accent"
@@ -267,7 +267,7 @@ export function NotificationsOverlay() {
                 <button
                   onClick={() => setShowUnreadOnly(!showUnreadOnly)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors text-sm",
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors text-body",
                     showUnreadOnly
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-muted-foreground hover:bg-accent"
@@ -297,8 +297,7 @@ export function NotificationsOverlay() {
                       <Avatar className="w-10 h-10" style={{ border: "1px solid var(--border)" }}>
                         <AvatarImage src={n.avatar} />
                         <AvatarFallback
-                          className="bg-primary/10 text-primary"
-                          style={{ fontSize: "var(--text-sm)" }}
+                          className="bg-primary/10 text-primary text-body"
                         >
                           {n.author.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
@@ -317,18 +316,18 @@ export function NotificationsOverlay() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm leading-snug">
+                      <p className="text-body leading-snug">
                         <span className="font-semibold">{n.author}</span>{" "}
                         {n.action}{" "}
                         <span className="font-medium">{n.target}</span>
                       </p>
                       <div className="flex items-center gap-3 mt-1.5">
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1 text-caption text-muted-foreground">
                           <Clock className="w-3 h-3" />
                           {n.time}
                         </span>
                         {n.space && (
-                          <Badge variant="secondary" className="text-[11px]">
+                          <Badge variant="secondary" className="text-caption">
                             {n.space}
                           </Badge>
                         )}
@@ -354,7 +353,7 @@ export function NotificationsOverlay() {
                   >
                     <Bell className="w-7 h-7" style={{ color: "var(--muted-foreground)", opacity: 0.5 }} />
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-body text-muted-foreground">
                     {showUnreadOnly
                       ? "No unread notifications"
                       : "No notifications match your filter"}

@@ -7,8 +7,16 @@ type ExpandableMarkdownProps = {
   content: string;
   /** Lines to show when collapsed; defaults to 3 (post-card snippet). */
   maxLines?: number;
+  /**
+   * Initial expanded state once overflow has been detected. When the content
+   * doesn't overflow, this is ignored — no toggle is rendered. Drives the
+   * space-level `calloutDescriptionDisplayMode` setting (Expanded vs Collapsed).
+   */
+  defaultExpanded?: boolean;
   className?: string;
 };
+
+type OverflowState = 'detecting' | 'no-overflow' | 'collapsed' | 'expanded';
 
 const lineClampClassMap: Record<number, string> = {
   1: 'line-clamp-1',
@@ -22,78 +30,95 @@ const lineClampClassMap: Record<number, string> = {
 /**
  * Markdown body with a "Read more" / "Read less" toggle that only appears when
  * the content actually overflows. Mirrors the MUI `ExpandableDescription` +
- * `AutomaticOverflowGradient` pattern (see `src/domain/space/components/ExpandableDescription.tsx`):
+ * `AutomaticOverflowGradient` pattern (see `src/core/ui/markdown/ExpandableMarkdown.tsx`):
  *
+ *  - Detecting → `line-clamp-N` applied so `scrollHeight > clientHeight` can be measured
  *  - Collapsed → `line-clamp-N` + a bottom fade gradient + "Read more" link
  *  - Expanded → full content + "Read less" link
  *  - No overflow → no toggle, no fade (renders identically to plain markdown)
  *
- * Overflow is detected after layout via `scrollHeight > clientHeight` on the
- * clamped element, with a `ResizeObserver` to re-evaluate on container width
- * changes (mobile rotations, sidebar resize, etc.).
+ * After the first layout pass we decide between Collapsed and Expanded based on
+ * `defaultExpanded`. A `ResizeObserver` re-evaluates while collapsed so
+ * resizing the container can drop the toggle if the content no longer overflows.
  */
-export function ExpandableMarkdown({ content, maxLines = 3, className }: ExpandableMarkdownProps) {
+export function ExpandableMarkdown({
+  content,
+  maxLines = 3,
+  defaultExpanded = false,
+  className,
+}: ExpandableMarkdownProps) {
   const { t } = useTranslation('crd-space');
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [state, setState] = useState<OverflowState>('detecting');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Only measure when collapsed: once expanded, line-clamp is off so scrollHeight
-  // equals clientHeight and the naive check would flip `isOverflowing` back to
-  // false — hiding the "Read less" toggle. While expanded we trust the prior
-  // measurement (the user only got there by clicking "Read more").
+  // Re-enter detection when `defaultExpanded` flips (e.g. space settings load
+  // async, or an admin toggles the display mode at runtime), or when the
+  // rendered content / clamp changes — otherwise the prior measurement is
+  // stale and a now-shorter post would still show "Read more".
+  const prevDefaultExpandedRef = useRef(defaultExpanded);
+  useEffect(() => {
+    if (prevDefaultExpandedRef.current !== defaultExpanded) {
+      prevDefaultExpandedRef.current = defaultExpanded;
+    }
+    setState('detecting');
+  }, [defaultExpanded, content, maxLines]);
+
+  // Measure overflow while detecting. The container has `line-clamp-N` applied
+  // (see `isClamped` below) so `scrollHeight > clientHeight` is meaningful.
   useLayoutEffect(() => {
-    if (isExpanded) return;
+    if (state !== 'detecting') return;
     const el = containerRef.current;
     if (!el) return;
     const overflowing = el.scrollHeight > el.clientHeight + 1; // +1px tolerance for sub-pixel rounding
-    setIsOverflowing(prev => (prev === overflowing ? prev : overflowing));
-  });
+    setState(overflowing ? (defaultExpanded ? 'expanded' : 'collapsed') : 'no-overflow');
+  }, [state, defaultExpanded, content, maxLines]);
 
+  // While collapsed, keep watching for container-size changes (sidebar resize,
+  // device rotation) so the toggle is dropped if content stops overflowing.
   useEffect(() => {
-    if (isExpanded) return;
+    if (state !== 'collapsed') return;
     const el = containerRef.current;
     if (!el) return;
     const observer = new ResizeObserver(() => {
       const overflowing = el.scrollHeight > el.clientHeight + 1;
-      setIsOverflowing(prev => (prev === overflowing ? prev : overflowing));
+      if (!overflowing) setState('no-overflow');
     });
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isExpanded]);
+  }, [state]);
 
+  const isClamped = state === 'detecting' || state === 'collapsed';
   const clampClass = lineClampClassMap[maxLines] ?? 'line-clamp-3';
-  const showFade = !isExpanded && isOverflowing;
 
   return (
     <div className={cn('relative', className)}>
-      <div ref={containerRef} className={cn(!isExpanded && clampClass)}>
+      <div ref={containerRef} className={cn(isClamped && clampClass)}>
         <MarkdownContent content={content} className="text-muted-foreground" />
       </div>
-      {showFade && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-card"
-        />
+      {state === 'collapsed' && (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-card"
+          />
+          {/* Pinned to the bottom-right of the clipped block so it sits on the last
+              visible line (matches the MUI ExpandableDescription / SeeMore layout).
+              The fade gradient above provides contrast behind the label. */}
+          <button
+            type="button"
+            onClick={() => setState('expanded')}
+            aria-expanded={false}
+            className="absolute bottom-0 right-0 z-10 cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1 bg-card"
+          >
+            {t('postSnippet.readMore')}
+          </button>
+        </>
       )}
-      {isOverflowing && !isExpanded && (
-        // Pinned to the bottom-right of the clipped block so it sits on the last
-        // visible line (matches the MUI ExpandableDescription / SeeMore layout).
-        // The fade gradient above provides contrast behind the label.
-        <button
-          type="button"
-          onClick={() => setIsExpanded(true)}
-          aria-expanded={false}
-          className="absolute bottom-0 right-0 z-10 cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1 bg-card"
-        >
-          {t('postSnippet.readMore')}
-        </button>
-      )}
-      {isOverflowing && isExpanded && (
+      {state === 'expanded' && (
         <div className="flex justify-end mt-1">
           <button
             type="button"
-            onClick={() => setIsExpanded(false)}
+            onClick={() => setState('collapsed')}
             aria-expanded={true}
             className="cursor-pointer text-caption uppercase text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >

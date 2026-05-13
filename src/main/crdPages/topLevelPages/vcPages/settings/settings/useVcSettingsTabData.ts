@@ -8,7 +8,6 @@ import {
   useVirtualContributorKnowledgeBaseLastUpdatedQuery,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import type {
   SectionSaveStatus,
@@ -18,8 +17,6 @@ import type {
   VcSearchVisibility,
   VcVisibilityCardProps,
 } from '@/crd/components/virtualContributor/settings/VCSettingsTabView.types';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import {
   computeEngineCardVisibility,
   mapBokTypeToView,
@@ -41,7 +38,6 @@ type UseVcSettingsTabDataResult = {
   bodyOfKnowledge?: Omit<VcBodyOfKnowledgeCardProps, 'refreshLabel'>;
   prompt?: Omit<VcPromptCardProps, 'helpText'>;
   externalConfig?: VcExternalConfigCardProps;
-  promptGraphFallback?: { legacyHref: string };
 };
 
 /**
@@ -89,9 +85,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
     skip: !vcId,
   });
 
-  const { platformPrivilegeWrapper } = useCurrentUserContext();
-  const platformAdmin = Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin));
-
   const [updateVc] = useUpdateVirtualContributorMutation();
   const [updateVcSettings] = useUpdateVirtualContributorSettingsMutation();
   const [updateAiPersona] = useUpdateAiPersonaMutation();
@@ -105,8 +98,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
   const cards = computeEngineCardVisibility({
     engine,
     bodyOfKnowledgeType: bokType,
-    platformAdmin,
-    promptGraphEditingEnabled: Boolean(vc?.platformSettings?.promptGraphEditingEnabled),
   });
 
   // ────────────────── Visibility ──────────────────
@@ -317,11 +308,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
     }
   };
 
-  const profileUrl = vc?.profile?.url;
-  const legacySettingsUrl = profileUrl ? buildSettingsUrl(profileUrl) : undefined;
-  const promptGraphFallback =
-    cards.showPromptGraphFallback && legacySettingsUrl ? { legacyHref: legacySettingsUrl } : undefined;
-
   return {
     loading: vcLoading || aiPersonaLoading,
     visibility: {
@@ -368,7 +354,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
             onSave: onSaveExternal,
           }
         : undefined,
-    promptGraphFallback,
   };
 };
 

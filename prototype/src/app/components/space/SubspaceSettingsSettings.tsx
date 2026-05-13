@@ -83,11 +83,11 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+        <h2 className="text-page-title">Settings</h2>
         <p className="text-muted-foreground mt-2">
           Configure this subspace's visibility, membership policies, and allowed
           member actions.
-          {" "}<span className="text-xs text-muted-foreground/70 italic">Changes are saved automatically.</span>
+          {" "}<span className="text-caption text-muted-foreground/70 italic">Changes are saved automatically.</span>
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Visibility
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -127,7 +127,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="v-public"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Globe className="w-4 h-4 text-info" /> Public
                   </Label>
@@ -145,7 +145,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="v-private"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-4 h-4 text-warning" /> Private
                   </Label>
@@ -155,7 +155,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 </div>
               </div>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-4 italic">
+            <p className="text-caption text-muted-foreground mt-4 italic">
               Consider your subspace's purpose and audience when choosing visibility.
             </p>
           </AccordionContent>
@@ -168,7 +168,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Membership
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -190,7 +190,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-none"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <UserPlus className="w-4 h-4 text-success" /> No Application
                     Required
@@ -198,7 +198,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     All parent space members can join directly without approval.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
                 </div>
               </div>
               <div
@@ -209,7 +209,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-application"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <FileTextIcon className="w-4 h-4 text-info" /> Application Required
                   </Label>
@@ -217,7 +217,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                     Members must submit an application that leads can approve or
                     reject.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
                 </div>
               </div>
               <div
@@ -228,14 +228,14 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-invitation"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Mail className="w-4 h-4 text-primary" /> Invitation Only
                   </Label>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Members can only join after being invited by a lead.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
                 </div>
               </div>
             </RadioGroup>
@@ -249,7 +249,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Allowed Actions
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -315,7 +315,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         <AccordionItem value="template" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Template & Duplication
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -330,7 +330,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <FileBox className="w-5 h-5 mt-0.5 text-muted-foreground" />
                   <div>
                     <h4 className="font-semibold text-foreground">Save as Template</h4>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                    <p className="text-body text-muted-foreground mt-1 max-w-xl">
                       Turn this subspace into a template that can be used to create new subspaces with the same structure, innovation flow, and settings.
                     </p>
                   </div>
@@ -344,7 +344,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                   <Copy className="w-5 h-5 mt-0.5 text-muted-foreground" />
                   <div>
                     <h4 className="font-semibold text-foreground">Duplicate Subspace</h4>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                    <p className="text-body text-muted-foreground mt-1 max-w-xl">
                       Create a copy of this subspace including its structure, posts, and settings. Members will not be copied.
                     </p>
                   </div>
@@ -361,7 +361,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         <AccordionItem value="danger" className="border border-destructive/20 rounded-lg bg-destructive/5 px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-destructive">
+              <h3 className="text-subsection-title flex items-center gap-2 text-destructive">
                 <AlertTriangle className="w-5 h-5" />
                 Danger Zone
               </h3>
@@ -374,7 +374,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border border-destructive/20 rounded-md bg-background">
               <div>
                 <h4 className="font-semibold text-foreground">Delete this Subspace</h4>
-                <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                <p className="text-body text-muted-foreground mt-1 max-w-xl">
                   Deleting this subspace is permanent. All posts, content, and membership data will be permanently removed. Be careful, this action cannot be undone.
                 </p>
               </div>
@@ -421,7 +421,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 </DialogContent>
               </Dialog>
             </div>
-            <p className="text-xs text-muted-foreground mt-3 italic">
+            <p className="text-caption text-muted-foreground mt-3 italic">
               Please contact the Alkemio team if you need assistance with subspace deletion.
             </p>
           </AccordionContent>
@@ -453,8 +453,8 @@ function ActionToggle({
           <Icon className="w-5 h-5" />
         </div>
         <div className="space-y-0.5">
-          <Label htmlFor={id} className="text-base font-medium cursor-pointer">{label}</Label>
-          <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
+          <Label htmlFor={id} className="text-subheader cursor-pointer">{label}</Label>
+          <p className="text-caption text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
             {description}
           </p>
         </div>

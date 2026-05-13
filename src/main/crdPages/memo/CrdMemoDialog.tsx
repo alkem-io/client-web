@@ -139,7 +139,12 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     myMembershipStatus,
   });
 
-  const editorDisabled = !synced || isReadOnly || !hasContributePrivileges;
+  // The connection-loading overlay below blocks interaction until the provider
+  // is `connected` AND the initial sync packet has arrived. By the time the
+  // overlay disappears, the editor is built with the final disabled state
+  // (permission-driven only), so it does not need to rebuild mid-session.
+  const isConnectionReady = connectionStatus === 'connected' && synced;
+  const editorDisabled = isReadOnly || !hasContributePrivileges;
 
   const title = (
     <MemoDisplayName
@@ -165,18 +170,38 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
             {t('memo.errors.loading')}
           </div>
         ) : (
-          <div className="h-full p-3">
-            <CollaborativeMarkdownEditor
-              ydoc={ydoc as unknown as YDocLike}
-              provider={provider as unknown as CollabProviderLike}
-              user={{ name: user.name, color: user.color }}
-              disabled={editorDisabled}
-              onReady={handleEditorReady}
-              className="h-full"
-              onImageUpload={markdownIntegration.onImageUpload}
-              iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
-              onError={markdownIntegration.onError}
-            />
+          <div className="h-full p-3 relative">
+            {/* The collaborative editor is only mounted once the Hocuspocus
+                provider is fully connected and the initial Yjs sync has
+                completed. Mounting earlier produces an editor instance that
+                attaches to an empty/partial ydoc, which Tiptap then has to
+                rebuild on the next render — and the rebuild race is what
+                made just-created memos appear stuck on the first 1–3 opens
+                (toolbar visible, typing ignored). Holding the mount means
+                the editor's first render is its final render, with
+                `disabled` driven purely by permissions. Mirrors the MUI
+                memo dialog's "Connecting to collaboration service…" overlay. */}
+            {isConnectionReady ? (
+              <CollaborativeMarkdownEditor
+                ydoc={ydoc as unknown as YDocLike}
+                provider={provider as unknown as CollabProviderLike}
+                user={{ name: user.name, color: user.color }}
+                disabled={editorDisabled}
+                onReady={handleEditorReady}
+                className="h-full"
+                onImageUpload={markdownIntegration.onImageUpload}
+                iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+                onError={markdownIntegration.onError}
+              />
+            ) : (
+              <output
+                aria-live="polite"
+                aria-busy={true}
+                className="flex items-center justify-center h-full text-muted-foreground text-body"
+              >
+                {t('memo.footer.readonlyReason.connecting')}
+              </output>
+            )}
           </div>
         )}
       </MemoEditorShell>

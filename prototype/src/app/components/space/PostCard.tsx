@@ -83,14 +83,14 @@ export function PostCard({ post }: { post: PostProps }) {
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm text-foreground">{post.author.name}</span>
-              <span className="text-xs text-muted-foreground">• {post.timestamp}</span>
+              <span className="text-card-title text-foreground">{post.author.name}</span>
+              <span className="text-caption text-muted-foreground">• {post.timestamp}</span>
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-normal">
+              <Badge variant="secondary" className="text-badge font-normal h-5 px-1.5">
                 {post.author.role}
               </Badge>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="text-caption text-muted-foreground flex items-center gap-1">
                 {getIcon()} {getLabel()}
               </span>
             </div>
@@ -116,13 +116,13 @@ export function PostCard({ post }: { post: PostProps }) {
       </CardHeader>
       
       <CardContent className="px-6 pb-3">
-        <h3 
-          className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors cursor-pointer"
+        <h3
+          className="text-subsection-title font-bold mb-2 text-foreground group-hover:text-primary transition-colors cursor-pointer"
           onClick={post.onClick}
         >
           {post.title}
         </h3>
-        <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
+        <p className="text-muted-foreground text-body line-clamp-3 mb-4">
           {post.snippet}
         </p>
 
@@ -146,7 +146,7 @@ export function PostCard({ post }: { post: PostProps }) {
                 <div className="w-8 h-8 bg-background rounded flex items-center justify-center border border-border shrink-0">
                   <FileText className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <span className="text-xs font-medium truncate">{item.title}</span>
+                <span className="text-caption font-medium truncate">{item.title}</span>
               </div>
             ))}
           </div>
@@ -163,15 +163,15 @@ export function PostCard({ post }: { post: PostProps }) {
               case 'word':
                 return (
                   <div className="bg-white dark:bg-zinc-900 px-10 py-8 min-h-[280px]">
-                    <div className="space-y-2.5 text-[11px] text-foreground/70 leading-[1.7]">
-                      <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 text-center">Municipality of Greenfield</p>
+                    <div className="space-y-2.5 text-caption text-foreground/70 leading-[1.7]">
+                      <p className="text-badge uppercase tracking-[0.2em] text-muted-foreground/50 text-center">Municipality of Greenfield</p>
                       <h1 className="text-[14px] font-bold text-foreground text-center mb-0.5">2030 Renewable Transition Policy Proposal</h1>
-                      <p className="text-[10px] text-muted-foreground text-center mb-4">Draft v3.2 — April 2026</p>
+                      <p className="text-badge text-muted-foreground text-center mb-4">Draft v3.2 — April 2026</p>
                       <div className="w-8 h-px bg-border mx-auto mb-3" />
-                      <h2 className="text-[11px] font-bold text-foreground mt-3">1. Executive Summary</h2>
+                      <h2 className="text-caption font-bold text-foreground mt-3">1. Executive Summary</h2>
                       <p>This policy proposal outlines a comprehensive framework for achieving 100% renewable energy across all municipal operations by 2030. The strategy addresses grid modernization, community solar programs, building electrification, and transportation fleet conversion.</p>
                       <p>Key targets include reducing carbon emissions by 85% from 2020 baselines, deploying 45 MW of new solar capacity across public infrastructure, and converting 100% of the municipal vehicle fleet to electric by 2029.</p>
-                      <h2 className="text-[11px] font-bold text-foreground mt-3">2. Current State Assessment</h2>
+                      <h2 className="text-caption font-bold text-foreground mt-3">2. Current State Assessment</h2>
                       <p>As of Q1 2026, the municipality derives 42% of its energy from renewable sources, primarily wind (28%) and solar (14%).</p>
                     </div>
                     {/* Fade out at bottom */}
@@ -181,7 +181,7 @@ export function PostCard({ post }: { post: PostProps }) {
               case 'spreadsheet':
                 return (
                   <div className="bg-white dark:bg-zinc-900 overflow-hidden min-h-[200px]">
-                    <table className="w-full text-xs border-collapse">
+                    <table className="w-full text-caption border-collapse">
                       <thead>
                         <tr className="bg-muted/50">
                           <th className="border border-border/40 px-3 py-1.5 text-left font-semibold text-muted-foreground">District</th>
@@ -204,7 +204,7 @@ export function PostCard({ post }: { post: PostProps }) {
                             <td className="border border-border/40 px-3 py-1.5 text-right tabular-nums">{row.budget}</td>
                             <td className="border border-border/40 px-3 py-1.5 text-right">{row.timeline}</td>
                             <td className="border border-border/40 px-3 py-1.5 text-right">
-                              <span className={cn("inline-block px-1.5 py-0.5 rounded text-[10px] font-medium",
+                              <span className={cn("inline-block px-1.5 py-0.5 rounded text-badge font-medium",
                                 row.risk === 'Low' && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
                                 row.risk === 'Medium' && "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
                                 row.risk === 'High' && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
@@ -220,20 +220,20 @@ export function PostCard({ post }: { post: PostProps }) {
               case 'presentation':
                 return (
                   <div className="aspect-[16/9] bg-gradient-to-br from-primary/90 to-primary/60 flex flex-col items-center justify-center text-white p-8">
-                    <p className="text-xs uppercase tracking-widest opacity-70 mb-3">April 2026 Stakeholder Update</p>
-                    <h2 className="text-xl font-bold text-center mb-2">2030 Renewable Transition</h2>
-                    <p className="text-sm opacity-80 text-center max-w-xs">Progress Report & Revised Timeline for Municipal Energy Strategy</p>
+                    <p className="text-label uppercase tracking-widest opacity-70 mb-3">April 2026 Stakeholder Update</p>
+                    <h2 className="text-section-title font-bold text-center mb-2">2030 Renewable Transition</h2>
+                    <p className="text-body opacity-80 text-center max-w-xs">Progress Report & Revised Timeline for Municipal Energy Strategy</p>
                     <div className="flex gap-4 mt-6">
                       <div className="text-center">
-                        <p className="text-2xl font-bold">42%</p>
-                        <p className="text-[10px] opacity-70">Current Renewable</p>
+                        <p className="text-page-title">42%</p>
+                        <p className="text-badge opacity-70">Current Renewable</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-2xl font-bold">100%</p>
-                        <p className="text-[10px] opacity-70">2030 Target</p>
+                        <p className="text-page-title">100%</p>
+                        <p className="text-badge opacity-70">2030 Target</p>
                       </div>
                     </div>
-                    <p className="text-[10px] opacity-50 mt-4">Slide 1 of 24</p>
+                    <p className="text-badge opacity-50 mt-4">Slide 1 of 24</p>
                   </div>
                 );
             }
@@ -249,7 +249,7 @@ export function PostCard({ post }: { post: PostProps }) {
                       key={idx}
                       onClick={(e) => { e.stopPropagation(); setActiveDocIndex(idx); setActiveDocPage(0); }}
                       className={cn(
-                        "flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap border-b-2 transition-colors shrink-0",
+                        "flex items-center gap-2 px-3 py-2 text-caption whitespace-nowrap border-b-2 transition-colors shrink-0",
                         idx === activeDocIndex
                           ? "border-primary text-foreground bg-background"
                           : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -277,14 +277,14 @@ export function PostCard({ post }: { post: PostProps }) {
               <div className="flex items-center justify-between px-3 py-2 bg-muted/20 border-t border-border">
                 <div className="flex items-center gap-2 min-w-0">
                   {getDocIcon(activeDoc.docType)}
-                  <span className="text-xs font-medium truncate">{activeDoc.title}</span>
-                  <span className="text-[10px] text-muted-foreground shrink-0">({activeDoc.size})</span>
+                  <span className="text-caption font-medium truncate">{activeDoc.title}</span>
+                  <span className="text-badge text-muted-foreground shrink-0">({activeDoc.size})</span>
                   {activeDoc.lastEdited && (
-                    <span className="text-[10px] text-muted-foreground/60 shrink-0">· {activeDoc.lastEdited}</span>
+                    <span className="text-badge text-muted-foreground/60 shrink-0">· {activeDoc.lastEdited}</span>
                   )}
                 </div>
                 {hasMultiple && (
-                  <span className="text-[10px] text-muted-foreground shrink-0">{docs.length} documents</span>
+                  <span className="text-badge text-muted-foreground shrink-0">{docs.length} documents</span>
                 )}
               </div>
             </div>
@@ -309,7 +309,7 @@ export function PostCard({ post }: { post: PostProps }) {
                   {/* Hover Overlay (Button & Dimming) - Visible on hover, unless it's the "More" block */}
                   {!showMoreOverlay && (
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/wb:opacity-100 transition-opacity duration-200 bg-primary/40">
-                      <Button variant="secondary" size="sm" className="shadow-lg h-8 text-xs font-semibold">
+                      <Button variant="secondary" size="sm" className="shadow-lg h-8 text-caption font-semibold">
                         Open Whiteboard
                       </Button>
                     </div>
@@ -318,15 +318,15 @@ export function PostCard({ post }: { post: PostProps }) {
                   {/* Text Overlay (Title/Author) - Always visible unless "More" overlay is active */}
                   {!showMoreOverlay && (
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent p-3 flex flex-col justify-end pointer-events-none">
-                      <p className="text-white text-xs font-semibold truncate">{wb.title}</p>
-                      <p className="text-white/70 text-[10px] truncate">by {wb.author}</p>
+                      <p className="text-white text-caption font-semibold truncate">{wb.title}</p>
+                      <p className="text-white/70 text-badge truncate">by {wb.author}</p>
                     </div>
                   )}
 
                   {/* "More" Overlay - Always visible for the 4th item if there are more */}
                   {showMoreOverlay && (
                     <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
-                      <span className="text-white font-bold text-lg">+{remainingCount} more</span>
+                      <span className="text-white text-subsection-title font-bold">+{remainingCount} more</span>
                     </div>
                   )}
                 </div>
@@ -339,7 +339,7 @@ export function PostCard({ post }: { post: PostProps }) {
       <CardFooter className="px-6 py-3 border-t bg-muted/5 flex items-center gap-4">
         <Button variant="ghost" size="sm" className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent">
           <MessageSquare className="w-4 h-4" />
-          <span className="text-xs">{post.stats.comments} Comments</span>
+          <span className="text-caption">{post.stats.comments} Comments</span>
         </Button>
       </CardFooter>
     </Card>

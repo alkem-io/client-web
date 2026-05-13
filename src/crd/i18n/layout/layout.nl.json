@@ -20,7 +20,11 @@
     "changeLanguage": "Taal wijzigen",
     "getHelp": "Hulp krijgen",
     "showGrid": "Raster tonen",
-    "hideGrid": "Raster verbergen"
+    "hideGrid": "Raster verbergen",
+    "designVersion": {
+      "label": "Nieuw ontwerp (bèta)",
+      "caption": "Het oude ontwerp blijft nog korte tijd beschikbaar."
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

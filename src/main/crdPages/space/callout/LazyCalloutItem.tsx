@@ -7,6 +7,9 @@ import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
@@ -89,8 +92,18 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
+  // Mirror MUI `CalloutView`: the description display mode is read from the
+  // closest space context (subspace if we're inside one, otherwise the parent
+  // space). `useCalloutDescriptionDisplayMode` returns `true` when the setting
+  // is "Collapsed"; the PostCard expects the inverse.
+  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id ?? space?.id);
 
-  const postData = mapCalloutDetailsToPostCard(callout, t);
+  const postData = {
+    ...mapCalloutDetailsToPostCard(callout, t),
+    descriptionExpanded: !descriptionCollapsed,
+  };
 
   const moveActions = useCrdCalloutMoveActions({
     calloutsSetId,

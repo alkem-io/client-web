@@ -55,14 +55,14 @@ function InlineSaveButton({
 }) {
   if (status === "saved") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
+      <span className="inline-flex items-center gap-1 text-caption text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
         <Check className="w-3 h-3" /> Saved
       </span>
     );
   }
   if (status === "saving") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
         <Loader2 className="w-3 h-3 animate-spin" /> Saving…
       </span>
     );
@@ -73,7 +73,7 @@ function InlineSaveButton({
       variant="ghost"
       size="sm"
       onClick={onSave}
-      className="h-6 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
+      className="h-6 px-2 text-caption text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
     >
       Save
     </Button>
@@ -187,7 +187,7 @@ export function SpaceSettingsAbout() {
         
         {/* Header */}
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">About</h2>
+          <h2 className="text-page-title">About</h2>
           <p className="text-muted-foreground mt-2">
             Define your space's purpose, motivation, and target audience.
           </p>
@@ -197,7 +197,7 @@ export function SpaceSettingsAbout() {
 
         {/* ── Space Name ── */}
         <section>
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Space Name</Label>
+          <Label className="text-label uppercase text-muted-foreground">Space Name</Label>
           <div className="mt-2 space-y-2">
             <div className="relative max-w-md">
               <Input
@@ -219,7 +219,7 @@ export function SpaceSettingsAbout() {
 
         {/* ── Branding ── */}
         <section className="space-y-6">
-          <h3 className="text-lg font-medium">Space Branding</h3>
+          <h3 className="text-subsection-title font-medium">Space Branding</h3>
           
           {/* Page Banner */}
           <div className="space-y-3">
@@ -236,7 +236,7 @@ export function SpaceSettingsAbout() {
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Shown at the top of the Space and in Subspaces.</p>
+            <p className="text-caption text-muted-foreground">Shown at the top of the Space and in Subspaces.</p>
           </div>
 
           {/* Card Banner */}
@@ -254,7 +254,7 @@ export function SpaceSettingsAbout() {
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Shown in search results and Space overviews.</p>
+            <p className="text-caption text-muted-foreground">Shown in search results and Space overviews.</p>
           </div>
         </section>
 
@@ -272,7 +272,7 @@ export function SpaceSettingsAbout() {
 
           return (
             <section key={field} className="space-y-1">
-              <Label className="text-base font-semibold">{title}</Label>
+              <Label className="text-subheader font-semibold">{title}</Label>
 
               <div className="space-y-2">
                 <div className="prose-editor">
@@ -285,7 +285,7 @@ export function SpaceSettingsAbout() {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-muted-foreground">{hint}</p>
+                  <p className="text-caption text-muted-foreground">{hint}</p>
                   <InlineSaveButton dirty={dirty[field]} status={statuses[field]} onSave={() => saveSection(field as SectionId)} />
                 </div>
               </div>
@@ -304,7 +304,7 @@ export function SpaceSettingsAbout() {
             <div className="relative flex flex-wrap gap-2 p-3 pr-8 bg-background border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-h-[50px]">
               <EditPencil className="absolute right-2.5 top-3" />
               {formData.tags.map(tag => (
-                <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-xs font-medium">
+                <span key={tag} className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-caption font-medium">
                   {tag}
                   <button onClick={() => removeTag(tag)} className="text-muted-foreground hover:text-foreground">
                     <X className="w-3 h-3" />
@@ -312,7 +312,7 @@ export function SpaceSettingsAbout() {
                 </span>
               ))}
               <input 
-                className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px]"
+                className="flex-1 bg-transparent border-none outline-none text-body min-w-[120px]"
                 placeholder="Type a tag and press Enter…"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -320,7 +320,7 @@ export function SpaceSettingsAbout() {
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Tags help members discover your space.</p>
+              <p className="text-caption text-muted-foreground">Tags help members discover your space.</p>
               <InlineSaveButton dirty={dirty.tags} status={statuses.tags} onSave={() => saveSection("tags")} />
             </div>
           </div>
@@ -332,7 +332,7 @@ export function SpaceSettingsAbout() {
         <section>
           <div className="flex items-center justify-between">
             <Label>References & Links</Label>
-            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-7 text-xs">
+            <Button variant="outline" size="sm" onClick={addReference} className="gap-1 h-7 text-caption">
               <Plus className="w-3 h-3" /> Add
             </Button>
           </div>
@@ -360,7 +360,7 @@ export function SpaceSettingsAbout() {
               </div>
             ))}
             {formData.references.length === 0 && (
-              <p className="text-sm text-muted-foreground italic">No references added yet. Click "Add" above.</p>
+              <p className="text-body text-muted-foreground italic">No references added yet. Click "Add" above.</p>
             )}
             <div className="flex items-center justify-end gap-2">
               <InlineSaveButton dirty={dirty.references} status={statuses.references} onSave={() => saveSection("references")} />
@@ -375,11 +375,11 @@ export function SpaceSettingsAbout() {
           <div className="flex items-center justify-between mb-2">
              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Preview</h3>
              {Object.values(dirty).some(Boolean) ? (
-               <span className="text-xs text-amber-500 flex items-center gap-1.5">
+               <span className="text-caption text-amber-500 flex items-center gap-1.5">
                  Unsaved changes
                </span>
              ) : Object.values(statuses).some(s => s === "saved") ? (
-               <span className="text-xs text-success flex items-center gap-1.5">
+               <span className="text-caption text-success flex items-center gap-1.5">
                  <Check className="w-3 h-3" /> Saved
                </span>
              ) : null}
@@ -403,33 +403,33 @@ export function SpaceSettingsAbout() {
                        {(formData.name || "Untitled").substring(0, 2).toUpperCase()}
                    </div>
                    <div>
-                      <h4 className="font-semibold text-sm">{formData.name || "Untitled Space"}</h4>
-                      <p className="text-xs text-muted-foreground">Last active just now</p>
+                      <h4 className="text-card-title">{formData.name || "Untitled Space"}</h4>
+                      <p className="text-caption text-muted-foreground">Last active just now</p>
                    </div>
                 </div>
                 
                 <div className="space-y-1">
-                   <p className="text-xs font-medium text-muted-foreground uppercase">What</p>
-                   <div 
-                     className="text-sm text-card-foreground line-clamp-3 prose prose-sm max-w-none"
+                   <p className="text-label uppercase text-muted-foreground">What</p>
+                   <div
+                     className="text-body text-card-foreground line-clamp-3 prose prose-sm max-w-none"
                      dangerouslySetInnerHTML={{ __html: formData.what || "<p class='text-muted-foreground italic'>No description yet...</p>" }}
                    />
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
                    {formData.tags.length > 0 ? formData.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="bg-secondary px-2 py-0.5 rounded text-[10px] text-secondary-foreground">{tag}</span>
+                      <span key={tag} className="bg-secondary px-2 py-0.5 rounded text-badge text-secondary-foreground">{tag}</span>
                    )) : (
-                      <span className="bg-muted px-2 py-0.5 rounded text-[10px] text-muted-foreground">No Tags</span>
+                      <span className="bg-muted px-2 py-0.5 rounded text-badge text-muted-foreground">No Tags</span>
                    )}
                    {formData.tags.length > 3 && (
-                      <span className="bg-muted px-2 py-0.5 rounded text-[10px] text-muted-foreground">+{formData.tags.length - 3}</span>
+                      <span className="bg-muted px-2 py-0.5 rounded text-badge text-muted-foreground">+{formData.tags.length - 3}</span>
                    )}
                 </div>
              </div>
           </div>
           
-          <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 text-xs text-primary/80 space-y-2">
+          <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 text-caption text-primary/80 space-y-2">
              <p className="font-semibold flex items-center gap-2">
                 <InfoIcon className="w-3.5 h-3.5" />
                 Live Preview

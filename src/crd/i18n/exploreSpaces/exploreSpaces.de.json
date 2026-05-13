@@ -28,6 +28,7 @@
     "in": "in",
     "loading": "Räume werden geladen",
     "moreLeads": "{{count}} weitere Leiter",
+    "moreTags": "{{count}} weitere Tags",
     "removeFilter": "Filter entfernen"
   }
 }

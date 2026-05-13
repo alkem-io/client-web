@@ -134,18 +134,16 @@ export function SpaceResourcesList() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2
+            className="text-page-title"
             style={{
-              fontSize: "var(--text-2xl)",
-              fontWeight: 700,
               color: "var(--foreground)",
             }}
           >
             Knowledge Base
           </h2>
           <p
-            className="mt-1"
+            className="mt-1 text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
             }}
           >
@@ -185,8 +183,7 @@ export function SpaceResourcesList() {
           }}
         >
           <SelectTrigger
-            className="h-9 w-auto min-w-[160px]"
-            style={{ fontSize: "var(--text-sm)" }}
+            className="h-9 w-auto min-w-[160px] text-control"
           >
             <SelectValue placeholder="Type: All" />
           </SelectTrigger>
@@ -231,12 +228,9 @@ export function SpaceResourcesList() {
 
                   {/* Title */}
                   <h3
-                    className="mb-2 line-clamp-2 group-hover:text-primary transition-colors"
+                    className="mb-2 line-clamp-2 group-hover:text-primary transition-colors text-card-title"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 600,
                       color: "var(--foreground)",
-                      lineHeight: 1.4,
                     }}
                   >
                     {resource.name}
@@ -244,11 +238,9 @@ export function SpaceResourcesList() {
 
                   {/* Description */}
                   <p
-                    className="line-clamp-2 flex-1 mb-4"
+                    className="line-clamp-2 flex-1 mb-4 text-body"
                     style={{
-                      fontSize: "var(--text-sm)",
                       color: "var(--muted-foreground)",
-                      lineHeight: 1.5,
                     }}
                   >
                     {resource.description}
@@ -313,8 +305,8 @@ export function SpaceResourcesList() {
             }}
           />
           <p
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
             }}
           >

@@ -44,25 +44,20 @@ export function CalloutTabs({
                 onClick={() => onTabChange(tab.id)}
                 className={cn(
                   "pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none inline-flex items-center gap-1.5",
+                  isActive ? "text-control font-semibold" : "text-control",
                   isActive
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
                 )}
                 style={{
-                  fontSize: 14,
-                  fontWeight: isActive ? 600 : 500,
                   fontFamily: "'Inter', sans-serif",
-                  lineHeight: "20px",
                 }}
               >
               {tab.label}
               {tab.count !== undefined && tab.count > 0 && (
                 <span
-                  className="rounded-full px-1.5 py-0.5"
+                  className="rounded-full px-1.5 py-0.5 text-badge font-bold"
                   style={{
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    lineHeight: 1,
                     background: isActive
                       ? "color-mix(in srgb, var(--primary) 12%, transparent)"
                       : "color-mix(in srgb, var(--muted-foreground) 12%, transparent)",

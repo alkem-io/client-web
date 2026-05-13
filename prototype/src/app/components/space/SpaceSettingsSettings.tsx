@@ -79,10 +79,10 @@ export function SpaceSettingsSettings() {
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* 1. Page Title & Description */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+        <h2 className="text-page-title">Settings</h2>
         <p className="text-muted-foreground mt-2">
           Configure your space's visibility, membership policies, and allowed member actions.
-          {" "}<span className="text-xs text-muted-foreground/70 italic">Changes are saved automatically.</span>
+          {" "}<span className="text-caption text-muted-foreground/70 italic">Changes are saved automatically.</span>
         </p>
       </div>
 
@@ -94,10 +94,10 @@ export function SpaceSettingsSettings() {
         <AccordionItem value="visibility" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Visibility
               </h3>
-              <p className="text-sm text-muted-foreground font-normal text-left">
+              <p className="text-body text-muted-foreground font-normal text-left">
                 Control who can see and access this space
               </p>
             </div>
@@ -107,11 +107,11 @@ export function SpaceSettingsSettings() {
               <div className="flex items-start space-x-3 p-4 rounded-md border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => setVisibility("public")}>
                 <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
                 <div className="space-y-1">
-                  <Label htmlFor="visibility-public" className="text-base font-medium flex items-center gap-2 cursor-pointer">
+                  <Label htmlFor="visibility-public" className="text-subheader flex items-center gap-2 cursor-pointer">
                     <Globe className="w-4 h-4 text-info" />
                     Public
                   </Label>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.
                   </p>
                 </div>
@@ -119,17 +119,17 @@ export function SpaceSettingsSettings() {
               <div className="flex items-start space-x-3 p-4 rounded-md border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => setVisibility("private")}>
                 <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
                 <div className="space-y-1">
-                  <Label htmlFor="visibility-private" className="text-base font-medium flex items-center gap-2 cursor-pointer">
+                  <Label htmlFor="visibility-private" className="text-subheader flex items-center gap-2 cursor-pointer">
                     <Lock className="w-4 h-4 text-warning" />
                     Private
                   </Label>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     This Space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the content are publicly visible.
                   </p>
                 </div>
               </div>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-4 italic">
+            <p className="text-caption text-muted-foreground mt-4 italic">
               Consider your space's purpose and audience when choosing visibility.
             </p>
           </AccordionContent>
@@ -139,7 +139,7 @@ export function SpaceSettingsSettings() {
         <AccordionItem value="membership" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Membership
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -152,42 +152,42 @@ export function SpaceSettingsSettings() {
               <div className="flex items-start space-x-3 p-4 rounded-md border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => setMembershipMode("none")}>
                 <RadioGroupItem value="none" id="membership-none" className="mt-1" />
                 <div className="space-y-1">
-                  <Label htmlFor="membership-none" className="text-base font-medium flex items-center gap-2 cursor-pointer">
+                  <Label htmlFor="membership-none" className="text-subheader flex items-center gap-2 cursor-pointer">
                     <UserPlus className="w-4 h-4 text-success" />
                     No Application Required
                   </Label>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     All Space members can directly join, without you having to review their applications.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for public, open collaboration spaces</p>
                 </div>
               </div>
               
               <div className="flex items-start space-x-3 p-4 rounded-md border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => setMembershipMode("application")}>
                 <RadioGroupItem value="application" id="membership-application" className="mt-1" />
                 <div className="space-y-1">
-                  <Label htmlFor="membership-application" className="text-base font-medium flex items-center gap-2 cursor-pointer">
+                  <Label htmlFor="membership-application" className="text-subheader flex items-center gap-2 cursor-pointer">
                     <FileTextIcon className="w-4 h-4 text-info" />
                     Application Required
                   </Label>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     If people want to become a member, they have to fill in the application form. You receive their applications (see community tab here) and you can accept them or reject them.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for curated spaces with specific requirements</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3 p-4 rounded-md border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => setMembershipMode("invitation")}>
                 <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
                 <div className="space-y-1">
-                  <Label htmlFor="membership-invitation" className="text-base font-medium flex items-center gap-2 cursor-pointer">
+                  <Label htmlFor="membership-invitation" className="text-subheader flex items-center gap-2 cursor-pointer">
                     <Mail className="w-4 h-4 text-primary" />
                     Invitation Only
                   </Label>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-body text-muted-foreground">
                     Users can only become a member after you've invited them. There is no 'apply' or 'join' button for others to click.
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">Best for private, restricted collaboration teams</p>
                 </div>
               </div>
             </RadioGroup>
@@ -198,7 +198,7 @@ export function SpaceSettingsSettings() {
         <AccordionItem value="organizations" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Applicable Organizations
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -215,8 +215,8 @@ export function SpaceSettingsSettings() {
                       <Building2 className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-sm">{org.name}</p>
-                      <p className="text-xs text-muted-foreground">@{org.domain}</p>
+                      <p className="text-body-emphasis">{org.name}</p>
+                      <p className="text-caption text-muted-foreground">@{org.domain}</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => removeOrganization(org.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
@@ -234,8 +234,8 @@ export function SpaceSettingsSettings() {
 
             <div className="flex items-center justify-between space-x-4">
               <div className="space-y-1">
-                <Label htmlFor="auto-add-users" className="text-sm font-medium">Automatic Access</Label>
-                <p className="text-xs text-muted-foreground max-w-md">
+                <Label htmlFor="auto-add-users" className="text-body-emphasis">Automatic Access</Label>
+                <p className="text-caption text-muted-foreground max-w-md">
                   Automatically add new users with emails matching the organization domain to this space as members.
                 </p>
               </div>
@@ -252,7 +252,7 @@ export function SpaceSettingsSettings() {
         <AccordionItem value="actions" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Allowed Actions
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -326,11 +326,11 @@ export function SpaceSettingsSettings() {
         <AccordionItem value="danger" className="border border-destructive/20 rounded-lg bg-destructive/5 px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-destructive">
+              <h3 className="text-subsection-title flex items-center gap-2 text-destructive">
                 <AlertTriangle className="w-5 h-5" />
                 Danger Zone
               </h3>
-              <p className="text-sm text-destructive/80 font-normal text-left">
+              <p className="text-body text-destructive/80 font-normal text-left">
                 Irreversible actions for this space
               </p>
             </div>
@@ -339,7 +339,7 @@ export function SpaceSettingsSettings() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border border-destructive/20 rounded-md bg-background">
               <div>
                 <h4 className="font-semibold text-foreground">Delete this Space</h4>
-                <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                <p className="text-body text-muted-foreground mt-1 max-w-xl">
                   Deleting this Space is permanent. All posts, content, and membership data will be permanently removed. Be careful, this action cannot be undone.
                 </p>
               </div>
@@ -379,7 +379,7 @@ export function SpaceSettingsSettings() {
                 </DialogContent>
               </Dialog>
             </div>
-            <p className="text-xs text-muted-foreground mt-3 italic">
+            <p className="text-caption text-muted-foreground mt-3 italic">
               Please contact the Alkemio team if you need assistance with space deletion.
             </p>
           </AccordionContent>
@@ -411,8 +411,8 @@ function ActionToggle({
           <Icon className="w-5 h-5" />
         </div>
         <div className="space-y-0.5">
-          <Label htmlFor={id} className="text-base font-medium cursor-pointer">{label}</Label>
-          <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
+          <Label htmlFor={id} className="text-subheader cursor-pointer">{label}</Label>
+          <p className="text-caption text-muted-foreground max-w-[200px] sm:max-w-xs">
             {description}
           </p>
         </div>

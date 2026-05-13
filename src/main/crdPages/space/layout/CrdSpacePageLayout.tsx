@@ -120,7 +120,6 @@ export default function CrdSpacePageLayout() {
     showSettings,
     settingsHref,
     onActivityClick: () => setActivityDialogOpen(true),
-    onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };
 

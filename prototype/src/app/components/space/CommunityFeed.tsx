@@ -63,9 +63,8 @@ export function CommunityFeed() {
       {/* Section header */}
       <div className="flex items-center justify-between mb-6">
         <h2
+          className="text-section-title"
           style={{
-            fontSize: "var(--text-xl)",
-            fontWeight: 600,
             color: "var(--foreground)",
             fontFamily: "'Inter', sans-serif",
           }}

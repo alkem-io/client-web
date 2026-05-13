@@ -1,12 +1,16 @@
+import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCalloutContributionQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
+import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
+import { ShareButton } from '@/crd/components/common/ShareButton';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
@@ -124,7 +128,7 @@ export function CalloutDetailDialogConnector({
   initialPostId,
   moveActions,
 }: CalloutDetailDialogConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
@@ -140,6 +144,11 @@ export function CalloutDetailDialogConnector({
     initialIsPost ? initialContributionId : undefined
   );
   const [postId, setPostId] = useState<string | undefined>(initialPostId);
+  // Post-edit dialog opens on top of the inline preview when the user clicks the
+  // edit pencil. Clicking a contribution card no longer opens the edit form
+  // directly — it selects the post and the connector renders the read-only
+  // preview inside the dialog body (MUI parity).
+  const [postEditOpen, setPostEditOpen] = useState(false);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -240,6 +249,62 @@ export function CalloutDetailDialogConnector({
     <ContributionsSlot callout={callout} open={open} onContributionClick={handleContributionClick} />
   ) : undefined;
 
+  // Inline preview of the selected post contribution — mirrors the MUI flow
+  // where clicking a post card swaps the contributions grid for a read-only
+  // preview of the chosen post (`CalloutContributionPreview` + `CalloutContributionPreviewPost`).
+  const { data: postContributionData, loading: loadingPostContribution } = useCalloutContributionQuery({
+    variables: { contributionId: postContributionId ?? '', includePost: true },
+    skip: !open || !postContributionId || contributionType !== CalloutContributionType.Post,
+  });
+  const selectedPost = postContributionData?.lookup.contribution?.post;
+  const selectedPostUrl = selectedPost?.profile?.url;
+  // Edit privileges live on the contribution wrapper, not the inner post — same
+  // shape MUI uses in `useCalloutContributionQuery` to gate the edit button.
+  const canEditSelectedPost =
+    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
+    false;
+  const selectedContributionSlot =
+    postContributionId && contributionType === CalloutContributionType.Post ? (
+      <CalloutPostPreview
+        loading={loadingPostContribution && !selectedPost}
+        post={{
+          id: selectedPost?.id ?? postContributionId,
+          title: selectedPost?.profile.displayName ?? '',
+          author: selectedPost?.createdBy?.profile
+            ? {
+                name: selectedPost.createdBy.profile.displayName,
+                avatarUrl: selectedPost.createdBy.profile.avatar?.uri,
+              }
+            : undefined,
+          // Display the absolute date — the dialog header already shows the
+          // callout-level timestamp, so we don't need a relative "x ago" here.
+          timestamp: selectedPost?.createdDate
+            ? format(new Date(selectedPost.createdDate as string | number | Date), 'P', {
+                locale: resolveDateFnsLocale(i18n.language),
+              })
+            : undefined,
+          description: selectedPost?.profile.description ?? undefined,
+          tags: selectedPost?.profile.tagset?.tags ?? [],
+          references: selectedPost?.profile.references?.map(ref => ({
+            id: ref.id,
+            name: ref.name,
+            uri: ref.uri,
+            description: ref.description ?? undefined,
+          })),
+        }}
+        onEdit={canEditSelectedPost ? () => setPostEditOpen(true) : undefined}
+        onClose={() => {
+          setPostContributionId(undefined);
+          setPostId(undefined);
+        }}
+        shareSlot={
+          selectedPostUrl ? (
+            <ShareButton url={selectedPostUrl} tooltip={t('postPreview.share')} dialogTitle={t('postPreview.share')} />
+          ) : undefined
+        }
+      />
+    ) : undefined;
+
   const whiteboardOverlay = whiteboardContributionId ? (
     <WhiteboardContributionConnector
       open={true}
@@ -263,16 +328,15 @@ export function CalloutDetailDialogConnector({
     ) : null;
 
   const postOverlay =
-    postContributionId && postId ? (
+    postEditOpen && postContributionId && postId ? (
       <PostContributionConnector
         open={true}
         calloutId={callout.id}
         contributionId={postContributionId}
         postId={postId}
-        onClose={() => {
-          setPostContributionId(undefined);
-          setPostId(undefined);
-        }}
+        // Closing the edit dialog returns to the read-only preview — only
+        // explicit close on the preview itself clears the selection.
+        onClose={() => setPostEditOpen(false)}
       />
     ) : null;
 
@@ -326,6 +390,7 @@ export function CalloutDetailDialogConnector({
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
+          selectedContributionSlot={selectedContributionSlot}
           settingsSlot={settingsSlot}
           onShareClick={handleShareClick}
         />
@@ -356,6 +421,7 @@ export function CalloutDetailDialogConnector({
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
             contributionsCount={callout.contributions.length}
+            selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}

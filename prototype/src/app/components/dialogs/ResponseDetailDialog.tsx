@@ -85,7 +85,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
         <div className="h-14 shrink-0 bg-background flex items-center justify-between px-4 border-b border-border z-20">
           <div className="flex items-center gap-3">
              <div className="flex flex-col">
-              <DialogTitle className="text-sm font-bold text-foreground line-clamp-1">
+              <DialogTitle className="text-card-title font-bold text-foreground line-clamp-1">
                 Response Detail
               </DialogTitle>
               <DialogDescription className="sr-only">
@@ -103,7 +103,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
 
         {/* 2. Response Navigation Controls */}
         <div className="h-12 shrink-0 bg-muted/20 border-b border-border flex items-center justify-between px-6">
-            <div className="flex items-center gap-4 text-sm font-medium text-muted-foreground">
+            <div className="flex items-center gap-4 text-body-emphasis text-muted-foreground">
                <span>Response {MOCK_RESPONSE.responseIndex} of {MOCK_RESPONSE.totalResponses}</span>
             </div>
             
@@ -134,7 +134,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
             
             {/* Peer Responses Preview Strip */}
             <div className="px-8 pt-8 pb-2">
-               <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+               <h3 className="text-label uppercase text-muted-foreground mb-3">
                  All Contributions ({MOCK_RESPONSE.totalResponses})
                </h3>
                <div className="flex gap-3 overflow-x-auto pb-4 -mx-2 px-2 snap-x">
@@ -162,7 +162,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
                           )}
                        </div>
                        <div className="space-y-1">
-                          <div className={cn("font-semibold text-sm leading-tight line-clamp-2", item.active ? "text-primary" : "text-foreground")}>
+                          <div className={cn("text-card-title line-clamp-2", item.active ? "text-primary" : "text-foreground")}>
                             {item.title}
                           </div>
                           <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
@@ -176,7 +176,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
                   
                   {/* View All Card */}
                   <div className="shrink-0 w-24 flex items-center justify-center rounded-lg border border-dashed border-border hover:bg-muted/30 cursor-pointer transition-colors">
-                     <span className="text-xs font-medium text-muted-foreground">View All</span>
+                     <span className="text-caption font-medium text-muted-foreground">View All</span>
                   </div>
                </div>
                <Separator className="mt-2" />
@@ -210,7 +210,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
               </div>
 
               <div>
-                <h1 className="text-3xl font-bold text-foreground leading-tight mb-4">
+                <h1 className="text-hero text-foreground mb-4">
                   {MOCK_RESPONSE.title}
                 </h1>
                 <div className="flex items-center gap-3">
@@ -219,14 +219,14 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
                     <AvatarFallback>{MOCK_RESPONSE.author.initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-foreground">{MOCK_RESPONSE.author.name}</span>
-                    <span className="text-xs text-muted-foreground">{MOCK_RESPONSE.author.date}</span>
+                    <span className="text-card-title text-foreground">{MOCK_RESPONSE.author.name}</span>
+                    <span className="text-caption text-muted-foreground">{MOCK_RESPONSE.author.date}</span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-6">
-                 <p className="text-base text-foreground/90 leading-relaxed">
+                 <p className="text-subheader font-normal text-foreground/90">
                    {MOCK_RESPONSE.content.description}
                  </p>
                  <div className="rounded-xl overflow-hidden border border-border bg-muted relative group cursor-pointer shadow-sm">
@@ -243,7 +243,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
             {/* 4. Comments Section */}
             <div className="bg-muted/30 border-t border-border p-8 min-h-[300px]">
                <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-base font-bold flex items-center gap-2">
+                 <h3 className="text-subheader font-bold flex items-center gap-2">
                    Comments on this response
                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] rounded-full">2</Badge>
                  </h3>
@@ -254,17 +254,17 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
                     <div key={comment.id} className="flex gap-4">
                        <Avatar className="w-8 h-8 mt-1">
                          <AvatarImage src={comment.author.avatar} />
-                         <AvatarFallback className="text-xs">{comment.author.initials}</AvatarFallback>
+                         <AvatarFallback className="text-caption">{comment.author.initials}</AvatarFallback>
                        </Avatar>
                        <div className="flex-1 space-y-2">
                           <div className="flex items-center justify-between">
                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold">{comment.author.name}</span>
-                                <span className="text-xs text-muted-foreground">{comment.date}</span>
+                                <span className="text-card-title">{comment.author.name}</span>
+                                <span className="text-caption text-muted-foreground">{comment.date}</span>
                              </div>
                           </div>
-                          <p className="text-sm text-foreground/90">{comment.text}</p>
-                          <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+                          <p className="text-body text-foreground/90">{comment.text}</p>
+                          <div className="flex items-center gap-4 text-control text-muted-foreground">
                              <button className="hover:text-primary transition-colors">Reply</button>
                              <button className="hover:text-primary transition-colors flex items-center gap-1">
                                Like ({comment.reactions})
@@ -288,7 +288,7 @@ export function ResponseDetailDialog({ open, onOpenChange, responseId }: Respons
              <div className="flex-1 relative bg-muted/30 rounded-xl border border-border focus-within:ring-1 focus-within:ring-ring focus-within:border-primary/50 transition-all">
                 <Textarea 
                   placeholder="Comment on this response..." 
-                  className="min-h-[48px] max-h-[120px] pr-14 resize-none py-3 bg-transparent border-none focus-visible:ring-0 shadow-none text-sm"
+                  className="min-h-[48px] max-h-[120px] pr-14 resize-none py-3 bg-transparent border-none focus-visible:ring-0 shadow-none text-body"
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                 />

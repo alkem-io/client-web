@@ -20,7 +20,11 @@
     "changeLanguage": "Смяна на езика",
     "getHelp": "Помощ",
     "showGrid": "Покажи мрежа",
-    "hideGrid": "Скрий мрежа"
+    "hideGrid": "Скрий мрежа",
+    "designVersion": {
+      "label": "Нов дизайн (бета)",
+      "caption": "Старият дизайн ще остане наличен още кратко време."
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

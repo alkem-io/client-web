@@ -347,7 +347,6 @@
     }
   },
   "mobile": {
-    "more": "Plus",
     "menu": "Menu",
     "activity": "Activité",
     "videoCall": "Appel vidéo",
@@ -635,6 +634,14 @@
   "postSnippet": {
     "readMore": "… Lire la suite",
     "readLess": "Réduire"
+  },
+  "postPreview": {
+    "label": "Aperçu de la contribution sélectionnée",
+    "edit": "Modifier la réponse",
+    "share": "Partager la réponse",
+    "close": "Fermer l'aperçu",
+    "emptyDescription": "Aucune description",
+    "references": "Références"
   },
   "comments": {
     "title": "Discussion",
