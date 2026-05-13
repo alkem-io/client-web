@@ -43,19 +43,21 @@ type BuildConfig = NonCollabConfig | CollabConfig;
 const isImageFile = (item: DataTransferItem) => item.kind === 'file' && item.type.startsWith('image/');
 
 function createImagePasteHandler(onImageUpload: (file: File) => Promise<string>, onError?: (message: string) => void) {
-  const insert = (view: EditorView, files: File[]) => {
+  const insertAt = async (view: EditorView, files: File[], startPos: number) => {
+    let pos = startPos;
     for (const file of files) {
-      onImageUpload(file)
-        .then(url => {
-          const { schema } = view.state;
-          const node = schema.nodes.image?.create({ src: url, alt: file.name });
-          if (!node) return;
-          const tr = view.state.tr.replaceSelectionWith(node);
-          view.dispatch(tr);
-        })
-        .catch(err => {
-          onError?.(err instanceof Error ? err.message : 'Image upload failed');
-        });
+      try {
+        const url = await onImageUpload(file);
+        if (view.isDestroyed) return;
+        const { schema } = view.state;
+        const node = schema.nodes.image?.create({ src: url, alt: file.name });
+        if (!node) continue;
+        const tr = view.state.tr.insert(pos, node);
+        view.dispatch(tr);
+        pos += node.nodeSize;
+      } catch (err) {
+        onError?.(err instanceof Error ? err.message : 'Image upload failed');
+      }
     }
   };
 
@@ -71,7 +73,7 @@ function createImagePasteHandler(onImageUpload: (file: File) => Promise<string>,
     }
     if (files.length === 0) return false;
     event.preventDefault();
-    insert(view, files);
+    void insertAt(view, files, view.state.selection.from);
     return true;
   };
 
@@ -81,7 +83,8 @@ function createImagePasteHandler(onImageUpload: (file: File) => Promise<string>,
     const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
     if (imageFiles.length === 0) return false;
     event.preventDefault();
-    insert(view, imageFiles);
+    const dropPos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos ?? view.state.selection.from;
+    void insertAt(view, imageFiles, dropPos);
     return true;
   };
 

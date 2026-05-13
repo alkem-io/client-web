@@ -41,13 +41,18 @@ export function ToolbarEmbedDialog({ editor, iframeAllowedUrls, onError, disable
       onError?.(t('editor.embed.invalid'));
       return;
     }
-    let origin: string;
+    let parsedUrl: URL;
     try {
-      origin = new URL(src).origin;
+      parsedUrl = new URL(src);
     } catch {
       onError?.(t('editor.embed.invalid'));
       return;
     }
+    if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:') {
+      onError?.(t('editor.embed.invalid'));
+      return;
+    }
+    const origin = parsedUrl.origin;
     if (iframeAllowedUrls && iframeAllowedUrls.length > 0) {
       const allowed = iframeAllowedUrls.some(allowedUrl => allowedUrl === origin);
       if (!allowed) {

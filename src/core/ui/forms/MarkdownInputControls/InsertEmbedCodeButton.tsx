@@ -8,11 +8,13 @@ import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownInputToolbarButton, {
+  type MarkdownInputToolbarButtonProps,
+} from '@/core/ui/forms/MarkdownInputControls/MarkdownInputToolbarButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import MarkdownInputToolbarButton, { type MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
 interface InsertEmbedCodeButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;

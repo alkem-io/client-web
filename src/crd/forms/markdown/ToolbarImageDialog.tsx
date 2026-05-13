@@ -86,7 +86,7 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
               type="url"
               value={src}
               onChange={e => setSrc(e.target.value)}
-              placeholder="https://..."
+              placeholder={t('editor.link.placeholder')}
               disabled={uploading}
             />
           </div>
