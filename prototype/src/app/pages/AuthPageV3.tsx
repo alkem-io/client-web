@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { Eye, EyeOff, Info, Fingerprint, ChevronUp, HelpCircle } from "lucide-react";
+import { Eye, EyeOff, Info, Fingerprint, HelpCircle } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Checkbox } from "@/app/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 import { Footer } from "@/app/components/layout/Footer";
 import AlkemioLogo from "@/imports/AlkemioLogo";
 
@@ -252,10 +251,10 @@ function AuthCard({
   );
 }
 
-/* ─── Main Auth Page ─── */
+/* ─── Main Auth Page V3 — Soft Gradient Background ─── */
 type AuthView = "sign-in" | "sign-up" | "sign-up-password" | "verify" | "recovery";
 
-export default function AuthPage() {
+export default function AuthPageV3() {
   const navigate = useNavigate();
   const location = useLocation();
   const [view, setView] = useState<AuthView>("sign-in");
@@ -277,7 +276,6 @@ export default function AuthPage() {
 
   const handleSignIn = () => {
     setIsLoggingIn(true);
-    // Wait for animation to finish, then navigate
     setTimeout(() => navigate("/"), 1200);
   };
 
@@ -289,214 +287,55 @@ export default function AuthPage() {
     setView("verify");
   };
 
-  const handleRecovery = () => {
-    // Show success state or navigate
-  };
+  const handleRecovery = () => {};
 
   return (
     <div
       className="min-h-screen flex flex-col relative"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Background: Sandblasted/frosted preview of dashboard */}
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        {/* Base background */}
-        <div className="absolute inset-0" style={{ background: "var(--background)" }} />
-
-        {/* Dashboard replica — exact layout: grid-cols-12, px-8 py-8, col-span-2 sidebar + col-span-9 main */}
-        <div className="absolute inset-0">
-
-          {/* ─── Header bar (56px like real Header) ─── */}
-          <div
-            className="absolute top-0 left-0 right-0 flex items-center px-6 gap-4"
-            style={{ height: "56px", background: "var(--card)", borderBottom: "1px solid var(--border)" }}
-          >
-            <div className="w-7 h-7 rounded" style={{ background: "rgba(9,188,212,0.35)" }} />
-            <div className="h-3 w-20 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
-            <div className="flex-1 max-w-lg mx-auto h-8 rounded-md flex items-center px-3 gap-2" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }}>
-              <div className="w-3.5 h-3.5 rounded-sm" style={{ background: "var(--border)" }} />
-              <div className="h-2 w-14 rounded" style={{ background: "var(--border)", opacity: 0.5 }} />
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-full" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
-              <div className="w-7 h-7 rounded-full" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
-              <div className="w-8 h-8 rounded-full" style={{ background: "rgba(9,188,212,0.15)" }} />
-            </div>
-          </div>
-
-          {/* ─── Content below header — matches real Dashboard: px-8 py-8, grid-cols-12 gap-6 ─── */}
-          <div className="absolute top-[56px] left-0 right-0 bottom-0 px-8 py-8">
-            <div className="grid grid-cols-12 gap-6 h-full">
-
-              {/* Sidebar col-span-2 */}
-              <div className="col-span-2 space-y-1">
-                {[
-                  { w: "75%", badge: true },
-                  { w: "88%", badge: false },
-                  { w: "58%", badge: false },
-                  { w: "72%", badge: false },
-                  { w: "52%", badge: false },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 py-2">
-                    <div className="w-4 h-4 rounded shrink-0" style={{ background: "rgba(29,56,74,0.18)" }} />
-                    <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.1)", width: item.w }} />
-                    {item.badge && <div className="w-5 h-4 rounded-full ml-auto" style={{ background: "rgba(9,188,212,0.4)" }} />}
-                  </div>
-                ))}
-
-                {/* MY SPACES */}
-                <div className="pt-4 mt-3" style={{ borderTop: "1px solid var(--border)" }}>
-                  <div className="h-2 rounded mb-3" style={{ background: "rgba(29,56,74,0.07)", width: "50%" }} />
-                  <div className="space-y-3">
-                    {[
-                      "rgba(234,179,8,0.45)",
-                      "rgba(34,197,94,0.35)",
-                      "rgba(59,130,246,0.35)",
-                    ].map((c, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded shrink-0" style={{ background: c }} />
-                        <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.08)" }} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* VIRTUAL CONTRIBUTORS */}
-                <div className="pt-4 mt-3" style={{ borderTop: "1px solid var(--border)" }}>
-                  <div className="h-2 rounded mb-3" style={{ background: "rgba(29,56,74,0.06)", width: "72%" }} />
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full shrink-0" style={{ background: "rgba(29,56,74,0.1)", border: "1px solid var(--border)" }} />
-                      <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.07)" }} />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full shrink-0" style={{ background: "rgba(29,56,74,0.1)", border: "1px solid var(--border)" }} />
-                      <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.07)" }} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Activity View */}
-                <div className="pt-4 mt-3 flex items-center gap-2" style={{ borderTop: "1px solid var(--border)" }}>
-                  <div className="w-4 h-4 rounded shrink-0" style={{ background: "rgba(29,56,74,0.15)" }} />
-                  <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: "55%" }} />
-                  <div className="w-8 h-4 rounded-full ml-auto" style={{ background: "var(--border)" }} />
-                </div>
-              </div>
-
-              {/* Main col-span-9 — inner grid-cols-9 */}
-              <div className="col-span-9">
-                {/* Section: Recent Spaces */}
-                <div className="space-y-4 mb-6">
-                  <div className="flex items-center justify-between">
-                    <div className="h-5 w-28 rounded" style={{ background: "rgba(29,56,74,0.14)" }} />
-                    <div className="h-3 w-36 rounded" style={{ background: "rgba(9,188,212,0.3)" }} />
-                  </div>
-
-                  {/* 4-col cards with aspect-video */}
-                  <div className="grid grid-cols-4 gap-4">
-                    {[
-                      "rgba(180,140,60,0.3)",
-                      "rgba(80,160,100,0.25)",
-                      "rgba(180,80,80,0.2)",
-                      "rgba(100,80,170,0.25)",
-                    ].map((color, i) => (
-                      <div
-                        key={i}
-                        className="rounded-md overflow-hidden"
-                        style={{ background: "var(--card)", border: "1px solid var(--border)" }}
-                      >
-                        <div className="aspect-video" style={{ background: color }} />
-                        <div className="p-3 flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg shrink-0" style={{ background: color, opacity: 0.8 }} />
-                          <div className="h-3 rounded flex-1" style={{ background: "rgba(29,56,74,0.09)" }} />
-                          {i % 2 === 0 && <div className="w-4 h-4 rounded-sm shrink-0" style={{ background: "rgba(29,56,74,0.06)" }} />}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Activity feeds: grid-cols-9, 5:4 split */}
-                <div className="grid grid-cols-9 gap-6">
-                  {/* Left feed col-span-5 */}
-                  <div
-                    className="col-span-5 rounded-md p-5"
-                    style={{ background: "var(--card)", border: "1px solid var(--border)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="h-3.5 w-40 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
-                      <div className="w-5 h-5 rounded" style={{ background: "var(--border)" }} />
-                    </div>
-                    <div className="flex gap-2 mb-5">
-                      <div className="h-6 w-28 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
-                      <div className="h-6 w-32 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
-                    </div>
-                    <div className="space-y-5">
-                      {[85, 78, 72, 80, 68, 75, 82].map((w, n) => (
-                        <div key={n} className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-full shrink-0" style={{ background: `hsl(${n * 50 + 10}, 30%, 78%)` }} />
-                          <div className="flex-1 pt-1 space-y-1.5">
-                            <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: `${w}%` }} />
-                            <div className="h-2 rounded" style={{ background: "rgba(29,56,74,0.04)", width: "22%" }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Right feed col-span-4 */}
-                  <div
-                    className="col-span-4 rounded-md p-5"
-                    style={{ background: "var(--card)", border: "1px solid var(--border)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="h-3.5 w-32 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
-                      <div className="w-5 h-5 rounded" style={{ background: "var(--border)" }} />
-                    </div>
-                    <div className="flex gap-2 mb-5">
-                      <div className="h-6 w-28 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
-                    </div>
-                    <div className="space-y-5">
-                      {[76, 70, 65, 80, 58, 72].map((w, n) => (
-                        <div key={n} className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-full shrink-0" style={{ background: "hsl(210, 22%, 78%)" }} />
-                          <div className="flex-1 pt-1 space-y-1.5">
-                            <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: `${w}%` }} />
-                            <div className="h-2 rounded" style={{ background: "rgba(29,56,74,0.04)", width: "18%" }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        {/* Frosted glass overlay — animates out on login */}
+      {/* Background: Soft multi-stop gradient */}
+      <div className="absolute inset-0" style={{ zIndex: 0 }}>
+        {/* Primary gradient — very soft warm-to-cool sweep */}
         <div
           className="absolute inset-0"
           style={{
-            backdropFilter: isLoggingIn ? "blur(0px) saturate(1)" : "blur(10px) saturate(1.2)",
-            WebkitBackdropFilter: isLoggingIn ? "blur(0px) saturate(1)" : "blur(10px) saturate(1.2)",
-            background: isLoggingIn ? "rgba(255, 255, 255, 0)" : "rgba(255, 255, 255, 0.3)",
-            transition: "all 1s cubic-bezier(0.4, 0, 0.2, 1)",
+            background: "linear-gradient(145deg, #f8fafc 0%, #eef4f9 25%, #f0f7fc 45%, #f5f0f8 65%, #faf5f0 85%, #f8fafc 100%)",
           }}
         />
 
-        {/* Subtle glass texture / noise */}
+        {/* Subtle radial orbs for depth */}
         <div
-          className="absolute inset-0"
+          className="absolute"
           style={{
-            opacity: isLoggingIn ? 0 : 0.025,
-            transition: "opacity 0.6s ease",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            top: "10%",
+            left: "5%",
+            width: "50vw",
+            height: "50vh",
+            borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(9,188,212,0.06) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute"
+          style={{
+            bottom: "5%",
+            right: "10%",
+            width: "45vw",
+            height: "45vh",
+            borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(168,85,247,0.04) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute"
+          style={{
+            top: "40%",
+            left: "30%",
+            width: "40vw",
+            height: "40vh",
+            borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(59,130,246,0.035) 0%, transparent 70%)",
           }}
         />
       </div>
@@ -632,7 +471,6 @@ export default function AuthPage() {
         {view === "sign-up-password" && (
           <AuthCard title="Sign up" showSignIn onNavigate={handleNavigate}>
             <div className="space-y-5">
-              {/* Info callout */}
               <div
                 className="flex items-center gap-3 p-3 rounded"
                 style={{
@@ -692,7 +530,6 @@ export default function AuthPage() {
 
               <OrDivider />
 
-              {/* Passkey button */}
               <Button
                 size="lg"
                 className="w-full uppercase tracking-wider font-semibold gap-2"
