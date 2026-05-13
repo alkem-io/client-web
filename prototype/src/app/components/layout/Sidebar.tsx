@@ -148,24 +148,21 @@ export function Sidebar({ className }: { className?: string }) {
                   <item.icon className="w-5 h-5 shrink-0" />
                   <span
                     className={cn(
-                      "whitespace-nowrap transition-all duration-300",
+                      "whitespace-nowrap transition-all duration-300 text-control",
                       isCollapsed
                         ? "w-0 opacity-0 overflow-hidden hidden"
                         : "w-auto opacity-100 block"
                     )}
-                    style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-medium)" as any }}
                   >
                     {item.label}
                   </span>
                 </div>
                 {!isCollapsed && item.badge && (
                   <span
-                    className="rounded-full"
+                    className="rounded-full text-badge font-bold"
                     style={{
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
-                      fontSize: "10px",
-                      fontWeight: 700,
                       padding: "1px 6px",
                     }}
                   >
@@ -206,10 +203,8 @@ export function Sidebar({ className }: { className?: string }) {
         <div>
           {!isCollapsed && (
             <div
-              className="uppercase tracking-wider px-3 mb-3 whitespace-nowrap overflow-hidden transition-opacity duration-300"
+              className="text-label uppercase px-3 mb-3 whitespace-nowrap overflow-hidden transition-opacity duration-300"
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
                 color: "var(--sidebar-foreground)",
                 opacity: 0.5,
               }}
@@ -226,24 +221,20 @@ export function Sidebar({ className }: { className?: string }) {
                 key={space.href}
                 to={space.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-md transition-colors h-10",
+                  "flex items-center gap-3 rounded-md transition-colors h-10 text-control",
                   isCollapsed ? "justify-center px-0" : "px-3"
                 )}
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "color-mix(in srgb, var(--sidebar-foreground) 70%, transparent)",
                 }}
                 title={isCollapsed ? space.name : undefined}
               >
                 <div
-                  className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
+                  className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-badge font-bold"
                   style={{
                     background:
                       "color-mix(in srgb, var(--primary) 10%, transparent)",
                     color: "var(--primary)",
-                    fontSize: "10px",
-                    fontWeight: 700,
                   }}
                 >
                   {space.initials}
@@ -267,10 +258,8 @@ export function Sidebar({ className }: { className?: string }) {
         <div>
           {!isCollapsed && (
             <div
-              className="uppercase tracking-wider px-3 mb-3 whitespace-nowrap overflow-hidden transition-opacity duration-300"
+              className="text-label uppercase px-3 mb-3 whitespace-nowrap overflow-hidden transition-opacity duration-300"
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
                 color: "var(--sidebar-foreground)",
                 opacity: 0.5,
               }}
@@ -286,19 +275,17 @@ export function Sidebar({ className }: { className?: string }) {
               <button
                 key={vc.name}
                 className={cn(
-                  "flex items-center gap-3 rounded-md transition-colors h-10 w-full",
+                  "flex items-center gap-3 rounded-md transition-colors h-10 w-full text-control",
                   isCollapsed ? "justify-center px-0" : "px-3"
                 )}
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "color-mix(in srgb, var(--sidebar-foreground) 70%, transparent)",
                 }}
                 title={isCollapsed ? vc.name : undefined}
               >
                 <Avatar className="w-6 h-6 shrink-0">
                   <AvatarFallback
-                    className="text-[9px] font-bold"
+                    className="text-badge font-bold"
                     style={{
                       background:
                         "color-mix(in srgb, var(--chart-2) 15%, transparent)",
@@ -340,10 +327,8 @@ export function Sidebar({ className }: { className?: string }) {
           {!isCollapsed ? (
             <>
               <div
-                className="flex items-center gap-2 whitespace-nowrap overflow-hidden"
+                className="flex items-center gap-2 whitespace-nowrap overflow-hidden text-control"
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "color-mix(in srgb, var(--sidebar-foreground) 80%, transparent)",
                 }}
               >

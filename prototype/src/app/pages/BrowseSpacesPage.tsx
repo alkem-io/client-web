@@ -659,22 +659,17 @@ export default function BrowseSpacesPage() {
       {/* ─── Page Header ───────────────────────────────────────────────── */}
       <div style={{ padding: "32px 0 24px" }}>
         <h1
-          style={{
-            fontSize: "var(--text-2xl)",
-            fontWeight: 700,
-            color: "var(--foreground)",
-            lineHeight: 1.2,
-          }}
+          className="text-page-title"
+          style={{ color: "var(--foreground)" }}
         >
           {t("spaces.title")}
         </h1>
         <p
+          className="text-body"
           style={{
-            fontSize: "var(--text-sm)",
             color: "var(--muted-foreground)",
             marginTop: 6,
             maxWidth: 560,
-            lineHeight: 1.5,
           }}
         >
           {t("spaces.subtitle")}
@@ -704,10 +699,10 @@ export default function BrowseSpacesPage() {
               setSearchQuery(e.target.value);
               setVisibleCount(BATCH_SIZE);
             }}
+            className="text-body"
             style={{
               paddingLeft: 40,
               height: 40,
-              fontSize: "var(--text-sm)",
               background: "var(--input-background)",
               border: "1px solid var(--border)",
               borderRadius: "var(--radius)",
@@ -734,12 +729,11 @@ export default function BrowseSpacesPage() {
           onValueChange={(v) => setSortBy(v as SortOption)}
         >
           <SelectTrigger
-            className="gap-2"
+            className="gap-2 text-control"
             style={{
               width: "auto",
               minWidth: 160,
               height: 40,
-              fontSize: "var(--text-sm)",
               background: "var(--input-background)",
               border: "1px solid var(--border)",
               borderRadius: "var(--radius)",
@@ -761,10 +755,9 @@ export default function BrowseSpacesPage() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="gap-2"
+              className="gap-2 text-control"
               style={{
                 height: 40,
-                fontSize: "var(--text-sm)",
                 borderRadius: "var(--radius)",
                 color: activeFilterCount > 0 ? "var(--primary)" : "var(--foreground)",
                 borderColor: activeFilterCount > 0 ? "var(--primary)" : "var(--border)",
@@ -774,8 +767,8 @@ export default function BrowseSpacesPage() {
               {t("spaces.filters")}
               {activeFilterCount > 0 && (
                 <Badge
+                  className="text-badge font-normal"
                   style={{
-                    fontSize: "10px",
                     padding: "0 5px",
                     height: 18,
                     background: "var(--primary)",
@@ -791,10 +784,8 @@ export default function BrowseSpacesPage() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" style={{ minWidth: 200 }}>
             <DropdownMenuLabel
+              className="text-badge font-bold uppercase"
               style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 color: "var(--muted-foreground)",
               }}
@@ -821,10 +812,8 @@ export default function BrowseSpacesPage() {
             </DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
             <DropdownMenuLabel
+              className="text-badge font-bold uppercase"
               style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 color: "var(--muted-foreground)",
               }}
@@ -857,9 +846,8 @@ export default function BrowseSpacesPage() {
                     variant="ghost"
                     size="sm"
                     onClick={clearFilters}
-                    className="w-full justify-start gap-2"
+                    className="w-full justify-start gap-2 text-control"
                     style={{
-                      fontSize: "var(--text-sm)",
                       color: "var(--destructive)",
                       height: 32,
                     }}
@@ -880,9 +868,8 @@ export default function BrowseSpacesPage() {
           {searchQuery && (
             <Badge
               variant="secondary"
-              className="gap-1 cursor-pointer"
+              className="gap-1 cursor-pointer text-caption font-normal"
               style={{
-                fontSize: "11px",
                 padding: "4px 10px",
                 borderRadius: "999px",
                 background: "var(--secondary)",
@@ -897,9 +884,8 @@ export default function BrowseSpacesPage() {
           {privacyFilter !== "all" && (
             <Badge
               variant="secondary"
-              className="gap-1 cursor-pointer"
+              className="gap-1 cursor-pointer text-caption font-normal"
               style={{
-                fontSize: "11px",
                 padding: "4px 10px",
                 borderRadius: "999px",
                 background: "var(--secondary)",
@@ -914,9 +900,8 @@ export default function BrowseSpacesPage() {
           {typeFilter !== "all" && (
             <Badge
               variant="secondary"
-              className="gap-1 cursor-pointer"
+              className="gap-1 cursor-pointer text-caption font-normal"
               style={{
-                fontSize: "11px",
                 padding: "4px 10px",
                 borderRadius: "999px",
                 background: "var(--secondary)",
@@ -937,17 +922,15 @@ export default function BrowseSpacesPage() {
         style={{ marginBottom: 16 }}
       >
         <p
-          style={{
-            fontSize: "var(--text-sm)",
-            color: "var(--muted-foreground)",
-          }}
+          className="text-body"
+          style={{ color: "var(--muted-foreground)" }}
         >
           {t("spaces.showing")}{" "}
-          <span style={{ fontWeight: 600, color: "var(--foreground)" }}>
+          <span className="font-semibold" style={{ color: "var(--foreground)" }}>
             {displayedSpaces.length}
           </span>{" "}
           {t("spaces.of")}{" "}
-          <span style={{ fontWeight: 600, color: "var(--foreground)" }}>
+          <span className="font-semibold" style={{ color: "var(--foreground)" }}>
             {filteredSpaces.length}
           </span>{" "}
           {t("spaces.spaces")}
@@ -984,14 +967,12 @@ export default function BrowseSpacesPage() {
               <Button
                 variant="outline"
                 onClick={handleLoadMore}
-                className="gap-2"
+                className="gap-2 text-control"
                 style={{
                   height: 40,
                   paddingLeft: 24,
                   paddingRight: 24,
-                  fontSize: "var(--text-sm)",
                   borderRadius: "var(--radius)",
-                  fontWeight: 500,
                 }}
               >
                 <ChevronDown style={{ width: 16, height: 16 }} />
@@ -1021,9 +1002,8 @@ export default function BrowseSpacesPage() {
             }}
           />
           <h3
+            className="text-subheader font-semibold"
             style={{
-              fontSize: "var(--text-base)",
-              fontWeight: 600,
               color: "var(--foreground)",
               marginBottom: 4,
             }}
@@ -1031,11 +1011,10 @@ export default function BrowseSpacesPage() {
             {t("spaces.noResults")}
           </h3>
           <p
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               maxWidth: 360,
-              lineHeight: 1.5,
               marginBottom: 16,
             }}
           >
@@ -1044,8 +1023,7 @@ export default function BrowseSpacesPage() {
           <Button
             variant="outline"
             onClick={clearFilters}
-            className="gap-2"
-            style={{ fontSize: "var(--text-sm)" }}
+            className="gap-2 text-control"
           >
             <X style={{ width: 14, height: 14 }} />
             {t("spaces.clearFilters")}

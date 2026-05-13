@@ -270,7 +270,7 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="mx-2 text-sm text-muted-foreground">
+              <span className="mx-2 text-body text-muted-foreground">
                 Page {safeCurrentPage} of {totalPages}
               </span>
               <Button
@@ -295,9 +295,8 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
                 <User className="w-6 h-6" style={{ color: "var(--muted-foreground)" }} />
               </div>
               <h3
+                className="text-subheader"
                 style={{
-                  fontSize: "var(--text-base)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -373,7 +372,7 @@ function UserCard({
               </Link>
               <div
                 className={cn(
-                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border mt-1",
+                  "inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium border mt-1",
                   getRoleBadgeColor(member.roleType)
                 )}
                 style={{ fontFamily: "'Inter', sans-serif" }}

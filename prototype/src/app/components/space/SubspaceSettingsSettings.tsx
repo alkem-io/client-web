@@ -83,11 +83,11 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+        <h2 className="text-page-title">Settings</h2>
         <p className="text-muted-foreground mt-2">
           Configure this subspace's visibility, membership policies, and allowed
           member actions.
-          {" "}<span className="text-xs text-muted-foreground/70 italic">Changes are saved automatically.</span>
+          {" "}<span className="text-caption text-muted-foreground/70 italic">Changes are saved automatically.</span>
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Visibility
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -127,7 +127,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="v-public"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Globe className="w-4 h-4 text-info" /> Public
                   </Label>
@@ -145,7 +145,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="v-private"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-4 h-4 text-warning" /> Private
                   </Label>
@@ -168,7 +168,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Membership
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -190,7 +190,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-none"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <UserPlus className="w-4 h-4 text-success" /> No Application
                     Required
@@ -209,7 +209,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-application"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <FileTextIcon className="w-4 h-4 text-info" /> Application Required
                   </Label>
@@ -228,7 +228,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
                 <div className="space-y-1">
                   <Label
                     htmlFor="m-invitation"
-                    className="text-base font-medium flex items-center gap-2 cursor-pointer"
+                    className="text-subheader flex items-center gap-2 cursor-pointer"
                   >
                     <Mail className="w-4 h-4 text-primary" /> Invitation Only
                   </Label>
@@ -249,7 +249,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         >
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Allowed Actions
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -315,7 +315,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         <AccordionItem value="template" className="border rounded-lg bg-card px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-subsection-title flex items-center gap-2">
                 Template & Duplication
               </h3>
               <p className="text-sm text-muted-foreground font-normal text-left">
@@ -361,7 +361,7 @@ export function SubspaceSettingsSettings({ subspaceName }: SubspaceSettingsSetti
         <AccordionItem value="danger" className="border border-destructive/20 rounded-lg bg-destructive/5 px-6">
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-destructive">
+              <h3 className="text-subsection-title flex items-center gap-2 text-destructive">
                 <AlertTriangle className="w-5 h-5" />
                 Danger Zone
               </h3>
@@ -453,7 +453,7 @@ function ActionToggle({
           <Icon className="w-5 h-5" />
         </div>
         <div className="space-y-0.5">
-          <Label htmlFor={id} className="text-base font-medium cursor-pointer">{label}</Label>
+          <Label htmlFor={id} className="text-subheader cursor-pointer">{label}</Label>
           <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
             {description}
           </p>

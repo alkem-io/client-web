@@ -175,12 +175,12 @@ export function AboutThisSpaceDialog({
             <div className="flex items-start justify-between">
               <div className="pr-8">
                 <DialogTitle
-                  className="text-xl font-semibold"
+                  className="text-section-title"
                   style={{ color: "var(--foreground)" }}
                 >
                   {SPACE_DATA.name}
                 </DialogTitle>
-                <DialogDescription className="mt-1 italic text-sm text-muted-foreground leading-relaxed">
+                <DialogDescription className="mt-1 italic text-body text-muted-foreground">
                   {SPACE_DATA.tagline}
                 </DialogDescription>
               </div>
@@ -433,10 +433,8 @@ export function AboutThisSpaceDialog({
                   {isGuidelinesTruncated && (
                     <button
                       onClick={() => setGuidelinesOpen(true)}
-                      className="mt-3 hover:underline"
+                      className="mt-3 hover:underline text-body-emphasis"
                       style={{
-                        fontSize: "var(--text-sm)",
-                        fontWeight: 500,
                         color: "var(--primary)",
                       }}
                     >
@@ -625,7 +623,7 @@ export function AboutThisSpaceDialog({
             className="px-6 pt-5 pb-4 border-b shrink-0 flex items-center justify-between"
             style={{ background: "var(--background)" }}
           >
-            <DialogTitle className="text-lg font-semibold">
+            <DialogTitle className="text-subsection-title">
               {SPACE_DATA.guidelines.title}
             </DialogTitle>
             <DialogClose className="rounded-full p-2 hover:bg-muted transition-colors -mr-2">
@@ -673,7 +671,7 @@ export function AboutThisSpaceDialog({
             className="px-6 pt-5 pb-4 border-b flex items-center justify-between"
             style={{ background: "var(--background)" }}
           >
-            <DialogTitle className="text-lg font-semibold">
+            <DialogTitle className="text-subsection-title">
               Contact Host
             </DialogTitle>
             <DialogClose className="rounded-full p-2 hover:bg-muted transition-colors -mr-2">

@@ -99,7 +99,7 @@ export default function VCProfilePage() {
               <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 w-full">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl md:text-4xl font-bold text-foreground">{vc.name}</h1>
+                    <h1 className="text-hero text-foreground">{vc.name}</h1>
                     <Badge variant="secondary" className="gap-1.5 font-medium">
                       <Bot className="w-3.5 h-3.5" />
                       Virtual Contributor
@@ -108,7 +108,7 @@ export default function VCProfilePage() {
                   {/* Skill Tags */}
                   <div className="flex flex-wrap gap-2 mt-2">
                     {vc.tags.map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs font-medium bg-primary/5 border-primary/20 text-primary">
+                      <Badge key={tag} variant="outline" className="text-caption font-medium bg-primary/5 border-primary/20 text-primary">
                         {tag}
                       </Badge>
                     ))}
@@ -136,32 +136,32 @@ export default function VCProfilePage() {
           <div className="col-span-12 lg:col-start-2 lg:col-span-3 space-y-6 lg:sticky lg:top-24 self-start">
             {/* Description */}
             <section>
-              <h2 className="text-lg font-bold mb-2">Description</h2>
-              <p className="text-sm text-muted-foreground">{vc.description}</p>
+              <h2 className="text-subsection-title font-bold mb-2">Description</h2>
+              <p className="text-body text-muted-foreground">{vc.description}</p>
             </section>
 
             {/* Host */}
             <section>
-              <h2 className="text-lg font-bold mb-3">Host</h2>
+              <h2 className="text-subsection-title font-bold mb-3">Host</h2>
               <Link to={`/user/${vc.host.slug}`} className="flex items-center gap-3 group">
                 <Avatar className="w-10 h-10">
                   <AvatarImage src={vc.host.avatarUrl} alt={vc.host.name} />
                   <AvatarFallback>{vc.host.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">{vc.host.name}</span>
+                <span className="text-body-emphasis group-hover:text-primary transition-colors">{vc.host.name}</span>
               </Link>
             </section>
 
             {/* References */}
             <section>
-              <h2 className="text-lg font-bold mb-3">References</h2>
+              <h2 className="text-subsection-title font-bold mb-3">References</h2>
               {vc.references.length > 0 ? (
                 <ul className="space-y-2">
                   {vc.references.map((ref) => (
                     <li key={ref.name}>
                       <a
                         href={ref.url}
-                        className="text-sm text-primary hover:underline flex items-center gap-1.5"
+                        className="text-body text-primary hover:underline flex items-center gap-1.5"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -172,14 +172,14 @@ export default function VCProfilePage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground italic">No references added</p>
+                <p className="text-body text-muted-foreground italic">No references added</p>
               )}
             </section>
 
             {/* Body of Knowledge */}
             <section>
-              <h2 className="text-lg font-bold mb-3">Body of Knowledge</h2>
-              <p className="text-xs text-muted-foreground mb-3">
+              <h2 className="text-subsection-title font-bold mb-3">Body of Knowledge</h2>
+              <p className="text-caption text-muted-foreground mb-3">
                 Answers Softmann gives are based on the body of knowledge coming from:
               </p>
               <Link
@@ -188,13 +188,13 @@ export default function VCProfilePage() {
               >
                 <Avatar className="w-9 h-9 rounded-lg">
                   <AvatarImage src={vc.bodyOfKnowledge.sourceAvatarUrl} alt={vc.bodyOfKnowledge.sourceName} />
-                  <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs">
+                  <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-caption">
                     <BookOpen className="w-4 h-4" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex items-center gap-2">
                   <Settings className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  <span className="text-body-emphasis group-hover:text-primary transition-colors">
                     {vc.bodyOfKnowledge.sourceName}
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export default function VCProfilePage() {
           <div className="col-span-12 lg:col-span-7 space-y-8">
             {/* Functionality Section */}
             <section>
-              <h2 className="text-xl font-semibold mb-4">Functionality</h2>
+              <h2 className="text-section-title mb-4">Functionality</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Functional Capabilities */}
                 <Card className="text-center">
@@ -214,12 +214,12 @@ export default function VCProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
                       <CircuitBoard className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-sm font-semibold">Functional Capabilities</CardTitle>
+                    <CardTitle className="text-card-title">Functional Capabilities</CardTitle>
                   </CardHeader>
                   <CardContent className="px-4 pb-5 pt-2">
                     <ul className="space-y-1.5 text-left">
                       {vc.functionality.capabilities.map((item) => (
-                        <li key={item.label} className="flex items-start gap-2 text-xs">
+                        <li key={item.label} className="flex items-start gap-2 text-caption">
                           {item.enabled ? (
                             <Check className="w-3.5 h-3.5 mt-0.5 text-foreground shrink-0" />
                           ) : (
@@ -240,14 +240,14 @@ export default function VCProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
                       <Upload className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-sm font-semibold">
+                    <CardTitle className="text-card-title">
                       Data access from the Space where it is a member
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="px-4 pb-5 pt-2">
                     <ul className="space-y-1.5 text-left">
                       {vc.functionality.dataAccess.map((item) => (
-                        <li key={item.label} className="flex items-start gap-2 text-xs">
+                        <li key={item.label} className="flex items-start gap-2 text-caption">
                           {item.enabled ? (
                             <Check className="w-3.5 h-3.5 mt-0.5 text-foreground shrink-0" />
                           ) : (
@@ -268,10 +268,10 @@ export default function VCProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
                       <Users className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-sm font-semibold">Role Requirements</CardTitle>
+                    <CardTitle className="text-card-title">Role Requirements</CardTitle>
                   </CardHeader>
                   <CardContent className="px-4 pb-5 pt-2">
-                    <p className="text-xs text-muted-foreground text-left">
+                    <p className="text-caption text-muted-foreground text-left">
                       This VC needs to be granted <strong className="text-foreground">member rights</strong> to function correctly
                     </p>
                   </CardContent>
@@ -281,7 +281,7 @@ export default function VCProfilePage() {
 
             {/* AI Engine Section */}
             <section>
-              <h2 className="text-xl font-semibold mb-4">AI Engine: {vc.aiEngine.name}</h2>
+              <h2 className="text-section-title mb-4">AI Engine: {vc.aiEngine.name}</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Open Model Transparency */}
                 <TransparencyCard
@@ -330,8 +330,8 @@ export default function VCProfilePage() {
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
                       <FileText className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-sm font-semibold">Technical References</CardTitle>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <CardTitle className="text-card-title">Technical References</CardTitle>
+                    <p className="text-caption text-muted-foreground mt-1">
                       Access to detailed information on the underlying models specifications
                     </p>
                   </CardHeader>
@@ -342,13 +342,13 @@ export default function VCProfilePage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                        <Button variant="outline" size="sm" className="gap-1.5 text-caption">
                           <FileText className="w-3.5 h-3.5" />
                           SEE DOCUMENTATION
                         </Button>
                       </a>
                     ) : (
-                      <p className="text-xs text-muted-foreground italic">Not available</p>
+                      <p className="text-caption text-muted-foreground italic">Not available</p>
                     )}
                   </CardContent>
                 </Card>
@@ -358,8 +358,8 @@ export default function VCProfilePage() {
             {/* Monitoring Section */}
             <section>
               <Separator className="mb-6" />
-              <h2 className="text-xl font-semibold mb-3">Monitoring by Alkemio</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <h2 className="text-section-title mb-3">Monitoring by Alkemio</h2>
+              <p className="text-body text-muted-foreground">
                 Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our Terms & Conditions.
               </p>
             </section>
@@ -388,23 +388,23 @@ function TransparencyCard({ icon, title, description, value, textValue, noIcon }
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
           {icon}
         </div>
-        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">{description}</p>
+        <CardTitle className="text-card-title">{title}</CardTitle>
+        <p className="text-caption text-muted-foreground mt-1">{description}</p>
       </CardHeader>
       <CardContent className="px-4 pb-5 pt-2">
         {textValue ? (
-          <span className="text-sm font-medium text-foreground">{textValue}</span>
+          <span className="text-body-emphasis text-foreground">{textValue}</span>
         ) : value !== undefined ? (
           <div className="flex items-center justify-center gap-1.5">
             {value ? (
               <>
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium">Yes</span>
+                <span className="text-body-emphasis">Yes</span>
               </>
             ) : (
               <>
                 {noIcon || <XCircle className="w-4 h-4 text-muted-foreground" />}
-                <span className="text-sm font-medium text-muted-foreground">No</span>
+                <span className="text-body-emphasis text-muted-foreground">No</span>
               </>
             )}
           </div>

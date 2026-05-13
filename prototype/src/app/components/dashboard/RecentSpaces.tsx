@@ -50,9 +50,8 @@ export function RecentSpaces() {
     <div className="space-y-4" style={{ fontFamily: "'Inter', sans-serif" }}>
       <div className="flex items-center justify-between">
         <h2
+          className="text-section-title font-bold"
           style={{
-            fontSize: "var(--text-xl)",
-            fontWeight: 700,
             color: "var(--foreground)",
           }}
         >
@@ -60,10 +59,8 @@ export function RecentSpaces() {
         </h2>
         <button
           onClick={() => setMembershipsOpen(true)}
-          className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-none"
+          className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer bg-transparent border-none text-control"
           style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: "var(--font-weight-medium)" as any,
             color: "var(--primary)",
           }}
         >
@@ -122,11 +119,9 @@ export function RecentSpaces() {
               </div>
               <div className="min-w-0 flex-1">
                 <h3
-                  className="truncate"
+                  className="truncate text-card-title"
                   style={{
-                    fontWeight: 600,
                     color: "var(--card-foreground)",
-                    fontSize: "var(--text-sm)",
                   }}
                 >
                   {space.name}

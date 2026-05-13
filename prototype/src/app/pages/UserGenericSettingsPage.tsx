@@ -30,10 +30,10 @@ export default function UserGenericSettingsPage({ title = "Settings" }: { title?
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
           
@@ -45,7 +45,7 @@ export default function UserGenericSettingsPage({ title = "Settings" }: { title?
                   key={tab.label}
                   to={tab.href}
                   className={cn(
-                    "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                    "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                     isActive
                       ? "border-primary text-primary"
                       : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -66,7 +66,7 @@ export default function UserGenericSettingsPage({ title = "Settings" }: { title?
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
         <div className="flex flex-col items-center justify-center min-h-[400px] border border-dashed rounded-xl bg-muted/5">
-            <h2 className="text-2xl font-semibold mb-2">{title}</h2>
+            <h2 className="text-page-title font-semibold mb-2">{title}</h2>
             <p className="text-muted-foreground">This section is currently under development.</p>
         </div>
           </div>

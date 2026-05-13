@@ -32,11 +32,7 @@ export function SpaceHeader({ spaceSlug }: SpaceHeaderProps) {
             {/* Row 1: title */}
             <div className="flex items-center justify-between gap-4">
               <h1
-                className="text-foreground truncate font-bold tracking-tight"
-                style={{
-                  fontSize: "clamp(22px, 3vw, 32px)",
-                  lineHeight: 1.2,
-                }}
+                className="text-foreground truncate text-hero"
               >
                 Steward-Ownership Field Builder Community
               </h1>
@@ -44,10 +40,7 @@ export function SpaceHeader({ spaceSlug }: SpaceHeaderProps) {
             {/* Row 2: tagline */}
             <div className="flex items-center gap-4">
               <p
-                className="text-muted-foreground truncate text-sm"
-                style={{
-                  lineHeight: 1.4,
-                }}
+                className="text-muted-foreground truncate text-body"
               >
                 The place for all field builders on steward-ownership to learn, connect, discuss and collaborate.
               </p>

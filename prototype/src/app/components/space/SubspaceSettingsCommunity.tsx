@@ -201,7 +201,7 @@ function SectionHeader({
       </div>
       <div className="flex-1">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-base flex items-center gap-2">{title}</h3>
+          <h3 className="text-subheader font-semibold flex items-center gap-2">{title}</h3>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
@@ -289,7 +289,7 @@ export function SubspaceSettingsCommunity() {
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Community</h2>
+        <h2 className="text-page-title">Community</h2>
         <p className="text-muted-foreground mt-2">
           Manage your subspace members, review applications, and configure community settings.
         </p>
@@ -322,7 +322,7 @@ export function SubspaceSettingsCommunity() {
       {/* Members Table Section */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
+          <h3 className="text-subsection-title flex items-center gap-2">
             Subspace Members
             <Badge variant="secondary" className="rounded-full px-2 py-0.5 ml-2">
               {filteredMembers.length}
@@ -553,7 +553,7 @@ export function SubspaceSettingsCommunity() {
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <div className="text-sm font-medium">
+              <div className="text-body-emphasis">
                 Page {page} of {totalPages}
               </div>
               <Button
@@ -596,7 +596,7 @@ export function SubspaceSettingsCommunity() {
                 <div className="bg-primary/10 p-2 rounded text-primary">
                   <span className="font-bold text-xs">Q1</span>
                 </div>
-                <span className="text-sm font-medium">Why do you want to join this subspace?</span>
+                <span className="text-body-emphasis">Why do you want to join this subspace?</span>
               </div>
               <Badge variant="secondary">Required</Badge>
             </div>

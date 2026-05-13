@@ -121,7 +121,7 @@ export function SubspaceSettingsSubspaces() {
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Subspaces</h2>
+        <h2 className="text-page-title">Subspaces</h2>
         <p className="text-muted-foreground mt-2">
           Manage child subspaces within this subspace.
         </p>
@@ -132,7 +132,7 @@ export function SubspaceSettingsSubspaces() {
       {/* Subspaces List */}
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
+          <h3 className="text-subsection-title flex items-center gap-2">
             Subspaces
             <Badge variant="secondary" className="rounded-full">
               {filtered.length}
@@ -199,7 +199,7 @@ export function SubspaceSettingsSubspaces() {
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Subspace Name</label>
+                    <label className="text-body-emphasis">Subspace Name</label>
                     <Input
                       placeholder="e.g. Solar Panel Research"
                       value={newName}
@@ -207,7 +207,7 @@ export function SubspaceSettingsSubspaces() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Description</label>
+                    <label className="text-body-emphasis">Description</label>
                     <Input
                       placeholder="What is this subspace for?"
                       value={newDesc}
@@ -271,7 +271,7 @@ export function SubspaceSettingsSubspaces() {
 
                 <div className="p-4 flex flex-col flex-1">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
+                    <h4 className="text-subsection-title line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
                       {s.name}
                     </h4>
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2 min-h-[40px]">
@@ -296,7 +296,7 @@ export function SubspaceSettingsSubspaces() {
                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-4">
                   <Search className="w-6 h-6 opacity-50" />
                 </div>
-                <h3 className="font-medium text-lg text-foreground">No subspaces found</h3>
+                <h3 className="text-subsection-title font-medium text-foreground">No subspaces found</h3>
                 <p className="text-sm mt-1 mb-4">Try adjusting your search or filters.</p>
                 <Button variant="outline" onClick={() => { setSearch(""); setStatusFilter("All"); }}>
                   Clear Filters
