@@ -41,6 +41,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
@@ -54,6 +55,7 @@ export default function CrdSpacePageLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [communityOpen, setCommunityOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
@@ -111,12 +113,13 @@ export default function CrdSpacePageLayout() {
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
 
   const headerActions = {
+    showActivity: true,
     showVideoCall: isVideoCallEnabled && !!videoCallUrl,
     videoCallUrl: videoCallUrl || undefined,
     showShare: true,
     showSettings,
     settingsHref,
-    onShareClick: () => setShareDialogOpen(true),
+    onActivityClick: () => setActivityDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
   };
 
@@ -222,6 +225,15 @@ export default function CrdSpacePageLayout() {
         open={communityOpen}
         onOpenChange={setCommunityOpen}
         roleSetId={space.about.membership?.roleSetID || undefined}
+      />
+
+      {/* Activity dialog — opened from header Activity icon. Matches the
+          legacy MUI ActivityDialog: queries activity-on-collaboration with
+          includeChild so child callout events are included. */}
+      <CrdSpaceActivityDialogConnector
+        open={activityDialogOpen}
+        onOpenChange={setActivityDialogOpen}
+        spaceId={spaceId}
       />
 
       {/* Share dialog — opened from header share icon and the mobile "More" drawer.

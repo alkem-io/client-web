@@ -1,4 +1,4 @@
-import { Home, Settings, Share2, Video } from 'lucide-react';
+import { Activity, Home, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
@@ -16,6 +16,8 @@ type SpaceHeaderActions = {
   showVideoCall?: boolean;
   showShare?: boolean;
   showSettings?: boolean;
+  showActivity?: boolean;
+  onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
   videoCallUrl?: string;
@@ -84,6 +86,17 @@ export function SpaceHeader({
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
               <div className="flex items-center gap-2">
+                {actions.showActivity && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                    onClick={actions.onActivityClick}
+                    aria-label={t('mobile.activity')}
+                  >
+                    <Activity className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                )}
                 {actions.showVideoCall &&
                   (safeVideoCallUrl ? (
                     <Button

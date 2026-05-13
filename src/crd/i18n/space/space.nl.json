@@ -348,6 +348,7 @@
   },
   "mobile": {
     "menu": "Menu",
+    "activity": "Activiteit",
     "videoCall": "Videogesprek",
     "share": "Delen",
     "settings": "Instellingen"
@@ -760,5 +761,8 @@
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
     "loadingPost": "Bericht laden"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
   }
 }

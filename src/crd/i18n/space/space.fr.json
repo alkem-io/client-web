@@ -348,6 +348,7 @@
   },
   "mobile": {
     "menu": "Menu",
+    "activity": "Activité",
     "videoCall": "Appel vidéo",
     "share": "Partager",
     "settings": "Paramètres"
@@ -760,5 +761,8 @@
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
     "loadingPost": "Chargement de la publication"
+  },
+  "activity": {
+    "dialogTitle": "Activité récente"
   }
 }

@@ -142,10 +142,12 @@ export function SpacePage() {
             isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
             memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
             actions={{
+              showActivity: true,
               showVideoCall: false,
               showShare: true,
               showSettings: true,
               settingsHref: '/space/green-energy/settings',
+              onActivityClick: () => {},
               onShareClick: () => {},
             }}
             onMemberClick={() => setActiveTab(1)}

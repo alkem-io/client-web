@@ -348,6 +348,7 @@
   },
   "mobile": {
     "menu": "Меню",
+    "activity": "Активност",
     "videoCall": "Видеоразговор",
     "share": "Сподели",
     "settings": "Настройки"
@@ -760,5 +761,8 @@
     "moreActionsDrawer": "Допълнителни действия",
     "close": "Затвори",
     "loadingPost": "Зареждане на публикация"
+  },
+  "activity": {
+    "dialogTitle": "Скорошна активност"
   }
 }
