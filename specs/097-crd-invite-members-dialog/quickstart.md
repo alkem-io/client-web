@@ -13,7 +13,7 @@ This guide is for QA / reviewers verifying the dialog manually. Engineering can 
 3. Sign in as a Space admin who can read and admin a Space (e.g. `alkemio-admin@alkem.io`).
 4. Enable the CRD design system in the browser console:
    ```js
-   localStorage.setItem('alkemio-crd-enabled', 'true');
+   localStorage.setItem('alkemio-design-version', '2');
    location.reload();
    ```
 

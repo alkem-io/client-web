@@ -153,7 +153,7 @@ When a route is migrated to CRD, the **entire page** renders in CRD — header, 
 
 ### D3: localStorage Feature Toggle (Safe Merge Strategy)
 
-During migration, CRD routes are gated behind a localStorage toggle so the branch can be merged to develop without affecting end users. The toggle defaults to OFF — deployed environments render the old MUI page. Developers and QA opt in via `localStorage.setItem('alkemio-crd-enabled', 'true')` + page refresh.
+During migration, CRD routes are gated behind a localStorage toggle so the branch can be merged to develop without affecting end users. The toggle defaults to OFF — deployed environments render the old MUI page. Developers and QA opt in via `localStorage.setItem('alkemio-design-version', '2')` + page refresh.
 
 **Implementation:**
 - `src/main/crdPages/useCrdEnabled.ts` — reads `alkemio-crd-enabled` from localStorage (default `false`)

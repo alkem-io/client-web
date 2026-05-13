@@ -18,37 +18,39 @@ root.tsx
       ├── MUI routes  → TopLevelLayout (existing MUI header/footer)
       └── CRD routes  → CrdLayoutWrapper → CrdLayout (CRD header/footer)
            (gated by       └── <Outlet /> → Your page
-            localStorage
-            toggle)
+            UserSettings
+            .designVersion)
 ```
 
 CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
 
-During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. Developers and QA opt in via the **Admin UI** (Administration → Platform Settings → Design System) or the browser console.
+During migration, CRD routes are gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; default `1`). Deployed environments always render the old MUI pages until the user opts in. Authenticated users flip the **Design Version switch in the CRD user menu** (top-right header). Developers/QA can also seed the toggle from the browser console.
 
 ## Feature Toggle
 
-The toggle lives in `src/main/crdPages/useCrdEnabled.ts` and is used in `TopLevelRoutes.tsx` to conditionally render CRD or MUI pages.
+The toggle is read at boot from `localStorage('alkemio-design-version')` in `src/main/crdPages/useCrdEnabled.ts` and consumed by route dispatchers (`TopLevelRoutes.tsx`). The localStorage value is kept in sync with the server-side `UserSettings.designVersion` by `useDesignVersionSync.ts`; the user-menu switch (`useDesignVersionToggle.ts`) writes both the server preference and the localStorage mirror, then hard-reloads so the boot path picks up the new shell.
 
-**Enable CRD pages via Admin UI:**
-Navigate to **Administration → Platform Settings** (the layout settings page). Under the "Design System" section, select **CRD (New Design)** and the page reloads with the new design. This sets `localStorage('alkemio-crd-enabled', 'true')` under the hood.
+**Enable CRD pages via the UI:**
+Click your avatar in the top-right of the CRD header → toggle the **Design Version** switch. The page reloads and the preference persists to your account.
 
-**Enable via browser console** (alternative):
+**Enable via browser console** (dev / QA seed):
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 **Disable CRD pages** (back to MUI):
-Use the Admin UI toggle, or via console:
+Toggle the switch in the user menu, or via console:
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
+The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load — no manual cleanup needed.
+
 Both page versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty.
 
-When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts`, remove conditional routing in `TopLevelRoutes.tsx`, remove `NotificationsGate` from `root.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
+When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts` + `useDesignVersionToggle.ts` + `useDesignVersionSync.ts`, remove conditional routing in `TopLevelRoutes.tsx`, remove `NotificationsGate` from `root.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
 
 ## The Three Layers
 
@@ -371,7 +373,7 @@ src/crd/i18n/
     └── exploreSpaces.en.json (+ .es, .nl, .bg, .de, .fr)
 
 src/main/crdPages/
-├── useCrdEnabled.ts           # Feature toggle hook (localStorage, default OFF)
+├── useCrdEnabled.ts           # Feature toggle hook (reads UserSettings.designVersion via localStorage mirror, default OFF)
 └── spaces/
     ├── SpaceExplorerPage.tsx      # CRD page component (calls hook, renders CRD)
     ├── spaceCardDataMapper.ts     # GraphQL → CRD prop mapping

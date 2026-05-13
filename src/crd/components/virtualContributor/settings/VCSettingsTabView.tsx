@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { ExternalLink, Globe, Info, Key, MessageSquare, RefreshCcw } from 'lucide-react';
+import { Globe, Info, Key, MessageSquare, RefreshCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
@@ -17,7 +17,6 @@ import type {
   VcBodyOfKnowledgeCardProps,
   VcExternalConfigCardProps,
   VcPromptCardProps,
-  VcPromptGraphFallbackProps,
   VcSearchVisibility,
   VcSettingsViewProps,
   VcVisibilityCardProps,
@@ -67,7 +66,6 @@ export function VCSettingsTabView(props: VcSettingsViewProps) {
       {props.bodyOfKnowledge ? <VCBodyOfKnowledgeCard {...props.bodyOfKnowledge} /> : null}
       {props.prompt ? <VCPromptCard {...props.prompt} labels={labels} /> : null}
       {props.externalConfig ? <VCExternalConfigCard {...props.externalConfig} labels={labels} /> : null}
-      {props.promptGraphFallback ? <VCPromptGraphFallbackCard {...props.promptGraphFallback} /> : null}
     </div>
   );
 }
@@ -231,20 +229,6 @@ function VCExternalConfigCard(p: VcExternalConfigCardProps & { labels: SectionLa
       </div>
 
       <FF dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
-    </SettingsCard>
-  );
-}
-
-function VCPromptGraphFallbackCard(p: VcPromptGraphFallbackProps) {
-  return (
-    <SettingsCard icon={Info} title={p.heading}>
-      <p className="text-body text-muted-foreground">{p.description}</p>
-      <div className="mt-4">
-        <Button type="button" variant="outline" onClick={p.onCtaClick}>
-          <ExternalLink aria-hidden="true" className="mr-2 size-4" />
-          {p.ctaLabel}
-        </Button>
-      </div>
     </SettingsCard>
   );
 }

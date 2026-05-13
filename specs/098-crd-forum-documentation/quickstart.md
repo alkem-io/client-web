@@ -18,14 +18,14 @@ This guide walks a developer or QA tester through validating the feature end-to-
 Open the browser console and run:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To verify: top-level pages render with the CRD visual language (Tailwind, shadcn primitives, no MUI elevation). Toggle off with:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -211,7 +211,7 @@ The matrix below maps each spec acceptance scenario to a manual test step. All t
 
 ### E. Toggle-off smoke pass
 
-Run with `localStorage.removeItem('alkemio-crd-enabled')` and reload.
+Run with `localStorage.setItem('alkemio-design-version', '1')` and reload.
 
 **E1. MUI Forum is unchanged**
 

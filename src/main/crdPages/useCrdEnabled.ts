@@ -55,24 +55,3 @@ export function writeDesignVersionToStorage(version: DesignVersion): void {
 export function useCrdEnabled(): boolean {
   return readDesignVersionFromStorage() === DESIGN_VERSION_NEW;
 }
-
-/**
- * Imperatively disable the CRD design-system toggle and hard-navigate to a
- * legacy MUI URL. Used by CRD-only fallback affordances (e.g. the VC Settings
- * "Open in legacy view" CTA on the Prompt Graph fallback tile) that point at
- * pages still owned by the MUI shell.
- *
- * A full reload via `window.location.assign` is required — the CRD/MUI choice
- * is made at app boot when `useCrdEnabled()` is read by the route dispatchers,
- * so client-side `useNavigate` would resolve back to the CRD shell.
- */
-export function disableCrdAndNavigate(targetUrl: string): void {
-  try {
-    localStorage.removeItem(DESIGN_VERSION_STORAGE_KEY);
-    // Legacy key — remove together with the migration block above.
-    localStorage.removeItem(CRD_TOGGLE_STORAGE_KEY);
-  } catch {
-    // Ignore — privacy-mode browsers may block localStorage.
-  }
-  window.location.assign(targetUrl);
-}
