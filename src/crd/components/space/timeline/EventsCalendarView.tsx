@@ -1,7 +1,7 @@
 import type { Locale } from 'date-fns';
 import { addDays, format, isBefore, isSameDay, startOfDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
@@ -32,6 +32,8 @@ type EventsCalendarViewProps = {
   highlightedDay: Date | null;
   onHighlightDay: (date: Date) => void;
   onEventClick: (event: EventListItem) => void;
+  /** Consumer wires the permission check; when absent the create button is hidden. */
+  onCreateEvent?: () => void;
   loading?: boolean;
   /** Localized empty-state text. When absent, falls back to a built-in key. */
   emptyMessage?: string;
@@ -157,6 +159,7 @@ export function EventsCalendarView({
   highlightedDay,
   onHighlightDay,
   onEventClick,
+  onCreateEvent,
   loading,
   emptyMessage,
   exportSlot,
@@ -245,7 +248,23 @@ export function EventsCalendarView({
 
   const listPane = (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      {exportSlot && <div className="flex items-center justify-end">{exportSlot}</div>}
+      {(onCreateEvent || exportSlot) && (
+        <div className="flex items-center justify-end gap-2">
+          {onCreateEvent && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 rounded-full text-primary"
+              style={{ background: 'color-mix(in srgb, var(--primary) 10%, transparent)' }}
+              onClick={onCreateEvent}
+              aria-label={t('calendar.addEvent')}
+            >
+              <Plus className="w-3 h-3" aria-hidden="true" />
+            </Button>
+          )}
+          {exportSlot}
+        </div>
+      )}
       <ScrollArea className="min-h-0 flex-1">
         <div className="flex flex-col gap-3 pr-2">
           {loading && events.length === 0 ? (

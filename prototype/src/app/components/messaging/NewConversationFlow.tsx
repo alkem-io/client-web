@@ -82,9 +82,8 @@ export function NewConversationFlow({
           <ArrowLeft style={{ width: 18, height: 18 }} />
         </button>
         <span
+          className="text-card-title"
           style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: 600,
             color: "var(--foreground)",
             fontFamily: "'Inter', sans-serif",
           }}
@@ -150,9 +149,8 @@ export function NewConversationFlow({
               </div>
               <div className="min-w-0">
                 <span
+                  className="text-control"
                   style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: 500,
                     color: "var(--foreground)",
                     display: "block",
                     fontFamily: "'Inter', sans-serif",
@@ -161,8 +159,8 @@ export function NewConversationFlow({
                   {item.label}
                 </span>
                 <span
+                  className="text-caption"
                   style={{
-                    fontSize: "12px",
                     color: "var(--muted-foreground)",
                     fontFamily: "'Inter', sans-serif",
                   }}
@@ -202,10 +200,9 @@ export function NewConversationFlow({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 autoFocus
-                className="w-full bg-transparent outline-none"
+                className="w-full bg-transparent outline-none text-body"
                 style={{
                   padding: "8px 12px 8px 32px",
-                  fontSize: "var(--text-sm)",
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -235,9 +232,8 @@ export function NewConversationFlow({
                 >
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback
+                    className="text-caption font-semibold"
                     style={{
-                      fontSize: "11px",
-                      fontWeight: 600,
                       fontFamily: "'Inter', sans-serif",
                     }}
                   >
@@ -246,9 +242,8 @@ export function NewConversationFlow({
                 </Avatar>
                 <div className="min-w-0">
                   <span
+                    className="text-control"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 500,
                       color: "var(--foreground)",
                       display: "block",
                       fontFamily: "'Inter', sans-serif",
@@ -257,9 +252,8 @@ export function NewConversationFlow({
                     {user.name}
                   </span>
                   <span
-                    className="flex items-center gap-1.5"
+                    className="flex items-center gap-1.5 text-caption"
                     style={{
-                      fontSize: "11px",
                       color: "var(--muted-foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -303,11 +297,9 @@ export function NewConversationFlow({
                 {selectedUsers.map((u) => (
                   <span
                     key={u.id}
-                    className="flex items-center gap-1 rounded-full"
+                    className="flex items-center gap-1 rounded-full text-caption font-medium"
                     style={{
                       padding: "3px 8px 3px 4px",
-                      fontSize: "11px",
-                      fontWeight: 500,
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                       fontFamily: "'Inter', sans-serif",
@@ -355,10 +347,9 @@ export function NewConversationFlow({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 autoFocus
-                className="w-full bg-transparent outline-none"
+                className="w-full bg-transparent outline-none text-body"
                 style={{
                   padding: "8px 12px 8px 32px",
-                  fontSize: "var(--text-sm)",
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -391,9 +382,8 @@ export function NewConversationFlow({
                   >
                     <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback
+                      className="text-caption font-semibold"
                       style={{
-                        fontSize: "11px",
-                        fontWeight: 600,
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
@@ -401,10 +391,8 @@ export function NewConversationFlow({
                     </AvatarFallback>
                   </Avatar>
                   <span
-                    className="flex-1"
+                    className="flex-1 text-control"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 500,
                       color: "var(--foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -445,11 +433,9 @@ export function NewConversationFlow({
             <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
               <button
                 onClick={() => setStep("group-name")}
-                className="w-full rounded-lg transition-colors"
+                className="w-full rounded-lg transition-colors text-control font-semibold"
                 style={{
                   padding: "10px",
-                  fontSize: "var(--text-sm)",
-                  fontWeight: 600,
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   borderRadius: "var(--radius)",
@@ -468,9 +454,8 @@ export function NewConversationFlow({
         <div style={{ padding: "20px 16px" }} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label
+              className="text-caption font-semibold"
               style={{
-                fontSize: "12px",
-                fontWeight: 600,
                 color: "var(--foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -483,10 +468,9 @@ export function NewConversationFlow({
               onChange={(e) => setGroupName(e.target.value)}
               placeholder="e.g. Workshop Planning"
               autoFocus
-              className="w-full outline-none"
+              className="w-full outline-none text-body"
               style={{
                 padding: "10px 14px",
-                fontSize: "var(--text-sm)",
                 color: "var(--foreground)",
                 background: "var(--input-background)",
                 border: "1px solid var(--border)",
@@ -498,9 +482,8 @@ export function NewConversationFlow({
 
           <div className="flex flex-col gap-2">
             <span
+              className="text-caption font-semibold"
               style={{
-                fontSize: "12px",
-                fontWeight: 600,
                 color: "var(--foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -517,8 +500,8 @@ export function NewConversationFlow({
                     </AvatarFallback>
                   </Avatar>
                   <span
+                    className="text-caption"
                     style={{
-                      fontSize: "12px",
                       color: "var(--foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -533,11 +516,9 @@ export function NewConversationFlow({
           <button
             onClick={handleCreateGroup}
             disabled={!groupName.trim()}
-            className="w-full rounded-lg transition-all"
+            className="w-full rounded-lg transition-all text-control font-semibold"
             style={{
               padding: "10px",
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
               background: groupName.trim()
                 ? "var(--primary)"
                 : "var(--muted)",
@@ -564,8 +545,8 @@ export function NewConversationFlow({
               style={{ padding: "48px 24px" }}
             >
               <p
+                className="text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   color: "var(--muted-foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -601,9 +582,8 @@ export function NewConversationFlow({
                 </div>
                 <div className="min-w-0 flex-1">
                   <span
+                    className="text-control"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 500,
                       color: "var(--foreground)",
                       display: "block",
                       fontFamily: "'Inter', sans-serif",
@@ -612,8 +592,8 @@ export function NewConversationFlow({
                     {ch.name}
                   </span>
                   <span
+                    className="text-caption"
                     style={{
-                      fontSize: "11px",
                       color: "var(--muted-foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -623,13 +603,11 @@ export function NewConversationFlow({
                 </div>
                 {ch.unread > 0 && (
                   <span
-                    className="shrink-0 rounded-full flex items-center justify-center"
+                    className="shrink-0 rounded-full flex items-center justify-center text-badge font-bold"
                     style={{
                       minWidth: 18,
                       height: 18,
                       padding: "0 5px",
-                      fontSize: "10px",
-                      fontWeight: 700,
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                       fontFamily: "'Inter', sans-serif",

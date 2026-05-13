@@ -344,7 +344,7 @@ function SubspaceListItem({
             {subspace.name}
           </a>
           {subspace.visibility === 'archived' && (
-            <Badge variant="secondary" className="text-[10px] py-0 h-5">
+            <Badge variant="secondary" className="text-badge py-0 h-5">
               Archived
             </Badge>
           )}

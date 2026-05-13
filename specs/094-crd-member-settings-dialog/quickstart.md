@@ -16,14 +16,14 @@ This guide walks a developer or QA tester through validating the feature end-to-
 Open the browser console and run:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To verify: the Space pages render with the CRD visual language (Tailwind, shadcn primitives, no MUI elevation). Toggle off with:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -144,7 +144,7 @@ The matrix below maps each spec acceptance scenario to a manual test step. All t
 
 ### P. CRD toggle off (FR-002, FR-022)
 
-1. Disable the CRD toggle (`localStorage.removeItem('alkemio-crd-enabled')`, reload).
+1. Disable the CRD toggle (`localStorage.setItem('alkemio-design-version', '1')`, reload).
 2. Navigate to the same Space settings community page. Verify the legacy MUI page renders.
 3. Open the **MUI** Member settings dialog (edit-pencil affordance per row). Verify it still renders correctly.
 4. Toggle CRD on, reload, repeat the CRD test set: no errors, no stale rendering.

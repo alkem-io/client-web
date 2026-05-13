@@ -207,7 +207,7 @@ function LibraryCard({
             {template.providerAvatarUrl ? (
               <img src={template.providerAvatarUrl} alt="" className="size-3.5 rounded-full object-cover" />
             ) : null}
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+            <Badge variant="secondary" className="text-badge px-1.5 py-0">
               {template.providerName}
             </Badge>
           </div>

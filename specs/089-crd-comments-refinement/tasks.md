@@ -104,7 +104,7 @@ This is a presentation-layer refinement — there are no shared infrastructure p
 
 - [X] T010 Run `pnpm lint` from the repository root. Confirm TypeScript passes and Biome/ESLint are clean. First pass surfaced a second call site (`src/crd/app/pages/SpacePage.tsx`) that was fixed under T007; second pass returned EXIT=0 with only pre-existing warnings (no new errors).
 - [X] T011 Run `pnpm vitest run` from the repository root. **Result**: 592 passed / 3 skipped / 0 failed across 58 files (11.73s). Baseline unchanged.
-- [ ] T012 Walk the manual verification matrix in `specs/089-crd-comments-refinement/quickstart.md` sections A (timeline modal, 12 checks), B (callout dialog, 6 checks), C (cross-surface consistency, 3 checks), and D (edge cases, 4 checks) in a browser with `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload()` applied. Capture screenshots or a short screen recording for the PR description, per Constitution §Engineering Workflow #4 (testing evidence). **Deferred to user** — requires running backend at localhost:3000 and human-eyes browser verification.
+- [ ] T012 Walk the manual verification matrix in `specs/089-crd-comments-refinement/quickstart.md` sections A (timeline modal, 12 checks), B (callout dialog, 6 checks), C (cross-surface consistency, 3 checks), and D (edge cases, 4 checks) in a browser with `localStorage.setItem('alkemio-design-version', '2'); location.reload()` applied. Capture screenshots or a short screen recording for the PR description, per Constitution §Engineering Workflow #4 (testing evidence). **Deferred to user** — requires running backend at localhost:3000 and human-eyes browser verification.
 
 ---
 

@@ -171,21 +171,14 @@ export default function OnboardingPage() {
             <step.icon className="w-6 h-6" />
           </div>
           <h1
-            style={{
-              fontSize: "var(--text-xl)",
-              fontWeight: 700,
-              color: "var(--foreground)",
-            }}
+            className="text-section-title font-bold"
+            style={{ color: "var(--foreground)" }}
           >
             {step.title}
           </h1>
           <p
-            className="max-w-sm mx-auto mt-2"
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--muted-foreground)",
-              lineHeight: 1.6,
-            }}
+            className="max-w-sm mx-auto mt-2 text-body"
+            style={{ color: "var(--muted-foreground)" }}
           >
             {step.subtitle}
           </p>
@@ -200,7 +193,7 @@ export default function OnboardingPage() {
               border: "1px solid var(--border)",
             }}
           >
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}>
+            <p className="text-body" style={{ color: "var(--foreground)" }}>
               Alkemio is a collaborative platform where people and organizations come together to
               tackle societal challenges. This quick setup will help personalize your experience.
             </p>
@@ -214,14 +207,12 @@ export default function OnboardingPage() {
                 key={interest}
                 onClick={() => toggleInterest(interest)}
                 className={cn(
-                  "px-3.5 py-2 rounded-full transition-colors",
+                  "px-3.5 py-2 rounded-full transition-colors text-control",
                   selectedInterests.includes(interest)
                     ? "bg-primary text-primary-foreground"
                     : "bg-secondary text-secondary-foreground hover:bg-accent"
                 )}
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   border: selectedInterests.includes(interest)
                     ? "1px solid var(--primary)"
                     : "1px solid var(--border)",
@@ -267,17 +258,14 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <p
-                    style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 600,
-                      color: "var(--foreground)",
-                    }}
+                    className="text-card-title"
+                    style={{ color: "var(--foreground)" }}
                   >
                     {goal.title}
                   </p>
                   <p
+                    className="text-caption"
                     style={{
-                      fontSize: "12px",
                       color: "var(--muted-foreground)",
                       marginTop: 2,
                     }}
@@ -302,11 +290,8 @@ export default function OnboardingPage() {
               <div className="flex items-center gap-2">
                 <Lightbulb className="w-4 h-4" style={{ color: "var(--primary)" }} />
                 <span
-                  style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: 600,
-                    color: "var(--foreground)",
-                  }}
+                  className="text-card-title"
+                  style={{ color: "var(--foreground)" }}
                 >
                   Your Interests
                 </span>
@@ -315,9 +300,8 @@ export default function OnboardingPage() {
                 {selectedInterests.map((i) => (
                   <span
                     key={i}
-                    className="px-2.5 py-1 rounded-full"
+                    className="px-2.5 py-1 rounded-full text-caption"
                     style={{
-                      fontSize: "12px",
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                     }}
@@ -337,11 +321,8 @@ export default function OnboardingPage() {
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" style={{ color: "var(--primary)" }} />
                 <span
-                  style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: 600,
-                    color: "var(--foreground)",
-                  }}
+                  className="text-card-title"
+                  style={{ color: "var(--foreground)" }}
                 >
                   Your Goals
                 </span>
@@ -350,9 +331,8 @@ export default function OnboardingPage() {
                 {GOALS.filter((g) => selectedGoals.includes(g.id)).map((g) => (
                   <span
                     key={g.id}
-                    className="px-2.5 py-1 rounded-full"
+                    className="px-2.5 py-1 rounded-full text-caption"
                     style={{
-                      fontSize: "12px",
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                     }}

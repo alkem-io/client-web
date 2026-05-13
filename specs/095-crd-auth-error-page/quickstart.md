@@ -33,11 +33,11 @@ CRD pages are hidden behind a localStorage toggle. In the browser console at any
 
 ```js
 // Enable
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 
 // Disable
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 

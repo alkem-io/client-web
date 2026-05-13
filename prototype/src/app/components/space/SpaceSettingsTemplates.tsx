@@ -196,7 +196,7 @@ function TemplateCard({ template, onAction }: {
       <div className="flex-1 p-4 flex flex-col gap-3">
         <div>
           <h4 className="font-semibold leading-none mb-1.5">{template.name}</h4>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-body text-muted-foreground line-clamp-2">
             {template.description}
           </p>
         </div>
@@ -279,7 +279,7 @@ export function SpaceSettingsTemplates() {
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* 1. Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Templates</h2>
+        <h2 className="text-page-title">Templates</h2>
         <p className="text-muted-foreground mt-2">
           Select and manage the templates available to your space members. You can create custom templates or use templates from the General Library.
         </p>
@@ -321,12 +321,12 @@ export function SpaceSettingsTemplates() {
                      </div>
                      <div>
                        <div className="flex items-center gap-2">
-                         <h3 className="font-semibold text-base">{section.title}</h3>
-                         <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-[1.5rem] flex justify-center">
+                         <h3 className="text-subheader font-semibold">{section.title}</h3>
+                         <Badge variant="secondary" className="text-caption h-5 px-1.5 min-w-[1.5rem] flex justify-center">
                             {sectionTemplates.length}
                          </Badge>
                        </div>
-                       <p className="text-sm text-muted-foreground hidden sm:block">
+                       <p className="text-body text-muted-foreground hidden sm:block">
                          {section.description}
                        </p>
                      </div>
@@ -383,7 +383,7 @@ export function SpaceSettingsTemplates() {
                      <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground border-2 border-dashed rounded-lg">
                        <section.icon className="w-10 h-10 mb-3 opacity-20" />
                        <p className="font-medium">No templates found</p>
-                       <p className="text-sm">Try searching for a different term or create a new template.</p>
+                       <p className="text-body">Try searching for a different term or create a new template.</p>
                        <Button variant="link" size="sm" className="mt-2">
                          Browse General Library
                        </Button>
@@ -410,7 +410,7 @@ export function SpaceSettingsTemplates() {
              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                <Search className="w-8 h-8 text-muted-foreground/50" />
              </div>
-             <h3 className="text-lg font-semibold">No results found</h3>
+             <h3 className="text-subsection-title">No results found</h3>
              <p className="text-muted-foreground">
                No templates match your current search query.
              </p>

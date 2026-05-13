@@ -28,8 +28,8 @@ Paths are relative to the repository root. References to `src/...` below follow 
 
 **Purpose**: Pre-flight verification. Branch and spec docs are already in place from `/speckit.specify` and `/speckit.plan`.
 
-- [X] T001 Verify branch and dev environment: confirm current branch is `087-crd-space-about-dialog`, run `pnpm install`, start `pnpm start`, navigate to `http://localhost:3001/<spaceUrlName>/about` with `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload()` and confirm the existing partial CRD About view renders.
-- [X] T002 [P] Verify legacy MUI About still renders unchanged at `http://localhost:3001/<spaceUrlName>/about` after `localStorage.removeItem('alkemio-crd-enabled'); location.reload()`. This is the regression baseline.
+- [X] T001 Verify branch and dev environment: confirm current branch is `087-crd-space-about-dialog`, run `pnpm install`, start `pnpm start`, navigate to `http://localhost:3001/<spaceUrlName>/about` with `localStorage.setItem('alkemio-design-version', '2'); location.reload()` and confirm the existing partial CRD About view renders.
+- [X] T002 [P] Verify legacy MUI About still renders unchanged at `http://localhost:3001/<spaceUrlName>/about` after `localStorage.setItem('alkemio-design-version', '1'); location.reload()`. This is the regression baseline.
 
 ---
 
@@ -178,8 +178,8 @@ Paths are relative to the repository root. References to `src/...` below follow 
 - [ ] T030 Execute the manual test matrix in [quickstart.md § 6](./quickstart.md#6-manual-test-matrix) for each of the five user stories. Capture observations or screenshots for the PR description.
 - [ ] T031 Execute the accessibility checklist in [quickstart.md § 8](./quickstart.md#8-accessibility-checklist-fr-020--fr-021--sc-006) using keyboard-only navigation and a screen reader (VoiceOver or NVDA). Document any findings in the PR description.
 - [ ] T032 Regression verification per spec FR-002 / FR-023 / FR-024 / SC-002:
-  1. With `localStorage.removeItem('alkemio-crd-enabled'); location.reload()`, navigate to `/<space>/about` and confirm the legacy MUI `SpaceAboutDialog` from `src/domain/space/about/` renders unchanged (no behavior change attributable to this branch).
-  2. With `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload()`, navigate to `/<space>/about` and confirm the new CRD dialog renders.
+  1. With `localStorage.setItem('alkemio-design-version', '1'); location.reload()`, navigate to `/<space>/about` and confirm the legacy MUI `SpaceAboutDialog` from `src/domain/space/about/` renders unchanged (no behavior change attributable to this branch).
+  2. With `localStorage.setItem('alkemio-design-version', '2'); location.reload()`, navigate to `/<space>/about` and confirm the new CRD dialog renders.
   3. **Subspace path with CRD on (FR-024)**: with the CRD toggle still on, navigate to `/<space>/challenges/<sub>/about` and confirm the legacy MUI subspace About dialog renders (CRD About is L0-exclusive in this iteration; subspace routing still delegates to legacy `SubspaceRoutes`).
 
 ---

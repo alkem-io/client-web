@@ -12,24 +12,21 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributorAccountView } from '@/crd/components/contributor/settings/ContributorAccountView';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+// TEMP fallback: open existing MUI dialogs until CRD parity ports land
+// (spec 097-crd-user-settings, tasks T033a–T033f). Delete the four imports
+// below and the corresponding JSX at the bottom of this file once those
+// CRD dialogs are wired in.
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import {
   type AccountResourceKind,
   mapUserAccountToViewProps,
   type UserAccountMapperCallbacks,
 } from './userAccountMapper';
-
-/**
- * Per research §3 (Decision #3): create flows navigate to existing MUI
- * admin routes. These URLs are defined in the spec; the routing layer
- * for these admin flows is owned by adjacent specs.
- */
-const CREATE_URLS = {
-  space: '/admin/spaces/new',
-  virtualContributor: '/admin/virtual-contributors/new',
-  innovationPack: '/admin/innovation-packs/new',
-  innovationHub: '/admin/innovation-hubs/new',
-} as const;
 
 type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
 
@@ -38,9 +35,10 @@ type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
  * `ContributorAccountView`. Owns the `pendingDelete` state and renders
  * the destructive `ConfirmationDialog` at the page level (Rule #9).
  *
- * Heavy create / manage flows navigate to existing MUI admin routes per
- * research §3 (Decision #3) — no new CRD creation dialogs introduced.
- * The actual delete mutations are reused from the MUI admin path.
+ * Create flows currently use a TEMP fallback that mounts the existing MUI
+ * dialogs (`CreateSpace`, `useVirtualContributorWizard`,
+ * `CreateInnovationPackDialog`, `CreateInnovationHubDialog`) until the CRD
+ * parity ports land (spec 097-crd-user-settings, tasks T033a–T033f).
  */
 const CrdUserAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
@@ -49,6 +47,10 @@ const CrdUserAccountTab = () => {
   const { userId } = useUserPageRouteContext();
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
+  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
+  const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
+  const [createPackOpen, setCreatePackOpen] = useState(false);
+  const [createHubOpen, setCreateHubOpen] = useState(false);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId ?? '' },
@@ -60,6 +62,9 @@ const CrdUserAccountTab = () => {
     variables: { accountId: accountId ?? '' },
     skip: !accountId,
   });
+
+  const account = accountData?.lookup.account ?? undefined;
+  const accountHostName = userData?.lookup.user?.profile?.displayName;
 
   const refetchAccount = ['AccountInformation'];
 
@@ -86,10 +91,14 @@ const CrdUserAccountTab = () => {
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 
   const callbacks: UserAccountMapperCallbacks = {
-    onCreateSpace: () => navigate(CREATE_URLS.space),
-    onCreateVc: () => navigate(CREATE_URLS.virtualContributor),
-    onCreateInnovationPack: () => navigate(CREATE_URLS.innovationPack),
-    onCreateInnovationHub: () => navigate(CREATE_URLS.innovationHub),
+    onCreateSpace: () => setCreateSpaceOpen(true),
+    // Cast: `AccountInformation` returns `about.membership.myPrivileges`,
+    // but `UserAccountProps` expects the full `SpaceAboutLightModel`
+    // membership shape. The wizard only reads `id`, `host`, `spaces[].id`,
+    // and `spaces[].authorization?.myPrivileges` at runtime — all present.
+    onCreateVc: () => startWizard(account as UserAccountProps | undefined, accountHostName),
+    onCreateInnovationPack: () => setCreatePackOpen(true),
+    onCreateInnovationHub: () => setCreateHubOpen(true),
     onManage: (_kind, _id, href) => {
       if (href) navigate(href);
     },
@@ -117,12 +126,7 @@ const CrdUserAccountTab = () => {
     });
   };
 
-  const props = mapUserAccountToViewProps(
-    accountData?.lookup.account ?? undefined,
-    loadingUser || loadingAccount,
-    t,
-    callbacks
-  );
+  const props = mapUserAccountToViewProps(account, loadingUser || loadingAccount, t, callbacks);
 
   return (
     <>
@@ -140,6 +144,23 @@ const CrdUserAccountTab = () => {
         onCancel={() => setPendingDelete(null)}
         loading={deletingAny}
       />
+      {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
+      {account?.id && (
+        <>
+          <CreateSpace accountId={account.id} open={createSpaceOpen} onClose={() => setCreateSpaceOpen(false)} />
+          <CreateInnovationPackDialog
+            accountId={account.id}
+            open={createPackOpen}
+            onClose={() => setCreatePackOpen(false)}
+          />
+          <CreateInnovationHubDialog
+            accountId={account.id}
+            open={createHubOpen}
+            onClose={() => setCreateHubOpen(false)}
+          />
+        </>
+      )}
+      {virtualContributorWizard}
     </>
   );
 };

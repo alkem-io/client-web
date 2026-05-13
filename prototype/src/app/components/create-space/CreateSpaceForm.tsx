@@ -92,11 +92,11 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
               placeholder="Tagline (Short description)"
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
-              className="border-none px-0 shadow-none focus-visible:ring-0 text-[length:var(--text-base)] leading-relaxed placeholder:text-muted-foreground/60 h-auto"
+              className="border-none px-0 shadow-none focus-visible:ring-0 text-subheader font-normal placeholder:text-muted-foreground/60 h-auto"
             />
 
             <div className="flex items-center gap-0.5 h-9">
-              <span className="text-muted-foreground/60 select-none shrink-0 font-normal text-[length:var(--text-base)]">
+              <span className="text-muted-foreground/60 select-none shrink-0 text-subheader font-normal">
                 alkem.io/
               </span>
               <div className="relative flex-1 min-w-0">
@@ -104,11 +104,11 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                   placeholder="space-url-slug"
                   value={urlSlug}
                   onChange={handleSlugChange}
-                  className="border-none shadow-none focus-visible:ring-0 h-full p-0 bg-transparent w-full font-medium text-[length:var(--text-base)]"
+                  className="border-none shadow-none focus-visible:ring-0 h-full p-0 bg-transparent w-full text-subheader"
                 />
               </div>
               {urlSlug && (
-                <div className="flex items-center gap-1 text-success font-medium shrink-0 pl-2 text-[length:var(--text-sm)]">
+                <div className="flex items-center gap-1 text-success shrink-0 pl-2 text-body-emphasis">
                   <Check className="w-3 h-3" /> Available
                 </div>
               )}
@@ -123,7 +123,7 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
               <Button variant="ghost" className="w-full flex items-center justify-between p-2 h-auto hover:bg-muted/50 font-normal">
                 <div className="flex items-center gap-2 text-muted-foreground">
                    <Settings className="w-4 h-4" />
-                   <span className="text-[length:var(--text-sm)]">Space Details & Assets</span>
+                   <span className="text-control">Space Details & Assets</span>
                 </div>
                 <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", settingsOpen && "rotate-90")} />
               </Button>
@@ -144,12 +144,12 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                 </div>
                 <div className="relative">
                   <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                  <Input 
-                    value={currentTag} 
+                  <Input
+                    value={currentTag}
                     onChange={e => setCurrentTag(e.target.value)}
                     onKeyDown={handleAddTag}
-                    placeholder="Add tags separated by Enter..." 
-                    className="pl-8 h-9 bg-background text-[length:var(--text-sm)]"
+                    placeholder="Add tags separated by Enter..."
+                    className="pl-8 h-9 bg-background text-control"
                   />
                 </div>
               </div>
@@ -173,7 +173,7 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-4 text-center cursor-pointer hover:bg-muted/10 transition-colors" onClick={() => setPageBanner("https://images.unsplash.com/photo-1696041757950-62e2c030283b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwY29tbXVuaXR5JTIwYmFubmVyJTIwYWJzdHJhY3R8ZW58MXx8fHwxNzY5NDMxODQyfDA&ixlib=rb-4.1.0&q=80&w=1080")}>
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <ImageIcon className="w-4 h-4" />
-                          <span className="text-[length:var(--text-xs)]">Upload Page Banner</span>
+                          <span className="text-caption">Upload Page Banner</span>
                         </div>
                       </div>
                     )}
@@ -197,7 +197,7 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-4 text-center cursor-pointer hover:bg-muted/10 transition-colors" onClick={() => setCardBanner("https://images.unsplash.com/photo-1548728560-b6adb671a69f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB0ZWFtd29yayUyMG9mZmljZSUyMGFic3RyYWN0fGVufDF8fHx8MTc2OTQzMTg0Mnww&ixlib=rb-4.1.0&q=80&w=1080")}>
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <ImageIcon className="w-4 h-4" />
-                          <span className="text-[length:var(--text-xs)]">Upload Card Banner</span>
+                          <span className="text-caption">Upload Card Banner</span>
                         </div>
                       </div>
                     )}
@@ -214,10 +214,10 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                     onCheckedChange={(checked) => setAddTutorials(checked as boolean)}
                   />
                   <div className="grid gap-1.5 leading-none">
-                    <Label htmlFor="tutorials" className="font-medium cursor-pointer text-[length:var(--text-sm)]">
+                    <Label htmlFor="tutorials" className="cursor-pointer text-body-emphasis">
                       Add Tutorials to this Space
                     </Label>
-                    <p className="text-[length:var(--text-xs)] text-muted-foreground">
+                    <p className="text-caption text-muted-foreground">
                       Automatically add onboarding content for new members
                     </p>
                   </div>
@@ -230,7 +230,7 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
                     onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
                   />
                   <div className="grid gap-1.5 leading-none">
-                    <Label htmlFor="terms" className="font-medium cursor-pointer text-[length:var(--text-sm)]">
+                    <Label htmlFor="terms" className="cursor-pointer text-body-emphasis">
                       I accept the terms and agreements <span className="text-destructive">*</span>
                     </Label>
                   </div>
@@ -244,11 +244,11 @@ export function CreateSpaceForm({ onCancel, onSuccess }: CreateSpaceFormProps) {
 
         {/* Footer */}
         <div className="px-6 py-4 border-t bg-muted/10 flex justify-end gap-2">
-          <Button variant="ghost" onClick={onCancel} className="text-[length:var(--text-base)]">Cancel</Button>
+          <Button variant="ghost" onClick={onCancel} className="text-subheader font-normal">Cancel</Button>
           <Button 
             onClick={handleCreate} 
             disabled={!isFormValid || isSubmitting}
-            className="px-8 text-[length:var(--text-base)]"
+            className="px-8 text-subheader font-normal"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">

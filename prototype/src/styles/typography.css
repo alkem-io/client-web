@@ -1,5 +1,5 @@
 /**
- * CRD Typography Scale
+ * Prototype Typography Scale
  *
  * Semantic tokens registered via @theme inline. Tailwind v4 auto-generates
  * a utility class for each --text-* token that bundles font-size, line-height,
@@ -12,12 +12,11 @@
  * with the viewport — they do not need responsive breakpoint composition.
  *
  * Source of truth: specs/042-crd-space-page/typography/fonts.md
- * Mirrored from: prototype/src/styles/typography.css
  *
- * IMPORTANT: When adding or updating tokens here, also update:
- *   - src/crd/CLAUDE.md (Golden Rule #8 — token table + migration table)
- *   - docs/crd/migration-guide.md (Typography section — token table + migration table)
- *   - prototype/src/styles/typography.css (keep in lockstep until prototype is retired)
+ * Prototype-readonly exception: this file is the one exception to
+ * prototype/CLAUDE.md's no-modify rule, granted for the typography
+ * unification pass. The same tokens will be copied into
+ * src/crd/styles/typography.css in a follow-up step.
  */
 
 @theme inline {

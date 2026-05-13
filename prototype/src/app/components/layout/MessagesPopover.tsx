@@ -132,7 +132,7 @@ export function MessagesPopover() {
                 background: "color-mix(in srgb, var(--muted) 30%, transparent)",
               }}
             >
-              <h3 className="text-sm font-semibold">Messages</h3>
+              <h3 className="text-card-title">Messages</h3>
               <Button variant="ghost" size="icon" className="h-7 w-7">
                 <Plus className="w-4 h-4" />
               </Button>
@@ -150,7 +150,7 @@ export function MessagesPopover() {
                   placeholder="Search conversations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 bg-transparent outline-none text-sm"
+                  className="flex-1 bg-transparent outline-none text-control"
                   style={{ color: "var(--foreground)" }}
                 />
               </div>
@@ -167,16 +167,16 @@ export function MessagesPopover() {
                 >
                   <Avatar className="w-9 h-9 shrink-0" style={{ border: "1px solid var(--border)" }}>
                     <AvatarImage src={c.avatar} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    <AvatarFallback className="bg-primary/10 text-primary text-caption">
                       {c.name.substring(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium truncate">{c.name}</span>
-                      <span className="text-[11px] text-muted-foreground shrink-0">{c.time}</span>
+                      <span className="text-control truncate">{c.name}</span>
+                      <span className="text-caption text-muted-foreground shrink-0">{c.time}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                    <p className="text-caption text-muted-foreground truncate mt-0.5">
                       {c.lastMessage}
                     </p>
                   </div>
@@ -209,7 +209,7 @@ export function MessagesPopover() {
                     {contact?.name.substring(0, 2)}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-semibold">{contact?.name}</span>
+                <span className="text-card-title">{contact?.name}</span>
               </div>
               <div className="flex items-center gap-0.5">
                 <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
@@ -247,7 +247,7 @@ export function MessagesPopover() {
                           : "var(--foreground)",
                     }}
                   >
-                    <p className="text-sm leading-relaxed">{m.text}</p>
+                    <p className="text-body">{m.text}</p>
                     <div
                       className="flex items-center justify-end mt-0.5"
                       style={{ fontSize: "10px", opacity: 0.7 }}
@@ -276,7 +276,7 @@ export function MessagesPopover() {
                 placeholder="Type a message..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                className="flex-1 h-8 px-3 rounded-md bg-transparent outline-none text-sm"
+                className="flex-1 h-8 px-3 rounded-md bg-transparent outline-none text-control"
                 style={{
                   border: "1px solid var(--border)",
                   color: "var(--foreground)",

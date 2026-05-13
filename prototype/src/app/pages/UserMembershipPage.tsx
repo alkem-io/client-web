@@ -120,10 +120,10 @@ export default function UserMembershipPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
           
@@ -133,7 +133,7 @@ export default function UserMembershipPage() {
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -172,7 +172,7 @@ export default function UserMembershipPage() {
                   key={status}
                   onClick={() => setFilter(status)}
                   className={cn(
-                    "px-3 py-1.5 rounded-sm text-sm font-medium transition-all",
+                    "px-3 py-1.5 rounded-sm text-control transition-all",
                     filter === status
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -191,7 +191,7 @@ export default function UserMembershipPage() {
         </div>
 
         {/* Results Info */}
-        <div className="text-sm text-muted-foreground">
+        <div className="text-body text-muted-foreground">
           Showing {filteredMemberships.length} of {memberships.length} memberships
         </div>
 
@@ -243,7 +243,7 @@ export default function UserMembershipPage() {
 
               <CardHeader className="p-4 pb-2">
                 <div className="flex justify-between items-start gap-2">
-                  <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
+                  <h3 className="text-subsection-title group-hover:text-primary transition-colors line-clamp-1">
                     {item.name}
                   </h3>
                 </div>
@@ -255,12 +255,12 @@ export default function UserMembershipPage() {
               </CardHeader>
               
               <CardContent className="p-4 pt-2 flex-grow">
-                <p className="text-sm text-muted-foreground line-clamp-2">
+                <p className="text-body text-muted-foreground line-clamp-2">
                   {item.description}
                 </p>
               </CardContent>
               
-              <CardFooter className="p-4 border-t bg-muted/30 text-xs text-muted-foreground flex justify-between items-center mt-auto">
+              <CardFooter className="p-4 border-t bg-muted/30 text-caption text-muted-foreground flex justify-between items-center mt-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1" title="Members">
                     <Users className="w-3.5 h-3.5" />
@@ -275,8 +275,8 @@ export default function UserMembershipPage() {
           {filteredMemberships.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center py-16 border rounded-lg bg-muted/10 border-dashed">
               <Folder className="w-10 h-10 text-muted-foreground/50 mb-3" />
-              <h3 className="text-lg font-medium">No memberships found</h3>
-              <p className="text-muted-foreground text-sm mb-4">Try adjusting your filters or search query.</p>
+              <h3 className="text-subsection-title font-medium">No memberships found</h3>
+              <p className="text-muted-foreground text-body mb-4">Try adjusting your filters or search query.</p>
               <Button variant="outline" onClick={() => {setFilter("All"); setSearchQuery("");}}>
                 Clear Filters
               </Button>

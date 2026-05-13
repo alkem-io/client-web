@@ -19,11 +19,11 @@ pnpm start        # dev server at http://localhost:3001
 Enable the CRD feature toggle in the browser console once:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
-(Disable later with `localStorage.removeItem('alkemio-crd-enabled')`.)
+(Disable later with `localStorage.setItem('alkemio-design-version', '1')`.)
 
 ## Test data
 
@@ -162,4 +162,4 @@ pnpm build                    # production build (sanity check; ~20s)
 - The Apollo `useSpaceCalendarEventsQuery` fires only once per dashboard load (not twice — sidebar + dialog should share via cache).
 - The `CalendarEventImportUrls` query fires only on first dropdown open per event detail.
 - Closing the dialog cleanly strips `?highlight=`, `?new=1`, and the `/calendar` path so the URL is bookmarkable on the dashboard.
-- The legacy MUI dashboard route still works when `localStorage.removeItem('alkemio-crd-enabled')` is run — the legacy `CalendarDialog` and `DashboardCalendarSection` should be untouched (per FR-043).
+- The legacy MUI dashboard route still works when `localStorage.setItem('alkemio-design-version', '1')` is run — the legacy `CalendarDialog` and `DashboardCalendarSection` should be untouched (per FR-043).

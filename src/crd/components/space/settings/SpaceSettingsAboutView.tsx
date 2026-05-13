@@ -99,7 +99,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               ariaLabel="Space name"
               editAriaLabel="Edit space name"
               placeholder="Space Name"
-              className="mt-2 text-base"
+              className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
               hint={t('about.name.description')}
@@ -121,7 +121,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               ariaLabel="Tagline"
               editAriaLabel="Edit tagline"
               placeholder="Tagline"
-              className="mt-2 text-base"
+              className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
               hint={t('about.tagline.description')}
