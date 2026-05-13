@@ -54,7 +54,7 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-in fade-in duration-500" style={{ background: 'var(--background)', fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
       <div className="w-full max-w-3xl space-y-6">
         
         <div className="text-center space-y-2">
@@ -71,7 +71,6 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
                     <Input 
                        placeholder="Search spaces..." 
-                       style={{ paddingLeft: 36, background: 'var(--input-background)', fontFamily: "'Inter', sans-serif" }}
                        value={search}
                        onChange={e => setSearch(e.target.value)}
                     />
@@ -150,7 +149,7 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
 
                <div className="flex items-center gap-3">
                   <Button variant="ghost" onClick={() => setSelected(selected.length > 0 ? [] : [])}>Load Last Selection</Button>
-                  <Button onClick={handleGenerate} disabled={selected.length === 0 || isGenerating} className="min-w-[140px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <Button onClick={handleGenerate} disabled={selected.length === 0 || isGenerating}>
                      {isGenerating ? (
                         <>Generating Graph...</>
                      ) : (

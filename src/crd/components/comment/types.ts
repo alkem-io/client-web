@@ -31,6 +31,12 @@ export type CommentsContainerData = {
   comments: CommentData[];
   currentUser?: CommentAuthor;
   loading?: boolean;
+  /** Whether the current viewer is allowed to post / reply / react.
+   *  When false, per-comment Reply, the add-reaction picker, and the reaction
+   *  pill toggles are rendered non-interactive. Existing reaction pills and
+   *  per-comment Delete (gated separately by `comment.canDelete`) remain
+   *  visible. Defaults to true for backwards compatibility. */
+  canComment?: boolean;
   onReply: (parentId: string, content: string) => void;
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;

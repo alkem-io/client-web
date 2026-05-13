@@ -4,10 +4,13 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { Error404 } from '@/core/pages/Errors/Error404';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
+import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdVCProfilePage from './publicProfile/CrdVCProfilePage';
+
+const CrdVCSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdVCSettingsRoutes'));
 
 const MuiVCSettingsRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/virtualContributorAdmin/VCSettingsRoute')
@@ -15,6 +18,24 @@ const MuiVCSettingsRoute = lazyWithGlobalErrorHandler(
 const MuiVCKnowledgeBaseRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/virtualContributor/knowledgeBase/VCKnowledgeBaseRoute')
 );
+
+const VcSettingsDispatch = () => {
+  const crdEnabled = useCrdEnabled();
+  if (crdEnabled) {
+    return (
+      <CrdLayoutWrapper>
+        <Suspense fallback={<Loading />}>
+          <CrdVCSettingsRoutes />
+        </Suspense>
+      </CrdLayoutWrapper>
+    );
+  }
+  return (
+    <Suspense fallback={<Loading />}>
+      <MuiVCSettingsRoute />
+    </Suspense>
+  );
+};
 
 export const CrdVCRoutes = () => (
   <Routes>
@@ -39,9 +60,7 @@ export const CrdVCRoutes = () => (
         path="settings/*"
         element={
           <NoIdentityRedirect>
-            <Suspense fallback={<Loading />}>
-              <MuiVCSettingsRoute />
-            </Suspense>
+            <VcSettingsDispatch />
           </NoIdentityRedirect>
         }
       />

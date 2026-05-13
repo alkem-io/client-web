@@ -1,0 +1,61 @@
+{
+  "banner": {
+    "title": "Welcome to the Alkemio Forum",
+    "subtitle": "Connect with others, ask questions, and stay updated with Alkemio's release notes",
+    "iconLabel": "Forum"
+  },
+  "categories": {
+    "all": "Show all",
+    "sectionLabel": "Categories",
+    "selectAriaLabel": "Filter by category"
+  },
+  "list": {
+    "headerCount_one": "Discussions ({{count}})",
+    "headerCount_other": "Discussions ({{count}})",
+    "initiate": "Initiate Discussion",
+    "searchPlaceholder": "Search",
+    "searchAriaLabel": "Search discussions",
+    "itemAriaLabel_one": "{{title}} by {{author}}, {{date}}, {{count}} comment",
+    "itemAriaLabel_other": "{{title}} by {{author}}, {{date}}, {{count}} comments",
+    "metaLine_one": "{{author}} on {{date}} · {{count}} comment",
+    "metaLine_other": "{{author}} on {{date}} · {{count}} comments",
+    "sort": {
+      "ariaLabel": "Sort discussions",
+      "newest": "Newest",
+      "oldest": "Oldest"
+    },
+    "empty": {
+      "title": "No discussions found",
+      "subtitle": "Try adjusting your search or category filter"
+    },
+    "loading": "Loading discussions"
+  },
+  "detail": {
+    "back": "See all discussions in this category",
+    "share": "Share",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading discussion"
+  },
+  "dialog": {
+    "create": {
+      "title": "Create Discussion",
+      "submit": "Create Discussion"
+    },
+    "update": {
+      "title": "Edit Discussion",
+      "submit": "Save Changes"
+    },
+    "fields": {
+      "title": "Title",
+      "category": "Category *",
+      "body": "Share your thoughts..."
+    },
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": {
+      "description": "This action cannot be undone.",
+      "confirm": "Delete"
+    }
+  }
+}

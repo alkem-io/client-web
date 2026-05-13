@@ -181,7 +181,7 @@ function AuthCard({
 }) {
   return (
     <div
-      className="w-full max-w-[420px] relative"
+      className="w-full relative"
       style={{
         background: "var(--card)",
         borderRadius: "8px",
@@ -190,11 +190,22 @@ function AuthCard({
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-2">
-        <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
-          Welcome to Alkemio!
-        </span>
+      {/* Logo + Account toggle row */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <div className="w-36 h-5 relative">
+            <AlkemioLogo />
+          </div>
+          <p
+            className="mt-1.5"
+            style={{
+              fontSize: "11px",
+              color: "var(--muted-foreground)",
+            }}
+          >
+            Safe Spaces for Collaboration
+          </p>
+        </div>
         {showSignUp && (
           <div className="text-right">
             <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>No account?</span>
@@ -258,14 +269,16 @@ export default function AuthPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [signUpPassword, setSignUpPassword] = useState("");
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleNavigate = (route: string) => {
     setView(route as AuthView);
   };
 
   const handleSignIn = () => {
-    // Simulate sign-in → navigate to dashboard
-    navigate("/");
+    setIsLoggingIn(true);
+    // Wait for animation to finish, then navigate
+    setTimeout(() => navigate("/"), 1200);
   };
 
   const handleSignUpNext = () => {
@@ -285,82 +298,219 @@ export default function AuthPage() {
       className="min-h-screen flex flex-col relative"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Background illustration area */}
+      {/* Background: Sandblasted/frosted preview of dashboard */}
       <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(135deg, #E8F6FC 0%, #D4EFFA 30%, #C5E8F7 60%, #E0F4FD 100%)",
-          zIndex: 0,
-        }}
+        className="absolute inset-0 overflow-hidden"
+        style={{ zIndex: 0 }}
       >
-        {/* Decorative network pattern overlay */}
+        {/* Base background */}
+        <div className="absolute inset-0" style={{ background: "var(--background)" }} />
+
+        {/* Dashboard replica — exact layout: grid-cols-12, px-8 py-8, col-span-2 sidebar + col-span-9 main */}
+        <div className="absolute inset-0">
+
+          {/* ─── Header bar (56px like real Header) ─── */}
+          <div
+            className="absolute top-0 left-0 right-0 flex items-center px-6 gap-4"
+            style={{ height: "56px", background: "var(--card)", borderBottom: "1px solid var(--border)" }}
+          >
+            <div className="w-7 h-7 rounded" style={{ background: "rgba(9,188,212,0.35)" }} />
+            <div className="h-3 w-20 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
+            <div className="flex-1 max-w-lg mx-auto h-8 rounded-md flex items-center px-3 gap-2" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }}>
+              <div className="w-3.5 h-3.5 rounded-sm" style={{ background: "var(--border)" }} />
+              <div className="h-2 w-14 rounded" style={{ background: "var(--border)", opacity: 0.5 }} />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
+              <div className="w-7 h-7 rounded-full" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
+              <div className="w-8 h-8 rounded-full" style={{ background: "rgba(9,188,212,0.15)" }} />
+            </div>
+          </div>
+
+          {/* ─── Content below header — matches real Dashboard: px-8 py-8, grid-cols-12 gap-6 ─── */}
+          <div className="absolute top-[56px] left-0 right-0 bottom-0 px-8 py-8">
+            <div className="grid grid-cols-12 gap-6 h-full">
+
+              {/* Sidebar col-span-2 */}
+              <div className="col-span-2 space-y-1">
+                {[
+                  { w: "75%", badge: true },
+                  { w: "88%", badge: false },
+                  { w: "58%", badge: false },
+                  { w: "72%", badge: false },
+                  { w: "52%", badge: false },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 py-2">
+                    <div className="w-4 h-4 rounded shrink-0" style={{ background: "rgba(29,56,74,0.18)" }} />
+                    <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.1)", width: item.w }} />
+                    {item.badge && <div className="w-5 h-4 rounded-full ml-auto" style={{ background: "rgba(9,188,212,0.4)" }} />}
+                  </div>
+                ))}
+
+                {/* MY SPACES */}
+                <div className="pt-4 mt-3" style={{ borderTop: "1px solid var(--border)" }}>
+                  <div className="h-2 rounded mb-3" style={{ background: "rgba(29,56,74,0.07)", width: "50%" }} />
+                  <div className="space-y-3">
+                    {[
+                      "rgba(234,179,8,0.45)",
+                      "rgba(34,197,94,0.35)",
+                      "rgba(59,130,246,0.35)",
+                    ].map((c, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded shrink-0" style={{ background: c }} />
+                        <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.08)" }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* VIRTUAL CONTRIBUTORS */}
+                <div className="pt-4 mt-3" style={{ borderTop: "1px solid var(--border)" }}>
+                  <div className="h-2 rounded mb-3" style={{ background: "rgba(29,56,74,0.06)", width: "72%" }} />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full shrink-0" style={{ background: "rgba(29,56,74,0.1)", border: "1px solid var(--border)" }} />
+                      <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.07)" }} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full shrink-0" style={{ background: "rgba(29,56,74,0.1)", border: "1px solid var(--border)" }} />
+                      <div className="h-2.5 rounded flex-1" style={{ background: "rgba(29,56,74,0.07)" }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Activity View */}
+                <div className="pt-4 mt-3 flex items-center gap-2" style={{ borderTop: "1px solid var(--border)" }}>
+                  <div className="w-4 h-4 rounded shrink-0" style={{ background: "rgba(29,56,74,0.15)" }} />
+                  <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: "55%" }} />
+                  <div className="w-8 h-4 rounded-full ml-auto" style={{ background: "var(--border)" }} />
+                </div>
+              </div>
+
+              {/* Main col-span-9 — inner grid-cols-9 */}
+              <div className="col-span-9">
+                {/* Section: Recent Spaces */}
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center justify-between">
+                    <div className="h-5 w-28 rounded" style={{ background: "rgba(29,56,74,0.14)" }} />
+                    <div className="h-3 w-36 rounded" style={{ background: "rgba(9,188,212,0.3)" }} />
+                  </div>
+
+                  {/* 4-col cards with aspect-video */}
+                  <div className="grid grid-cols-4 gap-4">
+                    {[
+                      "rgba(180,140,60,0.3)",
+                      "rgba(80,160,100,0.25)",
+                      "rgba(180,80,80,0.2)",
+                      "rgba(100,80,170,0.25)",
+                    ].map((color, i) => (
+                      <div
+                        key={i}
+                        className="rounded-md overflow-hidden"
+                        style={{ background: "var(--card)", border: "1px solid var(--border)" }}
+                      >
+                        <div className="aspect-video" style={{ background: color }} />
+                        <div className="p-3 flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg shrink-0" style={{ background: color, opacity: 0.8 }} />
+                          <div className="h-3 rounded flex-1" style={{ background: "rgba(29,56,74,0.09)" }} />
+                          {i % 2 === 0 && <div className="w-4 h-4 rounded-sm shrink-0" style={{ background: "rgba(29,56,74,0.06)" }} />}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Activity feeds: grid-cols-9, 5:4 split */}
+                <div className="grid grid-cols-9 gap-6">
+                  {/* Left feed col-span-5 */}
+                  <div
+                    className="col-span-5 rounded-md p-5"
+                    style={{ background: "var(--card)", border: "1px solid var(--border)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="h-3.5 w-40 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
+                      <div className="w-5 h-5 rounded" style={{ background: "var(--border)" }} />
+                    </div>
+                    <div className="flex gap-2 mb-5">
+                      <div className="h-6 w-28 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
+                      <div className="h-6 w-32 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
+                    </div>
+                    <div className="space-y-5">
+                      {[85, 78, 72, 80, 68, 75, 82].map((w, n) => (
+                        <div key={n} className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-full shrink-0" style={{ background: `hsl(${n * 50 + 10}, 30%, 78%)` }} />
+                          <div className="flex-1 pt-1 space-y-1.5">
+                            <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: `${w}%` }} />
+                            <div className="h-2 rounded" style={{ background: "rgba(29,56,74,0.04)", width: "22%" }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right feed col-span-4 */}
+                  <div
+                    className="col-span-4 rounded-md p-5"
+                    style={{ background: "var(--card)", border: "1px solid var(--border)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="h-3.5 w-32 rounded" style={{ background: "rgba(29,56,74,0.12)" }} />
+                      <div className="w-5 h-5 rounded" style={{ background: "var(--border)" }} />
+                    </div>
+                    <div className="flex gap-2 mb-5">
+                      <div className="h-6 w-28 rounded" style={{ background: "var(--secondary)", border: "1px solid var(--border)" }} />
+                    </div>
+                    <div className="space-y-5">
+                      {[76, 70, 65, 80, 58, 72].map((w, n) => (
+                        <div key={n} className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-full shrink-0" style={{ background: "hsl(210, 22%, 78%)" }} />
+                          <div className="flex-1 pt-1 space-y-1.5">
+                            <div className="h-2.5 rounded" style={{ background: "rgba(29,56,74,0.08)", width: `${w}%` }} />
+                            <div className="h-2 rounded" style={{ background: "rgba(29,56,74,0.04)", width: "18%" }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Frosted glass overlay — animates out on login */}
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0"
           style={{
-            backgroundImage: `
-              radial-gradient(circle at 20% 50%, rgba(29,56,74,0.05) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(29,56,74,0.03) 0%, transparent 40%),
-              radial-gradient(circle at 50% 80%, rgba(29,56,74,0.04) 0%, transparent 45%)
-            `,
+            backdropFilter: isLoggingIn ? "blur(0px) saturate(1)" : "blur(10px) saturate(1.2)",
+            WebkitBackdropFilter: isLoggingIn ? "blur(0px) saturate(1)" : "blur(10px) saturate(1.2)",
+            background: isLoggingIn ? "rgba(255, 255, 255, 0)" : "rgba(255, 255, 255, 0.3)",
+            transition: "all 1s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
-        {/* Abstract connection dots */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="network" width="120" height="120" patternUnits="userSpaceOnUse">
-              <circle cx="60" cy="60" r="2" fill="var(--primary)" />
-              <circle cx="20" cy="20" r="1.5" fill="var(--primary)" />
-              <circle cx="100" cy="30" r="1.5" fill="var(--primary)" />
-              <circle cx="30" cy="100" r="1.5" fill="var(--primary)" />
-              <circle cx="90" cy="90" r="1" fill="var(--primary)" />
-              <line x1="60" y1="60" x2="20" y2="20" stroke="var(--primary)" strokeWidth="0.5" />
-              <line x1="60" y1="60" x2="100" y2="30" stroke="var(--primary)" strokeWidth="0.5" />
-              <line x1="60" y1="60" x2="30" y2="100" stroke="var(--primary)" strokeWidth="0.5" />
-              <line x1="60" y1="60" x2="90" y2="90" stroke="var(--primary)" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#network)" />
-        </svg>
 
-        {/* Isometric people illustrations - abstract shapes */}
-        <div className="absolute top-[10%] left-[5%] w-16 h-16 rounded-full opacity-10" style={{ background: "var(--primary)" }} />
-        <div className="absolute top-[20%] left-[15%] w-24 h-24 rounded-xl opacity-5" style={{ background: "var(--primary)" }} />
-        <div className="absolute top-[60%] left-[8%] w-20 h-20 rounded-full opacity-8" style={{ background: "var(--primary)" }} />
-        <div className="absolute top-[30%] left-[35%] w-12 h-12 rounded-full opacity-6" style={{ background: "var(--primary)" }} />
-        <div className="absolute top-[15%] left-[50%] w-16 h-16 rounded-lg opacity-4" style={{ background: "var(--primary)" }} />
-        <div className="absolute top-[70%] left-[25%] w-14 h-14 rounded-full opacity-7" style={{ background: "var(--primary)" }} />
-        <div className="absolute bottom-[20%] left-[40%] w-10 h-10 rounded-full opacity-5" style={{ background: "var(--primary)" }} />
-      </div>
-
-      {/* Logo top-left */}
-      <div
-        className="absolute top-6 left-6 z-10"
-        style={{
-          background: "rgba(255,255,255,0.85)",
-          backdropFilter: "blur(8px)",
-          borderRadius: "12px",
-          padding: "16px 24px",
-        }}
-      >
-        <div className="w-44 h-6 relative">
-          <AlkemioLogo />
-        </div>
-        <p
-          className="mt-2"
+        {/* Subtle glass texture / noise */}
+        <div
+          className="absolute inset-0"
           style={{
-            fontSize: "12px",
-            color: "var(--muted-foreground)",
-            fontFamily: "'Inter', sans-serif",
+            opacity: isLoggingIn ? 0 : 0.025,
+            transition: "opacity 0.6s ease",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           }}
-        >
-          Safe Spaces for Collaboration
-        </p>
+        />
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex items-center relative z-10 px-6 md:px-8 py-12">
-        <div className="grid grid-cols-12 gap-6 w-full">
-          <div className="col-span-12 sm:col-span-8 sm:col-start-5 md:col-span-6 md:col-start-7 lg:col-span-4 lg:col-start-9">
+      <div
+        className="flex-1 flex items-center justify-end relative z-10 px-6 md:px-12 lg:px-24 xl:px-32 py-12"
+        style={{
+          opacity: isLoggingIn ? 0 : 1,
+          transform: isLoggingIn ? "translateY(-40px) scale(0.97)" : "translateY(0) scale(1)",
+          transition: "opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div className="w-full max-w-[420px]">
         {/* Auth Card */}
         {view === "sign-in" && (
           <AuthCard title="Sign in" showSignUp onNavigate={handleNavigate}>
@@ -610,7 +760,6 @@ export default function AuthPage() {
             </div>
           </AuthCard>
         )}
-          </div>
         </div>
       </div>
 

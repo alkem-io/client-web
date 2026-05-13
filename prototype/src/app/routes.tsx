@@ -23,12 +23,15 @@ import TemplatePackDetailPage from "./pages/TemplatePackDetailPage";
 import TemplateDetailPage from "./pages/TemplateDetailPage";
 import DesignSystemPage from "./pages/DesignSystemPage";
 import TypographySystemPage from "./pages/TypographySystemPage";
+import TypographyDecisionPage from "./pages/TypographyDecisionPage";
 import EcosystemAnalyticsPage from "./pages/analytics/EcosystemAnalyticsPage";
 import BrowseSpacesPage from "./pages/BrowseSpacesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminPage from "./pages/AdminPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import AuthPage from "./pages/AuthPage";
+import AuthPageV2 from "./pages/AuthPageV2";
+import AuthPageV3 from "./pages/AuthPageV3";
 import PackSettingsPage from "./pages/PackSettingsPage";
 import TemplateSettingsPage from "./pages/TemplateSettingsPage";
 import VCProfilePage from "./pages/VCProfilePage";
@@ -42,11 +45,14 @@ export const router = createBrowserRouter([
       /* ─── Standalone pages (no layout) ─── */
       { path: "/design-system", Component: DesignSystemPage },
       { path: "/typography", Component: TypographySystemPage },
+      { path: "/typography-decisions", Component: TypographyDecisionPage },
       { path: "/analytics", Component: EcosystemAnalyticsPage },
       { path: "/onboarding", Component: OnboardingPage },
       { path: "/sign-in", Component: AuthPage },
       { path: "/sign-up", Component: AuthPage },
       { path: "/password-recovery", Component: AuthPage },
+      { path: "/sign-in-v2", Component: AuthPageV2 },
+      { path: "/sign-in-v3", Component: AuthPageV3 },
 
       /* ─── Pages WITH app sidebar (MainLayout) ─── */
       {
