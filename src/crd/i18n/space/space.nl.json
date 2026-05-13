@@ -634,6 +634,14 @@
     "readMore": "… Lees meer",
     "readLess": "Lees minder"
   },
+  "postPreview": {
+    "label": "Voorbeeld van geselecteerde bijdrage",
+    "edit": "Reactie bewerken",
+    "share": "Reactie delen",
+    "close": "Voorbeeld sluiten",
+    "emptyDescription": "Geen beschrijving",
+    "references": "Referenties"
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",

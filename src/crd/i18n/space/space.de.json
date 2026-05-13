@@ -634,6 +634,14 @@
     "readMore": "… Mehr lesen",
     "readLess": "Weniger lesen"
   },
+  "postPreview": {
+    "label": "Vorschau des ausgewählten Beitrags",
+    "edit": "Beitrag bearbeiten",
+    "share": "Beitrag teilen",
+    "close": "Vorschau schließen",
+    "emptyDescription": "Keine Beschreibung",
+    "references": "Verweise"
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",

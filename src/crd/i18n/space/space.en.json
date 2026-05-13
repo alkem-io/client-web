@@ -625,6 +625,14 @@
     "readMore": "… Read more",
     "readLess": "Read less"
   },
+  "postPreview": {
+    "label": "Selected contribution preview",
+    "edit": "Edit response",
+    "share": "Share response",
+    "close": "Close preview",
+    "emptyDescription": "No description",
+    "references": "References"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",

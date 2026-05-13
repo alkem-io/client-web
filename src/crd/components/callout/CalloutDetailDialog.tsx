@@ -33,6 +33,14 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /**
+   * Inline preview of the currently-selected contribution (e.g. CalloutPostPreview).
+   * Rendered BELOW the contributions grid so the user keeps the full list in view
+   * while reading the selected response — mirrors the MUI flow where the
+   * `CalloutContributionsHorizontalPager` + `CalloutContributionPreview` stack
+   * coexist (`src/domain/collaboration/callout/CalloutView/CalloutView.tsx`).
+   */
+  selectedContributionSlot?: ReactNode;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
@@ -70,6 +78,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  selectedContributionSlot,
   pollSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
@@ -165,34 +174,36 @@ export function CalloutDetailDialog({
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
-            {/* Reactions + share bar */}
-            <div className="flex items-center gap-4 py-4 border-y border-border">
-              {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+            {/* Reactions bar (sharing is consolidated to the sticky header). */}
+            {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+              <div className="flex items-center gap-4 py-4 border-y border-border">
                 <span className="text-body-emphasis text-muted-foreground">
                   {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
                 </span>
-              )}
-              <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
-                <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                {t('calloutDialog.share')}
-              </Button>
-            </div>
-
-            {/* Contributions section */}
-            {hasContributions && contributionsSlot && (
-              <div className="py-8 border-b border-border">
-                <div className="flex items-center gap-2 mb-6">
-                  <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
-                  {contributionsCount !== undefined && (
-                    <Badge variant="secondary" className="rounded-full px-2">
-                      {contributionsCount}
-                    </Badge>
-                  )}
-                </div>
-                {contributionsSlot}
               </div>
             )}
+
+            {/* Contributions section — grid stays visible even when a contribution is
+                selected, so the user can switch between responses. The inline
+                preview (e.g. CalloutPostPreview) renders directly below the grid. */}
+            {(hasContributions && contributionsSlot) || selectedContributionSlot ? (
+              <div className="py-8 border-b border-border space-y-6">
+                {hasContributions && contributionsSlot && (
+                  <>
+                    <div className="flex items-center gap-2 mb-6">
+                      <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
+                      {contributionsCount !== undefined && (
+                        <Badge variant="secondary" className="rounded-full px-2">
+                          {contributionsCount}
+                        </Badge>
+                      )}
+                    </div>
+                    {contributionsSlot}
+                  </>
+                )}
+                {selectedContributionSlot}
+              </div>
+            ) : null}
 
             {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
                 (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the
