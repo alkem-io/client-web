@@ -1,0 +1,8 @@
+# ripgrep / fd / other "respects .ignore" tools — excluded from agent recon.
+# These paths are committed to git but produce too much noise during code search.
+src/core/apollo/generated/
+build/
+coverage/
+build/stats.html
+public/env-config.js
+public/meta.json

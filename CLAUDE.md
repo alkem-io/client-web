@@ -230,6 +230,12 @@ Husky runs lint-staged on commit:
 - Runs ESLint (retained for `react-compiler` rule)
 - Run `pnpm lint` before committing to catch issues early
 
+## Investigation: Grep for Facts, Read for Code
+
+When the question is binary or locational ("does X import Y?", "where is Y mounted?", "what props does Z accept?"), use `grep` — never a full `Read`. Reserve `Read` for files you're about to edit or whose structure you're mirroring. Batch greps with `\|` alternation when you have multiple lookups. Before deleting defensive code paths (optional context variants, fallback branches, "just in case" guards), grep-verify that every caller satisfies the strict path's preconditions.
+
+Full guide with a cookbook of recurring queries: [`docs/agent-efficiency-grep-for-facts.md`](docs/agent-efficiency-grep-for-facts.md).
+
 ## Debugging & Root Cause Analysis
 
 **CRITICAL**: NEVER apply fixes, duct tape, workarounds, or mask symptoms before understanding the root cause of a problem. When investigating bugs:

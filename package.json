@@ -27,6 +27,8 @@
     "gulp": "gulp",
     "lint": "tsc --noEmit && biome ci . && eslint .",
     "lint:fix": "tsc --noEmit && biome check --write . && eslint .",
+    "lint:summary": "NO_COLOR=1 pnpm lint 2>&1 | grep -E 'Found [0-9]+|error|✖' | head -10 || true",
+    "lint:errors-only": "NO_COLOR=1 pnpm lint 2>&1 | grep -E 'error\\b' | head -20 || true",
     "prune": "rm -rf node_modules && pnpm install",
     "serve:dev": "serve -s build -l 3001",
     "spellcheck": "npx cspell '**/*.{ts,tsx}' >> cspell-report.txt",
