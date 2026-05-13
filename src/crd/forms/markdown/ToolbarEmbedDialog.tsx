@@ -9,7 +9,7 @@ import { isEditorReady } from './isEditorReady';
 
 type ToolbarEmbedDialogProps = {
   editor: Editor;
-  /** Allowed iframe origins. When provided, the embed src must match one of them. When empty/undefined, no origin check (any https iframe accepted). */
+  /** Allowed iframe origins. When provided, the embed src must match one of them. When empty/undefined, any http(s) iframe is accepted (non-http(s) schemes are always rejected). */
   iframeAllowedUrls?: string[];
   /** Called when user submits an invalid embed (parse failure or disallowed origin). */
   onError?: (message: string) => void;
@@ -71,7 +71,7 @@ export function ToolbarEmbedDialog({ editor, iframeAllowedUrls, onError, disable
         <button
           type="button"
           disabled={disabled}
-          className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+          className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors shrink-0 disabled:opacity-40 disabled:pointer-events-none outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
           aria-label={t('editor.embed.insert')}
         >
           <MonitorPlay className="w-4 h-4" aria-hidden="true" />

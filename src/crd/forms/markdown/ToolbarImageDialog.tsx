@@ -68,7 +68,7 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
       <DialogTrigger asChild={true}>
         <button
           type="button"
-          className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors shrink-0"
+          className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
           aria-label={t('editor.image.insert')}
         >
           <ImageIcon className="w-4 h-4" aria-hidden="true" />
