@@ -1,4 +1,4 @@
-import type { Editor } from '@tiptap/react';
+import { type Editor, useEditorState } from '@tiptap/react';
 import {
   Bold,
   Code,
@@ -14,7 +14,6 @@ import {
   Smile,
   Undo2,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { cn } from '@/crd/lib/utils';
@@ -47,21 +46,17 @@ export function MarkdownToolbar({
   hideImageOptions = false,
 }: MarkdownToolbarProps) {
   const { t } = useTranslation('crd-markdown');
-  const [, setTick] = useState(0);
 
-  // Refresh table context on transactions
-  useEffect(() => {
-    if (!editor) return;
-    const handler = () => setTick(tick => tick + 1);
-    editor.on('transaction', handler);
-    return () => {
-      editor.off('transaction', handler);
-    };
-  }, [editor]);
+  // Subscribe to selection/transaction changes via Tiptap's canonical reactive
+  // hook. Without this, `editor.isActive('table')` is only evaluated on mount
+  // and the toolbar never swaps between the table picker and the table-ops menu.
+  const isInTable =
+    useEditorState({
+      editor,
+      selector: ({ editor: ed }) => (ed ? ed.isActive('table') : false),
+    }) ?? false;
 
   if (!isEditorReady(editor)) return null;
-
-  const isInTable = editor.isActive('table');
 
   const handleEmojiSelect = (emoji: string) => {
     editor.chain().focus().insertContent(emoji).run();

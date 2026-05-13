@@ -4,11 +4,11 @@ import {
   ArrowLeftToLine,
   ArrowRightToLine,
   ArrowUpToLine,
-  Settings2,
+  Table as TableIcon,
   Trash2,
   XSquare,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import {
@@ -27,21 +27,37 @@ type ToolbarTableOpsMenuProps = {
 export function ToolbarTableOpsMenu({ editor }: ToolbarTableOpsMenuProps) {
   const { t } = useTranslation('crd-markdown');
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const savedSelectionRef = useRef<{ from: number; to: number } | null>(null);
 
   if (!isEditorReady(editor)) return null;
 
-  const run = (cmd: (c: ChainedCommands) => ChainedCommands) => cmd(editor.chain().focus()).run();
+  const saveSelection = () => {
+    savedSelectionRef.current = { from: editor.state.selection.from, to: editor.state.selection.to };
+  };
+
+  const run = (cmd: (c: ChainedCommands) => ChainedCommands) => {
+    const saved = savedSelectionRef.current;
+    const chain = editor.chain().focus();
+    if (saved) chain.setTextSelection(saved);
+    cmd(chain).run();
+    savedSelectionRef.current = null;
+  };
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChange={open => {
+          if (open) saveSelection();
+        }}
+      >
         <DropdownMenuTrigger asChild={true}>
           <button
             type="button"
-            className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors shrink-0"
+            className="h-8 w-8 inline-flex items-center justify-center rounded-md bg-muted text-foreground transition-colors shrink-0"
             aria-label={t('editor.table.operations')}
+            aria-pressed={true}
           >
-            <Settings2 className="w-4 h-4" aria-hidden="true" />
+            <TableIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">

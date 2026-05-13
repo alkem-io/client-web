@@ -53,6 +53,8 @@ function MarkdownEditorLazy({
     collaborative: false,
     disabled,
     ariaLabel: placeholder ?? t('editor.toolbar'),
+    onImageUpload,
+    onError,
   });
 
   const { editor } = useMarkdownEditorState({

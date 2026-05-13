@@ -60,6 +60,8 @@ function CollaborativeMarkdownEditorLazy({
     user,
     disabled,
     ariaLabel: placeholder ?? t('editor.toolbar'),
+    onImageUpload,
+    onError,
   });
 
   const editor = useEditor(editorOptions, [editorOptions]);
