@@ -36,11 +36,11 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 - *New analytics module* — rejected: out of scope, no existing precedent.
 - *Generic `console.info`* — rejected: not captured by Sentry, not searchable in dashboards.
 
-## R3. `designVersion` schema state (today)
+## R3. `designVersion` schema state (verified after codegen)
 
-**Decision**: Treat `designVersion` as **absent** today and gate the codegen step. The PR for this feature MUST be opened after the server deploy that adds `UserSettings.designVersion`. Once `pnpm codegen` runs against the deployed schema, `designVersion: String | null` (string per server spec — values `"1"`/`"2"`) appears in `UserSettings` and `UpdateUserSettingsEntityInput`.
+**Decision**: Treat `designVersion` as **absent until codegen** and gate the codegen step. The PR for this feature MUST be opened after the server deploy that adds `UserSettings.designVersion`. Once `pnpm codegen` runs against the deployed schema, `designVersion: Int` (non-null `Scalars['Int']`, server reserves `3+` for future design generations) appears on `UserSettings`, and `designVersion?: InputMaybe<Scalars['Int']['input']>` appears on `UpdateUserSettingsEntityInput`.
 
-**Rationale**: Confirmed by grep of `src/core/apollo/generated/graphql-schema.ts` — no `designVersion` field anywhere as of branch `099-design-version-switch`. The server plan referenced in the spec (`alkem-io/server@1391196`) defines the field but it's not yet exposed in the deployed schema this repo's backend points at.
+**Rationale**: Initial assumption was `String` per the server spec wording; the deployed schema confirmed `Int`. The client narrows the field to `1 | 2 | undefined` in `CurrentUserModel.designVersion` — unexpected values (including `3+`) collapse to `undefined` and are treated as "no preference".
 
 **Alternatives considered**:
 - *Author a local schema stub for development* — rejected: introduces drift from the server contract and violates Constitution §III (GraphQL Contract Fidelity).
@@ -49,13 +49,13 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 ## R4. Reconciliation reload contract
 
 **Decision**:
-- `useDesignVersionSync` runs once at app shell (called from `src/root.tsx`).
-- On every render where `useCurrentUserContext()` reports `isAuthenticated && !loading && designVersion != null`:
-  - Compute `desiredLS = designVersion === '2'`.
-  - If `readCrdEnabledFromStorage()` (returns `boolean | null`) equals `desiredLS` → no-op.
-  - Otherwise: `writeCrdEnabledToStorage(desiredLS)` then `window.location.reload()`.
-- Reload is guarded by a **module-level `let`** flag (`let hasReloaded = false`), set immediately before `reload()`. React Strict Mode's double-effect cannot trigger a second reload because the flag is module-scoped, not state-scoped.
-- If the query errors (Apollo's `error` is set), the hook returns without any side effects (FR-008a).
+- `useDesignVersionSync` runs once at app shell (mounted from `src/root.tsx`).
+- On every render where `useCurrentUserContext()` reports `isAuthenticated && !loadingMe && designVersion !== undefined`:
+  - Read the cached version via `readDesignVersionFromStorage()` (returns `DesignVersion | null`).
+  - If `current === designVersion` → no-op.
+  - Otherwise: `writeDesignVersionToStorage(designVersion)` then `window.location.reload()`.
+- Reload is guarded by a **module-level** `lastReconciledUserID` (keyed by user id), so React Strict Mode's double-mount cannot trigger a second reload and sign-out → sign-in as a different user re-evaluates exactly once.
+- If `designVersion` is `undefined` (Apollo error, unauthenticated, unrecognized `3+` value), the hook returns without any side effects (FR-008a).
 
 **Rationale**: Plain functional logic — no memoization, no `useEffect` cleanup. Synchronous LS read keeps the existing `useCrdEnabled()` contract intact. The reload-once-per-page-load guarantee comes from the module flag, not from React state, sidestepping concurrency concerns.
 
@@ -63,13 +63,17 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 - *Subscribe to `storage` events for cross-tab live sync* — rejected: spec edge case says "two browser tabs" only needs to follow saved preference on next reload.
 - *Block app rendering until preference resolves* — rejected by clarification 2026-05-12 Q1: render cached design immediately, reconcile asynchronously.
 
-## R5. Default behavior for `useCrdEnabled()` (unchanged)
+## R5. Default behavior for `useCrdEnabled()` (unchanged) + versioned LS
 
-**Decision**: When the LS key is unset (no value cached), `useCrdEnabled()` continues to return `false` (MUI/old design) — same as today. When the LS key is `'true'` → `true`. When the LS key is `'false'` → `false`. LS access failures fall back to `false`. The new helpers `readCrdEnabledFromStorage()` and `writeCrdEnabledToStorage()` are added without changing this default.
+**Decision**: The LS contract changes from boolean (`alkemio-crd-enabled = 'true'/'false'`) to versioned (`alkemio-design-version = '1'/'2'`) — mirroring the server's `Int` field. The default-when-unset semantic is unchanged: `useCrdEnabled()` returns `false` (MUI/old design) when the new key is unset. New exports in `useCrdEnabled.ts`:
+- Constants `DESIGN_VERSION_OLD = 1`, `DESIGN_VERSION_NEW = 2` (with a `DesignVersion` union type).
+- `readDesignVersionFromStorage()` → `DesignVersion | null`.
+- `writeDesignVersionToStorage(version: DesignVersion): void`.
+- A one-time module-level migration block that converts any existing `alkemio-crd-enabled` value to the new key and removes the legacy key. The legacy key + migration are scheduled for removal in T025 (~3 releases after #099 ships).
 
-**Rationale**: Clarification 2026-05-13 (superseding 2026-05-12 Q3) keeps the migration push for a later, separate milestone. This feature ships only the explicit toggle + server-backed persistence; existing users with no LS key continue to see exactly what they see today.
+**Rationale**: Clarification 2026-05-13 (superseding 2026-05-12 Q3) keeps the platform default as the old design; flipping it to the new design is deferred to a separate, later milestone. The versioned LS removes the boolean↔integer impedance mismatch between client cache and server preference.
 
-**Implication for existing users**: None. Users without an LS key keep seeing the old design. Users who have explicitly toggled (LS set to `'true'` or `'false'`) keep their current shell. The only behavior change is for users who have set `designVersion` server-side on another device — they will be reconciled to that preference per R4.
+**Implication for existing users**: None visible. Users with `alkemio-crd-enabled = 'true'` are silently migrated to `alkemio-design-version = '2'` on first load; `'false'` → `'1'`; unset stays unset.
 
 **Alternatives considered**:
 - *Invert the default to push migration now* — rejected per 2026-05-13 clarification: the team prefers a deliberate, later flip.
@@ -78,14 +82,13 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 ## R6. i18n key placement
 
 **Decision**:
-- **MUI side**: 2 keys in `src/core/i18n/en/translation.en.json` only:
-  - `topBar.designVersion.label` — short label next to the switch
-  - `topBar.designVersion.beta` — caption (one sentence)
-- **CRD side**: 2 keys × 6 locales under `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json`:
-  - `designVersion.label`
-  - `designVersion.beta`
+- **MUI side**: 3 keys in `src/core/i18n/en/translation.en.json` only (English source — Crowdin handles non-EN):
+  - `topBar.designVersion.label` — label next to the switch (e.g. "New design (beta)")
+  - `topBar.designVersion.caption` — sub-caption (e.g. "The old design will remain available for a short time.")
+  - `topBar.designVersion.errorSaving` — non-blocking error notification when the update mutation fails
+- **CRD side**: `label` + `caption` × 6 locales under `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json` (`header.designVersion.label`, `header.designVersion.caption`). The error notification is shown via the integration layer (`useDesignVersionToggle`) which lives outside `src/crd/`, so it reuses the MUI `topBar.designVersion.errorSaving` key.
 
-**Rationale**: Per project CLAUDE.md and constitution §3. Main app namespace uses Crowdin (English source only); CRD namespace is AI-assisted with all six locales edited directly.
+**Rationale**: Per project CLAUDE.md and constitution §3. Main app namespace uses Crowdin (English source only); CRD namespace is AI-assisted with all six locales edited directly. The beta status is folded into the label string itself (`"New design (beta)"`) rather than a separate "Beta —" prefix on the caption.
 
 **Alternatives considered**:
 - *Share a single key set across both menus* — rejected: namespaces are isolated by design (translation vs. crd-layout).

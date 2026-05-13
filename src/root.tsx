@@ -22,11 +22,11 @@ import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
+import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
-import { useDesignVersionSync } from './main/crdPages/useDesignVersionSync';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';

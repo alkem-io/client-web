@@ -80,7 +80,7 @@ Single React SPA project (no backend/frontend split). All paths are `src/...` fr
 
 **Goal**: When an authenticated user lands on a fresh browser/device, the saved preference is fetched and — if it disagrees with the local cache — exactly one reconciliation reload runs so the user lands in the design they previously chose.
 
-**Independent Test**: With LS deliberately set to the "wrong" value (e.g. `'false'` for a user whose server preference is `"2"`), reload the page. Confirm the cached shell renders briefly, then the page reloads exactly once to the saved design. Matches quickstart Scenario B and Scenario I.
+**Independent Test**: With LS deliberately set to the "wrong" value (e.g. `alkemio-design-version='1'` for a user whose server preference is `2`), reload the page. Confirm the cached shell renders briefly, then the page reloads exactly once to the saved design. Matches quickstart Scenario B and Scenario I.
 
 ### Implementation
 
@@ -90,10 +90,10 @@ Single React SPA project (no backend/frontend split). All paths are `src/...` fr
     - anonymous → no-op
     - loading → no-op
     - error → no-op
-    - `designVersion === 2` and LS `'true'` → no-op
-    - `designVersion === 2` and LS `'false'` → write `'true'`, reload called once
-    - `designVersion === 1` and LS `'true'` → write `'false'`, reload called once
-    - `designVersion === 2` and LS unset → write `'true'`, reload called once
+    - `designVersion === 2` and LS `'2'` → no-op
+    - `designVersion === 2` and LS `'1'` → write `'2'`, reload called once
+    - `designVersion === 1` and LS `'2'` → write `'1'`, reload called once
+    - `designVersion === 2` and LS unset → write `'2'`, reload called once
     - Re-rendering the hook after a reload was triggered must NOT call reload again (asserts the module-level guard). Depends on T013.
 
 **Checkpoint**: User Story 2 is fully functional. Cross-device preferences propagate with at most one reload per fresh session. SC-003, SC-004, FR-007, FR-008, FR-008a, FR-008b, FR-009 are verifiable via quickstart Scenarios B, C, G, I.

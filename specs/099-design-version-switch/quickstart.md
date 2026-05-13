@@ -18,10 +18,10 @@ End-to-end manual verification recipe. Designed to be the smallest path that exe
 Before touching the browser:
 
 ```bash
-pnpm codegen          # regenerate from deployed schema
-pnpm lint             # Biome + ESLint
+pnpm codegen          # regenerate from deployed schema (backend at localhost:4000/graphql per codegen.yml)
+pnpm lint             # tsc --noEmit + biome ci + eslint
 pnpm vitest run       # unit tests, including the two new hook tests
-pnpm build            # production build sanity check (~20s)
+pnpm build            # production build sanity check (~20–60s)
 ```
 
 All four must pass before proceeding.
@@ -40,36 +40,36 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
 
 1. Open a clean private/incognito window. Visit `http://localhost:3001`.
 2. **Expected**: The MUI (old design) shell renders by default — `useCrdEnabled()` returns `false` when LS is unset. No reload occurs. The user menu does NOT show the design switch row (anonymous users never see it, FR-003).
-3. Open Local Storage — `alkemio-crd-enabled` should not be set.
+3. Open Local Storage — neither `alkemio-design-version` nor the legacy `alkemio-crd-enabled` key should be set.
 4. Open DevTools Network — no `updateUserSettings` mutation should have fired. The `CurrentUserLight` query may have fired but with no authenticated user.
 
-### Scenario B — authenticated user, server says "1", local cache says "true" (FR-007, SC-003)
+### Scenario B — authenticated user, server says `1`, local cache says `'2'` (FR-007, SC-003)
 
-1. Sign in as a user whose server `designVersion` is `"1"` (old design). If you don't have one, set it via Scenario D first then return.
-2. Manually set `localStorage.setItem('alkemio-crd-enabled', 'true')` from the console.
+1. Sign in as a user whose server `designVersion` is `1` (old design). If you don't have one, set it via Scenario D first then return.
+2. Manually set `localStorage.setItem('alkemio-design-version', '2')` from the console.
 3. Reload the page (`Cmd-R`).
 4. **Expected**:
-   - The CRD shell appears briefly (rendered from the cached `true`).
-   - `CurrentUserLight` resolves with `designVersion: "1"`.
-   - `useDesignVersionSync` detects mismatch, sets LS to `'false'`, and calls `window.location.reload()`.
+   - The CRD shell appears briefly (rendered from the cached `'2'`).
+   - `CurrentUserLight` resolves with `designVersion: 1`.
+   - `useDesignVersionSync` detects mismatch, writes LS `'1'`, and calls `window.location.reload()`.
    - The MUI shell loads.
    - Exactly **one** reconciliation reload — verified by counting page-load entries in Network/Performance.
 5. Open the MUI user menu — the design-version switch is present above "Dashboard", in the OFF position, with the beta caption visible.
 
 ### Scenario C — authenticated user, cache already matches saved preference (FR-007, SC-004)
 
-1. With Scenario B's user (now on MUI, LS=`'false'`, server=`"1"`), reload.
-2. **Expected**: zero reconciliation reloads. The MUI shell renders directly. `CurrentUserLight` returns `"1"`, matches `'false'`, no-op.
+1. With Scenario B's user (now on MUI, LS=`'1'`, server=`1`), reload.
+2. **Expected**: zero reconciliation reloads. The MUI shell renders directly. `CurrentUserLight` returns `1`, matches the cached `'1'`, no-op.
 
 ### Scenario D — toggle ON from the MUI menu (FR-001, FR-002, FR-004, FR-006, FR-012, FR-014, FR-016, SC-001, SC-002)
 
 1. Sign in as Scenario B's user (currently on MUI).
 2. Click the avatar → open user menu.
-3. Verify: switch sits above "Dashboard"; caption reads roughly "Beta — the old design will remain available for a short time."; switch is OFF.
+3. Verify: switch labelled "New design (beta)" sits above "Dashboard"; caption reads "The old design will remain available for a short time."; switch is OFF.
 4. Click the switch.
 5. **Expected (within 5 seconds end-to-end):**
-   - `updateUserSettings` mutation fires in Network with `variables.settingsData.settings.designVersion === "2"`.
-   - On mutation success: LS is set to `'true'`, a Sentry breadcrumb / event labeled `DESIGN_VERSION_SWITCH` is emitted with the new value (visible in DevTools console if Sentry's `debug` mode is on).
+   - `updateUserSettings` mutation fires in Network with `variables.settingsData.settings.designVersion === 2` (integer, not string).
+   - On mutation success: `alkemio-design-version` is set to `'2'`, a Sentry breadcrumb / event labeled `DESIGN_VERSION_SWITCH` is emitted with the new value (visible in DevTools console if Sentry's `debug` mode is on).
    - The page reloads.
    - The CRD shell loads. Every page (`/`, `/forum`, `/space/X`, `/admin/something`) renders in the new design — verified by clicking through 3–4 routes.
    - **Auth survives the reload**: after the reload, the user avatar is still present in the top nav, no sign-in prompt is shown, and `CurrentUserLight` returns the same user id as before the toggle. (Verifies FR-013.)
@@ -88,10 +88,10 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 
 ### Scenario G — preference fetch failure (FR-008a)
 
-1. Set LS to `'false'`. Sign in.
+1. Set `localStorage.setItem('alkemio-design-version', '1')`. Sign in.
 2. Before reload, block the `CurrentUserLight` request in DevTools.
 3. Reload.
-4. **Expected**: MUI shell renders from the cache (LS=`'false'`). No reload, no error toast. User menu does not show the switch (because `useCurrentUserContext` reports unloaded user — `isVisible` is false). After unblocking and reload, the switch becomes visible.
+4. **Expected**: MUI shell renders from the cache (LS=`'1'`). No reload, no error toast. User menu does not show the switch (because `useCurrentUserContext` reports unloaded user — `isVisible` is false). After unblocking and reload, the switch becomes visible.
 
 ### Scenario H — legacy entry points gone (FR-011, SC-006)
 
@@ -103,7 +103,7 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 
 1. In Browser 1: sign in, toggle to CRD.
 2. In Browser 2 (different browser, not just incognito): sign in as the same user with a clean LS.
-3. **Expected**: The MUI shell renders briefly (LS unset → default = MUI). `CurrentUserLight` resolves with `designVersion: "2"`, mismatch detected (LS is `null` vs. desired `true`), LS is set to `'true'`, exactly one reload fires.
+3. **Expected**: The MUI shell renders briefly (LS unset → default = MUI). `CurrentUserLight` resolves with `designVersion: 2`, mismatch detected (LS is `null` vs. desired `2`), LS is set to `'2'`, exactly one reload fires.
 4. After the reload, the CRD shell renders. Total: one reconciliation reload, matching SC-003.
 
 ### Scenario J — accessibility spot check (Constitution §V)
@@ -121,6 +121,7 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 ## Definition of Done
 
 All scenarios pass, `pnpm lint`, `pnpm vitest run`, and `pnpm build` are green, and the regenerated GraphQL artifacts are committed. PR description includes:
-- A short note that the inverted default is intentional (link to clarification 2026-05-12 Q3).
+- A short note that the platform default is **unchanged** (link to clarification 2026-05-13, superseding 2026-05-12 Q3) — flipping the default to the new design is deferred to a later, separate milestone.
+- A short note that the LS format moved from `alkemio-crd-enabled = 'true'/'false'` to `alkemio-design-version = '1'/'2'`, with a one-time migration on first load.
 - Screenshots of both menus showing the switch + caption.
-- Confirmation that the two legacy toggle UIs are removed.
+- Confirmation that the legacy toggle UIs are removed.

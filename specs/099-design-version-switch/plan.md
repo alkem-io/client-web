@@ -8,7 +8,7 @@
 Add a single-source-of-truth design-version toggle that:
 
 1. Lives in both user menus (legacy MUI `PlatformNavigationUserMenu` and new CRD `UserMenu` rendered by `src/crd/layouts/Header.tsx`), above the Dashboard link, with a beta caption — visible only to authenticated users.
-2. Persists the choice as `UserSettings.designVersion` server-side (`Int` — `1` = old, `2` = new, `3+` reserved by server for future design generations; field is non-null and defaults to `1` server-side) via the existing `updateUserSettings` mutation, with a localStorage fast-boot cache (`alkemio-crd-enabled`) read synchronously by `useCrdEnabled()` at app shell mount.
+2. Persists the choice as `UserSettings.designVersion` server-side (`Int` — `1` = old, `2` = new, `3+` reserved by server for future design generations; field is non-null and defaults to `1` server-side) via the existing `updateUserSettings` mutation, with a localStorage fast-boot cache (`alkemio-design-version`, values `'1'`/`'2'`) read synchronously by `useCrdEnabled()` at app shell mount. The previous boolean key `alkemio-crd-enabled` is migrated transparently on first load.
 3. Reconciles cache vs. saved preference on every authenticated load — server preference wins, cache rewritten, exactly one `window.location.reload()` on mismatch. Renders the cached design immediately so first paint isn't blocked.
 4. Preserves the existing platform default — **old design** — when no preference is known (per clarification 2026-05-13, superseding 2026-05-12 Q3). `useCrdEnabled()` keeps its current "unset LS → returns `false`" behavior. Flipping the default to the new design is deferred to a later migration milestone, out of scope here.
 5. Removes the two existing legacy toggle UIs (`CrdUserSettingsTab.tsx` row and `AdminLayoutPage.tsx` button) so the user menu is the only entry point.
@@ -74,7 +74,7 @@ Add a single-source-of-truth design-version toggle that:
 - §1 — this plan documents the GraphQL operations touched (`CurrentUserLight`, `updateUserSettings`) and the React 19 features (no manual memo, synchronous reconciliation hook). Constitution Check explicit above.
 - §2 — `pnpm codegen` step is in the verification checklist and `quickstart.md`.
 - §3 — domain-first: schema fragment → context exposure → app-shell hooks → menu integrations → cleanup of legacy toggles.
-- §5 — root cause analysis: the previous duplicated LS reads across three files is the actual reason for the centralization work, not a workaround. The default-inversion is a deliberate spec decision (clarification 2026-05-12 Q3), not a symptom mask.
+- §5 — root cause analysis: the previous duplicated LS reads across three files is the actual reason for the centralization work, not a workaround. Per clarification 2026-05-13 (superseding 2026-05-12 Q3) the LS-unset default is intentionally kept as it is today (old design); flipping it to the new design is deferred to a separate, later migration milestone.
 
 **No constitution violations to justify in the Complexity Tracking table.**
 
@@ -123,7 +123,7 @@ src/
 │       └── domain/layout/AdminLayoutPage.tsx        # Remove legacy toggle (FR-011)
 ├── main/
 │   ├── crdPages/
-│   │   ├── useCrdEnabled.ts                         # Extended: read/write helpers + INVERTED default
+│   │   ├── useCrdEnabled.ts                         # Extended: versioned LS helpers + constants (default unchanged)
 │   │   ├── useDesignVersionSync.ts                  # NEW — reconciliation hook (mounted in root.tsx)
 │   │   ├── useDesignVersionToggle.ts                # NEW — toggle hook (mutation + LS + reload + log)
 │   │   └── topLevelPages/userPages/settings/settings/

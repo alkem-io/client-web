@@ -43,14 +43,14 @@ This is a frontend feature with one new persisted field on the server, one exist
 
 ## Cache ↔ Server Mapping
 
-| Server `designVersion` | Cache `alkemio-crd-enabled` | Action on load (signed-in user) |
-|------------------------|------------------------------|----------------------------------|
-| `2` (new design)       | `'true'`                     | No-op |
-| `2` (new design)       | `'false'` or unset           | Write `'true'`, reload once |
-| `1` (old design)       | `'false'`                    | No-op |
-| `1` (old design)       | `'true'` or unset            | Write `'false'`, reload once |
-| `3+` (unrecognized)    | any value or unset           | No-op — client treats as unsupported |
-| (fetch errored)        | any value or unset           | No-op — silent skip per FR-008a |
+| Server `designVersion` | Cache `alkemio-design-version` | Action on load (signed-in user) |
+|------------------------|---------------------------------|----------------------------------|
+| `2` (new design)       | `'2'`                           | No-op |
+| `2` (new design)       | `'1'` or unset                  | Write `'2'`, reload once |
+| `1` (old design)       | `'1'`                           | No-op |
+| `1` (old design)       | `'2'` or unset                  | Write `'1'`, reload once |
+| `3+` (unrecognized)    | any value or unset              | No-op — client treats as unsupported |
+| (fetch errored)        | any value or unset              | No-op — silent skip per FR-008a |
 
 ## Derived in-memory values
 
@@ -110,6 +110,6 @@ type DesignVersionToggleState =
 | Data | Persistence | Lifetime |
 |------|-------------|----------|
 | `UserSettings.designVersion` | Server (the user's settings record) | Permanent until user changes it or admin clears it |
-| `alkemio-crd-enabled` | `localStorage` | Until user clears browser storage or explicitly logs out (existing platform behavior) |
+| `alkemio-design-version` | `localStorage` | Until user clears browser storage or explicitly logs out (existing platform behavior). Legacy key `alkemio-crd-enabled` is migrated and removed on first load. |
 | `hasReloaded` flag in `useDesignVersionSync` | Module-level JS variable | Until the next full page reload (which resets the module) |
 | `designVersion` on `useCurrentUserContext()` | Apollo cache | Until the query is refetched or cache evicted (standard Apollo behavior) |
