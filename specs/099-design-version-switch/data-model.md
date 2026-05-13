@@ -36,8 +36,8 @@ This is a frontend feature with one new persisted field on the server, one exist
 |--------------|---------------------------|-------|
 | `'true'`     | `true`                    | User has opted into the new design |
 | `'false'`    | `false`                   | User has opted into the old design |
-| _unset_      | `true`                    | **Inverted from current behavior** — new default per FR-008b |
-| LS access throws | `true`                | Fallback to new default for safety |
+| _unset_      | `false`                   | Existing default — old design (per FR-008b; future migration milestone may flip this) |
+| LS access throws | `false`                | Fallback to the existing default |
 
 ## Cache ↔ Server Mapping
 
@@ -84,7 +84,7 @@ type DesignVersionToggleState =
         └─────────────────────────────────────────────────────────┘
                                   │
             ┌─────────────────────┴─────────────────────┐
-            │ Read LS → render cached design (or new    │
+            │ Read LS → render cached design (or old    │
             │ design if LS unset). App becomes usable.  │
             └─────────────────────┬─────────────────────┘
                                   │

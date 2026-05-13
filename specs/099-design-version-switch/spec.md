@@ -11,8 +11,12 @@
 
 - Q: On a fresh session where the local cache and saved preference disagree, what does the user see before the corrective reload fires? → A: Render the cached design immediately; fire one reload as soon as the saved preference resolves and is known to disagree. Accept a brief flash of the "wrong" design (one-time per fresh session / cross-device change).
 - Q: If the saved-preference fetch fails (server error, timeout, network drop), how should reconciliation behave? → A: Silently keep whatever design is currently rendered (cached or default). No reconciliation reload, no user-visible error.
-- Q: What is the platform default when no preference is known (anonymous user, authenticated user with the field unset, or fetch failed and no cache)? → A: The new design is the default. Old design is shown only when explicitly chosen (saved preference or cache).
+- Q: What is the platform default when no preference is known (anonymous user, authenticated user with the field unset, or fetch failed and no cache)? → A: ~~The new design is the default.~~ **Superseded — see 2026-05-13 session below.**
 - Q: Should design switches be tracked for observability/analytics? → A: Yes — emit an info-level log event for every toggle click, including the resulting design version. (Implementation note: reuse the existing Sentry info-log helper with an appropriate category.) Reconciliation reloads are not tracked.
+
+### Session 2026-05-13
+
+- Q (revision of 2026-05-12 Q3): Confirm the platform default for "no preference known" cases. → A: The **old design** is the default. The migration push that flips the default to the new design is deferred to a later, separate milestone. For this feature, the only behavioral change is the addition of the explicit toggle and server-backed persistence; the unset/anonymous default stays as it is today.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -71,7 +75,7 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 - **Preference changed on another device/tab**: The current tab does not need to live-sync; it picks up the change on its next load.
 - **Network error while saving the preference**: The active design does not change, and the user is shown a non-blocking error indicating the change could not be saved. Their previously chosen design remains active.
 - **Saved-preference fetch fails for a signed-in user**: The platform keeps the currently rendered design (cached or default) and skips reconciliation for that session. No reload, no user-facing error. The next successful load will reconcile.
-- **Saved preference value is missing or unrecognised**: The platform treats this as "no preference" and uses the local cache (or the platform default — the new design) without triggering a reload.
+- **Saved preference value is missing or unrecognised**: The platform treats this as "no preference" and uses the local cache (or the platform default — the old design) without triggering a reload.
 - **Two browser tabs open**: A toggle action in one tab will, after its reload, only affect that tab. Other open tabs follow the saved preference on their next reload.
 - **User signs out, then signs back in as a different user**: The new user's saved preference takes effect on their first load; the previous user's cache state must not silently apply to them.
 
@@ -88,7 +92,7 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 - **FR-007**: On every platform load for a signed-in user, the system MUST compare the saved preference against the locally cached value and, if they disagree, update the local cache to match the saved preference and reload the page exactly once so the correct design renders. The platform MUST NOT block initial render waiting for the saved preference: the cached design renders immediately, and the corrective reload fires only after the saved preference has resolved.
 - **FR-008**: If a signed-in user has no saved preference, the platform MUST use the locally cached value (or, if no cache exists, the platform default) without triggering a reload.
 - **FR-008a**: If the saved-preference fetch fails or never resolves (server error, network drop, timeout), the platform MUST keep the currently rendered design active, MUST NOT trigger a reconciliation reload for that session, and MUST NOT surface an error to the user.
-- **FR-008b**: When no preference is known and no local cache exists (e.g. first-ever visit, anonymous user, or signed-in user whose preference fetch failed and who has no cached value), the platform default MUST be the **new design**. The old design MUST only be rendered when explicitly selected via saved preference or local cache.
+- **FR-008b**: When no preference is known and no local cache exists (e.g. first-ever visit, anonymous user, or signed-in user whose preference fetch failed and who has no cached value), the platform default MUST be the **old design**. The new design MUST only be rendered when explicitly selected via saved preference or local cache. (A future migration milestone will flip this default; it is intentionally out of scope for this feature.)
 - **FR-009**: For anonymous users, the platform MUST NOT perform any preference reconciliation and MUST NOT trigger any preference-driven reload.
 - **FR-010**: If saving the preference fails (e.g. network error), the platform MUST keep the previously active design and surface a clear, non-blocking error message to the user.
 - **FR-011**: The platform MUST remove the previously existing design-toggle UIs from the user-settings sub-tab and the platform-admin layout page so the user menu is the sole user-facing entry point.
@@ -120,6 +124,6 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 
 - A server-side field exists on the user's settings that stores the user's chosen design version (two meaningful values plus an unset state) and is updatable through the existing user-settings update flow.
 - The platform already supports loading either of the two design shells based on a single boot-time signal, so a single page reload is sufficient to switch the user from one shell to the other.
-- The platform default for "no preference known" cases (anonymous users, signed-in users with the field unset, and signed-in users whose preference fetch failed and who have no cached value) is the **new design**. This is a deliberate change from the previous default of "old design" and is part of the migration push.
+- The platform default for "no preference known" cases (anonymous users, signed-in users with the field unset, and signed-in users whose preference fetch failed and who have no cached value) remains the **old design** — same as today. The eventual flip to a new-design default is deferred to a later, separate migration milestone and is intentionally out of scope here.
 - Only one design-switch operation is in flight at a time per user; the toggle does not need to support concurrent in-flight changes.
 - The "beta" caption wording is finalised by product when translation keys are authored; this spec assumes the message conveys both "beta" status and "old design will remain available for a short time".

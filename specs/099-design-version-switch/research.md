@@ -63,16 +63,16 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 - *Subscribe to `storage` events for cross-tab live sync* — rejected: spec edge case says "two browser tabs" only needs to follow saved preference on next reload.
 - *Block app rendering until preference resolves* — rejected by clarification 2026-05-12 Q1: render cached design immediately, reconcile asynchronously.
 
-## R5. Inverted default for `useCrdEnabled()`
+## R5. Default behavior for `useCrdEnabled()` (unchanged)
 
-**Decision**: When the LS key is unset (no value cached), `useCrdEnabled()` now returns `true` (CRD/new design). When the LS key is `'true'` → `true`. When the LS key is `'false'` → `false`. The single `try`/`catch` keeps SSR/private-mode safety: any LS access failure falls back to `true` (the new default).
+**Decision**: When the LS key is unset (no value cached), `useCrdEnabled()` continues to return `false` (MUI/old design) — same as today. When the LS key is `'true'` → `true`. When the LS key is `'false'` → `false`. LS access failures fall back to `false`. The new helpers `readCrdEnabledFromStorage()` and `writeCrdEnabledToStorage()` are added without changing this default.
 
-**Rationale**: Clarification 2026-05-12 Q3 makes the new design the platform default for any "no preference known" state, including the first-ever page load before any reconciliation has run. This is the migration-push behavior.
+**Rationale**: Clarification 2026-05-13 (superseding 2026-05-12 Q3) keeps the migration push for a later, separate milestone. This feature ships only the explicit toggle + server-backed persistence; existing users with no LS key continue to see exactly what they see today.
 
-**Implication for existing users**: Users who currently have LS unset (the majority) will see the new design on the next deploy. Anyone who has explicitly toggled (LS set to `'true'` or `'false'`) sees no change.
+**Implication for existing users**: None. Users without an LS key keep seeing the old design. Users who have explicitly toggled (LS set to `'true'` or `'false'`) keep their current shell. The only behavior change is for users who have set `designVersion` server-side on another device — they will be reconciled to that preference per R4.
 
 **Alternatives considered**:
-- *Leave default as `false`, rely on server preference only* — rejected: most users don't have a saved preference yet, so they'd remain on the old design indefinitely.
+- *Invert the default to push migration now* — rejected per 2026-05-13 clarification: the team prefers a deliberate, later flip.
 - *Delete the LS key entirely and rely on server* — rejected: would require an async wait at every page load to determine the design, contradicting R4's "render cached design immediately".
 
 ## R6. i18n key placement

@@ -39,7 +39,7 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
 ### Scenario A — first-ever fresh session, no preference, anonymous user (FR-008b, FR-009, FR-003, SC-005)
 
 1. Open a clean private/incognito window. Visit `http://localhost:3001`.
-2. **Expected**: The CRD (new design) shell renders by default (inverted-default behavior). No reload occurs. The user menu (if visible to anonymous users) does NOT show the design switch row.
+2. **Expected**: The MUI (old design) shell renders by default — `useCrdEnabled()` returns `false` when LS is unset. No reload occurs. The user menu does NOT show the design switch row (anonymous users never see it, FR-003).
 3. Open Local Storage — `alkemio-crd-enabled` should not be set.
 4. Open DevTools Network — no `updateUserSettings` mutation should have fired. The `CurrentUserLight` query may have fired but with no authenticated user.
 
@@ -103,8 +103,8 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 
 1. In Browser 1: sign in, toggle to CRD.
 2. In Browser 2 (different browser, not just incognito): sign in as the same user with a clean LS.
-3. **Expected**: One brief flash of MUI (because LS is unset → default = CRD, but the saved preference is `"2"` → already matches → no flash actually visible; if LS is `'false'` for some reason then exactly one reload).
-4. CRD shell renders.
+3. **Expected**: The MUI shell renders briefly (LS unset → default = MUI). `CurrentUserLight` resolves with `designVersion: "2"`, mismatch detected (LS is `null` vs. desired `true`), LS is set to `'true'`, exactly one reload fires.
+4. After the reload, the CRD shell renders. Total: one reconciliation reload, matching SC-003.
 
 ### Scenario J — accessibility spot check (Constitution §V)
 

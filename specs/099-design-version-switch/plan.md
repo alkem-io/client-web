@@ -10,7 +10,7 @@ Add a single-source-of-truth design-version toggle that:
 1. Lives in both user menus (legacy MUI `PlatformNavigationUserMenu` and new CRD `UserMenu` rendered by `src/crd/layouts/Header.tsx`), above the Dashboard link, with a beta caption — visible only to authenticated users.
 2. Persists the choice as `UserSettings.designVersion` server-side (`"1"` = old, `"2"` = new) via the existing `updateUserSettings` mutation, with a localStorage fast-boot cache (`alkemio-crd-enabled`) read synchronously by `useCrdEnabled()` at app shell mount.
 3. Reconciles cache vs. saved preference on every authenticated load — server preference wins, cache rewritten, exactly one `window.location.reload()` on mismatch. Renders the cached design immediately so first paint isn't blocked.
-4. Flips the platform default from "old design" to **"new design"** when no preference is known (per clarification 2026-05-12, Q3) — affects `useCrdEnabled()` return value when LS is unset, and is the deliberate migration-push behavior.
+4. Preserves the existing platform default — **old design** — when no preference is known (per clarification 2026-05-13, superseding 2026-05-12 Q3). `useCrdEnabled()` keeps its current "unset LS → returns `false`" behavior. Flipping the default to the new design is deferred to a later migration milestone, out of scope here.
 5. Removes the two existing legacy toggle UIs (`CrdUserSettingsTab.tsx` row and `AdminLayoutPage.tsx` button) so the user menu is the only entry point.
 6. Emits a Sentry `info` log on every successful toggle click using the existing `info` helper at `src/core/logging/sentry/log.ts`. Reconciliation reloads emit nothing.
 
@@ -27,10 +27,10 @@ Add a single-source-of-truth design-version toggle that:
 - Sentry info-logger at `src/core/logging/sentry/log.ts` (existing — `info(msg, { label, category })`)
 
 **Storage**:
-- Client cache: `localStorage` key `alkemio-crd-enabled` (existing, value `'true'`/`'false'`/unset). Default-when-unset semantics **invert** in this feature: unset now means "new design".
+- Client cache: `localStorage` key `alkemio-crd-enabled` (existing, value `'true'`/`'false'`/unset). Default-when-unset semantics are **unchanged** from today: unset → `useCrdEnabled()` returns `false` → old (MUI) design renders.
 - Server: `User.settings.designVersion` field on the GraphQL schema. **Currently absent** from generated `graphql-schema.ts` — appears after `pnpm codegen` against the deployed server (server work tracked at https://github.com/alkem-io/server/blob/139119695a4d2745c10e559cb18c19e8629d6bc2/specs/096-user-design-version/plan.md).
 
-**Testing**: Vitest with jsdom (`pnpm vitest run`). Add unit tests for the new sync/toggle hooks and a render test for both menu integrations. Existing tests for `useCrdEnabled` consumers (`CrdAwareErrorComponent.test.tsx`, `AncestorRedirectDispatcher.test.tsx`) must continue to pass — they mock `useCrdEnabled` directly, but the inverted default needs verifying against any tests that implicitly rely on `localStorage` being unset → MUI.
+**Testing**: Vitest with jsdom (`pnpm vitest run`). Add unit tests for the new sync/toggle hooks and a render test for both menu integrations. Existing tests for `useCrdEnabled` consumers (`CrdAwareErrorComponent.test.tsx`, `AncestorRedirectDispatcher.test.tsx`) must continue to pass — they mock `useCrdEnabled` directly. Default-when-unset semantics are unchanged (still MUI), so no implicit-default assumptions break.
 
 **Target Platform**: Modern evergreen browsers per project rule (>90% caniuse coverage). Single-page React 19 app served by Vite.
 
