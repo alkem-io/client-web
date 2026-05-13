@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/react';
 import { Image as ImageIcon, Loader2, Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/crd/primitives/dialog';
@@ -22,6 +22,8 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
   const [alt, setAlt] = useState('');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const srcInputId = useId();
+  const altInputId = useId();
 
   if (!isEditorReady(editor)) return null;
 
@@ -80,9 +82,9 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="crd-md-image-src">{t('editor.image.url')}</Label>
+            <Label htmlFor={srcInputId}>{t('editor.image.url')}</Label>
             <Input
-              id="crd-md-image-src"
+              id={srcInputId}
               type="url"
               value={src}
               onChange={e => setSrc(e.target.value)}
@@ -99,6 +101,7 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
+                aria-busy={uploading}
                 className="w-full"
               >
                 {uploading ? (
@@ -111,9 +114,9 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
             </>
           )}
           <div className="space-y-1">
-            <Label htmlFor="crd-md-image-alt">{t('editor.image.alt')}</Label>
+            <Label htmlFor={altInputId}>{t('editor.image.alt')}</Label>
             <Input
-              id="crd-md-image-alt"
+              id={altInputId}
               value={alt}
               onChange={e => setAlt(e.target.value)}
               placeholder={t('editor.image.altPlaceholder')}
