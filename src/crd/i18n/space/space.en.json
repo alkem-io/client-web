@@ -338,7 +338,6 @@
     }
   },
   "mobile": {
-    "more": "More",
     "menu": "Menu",
     "activity": "Activity",
     "videoCall": "Video Call",
@@ -626,6 +625,14 @@
   "postSnippet": {
     "readMore": "… Read more",
     "readLess": "Read less"
+  },
+  "postPreview": {
+    "label": "Selected contribution preview",
+    "edit": "Edit response",
+    "share": "Share response",
+    "close": "Close preview",
+    "emptyDescription": "No description",
+    "references": "References"
   },
   "comments": {
     "title": "Discussion",
