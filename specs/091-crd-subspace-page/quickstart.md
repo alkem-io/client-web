@@ -60,14 +60,14 @@ The new SubSpace page renders only when the design-system toggle is on.
 **Via console**:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To revert and confirm the legacy MUI page is unaffected:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 

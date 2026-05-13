@@ -9,7 +9,7 @@
 - Running Alkemio backend at localhost:3000 (Traefik) / localhost:4000 (GraphQL)
 - CRD feature toggle enabled in browser console:
   ```js
-  localStorage.setItem('alkemio-crd-enabled', 'true');
+  localStorage.setItem('alkemio-design-version', '2');
   location.reload();
   ```
 

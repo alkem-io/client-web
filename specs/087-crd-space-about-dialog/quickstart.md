@@ -20,7 +20,7 @@ Backend must be running locally at `http://localhost:3000` (Traefik) for GraphQL
 In the browser console on `http://localhost:3001`:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
@@ -29,7 +29,7 @@ Or use the in-app Admin UI: **Administration → Platform Settings → Design Sy
 To revert to MUI:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -194,7 +194,7 @@ For each of `en`, `nl`, `es`, `bg`, `de`, `fr`:
 ### Regression — MUI fallback (FR-002, FR-023, SC-002)
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 

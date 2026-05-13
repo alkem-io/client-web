@@ -27,7 +27,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Two settings integratio
 
 **Purpose**: Repo-wide setup — confirm prerequisites, no new tooling needed.
 
-- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-crd-enabled', 'true')` and reload `/user/<self>/settings/profile`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard / Profile from 096) render with the toggle on. Document any environment issues in this task's notes — no code change.
+- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-design-version', '2')` and reload `/user/<self>/settings/profile`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard / Profile from 096) render with the toggle on. Document any environment issues in this task's notes — no code change.
 
 ---
 

@@ -13,18 +13,16 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributorAccountView } from '@/crd/components/contributor/settings/ContributorAccountView';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+// TEMP fallback: open existing MUI dialogs until CRD parity ports land
+// (spec 097-crd-user-settings, tasks T033a–T033f). Delete the four imports
+// below and the corresponding JSX at the bottom of this file once those
+// CRD dialogs are wired in.
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import { type AccountResourceKind, mapOrgAccountToViewProps, type OrgAccountMapperCallbacks } from './orgAccountMapper';
-
-/**
- * Per research §3 (Decision #3): create flows navigate to existing MUI
- * admin routes — same URLs as the User-side `CrdUserAccountTab`.
- */
-const CREATE_URLS = {
-  space: '/admin/spaces/new',
-  virtualContributor: '/admin/virtual-contributors/new',
-  innovationPack: '/admin/innovation-packs/new',
-  innovationHub: '/admin/innovation-hubs/new',
-} as const;
 
 type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
 
@@ -32,8 +30,8 @@ type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
  * Integration page for the Org Account tab (US9). Mirrors
  * `CrdUserAccountTab` (US2) but reads from `useOrganizationAccountQuery`
  * → `account.id` → `useAccountInformationQuery`. The rest of the flow —
- * delete mutations, ConfirmationDialog, kebab actions, create
- * navigations — is identical to the User side.
+ * delete mutations, ConfirmationDialog, kebab actions, create dialogs —
+ * is identical to the User side.
  */
 const CrdOrgAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
@@ -42,6 +40,10 @@ const CrdOrgAccountTab = () => {
   const { organizationId } = useOrganizationContext();
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
+  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
+  const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
+  const [createPackOpen, setCreatePackOpen] = useState(false);
+  const [createHubOpen, setCreateHubOpen] = useState(false);
 
   const { data: orgData, loading: loadingOrg } = useOrganizationAccountQuery({
     variables: { organizationId: organizationId ?? '' },
@@ -53,6 +55,9 @@ const CrdOrgAccountTab = () => {
     variables: { accountId: accountId ?? '' },
     skip: !accountId,
   });
+
+  const account = accountData?.lookup.account ?? undefined;
+  const accountHostName = orgData?.lookup.organization?.profile?.displayName;
 
   const refetchAccount = ['AccountInformation'];
 
@@ -79,10 +84,14 @@ const CrdOrgAccountTab = () => {
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 
   const callbacks: OrgAccountMapperCallbacks = {
-    onCreateSpace: () => navigate(CREATE_URLS.space),
-    onCreateVc: () => navigate(CREATE_URLS.virtualContributor),
-    onCreateInnovationPack: () => navigate(CREATE_URLS.innovationPack),
-    onCreateInnovationHub: () => navigate(CREATE_URLS.innovationHub),
+    onCreateSpace: () => setCreateSpaceOpen(true),
+    // Cast: `AccountInformation` returns `about.membership.myPrivileges`,
+    // but `UserAccountProps` expects the full `SpaceAboutLightModel`
+    // membership shape. The wizard only reads `id`, `host`, `spaces[].id`,
+    // and `spaces[].authorization?.myPrivileges` at runtime — all present.
+    onCreateVc: () => startWizard(account as UserAccountProps | undefined, accountHostName),
+    onCreateInnovationPack: () => setCreatePackOpen(true),
+    onCreateInnovationHub: () => setCreateHubOpen(true),
     onManage: (_kind, _id, href) => {
       if (href) navigate(href);
     },
@@ -110,12 +119,7 @@ const CrdOrgAccountTab = () => {
     });
   };
 
-  const props = mapOrgAccountToViewProps(
-    accountData?.lookup.account ?? undefined,
-    loadingOrg || loadingAccount,
-    t,
-    callbacks
-  );
+  const props = mapOrgAccountToViewProps(account, loadingOrg || loadingAccount, t, callbacks);
 
   return (
     <>
@@ -133,6 +137,23 @@ const CrdOrgAccountTab = () => {
         onCancel={() => setPendingDelete(null)}
         loading={deletingAny}
       />
+      {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
+      {account?.id && (
+        <>
+          <CreateSpace accountId={account.id} open={createSpaceOpen} onClose={() => setCreateSpaceOpen(false)} />
+          <CreateInnovationPackDialog
+            accountId={account.id}
+            open={createPackOpen}
+            onClose={() => setCreatePackOpen(false)}
+          />
+          <CreateInnovationHubDialog
+            accountId={account.id}
+            open={createHubOpen}
+            onClose={() => setCreateHubOpen(false)}
+          />
+        </>
+      )}
+      {virtualContributorWizard}
     </>
   );
 };
