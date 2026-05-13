@@ -32,7 +32,7 @@ App is served at `http://localhost:3001`. Sign in with any local user.
 Open the browser console and run:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
@@ -116,7 +116,7 @@ Negative cases:
 
 ### Test 9 — MUI fallback regression (SC-007)
 
-1. Disable CRD: `localStorage.removeItem('alkemio-crd-enabled'); location.reload();`
+1. Disable CRD: `localStorage.setItem('alkemio-design-version', '1'); location.reload();`
 2. On a Space, open the search bar.
 3. Verify the **MUI** search dialog renders (not the CRD overlay) with its existing "Search In:" dropdown working exactly as before — no regression in the MUI path.
 
