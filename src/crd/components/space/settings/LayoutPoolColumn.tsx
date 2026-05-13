@@ -75,13 +75,13 @@ export function LayoutPoolColumn({
             />
           </div>
           {column.description && (
-            <p className="mt-1 line-clamp-3 text-sm text-muted-foreground break-words">{column.description}</p>
+            <p className="mt-1 line-clamp-3 text-body text-muted-foreground break-words">{column.description}</p>
           )}
         </div>
         <CardContent ref={setNodeRef} className="flex flex-col gap-2 px-4 py-3">
           <SortableContext items={calloutIds} strategy={verticalListSortingStrategy}>
             {column.callouts.length === 0 && (
-              <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
+              <div className="rounded-md border border-dashed p-4 text-center text-caption text-muted-foreground">
                 {t('layout.column.empty')}
               </div>
             )}

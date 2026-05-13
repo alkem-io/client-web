@@ -72,7 +72,7 @@ export function ChangeDefaultSubspaceTemplateDialog({
           <DialogTitle>{t('subspaces.defaultTemplate.dialog.title')}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 py-2 text-sm">
+        <div className="flex flex-col gap-4 py-2 text-body">
           <p>{t('subspaces.defaultTemplate.dialog.intro')}</p>
           <p>
             <Trans
@@ -94,7 +94,7 @@ export function ChangeDefaultSubspaceTemplateDialog({
               {t('subspaces.defaultTemplate.dialog.fieldLabel')}
             </Label>
             {loading ? (
-              <div className="flex h-9 items-center rounded-md border px-3 text-muted-foreground text-sm gap-2">
+              <div className="flex h-9 items-center rounded-md border px-3 text-muted-foreground text-control gap-2">
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
                 {t('subspaces.defaultTemplate.dialog.loading')}
               </div>
@@ -115,7 +115,7 @@ export function ChangeDefaultSubspaceTemplateDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {templates.length === 0 && (
-                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                    <div className="px-2 py-1.5 text-control text-muted-foreground">
                       {t('subspaces.defaultTemplate.dialog.empty')}
                     </div>
                   )}
@@ -127,7 +127,9 @@ export function ChangeDefaultSubspaceTemplateDialog({
                 </SelectContent>
               </Select>
             )}
-            {invalid && <p className="text-xs text-destructive">{t('subspaces.defaultTemplate.dialog.required')}</p>}
+            {invalid && (
+              <p className="text-caption text-destructive">{t('subspaces.defaultTemplate.dialog.required')}</p>
+            )}
           </div>
         </div>
 

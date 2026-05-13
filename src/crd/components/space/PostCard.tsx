@@ -95,6 +95,12 @@ export type PostCardData = {
    * Default `true` (legacy callsites stay unchanged).
    */
   commentsEnabled?: boolean;
+  /**
+   * Whether the snippet/description starts expanded. Mirrors the space-level
+   * `calloutDescriptionDisplayMode` setting (Expanded vs Collapsed). Only takes
+   * effect when the snippet actually overflows the clamp height.
+   */
+  descriptionExpanded?: boolean;
 };
 
 type PostCardProps = {
@@ -260,7 +266,14 @@ export function PostCard({
             {post.title}
           </a>
         </h3>
-        {post.snippet && <ExpandableMarkdown content={post.snippet} maxLines={3} className="mb-4" />}
+        {post.snippet && (
+          <ExpandableMarkdown
+            content={post.snippet}
+            maxLines={3}
+            defaultExpanded={post.descriptionExpanded}
+            className="mb-4"
+          />
+        )}
 
         {/* Whiteboard framing preview — always render (even when empty), MUI parity. */}
         {post.type === 'whiteboard' && (

@@ -13,10 +13,10 @@ type MemberAvatar = {
 };
 
 type SpaceHeaderActions = {
-  showActivity?: boolean;
   showVideoCall?: boolean;
   showShare?: boolean;
   showSettings?: boolean;
+  showActivity?: boolean;
   onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;

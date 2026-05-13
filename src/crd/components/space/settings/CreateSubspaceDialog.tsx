@@ -278,9 +278,9 @@ function FieldShell({
       </Label>
       {children}
       {error ? (
-        <p className="text-xs text-destructive">{error}</p>
+        <p className="text-caption text-destructive">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <p className="text-caption text-muted-foreground">{hint}</p>
       ) : null}
     </div>
   );
@@ -343,7 +343,7 @@ function FileField({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={disabled}
-            className="flex h-full w-full items-center justify-center gap-2 text-muted-foreground text-sm hover:bg-muted/50 cursor-pointer"
+            className="flex h-full w-full items-center justify-center gap-2 text-muted-foreground text-control hover:bg-muted/50 cursor-pointer"
           >
             <ImageIcon aria-hidden="true" className="size-4" />
             {placeholderText}
@@ -364,9 +364,9 @@ function FileField({
         />
       </div>
       {error ? (
-        <p className="text-xs text-destructive">{error}</p>
+        <p className="text-caption text-destructive">{error}</p>
       ) : constraints ? (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-muted-foreground">
           {t('subspaces.createDialog.visuals.resolutionHint', {
             width: constraints.maxWidth,
             height: constraints.maxHeight,

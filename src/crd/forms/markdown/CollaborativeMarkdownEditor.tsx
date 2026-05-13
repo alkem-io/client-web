@@ -54,7 +54,12 @@ function CollaborativeMarkdownEditorLazy({
     ariaLabel: placeholder ?? t('editor.toolbar'),
   });
 
-  const editor = useEditor(editorOptions, [editorOptions]);
+  // The deps list MUST be on stable values (not the freshly-built `editorOptions`
+  // object) — otherwise Tiptap destroys and recreates the editor on every render,
+  // which kills typing because each instance has a brand-new ProseMirror state
+  // before keystrokes can land. `ydoc` / `provider` are memoized in `useCollaboration`,
+  // and `disabled` is the only intentional rebuild trigger (permissions / sync state).
+  const editor = useEditor(editorOptions, [ydoc, provider, disabled]);
 
   useEffect(() => {
     if (editor && onReady) {

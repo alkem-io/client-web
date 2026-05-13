@@ -78,7 +78,7 @@ export function TemplateLibraryDialog({
         <DialogHeader className="p-6 pb-4">
           <div className="flex items-center gap-2">
             <Library aria-hidden="true" className="size-5 text-primary" />
-            <DialogTitle className="text-lg">{title}</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
           </div>
           {subtitle ? <DialogDescription>{subtitle}</DialogDescription> : null}
         </DialogHeader>
@@ -100,7 +100,7 @@ export function TemplateLibraryDialog({
             <button
               type="button"
               onClick={onLoadPlatform}
-              className="inline-flex items-center gap-2 self-start text-sm text-primary hover:underline cursor-pointer"
+              className="inline-flex items-center gap-2 self-start text-body text-primary hover:underline cursor-pointer"
             >
               <Search aria-hidden="true" className="size-4" />
               {t('templateLibrary.loadPlatform')}
@@ -156,7 +156,7 @@ function LibrarySection({
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground italic">{t('templateLibrary.emptySection')}</p>
+        <p className="text-body text-muted-foreground italic">{t('templateLibrary.emptySection')}</p>
       )}
     </div>
   );
@@ -198,8 +198,10 @@ function LibraryCard({
         )}
       </div>
       <div className="flex flex-col gap-1 p-3">
-        <p className="font-semibold text-sm leading-tight line-clamp-1">{template.name}</p>
-        {template.description && <p className="text-xs text-muted-foreground line-clamp-2">{template.description}</p>}
+        <p className="text-card-title line-clamp-1">{template.name}</p>
+        {template.description && (
+          <p className="text-caption text-muted-foreground line-clamp-2">{template.description}</p>
+        )}
         {template.providerName && (
           <div className="mt-1 flex items-center gap-1.5">
             {template.providerAvatarUrl ? (

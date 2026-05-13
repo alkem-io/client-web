@@ -68,7 +68,9 @@ export function ApplicationFormEditor({
         </div>
 
         {questions.length === 0 && (
-          <p className="text-sm text-muted-foreground py-4 text-center">{t('settings.applicationForm.noQuestions')}</p>
+          <p className="text-body text-muted-foreground py-4 text-center">
+            {t('settings.applicationForm.noQuestions')}
+          </p>
         )}
 
         {questions.map((q, index) => (
@@ -81,18 +83,18 @@ export function ApplicationFormEditor({
                 value={q.question}
                 onChange={e => onQuestionChange(index, e.target.value)}
                 placeholder={t('settings.applicationForm.questionPlaceholder')}
-                className={cn('h-8 text-sm', !q.question.trim() && 'border-destructive')}
+                className={cn('h-8 text-control', !q.question.trim() && 'border-destructive')}
                 aria-invalid={!q.question.trim()}
                 disabled={loading}
               />
               {!q.question.trim() && (
-                <p className="text-xs text-destructive mt-1">{t('settings.applicationForm.questionRequired')}</p>
+                <p className="text-caption text-destructive mt-1">{t('settings.applicationForm.questionRequired')}</p>
               )}
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Label
                 htmlFor={`q-required-${index}`}
-                className="text-xs text-muted-foreground cursor-pointer whitespace-nowrap"
+                className="text-caption text-muted-foreground cursor-pointer whitespace-nowrap"
               >
                 {t('settings.applicationForm.required')}
               </Label>
