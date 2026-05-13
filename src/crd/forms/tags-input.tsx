@@ -8,9 +8,27 @@ type TagsInputProps = {
   placeholder?: string;
   className?: string;
   icon?: React.ReactNode;
+  /**
+   * Localized aria-label formatters. Consumers should pass these from their
+   * `useTranslation` to keep user-visible (screen-reader) text out of this
+   * component. When omitted the aria-label falls back to the tag value itself
+   * — informative for screen readers and language-neutral.
+   */
+  formatEditTagAriaLabel?: (tag: string) => string;
+  formatEditButtonAriaLabel?: (tag: string) => string;
+  formatRemoveButtonAriaLabel?: (tag: string) => string;
 };
 
-export function TagsInput({ value, onChange, placeholder, className, icon }: TagsInputProps) {
+export function TagsInput({
+  value,
+  onChange,
+  placeholder,
+  className,
+  icon,
+  formatEditTagAriaLabel,
+  formatEditButtonAriaLabel,
+  formatRemoveButtonAriaLabel,
+}: TagsInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
@@ -106,7 +124,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
               onChange={e => setEditingValue(e.target.value)}
               onKeyDown={handleEditKeyDown}
               onBlur={commitEdit}
-              aria-label={`Edit tag ${tag}`}
+              aria-label={formatEditTagAriaLabel ? formatEditTagAriaLabel(tag) : tag}
               className="px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-background outline-none focus:ring-2 focus:ring-ring min-w-[60px]"
               style={{
                 width: `${Math.max(editingValue.length, 4) + 2}ch`,
@@ -117,10 +135,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
         return (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary"
-            style={{
-              background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
-            }}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-primary/10"
           >
             <button
               type="button"
@@ -129,7 +144,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
                 startEditing(index);
               }}
               className="bg-transparent border-none p-0 text-inherit font-inherit cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
-              aria-label={`Edit ${tag}`}
+              aria-label={formatEditButtonAriaLabel ? formatEditButtonAriaLabel(tag) : tag}
             >
               {tag}
             </button>
@@ -139,8 +154,8 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
                 e.stopPropagation();
                 removeTag(tag);
               }}
-              className="hover:opacity-70 cursor-pointer"
-              aria-label={`Remove ${tag}`}
+              className="hover:opacity-70 cursor-pointer rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              aria-label={formatRemoveButtonAriaLabel ? formatRemoveButtonAriaLabel(tag) : tag}
             >
               <X className="size-3" />
             </button>

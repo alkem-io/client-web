@@ -123,6 +123,7 @@ export function InviteMembersDialog({
                 value={search}
                 onChange={e => onSearchChange(e.target.value)}
                 placeholder={t('community.invite.users.search')}
+                aria-label={t('community.invite.users.search')}
                 className="h-9 pl-9 text-control"
               />
             </div>

@@ -100,7 +100,7 @@ export function TemplateLibraryDialog({
             <button
               type="button"
               onClick={onLoadPlatform}
-              className="inline-flex items-center gap-2 self-start text-control text-primary hover:underline cursor-pointer"
+              className="inline-flex items-center gap-2 self-start text-body text-primary hover:underline cursor-pointer"
             >
               <Search aria-hidden="true" className="size-4" />
               {t('templateLibrary.loadPlatform')}

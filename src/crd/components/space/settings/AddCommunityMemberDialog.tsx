@@ -71,6 +71,7 @@ export function AddCommunityMemberDialog({
               value={search}
               onChange={e => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder}
               className="h-9 pl-9 text-control"
             />
           </div>

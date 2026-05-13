@@ -290,7 +290,7 @@ function SubspaceGridCard({
         <div className="flex-1">
           <a
             href={subspace.href}
-            className="text-subsection-title line-clamp-1 group-hover:text-primary transition-colors cursor-pointer"
+            className="text-subsection-title line-clamp-1 group-hover:text-primary transition-colors cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {subspace.name}
           </a>
@@ -337,7 +337,10 @@ function SubspaceListItem({
           {subspace.isPinned && (
             <Pin aria-hidden="true" className="size-3.5 text-amber-500 shrink-0" aria-label="Pinned" />
           )}
-          <a href={subspace.href} className="text-body-emphasis text-foreground truncate hover:underline">
+          <a
+            href={subspace.href}
+            className="text-body-emphasis text-foreground truncate hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
             {subspace.name}
           </a>
           {subspace.visibility === 'archived' && (

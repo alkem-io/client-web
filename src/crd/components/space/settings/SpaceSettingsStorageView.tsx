@@ -154,7 +154,7 @@ function StorageRow({
             href={node.openHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-body hover:underline truncate"
+            className="text-body hover:underline truncate rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {node.name}
           </a>
@@ -162,7 +162,10 @@ function StorageRow({
       </TableCell>
       <TableCell className="text-body text-muted-foreground">{node.sizeFormatted}</TableCell>
       <TableCell>
-        <a href={node.uploaderHref} className="text-body hover:underline text-muted-foreground">
+        <a
+          href={node.uploaderHref}
+          className="text-body hover:underline text-muted-foreground rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
           {node.uploaderName}
         </a>
       </TableCell>

@@ -98,7 +98,7 @@ function LazyCalloutItemContent({
   // closest space context (subspace if we're inside one, otherwise the parent
   // space). `useCalloutDescriptionDisplayMode` returns `true` when the setting
   // is "Collapsed"; the PostCard expects the inverse.
-  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id || '');
+  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id ?? space?.id);
 
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),

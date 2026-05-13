@@ -186,9 +186,9 @@ export function CalloutDetailDialog({
             {/* Contributions section — grid stays visible even when a contribution is
                 selected, so the user can switch between responses. The inline
                 preview (e.g. CalloutPostPreview) renders directly below the grid. */}
-            {(hasContributions && contributionsSlot) || selectedContributionSlot ? (
+            {hasContributions && (contributionsSlot || selectedContributionSlot) && (
               <div className="py-8 border-b border-border space-y-6">
-                {hasContributions && contributionsSlot && (
+                {contributionsSlot && (
                   <>
                     <div className="flex items-center gap-2 mb-6">
                       <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
@@ -203,7 +203,7 @@ export function CalloutDetailDialog({
                 )}
                 {selectedContributionSlot}
               </div>
-            ) : null}
+            )}
 
             {/* Discussion section — hidden entirely when commenting is disabled and no messages exist
                 (mirrors MUI behavior); read-only thread shown when disabled but messages exist (the

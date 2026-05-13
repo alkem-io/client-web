@@ -105,7 +105,9 @@ export function SpaceSettingsAccountView({
             {plan.features.length > 0 && (
               <div className="space-y-3">
                 <p className="text-body-emphasis text-muted-foreground">{t('account.plan.featuresHeading')}</p>
-                <ul className="space-y-2 text-body">
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className="space-y-2 text-body">
                   {plan.features.map(f => (
                     <li key={f} className="flex items-center gap-2">
                       <Check aria-hidden="true" className="size-4 text-emerald-600 shrink-0" />

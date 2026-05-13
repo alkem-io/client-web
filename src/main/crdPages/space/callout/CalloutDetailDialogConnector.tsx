@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContributionQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -9,6 +10,7 @@ import {
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { ShareButton } from '@/crd/components/common/ShareButton';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
@@ -126,7 +128,7 @@ export function CalloutDetailDialogConnector({
   initialPostId,
   moveActions,
 }: CalloutDetailDialogConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
@@ -277,7 +279,9 @@ export function CalloutDetailDialogConnector({
           // Display the absolute date — the dialog header already shows the
           // callout-level timestamp, so we don't need a relative "x ago" here.
           timestamp: selectedPost?.createdDate
-            ? new Date(selectedPost.createdDate as string | number | Date).toLocaleDateString()
+            ? format(new Date(selectedPost.createdDate as string | number | Date), 'P', {
+                locale: resolveDateFnsLocale(i18n.language),
+              })
             : undefined,
           description: selectedPost?.profile.description ?? undefined,
           tags: selectedPost?.profile.tagset?.tags ?? [],

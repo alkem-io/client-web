@@ -52,14 +52,16 @@ export function ExpandableMarkdown({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Re-enter detection when `defaultExpanded` flips (e.g. space settings load
-  // async, or an admin toggles the display mode at runtime).
+  // async, or an admin toggles the display mode at runtime), or when the
+  // rendered content / clamp changes — otherwise the prior measurement is
+  // stale and a now-shorter post would still show "Read more".
   const prevDefaultExpandedRef = useRef(defaultExpanded);
   useEffect(() => {
     if (prevDefaultExpandedRef.current !== defaultExpanded) {
       prevDefaultExpandedRef.current = defaultExpanded;
-      setState('detecting');
     }
-  }, [defaultExpanded]);
+    setState('detecting');
+  }, [defaultExpanded, content, maxLines]);
 
   // Measure overflow while detecting. The container has `line-clamp-N` applied
   // (see `isClamped` below) so `scrollHeight > clientHeight` is meaningful.
@@ -69,7 +71,7 @@ export function ExpandableMarkdown({
     if (!el) return;
     const overflowing = el.scrollHeight > el.clientHeight + 1; // +1px tolerance for sub-pixel rounding
     setState(overflowing ? (defaultExpanded ? 'expanded' : 'collapsed') : 'no-overflow');
-  });
+  }, [state, defaultExpanded, content, maxLines]);
 
   // While collapsed, keep watching for container-size changes (sidebar resize,
   // device rotation) so the toggle is dropped if content stops overflowing.

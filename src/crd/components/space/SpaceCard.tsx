@@ -211,13 +211,19 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                       variant="outline"
                       className="text-badge px-2 py-0 rounded-full text-muted-foreground shrink-0"
                     >
-                      <button type="button" aria-label={t('spaces.moreTags', { count: space.tags.length - 3 })}>
+                      <button
+                        type="button"
+                        aria-label={t('spaces.moreTags', { count: space.tags.length - 3 })}
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
                         +{space.tags.length - 3}
                       </button>
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <ul className="flex flex-col gap-0.5">
+                    {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                    {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                    <ul role="list" className="flex flex-col gap-0.5">
                       {space.tags.slice(3).map(tag => (
                         <li key={tag}>{tag}</li>
                       ))}
