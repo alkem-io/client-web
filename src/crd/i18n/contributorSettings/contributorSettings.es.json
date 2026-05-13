@@ -593,11 +593,6 @@
       "assistantIdLabel": "ID del asistente",
       "modelLabel": "Modelo"
     },
-    "promptGraphFallback": {
-      "heading": "La edición del Prompt Graph permanece en MUI",
-      "description": "El editor de flujos se está migrando. Abre la página de configuración antigua para editar el prompt graph.",
-      "ctaLabel": "Abrir en vista antigua"
-    },
     "settings": {
       "commitErrorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
     }

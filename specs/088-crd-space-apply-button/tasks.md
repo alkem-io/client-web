@@ -135,7 +135,7 @@ All referenced 087 components and domain hooks already exist; this feature adds 
 
 - [X] T017a [P] No-new-translation-keys audit: from the repo root, run `git diff --name-only develop -- src/crd/i18n/ src/core/i18n/` against the base branch. Confirm the output is empty, proving no locale files were added or modified by this feature (FR-012, SC-009).
 
-- [ ] T018 [P] CRD toggle OFF fallback: run Scenario 8 from `specs/088-crd-space-apply-button/quickstart.md` §3. Disable the CRD toggle via the Admin UI (or `localStorage.removeItem('alkemio-crd-enabled')`) and reload. Confirm the legacy MUI apply/join CTA renders on the Dashboard via `src/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage.tsx:79-92` with no CRD chrome, no duplicated CTA, and no console errors. Re-enable the toggle and reload: CRD CTA returns (FR-002, FR-019, SC-010).
+- [ ] T018 [P] CRD toggle OFF fallback: run Scenario 8 from `specs/088-crd-space-apply-button/quickstart.md` §3. Disable the CRD toggle via the Admin UI (or `localStorage.setItem('alkemio-design-version', '1')`) and reload. Confirm the legacy MUI apply/join CTA renders on the Dashboard via `src/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage.tsx:79-92` with no CRD chrome, no duplicated CTA, and no console errors. Re-enable the toggle and reload: CRD CTA returns (FR-002, FR-019, SC-010).
 
 - [ ] T019 [P] Mutation failure UX: run Scenario 9 from `specs/088-crd-space-apply-button/quickstart.md` §3. Open the apply form, stop the backend (or throttle the network to force a failure), submit, and confirm the platform's toast surfaces the error while the form dialog stays open with the user's text intact. Restart the backend and resubmit to verify success (FR-013).
 

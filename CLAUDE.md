@@ -344,26 +344,35 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 ## CRD Feature Toggle
 
-The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
+The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD). Default is `1`. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
+
+For developers / QA who want to seed the toggle without going through the UI:
 
 ```js
-// Enable:  open browser console and run:
-localStorage.setItem('alkemio-crd-enabled', 'true');
+// Enable CRD (new design):
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 
-// Disable:
-localStorage.removeItem('alkemio-crd-enabled');
+// Back to MUI (old design):
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
-Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load (see `useCrdEnabled.ts`).
+
+Implementation surface:
+- `src/main/crdPages/useCrdEnabled.ts` — boot-time read of `localStorage('alkemio-design-version')`; the `useCrdEnabled()` hook is consumed by route dispatchers.
+- `src/main/crdPages/useDesignVersionToggle.ts` — user-menu switch: writes `UserSettings.designVersion` via `updateUserSettings`, mirrors to localStorage, hard-reloads.
+- `src/main/crdPages/useDesignVersionSync.ts` — reconciles server state with localStorage on auth.
+- `TopLevelRoutes.tsx` — picks MUI vs CRD route trees off `useCrdEnabled()`.
+
+When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 099-design-version-switch: Added TypeScript 5.x / React 19 (with React Compiler — no manual memoization) / Node ≥24.0.0 (Volta-pinned 24.14.0)
 - 098-crd-forum-documentation: Added TypeScript 5.x / React 19 / Node ≥24.0.0 (Volta-pinned to 24.14.0) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `card`, `input`, `select`, `separator`, `tooltip`, `avatar`, `button`, `skeleton`; existing CRD composites `ShareDialog`/`ShareButton`, `ConfirmationDialog`, `CommentThread`/`CommentInput`/`CommentItem`, `MarkdownEditor`, `TagsInput`, `MarkdownContent` / `InlineMarkdown`; `lucide-react` (MessageSquare, Rocket, Settings, Users, Building2, HelpCircle, MoreHorizontal, Search, ArrowLeft, Plus, Share2, Pencil, Trash2, Send, Smile); Apollo Client (existing — unchanged); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`); Formik (integration layer only; never inside `src/crd/`)
 - 095-crd-auth-error-page: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), `lucide-react`, `react-i18next` (existing), `react-router-dom` (existing — used only in the integration layer, never in `src/crd/`), `class-variance-authority` (existing). No new dependencies.
-- 094-crd-member-settings-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `alert-dialog`, `checkbox`, `label`, `button`, `avatar`, `dropdown-menu`; `lucide-react` (Trash2, MoreHorizontal, X icons); `react-i18next` (existing); Apollo Client (existing, unchanged — reused via `useCommunityAdmin` and generated mutation hooks); React Compiler (`babel-plugin-react-compiler`)
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node ≥24.0.0 (Volta-pinned to 24.14.0) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `card`, `input`, `select`, `separator`, `tooltip`, `avatar`, `button`, `skeleton`; existing CRD composites `ShareDialog`/`ShareButton`, `ConfirmationDialog`, `CommentThread`/`CommentInput`/`CommentItem`, `MarkdownEditor`, `TagsInput`, `MarkdownContent` / `InlineMarkdown`; `lucide-react` (MessageSquare, Rocket, Settings, Users, Building2, HelpCircle, MoreHorizontal, Search, ArrowLeft, Plus, Share2, Pencil, Trash2, Send, Smile); Apollo Client (existing — unchanged); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`); Formik (integration layer only; never inside `src/crd/`) (098-crd-forum-documentation)
-- N/A (frontend SPA; data via existing GraphQL queries / mutations / subscriptions — no schema changes) (098-crd-forum-documentation)
+- TypeScript 5.x / React 19 (with React Compiler — no manual memoization) / Node ≥24.0.0 (Volta-pinned 24.14.0) (099-design-version-switch)

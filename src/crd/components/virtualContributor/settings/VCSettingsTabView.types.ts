@@ -66,22 +66,6 @@ export type VcExternalConfigCardProps = {
   onSave: () => void;
 };
 
-export type VcPromptGraphFallbackProps = {
-  /** Pre-localized heading. */
-  heading: string;
-  /** Pre-localized body copy. */
-  description: string;
-  /** Pre-localized CTA label. */
-  ctaLabel: string;
-  /**
-   * Invoked when the user clicks the CTA. The integration layer is
-   * responsible for navigating to the legacy MUI page — usually via
-   * `disableCrdAndNavigate(...)` so the CRD toggle is cleared first and the
-   * MUI shell actually renders.
-   */
-  onCtaClick: () => void;
-};
-
 export type VcSettingsViewProps = {
   loading: boolean;
   visibility: VcVisibilityCardProps;
@@ -91,6 +75,4 @@ export type VcSettingsViewProps = {
   prompt?: VcPromptCardProps;
   /** Absent when engine has no external config. */
   externalConfig?: VcExternalConfigCardProps;
-  /** Present only when Prompt Graph editing is enabled for this VC + viewer. */
-  promptGraphFallback?: VcPromptGraphFallbackProps;
 };

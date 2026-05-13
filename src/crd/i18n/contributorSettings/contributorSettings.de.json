@@ -592,11 +592,6 @@
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Modell"
     },
-    "promptGraphFallback": {
-      "heading": "Die Bearbeitung des Prompt Graph bleibt in MUI",
-      "description": "Der Flow-Editor wird migriert. Öffnen Sie die alte Einstellungsseite, um den Prompt Graph zu bearbeiten.",
-      "ctaLabel": "In alter Ansicht öffnen"
-    },
     "settings": {
       "commitErrorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
     }

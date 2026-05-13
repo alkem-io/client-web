@@ -80,20 +80,20 @@ export default function UserProfileSettingsPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <Link
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -120,7 +120,7 @@ export default function UserProfileSettingsPage() {
             
             {/* Identity Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <User className="w-5 h-5 text-primary" />
                 Identity
               </h3>
@@ -175,7 +175,7 @@ export default function UserProfileSettingsPage() {
 
             {/* Bio Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <Layout className="w-5 h-5 text-primary" />
                 About You
               </h3>
@@ -221,7 +221,7 @@ export default function UserProfileSettingsPage() {
 
             {/* Social Links Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <LinkIcon className="w-5 h-5 text-primary" />
                 Social Links
               </h3>
@@ -318,7 +318,7 @@ export default function UserProfileSettingsPage() {
           {/* Right Column: Profile Picture Preview */}
           <div className="hidden lg:block w-80 flex-shrink-0 sticky top-52">
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground">Profile Picture</h3>
+              <h3 className="text-body-emphasis text-muted-foreground">Profile Picture</h3>
               <div className="flex flex-col items-center text-center">
                 <div className="relative group mb-4">
                   <Avatar className="w-40 h-40 border-4 border-background shadow-lg text-4xl">
@@ -334,12 +334,12 @@ export default function UserProfileSettingsPage() {
                     <Camera className="w-5 h-5" />
                   </button>
                 </div>
-                <h2 className="text-lg font-bold">{formData.firstName} {formData.lastName}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{formData.tagline}</p>
+                <h2 className="text-subsection-title font-bold">{formData.firstName} {formData.lastName}</h2>
+                <p className="text-body text-muted-foreground mt-1">{formData.tagline}</p>
                 <Button variant="outline" size="sm" className="w-full mt-4">
                   Change Avatar
                 </Button>
-                <p className="text-xs text-muted-foreground mt-2 text-center px-2">
+                <p className="text-caption text-muted-foreground mt-2 text-center px-2">
                   Recommended: 400x400px. JPG, PNG or GIF.
                 </p>
               </div>
