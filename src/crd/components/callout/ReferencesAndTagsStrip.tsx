@@ -45,7 +45,9 @@ export function ReferencesAndTagsStrip({
   return (
     <div className={cn('space-y-2', className)}>
       {hasReferences && (
-        <ul className="space-y-1">
+        // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+        // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+        <ul role="list" className="space-y-1">
           {references?.map(ref => (
             <li key={ref.id}>
               <a
@@ -78,11 +80,11 @@ export function ReferencesAndTagsStrip({
             <Tooltip>
               <TooltipTrigger asChild={true}>
                 <Badge
+                  asChild={true}
                   variant="outline"
                   className="text-badge px-2 h-5 font-medium border-border text-muted-foreground rounded-full cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  tabIndex={0}
                 >
-                  +{hiddenTags.length}
+                  <button type="button">+{hiddenTags.length}</button>
                 </Badge>
               </TooltipTrigger>
               <TooltipContent side="bottom">{hiddenTags.join(', ')}</TooltipContent>

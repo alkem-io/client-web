@@ -120,11 +120,19 @@ export function CrdPostContributionDialog({
   });
   const siblingCallouts = siblingCalloutsData?.lookup.calloutsSet?.callouts ?? [];
   const [targetCalloutId, setTargetCalloutId] = useState<string>(calloutId);
+  // Mutable baseline for move detection. After a successful move, the prop
+  // `calloutId` doesn't change but the contribution now lives in
+  // `targetCalloutId` — so subsequent saves must compare against the new
+  // location, not the immutable prop, otherwise the move re-fires and fails.
+  const baselineCalloutIdRef = useRef<string>(calloutId);
   // Reset the dropdown to the current callout whenever the dialog opens against a fresh post.
   useEffect(() => {
-    if (open) setTargetCalloutId(calloutId);
+    if (open) {
+      setTargetCalloutId(calloutId);
+      baselineCalloutIdRef.current = calloutId;
+    }
   }, [open, calloutId]);
-  const isMoveTargetChanged = targetCalloutId !== calloutId;
+  const isMoveTargetChanged = targetCalloutId !== baselineCalloutIdRef.current;
 
   const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
 
@@ -238,18 +246,35 @@ export function CrdPostContributionDialog({
       // References — diff the form's `references` against the server's
       // `post.profile.references`. Rows without an `id` are brand-new and need
       // `createReferenceOnProfile`; original rows missing from the form are
-      // deletions. Update-in-place isn't supported here (matches MUI's
-      // post-edit dialog, which also relies on remove + re-add for changes).
+      // deletions. Update-in-place isn't supported by the schema, so a row
+      // whose title/url/description was edited is converted to delete+create
+      // (matches MUI's post-edit dialog approach).
       const originalReferences = post.profile.references ?? [];
+      const originalById = new Map(originalReferences.map(r => [r.id, r]));
       const currentIds = new Set(values.references.map(r => r.id).filter(Boolean) as string[]);
-      const removedIds = originalReferences.map(r => r.id).filter(id => !currentIds.has(id));
+
+      // Existing rows whose content has changed → delete+recreate.
+      const modifiedRows = values.references.filter((r): r is (typeof values.references)[number] & { id: string } => {
+        if (!r.id) return false;
+        const original = originalById.get(r.id);
+        if (!original) return false;
+        if (!r.title.trim() || !r.url.trim()) return false;
+        return (
+          original.name !== r.title.trim() ||
+          original.uri !== ensureHttps(r.url) ||
+          (original.description ?? '') !== r.description.trim()
+        );
+      });
+      const modifiedIds = new Set(modifiedRows.map(r => r.id));
+      const removedIds = originalReferences.map(r => r.id).filter(id => !currentIds.has(id) || modifiedIds.has(id));
       const newRows = values.references.filter(r => !r.id && r.title.trim() && r.url.trim());
+      const rowsToCreate = [...newRows, ...modifiedRows];
 
       try {
         for (const refId of removedIds) {
           await deleteReference({ variables: { input: { ID: refId } } });
         }
-        for (const row of newRows) {
+        for (const row of rowsToCreate) {
           await createReferenceOnProfile({
             variables: {
               input: {
@@ -291,6 +316,7 @@ export function CrdPostContributionDialog({
             refetchQueries: ['CalloutContributions', 'CalloutDetails'],
           });
           await refetchSiblingCallouts();
+          baselineCalloutIdRef.current = targetCalloutId;
           notify(t('postLocation.moved'), 'success');
         } catch (err) {
           logError(new Error('Post move failed', { cause: err as Error }));

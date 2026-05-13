@@ -5,6 +5,7 @@ import { ContributionLinkList } from '@/crd/components/contribution/Contribution
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -30,7 +31,8 @@ export function ContributionsPreviewConnector({
   onShowAll,
   onContributionClick,
 }: ContributionsPreviewConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
 
   const contributionType = getCalloutContributionType(callout);
   // Section visibility follows MUI's `CalloutView` — driven by the presence of
@@ -55,7 +57,9 @@ export function ContributionsPreviewConnector({
     skip: !hasContributionType,
   });
 
-  const contributions = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
+  const contributions = items
+    .map(item => mapAnyContributionToCardData(item, locale))
+    .filter(Boolean) as ContributionCardData[];
 
   // The "+ Add" tile mirrors the detail-dialog flow (CalloutDetailDialogConnector → ContributionsSlot):
   // appended as a trailing slot in the same grid using the existing add connectors, so the user can

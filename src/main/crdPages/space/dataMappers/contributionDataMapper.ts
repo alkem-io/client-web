@@ -1,3 +1,4 @@
+import type { Locale } from 'date-fns';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 
 type ContributionCardData = {
@@ -122,10 +123,10 @@ type AnyContributionItem = {
   } | null;
 };
 
-function toDateString(date: Date | string | undefined): string | undefined {
+function toDateString(date: Date | string | undefined, locale?: Locale): string | undefined {
   // Short localized date (e.g. `05/13/2026` in en-US) — the contribution-card
   // surface only needs the day, not the precise timestamp the server returns.
-  return formatShortDate(date);
+  return formatShortDate(date, locale);
 }
 
 function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
@@ -136,7 +137,10 @@ function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
   };
 }
 
-export function mapAnyContributionToCardData(item: AnyContributionItem): ContributionCardData | undefined {
+export function mapAnyContributionToCardData(
+  item: AnyContributionItem,
+  locale?: Locale
+): ContributionCardData | undefined {
   // Use `item.id` (contribution wrapper ID) — this is the ID the backend uses
   // to look up a contribution inside a callout (e.g. WhiteboardFromCallout query).
   if (item.post) {
@@ -150,7 +154,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       tags: post.profile.tagset?.tags ?? [],
       previewUrl: post.profile.visual?.uri,
       author: extractAuthor(post.createdBy),
-      createdDate: toDateString(post.createdDate),
+      createdDate: toDateString(post.createdDate, locale),
       commentCount: post.comments?.messagesCount,
       postId: post.id,
     };
@@ -165,7 +169,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       href: wb.profile.url,
       previewUrl: wb.profile.visual?.uri,
       author: extractAuthor(wb.createdBy),
-      createdDate: toDateString(wb.createdDate),
+      createdDate: toDateString(wb.createdDate, locale),
     };
   }
 
@@ -179,7 +183,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       markdownContent: memo.markdown,
       memoId: memo.id,
       author: extractAuthor(memo.createdBy),
-      createdDate: toDateString(memo.createdDate),
+      createdDate: toDateString(memo.createdDate, locale),
     };
   }
 

@@ -712,7 +712,7 @@
     },
     "confirmClose": {
       "title": "Dit venster sluiten?",
-      "description": "Niet-opgeslagen reactietekst gaat verloren.",
+      "description": "Niet-opgeslagen opmerkingstekst gaat verloren.",
       "confirm": "Sluiten",
       "cancel": "Open houden"
     }

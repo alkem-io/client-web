@@ -64,6 +64,8 @@ function ContributionsSlot({
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
 }) {
+  const { i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
   const contributionType = getCalloutContributionType(callout);
   const { canCreateContribution } = useCalloutCollaborationPermissions({
     callout,
@@ -89,7 +91,9 @@ function ContributionsSlot({
     return null;
   }
 
-  const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
+  const mapped = items
+    .map(item => mapAnyContributionToCardData(item, locale))
+    .filter(Boolean) as ContributionCardData[];
 
   const defaults = callout.contributionDefaults;
   const trailingSlot = canCreateContribution ? (
@@ -138,9 +142,10 @@ export function CalloutDetailDialogConnector({
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
+  const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
 
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
-    initialIsMemo || initialIsPost ? undefined : initialContributionId
+    initialIsWhiteboard ? initialContributionId : undefined
   );
   const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
     initialIsMemo ? initialContributionId : undefined
@@ -204,14 +209,30 @@ export function CalloutDetailDialogConnector({
     } else if (contributionType === CalloutContributionType.Post) {
       setPostContributionId(initialContributionId);
       setPostId(initialPostId);
-    } else {
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
       // Deep-linked whiteboard contributions open the editor immediately —
       // MUI parity (`openContributionDialogOnLoad`). The inline preview slot
       // becomes visible after the user closes the editor.
       setWhiteboardContributionId(initialContributionId);
       setWhiteboardEditorOpen(true);
     }
+    // Other contribution types (Link) don't have a dedicated overlay; the
+    // grid card itself owns the navigation.
   }, [initialContributionId, initialMemoId, initialPostId, contributionType]);
+
+  // Reset per-contribution state whenever the dialog closes so reopening
+  // starts from the fresh initial values rather than stale selections from
+  // the previous session.
+  useEffect(() => {
+    if (open) return;
+    setWhiteboardContributionId(initialIsWhiteboard ? initialContributionId : undefined);
+    setMemoContributionId(initialIsMemo ? initialContributionId : undefined);
+    setMemoId(initialMemoId);
+    setPostContributionId(initialIsPost ? initialContributionId : undefined);
+    setPostId(initialPostId);
+    setWhiteboardEditorOpen(false);
+    setPostEditOpen(false);
+  }, [open, initialContributionId, initialIsMemo, initialIsPost, initialIsWhiteboard, initialMemoId, initialPostId]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -253,7 +274,7 @@ export function CalloutDetailDialogConnector({
     } else if (contributionType === CalloutContributionType.Post) {
       setPostContributionId(contributionId);
       setPostId(clickedEntityId);
-    } else {
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
       // MUI parity (`CalloutContributionPreview` with `openContributionDialogOnLoad`):
       // clicking a whiteboard card jumps the user straight into the collaborative
       // editor. The inline preview then becomes visible underneath when the user

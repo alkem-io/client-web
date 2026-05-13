@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { Loading } from '@/crd/components/common/Loading';
@@ -56,6 +56,18 @@ export function ResponseDefaultsConnector({
   // Read whiteboard content straight from `values` so external updates land
   // immediately in the editor instead of being shadowed by local state.
   const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
+
+  // The preview blobs and preview-settings state are session-local — they
+  // live only as long as the dialog is open against a whiteboard response.
+  // Reset them when the dialog closes or when the response type switches
+  // away from whiteboard so a stale thumbnail doesn't bleed into a later
+  // session that might be looking at a different default.
+  useEffect(() => {
+    if (!open || type !== 'whiteboard') {
+      setPreviewImages(undefined);
+      setWhiteboardPreviewSettings(DefaultWhiteboardPreviewSettings);
+    }
+  }, [open, type]);
 
   const whiteboardSlot =
     type === 'whiteboard' ? (

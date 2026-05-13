@@ -1,14 +1,10 @@
 import { Pencil, Presentation, Trash2 } from 'lucide-react';
 import { cn } from '@/crd/lib/utils';
 
-type InlineWhiteboardPreviewProps = {
+type InlineWhiteboardPreviewBaseProps = {
   onEdit: () => void;
-  /** When provided, a trash button appears top-right to clear the content. */
-  onDelete?: () => void;
   /** Accessible label for the Edit affordance (the button + the clickable box). */
   editLabel: string;
-  /** Accessible label for the Delete affordance (only used when onDelete is set). */
-  deleteLabel?: string;
   /** Alt text used when the preview image is shown. */
   imageAlt?: string;
   /**
@@ -20,6 +16,11 @@ type InlineWhiteboardPreviewProps = {
   disabled?: boolean;
   className?: string;
 };
+
+// Discriminated union: when `onDelete` is provided, `deleteLabel` is required so
+// the trash button always has a screen-reader-correct label distinct from Edit.
+type InlineWhiteboardPreviewProps = InlineWhiteboardPreviewBaseProps &
+  ({ onDelete: () => void; deleteLabel: string } | { onDelete?: undefined; deleteLabel?: undefined });
 
 /**
  * Inline whiteboard preview used in form contexts (create-post framing, contribution-defaults
@@ -69,7 +70,7 @@ export function InlineWhiteboardPreview({
             onDelete();
           }}
           disabled={disabled}
-          aria-label={deleteLabel ?? editLabel}
+          aria-label={deleteLabel}
           className={cn(
             'absolute top-2 right-2 size-8 flex items-center justify-center rounded-md bg-background border border-border shadow-sm',
             'text-muted-foreground hover:text-destructive hover:border-destructive/50 transition-colors',
