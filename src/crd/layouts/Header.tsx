@@ -61,6 +61,7 @@ type HeaderProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
+  unreadMessagesCount?: number;
   unreadNotificationsCount?: number;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
@@ -86,6 +87,7 @@ export function Header({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
+  unreadMessagesCount,
   unreadNotificationsCount,
   languages,
   currentLanguage,
@@ -137,6 +139,14 @@ export function Header({
           href={navigationHrefs.messages}
           ariaLabel={t('header.messages')}
           icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
+          badge={
+            typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
+              <>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
+              </>
+            ) : undefined
+          }
         />
 
         <HeaderIconButton

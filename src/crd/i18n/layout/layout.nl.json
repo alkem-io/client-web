@@ -6,6 +6,7 @@
     "messages": "Berichten",
     "notifications": "Meldingen",
     "unreadNotifications": "{{count}} ongelezen meldingen",
+    "unreadMessages": "{{count}} ongelezen berichten",
     "spaces": "Ruimtes",
     "platformNavigation": "Platformnavigatie",
     "myAccount": "Mijn account",
