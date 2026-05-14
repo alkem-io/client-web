@@ -1,5 +1,5 @@
 import { Loader2, Paperclip, Plus, Trash2 } from 'lucide-react';
-import { type ChangeEvent, useRef, useState } from 'react';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import type { ReferenceRow } from '@/crd/forms/callout/types';
@@ -50,9 +50,20 @@ export function ReferencesEditor({
   // Per-row upload spinner state. Keyed by row index — fine because the
   // editor is the sole owner of `rows` indexing inside any single render.
   const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
+  // Mirror of `rows` for post-await reads. The file upload takes seconds; if
+  // the user types into any row while it's in flight, the closure-captured
+  // `rows` is stale by the time `await onFileUpload` resolves. Without this
+  // ref, `updateRow`'s `rows.map(...)` would rebuild the array from the
+  // pre-upload snapshot and revert every keystroke. Updating in an effect
+  // (not inline during render) keeps the mirror consistent under concurrent
+  // rendering.
+  const rowsRef = useRef(rows);
+  useEffect(() => {
+    rowsRef.current = rows;
+  }, [rows]);
 
   const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
-    onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+    onChange(rowsRef.current.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   };
 
   const handleFileSelected = async (index: number, file: File | undefined) => {
@@ -61,9 +72,9 @@ export function ReferencesEditor({
     try {
       const url = await onFileUpload(file);
       if (!url) return;
-      // Compose the title autofill against the latest row state in `rows` —
-      // the user may have typed something while the upload was in flight.
-      const current = rows[index];
+      // Read from the ref, not the closure — `rows` here is the snapshot from
+      // the render that started the upload.
+      const current = rowsRef.current[index];
       const titleEmpty = !current?.title.trim();
       const filenameBase = file.name.replace(/\.[^./\\]+$/, '').trim();
       const patch: Partial<ReferenceRow> = { url };
