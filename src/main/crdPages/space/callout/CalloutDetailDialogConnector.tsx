@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContributionQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -9,8 +8,10 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
+import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
@@ -63,6 +64,8 @@ function ContributionsSlot({
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
 }) {
+  const { i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
   const contributionType = getCalloutContributionType(callout);
   const { canCreateContribution } = useCalloutCollaborationPermissions({
     callout,
@@ -76,14 +79,21 @@ function ContributionsSlot({
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
-    skip: !open || !contributionType || !callout.settings.contribution.enabled,
+    skip: !open || !contributionType,
   });
 
-  if (!contributionType || !callout.settings.contribution.enabled) {
+  // Visibility follows MUI: presence of `allowedTypes` (i.e. `contributionType`)
+  // is what marks the callout as collecting contributions. `enabled: false`
+  // (turning both Members/Admins switches off) is a soft-disable — existing
+  // contributions stay visible and the section header is still there; only the
+  // Add tile is suppressed via `canCreateContribution`.
+  if (!contributionType) {
     return null;
   }
 
-  const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
+  const mapped = items
+    .map(item => mapAnyContributionToCardData(item, locale))
+    .filter(Boolean) as ContributionCardData[];
 
   const defaults = callout.contributionDefaults;
   const trailingSlot = canCreateContribution ? (
@@ -132,9 +142,10 @@ export function CalloutDetailDialogConnector({
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
+  const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
 
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
-    initialIsMemo || initialIsPost ? undefined : initialContributionId
+    initialIsWhiteboard ? initialContributionId : undefined
   );
   const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
     initialIsMemo ? initialContributionId : undefined
@@ -144,6 +155,10 @@ export function CalloutDetailDialogConnector({
     initialIsPost ? initialContributionId : undefined
   );
   const [postId, setPostId] = useState<string | undefined>(initialPostId);
+  // Whiteboard preview / editor flow (MUI parity): selecting a whiteboard
+  // contribution swaps the grid for an inline preview thumbnail; the
+  // collaborative editor only opens when the user clicks the preview.
+  const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   // Post-edit dialog opens on top of the inline preview when the user clicks the
   // edit pencil. Clicking a contribution card no longer opens the edit form
   // directly — it selects the post and the connector renders the read-only
@@ -194,10 +209,30 @@ export function CalloutDetailDialogConnector({
     } else if (contributionType === CalloutContributionType.Post) {
       setPostContributionId(initialContributionId);
       setPostId(initialPostId);
-    } else {
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
+      // Deep-linked whiteboard contributions open the editor immediately —
+      // MUI parity (`openContributionDialogOnLoad`). The inline preview slot
+      // becomes visible after the user closes the editor.
       setWhiteboardContributionId(initialContributionId);
+      setWhiteboardEditorOpen(true);
     }
+    // Other contribution types (Link) don't have a dedicated overlay; the
+    // grid card itself owns the navigation.
   }, [initialContributionId, initialMemoId, initialPostId, contributionType]);
+
+  // Reset per-contribution state whenever the dialog closes so reopening
+  // starts from the fresh initial values rather than stale selections from
+  // the previous session.
+  useEffect(() => {
+    if (open) return;
+    setWhiteboardContributionId(initialIsWhiteboard ? initialContributionId : undefined);
+    setMemoContributionId(initialIsMemo ? initialContributionId : undefined);
+    setMemoId(initialMemoId);
+    setPostContributionId(initialIsPost ? initialContributionId : undefined);
+    setPostId(initialPostId);
+    setWhiteboardEditorOpen(false);
+    setPostEditOpen(false);
+  }, [open, initialContributionId, initialIsMemo, initialIsPost, initialIsWhiteboard, initialMemoId, initialPostId]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -239,12 +274,18 @@ export function CalloutDetailDialogConnector({
     } else if (contributionType === CalloutContributionType.Post) {
       setPostContributionId(contributionId);
       setPostId(clickedEntityId);
-    } else {
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
+      // MUI parity (`CalloutContributionPreview` with `openContributionDialogOnLoad`):
+      // clicking a whiteboard card jumps the user straight into the collaborative
+      // editor. The inline preview then becomes visible underneath when the user
+      // closes the editor (since `whiteboardContributionId` stays set).
       setWhiteboardContributionId(contributionId);
+      setWhiteboardEditorOpen(true);
     }
   };
 
-  const hasContributionType = Boolean(getCalloutContributionType(callout)) && callout.settings.contribution.enabled;
+  // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
+  const hasContributionType = Boolean(getCalloutContributionType(callout));
   const contributionsSlot = hasContributionType ? (
     <ContributionsSlot callout={callout} open={open} onContributionClick={handleContributionClick} />
   ) : undefined;
@@ -263,7 +304,58 @@ export function CalloutDetailDialogConnector({
   const canEditSelectedPost =
     postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
     false;
-  const selectedContributionSlot =
+
+  // Whiteboard contribution data — drives the inline preview (header + thumbnail
+  // + click-to-open overlay). MUI parity: clicking a whiteboard card surfaces
+  // this preview first; the full collaborative editor only mounts when the user
+  // clicks through. Fetching from `lookup.contribution` keeps the preview
+  // independent from the costlier WhiteboardFromCallout query that the editor
+  // uses internally.
+  const { data: whiteboardContributionData, loading: loadingWhiteboardContribution } = useCalloutContributionQuery({
+    variables: { contributionId: whiteboardContributionId ?? '', includeWhiteboard: true },
+    skip: !open || !whiteboardContributionId || contributionType !== CalloutContributionType.Whiteboard,
+  });
+  const selectedWhiteboard = whiteboardContributionData?.lookup.contribution?.whiteboard;
+  const canEditSelectedWhiteboard =
+    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Update
+    ) ?? false;
+
+  const selectedWhiteboardContributionSlot =
+    whiteboardContributionId && contributionType === CalloutContributionType.Whiteboard ? (
+      <CalloutWhiteboardContributionPreview
+        loading={loadingWhiteboardContribution && !selectedWhiteboard}
+        whiteboard={{
+          id: selectedWhiteboard?.id ?? whiteboardContributionId,
+          title: selectedWhiteboard?.profile.displayName ?? '',
+          author: selectedWhiteboard?.createdBy?.profile
+            ? {
+                name: selectedWhiteboard.createdBy.profile.displayName,
+                avatarUrl: selectedWhiteboard.createdBy.profile.avatar?.uri,
+              }
+            : undefined,
+          timestamp: formatRelativeFromNow(
+            selectedWhiteboard?.createdDate as string | number | Date | undefined,
+            resolveDateFnsLocale(i18n.language)
+          ),
+          previewUrl: selectedWhiteboard?.profile.preview?.uri,
+        }}
+        onOpen={() => setWhiteboardEditorOpen(true)}
+        onEdit={canEditSelectedWhiteboard ? () => setWhiteboardEditorOpen(true) : undefined}
+        onClose={() => setWhiteboardContributionId(undefined)}
+        shareSlot={
+          selectedWhiteboard?.profile?.url ? (
+            <ShareButton
+              url={selectedWhiteboard.profile.url}
+              tooltip={t('whiteboardPreview.share')}
+              dialogTitle={t('whiteboardPreview.share')}
+            />
+          ) : undefined
+        }
+      />
+    ) : undefined;
+
+  const selectedPostContributionSlot =
     postContributionId && contributionType === CalloutContributionType.Post ? (
       <CalloutPostPreview
         loading={loadingPostContribution && !selectedPost}
@@ -276,13 +368,13 @@ export function CalloutDetailDialogConnector({
                 avatarUrl: selectedPost.createdBy.profile.avatar?.uri,
               }
             : undefined,
-          // Display the absolute date — the dialog header already shows the
-          // callout-level timestamp, so we don't need a relative "x ago" here.
-          timestamp: selectedPost?.createdDate
-            ? format(new Date(selectedPost.createdDate as string | number | Date), 'P', {
-                locale: resolveDateFnsLocale(i18n.language),
-              })
-            : undefined,
+          // Match MUI's contribution-preview header ("1 hour ago" / "5 minutes ago")
+          // — the precise date is shown on the contribution card itself; in the
+          // inline preview we want the at-a-glance relative distance.
+          timestamp: formatRelativeFromNow(
+            selectedPost?.createdDate as string | number | Date | undefined,
+            resolveDateFnsLocale(i18n.language)
+          ),
           description: selectedPost?.profile.description ?? undefined,
           tags: selectedPost?.profile.tagset?.tags ?? [],
           references: selectedPost?.profile.references?.map(ref => ({
@@ -305,14 +397,23 @@ export function CalloutDetailDialogConnector({
       />
     ) : undefined;
 
-  const whiteboardOverlay = whiteboardContributionId ? (
-    <WhiteboardContributionConnector
-      open={true}
-      calloutId={callout.id}
-      contributionId={whiteboardContributionId}
-      onClose={() => setWhiteboardContributionId(undefined)}
-    />
-  ) : null;
+  // Single slot consumed by `CalloutDetailDialog` — either the post preview or
+  // the whiteboard preview, never both (the contribution-type strip is uniform
+  // per callout, so only one of these is set at a time).
+  const selectedContributionSlot = selectedWhiteboardContributionSlot ?? selectedPostContributionSlot;
+
+  const whiteboardOverlay =
+    whiteboardEditorOpen && whiteboardContributionId ? (
+      <WhiteboardContributionConnector
+        open={true}
+        calloutId={callout.id}
+        contributionId={whiteboardContributionId}
+        // Returning from the editor lands on the inline preview, not the grid —
+        // matches the MUI nav pattern. The user closes the preview explicitly
+        // (via its X button) to return to the grid.
+        onClose={() => setWhiteboardEditorOpen(false)}
+      />
+    ) : null;
 
   const memoOverlay =
     memoContributionId && memoId ? (
@@ -327,13 +428,21 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  // Fall back to the fetched post's id when the entry point (feed thumbnail
+  // click, deep link) didn't plumb `postId` through. The contribution-query
+  // resolution above already returns `selectedPost.id`, so the edit overlay
+  // can open against it even if the `postId` URL/click state was empty —
+  // matches the MUI `CalloutContributionPreviewPost` edit pencil, which
+  // never depended on a route param for the post id.
+  const resolvedPostId = postId ?? selectedPost?.id;
   const postOverlay =
-    postEditOpen && postContributionId && postId ? (
+    postEditOpen && postContributionId && resolvedPostId ? (
       <PostContributionConnector
         open={true}
         calloutId={callout.id}
+        calloutsSetId={callout.calloutsSetId}
         contributionId={postContributionId}
-        postId={postId}
+        postId={resolvedPostId}
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}

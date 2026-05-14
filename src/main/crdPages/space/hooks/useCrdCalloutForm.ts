@@ -31,7 +31,13 @@ export type { AllowedActors, ContributionDefaults, FramingChip, LinkRow, Referen
 export type CalloutFormValues = {
   title: string;
   description: string;
-  tags: string;
+  /**
+   * Array of tag strings — the same shape the chip-based `TagsInput` from
+   * `@/crd/forms/tags-input` produces (used in profile / org / VC / space
+   * explorer). One `TagsInput`, one type, everywhere — no per-surface
+   * string ↔ array bridges.
+   */
+  tags: string[];
   // Zone 1 — framing
   framingChip: FramingChip;
   framingCommentsEnabled: boolean;
@@ -92,7 +98,7 @@ const createInitialPollOptions = (): PollOptionValue[] =>
 export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   title: '',
   description: '',
-  tags: '',
+  tags: [],
   framingChip: 'none',
   framingCommentsEnabled: true,
   memoMarkdown: '',

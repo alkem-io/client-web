@@ -49,10 +49,10 @@ const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, CalloutForm
   [CalloutContributionType.CollaboraDocument]: 'none',
 };
 
-const findDefaultTagset = (tagsets: TemplateCallout['framing']['profile']['tagsets']): string => {
-  if (!tagsets || tagsets.length === 0) return '';
+const findDefaultTagset = (tagsets: TemplateCallout['framing']['profile']['tagsets']): string[] => {
+  if (!tagsets || tagsets.length === 0) return [];
   const defaultTagset = tagsets.find(ts => ts.name === 'default') ?? tagsets[0];
-  return defaultTagset?.tags.join(', ') ?? '';
+  return defaultTagset?.tags ?? [];
 };
 
 /**

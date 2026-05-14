@@ -39,9 +39,9 @@ const findDefaultTagset = (tagsets: CalloutData['framing']['profile']['tagsets']
   return tagsets.find(ts => ts.name === 'default') ?? tagsets[0];
 };
 
-const findTags = (tagsets: CalloutData['framing']['profile']['tagsets']): string => {
+const findTags = (tagsets: CalloutData['framing']['profile']['tagsets']): string[] => {
   const defaultTagset = findDefaultTagset(tagsets);
-  return defaultTagset?.tags.join(', ') ?? '';
+  return defaultTagset?.tags ?? [];
 };
 
 /**
@@ -71,11 +71,17 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
   const { framing, settings, contributionDefaults } = callout;
   const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
 
+  // `responseType` is the user's chosen contribution type — it must come from
+  // `allowedTypes` ALONE. `enabled` is a separate "is anyone currently allowed
+  // to add?" flag that flips to false when the user turns both Members/Admins
+  // toggles off, but the callout is still a contribution-collecting callout.
+  // AND-ing `responseType` on `enabled` here would silently reset the chip to
+  // "None" on every edit-dialog open whenever the toggles are off, and the
+  // update mapper would then commit that loss back to the server.
   const firstAllowedType = settings.contribution.allowedTypes[0];
-  const responseType: ResponseType =
-    settings.contribution.enabled && firstAllowedType
-      ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
-      : 'none';
+  const responseType: ResponseType = firstAllowedType
+    ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
+    : 'none';
 
   const values: Partial<CalloutFormValues> = {
     title: framing.profile.displayName,
