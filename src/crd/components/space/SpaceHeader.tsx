@@ -35,6 +35,12 @@ type SpaceHeaderProps = {
   memberAvatars: MemberAvatar[];
   actions: SpaceHeaderActions;
   onMemberClick?: () => void;
+  /**
+   * When true, the banner slides under the sticky page header (h-16) so the
+   * header can render transparently over it. Top-positioned in-banner elements
+   * are offset accordingly so they remain visible below the header. Default false.
+   */
+  overlayHeader?: boolean;
   className?: string;
 };
 
@@ -47,6 +53,7 @@ export function SpaceHeader({
   memberAvatars,
   actions,
   onMemberClick,
+  overlayHeader = false,
   className,
 }: SpaceHeaderProps) {
   const { t } = useTranslation('crd-space');
@@ -56,7 +63,7 @@ export function SpaceHeader({
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
-    <div className={cn('flex flex-col bg-background', className)}>
+    <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
       <div
         className="relative w-full h-[256px] overflow-hidden group"
         role="img"
@@ -81,8 +88,9 @@ export function SpaceHeader({
           }}
         />
 
-        {/* Top-right action buttons */}
-        <div className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8 pt-8">
+        {/* Top-right action buttons — when overlaid, push down by header height
+            (h-16) so the row sits below the transparent sticky header. */}
+        <div className={cn('absolute top-0 left-0 right-0 z-10 px-6 md:px-8', overlayHeader ? 'pt-24' : 'pt-8')}>
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
               <div className="flex items-center gap-2">
