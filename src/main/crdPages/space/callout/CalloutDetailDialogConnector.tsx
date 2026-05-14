@@ -542,6 +542,14 @@ export function CalloutDetailDialogConnector({
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}
+        // Deleting the post must clear the inline preview too — otherwise the
+        // grid refreshes without the post but the preview keeps rendering its
+        // cached snapshot, making it look like the deletion failed.
+        onDeleted={() => {
+          setPostEditOpen(false);
+          setPostContributionId(undefined);
+          setPostId(undefined);
+        }}
       />
     ) : null;
 
