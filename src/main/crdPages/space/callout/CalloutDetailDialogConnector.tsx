@@ -10,6 +10,7 @@ import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialo
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
 import { ShareButton } from '@/crd/components/common/ShareButton';
+import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -28,6 +29,8 @@ import { CollaboraFramingConnector } from './CollaboraFramingConnector';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
+import { LinkContributionAddConnector } from './LinkContributionAddConnector';
+import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { MemoContributionConnector } from './MemoContributionConnector';
@@ -116,6 +119,23 @@ function ContributionsSlot({
     ) : null
   ) : null;
 
+  // Link contributions render as a list (not a card grid), with inline add + edit / delete
+  // affordances gated by per-link authorization.
+  if (contributionType === CalloutContributionType.Link) {
+    return (
+      <div ref={inViewRef}>
+        {!loading && (
+          <LinkContributionListSlot
+            calloutId={callout.id}
+            contributions={mapped}
+            canCreateContribution={canCreateContribution}
+            onContributionCreated={onContributionCreated}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div ref={inViewRef}>
       {!loading && (
@@ -126,6 +146,81 @@ function ContributionsSlot({
         />
       )}
     </div>
+  );
+}
+
+function LinkContributionListSlot({
+  calloutId,
+  contributions,
+  canCreateContribution,
+  onContributionCreated,
+}: {
+  calloutId: string;
+  contributions: ContributionCardData[];
+  canCreateContribution: boolean;
+  onContributionCreated?: () => void;
+}) {
+  const [addOpen, setAddOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<
+    | {
+        contributionId: string;
+        linkId: string;
+        url: string;
+        displayName: string;
+        description?: string;
+        canDelete: boolean;
+        intent: 'edit' | 'delete';
+      }
+    | undefined
+  >(undefined);
+
+  const links = contributions.map(c => ({
+    id: c.id,
+    url: c.linkUrl ?? '',
+    displayName: c.title,
+    description: c.linkDescription,
+    canEdit: c.canEditLink,
+    canDelete: c.canDeleteLink,
+  }));
+
+  const openTarget = (contributionId: string, intent: 'edit' | 'delete') => {
+    const c = contributions.find(item => item.id === contributionId);
+    if (!c || !c.linkId) return;
+    setEditTarget({
+      contributionId: c.id,
+      linkId: c.linkId,
+      url: c.linkUrl ?? '',
+      displayName: c.title,
+      description: c.linkDescription,
+      canDelete: Boolean(c.canDeleteLink),
+      intent,
+    });
+  };
+
+  return (
+    <>
+      <ContributionLinkList
+        links={links}
+        canAdd={canCreateContribution}
+        onAdd={() => setAddOpen(true)}
+        onEdit={id => openTarget(id, 'edit')}
+        onDelete={id => openTarget(id, 'delete')}
+      />
+      {canCreateContribution && (
+        <LinkContributionAddConnector
+          calloutId={calloutId}
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          onCreated={onContributionCreated}
+        />
+      )}
+      <LinkContributionEditConnector
+        target={editTarget}
+        canDelete={editTarget?.canDelete}
+        onClose={() => setEditTarget(undefined)}
+      />
+    </>
   );
 }
 
