@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useDeleteContributionMutation,
@@ -60,16 +60,35 @@ export function LinkContributionEditConnector({
     awaitRefetchQueries: true,
   });
 
+  // Track whether the inner Link has already been deleted in a previous attempt — on retry we
+  // skip the deleteLink call (it would 404), but still need to clear the orphan contribution
+  // wrapper. Cleared whenever a new target is opened.
+  const linkAlreadyDeleted = useRef(false);
+  useEffect(() => {
+    if (!target) linkAlreadyDeleted.current = false;
+  }, [target]);
+
   const [handleConfirmDelete, deleting] = useLoadingState(async () => {
     if (!target) return;
     // Mirror the MUI flow (CalloutContributionsLink): delete the inner Link, then
     // delete the contribution wrapper so the slot is removed from the callout's
-    // contribution list. Deleting only the Link leaves an orphaned wrapper.
-    await deleteLink({ variables: { input: { ID: target.linkId } } });
-    await deleteContribution({ variables: { contributionId: target.contributionId } });
-    setPendingDelete(false);
-    onDeleted?.();
-    onClose();
+    // contribution list. Deleting only the Link leaves an orphaned wrapper, so on
+    // failure we keep the confirmation open and let the user retry — Apollo logs
+    // the error and a snackbar surfaces it via the global error link.
+    try {
+      if (!linkAlreadyDeleted.current) {
+        await deleteLink({ variables: { input: { ID: target.linkId } } });
+        linkAlreadyDeleted.current = true;
+      }
+      await deleteContribution({ variables: { contributionId: target.contributionId } });
+      linkAlreadyDeleted.current = false;
+      setPendingDelete(false);
+      onDeleted?.();
+      onClose();
+    } catch {
+      // Stay on the confirmation dialog so the user can retry. State already reflects which
+      // mutation succeeded via `linkAlreadyDeleted`, so a retry skips the half that's done.
+    }
   });
 
   return (
