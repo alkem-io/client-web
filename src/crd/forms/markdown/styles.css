@@ -2,7 +2,10 @@
 
 .crd-markdown-editor .ProseMirror {
   outline: none;
-  min-height: 120px;
+  /* Fill the flex parent so the whole visible area is a click target — without this the
+     editable div is only the height of its content (~120px when empty), and clicks below
+     that strip land outside the contenteditable and don't place a caret. */
+  min-height: 100%;
   padding: 0.75rem;
   font-size: 0.875rem;
   line-height: 1.625;

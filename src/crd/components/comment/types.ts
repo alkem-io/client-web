@@ -20,7 +20,18 @@ export type CommentData = {
   id: string;
   author: CommentAuthor;
   content: string;
+  /** Pre-formatted relative-time display string (e.g. "2 minutes ago",
+   *  "just now"). Produced by the integration-layer mapper via
+   *  `formatTimeElapsed` so the CRD component renders it as-is. The mapper's
+   *  consumer is expected to re-run periodically (see `useNow` in
+   *  `useCrdRoomComments`) to keep the string current. */
   timestamp: string;
+  /** Raw epoch milliseconds for the message. Used by `CommentThread` to
+   *  sort comments numerically (newest-first for top-level, oldest-first
+   *  for replies within a parent). Kept separate from `timestamp` because
+   *  the display string ("2 minutes ago") cannot be reliably parsed back
+   *  into a Date. */
+  timestampMs: number;
   parentId?: string;
   isDeleted?: boolean;
   reactions: CommentReaction[];

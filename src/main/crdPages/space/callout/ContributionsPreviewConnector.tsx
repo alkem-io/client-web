@@ -1,15 +1,21 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { getCalloutContributionType } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
+import { MemoContributionAddConnector } from './MemoContributionAddConnector';
+import { PostContributionAddConnector } from './PostContributionAddConnector';
+import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 
 const MAX_PREVIEW_ITEMS = 4;
 const ITEMS_BEFORE_MORE = 3;
@@ -25,10 +31,21 @@ export function ContributionsPreviewConnector({
   onShowAll,
   onContributionClick,
 }: ContributionsPreviewConnectorProps) {
-  const { t } = useTranslation('crd-space');
+  const { t, i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
 
   const contributionType = getCalloutContributionType(callout);
-  const contributionsEnabled = callout.settings.contribution.enabled && !!contributionType;
+  // Section visibility follows MUI's `CalloutView` — driven by the presence of
+  // `allowedTypes`, not the `enabled` flag. Turning both Members/Admins switches
+  // off sets `enabled: false` + `canAddContributions: None`, but the callout is
+  // still "a memo callout that collects memos" and existing contributions must
+  // stay reachable. The Add tile is gated separately on `canCreateContribution`.
+  const hasContributionType = !!contributionType;
+
+  const { canCreateContribution } = useCalloutCollaborationPermissions({
+    callout,
+    contributionType: contributionType ?? CalloutContributionType.Post,
+  });
 
   const {
     inViewRef,
@@ -37,12 +54,40 @@ export function ContributionsPreviewConnector({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
     pageSize: MAX_PREVIEW_ITEMS,
-    skip: !contributionsEnabled,
+    skip: !hasContributionType,
   });
 
-  const contributions = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
+  const contributions = items
+    .map(item => mapAnyContributionToCardData(item, locale))
+    .filter(Boolean) as ContributionCardData[];
 
-  if (!contributionsEnabled || !contributionType || contributions.length === 0) {
+  // The "+ Add" tile mirrors the detail-dialog flow (CalloutDetailDialogConnector → ContributionsSlot):
+  // appended as a trailing slot in the same grid using the existing add connectors, so the user can
+  // create a memo / whiteboard / post directly from the feed-level card. Link contributions don't yet
+  // have a CRD add connector, so they keep the list-only treatment.
+  const defaults = callout.contributionDefaults;
+  const addTile: ReactNode =
+    canCreateContribution && contributionType ? (
+      contributionType === CalloutContributionType.Whiteboard ? (
+        <WhiteboardContributionAddConnector
+          key="add-tile"
+          calloutId={callout.id}
+          defaultDisplayName={defaults?.defaultDisplayName}
+          defaultContent={defaults?.whiteboardContent}
+        />
+      ) : contributionType === CalloutContributionType.Memo ? (
+        <MemoContributionAddConnector key="add-tile" calloutId={callout.id} />
+      ) : contributionType === CalloutContributionType.Post ? (
+        <PostContributionAddConnector
+          key="add-tile"
+          calloutId={callout.id}
+          defaultDisplayName={defaults?.defaultDisplayName}
+          defaultDescription={defaults?.postDescription}
+        />
+      ) : null
+    ) : null;
+
+  if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
   }
 
@@ -50,7 +95,18 @@ export function ContributionsPreviewConnector({
   const visibleItems = hasMore ? contributions.slice(0, ITEMS_BEFORE_MORE) : contributions;
   const moreCount = total - ITEMS_BEFORE_MORE;
 
-  // Links render as a list, not cards
+  // MUI parity (`CalloutContributionsBlock`): a `Contributions (n)` header
+  // anchors the section so the callout's nature is obvious even with zero
+  // contributions and contributions disabled. Without the header, a memo
+  // callout whose toggles are off looks like a plain post in the feed and
+  // there's no signal that contributions ever lived here.
+  const header = (
+    <p className="text-label uppercase text-muted-foreground mt-4 mb-2">
+      {t('callout.contributionsHeader', { count: total })}
+    </p>
+  );
+
+  // Links render as a list, not a card grid.
   if (contributionType === CalloutContributionType.Link) {
     const links = contributions.map(c => ({
       id: c.id,
@@ -60,8 +116,11 @@ export function ContributionsPreviewConnector({
     }));
 
     return (
-      <div ref={inViewRef} className="mt-4">
-        <ContributionLinkList links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links} />
+      <div ref={inViewRef}>
+        {header}
+        {contributions.length > 0 ? (
+          <ContributionLinkList links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links} />
+        ) : null}
         {hasMore && (
           <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
             {t('callout.moreContributions', { count: moreCount })}
@@ -79,43 +138,55 @@ export function ContributionsPreviewConnector({
   if (usesOverlayPattern && hasMore) {
     const lastContribution = contributions[ITEMS_BEFORE_MORE];
     return (
-      <div ref={inViewRef} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-        {visibleItems.map(contribution => (
-          <ContributionCard
-            key={contribution.id}
-            contribution={contribution}
+      <div ref={inViewRef}>
+        {header}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {visibleItems.map(contribution => (
+            <ContributionCard
+              key={contribution.id}
+              contribution={contribution}
+              contributionType={contributionType}
+              onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+            />
+          ))}
+          <OverlayMoreCard
+            lastContribution={lastContribution}
             contributionType={contributionType}
-            onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+            label={t('callout.moreContributions', { count: moreCount })}
+            onClick={onShowAll}
           />
-        ))}
-        <OverlayMoreCard
-          lastContribution={lastContribution}
-          contributionType={contributionType}
-          label={t('callout.moreContributions', { count: moreCount })}
-          onClick={onShowAll}
-        />
+        </div>
       </div>
     );
   }
 
+  // Default branch: header + grid. Renders even when the grid is empty (header
+  // alone signals "this is a contribution-collecting callout, currently 0").
   return (
-    <div ref={inViewRef} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-      {visibleItems.map(contribution => (
-        <ContributionCard
-          key={contribution.id}
-          contribution={contribution}
-          contributionType={contributionType}
-          onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
-        />
-      ))}
-      {hasMore && (
-        <button
-          type="button"
-          className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          onClick={onShowAll}
-        >
-          {t('callout.moreContributions', { count: moreCount })}
-        </button>
+    <div ref={inViewRef}>
+      {header}
+      {(visibleItems.length > 0 || hasMore || addTile) && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {visibleItems.map(contribution => (
+            <ContributionCard
+              key={contribution.id}
+              contribution={contribution}
+              contributionType={contributionType}
+              onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+            />
+          ))}
+          {hasMore ? (
+            <button
+              type="button"
+              className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={onShowAll}
+            >
+              {t('callout.moreContributions', { count: moreCount })}
+            </button>
+          ) : (
+            addTile
+          )}
+        </div>
       )}
     </div>
   );

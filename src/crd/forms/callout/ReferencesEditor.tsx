@@ -1,5 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import type { ReferenceRow } from '@/crd/forms/callout/types';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
@@ -22,6 +24,11 @@ const createEmptyRow = (): ReferenceRow => ({ title: '', url: '', description: '
  */
 export function ReferencesEditor({ rows, onChange, errors, disabled }: ReferencesEditorProps) {
   const { t } = useTranslation('crd-space');
+  // Pending delete confirmation — CRD rule 9: "every destructive action…
+  // must go through ConfirmationDialog before the mutation fires."
+  // We treat staged-not-yet-saved removals the same way as server-side
+  // deletes, since once Save commits the row is gone with no client-side undo.
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
 
   const updateRow = (index: number, patch: Partial<ReferenceRow>) => {
     onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
@@ -34,6 +41,8 @@ export function ReferencesEditor({ rows, onChange, errors, disabled }: Reference
   const addRow = () => {
     onChange([...rows, createEmptyRow()]);
   };
+
+  const pendingDeleteRow = pendingDeleteIndex !== null ? rows[pendingDeleteIndex] : undefined;
 
   return (
     <div className="space-y-3">
@@ -98,7 +107,7 @@ export function ReferencesEditor({ rows, onChange, errors, disabled }: Reference
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => removeRow(index)}
+                onClick={() => setPendingDeleteIndex(index)}
                 disabled={disabled}
                 aria-label={t('references.removeRow')}
                 className="text-muted-foreground hover:text-destructive"
@@ -114,6 +123,24 @@ export function ReferencesEditor({ rows, onChange, errors, disabled }: Reference
         <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
         {t('references.addRow')}
       </Button>
+
+      <ConfirmationDialog
+        open={pendingDeleteIndex !== null}
+        onOpenChange={open => {
+          if (!open) setPendingDeleteIndex(null);
+        }}
+        title={t('references.removeConfirm.title')}
+        description={t('references.removeConfirm.description', {
+          name: pendingDeleteRow?.title.trim() || pendingDeleteRow?.url || t('references.removeConfirm.unnamed'),
+        })}
+        confirmLabel={t('references.removeConfirm.confirm')}
+        cancelLabel={t('dialogs.cancel')}
+        variant="destructive"
+        onConfirm={() => {
+          if (pendingDeleteIndex !== null) removeRow(pendingDeleteIndex);
+          setPendingDeleteIndex(null);
+        }}
+      />
     </div>
   );
 }

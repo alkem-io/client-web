@@ -168,6 +168,7 @@
     "document": "Document",
     "moreWhiteboards": "+{{count}} more",
     "moreContributions": "+{{count}} more",
+    "contributionsHeader": "Contributions ({{count}})",
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
@@ -218,7 +219,12 @@
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "clearTypeConfirm": {
+      "title": "Remove this content type?",
+      "description": "Once you save, the existing content will be deleted and you won't be able to attach a different type to this post. This action cannot be undone.",
+      "confirm": "Remove"
+    }
   },
   "contribution": {
     "edit": "Edit",
@@ -421,7 +427,8 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
-    "tagsPlaceholder": "Comma-separated tags",
+    "tagsPlaceholder": "Add a tag and press Enter",
+    "tagsTooShort": "Each tag must be at least {{min}} characters.",
     "framingType": "Add to post",
     "visibility": "Visibility",
     "publishedLabel": "Published",
@@ -485,7 +492,13 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Optional description",
     "addRow": "Add another reference",
-    "removeRow": "Remove reference"
+    "removeRow": "Remove reference",
+    "removeConfirm": {
+      "title": "Remove this reference?",
+      "description": "“{{name}}” will be removed once you save. This cannot be undone.",
+      "confirm": "Remove",
+      "unnamed": "this reference"
+    }
   },
   "responseDefaults": {
     "srDescription": "Configure the default values for new contributions in this $t(common.callout).",
@@ -634,6 +647,19 @@
     "emptyDescription": "No description",
     "references": "References"
   },
+  "postLocation": {
+    "label": "Post location",
+    "warning": "Be careful changing the response location. Moving the response to another post will make it disappear from the current post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
+    "moved": "Response moved successfully.",
+    "moveFailed": "Could not move the response. Please try again."
+  },
+  "whiteboardPreview": {
+    "label": "Selected whiteboard preview",
+    "edit": "Edit whiteboard",
+    "share": "Share whiteboard",
+    "close": "Close preview",
+    "openFull": "Click to see the full whiteboard"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
@@ -674,6 +700,12 @@
       "description": "The framing content for this $t(common.callout) will be removed. This cannot be undone.",
       "confirm": "Remove",
       "cancel": "Keep"
+    },
+    "confirmClose": {
+      "title": "Close this dialog?",
+      "description": "Any unsaved comment text will be lost.",
+      "confirm": "Close",
+      "cancel": "Keep open"
     }
   },
   "poll": {

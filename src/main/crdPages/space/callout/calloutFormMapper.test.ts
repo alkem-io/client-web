@@ -11,6 +11,7 @@ import {
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
   allowedActorsFromServer,
@@ -340,11 +341,11 @@ describe('mapFormToCalloutCreationInput — contribution settings', () => {
 
 describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
   it('tags: included on framing.tags only when non-empty; profile.tagsets is never set on create', () => {
-    const withTags = mapFormToCalloutCreationInput(baseValues({ tags: 'a, b' }), createOptions);
+    const withTags = mapFormToCalloutCreationInput(baseValues({ tags: ['a', 'b'] }), createOptions);
     expect(withTags.input.framing.tags).toEqual(['a', 'b']);
     expect((withTags.input.framing.profile as { tagsets?: unknown }).tagsets).toBeUndefined();
 
-    const blankTags = mapFormToCalloutCreationInput(baseValues({ tags: '   ' }), createOptions);
+    const blankTags = mapFormToCalloutCreationInput(baseValues({ tags: [] }), createOptions);
     expect(blankTags.input.framing.tags).toBeUndefined();
   });
 
@@ -397,7 +398,13 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(noResponse.input.contributionDefaults).toBeUndefined();
   });
 
-  it('contributionDefaults: empty whiteboardContent is omitted for whiteboard responses (create + update)', () => {
+  it('contributionDefaults on create: empty whiteboardContent falls back to EmptyWhiteboardString (MUI parity)', () => {
+    // MUI's CreateCalloutDialog (CreateCalloutDialog.tsx) always sends
+    // `contributionDefaults.whiteboardContent` when allowedTypes includes
+    // Whiteboard — its form initializes the field to `EmptyWhiteboardString`,
+    // not `''`. The server requires a valid initial canvas to seed new
+    // whiteboard contributions; omitting it makes "+ Add whiteboard" fail
+    // even though the callout itself was created.
     const create = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'whiteboard',
@@ -405,8 +412,14 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
       }),
       createOptions
     );
-    expect(create.input.contributionDefaults).toBeUndefined();
+    expect(create.input.contributionDefaults).toEqual({
+      defaultDisplayName: undefined,
+      postDescription: undefined,
+      whiteboardContent: EmptyWhiteboardString,
+    });
+  });
 
+  it('contributionDefaults on update: empty whiteboardContent stays undefined (server preserves existing default)', () => {
     const update = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'whiteboard',
@@ -520,7 +533,7 @@ describe('mapFormToCalloutUpdateInput', () => {
   it('tagsets: included only when editMeta.framingProfileTagsetId is present', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
-        tags: 'a, b',
+        tags: ['a', 'b'],
         editMeta: { framingProfileTagsetId: 'tagset-1' },
       }),
       updateOptions

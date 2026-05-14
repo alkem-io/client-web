@@ -1,22 +1,19 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useSpaceContentTemplatesOnSpaceQuery,
-  useTemplateContentLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { Loading } from '@/crd/components/common/Loading';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
-import { Button } from '@/crd/primitives/button';
-import { Label } from '@/crd/primitives/label';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
+import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 
 const WHITEBOARD_DEFAULT_TEMPLATE_ID = '__response_default_whiteboard';
 
@@ -24,26 +21,24 @@ type ResponseDefaultsConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   type: ResponseType;
-  spaceId?: string;
   values: ContributionDefaults;
   onSave: (next: ContributionDefaults) => void;
 };
 
 /**
- * Wraps `ResponseDefaultsDialog` and provides the two integration-only slots:
- * the template picker (fetches `useSpaceContentTemplatesOnSpaceQuery` and uses
- * `useTemplateContentLazyQuery` to load the picked template's content), and
- * the whiteboard-default launcher that opens `CrdSingleUserWhiteboardDialog`.
+ * Wraps `ResponseDefaultsDialog` and provides the whiteboard-default sub-flow:
+ * an inline preview box (`InlineWhiteboardPreview`) that opens
+ * `CrdSingleUserWhiteboardDialog` for in-place editing.
  *
- * The template picker is a minimal select-style list for now — the popover +
- * search pattern from the prototype (spec T026) can be refined without
- * changing the prop contract.
+ * MUI parity: the legacy `ContributionsSettings{Whiteboard,Post}` dialogs
+ * expose only a default title (+ optional description for posts / inline
+ * whiteboard preview for whiteboards) — there is no template picker on
+ * either path, so we don't render one here either.
  */
 export function ResponseDefaultsConnector({
   open,
   onOpenChange,
   type,
-  spaceId,
   values,
   onSave,
 }: ResponseDefaultsConnectorProps) {
@@ -52,73 +47,37 @@ export function ResponseDefaultsConnector({
   const [whiteboardPreviewSettings, setWhiteboardPreviewSettings] = useState<WhiteboardPreviewSettings>(
     DefaultWhiteboardPreviewSettings
   );
-  // Read whiteboard content straight from `values` so template-applied content
-  // (which lands via `onSave` → parent `values.whiteboardContent`) is always
-  // visible to the editor, instead of being shadowed by stale local state.
+  // Captured each time the user saves the inline whiteboard editor so the
+  // preview thumbnail reflects the current canvas (MUI parity). These blobs
+  // are local to the defaults flow — the defaults whiteboard is a virtual
+  // template, not a server entity, so we don't upload them anywhere.
+  const [previewImages, setPreviewImages] = useState<WhiteboardPreviewImage[] | undefined>(undefined);
+  const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(previewImages);
+  // Read whiteboard content straight from `values` so external updates land
+  // immediately in the editor instead of being shadowed by local state.
   const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
 
-  const needsTemplates = (type === 'post' || type === 'whiteboard') && Boolean(spaceId) && open;
-  const { data: templatesData, loading: templatesLoading } = useSpaceContentTemplatesOnSpaceQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: !needsTemplates,
-  });
-
-  const templates =
-    templatesData?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(tmpl => ({
-      id: tmpl.id,
-      name: tmpl.profile.displayName,
-    })) ?? [];
-
-  const [getTemplateContent] = useTemplateContentLazyQuery();
-
-  const applyTemplate = async (templateId: string) => {
-    if (!templateId) return;
-    const { data } = await getTemplateContent({ variables: { templateId, includeCallout: true } });
-    const callout = data?.lookup.template?.callout;
-    if (!callout) return;
-    // Pre-fill contribution defaults from the template's contributionDefaults.
-    const defaults = callout.contributionDefaults;
-    if (!defaults) return;
-    onSave({
-      defaultDisplayName: defaults.defaultDisplayName ?? values.defaultDisplayName,
-      postDescription: defaults.postDescription ?? values.postDescription,
-      whiteboardContent: defaults.whiteboardContent ?? values.whiteboardContent,
-    });
-  };
-
-  const templateSlot =
-    type === 'post' || type === 'whiteboard' ? (
-      <div className="space-y-1.5">
-        <Label htmlFor="response-defaults-template" className="text-body text-foreground">
-          {t('responseDefaults.template')}
-        </Label>
-        <select
-          id="response-defaults-template"
-          className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-          disabled={templatesLoading || templates.length === 0}
-          onChange={e => void applyTemplate(e.target.value)}
-          defaultValue=""
-        >
-          <option value="" disabled={true}>
-            {templatesLoading ? t('responseDefaults.templateLoading') : t('responseDefaults.templatePlaceholder')}
-          </option>
-          {templates.map(tmpl => (
-            <option key={tmpl.id} value={tmpl.id}>
-              {tmpl.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    ) : null;
+  // The preview blobs and preview-settings state are session-local — they
+  // live only as long as the dialog is open against a whiteboard response.
+  // Reset them when the dialog closes or when the response type switches
+  // away from whiteboard so a stale thumbnail doesn't bleed into a later
+  // session that might be looking at a different default.
+  useEffect(() => {
+    if (!open || type !== 'whiteboard') {
+      setPreviewImages(undefined);
+      setWhiteboardPreviewSettings(DefaultWhiteboardPreviewSettings);
+    }
+  }, [open, type]);
 
   const whiteboardSlot =
     type === 'whiteboard' ? (
       <>
-        <Button variant="outline" size="sm" onClick={() => setWhiteboardEditorOpen(true)}>
-          {values.whiteboardContent && values.whiteboardContent !== EmptyWhiteboardString
-            ? t('responseDefaults.editWhiteboard')
-            : t('responseDefaults.configureWhiteboard')}
-        </Button>
+        <InlineWhiteboardPreview
+          onEdit={() => setWhiteboardEditorOpen(true)}
+          editLabel={t('framing.edit')}
+          previewImageUrl={whiteboardPreviewUrl}
+          imageAlt={values.defaultDisplayName || t('responseDefaults.defaultWhiteboard')}
+        />
         <Suspense fallback={<Loading />}>
           <CrdSingleUserWhiteboardDialog
             entities={{
@@ -136,8 +95,9 @@ export function ResponseDefaultsConnector({
             }}
             actions={{
               onCancel: () => setWhiteboardEditorOpen(false),
-              onUpdate: async (wb, _previewImages) => {
+              onUpdate: async (wb, nextPreviewImages) => {
                 setWhiteboardPreviewSettings(wb.previewSettings);
+                setPreviewImages(nextPreviewImages);
                 onSave({ ...values, whiteboardContent: wb.content });
                 setWhiteboardEditorOpen(false);
               },
@@ -161,7 +121,6 @@ export function ResponseDefaultsConnector({
       type={type}
       values={values}
       onSave={onSave}
-      templateSlot={templateSlot}
       whiteboardSlot={whiteboardSlot}
     />
   );

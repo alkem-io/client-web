@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
@@ -20,12 +21,6 @@ type ResponseDefaultsDialogProps = {
   /** Commits draft values back to the parent form. */
   onSave: (next: ContributionDefaults) => void;
   /**
-   * Optional template-picker popover slot — injected by the connector
-   * (`ResponseDefaultsConnector` fetches `useSpaceContentTemplatesOnSpaceQuery`
-   * and passes the picker). Rendered for post + whiteboard types only (FR-41).
-   */
-  templateSlot?: ReactNode;
-  /**
    * Optional whiteboard-editor launcher slot — rendered for the whiteboard
    * type (the connector wires `CrdSingleUserWhiteboardDialog`).
    */
@@ -44,12 +39,16 @@ export function ResponseDefaultsDialog({
   type,
   values,
   onSave,
-  templateSlot,
   whiteboardSlot,
   disabled,
 }: ResponseDefaultsDialogProps) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<ContributionDefaults>(values);
+  // Snapshot of `values` at open-time — drives the dirty check that gates the
+  // "Discard changes?" confirmation on close. Re-seeded on every open so each
+  // dialog session starts clean.
+  const [openSnapshot, setOpenSnapshot] = useState<ContributionDefaults>(values);
+  const [discardOpen, setDiscardOpen] = useState(false);
 
   // Seed the draft only on the closed → open transition. A parent re-render
   // that hands a new `values` reference (unrelated form mutation, identity
@@ -61,6 +60,7 @@ export function ResponseDefaultsDialog({
   useEffect(() => {
     if (open && !wasOpenRef.current) {
       setDraft(valuesRef.current);
+      setOpenSnapshot(valuesRef.current);
     }
     wasOpenRef.current = open;
   }, [open]);
@@ -79,6 +79,28 @@ export function ResponseDefaultsDialog({
       );
     }
   }, [open, values.whiteboardContent]);
+
+  // Dirty against the open-time snapshot rather than against `values` —
+  // `values` may have been mutated via the whiteboard sub-flow (which commits
+  // through the parent form) and is intended to be preserved on Save. The
+  // snapshot is the only stable "what did the user start with" reference.
+  const isDirty =
+    draft.defaultDisplayName !== openSnapshot.defaultDisplayName ||
+    draft.postDescription !== openSnapshot.postDescription ||
+    values.whiteboardContent !== openSnapshot.whiteboardContent;
+
+  const handleRequestClose = () => {
+    if (isDirty) {
+      setDiscardOpen(true);
+      return;
+    }
+    onOpenChange(false);
+  };
+
+  const handleConfirmDiscard = () => {
+    setDiscardOpen(false);
+    onOpenChange(false);
+  };
 
   const title = (() => {
     switch (type) {
@@ -105,14 +127,21 @@ export function ResponseDefaultsDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={nextOpen => {
+        if (!nextOpen) {
+          handleRequestClose();
+        } else {
+          onOpenChange(true);
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-2xl">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription className="sr-only">{t('responseDefaults.srDescription')}</DialogDescription>
 
         <div className="space-y-4 min-w-0">
-          {(type === 'post' || type === 'whiteboard') && templateSlot}
-
           <div className="space-y-1.5">
             <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
               {t('responseDefaults.defaultTitle')}
@@ -149,7 +178,7 @@ export function ResponseDefaultsDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={disabled}>
+          <Button variant="ghost" onClick={handleRequestClose} disabled={disabled}>
             {t('dialogs.cancel')}
           </Button>
           <Button onClick={handleSave} disabled={disabled}>
@@ -157,6 +186,7 @@ export function ResponseDefaultsDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+      <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleConfirmDiscard} />
     </Dialog>
   );
 }

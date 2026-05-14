@@ -185,6 +185,7 @@
     "memo": "Nota",
     "moreWhiteboards": "+{{count}} más",
     "moreContributions": "+{{count}} más",
+    "contributionsHeader": "Contribuciones ({{count}})",
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
@@ -218,7 +219,12 @@
     "postUnsavedCloseCancel": "Seguir editando",
     "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
-    "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo."
+    "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
+    "clearTypeConfirm": {
+      "title": "¿Quitar este tipo de contenido?",
+      "description": "Al guardar, el contenido existente se eliminará y no podrás adjuntar un tipo distinto a esta publicación. Esta acción no se puede deshacer.",
+      "confirm": "Quitar"
+    }
   },
   "contribution": {
     "edit": "Editar",
@@ -430,7 +436,8 @@
     "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "Escribe algo...",
     "tagsLabel": "Etiquetas",
-    "tagsPlaceholder": "Etiquetas separadas por comas",
+    "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
+    "tagsTooShort": "Cada etiqueta debe tener al menos {{min}} caracteres.",
     "framingType": "Añadir a la publicación",
     "visibility": "Visibilidad",
     "publishedLabel": "Publicado",
@@ -494,7 +501,13 @@
     "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "Descripción opcional",
     "addRow": "Añadir otra referencia",
-    "removeRow": "Eliminar referencia"
+    "removeRow": "Eliminar referencia",
+    "removeConfirm": {
+      "title": "¿Eliminar esta referencia?",
+      "description": "«{{name}}» se eliminará al guardar. Esta acción no se puede deshacer.",
+      "confirm": "Eliminar",
+      "unnamed": "esta referencia"
+    }
   },
   "responseDefaults": {
     "srDescription": "Configura los valores por defecto para las nuevas contribuciones de este aviso.",
@@ -643,6 +656,19 @@
     "emptyDescription": "Sin descripción",
     "references": "Referencias"
   },
+  "postLocation": {
+    "label": "Ubicación de la publicación",
+    "warning": "Ten cuidado al cambiar la ubicación de la respuesta. Al moverla a otra publicación, desaparecerá de la actual. Esto puede dificultar que las personas, incluida quien creó la respuesta, la recuperen. Solo puedes mover respuestas dentro del mismo Espacio o Subespacio.",
+    "moved": "Respuesta movida correctamente.",
+    "moveFailed": "No se pudo mover la respuesta. Por favor, inténtalo de nuevo."
+  },
+  "whiteboardPreview": {
+    "label": "Vista previa del whiteboard seleccionado",
+    "edit": "Editar whiteboard",
+    "share": "Compartir whiteboard",
+    "close": "Cerrar vista previa",
+    "openFull": "Haz clic para ver el whiteboard completo"
+  },
   "comments": {
     "title": "Discusión",
     "showMore": "Mostrar más",
@@ -683,6 +709,12 @@
       "description": "El contenido de encuadre de esta llamada se eliminará. Esta acción no se puede deshacer.",
       "confirm": "Eliminar",
       "cancel": "Conservar"
+    },
+    "confirmClose": {
+      "title": "¿Cerrar este diálogo?",
+      "description": "Se perderá cualquier comentario no guardado.",
+      "confirm": "Cerrar",
+      "cancel": "Mantener abierto"
     }
   },
   "poll": {

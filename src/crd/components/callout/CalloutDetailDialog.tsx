@@ -1,11 +1,17 @@
 import { Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ReferencesAndTagsStrip,
+  type ReferencesAndTagsStripReference,
+} from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
+
+export type CalloutDetailDialogReference = ReferencesAndTagsStripReference;
 
 export type CalloutDetailDialogData = {
   id: string;
@@ -19,6 +25,10 @@ export type CalloutDetailDialogData = {
   timestamp?: string;
   commentCount?: number;
   reactionCount?: number;
+  /** Default-tagset tags, displayed as a compact pill row below the title (MUI `CalloutHeader` parity). */
+  tags?: string[];
+  /** External references, rendered alongside the tag strip. Clicking a reference opens its URI. */
+  references?: CalloutDetailDialogReference[];
 };
 
 type CalloutDetailDialogProps = {
@@ -165,6 +175,8 @@ export function CalloutDetailDialog({
               )}
 
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
+
+              <ReferencesAndTagsStrip references={callout.references} tags={callout.tags} />
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
