@@ -277,7 +277,6 @@
     "officeDocumentsNotEnabled": "Office-Dokumente sind für diesen Space nicht aktiviert."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} Mitglieder und {{organizations}} Organisationen in diesem Bereich.",
     "inviteMember": "Mitglied einladen",
     "search": "Mitglieder oder Organisationen suchen...",

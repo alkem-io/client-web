@@ -277,7 +277,6 @@
     "officeDocumentsNotEnabled": "Office documents are not enabled for this space."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} members and {{organizations}} organizations in this space.",
     "inviteMember": "Invite Member",
     "search": "Search members or organizations...",

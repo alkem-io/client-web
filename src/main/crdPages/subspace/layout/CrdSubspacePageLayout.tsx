@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
@@ -20,6 +21,7 @@ import {
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
@@ -48,6 +50,7 @@ export default function CrdSubspacePageLayout() {
   const { t } = useTranslation(['crd-spaceSettings', 'crd-subspace']);
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const createSubspace = useCreateSubspace(data.subspaceId ?? '');
 
@@ -212,9 +215,8 @@ export default function CrdSubspacePageLayout() {
           actions={{
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
+            onShareClick: () => setShareDialogOpen(true),
           }}
-          memberAvatars={data.bannerAvatars}
-          onMemberClick={() => setActiveDialog('community')}
           overlayHeader={enableBannerOverlay}
         />
 
@@ -272,6 +274,23 @@ export default function CrdSubspacePageLayout() {
       />
 
       <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
+
+      {/* Share dialog — opened from the SubspaceHeader share icon. Mirrors the L0 wiring in
+          CrdSpacePageLayout: URL + clipboard copy, plus a "Share on Alkemio" sub-view. */}
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        url={data.subspaceUrl}
+        shareOnAlkemioSlot={
+          data.subspaceUrl ? (
+            <CalloutShareOnAlkemioForm
+              key={data.subspaceUrl}
+              url={data.subspaceUrl}
+              entityLabel={t('common.subspace', { ns: 'translation' }).toLowerCase()}
+            />
+          ) : undefined
+        }
+      />
 
       {data.canCreateSubspace && (
         <CreateSubspaceDialog

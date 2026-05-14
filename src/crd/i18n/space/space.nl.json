@@ -277,7 +277,6 @@
     "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
     "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",

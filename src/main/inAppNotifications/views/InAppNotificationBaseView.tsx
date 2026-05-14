@@ -41,11 +41,9 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={props.to ? RouterLink : Box} {...props} />;
 
-const getSpaceAvatar = (space?: {
-  id?: string;
-  about?: { profile?: { cardBanner?: { uri?: string }; avatar?: { uri?: string } } };
-}) => {
-  return space?.about?.profile?.avatar?.uri || space?.about?.profile?.cardBanner?.uri || null;
+const getSpaceAvatar = (space?: { id?: string; about?: { profile?: { avatar?: { uri?: string } } } }) => {
+  // Notification icon = avatar position. Never substitute cardBanner here.
+  return space?.about?.profile?.avatar?.uri || null;
 };
 
 export const InAppNotificationBaseView = ({

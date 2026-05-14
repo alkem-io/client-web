@@ -140,7 +140,6 @@ export function SpacePage() {
             bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
             color={pickColorFromId('mock-space-green-energy')}
             isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
-            memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
             actions={{
               showActivity: true,
               showVideoCall: false,
@@ -150,7 +149,6 @@ export function SpacePage() {
               onActivityClick: () => {},
               onShareClick: () => {},
             }}
-            onMemberClick={() => setActiveTab(1)}
           />
         }
         sidebar={sidebar}

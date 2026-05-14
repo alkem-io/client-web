@@ -2,14 +2,29 @@ import type { ReactNode } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
-export type SpaceSettingsHeaderProps = {
+type SpaceSettingsHeaderAvatarProps =
+  | {
+      /**
+       * Suppress the avatar entirely (renders title + tagline only). Set for L0 settings headers,
+       * since L0 has no avatar concept per the canonical visual-fields rule.
+       */
+      hideAvatar: true;
+      avatarUrl?: never;
+      initials?: never;
+      avatarColor?: never;
+    }
+  | {
+      hideAvatar?: false;
+      avatarUrl?: string | null;
+      /** Two-letter fallback shown when `avatarUrl` is absent. */
+      initials: string;
+      /** Hex color used to tint the avatar fallback (from `pickColorFromId`). */
+      avatarColor: string;
+    };
+
+export type SpaceSettingsHeaderProps = SpaceSettingsHeaderAvatarProps & {
   title: string;
   tagline?: string | null;
-  avatarUrl?: string | null;
-  /** Two-letter fallback shown when `avatarUrl` is absent. */
-  initials: string;
-  /** Hex color used to tint the avatar fallback (from `pickColorFromId`). */
-  avatarColor: string;
   /** Optional tab strip rendered below the title block; gets a full-width bottom border. */
   tabs?: ReactNode;
   className?: string;
@@ -28,6 +43,7 @@ export function SpaceSettingsHeader({
   avatarUrl,
   initials,
   avatarColor,
+  hideAvatar,
   tabs,
   className,
 }: SpaceSettingsHeaderProps) {
@@ -37,12 +53,14 @@ export function SpaceSettingsHeader({
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
             <div className="flex items-center gap-4">
-              <Avatar className="size-12 shrink-0">
-                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-                <AvatarFallback className="text-white text-body-emphasis" style={{ backgroundColor: avatarColor }}>
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              {!hideAvatar && (
+                <Avatar className="size-12 shrink-0">
+                  {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+                  <AvatarFallback className="text-white text-body-emphasis" style={{ backgroundColor: avatarColor }}>
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               <div className="min-w-0">
                 <h1 className="text-page-title truncate">{title}</h1>
                 {tagline && <p className="mt-0.5 text-body text-muted-foreground">{tagline}</p>}
