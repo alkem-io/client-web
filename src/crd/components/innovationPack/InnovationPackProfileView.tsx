@@ -155,7 +155,10 @@ export function InnovationPackProfileView({
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   {pack.providerUrl ? (
-                    <a href={pack.providerUrl} className="text-body-emphasis hover:underline truncate block">
+                    <a
+                      href={pack.providerUrl}
+                      className="text-body-emphasis hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm truncate block"
+                    >
                       {pack.providerName}
                     </a>
                   ) : (
@@ -201,7 +204,7 @@ export function InnovationPackProfileView({
                       href={ref.uri}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-body-emphasis text-primary hover:underline inline-flex items-center gap-1"
+                      className="text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm inline-flex items-center gap-1"
                     >
                       <span className="truncate">{ref.name}</span>
                       <ExternalLink aria-hidden="true" className="size-3 shrink-0" />

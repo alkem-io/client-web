@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useCreateReferenceOnProfileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   CommunityGuidelinesEditorValue,
   CommunityGuidelinesReferenceRow,
@@ -36,8 +37,9 @@ const EMPTY_VALUE: CommunityGuidelinesEditorValue = { title: '', body: '', refer
 export function useCommunityGuidelinesData(
   communityGuidelinesId: string | undefined
 ): UseCommunityGuidelinesDataResult {
-  const { communityGuidelines, loading, onUpdateCommunityGuidelines, onSelectCommunityGuidelinesTemplate } =
+  const { communityGuidelines, profileId, loading, onUpdateCommunityGuidelines, onSelectCommunityGuidelinesTemplate } =
     useCommunityGuidelines(communityGuidelinesId);
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
 
   const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
     ? {
@@ -69,12 +71,29 @@ export function useCommunityGuidelinesData(
     if (!communityGuidelines || !communityGuidelinesId) return;
     setSubmitting(true);
     try {
+      // The bulk-update mutation keys on existing reference IDs only, so a row that the user added in this
+      // editing session has no ID and would be silently dropped. Create those rows first via
+      // `createReferenceOnProfile` (mirroring `useInnovationPackAdmin`), then issue the bulk update with the
+      // existing rows. The CG query refetch triggered by `onUpdateCommunityGuidelines` reseeds the new rows
+      // from the server on the next render.
+      const newRefs = value.references.filter(r => !r.id);
+      if (newRefs.length > 0 && profileId) {
+        for (const ref of newRefs) {
+          await createReferenceOnProfile({
+            variables: {
+              input: {
+                profileID: profileId,
+                name: ref.name,
+                uri: ref.uri,
+                description: ref.description ?? '',
+              },
+            },
+          });
+        }
+      }
       await onUpdateCommunityGuidelines({
         displayName: value.title,
         description: value.body,
-        // Only existing references can travel through the bulk update (the input keys on `ID`); new rows
-        // need the dedicated `createReferenceOnProfile` path, which the live-guidelines flow doesn't expose
-        // here — so a newly-added row is dropped on save (TODO 098, mirrors the CG-template edit limitation).
         references: value.references.flatMap(r =>
           r.id ? [{ id: r.id, name: r.name, uri: r.uri, description: r.description }] : []
         ),

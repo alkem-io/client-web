@@ -75,7 +75,7 @@ export function TemplateSectionHeader({
       {showAdd && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
-            <Button size="sm" variant="outline" className="gap-2">
+            <Button size="sm" variant="outline" className="gap-2" aria-label={t('manager.addNew')}>
               <Plus aria-hidden="true" className="size-4" />
               <span className="hidden sm:inline">{t('manager.addNew')}</span>
               <ChevronDown aria-hidden="true" className="size-3 opacity-50" />
