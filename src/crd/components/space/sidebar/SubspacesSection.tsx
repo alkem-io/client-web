@@ -79,32 +79,35 @@ export function SubspacesSection({
             ))}
       </div>
       <div className="relative">
-        <div className="space-y-1">
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+        <ul role="list" className="space-y-1">
           {visible.map(subspace => (
-            <a
-              key={subspace.name}
-              href={subspace.href}
-              onClick={e => {
-                if (onSubspaceClick) {
-                  e.preventDefault();
-                  onSubspaceClick(subspace.href);
-                }
-              }}
-              className="group flex items-center justify-between px-3 py-2 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar className="w-7 h-7 rounded-md">
-                  <AvatarFallback className="rounded-md text-badge">{subspace.initials}</AvatarFallback>
-                </Avatar>
-                <span className="text-body-emphasis text-foreground">{subspace.name}</span>
-              </div>
-              <ChevronRight
-                className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-hidden="true"
-              />
-            </a>
+            <li key={subspace.href}>
+              <a
+                href={subspace.href}
+                onClick={e => {
+                  if (onSubspaceClick) {
+                    e.preventDefault();
+                    onSubspaceClick(subspace.href);
+                  }
+                }}
+                className="group flex items-center justify-between px-3 py-2 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-7 h-7 rounded-md">
+                    <AvatarFallback className="rounded-md text-badge">{subspace.initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-body-emphasis text-foreground">{subspace.name}</span>
+                </div>
+                <ChevronRight
+                  className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-hidden="true"
+                />
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
         {isTruncated && (
           <div
             aria-hidden="true"

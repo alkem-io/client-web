@@ -69,9 +69,11 @@ export function SpaceSubspacesList({
 
   const STATUS_OPTIONS: StatusFilter[] = ['all', 'active', 'archived'];
 
-  // Apply status + search + tag filters.
+  // Apply status + search + tag filters. When `disableFilters` is true, the
+  // status/tag controls are hidden — also skip their predicates so any residual
+  // state from before the prop flipped can't filter results invisibly.
   let filtered = subspaces;
-  if (statusFilter !== 'all') {
+  if (!disableFilters && statusFilter !== 'all') {
     filtered = filtered.filter(s => s.status === statusFilter);
   }
   if (searchQuery) {
@@ -80,7 +82,7 @@ export function SpaceSubspacesList({
       s => s.name.toLowerCase().includes(query) || s.description.toLowerCase().includes(query)
     );
   }
-  if (selectedTags.length > 0) {
+  if (!disableFilters && selectedTags.length > 0) {
     filtered = filtered.filter(s => selectedTags.every(tag => s.tags.includes(tag)));
   }
 
@@ -96,7 +98,8 @@ export function SpaceSubspacesList({
     setShowAll(false);
   };
 
-  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0 || statusFilter !== 'all';
+  const hasActiveFilter =
+    searchQuery.length > 0 || (!disableFilters && (selectedTags.length > 0 || statusFilter !== 'all'));
   const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
