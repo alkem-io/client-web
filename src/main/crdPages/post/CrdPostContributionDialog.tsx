@@ -37,6 +37,7 @@ import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
 import {
   emptyPostContributionFormValues,
@@ -83,6 +84,7 @@ export function CrdPostContributionDialog({
   const { t } = useTranslation('crd-space');
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
+  const markdownIntegration = useMarkdownEditorIntegration();
   const titleFieldId = useId();
   const descriptionFieldId = useId();
   const tagsFieldId = useId();
@@ -403,6 +405,9 @@ export function CrdPostContributionDialog({
                     onChange={value => updateField('description', value)}
                     disabled={submitting}
                     placeholder={t('callout.postDescriptionPlaceholder')}
+                    onImageUpload={markdownIntegration.onImageUpload}
+                    iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+                    onError={markdownIntegration.onError}
                   />
                   {errors.description && (
                     <p className="text-caption text-destructive" aria-live="polite">

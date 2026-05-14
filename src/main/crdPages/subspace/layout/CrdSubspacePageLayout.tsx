@@ -9,6 +9,7 @@ import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import {
   getVisibleSettingsTabs,
@@ -135,7 +136,7 @@ export default function CrdSubspacePageLayout() {
 
   if (isOnSettings) {
     return (
-      <>
+      <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
         {data.visibility.status !== 'active' && (
           <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
         )}
@@ -164,12 +165,12 @@ export default function CrdSubspacePageLayout() {
             </div>
           </main>
         </div>
-      </>
+      </StorageConfigContextProvider>
     );
   }
 
   return (
-    <>
+    <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
       {data.visibility.status !== 'active' && (
         <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
       )}
@@ -238,6 +239,6 @@ export default function CrdSubspacePageLayout() {
       />
 
       <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
-    </>
+    </StorageConfigContextProvider>
   );
 }

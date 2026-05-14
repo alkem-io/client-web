@@ -16,6 +16,7 @@ import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapMemoFooterProps } from './memoFooterMapper';
 import { useCrdMemoProvider } from './useCrdMemoProvider';
@@ -46,6 +47,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     useCrdMemoProvider({
       collaborationId: memoId,
     });
+
+  const markdownIntegration = useMarkdownEditorIntegration();
 
   const handleEditorReady = (editor: Editor) => {
     editorRef.current = editor;
@@ -185,6 +188,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 disabled={editorDisabled}
                 onReady={handleEditorReady}
                 className="h-full"
+                onImageUpload={markdownIntegration.onImageUpload}
+                iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+                onError={markdownIntegration.onError}
               />
             ) : (
               <Loading text={t('memo.footer.readonlyReason.connecting')} />

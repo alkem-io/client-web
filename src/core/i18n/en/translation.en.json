@@ -642,7 +642,8 @@
         "year_one": "{{count}}y",
         "year_other": "{{count}}y",
         "moreThanYears_one": "> {{count}}y",
-        "moreThanYears_other": "> {{count}}y"
+        "moreThanYears_other": "> {{count}}y",
+        "justNow": "now"
       },
       "long": {
         "timeAgo": "{{time}} ago",
@@ -659,7 +660,8 @@
         "year_one": "{{count}} year",
         "year_other": "{{count}} years",
         "moreThanYears_one": "> {{count}} year",
-        "moreThanYears_other": "> {{count}} years"
+        "moreThanYears_other": "> {{count}} years",
+        "justNow": "just now"
       }
     },
     "supportEmail": "support@alkem.io",

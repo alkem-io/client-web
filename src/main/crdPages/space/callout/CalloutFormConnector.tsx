@@ -54,6 +54,7 @@ import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/us
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import {
   diffPollOptions,
   isAddedSentinel,
@@ -134,6 +135,8 @@ export function CalloutFormConnector({
   const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
+
+  const markdownIntegration = useMarkdownEditorIntegration();
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
@@ -524,6 +527,9 @@ export function CalloutFormConnector({
             value={values.description}
             onChange={v => setField('description', v)}
             placeholder={t('forms.descriptionPlaceholder')}
+            onImageUpload={markdownIntegration.onImageUpload}
+            iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+            onError={markdownIntegration.onError}
           />
         }
         framingZoneSlot={
