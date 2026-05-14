@@ -245,7 +245,33 @@ export function CrdPostContributionDialog({
         awaitRefetchQueries: true,
       });
       const created = createData?.createContributionOnCallout.post;
-      if (created) onCreated?.({ id: created.id });
+      // References — `CreatePostInput` doesn't accept references inline, so any
+      // rows the user typed in the "More options" section need a follow-up
+      // `createReferenceOnProfile` call against the new post's profile id.
+      // Mirrors the edit-mode "new rows" branch below.
+      if (created) {
+        const newReferenceRows = values.references.filter(r => r.title.trim() && r.url.trim());
+        if (newReferenceRows.length > 0) {
+          try {
+            for (const row of newReferenceRows) {
+              await createReferenceOnProfile({
+                variables: {
+                  input: {
+                    profileID: created.profile.id,
+                    name: row.title.trim(),
+                    uri: ensureHttps(row.url),
+                    description: row.description.trim() || undefined,
+                  },
+                },
+              });
+            }
+          } catch (err) {
+            logError(new Error('Post reference creation failed', { cause: err as Error }));
+            notify(t('callout.referencesSaveFailed'), 'error');
+          }
+        }
+        onCreated?.({ id: created.id });
+      }
       onOpenChange(false);
     } else if (mode === 'edit' && post) {
       // References — diff the form's `references` against the server's
