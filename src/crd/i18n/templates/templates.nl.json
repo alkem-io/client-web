@@ -191,7 +191,6 @@
   "delete": {
     "title": "Sjabloon verwijderen?",
     "body": "“{{name}}” wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.",
-    "bodyUsedAsDefault": "“{{name}}” wordt momenteel als standaard gebruikt en wordt losgekoppeld. Dit kan niet ongedaan worden gemaakt.",
     "confirm": "Sjabloon verwijderen",
     "cancel": "Annuleren"
   },
@@ -286,9 +285,9 @@
     "templatesHeading": "Sjablonen"
   },
   "library": {
-    "title": "Innovation Library",
+    "title": "Innovatiebibliotheek",
     "subtitle": "Ontdek sjablonen en innovation packs van het platform.",
-    "pageTitle": "Innovation Library",
+    "pageTitle": "Innovatiebibliotheek",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Er zijn nog geen innovation packs beschikbaar."
@@ -301,7 +300,7 @@
       "label": "Filter op type",
       "all": "Alle",
       "types": {
-        "space": "Spaces",
+        "space": "Ruimten",
         "callout": "Samenwerkingstools",
         "whiteboard": "Whiteboards",
         "post": "Posts",

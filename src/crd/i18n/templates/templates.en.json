@@ -173,7 +173,6 @@
   "delete": {
     "title": "Delete template?",
     "body": "“{{name}}” will be permanently deleted. This cannot be undone.",
-    "bodyUsedAsDefault": "“{{name}}” is currently used as a default and will be unset. This cannot be undone.",
     "confirm": "Delete template",
     "cancel": "Cancel"
   },

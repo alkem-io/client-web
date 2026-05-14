@@ -191,7 +191,6 @@
   "delete": {
     "title": "¿Eliminar plantilla?",
     "body": "“{{name}}” se eliminará permanentemente. Esta acción no se puede deshacer.",
-    "bodyUsedAsDefault": "“{{name}}” se está usando como predeterminada y se desvinculará. Esta acción no se puede deshacer.",
     "confirm": "Eliminar plantilla",
     "cancel": "Cancelar"
   },

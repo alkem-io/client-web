@@ -191,7 +191,6 @@
   "delete": {
     "title": "Supprimer le modèle ?",
     "body": "« {{name}} » sera supprimé définitivement. Cette action est irréversible.",
-    "bodyUsedAsDefault": "« {{name}} » est actuellement utilisé comme valeur par défaut et sera dissocié. Cette action est irréversible.",
     "confirm": "Supprimer le modèle",
     "cancel": "Annuler"
   },

@@ -62,7 +62,7 @@ export type UseTemplatesManagerResult = {
   form: UseTemplateFormsResult;
   /** Import-from-library picker (Space holder only) — the page renders `<TemplatePicker {...importPicker} />`. */
   importPicker: TemplatePickerImportProps;
-  pendingDelete: { id: string; name: string; isUsedAsDefault: boolean } | null;
+  pendingDelete: { id: string; name: string } | null;
   confirmDelete: () => Promise<void>;
   cancelDelete: () => void;
 };
@@ -165,26 +165,36 @@ export function useTemplatesManager({
     });
     const fetched = contentData?.lookup.template;
     if (!fetched) return;
+    // Captured once and threaded into the form so the edit submit can build
+    // `UpdateProfileInput.tagsets: [{ ID: tagsetId, tags }]` (tags don't have a top-level field
+    // on the profile-update input).
+    const tagsetId = fetched.profile.defaultTagset?.id;
     if (card.type === 'callout') {
       if (!fetched.callout) return;
       form.openEditCallout(
         card.id,
         fetched.callout.id,
         { name: card.name, description: card.description, tags: card.tags },
-        calloutTemplateContentToFormValues(fetched.callout)
+        calloutTemplateContentToFormValues(fetched.callout),
+        tagsetId
       );
       return;
     }
     if (card.type === 'space') {
       // Space template edit (profile-only — the source space is shown but re-capture isn't wired here).
-      form.openEdit(card.id, {
-        type: 'space',
-        name: card.name,
-        description: card.description,
-        tags: card.tags,
-        recursive: true,
-        sourceSpaceId: fetched.contentSpace?.id,
-      });
+      form.openEdit(
+        card.id,
+        {
+          type: 'space',
+          name: card.name,
+          description: card.description,
+          tags: card.tags,
+          recursive: true,
+          sourceSpaceId: fetched.contentSpace?.id,
+        },
+        undefined,
+        tagsetId
+      );
       return;
     }
     const formValues = templateContentToFormValues(
@@ -195,7 +205,17 @@ export function useTemplatesManager({
     );
     if (!formValues) return;
     const subEntityId = card.type === 'communityGuidelines' ? fetched.communityGuidelines?.id : undefined;
-    form.openEdit(card.id, formValues, subEntityId);
+    // For CG: snapshot the CG entity's profile id + original reference ids so the submit can route
+    // adds/removes through `createReferenceOnProfile` / `deleteReference` (the CG update mutation
+    // only updates existing references — see `useTemplateForms.submitEdit`).
+    const cgContext =
+      card.type === 'communityGuidelines' && fetched.communityGuidelines
+        ? {
+            profileId: fetched.communityGuidelines.profile.id,
+            originalReferenceIds: (fetched.communityGuidelines.profile.references ?? []).map(r => r.id),
+          }
+        : undefined;
+    form.openEdit(card.id, formValues, subEntityId, tagsetId, cgContext);
   };
   const requestEdit = async (id: string) => {
     const card = findCard(id);
@@ -225,12 +245,26 @@ export function useTemplatesManager({
   };
 
   // ── delete ──
-  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string; isUsedAsDefault: boolean } | null>(
-    null
-  );
+  // The server-side `deleteTemplate` mutation cascades referencing defaults (it nulls
+  // `TemplateDefault` pointers + clears `innovationFlow.states[*].defaultCalloutTemplate`).
+  // The CRD client's only responsibility is to refetch the queries that show template lists
+  // or default-template pointers so the UI reflects the cascade without a hard refresh.
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTemplate] = useDeleteTemplateMutation({
-    refetchQueries: templatesSetId ? [refetchAllTemplatesInTemplatesSetQuery({ templatesSetId })] : [],
+    refetchQueries: [
+      ...(templatesSetId ? [refetchAllTemplatesInTemplatesSetQuery({ templatesSetId })] : []),
+      // Surfaces that show a default-template pointer the server may have just cleared:
+      'SpaceAdminDefaultSpaceTemplatesDetails', // Space templatesManager.templateDefaults (default-subspace-template)
+      'SpaceContentTemplatesOnSpace', // Subspaces tab's "select default" picker choices
+      'SpaceTab', // space.collaboration.innovationFlow.states[*].defaultCalloutTemplate
+      'InnovationFlowSettings', // same flow-state field, Layout-tab alternative surface
+      'SpaceTemplatesManager', // holder metadata
+      // Surfaces that show template lists:
+      'InnovationLibrary',
+      'ImportTemplateDialogAccountTemplates',
+      'ImportTemplateDialogPlatformTemplates',
+    ],
     awaitRefetchQueries: true,
     update: (cache, _result, { variables }) => {
       if (!variables?.templateId) return;
@@ -238,12 +272,10 @@ export function useTemplatesManager({
       cache.gc();
     },
   });
-  // TODO(098/V3): consult the holder's `templateDefaults` + the innovation-flow-state defaults.
-  const isUsedAsDefault = (_id: string): boolean => false;
   const requestDelete = (id: string) => {
     const card = findCard(id);
     if (!card) return;
-    setPendingDelete({ id, name: card.name, isUsedAsDefault: isUsedAsDefault(id) });
+    setPendingDelete({ id, name: card.name });
   };
   const confirmDelete = async () => {
     if (!pendingDelete) return;
@@ -252,8 +284,6 @@ export function useTemplatesManager({
     setPendingDelete(null);
     try {
       await deleteTemplate({ variables: { templateId: targetId } });
-      // TODO(098/FR-019): if it was a default, clear the referencing defaults via `useSetDefaultTemplate`
-      // (unless the backend cascade handles it — see V3).
     } finally {
       setDeletingId(null);
     }

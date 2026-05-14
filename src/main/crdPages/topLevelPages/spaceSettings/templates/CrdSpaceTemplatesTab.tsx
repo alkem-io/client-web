@@ -74,9 +74,7 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
         }}
         variant="destructive"
         title={t('delete.title')}
-        description={t(tm.pendingDelete?.isUsedAsDefault ? 'delete.bodyUsedAsDefault' : 'delete.body', {
-          name: tm.pendingDelete?.name ?? '',
-        })}
+        description={t('delete.body', { name: tm.pendingDelete?.name ?? '' })}
         confirmLabel={t('delete.confirm')}
         cancelLabel={t('delete.cancel')}
         onConfirm={() => void tm.confirmDelete()}

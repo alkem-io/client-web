@@ -2,8 +2,10 @@ import type { ReactNode } from 'react';
 import { useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useCreateReferenceOnProfileMutation,
   useCreateTemplateFromSpaceMutation,
   useCreateTemplateMutation,
+  useDeleteReferenceMutation,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
@@ -115,9 +117,20 @@ export type UseTemplateFormsResult = {
   /**
    * Open the edit dialog for an existing template, pre-filled. `subEntityId` is the id of the per-type
    * sub-entity that has its own update mutation (the CommunityGuidelines id for a CG template; unused otherwise).
+   * `tagsetId` is the id of the template profile's `defaultTagset` — required to update tags on save
+   * (`UpdateProfileInput` carries tags via a `tagsets: UpdateTagsetInput[]` array, not a top-level field).
+   * `cgContext` (CG-only) carries the CG entity's profile id and the original reference id snapshot —
+   * needed so add/remove references on save can route to `createReferenceOnProfile` / `deleteReference`
+   * (the CG update mutation only updates existing references by id).
    * Not for callout — use `openEditCallout`.
    */
-  openEdit: (templateId: string, values: TemplateFormValues, subEntityId?: string) => void;
+  openEdit: (
+    templateId: string,
+    values: TemplateFormValues,
+    subEntityId?: string,
+    tagsetId?: string,
+    cgContext?: { profileId: string; originalReferenceIds: string[] }
+  ) => void;
   /**
    * Fire the create mutation directly for an arbitrary values object (used by duplicate / import-from-library).
    * Not validated, not wrapped in a transition — the caller owns the spinner. Rejects on failure. Not for callout.
@@ -126,12 +139,16 @@ export type UseTemplateFormsResult = {
   // ── Callout-specific (the callout body lives in a dedicated `useCrdCalloutForm` instance) ──
   /** Open the create dialog for a Callout template, optionally pre-filled (used by Duplicate and "save callout as template"). */
   openCreateCallout: (prefill?: { common?: Partial<TemplateCommonValues>; body?: Partial<CalloutFormValues> }) => void;
-  /** Open the edit dialog for an existing Callout template. `calloutId` is the template's underlying `Callout` id. */
+  /**
+   * Open the edit dialog for an existing Callout template. `calloutId` is the template's underlying `Callout` id.
+   * `tagsetId` is the template profile's `defaultTagset` id — required to update template-level tags on save.
+   */
   openEditCallout: (
     templateId: string,
     calloutId: string,
     common: Partial<TemplateCommonValues>,
-    body: Partial<CalloutFormValues>
+    body: Partial<CalloutFormValues>,
+    tagsetId?: string
   ) => void;
   /** Fire the create-callout-template mutation directly (used by Duplicate / import-from-library). Rejects on failure. */
   submitCalloutCopy: (common: Partial<TemplateCommonValues>, body: Partial<CalloutFormValues>) => Promise<void>;
@@ -154,6 +171,21 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
   const [editTemplateId, setEditTemplateId] = useState<string | null>(null);
   const [editSubEntityId, setEditSubEntityId] = useState<string | null>(null);
   const [editCalloutId, setEditCalloutId] = useState<string | null>(null);
+  /**
+   * Id of the template's `profile.defaultTagset`, captured when opening the edit dialog. Used to
+   * build `UpdateProfileInput.tagsets` on submit — the only path to update a template's tags via
+   * `updateTemplate` (`UpdateProfileInput` has no top-level `tags` field; tags live on a tagset).
+   */
+  const [editTagsetId, setEditTagsetId] = useState<string | null>(null);
+  /**
+   * Community Guidelines edit context, captured when opening the edit dialog for a CG template.
+   * The `updateCommunityGuidelines` mutation only updates *existing* references (by `ID`); adding
+   * and removing references requires `createReferenceOnProfile` and `deleteReference` against the
+   * CG entity's own profile id — so we snapshot the profile id + the original reference id set at
+   * open time and replay the diff against `current.references` on submit.
+   */
+  const [editCgProfileId, setEditCgProfileId] = useState<string | null>(null);
+  const [editOriginalCgReferenceIds, setEditOriginalCgReferenceIds] = useState<string[]>([]);
   const [values, setValues] = useState<TemplateFormValues>(() => emptyValuesFor('post'));
   const [errors, setErrors] = useState<TemplateFormErrors>({});
   const [pristine, setPristine] = useState(true);
@@ -173,6 +205,11 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
+  // CG reference add/remove — the legacy editor fires these immediately at user-interaction time,
+  // but our CRD form batches them on save; the trailing `updateCommunityGuidelines.refetchQueries`
+  // is what ultimately repopulates the cache so per-call refetches aren't needed here.
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
 
   const calloutFallbacks: CalloutTemplateMapperFallbacks = {
     whiteboardFallbackDisplayName: tSpace('callout.whiteboard'),
@@ -198,17 +235,29 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setEditTemplateId(null);
     setEditSubEntityId(null);
     setEditCalloutId(null);
+    setEditTagsetId(null);
+    setEditCgProfileId(null);
+    setEditOriginalCgReferenceIds([]);
     setValues(initial ?? emptyValuesFor(type));
     setErrors({});
     setPristine(true);
     setWhiteboardTemplatePreviewImages([]);
     setOpen(true);
   };
-  const openEdit = (templateId: string, initial: TemplateFormValues, subEntityId?: string) => {
+  const openEdit = (
+    templateId: string,
+    initial: TemplateFormValues,
+    subEntityId?: string,
+    tagsetId?: string,
+    cgContext?: { profileId: string; originalReferenceIds: string[] }
+  ) => {
     setIntent('edit');
     setEditTemplateId(templateId);
     setEditSubEntityId(subEntityId ?? null);
     setEditCalloutId(null);
+    setEditTagsetId(tagsetId ?? null);
+    setEditCgProfileId(cgContext?.profileId ?? null);
+    setEditOriginalCgReferenceIds(cgContext?.originalReferenceIds ?? []);
     setValues(initial);
     setErrors({});
     setPristine(true);
@@ -220,6 +269,7 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setEditTemplateId(null);
     setEditSubEntityId(null);
     setEditCalloutId(null);
+    setEditTagsetId(null);
     setValues({ ...emptyValuesFor('callout'), ...prefill?.common });
     if (prefill?.body) calloutForm.prefill(prefill.body);
     else calloutForm.reset();
@@ -227,11 +277,18 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setPristine(true);
     setOpen(true);
   };
-  const openEditCallout: UseTemplateFormsResult['openEditCallout'] = (templateId, calloutId, common, body) => {
+  const openEditCallout: UseTemplateFormsResult['openEditCallout'] = (
+    templateId,
+    calloutId,
+    common,
+    body,
+    tagsetId
+  ) => {
     setIntent('edit');
     setEditTemplateId(templateId);
     setEditSubEntityId(null);
     setEditCalloutId(calloutId);
+    setEditTagsetId(tagsetId ?? null);
     setValues({ ...emptyValuesFor('callout'), ...common });
     calloutForm.prefill(body);
     setErrors({});
@@ -242,6 +299,9 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setOpen(false);
     setErrors({});
     setWhiteboardTemplatePreviewImages([]);
+    setEditTagsetId(null);
+    setEditCgProfileId(null);
+    setEditOriginalCgReferenceIds([]);
   };
 
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
@@ -265,6 +325,7 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
             templatesSetId: setId,
             type: GqlTemplateType.CommunityGuidelines,
             profileData,
+            tags,
             communityGuidelinesData: {
               profile: {
                 displayName: current.title,
@@ -330,8 +391,22 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     });
   };
 
-  const submitEdit = async (current: TemplateFormValues, templateId: string, subEntityId: string | null) => {
-    const profile = { displayName: current.name, description: current.description || undefined };
+  const submitEdit = async (
+    current: TemplateFormValues,
+    templateId: string,
+    subEntityId: string | null,
+    tagsetId: string | null,
+    cgProfileId: string | null,
+    cgOriginalReferenceIds: string[]
+  ) => {
+    // Template-level tags travel via `UpdateProfileInput.tagsets` (an `UpdateTagsetInput[]` keyed by
+    // the existing tagset id). Without the id we can't update tags — log a quiet skip rather than
+    // sending a no-op input the server would reject.
+    const profile = {
+      displayName: current.name,
+      description: current.description || undefined,
+      tagsets: tagsetId ? [{ ID: tagsetId, tags: current.tags }] : undefined,
+    };
     switch (current.type) {
       case 'post':
         await updateTemplate({
@@ -361,6 +436,34 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
       case 'communityGuidelines': {
         await updateTemplate({ variables: { templateId, profile } });
         if (subEntityId) {
+          // Diff the form state against the snapshot captured at edit-open time. The CG update
+          // mutation can only *update existing* references (keyed by their `ID`); rows added in
+          // the form (no `id`) go through `createReferenceOnProfile`, rows removed in the form
+          // (id in snapshot but no longer present) go through `deleteReference`.
+          const currentReferenceIds = new Set(current.references.flatMap((r): string[] => (r.id ? [r.id] : [])));
+          const deletedIds = cgOriginalReferenceIds.filter(id => !currentReferenceIds.has(id));
+          const newRows = current.references.filter(r => !r.id);
+
+          if (deletedIds.length > 0) {
+            await Promise.all(deletedIds.map(id => deleteReference({ variables: { input: { ID: id } } })));
+          }
+          if (cgProfileId && newRows.length > 0) {
+            await Promise.all(
+              newRows.map(r =>
+                createReferenceOnProfile({
+                  variables: {
+                    input: {
+                      profileID: cgProfileId,
+                      name: r.name || 'Reference',
+                      uri: r.uri || undefined,
+                      description: r.description || undefined,
+                    },
+                  },
+                })
+              )
+            );
+          }
+
           await updateCommunityGuidelines({
             variables: {
               communityGuidelinesData: {
@@ -368,8 +471,7 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
                 profile: {
                   displayName: current.title,
                   description: current.guidelinesMarkdown || undefined,
-                  // Only existing references can be updated here (new rows would need a `referencesAddedData`-style
-                  // input the schema doesn't expose for this mutation) — TODO(098).
+                  // Existing references only; adds/removes were handled above.
                   references: current.references.flatMap(r =>
                     r.id
                       ? [{ ID: r.id, name: r.name, uri: r.uri || undefined, description: r.description || undefined }]
@@ -407,10 +509,13 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     const setId = templatesSetId;
     const editId = editTemplateId;
     const subEntityId = editSubEntityId;
+    const tagsetId = editTagsetId;
+    const cgProfileId = editCgProfileId;
+    const cgOriginalReferenceIds = editOriginalCgReferenceIds;
     startSubmitting(async () => {
       try {
         if (intent === 'edit' && editId) {
-          await submitEdit(current, editId, subEntityId);
+          await submitEdit(current, editId, subEntityId, tagsetId, cgProfileId, cgOriginalReferenceIds);
         } else {
           await submitCreate(current, setId);
         }

@@ -191,7 +191,6 @@
   "delete": {
     "title": "Vorlage löschen?",
     "body": "„{{name}}“ wird endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
-    "bodyUsedAsDefault": "„{{name}}“ wird derzeit als Standard verwendet und wird gelöst. Dies kann nicht rückgängig gemacht werden.",
     "confirm": "Vorlage löschen",
     "cancel": "Abbrechen"
   },
@@ -286,9 +285,9 @@
     "templatesHeading": "Vorlagen"
   },
   "library": {
-    "title": "Innovation Library",
+    "title": "Innovationsbibliothek",
     "subtitle": "Entdecke Vorlagen und Innovation Packs aus der gesamten Plattform.",
-    "pageTitle": "Innovation Library",
+    "pageTitle": "Innovationsbibliothek",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Es sind noch keine Innovation Packs verfügbar."
@@ -301,7 +300,7 @@
       "label": "Nach Typ filtern",
       "all": "Alle",
       "types": {
-        "space": "Spaces",
+        "space": "Bereiche",
         "callout": "Kollaborationstools",
         "whiteboard": "Whiteboards",
         "post": "Beiträge",
