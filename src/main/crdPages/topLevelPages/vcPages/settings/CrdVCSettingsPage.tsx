@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useVcSettingsAccessGuard from './useVcSettingsAccessGuard';
 import useVcSettingsTab, { type VcSettingsTabId } from './useVcSettingsTab';
 
@@ -42,6 +44,16 @@ const CrdVCSettingsPage = () => {
   const displayName = vc?.profile?.displayName ?? '';
   const avatarUrl = vc?.profile?.avatar?.uri ?? undefined;
   const avatarColor = vcId ? pickColorFromId(vcId) : undefined;
+
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    displayName && profileUrl
+      ? [
+          { label: displayName, href: profileUrl, icon: Bot },
+          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t(`shell.tabs.vc.${activeTabId}`) },
+        ]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   const tabs: ReadonlyArray<SettingsTabDescriptor<VcSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.vc.profile'), icon: Bot },
