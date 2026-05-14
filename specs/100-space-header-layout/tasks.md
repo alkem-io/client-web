@@ -1,6 +1,6 @@
 # Tasks: Space & Subspace Header Layout — Full-Width Banner with Title Below
 
-**Input**: Design documents from `/Users/polibon/Projects/alkemio/client-web/specs/100-space-header-layout/`
+**Input**: Design documents from `specs/100-space-header-layout/`
 **Prerequisites**: spec.md ✓, plan.md ✓, research.md ✓, data-model.md ✓, contracts/headers.ts ✓, quickstart.md ✓
 
 **Tests**: Not requested. The change is presentational and verified via the manual plan in `quickstart.md`. No test tasks included.

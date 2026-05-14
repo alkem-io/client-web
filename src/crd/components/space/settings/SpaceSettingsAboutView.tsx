@@ -320,7 +320,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         <div className="hidden min-w-0 lg:block">
           <div className="sticky top-6">
             <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
-            <SpaceCard space={previewCardToSpaceCardData(previewCard)} />
+            <SpaceCard space={previewCardToSpaceCardData(previewCard, level)} />
             {/* Live Preview info */}
             <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
               <span className="mt-0.5 text-muted-foreground">ⓘ</span>
@@ -336,8 +336,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   );
 }
 
-function previewCardToSpaceCardData(preview: SpaceCardPreview): SpaceCardData {
-  const isL0 = preview.level === 'L0';
+function previewCardToSpaceCardData(preview: SpaceCardPreview, level: SpaceSettingsLevel): SpaceCardData {
+  const isL0 = level === 'L0';
   return {
     id: preview.href || 'preview',
     name: preview.name,

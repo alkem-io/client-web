@@ -2,19 +2,29 @@ import type { ReactNode } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
-export type SpaceSettingsHeaderProps = {
+type SpaceSettingsHeaderAvatarProps =
+  | {
+      /**
+       * Suppress the avatar entirely (renders title + tagline only). Set for L0 settings headers,
+       * since L0 has no avatar concept per the canonical visual-fields rule.
+       */
+      hideAvatar: true;
+      avatarUrl?: never;
+      initials?: never;
+      avatarColor?: never;
+    }
+  | {
+      hideAvatar?: false;
+      avatarUrl?: string | null;
+      /** Two-letter fallback shown when `avatarUrl` is absent. */
+      initials: string;
+      /** Hex color used to tint the avatar fallback (from `pickColorFromId`). */
+      avatarColor: string;
+    };
+
+export type SpaceSettingsHeaderProps = SpaceSettingsHeaderAvatarProps & {
   title: string;
   tagline?: string | null;
-  avatarUrl?: string | null;
-  /** Two-letter fallback shown when `avatarUrl` is absent. Required when the avatar is rendered. */
-  initials?: string;
-  /** Hex color used to tint the avatar fallback (from `pickColorFromId`). Required when the avatar is rendered. */
-  avatarColor?: string;
-  /**
-   * Suppress the avatar entirely (renders title + tagline only). Set for L0 settings headers,
-   * since L0 has no avatar concept per the canonical visual-fields rule.
-   */
-  hideAvatar?: boolean;
   /** Optional tab strip rendered below the title block; gets a full-width bottom border. */
   tabs?: ReactNode;
   className?: string;

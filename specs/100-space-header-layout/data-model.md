@@ -77,8 +77,8 @@ This is a presentational layout change. **No domain entities, no GraphQL types, 
 | `subspaceColor` | `string` | Solid background colour for the avatar fallback. |
 | `subspaceAvatarUrl` | `string \| undefined` | Image source for the subspace avatar; supersedes initials when present. |
 | `parentName` | `string` | Used in accessibility text only (e.g., banner `aria-label`). No visible parent tile. (May be safely dropped if no aria-label uses it post-refactor; audit during implementation.) |
-| `parentBannerUrl` | `string \| undefined` | Renders as `background-image` on the banner. Falls back to `parentColor`-derived gradient. |
-| `actions` | `SubspaceHeaderActionsData` | Same shape as `SpaceHeaderActions` minus `videoCallUrl` differences; rendered in the title row's right cell. |
+| `parentBannerUrl` | `string \| undefined` | Renders as `background-image` on the banner. Falls back to a deterministic accent gradient derived from the L0 root id (the implementation receives this as a separate `color` prop). |
+| `actions` | `SubspaceHeaderActions` | See `contracts/headers.ts` for the exact shape. Differs from `SpaceHeaderActions` in that it adds an optional `shareUrl` and omits `onSettingsClick` (settings is href-only on subspaces). Rendered in the title row's right cell. |
 | `className` | `string \| undefined` | Outer wrapper class composition. |
 
 ### Markup contract (post-change)
@@ -87,7 +87,7 @@ This is a presentational layout change. **No domain entities, no GraphQL types, 
 <div className={cn('flex flex-col bg-background', className)}>
   {/* Banner: full-width, fluid aspect-[6/1] */}
   <div className="relative w-full aspect-[6/1] overflow-hidden" role="img" aria-label={t('a11y.subspaceBanner', { name: title })}>
-    {/* bg image (parentBannerUrl) or gradient from parentColor — UNCHANGED logic */}
+    {/* bg image (parentBannerUrl) or deterministic accent gradient — UNCHANGED logic */}
   </div>
 
   {/* Below-banner: title row + optional subtitle row, inside inner content width */}
