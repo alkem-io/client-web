@@ -47,14 +47,15 @@ export function CommentThread({
     repliesByParent.set(comment.parentId, [...existing, comment]);
   }
 
-  const sortedTopLevel = [...topLevel].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
+  // Sort numerically on the raw epoch-ms field. The display `timestamp`
+  // ("2 minutes ago") cannot be parsed back into a Date, so sorting on it
+  // would silently no-op (NaN comparator) — see CommentData.timestampMs.
+  const sortedTopLevel = [...topLevel].sort((a, b) => b.timestampMs - a.timestampMs);
 
   for (const [parentId, replies] of repliesByParent.entries()) {
     repliesByParent.set(
       parentId,
-      [...replies].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+      [...replies].sort((a, b) => a.timestampMs - b.timestampMs)
     );
   }
 

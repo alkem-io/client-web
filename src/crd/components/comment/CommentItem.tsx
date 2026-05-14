@@ -72,9 +72,7 @@ export function CommentItem({
             <div className="rounded-lg bg-muted/50 px-3 py-2">
               <div className="flex items-center gap-2">
                 <span className="text-body-emphasis text-foreground">{comment.author.name}</span>
-                <span className="text-caption text-muted-foreground">
-                  {new Date(comment.timestamp).toLocaleString()}
-                </span>
+                <span className="text-caption text-muted-foreground">{comment.timestamp}</span>
               </div>
 
               {comment.isDeleted ? (
