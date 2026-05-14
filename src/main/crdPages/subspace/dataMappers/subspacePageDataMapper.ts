@@ -1,4 +1,3 @@
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData, SubspaceHeaderProps } from '@/crd/components/space/SubspaceHeader';
 import type {
@@ -24,46 +23,37 @@ type ProfileLike = {
 
 export type SubspaceBannerSourceData = {
   subspaceId: string;
-  level: SpaceLevel;
   subspaceProfile: ProfileLike | undefined;
-  parentSpaceId: string | undefined;
-  parentProfile: ProfileLike | undefined;
+  /**
+   * The L0 root of this subspace's ancestry chain. For an L1 this is the same as the immediate
+   * parent; for an L2 this is the grandparent — *not* the immediate L1 parent. The page banner
+   * is always inherited from the L0 root because L1/L2 do not have a settable page banner.
+   */
+  levelZeroSpaceId: string | undefined;
+  levelZeroProfile: ProfileLike | undefined;
 };
 
 export type SubspaceBannerProps = Pick<
   SubspaceHeaderProps,
-  | 'title'
-  | 'tagline'
-  | 'subspaceInitials'
-  | 'subspaceColor'
-  | 'subspaceAvatarUrl'
-  | 'parentName'
-  | 'parentInitials'
-  | 'parentColor'
-  | 'parentBannerUrl'
-  | 'badgeKind'
+  'title' | 'tagline' | 'subspaceInitials' | 'subspaceColor' | 'subspaceAvatarUrl' | 'bannerUrl' | 'color'
 >;
 
 export function mapSubspaceBanner({
   subspaceId,
-  level,
   subspaceProfile,
-  parentSpaceId,
-  parentProfile,
+  levelZeroSpaceId,
+  levelZeroProfile,
 }: SubspaceBannerSourceData): SubspaceBannerProps {
   const title = subspaceProfile?.displayName ?? '';
-  const parentName = parentProfile?.displayName ?? '';
+  const levelZeroName = levelZeroProfile?.displayName ?? '';
   return {
     title,
     tagline: subspaceProfile?.tagline ?? undefined,
     subspaceInitials: getInitials(title) || '??',
     subspaceColor: pickColorFromId(subspaceId || title),
     subspaceAvatarUrl: subspaceProfile?.avatar?.uri ?? undefined,
-    parentName,
-    parentInitials: getInitials(parentName) || '??',
-    parentColor: pickColorFromId(parentSpaceId ?? parentName),
-    parentBannerUrl: parentProfile?.banner?.uri ?? undefined,
-    badgeKind: level === SpaceLevel.L2 ? 'subSubspace' : 'subspace',
+    bannerUrl: levelZeroProfile?.banner?.uri || undefined,
+    color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }
 

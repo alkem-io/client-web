@@ -11,11 +11,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import {
-  mapMemberAvatars,
-  mapSpaceVisibility,
-  type SpaceVisibilityData,
-} from '../../space/dataMappers/spacePageDataMapper';
+import { mapSpaceVisibility, type SpaceVisibilityData } from '../../space/dataMappers/spacePageDataMapper';
 import {
   mapInnovationFlowPhases,
   mapSubspaceBanner,
@@ -46,7 +42,6 @@ export type CrdSubspacePageData = {
   /** Render data */
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
-  bannerAvatars: ReturnType<typeof mapMemberAvatars>;
   sidebar: SubspaceSidebarData;
   visibility: SpaceVisibilityData;
 
@@ -129,10 +124,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
   const banner = mapSubspaceBanner({
     subspaceId,
-    level: subspace.level,
     subspaceProfile,
-    parentSpaceId,
-    parentProfile,
+    levelZeroSpaceId,
+    levelZeroProfile,
   });
 
   const bannerActions = mapSubspaceHeaderActions({
@@ -141,8 +135,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
     videoCallEnabled: isVideoCallEnabled,
     videoCallUrl: videoCallUrl || undefined,
   });
-
-  const bannerAvatars = mapMemberAvatars(subspace.about.membership?.leadUsers);
 
   const sidebar = mapSubspaceSidebar({
     description: subspaceProfile.description,
@@ -174,7 +166,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     banner,
     bannerActions,
-    bannerAvatars,
     sidebar,
     visibility: visibilityData,
 

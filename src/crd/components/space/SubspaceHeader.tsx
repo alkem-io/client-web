@@ -2,15 +2,7 @@ import { Activity, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
-
-type MemberAvatar = {
-  id: string;
-  url?: string;
-  initials: string;
-};
 
 export type SubspaceHeaderActionsData = {
   showActivity: boolean;
@@ -30,24 +22,22 @@ export type SubspaceHeaderProps = {
   title: string;
   tagline?: string;
   subspaceInitials: string;
+  /** Subspace accent colour — used for the avatar fallback. */
   subspaceColor: string;
   subspaceAvatarUrl?: string;
 
-  /** Immediate parent identity (L0 for L1, L1 for L2) */
-  parentName: string;
-  parentInitials: string;
-  parentColor: string;
-  parentBannerUrl?: string;
-
-  /** Level badge — discriminator key, the component resolves the localized label internally */
-  badgeKind: 'subspace' | 'subSubspace';
+  /**
+   * Page banner image — sourced from the L0 root of the ancestry chain (NOT from the immediate
+   * parent for L2). L1/L2 subspaces do not have a settable page banner, so the L0 root's BANNER
+   * visual (stored at ~1920×320) is used. The subspace's own cardBanner is intentionally NOT used
+   * here because it is sized for cards (~416×256) and would be visibly blurry when stretched.
+   */
+  bannerUrl?: string;
+  /** Accent colour for the gradient fallback when `bannerUrl` is missing — derived from the L0 root id. */
+  color: string;
 
   /** Banner action icons */
   actions: SubspaceHeaderActionsData;
-
-  /** Community avatar stack */
-  memberAvatars: MemberAvatar[];
-  onMemberClick?: () => void;
 
   className?: string;
 };
@@ -58,57 +48,56 @@ export function SubspaceHeader({
   subspaceInitials,
   subspaceColor,
   subspaceAvatarUrl,
-  parentName,
-  parentInitials,
-  parentColor,
-  parentBannerUrl,
-  badgeKind,
+  bannerUrl,
+  color,
   actions,
-  memberAvatars,
-  onMemberClick,
   className,
 }: SubspaceHeaderProps) {
   const { t } = useTranslation('crd-subspace');
-  const displayedAvatars = memberAvatars.slice(0, 5);
-  const showAvatarStack = displayedAvatars.length > 0;
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
   const safeShareUrl = safeHttpUrl(actions.shareUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
-  const badgeText = badgeKind === 'subSubspace' ? t('badge.subSubspace') : t('badge.subspace');
-
   return (
     <div className={cn('flex flex-col bg-background', className)}>
       <div
-        className="relative w-full h-52 md:h-64 overflow-hidden group"
+        className="relative w-full aspect-[6/1] overflow-hidden"
         role="img"
         aria-label={t('a11y.subspaceBanner', { name: title })}
       >
-        {/* Banner background — parent's banner image when present, else gradient from parent's accent color */}
         <div
-          className={cn(
-            'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105',
-            !parentBannerUrl && 'bg-muted'
-          )}
+          className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && 'bg-muted')}
           style={
-            parentBannerUrl
-              ? { backgroundImage: `url(${parentBannerUrl})` }
-              : { background: `linear-gradient(135deg, ${parentColor}, color-mix(in srgb, ${parentColor} 70%, black))` }
+            bannerUrl
+              ? { backgroundImage: `url(${bannerUrl})` }
+              : { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }
           }
         />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      </div>
 
-        {/* Top-right action icons */}
-        <div className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8 pt-8">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
-              <div className="flex items-center gap-2">
+      <div className="w-full px-6 md:px-8 pt-8 pb-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex flex-col gap-1">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div
+                  className="shrink-0 size-14 rounded-md border-2 border-border overflow-hidden flex items-center justify-center"
+                  style={subspaceAvatarUrl ? undefined : { background: subspaceColor }}
+                >
+                  {subspaceAvatarUrl ? (
+                    <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-subsection-title font-bold text-primary-foreground">{subspaceInitials}</span>
+                  )}
+                </div>
+                <h1 className="text-hero text-foreground truncate">{title}</h1>
+              </div>
+              <div className="shrink-0 flex items-center gap-2">
                 {actions.showActivity && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                    className="h-9 w-9"
                     onClick={actions.onActivityClick}
                     aria-label={t('actions.activity')}
                   >
@@ -120,7 +109,7 @@ export function SubspaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      className="h-9 w-9"
                       aria-label={t('actions.videoCall')}
                       asChild={true}
                     >
@@ -132,7 +121,7 @@ export function SubspaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      className="h-9 w-9"
                       onClick={actions.onVideoCallClick}
                       aria-label={t('actions.videoCall')}
                     >
@@ -144,7 +133,7 @@ export function SubspaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      className="h-9 w-9"
                       aria-label={t('actions.share')}
                       asChild={true}
                     >
@@ -156,7 +145,7 @@ export function SubspaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      className="h-9 w-9"
                       onClick={actions.onShareClick}
                       aria-label={t('actions.share')}
                     >
@@ -167,7 +156,7 @@ export function SubspaceHeader({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                    className="h-9 w-9"
                     aria-label={t('actions.settings')}
                     asChild={true}
                   >
@@ -178,95 +167,8 @@ export function SubspaceHeader({
                 )}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Level badge — top-right */}
-        <Badge
-          variant="secondary"
-          className="absolute top-4 right-4 backdrop-blur-sm border-0 text-badge uppercase"
-          style={{
-            background: 'color-mix(in srgb, var(--background) 80%, transparent)',
-            letterSpacing: '0.08em',
-          }}
-        >
-          {badgeText}
-        </Badge>
-
-        {/* Member avatar stack — bottom-right, aligned with the action-icon row above (ends at col 11) */}
-        {showAvatarStack && (
-          <div className="absolute bottom-6 left-0 right-0 px-6 md:px-8">
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex justify-end">
-                <button
-                  type="button"
-                  className="flex items-center gap-4 cursor-pointer transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
-                  onClick={onMemberClick}
-                  aria-label={t('members.viewCommunity')}
-                >
-                  <div className="flex -space-x-2">
-                    {displayedAvatars.map(avatar => (
-                      <Avatar
-                        key={avatar.id}
-                        className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
-                      >
-                        {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}
-                        <AvatarFallback
-                          style={{ background: 'color-mix(in srgb, var(--primary) 20%, transparent)' }}
-                          className="text-caption text-primary-foreground"
-                        >
-                          {avatar.initials}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Below-banner: layered avatar overlapping upward + title/tagline */}
-      <div className="px-6 md:px-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex flex-col md:flex-row items-start gap-5">
-            {/* Two-layered avatar — parent behind, subspace in front */}
-            <div className="relative shrink-0 -mt-12 w-28 h-28">
-              {/* Parent avatar (behind, top-left) */}
-              <div
-                role="img"
-                aria-label={t('a11y.parentLink', { name: parentName })}
-                className="absolute top-0 left-0 size-[72px] rounded-xl border-[3px] border-background overflow-hidden flex items-center justify-center z-[1]"
-                style={parentBannerUrl ? undefined : { background: parentColor }}
-              >
-                {parentBannerUrl ? (
-                  <img src={parentBannerUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-subsection-title font-bold text-primary-foreground" aria-hidden="true">
-                    {parentInitials}
-                  </span>
-                )}
-              </div>
-
-              {/* Subspace avatar (in front, bottom-right) */}
-              <div
-                className="absolute top-6 left-6 size-[88px] rounded-xl border-[3px] border-background overflow-hidden flex items-center justify-center z-[2] shadow-sm"
-                style={subspaceAvatarUrl ? undefined : { background: subspaceColor }}
-              >
-                {subspaceAvatarUrl ? (
-                  <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-section-title font-bold text-primary-foreground">{subspaceInitials}</span>
-                )}
-              </div>
-            </div>
-
-            {/* Title + tagline below banner */}
-            <div className="flex-1 pt-4 min-w-0">
-              <h1 className="text-page-title text-foreground mb-1 tracking-tight truncate">{title}</h1>
-              {tagline && <p className="max-w-xl text-body text-muted-foreground">{tagline}</p>}
-            </div>
+            {tagline && <p className="text-body text-muted-foreground truncate">{tagline}</p>}
           </div>
         </div>
       </div>

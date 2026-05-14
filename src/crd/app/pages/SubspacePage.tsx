@@ -27,12 +27,6 @@ const ACTIONS: SubspaceHeaderActionsData = {
   videoCallUrl: 'https://meet.jit.si/preview-call',
 };
 
-const MEMBER_AVATARS = MOCK_MEMBERS.slice(0, 5).map(m => ({
-  id: m.id,
-  url: m.avatarUrl,
-  initials: m.name.slice(0, 2).toUpperCase(),
-}));
-
 export function SubspacePage() {
   const [activePhaseId, setActivePhaseId] = useState<string | undefined>(PHASES[0]?.id);
   const [communityOpen, setCommunityOpen] = useState(false);
@@ -53,13 +47,8 @@ export function SubspacePage() {
         tagline="Developing strategies for municipal energy transition to 100% renewables by 2030."
         subspaceInitials="RE"
         subspaceColor={pickColorFromId(SUBSPACE_ID)}
-        parentName="Green Energy Space"
-        parentInitials="GE"
-        parentColor={pickColorFromId(PARENT_ID)}
-        badgeKind="subspace"
+        color={pickColorFromId(PARENT_ID)}
         actions={ACTIONS}
-        memberAvatars={MEMBER_AVATARS}
-        onMemberClick={() => setCommunityOpen(true)}
       />
 
       <main className="flex-1 w-full px-6 md:px-8 py-8">

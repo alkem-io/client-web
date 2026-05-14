@@ -1,8 +1,4 @@
 {
-  "badge": {
-    "subspace": "SubEspacio",
-    "subSubspace": "SubSubEspacio"
-  },
   "actions": {
     "activity": "Actividad reciente",
     "videoCall": "Iniciar videollamada",
@@ -10,7 +6,6 @@
     "settings": "Ajustes"
   },
   "members": {
-    "viewCommunity": "Ver miembros de la comunidad",
     "memberCount_one": "{{count}} miembro",
     "memberCount_other": "{{count}} miembros"
   },
@@ -62,7 +57,6 @@
   },
   "a11y": {
     "subspaceBanner": "Banner del SubEspacio {{name}}",
-    "parentLink": "Ir al espacio principal {{name}}",
     "flowTabs": "Fases del flujo de innovación",
     "sidebarNavigation": "Barra lateral del SubEspacio",
     "communityDialog": "Diálogo de miembros de la comunidad",

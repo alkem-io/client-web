@@ -76,7 +76,7 @@ export default function CrdSpaceSettingsPage() {
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
-  const about = useAboutTabData(spaceId, spaceUrl);
+  const about = useAboutTabData(spaceId, spaceUrl, level);
   const layout = useLayoutTabData(spaceId);
   const community = useCommunityTabData(roleSetId);
   const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');

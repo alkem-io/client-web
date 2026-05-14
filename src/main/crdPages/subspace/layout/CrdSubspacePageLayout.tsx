@@ -182,8 +182,6 @@ export default function CrdSubspacePageLayout() {
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
           }}
-          memberAvatars={data.bannerAvatars}
-          onMemberClick={() => setActiveDialog('community')}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 py-8">

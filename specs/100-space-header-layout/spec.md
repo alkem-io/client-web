@@ -5,6 +5,36 @@
 **Status**: Draft
 **Input**: User description: "Changes to banner and title placement in a Space and Subspace (both have the same look). The new look: banner is full-width edge-to-edge; content has the same inner width as today (unchanged); title and subtitle are placed BELOW the banner (not on top of it); action buttons that were previously on top of the banner are now on the RIGHT side of the title row, at the far right end of the content placement. Apply to both Space and Subspace. Reference the prototype for these specific changes only — ignore other prototype changes. This design is not present in MUI; update the CRD layer accordingly. Follow `src/crd/CLAUDE.md` for CRD migration practice."
 
+## Visual fields — canonical usage (project-wide rule)
+
+The platform stores up to **three separate visual fields** on a space/subspace profile, each with a **distinct semantic role**. They MUST NEVER be substituted for each other (no "show cardBanner where avatar would go" fallbacks, no "show avatar where cardBanner would go" inversions).
+
+**Critical: L0 has no avatar concept.** L0 spaces have only a page banner and a card banner — there is no L0 avatar, and L0 cards display **title + cardBanner**, never an avatar. L1 and L2 subspaces have an avatar and a card banner; they have no settable page banner and inherit the L0 root's.
+
+| Field | Settable on | Used for |
+|-------|-------------|----------|
+| `banner` (Visual type `BANNER`, ~1920×320) | **L0 only** | The full-width page banner on a space's page layout — on top of the L0 page, **and** on top of L1/L2 pages (which inherit it from the L0 root of their ancestry chain). |
+| `cardBanner` (Visual type `CARD`, ~416×256) | **L0, L1, L2** | The big banner image on every space/subspace **card** display (explorer cards, subspace grid cards, hierarchy cards). |
+| `avatar` (Visual type `AVATAR`) | **L1 and L2 only** | The small inset image for an L1/L2. Used in the L1/L2 page header (inline next to the title) and in any list-style display of an L1/L2 (sidebar lists, admin Subspaces rows, notification icons, activity-item icons). |
+
+**Canonical compositions:**
+
+- **L0 page header** → `banner` + title (no avatar).
+- **L0 card** (everywhere an L0 is shown as a card) → `cardBanner` + title (no avatar).
+- **L0 in a list/small entry** → title only (no avatar, no cardBanner thumbnail). L0 is a top-level space — its small-entry representation is text-only.
+- **L1/L2 page header** → `banner` (inherited from the **L0 root**, not the immediate parent for L2) + inline `avatar` + title.
+- **L1/L2 card** → `cardBanner` + `avatar` + title.
+- **L1/L2 in a list/small entry** → `avatar` + title.
+
+**Hard rules:**
+
+1. Do not use `cardBanner` as a fallback for `avatar` (and vice versa). They have different aspect ratios, different sizes, and different semantics. A missing `avatar` falls back to the deterministic default-avatar visual (`getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)` in MUI, or the colour-from-id gradient in CRD) — **never** to `cardBanner`.
+2. Do not source the L1/L2 page banner from the immediate parent when L0 differs. For an L2, the immediate parent is L1 (which does not have a settable page banner); the page banner MUST come from the L0 root.
+3. L0 settings UI MUST expose uploaders for `banner` (page) and `cardBanner` only — **not** avatar. L1/L2 settings UI MUST expose `avatar` and `cardBanner` only — **not** the page banner.
+4. List/small-entry renderers that may be passed an L0 should suppress the avatar slot for L0. Components that currently render a generic placeholder for "L0 without avatar" are acceptable for now but should ideally hide the avatar entirely when the entity is an L0.
+
+This rule applies to **both** the MUI legacy layer (`src/core/ui/`, `src/domain/space/`) and the CRD layer (`src/crd/`, `src/main/crdPages/`). It is project-wide and predates this spec — this spec only codifies it because the spec's page-banner decisions (A7a) depend on it, and several existing MUI substitution bugs were found while implementing this spec (`SubspaceLinkList`, `SpaceCardHorizontal`, `InAppNotificationBaseView`, `MyLatestContributions`, `useSubspaceCardData`, `useParentSpaceInfo` — all fixed in this branch).
+
 ## Clarifications
 
 ### Session 2026-05-14
@@ -116,7 +146,8 @@ These fill gaps in the brief by drawing on the prototype and `src/crd/CLAUDE.md`
 - **A4 — Title text colour switches from `text-primary-foreground` (white) to `text-foreground` (theme-aware).** Title and subtitle are no longer over a photographic background, so they use the standard theme text tokens.
 - **A5 — Member avatar stack is removed from the header** (clarified 2026-05-14). The currently bottom-right overlaid avatar cluster on the banner is dropped from `SpaceHeader` and `SubspaceHeader` entirely. Visitors access community members through the dedicated members panel rather than from the header. The `memberAvatars` and `onMemberClick` props become unused — they can be removed in this change or kept as accepted-but-ignored. Consumers in `src/main/crdPages/` stop passing them.
 - **A6 — Subspace level badge is removed from the header** (clarified 2026-05-14). The "Subspace" / "Sub-subspace" pill currently overlaid `top-4 right-4` on the banner is dropped entirely. Breadcrumbs upstream of the header already disclose the subspace / sub-subspace hierarchy, so the badge is redundant. The `badgeKind` prop on `SubspaceHeader` becomes unused (can be removed or kept as accepted-but-ignored).
-- **A7 — Subspace avatar simplifies to a single tile** (clarified 2026-05-14). The current two-tile layered avatar (parent behind, subspace in front, `-mt-12` upward overlap into the banner) is replaced by a single ~56px subspace avatar inline with the title row, matching the prototype's `SubspaceHeader.tsx`. Parent identity is still conveyed by the parent banner image being used as the banner background. The `-mt-12` upward-overlap pattern is removed; the avatar sits cleanly in the below-banner section alongside the title and subtitle.
+- **A7 — Subspace avatar simplifies to a single tile** (clarified 2026-05-14). The current two-tile layered avatar (parent behind, subspace in front, `-mt-12` upward overlap into the banner) is replaced by a single ~56px subspace avatar inline with the title row, matching the prototype's `SubspaceHeader.tsx`. The `-mt-12` upward-overlap pattern is removed; the avatar sits cleanly in the below-banner section alongside the title and subtitle.
+- **A7a — Subspace page banner uses the L0 root's banner image** (final decision). Per the "Visual fields — canonical usage" rule above, the subspace page banner is sourced from `levelZeroProfile.banner?.uri` (the L0 ancestor's BANNER visual, stored at page-banner resolution ~1920×320). For an L1, the L0 ancestor is the immediate parent; for an L2 (sub-sub-space), the L0 ancestor is the grandparent — *not* the immediate L1 parent (L1 has no settable page banner). The subspace's own `cardBanner` is **not** used because cardBanner is 416×256 (sized for cards) and would be visibly blurry stretched to a full-width banner. When the L0 root has no banner uploaded, the deterministic gradient fallback uses the L0's colour (`pickColorFromId(levelZeroSpaceId)`). Subspace identity is conveyed via the breadcrumb trail, the inline ~56 px subspace avatar in the title row, and the subspace title and tagline. **Iteration history**: an interim attempt to source from the subspace's own image produced unacceptable blur; a follow-up that used the *immediate* parent (instead of L0) failed on L2 because L1 has no banner. The L0-rooted lookup matches the legacy MUI `SubspacePageBanner.tsx` (`lookup.level0Space.about.profile.banner`). A future platform change that exposes a high-res BANNER visual type on L1/L2 subspaces could let this assumption be revisited.
 - **A8 — Banner height is fluid via `aspectRatio: 6 / 1`** (clarified 2026-05-14). The banner scales with viewport width — wider viewports get a proportionally taller banner. This replaces today's fixed `h-[256px]` (Space) and `h-52 md:h-64` (Subspace). The `-64px` underlap into a transparent platform header — the rest of the prototype's banner treatment — is **out of scope** for this spec and will be tackled in the next, adjacent spec.
 - **A9 — CRD routes only.** Both routes (`SpacePage` and `SubspacePage` under `src/crd/app/pages/` and their `src/main/crdPages/` integrations) are affected; no MUI route is touched. The `useCrdEnabled` toggle continues to route legacy users to MUI pages, which are unchanged.
 

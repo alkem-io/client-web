@@ -250,7 +250,6 @@
     "officeDocumentsNotEnabled": "Los documentos ofimáticos no están habilitados para este espacio."
   },
   "members": {
-    "title": "Comunidad",
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
     "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
