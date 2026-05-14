@@ -20,6 +20,7 @@ type CrdLayoutProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
+  unreadMessagesCount?: number;
   unreadNotificationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
@@ -34,6 +35,8 @@ type CrdLayoutProps = {
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
   designVersionSwitch?: CrdDesignVersionSwitch;
+  /** When true the header renders transparently over a hero banner below it. */
+  overlayBanner?: boolean;
   children: ReactNode;
 };
 
@@ -45,6 +48,7 @@ export function CrdLayout({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
+  unreadMessagesCount,
   unreadNotificationsCount,
   languages,
   currentLanguage,
@@ -59,6 +63,7 @@ export function CrdLayout({
   footerLinks,
   showGridToggle,
   designVersionSwitch,
+  overlayBanner,
   children,
 }: CrdLayoutProps) {
   const content = (
@@ -71,6 +76,7 @@ export function CrdLayout({
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
+        unreadMessagesCount={unreadMessagesCount}
         unreadNotificationsCount={unreadNotificationsCount}
         languages={languages}
         currentLanguage={currentLanguage}
@@ -84,6 +90,7 @@ export function CrdLayout({
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
         designVersionSwitch={designVersionSwitch}
+        overlayBanner={overlayBanner}
       />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer

@@ -6,6 +6,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "unreadNotifications": "{{count}} notifications non lues",
+    "unreadMessages": "{{count}} messages non lus",
     "spaces": "Espaces",
     "platformNavigation": "Navigation de la plateforme",
     "myAccount": "Mon compte",

@@ -26,16 +26,32 @@ type SpaceHeaderProps = {
   color?: string;
   isHomeSpace?: boolean;
   actions: SpaceHeaderActions;
+  /**
+   * When true, the banner slides under the sticky page header (h-16) so the header can render
+   * transparently over it (spec 100-space-header-layout A8). The title/buttons row stays below
+   * the banner — no in-banner overlay offset is needed in this layout because the only content
+   * inside the banner div is the image/gradient itself.
+   */
+  overlayHeader?: boolean;
   className?: string;
 };
 
-export function SpaceHeader({ title, tagline, bannerUrl, color, isHomeSpace, actions, className }: SpaceHeaderProps) {
+export function SpaceHeader({
+  title,
+  tagline,
+  bannerUrl,
+  color,
+  isHomeSpace,
+  actions,
+  overlayHeader = false,
+  className,
+}: SpaceHeaderProps) {
   const { t } = useTranslation('crd-space');
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
-    <div className={cn('flex flex-col bg-background', className)}>
+    <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
       <div
         className="relative w-full aspect-[6/1] overflow-hidden"
         role="img"

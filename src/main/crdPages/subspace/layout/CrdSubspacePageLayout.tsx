@@ -17,6 +17,7 @@ import {
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
@@ -169,11 +170,18 @@ export default function CrdSubspacePageLayout() {
     );
   }
 
+  // Transparent header + banner-under-header treatment is only safe on the
+  // active subspace home; suspended/archived shows a visibility notice that
+  // would collide with -mt-16, and `isOnSettings` is already a separate
+  // branch above with no banner image.
+  const enableBannerOverlay = data.visibility.status === 'active';
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
       {data.visibility.status !== 'active' && (
         <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
       )}
+      {enableBannerOverlay && <EnableBannerOverlay />}
 
       <div className="flex flex-col bg-background min-h-screen">
         <SubspaceHeader
@@ -182,6 +190,7 @@ export default function CrdSubspacePageLayout() {
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
           }}
+          overlayHeader={enableBannerOverlay}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 py-8">
@@ -239,4 +248,9 @@ export default function CrdSubspacePageLayout() {
       <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
     </StorageConfigContextProvider>
   );
+}
+
+function EnableBannerOverlay() {
+  useEnableBannerOverlay();
+  return null;
 }

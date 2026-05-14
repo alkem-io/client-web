@@ -60,7 +60,7 @@ export function ToolbarTableOpsMenu({ editor }: ToolbarTableOpsMenuProps) {
             <TableIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent className="z-[70]" align="start">
           <DropdownMenuItem onClick={() => run(c => c.addColumnBefore())}>
             <ArrowLeftToLine className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('editor.table.addColumnBefore')}

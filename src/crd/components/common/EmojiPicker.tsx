@@ -18,7 +18,7 @@ export function EmojiPicker({ onSelect, trigger }: EmojiPickerProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild={true}>{trigger}</PopoverTrigger>
-      <PopoverContent side="top" align="start" className="w-auto border p-0 shadow-lg">
+      <PopoverContent side="top" align="start" className="z-[70] w-auto border p-0 shadow-lg">
         <EmojiPickerLib
           onEmojiClick={handleEmojiClick}
           emojiStyle={EmojiStyle.NATIVE}

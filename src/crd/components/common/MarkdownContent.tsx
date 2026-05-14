@@ -89,8 +89,9 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
-        // Iframes (embedded videos etc.)
-        '[&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0',
+        // Iframes (embedded videos etc.) — markdown stores them with width="100%" height="100%",
+        // so without an explicit aspect-ratio the height collapses and the embed visual gets clipped.
+        '[&_iframe]:block [&_iframe]:w-full [&_iframe]:h-auto [&_iframe]:aspect-video [&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0 [&_iframe]:my-3',
         className
       )}
     >

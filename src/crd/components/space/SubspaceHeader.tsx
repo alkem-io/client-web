@@ -39,6 +39,14 @@ export type SubspaceHeaderProps = {
   /** Banner action icons */
   actions: SubspaceHeaderActionsData;
 
+  /**
+   * When true, the banner slides under the sticky page header (h-16) so the header can render
+   * transparently over it (spec 100-space-header-layout A8). The title/buttons row stays below
+   * the banner — no in-banner overlay offset is needed in this layout because the only content
+   * inside the banner div is the image/gradient itself.
+   */
+  overlayHeader?: boolean;
+
   className?: string;
 };
 
@@ -51,6 +59,7 @@ export function SubspaceHeader({
   bannerUrl,
   color,
   actions,
+  overlayHeader = false,
   className,
 }: SubspaceHeaderProps) {
   const { t } = useTranslation('crd-subspace');
@@ -59,7 +68,7 @@ export function SubspaceHeader({
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
-    <div className={cn('flex flex-col bg-background', className)}>
+    <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
       <div
         className="relative w-full aspect-[6/1] overflow-hidden"
         role="img"
