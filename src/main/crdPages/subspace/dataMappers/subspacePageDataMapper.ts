@@ -80,7 +80,9 @@ export function mapSubspaceHeaderActions({
     videoCallUrl,
     showShare: true,
     showSettings: canUpdate,
-    shareUrl,
+    // `shareUrl` is intentionally NOT output: the SubspaceHeader's Share button is wired by the
+    // consumer via `onShareClick` (which opens the ShareDialog with the subspace URL). The input
+    // `shareUrl` is still consumed here purely to derive `settingsHref`.
     settingsHref: shareUrl && canUpdate ? buildSubspaceSettingsUrl(shareUrl) : undefined,
   };
 }

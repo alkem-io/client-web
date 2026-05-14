@@ -22,7 +22,6 @@ const ACTIONS: SubspaceHeaderActionsData = {
   showVideoCall: true,
   showShare: true,
   showSettings: true,
-  shareUrl: '/preview/share',
   settingsHref: '/preview/settings',
   videoCallUrl: 'https://meet.jit.si/preview-call',
 };

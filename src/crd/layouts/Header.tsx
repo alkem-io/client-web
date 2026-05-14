@@ -139,96 +139,107 @@ export function Header({
   return (
     <header
       className={cn(
-        'h-16 sticky top-0 z-50 px-4 sm:px-6 flex items-center justify-between transition-colors duration-300',
+        'h-16 sticky top-0 z-50 transition-colors duration-300',
         isTransparent ? 'bg-transparent border-b border-transparent' : 'border-b border-border bg-background',
         className
       )}
     >
-      {/* Left: Logo + breadcrumbs */}
-      <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
-        <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
-          <AlkemioLogo className="w-8 h-8" />
-        </a>
-        {breadcrumbs && (
-          <>
-            <div className={cn('h-6 w-px hidden md:block', isTransparent ? 'bg-foreground/20' : 'bg-border')} />
-            <div className="min-w-0">{breadcrumbs}</div>
-          </>
-        )}
+      {/* Inner grid — left and right groups align with the inner content's left/right edges
+          (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width so the
+          header items are not flush against the viewport edges. */}
+      <div className="w-full h-full px-6 md:px-8">
+        <div className="grid grid-cols-12 gap-6 h-full">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between h-full">
+            {/* Left: Logo + breadcrumbs */}
+            <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
+              <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
+                <AlkemioLogo className="w-8 h-8" />
+              </a>
+              {breadcrumbs && (
+                <>
+                  <div className={cn('h-6 w-px hidden md:block', isTransparent ? 'bg-foreground/20' : 'bg-border')} />
+                  <div className="min-w-0">{breadcrumbs}</div>
+                </>
+              )}
+            </div>
+
+            {/* Right: icon row */}
+            <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1', pillClasses)}>
+              <HeaderIconButton
+                onClick={onSearchClick}
+                ariaLabel={t('header.search')}
+                icon={<Search aria-hidden="true" className="w-5 h-5" />}
+              />
+
+              <HeaderIconButton
+                onClick={onMessagesClick}
+                href={navigationHrefs.messages}
+                ariaLabel={t('header.messages')}
+                icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
+                badge={
+                  typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
+                    <>
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                      <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
+                    </>
+                  ) : undefined
+                }
+              />
+
+              <HeaderIconButton
+                onClick={onNotificationsClick}
+                href={navigationHrefs.notifications}
+                ariaLabel={t('header.notifications')}
+                icon={<Bell aria-hidden="true" className="w-5 h-5" />}
+                badge={
+                  typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 ? (
+                    <>
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                      <span className="sr-only">
+                        {t('header.unreadNotifications', { count: unreadNotificationsCount })}
+                      </span>
+                    </>
+                  ) : undefined
+                }
+              />
+
+              {platformNavigationItems && platformNavigationItems.length > 0 ? (
+                <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground"
+                  aria-label={t('header.spaces')}
+                  asChild={true}
+                >
+                  <a href={navigationHrefs.spaces}>
+                    <LayoutGrid aria-hidden="true" className="w-5 h-5" />
+                  </a>
+                </Button>
+              )}
+
+              <div className={cn('h-6 w-px hidden md:block', isTransparent ? 'bg-foreground/20' : 'bg-border')} />
+
+              <UserMenu
+                user={user}
+                authenticated={authenticated}
+                navigationHrefs={navigationHrefs}
+                isAdmin={isAdmin}
+                pendingInvitationsCount={pendingInvitationsCount}
+                languages={languages}
+                currentLanguage={currentLanguage}
+                onLogout={onLogout}
+                onPendingMembershipsClick={onPendingMembershipsClick}
+                onHelpClick={onHelpClick}
+                onLanguageChange={onLanguageChange}
+                showGridToggle={showGridToggle}
+                designVersionSwitch={designVersionSwitch}
+              />
+            </nav>
+          </div>
+        </div>
       </div>
-
-      {/* Right: icon row */}
-      <nav aria-label={t('header.menu')} className={cn('flex items-center gap-1', pillClasses)}>
-        <HeaderIconButton
-          onClick={onSearchClick}
-          ariaLabel={t('header.search')}
-          icon={<Search aria-hidden="true" className="w-5 h-5" />}
-        />
-
-        <HeaderIconButton
-          onClick={onMessagesClick}
-          href={navigationHrefs.messages}
-          ariaLabel={t('header.messages')}
-          icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
-          badge={
-            typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
-              <>
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
-                <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
-              </>
-            ) : undefined
-          }
-        />
-
-        <HeaderIconButton
-          onClick={onNotificationsClick}
-          href={navigationHrefs.notifications}
-          ariaLabel={t('header.notifications')}
-          icon={<Bell aria-hidden="true" className="w-5 h-5" />}
-          badge={
-            typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 ? (
-              <>
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
-                <span className="sr-only">{t('header.unreadNotifications', { count: unreadNotificationsCount })}</span>
-              </>
-            ) : undefined
-          }
-        />
-
-        {platformNavigationItems && platformNavigationItems.length > 0 ? (
-          <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground"
-            aria-label={t('header.spaces')}
-            asChild={true}
-          >
-            <a href={navigationHrefs.spaces}>
-              <LayoutGrid aria-hidden="true" className="w-5 h-5" />
-            </a>
-          </Button>
-        )}
-
-        <div className={cn('h-6 w-px hidden md:block', isTransparent ? 'bg-foreground/20' : 'bg-border')} />
-
-        <UserMenu
-          user={user}
-          authenticated={authenticated}
-          navigationHrefs={navigationHrefs}
-          isAdmin={isAdmin}
-          pendingInvitationsCount={pendingInvitationsCount}
-          languages={languages}
-          currentLanguage={currentLanguage}
-          onLogout={onLogout}
-          onPendingMembershipsClick={onPendingMembershipsClick}
-          onHelpClick={onHelpClick}
-          onLanguageChange={onLanguageChange}
-          showGridToggle={showGridToggle}
-          designVersionSwitch={designVersionSwitch}
-        />
-      </nav>
     </header>
   );
 }

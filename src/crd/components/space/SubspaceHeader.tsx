@@ -9,7 +9,6 @@ export type SubspaceHeaderActionsData = {
   showVideoCall: boolean;
   showShare: boolean;
   showSettings: boolean;
-  shareUrl?: string;
   settingsHref?: string;
   videoCallUrl?: string;
   onActivityClick?: () => void;
@@ -64,7 +63,6 @@ export function SubspaceHeader({
 }: SubspaceHeaderProps) {
   const { t } = useTranslation('crd-subspace');
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
-  const safeShareUrl = safeHttpUrl(actions.shareUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
@@ -137,30 +135,17 @@ export function SubspaceHeader({
                       <Video className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   ))}
-                {actions.showShare &&
-                  (safeShareUrl ? (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      aria-label={t('actions.share')}
-                      asChild={true}
-                    >
-                      <a href={safeShareUrl}>
-                        <Share2 className="h-4 w-4" aria-hidden="true" />
-                      </a>
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={actions.onShareClick}
-                      aria-label={t('actions.share')}
-                    >
-                      <Share2 className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                  ))}
+                {actions.showShare && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={actions.onShareClick}
+                    aria-label={t('actions.share')}
+                  >
+                    <Share2 className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                )}
                 {actions.showSettings && safeSettingsHref && (
                   <Button
                     variant="ghost"
