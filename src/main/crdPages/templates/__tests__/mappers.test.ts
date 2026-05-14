@@ -159,6 +159,36 @@ describe('templateContentMapper', () => {
     });
   });
 
+  it('maps a Collabora-document-framed callout content payload', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.CollaboraDocument,
+          profile: { displayName: 'Strategy doc', description: 'shared planning surface' },
+          collaboraDocument: {
+            profile: { displayName: 'Strategy.docx' },
+            documentType: 'word',
+          },
+        },
+        settings: {
+          contribution: { allowedTypes: [] },
+          framing: { commentsEnabled: false },
+        },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({
+      type: 'callout',
+      framingKind: 'document',
+      framingTitle: 'Strategy doc',
+      framingDescription: 'shared planning surface',
+      framingCollaboraDoc: { displayName: 'Strategy.docx', documentType: 'word' },
+    });
+    // The Collabora preview is a read-only title/placeholder — the mapper carries the doc handle on
+    // `framingCollaboraDoc` so the consumer can render `CalloutCollaboraPreview` without a live document service.
+  });
+
   it('maps a poll-framed callout content payload', () => {
     const template = {
       callout: {

@@ -28,7 +28,13 @@ export type UseSaveAsTemplateResult = {
   openSaveAs: (source: SaveAsTemplateSource) => void;
 };
 
-function toSaveAsValues(source: Exclude<SaveAsTemplateSource, { kind: 'callout' }>): TemplateFormValues {
+/**
+ * Pure pre-fill helper — builds the `TemplateFormValues` shape that a "save as a template" flow
+ * opens the Create Template dialog with, for the non-callout sources (the callout case takes
+ * pre-built CRD callout-form values from the caller, since it composes the heavyweight callout
+ * authoring connectors). Exported only to make it independently unit-testable.
+ */
+export function toSaveAsValues(source: Exclude<SaveAsTemplateSource, { kind: 'callout' }>): TemplateFormValues {
   switch (source.kind) {
     case 'communityGuidelines':
       return {
