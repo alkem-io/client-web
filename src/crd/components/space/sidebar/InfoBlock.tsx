@@ -1,4 +1,5 @@
 import { MapPin, Pencil } from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
@@ -40,6 +41,19 @@ const MARKDOWN_OVERRIDES = cn(
 
 export function InfoBlock({ description, leads = [], onEditClick, className }: InfoBlockProps) {
   const { t } = useTranslation('crd-space');
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useLayoutEffect(() => {
+    setIsExpanded(false);
+  }, [description]);
+
+  useLayoutEffect(() => {
+    const el = descriptionRef.current;
+    if (!el || isExpanded) return;
+    setIsOverflowing(el.scrollHeight > el.clientHeight + 1);
+  }, [description, isExpanded]);
 
   if (!description && leads.length === 0) return null;
 
@@ -47,7 +61,26 @@ export function InfoBlock({ description, leads = [], onEditClick, className }: I
 
   return (
     <div className={cn('group relative bg-primary text-primary-foreground rounded-lg p-5', className)}>
-      {description && <MarkdownContent content={description} className={MARKDOWN_OVERRIDES} />}
+      {description && (
+        <>
+          <div ref={descriptionRef} className={cn(!isExpanded && 'line-clamp-3')}>
+            <MarkdownContent content={description} className={MARKDOWN_OVERRIDES} />
+          </div>
+          {isOverflowing && (
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                setIsExpanded(prev => !prev);
+              }}
+              aria-expanded={isExpanded}
+              className="relative z-10 mt-2 text-body-emphasis text-primary-foreground underline underline-offset-2 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-sm"
+            >
+              {isExpanded ? t('callout.collapse') : t('callout.expand')}
+            </button>
+          )}
+        </>
+      )}
 
       {leads.length > 0 && (
         <div className={cn('pt-3 border-t border-white/15', description && 'mt-3')}>
@@ -110,9 +143,15 @@ function LeadRow({ lead }: { lead: LeadItem }) {
     </div>
   );
 
-  // Lead rows render as static markup inside the InfoBlock. The InfoBlock's
-  // edit-overlay button covers the whole block, so wrapping in <a> here would
-  // produce nested clickable elements (a-inside-button via overlay z-index)
-  // and steal focus from the edit affordance. Static rendering is intentional.
-  return inner;
+  if (!lead.href) return inner;
+
+  return (
+    <a
+      href={lead.href}
+      onClick={e => e.stopPropagation()}
+      className="relative z-10 block rounded-md -mx-1 px-1 py-0.5 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+    >
+      {inner}
+    </a>
+  );
 }
