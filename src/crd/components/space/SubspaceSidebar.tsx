@@ -52,6 +52,9 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
   onShowAllSubspaces?: () => void;
   /** Navigate to a nested subspace from the widget row. */
   onSubspaceClick?: (href: string) => void;
+  /** Opens the Create Subspace dialog. Surfaced as a "Create" link in the
+   *  widget header when there are no nested subspaces yet. */
+  onCreateSubspace?: () => void;
   className?: string;
 };
 
@@ -74,6 +77,7 @@ export function SubspaceSidebar({
   subspaces,
   onShowAllSubspaces,
   onSubspaceClick,
+  onCreateSubspace,
   className,
 }: SubspaceSidebarProps) {
   const { t } = useTranslation('crd-subspace');
@@ -125,8 +129,13 @@ export function SubspaceSidebar({
         </ul>
       </nav>
 
-      {subspaces && subspaces.length > 0 && (
-        <SubspacesSection subspaces={subspaces} onShowAllClick={onShowAllSubspaces} onSubspaceClick={onSubspaceClick} />
+      {subspaces && (subspaces.length > 0 || onCreateSubspace) && (
+        <SubspacesSection
+          subspaces={subspaces}
+          onShowAllClick={onShowAllSubspaces}
+          onSubspaceClick={onSubspaceClick}
+          onCreateClick={onCreateSubspace}
+        />
       )}
 
       {virtualContributor && (

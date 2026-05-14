@@ -63,6 +63,7 @@ export type CrdSubspacePageData = {
   /** Permissions surfaced on the page */
   canRead: boolean;
   canUpdate: boolean;
+  canCreateSubspace: boolean;
 
   /** Apply / Join CTA — pass-through from useApplicationButton */
   applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
@@ -200,6 +201,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
+    canCreateSubspace: permissions.canCreateSubspace,
 
     applicationButtonProps,
     applicationLoading,

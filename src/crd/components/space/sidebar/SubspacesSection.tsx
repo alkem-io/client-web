@@ -15,6 +15,10 @@ type SubspacesSectionProps = {
   showAllHref?: string;
   onShowAllClick?: () => void;
   onSubspaceClick?: (href: string) => void;
+  /** When the list is empty, the top-right "Show all" affordance is replaced by
+   *  a "Create" link that calls this callback. The section stays hidden when
+   *  empty AND this is not provided. */
+  onCreateClick?: () => void;
   className?: string;
 };
 
@@ -23,6 +27,7 @@ export function SubspacesSection({
   showAllHref,
   onShowAllClick,
   onSubspaceClick,
+  onCreateClick,
   className,
 }: SubspacesSectionProps) {
   const { t } = useTranslation('crd-space');
@@ -33,30 +38,45 @@ export function SubspacesSection({
   const hasShowAll = Boolean(showAllHref) || Boolean(onShowAllClick);
   const visible = hasShowAll ? subspaces.slice(0, MAX_VISIBLE) : subspaces;
   const isTruncated = hasShowAll && subspaces.length > MAX_VISIBLE;
+  const isEmpty = subspaces.length === 0;
+
+  // Hide the whole section when there's nothing to show AND no Create affordance.
+  if (isEmpty && !onCreateClick) return null;
+
   const showAllLabel = t('sidebar.showAll');
+  const createLabel = t('sidebar.create');
 
   return (
     <div className={className}>
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
-        {hasShowAll &&
-          subspaces.length > 0 &&
-          (showAllHref ? (
-            <a
-              href={showAllHref}
-              className="text-caption font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            >
-              {showAllLabel}
-            </a>
-          ) : (
-            <button
-              type="button"
-              onClick={onShowAllClick}
-              className="text-caption font-medium text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            >
-              {showAllLabel}
-            </button>
-          ))}
+        {isEmpty
+          ? onCreateClick && (
+              <button
+                type="button"
+                onClick={onCreateClick}
+                className="text-caption font-medium text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+              >
+                {createLabel}
+              </button>
+            )
+          : hasShowAll &&
+            (showAllHref ? (
+              <a
+                href={showAllHref}
+                className="text-caption font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+              >
+                {showAllLabel}
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={onShowAllClick}
+                className="text-caption font-medium text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+              >
+                {showAllLabel}
+              </button>
+            ))}
       </div>
       <div className="relative">
         <div className="space-y-1">
