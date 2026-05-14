@@ -39,6 +39,7 @@ import {
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
@@ -109,6 +110,13 @@ export default function CrdSpacePageLayout() {
   const visibilityData = mapSpaceVisibility(visibility);
   const memberAvatars = mapMemberAvatars(space.about.membership?.leadUsers);
 
+  // The transparent header + banner-under-header treatment only applies on
+  // the active-space home tab(s). Suspended/archived spaces show a visibility
+  // notice above the banner — pulling the banner up under the header would
+  // collide with it. Settings pages render `SpaceSettingsHeader` (no banner
+  // image), so they stay opaque too.
+  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
+
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
 
@@ -151,6 +159,7 @@ export default function CrdSpacePageLayout() {
       {visibilityData.status !== 'active' && (
         <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
       )}
+      {enableBannerOverlay && <EnableBannerOverlay />}
       <SpaceShell
         header={
           isOnSettings ? (
@@ -177,6 +186,7 @@ export default function CrdSpacePageLayout() {
               memberAvatars={memberAvatars}
               onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}
+              overlayHeader={enableBannerOverlay}
             />
           )
         }
@@ -255,6 +265,11 @@ export default function CrdSpacePageLayout() {
       />
     </StorageConfigContextProvider>
   );
+}
+
+function EnableBannerOverlay() {
+  useEnableBannerOverlay();
+  return null;
 }
 
 function L0SettingsBreadcrumbs({

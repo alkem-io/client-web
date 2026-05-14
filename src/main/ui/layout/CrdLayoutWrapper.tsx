@@ -17,6 +17,7 @@ import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNot
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
 import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -49,6 +50,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const breadcrumbItems = useBreadcrumbs();
+  const overlayBanner = useBannerOverlay();
   const designVersionToggle = useDesignVersionToggle();
   const designVersionSwitch = designVersionToggle.isVisible
     ? {
@@ -93,6 +95,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
+        overlayBanner={overlayBanner}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
@@ -123,9 +126,11 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
   return (
     <BreadcrumbsProvider>
-      <SearchProvider>
-        <CrdLayoutConnector>{children}</CrdLayoutConnector>
-      </SearchProvider>
+      <BannerOverlayProvider>
+        <SearchProvider>
+          <CrdLayoutConnector>{children}</CrdLayoutConnector>
+        </SearchProvider>
+      </BannerOverlayProvider>
     </BreadcrumbsProvider>
   );
 }
