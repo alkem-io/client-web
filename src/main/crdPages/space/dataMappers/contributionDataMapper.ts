@@ -19,6 +19,12 @@ type ContributionCardData = {
   postId?: string;
   linkUrl?: string;
   linkDescription?: string;
+  /** For link contributions: the underlying link id (different from the contribution wrapper id). Used by update/delete mutations. */
+  linkId?: string;
+  /** For link contributions: whether the current user can update this specific link. */
+  canEditLink?: boolean;
+  /** For link contributions: whether the current user can delete this specific link. */
+  canDeleteLink?: boolean;
 };
 
 export type { ContributionCardData };
@@ -189,12 +195,16 @@ export function mapAnyContributionToCardData(
 
   if (item.link) {
     const link = item.link;
+    const privileges = link.authorization?.myPrivileges ?? [];
     return {
       id: item.id,
       type: 'link',
       title: link.profile.displayName,
       linkUrl: link.uri,
       linkDescription: link.profile.description ?? undefined,
+      linkId: link.id,
+      canEditLink: privileges.includes('UPDATE'),
+      canDeleteLink: privileges.includes('DELETE'),
     };
   }
 

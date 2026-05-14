@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
@@ -13,6 +13,8 @@ import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutCo
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { getCalloutContributionType } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
+import { LinkContributionAddConnector } from './LinkContributionAddConnector';
+import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
@@ -63,8 +65,9 @@ export function ContributionsPreviewConnector({
 
   // The "+ Add" tile mirrors the detail-dialog flow (CalloutDetailDialogConnector → ContributionsSlot):
   // appended as a trailing slot in the same grid using the existing add connectors, so the user can
-  // create a memo / whiteboard / post directly from the feed-level card. Link contributions don't yet
-  // have a CRD add connector, so they keep the list-only treatment.
+  // create a memo / whiteboard / post / link directly from the feed-level card. The Link branch renders
+  // an inline "+ Add link" button inside the link list (see below), not a card tile, since link
+  // contributions render as a list, not a grid.
   const defaults = callout.contributionDefaults;
   const addTile: ReactNode =
     canCreateContribution && contributionType ? (
@@ -86,6 +89,22 @@ export function ContributionsPreviewConnector({
         />
       ) : null
     ) : null;
+
+  // Link-list edit/add state lives in this connector so the inline "+ Add link" button in the list
+  // and the per-row Edit / Delete affordances can drive a single set of dialogs.
+  const [linkAddOpen, setLinkAddOpen] = useState(false);
+  const [linkEditTarget, setLinkEditTarget] = useState<
+    | {
+        contributionId: string;
+        linkId: string;
+        url: string;
+        displayName: string;
+        description?: string;
+        canDelete: boolean;
+        intent?: 'edit' | 'delete';
+      }
+    | undefined
+  >(undefined);
 
   if (!hasContributionType || !contributionType) {
     return <div ref={inViewRef} />;
@@ -113,19 +132,57 @@ export function ContributionsPreviewConnector({
       url: c.linkUrl ?? '',
       displayName: c.title,
       description: c.linkDescription,
+      canEdit: c.canEditLink,
+      canDelete: c.canDeleteLink,
     }));
+
+    const openLinkTarget = (contributionId: string, intent: 'edit' | 'delete') => {
+      const c = contributions.find(item => item.id === contributionId);
+      if (!c || !c.linkId) return;
+      setLinkEditTarget({
+        contributionId: c.id,
+        linkId: c.linkId,
+        url: c.linkUrl ?? '',
+        displayName: c.title,
+        description: c.linkDescription,
+        canDelete: Boolean(c.canDeleteLink),
+        intent,
+      });
+    };
 
     return (
       <div ref={inViewRef}>
         {header}
         {contributions.length > 0 ? (
-          <ContributionLinkList links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links} />
+          <ContributionLinkList
+            links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links}
+            canAdd={canCreateContribution}
+            onAdd={() => setLinkAddOpen(true)}
+            onEdit={id => openLinkTarget(id, 'edit')}
+            onDelete={id => openLinkTarget(id, 'delete')}
+          />
+        ) : canCreateContribution ? (
+          <ContributionLinkList links={[]} canAdd={true} onAdd={() => setLinkAddOpen(true)} />
         ) : null}
         {hasMore && (
           <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
             {t('callout.moreContributions', { count: moreCount })}
           </Button>
         )}
+        {canCreateContribution && (
+          <LinkContributionAddConnector
+            calloutId={callout.id}
+            inlineTrigger={true}
+            open={linkAddOpen}
+            onOpenChange={setLinkAddOpen}
+          />
+        )}
+        <LinkContributionEditConnector
+          calloutId={callout.id}
+          target={linkEditTarget}
+          canDelete={linkEditTarget?.canDelete}
+          onClose={() => setLinkEditTarget(undefined)}
+        />
       </div>
     );
   }
