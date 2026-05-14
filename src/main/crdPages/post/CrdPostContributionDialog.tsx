@@ -37,8 +37,10 @@ import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
+import { useReferenceFileUpload } from '@/main/crdPages/space/callout/useReferenceFileUpload';
 import {
   emptyPostContributionFormValues,
   type PostContributionFormValues,
@@ -85,6 +87,7 @@ export function CrdPostContributionDialog({
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
   const markdownIntegration = useMarkdownEditorIntegration();
+  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
   const titleFieldId = useId();
   const descriptionFieldId = useId();
   const tagsFieldId = useId();
@@ -429,14 +432,13 @@ export function CrdPostContributionDialog({
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label className="text-body text-foreground">{t('postPreview.references')}</Label>
-                  <ReferencesEditor
-                    rows={values.references}
-                    onChange={rows => updateField('references', rows)}
-                    disabled={submitting}
-                  />
-                </div>
+                <ReferencesEditor
+                  rows={values.references}
+                  onChange={rows => updateField('references', rows)}
+                  disabled={submitting}
+                  onFileUpload={referenceUpload.onFileUpload}
+                  uploadAccept={referenceUpload.accept}
+                />
 
                 {/* Post location — MUI parity (`post-edit.postLocation.*`). Rendered only
                     in edit mode when the user has `MovePost` privilege AND the parent

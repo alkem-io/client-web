@@ -528,6 +528,7 @@
     "descriptionPlaceholder": "Optionele beschrijving",
     "addRow": "Nog een referentie toevoegen",
     "removeRow": "Referentie verwijderen",
+    "attachFile": "Bestand bijvoegen",
     "removeConfirm": {
       "title": "Deze referentie verwijderen?",
       "description": "“{{name}}” wordt verwijderd zodra je opslaat. Dit kan niet ongedaan worden gemaakt.",
