@@ -369,10 +369,11 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 100-space-header-layout: Added TypeScript 5.x / React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + `@/crd/primitives/*` (shadcn/ui + Radix), Tailwind CSS v4, `lucide-react` for icons, `react-i18next` for `crd-space` / `crd-subspace` namespaces
 - 099-design-version-switch: Added TypeScript 5.x / React 19 (with React Compiler — no manual memoization) / Node ≥24.0.0 (Volta-pinned 24.14.0)
 - 098-crd-forum-documentation: Added TypeScript 5.x / React 19 / Node ≥24.0.0 (Volta-pinned to 24.14.0) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `card`, `input`, `select`, `separator`, `tooltip`, `avatar`, `button`, `skeleton`; existing CRD composites `ShareDialog`/`ShareButton`, `ConfirmationDialog`, `CommentThread`/`CommentInput`/`CommentItem`, `MarkdownEditor`, `TagsInput`, `MarkdownContent` / `InlineMarkdown`; `lucide-react` (MessageSquare, Rocket, Settings, Users, Building2, HelpCircle, MoreHorizontal, Search, ArrowLeft, Plus, Share2, Pencil, Trash2, Send, Smile); Apollo Client (existing — unchanged); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`); Formik (integration layer only; never inside `src/crd/`)
-- 095-crd-auth-error-page: Added TypeScript 5.x / React 19 (with React Compiler) + shadcn/ui (Radix UI + Tailwind v4), `lucide-react`, `react-i18next` (existing), `react-router-dom` (existing — used only in the integration layer, never in `src/crd/`), `class-variance-authority` (existing). No new dependencies.
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 (with React Compiler — no manual memoization) / Node ≥24.0.0 (Volta-pinned 24.14.0) (099-design-version-switch)
+- TypeScript 5.x / React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + `@/crd/primitives/*` (shadcn/ui + Radix), Tailwind CSS v4, `lucide-react` for icons, `react-i18next` for `crd-space` / `crd-subspace` namespaces (100-space-header-layout)
+- N/A — presentational change. Apollo cache untouched. (100-space-header-layout)
