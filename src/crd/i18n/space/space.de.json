@@ -528,6 +528,7 @@
     "descriptionPlaceholder": "Optionale Beschreibung",
     "addRow": "Weitere Referenz hinzufügen",
     "removeRow": "Referenz entfernen",
+    "attachFile": "Datei anhängen",
     "removeConfirm": {
       "title": "Diese Referenz entfernen?",
       "description": "„{{name}}“ wird beim Speichern entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
