@@ -8,13 +8,12 @@ type BannerOverlayContextValue = {
 const BannerOverlayContext = createContext<BannerOverlayContextValue | null>(null);
 
 export function BannerOverlayProvider({ children }: { children: ReactNode }) {
-  const [active, setActiveRaw] = useState(false);
-
-  // Shallow-equal guard avoids re-publish cycles when callers re-mount
-  // <EnableBannerOverlay /> across renders.
-  const setActive = (next: boolean) => {
-    setActiveRaw(prev => (prev === next ? prev : next));
-  };
+  // `useState`'s setter is referentially stable across renders and already
+  // bails out on `Object.is`-equal updates, so we don't need a wrapped setter
+  // with a manual shallow-equal guard (the pattern in BreadcrumbsContext
+  // exists only because that context stores an *array*, where fresh identity
+  // with identical contents would otherwise trigger updates).
+  const [active, setActive] = useState(false);
 
   const value = { active, setActive };
   return <BannerOverlayContext.Provider value={value}>{children}</BannerOverlayContext.Provider>;
