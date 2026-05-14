@@ -32,14 +32,10 @@ export const useParentSpaceInfo = (parentSpaceId?: string) => {
     };
   })();
 
-  // Get parent avatar URI for collectSubspaceAvatars
-  const parentAvatarUri = (() => {
-    if (!parentSpace?.about?.profile) {
-      return undefined;
-    }
-
-    return parentSpace.about.profile.avatar?.uri || parentSpace.about.profile.cardBanner?.uri;
-  })();
+  // Get parent avatar URI for collectSubspaceAvatars. Avatar position — never substitute cardBanner.
+  // L0 parents have no avatar; the consumer (collectSubspaceAvatars) skips the parent entry when
+  // parentAvatarUri is undefined.
+  const parentAvatarUri = parentSpace?.about?.profile?.avatar?.uri || undefined;
 
   const parentDisplayName = parentSpace?.about?.profile.displayName;
 

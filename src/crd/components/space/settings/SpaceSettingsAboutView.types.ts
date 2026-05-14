@@ -50,6 +50,11 @@ export type SpaceCardPreview = {
   color: string;
   initials: string;
   href: string;
+  /**
+   * Space level — used by the preview to suppress the avatar block for L0 (which has no avatar
+   * concept per the canonical visual-fields rule). Defaults to non-L0 behaviour when omitted.
+   */
+  level?: SpaceSettingsLevel;
   /** The "What" description — shown in the About preview's WHAT section. */
   what?: string;
   /** For future Explore card: leads, member count, etc. */

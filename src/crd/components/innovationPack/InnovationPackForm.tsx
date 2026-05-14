@@ -1,5 +1,5 @@
 import { ImageIcon, Loader2 } from 'lucide-react';
-import { useId, useRef } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReferenceRowsEditor } from '@/crd/components/templates/forms/ReferenceRowsEditor';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -37,11 +37,15 @@ export function InnovationPackForm({
 }: InnovationPackFormProps) {
   const { t } = useTranslation('crd-templates');
   const formId = useId();
+  // Only populate `referenceErrors` when the error value is actually set — an `undefined` value would
+  // otherwise count as a blocking error and disable the Save button with no UI indication of why.
   const referenceErrors: Record<string, string | undefined> = {};
   for (const key of Object.keys(errors)) {
-    if (key.startsWith('references.')) referenceErrors[key.slice('references.'.length)] = errors[key];
+    if (key.startsWith('references.') && errors[key]) {
+      referenceErrors[key.slice('references.'.length)] = errors[key];
+    }
   }
-  const hasBlockingError = Boolean(errors.name) || Object.keys(referenceErrors).length > 0;
+  const hasBlockingError = Boolean(errors.name) || Object.values(referenceErrors).some(Boolean);
 
   return (
     <form
@@ -182,8 +186,19 @@ function AvatarUpload({
 }) {
   const { t } = useTranslation('crd-templates');
   const inputRef = useRef<HTMLInputElement>(null);
-  // Preview URL: prefer the staged file (ObjectURL); else fall back to the server image.
-  const stagedUrl = stagedFile ? URL.createObjectURL(stagedFile) : undefined;
+  // Preview URL: prefer the staged file (blob URL); else fall back to the server image.
+  // `URL.createObjectURL` is held in state with a cleanup effect so the blob URL is revoked when the
+  // file changes or the component unmounts — otherwise every render would leak a fresh blob.
+  const [stagedUrl, setStagedUrl] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    if (!stagedFile) {
+      setStagedUrl(undefined);
+      return;
+    }
+    const url = URL.createObjectURL(stagedFile);
+    setStagedUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [stagedFile]);
   const previewUrl = stagedUrl ?? currentUrl;
 
   const handlePick = (e: React.ChangeEvent<HTMLInputElement>) => {

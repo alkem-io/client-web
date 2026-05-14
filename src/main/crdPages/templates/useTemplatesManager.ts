@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   refetchAllTemplatesInTemplatesSetQuery,
   useAllTemplatesInTemplatesSetQuery,
@@ -147,11 +147,17 @@ export function useTemplatesManager({
     void getTemplateContent({ variables: { templateId: id, ...templateContentIncludeVars(card.type) } }).then(
       ({ data: contentData }) => {
         const fetched = contentData?.lookup.template;
-        setPreview(prev => ({
-          ...prev,
-          content: fetched ? mapTemplateContent(fetched, card.type) : undefined,
-          contentLoading: false,
-        }));
+        // Guard against a slow response for template A landing after the user has already opened B (or
+        // closed the dialog). The previous state's `header.id` is the active preview at commit time.
+        setPreview(prev =>
+          prev.header?.id === id
+            ? {
+                ...prev,
+                content: fetched ? mapTemplateContent(fetched, card.type) : undefined,
+                contentLoading: false,
+              }
+            : prev
+        );
       }
     );
   };
@@ -334,17 +340,24 @@ export function useTemplatesManager({
   ];
   const findImportCard = (id: string) => [...importAccountCards, ...importPlatformCards].find(c => c.id === id);
 
+  // Tracks the latest import-preview request so a slow response for template A doesn't overwrite the
+  // content shown for template B if the user clicked another card mid-fetch.
+  const activeImportPreviewIdRef = useRef<string | null>(null);
   const onImportPreview = (id: string) => {
     if (importType === null) return;
+    activeImportPreviewIdRef.current = id;
     setImportPreviewId(id);
     setImportPreviewContent(undefined);
     setImportPreviewLoading(true);
     void getTemplateContent({ variables: { templateId: id, ...templateContentIncludeVars(importType) } })
       .then(({ data: contentData }) => {
+        if (activeImportPreviewIdRef.current !== id) return;
         const fetched = contentData?.lookup.template;
         setImportPreviewContent(fetched ? mapTemplateContent(fetched, importType) : undefined);
       })
-      .finally(() => setImportPreviewLoading(false));
+      .finally(() => {
+        if (activeImportPreviewIdRef.current === id) setImportPreviewLoading(false);
+      });
   };
 
   const handleImport = async (id: string) => {

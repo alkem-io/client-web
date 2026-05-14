@@ -26,7 +26,14 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    /*
+     * `clip` (not `hidden`) prevents horizontal page scroll without
+     * establishing a scroll container. `overflow: hidden` would capture
+     * `position: sticky` descendants (including the Header) and stop them
+     * from pinning to the viewport. `clip` is widely supported (≥93%) and
+     * is the correct primitive for "clip overflow, don't scroll".
+     */
+    overflow-x: clip;
   }
 
   .crd-root *,

@@ -75,7 +75,7 @@ export default function CrdSpaceSettingsPage() {
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
-  const about = useAboutTabData(spaceId, spaceUrl);
+  const about = useAboutTabData(spaceId, spaceUrl, level);
   const layout = useLayoutTabData(spaceId);
   const community = useCommunityTabData(roleSetId);
   const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
@@ -111,13 +111,14 @@ export default function CrdSpaceSettingsPage() {
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
-  const [appliedGuidelinesTemplateId, setAppliedGuidelinesTemplateId] = useState<string | null>(null);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
   useEffect(() => {
-    if (!selectedGuidelinesTemplateId || appliedGuidelinesTemplateId === selectedGuidelinesTemplateId) return;
-    setAppliedGuidelinesTemplateId(selectedGuidelinesTemplateId);
+    if (!selectedGuidelinesTemplateId) return;
     void communityGuidelines.onApplyTemplate(selectedGuidelinesTemplateId);
-  }, [selectedGuidelinesTemplateId, appliedGuidelinesTemplateId, communityGuidelines]);
+    // Consume the selection so re-picking the same template (e.g. after a failed apply, or reopening the
+    // picker to retry) fires the effect again instead of short-circuiting on a stale "already applied" id.
+    guidelinesTemplatePicker.clearSelection();
+  }, [selectedGuidelinesTemplateId, communityGuidelines, guidelinesTemplatePicker]);
   const openGuidelinesTemplatePicker = () => {
     if (communityGuidelines.hasContent) setConfirmReplaceGuidelinesOpen(true);
     else guidelinesTemplatePicker.openPicker();
@@ -125,7 +126,6 @@ export default function CrdSpaceSettingsPage() {
 
   // Layout-tab: per-flow-state default Callout template (T058) — the column kebab opens this picker.
   const [defaultCalloutTemplateColumnId, setDefaultCalloutTemplateColumnId] = useState<string | null>(null);
-  const [appliedDefaultCalloutTemplateKey, setAppliedDefaultCalloutTemplateKey] = useState<string | null>(null);
   const defaultCalloutTemplatePicker = useTemplatePicker({
     allowedTypes: ['callout'],
     accountId,
@@ -166,12 +166,12 @@ export default function CrdSpaceSettingsPage() {
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
   useEffect(() => {
     if (!selectedDefaultCalloutTemplateId || !defaultCalloutTemplateColumnId) return;
-    const key = `${defaultCalloutTemplateColumnId}:${selectedDefaultCalloutTemplateId}`;
-    if (appliedDefaultCalloutTemplateKey === key) return;
-    setAppliedDefaultCalloutTemplateKey(key);
     columnMenu.onSetAsDefaultCalloutTemplate(defaultCalloutTemplateColumnId, selectedDefaultCalloutTemplateId);
     setDefaultCalloutTemplateColumnId(null);
-  }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, appliedDefaultCalloutTemplateKey, columnMenu]);
+    // Consume the selection so re-picking the same template (different column, or same column after a
+    // failed apply) fires the effect again instead of short-circuiting on a stale "already applied" key.
+    defaultCalloutTemplatePicker.clearSelection();
+  }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
 
   // About uses per-section inline Save, so it does NOT participate in the
   // tab-switch guard. Only Layout and the Application Form can enter a

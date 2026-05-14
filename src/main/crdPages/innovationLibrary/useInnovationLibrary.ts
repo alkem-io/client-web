@@ -58,6 +58,11 @@ export function useInnovationLibrary(): UseInnovationLibraryResult {
           setPreviewContent(mapTemplateContent(fetched, card.type));
         }
       })
+      .catch(() => {
+        // Network / auth error — close the preview so the user can retry, rather than leaving the
+        // dialog open with no content and no signal of what went wrong.
+        setPreviewTemplate(undefined);
+      })
       .finally(() => setPreviewLoading(false));
   };
 

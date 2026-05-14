@@ -60,7 +60,7 @@ export function TemplateSectionHeader({
                 </span>
               )}
             </span>
-            <span className="block text-body text-muted-foreground mt-0.5 hidden sm:block">
+            <span className="hidden text-body text-muted-foreground mt-0.5 sm:block">
               {t(`manager.sections.${type}.subtitle`)}
             </span>
           </span>

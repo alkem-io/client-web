@@ -35,6 +35,8 @@ type CrdLayoutProps = {
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
   designVersionSwitch?: CrdDesignVersionSwitch;
+  /** When true the header renders transparently over a hero banner below it. */
+  overlayBanner?: boolean;
   children: ReactNode;
 };
 
@@ -61,6 +63,7 @@ export function CrdLayout({
   footerLinks,
   showGridToggle,
   designVersionSwitch,
+  overlayBanner,
   children,
 }: CrdLayoutProps) {
   const content = (
@@ -87,6 +90,7 @@ export function CrdLayout({
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
         designVersionSwitch={designVersionSwitch}
+        overlayBanner={overlayBanner}
       />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer

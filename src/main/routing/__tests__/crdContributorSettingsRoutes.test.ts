@@ -33,10 +33,18 @@ import { describe, expect, it } from 'vitest';
 const MUI_LOAD_TIMEOUT_MS = 30_000;
 
 describe('CRD User Settings — lazy chunks load without throwing', () => {
-  it('CrdUserSettingsRoutes', async () => {
-    const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes');
-    expect(typeof mod.default).toBe('function');
-  });
+  // `CrdUserSettingsRoutes` is the entry point that lazy-references every other
+  // chunk below — its first-time import in the suite warms the lazy graph and
+  // can exceed the default 5s timeout under parallel jsdom load. Use the same
+  // buffer as the MUI-heavy tests below.
+  it(
+    'CrdUserSettingsRoutes',
+    async () => {
+      const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes');
+      expect(typeof mod.default).toBe('function');
+    },
+    MUI_LOAD_TIMEOUT_MS
+  );
 
   it('CrdUserProfileTab', async () => {
     const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/profile/CrdUserProfileTab');
