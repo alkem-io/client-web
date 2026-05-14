@@ -71,7 +71,7 @@ export function ToolbarTablePicker({ editor }: ToolbarTablePickerProps) {
           <TableIcon className="w-4 h-4" aria-hidden="true" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-2" align="start">
+      <PopoverContent className="z-[70] w-auto p-2" align="start">
         {!customMode ? (
           <>
             {/* biome-ignore lint/a11y/noStaticElementInteractions: mouseLeave only resets hover state — accessible interaction is delegated to per-cell buttons */}
