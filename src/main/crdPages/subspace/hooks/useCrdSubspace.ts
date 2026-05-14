@@ -6,7 +6,9 @@ import {
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
+import { getInitials } from '@/crd/lib/getInitials';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
@@ -43,6 +45,8 @@ export type CrdSubspacePageData = {
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
+  /** Nested subspaces of the current subspace — fed into the sidebar widget. */
+  subspaces: Array<{ name: string; initials: string; href: string }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
@@ -54,6 +58,7 @@ export type CrdSubspacePageData = {
   /** Permissions surfaced on the page */
   canRead: boolean;
   canUpdate: boolean;
+  canCreateSubspace: boolean;
 
   /** Apply / Join CTA — pass-through from useApplicationButton */
   applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
@@ -144,6 +149,16 @@ export function useCrdSubspace(): CrdSubspacePageData {
     virtualContributor: undefined,
   });
 
+  // Nested subspaces (L2s) shown by the sidebar widget. Reuses the same hook the
+  // L0 dashboard uses for its children list — it works for any space level.
+  const { dashboardNavigation } = useSpaceDashboardNavigation({ spaceId: subspaceId });
+  const subspaces =
+    dashboardNavigation?.children?.map(child => ({
+      name: child.displayName,
+      initials: getInitials(child.displayName),
+      href: child.url,
+    })) ?? [];
+
   const visibilityData = mapSpaceVisibility(visibility);
 
   return {
@@ -167,6 +182,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     banner,
     bannerActions,
     sidebar,
+    subspaces,
     visibility: visibilityData,
 
     phases,
@@ -176,6 +192,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
+    canCreateSubspace: permissions.canCreateSubspace,
 
     applicationButtonProps,
     applicationLoading,

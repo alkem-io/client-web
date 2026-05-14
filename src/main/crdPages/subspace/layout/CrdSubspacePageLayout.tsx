@@ -8,9 +8,11 @@ import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
+import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import {
   getVisibleSettingsTabs,
@@ -50,6 +52,7 @@ export default function CrdSubspacePageLayout() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const createSubspace = useCreateSubspace(data.subspaceId ?? '');
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -101,6 +104,16 @@ export default function CrdSubspacePageLayout() {
 
   const editFlowHref = data.subspaceUrl ? `${data.subspaceUrl}/settings/layout` : undefined;
 
+  // Single source of truth for the create-subspace handler. Both the sidebar
+  // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
+  // call it; `data.canCreateSubspace` is the only privilege gate.
+  const handleCreateSubspace = data.canCreateSubspace
+    ? () => {
+        setMobileMenuOpen(false);
+        createSubspace.openDialog();
+      }
+    : undefined;
+
   const subspaceSidebar = (
     <SubspaceSidebar
       {...data.sidebar}
@@ -113,6 +126,16 @@ export default function CrdSubspacePageLayout() {
         setAboutOpen(true);
       }}
       onQuickActionClick={handleQuickAction}
+      subspaces={data.subspaces}
+      onShowAllSubspaces={() => {
+        setMobileMenuOpen(false);
+        setActiveDialog('subspaces');
+      }}
+      onSubspaceClick={href => {
+        setMobileMenuOpen(false);
+        navigate(href);
+      }}
+      onCreateSubspace={handleCreateSubspace}
     />
   );
 
@@ -247,6 +270,7 @@ export default function CrdSubspacePageLayout() {
         open={activeDialog === 'subspaces'}
         onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
         subspaceId={data.subspaceId}
+        onCreateSubspace={handleCreateSubspace}
       />
 
       <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
@@ -267,6 +291,25 @@ export default function CrdSubspacePageLayout() {
           ) : undefined
         }
       />
+
+      {data.canCreateSubspace && (
+        <CreateSubspaceDialog
+          open={createSubspace.open}
+          onOpenChange={open => {
+            if (!open) createSubspace.closeDialog();
+          }}
+          values={createSubspace.values}
+          errors={createSubspace.errors}
+          templates={createSubspace.templates}
+          templatesLoading={createSubspace.templatesLoading}
+          submitting={createSubspace.submitting}
+          canSubmit={createSubspace.canSubmit}
+          avatarConstraints={createSubspace.avatarConstraints}
+          cardBannerConstraints={createSubspace.cardBannerConstraints}
+          onChange={createSubspace.onChange}
+          onSubmit={() => void createSubspace.onSubmit()}
+        />
+      )}
     </StorageConfigContextProvider>
   );
 }

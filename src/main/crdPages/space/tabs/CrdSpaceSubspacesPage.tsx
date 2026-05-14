@@ -5,11 +5,12 @@ import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
+import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
-import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
+import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -53,10 +54,10 @@ export default function CrdSpaceSubspacesPage() {
     href: s.href,
   }));
 
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
-  const handleCreateClick = canCreate ? () => setIsCreateDialogOpen(true) : undefined;
+  const createSubspace = useCreateSubspace(spaceId ?? '');
+  const handleCreateClick = canCreate ? createSubspace.openDialog : undefined;
 
   return (
     <>
@@ -105,10 +106,21 @@ export default function CrdSpaceSubspacesPage() {
       )}
 
       {canCreate && (
-        <CreateSubspace
-          open={isCreateDialogOpen}
-          onClose={() => setIsCreateDialogOpen(false)}
-          parentSpaceId={spaceId}
+        <CreateSubspaceDialog
+          open={createSubspace.open}
+          onOpenChange={open => {
+            if (!open) createSubspace.closeDialog();
+          }}
+          values={createSubspace.values}
+          errors={createSubspace.errors}
+          templates={createSubspace.templates}
+          templatesLoading={createSubspace.templatesLoading}
+          submitting={createSubspace.submitting}
+          canSubmit={createSubspace.canSubmit}
+          avatarConstraints={createSubspace.avatarConstraints}
+          cardBannerConstraints={createSubspace.cardBannerConstraints}
+          onChange={createSubspace.onChange}
+          onSubmit={() => void createSubspace.onSubmit()}
         />
       )}
     </>
