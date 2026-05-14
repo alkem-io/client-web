@@ -1,56 +1,56 @@
 {
   "manager": {
-    "title": "Templates",
-    "subtitle": "Reusable templates for this space.",
-    "search": "Search templates…",
-    "addNew": "Add new",
-    "createNew": "Create new",
-    "selectFromLibrary": "Select from library",
-    "duplicating": "Creating…",
-    "deleting": "Deleting…",
-    "noTemplates": "No templates yet",
-    "noTemplatesHint": "Create one, or import one from the library.",
-    "noTemplatesReadOnly": "No templates yet.",
-    "sectionList": "Template sections",
-    "templateList": "Templates",
+    "title": "Sjablonen",
+    "subtitle": "Herbruikbare sjablonen voor deze ruimte.",
+    "search": "Zoek sjablonen…",
+    "addNew": "Toevoegen",
+    "createNew": "Nieuw maken",
+    "selectFromLibrary": "Selecteer uit bibliotheek",
+    "duplicating": "Bezig met aanmaken…",
+    "deleting": "Bezig met verwijderen…",
+    "noTemplates": "Nog geen sjablonen",
+    "noTemplatesHint": "Maak er een, of importeer er een uit de bibliotheek.",
+    "noTemplatesReadOnly": "Nog geen sjablonen.",
+    "sectionList": "Sjabloonsecties",
+    "templateList": "Sjablonen",
     "sections": {
       "space": {
-        "title": "Space templates",
-        "subtitle": "Structure a space with predefined phases and starter tools."
+        "title": "Ruimtesjablonen",
+        "subtitle": "Structureer een ruimte met vooraf gedefinieerde fasen en starttools."
       },
       "callout": {
-        "title": "Collaboration tools",
-        "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
+        "title": "Samenwerkingstools",
+        "subtitle": "Herbruikbare callouts voor workshops, brainstorms en groepsactiviteiten."
       },
       "whiteboard": {
-        "title": "Whiteboard templates",
-        "subtitle": "Canvas layouts for visual collaboration."
+        "title": "Whiteboard-sjablonen",
+        "subtitle": "Canvaslay-outs voor visuele samenwerking."
       },
       "post": {
-        "title": "Post templates",
-        "subtitle": "Standardised documents for projects and decisions."
+        "title": "Postsjablonen",
+        "subtitle": "Gestandaardiseerde documenten voor projecten en beslissingen."
       },
       "communityGuidelines": {
-        "title": "Community guidelines templates",
-        "subtitle": "Rules and expectations for a community."
+        "title": "Sjablonen voor gemeenschapsrichtlijnen",
+        "subtitle": "Regels en verwachtingen voor een gemeenschap."
       }
     }
   },
   "card": {
-    "actions": "Template actions",
-    "preview": "Preview",
-    "edit": "Edit",
-    "duplicate": "Duplicate",
-    "delete": "Delete",
-    "noPreview": "No preview"
+    "actions": "Sjabloonacties",
+    "preview": "Voorbeeld",
+    "edit": "Bewerken",
+    "duplicate": "Dupliceren",
+    "delete": "Verwijderen",
+    "noPreview": "Geen voorbeeld"
   },
   "framingKind": {
-    "none": "Text",
+    "none": "Tekst",
     "whiteboard": "Whiteboard",
     "memo": "Memo",
     "document": "Document",
     "cta": "Link",
-    "image": "Gallery",
+    "image": "Galerij",
     "poll": "Poll"
   },
   "contributionType": {
@@ -59,209 +59,231 @@
     "link": "Links"
   },
   "preview": {
-    "loading": "Loading template…",
-    "edit": "Edit template",
-    "close": "Close",
+    "loading": "Sjabloon laden…",
+    "edit": "Sjabloon bewerken",
+    "close": "Sluiten",
     "empty": "—",
     "callout": {
-      "framingKind": "Content type",
-      "framing": "Content",
-      "allowedContributions": "Allowed contributions",
-      "noContributions": "No contributions",
-      "comments": "Comments enabled",
-      "commentsDisabled": "Comments disabled",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
+      "framingKind": "Inhoudstype",
+      "framing": "Inhoud",
+      "allowedContributions": "Toegestane bijdragen",
+      "noContributions": "Geen bijdragen",
+      "comments": "Reacties ingeschakeld",
+      "commentsDisabled": "Reacties uitgeschakeld",
+      "defaultPostDescription": "Standaard postbeschrijving",
+      "defaultWhiteboard": "Standaard whiteboard",
       "links": "Links",
-      "gallery": "Gallery",
-      "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "gallery": "Galerij",
+      "pollQuestion": "Vraag",
+      "pollOptions": "Opties"
     },
     "whiteboard": {
-      "empty": "This whiteboard template has no drawing."
+      "empty": "Dit whiteboard-sjabloon heeft geen tekening."
     },
     "post": {
-      "defaultDescription": "Default description"
+      "defaultDescription": "Standaard beschrijving"
     },
     "space": {
-      "phases": "Phases",
-      "starterCallouts": "Starter tools",
-      "subspaceTemplates": "Subspace templates",
-      "none": "None"
+      "phases": "Fasen",
+      "starterCallouts": "Starttools",
+      "subspaceTemplates": "Subruimte-sjablonen",
+      "none": "Geen"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "body": "Guidelines",
-      "references": "References"
+      "title": "Titel richtlijnen",
+      "body": "Richtlijnen",
+      "references": "Referenties"
     }
   },
   "picker": {
-    "title": "Use a template",
-    "importTitle": "Template library",
-    "search": "Search templates…",
-    "noTemplates": "No templates available.",
-    "noTemplatesForType": "No templates available for this type.",
+    "title": "Gebruik een sjabloon",
+    "importTitle": "Sjabloonbibliotheek",
+    "search": "Zoek sjablonen…",
+    "noTemplates": "Geen sjablonen beschikbaar.",
+    "noTemplatesForType": "Geen sjablonen beschikbaar voor dit type.",
     "sources": {
-      "space": "This space",
-      "account": "Your account",
+      "space": "Deze ruimte",
+      "account": "Jouw account",
       "platform": "Platform"
     },
-    "select": "Use this template",
-    "noTemplate": "No template — start blank",
-    "import": "Import",
-    "inThisSet": "In this set",
-    "remove": "Remove from set",
-    "selectPreviewHint": "Select a template to preview it.",
-    "close": "Close",
-    "done": "Done"
+    "select": "Gebruik dit sjabloon",
+    "noTemplate": "Geen sjabloon — begin blanco",
+    "import": "Importeren",
+    "inThisSet": "In deze set",
+    "remove": "Verwijderen uit set",
+    "selectPreviewHint": "Selecteer een sjabloon om er een voorbeeld van te zien.",
+    "close": "Sluiten",
+    "done": "Klaar"
   },
   "form": {
     "createTitle": {
-      "space": "Create space template",
-      "callout": "Create collaboration-tool template",
-      "whiteboard": "Create whiteboard template",
-      "post": "Create post template",
-      "communityGuidelines": "Create community-guidelines template"
+      "space": "Ruimtesjabloon maken",
+      "callout": "Samenwerkingstool-sjabloon maken",
+      "whiteboard": "Whiteboard-sjabloon maken",
+      "post": "Postsjabloon maken",
+      "communityGuidelines": "Sjabloon voor gemeenschapsrichtlijnen maken"
     },
     "editTitle": {
-      "space": "Edit space template",
-      "callout": "Edit collaboration-tool template",
-      "whiteboard": "Edit whiteboard template",
-      "post": "Edit post template",
-      "communityGuidelines": "Edit community-guidelines template"
+      "space": "Ruimtesjabloon bewerken",
+      "callout": "Samenwerkingstool-sjabloon bewerken",
+      "whiteboard": "Whiteboard-sjabloon bewerken",
+      "post": "Postsjabloon bewerken",
+      "communityGuidelines": "Sjabloon voor gemeenschapsrichtlijnen bewerken"
     },
     "common": {
-      "name": "Template name",
-      "namePlaceholder": "e.g. Project kickoff",
-      "nameRequired": "A template name is required.",
-      "description": "Description",
-      "descriptionPlaceholder": "What is this template for?",
-      "tags": "Tags",
-      "tagsPlaceholder": "Add a tag and press Enter",
-      "banner": "Preview image",
-      "uploadBanner": "Upload preview image"
+      "name": "Sjabloonnaam",
+      "namePlaceholder": "bijv. Project-kickoff",
+      "nameRequired": "Een sjabloonnaam is verplicht.",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Waarvoor is dit sjabloon?",
+      "tags": "Labels",
+      "tagsPlaceholder": "Voeg een label toe en druk op Enter",
+      "banner": "Voorbeeldafbeelding",
+      "uploadBanner": "Voorbeeldafbeelding uploaden"
     },
-    "save": "Save",
-    "cancel": "Cancel",
-    "callout": {
-      "framingKind": "Content type",
-      "framingTitle": "Title",
-      "framingTitlePlaceholder": "Title shown on the callout",
-      "framingDescription": "Description",
-      "allowedContributions": "Allowed contributions",
-      "comments": "Allow comments",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
-      "editDefaults": "Edit contribution defaults",
-      "pollQuestion": "Poll question",
-      "pollQuestionPlaceholder": "What do you want to ask?",
-      "pollOptions": "Poll options"
-    },
+    "save": "Opslaan",
+    "cancel": "Annuleren",
     "whiteboard": {
       "drawing": "Whiteboard",
-      "editDrawing": "Edit drawing",
-      "startDrawing": "Start drawing",
-      "previewSettings": "Preview settings",
-      "editPreview": "Edit preview",
-      "previewImage": "Preview image",
-      "uploadPreviewImage": "Upload preview image"
+      "editDrawing": "Tekening bewerken",
+      "startDrawing": "Begin met tekenen",
+      "previewSettings": "Voorbeeldinstellingen",
+      "editPreview": "Voorbeeld bewerken",
+      "previewImage": "Voorbeeldafbeelding",
+      "uploadPreviewImage": "Voorbeeldafbeelding uploaden"
     },
     "post": {
-      "defaultDescription": "Default description",
-      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+      "defaultDescription": "Standaard beschrijving",
+      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe posts die dit sjabloon gebruiken"
     },
     "space": {
-      "source": "Copy structure from",
-      "searchPlaceholder": "Search spaces and subspaces…",
-      "noResults": "No matching spaces.",
-      "sourceRequired": "Choose a space or subspace to copy.",
-      "recursive": "Include nested subspaces",
-      "capturedStructure": "Captured structure"
+      "source": "Structuur kopiëren van",
+      "searchPlaceholder": "Zoek ruimten en subruimten…",
+      "noResults": "Geen overeenkomende ruimten.",
+      "sourceRequired": "Kies een ruimte of subruimte om te kopiëren.",
+      "recursive": "Geneste subruimten meenemen",
+      "capturedStructure": "Vastgelegde structuur"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "titlePlaceholder": "e.g. Our community values",
-      "titleRequired": "A guidelines title is required.",
-      "body": "Guidelines",
-      "bodyPlaceholder": "Write the guidelines for this community…",
-      "references": "References"
+      "title": "Titel richtlijnen",
+      "titlePlaceholder": "bijv. Onze gemeenschapswaarden",
+      "titleRequired": "Een titel voor de richtlijnen is verplicht.",
+      "body": "Richtlijnen",
+      "bodyPlaceholder": "Schrijf de richtlijnen voor deze gemeenschap…",
+      "references": "Referenties"
     }
   },
   "references": {
-    "add": "Add reference",
-    "name": "Name",
+    "add": "Referentie toevoegen",
+    "name": "Naam",
     "uri": "URL",
-    "description": "Description",
-    "remove": "Remove reference",
-    "nameRequired": "A name is required.",
-    "uriRequired": "A URL is required."
+    "description": "Beschrijving",
+    "remove": "Referentie verwijderen",
+    "nameRequired": "Een naam is verplicht.",
+    "uriRequired": "Een URL is verplicht."
   },
   "discard": {
-    "title": "Discard changes?",
-    "body": "You have unsaved changes. Discard them?",
-    "confirm": "Discard",
-    "cancel": "Keep editing"
+    "title": "Wijzigingen negeren?",
+    "body": "Je hebt niet-opgeslagen wijzigingen. Wil je ze negeren?",
+    "confirm": "Negeren",
+    "cancel": "Doorgaan met bewerken"
   },
   "delete": {
-    "title": "Delete template?",
-    "body": "“{{name}}” will be permanently deleted. This cannot be undone.",
-    "bodyUsedAsDefault": "“{{name}}” is currently used as a default and will be unset. This cannot be undone.",
-    "confirm": "Delete template",
-    "cancel": "Cancel"
+    "title": "Sjabloon verwijderen?",
+    "body": "“{{name}}” wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "bodyUsedAsDefault": "“{{name}}” wordt momenteel als standaard gebruikt en wordt losgekoppeld. Dit kan niet ongedaan worden gemaakt.",
+    "confirm": "Sjabloon verwijderen",
+    "cancel": "Annuleren"
   },
   "removeFromSet": {
-    "title": "Remove this template?",
-    "body": "“{{name}}” will be removed from this set. The original in the library is not affected.",
-    "confirm": "Remove",
-    "cancel": "Cancel"
+    "title": "Dit sjabloon verwijderen?",
+    "body": "“{{name}}” wordt uit deze set verwijderd. Het origineel in de bibliotheek blijft ongewijzigd.",
+    "confirm": "Verwijderen",
+    "cancel": "Annuleren"
   },
   "setDefault": {
-    "subspaceTitle": "Default subspace template",
-    "subspaceSubtitle": "Used to pre-fill the form when creating a subspace of this space.",
-    "flowStateTitle": "Default callout template",
-    "flowStateSubtitle": "Used to pre-fill the form when adding a callout to this phase.",
-    "current": "Current default",
-    "none": "No default",
-    "noCandidates": "There are no space templates in this set yet.",
-    "confirm": "Set as default",
-    "clear": "Clear default",
-    "previewHint": "Select a template to preview it.",
-    "cancel": "Cancel"
+    "subspaceTitle": "Standaard subruimte-sjabloon",
+    "subspaceSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het maken van een subruimte van deze ruimte.",
+    "flowStateTitle": "Standaard callout-sjabloon",
+    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een callout aan deze fase.",
+    "current": "Huidige standaard",
+    "none": "Geen standaard",
+    "noCandidates": "Er zijn nog geen ruimtesjablonen in deze set.",
+    "confirm": "Als standaard instellen",
+    "clear": "Standaard wissen",
+    "previewHint": "Selecteer een sjabloon om er een voorbeeld van te zien.",
+    "cancel": "Annuleren"
   },
   "saveAs": {
-    "fromCalloutTitle": "Save callout as a template",
-    "fromGuidelinesTitle": "Save guidelines as a template",
-    "fromSubspaceTitle": "Save subspace as a template",
-    "unsavedSourceTitle": "Save your changes first",
-    "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
+    "fromCalloutTitle": "Callout opslaan als sjabloon",
+    "fromGuidelinesTitle": "Richtlijnen opslaan als sjabloon",
+    "fromSubspaceTitle": "Subruimte opslaan als sjabloon",
+    "unsavedSourceTitle": "Sla eerst je wijzigingen op",
+    "unsavedSourceBody": "Sla niet-opgeslagen wijzigingen op of negeer ze voordat je hier een sjabloon van maakt.",
     "unsavedSourceConfirm": "OK"
   },
-  "guidelinesEditor": {
-    "title": "Community guidelines",
-    "titleLabel": "Title",
-    "titlePlaceholder": "e.g. Our community values",
-    "titleRequired": "A title is required.",
-    "body": "Guidelines",
-    "bodyPlaceholder": "Write the guidelines for this community…",
-    "references": "References",
-    "save": "Save guidelines",
-    "applyTemplate": "Apply a template",
-    "saveAsTemplate": "Save as a template",
-    "replaceTitle": "Replace the current guidelines?",
-    "replaceBody": "Applying this template will replace the current title, body and references.",
-    "replaceConfirm": "Replace",
-    "replaceCancel": "Cancel"
-  },
-  "calloutCreate": {
-    "useTemplate": "Use a template",
-    "noTemplate": "No template — start blank",
-    "overwriteTitle": "Replace the current callout?",
-    "overwriteBody": "Selecting a template will overwrite what you've entered.",
-    "overwriteConfirm": "Replace",
-    "overwriteCancel": "Cancel"
-  },
   "packAdmin": {
-    "subtitle": "Sjablonen in dit Innovation Pack"
+    "subtitle": "Sjablonen in dit Innovation Pack",
+    "detailsHeading": "Pakketgegevens",
+    "detailsSubtitle": "Werk de naam, beschrijving, providerinstellingen en referenties van het pakket bij.",
+    "templatesHeading": "Sjablonen"
+  },
+  "packForm": {
+    "name": "Naam van pakket",
+    "namePlaceholder": "bijv. Onboarding-kit",
+    "nameRequired": "Een pakketnaam is verplicht.",
+    "provider": "Aanbieder",
+    "providerHint": "De aanbieder is de eigenaarsorganisatie en kan hier niet worden gewijzigd.",
+    "avatar": "Avatar",
+    "avatarHint": "Vierkant beeld, gebruikt in pakketkaarten en koppen.",
+    "uploadAvatar": "Avatar uploaden",
+    "changeAvatar": "Avatar wijzigen",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat dit Innovation Pack over?",
+    "tags": "Labels",
+    "tagsPlaceholder": "Voeg een label toe en druk op Enter",
+    "references": "Referenties",
+    "listedInStore": "In de winkel vermelden",
+    "listedInStoreHint": "Toon dit pakket in de Innovation Library.",
+    "searchVisibility": "Zichtbaarheid in zoekopdrachten",
+    "searchVisibilityOptions": {
+      "public": "Openbaar",
+      "authenticated": "Geauthenticeerde gebruikers",
+      "account": "Alleen account"
+    },
+    "searchVisibilityHints": {
+      "public": "Iedereen — inclusief niet-geauthenticeerde bezoekers — kan dit pakket via zoeken vinden.",
+      "authenticated": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
+      "account": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
+    },
+    "save": "Wijzigingen opslaan"
+  },
+  "createPack": {
+    "title": "Innovation Pack maken",
+    "name": "Naam",
+    "namePlaceholder": "bijv. Onboarding-kit",
+    "nameRequired": "Een pakketnaam is verplicht.",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat dit Innovation Pack over?",
+    "create": "Maken",
+    "cancel": "Annuleren"
+  },
+  "deletePack": {
+    "title": "Innovation Pack verwijderen?",
+    "body": "“{{name}}” en al zijn sjablonen worden permanent verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "confirm": "Pakket verwijderen",
+    "cancel": "Annuleren"
+  },
+  "packProfile": {
+    "shareTooltip": "Deel dit Innovation Pack",
+    "manage": "Beheer dit pakket",
+    "sidebarLabel": "Pakketgegevens",
+    "provider": "Aanbieder",
+    "providerUnknown": "Aanbieder onbekend",
+    "tags": "Labels",
+    "references": "Referenties",
+    "referencesEmpty": "Geen referenties.",
+    "templatesHeading": "Sjablonen"
   },
   "library": {
     "title": "Innovation Library",

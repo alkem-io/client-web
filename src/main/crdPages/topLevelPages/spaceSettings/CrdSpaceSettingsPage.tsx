@@ -13,7 +13,6 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { InviteMembersDialog } from '@/crd/components/space/settings/InviteMembersDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
-import { SaveSubspaceAsTemplateDialog } from '@/crd/components/space/settings/SaveSubspaceAsTemplateDialog';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
@@ -44,7 +43,6 @@ import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
 import { useStorageTabData } from './storage/useStorageTabData';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
-import { useSaveSubspaceAsTemplate } from './subspaces/useSaveSubspaceAsTemplate';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
@@ -86,10 +84,7 @@ export default function CrdSpaceSettingsPage() {
     templatesSetId: subspacesTab.templatesSetId,
     defaultTemplateId: subspacesTab.defaultTemplateId,
   });
-  const saveAsTemplate = useSaveSubspaceAsTemplate({
-    templatesSetId: subspacesTab.templatesSetId,
-    onSaved: () => subspacesTab.closeSaveAsTemplate(),
-  });
+  // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
   const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
   const settingsTab = useSettingsTabData(spaceId);
   const applicationForm = useApplicationFormData(settingsTab.roleSetId);
@@ -107,7 +102,14 @@ export default function CrdSpaceSettingsPage() {
     accountId,
     spaceTemplatesSetId: templatesSetId,
   });
-  const guidelinesSaveAs = useSaveAsTemplate({ templatesSetId, spaceId });
+  // Unified "Save as a template" dialog driver — used by both the Community-guidelines editor (US5/T070,
+  // FR-038) and the Subspaces tab kebab (US4/T053). One dialog instance is enough because only one of
+  // the two flows can be open at a time; `openSaveAs` discriminates on the `kind` field.
+  const saveAs = useSaveAsTemplate({
+    templatesSetId,
+    spaceId,
+    onSaved: () => subspacesTab.closeSaveAsTemplate(),
+  });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
   const [appliedGuidelinesTemplateId, setAppliedGuidelinesTemplateId] = useState<string | null>(null);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
@@ -210,15 +212,22 @@ export default function CrdSpaceSettingsPage() {
     isLead: org.isLead,
   });
 
-  // Bridge: when Subspaces tab signals "save as template" for a subspace,
-  // hand it off to the dedicated dialog hook with the subspace's current name.
+  // Bridge: when Subspaces tab signals "save as template" for a subspace, open the unified
+  // `TemplateFormDialog` (`type: 'space'`) pre-filled from that subspace as the source.
+  // T053 — the legacy `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` plumbing is
+  // retained on disk (modify-not-delete) but no longer wired into the page.
   useEffect(() => {
     if (!subspacesTab.saveAsTemplateSubspaceId) return;
     const target = subspacesTab.subspaces.find(s => s.id === subspacesTab.saveAsTemplateSubspaceId);
     if (!target) return;
-    saveAsTemplate.onOpen({ subspaceId: target.id, subspaceName: target.name });
+    saveAs.openSaveAs({
+      kind: 'subspace',
+      subspaceId: target.id,
+      name: target.name,
+      description: target.description,
+    });
     subspacesTab.closeSaveAsTemplate();
-  }, [subspacesTab, saveAsTemplate]);
+  }, [subspacesTab, saveAs]);
 
   const handleConfirmSwitchSave = async () => {
     if (layout.isDirty) await layout.onSave();
@@ -338,7 +347,7 @@ export default function CrdSpaceSettingsPage() {
                       onSave={() => void communityGuidelines.onSave()}
                       onApplyTemplate={openGuidelinesTemplatePicker}
                       onSaveAsTemplate={() =>
-                        guidelinesSaveAs.openSaveAs({
+                        saveAs.openSaveAs({
                           kind: 'communityGuidelines',
                           title: communityGuidelines.value.title,
                           bodyMarkdown: communityGuidelines.value.body,
@@ -449,27 +458,10 @@ export default function CrdSpaceSettingsPage() {
         onCancel={updatesTab.onCancelRemove}
       />
 
-      <SaveSubspaceAsTemplateDialog
-        open={saveAsTemplate.open}
-        onOpenChange={open => {
-          if (!open) saveAsTemplate.onClose();
-        }}
-        subspaceName={saveAsTemplate.subspaceName}
-        activeSpaceName={saveAsTemplate.activeSpaceName}
-        values={saveAsTemplate.values}
-        errors={saveAsTemplate.errors}
-        submitting={saveAsTemplate.submitting}
-        canSubmit={saveAsTemplate.canSubmit}
-        preview={saveAsTemplate.preview}
-        previewLoading={saveAsTemplate.previewLoading}
-        urlLoader={saveAsTemplate.urlLoader}
-        onChange={saveAsTemplate.onChange}
-        onSubmit={() => void saveAsTemplate.onSubmit()}
-        onOpenUrlLoader={saveAsTemplate.onOpenUrlLoader}
-        onCloseUrlLoader={saveAsTemplate.onCloseUrlLoader}
-        onUrlChange={saveAsTemplate.onUrlChange}
-        onUseUrl={() => void saveAsTemplate.onUseUrl()}
-      />
+      {/* Subspace "Save as template" + Community-Guidelines "Save as template" both flow through the
+          unified `saveAs.form` → `<TemplateFormDialog>` mounted below (T053). The legacy
+          `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` remain on disk for reference
+          but are no longer wired to this page. */}
 
       <CreateSubspaceDialog
         open={createSubspace.open}
@@ -791,21 +783,23 @@ export default function CrdSpaceSettingsPage() {
         onCancel={handleConfirmSwitchCancel}
       />
 
-      {/* Community-guidelines: apply-a-template picker + save-as dialog (FR-038 / T070). */}
+      {/* Community-guidelines + Subspace save-as both drive this shared `<TemplateFormDialog>`
+          via the unified `saveAs` instance (FR-038 / T070 / T053). Only one of the two flows can
+          be open at a time; the dialog state is reset every time `openSaveAs` is called. */}
       <TemplatePicker {...guidelinesTemplatePicker.pickerProps} />
       <TemplatePicker {...defaultCalloutTemplatePicker.pickerProps} />
       <TemplateFormDialog
-        open={guidelinesSaveAs.form.open}
-        intent={guidelinesSaveAs.form.intent}
-        type={guidelinesSaveAs.form.type}
-        commonValue={guidelinesSaveAs.form.commonValue}
-        commonErrors={guidelinesSaveAs.form.commonErrors}
-        onCommonChange={guidelinesSaveAs.form.onCommonChange}
-        perTypeFormSlot={guidelinesSaveAs.form.perTypeFormSlot}
-        submitting={guidelinesSaveAs.form.submitting}
-        onSubmit={guidelinesSaveAs.form.onSubmit}
-        onCancel={guidelinesSaveAs.form.onCancel}
-        isDirty={guidelinesSaveAs.form.isDirty}
+        open={saveAs.form.open}
+        intent={saveAs.form.intent}
+        type={saveAs.form.type}
+        commonValue={saveAs.form.commonValue}
+        commonErrors={saveAs.form.commonErrors}
+        onCommonChange={saveAs.form.onCommonChange}
+        perTypeFormSlot={saveAs.form.perTypeFormSlot}
+        submitting={saveAs.form.submitting}
+        onSubmit={saveAs.form.onSubmit}
+        onCancel={saveAs.form.onCancel}
+        isDirty={saveAs.form.isDirty}
       />
       <ConfirmationDialog
         open={confirmReplaceGuidelinesOpen}

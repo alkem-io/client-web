@@ -125,20 +125,6 @@
     },
     "save": "Save",
     "cancel": "Cancel",
-    "callout": {
-      "framingKind": "Content type",
-      "framingTitle": "Title",
-      "framingTitlePlaceholder": "Title shown on the callout",
-      "framingDescription": "Description",
-      "allowedContributions": "Allowed contributions",
-      "comments": "Allow comments",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
-      "editDefaults": "Edit contribution defaults",
-      "pollQuestion": "Poll question",
-      "pollQuestionPlaceholder": "What do you want to ask?",
-      "pollOptions": "Poll options"
-    },
     "whiteboard": {
       "drawing": "Whiteboard",
       "editDrawing": "Edit drawing",
@@ -218,32 +204,68 @@
     "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
     "unsavedSourceConfirm": "OK"
   },
-  "guidelinesEditor": {
-    "title": "Community guidelines",
-    "titleLabel": "Title",
-    "titlePlaceholder": "e.g. Our community values",
-    "titleRequired": "A title is required.",
-    "body": "Guidelines",
-    "bodyPlaceholder": "Write the guidelines for this community…",
-    "references": "References",
-    "save": "Save guidelines",
-    "applyTemplate": "Apply a template",
-    "saveAsTemplate": "Save as a template",
-    "replaceTitle": "Replace the current guidelines?",
-    "replaceBody": "Applying this template will replace the current title, body and references.",
-    "replaceConfirm": "Replace",
-    "replaceCancel": "Cancel"
-  },
-  "calloutCreate": {
-    "useTemplate": "Use a template",
-    "noTemplate": "No template — start blank",
-    "overwriteTitle": "Replace the current callout?",
-    "overwriteBody": "Selecting a template will overwrite what you've entered.",
-    "overwriteConfirm": "Replace",
-    "overwriteCancel": "Cancel"
-  },
   "packAdmin": {
-    "subtitle": "Templates in this Innovation Pack"
+    "subtitle": "Templates in this Innovation Pack",
+    "detailsHeading": "Pack details",
+    "detailsSubtitle": "Update the pack’s name, description, provider settings and references.",
+    "templatesHeading": "Templates"
+  },
+  "packForm": {
+    "name": "Pack name",
+    "namePlaceholder": "e.g. Onboarding kit",
+    "nameRequired": "A pack name is required.",
+    "provider": "Provider",
+    "providerHint": "The provider is the owning organisation and cannot be changed here.",
+    "avatar": "Avatar",
+    "avatarHint": "Square image, used in pack cards and headers.",
+    "uploadAvatar": "Upload avatar",
+    "changeAvatar": "Change avatar",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Pack about?",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add a tag and press Enter",
+    "references": "References",
+    "listedInStore": "Listed in store",
+    "listedInStoreHint": "Show this pack in the Innovation Library.",
+    "searchVisibility": "Search visibility",
+    "searchVisibilityOptions": {
+      "public": "Public",
+      "authenticated": "Authenticated users",
+      "account": "Account only"
+    },
+    "searchVisibilityHints": {
+      "public": "Anyone — including unauthenticated visitors — can find this pack via search.",
+      "authenticated": "Signed-in users can find this pack via search.",
+      "account": "Only members of the owning account can find this pack via search."
+    },
+    "save": "Save changes"
+  },
+  "createPack": {
+    "title": "Create Innovation Pack",
+    "name": "Name",
+    "namePlaceholder": "e.g. Onboarding kit",
+    "nameRequired": "A pack name is required.",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Pack about?",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "deletePack": {
+    "title": "Delete Innovation Pack?",
+    "body": "“{{name}}” and all of its templates will be permanently deleted. This cannot be undone.",
+    "confirm": "Delete pack",
+    "cancel": "Cancel"
+  },
+  "packProfile": {
+    "shareTooltip": "Share this Innovation Pack",
+    "manage": "Manage this pack",
+    "sidebarLabel": "Pack details",
+    "provider": "Provider",
+    "providerUnknown": "Provider unknown",
+    "tags": "Tags",
+    "references": "References",
+    "referencesEmpty": "No references.",
+    "templatesHeading": "Templates"
   },
   "library": {
     "title": "Innovation Library",

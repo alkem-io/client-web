@@ -1,267 +1,289 @@
 {
   "manager": {
-    "title": "Templates",
-    "subtitle": "Reusable templates for this space.",
-    "search": "Search templates…",
-    "addNew": "Add new",
-    "createNew": "Create new",
-    "selectFromLibrary": "Select from library",
-    "duplicating": "Creating…",
-    "deleting": "Deleting…",
-    "noTemplates": "No templates yet",
-    "noTemplatesHint": "Create one, or import one from the library.",
-    "noTemplatesReadOnly": "No templates yet.",
-    "sectionList": "Template sections",
-    "templateList": "Templates",
+    "title": "Vorlagen",
+    "subtitle": "Wiederverwendbare Vorlagen für diesen Bereich.",
+    "search": "Vorlagen suchen…",
+    "addNew": "Hinzufügen",
+    "createNew": "Neu erstellen",
+    "selectFromLibrary": "Aus Bibliothek auswählen",
+    "duplicating": "Wird erstellt…",
+    "deleting": "Wird gelöscht…",
+    "noTemplates": "Noch keine Vorlagen",
+    "noTemplatesHint": "Erstelle eine oder importiere eine aus der Bibliothek.",
+    "noTemplatesReadOnly": "Noch keine Vorlagen.",
+    "sectionList": "Vorlagen-Abschnitte",
+    "templateList": "Vorlagen",
     "sections": {
       "space": {
-        "title": "Space templates",
-        "subtitle": "Structure a space with predefined phases and starter tools."
+        "title": "Bereichsvorlagen",
+        "subtitle": "Strukturiere einen Bereich mit vordefinierten Phasen und Starter-Tools."
       },
       "callout": {
-        "title": "Collaboration tools",
-        "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
+        "title": "Kollaborationswerkzeuge",
+        "subtitle": "Wiederverwendbare Callouts für Workshops, Brainstormings und Gruppenaktivitäten."
       },
       "whiteboard": {
-        "title": "Whiteboard templates",
-        "subtitle": "Canvas layouts for visual collaboration."
+        "title": "Whiteboard-Vorlagen",
+        "subtitle": "Leinwand-Layouts für visuelle Zusammenarbeit."
       },
       "post": {
-        "title": "Post templates",
-        "subtitle": "Standardised documents for projects and decisions."
+        "title": "Beitragsvorlagen",
+        "subtitle": "Standardisierte Dokumente für Projekte und Entscheidungen."
       },
       "communityGuidelines": {
-        "title": "Community guidelines templates",
-        "subtitle": "Rules and expectations for a community."
+        "title": "Vorlagen für Community-Richtlinien",
+        "subtitle": "Regeln und Erwartungen für eine Community."
       }
     }
   },
   "card": {
-    "actions": "Template actions",
-    "preview": "Preview",
-    "edit": "Edit",
-    "duplicate": "Duplicate",
-    "delete": "Delete",
-    "noPreview": "No preview"
+    "actions": "Vorlagen-Aktionen",
+    "preview": "Vorschau",
+    "edit": "Bearbeiten",
+    "duplicate": "Duplizieren",
+    "delete": "Löschen",
+    "noPreview": "Keine Vorschau"
   },
   "framingKind": {
     "none": "Text",
     "whiteboard": "Whiteboard",
     "memo": "Memo",
-    "document": "Document",
+    "document": "Dokument",
     "cta": "Link",
-    "image": "Gallery",
-    "poll": "Poll"
+    "image": "Galerie",
+    "poll": "Umfrage"
   },
   "contributionType": {
-    "post": "Posts",
+    "post": "Beiträge",
     "whiteboard": "Whiteboards",
     "link": "Links"
   },
   "preview": {
-    "loading": "Loading template…",
-    "edit": "Edit template",
-    "close": "Close",
+    "loading": "Vorlage wird geladen…",
+    "edit": "Vorlage bearbeiten",
+    "close": "Schließen",
     "empty": "—",
     "callout": {
-      "framingKind": "Content type",
-      "framing": "Content",
-      "allowedContributions": "Allowed contributions",
-      "noContributions": "No contributions",
-      "comments": "Comments enabled",
-      "commentsDisabled": "Comments disabled",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
+      "framingKind": "Inhaltstyp",
+      "framing": "Inhalt",
+      "allowedContributions": "Erlaubte Beiträge",
+      "noContributions": "Keine Beiträge",
+      "comments": "Kommentare aktiviert",
+      "commentsDisabled": "Kommentare deaktiviert",
+      "defaultPostDescription": "Standard-Beitragsbeschreibung",
+      "defaultWhiteboard": "Standard-Whiteboard",
       "links": "Links",
-      "gallery": "Gallery",
-      "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "gallery": "Galerie",
+      "pollQuestion": "Frage",
+      "pollOptions": "Optionen"
     },
     "whiteboard": {
-      "empty": "This whiteboard template has no drawing."
+      "empty": "Diese Whiteboard-Vorlage enthält keine Zeichnung."
     },
     "post": {
-      "defaultDescription": "Default description"
+      "defaultDescription": "Standardbeschreibung"
     },
     "space": {
-      "phases": "Phases",
-      "starterCallouts": "Starter tools",
-      "subspaceTemplates": "Subspace templates",
-      "none": "None"
+      "phases": "Phasen",
+      "starterCallouts": "Starter-Tools",
+      "subspaceTemplates": "Vorlagen für Unterbereiche",
+      "none": "Keine"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "body": "Guidelines",
-      "references": "References"
+      "title": "Titel der Richtlinien",
+      "body": "Richtlinien",
+      "references": "Referenzen"
     }
   },
   "picker": {
-    "title": "Use a template",
-    "importTitle": "Template library",
-    "search": "Search templates…",
-    "noTemplates": "No templates available.",
-    "noTemplatesForType": "No templates available for this type.",
+    "title": "Vorlage verwenden",
+    "importTitle": "Vorlagen-Bibliothek",
+    "search": "Vorlagen suchen…",
+    "noTemplates": "Keine Vorlagen verfügbar.",
+    "noTemplatesForType": "Keine Vorlagen für diesen Typ verfügbar.",
     "sources": {
-      "space": "This space",
-      "account": "Your account",
-      "platform": "Platform"
+      "space": "Dieser Bereich",
+      "account": "Dein Account",
+      "platform": "Plattform"
     },
-    "select": "Use this template",
-    "noTemplate": "No template — start blank",
-    "import": "Import",
-    "inThisSet": "In this set",
-    "remove": "Remove from set",
-    "selectPreviewHint": "Select a template to preview it.",
-    "close": "Close",
-    "done": "Done"
+    "select": "Diese Vorlage verwenden",
+    "noTemplate": "Keine Vorlage — leer beginnen",
+    "import": "Importieren",
+    "inThisSet": "In dieser Sammlung",
+    "remove": "Aus Sammlung entfernen",
+    "selectPreviewHint": "Wähle eine Vorlage, um eine Vorschau anzuzeigen.",
+    "close": "Schließen",
+    "done": "Fertig"
   },
   "form": {
     "createTitle": {
-      "space": "Create space template",
-      "callout": "Create collaboration-tool template",
-      "whiteboard": "Create whiteboard template",
-      "post": "Create post template",
-      "communityGuidelines": "Create community-guidelines template"
+      "space": "Bereichsvorlage erstellen",
+      "callout": "Kollaborationswerkzeug-Vorlage erstellen",
+      "whiteboard": "Whiteboard-Vorlage erstellen",
+      "post": "Beitragsvorlage erstellen",
+      "communityGuidelines": "Vorlage für Community-Richtlinien erstellen"
     },
     "editTitle": {
-      "space": "Edit space template",
-      "callout": "Edit collaboration-tool template",
-      "whiteboard": "Edit whiteboard template",
-      "post": "Edit post template",
-      "communityGuidelines": "Edit community-guidelines template"
+      "space": "Bereichsvorlage bearbeiten",
+      "callout": "Kollaborationswerkzeug-Vorlage bearbeiten",
+      "whiteboard": "Whiteboard-Vorlage bearbeiten",
+      "post": "Beitragsvorlage bearbeiten",
+      "communityGuidelines": "Vorlage für Community-Richtlinien bearbeiten"
     },
     "common": {
-      "name": "Template name",
-      "namePlaceholder": "e.g. Project kickoff",
-      "nameRequired": "A template name is required.",
-      "description": "Description",
-      "descriptionPlaceholder": "What is this template for?",
+      "name": "Vorlagenname",
+      "namePlaceholder": "z. B. Projekt-Kickoff",
+      "nameRequired": "Ein Vorlagenname ist erforderlich.",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Wofür ist diese Vorlage?",
       "tags": "Tags",
-      "tagsPlaceholder": "Add a tag and press Enter",
-      "banner": "Preview image",
-      "uploadBanner": "Upload preview image"
+      "tagsPlaceholder": "Tag hinzufügen und Enter drücken",
+      "banner": "Vorschaubild",
+      "uploadBanner": "Vorschaubild hochladen"
     },
-    "save": "Save",
-    "cancel": "Cancel",
-    "callout": {
-      "framingKind": "Content type",
-      "framingTitle": "Title",
-      "framingTitlePlaceholder": "Title shown on the callout",
-      "framingDescription": "Description",
-      "allowedContributions": "Allowed contributions",
-      "comments": "Allow comments",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
-      "editDefaults": "Edit contribution defaults",
-      "pollQuestion": "Poll question",
-      "pollQuestionPlaceholder": "What do you want to ask?",
-      "pollOptions": "Poll options"
-    },
+    "save": "Speichern",
+    "cancel": "Abbrechen",
     "whiteboard": {
       "drawing": "Whiteboard",
-      "editDrawing": "Edit drawing",
-      "startDrawing": "Start drawing",
-      "previewSettings": "Preview settings",
-      "editPreview": "Edit preview",
-      "previewImage": "Preview image",
-      "uploadPreviewImage": "Upload preview image"
+      "editDrawing": "Zeichnung bearbeiten",
+      "startDrawing": "Zeichnen beginnen",
+      "previewSettings": "Vorschau-Einstellungen",
+      "editPreview": "Vorschau bearbeiten",
+      "previewImage": "Vorschaubild",
+      "uploadPreviewImage": "Vorschaubild hochladen"
     },
     "post": {
-      "defaultDescription": "Default description",
-      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+      "defaultDescription": "Standardbeschreibung",
+      "defaultDescriptionPlaceholder": "Vorausgefüllter Inhalt für neue Beiträge, die diese Vorlage nutzen"
     },
     "space": {
-      "source": "Copy structure from",
-      "searchPlaceholder": "Search spaces and subspaces…",
-      "noResults": "No matching spaces.",
-      "sourceRequired": "Choose a space or subspace to copy.",
-      "recursive": "Include nested subspaces",
-      "capturedStructure": "Captured structure"
+      "source": "Struktur kopieren von",
+      "searchPlaceholder": "Bereiche und Unterbereiche suchen…",
+      "noResults": "Keine passenden Bereiche.",
+      "sourceRequired": "Wähle einen Bereich oder Unterbereich zum Kopieren.",
+      "recursive": "Verschachtelte Unterbereiche einbeziehen",
+      "capturedStructure": "Erfasste Struktur"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "titlePlaceholder": "e.g. Our community values",
-      "titleRequired": "A guidelines title is required.",
-      "body": "Guidelines",
-      "bodyPlaceholder": "Write the guidelines for this community…",
-      "references": "References"
+      "title": "Titel der Richtlinien",
+      "titlePlaceholder": "z. B. Unsere Community-Werte",
+      "titleRequired": "Ein Titel für die Richtlinien ist erforderlich.",
+      "body": "Richtlinien",
+      "bodyPlaceholder": "Schreibe die Richtlinien für diese Community…",
+      "references": "Referenzen"
     }
   },
   "references": {
-    "add": "Add reference",
+    "add": "Referenz hinzufügen",
     "name": "Name",
     "uri": "URL",
-    "description": "Description",
-    "remove": "Remove reference",
-    "nameRequired": "A name is required.",
-    "uriRequired": "A URL is required."
+    "description": "Beschreibung",
+    "remove": "Referenz entfernen",
+    "nameRequired": "Ein Name ist erforderlich.",
+    "uriRequired": "Eine URL ist erforderlich."
   },
   "discard": {
-    "title": "Discard changes?",
-    "body": "You have unsaved changes. Discard them?",
-    "confirm": "Discard",
-    "cancel": "Keep editing"
+    "title": "Änderungen verwerfen?",
+    "body": "Du hast nicht gespeicherte Änderungen. Möchtest du sie verwerfen?",
+    "confirm": "Verwerfen",
+    "cancel": "Weiter bearbeiten"
   },
   "delete": {
-    "title": "Delete template?",
-    "body": "“{{name}}” will be permanently deleted. This cannot be undone.",
-    "bodyUsedAsDefault": "“{{name}}” is currently used as a default and will be unset. This cannot be undone.",
-    "confirm": "Delete template",
-    "cancel": "Cancel"
+    "title": "Vorlage löschen?",
+    "body": "„{{name}}“ wird endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "bodyUsedAsDefault": "„{{name}}“ wird derzeit als Standard verwendet und wird gelöst. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Vorlage löschen",
+    "cancel": "Abbrechen"
   },
   "removeFromSet": {
-    "title": "Remove this template?",
-    "body": "“{{name}}” will be removed from this set. The original in the library is not affected.",
-    "confirm": "Remove",
-    "cancel": "Cancel"
+    "title": "Diese Vorlage entfernen?",
+    "body": "„{{name}}“ wird aus dieser Sammlung entfernt. Das Original in der Bibliothek bleibt unverändert.",
+    "confirm": "Entfernen",
+    "cancel": "Abbrechen"
   },
   "setDefault": {
-    "subspaceTitle": "Default subspace template",
-    "subspaceSubtitle": "Used to pre-fill the form when creating a subspace of this space.",
-    "flowStateTitle": "Default callout template",
-    "flowStateSubtitle": "Used to pre-fill the form when adding a callout to this phase.",
-    "current": "Current default",
-    "none": "No default",
-    "noCandidates": "There are no space templates in this set yet.",
-    "confirm": "Set as default",
-    "clear": "Clear default",
-    "previewHint": "Select a template to preview it.",
-    "cancel": "Cancel"
+    "subspaceTitle": "Standard-Vorlage für Unterbereich",
+    "subspaceSubtitle": "Wird verwendet, um das Formular beim Erstellen eines Unterbereichs dieses Bereichs vorauszufüllen.",
+    "flowStateTitle": "Standard-Callout-Vorlage",
+    "flowStateSubtitle": "Wird verwendet, um das Formular beim Hinzufügen eines Callouts zu dieser Phase vorauszufüllen.",
+    "current": "Aktueller Standard",
+    "none": "Kein Standard",
+    "noCandidates": "In dieser Sammlung gibt es noch keine Bereichsvorlagen.",
+    "confirm": "Als Standard festlegen",
+    "clear": "Standard löschen",
+    "previewHint": "Wähle eine Vorlage, um eine Vorschau anzuzeigen.",
+    "cancel": "Abbrechen"
   },
   "saveAs": {
-    "fromCalloutTitle": "Save callout as a template",
-    "fromGuidelinesTitle": "Save guidelines as a template",
-    "fromSubspaceTitle": "Save subspace as a template",
-    "unsavedSourceTitle": "Save your changes first",
-    "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
+    "fromCalloutTitle": "Callout als Vorlage speichern",
+    "fromGuidelinesTitle": "Richtlinien als Vorlage speichern",
+    "fromSubspaceTitle": "Unterbereich als Vorlage speichern",
+    "unsavedSourceTitle": "Speichere zuerst deine Änderungen",
+    "unsavedSourceBody": "Speichere oder verwerfe die ungespeicherten Änderungen, bevor du daraus eine Vorlage erstellst.",
     "unsavedSourceConfirm": "OK"
   },
-  "guidelinesEditor": {
-    "title": "Community guidelines",
-    "titleLabel": "Title",
-    "titlePlaceholder": "e.g. Our community values",
-    "titleRequired": "A title is required.",
-    "body": "Guidelines",
-    "bodyPlaceholder": "Write the guidelines for this community…",
-    "references": "References",
-    "save": "Save guidelines",
-    "applyTemplate": "Apply a template",
-    "saveAsTemplate": "Save as a template",
-    "replaceTitle": "Replace the current guidelines?",
-    "replaceBody": "Applying this template will replace the current title, body and references.",
-    "replaceConfirm": "Replace",
-    "replaceCancel": "Cancel"
-  },
-  "calloutCreate": {
-    "useTemplate": "Use a template",
-    "noTemplate": "No template — start blank",
-    "overwriteTitle": "Replace the current callout?",
-    "overwriteBody": "Selecting a template will overwrite what you've entered.",
-    "overwriteConfirm": "Replace",
-    "overwriteCancel": "Cancel"
-  },
   "packAdmin": {
-    "subtitle": "Vorlagen in diesem Innovation Pack"
+    "subtitle": "Vorlagen in diesem Innovation Pack",
+    "detailsHeading": "Pack-Details",
+    "detailsSubtitle": "Aktualisiere den Namen, die Beschreibung, die Anbietereinstellungen und die Referenzen des Packs.",
+    "templatesHeading": "Vorlagen"
+  },
+  "packForm": {
+    "name": "Pack-Name",
+    "namePlaceholder": "z. B. Onboarding-Kit",
+    "nameRequired": "Ein Pack-Name ist erforderlich.",
+    "provider": "Anbieter",
+    "providerHint": "Der Anbieter ist die besitzende Organisation und kann hier nicht geändert werden.",
+    "avatar": "Avatar",
+    "avatarHint": "Quadratisches Bild, das in Pack-Karten und Headern verwendet wird.",
+    "uploadAvatar": "Avatar hochladen",
+    "changeAvatar": "Avatar ändern",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Worum geht es in diesem Innovation Pack?",
+    "tags": "Tags",
+    "tagsPlaceholder": "Tag hinzufügen und Enter drücken",
+    "references": "Referenzen",
+    "listedInStore": "Im Store gelistet",
+    "listedInStoreHint": "Zeige dieses Pack in der Innovation Library.",
+    "searchVisibility": "Such-Sichtbarkeit",
+    "searchVisibilityOptions": {
+      "public": "Öffentlich",
+      "authenticated": "Authentifizierte Benutzer",
+      "account": "Nur Account"
+    },
+    "searchVisibilityHints": {
+      "public": "Jeder — einschließlich nicht authentifizierter Besucher — kann dieses Pack über die Suche finden.",
+      "authenticated": "Angemeldete Benutzer können dieses Pack über die Suche finden.",
+      "account": "Nur Mitglieder des besitzenden Accounts können dieses Pack über die Suche finden."
+    },
+    "save": "Änderungen speichern"
+  },
+  "createPack": {
+    "title": "Innovation Pack erstellen",
+    "name": "Name",
+    "namePlaceholder": "z. B. Onboarding-Kit",
+    "nameRequired": "Ein Pack-Name ist erforderlich.",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Worum geht es in diesem Innovation Pack?",
+    "create": "Erstellen",
+    "cancel": "Abbrechen"
+  },
+  "deletePack": {
+    "title": "Innovation Pack löschen?",
+    "body": "„{{name}}“ und alle Vorlagen werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Pack löschen",
+    "cancel": "Abbrechen"
+  },
+  "packProfile": {
+    "shareTooltip": "Dieses Innovation Pack teilen",
+    "manage": "Dieses Pack verwalten",
+    "sidebarLabel": "Pack-Details",
+    "provider": "Anbieter",
+    "providerUnknown": "Anbieter unbekannt",
+    "tags": "Tags",
+    "references": "Referenzen",
+    "referencesEmpty": "Keine Referenzen.",
+    "templatesHeading": "Vorlagen"
   },
   "library": {
     "title": "Innovation Library",

@@ -1,267 +1,289 @@
 {
   "manager": {
-    "title": "Templates",
-    "subtitle": "Reusable templates for this space.",
-    "search": "Search templates…",
-    "addNew": "Add new",
-    "createNew": "Create new",
-    "selectFromLibrary": "Select from library",
-    "duplicating": "Creating…",
-    "deleting": "Deleting…",
-    "noTemplates": "No templates yet",
-    "noTemplatesHint": "Create one, or import one from the library.",
-    "noTemplatesReadOnly": "No templates yet.",
-    "sectionList": "Template sections",
-    "templateList": "Templates",
+    "title": "Шаблони",
+    "subtitle": "Шаблони за многократна употреба за това пространство.",
+    "search": "Търси шаблони…",
+    "addNew": "Добави",
+    "createNew": "Създай нов",
+    "selectFromLibrary": "Избери от библиотеката",
+    "duplicating": "Създаване…",
+    "deleting": "Изтриване…",
+    "noTemplates": "Все още няма шаблони",
+    "noTemplatesHint": "Създайте нов или импортирайте от библиотеката.",
+    "noTemplatesReadOnly": "Все още няма шаблони.",
+    "sectionList": "Секции с шаблони",
+    "templateList": "Шаблони",
     "sections": {
       "space": {
-        "title": "Space templates",
-        "subtitle": "Structure a space with predefined phases and starter tools."
+        "title": "Шаблони за пространство",
+        "subtitle": "Структурирайте пространство с предварително зададени фази и стартови инструменти."
       },
       "callout": {
-        "title": "Collaboration tools",
-        "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
+        "title": "Инструменти за сътрудничество",
+        "subtitle": "Шаблони за callouts, подходящи за работилници, мозъчни атаки и групови дейности."
       },
       "whiteboard": {
-        "title": "Whiteboard templates",
-        "subtitle": "Canvas layouts for visual collaboration."
+        "title": "Шаблони за бяла дъска",
+        "subtitle": "Платна за визуално сътрудничество."
       },
       "post": {
-        "title": "Post templates",
-        "subtitle": "Standardised documents for projects and decisions."
+        "title": "Шаблони за публикации",
+        "subtitle": "Стандартизирани документи за проекти и решения."
       },
       "communityGuidelines": {
-        "title": "Community guidelines templates",
-        "subtitle": "Rules and expectations for a community."
+        "title": "Шаблони за указания на общността",
+        "subtitle": "Правила и очаквания за общност."
       }
     }
   },
   "card": {
-    "actions": "Template actions",
-    "preview": "Preview",
-    "edit": "Edit",
-    "duplicate": "Duplicate",
-    "delete": "Delete",
-    "noPreview": "No preview"
+    "actions": "Действия за шаблон",
+    "preview": "Преглед",
+    "edit": "Редактирай",
+    "duplicate": "Дублирай",
+    "delete": "Изтрий",
+    "noPreview": "Няма преглед"
   },
   "framingKind": {
-    "none": "Text",
-    "whiteboard": "Whiteboard",
-    "memo": "Memo",
-    "document": "Document",
-    "cta": "Link",
-    "image": "Gallery",
-    "poll": "Poll"
+    "none": "Текст",
+    "whiteboard": "Бяла дъска",
+    "memo": "Бележка",
+    "document": "Документ",
+    "cta": "Връзка",
+    "image": "Галерия",
+    "poll": "Анкета"
   },
   "contributionType": {
-    "post": "Posts",
-    "whiteboard": "Whiteboards",
-    "link": "Links"
+    "post": "Публикации",
+    "whiteboard": "Бели дъски",
+    "link": "Връзки"
   },
   "preview": {
-    "loading": "Loading template…",
-    "edit": "Edit template",
-    "close": "Close",
+    "loading": "Зареждане на шаблон…",
+    "edit": "Редактирай шаблона",
+    "close": "Затвори",
     "empty": "—",
     "callout": {
-      "framingKind": "Content type",
-      "framing": "Content",
-      "allowedContributions": "Allowed contributions",
-      "noContributions": "No contributions",
-      "comments": "Comments enabled",
-      "commentsDisabled": "Comments disabled",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
-      "links": "Links",
-      "gallery": "Gallery",
-      "pollQuestion": "Question",
-      "pollOptions": "Options"
+      "framingKind": "Тип съдържание",
+      "framing": "Съдържание",
+      "allowedContributions": "Позволени приноси",
+      "noContributions": "Без приноси",
+      "comments": "Коментарите са разрешени",
+      "commentsDisabled": "Коментарите са изключени",
+      "defaultPostDescription": "Описание по подразбиране за публикация",
+      "defaultWhiteboard": "Бяла дъска по подразбиране",
+      "links": "Връзки",
+      "gallery": "Галерия",
+      "pollQuestion": "Въпрос",
+      "pollOptions": "Опции"
     },
     "whiteboard": {
-      "empty": "This whiteboard template has no drawing."
+      "empty": "Този шаблон за бяла дъска няма рисунка."
     },
     "post": {
-      "defaultDescription": "Default description"
+      "defaultDescription": "Описание по подразбиране"
     },
     "space": {
-      "phases": "Phases",
-      "starterCallouts": "Starter tools",
-      "subspaceTemplates": "Subspace templates",
-      "none": "None"
+      "phases": "Фази",
+      "starterCallouts": "Стартови инструменти",
+      "subspaceTemplates": "Шаблони за подпространства",
+      "none": "Няма"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "body": "Guidelines",
-      "references": "References"
+      "title": "Заглавие на указанията",
+      "body": "Указания",
+      "references": "Препратки"
     }
   },
   "picker": {
-    "title": "Use a template",
-    "importTitle": "Template library",
-    "search": "Search templates…",
-    "noTemplates": "No templates available.",
-    "noTemplatesForType": "No templates available for this type.",
+    "title": "Използвай шаблон",
+    "importTitle": "Библиотека с шаблони",
+    "search": "Търси шаблони…",
+    "noTemplates": "Няма налични шаблони.",
+    "noTemplatesForType": "Няма налични шаблони за този тип.",
     "sources": {
-      "space": "This space",
-      "account": "Your account",
-      "platform": "Platform"
+      "space": "Това пространство",
+      "account": "Вашият профил",
+      "platform": "Платформа"
     },
-    "select": "Use this template",
-    "noTemplate": "No template — start blank",
-    "import": "Import",
-    "inThisSet": "In this set",
-    "remove": "Remove from set",
-    "selectPreviewHint": "Select a template to preview it.",
-    "close": "Close",
-    "done": "Done"
+    "select": "Използвай този шаблон",
+    "noTemplate": "Без шаблон — започни от нулата",
+    "import": "Импортирай",
+    "inThisSet": "В този набор",
+    "remove": "Премахни от набора",
+    "selectPreviewHint": "Изберете шаблон, за да го прегледате.",
+    "close": "Затвори",
+    "done": "Готово"
   },
   "form": {
     "createTitle": {
-      "space": "Create space template",
-      "callout": "Create collaboration-tool template",
-      "whiteboard": "Create whiteboard template",
-      "post": "Create post template",
-      "communityGuidelines": "Create community-guidelines template"
+      "space": "Създаване на шаблон за пространство",
+      "callout": "Създаване на шаблон за инструмент за сътрудничество",
+      "whiteboard": "Създаване на шаблон за бяла дъска",
+      "post": "Създаване на шаблон за публикация",
+      "communityGuidelines": "Създаване на шаблон за указания на общността"
     },
     "editTitle": {
-      "space": "Edit space template",
-      "callout": "Edit collaboration-tool template",
-      "whiteboard": "Edit whiteboard template",
-      "post": "Edit post template",
-      "communityGuidelines": "Edit community-guidelines template"
+      "space": "Редактиране на шаблон за пространство",
+      "callout": "Редактиране на шаблон за инструмент за сътрудничество",
+      "whiteboard": "Редактиране на шаблон за бяла дъска",
+      "post": "Редактиране на шаблон за публикация",
+      "communityGuidelines": "Редактиране на шаблон за указания на общността"
     },
     "common": {
-      "name": "Template name",
-      "namePlaceholder": "e.g. Project kickoff",
-      "nameRequired": "A template name is required.",
-      "description": "Description",
-      "descriptionPlaceholder": "What is this template for?",
-      "tags": "Tags",
-      "tagsPlaceholder": "Add a tag and press Enter",
-      "banner": "Preview image",
-      "uploadBanner": "Upload preview image"
+      "name": "Име на шаблон",
+      "namePlaceholder": "напр. Начало на проект",
+      "nameRequired": "Изисква се име на шаблон.",
+      "description": "Описание",
+      "descriptionPlaceholder": "За какво е този шаблон?",
+      "tags": "Етикети",
+      "tagsPlaceholder": "Добавете етикет и натиснете Enter",
+      "banner": "Изображение за преглед",
+      "uploadBanner": "Качи изображение за преглед"
     },
-    "save": "Save",
-    "cancel": "Cancel",
-    "callout": {
-      "framingKind": "Content type",
-      "framingTitle": "Title",
-      "framingTitlePlaceholder": "Title shown on the callout",
-      "framingDescription": "Description",
-      "allowedContributions": "Allowed contributions",
-      "comments": "Allow comments",
-      "defaultPostDescription": "Default post description",
-      "defaultWhiteboard": "Default whiteboard",
-      "editDefaults": "Edit contribution defaults",
-      "pollQuestion": "Poll question",
-      "pollQuestionPlaceholder": "What do you want to ask?",
-      "pollOptions": "Poll options"
-    },
+    "save": "Запази",
+    "cancel": "Отказ",
     "whiteboard": {
-      "drawing": "Whiteboard",
-      "editDrawing": "Edit drawing",
-      "startDrawing": "Start drawing",
-      "previewSettings": "Preview settings",
-      "editPreview": "Edit preview",
-      "previewImage": "Preview image",
-      "uploadPreviewImage": "Upload preview image"
+      "drawing": "Бяла дъска",
+      "editDrawing": "Редактирай рисунката",
+      "startDrawing": "Започни да рисуваш",
+      "previewSettings": "Настройки за преглед",
+      "editPreview": "Редактирай прегледа",
+      "previewImage": "Изображение за преглед",
+      "uploadPreviewImage": "Качи изображение за преглед"
     },
     "post": {
-      "defaultDescription": "Default description",
-      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+      "defaultDescription": "Описание по подразбиране",
+      "defaultDescriptionPlaceholder": "Съдържание, попълнено предварително за нови публикации, използващи този шаблон"
     },
     "space": {
-      "source": "Copy structure from",
-      "searchPlaceholder": "Search spaces and subspaces…",
-      "noResults": "No matching spaces.",
-      "sourceRequired": "Choose a space or subspace to copy.",
-      "recursive": "Include nested subspaces",
-      "capturedStructure": "Captured structure"
+      "source": "Копирай структура от",
+      "searchPlaceholder": "Търси пространства и подпространства…",
+      "noResults": "Няма съответстващи пространства.",
+      "sourceRequired": "Избери пространство или подпространство за копиране.",
+      "recursive": "Включи вложените подпространства",
+      "capturedStructure": "Заснета структура"
     },
     "communityGuidelines": {
-      "title": "Guidelines title",
-      "titlePlaceholder": "e.g. Our community values",
-      "titleRequired": "A guidelines title is required.",
-      "body": "Guidelines",
-      "bodyPlaceholder": "Write the guidelines for this community…",
-      "references": "References"
+      "title": "Заглавие на указанията",
+      "titlePlaceholder": "напр. Нашите ценности на общността",
+      "titleRequired": "Изисква се заглавие на указанията.",
+      "body": "Указания",
+      "bodyPlaceholder": "Напишете указанията за тази общност…",
+      "references": "Препратки"
     }
   },
   "references": {
-    "add": "Add reference",
-    "name": "Name",
+    "add": "Добави препратка",
+    "name": "Име",
     "uri": "URL",
-    "description": "Description",
-    "remove": "Remove reference",
-    "nameRequired": "A name is required.",
-    "uriRequired": "A URL is required."
+    "description": "Описание",
+    "remove": "Премахни препратката",
+    "nameRequired": "Изисква се име.",
+    "uriRequired": "Изисква се URL адрес."
   },
   "discard": {
-    "title": "Discard changes?",
-    "body": "You have unsaved changes. Discard them?",
-    "confirm": "Discard",
-    "cancel": "Keep editing"
+    "title": "Да се отхвърлят ли промените?",
+    "body": "Имате незапазени промени. Искате ли да ги отхвърлите?",
+    "confirm": "Отхвърли",
+    "cancel": "Продължи редактирането"
   },
   "delete": {
-    "title": "Delete template?",
-    "body": "“{{name}}” will be permanently deleted. This cannot be undone.",
-    "bodyUsedAsDefault": "“{{name}}” is currently used as a default and will be unset. This cannot be undone.",
-    "confirm": "Delete template",
-    "cancel": "Cancel"
+    "title": "Изтриване на шаблона?",
+    "body": "„{{name}}“ ще бъде изтрит завинаги. Това не може да бъде отменено.",
+    "bodyUsedAsDefault": "„{{name}}“ в момента се използва като по подразбиране и ще бъде отвързан. Това не може да бъде отменено.",
+    "confirm": "Изтрий шаблона",
+    "cancel": "Отказ"
   },
   "removeFromSet": {
-    "title": "Remove this template?",
-    "body": "“{{name}}” will be removed from this set. The original in the library is not affected.",
-    "confirm": "Remove",
-    "cancel": "Cancel"
+    "title": "Да се премахне ли този шаблон?",
+    "body": "„{{name}}“ ще бъде премахнат от този набор. Оригиналът в библиотеката не се засяга.",
+    "confirm": "Премахни",
+    "cancel": "Отказ"
   },
   "setDefault": {
-    "subspaceTitle": "Default subspace template",
-    "subspaceSubtitle": "Used to pre-fill the form when creating a subspace of this space.",
-    "flowStateTitle": "Default callout template",
-    "flowStateSubtitle": "Used to pre-fill the form when adding a callout to this phase.",
-    "current": "Current default",
-    "none": "No default",
-    "noCandidates": "There are no space templates in this set yet.",
-    "confirm": "Set as default",
-    "clear": "Clear default",
-    "previewHint": "Select a template to preview it.",
-    "cancel": "Cancel"
+    "subspaceTitle": "Шаблон за подпространство по подразбиране",
+    "subspaceSubtitle": "Използва се за предварително попълване на формуляра при създаване на подпространство в това пространство.",
+    "flowStateTitle": "Шаблон за callout по подразбиране",
+    "flowStateSubtitle": "Използва се за предварително попълване на формуляра при добавяне на callout към тази фаза.",
+    "current": "Текущ по подразбиране",
+    "none": "Няма по подразбиране",
+    "noCandidates": "Все още няма шаблони за пространство в този набор.",
+    "confirm": "Задай като по подразбиране",
+    "clear": "Изчисти по подразбиране",
+    "previewHint": "Изберете шаблон, за да го прегледате.",
+    "cancel": "Отказ"
   },
   "saveAs": {
-    "fromCalloutTitle": "Save callout as a template",
-    "fromGuidelinesTitle": "Save guidelines as a template",
-    "fromSubspaceTitle": "Save subspace as a template",
-    "unsavedSourceTitle": "Save your changes first",
-    "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
+    "fromCalloutTitle": "Запази callout като шаблон",
+    "fromGuidelinesTitle": "Запази указанията като шаблон",
+    "fromSubspaceTitle": "Запази подпространството като шаблон",
+    "unsavedSourceTitle": "Първо запазете промените си",
+    "unsavedSourceBody": "Запазете или отхвърлете незапазените промени, преди да създадете шаблон от това.",
     "unsavedSourceConfirm": "OK"
   },
-  "guidelinesEditor": {
-    "title": "Community guidelines",
-    "titleLabel": "Title",
-    "titlePlaceholder": "e.g. Our community values",
-    "titleRequired": "A title is required.",
-    "body": "Guidelines",
-    "bodyPlaceholder": "Write the guidelines for this community…",
-    "references": "References",
-    "save": "Save guidelines",
-    "applyTemplate": "Apply a template",
-    "saveAsTemplate": "Save as a template",
-    "replaceTitle": "Replace the current guidelines?",
-    "replaceBody": "Applying this template will replace the current title, body and references.",
-    "replaceConfirm": "Replace",
-    "replaceCancel": "Cancel"
-  },
-  "calloutCreate": {
-    "useTemplate": "Use a template",
-    "noTemplate": "No template — start blank",
-    "overwriteTitle": "Replace the current callout?",
-    "overwriteBody": "Selecting a template will overwrite what you've entered.",
-    "overwriteConfirm": "Replace",
-    "overwriteCancel": "Cancel"
-  },
   "packAdmin": {
-    "subtitle": "Шаблони в този Innovation Pack"
+    "subtitle": "Шаблони в този Innovation Pack",
+    "detailsHeading": "Детайли за пакета",
+    "detailsSubtitle": "Актуализирайте името, описанието, настройките за доставчика и препратките на пакета.",
+    "templatesHeading": "Шаблони"
+  },
+  "packForm": {
+    "name": "Име на пакет",
+    "namePlaceholder": "напр. Комплект за въвеждане",
+    "nameRequired": "Изисква се име на пакета.",
+    "provider": "Доставчик",
+    "providerHint": "Доставчикът е собственикът-организация и не може да се променя тук.",
+    "avatar": "Аватар",
+    "avatarHint": "Квадратно изображение, използвано в картите и заглавията на пакета.",
+    "uploadAvatar": "Качи аватар",
+    "changeAvatar": "Промени аватар",
+    "description": "Описание",
+    "descriptionPlaceholder": "За какво е този Innovation Pack?",
+    "tags": "Етикети",
+    "tagsPlaceholder": "Добавете етикет и натиснете Enter",
+    "references": "Препратки",
+    "listedInStore": "Видим в магазина",
+    "listedInStoreHint": "Покажи този пакет в Innovation Library.",
+    "searchVisibility": "Видимост при търсене",
+    "searchVisibilityOptions": {
+      "public": "Публичен",
+      "authenticated": "Удостоверени потребители",
+      "account": "Само профил"
+    },
+    "searchVisibilityHints": {
+      "public": "Всеки — включително неудостоверени посетители — може да открие този пакет чрез търсене.",
+      "authenticated": "Влезлите потребители могат да открият този пакет чрез търсене.",
+      "account": "Само членовете на собственика-профил могат да открият този пакет чрез търсене."
+    },
+    "save": "Запази промените"
+  },
+  "createPack": {
+    "title": "Създай Innovation Pack",
+    "name": "Име",
+    "namePlaceholder": "напр. Комплект за въвеждане",
+    "nameRequired": "Изисква се име на пакета.",
+    "description": "Описание",
+    "descriptionPlaceholder": "За какво е този Innovation Pack?",
+    "create": "Създай",
+    "cancel": "Отказ"
+  },
+  "deletePack": {
+    "title": "Изтриване на Innovation Pack?",
+    "body": "„{{name}}“ и всички негови шаблони ще бъдат изтрити завинаги. Това не може да бъде отменено.",
+    "confirm": "Изтрий пакета",
+    "cancel": "Отказ"
+  },
+  "packProfile": {
+    "shareTooltip": "Сподели този Innovation Pack",
+    "manage": "Управление на пакета",
+    "sidebarLabel": "Детайли за пакета",
+    "provider": "Доставчик",
+    "providerUnknown": "Неизвестен доставчик",
+    "tags": "Етикети",
+    "references": "Препратки",
+    "referencesEmpty": "Няма препратки.",
+    "templatesHeading": "Шаблони"
   },
   "library": {
     "title": "Иновационна библиотека",

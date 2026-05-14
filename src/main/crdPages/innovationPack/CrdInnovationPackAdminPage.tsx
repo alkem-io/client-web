@@ -2,31 +2,48 @@ import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { InnovationPackAdminView } from '@/crd/components/innovationPack/InnovationPackAdminView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
-import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
-import type { TemplateType } from '@/crd/components/templates/types';
+import type { TemplatesManagerViewProps, TemplateType } from '@/crd/components/templates/types';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useInnovationPackAdmin } from './useInnovationPackAdmin';
 
 const allTypes = (_type: TemplateType) => true;
 
 /**
- * Innovation Pack admin (templates), CRD-native — `<pack.profile.url>/settings`.
- * Hosts the holder-agnostic `TemplatesManagerView` (`holderKind: 'innovationPack'`)
- * driven by `useInnovationPackAdmin` → `useTemplatesManager`, plus the shared
- * preview / create-edit / delete dialogs. Import-from-library is Space-only, so
- * `canImport` is `false` here. Page access is the gate — no per-type authz.
- * The pack edit form (US7) renders above the templates manager in a later pass.
+ * Innovation Pack admin (templates + details), CRD-native — `<pack.profile.url>/settings`.
+ *
+ * Composes the holder-agnostic `TemplatesManagerView` (`holderKind: 'innovationPack'`)
+ * with the US7 pack-details edit form, both driven by `useInnovationPackAdmin`.
+ *
+ * Import-from-library is Space-only, so `canImport` is `false` here. Page access is the
+ * gate — no per-type authz. No "delete pack" action on this page; pack deletion lives
+ * in the Account-tab pack-card three-dot menu (FR-042).
  */
 export const CrdInnovationPackAdminPage = () => {
   const { t } = useTranslation('crd-templates');
-  const { loading, notFound, innovationPackId, pack, tm } = useInnovationPackAdmin();
+  const { loading, notFound, innovationPackId, pack, tm, form } = useInnovationPackAdmin();
   usePageTitle(pack?.displayName);
 
   if (notFound) {
     return <Error404 />;
   }
+
+  const templatesManager: TemplatesManagerViewProps = {
+    holderKind: 'innovationPack',
+    categories: tm.categories,
+    loading: loading || tm.loading,
+    duplicatingId: tm.duplicatingId,
+    deletingId: tm.deletingId,
+    canCreate: allTypes,
+    canEdit: allTypes,
+    canDelete: () => true,
+    canImport: () => false,
+    onCreate: tm.onCreate,
+    onImport: tm.onImport,
+    onTemplateAction: tm.onTemplateAction,
+  };
 
   return (
     <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
@@ -36,20 +53,7 @@ export const CrdInnovationPackAdminPage = () => {
           <p className="text-body text-muted-foreground">{t('packAdmin.subtitle')}</p>
         </header>
 
-        <TemplatesManagerView
-          holderKind="innovationPack"
-          categories={tm.categories}
-          loading={loading || tm.loading}
-          duplicatingId={tm.duplicatingId}
-          deletingId={tm.deletingId}
-          canCreate={allTypes}
-          canEdit={allTypes}
-          canDelete={() => true}
-          canImport={() => false}
-          onCreate={tm.onCreate}
-          onImport={tm.onImport}
-          onTemplateAction={tm.onTemplateAction}
-        />
+        <InnovationPackAdminView form={form} templatesManager={templatesManager} />
 
         {tm.preview.header && (
           <TemplatePreviewDialog
