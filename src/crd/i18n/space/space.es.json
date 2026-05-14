@@ -528,6 +528,7 @@
     "descriptionPlaceholder": "Descripción opcional",
     "addRow": "Añadir otra referencia",
     "removeRow": "Eliminar referencia",
+    "attachFile": "Adjuntar archivo",
     "removeConfirm": {
       "title": "¿Eliminar esta referencia?",
       "description": "«{{name}}» se eliminará al guardar. Esta acción no se puede deshacer.",
