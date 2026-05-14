@@ -74,7 +74,15 @@
         "saving": "Opslaan…",
         "save": "Opslaan"
       },
-      "deletePhase": "Fase verwijderen"
+      "deletePhase": {
+        "menuLabel": "Fase verwijderen",
+        "confirm": {
+          "title": "Deze fase verwijderen?",
+          "description": "Callouts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Fase verwijderen",
+          "cancel": "Annuleren"
+        }
+      }
     },
     "addPhase": {
       "button": "Fase toevoegen",

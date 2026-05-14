@@ -74,7 +74,15 @@
         "saving": "Guardando…",
         "save": "Guardar"
       },
-      "deletePhase": "Eliminar fase"
+      "deletePhase": {
+        "menuLabel": "Eliminar fase",
+        "confirm": {
+          "title": "¿Eliminar esta fase?",
+          "description": "Los callouts etiquetados actualmente con esta fase perderán la etiqueta. Esta acción no se puede deshacer.",
+          "confirm": "Eliminar fase",
+          "cancel": "Cancelar"
+        }
+      }
     },
     "addPhase": {
       "button": "Añadir fase",

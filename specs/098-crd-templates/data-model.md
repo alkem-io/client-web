@@ -141,6 +141,18 @@ type TemplateFormValues =
       // mirrors the existing CRD callout-authoring connectors' value shape (FramingChip + per-kind content),
       // not a bespoke set of fields — the Callout template form reuses those connectors. Covers every
       // framing kind incl. 'document' (Collabora) and 'poll'.
+      //
+      // NOTE — **two distinct tag sets in a Callout template** (FR-020):
+      //   (a) the *template's* tags — live on `TemplateCommonValues.tags` (above), rendered by the
+      //       dialog shell (`TemplateFormDialog`). These are the tags users see when browsing the
+      //       template gallery.
+      //   (b) the *captured callout's* tags — live on `useCrdCalloutForm.values.tags`, rendered
+      //       inside the Callout-template *body slot* (`CalloutTemplateForm` Zone 3). These are the
+      //       tags applied to every callout created from this template. Both are persisted; the
+      //       integration layer (`useTemplateForms`/`calloutFormMapper`) maps them to the right
+      //       fields (template profile tagset vs. callout framing tagset).
+      //   Only Callout templates carry (b); Whiteboard / Post / Space / Community Guidelines
+      //   templates have only the template-level tag set (a).
       framingKind: FramingKind; framingTitle; framingDescription;
       framingWhiteboardContent?; framingMemoContent?; framingCollaboraDoc?; framingLinks?; framingMediaFiles?; framingPoll?;
       allowedContributionTypes; commentsEnabled;

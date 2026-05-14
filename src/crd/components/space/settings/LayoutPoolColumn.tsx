@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -51,6 +52,7 @@ export function LayoutPoolColumn({
   const calloutIds = column.callouts.map(c => c.id);
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
+  const [pendingPhaseDelete, setPendingPhaseDelete] = useState(false);
 
   return (
     <>
@@ -71,6 +73,7 @@ export function LayoutPoolColumn({
               column={column}
               actions={columnMenuActions}
               onEditDetails={() => setEditDetailsOpen(true)}
+              onRequestDeletePhase={() => setPendingPhaseDelete(true)}
               t={t}
             />
           </div>
@@ -111,6 +114,23 @@ export function LayoutPoolColumn({
         }}
         onCancel={() => setEditDetailsOpen(false)}
       />
+
+      <ConfirmationDialog
+        open={pendingPhaseDelete}
+        onOpenChange={open => {
+          if (!open) setPendingPhaseDelete(false);
+        }}
+        variant="destructive"
+        title={t('layout.column.deletePhase.confirm.title')}
+        description={t('layout.column.deletePhase.confirm.description')}
+        confirmLabel={t('layout.column.deletePhase.confirm.confirm')}
+        cancelLabel={t('layout.column.deletePhase.confirm.cancel')}
+        onConfirm={() => {
+          void columnMenuActions.onDeletePhase?.(column.id);
+          setPendingPhaseDelete(false);
+        }}
+        onCancel={() => setPendingPhaseDelete(false)}
+      />
     </>
   );
 }
@@ -121,10 +141,11 @@ type ColumnOverflowMenuProps = {
   column: LayoutPoolColumnData;
   actions: ColumnMenuActions;
   onEditDetails: () => void;
+  onRequestDeletePhase: () => void;
   t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
 };
 
-function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflowMenuProps) {
+function ColumnOverflowMenu({ column, actions, onEditDetails, onRequestDeletePhase, t }: ColumnOverflowMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild={true}>
@@ -158,12 +179,9 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, t }: ColumnOverflo
         {actions.onDeletePhase && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => void actions.onDeletePhase?.(column.id)}
-            >
+            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onRequestDeletePhase}>
               <Trash2 aria-hidden="true" className="mr-2 size-3.5" />
-              {t('layout.column.deletePhase')}
+              {t('layout.column.deletePhase.menuLabel')}
             </DropdownMenuItem>
           </>
         )}

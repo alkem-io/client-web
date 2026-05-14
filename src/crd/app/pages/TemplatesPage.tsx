@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { TemplateContentPreview } from '@/crd/components/templates/TemplateContentPreview';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
@@ -32,10 +32,7 @@ export function TemplatesPage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewContent, setPreviewContent] = useState<TemplateContent | undefined>(undefined);
 
-  const previewHeader = useMemo(
-    () => (previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined),
-    [previewId]
-  );
+  const previewHeader = previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined;
 
   const openPreview = (id: string) => {
     setPreviewId(id);

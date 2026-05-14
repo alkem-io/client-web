@@ -74,7 +74,15 @@
         "saving": "Enregistrement…",
         "save": "Enregistrer"
       },
-      "deletePhase": "Supprimer la phase"
+      "deletePhase": {
+        "menuLabel": "Supprimer la phase",
+        "confirm": {
+          "title": "Supprimer cette phase ?",
+          "description": "Les callouts actuellement étiquetés avec cette phase perdront leur étiquette. Cette action est irréversible.",
+          "confirm": "Supprimer la phase",
+          "cancel": "Annuler"
+        }
+      }
     },
     "addPhase": {
       "button": "Ajouter une phase",

@@ -24,6 +24,7 @@ import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
@@ -135,26 +136,29 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
         />
       </div>
 
-      {/* Zone 3 — more options */}
+      {/* Zone 3 — more options.
+          NOTE — there are **two** tag sets in a Callout template (FR-020):
+            (a) the *template's* tags — `commonValue.tags`, rendered by the dialog shell
+                (`TemplateFormDialog`). Drive the template gallery's tag filter.
+            (b) the *captured callout's* tags — `values.tags` (this form's `useCrdCalloutForm` value),
+                rendered below. Applied to every callout created from this template.
+          Both are persisted; the integration layer (`useTemplateForms` / `calloutFormMapper`) maps
+          each to the right tagset (template profile vs. callout framing). The two tag inputs are
+          intentionally separate; do not collapse them.
+          Mirrors the live callout-creation form (`CalloutFormConnector.tsx` "moreOptionsSlot"). */}
       <div className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="callout-template-tags" className="text-caption text-muted-foreground">
             {t('forms.tagsLabel')}
           </Label>
-          <div className="relative">
-            <Hash
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <input
-              id="callout-template-tags"
-              type="text"
-              value={values.tags}
-              placeholder={t('forms.tagsPlaceholder')}
-              disabled={disabled}
-              className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-            />
-          </div>
+          <TagsInput
+            value={values.tags}
+            onChange={tags => setField('tags', tags)}
+            placeholder={t('forms.tagsPlaceholder')}
+            minLength={2}
+            formatTooShortErrorMessage={min => t('forms.tagsTooShort', { min })}
+            icon={<Hash aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />}
+          />
         </div>
         <AllowCommentsField
           value={values.framingCommentsEnabled}

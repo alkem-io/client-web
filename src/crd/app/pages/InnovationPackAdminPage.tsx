@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { InnovationPackAdminView } from '@/crd/components/innovationPack/InnovationPackAdminView';
 import type {
   InnovationPackFormErrors,
@@ -34,19 +34,13 @@ export function InnovationPackAdminPage() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const errors: InnovationPackFormErrors = useMemo(
-    () => (!values.name.trim() ? { name: 'A pack name is required.' } : {}),
-    [values.name]
-  );
+  const errors: InnovationPackFormErrors = !values.name.trim() ? { name: 'A pack name is required.' } : {};
 
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewContent, setPreviewContent] = useState<TemplateContent | undefined>(undefined);
 
-  const previewHeader = useMemo(
-    () => (previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined),
-    [previewId]
-  );
+  const previewHeader = previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined;
 
   const openPreview = (id: string) => {
     setPreviewId(id);

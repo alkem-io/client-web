@@ -74,7 +74,15 @@
         "saving": "Speichern…",
         "save": "Speichern"
       },
-      "deletePhase": "Phase löschen"
+      "deletePhase": {
+        "menuLabel": "Phase löschen",
+        "confirm": {
+          "title": "Diese Phase löschen?",
+          "description": "Callouts, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Phase löschen",
+          "cancel": "Abbrechen"
+        }
+      }
     },
     "addPhase": {
       "button": "Phase hinzufügen",

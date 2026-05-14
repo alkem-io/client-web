@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { InnovationPackProfileView } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import type { TemplateContent } from '@/crd/components/templates/types';
@@ -23,10 +23,7 @@ export function InnovationPackProfilePage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewContent, setPreviewContent] = useState<TemplateContent | undefined>(undefined);
 
-  const previewHeader = useMemo(
-    () => (previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined),
-    [previewId]
-  );
+  const previewHeader = previewId ? MOCK_ALL_TEMPLATES.find(t => t.id === previewId) : undefined;
 
   const openPreview = (id: string) => {
     setPreviewId(id);

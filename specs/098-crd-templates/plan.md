@@ -119,12 +119,12 @@ src/
 │   │   ├── innovationLibrary/{InnovationLibraryView,TemplateGallery,TemplateTypeFilter}.tsx   # NEW — from prototype TemplateLibrary.tsx
 │   │   └── i18n/templates/templates.{en,nl,es,bg,de,fr}.json   # NEW
 │   └── components/space/settings/
-│       ├── SpaceSettingsTemplatesView.tsx          # KEEP as a ≤10-line wrapper → `<TemplatesManagerView holderKind="space" .../>`
-│       ├── TemplateLibraryDialog.tsx               # REMOVE — superseded by `templates/TemplatePicker.tsx` (mode='import')
-│       ├── TemplateEditDialog.tsx                  # REMOVE — superseded by `templates/TemplateFormDialog.tsx`
-│       ├── TemplatePreviewDialog.tsx               # MOVE → `templates/TemplatePreviewDialog.tsx`
-│       ├── SaveSubspaceAsTemplateDialog.tsx        # REMOVE — superseded by `templates/SaveAsTemplateDialog.tsx` (subspace case)
-│       └── ChangeDefaultSubspaceTemplateDialog.tsx # REMOVE — superseded by `templates/SetDefaultTemplateDialog.tsx`
+│       ├── SpaceSettingsTemplatesView.tsx          # DELETED (Session 34) — direct-cutover via `CrdSpaceTemplatesTab.tsx`; the planned ≤10-line wrapper was unnecessary once the in-page consumer migrated
+│       ├── TemplateLibraryDialog.tsx               # DELETED (Session 34) — superseded by `templates/TemplatePicker.tsx` (mode='import')
+│       ├── TemplateEditDialog.tsx                  # DELETED (Session 34) — superseded by `templates/TemplateFormDialog.tsx`
+│       ├── TemplatePreviewDialog.tsx               # DELETED (Session 34) at this legacy location — replacement lives at `templates/TemplatePreviewDialog.tsx`
+│       ├── SaveSubspaceAsTemplateDialog.tsx        # DELETED (Session 34) — superseded by `templates/SaveAsTemplateDialog.tsx` (subspace case)
+│       └── ChangeDefaultSubspaceTemplateDialog.tsx # STILL PRESENT — `CrdSpaceSettingsPage.tsx` still renders it for the default-subspace-template card; re-point to `SetDefaultTemplateDialog(purpose:'defaultSubspaceTemplate')` is tracked as T091, after which this file is deleted
 ├── main/
 │   └── crdPages/
 │       ├── templates/                               # NEW — shared integration layer
@@ -142,8 +142,8 @@ src/
 │       │   ├── CalloutSettingsConnector.tsx        # MODIFIED — "save as template" opens the CRD `TemplateFormDialog` pre-filled (drop the legacy `CreateTemplateDialog` bridge + the kill-switch once stable)
 │       │   └── ResponseDefaultsConnector.tsx       # MODIFIED — use `useTemplatePicker({allowedTypes:['post'|'whiteboard']})` instead of the bespoke `useSpaceContentTemplatesOnSpaceQuery`
 │       └── topLevelPages/spaceSettings/
-│           ├── templates/{useTemplatesTabData.ts,useTemplateActions.ts,useTemplateLibrary.ts,templatesMapper.ts}   # MODIFIED — `useTemplatesTabData` becomes a thin adapter over `crdPages/templates/*`; the other three are absorbed/removed (temporary re-exports if `045` imports break, removed in Polish)
-│           ├── subspaces/{useSubspacesTabData.ts,useSaveSubspaceAsTemplate.ts}   # MODIFIED — re-point to `SaveAsTemplateDialog` / `SetDefaultTemplateDialog` (the `045` plumbing stays)
+│           ├── templates/{useTemplatesTabData.ts,useTemplateActions.ts,useTemplateLibrary.ts,templatesMapper.ts}   # DELETED (Session 34) — direct-cutover: `CrdSpaceTemplatesTab.tsx` (sibling) consumes `crdPages/templates/*` directly. All four files were a fully self-referential orphan cluster after Phase 2.
+│           ├── subspaces/{useSubspacesTabData.ts,useSaveSubspaceAsTemplate.ts}   # MIXED — `useSubspacesTabData.ts` MODIFIED (re-points the save-as bridge into `CrdSpaceSettingsPage.tsx`'s unified `saveAs` instance per T053); `useSaveSubspaceAsTemplate.ts` DELETED (Session 34, orphan after T053).
 │           └── layout/useColumnMenu.ts             # MODIFIED — open `SetDefaultTemplateDialog` (purpose='flowStateDefaultCalloutTemplate'); relabel "Default post template" → "Default callout template"
 │           └── community/…                          # MODIFIED + DELIVERED — the CRD community-guidelines editor host: this feature builds it to legacy parity (guidelines TITLE + references-list editor + `MarkdownEditor` body, working — superseding `045`'s markdown-only stub, FR-038) via a new `src/crd/components/space/settings/CommunityGuidelinesEditor.tsx` (presentational) + an integration hook here (`useUpdateCommunityGuidelines`); "apply template" via `useTemplatePicker({allowedTypes:['communityGuidelines']})`; "save as template" via `useSaveAsTemplate({sourceKind:'communityGuidelines'})` (port `useCommunityGuidelines.onSelectCommunityGuidelinesTemplate` logic into the integration layer, no MUI). Replaces whatever `045`'s Community tab stubbed.
 ├── main/routing/TopLevelRoutes.tsx                  # MODIFIED — toggle-gated CRD route for `/innovation-library` (CrdInnovationLibraryPage vs MuiInnovationLibraryPage); keep MUI version for toggle-off

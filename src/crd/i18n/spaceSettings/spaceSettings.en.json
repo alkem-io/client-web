@@ -74,7 +74,15 @@
         "saving": "Saving…",
         "save": "Save"
       },
-      "deletePhase": "Delete phase"
+      "deletePhase": {
+        "menuLabel": "Delete phase",
+        "confirm": {
+          "title": "Delete this phase?",
+          "description": "Callouts currently tagged with this phase will lose the tag. This action cannot be undone.",
+          "confirm": "Delete phase",
+          "cancel": "Cancel"
+        }
+      }
     },
     "addPhase": {
       "button": "Add phase",
