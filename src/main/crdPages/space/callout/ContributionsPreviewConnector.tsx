@@ -178,6 +178,7 @@ export function ContributionsPreviewConnector({
           />
         )}
         <LinkContributionEditConnector
+          calloutId={callout.id}
           target={linkEditTarget}
           canDelete={linkEditTarget?.canDelete}
           onClose={() => setLinkEditTarget(undefined)}

@@ -216,6 +216,7 @@ function LinkContributionListSlot({
         />
       )}
       <LinkContributionEditConnector
+        calloutId={calloutId}
         target={editTarget}
         canDelete={editTarget?.canDelete}
         onClose={() => setEditTarget(undefined)}

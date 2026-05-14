@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useDeleteContributionMutation,
+  useDeleteDocumentMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -11,6 +12,12 @@ import {
 } from '@/crd/components/contribution/LinkContributionDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import {
+  StorageConfigContextProvider,
+  useStorageConfigContext,
+} from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { LinkTermsHelper } from './LinkTermsHelper';
+import { LinkUrlAttachFileButton } from './LinkUrlAttachFileButton';
 
 type EditTarget = {
   contributionId: string;
@@ -23,6 +30,8 @@ type EditTarget = {
 };
 
 type LinkContributionEditConnectorProps = {
+  /** Owning callout — required for the file-upload storage context. */
+  calloutId: string;
   target: EditTarget | undefined;
   onClose: () => void;
   /** When true, the edit dialog shows a delete button (and pending-delete confirmation). Defaults to false. */
@@ -32,6 +41,7 @@ type LinkContributionEditConnectorProps = {
 };
 
 export function LinkContributionEditConnector({
+  calloutId,
   target,
   onClose,
   canDelete,
@@ -42,33 +52,12 @@ export function LinkContributionEditConnector({
   const [pendingDelete, setPendingDelete] = useState(false);
   const directDeleteIntent = target?.intent === 'delete';
   const showDeleteConfirm = pendingDelete || directDeleteIntent;
+  const editFormOpen = Boolean(target) && !showDeleteConfirm;
 
-  const [updateLink] = useUpdateLinkMutation({
-    refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-    awaitRefetchQueries: true,
-  });
   const [deleteLink] = useDeleteLinkMutation();
   const [deleteContribution] = useDeleteContributionMutation({
     refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     awaitRefetchQueries: true,
-  });
-
-  const [handleSubmit, saving] = useLoadingState(async (values: LinkContributionFormValues) => {
-    if (!target) return;
-    await updateLink({
-      variables: {
-        input: {
-          ID: target.linkId,
-          uri: values.url,
-          profile: {
-            displayName: values.displayName,
-            description: values.description || undefined,
-          },
-        },
-      },
-    });
-    onSaved?.();
-    onClose();
   });
 
   const [handleConfirmDelete, deleting] = useLoadingState(async () => {
@@ -85,30 +74,17 @@ export function LinkContributionEditConnector({
 
   return (
     <>
-      <LinkContributionDialog
-        open={Boolean(target) && !showDeleteConfirm}
-        onOpenChange={open => {
-          if (saving || deleting) {
-            return;
-          }
-          if (!open) {
-            onClose();
-          }
-        }}
-        mode="edit"
-        initialValues={
-          target
-            ? {
-                url: target.url,
-                displayName: target.displayName,
-                description: target.description ?? '',
-              }
-            : undefined
-        }
-        saving={saving}
-        onDelete={canDelete ? () => setPendingDelete(true) : undefined}
-        onSubmit={handleSubmit}
-      />
+      <StorageConfigContextProvider locationType="callout" calloutId={calloutId} skip={!editFormOpen}>
+        <LinkEditDialog
+          target={target}
+          open={editFormOpen}
+          canDelete={canDelete}
+          onClose={onClose}
+          onSaved={onSaved}
+          onTriggerDelete={() => setPendingDelete(true)}
+          deleting={deleting}
+        />
+      </StorageConfigContextProvider>
       <ConfirmationDialog
         open={showDeleteConfirm}
         onOpenChange={open => {
@@ -134,5 +110,103 @@ export function LinkContributionEditConnector({
         }}
       />
     </>
+  );
+}
+
+function LinkEditDialog({
+  target,
+  open,
+  canDelete,
+  onClose,
+  onSaved,
+  onTriggerDelete,
+  deleting,
+}: {
+  target: EditTarget | undefined;
+  open: boolean;
+  canDelete?: boolean;
+  onClose: () => void;
+  onSaved?: () => void;
+  onTriggerDelete: () => void;
+  deleting: boolean;
+}) {
+  const storageConfig = useStorageConfigContext();
+  // Track docs uploaded during this edit session for cleanup on cancel. Note that the
+  // *previous* URL (if it was a stored document) is not in this set — we only track
+  // newly uploaded ones from this session.
+  const uploadedDocIds = useRef<string[]>([]);
+  const [updateLink] = useUpdateLinkMutation({
+    refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+    awaitRefetchQueries: true,
+  });
+  const [deleteDocument] = useDeleteDocumentMutation();
+
+  const deleteUploadedDocuments = async () => {
+    const ids = uploadedDocIds.current;
+    uploadedDocIds.current = [];
+    await Promise.all(
+      ids.map(documentId =>
+        deleteDocument({ variables: { documentId } }).catch(() => {
+          // Best-effort cleanup.
+        })
+      )
+    );
+  };
+
+  const [handleSubmit, saving] = useLoadingState(async (values: LinkContributionFormValues) => {
+    if (!target) return;
+    await updateLink({
+      variables: {
+        input: {
+          ID: target.linkId,
+          uri: values.url,
+          profile: {
+            displayName: values.displayName,
+            description: values.description || undefined,
+          },
+        },
+      },
+    });
+    uploadedDocIds.current = [];
+    onSaved?.();
+    onClose();
+  });
+
+  return (
+    <LinkContributionDialog
+      mode="edit"
+      open={open}
+      onOpenChange={next => {
+        if (saving || deleting) return;
+        if (!next) onClose();
+      }}
+      initialValues={
+        target
+          ? {
+              url: target.url,
+              displayName: target.displayName,
+              description: target.description ?? '',
+            }
+          : undefined
+      }
+      saving={saving}
+      onDelete={canDelete ? onTriggerDelete : undefined}
+      onSubmit={handleSubmit}
+      onCancel={() => {
+        void deleteUploadedDocuments();
+      }}
+      urlAdornment={({ setUrl, setDisplayName }) => (
+        <LinkUrlAttachFileButton
+          storageConfig={storageConfig}
+          disabled={saving}
+          onUploaded={({ url, documentId, fileName }) => {
+            setUrl(url);
+            setDisplayName(fileName);
+            uploadedDocIds.current.push(documentId);
+          }}
+        />
+      )}
+      urlHelperSlot={<LinkTermsHelper />}
+    />
   );
 }
