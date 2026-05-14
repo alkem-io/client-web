@@ -46,10 +46,14 @@ export function InfoBlock({ description, leads = [], onEditClick, className }: I
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useLayoutEffect(() => {
-    const el = descriptionRef.current;
-    if (!el) return;
-    setIsOverflowing(el.scrollHeight > el.clientHeight + 1);
+    setIsExpanded(false);
   }, [description]);
+
+  useLayoutEffect(() => {
+    const el = descriptionRef.current;
+    if (!el || isExpanded) return;
+    setIsOverflowing(el.scrollHeight > el.clientHeight + 1);
+  }, [description, isExpanded]);
 
   if (!description && leads.length === 0) return null;
 
