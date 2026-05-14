@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
   "shell": {
     "tabs": {
       "user": {

@@ -213,13 +213,16 @@ export default function CrdSpacePageLayout() {
         </MobileSidebarDrawer>
       )}
 
-      {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
-          this parent layout doesn't clobber the subspace layout's trail at
-          L1 / L2 (`pathname` includes `/settings` at those levels too). */}
-      {isLevelZero && isOnSettings && spaceDisplayName && (
-        <L0SettingsBreadcrumbs
+      {/* L0 breadcrumbs — only mounted at L0 so this parent layout doesn't
+          clobber the subspace layout's trail at L1 / L2 (CrdSpacePageLayout
+          runs hooks at every level; gating the mount on `isLevelZero` keeps
+          the publish scoped to L0). On a plain L0 home this emits a single
+          current-page crumb; on `/settings` it emits the 3-hop trail. */}
+      {isLevelZero && spaceDisplayName && (
+        <L0Breadcrumbs
           spaceDisplayName={spaceDisplayName}
           spaceUrl={spaceUrl}
+          isOnSettings={isOnSettings}
           activeSettingsTab={activeSettingsTab}
         />
       )}
@@ -259,21 +262,25 @@ function EnableBannerOverlay() {
   return null;
 }
 
-function L0SettingsBreadcrumbs({
+function L0Breadcrumbs({
   spaceDisplayName,
   spaceUrl,
+  isOnSettings,
   activeSettingsTab,
 }: {
   spaceDisplayName: string;
   spaceUrl: string;
+  isOnSettings: boolean;
   activeSettingsTab: SpaceSettingsTabId;
 }) {
   const { t } = useTranslation('crd-spaceSettings');
-  const items: BreadcrumbTrailItem[] = [
-    { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
-    { label: t(`tabs.${activeSettingsTab}`) },
-  ];
+  const items: BreadcrumbTrailItem[] = isOnSettings
+    ? [
+        { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+        { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+        { label: t(`tabs.${activeSettingsTab}`) },
+      ]
+    : [{ label: spaceDisplayName, icon: Layers }];
   useSetBreadcrumbs(items);
   return null;
 }
