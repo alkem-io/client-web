@@ -193,7 +193,7 @@ describe('calloutTemplateContentToFormValues', () => {
     const v = calloutTemplateContentToFormValues(baseFragment());
     expect(v.title).toBe('Framed thing');
     expect(v.description).toBe('desc');
-    expect(v.tags).toBe('alpha, beta');
+    expect(v.tags).toEqual(['alpha', 'beta']);
     expect(v.framingChip).toBe('none');
     expect(v.framingCommentsEnabled).toBe(false);
     expect(v.responseType).toBe('post');

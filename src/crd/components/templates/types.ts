@@ -287,11 +287,22 @@ export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: SpaceTemplateValues) => void;
-  /** Search results for the "pick a space/subspace to copy" picker — supplied by the integration layer. */
-  searchResults: { id: string; name: string; avatarUrl?: string }[];
-  searchValue: string;
-  onSearchChange: (next: string) => void;
-  searchLoading?: boolean;
+  /**
+   * Current value of the URL input the user pastes a space URL into.
+   * Mirrors the legacy MUI `SpaceContentFromSpaceUrlForm` UX.
+   */
+  url: string;
+  onUrlChange: (next: string) => void;
+  /** Fired when the user clicks the "Use this space" button. */
+  onUseUrl: () => void;
+  /** True while the URL resolver + space-content + privilege check is in flight. */
+  urlResolving: boolean;
+  /** Error from the most recent "Use this space" attempt (empty URL, invalid URL, no rights, not found, ...). */
+  urlError?: string;
+  /** Once a source space has been resolved, its display name (shown in the "selected" state). */
+  sourceDisplayName?: string;
+  /** Once a source space has been resolved, its avatar URL (optional, shown in the "selected" state). */
+  sourceAvatarUrl?: string;
   /** Read-only preview of the captured structure once content has been fetched (optional). */
   capturedStructure?: Extract<TemplateContent, { type: 'space' }>;
 };

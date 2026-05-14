@@ -55,7 +55,7 @@ export type UseTemplatesManagerResult = {
   onCreate: (type: TemplateType) => void;
   /** Surfaces the requested type for the page to host the import-from-library picker (Space holder only). */
   onImport: (type: TemplateType) => void;
-  /** preview / duplicate / delete now; edit is `TODO(098)` (needs `useTemplateForms` edit support). */
+  /** preview / edit / duplicate / delete — all 5 types. */
   onTemplateAction: (id: string, action: TemplateAction) => void;
   preview: TemplatesManagerPreviewState;
   /** The create/edit form-dialog state — the page renders `<TemplateFormDialog {...form} />`. */
@@ -372,8 +372,12 @@ export function useTemplatesManager({
     previewLoading: importPreviewLoading,
     alreadyInSet: EMPTY_STRING_SET,
     onImport: id => void handleImport(id),
-    // TODO(098): remove-from-set within the picker (the picker shows source — not destination — templates).
-    onRemoveFromSet: () => {},
+    // Route remove-from-set through the manager-level delete-confirmation flow so destructive
+    // confirmation (CRD Rule 9) and the post-delete refetch list both kick in. The picker shows
+    // source (not destination) templates today, so `findCard(id)` only resolves when a future
+    // build populates `alreadyInSet` with destination ids — in that case this lands the user on
+    // the same `ConfirmationDialog` they see from the manager kebab → Delete.
+    onRemoveFromSet: id => requestDelete(id),
   };
 
   const onTemplateAction = (id: string, action: TemplateAction) => {

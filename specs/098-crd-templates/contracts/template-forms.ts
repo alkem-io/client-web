@@ -14,8 +14,10 @@
  *    uses — and the integration-layer connector (`WhiteboardTemplateFormConnector`) wires it to the live editor dialog.
  *  - **`src/main/crdPages/templates/CalloutTemplateForm.tsx`** — the callout per-type form is in the INTEGRATION
  *    layer, not `src/crd/`, because it composes the callout-authoring connectors (Apollo/`@/domain/*`-bound).
- *    It's mounted into `perTypeFormSlot` for `type: 'callout'`. The Apollo space-search for the Space form also
- *    lives in the integration layer (`useTemplateForms` / a small `SpaceSourcePicker` connector).
+ *    It's mounted into `perTypeFormSlot` for `type: 'callout'`. The Apollo URL-resolver + space-content +
+ *    Update-privilege plumbing for the Space form's URL-paste source picker (mirroring the legacy MUI
+ *    `SpaceContentFromSpaceUrlForm`: paste URL → "Use this space" → load innovation-flow + callouts)
+ *    likewise lives in the integration layer (folded into `useTemplateForms`).
  *
  * Forms are CONTROLLED — `value` / `onChange` / `errors` come from the integration layer
  * (`src/main/crdPages/templates/useTemplateForms.ts`, which also assembles the slot per type). No Formik/RHF inside src/crd/.

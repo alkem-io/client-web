@@ -157,12 +157,23 @@
       "defaultDescriptionPlaceholder": "Contenido precargado para nuevas publicaciones que usen esta plantilla"
     },
     "space": {
-      "source": "Copiar estructura de",
-      "searchPlaceholder": "Buscar espacios y subespacios…",
-      "noResults": "No hay espacios coincidentes.",
-      "sourceRequired": "Elige un espacio o subespacio para copiar.",
+      "source": "Espacio fuente",
+      "sourceRequired": "Pega primero una URL de espacio y haz clic en \"Usar este espacio\".",
       "recursive": "Incluir subespacios anidados",
-      "capturedStructure": "Estructura capturada"
+      "capturedStructure": "Estructura capturada",
+      "urlLoader": {
+        "description": "Pega la URL de un espacio o subespacio cuya estructura quieras copiar.",
+        "placeholder": "https://…",
+        "use": "Usar este espacio",
+        "selectAnother": "Elegir otro espacio",
+        "resolving": "Comprobando…",
+        "errors": {
+          "required": "Pega primero una URL de espacio.",
+          "invalidUrl": "Esta URL no apunta a un espacio.",
+          "notFound": "Espacio no encontrado.",
+          "noRights": "Necesitas permisos de administrador sobre el espacio que quieres copiar como plantilla."
+        }
+      }
     },
     "communityGuidelines": {
       "title": "Título de las pautas",

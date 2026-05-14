@@ -1,19 +1,24 @@
 import type { ReactNode } from 'react';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCreateReferenceOnProfileMutation,
   useCreateTemplateFromSpaceMutation,
   useCreateTemplateMutation,
   useDeleteReferenceMutation,
+  useSpaceTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
+  useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
+  useUrlResolverLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
+  AuthorizationPrivilege,
   type CreateProfileInput,
   type CreateReferenceInput,
   TemplateType as GqlTemplateType,
+  UrlType,
 } from '@/core/apollo/generated/graphql-schema';
 import { CommunityGuidelinesTemplateForm } from '@/crd/components/templates/forms/CommunityGuidelinesTemplateForm';
 import { PostTemplateForm } from '@/crd/components/templates/forms/PostTemplateForm';
@@ -196,11 +201,26 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
   const [whiteboardTemplatePreviewImages, setWhiteboardTemplatePreviewImages] = useState<WhiteboardPreviewImage[]>([]);
   const { handlePreviewTemplates } = useHandlePreviewImages();
 
+  // Space-template URL-paste source picker (mirrors legacy MUI `SpaceContentFromSpaceUrlForm`):
+  // the user pastes a space URL, clicks "Use this space" → resolve URL → fetch space content →
+  // check Update privilege → commit the resolved space id + display details into the form value.
+  const [spaceSourceUrl, setSpaceSourceUrl] = useState('');
+  const [spaceSourceUrlError, setSpaceSourceUrlError] = useState<string | undefined>(undefined);
+  const [spaceSourceResolving, setSpaceSourceResolving] = useState(false);
+  const [spaceSourceDisplayName, setSpaceSourceDisplayName] = useState<string | undefined>(undefined);
+  const [spaceSourceAvatarUrl, setSpaceSourceAvatarUrl] = useState<string | undefined>(undefined);
+  // The Space template's `sourceSpaceId` at edit-open time — used on submit to decide whether to
+  // re-capture content from a new source (`updateTemplateFromSpace`) or just update the profile.
+  const [spaceSourceInitialSpaceId, setSpaceSourceInitialSpaceId] = useState<string | undefined>(undefined);
+
   const [createTemplate] = useCreateTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
   const [createTemplateFromSpace] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
   const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
+  const [updateTemplateFromSpace] = useUpdateTemplateFromSpaceMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet'],
+  });
   const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
@@ -210,6 +230,8 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
   // is what ultimately repopulates the cache so per-call refetches aren't needed here.
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+  const [resolveUrl] = useUrlResolverLazyQuery();
+  const [fetchSpaceContent] = useSpaceTemplateContentLazyQuery();
 
   const calloutFallbacks: CalloutTemplateMapperFallbacks = {
     whiteboardFallbackDisplayName: tSpace('callout.whiteboard'),
@@ -230,6 +252,15 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setValues(next);
   };
 
+  const resetSpaceSourceState = () => {
+    setSpaceSourceUrl('');
+    setSpaceSourceUrlError(undefined);
+    setSpaceSourceResolving(false);
+    setSpaceSourceDisplayName(undefined);
+    setSpaceSourceAvatarUrl(undefined);
+    setSpaceSourceInitialSpaceId(undefined);
+  };
+
   const reset = (type: TemplateType, initial?: TemplateFormValues) => {
     setIntent('create');
     setEditTemplateId(null);
@@ -242,6 +273,8 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setErrors({});
     setPristine(true);
     setWhiteboardTemplatePreviewImages([]);
+    resetSpaceSourceState();
+    if (initial && initial.type === 'space') setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
     setOpen(true);
   };
   const openEdit = (
@@ -262,6 +295,8 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setErrors({});
     setPristine(true);
     setWhiteboardTemplatePreviewImages([]);
+    resetSpaceSourceState();
+    if (initial.type === 'space') setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
     setOpen(true);
   };
   const openCreateCallout: UseTemplateFormsResult['openCreateCallout'] = prefill => {
@@ -302,7 +337,83 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     setEditTagsetId(null);
     setEditCgProfileId(null);
     setEditOriginalCgReferenceIds([]);
+    resetSpaceSourceState();
   };
+
+  /**
+   * URL-paste source picker — mirrors legacy MUI `SpaceContentFromSpaceUrlForm`:
+   * (1) resolve the pasted URL → must be a Space type, (2) fetch space content + display details,
+   * (3) require Update privilege on the resolved space, then commit `sourceSpaceId` into the form.
+   */
+  const onSpaceUrlChange = (next: string) => {
+    setSpaceSourceUrl(next);
+    if (spaceSourceUrlError) setSpaceSourceUrlError(undefined);
+  };
+  const onUseSpaceUrl = async () => {
+    setSpaceSourceUrlError(undefined);
+    const trimmed = spaceSourceUrl.trim();
+    if (!trimmed) {
+      setSpaceSourceUrlError(t('form.space.urlLoader.errors.required'));
+      return;
+    }
+    setSpaceSourceResolving(true);
+    try {
+      const { data, error } = await resolveUrl({ variables: { url: trimmed } });
+      if (error) {
+        setSpaceSourceUrlError(error.message);
+        return;
+      }
+      if (data?.urlResolver.type !== UrlType.Space) {
+        setSpaceSourceUrlError(t('form.space.urlLoader.errors.invalidUrl'));
+        return;
+      }
+      const resolvedSpaceId = data.urlResolver.space?.id;
+      if (!resolvedSpaceId) {
+        setSpaceSourceUrlError(t('form.space.urlLoader.errors.notFound'));
+        return;
+      }
+      const { data: contentData, error: contentError } = await fetchSpaceContent({
+        variables: { spaceId: resolvedSpaceId },
+      });
+      if (contentError) {
+        setSpaceSourceUrlError(contentError.message);
+        return;
+      }
+      const space = contentData?.lookup.space;
+      const privileges = space?.authorization?.myPrivileges ?? [];
+      if (!privileges.includes(AuthorizationPrivilege.Update)) {
+        setSpaceSourceUrlError(t('form.space.urlLoader.errors.noRights'));
+        return;
+      }
+      setSpaceSourceDisplayName(space?.about?.profile?.displayName);
+      setSpaceSourceAvatarUrl(space?.about?.profile?.avatar?.uri);
+      setValues(prev => (prev.type === 'space' ? { ...prev, sourceSpaceId: resolvedSpaceId } : prev));
+      setPristine(false);
+      setSpaceSourceUrl('');
+    } finally {
+      setSpaceSourceResolving(false);
+    }
+  };
+
+  // Back-fill the displayName / avatarUrl of an already-resolved source space on edit-open
+  // (the create flow sets these directly in `onUseSpaceUrl`; edit re-opens without them).
+  const editingSpaceSourceSpaceId = values.type === 'space' ? values.sourceSpaceId : undefined;
+  useEffect(() => {
+    if (!open) return;
+    if (!editingSpaceSourceSpaceId) return;
+    if (spaceSourceDisplayName !== undefined) return;
+    let cancelled = false;
+    void fetchSpaceContent({ variables: { spaceId: editingSpaceSourceSpaceId } }).then(({ data }) => {
+      if (cancelled) return;
+      const space = data?.lookup.space;
+      if (!space) return;
+      setSpaceSourceDisplayName(space.about?.profile?.displayName);
+      setSpaceSourceAvatarUrl(space.about?.profile?.avatar?.uri);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, editingSpaceSourceSpaceId, spaceSourceDisplayName, fetchSpaceContent]);
 
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
     const profileData = toProfileData(current);
@@ -429,9 +540,15 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
         return;
       }
       case 'space':
-        // Profile-only update — re-capturing from a different source space (`useUpdateTemplateFromSpaceMutation`)
-        // is not wired (the Space form's source picker has no search results in this build) — TODO(098/T031).
+        // Profile-only update by default. When the user re-selected a source via the URL-paste
+        // picker after opening the dialog (sourceSpaceId differs from the initial), also fire
+        // `updateTemplateFromSpace` to re-capture the structure from the newly chosen source.
         await updateTemplate({ variables: { templateId, profile } });
+        if (current.sourceSpaceId && current.sourceSpaceId !== spaceSourceInitialSpaceId) {
+          await updateTemplateFromSpace({
+            variables: { templateId, spaceId: current.sourceSpaceId, recursive: current.recursive },
+          });
+        }
         return;
       case 'communityGuidelines': {
         await updateTemplate({ variables: { templateId, profile } });
@@ -551,9 +668,13 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
           value={values}
           errors={errors}
           onChange={onPerTypeChange}
-          searchResults={[]}
-          searchValue=""
-          onSearchChange={() => {}}
+          url={spaceSourceUrl}
+          onUrlChange={onSpaceUrlChange}
+          onUseUrl={() => void onUseSpaceUrl()}
+          urlResolving={spaceSourceResolving}
+          urlError={spaceSourceUrlError}
+          sourceDisplayName={spaceSourceDisplayName}
+          sourceAvatarUrl={spaceSourceAvatarUrl}
         />
       );
       break;

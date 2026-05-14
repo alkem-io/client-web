@@ -139,12 +139,23 @@
       "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
     },
     "space": {
-      "source": "Copy structure from",
-      "searchPlaceholder": "Search spaces and subspaces…",
-      "noResults": "No matching spaces.",
-      "sourceRequired": "Choose a space or subspace to copy.",
+      "source": "Source space",
+      "sourceRequired": "Paste a space URL and click \"Use this space\" first.",
       "recursive": "Include nested subspaces",
-      "capturedStructure": "Captured structure"
+      "capturedStructure": "Captured structure",
+      "urlLoader": {
+        "description": "Paste the URL of a space or subspace whose structure you want to copy.",
+        "placeholder": "https://…",
+        "use": "Use this space",
+        "selectAnother": "Select another space",
+        "resolving": "Checking…",
+        "errors": {
+          "required": "Paste a space URL first.",
+          "invalidUrl": "This URL does not point to a space.",
+          "notFound": "Space not found.",
+          "noRights": "You need admin rights on the space you want to copy as a template."
+        }
+      }
     },
     "communityGuidelines": {
       "title": "Guidelines title",

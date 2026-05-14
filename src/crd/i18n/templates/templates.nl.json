@@ -157,12 +157,23 @@
       "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe posts die dit sjabloon gebruiken"
     },
     "space": {
-      "source": "Structuur kopiëren van",
-      "searchPlaceholder": "Zoek ruimten en subruimten…",
-      "noResults": "Geen overeenkomende ruimten.",
-      "sourceRequired": "Kies een ruimte of subruimte om te kopiëren.",
+      "source": "Bronruimte",
+      "sourceRequired": "Plak eerst een ruimte-URL en klik op \"Gebruik deze ruimte\".",
       "recursive": "Geneste subruimten meenemen",
-      "capturedStructure": "Vastgelegde structuur"
+      "capturedStructure": "Vastgelegde structuur",
+      "urlLoader": {
+        "description": "Plak de URL van een ruimte of subruimte waarvan je de structuur wilt kopiëren.",
+        "placeholder": "https://…",
+        "use": "Gebruik deze ruimte",
+        "selectAnother": "Kies een andere ruimte",
+        "resolving": "Bezig met controleren…",
+        "errors": {
+          "required": "Plak eerst een ruimte-URL.",
+          "invalidUrl": "Deze URL verwijst niet naar een ruimte.",
+          "notFound": "Ruimte niet gevonden.",
+          "noRights": "Je hebt beheerrechten nodig op de ruimte die je als sjabloon wilt kopiëren."
+        }
+      }
     },
     "communityGuidelines": {
       "title": "Titel richtlijnen",

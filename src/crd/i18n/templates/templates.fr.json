@@ -157,12 +157,23 @@
       "defaultDescriptionPlaceholder": "Contenu pré-rempli pour les nouvelles publications utilisant ce modèle"
     },
     "space": {
-      "source": "Copier la structure depuis",
-      "searchPlaceholder": "Rechercher des espaces et sous-espaces…",
-      "noResults": "Aucun espace correspondant.",
-      "sourceRequired": "Choisissez un espace ou sous-espace à copier.",
+      "source": "Espace source",
+      "sourceRequired": "Collez d'abord une URL d'espace et cliquez sur \"Utiliser cet espace\".",
       "recursive": "Inclure les sous-espaces imbriqués",
-      "capturedStructure": "Structure capturée"
+      "capturedStructure": "Structure capturée",
+      "urlLoader": {
+        "description": "Collez l'URL d'un espace ou sous-espace dont vous voulez copier la structure.",
+        "placeholder": "https://…",
+        "use": "Utiliser cet espace",
+        "selectAnother": "Choisir un autre espace",
+        "resolving": "Vérification…",
+        "errors": {
+          "required": "Collez d'abord une URL d'espace.",
+          "invalidUrl": "Cette URL ne pointe pas vers un espace.",
+          "notFound": "Espace introuvable.",
+          "noRights": "Vous devez avoir les droits administrateur sur l'espace que vous voulez copier comme modèle."
+        }
+      }
     },
     "communityGuidelines": {
       "title": "Titre des directives",

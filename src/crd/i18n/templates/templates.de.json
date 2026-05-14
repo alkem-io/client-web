@@ -157,12 +157,23 @@
       "defaultDescriptionPlaceholder": "Vorausgefüllter Inhalt für neue Beiträge, die diese Vorlage nutzen"
     },
     "space": {
-      "source": "Struktur kopieren von",
-      "searchPlaceholder": "Bereiche und Unterbereiche suchen…",
-      "noResults": "Keine passenden Bereiche.",
-      "sourceRequired": "Wähle einen Bereich oder Unterbereich zum Kopieren.",
+      "source": "Quell-Bereich",
+      "sourceRequired": "Füge zuerst eine Bereichs-URL ein und klicke auf \"Diesen Bereich verwenden\".",
       "recursive": "Verschachtelte Unterbereiche einbeziehen",
-      "capturedStructure": "Erfasste Struktur"
+      "capturedStructure": "Erfasste Struktur",
+      "urlLoader": {
+        "description": "Füge die URL eines Bereichs oder Unterbereichs ein, dessen Struktur du kopieren möchtest.",
+        "placeholder": "https://…",
+        "use": "Diesen Bereich verwenden",
+        "selectAnother": "Anderen Bereich auswählen",
+        "resolving": "Wird geprüft…",
+        "errors": {
+          "required": "Füge zuerst eine Bereichs-URL ein.",
+          "invalidUrl": "Diese URL verweist nicht auf einen Bereich.",
+          "notFound": "Bereich nicht gefunden.",
+          "noRights": "Du benötigst Adminrechte für den Bereich, den du als Vorlage kopieren möchtest."
+        }
+      }
     },
     "communityGuidelines": {
       "title": "Titel der Richtlinien",
