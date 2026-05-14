@@ -77,7 +77,7 @@ export function ToolbarEmbedDialog({ editor, iframeAllowedUrls, onError, disable
           <MonitorPlay className="w-4 h-4" aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="z-[70] sm:max-w-lg" overlayClassName="z-[70]">
         <DialogHeader>
           <DialogTitle>{t('editor.embed.dialogTitle')}</DialogTitle>
         </DialogHeader>

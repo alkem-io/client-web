@@ -76,7 +76,7 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
           <ImageIcon className="w-4 h-4" aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="z-[70] sm:max-w-md" overlayClassName="z-[70]">
         <DialogHeader>
           <DialogTitle>{t('editor.image.dialogTitle')}</DialogTitle>
         </DialogHeader>
