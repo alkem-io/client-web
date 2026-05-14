@@ -6,6 +6,7 @@ import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { toTagsetTitle } from '@/domain/common/tagset/toTagsetTitle';
+import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 
 interface TagsSegmentProps {
   name?: string;
@@ -78,14 +79,21 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   loading,
 }) => {
   const [field, meta, helper] = useField(name);
+  const translateValidation = useValidationMessageTranslation();
 
-  const isError = Boolean(meta.error) && meta.touched;
+  // Surface validation errors regardless of touched-state — pre-loaded data
+  // that fails the `minLength` rule (e.g. legacy 1-char tags created before
+  // the constraint existed) needs to be visible immediately, otherwise the
+  // SAVE button silently stays disabled with no explanation.
+  const isError = Boolean(meta.error);
   const helperText = (() => {
     if (!isError) {
       return _helperText;
     }
-
-    return meta.error;
+    // `textLengthValidator` returns `ValidationMessageWithPayload` objects
+    // (`{ key, payload }`) — translate them; fall back to the raw value as
+    // a defensive last resort if something pre-stringified it.
+    return translateValidation(meta.error as Parameters<typeof translateValidation>[0]) ?? meta.error;
   })();
 
   return (

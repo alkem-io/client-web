@@ -5,8 +5,8 @@ import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { InvitationDetailDialog } from '@/crd/components/dashboard/InvitationDetailDialog';
 import { PendingApplicationCard } from '@/crd/components/dashboard/PendingApplicationCard';
 import { PendingInvitationCard, PendingInvitationCardSkeleton } from '@/crd/components/dashboard/PendingInvitationCard';
@@ -156,9 +156,7 @@ const InvitationDetailContainer = ({
       <BlockSectionTitle paddingTop={gutters()}>{communityGuidelines.profile.displayName}</BlockSectionTitle>
       <Gutters disablePadding={true}>
         <div style={{ wordWrap: 'break-word' }}>
-          <WrapperMarkdown disableParagraphPadding={true}>
-            {communityGuidelines.profile.description ?? ''}
-          </WrapperMarkdown>
+          <MarkdownContent content={communityGuidelines.profile.description ?? ''} />
         </div>
         <References compact={true} references={communityGuidelines.profile.references} />
       </Gutters>

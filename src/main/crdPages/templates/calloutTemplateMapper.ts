@@ -135,7 +135,7 @@ export function calloutTemplateContentToFormValues(
   return {
     title: framing.profile.displayName,
     description: framing.profile.description ?? '',
-    tags: findDefaultTagset(framing.profile.tagsets)?.tags.join(', ') ?? '',
+    tags: findDefaultTagset(framing.profile.tagsets)?.tags ?? [],
     framingChip,
     framingCommentsEnabled: settings.framing.commentsEnabled,
     memoMarkdown: framing.memo?.markdown ?? '',

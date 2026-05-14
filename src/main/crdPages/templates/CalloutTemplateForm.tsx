@@ -150,7 +150,6 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
               id="callout-template-tags"
               type="text"
               value={values.tags}
-              onChange={e => setField('tags', e.target.value)}
               placeholder={t('forms.tagsPlaceholder')}
               disabled={disabled}
               className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"

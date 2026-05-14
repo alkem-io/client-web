@@ -20,6 +20,7 @@ type CrdLayoutProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
+  unreadMessagesCount?: number;
   unreadNotificationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
@@ -45,6 +46,7 @@ export function CrdLayout({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
+  unreadMessagesCount,
   unreadNotificationsCount,
   languages,
   currentLanguage,
@@ -71,6 +73,7 @@ export function CrdLayout({
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
+        unreadMessagesCount={unreadMessagesCount}
         unreadNotificationsCount={unreadNotificationsCount}
         languages={languages}
         currentLanguage={currentLanguage}
