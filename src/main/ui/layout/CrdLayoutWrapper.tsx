@@ -42,7 +42,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
-  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const { setIsOpen: setMessagingOpen, totalUnreadCount: messagesUnreadCount } = useUserMessagingContext();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -88,6 +88,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
+        unreadMessagesCount={messagesUnreadCount}
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
         currentLanguage={currentLanguage}
