@@ -110,6 +110,15 @@ export default function CrdSubspacePageLayout() {
         setAboutOpen(true);
       }}
       onQuickActionClick={handleQuickAction}
+      subspaces={data.subspaces}
+      onShowAllSubspaces={() => {
+        setMobileMenuOpen(false);
+        setActiveDialog('subspaces');
+      }}
+      onSubspaceClick={href => {
+        setMobileMenuOpen(false);
+        navigate(href);
+      }}
     />
   );
 

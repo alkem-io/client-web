@@ -1,10 +1,17 @@
-import { Activity, Bot, CalendarDays, Info, Layers, List, Users } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Info, List, Users } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
+import { SubspacesSection } from './sidebar/SubspacesSection';
+
+type SubspaceWidgetItem = {
+  name: string;
+  initials: string;
+  href: string;
+};
 
 export type SubspaceLeadData = {
   id: string;
@@ -39,6 +46,12 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
   /** "About this Subspace" button — opens the read-only about dialog. */
   onAboutClick: () => void;
   onQuickActionClick: (id: SubspaceQuickActionId) => void;
+  /** Nested subspaces of the current subspace (used by the widget under the nav). */
+  subspaces?: SubspaceWidgetItem[];
+  /** Opens the Subspaces dialog with the full list. */
+  onShowAllSubspaces?: () => void;
+  /** Navigate to a nested subspace from the widget row. */
+  onSubspaceClick?: (href: string) => void;
   className?: string;
 };
 
@@ -49,7 +62,6 @@ const QUICK_ACTIONS: QuickActionDef[] = [
   { id: 'events', icon: CalendarDays },
   { id: 'activity', icon: Activity },
   { id: 'index', icon: List },
-  { id: 'subspaces', icon: Layers },
 ];
 
 export function SubspaceSidebar({
@@ -59,6 +71,9 @@ export function SubspaceSidebar({
   onEditClick,
   onAboutClick,
   onQuickActionClick,
+  subspaces,
+  onShowAllSubspaces,
+  onSubspaceClick,
   className,
 }: SubspaceSidebarProps) {
   const { t } = useTranslation('crd-subspace');
@@ -109,6 +124,10 @@ export function SubspaceSidebar({
           ))}
         </ul>
       </nav>
+
+      {subspaces && subspaces.length > 0 && (
+        <SubspacesSection subspaces={subspaces} onShowAllClick={onShowAllSubspaces} onSubspaceClick={onSubspaceClick} />
+      )}
 
       {virtualContributor && (
         <section className="p-4 rounded-lg bg-card border border-border">
