@@ -15,7 +15,7 @@
     "settings": "Settings",
     "logout": "Log out",
     "login": "Log in",
-    "beta": "Beta",
+    "preview": "Preview",
     "pendingMemberships": "Pending Memberships",
     "administration": "Administration",
     "changeLanguage": "Change Language",
@@ -23,8 +23,7 @@
     "showGrid": "Show Grid",
     "hideGrid": "Hide Grid",
     "designVersion": {
-      "label": "New design (beta)",
-      "caption": "The old design will remain available for a short time."
+      "label": "New design (preview)"
     }
   },
   "footer": {
