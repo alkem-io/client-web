@@ -1,0 +1,327 @@
+{
+  "manager": {
+    "title": "Sjablonen",
+    "subtitle": "Herbruikbare sjablonen voor deze ruimte.",
+    "search": "Zoek sjablonen…",
+    "addNew": "Toevoegen",
+    "createNew": "Nieuw maken",
+    "selectFromLibrary": "Selecteer uit bibliotheek",
+    "duplicating": "Bezig met aanmaken…",
+    "deleting": "Bezig met verwijderen…",
+    "noTemplates": "Nog geen sjablonen",
+    "noTemplatesHint": "Maak er een, of importeer er een uit de bibliotheek.",
+    "noTemplatesReadOnly": "Nog geen sjablonen.",
+    "sectionList": "Sjabloonsecties",
+    "templateList": "Sjablonen",
+    "sections": {
+      "space": {
+        "title": "Ruimtesjablonen",
+        "subtitle": "Structureer een ruimte met vooraf gedefinieerde fasen en starttools."
+      },
+      "callout": {
+        "title": "Samenwerkingstools",
+        "subtitle": "Herbruikbare callouts voor workshops, brainstorms en groepsactiviteiten."
+      },
+      "whiteboard": {
+        "title": "Whiteboard-sjablonen",
+        "subtitle": "Canvaslay-outs voor visuele samenwerking."
+      },
+      "post": {
+        "title": "Postsjablonen",
+        "subtitle": "Gestandaardiseerde documenten voor projecten en beslissingen."
+      },
+      "communityGuidelines": {
+        "title": "Sjablonen voor gemeenschapsrichtlijnen",
+        "subtitle": "Regels en verwachtingen voor een gemeenschap."
+      }
+    }
+  },
+  "card": {
+    "actions": "Sjabloonacties",
+    "preview": "Voorbeeld",
+    "edit": "Bewerken",
+    "duplicate": "Dupliceren",
+    "delete": "Verwijderen",
+    "noPreview": "Geen voorbeeld"
+  },
+  "framingKind": {
+    "none": "Tekst",
+    "whiteboard": "Whiteboard",
+    "memo": "Memo",
+    "document": "Document",
+    "cta": "Link",
+    "image": "Galerij",
+    "poll": "Poll"
+  },
+  "contributionType": {
+    "post": "Posts",
+    "whiteboard": "Whiteboards",
+    "link": "Links"
+  },
+  "preview": {
+    "loading": "Sjabloon laden…",
+    "edit": "Sjabloon bewerken",
+    "close": "Sluiten",
+    "empty": "—",
+    "callout": {
+      "framingKind": "Inhoudstype",
+      "framing": "Inhoud",
+      "allowedContributions": "Toegestane bijdragen",
+      "noContributions": "Geen bijdragen",
+      "comments": "Reacties ingeschakeld",
+      "commentsDisabled": "Reacties uitgeschakeld",
+      "defaultPostDescription": "Standaard postbeschrijving",
+      "defaultWhiteboard": "Standaard whiteboard",
+      "links": "Links",
+      "gallery": "Galerij",
+      "pollQuestion": "Vraag",
+      "pollOptions": "Opties"
+    },
+    "whiteboard": {
+      "empty": "Dit whiteboard-sjabloon heeft geen tekening."
+    },
+    "post": {
+      "defaultDescription": "Standaard beschrijving"
+    },
+    "space": {
+      "phases": "Fasen",
+      "starterCallouts": "Starttools",
+      "subspaceTemplates": "Subruimte-sjablonen",
+      "none": "Geen"
+    },
+    "communityGuidelines": {
+      "title": "Titel richtlijnen",
+      "body": "Richtlijnen",
+      "references": "Referenties"
+    }
+  },
+  "picker": {
+    "title": "Gebruik een sjabloon",
+    "importTitle": "Sjabloonbibliotheek",
+    "search": "Zoek sjablonen…",
+    "noTemplates": "Geen sjablonen beschikbaar.",
+    "noTemplatesForType": "Geen sjablonen beschikbaar voor dit type.",
+    "sources": {
+      "space": "Deze ruimte",
+      "account": "Jouw account",
+      "platform": "Platform"
+    },
+    "select": "Gebruik dit sjabloon",
+    "noTemplate": "Geen sjabloon — begin blanco",
+    "import": "Importeren",
+    "inThisSet": "In deze set",
+    "remove": "Verwijderen uit set",
+    "selectPreviewHint": "Selecteer een sjabloon om er een voorbeeld van te zien.",
+    "close": "Sluiten",
+    "done": "Klaar"
+  },
+  "form": {
+    "createTitle": {
+      "space": "Ruimtesjabloon maken",
+      "callout": "Samenwerkingstool-sjabloon maken",
+      "whiteboard": "Whiteboard-sjabloon maken",
+      "post": "Postsjabloon maken",
+      "communityGuidelines": "Sjabloon voor gemeenschapsrichtlijnen maken"
+    },
+    "editTitle": {
+      "space": "Ruimtesjabloon bewerken",
+      "callout": "Samenwerkingstool-sjabloon bewerken",
+      "whiteboard": "Whiteboard-sjabloon bewerken",
+      "post": "Postsjabloon bewerken",
+      "communityGuidelines": "Sjabloon voor gemeenschapsrichtlijnen bewerken"
+    },
+    "common": {
+      "name": "Sjabloonnaam",
+      "namePlaceholder": "bijv. Project-kickoff",
+      "nameRequired": "Een sjabloonnaam is verplicht.",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Waarvoor is dit sjabloon?",
+      "tags": "Labels",
+      "tagsPlaceholder": "Voeg een label toe en druk op Enter",
+      "banner": "Voorbeeldafbeelding",
+      "uploadBanner": "Voorbeeldafbeelding uploaden"
+    },
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "whiteboard": {
+      "drawing": "Whiteboard",
+      "editDrawing": "Tekening bewerken",
+      "startDrawing": "Begin met tekenen",
+      "previewSettings": "Voorbeeldinstellingen",
+      "editPreview": "Voorbeeld bewerken",
+      "previewImage": "Voorbeeldafbeelding",
+      "uploadPreviewImage": "Voorbeeldafbeelding uploaden"
+    },
+    "post": {
+      "defaultDescription": "Standaard beschrijving",
+      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe posts die dit sjabloon gebruiken"
+    },
+    "space": {
+      "source": "Bronruimte",
+      "sourceRequired": "Plak eerst een ruimte-URL en klik op \"Gebruik deze ruimte\".",
+      "recursive": "Geneste subruimten meenemen",
+      "capturedStructure": "Vastgelegde structuur",
+      "urlLoader": {
+        "description": "Plak de URL van een ruimte of subruimte waarvan je de structuur wilt kopiëren.",
+        "placeholder": "https://…",
+        "use": "Gebruik deze ruimte",
+        "selectAnother": "Kies een andere ruimte",
+        "resolving": "Bezig met controleren…",
+        "errors": {
+          "required": "Plak eerst een ruimte-URL.",
+          "invalidUrl": "Deze URL verwijst niet naar een ruimte.",
+          "notFound": "Ruimte niet gevonden.",
+          "noRights": "Je hebt beheerrechten nodig op de ruimte die je als sjabloon wilt kopiëren."
+        }
+      }
+    },
+    "communityGuidelines": {
+      "title": "Titel richtlijnen",
+      "titlePlaceholder": "bijv. Onze gemeenschapswaarden",
+      "titleRequired": "Een titel voor de richtlijnen is verplicht.",
+      "body": "Richtlijnen",
+      "bodyPlaceholder": "Schrijf de richtlijnen voor deze gemeenschap…",
+      "references": "Referenties"
+    }
+  },
+  "references": {
+    "add": "Referentie toevoegen",
+    "name": "Naam",
+    "uri": "URL",
+    "description": "Beschrijving",
+    "remove": "Referentie verwijderen",
+    "nameRequired": "Een naam is verplicht.",
+    "uriRequired": "Een URL is verplicht."
+  },
+  "discard": {
+    "title": "Wijzigingen negeren?",
+    "body": "Je hebt niet-opgeslagen wijzigingen. Wil je ze negeren?",
+    "confirm": "Negeren",
+    "cancel": "Doorgaan met bewerken"
+  },
+  "delete": {
+    "title": "Sjabloon verwijderen?",
+    "body": "“{{name}}” wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "confirm": "Sjabloon verwijderen",
+    "cancel": "Annuleren"
+  },
+  "removeFromSet": {
+    "title": "Dit sjabloon verwijderen?",
+    "body": "“{{name}}” wordt uit deze set verwijderd. Het origineel in de bibliotheek blijft ongewijzigd.",
+    "confirm": "Verwijderen",
+    "cancel": "Annuleren"
+  },
+  "setDefault": {
+    "subspaceTitle": "Standaard subruimte-sjabloon",
+    "subspaceSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het maken van een subruimte van deze ruimte.",
+    "flowStateTitle": "Standaard callout-sjabloon",
+    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een callout aan deze fase.",
+    "current": "Huidige standaard",
+    "none": "Geen standaard",
+    "noCandidates": "Er zijn nog geen ruimtesjablonen in deze set.",
+    "confirm": "Als standaard instellen",
+    "clear": "Standaard wissen",
+    "previewHint": "Selecteer een sjabloon om er een voorbeeld van te zien.",
+    "cancel": "Annuleren"
+  },
+  "saveAs": {
+    "fromCalloutTitle": "Callout opslaan als sjabloon",
+    "fromGuidelinesTitle": "Richtlijnen opslaan als sjabloon",
+    "fromSubspaceTitle": "Subruimte opslaan als sjabloon",
+    "unsavedSourceTitle": "Sla eerst je wijzigingen op",
+    "unsavedSourceBody": "Sla niet-opgeslagen wijzigingen op of negeer ze voordat je hier een sjabloon van maakt.",
+    "unsavedSourceConfirm": "OK"
+  },
+  "packAdmin": {
+    "subtitle": "Sjablonen in dit Innovation Pack",
+    "detailsHeading": "Pakketgegevens",
+    "detailsSubtitle": "Werk de naam, beschrijving, providerinstellingen en referenties van het pakket bij.",
+    "templatesHeading": "Sjablonen"
+  },
+  "packForm": {
+    "name": "Naam van pakket",
+    "namePlaceholder": "bijv. Onboarding-kit",
+    "nameRequired": "Een pakketnaam is verplicht.",
+    "provider": "Aanbieder",
+    "providerHint": "De aanbieder is de eigenaarsorganisatie en kan hier niet worden gewijzigd.",
+    "avatar": "Avatar",
+    "avatarHint": "Vierkant beeld, gebruikt in pakketkaarten en koppen.",
+    "uploadAvatar": "Avatar uploaden",
+    "changeAvatar": "Avatar wijzigen",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat dit Innovation Pack over?",
+    "tags": "Labels",
+    "tagsPlaceholder": "Voeg een label toe en druk op Enter",
+    "references": "Referenties",
+    "listedInStore": "In de winkel vermelden",
+    "listedInStoreHint": "Toon dit pakket in de Innovation Library.",
+    "searchVisibility": "Zichtbaarheid in zoekopdrachten",
+    "searchVisibilityOptions": {
+      "public": "Openbaar",
+      "authenticated": "Geauthenticeerde gebruikers",
+      "account": "Alleen account"
+    },
+    "searchVisibilityHints": {
+      "public": "Iedereen — inclusief niet-geauthenticeerde bezoekers — kan dit pakket via zoeken vinden.",
+      "authenticated": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
+      "account": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
+    },
+    "save": "Wijzigingen opslaan"
+  },
+  "createPack": {
+    "title": "Innovation Pack maken",
+    "name": "Naam",
+    "namePlaceholder": "bijv. Onboarding-kit",
+    "nameRequired": "Een pakketnaam is verplicht.",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat dit Innovation Pack over?",
+    "create": "Maken",
+    "cancel": "Annuleren"
+  },
+  "deletePack": {
+    "title": "Innovation Pack verwijderen?",
+    "body": "“{{name}}” en al zijn sjablonen worden permanent verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "confirm": "Pakket verwijderen",
+    "cancel": "Annuleren"
+  },
+  "packProfile": {
+    "shareTooltip": "Deel dit Innovation Pack",
+    "manage": "Beheer dit pakket",
+    "sidebarLabel": "Pakketgegevens",
+    "provider": "Aanbieder",
+    "providerUnknown": "Aanbieder onbekend",
+    "tags": "Labels",
+    "references": "Referenties",
+    "referencesEmpty": "Geen referenties.",
+    "templatesHeading": "Sjablonen"
+  },
+  "library": {
+    "title": "Innovatiebibliotheek",
+    "subtitle": "Ontdek sjablonen en innovation packs van het platform.",
+    "pageTitle": "Innovatiebibliotheek",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Er zijn nog geen innovation packs beschikbaar."
+    },
+    "templates": {
+      "heading": "Sjablonen",
+      "empty": "Geen sjablonen voldoen aan de geselecteerde filters."
+    },
+    "filter": {
+      "label": "Filter op type",
+      "all": "Alle",
+      "types": {
+        "space": "Ruimten",
+        "callout": "Samenwerkingstools",
+        "whiteboard": "Whiteboards",
+        "post": "Posts",
+        "communityGuidelines": "Communityrichtlijnen"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} sjabloon",
+    "templateCount_other": "{{count}} sjablonen",
+    "byProvider": "door {{name}}"
+  }
+}

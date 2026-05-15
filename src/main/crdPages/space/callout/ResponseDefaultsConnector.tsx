@@ -1,15 +1,22 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { Loading } from '@/crd/components/common/Loading';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import type { TemplateType } from '@/crd/components/templates/types';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
+import { Button } from '@/crd/primitives/button';
+import { Label } from '@/crd/primitives/label';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { useSpace } from '@/domain/space/context/useSpace';
 import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
@@ -21,28 +28,37 @@ type ResponseDefaultsConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   type: ResponseType;
+  /** Parent space id — drives the templates-set lookup so the picker can offer the Space source section. */
+  spaceId?: string;
   values: ContributionDefaults;
   onSave: (next: ContributionDefaults) => void;
 };
 
 /**
- * Wraps `ResponseDefaultsDialog` and provides the whiteboard-default sub-flow:
- * an inline preview box (`InlineWhiteboardPreview`) that opens
- * `CrdSingleUserWhiteboardDialog` for in-place editing.
+ * Wraps `ResponseDefaultsDialog` and provides the two integration-only slots:
  *
- * MUI parity: the legacy `ContributionsSettings{Whiteboard,Post}` dialogs
- * expose only a default title (+ optional description for posts / inline
- * whiteboard preview for whiteboards) — there is no template picker on
- * either path, so we don't render one here either.
+ * 1. **Template picker** — the shared CRD `TemplatePicker` in `mode:'select'`.
+ *    Offers a **Post** template for the post/memo default description and a
+ *    **Whiteboard** template for the default whiteboard, sourced from the
+ *    space's templates set + its account + the platform library. Selecting a
+ *    template applies its content to the matching contribution default.
+ *
+ * 2. **Whiteboard-default sub-flow** — an inline preview box
+ *    (`InlineWhiteboardPreview`) that opens `CrdSingleUserWhiteboardDialog`
+ *    for in-place editing. The thumbnail reflects the last-saved canvas.
  */
 export function ResponseDefaultsConnector({
   open,
   onOpenChange,
   type,
+  spaceId,
   values,
   onSave,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const {
+    space: { accountId },
+  } = useSpace();
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [whiteboardPreviewSettings, setWhiteboardPreviewSettings] = useState<WhiteboardPreviewSettings>(
     DefaultWhiteboardPreviewSettings
@@ -54,7 +70,9 @@ export function ResponseDefaultsConnector({
   const [previewImages, setPreviewImages] = useState<WhiteboardPreviewImage[] | undefined>(undefined);
   const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(previewImages);
   // Read whiteboard content straight from `values` so external updates land
-  // immediately in the editor instead of being shadowed by local state.
+  // immediately in the editor instead of being shadowed by stale local state —
+  // both the template-picker apply path and the whiteboard sub-flow write
+  // through the parent form's `values.whiteboardContent`.
   const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
 
   // The preview blobs and preview-settings state are session-local — they
@@ -68,6 +86,36 @@ export function ResponseDefaultsConnector({
       setWhiteboardPreviewSettings(DefaultWhiteboardPreviewSettings);
     }
   }, [open, type]);
+
+  // Resolve the space's templates set so the picker can offer the Space source section.
+  const { data: tmData } = useSpaceTemplatesManagerQuery({ variables: { spaceId: spaceId ?? '' }, skip: !spaceId });
+  const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const pickerType: TemplateType = type === 'whiteboard' ? 'whiteboard' : 'post';
+  const picker = useTemplatePicker({ allowedTypes: [pickerType], spaceTemplatesSetId, accountId });
+
+  // Apply the picked template's content to the matching contribution default.
+  const selectedContent = picker.selectedTemplateContent;
+  const selectedId = picker.selectedTemplateId;
+  const [appliedFor, setAppliedFor] = useState<string | null>(null);
+  useEffect(() => {
+    if (!selectedContent || !selectedId || appliedFor === selectedId) return;
+    setAppliedFor(selectedId);
+    if (selectedContent.type === 'post') {
+      onSave({ ...values, postDescription: selectedContent.defaultDescription });
+    } else if (selectedContent.type === 'whiteboard') {
+      onSave({ ...values, whiteboardContent: selectedContent.whiteboardContent });
+    }
+  }, [selectedContent, selectedId, appliedFor, values, onSave]);
+
+  const supportsTemplate = type === 'post' || type === 'whiteboard';
+  const templateSlot = supportsTemplate ? (
+    <div className="space-y-1.5">
+      <Label className="text-body text-foreground">{t('responseDefaults.template')}</Label>
+      <Button variant="outline" size="sm" onClick={picker.openPicker}>
+        {t('responseDefaults.templatePlaceholder')}
+      </Button>
+    </div>
+  ) : null;
 
   const whiteboardSlot =
     type === 'whiteboard' ? (
@@ -115,13 +163,17 @@ export function ResponseDefaultsConnector({
     ) : null;
 
   return (
-    <ResponseDefaultsDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      type={type}
-      values={values}
-      onSave={onSave}
-      whiteboardSlot={whiteboardSlot}
-    />
+    <>
+      <ResponseDefaultsDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        type={type}
+        values={values}
+        onSave={onSave}
+        templateSlot={templateSlot}
+        whiteboardSlot={whiteboardSlot}
+      />
+      <TemplatePicker {...picker.pickerProps} />
+    </>
   );
 }

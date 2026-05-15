@@ -369,11 +369,9 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 100-space-header-layout: Added TypeScript 5.x / React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + `@/crd/primitives/*` (shadcn/ui + Radix), Tailwind CSS v4, `lucide-react` for icons, `react-i18next` for `crd-space` / `crd-subspace` namespaces
-- 099-design-version-switch: Added TypeScript 5.x / React 19 (with React Compiler — no manual memoization) / Node ≥24.0.0 (Volta-pinned 24.14.0)
-- 098-crd-forum-documentation: Added TypeScript 5.x / React 19 / Node ≥24.0.0 (Volta-pinned to 24.14.0) + shadcn/ui (Radix UI + Tailwind CSS v4) — existing CRD primitives `dialog`, `card`, `input`, `select`, `separator`, `tooltip`, `avatar`, `button`, `skeleton`; existing CRD composites `ShareDialog`/`ShareButton`, `ConfirmationDialog`, `CommentThread`/`CommentInput`/`CommentItem`, `MarkdownEditor`, `TagsInput`, `MarkdownContent` / `InlineMarkdown`; `lucide-react` (MessageSquare, Rocket, Settings, Users, Building2, HelpCircle, MoreHorizontal, Search, ArrowLeft, Plus, Share2, Pencil, Trash2, Send, Smile); Apollo Client (existing — unchanged); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`); Formik (integration layer only; never inside `src/crd/`)
+- 098-crd-templates: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`).
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + `@/crd/primitives/*` (shadcn/ui + Radix), Tailwind CSS v4, `lucide-react` for icons, `react-i18next` for `crd-space` / `crd-subspace` namespaces (100-space-header-layout)
-- N/A — presentational change. Apollo cache untouched. (100-space-header-layout)
+- TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`). (098-crd-templates)
+- localStorage (`alkemio-crd-enabled`) for the CRD toggle (existing). GraphQL data layer unchanged. (098-crd-templates)

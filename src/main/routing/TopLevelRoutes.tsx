@@ -37,6 +37,9 @@ const MuiSpaceExplorerPage = lazyWithGlobalErrorHandler(
 const InnovationLibraryPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
 );
+const CrdInnovationLibraryPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/innovationLibrary/CrdInnovationLibraryPage')
+);
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const PlatformAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/platformAdmin/routing/PlatformAdminRoute')
@@ -268,16 +271,31 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`/${TopLevelRoutePath.InnovationLibrary}`}
-                    element={
-                      <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
-                        <Suspense fallback={<Loading />}>
-                          <InnovationLibraryPage />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                        element={
+                          <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdInnovationLibraryPage />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                      element={
+                        <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                          <Suspense fallback={<Loading />}>
+                            <InnovationLibraryPage />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   <Route
                     path={`${TopLevelRoutePath.InnovationPacks}/*`}
                     element={
