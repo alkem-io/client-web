@@ -151,7 +151,7 @@ export function ImageCropDialog({
           )}
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="crop-alt-text" className="text-sm font-medium">
+            <label htmlFor="crop-alt-text" className="text-body-emphasis">
               {altTextLabel}
             </label>
             <Input

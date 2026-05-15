@@ -166,7 +166,7 @@ export function SpaceSettingsLayoutView({
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
-          <p className="text-sm text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
+          <p className="text-body text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
         </div>
         {canManagePhases && (
           <Button
@@ -241,7 +241,7 @@ export function SpaceSettingsLayoutView({
             onCheckedChange={checked => onPostDescriptionDisplayChange(checked ? 'collapsed' : 'expanded')}
             aria-label={t('layout.postDescriptionDisplay.switchLabel')}
           />
-          <p className="text-sm text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
+          <p className="text-body text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
         </div>
       </SpaceSettingsCard>
 

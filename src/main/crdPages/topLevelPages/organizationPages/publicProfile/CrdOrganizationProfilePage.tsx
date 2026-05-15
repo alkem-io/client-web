@@ -1,7 +1,9 @@
+import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import { OrganizationPublicProfileView } from '@/crd/components/organization/OrganizationPublicProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -14,6 +16,7 @@ import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevel
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { mapAssociates, mapOrgHostedResources } from './organizationProfileMapper';
 import { useCrdOrganizationProfilePageData } from './useCrdOrganizationProfilePageData';
 
@@ -36,6 +39,12 @@ export const CrdOrganizationProfilePage = () => {
   ];
 
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
+
+  const breadcrumbDisplayName = organization?.profile?.displayName ?? '';
+  const breadcrumbItems: BreadcrumbTrailItem[] = breadcrumbDisplayName
+    ? [{ label: breadcrumbDisplayName, icon: Building2 }]
+    : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (!loading.context && !loading.provider && !organization) {
     return <Error404 />;

@@ -61,7 +61,7 @@ function TemplateHeader({ template, onBack, onApply, packSlug, templateId }: { t
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+      <div className="flex items-center gap-2 text-body text-muted-foreground mb-4">
         <Button variant="ghost" size="sm" onClick={onBack} className="h-8 pl-0 hover:bg-transparent hover:text-foreground">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
@@ -100,20 +100,20 @@ function TemplateHeader({ template, onBack, onApply, packSlug, templateId }: { t
             )}
           </div>
           
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">{template.name}</h1>
-          
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <h1 className="text-hero text-foreground">{template.name}</h1>
+
+          <p className="text-subsection-title font-normal text-muted-foreground max-w-2xl">
             {template.description}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-body text-muted-foreground">
               <span className="font-medium text-foreground">{template.author || "Alkemio"}</span>
             </div>
             <div className="w-1 h-1 rounded-full bg-border" />
             <div className="flex gap-1.5">
               {template.tags?.map((tag: string) => (
-                <Badge key={tag} variant="secondary" className="text-xs font-normal text-muted-foreground bg-muted hover:bg-muted/80">
+                <Badge key={tag} variant="secondary" className="text-caption text-muted-foreground bg-muted hover:bg-muted/80">
                   {tag}
                 </Badge>
               ))}
@@ -183,9 +183,9 @@ function RenderSpaceContent({ structure }: { structure: any }) {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={cn(
-                            "pb-3 text-sm font-medium border-b-2 transition-colors",
-                            activeTab === tab 
-                                ? "border-primary text-primary" 
+                            "pb-3 text-control border-b-2 transition-colors",
+                            activeTab === tab
+                                ? "border-primary text-primary"
                                 : "border-transparent text-muted-foreground hover:text-foreground"
                         )}
                       >
@@ -206,7 +206,7 @@ function RenderSpaceContent({ structure }: { structure: any }) {
              {activeTab === "About" && (
                  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                      <div className="bg-white p-6 rounded-lg border border-border shadow-sm">
-                         <h3 className="font-semibold text-lg mb-2">About this Space</h3>
+                         <h3 className="text-subsection-title mb-2">About this Space</h3>
                          <p className="text-muted-foreground leading-relaxed">{structure.about || "This space serves as a central hub for collaboration."}</p>
                      </div>
                      
@@ -220,7 +220,7 @@ function RenderSpaceContent({ structure }: { structure: any }) {
                                      </div>
                                      <div>
                                          <div className="font-medium text-foreground">{post.title}</div>
-                                         <div className="text-xs text-muted-foreground mt-1">Updated recently</div>
+                                         <div className="text-caption text-muted-foreground mt-1">Updated recently</div>
                                      </div>
                                  </div>
                              ))}
@@ -242,7 +242,7 @@ function RenderSpaceContent({ structure }: { structure: any }) {
                                  </div>
                                  <div className="flex-1">
                                      <div className="font-semibold text-foreground">{sub.name}</div>
-                                     <div className="text-sm text-muted-foreground">{sub.description}</div>
+                                     <div className="text-body text-muted-foreground">{sub.description}</div>
                                  </div>
                                  <Button variant="ghost" size="sm"><ChevronRight className="w-4 h-4" /></Button>
                              </div>
@@ -258,19 +258,19 @@ function RenderSpaceContent({ structure }: { structure: any }) {
              {activeTab === "Resources" && (
                  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                      <div className="bg-white rounded-lg border border-border shadow-sm overflow-hidden">
-                         <div className="p-4 border-b border-border bg-muted/50 font-medium text-sm text-muted-foreground">Files & Links</div>
+                         <div className="p-4 border-b border-border bg-muted/50 text-body-emphasis text-muted-foreground">Files & Links</div>
                          <div className="divide-y divide-border">
                              {structure.samplePosts?.["Resources"]?.map((res: any, i: number) => (
                                  <div key={i} className="p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors">
                                      {res.type === "File" ? <FileText className="w-5 h-5 text-info" /> : <ExternalLink className="w-5 h-5 text-success" />}
                                      <div className="flex-1">
-                                         <div className="text-sm font-medium text-foreground">{res.title}</div>
-                                         <div className="text-xs text-muted-foreground">{res.type} • Added recently</div>
+                                         <div className="text-body-emphasis text-foreground">{res.title}</div>
+                                         <div className="text-caption text-muted-foreground">{res.type} • Added recently</div>
                                      </div>
                                  </div>
                              ))}
                              {(!structure.samplePosts?.["Resources"]) && (
-                                 <div className="p-8 text-center text-muted-foreground text-sm">No sample resources shown.</div>
+                                 <div className="p-8 text-center text-muted-foreground text-body">No sample resources shown.</div>
                              )}
                          </div>
                      </div>
@@ -284,10 +284,10 @@ function RenderSpaceContent({ structure }: { structure: any }) {
                          {structure.templates?.map((temp: any, i: number) => (
                              <div key={i} className="bg-white p-4 rounded-lg border border-border shadow-sm flex flex-col gap-2">
                                  <div className="flex items-center justify-between">
-                                     <Badge variant="secondary" className="text-xs">{temp.type}</Badge>
+                                     <Badge variant="secondary" className="text-caption">{temp.type}</Badge>
                                  </div>
                                  <div className="font-medium text-foreground">{temp.name}</div>
-                                 <div className="text-sm text-muted-foreground">Ready to use in this space.</div>
+                                 <div className="text-body text-muted-foreground">Ready to use in this space.</div>
                                  <Button variant="outline" size="sm" className="w-full mt-2">Use Template</Button>
                              </div>
                          ))}
@@ -315,8 +315,8 @@ function RenderSubspaceContent({ structure }: { structure: any }) {
     <div className="space-y-0">
        {/* Header */}
        <div className="mb-1">
-          <h3 className="text-lg font-semibold text-foreground">Innovation Flow</h3>
-          <p className="text-muted-foreground text-sm mt-1 max-w-3xl">{structure.description}</p>
+          <h3 className="text-subsection-title text-foreground">Innovation Flow</h3>
+          <p className="text-body text-muted-foreground mt-1 max-w-3xl">{structure.description}</p>
        </div>
 
        {/* Tab navigation — matches SpaceNavigationTabs style */}
@@ -327,16 +327,13 @@ function RenderSubspaceContent({ structure }: { structure: any }) {
                key={i}
                onClick={() => setActiveStage(i)}
                className={cn(
-                 "pb-2 pt-4 transition-all duration-200 whitespace-nowrap border-b-2 select-none cursor-pointer",
+                 "pb-2 pt-4 transition-all duration-200 whitespace-nowrap border-b-2 select-none cursor-pointer text-control",
                  i === activeStage
-                   ? "border-primary text-primary"
+                   ? "border-primary text-primary font-semibold"
                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
                )}
                style={{
-                 fontSize: 14,
-                 fontWeight: i === activeStage ? 600 : 500,
                  fontFamily: "'Inter', sans-serif",
-                 lineHeight: "20px",
                }}
              >
                {stage.name}
@@ -349,13 +346,13 @@ function RenderSubspaceContent({ structure }: { structure: any }) {
        {current && (
          <div className="pt-6 space-y-2">
            {current.posts?.map((post: string, k: number) => (
-             <div key={k} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
+             <div key={k} className="flex items-center gap-2 text-body text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
                <FileText className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
                {post}
              </div>
            ))}
            {(!current.posts || current.posts.length === 0) && (
-             <p className="text-sm text-muted-foreground py-4">No items in this stage.</p>
+             <p className="text-body text-muted-foreground py-4">No items in this stage.</p>
            )}
          </div>
        )}
@@ -379,15 +376,15 @@ function RenderPostContent({ structure }: { structure: any }) {
                    </div>
                    <div className="flex-1">
                        <div className="flex items-center justify-between">
-                           <div className="font-semibold text-sm text-foreground">Author Name</div>
+                           <div className="text-card-title text-foreground">Author Name</div>
                            <MoreHorizontal className="w-4 h-4 text-muted-foreground/60" />
                        </div>
-                       <div className="text-xs text-muted-foreground">Just now • in General</div>
+                       <div className="text-caption text-muted-foreground">Just now • in General</div>
                    </div>
                </div>
                
                <div className="space-y-3">
-                   <h2 className="text-lg font-bold text-foreground">{title}</h2>
+                   <h2 className="text-subsection-title font-bold text-foreground">{title}</h2>
                    <div className="prose prose-sm max-w-none text-muted-foreground">
                        <p>{description}</p>
                    </div>
@@ -411,19 +408,19 @@ function RenderCollabContent({ structure }: { structure: any }) {
                    </div>
                    <div className="flex-1">
                        <div className="flex items-center justify-between">
-                           <div className="font-semibold text-sm text-foreground">Alkemio User</div>
+                           <div className="text-card-title text-foreground">Alkemio User</div>
                            <MoreHorizontal className="w-4 h-4 text-muted-foreground/60" />
                        </div>
-                       <div className="text-xs text-muted-foreground">Just now</div>
+                       <div className="text-caption text-muted-foreground">Just now</div>
                    </div>
                </div>
                
                <div className="space-y-4 mb-6">
-                   <h2 className="text-lg font-bold text-foreground">{structure.post?.title || "Post Title"}</h2>
+                   <h2 className="text-subsection-title font-bold text-foreground">{structure.post?.title || "Post Title"}</h2>
                    <div className="prose prose-sm max-w-none text-muted-foreground">
                        <p>{structure.post?.description}</p>
                        {structure.post?.body && (
-                           <div className="whitespace-pre-line mt-2 text-sm">
+                           <div className="whitespace-pre-line mt-2 text-body">
                                {structure.post.body}
                            </div>
                        )}
@@ -460,7 +457,7 @@ function RenderCollabContent({ structure }: { structure: any }) {
                                </div>
                            )}
                            
-                           <div className="absolute bottom-2 right-2 bg-background/90 backdrop-blur px-2 py-1 rounded text-[10px] font-medium border border-border text-muted-foreground flex items-center gap-1">
+                           <div className="absolute bottom-2 right-2 bg-background/90 backdrop-blur px-2 py-1 rounded text-badge border border-border text-muted-foreground flex items-center gap-1">
                                {structure.component?.type === "Whiteboard" ? <Monitor className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
                                Click to open
                            </div>
@@ -469,10 +466,10 @@ function RenderCollabContent({ structure }: { structure: any }) {
                        <div className="p-3 bg-muted/50 border-t border-border/50 flex items-center justify-between">
                            <div>
                                <div className="flex items-center gap-2 mb-0.5">
-                                   <h4 className="font-medium text-foreground text-sm">{structure.component?.name}</h4>
+                                   <h4 className="text-body-emphasis text-foreground">{structure.component?.name}</h4>
                                    <Badge variant="outline" className="text-[10px] h-4 px-1 bg-background border-border text-muted-foreground">{structure.component?.type}</Badge>
                                </div>
-                               <p className="text-xs text-muted-foreground truncate max-w-[200px]">{structure.component?.preview}</p>
+                               <p className="text-caption text-muted-foreground truncate max-w-[200px]">{structure.component?.preview}</p>
                            </div>
                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><ExternalLink className="w-4 h-4 text-muted-foreground/60" /></Button>
                        </div>
@@ -503,9 +500,9 @@ function RenderWhiteboardContent({ template }: { template: any }) {
                 <div className="p-1.5 rounded hover:bg-muted cursor-pointer text-muted-foreground"><StickyNote className="w-4 h-4" /></div>
                 <div className="p-1.5 rounded hover:bg-muted cursor-pointer text-muted-foreground"><ImageIcon className="w-4 h-4" /></div>
             </div>
-            <div className="text-xs font-medium text-muted-foreground">{template.name}</div>
+            <div className="text-caption font-medium text-muted-foreground">{template.name}</div>
             <div className="flex items-center gap-2">
-                 <div className="text-xs text-muted-foreground/60">100%</div>
+                 <div className="text-caption text-muted-foreground/60">100%</div>
             </div>
         </div>
 
@@ -520,10 +517,10 @@ function RenderWhiteboardContent({ template }: { template: any }) {
                  {/* Zone 1 */}
                  <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
                      <div className="w-48 h-48 border-2 border-dashed border-border rounded-xl flex items-center justify-center bg-background/50">
-                         <span className="text-muted-foreground/60 text-xs font-medium uppercase tracking-widest">Brainstorming Zone</span>
+                         <span className="text-label uppercase text-muted-foreground/60">Brainstorming Zone</span>
                      </div>
                      <div className="absolute -top-4 -right-4 w-32 h-32 bg-warning/15 shadow-md rounded-sm transform rotate-6 border border-warning/20 p-4 flex items-center justify-center text-center">
-                         <span className="text-sm text-foreground/80">How might we...?</span>
+                         <span className="text-body text-foreground/80">How might we...?</span>
                      </div>
                  </div>
 
@@ -570,8 +567,8 @@ function RenderBriefContent({ structure }: { structure: any }) {
                     {structure.sections?.map((section: any, i: number) => (
                         <div key={i} className="space-y-3">
                             <h4 className="text-sm font-bold text-foreground uppercase tracking-wide">{section.title}</h4>
-                            <p className="text-sm text-muted-foreground italic">{section.description}</p>
-                            <div className="p-4 bg-muted/50 border border-border/50 rounded border-dashed min-h-[60px] flex items-center justify-center text-xs text-muted-foreground/60">
+                            <p className="text-body text-muted-foreground italic">{section.description}</p>
+                            <div className="p-4 bg-muted/50 border border-border/50 rounded border-dashed min-h-[60px] flex items-center justify-center text-caption text-muted-foreground/60">
                                 {section.type} Input Area
                             </div>
                         </div>
@@ -595,11 +592,11 @@ function RenderCommunityGuidelines({ structure }: { structure: any }) {
             <div className="max-w-2xl mx-auto space-y-6">
                  {structure.categories?.map((cat: any, i: number) => (
                      <div key={i} className="bg-card p-6 rounded-lg border border-border shadow-sm">
-                         <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
+                         <h3 className="text-subsection-title text-foreground mb-2 flex items-center gap-2">
                              <Shield className="w-5 h-5 text-success" />
                              {cat.name}
                          </h3>
-                         <p className="text-muted-foreground text-sm leading-relaxed border-l-2 border-border pl-4">
+                         <p className="text-body text-muted-foreground border-l-2 border-border pl-4">
                              {cat.preview}
                          </p>
                      </div>
@@ -624,24 +621,24 @@ function TemplatePreview({ template }: { template: any }) {
     <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
        <div className="max-w-2xl mx-auto">
            <div className="mb-6 pb-6 border-b border-border">
-               <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Title Format</div>
-               <div className="text-lg font-medium text-foreground font-mono bg-muted/50 p-3 rounded border border-border inline-block">
+               <div className="text-label uppercase text-muted-foreground mb-2">Title Format</div>
+               <div className="text-subsection-title font-medium text-foreground font-mono bg-muted/50 p-3 rounded border border-border inline-block">
                    {structure?.titleTemplate || "[Title Here]"}
                </div>
            </div>
            
            <div className="space-y-6">
-               <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Template Fields</div>
+               <div className="text-label uppercase text-muted-foreground">Template Fields</div>
                {structure?.fields?.map((field: any, i: number) => (
                    <div key={i} className="space-y-2">
-                       <label className="text-sm font-medium text-foreground/80">{typeof field === 'string' ? field : field.label}</label>
+                       <label className="text-body-emphasis text-foreground/80">{typeof field === 'string' ? field : field.label}</label>
                        <div className="h-10 bg-muted/50 border border-border rounded w-full" />
                    </div>
                ))}
                {!structure?.fields && <div className="text-muted-foreground/60 italic">No specific fields defined.</div>}
                
                {structure?.richText && (
-                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-info/10 p-2 rounded text-info w-fit">
+                   <div className="flex items-center gap-2 text-caption text-muted-foreground bg-info/10 p-2 rounded text-info w-fit">
                        <FileText className="w-3 h-3" /> Supports Rich Text Formatting
                    </div>
                )}
@@ -658,16 +655,16 @@ function MetadataPanel({ template }: { template: any }) {
       {/* About Section */}
       <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-sm">
         <h3 className="font-semibold text-foreground">About This Template</h3>
-        <p className="text-sm text-muted-foreground">{template.description}</p>
+        <p className="text-body text-muted-foreground">{template.description}</p>
         
         {template.tags && template.tags.length > 0 && (
           <>
             <Separator />
             <div>
-              <h4 className="text-sm font-medium mb-2">Tags</h4>
+              <h4 className="text-body-emphasis mb-2">Tags</h4>
               <div className="flex flex-wrap gap-1.5">
                 {template.tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary" className="text-xs font-normal">
+                  <Badge key={tag} variant="secondary" className="text-caption">
                     {tag}
                   </Badge>
                 ))}
@@ -679,7 +676,7 @@ function MetadataPanel({ template }: { template: any }) {
         {template.author && (
           <>
             <Separator />
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-body">
               <span className="text-muted-foreground">Created by</span>
               <span className="font-medium">{template.author}</span>
             </div>
@@ -740,7 +737,7 @@ export function TemplateDetail() {
   if (!template) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 text-center">
-         <h2 className="text-2xl font-bold mb-2">Template Not Found</h2>
+         <h2 className="text-page-title mb-2">Template Not Found</h2>
          <p className="text-muted-foreground mb-6">The template you are looking for does not exist or has been removed.</p>
          <Button onClick={() => navigate("/templates")}>Back to Library</Button>
       </div>
@@ -790,7 +787,7 @@ export function TemplateDetail() {
           
           <div className="py-4">
              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                <label className="text-body-emphasis peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                    Target Space
                 </label>
                 <Select value={selectedSpace} onValueChange={setSelectedSpace}>

@@ -1,0 +1,309 @@
+{
+  "manager": {
+    "title": "Templates",
+    "subtitle": "Reusable templates for this space.",
+    "search": "Search templates…",
+    "addNew": "Add new",
+    "createNew": "Create new",
+    "selectFromLibrary": "Select from library",
+    "duplicating": "Creating…",
+    "deleting": "Deleting…",
+    "noTemplates": "No templates yet",
+    "noTemplatesHint": "Create one, or import one from the library.",
+    "noTemplatesReadOnly": "No templates yet.",
+    "sectionList": "Template sections",
+    "templateList": "Templates",
+    "sections": {
+      "space": {
+        "title": "Space templates",
+        "subtitle": "Structure a space with predefined phases and starter tools."
+      },
+      "callout": {
+        "title": "Collaboration tools",
+        "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
+      },
+      "whiteboard": { "title": "Whiteboard templates", "subtitle": "Canvas layouts for visual collaboration." },
+      "post": { "title": "Post templates", "subtitle": "Standardised documents for projects and decisions." },
+      "communityGuidelines": {
+        "title": "Community guidelines templates",
+        "subtitle": "Rules and expectations for a community."
+      }
+    }
+  },
+  "card": {
+    "actions": "Template actions",
+    "preview": "Preview",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "noPreview": "No preview"
+  },
+  "framingKind": {
+    "none": "Text",
+    "whiteboard": "Whiteboard",
+    "memo": "Memo",
+    "document": "Document",
+    "cta": "Link",
+    "image": "Gallery",
+    "poll": "Poll"
+  },
+  "contributionType": {
+    "post": "Posts",
+    "whiteboard": "Whiteboards",
+    "link": "Links"
+  },
+  "preview": {
+    "loading": "Loading template…",
+    "edit": "Edit template",
+    "close": "Close",
+    "empty": "—",
+    "callout": {
+      "framingKind": "Content type",
+      "framing": "Content",
+      "allowedContributions": "Allowed contributions",
+      "noContributions": "No contributions",
+      "comments": "Comments enabled",
+      "commentsDisabled": "Comments disabled",
+      "defaultPostDescription": "Default post description",
+      "defaultWhiteboard": "Default whiteboard",
+      "links": "Links",
+      "gallery": "Gallery",
+      "pollQuestion": "Question",
+      "pollOptions": "Options"
+    },
+    "whiteboard": { "empty": "This whiteboard template has no drawing." },
+    "post": { "defaultDescription": "Default description" },
+    "space": {
+      "phases": "Phases",
+      "starterCallouts": "Starter tools",
+      "subspaceTemplates": "Subspace templates",
+      "none": "None"
+    },
+    "communityGuidelines": { "title": "Guidelines title", "body": "Guidelines", "references": "References" }
+  },
+  "picker": {
+    "title": "Use a template",
+    "importTitle": "Template library",
+    "search": "Search templates…",
+    "noTemplates": "No templates available.",
+    "noTemplatesForType": "No templates available for this type.",
+    "sources": { "space": "This space", "account": "Your account", "platform": "Platform" },
+    "select": "Use this template",
+    "noTemplate": "No template — start blank",
+    "import": "Import",
+    "inThisSet": "In this set",
+    "remove": "Remove from set",
+    "selectPreviewHint": "Select a template to preview it.",
+    "close": "Close",
+    "done": "Done"
+  },
+  "form": {
+    "createTitle": {
+      "space": "Create space template",
+      "callout": "Create collaboration-tool template",
+      "whiteboard": "Create whiteboard template",
+      "post": "Create post template",
+      "communityGuidelines": "Create community-guidelines template"
+    },
+    "editTitle": {
+      "space": "Edit space template",
+      "callout": "Edit collaboration-tool template",
+      "whiteboard": "Edit whiteboard template",
+      "post": "Edit post template",
+      "communityGuidelines": "Edit community-guidelines template"
+    },
+    "common": {
+      "name": "Template name",
+      "namePlaceholder": "e.g. Project kickoff",
+      "nameRequired": "A template name is required.",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this template for?",
+      "tags": "Tags",
+      "tagsPlaceholder": "Add a tag and press Enter",
+      "banner": "Preview image",
+      "uploadBanner": "Upload preview image"
+    },
+    "save": "Save",
+    "cancel": "Cancel",
+    "whiteboard": {
+      "drawing": "Whiteboard",
+      "editDrawing": "Edit drawing",
+      "startDrawing": "Start drawing",
+      "previewSettings": "Preview settings",
+      "editPreview": "Edit preview",
+      "previewImage": "Preview image",
+      "uploadPreviewImage": "Upload preview image"
+    },
+    "post": {
+      "defaultDescription": "Default description",
+      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+    },
+    "space": {
+      "source": "Source space",
+      "sourceRequired": "Paste a space URL and click \"Use this space\" first.",
+      "recursive": "Include nested subspaces",
+      "capturedStructure": "Captured structure",
+      "urlLoader": {
+        "description": "Paste the URL of a space or subspace whose structure you want to copy.",
+        "placeholder": "https://…",
+        "use": "Use this space",
+        "selectAnother": "Select another space",
+        "resolving": "Checking…",
+        "errors": {
+          "required": "Paste a space URL first.",
+          "invalidUrl": "This URL does not point to a space.",
+          "notFound": "Space not found.",
+          "noRights": "You need admin rights on the space you want to copy as a template."
+        }
+      }
+    },
+    "communityGuidelines": {
+      "title": "Guidelines title",
+      "titlePlaceholder": "e.g. Our community values",
+      "titleRequired": "A guidelines title is required.",
+      "body": "Guidelines",
+      "bodyPlaceholder": "Write the guidelines for this community…",
+      "references": "References"
+    }
+  },
+  "references": {
+    "add": "Add reference",
+    "name": "Name",
+    "uri": "URL",
+    "description": "Description",
+    "remove": "Remove reference",
+    "nameRequired": "A name is required.",
+    "uriRequired": "A URL is required."
+  },
+  "discard": {
+    "title": "Discard changes?",
+    "body": "You have unsaved changes. Discard them?",
+    "confirm": "Discard",
+    "cancel": "Keep editing"
+  },
+  "delete": {
+    "title": "Delete template?",
+    "body": "“{{name}}” will be permanently deleted. This cannot be undone.",
+    "confirm": "Delete template",
+    "cancel": "Cancel"
+  },
+  "removeFromSet": {
+    "title": "Remove this template?",
+    "body": "“{{name}}” will be removed from this set. The original in the library is not affected.",
+    "confirm": "Remove",
+    "cancel": "Cancel"
+  },
+  "setDefault": {
+    "subspaceTitle": "Default subspace template",
+    "subspaceSubtitle": "Used to pre-fill the form when creating a subspace of this space.",
+    "flowStateTitle": "Default callout template",
+    "flowStateSubtitle": "Used to pre-fill the form when adding a callout to this phase.",
+    "current": "Current default",
+    "none": "No default",
+    "noCandidates": "There are no space templates in this set yet.",
+    "confirm": "Set as default",
+    "clear": "Clear default",
+    "previewHint": "Select a template to preview it.",
+    "cancel": "Cancel"
+  },
+  "saveAs": {
+    "fromCalloutTitle": "Save callout as a template",
+    "fromGuidelinesTitle": "Save guidelines as a template",
+    "fromSubspaceTitle": "Save subspace as a template",
+    "unsavedSourceTitle": "Save your changes first",
+    "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
+    "unsavedSourceConfirm": "OK"
+  },
+  "packAdmin": {
+    "subtitle": "Templates in this Innovation Pack",
+    "detailsHeading": "Pack details",
+    "detailsSubtitle": "Update the pack’s name, description, provider settings and references.",
+    "templatesHeading": "Templates"
+  },
+  "packForm": {
+    "name": "Pack name",
+    "namePlaceholder": "e.g. Onboarding kit",
+    "nameRequired": "A pack name is required.",
+    "provider": "Provider",
+    "providerHint": "The provider is the owning organisation and cannot be changed here.",
+    "avatar": "Avatar",
+    "avatarHint": "Square image, used in pack cards and headers.",
+    "uploadAvatar": "Upload avatar",
+    "changeAvatar": "Change avatar",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Pack about?",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add a tag and press Enter",
+    "references": "References",
+    "listedInStore": "Listed in store",
+    "listedInStoreHint": "Show this pack in the Innovation Library.",
+    "searchVisibility": "Search visibility",
+    "searchVisibilityOptions": {
+      "public": "Public",
+      "authenticated": "Authenticated users",
+      "account": "Account only"
+    },
+    "searchVisibilityHints": {
+      "public": "Anyone — including unauthenticated visitors — can find this pack via search.",
+      "authenticated": "Signed-in users can find this pack via search.",
+      "account": "Only members of the owning account can find this pack via search."
+    },
+    "save": "Save changes"
+  },
+  "createPack": {
+    "title": "Create Innovation Pack",
+    "name": "Name",
+    "namePlaceholder": "e.g. Onboarding kit",
+    "nameRequired": "A pack name is required.",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Pack about?",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "deletePack": {
+    "title": "Delete Innovation Pack?",
+    "body": "“{{name}}” and all of its templates will be permanently deleted. This cannot be undone.",
+    "confirm": "Delete pack",
+    "cancel": "Cancel"
+  },
+  "packProfile": {
+    "shareTooltip": "Share this Innovation Pack",
+    "manage": "Manage this pack",
+    "sidebarLabel": "Pack details",
+    "provider": "Provider",
+    "providerUnknown": "Provider unknown",
+    "tags": "Tags",
+    "references": "References",
+    "referencesEmpty": "No references.",
+    "templatesHeading": "Templates"
+  },
+  "library": {
+    "title": "Innovation Library",
+    "subtitle": "Discover templates and innovation packs published across the platform.",
+    "pageTitle": "Innovation Library",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "No innovation packs available yet."
+    },
+    "templates": {
+      "heading": "Templates",
+      "empty": "No templates match the selected filters."
+    },
+    "filter": {
+      "label": "Filter by type",
+      "all": "All",
+      "types": {
+        "space": "Spaces",
+        "callout": "Collaboration tools",
+        "whiteboard": "Whiteboards",
+        "post": "Posts",
+        "communityGuidelines": "Community guidelines"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} template",
+    "templateCount_other": "{{count}} templates",
+    "byProvider": "by {{name}}"
+  }
+}

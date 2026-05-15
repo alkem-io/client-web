@@ -10,7 +10,8 @@ import type { ColumnMenuActions, LayoutColumnId } from '@/crd/components/space/s
 
 export type UseColumnMenuOptions = {
   innovationFlowId: string;
-  availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /** Open the shared Callout-template picker for the given flow state — the page hosts the picker. */
+  onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** All callouts with their current flowState tag + tagset ID, needed for rename cascade. */
   callouts: ReadonlyArray<{ id: string; flowStateTagsetId: string; currentStateName: string }>;
   /** Map column ID → current displayName, needed to find the old name during rename. */
@@ -30,7 +31,7 @@ export type UseColumnMenuOptions = {
 
 export function useColumnMenu({
   innovationFlowId,
-  availablePostTemplates,
+  onOpenDefaultCalloutTemplatePicker,
   callouts,
   columnNames,
   onColumnSaved,
@@ -54,7 +55,7 @@ export function useColumnMenu({
     });
   };
 
-  const onSetAsDefaultPostTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
+  const onSetAsDefaultCalloutTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
     startTransition(() => {
       if (templateId) {
         void setDefaultTemplate({ variables: { flowStateId: columnId, templateId } });
@@ -127,9 +128,9 @@ export function useColumnMenu({
 
   return {
     onChangeActivePhase,
-    onSetAsDefaultPostTemplate,
+    onSetAsDefaultCalloutTemplate,
+    onOpenDefaultCalloutTemplatePicker,
     onSaveColumnDetails,
-    availablePostTemplates,
     onDeletePhase,
   };
 }

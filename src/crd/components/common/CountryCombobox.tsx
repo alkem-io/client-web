@@ -67,18 +67,20 @@ export function CountryCombobox({
             placeholder="Search country…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="h-8 text-sm"
+            className="h-8 text-control"
             autoFocus={true}
           />
         </div>
         <div className="max-h-[200px] overflow-y-auto px-1 pb-1">
-          {filtered.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">No country found.</p>}
+          {filtered.length === 0 && (
+            <p className="py-4 text-center text-body text-muted-foreground">No country found.</p>
+          )}
           {filtered.map(country => (
             <button
               key={country.code}
               type="button"
               className={cn(
-                'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground',
+                'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-control outline-none hover:bg-accent hover:text-accent-foreground',
                 value === country.code && 'bg-accent text-accent-foreground'
               )}
               onClick={() => {

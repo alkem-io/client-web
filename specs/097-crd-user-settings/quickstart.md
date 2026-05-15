@@ -26,14 +26,14 @@ pnpm start            # dev server on localhost:3001
 Enable the CRD toggle in the browser console:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To disable (back to MUI):
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -172,29 +172,81 @@ Each item should be verified manually with the toggle ON. After all 12 are green
 - [ ] Confirm there is **no** Design System toggle on this tab (FR-132 — User-only).
 - [ ] **Hard-failure smoke**: kill backend connection (DevTools → Network → Offline) → flip either switch — switch flips optimistically, then **reverts** when the mutation fails, accompanied by an inline error toast (FR-133, parity with User Notifications + User Settings).
 
+### User Story 13 — VC Profile
+
+- [ ] Open `/vc/<vcNameId>/settings/profile` as a VC admin (e.g. the user who hosts the VC). Confirm the CRD shell loads with the 3-tab strip: **Profile / Membership / Settings**.
+- [ ] Edit **Display name** → click Save → "Saved!" indicator flashes for 1.8s → reload → value persisted via `updateVirtualContributor`.
+- [ ] Edit **Tagline** → Save → persisted.
+- [ ] Edit **Description** in the markdown editor (`MarkdownEditor` from `@/crd/forms/markdown`) → Save → persisted.
+- [ ] Edit **Keywords** tagset → Save → persisted. **First-save lazy-create**: on a VC that doesn't yet have a `Keywords` tagset, the first Save fires `createTagsetOnProfile({ name: 'Keywords' })`; subsequent saves patch the existing tagset.
+- [ ] Click the avatar upload button → file picker → select an image → **`ImageCropDialog` opens with the VC avatar's constraints** → adjust crop → Save → upload succeeds via `uploadImageOnVisual` and the avatar updates in-place. Cancel → no upload fires.
+- [ ] Click **Add another reference** in the References section → enter name + URL → Save → batch fires (`createReferenceOnProfile`).
+- [ ] Edit an existing reference → Save → batch fires (`updateReference`).
+- [ ] Click the × on a reference → **`ConfirmationDialog`** opens (per Rule #9 / FR-025) → Confirm → row removed pending Save → Save → batch fires (`deleteReference`).
+- [ ] Confirm the read-only metadata rows render under the form: **Host organization** (clickable link to the org) and **Body of Knowledge** name (when the VC has one). Both rows are absent when the underlying field is null.
+- [ ] No read-only mode (parity with FR-026): the form is fully editable for any user with `Update` privilege.
+
+### User Story 14 — VC Membership
+
+- [ ] Open `/vc/<vcNameId>/settings/membership` as the VC admin. Confirm the card grid renders at least one confirmed membership.
+- [ ] Per membership row: avatar/banner + display name + type badge (Space / Subspace) + optional tagline + kebab menu with **View Space** and **Leave Space** items (no Options label, no separator — parity with User Membership grid).
+- [ ] Click **View Space** on a row → navigates to the space URL.
+- [ ] Click **Leave Space** on a row → **`ConfirmationDialog`** opens (per FR-172 / Rule #9) with copy reflecting the row's type ("Leave space" / "Leave subspace") → Confirm → mutation fires (`removeRoleFromVirtualContributor`) → row disappears from the grid.
+- [ ] If the VC has at least one pending invitation, confirm the **Pending Invitations** section renders below the grid with one card per invitation (inviting space name + optional banner + welcome-message preview).
+- [ ] Click **Accept** on a pending invitation → **`ConfirmationDialog`** opens with the welcome message in the dialog body (per FR-173) → Confirm → mutation fires → invitation moves to confirmed memberships on refetch.
+- [ ] Click **Decline** on a pending invitation → `ConfirmationDialog` (destructive variant) → Confirm → mutation fires → invitation removed.
+- [ ] Confirm **no Home Space dropdown**, **no Auto-redirect checkbox**, **no search / filter strip** (smaller surface than User Membership US3).
+- [ ] Empty state: on a VC with zero memberships, the grid renders a muted caption ("This Virtual Contributor isn't a member of any space yet."). When there are no pending invitations the Pending block is hidden entirely.
+
+### User Story 15 — VC Settings
+
+- [ ] Open `/vc/<vcNameId>/settings/settings` as the VC admin. The **Visibility** card is always present.
+- [ ] **Visibility radio**: flip between Public / Account / Hidden → control flips optimistically → mutation fires (`updateVirtualContributorSettings`) → change persists after reload. **Hard-failure**: kill the backend connection → flip → control reverts and a toast surfaces the error (parity with FR-064 / FR-133).
+- [ ] **Listed in Store** toggle: when `searchVisibility === Public`, the toggle is enabled; for Account or Hidden it is disabled. Flipping fires the same mutation with the same revert-on-failure behavior.
+- [ ] **Body of Knowledge card** — for a VC where `bodyOfKnowledgeType ∈ {AlkemioSpace, AlkemioKnowledgeBase}` OR `engine === Guidance`:
+  - [ ] Flip the privacy toggle (`knowledgeBaseContentVisible`) → commits immediately.
+  - [ ] Click **Refresh Knowledge** → button enters loading state → mutation fires (`refreshBodyOfKnowledge`) → on success the last-updated timestamp updates.
+- [ ] **Prompt card** — for a `GenericOpenai` or `LibraFlow` engine VC:
+  - [ ] Edit the markdown editor → FieldFooter shows the dirty indicator + Save button.
+  - [ ] Click Save → "Saved!" indicator flashes for 1.8s → mutation fires (`updateAiPersona`) → reload → value persisted.
+  - [ ] Reload mid-edit (with dirty changes) → typed values are dropped (no global dirty buffer, parity with FR-016).
+- [ ] **External Config card** — for a `LibraFlow` / `OpenaiAssistant` / `GenericOpenai` engine VC:
+  - [ ] **`apiKey` is always rendered empty** on load, regardless of whether a key is stored on the server.
+  - [ ] Enter a new API key → Save → mutation fires with the new key in the payload.
+  - [ ] Re-open the page → the `apiKey` input is empty again (the value is never echoed back).
+  - [ ] Save without entering an apiKey → the apiKey is omitted from the mutation payload (matches MUI semantics).
+  - [ ] When `engine === 'openaiAssistant'`: confirm `assistantId` input is present and required.
+  - [ ] Select a different `model` from the dropdown → Save → mutation fires with the new model.
+- [ ] **Prompt Graph fallback tile** — for an `Expert` engine VC where the viewer is a platform admin (or `platformSettings.promptGraphEditingEnabled === true`):
+  - [ ] A small read-only tile renders with the heading "Prompt Graph editing remains in MUI" + a CTA link.
+  - [ ] Click the CTA → navigates to the legacy MUI Settings page (`/vc/<nameId>/settings` with CRD off).
+  - [ ] Confirm the actual node/edge editor is NOT rendered in CRD (deferred — Decision #17).
+- [ ] **Engine-conditional rendering**: switch between VCs with different engines and confirm only the cards that match the engine are present (Visibility always present; BoK card only when applicable; Prompt only on GenericOpenai/LibraFlow; ExternalConfig only on LibraFlow/OpenaiAssistant/GenericOpenai; Prompt Graph fallback only on Expert with the admin flag).
+
 ## Cross-cutting smoke
 
-- [ ] **Tab strip overflow**: shrink browser to `< md` width — both User (7-tab) and Org (5-tab) strips horizontally scroll; active tab auto-scrolls into view.
+- [ ] **Tab strip overflow**: shrink browser to `< md` width — User (7-tab), Org (5-tab), and VC (3-tab) strips horizontally scroll; active tab auto-scrolls into view.
 - [ ] **Keyboard navigation**: Tab into the tab strip → Left/Right arrows switch tabs → Enter activates. Same for the Org Authorization Admin/Owner sub-tab strip.
-- [ ] **Routing**: every URL `/user/<slug>/settings/<tab>` and `/organization/<slug>/settings/<tab>` resolves directly to the matching tab (deep-linking parity).
-- [ ] **CRD toggle off**: disable the toggle → every URL above resolves to the existing MUI page → no broken links → no console errors.
-- [ ] **Anonymous viewer**: open any settings URL while signed out → redirected to login.
-- [ ] **i18n**: switch language to nl, es, bg, de, fr → every visible string is localized (no `crd-contributorSettings.foo.bar` literal showing).
-- [ ] **Accessibility**: run axe scan on each of the 12 tabs — zero critical/serious violations.
+- [ ] **Routing**: every URL `/user/<slug>/settings/<tab>`, `/organization/<slug>/settings/<tab>`, and `/vc/<vcNameId>/settings/<tab>` resolves directly to the matching tab (deep-linking parity).
+- [ ] **CRD toggle off**: disable the toggle → every URL above resolves to the existing MUI page → no broken links → no console errors. Specifically: `/vc/<vcNameId>/settings/*` falls back to the existing `MuiVCSettingsRoute` (the VC admin shell at `src/domain/community/virtualContributorAdmin/`).
+- [ ] **Anonymous viewer**: open any settings URL while signed out → User: redirected to login; Org / VC: redirected to the public profile owned by 096.
+- [ ] **Non-editor (logged in but lacking Update privilege)**: open `/vc/<vcNameId>/settings/profile` as a user who is not the VC's host or platform admin → redirected to `/vc/<vcNameId>` (the public profile, FR-013).
+- [ ] **i18n**: switch language to nl, es, bg, de, fr → every visible string is localized (no `crd-contributorSettings.foo.bar` literal showing). Includes the new `shell.tabs.vc.*` and `vc.*` keys.
+- [ ] **Accessibility**: run axe scan on each of the 15 tabs — zero critical/serious violations.
 
 ## Performance & bundle smoke
 
-- [ ] `pnpm analyze` — combined delta of the two new lazy-loaded chunks (`userSettings*.js` and `orgSettings*.js`) ≤ +50 KB gzipped over the prior build (SC-007).
+- [ ] `pnpm analyze` — combined delta of the three new lazy-loaded chunks (`userSettings*.js`, `orgSettings*.js`, `vcSettings*.js`) ≤ +60 KB gzipped over the prior build (SC-007, +10 KB budget for the VC shell).
 - [ ] Tab switch < 200ms; per-section save round-trip < 1s perceived (mutation + refetch + "Saved!" flash for 1.8s); avatar / logo upload commit immediate on file-pick.
 
 ## Done definition
 
 The feature is "feature complete" when:
 
-1. All 12 smoke checklists pass with the toggle ON.
+1. All 15 smoke checklists pass with the toggle ON.
 2. The CRD-OFF smoke passes (no MUI regressions).
 3. `pnpm lint` passes with no new warnings.
-4. `pnpm vitest run` passes — all unit tests for mappers, predicate hooks, the per-section save state machine (`useUserProfileTabData` / `useOrgProfileTabData` — `idle | saving | saved | error`), push availability, optimistic overrides + hard-failure revert, and the i18n key parity test green.
+4. `pnpm vitest run` passes — all unit tests for mappers, predicate hooks (`useCanEditUserSettings`, `useCanEditOrganizationSettings`, `useCanEditVcSettings`), the per-section save state machine (`useUserProfileTabData` / `useOrgProfileTabData` / `useVcProfileTabData` — `idle | saving | saved | error`), push availability, optimistic overrides + hard-failure revert (User Notifications + Org Settings + VC Visibility), engine-conditional sub-section presence (`useVcSettingsTabData`), and the i18n key parity test green.
 5. Bundle delta within budget (SC-007).
 6. Zero critical/serious axe violations on every tab (SC-006).
 7. PR description includes:

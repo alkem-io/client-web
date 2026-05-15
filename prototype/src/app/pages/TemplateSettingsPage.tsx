@@ -332,14 +332,14 @@ function useSectionSave() {
 function InlineSaveButton({ dirty, status, onSave }: { dirty: boolean; status: SaveStatus; onSave: () => void }) {
   if (status === "saved") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
+      <span className="inline-flex items-center gap-1 text-caption text-emerald-600 animate-in fade-in slide-in-from-left-1 duration-200">
         <Check className="w-3 h-3" /> Saved
       </span>
     );
   }
   if (status === "saving") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
         <Loader2 className="w-3 h-3 animate-spin" /> Saving…
       </span>
     );
@@ -350,7 +350,7 @@ function InlineSaveButton({ dirty, status, onSave }: { dirty: boolean; status: S
       variant="ghost"
       size="sm"
       onClick={onSave}
-      className="h-6 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
+      className="h-6 px-2 text-caption text-primary hover:text-primary hover:bg-primary/10 animate-in fade-in slide-in-from-left-1 duration-200"
     >
       Save
     </Button>
@@ -408,7 +408,7 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">About</h2>
+        <h2 className="text-page-title">About</h2>
         <p className="text-muted-foreground mt-2">Template metadata and description.</p>
       </div>
 
@@ -417,7 +417,7 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
       {/* Name */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Template Name</Label>
+          <Label className="text-label uppercase text-muted-foreground">Template Name</Label>
           <InlineSaveButton dirty={dirty.name} status={statuses["name"] || "idle"} onSave={() => saveSection("name")} />
         </div>
         <Input value={name} onChange={(e) => setName(e.target.value)} className="bg-muted/50 border-border" />
@@ -428,10 +428,10 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
       {/* Description */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Template Description</Label>
+          <Label className="text-label uppercase text-muted-foreground">Template Description</Label>
           <InlineSaveButton dirty={dirty.description} status={statuses["description"] || "idle"} onSave={() => saveSection("description")} />
         </div>
-        <p className="text-xs text-muted-foreground">Explain what this template is for and when to use it.</p>
+        <p className="text-caption text-muted-foreground">Explain what this template is for and when to use it.</p>
         <div className="[&_.ql-editor]:min-h-[100px]">
           <ReactQuill theme="snow" value={description} onChange={setDescription} modules={quillModules} />
         </div>
@@ -442,7 +442,7 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
       {/* Tags */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Tags</Label>
+          <Label className="text-label uppercase text-muted-foreground">Tags</Label>
           <InlineSaveButton dirty={dirty.tags} status={statuses["tags"] || "idle"} onSave={() => saveSection("tags")} />
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -459,7 +459,7 @@ function TemplateAboutTab({ template }: { template: ReturnType<typeof getTemplat
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleAddTag}
             placeholder="Add tag…"
-            className="w-32 h-7 text-sm bg-muted/50 border-border"
+            className="w-32 h-7 text-body bg-muted/50 border-border"
           />
         </div>
       </section>
@@ -518,7 +518,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Content</h2>
+          <h2 className="text-page-title">Content</h2>
           <p className="text-muted-foreground mt-2">
             Provide a link to a {template.type === "Space" ? "space" : "subspace"} to use as the template source.
           </p>
@@ -528,7 +528,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         {/* Source URL */}
         <section className="space-y-3">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Source {template.type}</Label>
+          <Label className="text-label uppercase text-muted-foreground">Source {template.type}</Label>
           <div className="flex items-center gap-3">
             <Input
               value={sourceUrl}
@@ -544,7 +544,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
               Load
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             Paste a link to an existing {template.type === "Space" ? "space" : "subspace"} to import its innovation flow.
           </p>
         </section>
@@ -556,7 +556,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
             <section className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground uppercase tracking-wider">Innovation Flow</Label>
+                <Label className="text-label uppercase text-muted-foreground">Innovation Flow</Label>
                 <InlineSaveButton dirty={dirty.flow} status={statuses["flow"] || "idle"} onSave={() => saveSection("flow")} />
               </div>
 
@@ -568,7 +568,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
                       key={i}
                       type="button"
                       onClick={() => setActivePhase(i)}
-                      className={`pb-2 pt-3 text-sm font-medium border-b-2 whitespace-nowrap cursor-pointer transition-colors ${
+                      className={`pb-2 pt-3 text-control border-b-2 whitespace-nowrap cursor-pointer transition-colors ${
                         i === activePhase
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground"
@@ -580,14 +580,14 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
                 </div>
                 <div className="p-4 space-y-2">
                   {content.innovationFlow.phases[activePhase]?.collaborationTools.map((tool, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
+                    <div key={i} className="flex items-center gap-2 text-body text-muted-foreground bg-muted/50 p-2.5 rounded-md border border-border/50">
                       <FileText className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
                       {tool.name}
-                      <Badge variant="outline" className="ml-auto text-[10px] h-4 px-1.5">{tool.type}</Badge>
+                      <Badge variant="outline" className="ml-auto text-badge font-normal h-4 px-1.5">{tool.type}</Badge>
                     </div>
                   ))}
                   {(!content.innovationFlow.phases[activePhase]?.collaborationTools || content.innovationFlow.phases[activePhase].collaborationTools.length === 0) && (
-                    <p className="text-sm text-muted-foreground py-4">No collaboration tools in this phase.</p>
+                    <p className="text-body text-muted-foreground py-4">No collaboration tools in this phase.</p>
                   )}
                 </div>
               </div>
@@ -603,7 +603,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Content</h2>
+          <h2 className="text-page-title">Content</h2>
           <p className="text-muted-foreground mt-2">
             The whiteboard that gets created when someone uses this template.
           </p>
@@ -613,7 +613,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Whiteboard</Label>
+            <Label className="text-label uppercase text-muted-foreground">Whiteboard</Label>
             <InlineSaveButton dirty={dirty.whiteboard} status={statuses["whiteboard"] || "idle"} onSave={() => saveSection("whiteboard")} />
           </div>
           <div className="relative rounded-lg border border-border overflow-hidden bg-muted aspect-[16/9]">
@@ -635,7 +635,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
               </Button>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">Click to open the full whiteboard editor.</p>
+          <p className="text-caption text-muted-foreground">Click to open the full whiteboard editor.</p>
         </section>
       </div>
     );
@@ -646,7 +646,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Content</h2>
+          <h2 className="text-page-title">Content</h2>
           <p className="text-muted-foreground mt-2">
             The post content that gets created when someone uses this template.
           </p>
@@ -656,7 +656,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Post Title</Label>
+            <Label className="text-label uppercase text-muted-foreground">Post Title</Label>
             <InlineSaveButton dirty={dirty.title} status={statuses["title"] || "idle"} onSave={() => saveSection("title")} />
           </div>
           <Input
@@ -670,7 +670,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Description</Label>
+            <Label className="text-label uppercase text-muted-foreground">Description</Label>
             <InlineSaveButton dirty={dirty.body} status={statuses["body"] || "idle"} onSave={() => saveSection("body")} />
           </div>
           <div className="[&_.ql-editor]:min-h-[200px]">
@@ -691,7 +691,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Content</h2>
+          <h2 className="text-page-title">Content</h2>
           <p className="text-muted-foreground mt-2">
             The community guidelines text that members will see.
           </p>
@@ -701,7 +701,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Guidelines Title</Label>
+            <Label className="text-label uppercase text-muted-foreground">Guidelines Title</Label>
             <InlineSaveButton dirty={dirty.title} status={statuses["title"] || "idle"} onSave={() => saveSection("title")} />
           </div>
           <Input
@@ -715,7 +715,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground uppercase tracking-wider">Guidelines Body</Label>
+            <Label className="text-label uppercase text-muted-foreground">Guidelines Body</Label>
             <InlineSaveButton dirty={dirty.body} status={statuses["body"] || "idle"} onSave={() => saveSection("body")} />
           </div>
           <div className="[&_.ql-editor]:min-h-[300px]">
@@ -735,7 +735,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Content</h2>
+        <h2 className="text-page-title">Content</h2>
         <p className="text-muted-foreground mt-2">
           The post and attached whiteboard that get created when someone uses this template.
         </p>
@@ -746,7 +746,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
       {/* Post section */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Post Title</Label>
+          <Label className="text-label uppercase text-muted-foreground">Post Title</Label>
           <InlineSaveButton dirty={dirty.title} status={statuses["title"] || "idle"} onSave={() => saveSection("title")} />
         </div>
         <Input
@@ -760,7 +760,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Post Body</Label>
+          <Label className="text-label uppercase text-muted-foreground">Post Body</Label>
           <InlineSaveButton dirty={dirty.body} status={statuses["body"] || "idle"} onSave={() => saveSection("body")} />
         </div>
         <div className="[&_.ql-editor]:min-h-[140px]">
@@ -778,7 +778,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
       {/* Whiteboard section */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Attached Whiteboard</Label>
+          <Label className="text-label uppercase text-muted-foreground">Attached Whiteboard</Label>
           <InlineSaveButton dirty={dirty.whiteboard} status={statuses["whiteboard"] || "idle"} onSave={() => saveSection("whiteboard")} />
         </div>
         <div className="relative rounded-lg border border-border overflow-hidden bg-muted aspect-[16/9] max-w-lg">
@@ -800,7 +800,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
             </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">The whiteboard content that is attached to this collaboration tool.</p>
+        <p className="text-caption text-muted-foreground">The whiteboard content that is attached to this collaboration tool.</p>
       </section>
 
       <Separator />
@@ -808,7 +808,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
       {/* References */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">References</Label>
+          <Label className="text-label uppercase text-muted-foreground">References</Label>
           <InlineSaveButton dirty={dirty.references} status={statuses["references"] || "idle"} onSave={() => saveSection("references")} />
         </div>
         <div className="space-y-2">
@@ -860,7 +860,7 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
       {/* Response Options */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground uppercase tracking-wider">Response Options</Label>
+          <Label className="text-label uppercase text-muted-foreground">Response Options</Label>
           <InlineSaveButton dirty={dirty.responseOptions} status={statuses["responseOptions"] || "idle"} onSave={() => saveSection("responseOptions")} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -870,8 +870,8 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div className="space-y-0.5">
-                <p className="text-sm font-medium">Comments</p>
-                <p className="text-xs text-muted-foreground leading-snug">Allow community members to comment</p>
+                <p className="text-body-emphasis">Comments</p>
+                <p className="text-caption text-muted-foreground leading-snug">Allow community members to comment</p>
               </div>
             </div>
             <Switch
@@ -886,8 +886,8 @@ function TemplateContentTab({ template }: { template: ReturnType<typeof getTempl
                 <Layers className="w-5 h-5" />
               </div>
               <div className="space-y-0.5">
-                <p className="text-sm font-medium">Collection</p>
-                <p className="text-xs text-muted-foreground leading-snug">Allow members to submit contributions</p>
+                <p className="text-body-emphasis">Collection</p>
+                <p className="text-caption text-muted-foreground leading-snug">Allow members to submit contributions</p>
               </div>
             </div>
             <Select
@@ -919,7 +919,7 @@ function DangerZone({ template }: { template: ReturnType<typeof getTemplate> }) 
 
   return (
     <section className="space-y-4">
-      <Label className="text-xs text-muted-foreground uppercase tracking-wider">Danger Zone</Label>
+      <Label className="text-label uppercase text-muted-foreground">Danger Zone</Label>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10 gap-2">
@@ -969,9 +969,9 @@ export default function TemplateSettingsPage() {
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
               <div className="flex items-center gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">{template.name}</h1>
+                  <h1 className="text-page-title">{template.name}</h1>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <Badge variant="secondary" className="text-xs">{template.type}</Badge>
+                    <Badge variant="secondary" className="text-caption">{template.type}</Badge>
                   </div>
                 </div>
               </div>

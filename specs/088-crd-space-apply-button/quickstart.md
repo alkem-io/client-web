@@ -28,13 +28,13 @@ CRD is gated behind a per-browser localStorage flag, default off. Pick either me
 
 **Browser console**:
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To disable and revert to MUI:
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 

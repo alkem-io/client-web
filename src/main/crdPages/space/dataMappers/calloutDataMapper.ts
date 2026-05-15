@@ -50,24 +50,50 @@ function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): Collab
 }
 
 /**
+ * Structural subset shared by `CalloutModelLightExtended` and
+ * `CalloutDetailsModelExtended` — both expose published/created authorship
+ * fields with the same shape. Kept narrow so callers can pass either.
+ */
+type CalloutAuthorshipSource = {
+  publishedBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  publishedDate?: Date;
+  createdBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  createdDate?: Date;
+};
+
+/**
+ * Resolves the display author and timestamp for a callout, falling back from
+ * the published-* fields to the created-* fields. Shared by every callout
+ * mapper so the precedence rule lives in one place.
+ */
+function resolveAuthorAndTimestamp(
+  source: CalloutAuthorshipSource,
+  t: CrdSpaceTranslator
+): { author?: { name: string; avatarUrl?: string }; timestamp?: string } {
+  const authorSource = source.publishedBy ?? source.createdBy;
+  const dateSource = source.publishedDate ?? source.createdDate;
+  return {
+    author: authorSource?.profile
+      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
+      : undefined,
+    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
+  };
+}
+
+/**
  * Maps a lightweight callout (from the list query) to PostCardData.
  * Only has title and type — no description, no content previews.
  */
 export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): PostCardData {
-  const postType = mapFramingTypeToPostType(callout.framing.type);
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
-    type: postType,
+    type: mapFramingTypeToPostType(callout.framing.type),
     title: callout.framing.profile.displayName,
     snippet: undefined, // Not available in list query
     isDraft: callout.draft,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
+    timestamp,
+    author,
     commentCount: callout.activity ?? 0,
   };
 }
@@ -77,20 +103,15 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
  * Has description, content previews, author details, contribution counts.
  */
 export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: CrdSpaceTranslator): PostCardData {
-  const postType = mapFramingTypeToPostType(callout.framing.type);
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
-    type: postType,
+    type: mapFramingTypeToPostType(callout.framing.type),
     title: callout.framing.profile.displayName,
     snippet: callout.framing.profile.description ?? undefined,
     isDraft: callout.draft,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
+    timestamp,
+    author,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
@@ -123,6 +144,16 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
               : undefined;
           })()
         : undefined,
+    // User-authored tags (default tagset) and external references — surfaced
+    // on the feed card by `ReferencesAndTagsStrip` (the same component the
+    // detail dialog uses). MUI parity: `CalloutHeader`.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(ref => ({
+      id: ref.id,
+      name: ref.name,
+      uri: ref.uri,
+      description: ref.description ?? undefined,
+    })),
   };
 }
 
@@ -154,18 +185,24 @@ export function mapCalloutDetailsToDialogData(
   callout: CalloutDetailsModelExtended,
   t: CrdSpaceTranslator
 ): CalloutDetailDialogData {
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
     title: callout.framing.profile.displayName,
     description: callout.framing.profile.description ?? undefined,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
+    timestamp,
+    author,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     reactionCount: 0,
+    // `framing.profile.tagset` is the default (single) tagset for the
+    // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a
+    // separate `classification.tagsets` field and don't surface in this strip.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(ref => ({
+      id: ref.id,
+      name: ref.name,
+      uri: ref.uri,
+      description: ref.description ?? undefined,
+    })),
   };
 }

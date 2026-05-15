@@ -65,10 +65,10 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
               <X className="w-5 h-5" />
             </Button>
             <div className="flex flex-col">
-              <DialogTitle className="text-base font-semibold leading-tight text-foreground line-clamp-1">
+              <DialogTitle className="text-subheader font-semibold text-foreground line-clamp-1">
                 {post.title}
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground">
+              <DialogDescription className="text-caption text-muted-foreground">
                 in Green Energy Space / Sustainability
               </DialogDescription>
             </div>
@@ -100,7 +100,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
             {/* 2. Post Content Section */}
             <div className={cn("px-6 md:px-10 space-y-4", post.type === "document" ? "py-5" : "py-8 md:py-10 space-y-6")}>
               {post.type !== "document" && (
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+                <h1 className="text-display text-foreground">
                   {post.title}
                 </h1>
               )}
@@ -111,8 +111,8 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                   <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-foreground">{post.author.name}</span>
-                  <span className="text-xs text-muted-foreground">{post.timestamp} • {post.author.role}</span>
+                  <span className="text-card-title text-foreground">{post.author.name}</span>
+                  <span className="text-caption text-muted-foreground">{post.timestamp} • {post.author.role}</span>
                 </div>
               </div>
 
@@ -134,7 +134,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                         />
                     )}
 
-                    <h3 className="text-xl font-bold mt-6 mb-4">Key Discussion Points</h3>
+                    <h3 className="text-section-title font-bold mt-6 mb-4">Key Discussion Points</h3>
                     <ul className="list-disc pl-5 space-y-2">
                       <li>Impact on local community</li>
                       <li>Resource allocation requirements</li>
@@ -180,7 +180,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                     case 'spreadsheet':
                       return (
                         <div className="bg-white dark:bg-zinc-900 overflow-hidden min-h-[200px]">
-                          <table className="w-full text-xs border-collapse">
+                          <table className="w-full text-caption border-collapse">
                             <thead>
                               <tr className="bg-muted/50">
                                 <th className="border border-border/40 px-3 py-1.5 text-left font-semibold text-muted-foreground">District</th>
@@ -211,9 +211,9 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                     case 'presentation':
                       return (
                         <div className="aspect-[16/9] bg-gradient-to-br from-primary/90 to-primary/60 flex flex-col items-center justify-center text-white p-8">
-                          <p className="text-xs uppercase tracking-widest opacity-70 mb-3">April 2026 Stakeholder Update</p>
-                          <h2 className="text-xl font-bold text-center mb-2">2030 Renewable Transition</h2>
-                          <p className="text-sm opacity-80 text-center max-w-xs">Progress Report & Revised Timeline</p>
+                          <p className="text-label uppercase opacity-70 mb-3">April 2026 Stakeholder Update</p>
+                          <h2 className="text-section-title font-bold text-center mb-2">2030 Renewable Transition</h2>
+                          <p className="text-body opacity-80 text-center max-w-xs">Progress Report & Revised Timeline</p>
                         </div>
                       );
                   }
@@ -230,7 +230,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                         <div className="flex items-center justify-between px-4 py-2.5 bg-muted/20 border-b border-border">
                           <div className="flex items-center gap-2 min-w-0">
                             {getDocIcon(doc.docType)}
-                            <span className="text-sm font-medium truncate">{doc.title}</span>
+                            <span className="text-body-emphasis truncate">{doc.title}</span>
                             <span className="text-[10px] text-muted-foreground shrink-0">({doc.size})</span>
                             {doc.lastEdited && (
                               <span className="text-[10px] text-muted-foreground/60 shrink-0">· {doc.lastEdited}</span>
@@ -255,11 +255,11 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
               {/* 5. Post Metadata / Reactions */}
               <div className="flex items-center gap-4 py-4 border-y border-border mt-8">
                 <div className="flex -space-x-2">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-info/10 text-info text-xs border border-background">👍</span>
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10 text-destructive text-xs border border-background">❤️</span>
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-warning/10 text-warning text-xs border border-background">💡</span>
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-info/10 text-info text-caption border border-background">👍</span>
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10 text-destructive text-caption border border-background">❤️</span>
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-warning/10 text-warning text-caption border border-background">💡</span>
                 </div>
-                <span className="text-sm text-muted-foreground font-medium">{post.stats.likes} reactions</span>
+                <span className="text-body-emphasis text-muted-foreground">{post.stats.likes} reactions</span>
                 
                 <div className="flex-1" />
                 
@@ -278,16 +278,16 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
             {showContributions && (
               <div className="bg-muted/30 py-10 px-6 md:px-10 border-t border-border">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    Contributions 
+                  <h2 className="text-section-title font-bold flex items-center gap-2">
+                    Contributions
                     <Badge variant="secondary" className="rounded-full px-2">{contributionsCount}</Badge>
                   </h2>
                   
                   {/* Tabs for filtering - simplified for now */}
                   <Tabs defaultValue="all" className="w-auto">
                     <TabsList className="h-8 bg-background border border-border">
-                      <TabsTrigger value="all" className="text-xs px-3 h-6">All</TabsTrigger>
-                      <TabsTrigger value="whiteboards" className="text-xs px-3 h-6">Whiteboards</TabsTrigger>
+                      <TabsTrigger value="all" className="text-caption px-3 h-6">All</TabsTrigger>
+                      <TabsTrigger value="whiteboards" className="text-caption px-3 h-6">Whiteboards</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
@@ -311,14 +311,14 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                         </div>
                       </div>
                       <div className="p-4 space-y-2">
-                        <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">{wb.title}</h3>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <h3 className="text-card-title group-hover:text-primary transition-colors line-clamp-1">{wb.title}</h3>
+                        <div className="flex items-center gap-2 text-caption text-muted-foreground">
                           <Avatar className="w-5 h-5">
                             <AvatarFallback>{wb.author.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <span>{wb.author}</span>
                         </div>
-                        <div className="text-xs text-muted-foreground/70 pt-1">
+                        <div className="text-caption text-muted-foreground/70 pt-1">
                           2d ago • 3 comments
                         </div>
                       </div>
@@ -339,8 +339,8 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                         </div>
                       </div>
                       <div className="p-4 space-y-2">
-                        <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
-                        <div className="text-xs text-muted-foreground/70 pt-1">
+                        <h3 className="text-card-title group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
+                        <div className="text-caption text-muted-foreground/70 pt-1">
                           {item.type.toUpperCase()} • 1d ago
                         </div>
                       </div>
@@ -354,7 +354,7 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                        <PenTool className="w-6 h-6" />
                     </div>
-                    <span className="text-sm font-medium">Add Response</span>
+                    <span className="text-control">Add Response</span>
                   </div>
 
                 </div>
@@ -363,11 +363,11 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
 
             {/* 4. Comments Section */}
             <div className="px-[40px] py-[20px] md:px-10 max-w-4xl">
-              <h2 className="text-xl font-bold flex items-center gap-2 mb-2">
+              <h2 className="text-section-title font-bold flex items-center gap-2 mb-2">
                 Discussion
                 <Badge variant="secondary" className="rounded-full px-2">{post.stats.comments}</Badge>
               </h2>
-              <p className="text-sm text-muted-foreground mb-6">Comments on this post</p>
+              <p className="text-body text-muted-foreground mb-6">Comments on this post</p>
 
               <div className="space-y-6 mb-8">
                 {/* Mock Comment 1 */}
@@ -379,14 +379,14 @@ export function PostDetailDialog({ open, onOpenChange, post }: PostDetailDialogP
                   <div className="flex-1 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold">Sarah Jenkins</span>
-                        <span className="text-xs text-muted-foreground">2 days ago</span>
+                        <span className="text-card-title">Sarah Jenkins</span>
+                        <span className="text-caption text-muted-foreground">2 days ago</span>
                       </div>
                     </div>
-                    <p className="text-sm text-foreground/90">
+                    <p className="text-body text-foreground/90">
                       Great initiative! I think we should also consider the implications on local traffic patterns.
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium">
+                    <div className="flex items-center gap-4 text-control text-muted-foreground">
                       <button className="hover:text-primary transition-colors">Reply</button>
                       <button className="hover:text-primary transition-colors">Like (2)</button>
                     </div>

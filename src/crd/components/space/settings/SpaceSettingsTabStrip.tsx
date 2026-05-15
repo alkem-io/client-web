@@ -49,7 +49,7 @@ export function SpaceSettingsTabStrip<TTabId extends string>({
             aria-selected={isActive}
             onClick={() => onTabChange(id)}
             className={cn(
-              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-sm transition-colors shrink-0',
+              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-control transition-colors shrink-0',
               'border-b-2 -mb-px outline-none',
               'focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
               isActive

@@ -1,3 +1,4 @@
+import type { Reference } from '@apollo/client';
 import {
   MessageDetailsFragmentDoc,
   ReactionDetailsFragmentDoc,
@@ -7,6 +8,7 @@ import {
 import { MutationType, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { buildMessagesCountModifier } from '@/domain/communication/room/Comments/refreshRoomMessagesCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
@@ -64,17 +66,22 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
               fragmentName: 'MessageDetails',
             });
 
+            // Single atomic modify on the Room — messages list, virtual-contributor
+            // interactions, and the count are all updated together so an observer
+            // never sees a stale `messagesCount` against the new `messages` array.
             client.cache.modify({
               id: roomRefId,
               fields: {
-                messages(existingMessages = []) {
+                messages(existing) {
+                  const existingMessages = Array.isArray(existing) ? (existing as readonly Reference[]) : [];
                   // Check if already in the Room's messages array
                   if (existingMessages.some(m => m.__ref === messageRefId)) {
                     return existingMessages;
                   }
                   return [...existingMessages, newMessageRef];
                 },
-                vcInteractions(existingInteractions = []) {
+                vcInteractions(existing) {
+                  const existingInteractions = Array.isArray(existing) ? (existing as readonly Reference[]) : [];
                   return [
                     ...existingInteractions,
                     ...vcInteractions.map(data =>
@@ -86,6 +93,7 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
                     ),
                   ];
                 },
+                messagesCount: buildMessagesCountModifier(),
               },
             });
             break;
@@ -94,9 +102,11 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
             client.cache.modify({
               id: roomRefId,
               fields: {
-                messages(existingMessages = []) {
+                messages(existing) {
+                  const existingMessages = Array.isArray(existing) ? (existing as readonly Reference[]) : [];
                   return existingMessages.filter(message => message.__ref !== messageRefId);
                 },
+                messagesCount: buildMessagesCountModifier(),
               },
             });
             evictFromCache(client.cache, data.id, 'Message');

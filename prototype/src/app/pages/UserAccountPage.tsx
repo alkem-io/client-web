@@ -81,20 +81,20 @@ export default function UserAccountPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <Link
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -114,7 +114,7 @@ export default function UserAccountPage() {
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-12">
         {/* Help Text */}
-        <div className="flex items-center gap-2 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm text-primary/80 max-w-3xl">
+        <div className="flex items-center gap-2 p-4 bg-primary/5 border border-primary/20 rounded-lg text-body text-primary/80 max-w-3xl">
           <Layout className="w-4 h-4" />
           <p>Here you can view your active resources and manage your account allocation limits.</p>
         </div>
@@ -122,9 +122,9 @@ export default function UserAccountPage() {
         {/* Section: Hosted Spaces */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+            <h2 className="text-section-title font-bold flex items-center gap-2">
               Hosted Spaces
-              <Badge variant="secondary" className="ml-2 font-normal text-xs">
+              <Badge variant="secondary" className="ml-2 font-normal text-caption">
                 {hostedSpaces.length} Active
               </Badge>
             </h2>
@@ -152,12 +152,12 @@ export default function UserAccountPage() {
                   </div>
                 </div>
                 <CardHeader className="p-4 pb-2">
-                  <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="text-subsection-title group-hover:text-primary transition-colors">
                     {space.name}
                   </h3>
                 </CardHeader>
                 <CardContent className="p-4 pt-2 flex-grow">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-body text-muted-foreground line-clamp-2">
                     {space.description}
                   </p>
                 </CardContent>
@@ -169,8 +169,8 @@ export default function UserAccountPage() {
               <div className="h-12 w-12 rounded-full bg-muted group-hover:bg-background flex items-center justify-center mb-4 transition-colors shadow-sm">
                 <Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary" />
               </div>
-              <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">Create New Space</h3>
-              <p className="text-sm text-muted-foreground mt-2 max-w-[200px] text-center">
+              <h3 className="text-subsection-title text-foreground group-hover:text-primary transition-colors">Create New Space</h3>
+              <p className="text-body text-muted-foreground mt-2 max-w-[200px] text-center">
                 Launch a new collaborative environment for your team.
               </p>
             </button>
@@ -180,9 +180,9 @@ export default function UserAccountPage() {
         {/* Section: Virtual Contributors */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+            <h2 className="text-section-title font-bold flex items-center gap-2">
               Virtual Contributors
-              <Badge variant="secondary" className="ml-2 font-normal text-xs">
+              <Badge variant="secondary" className="ml-2 font-normal text-caption">
                 {virtualContributors.length} Active
               </Badge>
             </h2>
@@ -200,7 +200,7 @@ export default function UserAccountPage() {
                     <Bot className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base leading-tight group-hover:text-primary transition-colors truncate">
+                    <h3 className="text-subheader font-semibold group-hover:text-primary transition-colors truncate">
                       {vc.name}
                     </h3>
                   </div>
@@ -209,7 +209,7 @@ export default function UserAccountPage() {
                   </Button>
                 </CardHeader>
                 <CardContent className="p-5 pt-2 flex-grow">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-body text-muted-foreground">
                     {vc.description}
                   </p>
                 </CardContent>
@@ -221,7 +221,7 @@ export default function UserAccountPage() {
               <div className="h-10 w-10 rounded-full bg-muted group-hover:bg-background flex items-center justify-center mb-3 transition-colors">
                 <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
               </div>
-              <span className="text-sm font-medium text-muted-foreground group-hover:text-primary">Create New Contributor</span>
+              <span className="text-control text-muted-foreground group-hover:text-primary">Create New Contributor</span>
             </button>
           </div>
         </section>
@@ -230,7 +230,7 @@ export default function UserAccountPage() {
           {/* Section: Template Packs */}
           <section className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold tracking-tight">Template Packs</h2>
+              <h2 className="text-section-title font-bold">Template Packs</h2>
               <Button size="sm" variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
                 New Pack
@@ -244,8 +244,8 @@ export default function UserAccountPage() {
                     <FileBox className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{pack.name}</h3>
-                    <p className="text-xs text-muted-foreground truncate">{pack.description}</p>
+                    <h3 className="text-card-title group-hover:text-primary transition-colors">{pack.name}</h3>
+                    <p className="text-caption text-muted-foreground truncate">{pack.description}</p>
                   </div>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
                     <MoreVertical className="w-4 h-4" />
@@ -260,7 +260,7 @@ export default function UserAccountPage() {
                       <Plus className="w-5 h-5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-muted-foreground">Empty Slot</p>
+                      <p className="text-body-emphasis text-muted-foreground">Empty Slot</p>
                     </div>
                  </div>
                ))}
@@ -269,7 +269,7 @@ export default function UserAccountPage() {
             {/* Section: Custom Homepages (Now below Template Packs in same column) */}
             <div className="mt-8 pt-8 border-t border-border">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold tracking-tight">Custom Homepages</h2>
+                <h2 className="text-section-title font-bold">Custom Homepages</h2>
                 <Button size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
                   New Page
@@ -288,8 +288,8 @@ export default function UserAccountPage() {
                     <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
                       <Layout className="w-6 h-6 text-muted-foreground" />
                     </div>
-                    <h3 className="font-semibold text-sm mb-1">No Custom Homepages</h3>
-                    <p className="text-xs text-muted-foreground max-w-[200px] mb-4">
+                    <h3 className="text-card-title mb-1">No Custom Homepages</h3>
+                    <p className="text-caption text-muted-foreground max-w-[200px] mb-4">
                       Create a personalized landing page for your account.
                     </p>
                     <Button variant="outline" size="sm">

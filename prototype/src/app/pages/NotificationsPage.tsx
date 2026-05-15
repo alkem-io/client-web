@@ -159,17 +159,14 @@ export default function NotificationsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1
-            style={{
-              fontSize: "var(--text-2xl)",
-              fontWeight: 700,
-              color: "var(--foreground)",
-            }}
+            className="text-page-title"
+            style={{ color: "var(--foreground)" }}
           >
             Notifications
           </h1>
           <p
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               marginTop: 4,
             }}
@@ -217,14 +214,12 @@ export default function NotificationsPage() {
             key={f.key}
             onClick={() => setFilter(f.key)}
             className={cn(
-              "px-3 py-1.5 rounded-md transition-colors whitespace-nowrap",
+              "px-3 py-1.5 rounded-md transition-colors whitespace-nowrap text-control",
               filter === f.key
                 ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-secondary-foreground hover:bg-accent"
             )}
             style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: "var(--font-weight-medium)" as any,
               fontFamily: "'Inter', sans-serif",
             }}
           >
@@ -236,13 +231,12 @@ export default function NotificationsPage() {
           <button
             onClick={() => setShowUnreadOnly(!showUnreadOnly)}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors text-control font-normal",
               showUnreadOnly
                 ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-muted-foreground hover:bg-accent"
             )}
             style={{
-              fontSize: "var(--text-sm)",
               fontFamily: "'Inter', sans-serif",
             }}
           >
@@ -272,8 +266,7 @@ export default function NotificationsPage() {
                 <Avatar className="w-10 h-10" style={{ border: "1px solid var(--border)" }}>
                   <AvatarImage src={n.avatar} />
                   <AvatarFallback
-                    className="bg-primary/10 text-primary"
-                    style={{ fontSize: "var(--text-sm)" }}
+                    className="bg-primary/10 text-primary text-body"
                   >
                     {n.author.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -293,24 +286,22 @@ export default function NotificationsPage() {
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <p
-                  className="leading-snug"
+                  className="text-body leading-snug"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--foreground)",
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  <span style={{ fontWeight: 600 }}>{n.author}</span>{" "}
+                  <span className="font-semibold">{n.author}</span>{" "}
                   {n.action}{" "}
-                  <span style={{ fontWeight: 500, color: "var(--foreground)" }}>
+                  <span className="font-medium" style={{ color: "var(--foreground)" }}>
                     {n.target}
                   </span>
                 </p>
                 <div className="flex items-center gap-3 mt-1.5">
                   <span
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 text-caption"
                     style={{
-                      fontSize: "12px",
                       color: "var(--muted-foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -321,8 +312,8 @@ export default function NotificationsPage() {
                   {n.space && (
                     <Badge
                       variant="secondary"
+                      className="text-caption"
                       style={{
-                        fontSize: "11px",
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
@@ -357,8 +348,8 @@ export default function NotificationsPage() {
               />
             </div>
             <p
+              className="text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}

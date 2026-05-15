@@ -106,7 +106,7 @@ export function SpaceSettingsSubspacesView({
                   <LayoutTemplate aria-hidden="true" className="size-5 text-primary" />
                   {t('subspaces.defaultTemplate.title')}
                 </h3>
-                <p className="text-muted-foreground text-sm">{t('subspaces.defaultTemplate.description')}</p>
+                <p className="text-muted-foreground text-body">{t('subspaces.defaultTemplate.description')}</p>
               </div>
               <Button type="button" onClick={onChangeDefaultTemplate}>
                 {t('subspaces.defaultTemplate.change')}
@@ -201,8 +201,8 @@ export function SpaceSettingsSubspacesView({
             <div className="size-12 bg-muted rounded-full flex items-center justify-center mb-4">
               <Search className="size-6 opacity-50" />
             </div>
-            <h3 className="font-medium text-lg text-foreground">{t('subspaces.noResults')}</h3>
-            <p className="text-sm mt-1">{t('subspaces.noResultsHint')}</p>
+            <h3 className="text-subsection-title text-foreground">{t('subspaces.noResults')}</h3>
+            <p className="text-body mt-1">{t('subspaces.noResultsHint')}</p>
           </div>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -290,11 +290,11 @@ function SubspaceGridCard({
         <div className="flex-1">
           <a
             href={subspace.href}
-            className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors cursor-pointer"
+            className="text-subsection-title line-clamp-1 group-hover:text-primary transition-colors cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {subspace.name}
           </a>
-          <p className="text-sm text-muted-foreground mt-1 line-clamp-2 min-h-[40px]">{subspace.description}</p>
+          <p className="text-body text-muted-foreground mt-1 line-clamp-2 min-h-[40px]">{subspace.description}</p>
         </div>
       </div>
     </div>
@@ -337,16 +337,19 @@ function SubspaceListItem({
           {subspace.isPinned && (
             <Pin aria-hidden="true" className="size-3.5 text-amber-500 shrink-0" aria-label="Pinned" />
           )}
-          <a href={subspace.href} className="font-medium text-sm text-foreground truncate hover:underline">
+          <a
+            href={subspace.href}
+            className="text-body-emphasis text-foreground truncate hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
             {subspace.name}
           </a>
           {subspace.visibility === 'archived' && (
-            <Badge variant="secondary" className="text-[10px] py-0 h-5">
+            <Badge variant="secondary" className="text-badge py-0 h-5">
               Archived
             </Badge>
           )}
         </div>
-        <p className="text-xs text-muted-foreground truncate max-w-md">{subspace.description}</p>
+        <p className="text-caption text-muted-foreground truncate max-w-md">{subspace.description}</p>
       </div>
       <div className="shrink-0">
         <SubspaceKebab subspace={subspace} canSaveAsTemplate={canSaveAsTemplate} onKebabAction={onKebabAction} />

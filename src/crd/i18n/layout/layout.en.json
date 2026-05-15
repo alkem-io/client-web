@@ -6,6 +6,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "unreadNotifications": "{{count}} unread notifications",
+    "unreadMessages": "{{count}} unread messages",
     "spaces": "Spaces",
     "platformNavigation": "Platform navigation",
     "myAccount": "My Account",
@@ -14,13 +15,16 @@
     "settings": "Settings",
     "logout": "Log out",
     "login": "Log in",
-    "beta": "Beta",
+    "preview": "Preview",
     "pendingMemberships": "Pending Memberships",
     "administration": "Administration",
     "changeLanguage": "Change Language",
     "getHelp": "Get Help",
     "showGrid": "Show Grid",
-    "hideGrid": "Hide Grid"
+    "hideGrid": "Hide Grid",
+    "designVersion": {
+      "label": "New design (preview)"
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

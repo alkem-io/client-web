@@ -62,11 +62,8 @@ export default function AdminPage() {
         <div className="flex items-center gap-2 px-3 mb-6">
           <Shield className="w-5 h-5" style={{ color: "var(--primary)" }} />
           <span
-            style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: 600,
-              color: "var(--foreground)",
-            }}
+            className="text-card-title"
+            style={{ color: "var(--foreground)" }}
           >
             Administration
           </span>
@@ -78,15 +75,11 @@ export default function AdminPage() {
               key={s.id}
               onClick={() => navigate(s.id === "overview" ? "/admin" : `/admin/${s.id}`)}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-md text-left transition-colors",
+                "flex items-center gap-2.5 px-3 py-2 rounded-md text-left transition-colors text-control font-normal",
                 activeSection === s.id
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground font-semibold"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
-              style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: activeSection === s.id ? 600 : ("var(--font-weight-normal)" as any),
-              }}
             >
               <s.icon className="w-4 h-4 shrink-0" />
               {s.label}
@@ -102,17 +95,14 @@ export default function AdminPage() {
             <>
               <div className="mb-8">
                 <h1
-                  style={{
-                    fontSize: "var(--text-2xl)",
-                    fontWeight: 700,
-                    color: "var(--foreground)",
-                  }}
+                  className="text-page-title"
+                  style={{ color: "var(--foreground)" }}
                 >
                   Platform Overview
                 </h1>
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
                     marginTop: 4,
                   }}
@@ -139,18 +129,14 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <p
-                        style={{
-                          fontSize: "var(--text-2xl)",
-                          fontWeight: 700,
-                          color: "var(--foreground)",
-                          lineHeight: 1.2,
-                        }}
+                        className="text-page-title"
+                        style={{ color: "var(--foreground)" }}
                       >
                         {stat.value}
                       </p>
                       <p
+                        className="text-body"
                         style={{
-                          fontSize: "var(--text-sm)",
                           color: "var(--muted-foreground)",
                           marginTop: 2,
                         }}
@@ -167,11 +153,8 @@ export default function AdminPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <h2
-                      style={{
-                        fontSize: "var(--text-base)",
-                        fontWeight: 600,
-                        color: "var(--foreground)",
-                      }}
+                      className="text-subheader font-semibold"
+                      style={{ color: "var(--foreground)" }}
                     >
                       Recent Activity
                     </h2>
@@ -201,23 +184,20 @@ export default function AdminPage() {
                           opacity: 0.85,
                         }}
                       >
-                        <span style={{ fontSize: "11px", fontWeight: 700 }}>
+                        <span className="text-caption font-bold">
                           {item.user.substring(0, 2).toUpperCase()}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}>
-                          <span style={{ fontWeight: 600 }}>{item.user}</span>{" "}
+                        <p className="text-body" style={{ color: "var(--foreground)" }}>
+                          <span className="font-semibold">{item.user}</span>{" "}
                           <span style={{ color: "var(--muted-foreground)" }}>{item.action}</span>{" "}
-                          <span style={{ fontWeight: 500 }}>{item.target}</span>
+                          <span className="font-medium">{item.target}</span>
                         </p>
                       </div>
                       <span
-                        className="shrink-0"
-                        style={{
-                          fontSize: "12px",
-                          color: "var(--muted-foreground)",
-                        }}
+                        className="shrink-0 text-caption"
+                        style={{ color: "var(--muted-foreground)" }}
                       >
                         {item.time}
                       </span>
@@ -253,18 +233,14 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p
-                        className="group-hover:text-primary transition-colors"
-                        style={{
-                          fontSize: "var(--text-sm)",
-                          fontWeight: 600,
-                          color: "var(--foreground)",
-                        }}
+                        className="group-hover:text-primary transition-colors text-card-title"
+                        style={{ color: "var(--foreground)" }}
                       >
                         {action.label}
                       </p>
                       <p
+                        className="text-caption"
                         style={{
-                          fontSize: "12px",
                           color: "var(--muted-foreground)",
                           marginTop: 2,
                         }}
@@ -290,21 +266,14 @@ export default function AdminPage() {
                 })()}
               </div>
               <h2
-                className="capitalize"
-                style={{
-                  fontSize: "var(--text-xl)",
-                  fontWeight: 600,
-                  color: "var(--foreground)",
-                }}
+                className="capitalize text-section-title"
+                style={{ color: "var(--foreground)" }}
               >
                 {ADMIN_SECTIONS.find((s) => s.id === activeSection)?.label || activeSection}
               </h2>
               <p
-                className="max-w-sm text-center mt-2"
-                style={{
-                  fontSize: "var(--text-sm)",
-                  color: "var(--muted-foreground)",
-                }}
+                className="max-w-sm text-center mt-2 text-body"
+                style={{ color: "var(--muted-foreground)" }}
               >
                 This administration section is under development. Check back soon for full management capabilities.
               </p>

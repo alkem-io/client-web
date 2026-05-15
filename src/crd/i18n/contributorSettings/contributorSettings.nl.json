@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -15,6 +18,11 @@
         "account": "Account",
         "community": "Gemeenschap",
         "authorization": "Autorisatie",
+        "settings": "Instellingen"
+      },
+      "vc": {
+        "profile": "Profiel",
+        "membership": "Lidmaatschap",
         "settings": "Instellingen"
       }
     }
@@ -481,6 +489,114 @@
         "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Geassocieerde) zichtbaar op het openbare profiel."
       },
       "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Instellingen",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe deze Virtuele Bijdrager wordt weergegeven op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte regel die op het profiel van de bijdrager wordt getoond."
+        },
+        "description": {
+          "label": "Beschrijving",
+          "hint": "Leg uit wat deze Virtuele Bijdrager doet en hoe ermee te werken."
+        }
+      },
+      "keywords": {
+        "label": "Trefwoorden",
+        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtuele Bijdrager kunnen vinden.",
+        "placeholder": "Voeg een trefwoord toe en druk op Enter"
+      },
+      "socialLinks": {
+        "title": "Referenties",
+        "addAnother": "Nog een referentie toevoegen",
+        "namePlaceholder": "Naam",
+        "urlPlaceholder": "https://voorbeeld.com",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
+        "empty": "Nog geen referenties.",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Deze referentie wordt verwijderd wanneer u de sectie opslaat. U kunt dit ongedaan maken voordat u opslaat.",
+          "confirm": "Verwijderen"
+        }
+      },
+      "metadata": {
+        "title": "Over deze Virtuele Bijdrager",
+        "hostLabel": "Gehost door",
+        "bodyOfKnowledgeLabel": "Kennisbron"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Avatar wijzigen",
+        "uploading": "Bezig met uploaden…",
+        "helperText": "Vierkante JPEG of PNG, maximaal 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Lidmaatschappen"
+      },
+      "empty": "Deze Virtuele Bijdrager is nog geen lid van een ruimte.",
+      "spaceBadge": "Ruimte",
+      "subspaceBadge": "Subruimte",
+      "viewLabel": "Bekijk",
+      "leaveLabel": "Verlaten",
+      "leaveSpaceConfirmTitle": "Deze ruimte verlaten?",
+      "leaveSubspaceConfirmTitle": "Deze subruimte verlaten?",
+      "leaveConfirmBody": "Deze Virtuele Bijdrager verwijderen uit {{name}}? Dit kan ongedaan worden gemaakt door opnieuw lidmaatschap aan te vragen.",
+      "leaveConfirmAction": "Verlaten",
+      "pendingInvitationsHeading": "Openstaande uitnodigingen",
+      "acceptLabel": "Accepteren",
+      "declineLabel": "Afwijzen",
+      "acceptInvitationConfirmTitle": "Uitnodiging accepteren?",
+      "acceptInvitationConfirmBody": "De uitnodiging om {{name}} bij te wonen accepteren?",
+      "acceptInvitationConfirmAction": "Accepteren"
+    },
+    "visibility": {
+      "title": "Zichtbaarheid",
+      "helper": "Bepaalt wie deze Virtuele Bijdrager kan vinden.",
+      "publicLabel": "Openbaar",
+      "publicDescription": "Iedereen, inclusief anonieme bezoekers, kan deze Virtuele Bijdrager vinden.",
+      "accountLabel": "Account",
+      "accountDescription": "Alleen leden van het host-account kunnen deze Virtuele Bijdrager vinden.",
+      "hiddenLabel": "Verborgen",
+      "hiddenDescription": "Deze Virtuele Bijdrager is verborgen voor zoekopdrachten.",
+      "listedInStoreLabel": "Vermeld in de Alkemio-winkel",
+      "listedInStoreHelper": "Alleen beschikbaar wanneer Zichtbaarheid op Openbaar staat."
+    },
+    "bodyOfKnowledge": {
+      "title": "Kennisbron",
+      "helper": "Beheer hoe de kennisbron van deze Virtuele Bijdrager wordt blootgesteld.",
+      "privacyToggleLabel": "Kennisbron-inhoud verbergen voor niet-leden",
+      "privacyToggleHelper": "Wanneer ingeschakeld, wordt de onderliggende inhoud verborgen voor gebruikers zonder toegang.",
+      "refreshLabel": "Kennis vernieuwen",
+      "lastUpdated": "Laatst bijgewerkt:",
+      "never": "nooit"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Beschikbare variabelen: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Externe AI-configuratie",
+      "helper": "Verbind deze Virtuele Bijdrager met een externe AI-provider.",
+      "apiKeyLabel": "API-sleutel",
+      "apiKeyPlaceholder": "Voer een nieuwe API-sleutel in",
+      "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
+      "assistantIdLabel": "Assistant-ID",
+      "modelLabel": "Model"
+    },
+    "settings": {
+      "commitErrorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     }
   },
   "shared": {

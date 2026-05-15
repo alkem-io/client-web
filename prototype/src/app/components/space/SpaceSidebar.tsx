@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { ReadMoreText } from "@/app/components/ui/ReadMoreText";
 import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import {
@@ -9,12 +10,12 @@ import {
   Plus,
   MapPin,
   Mail,
-  UserPlus,
   Bot,
   BookOpen,
   ShieldCheck,
   FileText,
   FolderOpen,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router";
 import { AboutThisSpaceDialog } from "@/app/components/space/AboutThisSpaceDialog";
@@ -68,26 +69,15 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* ── Info Block (shared across all variants) ── */}
-      <InfoBlock />
+      <InfoBlock onAboutClick={() => setAboutOpen(true)} />
+      <AboutThisSpaceDialog open={aboutOpen} onOpenChange={setAboutOpen} spaceSlug={spaceSlug} />
+
+      {/* ── Community Members ── */}
+      <CommunityMembersWidget />
 
       {/* ── Variant-specific content ── */}
       {(variant === "home" || variant === "knowledge") && (
         <>
-          {/* About this Space button */}
-          <Button
-            variant="outline"
-            className="w-full uppercase tracking-wider gap-2"
-            style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: "var(--font-weight-medium)" as any,
-            }}
-            onClick={() => setAboutOpen(true)}
-          >
-            <Info className="w-4 h-4" />
-            About this Space
-          </Button>
-          <AboutThisSpaceDialog open={aboutOpen} onOpenChange={setAboutOpen} spaceSlug={spaceSlug} />
-
           {/* Subspaces List */}
           {variant === "home" && <SubspacesSection spaceSlug={spaceSlug} />}
           {variant === "knowledge" && <KnowledgeIndexSection />}
@@ -99,30 +89,14 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
 
       {variant === "community" && (
         <>
-          {/* Action buttons */}
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 gap-2"
-              style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: "var(--font-weight-medium)" as any,
-              }}
-            >
-              <Mail className="w-4 h-4" />
-              Contact Lead
-            </Button>
-            <Button
-              className="flex-1 gap-2"
-              style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: "var(--font-weight-medium)" as any,
-              }}
-            >
-              <UserPlus className="w-4 h-4" />
-              Invite
-            </Button>
-          </div>
+          {/* Contact Lead */}
+          <Button
+            variant="outline"
+            className="w-full gap-2 text-control"
+          >
+            <Mail className="w-4 h-4" />
+            Contact Lead
+          </Button>
 
           {/* Virtual Contributors */}
           <VirtualContributorsSection />
@@ -144,17 +118,7 @@ export function SpaceSidebar({ spaceSlug, variant = "home" }: SpaceSidebarProps)
 
 /* ─── Sub-components ─────────────────────────────────────────── */
 
-function InfoBlock() {
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const [isTruncated, setIsTruncated] = useState(false);
-
-  useEffect(() => {
-    const el = textRef.current;
-    if (el) {
-      setIsTruncated(el.scrollHeight > el.clientHeight);
-    }
-  }, []);
-
+function InfoBlock({ onAboutClick }: { onAboutClick: () => void }) {
   return (
     <div
       className="p-5"
@@ -164,33 +128,21 @@ function InfoBlock() {
         borderRadius: "var(--radius)",
       }}
     >
-      <p
-        ref={textRef}
-        className="mb-3 line-clamp-4"
-        style={{
-          fontSize: "var(--text-sm)",
-          lineHeight: 1.6,
-          opacity: 0.9,
-        }}
-      >
-        Collaborating on the future of sustainable energy solutions and urban
-        transformation. Join our community of innovators working to solve
-        real-world challenges.
-      </p>
-      {isTruncated && (
-        <button
-          onClick={() => setAboutOpen(true)}
-          className="hover:underline mb-4"
+      <div className="mb-3">
+        <ReadMoreText
+          maxLines={3}
+          className="text-body"
           style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: "var(--font-weight-medium)" as any,
-            color: "var(--primary-foreground)",
-            opacity: 0.8,
+            opacity: 0.9,
           }}
+          toggleColor="var(--primary-foreground)"
+          toggleOpacity={0.8}
         >
-          Read more
-        </button>
-      )}
+          Collaborating on the future of sustainable energy solutions and urban
+          transformation. Join our community of innovators working to solve
+          real-world challenges.
+        </ReadMoreText>
+      </div>
 
       {/* Space Lead */}
       <div
@@ -198,13 +150,8 @@ function InfoBlock() {
         style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
       >
         <p
-          className="uppercase tracking-wider mb-2"
-          style={{
-            fontSize: "10px",
-            fontWeight: 700,
-            opacity: 0.6,
-            letterSpacing: "0.04em",
-          }}
+          className="text-sidebar-label uppercase mb-2"
+          style={{ opacity: 0.6 }}
         >
           Lead
         </p>
@@ -229,7 +176,7 @@ function InfoBlock() {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
+            <p className="text-card-title">
               Elena Martinez
             </p>
             <p
@@ -242,6 +189,28 @@ function InfoBlock() {
           </div>
         </div>
       </div>
+
+      {/* About this Space */}
+      <button
+        onClick={onAboutClick}
+        className="w-full flex items-center justify-center gap-2 pt-3 mt-3 hover:underline cursor-pointer text-control"
+        style={{
+          borderTop: "1px solid rgba(255,255,255,0.15)",
+          color: "var(--primary-foreground)",
+          opacity: 0.8,
+          background: "none",
+          border: "none",
+          borderTopWidth: "1px",
+          borderTopStyle: "solid",
+          borderTopColor: "rgba(255,255,255,0.15)",
+          padding: 0,
+          paddingTop: "12px",
+          marginTop: "12px",
+        }}
+      >
+        <Info className="w-3.5 h-3.5" />
+        About this Space
+      </button>
     </div>
   );
 }
@@ -262,10 +231,8 @@ function VirtualContributorsSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -294,20 +261,17 @@ function VirtualContributorsSection() {
             </Avatar>
             <div className="min-w-0">
               <p
+                className="text-body-emphasis"
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                 }}
               >
                 {vc.name}
               </p>
               <p
-                className="line-clamp-2"
+                className="line-clamp-2 text-caption"
                 style={{
-                  fontSize: "12px",
                   color: "var(--muted-foreground)",
-                  lineHeight: 1.4,
                   marginTop: 2,
                 }}
               >
@@ -330,10 +294,8 @@ function CommunityGuidelinesSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -348,10 +310,9 @@ function CommunityGuidelinesSection() {
               style={{ color: "var(--success)" }}
             />
             <span
+              className="text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
-                lineHeight: 1.5,
               }}
             >
               {guideline}
@@ -373,10 +334,8 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
     <div>
       <div className="flex items-center justify-between mb-3 px-1">
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -386,11 +345,9 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
           {!showAll && (
             <Link
               to={`/space/${spaceSlug}/subspaces`}
-              className="hover:underline"
+              className="hover:underline text-caption font-medium"
               style={{
-                fontSize: "12px",
                 color: "var(--primary)",
-                fontWeight: "var(--font-weight-medium)" as any,
               }}
             >
               Show all
@@ -423,9 +380,8 @@ function SubspacesSection({ spaceSlug, showAll }: SubspacesSectionProps) {
                 </AvatarFallback>
               </Avatar>
               <span
+                className="text-control"
                 style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                 }}
               >
@@ -446,10 +402,8 @@ function EventsSection() {
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-1.5">
           <h3
-            className="uppercase tracking-wider"
+            className="text-sidebar-label uppercase"
             style={{
-              fontSize: "11px",
-              fontWeight: 600,
               color: "var(--muted-foreground)",
             }}
           >
@@ -471,24 +425,107 @@ function EventsSection() {
         </Button>
       </div>
       <p
-        className="px-3"
+        className="px-3 text-body"
         style={{
-          fontSize: "var(--text-sm)",
           color: "var(--muted-foreground)",
         }}
       >
         No upcoming events
       </p>
       <button
-        className="px-3 mt-2 hover:underline"
+        className="px-3 mt-2 hover:underline text-control"
         style={{
-          fontSize: "var(--text-sm)",
-          fontWeight: "var(--font-weight-medium)" as any,
           color: "var(--primary)",
         }}
       >
         Show calendar
       </button>
+    </div>
+  );
+}
+
+const COMMUNITY_MEMBERS = [
+  { name: "Sarah Chen", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "SC" },
+  { name: "David Kim", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "DK" },
+  { name: "Emily Davis", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "ED" },
+  { name: "Marc Johnson", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=128", initials: "MJ" },
+  { name: "Lisa Wang", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "LW" },
+  { name: "Alex Rivera", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "AR" },
+];
+
+function CommunityMembersWidget() {
+  const totalMembers = 29;
+  return (
+    <div
+      className="p-4"
+      style={{
+        background: "var(--card)",
+        border: "1px solid var(--border)",
+        borderRadius: "var(--radius)",
+      }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-1.5">
+          <Users className="w-3.5 h-3.5" style={{ color: "var(--muted-foreground)" }} />
+          <h3
+            className="text-sidebar-label uppercase"
+            style={{
+              color: "var(--muted-foreground)",
+            }}
+          >
+            Community
+          </h3>
+        </div>
+        <span
+          style={{
+            fontSize: "11px",
+            color: "var(--muted-foreground)",
+          }}
+        >
+          {totalMembers} members
+        </span>
+      </div>
+      <div className="flex -space-x-2 mb-3">
+        {COMMUNITY_MEMBERS.map((m) => (
+          <Avatar
+            key={m.initials}
+            className="w-8 h-8 transition-transform hover:z-10 hover:scale-110"
+            style={{ border: "2px solid var(--card)" }}
+          >
+            <AvatarImage src={m.avatar} alt={m.name} />
+            <AvatarFallback
+              style={{
+                background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+                color: "var(--primary)",
+                fontSize: "10px",
+                fontWeight: 600,
+              }}
+            >
+              {m.initials}
+            </AvatarFallback>
+          </Avatar>
+        ))}
+        <div
+          className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-colors"
+          style={{
+            background: "color-mix(in srgb, var(--primary) 10%, transparent)",
+            color: "var(--primary)",
+            fontSize: "11px",
+            fontWeight: 600,
+            border: "2px solid var(--card)",
+          }}
+        >
+          +{totalMembers - COMMUNITY_MEMBERS.length}
+        </div>
+      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full gap-1.5 text-control"
+      >
+        <Users className="w-3.5 h-3.5" />
+        View all members
+      </Button>
     </div>
   );
 }
@@ -511,10 +548,8 @@ function KnowledgeIndexSection() {
           style={{ color: "var(--muted-foreground)" }}
         />
         <h3
-          className="uppercase tracking-wider"
+          className="text-sidebar-label uppercase"
           style={{
-            fontSize: "11px",
-            fontWeight: 600,
             color: "var(--muted-foreground)",
           }}
         >
@@ -541,10 +576,8 @@ function KnowledgeIndexSection() {
               }}
             />
             <span
-              className="line-clamp-1"
+              className="line-clamp-1 text-control"
               style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: "var(--font-weight-medium)" as any,
                 color: "var(--foreground)",
               }}
             >

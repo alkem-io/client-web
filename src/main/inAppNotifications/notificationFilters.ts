@@ -81,3 +81,10 @@ export const getNotificationTypesForFilter = (filter: NotificationFilterType): N
       return ALL_NOTIFICATION_TYPES;
   }
 };
+
+export const getCategoryFilterForNotificationType = (type: NotificationEvent): NotificationFilterType | null => {
+  if (MESSAGES_AND_REPLIES_TYPES.includes(type)) return NotificationFilterType.MessagesAndReplies;
+  if (SPACE_NOTIFICATION_TYPES.includes(type)) return NotificationFilterType.Space;
+  if (PLATFORM_NOTIFICATION_TYPES.includes(type)) return NotificationFilterType.Platform;
+  return null;
+};

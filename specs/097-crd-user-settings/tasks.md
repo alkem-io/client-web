@@ -27,7 +27,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Two settings integratio
 
 **Purpose**: Repo-wide setup — confirm prerequisites, no new tooling needed.
 
-- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-crd-enabled', 'true')` and reload `/user/<self>/settings/profile`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard / Profile from 096) render with the toggle on. Document any environment issues in this task's notes — no code change.
+- [ ] T001 Verify dev server runs and CRD toggle is functional: `pnpm install`, `pnpm start`, then in the browser console set `localStorage.setItem('alkemio-design-version', '2')` and reload `/user/<self>/settings/profile`. Confirm the existing MUI page renders with the toggle off and the existing CRD pages (Spaces / Dashboard / Profile from 096) render with the toggle on. Document any environment issues in this task's notes — no code change.
 
 ---
 
@@ -330,6 +330,74 @@ This is a single Vite SPA. Source paths begin at `src/`. Two settings integratio
 - [X] T097 Delete the stale `contracts/editable-field.ts` once `tab-orgProfile.ts` has been rewritten (T066a) and no consumer imports from it. Verify with `grep -rn "EditableFieldShellProps\|EditableFieldStatus" src/` returns no results. **Result**: grep clean across `src/` and `specs/`; file deleted.
 - [X] T098 [US2 + US9] Account-tab capacity badges + per-plan tooltip (FR-034a, post-implementation correction — Decision #16). **Result**: extended `AccountResourceGroup` with optional `capacity` (`{ usage; limit; isAvailable; perPlan? }`) and added `AccountSpacePlanCapacity` to `contracts/tab-userAccount.ts` (re-exported by `tab-orgAccount.ts`). `contributorAccountMapper.ts` now reads `account.license.entitlements[]`, sums Free+Plus+Premium for Spaces (with the three-plan `perPlan` breakdown) and emits simple `{ usage, limit }` for VC / Pack / Hub; `isAvailable` is the actor's `canCreate*` privilege (NOT `availableEntitlements`). `ContributorAccountView.tsx` gained a `CapacityBadge` component that renders `X/Y` with a Tooltip whose body is the parity-port wording — per-plan for Spaces, single-line for the other three; "Not available" + contact-team copy when `!isAvailable && usage === 0`. Custom Homepages empty-state `Capacity: {{usage}}/{{limit}} Used` reads from the same data. New `shared.account.capacity.*` i18n keys in all six languages (key-parity test passes); obsolete `shared.account.activeCount` removed.
 - [X] T099 [US1 + US8] Avatar / logo upload via CRD `ImageCropDialog` (FR-024 / FR-093, post-implementation correction — Decision #10 rewrite). **Result**: `useUserProfileTabData` and `useOrgProfileTabData` now hold `pendingAvatarCrop: { file, config }` state. `onUploadAvatar(file)` no longer fires the upload directly — it reads the avatar's `VisualModelFull` constraints (`aspectRatio`, min/max width/height) from the raw query data and sets `pendingAvatarCrop`. New `onAvatarCropComplete(croppedFile, altText)` fires `uploadImageOnVisual` with the cropped file + supplied alt text and merges the result into the buffer; `onAvatarCropCancel()` clears the pending state. `CrdUserProfileTab` + `CrdOrgProfileTab` mount `<ImageCropDialog>` (`@/crd/components/common/ImageCropDialog` — same primitive 045 About uses). New `shared.avatarCropDialog.*` i18n keys in all six languages (Save/Saving/Cancel reuse existing `shared.*` keys). Tests in both hook test files rewritten — three cases per side covering "pick → dialog opens, no upload", "cancel → no upload", "crop save → upload fires with cropped file + alt text + buffer updates".
+
+---
+
+## Phase 16: VC Settings Shell Extension (Priority: P1) — 2026-05-11
+
+**Scope**: Add a CRD Virtual Contributor Settings shell with 3 tabs (Profile / Membership / Settings) gated by the same `useCrdEnabled` toggle that gates the rest of 097. Mirrors the User + Org shells. Apollo mutations reused unchanged. No GraphQL schema change. Prompt Graph editor on the Settings tab is **deferred** to a follow-up spec (Decision #17).
+
+**Independent Test**: With CRD on, log in as a user who hosts at least one VC. Click the gear icon on the public CRD VC profile (096) → lands on `/vc/<vcNameId>/settings/profile` rendered by the new CRD shell (NOT the MUI admin shell). The tab strip shows 3 tabs. Toggling CRD off makes the same URL resolve to the existing MUI admin shell (`MuiVCSettingsRoute`).
+
+### Shell + access guard (US13 / US14 / US15)
+
+- [ ] T100 [P] Implement `useCanEditVcSettings.ts` at `src/main/crdPages/topLevelPages/vcPages/useCanEditVcSettings.ts`. Returns `{ canEditSettings, hasUpdatePrivilege }` from `virtualContributor.authorization.myPrivileges.includes(AuthorizationPrivilege.Update)`. Unit-tested for true / false / anonymous branches (Decision #7 extended).
+- [ ] T101 [P] Implement `useVcSettingsAccessGuard.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/useVcSettingsAccessGuard.ts`. Wraps `useCanEditVcSettings`; on `canEditSettings === false` `navigate(profileUrl, { replace: true })` (FR-013).
+- [ ] T102 [P] Implement `useVcSettingsTab.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/useVcSettingsTab.ts`. Resolves active tab id (`'profile' | 'membership' | 'settings'`) from URL; `onTabSelect` routes through `buildSettingsTabUrl(profileUrl, tabId)` (no inline templates).
+- [ ] T103 [US13/14/15] Implement `CrdVCSettingsPage.tsx` at `src/main/crdPages/topLevelPages/vcPages/settings/CrdVCSettingsPage.tsx`. Hosts `SettingsShell<VcTabId>` with the 3 tabs; reads `vcId` from `useUrlResolver()` (same hook `CrdVCProfilePage` uses).
+- [ ] T104 [US13/14/15] Implement `CrdVCSettingsRoutes.tsx` at `src/main/crdPages/topLevelPages/vcPages/settings/CrdVCSettingsRoutes.tsx`. Routes for the 3 tabs; runs `useVcSettingsAccessGuard` at the top.
+- [ ] T105 [US13/14/15] Modify `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` — gate the existing `settings/*` route via `useCrdEnabled() ? <CrdVCSettingsRoutes /> : <MuiVCSettingsRoute />`. Mirrors the Org dispatch in `CrdOrganizationRoutes.tsx`.
+
+### US13 — VC Profile tab
+
+- [ ] T106 [P] [US13] Implement `vcProfileMapper.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/profile/vcProfileMapper.ts`. Maps `useVirtualContributorQuery` data to `VcProfileViewProps`. Re-uses `mapReferenceRows` / `mapAvatarColumn` helpers from the user-profile mapper. Surfaces `host` + `bodyOfKnowledge` read-only metadata rows.
+- [ ] T107 [US13] Implement `useVcProfileTabData.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/profile/useVcProfileTabData.ts`. Per-section save hook cloned from `useUserProfileTabData`'s shape — sections: `displayName`, `tagline`, `description`, `keywords` (with lazy-create on first save), `references` (batch). `pendingAvatarCrop` + `onAvatarCropComplete` / `onAvatarCropCancel` mirroring T099. `pendingReferenceDelete` state for Rule #9 confirmation flow.
+- [ ] T108 [US13] Implement `VCProfileTabView.tsx` at `src/crd/components/virtualContributor/settings/VCProfileTabView.tsx`. Composes `EditableSection` (for the 3 single-input sections + Keywords) + `ReferencesSection` + `AvatarColumn` + two read-only metadata rows (host + body-of-knowledge). Pure CRD — no Apollo / router / domain imports.
+- [ ] T109 [US13] Implement `CrdVCProfileTab.tsx` at `src/main/crdPages/topLevelPages/vcPages/settings/profile/CrdVCProfileTab.tsx`. Wires `useVcProfileTabData` to `VCProfileTabView`; mounts `<ImageCropDialog>` driven by `pendingAvatarCrop` and `<ConfirmationDialog>` driven by `pendingReferenceDelete`.
+- [ ] T110 [US13] Add VC Profile i18n keys under `vc.profile.*` (en / nl / es / bg / de / fr): `identity.{displayName,tagline,description}`, `keywords.{title, placeholder, addLabel}`, `socialLinks.{title,addLabel,removeAriaLabel,deleteConfirmTitle,deleteConfirmBody}`, `metadata.{hostLabel,bodyOfKnowledgeLabel}`. Run key-parity test.
+- [ ] T111 [US13] Unit-test `useVcProfileTabData.test.ts`: per-section idle/saving/saved/error lifecycle (cover at least DisplayName + Description + Keywords lazy-create + References batch + avatar crop happy path). Mirrors `useUserProfileTabData.test.ts`'s shape.
+
+### US14 — VC Membership tab
+
+- [ ] T112 [P] [US14] Implement `vcMembershipMapper.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/membership/vcMembershipMapper.ts`. Maps `useVcMembershipsQuery` confirmed-memberships + pending-invitations data to `VcMembershipViewProps`. Computes `type: 'space' | 'subspace'` from `level`; `color` from `pickColorFromId(spaceId)`.
+- [ ] T113 [US14] Implement `useVcMembershipTabData.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/membership/useVcMembershipTabData.ts`. Holds `leaveConfirm` + `acceptConfirm` pending state; `onRequestLeave` / `onRequestAccept` raise pending state; `onConfirm` fires `removeRoleFromVirtualContributor` (Leave) and the existing accept-invitation mutation (Accept). Decline is symmetric.
+- [ ] T114 [US14] Implement `VCMembershipTabView.tsx` at `src/crd/components/virtualContributor/settings/VCMembershipTabView.tsx`. Confirmed-memberships card grid (reuses the User Membership card layout — `MembershipCard` cloned/parameterized) + Pending Invitations list below. No Home Space selector, no search/filter strip.
+- [ ] T115 [US14] Implement `CrdVCMembershipTab.tsx` at `src/main/crdPages/topLevelPages/vcPages/settings/membership/CrdVCMembershipTab.tsx`. Wires `useVcMembershipTabData` to `VCMembershipTabView`; mounts two `<ConfirmationDialog>`s (one for Leave, one for Accept — Accept dialog body renders the invitation welcome message).
+- [ ] T116 [US14] Add VC Membership i18n keys under `vc.membership.*` (en / nl / es / bg / de / fr): `title, emptyMembershipsLabel, viewLabel, leaveLabel, leaveConfirmTitle, leaveConfirmBody, pendingInvitationsHeading, acceptLabel, declineLabel, acceptConfirmTitle, acceptConfirmBody`. Run key-parity test.
+- [ ] T117 [US14] Unit-test `useVcMembershipTabData.test.ts`: confirmed-memberships shape; pending-invitations shape; Leave-confirmation flow (request → confirm → mutation); Accept-confirmation flow (request → confirm → mutation).
+
+### US15 — VC Settings tab (engine-conditional sub-sections + Prompt Graph fallback)
+
+- [ ] T118 [P] [US15] Implement `vcSettingsMapper.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/settings/vcSettingsMapper.ts`. Maps `VirtualContributor` + `aiPersona` + `bodyOfKnowledgeType` + viewer flags (`platformAdmin`, `platformSettings.promptGraphEditingEnabled`) to `VcSettingsViewProps`. Implements the engine truth table in Decision #17 — only emits sub-section props for cards whose conditions hold; the others stay `undefined` on the view props.
+- [ ] T119 [US15] Implement `useVcSettingsTabData.ts` at `src/main/crdPages/topLevelPages/vcPages/settings/settings/useVcSettingsTabData.ts`. Holds:
+  - Visibility commit-on-change with optimistic-revert pattern (parity with User Notifications): `onChangeSearchVisibility` / `onToggleListedInStore` → visual flip → `updateVirtualContributorSettings` → revert + toast on hard failure.
+  - BoK privacy toggle (same optimistic-revert pattern). BoK refresh button: `onRefresh` → `refreshBodyOfKnowledge` → on success update `lastUpdatedIso`.
+  - Prompt: per-section save via FieldFooter (`idle | saving | saved | error`, `SAVED_FLASH_MS = 1800`). Mutation: `updateAiPersona`.
+  - External Config: per-section save. `apiKey` **never echoed back** — the value is read off the form state on save; included in the mutation payload only when non-empty (parity with MUI `ExternalConfig.tsx` line 72).
+  - PromptGraph fallback: pure read-only — emits `legacyHref` derived from the VC route.
+- [ ] T120 [US15] Implement `VCVisibilityCard.tsx` at `src/crd/components/virtualContributor/settings/VCVisibilityCard.tsx`. `searchVisibility` radio (Public / Account / Hidden) + `listedInStore` toggle (disabled unless searchVisibility === Public).
+- [ ] T121 [US15] Implement `VCBodyOfKnowledgeCard.tsx` at `src/crd/components/virtualContributor/settings/VCBodyOfKnowledgeCard.tsx`. Privacy toggle + "Refresh Knowledge" button + last-updated timestamp display.
+- [ ] T122 [US15] Implement `VCPromptCard.tsx` at `src/crd/components/virtualContributor/settings/VCPromptCard.tsx`. Reuses `@/crd/forms/markdown/MarkdownEditor`. Per-section save via FieldFooter.
+- [ ] T123 [US15] Implement `VCExternalConfigCard.tsx` at `src/crd/components/virtualContributor/settings/VCExternalConfigCard.tsx`. `apiKey` Input (always rendered empty) + conditional `assistantId` Input + `model` Select. Per-section save via FieldFooter.
+- [ ] T124 [US15] Implement `VCPromptGraphFallbackCard.tsx` at `src/crd/components/virtualContributor/settings/VCPromptGraphFallbackCard.tsx`. Small read-only tile with info icon + heading + body + CTA link to legacy MUI URL.
+- [ ] T125 [US15] Implement `VCSettingsTabView.tsx` at `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx`. Engine-conditional orchestrator — renders only the cards whose props are present on `VcSettingsViewProps`. Visibility always rendered.
+- [ ] T126 [US15] Implement `CrdVCSettingsTab.tsx` at `src/main/crdPages/topLevelPages/vcPages/settings/settings/CrdVCSettingsTab.tsx`. Wires `useVcSettingsTabData` to `VCSettingsTabView`.
+- [ ] T127 [US15] Add VC Settings i18n keys under `vc.{visibility,bodyOfKnowledge,prompt,externalConfig,promptGraphFallback}.*` and `shell.tabs.vc.{profile,membership,settings}` (en / nl / es / bg / de / fr). Run key-parity test.
+- [ ] T128 [US15] Unit-test `useVcSettingsTabData.test.ts`: visibility optimistic-revert pattern on hard failure (parity with User Notifications + Org Settings); per-engine sub-section presence (Visibility always, BoK + Prompt + ExternalConfig + PromptGraphFallback only when their condition holds); `apiKey`-omitted-when-empty payload shape; Prompt per-section save state machine.
+
+### VC route smoke + access-guard tests
+
+- [ ] T129 [P] Extend `src/main/crdPages/topLevelPages/vcPages/__tests__/canEditVcSettings.test.ts`: privilege-true / privilege-false / anonymous branches; loading state. Mirrors `canEditOrganizationSettings.test.ts`.
+- [ ] T130 [P] Extend `src/main/routing/__tests__/crdContributorSettingsRoutes.test.tsx` with 3 additional URL cases (VC profile / membership / settings). Module-load smoke (same shape as the existing 12 cases). CRD-off side: `/vc/<id>/settings/*` falls back to `MuiVCSettingsRoute`.
+
+### VC verification + polish
+
+- [ ] T131 Run `pnpm lint` and resolve any TypeScript / Biome / ESLint errors in the new files.
+- [ ] T132 Run `pnpm vitest run`. All new tests (T111, T117, T128, T129, T130) pass alongside the existing suite. No regressions in User / Org tests.
+- [ ] T133 Run `pnpm analyze`. The new VC Settings lazy chunk delta stays under +10 KB gzipped over the prior build (combined budget with User + Org chunks: +60 KB per quickstart Performance section). **Deferred to user (manual)**.
+- [ ] T134 Execute the manual smoke checklist for US13 / US14 / US15 from `quickstart.md` end-to-end against `localhost:3001`. CRD on AND off. **Deferred to user (manual)**.
+
+**Checkpoint**: VC Settings shell functional. Toggle on → gear lands on CRD shell; toggle off → gear lands on MUI admin shell. All three tabs persist edits with the same UX patterns the User + Org shells use.
 
 ---
 

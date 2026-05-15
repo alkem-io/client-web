@@ -133,17 +133,10 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
         borderRadius: "var(--radius)",
         padding: "24px",
         boxShadow: "var(--elevation-sm)",
-        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3
-          style={{
-            fontWeight: 700,
-            fontSize: "var(--text-base)",
-            color: "var(--foreground)",
-          }}
-        >
+        <h3 className="text-subheader font-bold text-foreground">
           {title}
         </h3>
         <button className="text-muted-foreground hover:text-foreground transition-colors">
@@ -155,8 +148,7 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
       <div className="flex gap-2 mb-6">
         <Select defaultValue="all-spaces">
           <SelectTrigger
-            className="h-8 w-auto min-w-[140px]"
-            style={{ fontSize: "var(--text-sm)" }}
+            className="h-8 w-auto min-w-[140px] text-control"
           >
             <SelectValue placeholder="Space: All Spaces" />
           </SelectTrigger>
@@ -169,8 +161,7 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
         {type === "spaces" && (
           <Select defaultValue="all-roles">
             <SelectTrigger
-              className="h-8 w-auto min-w-[130px]"
-              style={{ fontSize: "var(--text-sm)" }}
+              className="h-8 w-auto min-w-[130px] text-control"
             >
               <SelectValue placeholder="My role: All roles" />
             </SelectTrigger>
@@ -194,25 +185,25 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-foreground line-clamp-2">
+              <p className="text-body text-foreground line-clamp-2">
                 <span className="font-semibold">{activity.user.name}</span>{" "}
                 <span className="text-muted-foreground">{activity.action}</span>{" "}
                 <span className="font-medium text-primary">{activity.target}</span>
               </p>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-muted-foreground">{activity.timestamp}</span>
+                <span className="text-caption text-muted-foreground">{activity.timestamp}</span>
               </div>
             </div>
           </div>
         ))}
 
         {activities.length === 0 && (
-          <p className="text-sm text-muted-foreground py-4">No recent activity.</p>
+          <p className="text-body text-muted-foreground py-4">No recent activity.</p>
         )}
       </div>
 
       <div className="mt-6 pt-4 border-t border-border">
-        <button className="w-full text-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2">
+        <button className="w-full text-center text-control text-muted-foreground hover:text-primary transition-colors py-2">
           Show more
         </button>
       </div>

@@ -14,7 +14,7 @@ interface Item {
   title: ReactNode;
   icon: ReactNode;
   uri: string;
-  cardBanner?: string;
+  avatar?: string;
   isPrivate?: boolean;
   pinned?: boolean;
 }
@@ -61,7 +61,7 @@ const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: Lin
       to={item.uri}
       sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
     >
-      <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} ariaLabel={t('common.avatar')} />
+      <Avatar variant="rounded" alt="subspace avatar" src={item.avatar} ariaLabel={t('common.avatar')} />
 
       <BlockSectionTitle minWidth={0} noWrap={true}>
         {item.title}

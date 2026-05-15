@@ -1,11 +1,17 @@
 import { Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ReferencesAndTagsStrip,
+  type ReferencesAndTagsStripReference,
+} from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
+
+export type CalloutDetailDialogReference = ReferencesAndTagsStripReference;
 
 export type CalloutDetailDialogData = {
   id: string;
@@ -19,6 +25,10 @@ export type CalloutDetailDialogData = {
   timestamp?: string;
   commentCount?: number;
   reactionCount?: number;
+  /** Default-tagset tags, displayed as a compact pill row below the title (MUI `CalloutHeader` parity). */
+  tags?: string[];
+  /** External references, rendered alongside the tag strip. Clicking a reference opens its URI. */
+  references?: CalloutDetailDialogReference[];
 };
 
 type CalloutDetailDialogProps = {
@@ -33,6 +43,14 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /**
+   * Inline preview of the currently-selected contribution (e.g. CalloutPostPreview).
+   * Rendered BELOW the contributions grid so the user keeps the full list in view
+   * while reading the selected response — mirrors the MUI flow where the
+   * `CalloutContributionsHorizontalPager` + `CalloutContributionPreview` stack
+   * coexist (`src/domain/collaboration/callout/CalloutView/CalloutView.tsx`).
+   */
+  selectedContributionSlot?: ReactNode;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
@@ -70,6 +88,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  selectedContributionSlot,
   pollSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
@@ -157,6 +176,8 @@ export function CalloutDetailDialog({
 
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 
+              <ReferencesAndTagsStrip references={callout.references} tags={callout.tags} />
+
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
               {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
@@ -165,32 +186,34 @@ export function CalloutDetailDialog({
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
-            {/* Reactions + share bar */}
-            <div className="flex items-center gap-4 py-4 border-y border-border">
-              {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+            {/* Reactions bar (sharing is consolidated to the sticky header). */}
+            {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+              <div className="flex items-center gap-4 py-4 border-y border-border">
                 <span className="text-body-emphasis text-muted-foreground">
                   {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
                 </span>
-              )}
-              <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
-                <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                {t('calloutDialog.share')}
-              </Button>
-            </div>
+              </div>
+            )}
 
-            {/* Contributions section */}
-            {hasContributions && contributionsSlot && (
-              <div className="py-8 border-b border-border">
-                <div className="flex items-center gap-2 mb-6">
-                  <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
-                  {contributionsCount !== undefined && (
-                    <Badge variant="secondary" className="rounded-full px-2">
-                      {contributionsCount}
-                    </Badge>
-                  )}
-                </div>
-                {contributionsSlot}
+            {/* Contributions section — grid stays visible even when a contribution is
+                selected, so the user can switch between responses. The inline
+                preview (e.g. CalloutPostPreview) renders directly below the grid. */}
+            {hasContributions && (contributionsSlot || selectedContributionSlot) && (
+              <div className="py-8 border-b border-border space-y-6">
+                {contributionsSlot && (
+                  <>
+                    <div className="flex items-center gap-2 mb-6">
+                      <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
+                      {contributionsCount !== undefined && (
+                        <Badge variant="secondary" className="rounded-full px-2">
+                          {contributionsCount}
+                        </Badge>
+                      )}
+                    </div>
+                    {contributionsSlot}
+                  </>
+                )}
+                {selectedContributionSlot}
               </div>
             )}
 
