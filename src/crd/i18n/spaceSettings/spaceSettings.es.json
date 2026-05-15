@@ -93,6 +93,9 @@
         "confirm": "Añadir fase"
       }
     },
+    "replaceFlow": {
+      "button": "Reemplazar flujo de innovación"
+    },
     "row": {
       "drag": "Arrastra para reordenar",
       "menu": "Acciones del callout",

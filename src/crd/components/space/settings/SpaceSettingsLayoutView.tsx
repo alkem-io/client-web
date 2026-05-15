@@ -12,7 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceSettingsCard } from '@/crd/components/space/settings/SpaceSettingsCard';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
@@ -56,6 +56,11 @@ export type SpaceSettingsLayoutViewProps = {
   maximumNumberOfStates?: number;
   /** True while a structural mutation is in flight — disables Add Phase. */
   isStructureMutating?: boolean;
+  /**
+   * Admin slot rendered in the page header (next to "Add Phase") — used to
+   * inject the "Replace innovation flow" button connector at L0/L1/L2.
+   */
+  headerActionsSlot?: ReactNode;
   className?: string;
 };
 
@@ -87,6 +92,7 @@ export function SpaceSettingsLayoutView({
   onCreatePhase,
   maximumNumberOfStates = Number.POSITIVE_INFINITY,
   isStructureMutating = false,
+  headerActionsSlot,
   className,
 }: SpaceSettingsLayoutViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -168,19 +174,22 @@ export function SpaceSettingsLayoutView({
           <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
           <p className="text-body text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
         </div>
-        {canManagePhases && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="gap-2 shrink-0"
-            disabled={!canAddPhase}
-            onClick={() => setAddPhaseOpen(true)}
-          >
-            <Plus aria-hidden="true" className="size-4" />
-            {t('layout.addPhase.button')}
-          </Button>
-        )}
+        <div className="flex items-center gap-2 shrink-0">
+          {headerActionsSlot}
+          {canManagePhases && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2 shrink-0"
+              disabled={!canAddPhase}
+              onClick={() => setAddPhaseOpen(true)}
+            >
+              <Plus aria-hidden="true" className="size-4" />
+              {t('layout.addPhase.button')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Columns + Save bar inside a bordered container */}

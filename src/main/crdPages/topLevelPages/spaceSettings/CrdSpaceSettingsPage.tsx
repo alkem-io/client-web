@@ -27,6 +27,7 @@ import { TemplateEditDialog } from '@/crd/components/space/settings/TemplateEdit
 import { TemplateLibraryDialog } from '@/crd/components/space/settings/TemplateLibraryDialog';
 import { TemplatePreviewDialog } from '@/crd/components/space/settings/TemplatePreviewDialog';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import {
@@ -249,6 +250,7 @@ export default function CrdSpaceSettingsPage() {
                 onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
+                headerActionsSlot={<LayoutReplaceFlowConnector collaborationId={layout.collaborationId} />}
               />
             )}
             {activeTab === 'community' && (

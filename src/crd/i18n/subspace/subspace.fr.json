@@ -17,6 +17,13 @@
     "connectorAlt": "Phase suivante",
     "menu": "Menu"
   },
+  "flowAdmin": {
+    "trigger": "Gérer le flux d'innovation",
+    "setCurrentState": "Définir l'état actuel",
+    "currentStateMarker": "(actuel)",
+    "replaceFlow": "Remplacer le flux d'innovation…",
+    "editLayout": "Modifier la disposition du flux"
+  },
   "sidebar": {
     "about": "À propos de ce SousEspace",
     "lead": "Responsable",

@@ -39,6 +39,7 @@ export type UseLayoutTabDataResult = {
   /** Update both buffer AND snapshot for a column saved via the Edit Details dialog. */
   markColumnSaved: (columnId: LayoutColumnId, title: string, description: string) => void;
   /** Underlying ids — useful for the view's useColumnMenu consumer. */
+  collaborationId: string;
   innovationFlowId: string;
   calloutsSetId: string;
   /**
@@ -422,6 +423,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     onReset,
     isDirty,
     markColumnSaved,
+    collaborationId,
     innovationFlowId: flowData?.lookup.collaboration?.innovationFlow.id ?? '',
     calloutsSetId: flowData?.lookup.collaboration?.calloutsSet.id ?? '',
     onCreateState,

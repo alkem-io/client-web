@@ -93,6 +93,9 @@
         "confirm": "Add phase"
       }
     },
+    "replaceFlow": {
+      "button": "Replace innovation flow"
+    },
     "row": {
       "drag": "Drag to reorder",
       "menu": "Callout actions",

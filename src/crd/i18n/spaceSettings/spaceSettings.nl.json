@@ -93,6 +93,9 @@
         "confirm": "Fase toevoegen"
       }
     },
+    "replaceFlow": {
+      "button": "Innovatieflow vervangen"
+    },
     "row": {
       "drag": "Sleep om te herordenen",
       "menu": "Calloutacties",

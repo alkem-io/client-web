@@ -17,6 +17,13 @@
     "connectorAlt": "Next phase",
     "menu": "Menu"
   },
+  "flowAdmin": {
+    "trigger": "Manage innovation flow",
+    "setCurrentState": "Set current state",
+    "currentStateMarker": "(current)",
+    "replaceFlow": "Replace innovation flow…",
+    "editLayout": "Edit flow layout"
+  },
   "sidebar": {
     "about": "About this Subspace",
     "lead": "Lead",

@@ -93,6 +93,9 @@
         "confirm": "Phase hinzufügen"
       }
     },
+    "replaceFlow": {
+      "button": "Innovationsfluss ersetzen"
+    },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",
       "menu": "Callout-Aktionen",

@@ -17,6 +17,13 @@
     "connectorAlt": "Volgende fase",
     "menu": "Menu"
   },
+  "flowAdmin": {
+    "trigger": "Innovatieflow beheren",
+    "setCurrentState": "Huidige status instellen",
+    "currentStateMarker": "(huidig)",
+    "replaceFlow": "Innovatieflow vervangen…",
+    "editLayout": "Flow-lay-out bewerken"
+  },
   "sidebar": {
     "about": "Over deze SubSpace",
     "lead": "Trekker",
