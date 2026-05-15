@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
@@ -22,6 +24,7 @@ import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
+  const { t: tSettings } = useTranslation('crd-spaceSettings');
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
@@ -106,22 +109,40 @@ export default function CrdSpaceSubspacesPage() {
       )}
 
       {canCreate && (
-        <CreateSubspaceDialog
-          open={createSubspace.open}
-          onOpenChange={open => {
-            if (!open) createSubspace.closeDialog();
-          }}
-          values={createSubspace.values}
-          errors={createSubspace.errors}
-          templates={createSubspace.templates}
-          templatesLoading={createSubspace.templatesLoading}
-          submitting={createSubspace.submitting}
-          canSubmit={createSubspace.canSubmit}
-          avatarConstraints={createSubspace.avatarConstraints}
-          cardBannerConstraints={createSubspace.cardBannerConstraints}
-          onChange={createSubspace.onChange}
-          onSubmit={() => void createSubspace.onSubmit()}
-        />
+        <>
+          <CreateSubspaceDialog
+            open={createSubspace.open}
+            onOpenChange={open => {
+              if (!open) createSubspace.closeDialog();
+            }}
+            values={createSubspace.values}
+            errors={createSubspace.errors}
+            selectedTemplateName={createSubspace.selectedTemplateName}
+            selectedTemplateContent={createSubspace.selectedTemplateContent}
+            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
+            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
+            onClearTemplate={createSubspace.onClearTemplate}
+            submitting={createSubspace.submitting}
+            canSubmit={createSubspace.canSubmit}
+            avatarConstraints={createSubspace.avatarConstraints}
+            cardBannerConstraints={createSubspace.cardBannerConstraints}
+            onChange={createSubspace.onChange}
+            onSubmit={() => void createSubspace.onSubmit()}
+          />
+          <TemplatePicker {...createSubspace.picker} />
+          <ConfirmationDialog
+            open={createSubspace.overwriteConfirmOpen}
+            onOpenChange={open => {
+              if (!open) createSubspace.onCancelOverwriteTemplate();
+            }}
+            title={tSettings('subspaces.createDialog.template.overwriteConfirm.title')}
+            description={tSettings('subspaces.createDialog.template.overwriteConfirm.description')}
+            confirmLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.confirm')}
+            cancelLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.cancel')}
+            onConfirm={createSubspace.onConfirmOverwriteTemplate}
+            onCancel={createSubspace.onCancelOverwriteTemplate}
+          />
+        </>
       )}
     </>
   );

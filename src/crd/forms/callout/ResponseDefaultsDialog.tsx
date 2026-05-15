@@ -21,6 +21,12 @@ type ResponseDefaultsDialogProps = {
   /** Commits draft values back to the parent form. */
   onSave: (next: ContributionDefaults) => void;
   /**
+   * Optional template-picker entry-point slot — rendered for `post` and
+   * `whiteboard` types (the connector wires the shared `TemplatePicker` in
+   * `mode:'select'` and applies the picked template's content via `onSave`).
+   */
+  templateSlot?: ReactNode;
+  /**
    * Optional whiteboard-editor launcher slot — rendered for the whiteboard
    * type (the connector wires `CrdSingleUserWhiteboardDialog`).
    */
@@ -39,6 +45,7 @@ export function ResponseDefaultsDialog({
   type,
   values,
   onSave,
+  templateSlot,
   whiteboardSlot,
   disabled,
 }: ResponseDefaultsDialogProps) {
@@ -142,6 +149,8 @@ export function ResponseDefaultsDialog({
         <DialogDescription className="sr-only">{t('responseDefaults.srDescription')}</DialogDescription>
 
         <div className="space-y-4 min-w-0">
+          {(type === 'post' || type === 'whiteboard') && templateSlot}
+
           <div className="space-y-1.5">
             <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
               {t('responseDefaults.defaultTitle')}

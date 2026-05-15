@@ -519,6 +519,7 @@
     "descriptionPlaceholder": "Optional description",
     "addRow": "Add another reference",
     "removeRow": "Remove reference",
+    "attachFile": "Attach file",
     "removeConfirm": {
       "title": "Remove this reference?",
       "description": "“{{name}}” will be removed once you save. This cannot be undone.",

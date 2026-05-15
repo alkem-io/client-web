@@ -58,11 +58,9 @@
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)"
       },
-      "defaultPostTemplate": {
-        "label": "Standard-Beitragsvorlage",
-        "header": "Vorlage auswählen",
-        "clear": "Standard löschen",
-        "none": "Keine Vorlagen verfügbar"
+      "defaultCalloutTemplate": {
+        "set": "Standard-Callout-Vorlage festlegen…",
+        "clear": "Standard-Callout-Vorlage entfernen"
       },
       "editDetails": {
         "menuLabel": "Details bearbeiten",
@@ -76,7 +74,15 @@
         "saving": "Speichern…",
         "save": "Speichern"
       },
-      "deletePhase": "Phase löschen"
+      "deletePhase": {
+        "menuLabel": "Phase löschen",
+        "confirm": {
+          "title": "Diese Phase löschen?",
+          "description": "Callouts, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Phase löschen",
+          "cancel": "Abbrechen"
+        }
+      }
     },
     "addPhase": {
       "button": "Phase hinzufügen",
@@ -248,6 +254,17 @@
       "description": "Legen Sie Regeln und Erwartungen für das Verhalten der Mitglieder fest.",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Benennen Sie Ihre Community-Richtlinien",
+      "referencesLabel": "Verwandte Links",
+      "applyTemplate": "Vorlage verwenden",
+      "saveAsTemplate": "Als Vorlage speichern",
+      "applyConfirm": {
+        "title": "Aktuelle Richtlinien ersetzen?",
+        "description": "Beim Anwenden einer Vorlage werden der aktuelle Titel, der Inhalt und die Links überschrieben. Dies kann nicht rückgängig gemacht werden.",
+        "confirm": "Ersetzen",
+        "cancel": "Abbrechen"
+      },
       "save": "Richtlinien speichern",
       "saving": "Speichern…"
     },
@@ -417,7 +434,18 @@
         "hint": "Optional — wählen Sie eine Subspace-Vorlage aus, um Inhalte vorab zu füllen.",
         "loading": "Vorlagen laden…",
         "placeholder": "Vorlage auswählen (optional)",
-        "none": "Keine Vorlage"
+        "none": "Keine Vorlage",
+        "choose": "Vorlage auswählen",
+        "change": "Ändern",
+        "clear": "Leer verwenden",
+        "selectedLabel": "Ausgewählte Vorlage",
+        "loadingPreview": "Vorlagenvorschau wird geladen…",
+        "overwriteConfirm": {
+          "title": "Formularinhalt ersetzen?",
+          "description": "Durch das Anwenden dieser Vorlage werden der Name, der Slogan, die Beschreibung und die Tags überschrieben, die Sie bereits eingegeben haben.",
+          "confirm": "Vorlage anwenden",
+          "cancel": "Meine Änderungen behalten"
+        }
       },
       "displayName": {
         "label": "Name",

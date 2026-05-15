@@ -31641,6 +31641,68 @@ export type TemplateContentQuery = {
                         }>;
                       }
                     | undefined;
+                  poll?:
+                    | {
+                        __typename?: 'Poll';
+                        id: string;
+                        createdDate: Date;
+                        updatedDate: Date;
+                        title: string;
+                        status: PollStatus;
+                        totalVotes?: number | undefined;
+                        canSeeDetailedResults: boolean;
+                        settings: {
+                          __typename?: 'PollSettings';
+                          allowContributorsAddOptions: boolean;
+                          minResponses: number;
+                          maxResponses: number;
+                          resultsVisibility: PollResultsVisibility;
+                          resultsDetail: PollResultsDetail;
+                        };
+                        options: Array<{
+                          __typename?: 'PollOption';
+                          id: string;
+                          createdDate: Date;
+                          updatedDate: Date;
+                          text: string;
+                          sortOrder: number;
+                          voteCount?: number | undefined;
+                          votePercentage?: number | undefined;
+                          voters?:
+                            | Array<{
+                                __typename?: 'User';
+                                id: string;
+                                profile?:
+                                  | {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    }
+                                  | undefined;
+                              }>
+                            | undefined;
+                        }>;
+                        myVote?:
+                          | {
+                              __typename?: 'PollVote';
+                              id: string;
+                              createdDate: Date;
+                              updatedDate: Date;
+                              createdBy: string;
+                              selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                  collaboraDocument?:
+                    | {
+                        __typename?: 'CollaboraDocument';
+                        id: string;
+                        documentType: CollaboraDocumentType;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -32302,6 +32364,68 @@ export type CalloutTemplateContentFragment = {
             alternativeText?: string | undefined;
             sortOrder?: number | undefined;
           }>;
+        }
+      | undefined;
+    poll?:
+      | {
+          __typename?: 'Poll';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          title: string;
+          status: PollStatus;
+          totalVotes?: number | undefined;
+          canSeeDetailedResults: boolean;
+          settings: {
+            __typename?: 'PollSettings';
+            allowContributorsAddOptions: boolean;
+            minResponses: number;
+            maxResponses: number;
+            resultsVisibility: PollResultsVisibility;
+            resultsDetail: PollResultsDetail;
+          };
+          options: Array<{
+            __typename?: 'PollOption';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            text: string;
+            sortOrder: number;
+            voteCount?: number | undefined;
+            votePercentage?: number | undefined;
+            voters?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }>;
+          myVote?:
+            | {
+                __typename?: 'PollVote';
+                id: string;
+                createdDate: Date;
+                updatedDate: Date;
+                createdBy: string;
+                selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+              }
+            | undefined;
+        }
+      | undefined;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         }
       | undefined;
   };

@@ -54,6 +54,7 @@ import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/us
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import {
   diffPollOptions,
@@ -68,6 +69,7 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { useReferenceFileUpload } from './useReferenceFileUpload';
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -137,6 +139,7 @@ export function CalloutFormConnector({
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
   const markdownIntegration = useMarkdownEditorIntegration();
+  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
@@ -672,6 +675,8 @@ export function CalloutFormConnector({
               onChange={v => setField('referenceRows', v)}
               errors={errors as Record<string, string | undefined>}
               disabled={submitting}
+              onFileUpload={referenceUpload.onFileUpload}
+              uploadAccept={referenceUpload.accept}
             />
           </div>
         }

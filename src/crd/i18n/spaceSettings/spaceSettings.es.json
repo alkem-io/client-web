@@ -58,11 +58,9 @@
         "set": "Marcar como fase activa",
         "current": "Fase activa (actual)"
       },
-      "defaultPostTemplate": {
-        "label": "Plantilla de publicación predeterminada",
-        "header": "Elige una plantilla",
-        "clear": "Borrar predeterminada",
-        "none": "No hay plantillas disponibles"
+      "defaultCalloutTemplate": {
+        "set": "Establecer plantilla de callout predeterminada…",
+        "clear": "Quitar la plantilla de callout predeterminada"
       },
       "editDetails": {
         "menuLabel": "Editar detalles",
@@ -76,7 +74,15 @@
         "saving": "Guardando…",
         "save": "Guardar"
       },
-      "deletePhase": "Eliminar fase"
+      "deletePhase": {
+        "menuLabel": "Eliminar fase",
+        "confirm": {
+          "title": "¿Eliminar esta fase?",
+          "description": "Los callouts etiquetados actualmente con esta fase perderán la etiqueta. Esta acción no se puede deshacer.",
+          "confirm": "Eliminar fase",
+          "cancel": "Cancelar"
+        }
+      }
     },
     "addPhase": {
       "button": "Añadir fase",
@@ -248,6 +254,17 @@
       "description": "Establece reglas y expectativas sobre el comportamiento de los miembros.",
       "hint": "Se muestran a los nuevos miembros al unirse.",
       "placeholder": "Describe el código de conducta de tu espacio…",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Pon un nombre a tus normas de la comunidad",
+      "referencesLabel": "Enlaces relacionados",
+      "applyTemplate": "Usar una plantilla",
+      "saveAsTemplate": "Guardar como plantilla",
+      "applyConfirm": {
+        "title": "¿Reemplazar las normas actuales?",
+        "description": "Aplicar una plantilla sobrescribe el título, el contenido y los enlaces actuales. Esta acción no se puede deshacer.",
+        "confirm": "Reemplazar",
+        "cancel": "Cancelar"
+      },
       "save": "Guardar normas",
       "saving": "Guardando…"
     },
@@ -417,7 +434,18 @@
         "hint": "Opcional — elige una plantilla de subespacio para rellenar contenido previamente.",
         "loading": "Cargando plantillas…",
         "placeholder": "Seleccionar una plantilla (opcional)",
-        "none": "Sin plantilla"
+        "none": "Sin plantilla",
+        "choose": "Elegir una plantilla",
+        "change": "Cambiar",
+        "clear": "Usar en blanco",
+        "selectedLabel": "Plantilla seleccionada",
+        "loadingPreview": "Cargando vista previa de la plantilla…",
+        "overwriteConfirm": {
+          "title": "¿Reemplazar el contenido del formulario?",
+          "description": "Aplicar esta plantilla sobrescribirá el nombre, el lema, la descripción y las etiquetas que ya has introducido.",
+          "confirm": "Aplicar plantilla",
+          "cancel": "Mantener mis cambios"
+        }
       },
       "displayName": {
         "label": "Nombre",

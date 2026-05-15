@@ -528,6 +528,7 @@
     "descriptionPlaceholder": "Description facultative",
     "addRow": "Ajouter une autre référence",
     "removeRow": "Supprimer la référence",
+    "attachFile": "Joindre un fichier",
     "removeConfirm": {
       "title": "Supprimer cette référence ?",
       "description": "« {{name}} » sera supprimé lors de l’enregistrement. Cette action est irréversible.",
