@@ -11,7 +11,7 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Divider, FormControlLabel, Menu, MenuItem, MenuList, Switch, Typography } from '@mui/material';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
-import { type PropsWithChildren, type ReactNode, Suspense, useId, useState } from 'react';
+import { type PropsWithChildren, type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -75,7 +75,6 @@ const PlatformNavigationUserMenu = ({
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
   const designVersionToggle = useDesignVersionToggle();
-  const designVersionCaptionId = useId();
 
   const {
     openSelect,
@@ -151,30 +150,6 @@ const PlatformNavigationUserMenu = ({
                 </Typography>
               </NavigatableMenuItem>
             )}
-            {designVersionToggle.isVisible && (
-              <>
-                <Box sx={{ paddingX: gutters(1), paddingY: gutters(0.5) }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        size="small"
-                        checked={designVersionToggle.enabled}
-                        onChange={(_event, checked) => designVersionToggle.onChange(checked)}
-                        disabled={designVersionToggle.isPending}
-                        inputProps={{ 'aria-describedby': designVersionCaptionId }}
-                      />
-                    }
-                    label={t('topBar.designVersion.label')}
-                    labelPlacement="start"
-                    sx={{ marginLeft: 0, marginRight: 0, width: '100%', justifyContent: 'space-between' }}
-                  />
-                  <Caption id={designVersionCaptionId} color="neutralMedium.main">
-                    {t('topBar.designVersion.caption')}
-                  </Caption>
-                </Box>
-                <UserMenuDivider />
-              </>
-            )}
             <NavigatableMenuItem iconComponent={DashboardOutlined} route={homeUrl} onClick={onClose}>
               {t('pages.home.title')}
             </NavigatableMenuItem>
@@ -229,6 +204,27 @@ const PlatformNavigationUserMenu = ({
             >
               {t('buttons.getHelp')}
             </NavigatableMenuItem>
+            {designVersionToggle.isVisible && (
+              <>
+                <UserMenuDivider />
+                <Box sx={{ paddingX: gutters(1), paddingY: gutters(0.5) }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        size="small"
+                        checked={designVersionToggle.enabled}
+                        onChange={(_event, checked) => designVersionToggle.onChange(checked)}
+                        disabled={designVersionToggle.isPending}
+                      />
+                    }
+                    label={t('topBar.designVersion.label')}
+                    labelPlacement="start"
+                    sx={{ marginLeft: 0, marginRight: 0, width: '100%', justifyContent: 'space-between' }}
+                  />
+                </Box>
+                <UserMenuDivider />
+              </>
+            )}
             {isAuthenticated && (
               <NavigatableMenuItem iconComponent={MeetingRoomOutlined} route={AUTH_LOGOUT_PATH} onClick={onClose}>
                 {t('buttons.sign-out')}

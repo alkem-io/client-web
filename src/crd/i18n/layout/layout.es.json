@@ -15,7 +15,7 @@
     "settings": "Configuración",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
-    "beta": "Beta",
+    "preview": "Versión preliminar",
     "pendingMemberships": "Membresías pendientes",
     "administration": "Administración",
     "changeLanguage": "Cambiar idioma",
@@ -23,8 +23,7 @@
     "showGrid": "Mostrar cuadrícula",
     "hideGrid": "Ocultar cuadrícula",
     "designVersion": {
-      "label": "Nuevo diseño (beta)",
-      "caption": "El diseño anterior seguirá disponible durante un tiempo limitado."
+      "label": "Nuevo diseño (versión preliminar)"
     }
   },
   "footer": {

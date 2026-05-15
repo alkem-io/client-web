@@ -15,7 +15,7 @@
     "settings": "Настройки",
     "logout": "Изход",
     "login": "Вход",
-    "beta": "Бета",
+    "preview": "превю",
     "pendingMemberships": "Чакащи членства",
     "administration": "Администрация",
     "changeLanguage": "Смяна на езика",
@@ -23,8 +23,7 @@
     "showGrid": "Покажи мрежа",
     "hideGrid": "Скрий мрежа",
     "designVersion": {
-      "label": "Нов дизайн (бета)",
-      "caption": "Старият дизайн ще остане наличен още кратко време."
+      "label": "Нов дизайн (предварителен преглед)"
     }
   },
   "footer": {
