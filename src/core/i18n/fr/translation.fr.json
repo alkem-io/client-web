@@ -223,8 +223,7 @@
   "topBar": {
     "sign-in": "Connexion / Inscription",
     "designVersion": {
-      "label": "New design (beta)",
-      "caption": "The old design will remain available for a short time.",
+      "label": "New design (preview)",
       "errorSaving": "Could not save your design preference. Please try again."
     }
   },
@@ -4425,27 +4424,42 @@
       {
         "key": "transition-énergie",
         "name": "Transition énergétique",
-        "tags": ["Transition énergétique", "Énergie transitoire"]
+        "tags": [
+          "Transition énergétique",
+          "Énergie transitoire"
+        ]
       },
       {
         "key": "société inclusive",
         "name": "Société inclusive",
-        "tags": ["Société inclusive", "Samenleving inclusive"]
+        "tags": [
+          "Société inclusive",
+          "Samenleving inclusive"
+        ]
       },
       {
         "key": "services publics",
         "name": "Services publics",
-        "tags": ["Services publics", "Publieke Diensten"]
+        "tags": [
+          "Services publics",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovations"]
+        "tags": [
+          "Innovation",
+          "Innovations"
+        ]
       },
       {
         "key": "digitalisation de la société",
         "name": "Digitalisation de la société",
-        "tags": ["Digitalisation de la société", "Numérisation"]
+        "tags": [
+          "Digitalisation de la société",
+          "Numérisation"
+        ]
       }
     ]
   },
@@ -4532,7 +4546,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratuit",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 $t(common.members)", "Various tools, including standard $t(common.whiteboards)"],
+        "features": [
+          "Up to 10 $t(common.members)",
+          "Various tools, including standard $t(common.whiteboards)"
+        ],
         "disclaimer": "Free $t(common.spaces) are limited to 1 $t(common.space) per user",
         "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
       },

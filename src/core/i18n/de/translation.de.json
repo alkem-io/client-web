@@ -223,8 +223,7 @@
   "topBar": {
     "sign-in": "Einloggen / Anmelden",
     "designVersion": {
-      "label": "New design (beta)",
-      "caption": "The old design will remain available for a short time.",
+      "label": "New design (preview)",
       "errorSaving": "Could not save your design preference. Please try again."
     }
   },
@@ -4425,27 +4424,42 @@
       {
         "key": "Energie-Übergang",
         "name": "Energie-Übergang",
-        "tags": ["Energie-Übergang", "Energietransitie"]
+        "tags": [
+          "Energie-Übergang",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inklusive-Gesellschaft",
         "name": "Inklusive Gesellschaft",
-        "tags": ["Inklusive Gesellschaft", "Einschließlich Sieben-Samenleving"]
+        "tags": [
+          "Inklusive Gesellschaft",
+          "Einschließlich Sieben-Samenleving"
+        ]
       },
       {
         "key": "Öffentliche Dienstleistungen",
         "name": "Öffentliche Dienstleistungen",
-        "tags": ["Öffentliche Dienstleistungen", "Publieke Diensten"]
+        "tags": [
+          "Öffentliche Dienstleistungen",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovation"]
+        "tags": [
+          "Innovation",
+          "Innovation"
+        ]
       },
       {
         "key": "digitalisierung der Gesellschaft",
         "name": "Digitalisierung der Gesellschaft",
-        "tags": ["Digitalisierung der Gesellschaft", "Digitalisierung"]
+        "tags": [
+          "Digitalisierung der Gesellschaft",
+          "Digitalisierung"
+        ]
       }
     ]
   },
@@ -4532,7 +4546,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 $t(common.members)", "Various tools, including standard $t(common.whiteboards)"],
+        "features": [
+          "Up to 10 $t(common.members)",
+          "Various tools, including standard $t(common.whiteboards)"
+        ],
         "disclaimer": "Free $t(common.spaces) are limited to 1 $t(common.space) per user",
         "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
       },
