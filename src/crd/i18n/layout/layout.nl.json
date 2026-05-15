@@ -15,7 +15,7 @@
     "settings": "Instellingen",
     "logout": "Uitloggen",
     "login": "Inloggen",
-    "beta": "Bèta",
+    "preview": "Preview",
     "pendingMemberships": "Openstaande lidmaatschappen",
     "administration": "Administratie",
     "changeLanguage": "Taal wijzigen",
@@ -23,8 +23,7 @@
     "showGrid": "Raster tonen",
     "hideGrid": "Raster verbergen",
     "designVersion": {
-      "label": "Nieuw ontwerp (bèta)",
-      "caption": "Het oude ontwerp blijft nog korte tijd beschikbaar."
+      "label": "Nieuw ontwerp (preview)"
     }
   },
   "footer": {
