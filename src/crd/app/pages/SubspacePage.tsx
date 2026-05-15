@@ -50,7 +50,7 @@ export function SubspacePage() {
         actions={ACTIONS}
       />
 
-      <main className="flex-1 w-full px-6 md:px-8 py-8">
+      <main className="flex-1 w-full px-6 md:px-8 pb-8">
         <div className="grid grid-cols-12 gap-6 items-start">
           <div className="col-span-12 lg:col-span-8 lg:col-start-2 min-w-0">
             <div className="sticky top-16 z-10 pt-4 pb-3 mb-4 bg-background/95 backdrop-blur-sm">

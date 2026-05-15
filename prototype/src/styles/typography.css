@@ -80,7 +80,7 @@
   /* Control — UI-chrome in single-line interactive controls:
      buttons, menu rows, dropdowns, select triggers, inputs, tab labels.
      Same size as body, medium weight, tighter leading so rows stay compact. */
-  --text-control: 14px;
+  --text-control: 12px;
   --text-control--line-height: 1.25;
   --text-control--font-weight: 500;
 
@@ -110,4 +110,8 @@
   --text-badge--line-height: 1.3;
   --text-badge--font-weight: 600;
   --text-badge--letter-spacing: 0.04em;
+}
+
+.text-control {
+  text-transform: uppercase;
 }
