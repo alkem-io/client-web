@@ -19,6 +19,7 @@ export type CalloutDetailDialogData = {
   author?: {
     name: string;
     avatarUrl?: string;
+    profileUrl?: string;
     role?: string;
   };
   description?: string;
@@ -102,6 +103,23 @@ export function CalloutDetailDialog({
   const { t } = useTranslation('crd-space');
   const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
 
+  const author = callout.author;
+  const authorCluster = author ? (
+    <div className="flex items-center gap-3">
+      <Avatar className="w-10 h-10 border border-border">
+        {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
+        <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>
+      </Avatar>
+      <div>
+        <p className="text-card-title text-foreground">{author.name}</p>
+        <p className="text-caption text-muted-foreground">
+          {callout.timestamp}
+          {author.role && ` • ${author.role}`}
+        </p>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -156,23 +174,18 @@ export function CalloutDetailDialog({
             <div className="py-8 space-y-5">
               <h1 className="text-page-title text-foreground">{callout.title}</h1>
 
-              {callout.author && (
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-10 h-10 border border-border">
-                    {callout.author.avatarUrl && (
-                      <AvatarImage src={callout.author.avatarUrl} alt={callout.author.name} />
-                    )}
-                    <AvatarFallback>{callout.author.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-card-title text-foreground">{callout.author.name}</p>
-                    <p className="text-caption text-muted-foreground">
-                      {callout.timestamp}
-                      {callout.author.role && ` • ${callout.author.role}`}
-                    </p>
-                  </div>
-                </div>
-              )}
+              {authorCluster &&
+                (author?.profileUrl ? (
+                  <a
+                    href={author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 block rounded-md -mx-1 px-1 py-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {authorCluster}
+                  </a>
+                ) : (
+                  authorCluster
+                ))}
 
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 

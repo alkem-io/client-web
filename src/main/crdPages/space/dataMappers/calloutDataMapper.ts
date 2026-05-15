@@ -55,9 +55,9 @@ function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): Collab
  * fields with the same shape. Kept narrow so callers can pass either.
  */
 type CalloutAuthorshipSource = {
-  publishedBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  publishedBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
   publishedDate?: Date;
-  createdBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  createdBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
   createdDate?: Date;
 };
 
@@ -69,12 +69,16 @@ type CalloutAuthorshipSource = {
 function resolveAuthorAndTimestamp(
   source: CalloutAuthorshipSource,
   t: CrdSpaceTranslator
-): { author?: { name: string; avatarUrl?: string }; timestamp?: string } {
+): { author?: { name: string; avatarUrl?: string; profileUrl?: string }; timestamp?: string } {
   const authorSource = source.publishedBy ?? source.createdBy;
   const dateSource = source.publishedDate ?? source.createdDate;
   return {
     author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
+      ? {
+          name: authorSource.profile.displayName,
+          avatarUrl: authorSource.profile.avatar?.uri,
+          profileUrl: authorSource.profile.url,
+        }
       : undefined,
     timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
   };
