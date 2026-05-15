@@ -3,6 +3,7 @@ import {
   useSpaceAboutDetailsQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
@@ -192,7 +193,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
-    canCreateSubspace: permissions.canCreateSubspace,
+    // Spaces are capped at 3 levels (L0 → L1 → L2). An L2 cannot have children,
+    // so creation is offered only on L1 even if the backend grants the privilege.
+    canCreateSubspace: permissions.canCreateSubspace && subspace.level !== SpaceLevel.L2,
 
     applicationButtonProps,
     applicationLoading,
