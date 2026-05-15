@@ -13,6 +13,7 @@ type WhiteboardCollabFooterMappedProps = {
   deleteDisabled: boolean;
   canRestart: boolean;
   guestWarningVisible: boolean;
+  readonlyReason: ReadonlyReason | null;
 };
 
 type MapWhiteboardFooterParams = {
@@ -28,7 +29,7 @@ type MapWhiteboardFooterParams = {
   myMembershipStatus?: CommunityMembershipStatus;
 };
 
-enum ReadonlyReason {
+export enum ReadonlyReason {
   Readonly = 'readonly',
   ContentUpdatePolicy = 'contentUpdatePolicy',
   NoMembership = 'noMembership',
@@ -81,5 +82,6 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
     deleteDisabled: !!params.updating,
     canRestart,
     guestWarningVisible: params.guestContributionsAllowed === true,
+    readonlyReason,
   };
 }

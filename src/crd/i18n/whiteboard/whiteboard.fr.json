@@ -39,7 +39,22 @@
     }
   },
   "footer": {
-    "guestContributionsWarning": "Toute personne disposant du lien peut modifier"
+    "guestContributionsWarning": "Toute personne disposant du lien peut modifier",
+    "readonlyReason": {
+      "readonly": "<strong>Mode lecture seule</strong> <learnwhy>cliquez ici pour savoir pourquoi</learnwhy>",
+      "contentUpdatePolicy": "Vous n'avez pas les droits pour modifier ce tableau blanc. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de changer les paramètres de partage si vous souhaitez contribuer.",
+      "noMembership": "Vous devez être membre du {{spaceLevel}} dans lequel se trouve ce tableau blanc pour pouvoir le modifier. Cliquez ici pour <spacelink>rejoindre/postuler</spacelink>",
+      "unauthenticated": "Vous devez être connecté et membre du {{spaceLevel}} dans lequel se trouve ce tableau blanc pour pouvoir le modifier. Cliquez ici pour vous <signinlink>connecter</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Mode lecture seule",
+      "reason": {
+        "inactivity": "Vous ne pouvez pas modifier ce tableau blanc car vous êtes resté inactif trop longtemps. Veuillez essayer de rouvrir le tableau blanc pour continuer à modifier.",
+        "multiUserNotAllowed": "Vous ne pouvez pas modifier ce tableau blanc car cet espace n'autorise qu'un seul éditeur de tableau blanc à la fois",
+        "roomCapacityReached": "Vous ne pouvez pas modifier ce tableau blanc car cet espace autorise plusieurs éditeurs simultanément, mais le maximum est atteint",
+        "generic": "Vous ne pouvez pas modifier ce tableau blanc pour l'une des raisons suivantes :\n\n- Vous êtes resté inactif pendant 2 heures ou plus\n- Vous n'êtes pas membre de l'espace\n- Cet espace n'autorise qu'un seul éditeur de tableau blanc à la fois\n- Cet espace autorise plus d'éditeurs, mais le maximum est atteint"
+      }
+    }
   },
   "preview": {
     "settings": {
