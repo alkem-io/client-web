@@ -137,7 +137,17 @@ export function CalloutDetailDialog({
                 id="callout-dialog-description"
                 className="text-caption text-muted-foreground truncate"
               >
-                {callout.author?.name}
+                {callout.author?.profileUrl ? (
+                  <a
+                    href={callout.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {callout.author.name}
+                  </a>
+                ) : (
+                  callout.author?.name
+                )}
               </DialogDescription>
             </div>
           </div>
