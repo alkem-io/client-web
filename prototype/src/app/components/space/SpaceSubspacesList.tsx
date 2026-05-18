@@ -162,14 +162,12 @@ export function SpaceSubspacesList() {
             key={status}
             onClick={() => setFilter(status)}
             className={cn(
-              "px-3 py-1.5 rounded-full transition-colors",
+              "px-3 py-1.5 rounded-full transition-colors text-control",
               filter === status
                 ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
             style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: 500,
               border: `1px solid ${filter === status ? "var(--primary)" : "var(--border)"}`,
             }}
           >
@@ -206,17 +204,16 @@ export function SpaceSubspacesList() {
             }}
           />
           <h3
+            className="text-subsection-title font-medium"
             style={{
-              fontSize: "var(--text-lg)",
-              fontWeight: 500,
               color: "var(--foreground)",
             }}
           >
             No subspaces found
           </h3>
           <p
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
             }}
           >

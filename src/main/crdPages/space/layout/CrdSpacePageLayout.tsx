@@ -39,10 +39,10 @@ import {
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
-import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
-import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
@@ -56,7 +56,6 @@ export default function CrdSpacePageLayout() {
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
-  const [communityOpen, setCommunityOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
 
@@ -107,7 +106,13 @@ export default function CrdSpacePageLayout() {
   };
 
   const visibilityData = mapSpaceVisibility(visibility);
-  const memberAvatars = mapMemberAvatars(space.about.membership?.leadUsers);
+
+  // The transparent header + banner-under-header treatment only applies on
+  // the active-space home tab(s). Suspended/archived spaces show a visibility
+  // notice above the banner — pulling the banner up under the header would
+  // collide with it. Settings pages render `SpaceSettingsHeader` (no banner
+  // image), so they stay opaque too.
+  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
@@ -152,15 +157,14 @@ export default function CrdSpacePageLayout() {
       {visibilityData.status !== 'active' && (
         <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
       )}
+      {enableBannerOverlay && <EnableBannerOverlay />}
       <SpaceShell
         header={
           isOnSettings ? (
             <SpaceSettingsHeader
               title={space.about.profile.displayName}
               tagline={space.about.profile.tagline ?? null}
-              avatarUrl={space.about.profile.avatar?.uri ?? null}
-              initials={(space.about.profile.displayName ?? '').slice(0, 2).toUpperCase()}
-              avatarColor={pickColorFromId(spaceId ?? space.about.profile.displayName)}
+              hideAvatar={true}
               tabs={
                 <SpaceSettingsTabStrip
                   activeTab={activeSettingsTab}
@@ -175,9 +179,8 @@ export default function CrdSpacePageLayout() {
               tagline={space.about.profile.tagline ?? undefined}
               bannerUrl={space.about.profile.banner?.uri}
               color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
-              memberAvatars={memberAvatars}
-              onMemberClick={() => setCommunityOpen(true)}
               actions={headerActions}
+              overlayHeader={enableBannerOverlay}
             />
           )
         }
@@ -210,23 +213,19 @@ export default function CrdSpacePageLayout() {
         </MobileSidebarDrawer>
       )}
 
-      {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
-          this parent layout doesn't clobber the subspace layout's trail at
-          L1 / L2 (`pathname` includes `/settings` at those levels too). */}
-      {isLevelZero && isOnSettings && spaceDisplayName && (
-        <L0SettingsBreadcrumbs
+      {/* L0 breadcrumbs — only mounted at L0 so this parent layout doesn't
+          clobber the subspace layout's trail at L1 / L2 (CrdSpacePageLayout
+          runs hooks at every level; gating the mount on `isLevelZero` keeps
+          the publish scoped to L0). On a plain L0 home this emits a single
+          current-page crumb; on `/settings` it emits the 3-hop trail. */}
+      {isLevelZero && spaceDisplayName && (
+        <L0Breadcrumbs
           spaceDisplayName={spaceDisplayName}
           spaceUrl={spaceUrl}
+          isOnSettings={isOnSettings}
           activeSettingsTab={activeSettingsTab}
         />
       )}
-
-      {/* Community dialog — opened from banner avatar stack (shared with L1) */}
-      <CrdSpaceCommunityDialogConnector
-        open={communityOpen}
-        onOpenChange={setCommunityOpen}
-        roleSetId={space.about.membership?.roleSetID || undefined}
-      />
 
       {/* Activity dialog — opened from header Activity icon. Matches the
           legacy MUI ActivityDialog: queries activity-on-collaboration with
@@ -258,21 +257,30 @@ export default function CrdSpacePageLayout() {
   );
 }
 
-function L0SettingsBreadcrumbs({
+function EnableBannerOverlay() {
+  useEnableBannerOverlay();
+  return null;
+}
+
+function L0Breadcrumbs({
   spaceDisplayName,
   spaceUrl,
+  isOnSettings,
   activeSettingsTab,
 }: {
   spaceDisplayName: string;
   spaceUrl: string;
+  isOnSettings: boolean;
   activeSettingsTab: SpaceSettingsTabId;
 }) {
   const { t } = useTranslation('crd-spaceSettings');
-  const items: BreadcrumbTrailItem[] = [
-    { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
-    { label: t(`tabs.${activeSettingsTab}`) },
-  ];
+  const items: BreadcrumbTrailItem[] = isOnSettings
+    ? [
+        { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+        { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+        { label: t(`tabs.${activeSettingsTab}`) },
+      ]
+    : [{ label: spaceDisplayName, icon: Layers }];
   useSetBreadcrumbs(items);
   return null;
 }

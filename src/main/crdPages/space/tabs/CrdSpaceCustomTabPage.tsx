@@ -15,6 +15,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { countTagOccurrences } from './calloutTagCount';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -50,7 +51,15 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     },
     skip: !calloutsSetId,
   });
-  const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(tag => ({ name: tag, count: 0 }));
+  // The `CalloutsSetTags` query returns just `tags: string[]` (the universe of tags across the
+  // calloutsSet). Counts are tallied client-side from the currently visible (filtered) `callouts`
+  // array — so each chip shows "if I add this tag to the current filter, this many callouts remain".
+  // Tags in the universe that aren't on any visible callout legitimately get 0.
+  const tagCounts = countTagOccurrences(callouts);
+  const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(name => ({
+    name,
+    count: tagCounts[name] ?? 0,
+  }));
 
   // Build sidebar list from light callout data (also used as knowledge entries)
   const sidebarItems = callouts.map(callout => {

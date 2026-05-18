@@ -57,7 +57,11 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
   return (
     <div
       className={cn(
-        'max-w-none text-body text-foreground',
+        // `break-words` (overflow-wrap: break-word) so an unbreakable token
+        // (long URL, gibberish word) wraps instead of forming one physical
+        // line — otherwise `-webkit-line-clamp` can never overflow vertically
+        // and the text spills out of the card.
+        'max-w-none break-words text-body text-foreground',
         // Headings
         '[&_h1]:text-page-title [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:text-foreground',
         '[&_h2]:text-section-title [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-foreground',
@@ -89,8 +93,9 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
-        // Iframes (embedded videos etc.)
-        '[&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0',
+        // Iframes (embedded videos etc.) — markdown stores them with width="100%" height="100%",
+        // so without an explicit aspect-ratio the height collapses and the embed visual gets clipped.
+        '[&_iframe]:block [&_iframe]:w-full [&_iframe]:h-auto [&_iframe]:aspect-video [&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0 [&_iframe]:my-3',
         className
       )}
     >

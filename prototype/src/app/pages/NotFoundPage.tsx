@@ -27,9 +27,8 @@ export default function NotFoundPage() {
 
       {/* Heading */}
       <h1
+        className="text-page-title"
         style={{
-          fontSize: "var(--text-2xl)",
-          fontWeight: 700,
           color: "var(--foreground)",
           marginTop: "-0.25em",
         }}
@@ -39,12 +38,10 @@ export default function NotFoundPage() {
 
       {/* Description */}
       <p
-        className="max-w-md"
+        className="max-w-md text-body"
         style={{
-          fontSize: "var(--text-sm)",
           color: "var(--muted-foreground)",
           marginTop: 12,
-          lineHeight: 1.6,
         }}
       >
         The page you&apos;re looking for doesn&apos;t exist or has been moved. Check the URL or head
@@ -69,9 +66,8 @@ export default function NotFoundPage() {
 
       <button
         onClick={() => window.history.back()}
-        className="mt-4 flex items-center gap-1.5 transition-colors"
+        className="mt-4 flex items-center gap-1.5 transition-colors text-control"
         style={{
-          fontSize: "var(--text-sm)",
           color: "var(--muted-foreground)",
           fontFamily: "'Inter', sans-serif",
         }}

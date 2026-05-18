@@ -18,6 +18,7 @@ import type crdDocumentationTranslation from '@/crd/i18n/documentation/documenta
 import type crdProfilePagesTranslation from '@/crd/i18n/profilePages/profilePages.en.json';
 import type crdContributorSettingsTranslation from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import type crdCommunityTranslation from '@/crd/i18n/community/community.en.json';
+import type crdTemplatesTranslation from '@/crd/i18n/templates/templates.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -41,6 +42,7 @@ declare module 'i18next' {
       'crd-profilePages': typeof crdProfilePagesTranslation;
       'crd-contributorSettings': typeof crdContributorSettingsTranslation;
       'crd-community': typeof crdCommunityTranslation;
+      'crd-templates': typeof crdTemplatesTranslation;
     };
   }
 }

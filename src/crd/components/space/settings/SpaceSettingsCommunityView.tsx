@@ -186,7 +186,7 @@ export function SpaceSettingsCommunityView({
                 placeholder={t('community.members.search')}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
-                className="h-9 w-[220px] pl-9 text-sm"
+                className="h-9 w-[220px] pl-9 text-control"
               />
             </div>
             {permissions.canAddUsers && (

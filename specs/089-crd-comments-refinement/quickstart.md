@@ -30,14 +30,14 @@ Opens the SPA at `http://localhost:3001`. Wait for Vite to finish transforming m
 CRD pages are off by default. Enable them in the browser's DevTools console:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To disable later:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -115,7 +115,7 @@ Prerequisite: on a space with a callouts feed (home, knowledge base space feed, 
 | E8 | Click the callout title → the detail dialog opens. Click the expand icon in the callout header → the detail dialog opens. The dialog still works identically to before. | R8 |
 | E9 | Keyboard operability: Tab to the footer trigger. `Enter` or `Space` toggles. `Escape` does NOT collapse (correct — Collapsible is not modal). Screen-reader announces `aria-expanded="true"` / `false"` on toggle. | SC-009 |
 | E10 | Open DevTools → Network → filter by WS/subscription. On initial feed load (no expansions), confirm no comments subscription request fires. Expand one callout → a single subscription opens. Collapse it → subscription remains open (sticky). Navigate away and back → feed starts clean. | SC-010, R7 |
-| E11 | Disable CRD (`localStorage.removeItem('alkemio-crd-enabled'); location.reload();`). The same feed renders the legacy MUI callout list — no chevron, no inline expansion, unchanged behavior. | US5 AS8, FR-015 |
+| E11 | Disable CRD (`localStorage.setItem('alkemio-design-version', '1'); location.reload();`). The same feed renders the legacy MUI callout list — no chevron, no inline expansion, unchanged behavior. | US5 AS8, FR-015 |
 
 ---
 

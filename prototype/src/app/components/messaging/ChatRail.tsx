@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/app/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 /**
  * ChatRail — A collapsed vertical bar on the right side showing conversation icons.
@@ -79,15 +80,13 @@ export function ChatRail() {
                 <MessageSquare style={{ width: 18, height: 18 }} />
                 {totalUnread > 0 && (
                   <span
-                    className="absolute flex items-center justify-center rounded-full"
+                    className="absolute flex items-center justify-center rounded-full text-badge font-bold"
                     style={{
                       top: -2,
                       right: -4,
                       minWidth: 18,
                       height: 18,
                       padding: "0 4px",
-                      fontSize: "10px",
-                      fontWeight: 700,
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
                       border: "2px solid var(--sidebar)",
@@ -101,8 +100,8 @@ export function ChatRail() {
             </TooltipTrigger>
             <TooltipContent side="left" sideOffset={8}>
               <span
+                className="text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
@@ -165,8 +164,8 @@ export function ChatRail() {
             </TooltipTrigger>
             <TooltipContent side="left" sideOffset={8}>
               <span
+                className="text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
@@ -222,9 +221,8 @@ function ChatRailItem({
             >
               <AvatarImage src={conversation.avatar} alt={conversation.name} />
               <AvatarFallback
+                className="text-badge"
                 style={{
-                  fontSize: "10px",
-                  fontWeight: 600,
                   background: "var(--secondary)",
                   color: "var(--secondary-foreground)",
                   fontFamily: "'Inter', sans-serif",
@@ -235,15 +233,13 @@ function ChatRailItem({
             </Avatar>
           ) : (
             <div
-              className="flex items-center justify-center"
+              className="flex items-center justify-center text-badge font-bold"
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: "calc(var(--radius))",
                 background: conversation.avatarColor ?? "var(--secondary)",
                 color: "var(--primary-foreground)",
-                fontSize: "10px",
-                fontWeight: 700,
                 fontFamily: "'Inter', sans-serif",
               }}
             >
@@ -273,20 +269,17 @@ function ChatRailItem({
           {/* Unread badge */}
           {hasUnread && (
             <span
-              className="absolute flex items-center justify-center rounded-full"
+              className="absolute flex items-center justify-center rounded-full text-badge font-bold"
               style={{
                 top: 0,
                 right: 0,
                 minWidth: 16,
                 height: 16,
                 padding: "0 3px",
-                fontSize: "9px",
-                fontWeight: 700,
                 background: "var(--success)",
                 color: "var(--primary-foreground)",
                 border: "2px solid var(--sidebar)",
                 fontFamily: "'Inter', sans-serif",
-                lineHeight: 1,
               }}
             >
               {conversation.unread}
@@ -317,9 +310,8 @@ function ChatRailItem({
       <TooltipContent side="left" sideOffset={8} align="center">
         <div className="flex flex-col gap-0.5">
           <span
+            className={cn("text-body", hasUnread && "font-semibold")}
             style={{
-              fontSize: "var(--text-sm)",
-              fontWeight: hasUnread ? 600 : "var(--font-weight-normal)" as any,
               color: "var(--popover-foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -327,9 +319,8 @@ function ChatRailItem({
             {conversation.name}
           </span>
           <span
-            className="truncate"
+            className="truncate text-caption"
             style={{
-              fontSize: "11px",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
               maxWidth: 200,
@@ -339,9 +330,8 @@ function ChatRailItem({
           </span>
           {hasUnread && (
             <span
+              className="text-badge"
               style={{
-                fontSize: "10px",
-                fontWeight: 600,
                 color: "var(--primary)",
                 fontFamily: "'Inter', sans-serif",
               }}

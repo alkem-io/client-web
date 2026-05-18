@@ -34,7 +34,7 @@ export function VCPageHero({ avatarImageUrl, displayName, settingsUrl, typeBadge
           <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 min-w-0">
             <div className="min-w-0 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-profile-title text-foreground">{displayName}</h1>
+                <h1 className="text-hero text-foreground">{displayName}</h1>
                 <Badge variant="secondary">
                   <Bot className="size-3" aria-hidden="true" />
                   {typeBadgeLabel}

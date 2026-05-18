@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Настройки"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -592,11 +595,6 @@
       "apiKeyHelper": "Съществуващите ключове никога не се връщат. Оставете празно, за да запазите текущия ключ.",
       "assistantIdLabel": "ID на асистент",
       "modelLabel": "Модел"
-    },
-    "promptGraphFallback": {
-      "heading": "Редактирането на Prompt Graph остава в MUI",
-      "description": "Редакторът на потока се мигрира. Отворете старата страница с настройки, за да редактирате prompt graph.",
-      "ctaLabel": "Отваряне в стар изглед"
     },
     "settings": {
       "commitErrorToast": "Запазването на предпочитанието не успя — опитайте отново"

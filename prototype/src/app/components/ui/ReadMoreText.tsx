@@ -61,10 +61,8 @@ export function ReadMoreText({
       {(isTruncated || isExpanded) && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="hover:underline mt-1 cursor-pointer"
+          className="text-body-emphasis hover:underline mt-1 cursor-pointer"
           style={{
-            fontSize: "var(--text-sm)",
-            fontWeight: "var(--font-weight-medium)" as any,
             color: toggleColor ?? "inherit",
             opacity: toggleOpacity ?? 0.8,
             background: "none",

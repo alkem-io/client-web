@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Paramètres"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -592,11 +595,6 @@
       "apiKeyHelper": "Les clés existantes ne sont jamais renvoyées. Laissez vide pour conserver la clé actuelle.",
       "assistantIdLabel": "ID de l'assistant",
       "modelLabel": "Modèle"
-    },
-    "promptGraphFallback": {
-      "heading": "L'édition du Prompt Graph reste dans MUI",
-      "description": "L'éditeur de flux est en cours de migration. Ouvrez l'ancienne page de paramètres pour modifier le prompt graph.",
-      "ctaLabel": "Ouvrir dans l'ancienne vue"
     },
     "settings": {
       "commitErrorToast": "Échec de l'enregistrement de la préférence — réessayez"

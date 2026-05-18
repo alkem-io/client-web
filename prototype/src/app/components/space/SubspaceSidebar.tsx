@@ -160,21 +160,16 @@ export function SubspaceSidebar({
           <div className="flex items-center gap-2 mb-3">
             <Info className="w-4 h-4" style={{ opacity: 0.8 }} />
             <span
-              className="uppercase tracking-wider"
-              style={{
-                fontSize: "11px",
-                fontWeight: 700,
-                opacity: 0.8,
-              }}
+              className="text-sidebar-label uppercase font-bold"
+              style={{ opacity: 0.8 }}
             >
               Challenge Statement
             </span>
           </div>
           <ReadMoreText
             maxLines={3}
+            className="text-body"
             style={{
-              fontSize: "var(--text-sm)",
-              lineHeight: 1.6,
               opacity: 0.92,
             }}
             toggleColor="var(--primary-foreground)"
@@ -191,13 +186,8 @@ export function SubspaceSidebar({
             style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
           >
             <p
-              className="uppercase tracking-wider mb-2"
-              style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                opacity: 0.6,
-                letterSpacing: "0.04em",
-              }}
+              className="text-badge uppercase mb-2 font-bold"
+              style={{ opacity: 0.6 }}
             >
               Lead
             </p>
@@ -219,12 +209,12 @@ export function SubspaceSidebar({
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
+                <p className="text-card-title">
                   {SUBSPACE_LEAD.name}
                 </p>
                 <p
-                  className="flex items-center gap-1"
-                  style={{ fontSize: "11px", opacity: 0.7 }}
+                  className="flex items-center gap-1 text-caption"
+                  style={{ opacity: 0.7 }}
                 >
                   <MapPin className="w-3 h-3" />
                   {SUBSPACE_LEAD.location}
@@ -247,17 +237,13 @@ export function SubspaceSidebar({
             <div className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" style={{ color: "var(--muted-foreground)" }} />
               <h3
-                className="uppercase tracking-wider"
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  color: "var(--muted-foreground)",
-                }}
+                className="text-sidebar-label uppercase"
+                style={{ color: "var(--muted-foreground)" }}
               >
                 Community
               </h3>
             </div>
-            <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
+            <span className="text-caption" style={{ color: "var(--muted-foreground)" }}>
               16 members
             </span>
           </div>
@@ -288,12 +274,10 @@ export function SubspaceSidebar({
               </Avatar>
             ))}
             <div
-              className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-colors"
+              className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-colors text-caption font-semibold"
               style={{
                 background: "color-mix(in srgb, var(--primary) 10%, transparent)",
                 color: "var(--primary)",
-                fontSize: "11px",
-                fontWeight: 600,
                 border: "2px solid var(--card)",
               }}
             >
@@ -303,8 +287,7 @@ export function SubspaceSidebar({
           <Button
             variant="outline"
             size="sm"
-            className="w-full gap-1.5"
-            style={{ fontSize: "var(--text-sm)" }}
+            className="w-full gap-1.5 text-control"
             onClick={() => setOpenDialog("community")}
           >
             <Users className="w-3.5 h-3.5" />
@@ -315,12 +298,8 @@ export function SubspaceSidebar({
         {/* ── Quick Actions ── */}
         <div>
           <p
-            className="uppercase tracking-wider mb-3 px-1"
-            style={{
-              fontSize: "11px",
-              fontWeight: 600,
-              color: "var(--muted-foreground)",
-            }}
+            className="text-sidebar-label uppercase mb-3 px-1"
+            style={{ color: "var(--muted-foreground)" }}
           >
             Quick Actions
           </p>
@@ -346,11 +325,8 @@ export function SubspaceSidebar({
                   style={{ color: "var(--primary)" }}
                 />
                 <span
-                  style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: "var(--font-weight-medium)" as any,
-                    color: "var(--foreground)",
-                  }}
+                  className="text-control"
+                  style={{ color: "var(--foreground)" }}
                 >
                   {label}
                 </span>
@@ -374,12 +350,8 @@ export function SubspaceSidebar({
               style={{ color: "var(--muted-foreground)" }}
             />
             <p
-              className="uppercase tracking-wider"
-              style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "var(--muted-foreground)",
-              }}
+              className="text-sidebar-label uppercase"
+              style={{ color: "var(--muted-foreground)" }}
             >
               Virtual Contributor
             </p>
@@ -404,21 +376,14 @@ export function SubspaceSidebar({
             </Avatar>
             <div className="min-w-0">
               <p
-                style={{
-                  fontSize: "var(--text-sm)",
-                  fontWeight: "var(--font-weight-medium)" as any,
-                  color: "var(--foreground)",
-                }}
+                className="text-body-emphasis"
+                style={{ color: "var(--foreground)" }}
               >
                 {VIRTUAL_CONTRIBUTOR.name}
               </p>
               <p
-                className="line-clamp-2 mt-0.5"
-                style={{
-                  fontSize: "12px",
-                  color: "var(--muted-foreground)",
-                  lineHeight: 1.4,
-                }}
+                className="line-clamp-2 mt-0.5 text-caption"
+                style={{ color: "var(--muted-foreground)" }}
               >
                 {VIRTUAL_CONTRIBUTOR.description}
               </p>
@@ -462,12 +427,12 @@ export function SubspaceSidebar({
                     <item.icon className="w-3.5 h-3.5" style={{ color: "var(--primary)" }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}>
-                      <span style={{ fontWeight: 600 }}>{item.user}</span>{" "}
+                    <p className="text-body" style={{ color: "var(--foreground)" }}>
+                      <span className="font-semibold">{item.user}</span>{" "}
                       <span style={{ color: "var(--muted-foreground)" }}>{item.action}</span>{" "}
-                      <span style={{ fontWeight: 500 }}>{item.target}</span>
+                      <span className="font-medium">{item.target}</span>
                     </p>
-                    <p className="flex items-center gap-1 mt-0.5" style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+                    <p className="flex items-center gap-1 mt-0.5 text-caption" style={{ color: "var(--muted-foreground)" }}>
                       <Clock className="w-3 h-3" />
                       {item.time}
                     </p>
@@ -511,14 +476,14 @@ export function SubspaceSidebar({
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--foreground)" }}>{event.title}</p>
-                    <p className="mt-1 flex items-center gap-1.5" style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+                    <p className="text-card-title" style={{ color: "var(--foreground)" }}>{event.title}</p>
+                    <p className="mt-1 flex items-center gap-1.5 text-caption" style={{ color: "var(--muted-foreground)" }}>
                       <CalendarDays className="w-3 h-3" />
                       {event.date} · {event.time}
                     </p>
                   </div>
                   <span
-                    className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium"
+                    className="shrink-0 px-2 py-0.5 rounded-full text-caption font-medium"
                     style={{
                       background: event.status === "upcoming"
                         ? "color-mix(in srgb, var(--primary) 12%, transparent)"
@@ -529,7 +494,7 @@ export function SubspaceSidebar({
                     {event.status === "upcoming" ? "Upcoming" : "Past"}
                   </span>
                 </div>
-                <p className="mt-1.5 flex items-center gap-1" style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+                <p className="mt-1.5 flex items-center gap-1 text-caption" style={{ color: "var(--muted-foreground)" }}>
                   <Users className="w-3 h-3" />
                   {event.attendees} attendees
                 </p>
@@ -567,10 +532,10 @@ export function SubspaceSidebar({
               >
                 <FileText className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "var(--primary)" }} />
                 <div className="flex-1 min-w-0">
-                  <p className="truncate" style={{ fontSize: "var(--text-sm)", fontWeight: 500, color: "var(--foreground)" }}>
+                  <p className="truncate text-control" style={{ color: "var(--foreground)" }}>
                     {item.title}
                   </p>
-                  <p style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+                  <p className="text-caption" style={{ color: "var(--muted-foreground)" }}>
                     {item.type} · {item.channel} · {item.author}
                   </p>
                 </div>
@@ -601,14 +566,12 @@ export function SubspaceSidebar({
                 <button
                   key={status}
                   className={cn(
-                    "px-3 py-1.5 rounded-full transition-colors",
+                    "px-3 py-1.5 rounded-full transition-colors text-control",
                     status === "All"
                       ? "bg-primary text-primary-foreground"
                       : "bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: 500,
                     border: `1px solid ${status === "All" ? "var(--primary)" : "var(--border)"}`,
                   }}
                 >

@@ -37,9 +37,8 @@ export function CreateSpaceDialog({
           }}
         >
           <DialogTitle
+            className="text-section-title"
             style={{
-              fontWeight: 600,
-              fontSize: "var(--text-xl)",
               fontFamily: "'Inter', sans-serif",
               color: "var(--foreground)",
             }}

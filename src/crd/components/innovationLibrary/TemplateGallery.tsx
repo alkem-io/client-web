@@ -1,0 +1,46 @@
+import { TemplateCard } from '@/crd/components/templates/TemplateCard';
+import type { TemplateCardData } from '@/crd/components/templates/types';
+import { Skeleton } from '@/crd/primitives/skeleton';
+
+export type TemplateGalleryProps = {
+  /** Already filtered by the active type filter (the consumer applies it). */
+  templates: TemplateCardData[];
+  loading?: boolean;
+  onPreview: (templateId: string) => void;
+  /** Empty state when no templates match (FR-053). */
+  emptyLabel: string;
+};
+
+const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6'];
+
+/**
+ * Responsive grid of `TemplateCard`s for the Innovation Library. Read-only:
+ * `canEdit`/`canDelete` aren't passed, so cards only offer Preview.
+ */
+export function TemplateGallery({ templates, loading, onPreview, emptyLabel }: TemplateGalleryProps) {
+  if (loading) {
+    return (
+      <ul aria-busy={true} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {SKELETON_KEYS.map(key => (
+          <li key={key}>
+            <Skeleton className="aspect-video w-full rounded-lg" />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (templates.length === 0) {
+    return <p className="py-12 text-center text-body text-muted-foreground">{emptyLabel}</p>;
+  }
+
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {templates.map(template => (
+        <li key={template.id}>
+          <TemplateCard template={template} onPreview={onPreview} onAction={() => undefined} />
+        </li>
+      ))}
+    </ul>
+  );
+}

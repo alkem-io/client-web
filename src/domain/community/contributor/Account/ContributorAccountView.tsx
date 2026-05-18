@@ -18,9 +18,13 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Gutters from '@/core/ui/grid/Gutters';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { ConfirmationDialog as CrdConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { CreateInnovationPackDialog as CrdCreateInnovationPackDialog } from '@/crd/components/innovationPack/CreateInnovationPackDialog';
+import type { CreateInnovationPackValues } from '@/crd/components/innovationPack/types';
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
@@ -33,6 +37,10 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
 import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { useCreateInnovationPack } from '@/main/crdPages/innovationPack/useCreateInnovationPack';
+import { useDeleteInnovationPack } from '@/main/crdPages/innovationPack/useDeleteInnovationPack';
+import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
+import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import { AccountEntityType, useAccountEntityDeletion } from './useAccountEntityDeletion';
 
@@ -150,7 +158,10 @@ const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClic
 
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
+  const { t: tCrd } = useTranslation('crd-templates');
   const navigate = useNavigate();
+  const notify = useNotification();
+  const crdEnabled = useCrdEnabled();
   const { locations } = useConfig();
   const supportLink = locations?.support;
   const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
@@ -172,6 +183,56 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     isWingbackCreating,
     onCreateWingbackAccount,
   } = useAccountEntityDeletion(account?.id);
+
+  // ────────────────── CRD: pack create + delete (US7 / T076) ──────────────────
+
+  const [packCreateValues, setPackCreateValues] = useState<CreateInnovationPackValues>({
+    name: '',
+    description: '',
+  });
+  const packCreateErrors: Partial<Record<keyof CreateInnovationPackValues, string>> = !packCreateValues.name.trim()
+    ? { name: tCrd('createPack.nameRequired') }
+    : {};
+
+  const { create: crdCreatePack, creating: crdCreatePackCreating } = useCreateInnovationPack({
+    accountId: account?.id,
+    onCreated: ({ url }) => {
+      setCreateInnovationPackDialogOpen(false);
+      setPackCreateValues({ name: '', description: '' });
+      notify(t('pages.admin.innovation-packs.notifications.pack-created'), 'success');
+      if (url) navigate(buildInnovationPackSettingsUrl(url));
+    },
+  });
+
+  const onCrdCreatePackSubmit = async () => {
+    if (Object.keys(packCreateErrors).length > 0) return;
+    try {
+      await crdCreatePack(packCreateValues);
+    } catch {
+      notify(t('pages.admin.innovation-packs.notifications.pack-error'), 'error');
+    }
+  };
+
+  const [pendingPackDelete, setPendingPackDelete] = useState<{ id: string; name: string } | null>(null);
+  const { deletePack: crdDeletePack, deleting: crdDeletePackDeleting } = useDeleteInnovationPack({
+    onDeleted: () => {
+      setPendingPackDelete(null);
+      notify(
+        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovationPack') }),
+        'success'
+      );
+    },
+  });
+
+  const onCrdDeletePackConfirm = async () => {
+    if (!pendingPackDelete) return;
+    try {
+      await crdDeletePack(pendingPackDelete.id);
+    } catch {
+      notify(t('pages.admin.generic.sections.account.deleteFailed', { entity: t('common.innovationPack') }), 'error');
+      setPendingPackDelete(null);
+    }
+  };
 
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
   const myAccountEntitlementDetails = account?.license?.entitlements || [];
@@ -253,13 +314,19 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </MenuItemWithIcon>
     );
 
-  const getPackActions = (id: string) =>
+  const getPackActions = (pack: { id: string; profile: { displayName: string } }) =>
     canDeleteEntities && (
       <MenuItemWithIcon
         key="delete"
-        disabled={deletePackLoading}
+        disabled={crdEnabled ? crdDeletePackDeleting : deletePackLoading}
         iconComponent={DeleteOutline}
-        onClick={() => openDeleteDialog(AccountEntityType.InnovationPack, id)}
+        onClick={() => {
+          if (crdEnabled) {
+            setPendingPackDelete({ id: pack.id, name: pack.profile.displayName });
+          } else {
+            openDeleteDialog(AccountEntityType.InnovationPack, pack.id);
+          }
+        }}
       >
         {t('buttons.delete')}
       </MenuItemWithIcon>
@@ -435,7 +502,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(pack => (
-                <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
+                <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack)} />
               ))}
             <Actions justifyContent="end">
               {canCreateInnovationPack && account?.id && (
@@ -444,17 +511,34 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                     buttonComponent={
                       <StyledCreationButton
                         disabled={!isEntitledToCreateInnovationPack}
-                        onClick={() => setCreateInnovationPackDialogOpen(true)}
+                        onClick={() => {
+                          if (crdEnabled) {
+                            setPackCreateValues({ name: '', description: '' });
+                          }
+                          setCreateInnovationPackDialogOpen(true);
+                        }}
                       />
                     }
                     disabled={!isEntitledToCreateInnovationPack}
                     disabledTooltip={limitNoticeTooltip}
                   />
-                  <CreateInnovationPackDialog
-                    accountId={account?.id}
-                    open={createInnovationPackDialogOpen}
-                    onClose={() => setCreateInnovationPackDialogOpen(false)}
-                  />
+                  {crdEnabled ? (
+                    <CrdCreateInnovationPackDialog
+                      open={createInnovationPackDialogOpen}
+                      onClose={() => setCreateInnovationPackDialogOpen(false)}
+                      value={packCreateValues}
+                      errors={packCreateErrors}
+                      onChange={setPackCreateValues}
+                      onCreate={onCrdCreatePackSubmit}
+                      creating={crdCreatePackCreating}
+                    />
+                  ) : (
+                    <CreateInnovationPackDialog
+                      accountId={account?.id}
+                      open={createInnovationPackDialogOpen}
+                      onClose={() => setCreateInnovationPackDialogOpen(false)}
+                    />
+                  )}
                 </>
               )}
             </Actions>
@@ -500,13 +584,31 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               )}
             </Actions>
           </Gutters>
-          {deleteDialogOpen && (
+          {/* Legacy MUI delete dialog still handles Space / VC / Hub deletes (and Innovation Pack
+              when CRD is off). With CRD enabled, the pack-delete path is intercepted in
+              `getPackActions` and routed to the CRD `ConfirmationDialog` below. */}
+          {deleteDialogOpen && (!crdEnabled || entity !== AccountEntityType.InnovationPack) && (
             <EntityConfirmDeleteDialog
               entity={getEntityName(entity)}
               open={deleteDialogOpen}
               onClose={clearDeleteState}
               onDelete={deleteEntity}
               description={entity === AccountEntityType.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
+            />
+          )}
+          {crdEnabled && (
+            <CrdConfirmationDialog
+              open={pendingPackDelete !== null}
+              onOpenChange={open => {
+                if (!open) setPendingPackDelete(null);
+              }}
+              variant="destructive"
+              title={tCrd('deletePack.title')}
+              description={tCrd('deletePack.body', { name: pendingPackDelete?.name ?? '' })}
+              confirmLabel={tCrd('deletePack.confirm')}
+              cancelLabel={tCrd('deletePack.cancel')}
+              onConfirm={() => void onCrdDeletePackConfirm()}
+              loading={crdDeletePackDeleting}
             />
           )}
         </PageContentBlock>

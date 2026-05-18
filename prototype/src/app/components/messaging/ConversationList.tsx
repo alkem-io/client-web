@@ -93,11 +93,12 @@ export function ConversationList({
             <button
               key={opt.value}
               onClick={() => setFilter(opt.value)}
-              className="flex items-center gap-1 rounded-full transition-all"
+              className={cn(
+                "flex items-center gap-1 rounded-full transition-all text-caption font-medium",
+                isActive && "font-semibold",
+              )}
               style={{
                 padding: "4px 12px",
-                fontSize: "12px",
-                fontWeight: isActive ? 600 : 500,
                 fontFamily: "'Inter', sans-serif",
                 background: isActive ? "var(--primary)" : "var(--secondary)",
                 color: isActive
@@ -109,13 +110,11 @@ export function ConversationList({
               {opt.label}
               {unread > 0 && opt.value !== "all" && (
                 <span
-                  className="rounded-full flex items-center justify-center"
+                  className="rounded-full flex items-center justify-center text-badge font-bold"
                   style={{
                     minWidth: 16,
                     height: 16,
                     padding: "0 4px",
-                    fontSize: "10px",
-                    fontWeight: 700,
                     background: isActive
                       ? "var(--primary-foreground)"
                       : "var(--primary)",
@@ -157,10 +156,9 @@ export function ConversationList({
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent outline-none text-body"
             style={{
               padding: "7px 30px 7px 32px",
-              fontSize: "var(--text-sm)",
               color: "var(--foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -197,11 +195,10 @@ export function ConversationList({
               }}
             />
             <p
+              className="text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 fontFamily: "'Inter', sans-serif",
-                lineHeight: 1.5,
                 maxWidth: 240,
               }}
             >
@@ -294,9 +291,8 @@ function ConversationItem({
           <Avatar style={{ width: 40, height: 40, border: "1px solid var(--border)" }}>
             <AvatarImage src={conversation.avatar} alt={conversation.name} />
             <AvatarFallback
+              className="text-caption font-semibold"
               style={{
-                fontSize: "12px",
-                fontWeight: 600,
                 background: "var(--secondary)",
                 color: "var(--secondary-foreground)",
                 fontFamily: "'Inter', sans-serif",
@@ -348,10 +344,11 @@ function ConversationItem({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
             <span
-              className="truncate"
+              className={cn(
+                "truncate text-body-emphasis",
+                hasUnread && "font-semibold",
+              )}
               style={{
-                fontSize: "var(--text-sm)",
-                fontWeight: hasUnread ? 600 : 500,
                 color: "var(--foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -371,13 +368,11 @@ function ConversationItem({
             )}
           </div>
           <span
-            className="shrink-0"
+            className={cn("shrink-0 text-caption", hasUnread && "font-semibold")}
             style={{
-              fontSize: "11px",
               color: hasUnread
                 ? "var(--primary)"
                 : "var(--muted-foreground)",
-              fontWeight: hasUnread ? 600 : 400,
               fontFamily: "'Inter', sans-serif",
             }}
           >
@@ -386,29 +381,24 @@ function ConversationItem({
         </div>
         <div className="flex items-center justify-between gap-2" style={{ marginTop: 2 }}>
           <p
-            className="truncate"
+            className={cn("truncate text-caption", hasUnread && "font-medium")}
             style={{
-              fontSize: "12px",
               color: hasUnread
                 ? "var(--foreground)"
                 : "var(--muted-foreground)",
-              fontWeight: hasUnread ? 500 : 400,
               margin: 0,
               fontFamily: "'Inter', sans-serif",
-              lineHeight: 1.4,
             }}
           >
             {conversation.lastMessage}
           </p>
           {hasUnread && !navigatesOut && (
             <span
-              className="shrink-0 rounded-full flex items-center justify-center"
+              className="shrink-0 rounded-full flex items-center justify-center text-badge font-bold"
               style={{
                 minWidth: 18,
                 height: 18,
                 padding: "0 5px",
-                fontSize: "10px",
-                fontWeight: 700,
                 background: "var(--primary)",
                 color: "var(--primary-foreground)",
                 fontFamily: "'Inter', sans-serif",
@@ -422,10 +412,8 @@ function ConversationItem({
         {/* Variant B: "Open in Space" hint for Space channels */}
         {navigatesOut && (
           <div
-            className="flex items-center gap-1 mt-1"
+            className="flex items-center gap-1 mt-1 text-badge font-medium"
             style={{
-              fontSize: "10px",
-              fontWeight: 500,
               color: "var(--primary)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -434,13 +422,11 @@ function ConversationItem({
             <span>{navigateLabel ?? "Open in Space drawer"}</span>
             {hasUnread && (
               <span
-                className="rounded-full flex items-center justify-center ml-auto"
+                className="rounded-full flex items-center justify-center ml-auto text-badge font-bold"
                 style={{
                   minWidth: 16,
                   height: 16,
                   padding: "0 4px",
-                  fontSize: "9px",
-                  fontWeight: 700,
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                 }}

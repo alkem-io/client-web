@@ -585,6 +585,7 @@ export const ContributionAuthorFragmentDoc = gql`
   profile {
     id
     displayName
+    url
     avatar: visual(type: AVATAR) {
       ...VisualModel
     }
@@ -1109,6 +1110,7 @@ export const CalloutDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         id
         uri
@@ -1120,6 +1122,7 @@ export const CalloutDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         id
         uri
@@ -2018,16 +2021,6 @@ export const SpaceAboutCardAvatarFragmentDoc = gql`
   }
 }
     ${VisualModelFragmentDoc}`;
-export const SpaceAboutMinimalFragmentDoc = gql`
-    fragment SpaceAboutMinimal on SpaceAbout {
-  id
-  profile {
-    id
-    displayName
-    tagline
-  }
-}
-    `;
 export const ProfileVisualsFragmentDoc = gql`
     fragment ProfileVisuals on Profile {
   id
@@ -2730,6 +2723,17 @@ export const CalloutTemplateContentFragmentDoc = gql`
     mediaGallery {
       ...MediaGalleryVisuals
     }
+    poll {
+      ...PollDetails
+    }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+      }
+    }
   }
   settings {
     ...CalloutSettingsFull
@@ -2747,6 +2751,7 @@ ${WhiteboardDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MemoTemplateDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
+${PollDetailsFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
     fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
@@ -3042,6 +3047,16 @@ export const EventProfileFragmentDoc = gql`
   }
 }
     ${TagsetDetailsFragmentDoc}`;
+export const SpaceAboutMinimalFragmentDoc = gql`
+    fragment SpaceAboutMinimal on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    tagline
+  }
+}
+    `;
 export const CalendarEventInfoFragmentDoc = gql`
     fragment CalendarEventInfo on CalendarEvent {
   id
@@ -3058,12 +3073,12 @@ export const CalendarEventInfoFragmentDoc = gql`
   subspace @include(if: $includeSubspace) {
     id
     about {
-      ...SpaceAboutLight
+      ...SpaceAboutMinimal
     }
   }
 }
     ${EventProfileFragmentDoc}
-${SpaceAboutLightFragmentDoc}`;
+${SpaceAboutMinimalFragmentDoc}`;
 export const CollaborationTimelineInfoFragmentDoc = gql`
     fragment CollaborationTimelineInfo on Collaboration {
   id
@@ -16000,6 +16015,10 @@ export const CurrentUserLightDocument = gql`
   me {
     user {
       ...UserDetailsLight
+      settings {
+        id
+        designVersion
+      }
       account {
         id
         authorization {

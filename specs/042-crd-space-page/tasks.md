@@ -699,6 +699,21 @@ Phase 1 (setup + primitives)
 
 ---
 
+## Phase 21: Tag-Cloud Count Fix (Post-MVP)
+
+**Goal**: each tag chip in the Knowledge Base tab's `CalloutTagCloud` shows the count of callouts (in the currently visible filtered set) that carry that tag — instead of the hardcoded `(0)` that ships today.
+
+**User-visible symptom**: every tag chip at the top of a Space's 4th (Knowledge Base / custom) tab displays `(0)` next to its name. The tags themselves are correct (from `CalloutsSetTags`); only the count is wrong.
+
+**Root cause**: `src/main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx:53` maps the `tags: string[]` from `useCalloutsSetTagsQuery` to `{ name, count: 0 }` literally — the query exposes no counts, and no client-side tally is computed. The `CalloutTagCloud` component (T048) already accepts `count` and renders `({count})`.
+
+- [X] T153 Add `src/main/crdPages/space/tabs/calloutTagCount.ts` — a pure `countTagOccurrences(callouts) → Record<string, number>` helper that tallies `callout.framing.profile.tagset?.tags` across the array (uses `lodash-es/countBy` like the precedent in `src/domain/shared/components/SearchTagsInput/uniqSortedByOccurrences.ts`). Plain TS, no Apollo, no React. Update `CrdSpaceCustomTabPage.tsx:53` to: `const tagCounts = countTagOccurrences(callouts); const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(name => ({ name, count: tagCounts[name] ?? 0 }));`. Tags from the full-set `CalloutsSetTags` query that aren't present in the visible set get `0` legitimately ("if I add this tag to the current filter the result would be 0 callouts" — useful faceted feedback). The count is **always tallied against the currently visible filtered `callouts` array** — so when no filter is selected each tag's count is its global occurrence; when a tag is already in `tagsFilter` the count is the size of the post-filter result for that tag combined with the rest of the filter.
+- [X] T154 [P] Unit test `src/main/crdPages/space/tabs/__tests__/calloutTagCount.test.ts` — covers: empty input → empty record; single callout / multiple tags; multi-callout same-tag tally; callouts with no tagset → ignored; classification-tagset noise is not counted (the helper reads only `framing.profile.tagset?.tags`).
+
+**Checkpoint**: tag-cloud chips render with accurate counts; no other surface is changed.
+
+---
+
 ## Sub-Specification Tasks
 
 The following areas have their own task lists in dedicated sub-spec documents:

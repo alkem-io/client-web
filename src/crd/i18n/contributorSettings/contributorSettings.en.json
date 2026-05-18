@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -611,11 +614,6 @@
       "apiKeyHelper": "Existing keys are never echoed back. Leave blank to keep the current key.",
       "assistantIdLabel": "Assistant ID",
       "modelLabel": "Model"
-    },
-    "promptGraphFallback": {
-      "heading": "Prompt Graph editing remains in MUI",
-      "description": "The flow editor is being migrated. Open the legacy settings page to edit the prompt graph.",
-      "ctaLabel": "Open in legacy view"
     },
     "settings": {
       "commitErrorToast": "Couldn't save preference — try again"

@@ -17,7 +17,7 @@ export function SpaceShell({ header, sidebar, tabs, children, className }: Space
     <div className={cn('flex flex-col bg-background', className)}>
       {header}
 
-      <div className={cn('w-full px-6 md:px-8 pt-3 pb-8', hasTabs && 'sm:pt-8')}>
+      <div className={cn('w-full px-6 md:px-8 pb-8')}>
         <div className="grid grid-cols-12 gap-6 items-start">
           {hasSidebar && <div className="hidden lg:block lg:col-start-2 col-span-2">{sidebar}</div>}
 

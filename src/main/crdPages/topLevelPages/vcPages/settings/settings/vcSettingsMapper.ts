@@ -75,26 +75,22 @@ export type EngineCardVisibility = {
   showBodyOfKnowledge: boolean;
   showPrompt: boolean;
   showExternalConfig: boolean;
-  showPromptGraphFallback: boolean;
 };
 
 /**
  * Engine-conditional sub-section truth table — Decision #17 in research.md.
- * Pure function on view-side enums + viewer-scoped booleans.
+ * Pure function on view-side enums.
  */
 export const computeEngineCardVisibility = (params: {
   engine: VcAiEngine | undefined;
   bodyOfKnowledgeType: VcBodyOfKnowledgeType | undefined;
-  platformAdmin: boolean;
-  promptGraphEditingEnabled: boolean;
 }): EngineCardVisibility => {
-  const { engine, bodyOfKnowledgeType, platformAdmin, promptGraphEditingEnabled } = params;
+  const { engine, bodyOfKnowledgeType } = params;
   return {
     showBodyOfKnowledge:
       bodyOfKnowledgeType === 'alkemioSpace' || bodyOfKnowledgeType === 'alkemioKnowledgeBase' || engine === 'guidance',
     showPrompt: engine === 'genericOpenai' || engine === 'libraFlow',
     showExternalConfig: engine === 'libraFlow' || engine === 'openaiAssistant' || engine === 'genericOpenai',
-    showPromptGraphFallback: engine === 'expert' && (platformAdmin || promptGraphEditingEnabled),
   };
 };
 

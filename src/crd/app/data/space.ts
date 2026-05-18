@@ -393,6 +393,7 @@ export const MOCK_COMMENTS: CommentData[] = [
     author: { id: 'u1', name: 'Sarah Chen', avatarUrl: AVATARS.sarah },
     content: 'Great kickoff. I can help with policy review and timeline planning.',
     timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+    timestampMs: Date.now() - 1000 * 60 * 90,
     reactions: [
       {
         emoji: '👍',
@@ -418,6 +419,7 @@ export const MOCK_COMMENTS: CommentData[] = [
     author: { id: 'u2', name: 'David Miller', avatarUrl: AVATARS.david },
     content: 'Agreed. We should prioritize municipal buildings first.',
     timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    timestampMs: Date.now() - 1000 * 60 * 45,
     parentId: 'c1',
     reactions: [],
     canDelete: false,
@@ -427,6 +429,7 @@ export const MOCK_COMMENTS: CommentData[] = [
     author: { id: 'deleted', name: 'Deleted user' },
     content: '',
     timestamp: new Date(Date.now() - 1000 * 60 * 70).toISOString(),
+    timestampMs: Date.now() - 1000 * 60 * 70,
     reactions: [],
     isDeleted: true,
     canDelete: false,
@@ -436,6 +439,7 @@ export const MOCK_COMMENTS: CommentData[] = [
     author: { id: 'u5', name: 'Maya Ross', avatarUrl: AVATARS.maya },
     content: 'I can contribute data on current consumption patterns.',
     timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    timestampMs: Date.now() - 1000 * 60 * 30,
     parentId: 'c3',
     reactions: [
       {

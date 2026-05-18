@@ -34,8 +34,7 @@ import type {
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -203,10 +202,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     actions.onCancel();
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
+  const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -244,7 +243,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             onClose={onClose}
             title={options.dialogTitle ?? t('common.Whiteboard')}
             titleExtra={
-              <WhiteboardDialogTemplatesLibrary editModeEnabled={true} onImportTemplate={handleImportTemplate} />
+              options.canEdit ? <WhiteboardTemplatePickerButton onImport={handleImportTemplate} /> : undefined
             }
             headerActions={options.headerActions}
             footer={

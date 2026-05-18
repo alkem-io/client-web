@@ -199,9 +199,8 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
                 placeholder="Search members or organizations..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full h-10 pl-9 pr-4 transition-all"
+                className="w-full h-10 pl-9 pr-4 transition-all text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   fontFamily: "'Inter', sans-serif",
                   borderRadius: "var(--radius)",
                   border: "1px solid var(--border)",
@@ -225,10 +224,8 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
                 <button
                   key={filter}
                   onClick={() => handleFilterChange(filter)}
-                  className="px-3 py-2 whitespace-nowrap transition-colors"
+                  className="px-3 py-2 whitespace-nowrap transition-colors text-control"
                   style={{
-                    fontSize: "var(--text-sm)",
-                    fontWeight: "var(--font-weight-medium)" as any,
                     fontFamily: "'Inter', sans-serif",
                     borderRadius: "var(--radius)",
                     border: `1px solid ${selectedFilter === filter ? "var(--primary)" : "var(--border)"}`,
@@ -270,7 +267,7 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="mx-2 text-sm text-muted-foreground">
+              <span className="mx-2 text-body text-muted-foreground">
                 Page {safeCurrentPage} of {totalPages}
               </span>
               <Button
@@ -295,16 +292,15 @@ export function SubspaceCommunityDialog({ open, onOpenChange }: SubspaceCommunit
                 <User className="w-6 h-6" style={{ color: "var(--muted-foreground)" }} />
               </div>
               <h3
+                className="text-subheader"
                 style={{
-                  fontSize: "var(--text-base)",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
                 No results found
               </h3>
-              <p className="mt-1" style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
+              <p className="mt-1 text-body" style={{ color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
                 Try adjusting your search or filters.
               </p>
               <Button
@@ -348,10 +344,9 @@ function UserCard({
               <Avatar className="w-12 h-12" style={{ border: "1px solid var(--border)" }}>
                 {member.avatar && <AvatarImage src={member.avatar} alt={member.name} />}
                 <AvatarFallback
+                  className="text-card-title"
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontWeight: 600,
-                    fontSize: "var(--text-sm)",
                   }}
                 >
                   {member.initials}
@@ -361,11 +356,9 @@ function UserCard({
             <div>
               <Link
                 to={`/user/${member.name.toLowerCase().replace(/\s+/g, "-")}`}
-                className="hover:text-primary transition-colors block"
+                className="hover:text-primary transition-colors block text-card-title"
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontWeight: 600,
-                  fontSize: "var(--text-sm)",
                   color: "var(--foreground)",
                 }}
               >
@@ -373,7 +366,7 @@ function UserCard({
               </Link>
               <div
                 className={cn(
-                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border mt-1",
+                  "inline-flex items-center px-2 py-0.5 rounded-full text-caption font-medium border mt-1",
                   getRoleBadgeColor(member.roleType)
                 )}
                 style={{ fontFamily: "'Inter', sans-serif" }}
@@ -402,9 +395,8 @@ function UserCard({
         <div className="px-4 pb-4">
           {member.bio && (
             <p
-              className="line-clamp-2"
+              className="line-clamp-2 text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -413,9 +405,8 @@ function UserCard({
             </p>
           )}
           <div
-            className={cn("flex items-center gap-1", member.bio ? "mt-4" : "mt-1")}
+            className={cn("flex items-center gap-1 text-caption", member.bio ? "mt-4" : "mt-1")}
             style={{
-              fontSize: "12px",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -445,11 +436,10 @@ function OrgCard({ org }: { org: OrgEntry }) {
               >
                 <AvatarImage src={org.avatar} alt={org.name} style={{ borderRadius: "var(--radius)" }} />
                 <AvatarFallback
+                  className="text-caption font-bold"
                   style={{
                     borderRadius: "var(--radius)",
                     fontFamily: "'Inter', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "12px",
                     background: "color-mix(in srgb, var(--info) 15%, transparent)",
                     color: "var(--info)",
                   }}
@@ -461,11 +451,9 @@ function OrgCard({ org }: { org: OrgEntry }) {
             <div>
               <Link
                 to={`/organization/${org.name.toLowerCase().replace(/\s+/g, "-")}`}
-                className="hover:text-primary transition-colors block"
+                className="hover:text-primary transition-colors block text-card-title"
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontWeight: 600,
-                  fontSize: "var(--text-sm)",
                   color: "var(--foreground)",
                 }}
               >
@@ -473,10 +461,8 @@ function OrgCard({ org }: { org: OrgEntry }) {
               </Link>
               <div className="flex items-center gap-1.5 mt-1">
                 <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-caption font-medium"
                   style={{
-                    fontSize: "11px",
-                    fontWeight: "var(--font-weight-medium)" as any,
                     fontFamily: "'Inter', sans-serif",
                     color: "var(--info)",
                     background: "color-mix(in srgb, var(--info) 10%, transparent)",
@@ -506,9 +492,8 @@ function OrgCard({ org }: { org: OrgEntry }) {
 
         <div className="px-4 pb-4">
           <p
-            className="line-clamp-2 min-h-[2.5rem]"
+            className="line-clamp-2 min-h-[2.5rem] text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
@@ -516,9 +501,8 @@ function OrgCard({ org }: { org: OrgEntry }) {
             {org.description}
           </p>
           <div
-            className="flex items-center gap-1 mt-4"
+            className="flex items-center gap-1 mt-4 text-caption"
             style={{
-              fontSize: "12px",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
             }}

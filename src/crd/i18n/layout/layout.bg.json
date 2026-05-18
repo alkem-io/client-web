@@ -6,6 +6,7 @@
     "messages": "Съобщения",
     "notifications": "Известия",
     "unreadNotifications": "{{count}} непрочетени известия",
+    "unreadMessages": "{{count}} непрочетени съобщения",
     "spaces": "Пространства",
     "platformNavigation": "Навигация на платформата",
     "myAccount": "Моят акаунт",
@@ -20,7 +21,10 @@
     "changeLanguage": "Смяна на езика",
     "getHelp": "Помощ",
     "showGrid": "Покажи мрежа",
-    "hideGrid": "Скрий мрежа"
+    "hideGrid": "Скрий мрежа",
+    "designVersion": {
+      "label": "Нов дизайн (предварителен преглед)"
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

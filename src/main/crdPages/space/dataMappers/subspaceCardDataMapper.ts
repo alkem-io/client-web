@@ -11,6 +11,7 @@ type SubspaceQueryData = {
       displayName: string;
       tagline?: string | null;
       url: string;
+      avatar?: { uri: string } | null;
       cardBanner?: { uri: string } | null;
       tagset?: { tags: string[] } | null;
     };
@@ -62,9 +63,11 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     id: subspace.id,
     name: profile.displayName,
     description: profile.tagline ?? '',
-    // Leave undefined when no real cardBanner exists — `SpaceCard` renders the
-    // deterministic gradient from `avatarColor` instead of a stock default image.
+    // L1/L2 subspace card = cardBanner + inline avatar + title. Per the canonical visual-fields
+    // rule, never substitute cardBanner for avatar (or vice versa). When either is missing the
+    // SpaceCard renders the deterministic gradient/initials from `avatarColor`.
     bannerImageUrl: profile.cardBanner?.uri || undefined,
+    avatarUrl: profile.avatar?.uri || undefined,
     initials: getInitials(profile.displayName),
     avatarColor: pickColorFromId(subspace.id),
     isPrivate: !subspace.about.isContentPublic,

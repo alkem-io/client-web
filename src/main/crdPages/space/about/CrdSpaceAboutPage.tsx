@@ -1,6 +1,5 @@
 import { Lock, Mail } from 'lucide-react';
-import { useRef } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import useNavigate from '@/core/routing/useNavigate';
@@ -9,7 +8,6 @@ import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidel
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -29,8 +27,6 @@ export default function CrdSpaceAboutPage() {
     permissions.canRead ? space.about.profile.url : undefined,
     permissions.canRead ? undefined : 2
   );
-
-  const applyButtonRef = useRef<HTMLButtonElement>(null);
 
   const profileUrl = data?.lookup.space?.about.profile.url;
 
@@ -117,37 +113,17 @@ export default function CrdSpaceAboutPage() {
   const whoTitle = t(`about.context.${space.level}.who` as const, { ns: 'crd-space' });
 
   const lockTooltipSlot = !permissions.canRead ? (
-    <Tooltip>
-      <TooltipTrigger asChild={true}>
-        <button
-          type="button"
-          className="inline-flex items-center justify-center text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          aria-label={t('about.lockTooltip', { ns: 'crd-space' })}
-        >
-          <Lock className="w-4 h-4" aria-hidden="true" />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <Trans
-          i18nKey="components.spaceUnauthorizedDialog.message"
-          components={{
-            apply: (
-              <button
-                type="button"
-                className="underline text-primary-foreground bg-transparent border-0 cursor-pointer p-0"
-                onClick={() => {
-                  applyButtonRef.current?.click();
-                }}
-              />
-            ),
-          }}
-        />
-      </TooltipContent>
-    </Tooltip>
+    <span
+      role="img"
+      aria-label={t('about.lockTooltip', { ns: 'crd-space' })}
+      className="inline-flex items-center justify-center text-primary"
+    >
+      <Lock className="w-4 h-4" aria-hidden="true" />
+    </span>
   ) : undefined;
 
   const showApplyButton = !isMember && !applyLoading;
-  const joinSlot = showApplyButton ? <SpaceAboutApplyButton ref={applyButtonRef} {...buttonProps} /> : undefined;
+  const joinSlot = showApplyButton ? <SpaceAboutApplyButton {...buttonProps} /> : undefined;
 
   // Contact host — simple link to the host's profile page (FR-013).
   // The profile page handles authorization and has its own messaging UI.

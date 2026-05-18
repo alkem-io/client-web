@@ -273,7 +273,7 @@ const PostCard = ({
     >
       <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 group-hover/post:text-muted-foreground/60 shrink-0" />
 
-      <span className="flex-1 min-w-0 text-xs font-medium leading-snug line-clamp-2 text-foreground">
+      <span className="flex-1 min-w-0 text-caption font-medium line-clamp-2 text-foreground">
         {post.title}
       </span>
 
@@ -507,12 +507,12 @@ const KanbanColumn = ({
                   onChange={(e) => onRename(tab.id, e.target.value)}
                   onBlur={() => setEditingId(null)}
                   onKeyDown={handleKeyDown}
-                  className="h-6 py-0 px-1.5 text-sm font-semibold w-full max-w-[140px]"
+                  className="h-6 py-0 px-1.5 text-card-title w-full max-w-[140px]"
                   onClick={(e) => e.stopPropagation()}
                 />
               ) : (
                 <span
-                  className="text-sm font-semibold text-foreground truncate cursor-pointer hover:underline decoration-dashed underline-offset-4"
+                  className="text-card-title text-foreground truncate cursor-pointer hover:underline decoration-dashed underline-offset-4"
                   onClick={() => setEditingId(tab.id)}
                 >
                   {tab.label}
@@ -528,7 +528,7 @@ const KanbanColumn = ({
               )}
             </div>
 
-            <Badge variant="secondary" className="text-xs tabular-nums shrink-0">
+            <Badge variant="secondary" className="text-caption tabular-nums shrink-0">
               {posts.length}
             </Badge>
 
@@ -553,13 +553,13 @@ const KanbanColumn = ({
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === "Escape") setIsEditingDescription(false);
               }}
-              className="h-6 py-0 px-1.5 text-xs w-full"
+              className="h-6 py-0 px-1.5 text-caption w-full"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
             <div className="group/desc flex items-start gap-1">
               <p
-                className="text-xs text-muted-foreground leading-relaxed line-clamp-2 cursor-pointer hover:underline decoration-dashed underline-offset-4"
+                className="text-caption text-muted-foreground line-clamp-2 cursor-pointer hover:underline decoration-dashed underline-offset-4"
                 onClick={() => {
                   setIsEditingDescription(true);
                   setTimeout(() => descInputRef.current?.focus(), 0);
@@ -592,7 +592,7 @@ const KanbanColumn = ({
           >
             {posts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-4">
-                <span className="text-xs text-muted-foreground/50">
+                <span className="text-caption text-muted-foreground/50">
                   No posts assigned
                 </span>
               </div>
@@ -867,7 +867,7 @@ export function SpaceSettingsLayout() {
       <div className="w-full h-full">
         <div className="flex flex-col h-full">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Layout</h2>
+            <h2 className="text-page-title text-foreground">Layout</h2>
             <p className="text-muted-foreground mt-2">
               Customize your Space's navigation tabs. Rename, reorder, and manage post assignments.
             </p>
@@ -904,7 +904,7 @@ export function SpaceSettingsLayout() {
 
           <div className="mt-10 flex items-center justify-end gap-3">
             {lastSaved && (
-              <span className="text-sm text-muted-foreground flex items-center gap-1.5 mr-auto">
+              <span className="text-body text-muted-foreground flex items-center gap-1.5 mr-auto">
                 <Check className="w-4 h-4 text-success" /> Saved
               </span>
             )}

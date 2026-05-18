@@ -72,17 +72,12 @@ export function SubspaceHeader({
             </div>
             <div className="flex flex-col gap-0.5 min-w-0 flex-1">
               <h1
-                className="text-foreground truncate font-bold tracking-tight"
-                style={{
-                  fontSize: "clamp(22px, 3vw, 32px)",
-                  lineHeight: 1.2
-                }}
+                className="text-foreground truncate text-hero"
               >
                 {title}
               </h1>
               <p
                 className="text-muted-foreground truncate"
-                style={{ lineHeight: 1.4 }}
               >
                 {description}
               </p>

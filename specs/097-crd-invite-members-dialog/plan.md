@@ -128,7 +128,7 @@ The connector's external surface is just the prop boundary of `InviteMembersDial
 
 ### Quickstart
 
-See [quickstart.md](quickstart.md) — manual verification steps for each user story, including the `localStorage.setItem('alkemio-crd-enabled', 'true')` toggle to render the CRD pages.
+See [quickstart.md](quickstart.md) — manual verification steps for each user story, including the `localStorage.setItem('alkemio-design-version', '2')` toggle to render the CRD pages.
 
 ### Agent context update
 

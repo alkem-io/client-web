@@ -182,10 +182,6 @@ export function SpaceSidebar({
         </>
       )}
 
-      {variant === 'subspaces' && (
-        <SubspacesSection subspaces={subspaces} showAll={true} onSubspaceClick={onSubspaceClick} />
-      )}
-
       {children}
     </nav>
   );

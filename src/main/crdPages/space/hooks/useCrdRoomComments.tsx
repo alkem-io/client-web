@@ -6,6 +6,7 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useNow } from '@/crd/hooks/useNow';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -46,8 +47,17 @@ export function useCrdRoomComments({
   skipSubscription = false,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
+  // `tMain` resolves the default `translation` namespace, where the
+  // `common.time.*` keys used by `formatTimeElapsed` live. Following the
+  // dashboard mappers pattern (see DashboardWithMemberships → tMain).
+  const { t: tMain } = useTranslation();
   const { userModel, isAuthenticated } = useCurrentUserContext();
   const mentionSearch = useMentionableContributors();
+
+  // Tick every 30 s so relative-time strings ("2 minutes ago") in the
+  // mapper's output stay current while the thread is open. The returned
+  // value is unused; the state-change inside the hook triggers re-render.
+  useNow(30_000);
 
   const isSubscribed = useSubscribeOnRoomEvents(roomId, skipSubscription);
 
@@ -66,7 +76,7 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id });
+  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
 
   const currentUser = userModel
     ? {

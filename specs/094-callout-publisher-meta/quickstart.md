@@ -9,7 +9,7 @@ End-to-end implementation + verification path. Estimated effort: ~30 min includi
 - At least one space with:
   - A **published** callout where the publisher and creator are different users.
   - A **draft** callout (visible to space admins only).
-- CRD localStorage toggle on (browser console: `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload();`) for CRD verification; off for MUI verification.
+- CRD localStorage toggle on (browser console: `localStorage.setItem('alkemio-design-version', '2'); location.reload();`) for CRD verification; off for MUI verification.
 
 ## Implementation order
 

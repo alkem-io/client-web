@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -591,11 +594,6 @@
       "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Model"
-    },
-    "promptGraphFallback": {
-      "heading": "Bewerken van Prompt Graph blijft in MUI",
-      "description": "De flow-editor wordt gemigreerd. Open de oude instellingenpagina om de prompt graph te bewerken.",
-      "ctaLabel": "Openen in oude weergave"
     },
     "settings": {
       "commitErrorToast": "Voorkeur opslaan mislukt — probeer opnieuw"

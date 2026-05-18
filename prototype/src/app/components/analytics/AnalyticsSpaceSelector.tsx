@@ -58,8 +58,8 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
       <div className="w-full max-w-3xl space-y-6">
         
         <div className="text-center space-y-2">
-           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: 'var(--foreground)' }}>Select Top-Level Spaces</h1>
-           <p style={{ fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+           <h1 className="text-page-title" style={{ color: 'var(--foreground)' }}>Select Top-Level Spaces</h1>
+           <p className="text-subheader font-normal" style={{ color: 'var(--muted-foreground)' }}>
               Choose the L0 spaces you want to include in your network graph.
            </p>
         </div>
@@ -81,7 +81,7 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
                  </div>
               </div>
               
-              <div className="flex items-center gap-2 p-2 rounded" style={{ fontSize: '11px', color: 'var(--muted-foreground)', background: 'color-mix(in srgb, var(--primary) 5%, var(--background))', border: '1px solid color-mix(in srgb, var(--primary) 12%, transparent)' }}>
+              <div className="flex items-center gap-2 p-2 rounded text-caption" style={{ color: 'var(--muted-foreground)', background: 'color-mix(in srgb, var(--primary) 5%, var(--background))', border: '1px solid color-mix(in srgb, var(--primary) 12%, transparent)' }}>
                  <Shield className="w-3 h-3" style={{ color: 'var(--primary)' }} />
                  Showing only spaces where you have Member or Lead access.
               </div>
@@ -111,10 +111,10 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
                        
                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                             <h3 className="font-semibold text-[length:var(--text-base)] truncate">{space.name}</h3>
+                             <h3 className="text-subheader font-semibold truncate">{space.name}</h3>
                              {space.role === 'Lead' && <Badge variant="default" className="text-[10px] h-4 px-1">Lead</Badge>}
                           </div>
-                          <div className="flex items-center gap-3 text-[length:var(--text-xs)] text-muted-foreground">
+                          <div className="flex items-center gap-3 text-caption text-muted-foreground">
                              <span className="flex items-center gap-1">
                                 <div className={cn("w-1.5 h-1.5 rounded-full", space.privacy === 'Public' ? "bg-success" : "bg-warning")} />
                                 {space.privacy}
@@ -125,7 +125,7 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
                        </div>
 
                        <div className="text-right hidden sm:block">
-                          <div className="text-[length:var(--text-xs)] font-medium text-muted-foreground uppercase tracking-wider mb-1">Health</div>
+                          <div className="text-label uppercase text-muted-foreground mb-1">Health</div>
                           <Badge variant={space.health === 'High' ? 'default' : space.health === 'Medium' ? 'secondary' : 'outline'} className={cn("text-[10px]", space.health === 'High' && "bg-success/10 text-success hover:bg-success/10 border-transparent dark:bg-success/20 dark:text-success")}>
                              {space.health}
                           </Badge>
@@ -142,7 +142,7 @@ export function AnalyticsSpaceSelector({ onGenerate }: AnalyticsSpaceSelectorPro
            </div>
 
             <div className="p-4 flex items-center justify-between" style={{ borderTop: '1px solid var(--border)' }}>
-               <div className="flex items-center gap-2" style={{ fontSize: '11px', color: 'var(--muted-foreground)' }}>
+               <div className="flex items-center gap-2 text-caption" style={{ color: 'var(--muted-foreground)' }}>
                   <RefreshCw className="w-3 h-3" />
                   <span>We'll reuse cached data when available.</span>
                </div>

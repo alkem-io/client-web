@@ -16,7 +16,7 @@ const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
 );
 const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/subspace/routing/CrdSubspaceRoutes'));
-const SpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('@/domain/space/pages/SpaceCalloutPage'));
+const CrdSpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../CrdSpaceCalloutPage'));
 
 export default function CrdSpaceRoutes() {
   return (
@@ -68,7 +68,7 @@ export default function CrdSpaceRoutes() {
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceCalloutPage />
+                  <CrdSpaceCalloutPage />
                 </Suspense>
               }
             />
@@ -77,7 +77,7 @@ export default function CrdSpaceRoutes() {
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceCalloutPage />
+                  <CrdSpaceCalloutPage />
                 </Suspense>
               }
             />
