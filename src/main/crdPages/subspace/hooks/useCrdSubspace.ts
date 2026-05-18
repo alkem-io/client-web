@@ -47,10 +47,11 @@ export type CrdSubspacePageData = {
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
-  subspaces: Array<{ name: string; initials: string; href: string }>;
+  subspaces: Array<{ name: string; initials: string; href: string; avatarUrl?: string }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
+  innovationFlowId: string | undefined;
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
@@ -92,6 +93,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     skip: !collaborationId,
   });
   const flow = flowData?.lookup.collaboration?.innovationFlow;
+  const innovationFlowId = flow?.id;
   const phases = mapInnovationFlowPhases(flow?.states);
   const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
@@ -158,6 +160,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
       name: child.displayName,
       initials: getInitials(child.displayName),
       href: child.url,
+      avatarUrl: child.avatar?.uri,
     })) ?? [];
 
   const visibilityData = mapSpaceVisibility(visibility);
@@ -186,6 +189,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaces,
     visibility: visibilityData,
 
+    innovationFlowId,
     phases,
     currentPhaseId,
     canEditFlow,

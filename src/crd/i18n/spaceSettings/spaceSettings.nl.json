@@ -53,6 +53,7 @@
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
+      "drag": "Sleep om de fase te herschikken",
       "empty": "Nog geen callouts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
@@ -98,6 +99,11 @@
         "cancel": "Annuleren",
         "confirm": "Fase toevoegen"
       }
+    },
+    "replaceFlow": {
+      "button": "Innovatieflow vervangen",
+      "loading": "Nieuwe flow laden…",
+      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw."
     },
     "row": {
       "drag": "Sleep om te herordenen",
