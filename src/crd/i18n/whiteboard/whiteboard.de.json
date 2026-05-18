@@ -39,7 +39,22 @@
     }
   },
   "footer": {
-    "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten"
+    "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten",
+    "readonlyReason": {
+      "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",
+      "contentUpdatePolicy": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Bitten Sie den Besitzer <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
+      "noMembership": "Sie müssen Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um <spacelink>beizutreten/sich zu bewerben</spacelink>",
+      "unauthenticated": "Sie müssen angemeldet und Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um sich <signinlink>anzumelden</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Nur-Lese-Modus",
+      "reason": {
+        "inactivity": "Sie können dieses Whiteboard nicht bearbeiten, weil Sie zu lange inaktiv waren. Bitte versuchen Sie, das Whiteboard erneut zu öffnen, um weiter zu bearbeiten.",
+        "multiUserNotAllowed": "Sie können dieses Whiteboard nicht bearbeiten, weil dieser Space nur einen Whiteboard-Bearbeiter gleichzeitig erlaubt",
+        "roomCapacityReached": "Sie können dieses Whiteboard nicht bearbeiten, weil dieser Space mehrere Bearbeiter gleichzeitig erlaubt, aber das Maximum erreicht ist",
+        "generic": "Sie können dieses Whiteboard aus einem der folgenden Gründe nicht bearbeiten:\n\n- Sie waren 2 Stunden oder länger inaktiv\n- Sie sind kein Mitglied des Space\n- Dieser Space erlaubt nur einen Whiteboard-Bearbeiter gleichzeitig\n- Dieser Space erlaubt mehr Bearbeiter, aber das Maximum ist erreicht"
+      }
+    }
   },
   "preview": {
     "settings": {
