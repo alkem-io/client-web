@@ -57,7 +57,11 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
   return (
     <div
       className={cn(
-        'max-w-none text-body text-foreground',
+        // `break-words` (overflow-wrap: break-word) so an unbreakable token
+        // (long URL, gibberish word) wraps instead of forming one physical
+        // line — otherwise `-webkit-line-clamp` can never overflow vertically
+        // and the text spills out of the card.
+        'max-w-none break-words text-body text-foreground',
         // Headings
         '[&_h1]:text-page-title [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:text-foreground',
         '[&_h2]:text-section-title [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-foreground',
