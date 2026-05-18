@@ -148,6 +148,7 @@
     "loading": "Inhoud laden..."
   },
   "callout": {
+    "openAria": "{{title}} openen",
     "draft": "Concept",
     "expand": "Meer tonen",
     "collapse": "Minder tonen",
