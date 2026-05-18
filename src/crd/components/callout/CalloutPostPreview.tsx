@@ -1,10 +1,10 @@
 import { ExternalLink, Pencil, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -143,15 +143,7 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
 
         {(hasTags || hasReferences) && <hr className="border-border" />}
 
-        {hasTags && (
-          <div className="flex flex-wrap gap-1.5">
-            {post.tags?.map(tag => (
-              <Badge key={tag} variant="secondary" className="text-badge px-2 py-0.5 font-normal">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {hasTags && <CollapsibleTagList tags={post.tags ?? []} />}
 
         {hasReferences && (
           <div>

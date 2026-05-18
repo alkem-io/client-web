@@ -32,6 +32,7 @@ export function InnovationPackForm({
   onChange,
   onSubmit,
   submitting,
+  isDirty,
   providerName,
   avatarUrl,
 }: InnovationPackFormProps) {
@@ -161,7 +162,7 @@ export function InnovationPackForm({
 
       {/* Save */}
       <div className="flex justify-end pt-2">
-        <Button type="submit" disabled={submitting || hasBlockingError} aria-busy={submitting}>
+        <Button type="submit" disabled={submitting || hasBlockingError || !isDirty} aria-busy={submitting}>
           {submitting && <Loader2 aria-hidden="true" className={cn('size-4 mr-2 animate-spin')} />}
           {t('packForm.save')}
         </Button>

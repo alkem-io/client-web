@@ -1,10 +1,10 @@
 import { ArrowLeft, Check, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 
@@ -114,15 +114,7 @@ function InvitationDetailDialog({
                 <p className="text-caption text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
               )}
               {invitation.spaceTags.length > 0 && (
-                <ul className="flex flex-wrap justify-center gap-1 mt-1">
-                  {invitation.spaceTags.slice(0, 5).map(tag => (
-                    <li key={tag}>
-                      <Badge variant="secondary" className="text-badge">
-                        {tag}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
+                <CollapsibleTagList tags={invitation.spaceTags} className="justify-center mt-1" />
               )}
             </a>
 
