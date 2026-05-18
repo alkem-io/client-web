@@ -214,17 +214,18 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
 
     data?.lookup?.space?.mentionableContributors?.forEach(contributor => {
       if (isAlreadyMentioned(contributor)) return;
+      if (!contributor.profile?.url || !contributor.profile.displayName) return;
       const isVc = contributor.type === ActorType.VirtualContributor;
       if (isVc && suppressVcs) return;
       mentionableContributors.push({
-        id: contributor.profile?.url ?? '',
-        display: contributor.profile?.displayName ?? '',
-        avatarUrl: contributor.profile?.avatar?.uri,
+        id: contributor.profile.url,
+        display: contributor.profile.displayName,
+        avatarUrl: contributor.profile.avatar?.uri,
         ...(isVc
           ? { virtualContributor: true }
           : {
-              city: contributor.profile?.location?.city,
-              country: contributor.profile?.location?.country,
+              city: contributor.profile.location?.city,
+              country: contributor.profile.location?.country,
             }),
       });
     });
@@ -256,7 +257,12 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     mentionDebounceTimerRef.current = setTimeout(async () => {
       mentionDebounceTimerRef.current = null;
       const callbacks = mentionPendingCallbacksRef.current.splice(0);
-      const users = await getMentionableContributors(search);
+      let users: EnrichedSuggestionDataItem[] = [];
+      try {
+        users = await getMentionableContributors(search);
+      } catch {
+        users = [];
+      }
       for (const cb of callbacks) {
         cb(users);
       }

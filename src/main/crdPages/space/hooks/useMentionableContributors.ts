@@ -41,6 +41,12 @@ export function useMentionableContributors(): CrdMentionSearch {
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingResolversRef = useRef<Array<(suggestions: CrdMentionSuggestion[]) => void>>([]);
 
+  const spaceID = subspace.id || space.id;
+
+  useEffect(() => {
+    emptyQueriesRef.current = [];
+  }, [spaceID]);
+
   useEffect(
     () => () => {
       if (debounceTimerRef.current) {
@@ -49,8 +55,6 @@ export function useMentionableContributors(): CrdMentionSearch {
     },
     []
   );
-
-  const spaceID = subspace.id || space.id;
 
   return (search: string): Promise<CrdMentionSuggestion[]> => {
     const emptyQueries = emptyQueriesRef.current;
@@ -63,6 +67,13 @@ export function useMentionableContributors(): CrdMentionSearch {
       MENTION_INVALID_CHARS_REGEXP.test(search) ||
       search.length > MAX_MENTION_LENGTH
     ) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      for (const resolve of pendingResolversRef.current.splice(0)) {
+        resolve([]);
+      }
       return Promise.resolve([]);
     }
 
@@ -75,38 +86,44 @@ export function useMentionableContributors(): CrdMentionSearch {
         debounceTimerRef.current = null;
         const resolvers = pendingResolversRef.current.splice(0);
 
-        const { data } = await queryUsers({
-          variables: {
-            spaceID,
-            filter: { displayName: search },
-            limit: MAX_USERS_LISTED,
-          },
-        });
-
-        const suggestions: CrdMentionSuggestion[] = [];
-
-        data?.lookup?.space?.mentionableContributors?.forEach(contributor => {
-          if (!contributor.profile?.url) return;
-          const isVc = contributor.type === ActorType.VirtualContributor;
-          suggestions.push({
-            id: contributor.profile.url,
-            displayName: contributor.profile.displayName,
-            avatarUrl: contributor.profile.avatar?.uri,
-            ...(isVc
-              ? { virtualContributor: true }
-              : {
-                  city: contributor.profile.location?.city,
-                  country: contributor.profile.location?.country,
-                }),
+        try {
+          const { data } = await queryUsers({
+            variables: {
+              spaceID,
+              filter: { displayName: search },
+              limit: MAX_USERS_LISTED,
+            },
           });
-        });
 
-        if (suggestions.length === 0) {
-          emptyQueries.push(search);
-        }
+          const suggestions: CrdMentionSuggestion[] = [];
 
-        for (const r of resolvers) {
-          r(suggestions);
+          data?.lookup?.space?.mentionableContributors?.forEach(contributor => {
+            if (!contributor.profile?.url) return;
+            const isVc = contributor.type === ActorType.VirtualContributor;
+            suggestions.push({
+              id: contributor.profile.url,
+              displayName: contributor.profile.displayName,
+              avatarUrl: contributor.profile.avatar?.uri,
+              ...(isVc
+                ? { virtualContributor: true }
+                : {
+                    city: contributor.profile.location?.city,
+                    country: contributor.profile.location?.country,
+                  }),
+            });
+          });
+
+          if (suggestions.length === 0) {
+            emptyQueries.push(search);
+          }
+
+          for (const resolve of resolvers) {
+            resolve(suggestions);
+          }
+        } catch {
+          for (const resolve of resolvers) {
+            resolve([]);
+          }
         }
       }, MENTION_DEBOUNCE_MS);
     });
