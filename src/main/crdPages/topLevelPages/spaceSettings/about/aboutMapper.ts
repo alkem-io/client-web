@@ -4,6 +4,7 @@ import type {
   AboutReference,
   AboutVisual,
   SpaceCardPreview,
+  SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
@@ -65,19 +66,25 @@ export function mapSpaceToAboutFormValues(space: AboutSpace): AboutFormValues {
 }
 
 /** Build the live Preview card view from current form values + space id. */
-export function buildPreviewCard(spaceId: string, values: AboutFormValues, href: string): SpaceCardPreview {
+export function buildPreviewCard(
+  spaceId: string,
+  values: AboutFormValues,
+  href: string,
+  level: SpaceSettingsLevel
+): SpaceCardPreview {
   return {
     name: values.name,
     tagline: values.tagline,
     // The Preview is a SpaceCard (Explore-card shape), so its banner is the
-    // card banner — not the page banner. Subspaces never have a page banner;
-    // L0 spaces have both, but the Explore card uses cardBanner regardless.
+    // card banner — not the page banner. L0 spaces have both, but the Explore
+    // card uses cardBanner regardless. L1/L2 subspaces have no page banner.
     bannerUrl: values.cardBanner.uri ?? null,
     avatarUrl: values.avatar.uri ?? null,
     tags: values.tags,
     color: pickColorFromId(spaceId),
     initials: computeInitials(values.name),
     href,
+    level,
     what: values.what,
   };
 }

@@ -1,0 +1,327 @@
+{
+  "manager": {
+    "title": "Modèles",
+    "subtitle": "Modèles réutilisables pour cet espace.",
+    "search": "Rechercher des modèles…",
+    "addNew": "Ajouter",
+    "createNew": "Créer",
+    "selectFromLibrary": "Sélectionner depuis la bibliothèque",
+    "duplicating": "Création…",
+    "deleting": "Suppression…",
+    "noTemplates": "Aucun modèle pour l’instant",
+    "noTemplatesHint": "Créez-en un ou importez-en un depuis la bibliothèque.",
+    "noTemplatesReadOnly": "Aucun modèle pour l’instant.",
+    "sectionList": "Sections de modèles",
+    "templateList": "Modèles",
+    "sections": {
+      "space": {
+        "title": "Modèles d’espace",
+        "subtitle": "Structurez un espace avec des phases prédéfinies et des outils de démarrage."
+      },
+      "callout": {
+        "title": "Outils de collaboration",
+        "subtitle": "Callouts réutilisables pour ateliers, brainstormings et activités de groupe."
+      },
+      "whiteboard": {
+        "title": "Modèles de tableau blanc",
+        "subtitle": "Mises en page de canevas pour la collaboration visuelle."
+      },
+      "post": {
+        "title": "Modèles de publication",
+        "subtitle": "Documents standardisés pour projets et décisions."
+      },
+      "communityGuidelines": {
+        "title": "Modèles de directives communautaires",
+        "subtitle": "Règles et attentes pour une communauté."
+      }
+    }
+  },
+  "card": {
+    "actions": "Actions du modèle",
+    "preview": "Aperçu",
+    "edit": "Modifier",
+    "duplicate": "Dupliquer",
+    "delete": "Supprimer",
+    "noPreview": "Pas d’aperçu"
+  },
+  "framingKind": {
+    "none": "Texte",
+    "whiteboard": "Tableau blanc",
+    "memo": "Mémo",
+    "document": "Document",
+    "cta": "Lien",
+    "image": "Galerie",
+    "poll": "Sondage"
+  },
+  "contributionType": {
+    "post": "Publications",
+    "whiteboard": "Tableaux blancs",
+    "link": "Liens"
+  },
+  "preview": {
+    "loading": "Chargement du modèle…",
+    "edit": "Modifier le modèle",
+    "close": "Fermer",
+    "empty": "—",
+    "callout": {
+      "framingKind": "Type de contenu",
+      "framing": "Contenu",
+      "allowedContributions": "Contributions autorisées",
+      "noContributions": "Aucune contribution",
+      "comments": "Commentaires activés",
+      "commentsDisabled": "Commentaires désactivés",
+      "defaultPostDescription": "Description par défaut de la publication",
+      "defaultWhiteboard": "Tableau blanc par défaut",
+      "links": "Liens",
+      "gallery": "Galerie",
+      "pollQuestion": "Question",
+      "pollOptions": "Options"
+    },
+    "whiteboard": {
+      "empty": "Ce modèle de tableau blanc ne contient pas de dessin."
+    },
+    "post": {
+      "defaultDescription": "Description par défaut"
+    },
+    "space": {
+      "phases": "Phases",
+      "starterCallouts": "Outils de démarrage",
+      "subspaceTemplates": "Modèles de sous-espaces",
+      "none": "Aucun"
+    },
+    "communityGuidelines": {
+      "title": "Titre des directives",
+      "body": "Directives",
+      "references": "Références"
+    }
+  },
+  "picker": {
+    "title": "Utiliser un modèle",
+    "importTitle": "Bibliothèque de modèles",
+    "search": "Rechercher des modèles…",
+    "noTemplates": "Aucun modèle disponible.",
+    "noTemplatesForType": "Aucun modèle disponible pour ce type.",
+    "sources": {
+      "space": "Cet espace",
+      "account": "Votre compte",
+      "platform": "Plateforme"
+    },
+    "select": "Utiliser ce modèle",
+    "noTemplate": "Aucun modèle — partir de zéro",
+    "import": "Importer",
+    "inThisSet": "Dans cet ensemble",
+    "remove": "Retirer de l’ensemble",
+    "selectPreviewHint": "Sélectionnez un modèle pour le prévisualiser.",
+    "close": "Fermer",
+    "done": "Terminé"
+  },
+  "form": {
+    "createTitle": {
+      "space": "Créer un modèle d’espace",
+      "callout": "Créer un modèle d’outil de collaboration",
+      "whiteboard": "Créer un modèle de tableau blanc",
+      "post": "Créer un modèle de publication",
+      "communityGuidelines": "Créer un modèle de directives communautaires"
+    },
+    "editTitle": {
+      "space": "Modifier un modèle d’espace",
+      "callout": "Modifier un modèle d’outil de collaboration",
+      "whiteboard": "Modifier un modèle de tableau blanc",
+      "post": "Modifier un modèle de publication",
+      "communityGuidelines": "Modifier un modèle de directives communautaires"
+    },
+    "common": {
+      "name": "Nom du modèle",
+      "namePlaceholder": "p. ex. Lancement de projet",
+      "nameRequired": "Un nom de modèle est requis.",
+      "description": "Description",
+      "descriptionPlaceholder": "À quoi sert ce modèle ?",
+      "tags": "Étiquettes",
+      "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
+      "banner": "Image d’aperçu",
+      "uploadBanner": "Téléverser une image d’aperçu"
+    },
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "whiteboard": {
+      "drawing": "Tableau blanc",
+      "editDrawing": "Modifier le dessin",
+      "startDrawing": "Commencer à dessiner",
+      "previewSettings": "Paramètres d’aperçu",
+      "editPreview": "Modifier l’aperçu",
+      "previewImage": "Image d’aperçu",
+      "uploadPreviewImage": "Téléverser une image d’aperçu"
+    },
+    "post": {
+      "defaultDescription": "Description par défaut",
+      "defaultDescriptionPlaceholder": "Contenu pré-rempli pour les nouvelles publications utilisant ce modèle"
+    },
+    "space": {
+      "source": "Espace source",
+      "sourceRequired": "Collez d'abord une URL d'espace et cliquez sur \"Utiliser cet espace\".",
+      "recursive": "Inclure les sous-espaces imbriqués",
+      "capturedStructure": "Structure capturée",
+      "urlLoader": {
+        "description": "Collez l'URL d'un espace ou sous-espace dont vous voulez copier la structure.",
+        "placeholder": "https://…",
+        "use": "Utiliser cet espace",
+        "selectAnother": "Choisir un autre espace",
+        "resolving": "Vérification…",
+        "errors": {
+          "required": "Collez d'abord une URL d'espace.",
+          "invalidUrl": "Cette URL ne pointe pas vers un espace.",
+          "notFound": "Espace introuvable.",
+          "noRights": "Vous devez avoir les droits administrateur sur l'espace que vous voulez copier comme modèle."
+        }
+      }
+    },
+    "communityGuidelines": {
+      "title": "Titre des directives",
+      "titlePlaceholder": "p. ex. Nos valeurs communautaires",
+      "titleRequired": "Un titre de directives est requis.",
+      "body": "Directives",
+      "bodyPlaceholder": "Écrivez les directives pour cette communauté…",
+      "references": "Références"
+    }
+  },
+  "references": {
+    "add": "Ajouter une référence",
+    "name": "Nom",
+    "uri": "URL",
+    "description": "Description",
+    "remove": "Retirer la référence",
+    "nameRequired": "Un nom est requis.",
+    "uriRequired": "Une URL est requise."
+  },
+  "discard": {
+    "title": "Abandonner les modifications ?",
+    "body": "Vous avez des modifications non enregistrées. Voulez-vous les abandonner ?",
+    "confirm": "Abandonner",
+    "cancel": "Continuer à modifier"
+  },
+  "delete": {
+    "title": "Supprimer le modèle ?",
+    "body": "« {{name}} » sera supprimé définitivement. Cette action est irréversible.",
+    "confirm": "Supprimer le modèle",
+    "cancel": "Annuler"
+  },
+  "removeFromSet": {
+    "title": "Retirer ce modèle ?",
+    "body": "« {{name}} » sera retiré de cet ensemble. L’original dans la bibliothèque n’est pas affecté.",
+    "confirm": "Retirer",
+    "cancel": "Annuler"
+  },
+  "setDefault": {
+    "subspaceTitle": "Modèle de sous-espace par défaut",
+    "subspaceSubtitle": "Sert à pré-remplir le formulaire lors de la création d’un sous-espace de cet espace.",
+    "flowStateTitle": "Modèle de callout par défaut",
+    "flowStateSubtitle": "Sert à pré-remplir le formulaire lors de l’ajout d’un callout à cette phase.",
+    "current": "Valeur par défaut actuelle",
+    "none": "Aucune valeur par défaut",
+    "noCandidates": "Il n’y a pas encore de modèles d’espace dans cet ensemble.",
+    "confirm": "Définir comme par défaut",
+    "clear": "Effacer la valeur par défaut",
+    "previewHint": "Sélectionnez un modèle pour le prévisualiser.",
+    "cancel": "Annuler"
+  },
+  "saveAs": {
+    "fromCalloutTitle": "Enregistrer le callout comme modèle",
+    "fromGuidelinesTitle": "Enregistrer les directives comme modèle",
+    "fromSubspaceTitle": "Enregistrer le sous-espace comme modèle",
+    "unsavedSourceTitle": "Enregistrez d’abord vos modifications",
+    "unsavedSourceBody": "Enregistrez ou abandonnez les modifications non enregistrées avant de créer un modèle à partir de ceci.",
+    "unsavedSourceConfirm": "OK"
+  },
+  "packAdmin": {
+    "subtitle": "Modèles de cet Innovation Pack",
+    "detailsHeading": "Détails du pack",
+    "detailsSubtitle": "Mettez à jour le nom, la description, les paramètres du fournisseur et les références du pack.",
+    "templatesHeading": "Modèles"
+  },
+  "packForm": {
+    "name": "Nom du pack",
+    "namePlaceholder": "p. ex. Kit d’intégration",
+    "nameRequired": "Un nom de pack est requis.",
+    "provider": "Fournisseur",
+    "providerHint": "Le fournisseur est l’organisation propriétaire et ne peut pas être modifié ici.",
+    "avatar": "Avatar",
+    "avatarHint": "Image carrée, utilisée dans les cartes et en-têtes de pack.",
+    "uploadAvatar": "Téléverser un avatar",
+    "changeAvatar": "Changer l’avatar",
+    "description": "Description",
+    "descriptionPlaceholder": "De quoi parle cet Innovation Pack ?",
+    "tags": "Étiquettes",
+    "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
+    "references": "Références",
+    "listedInStore": "Listé dans la boutique",
+    "listedInStoreHint": "Affiche ce pack dans l’Innovation Library.",
+    "searchVisibility": "Visibilité dans la recherche",
+    "searchVisibilityOptions": {
+      "public": "Public",
+      "authenticated": "Utilisateurs authentifiés",
+      "account": "Compte uniquement"
+    },
+    "searchVisibilityHints": {
+      "public": "Tout le monde — y compris les visiteurs non authentifiés — peut trouver ce pack via la recherche.",
+      "authenticated": "Les utilisateurs connectés peuvent trouver ce pack via la recherche.",
+      "account": "Seuls les membres du compte propriétaire peuvent trouver ce pack via la recherche."
+    },
+    "save": "Enregistrer les modifications"
+  },
+  "createPack": {
+    "title": "Créer un Innovation Pack",
+    "name": "Nom",
+    "namePlaceholder": "p. ex. Kit d’intégration",
+    "nameRequired": "Un nom de pack est requis.",
+    "description": "Description",
+    "descriptionPlaceholder": "De quoi parle cet Innovation Pack ?",
+    "create": "Créer",
+    "cancel": "Annuler"
+  },
+  "deletePack": {
+    "title": "Supprimer cet Innovation Pack ?",
+    "body": "« {{name}} » et tous ses modèles seront définitivement supprimés. Cette action est irréversible.",
+    "confirm": "Supprimer le pack",
+    "cancel": "Annuler"
+  },
+  "packProfile": {
+    "shareTooltip": "Partager cet Innovation Pack",
+    "manage": "Gérer ce pack",
+    "sidebarLabel": "Détails du pack",
+    "provider": "Fournisseur",
+    "providerUnknown": "Fournisseur inconnu",
+    "tags": "Étiquettes",
+    "references": "Références",
+    "referencesEmpty": "Aucune référence.",
+    "templatesHeading": "Modèles"
+  },
+  "library": {
+    "title": "Bibliothèque d'innovation",
+    "subtitle": "Découvrez les modèles et Innovation Packs publiés sur la plateforme.",
+    "pageTitle": "Bibliothèque d'innovation",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Aucun Innovation Pack disponible pour le moment."
+    },
+    "templates": {
+      "heading": "Modèles",
+      "empty": "Aucun modèle ne correspond aux filtres sélectionnés."
+    },
+    "filter": {
+      "label": "Filtrer par type",
+      "all": "Tous",
+      "types": {
+        "space": "Espaces",
+        "callout": "Outils de collaboration",
+        "whiteboard": "Tableaux blancs",
+        "post": "Publications",
+        "communityGuidelines": "Règles de la communauté"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} modèle",
+    "templateCount_other": "{{count}} modèles",
+    "byProvider": "par {{name}}"
+  }
+}

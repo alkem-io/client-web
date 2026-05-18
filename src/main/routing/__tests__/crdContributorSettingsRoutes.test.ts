@@ -25,21 +25,43 @@ import { describe, expect, it } from 'vitest';
  * is a manual smoke (T092 — handled by the user against `localhost:3001`
  * per the per-tab smoke checklist in `quickstart.md`).
  */
+// MUI fallbacks have a much larger import graph (full @mui/material + emotion
+// + the entire MUI domain tree) so a per-test timeout buffer is required when
+// the suite runs in parallel under jsdom. The TEMP MUI fallback in
+// `CrdUserAccountTab` / `CrdOrgAccountTab` (spec 097, T033a–T033f) puts those
+// two CRD tests in the same bucket until the CRD parity dialogs land.
+const MUI_LOAD_TIMEOUT_MS = 30_000;
+
 describe('CRD User Settings — lazy chunks load without throwing', () => {
-  it('CrdUserSettingsRoutes', async () => {
-    const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes');
-    expect(typeof mod.default).toBe('function');
-  });
+  // `CrdUserSettingsRoutes` is the entry point that lazy-references every other
+  // chunk below — its first-time import in the suite warms the lazy graph and
+  // can exceed the default 5s timeout under parallel jsdom load. Use the same
+  // buffer as the MUI-heavy tests below.
+  it(
+    'CrdUserSettingsRoutes',
+    async () => {
+      const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes');
+      expect(typeof mod.default).toBe('function');
+    },
+    MUI_LOAD_TIMEOUT_MS
+  );
 
   it('CrdUserProfileTab', async () => {
     const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/profile/CrdUserProfileTab');
     expect(typeof mod.default).toBe('function');
   });
 
-  it('CrdUserAccountTab', async () => {
-    const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab');
-    expect(typeof mod.default).toBe('function');
-  });
+  // CrdUserAccountTab eagerly imports four MUI creation dialogs as a TEMP
+  // fallback (spec 097, T033a–T033f) — its module-load graph is therefore
+  // MUI-sized and needs the same parallel-jsdom buffer as the MUI tests.
+  it(
+    'CrdUserAccountTab',
+    async () => {
+      const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab');
+      expect(typeof mod.default).toBe('function');
+    },
+    MUI_LOAD_TIMEOUT_MS
+  );
 
   it('CrdUserMembershipTab', async () => {
     const mod = await import('@/main/crdPages/topLevelPages/userPages/settings/membership/CrdUserMembershipTab');
@@ -78,10 +100,16 @@ describe('CRD Org Settings — lazy chunks load without throwing', () => {
     expect(typeof mod.default).toBe('function');
   });
 
-  it('CrdOrgAccountTab', async () => {
-    const mod = await import('@/main/crdPages/topLevelPages/organizationPages/settings/account/CrdOrgAccountTab');
-    expect(typeof mod.default).toBe('function');
-  });
+  // CrdOrgAccountTab also eagerly imports the TEMP MUI creation dialogs
+  // (spec 097, T033a–T033f). Same parallel-jsdom buffer rationale.
+  it(
+    'CrdOrgAccountTab',
+    async () => {
+      const mod = await import('@/main/crdPages/topLevelPages/organizationPages/settings/account/CrdOrgAccountTab');
+      expect(typeof mod.default).toBe('function');
+    },
+    MUI_LOAD_TIMEOUT_MS
+  );
 
   it('CrdOrgCommunityTab', async () => {
     const mod = await import('@/main/crdPages/topLevelPages/organizationPages/settings/community/CrdOrgCommunityTab');
@@ -100,11 +128,6 @@ describe('CRD Org Settings — lazy chunks load without throwing', () => {
     expect(typeof mod.default).toBe('function');
   });
 });
-
-// MUI fallbacks have a much larger import graph (full @mui/material + emotion
-// + the entire MUI domain tree) so a per-test timeout buffer is required when
-// the suite runs in parallel under jsdom.
-const MUI_LOAD_TIMEOUT_MS = 30_000;
 
 describe('CRD-OFF parity — MUI fallback module-load smoke', () => {
   it(

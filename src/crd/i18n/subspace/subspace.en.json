@@ -1,8 +1,4 @@
 {
-  "badge": {
-    "subspace": "SubSpace",
-    "subSubspace": "SubSubSpace"
-  },
   "actions": {
     "activity": "Recent activity",
     "videoCall": "Start video call",
@@ -10,7 +6,6 @@
     "settings": "Settings"
   },
   "members": {
-    "viewCommunity": "View community members",
     "memberCount_one": "{{count}} member",
     "memberCount_other": "{{count}} members"
   },
@@ -62,7 +57,6 @@
   },
   "a11y": {
     "subspaceBanner": "SubSpace banner for {{name}}",
-    "parentLink": "Go to parent space {{name}}",
     "flowTabs": "Innovation flow phases",
     "sidebarNavigation": "SubSpace sidebar",
     "communityDialog": "Community members dialog",

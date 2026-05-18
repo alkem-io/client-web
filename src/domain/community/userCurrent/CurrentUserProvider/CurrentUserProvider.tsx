@@ -14,6 +14,7 @@ const CurrentUserContext = createContext<CurrentUserModel>({
   platformPrivilegeWrapper: undefined,
   userModel: undefined,
   accountId: undefined,
+  designVersion: undefined,
   loading: true,
   loadingMe: true, // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: false,
@@ -75,10 +76,15 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const accountPrivileges = user?.account?.authorization?.myPrivileges ?? [];
   const accountEntitlements = user?.account?.license?.availableEntitlements ?? [];
 
+  const rawDesignVersion = user?.settings?.designVersion;
+  const designVersion: 1 | 2 | undefined =
+    rawDesignVersion === 1 || rawDesignVersion === 2 ? rawDesignVersion : undefined;
+
   const providedValue = {
     platformPrivilegeWrapper,
     userModel: user,
     accountId,
+    designVersion,
     loading,
     loadingMe: loadingAuthentication || loadingMe,
     verified,

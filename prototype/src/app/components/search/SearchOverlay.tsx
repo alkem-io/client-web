@@ -366,9 +366,8 @@ export function SearchOverlay() {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Search…"
-                  className="flex-1 bg-transparent outline-none"
+                  className="flex-1 bg-transparent outline-none text-subheader font-normal"
                   style={{
-                    fontSize: "var(--text-base)",
                     color: "var(--foreground)",
                     fontFamily: "'Inter', sans-serif",
                   }}
@@ -380,11 +379,9 @@ export function SearchOverlay() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors whitespace-nowrap shrink-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors whitespace-nowrap shrink-0 text-control"
                         style={{
-                          fontSize: "var(--text-sm)",
                           fontFamily: "'Inter', sans-serif",
-                          fontWeight: "var(--font-weight-medium)" as any,
                           background: scope !== "all" ? "var(--primary)" : "var(--secondary)",
                           color: scope !== "all" ? "var(--primary-foreground)" : "var(--secondary-foreground)",
                           border: "1px solid var(--border)",
@@ -430,12 +427,10 @@ export function SearchOverlay() {
                     <span
                       key={`${tag}-${idx}`}
                       role="listitem"
-                      className="inline-flex items-center gap-1.5 rounded-full"
+                      className="inline-flex items-center gap-1.5 rounded-full text-body-emphasis"
                       style={{
                         padding: "3px 10px 3px 12px",
-                        fontSize: "var(--text-sm)",
                         fontFamily: "'Inter', sans-serif",
-                        fontWeight: 500,
                         background: "var(--primary)",
                         color: "var(--primary-foreground)",
                       }}
@@ -471,10 +466,9 @@ export function SearchOverlay() {
                       <Search style={{ width: 22, height: 22, color: "var(--muted-foreground)" }} />
                     </div>
                     <p
+                      className="text-subheader"
                       style={{
-                        fontSize: "var(--text-base)",
                         fontFamily: "'Inter', sans-serif",
-                        fontWeight: 500,
                         color: "var(--foreground)",
                         marginBottom: 6,
                       }}
@@ -482,11 +476,10 @@ export function SearchOverlay() {
                       Type a search term and press Enter
                     </p>
                     <p
+                      className="text-body"
                       style={{
-                        fontSize: "var(--text-sm)",
                         fontFamily: "'Inter', sans-serif",
                         color: "var(--muted-foreground)",
-                        lineHeight: 1.5,
                       }}
                     >
                       Search across Spaces, Posts, Responses, Users, and Organizations.
@@ -504,8 +497,8 @@ export function SearchOverlay() {
                       style={{ width: 28, height: 28, color: "var(--primary)" }}
                     />
                     <p
+                      className="text-body"
                       style={{
-                        fontSize: "var(--text-sm)",
                         fontFamily: "'Inter', sans-serif",
                         color: "var(--muted-foreground)",
                       }}
@@ -527,10 +520,9 @@ export function SearchOverlay() {
                       <Search style={{ width: 22, height: 22, color: "var(--muted-foreground)" }} />
                     </div>
                     <p
+                      className="text-subheader"
                       style={{
-                        fontSize: "var(--text-base)",
                         fontFamily: "'Inter', sans-serif",
-                        fontWeight: 500,
                         color: "var(--foreground)",
                         marginBottom: 6,
                       }}
@@ -539,11 +531,10 @@ export function SearchOverlay() {
                       {searchTags.map((t) => `"${t}"`).join(", ")}
                     </p>
                     <p
+                      className="text-body"
                       style={{
-                        fontSize: "var(--text-sm)",
                         fontFamily: "'Inter', sans-serif",
                         color: "var(--muted-foreground)",
-                        lineHeight: 1.5,
                       }}
                     >
                       Try different keywords or broaden your search.
@@ -580,11 +571,12 @@ export function SearchOverlay() {
                         <button
                           key={cat}
                           onClick={() => scrollToSection(cat)}
-                          className="flex items-center gap-2.5 px-5 py-2.5 text-left transition-colors"
+                          className={cn(
+                            "flex items-center gap-2.5 px-5 py-2.5 text-left transition-colors text-control font-normal",
+                            isActive && "font-semibold",
+                          )}
                           style={{
-                            fontSize: "var(--text-sm)",
                             fontFamily: "'Inter', sans-serif",
-                            fontWeight: isActive ? 600 : 400,
                             color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
                             background: isActive ? "var(--accent)" : "transparent",
                             borderLeft: isActive
@@ -638,22 +630,21 @@ export function SearchOverlay() {
                         <button
                           key={cat}
                           onClick={() => scrollToSection(cat)}
-                          className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-full transition-colors shrink-0"
+                          className={cn(
+                            "flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-full transition-colors shrink-0 text-control font-normal",
+                            isActive && "font-semibold",
+                          )}
                           style={{
-                            fontSize: "var(--text-sm)",
                             fontFamily: "'Inter', sans-serif",
-                            fontWeight: isActive ? 600 : 400,
                             background: isActive ? "var(--primary)" : "var(--secondary)",
                             color: isActive ? "var(--primary-foreground)" : "var(--muted-foreground)",
                           }}
                         >
                           {CATEGORY_LABELS[cat]}
                           <span
-                            className="rounded-full"
+                            className="rounded-full text-badge"
                             style={{
                               padding: "0 5px",
-                              fontSize: "10px",
-                              fontWeight: 600,
                               fontFamily: "'Inter', sans-serif",
                               background: isActive ? "var(--primary-foreground)" : "var(--muted)",
                               color: isActive ? "var(--primary)" : "var(--muted-foreground)",
@@ -677,13 +668,11 @@ export function SearchOverlay() {
                     {/* Disclaimer */}
                     <div className="px-5 md:px-6 pt-4">
                       <p
-                        className="rounded-lg px-3 py-2"
+                        className="rounded-lg px-3 py-2 text-body"
                         style={{
-                          fontSize: "var(--text-sm)",
                           fontFamily: "'Inter', sans-serif",
                           color: "var(--muted-foreground)",
                           background: "var(--secondary)",
-                          lineHeight: 1.5,
                         }}
                       >
                         These results may not represent the up to date state of the platform. Search results are updated on an interval.
@@ -715,21 +704,18 @@ export function SearchOverlay() {
                             <div className="flex items-center gap-2">
                               <span style={{ color: "var(--muted-foreground)" }}>{CATEGORY_ICONS[cat]}</span>
                               <h3
+                                className="text-subheader font-semibold"
                                 style={{
-                                  fontSize: "var(--text-base)",
                                   fontFamily: "'Inter', sans-serif",
-                                  fontWeight: 600,
                                   color: "var(--foreground)",
                                 }}
                               >
                                 {CATEGORY_LABELS[cat]}
                               </h3>
                               <span
-                                className="rounded-full"
+                                className="rounded-full text-caption font-semibold"
                                 style={{
                                   padding: "1px 8px",
-                                  fontSize: "12px",
-                                  fontWeight: 600,
                                   fontFamily: "'Inter', sans-serif",
                                   background: "var(--muted)",
                                   color: "var(--muted-foreground)",
@@ -744,11 +730,9 @@ export function SearchOverlay() {
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <button
-                                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors"
+                                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors text-control"
                                     style={{
-                                      fontSize: "var(--text-sm)",
                                       fontFamily: "'Inter', sans-serif",
-                                      fontWeight: 500,
                                       color: currentFilter !== "all" ? "var(--primary)" : "var(--muted-foreground)",
                                       background: currentFilter !== "all" ? "color-mix(in srgb, var(--primary) 10%, transparent)" : "transparent",
                                       border: "1px solid var(--border)",
@@ -840,9 +824,8 @@ export function SearchOverlay() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => loadMore(cat)}
-                                className="gap-1.5"
+                                className="gap-1.5 text-control"
                                 style={{
-                                  fontSize: "var(--text-sm)",
                                   fontFamily: "'Inter', sans-serif",
                                 }}
                               >
@@ -934,10 +917,9 @@ function PostResultCard({
             </AvatarFallback>
           </Avatar>
           <span
+            className="text-caption font-medium"
             style={{
-              fontSize: "12px",
               fontFamily: "'Inter', sans-serif",
-              fontWeight: 500,
               color: "var(--foreground)",
             }}
           >
@@ -947,13 +929,10 @@ function PostResultCard({
 
         {/* Title */}
         <h4
-          className="line-clamp-2 transition-colors duration-200 group-hover:text-primary"
+          className="line-clamp-2 transition-colors duration-200 group-hover:text-primary text-card-title"
           style={{
-            fontSize: "var(--text-sm)",
             fontFamily: "'Inter', sans-serif",
-            fontWeight: 600,
             color: "var(--card-foreground)",
-            lineHeight: 1.3,
           }}
         >
           {post.title}
@@ -961,12 +940,10 @@ function PostResultCard({
 
         {/* Snippet */}
         <p
-          className="line-clamp-2 flex-1"
+          className="line-clamp-2 flex-1 text-caption"
           style={{
-            fontSize: "12px",
             fontFamily: "'Inter', sans-serif",
             color: "var(--muted-foreground)",
-            lineHeight: 1.4,
           }}
         >
           {post.snippet}
@@ -976,10 +953,8 @@ function PostResultCard({
         <div className="flex items-center justify-between mt-auto pt-2" style={{ borderTop: "1px solid var(--border)" }}>
           <div className="flex items-center gap-1.5">
             <span
-              className="flex items-center gap-1 rounded-full px-2 py-0.5"
+              className="flex items-center gap-1 rounded-full px-2 py-0.5 text-badge"
               style={{
-                fontSize: "10px",
-                fontWeight: 500,
                 fontFamily: "'Inter', sans-serif",
                 background: "var(--secondary)",
                 color: "var(--secondary-foreground)",
@@ -1002,9 +977,8 @@ function PostResultCard({
 
         {/* Space context */}
         <p
-          className="truncate"
+          className="truncate text-caption"
           style={{
-            fontSize: "11px",
             fontFamily: "'Inter', sans-serif",
             color: "var(--muted-foreground)",
           }}
@@ -1046,9 +1020,8 @@ function ResponseResultCard({
           <Avatar style={{ width: 24, height: 24 }}>
             <AvatarImage src={response.author.avatar} />
             <AvatarFallback
+              className="text-badge"
               style={{
-                fontSize: "9px",
-                fontWeight: 600,
                 fontFamily: "'Inter', sans-serif",
                 background: "var(--secondary)",
                 color: "var(--secondary-foreground)",
@@ -1058,10 +1031,9 @@ function ResponseResultCard({
             </AvatarFallback>
           </Avatar>
           <span
+            className="text-caption font-medium"
             style={{
-              fontSize: "12px",
               fontFamily: "'Inter', sans-serif",
-              fontWeight: 500,
               color: "var(--foreground)",
             }}
           >
@@ -1081,13 +1053,10 @@ function ResponseResultCard({
 
         {/* Title */}
         <h4
-          className="line-clamp-2 transition-colors duration-200 group-hover:text-primary"
+          className="line-clamp-2 transition-colors duration-200 group-hover:text-primary text-card-title"
           style={{
-            fontSize: "var(--text-sm)",
             fontFamily: "'Inter', sans-serif",
-            fontWeight: 600,
             color: "var(--card-foreground)",
-            lineHeight: 1.3,
           }}
         >
           {response.title}
@@ -1095,12 +1064,10 @@ function ResponseResultCard({
 
         {/* Snippet */}
         <p
-          className="line-clamp-2 flex-1"
+          className="line-clamp-2 flex-1 text-caption"
           style={{
-            fontSize: "12px",
             fontFamily: "'Inter', sans-serif",
             color: "var(--muted-foreground)",
-            lineHeight: 1.4,
           }}
         >
           {response.snippet}
@@ -1113,9 +1080,8 @@ function ResponseResultCard({
         >
           <MessageSquare style={{ width: 11, height: 11, color: "var(--muted-foreground)" }} />
           <span
-            className="truncate"
+            className="truncate text-caption"
             style={{
-              fontSize: "11px",
               fontFamily: "'Inter', sans-serif",
               color: "var(--muted-foreground)",
             }}
@@ -1127,10 +1093,8 @@ function ResponseResultCard({
         {/* Type + Space */}
         <div className="flex items-center justify-between gap-2">
           <span
-            className="flex items-center gap-1 rounded-full px-2 py-0.5"
+            className="flex items-center gap-1 rounded-full px-2 py-0.5 text-badge"
             style={{
-              fontSize: "10px",
-              fontWeight: 500,
               fontFamily: "'Inter', sans-serif",
               background: "var(--secondary)",
               color: "var(--secondary-foreground)",
@@ -1140,9 +1104,8 @@ function ResponseResultCard({
             {postTypeLabel(response.type)}
           </span>
           <span
-            className="truncate"
+            className="truncate text-caption"
             style={{
-              fontSize: "11px",
               fontFamily: "'Inter', sans-serif",
               color: "var(--muted-foreground)",
             }}
@@ -1189,9 +1152,8 @@ function UserResultCard({
       >
         <AvatarImage src={user.avatar} alt={user.name} />
         <AvatarFallback
+          className="text-subheader font-semibold"
           style={{
-            fontSize: "var(--text-base)",
-            fontWeight: 600,
             fontFamily: "'Inter', sans-serif",
             background: "var(--primary)",
             color: "var(--primary-foreground)",
@@ -1206,21 +1168,17 @@ function UserResultCard({
         </AvatarFallback>
       </Avatar>
       <h4
-        className="transition-colors duration-200 group-hover:text-primary"
+        className="transition-colors duration-200 group-hover:text-primary text-card-title"
         style={{
-          fontSize: "var(--text-sm)",
           fontFamily: "'Inter', sans-serif",
-          fontWeight: 600,
           color: "var(--card-foreground)",
-          lineHeight: 1.3,
         }}
       >
         {user.name}
       </h4>
       <p
-        className="mt-1 truncate w-full"
+        className="mt-1 truncate w-full text-caption"
         style={{
-          fontSize: "12px",
           fontFamily: "'Inter', sans-serif",
           color: "var(--muted-foreground)",
         }}
@@ -1228,9 +1186,8 @@ function UserResultCard({
         {user.role}
       </p>
       <p
-        className="mt-0.5 truncate w-full"
+        className="mt-0.5 truncate w-full text-caption"
         style={{
-          fontSize: "11px",
           fontFamily: "'Inter', sans-serif",
           color: "var(--muted-foreground)",
         }}
@@ -1293,22 +1250,17 @@ function OrgResultCard({
         )}
       </div>
       <h4
-        className="transition-colors duration-200 group-hover:text-primary"
+        className="transition-colors duration-200 group-hover:text-primary text-card-title"
         style={{
-          fontSize: "var(--text-sm)",
           fontFamily: "'Inter', sans-serif",
-          fontWeight: 600,
           color: "var(--card-foreground)",
-          lineHeight: 1.3,
         }}
       >
         {org.name}
       </h4>
       <span
-        className="mt-1"
+        className="mt-1 text-badge"
         style={{
-          fontSize: "10px",
-          fontWeight: 500,
           fontFamily: "'Inter', sans-serif",
           padding: "1px 8px",
           borderRadius: "999px",
@@ -1319,12 +1271,10 @@ function OrgResultCard({
         {org.type}
       </span>
       <p
-        className="mt-2 line-clamp-2 w-full"
+        className="mt-2 line-clamp-2 w-full text-caption"
         style={{
-          fontSize: "12px",
           fontFamily: "'Inter', sans-serif",
           color: "var(--muted-foreground)",
-          lineHeight: 1.4,
         }}
       >
         {org.tagline}

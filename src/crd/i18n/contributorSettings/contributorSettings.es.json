@@ -1,4 +1,7 @@
 {
+  "breadcrumbs": {
+    "settings": "Ajustes"
+  },
   "shell": {
     "tabs": {
       "user": {
@@ -15,6 +18,11 @@
         "account": "Cuenta",
         "community": "Comunidad",
         "authorization": "Autorización",
+        "settings": "Ajustes"
+      },
+      "vc": {
+        "profile": "Perfil",
+        "membership": "Membresía",
         "settings": "Ajustes"
       }
     }
@@ -482,6 +490,114 @@
         "contributionRolesCaption": "Cuando está activado, las asignaciones de roles de la organización (Administrador, Propietario, Asociado) son visibles en el perfil público."
       },
       "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Ajustes",
+      "identity": {
+        "title": "Identidad",
+        "displayName": {
+          "label": "Nombre para mostrar",
+          "hint": "Cómo se muestra este Contribuidor Virtual en Alkemio.",
+          "required": "El nombre para mostrar es obligatorio"
+        },
+        "tagline": {
+          "label": "Eslogan",
+          "hint": "Una línea corta que se muestra en el perfil del contribuidor."
+        },
+        "description": {
+          "label": "Descripción",
+          "hint": "Explica qué hace este Contribuidor Virtual y cómo trabajar con él."
+        }
+      },
+      "keywords": {
+        "label": "Palabras clave",
+        "hint": "Añade palabras clave para que los usuarios puedan descubrir este Contribuidor Virtual.",
+        "placeholder": "Añade una palabra clave y pulsa Enter"
+      },
+      "socialLinks": {
+        "title": "Referencias",
+        "addAnother": "Añadir otra referencia",
+        "namePlaceholder": "Nombre",
+        "urlPlaceholder": "https://ejemplo.com",
+        "descriptionPlaceholder": "Descripción (opcional)",
+        "removeAriaLabel": "Eliminar referencia",
+        "empty": "Aún no hay referencias.",
+        "deleteDialog": {
+          "title": "¿Eliminar referencia?",
+          "description": "Esta referencia se eliminará al guardar la sección. Puedes deshacer antes de guardar.",
+          "confirm": "Eliminar"
+        }
+      },
+      "metadata": {
+        "title": "Acerca de este Contribuidor Virtual",
+        "hostLabel": "Alojado por",
+        "bodyOfKnowledgeLabel": "Cuerpo de conocimiento"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Cambiar avatar",
+        "uploading": "Subiendo…",
+        "helperText": "JPEG o PNG cuadrado, hasta 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Membresías"
+      },
+      "empty": "Este Contribuidor Virtual aún no es miembro de ningún espacio.",
+      "spaceBadge": "Espacio",
+      "subspaceBadge": "Subespacio",
+      "viewLabel": "Ver",
+      "leaveLabel": "Abandonar",
+      "leaveSpaceConfirmTitle": "¿Abandonar este espacio?",
+      "leaveSubspaceConfirmTitle": "¿Abandonar este subespacio?",
+      "leaveConfirmBody": "¿Eliminar este Contribuidor Virtual de {{name}}? Esto se puede revertir solicitando la membresía nuevamente.",
+      "leaveConfirmAction": "Abandonar",
+      "pendingInvitationsHeading": "Invitaciones pendientes",
+      "acceptLabel": "Aceptar",
+      "declineLabel": "Rechazar",
+      "acceptInvitationConfirmTitle": "¿Aceptar invitación?",
+      "acceptInvitationConfirmBody": "¿Aceptar la invitación para unirse a {{name}}?",
+      "acceptInvitationConfirmAction": "Aceptar"
+    },
+    "visibility": {
+      "title": "Visibilidad",
+      "helper": "Controla quién puede descubrir este Contribuidor Virtual.",
+      "publicLabel": "Público",
+      "publicDescription": "Todos, incluidos los visitantes anónimos, pueden encontrar este Contribuidor Virtual.",
+      "accountLabel": "Cuenta",
+      "accountDescription": "Solo los miembros de la cuenta anfitriona pueden encontrar este Contribuidor Virtual.",
+      "hiddenLabel": "Oculto",
+      "hiddenDescription": "Este Contribuidor Virtual está oculto en las búsquedas.",
+      "listedInStoreLabel": "Listado en la tienda Alkemio",
+      "listedInStoreHelper": "Solo disponible cuando la visibilidad es Pública."
+    },
+    "bodyOfKnowledge": {
+      "title": "Cuerpo de conocimiento",
+      "helper": "Gestiona cómo se expone la base de conocimiento de este Contribuidor Virtual.",
+      "privacyToggleLabel": "Ocultar el contenido de la base de conocimiento a los no miembros",
+      "privacyToggleHelper": "Cuando está activado, el contenido subyacente se oculta a los usuarios sin acceso.",
+      "refreshLabel": "Actualizar conocimiento",
+      "lastUpdated": "Última actualización:",
+      "never": "nunca"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Variables disponibles: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Configuración de IA externa",
+      "helper": "Conecta este Contribuidor Virtual a un proveedor de IA externo.",
+      "apiKeyLabel": "Clave API",
+      "apiKeyPlaceholder": "Introduce una nueva clave API",
+      "apiKeyHelper": "Las claves existentes nunca se devuelven. Deja en blanco para mantener la clave actual.",
+      "assistantIdLabel": "ID del asistente",
+      "modelLabel": "Modelo"
+    },
+    "settings": {
+      "commitErrorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
     }
   },
   "shared": {

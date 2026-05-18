@@ -172,19 +172,19 @@ export function NotificationsPopover() {
             background: "color-mix(in srgb, var(--muted) 30%, transparent)",
           }}
         >
-          <h3 className="text-sm font-semibold">Notifications</h3>
+          <h3 className="text-card-title">Notifications</h3>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-xs"
+              className="h-7 px-2 text-caption"
               onClick={markAllRead}
               disabled={unreadCount === 0}
             >
               <CheckCheck className="w-3.5 h-3.5 mr-1" />
               Mark all read
             </Button>
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-caption" asChild>
               <Link to="/user/alex-rivera/settings/notifications">
                 <Settings className="w-3.5 h-3.5" />
               </Link>
@@ -210,7 +210,7 @@ export function NotificationsPopover() {
               key={f.key}
               onClick={() => setFilter(f.key)}
               className={cn(
-                "px-2.5 py-1 rounded-md transition-colors whitespace-nowrap text-xs font-medium",
+                "px-2.5 py-1 rounded-md transition-colors whitespace-nowrap text-caption font-medium",
                 filter === f.key
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-secondary-foreground hover:bg-accent"
@@ -223,7 +223,7 @@ export function NotificationsPopover() {
           <button
             onClick={() => setShowUnreadOnly(!showUnreadOnly)}
             className={cn(
-              "ml-auto flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors text-xs shrink-0",
+              "ml-auto flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors text-caption shrink-0",
               showUnreadOnly
                 ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-muted-foreground hover:bg-accent"
@@ -250,7 +250,7 @@ export function NotificationsPopover() {
                 <div className="relative shrink-0">
                   <Avatar className="w-9 h-9" style={{ border: "1px solid var(--border)" }}>
                     <AvatarImage src={n.avatar} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    <AvatarFallback className="bg-primary/10 text-primary text-caption">
                       {n.author.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -267,18 +267,18 @@ export function NotificationsPopover() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm leading-snug">
+                  <p className="text-body leading-snug">
                     <span className="font-semibold">{n.author}</span>{" "}
                     {n.action}{" "}
                     <span className="font-medium">{n.target}</span>
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                    <span className="flex items-center gap-1 text-caption text-muted-foreground">
                       <Clock className="w-3 h-3" />
                       {n.time}
                     </span>
                     {n.space && (
-                      <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
+                      <Badge variant="secondary" className="text-badge h-4 px-1.5">
                         {n.space}
                       </Badge>
                     )}
@@ -303,7 +303,7 @@ export function NotificationsPopover() {
               >
                 <Bell className="w-5 h-5" style={{ color: "var(--muted-foreground)", opacity: 0.5 }} />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body text-muted-foreground">
                 {showUnreadOnly
                   ? "No unread notifications"
                   : "No notifications match your filter"}

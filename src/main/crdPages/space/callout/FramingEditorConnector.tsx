@@ -1,9 +1,11 @@
-import { Presentation, Settings, StickyNote } from 'lucide-react';
+import { Settings, StickyNote } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
@@ -30,6 +32,7 @@ import CrdSingleUserWhiteboardDialog, {
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
+import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
@@ -81,6 +84,14 @@ type FramingEditorConnectorProps = {
   whiteboardPreviewSettings?: WhiteboardPreviewSettings;
   whiteboardConfigured?: boolean;
   whiteboardTitle?: string;
+  /**
+   * Preview blobs returned from the last save of the inline whiteboard editor —
+   * used to render the current canvas as a thumbnail in the inline preview
+   * (MUI parity with `FormikWhiteboardPreview`). Empty array when the user
+   * hasn't opened the editor yet, in which case the preview falls back to a
+   * placeholder icon.
+   */
+  whiteboardPreviewImages?: WhiteboardPreviewImage[];
   onWhiteboardChange?: (
     content: string,
     previewImages: WhiteboardPreviewImage[] | undefined,
@@ -149,8 +160,8 @@ export function FramingEditorConnector({
   onPollStatusChange,
   whiteboardContent,
   whiteboardPreviewSettings,
-  whiteboardConfigured,
   whiteboardTitle,
+  whiteboardPreviewImages,
   onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
@@ -166,6 +177,7 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
+  const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(whiteboardPreviewImages);
 
   switch (framingType) {
     case 'whiteboard': {
@@ -185,26 +197,12 @@ export function FramingEditorConnector({
         const guestShareUrl = buildGuestShareUrl(editWhiteboard.id);
         return (
           <>
-            <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
-              <div className="flex items-center gap-3">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
-                    color: 'var(--primary)',
-                  }}
-                >
-                  <Presentation className="w-5 h-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-body-emphasis">{t('callout.whiteboard')}</p>
-                  <p className="text-caption text-muted-foreground">{t('framing.openWhiteboardHint')}</p>
-                </div>
-              </div>
-              <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
-                {t('framing.openWhiteboard')}
-              </Button>
-            </div>
+            <WhiteboardConfigCard
+              title={t('callout.whiteboard')}
+              status={t('framing.openWhiteboardHint')}
+              actionLabel={t('framing.openWhiteboard')}
+              onAction={() => setWhiteboardEditorOpen(true)}
+            />
             {whiteboardEditorOpen && (
               <CrdWhiteboardView
                 whiteboardId={editWhiteboard.id}
@@ -240,25 +238,12 @@ export function FramingEditorConnector({
 
       return (
         <>
-          <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
-            <div className="flex items-center gap-3">
-              <div
-                className="p-2 rounded-lg"
-                style={{ background: 'color-mix(in srgb, var(--primary) 15%, transparent)', color: 'var(--primary)' }}
-              >
-                <Presentation className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-body-emphasis">{t('framing.newWhiteboard')}</p>
-                <p className="text-caption text-muted-foreground">
-                  {whiteboardConfigured ? t('framing.configured') : t('framing.readyToCreate')}
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
-              {whiteboardConfigured ? t('framing.edit') : t('framing.configure')}
-            </Button>
-          </div>
+          <InlineWhiteboardPreview
+            onEdit={() => setWhiteboardEditorOpen(true)}
+            editLabel={t('framing.edit')}
+            previewImageUrl={whiteboardPreviewUrl}
+            imageAlt={whiteboardTitle || t('callout.whiteboard')}
+          />
           <Suspense fallback={<Loading />}>
             <CrdSingleUserWhiteboardDialog
               entities={{ whiteboard: templateWhiteboard }}

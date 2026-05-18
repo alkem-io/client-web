@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
+- Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
 - Always use pnpm; the lockfile is authoritative
 - All commits must be signed
 
@@ -344,23 +344,34 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 ## CRD Feature Toggle
 
-The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
+The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD). Default is `1`. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
+
+For developers / QA who want to seed the toggle without going through the UI:
 
 ```js
-// Enable:  open browser console and run:
-localStorage.setItem('alkemio-crd-enabled', 'true');
+// Enable CRD (new design):
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 
-// Disable:
-localStorage.removeItem('alkemio-crd-enabled');
+// Back to MUI (old design):
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
-Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load (see `useCrdEnabled.ts`).
+
+Implementation surface:
+- `src/main/crdPages/useCrdEnabled.ts` — boot-time read of `localStorage('alkemio-design-version')`; the `useCrdEnabled()` hook is consumed by route dispatchers.
+- `src/main/crdPages/useDesignVersionToggle.ts` — user-menu switch: writes `UserSettings.designVersion` via `updateUserSettings`, mirrors to localStorage, hard-reloads.
+- `src/main/crdPages/useDesignVersionSync.ts` — reconciles server state with localStorage on auth.
+- `TopLevelRoutes.tsx` — picks MUI vs CRD route trees off `useCrdEnabled()`.
+
+When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 097-crd-user-settings: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned). + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`, `table`, `checkbox`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD common components (`@/crd/components/common/InlineEditText`, `@/crd/components/common/CountryCombobox`, `@/crd/components/dialogs/ConfirmationDialog`). **`FieldFooter` MAY need extraction from 045's `SpaceSettingsAboutView.tsx` to `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse.** No new runtime dependencies.
-- 097-crd-user-settings: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`, `table`, `checkbox`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD dialogs (`ConfirmationDialog` from `@/crd/components/dialogs/`).
+- 098-crd-templates: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`).
+
 
 ## Active Technologies
-- TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned). + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`, `table`, `checkbox`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD common components (`@/crd/components/common/InlineEditText`, `@/crd/components/common/CountryCombobox`, `@/crd/components/dialogs/ConfirmationDialog`). **`FieldFooter` MAY need extraction from 045's `SpaceSettingsAboutView.tsx` to `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse.** No new runtime dependencies. (097-crd-user-settings)
+- TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`). (098-crd-templates)
+- localStorage (`alkemio-crd-enabled`) for the CRD toggle (existing). GraphQL data layer unchanged. (098-crd-templates)

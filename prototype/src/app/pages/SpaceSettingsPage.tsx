@@ -76,15 +76,15 @@ export function SpaceSettingsPage() {
                   </div>
                 ) : (
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-card-title font-bold shrink-0"
                     style={{ backgroundColor: space.avatarColor }}
                   >
                     {space.initials}
                   </div>
                 )}
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">{space.name}</h1>
-                  <p className="text-muted-foreground text-sm mt-0.5">{space.description}</p>
+                  <h1 className="text-page-title">{space.name}</h1>
+                  <p className="text-muted-foreground text-body mt-0.5">{space.description}</p>
                 </div>
               </div>
 
@@ -96,7 +96,7 @@ export function SpaceSettingsPage() {
                       key={item.id}
                       to={`/space/${spaceSlug}/settings/${item.id}`}
                       className={cn(
-                        "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                        "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                         isActive
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -152,10 +152,8 @@ export function SpaceSettingsPage() {
                 </div>
                 <div>
                   <h2
-                    className="capitalize"
+                    className="capitalize text-section-title"
                     style={{
-                      fontSize: "var(--text-xl)",
-                      fontWeight: 600,
                       color: "var(--foreground)",
                       fontFamily: "var(--font-family, 'Inter', sans-serif)",
                     }}
@@ -163,11 +161,9 @@ export function SpaceSettingsPage() {
                     {tab} Settings
                   </h2>
                   <p
-                    className="max-w-sm"
+                    className="max-w-sm text-body"
                     style={{
-                      fontSize: "var(--text-sm)",
                       color: "var(--muted-foreground)",
-                      lineHeight: 1.6,
                       marginTop: "var(--spacing-2, 8px)",
                     }}
                   >

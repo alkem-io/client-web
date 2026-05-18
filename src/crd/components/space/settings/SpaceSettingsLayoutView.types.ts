@@ -34,10 +34,12 @@ export type LayoutSaveBarState =
 
 export type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId) => void;
-  onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
+  /** Set (templateId) or clear (null) this flow state's default Callout template. Fires the mutation immediately. */
+  onSetAsDefaultCalloutTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
+  /** Open the shared template picker (Callout templates) to choose this flow state's default — the consumer hosts it. */
+  onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** Fires mutation immediately — saves title + description to backend, cascades rename to callouts. */
   onSaveColumnDetails: (columnId: LayoutColumnId, title: string, description: string) => Promise<void>;
-  availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
   /**
    * Phase delete (immediate-save). Only present when phase management is enabled
    * (subspaces) AND removing this phase would not violate the flow's min-states

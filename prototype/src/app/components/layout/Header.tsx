@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import {
   Search,
   MessageSquare,
@@ -60,6 +60,21 @@ export function Header({
   const { openNotifications } = useNotifications();
   const { openMessages } = useMessages();
 
+  // Transparent header overlay on space/subspace pages (banner visible)
+  const location = useLocation();
+  const hasBanner = location.pathname.startsWith("/space");
+  const [scrolledPastBanner, setScrolledPastBanner] = useState(false);
+
+  useEffect(() => {
+    if (!hasBanner) return;
+    const onScroll = () => setScrolledPastBanner(window.scrollY > 120);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [hasBanner]);
+
+  const headerTransparent = hasBanner && !scrolledPastBanner;
+
   // Cmd+K / Ctrl+K to open search
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -72,17 +87,31 @@ export function Header({
     return () => window.removeEventListener("keydown", handler);
   }, [openSearch]);
 
+  // Frosted glass pill style for items over transparent header
+  const frostedPill = headerTransparent
+    ? {
+        background: "rgba(255,255,255,0.75)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderRadius: "8px",
+        padding: "4px 12px",
+      }
+    : undefined;
+
   return (
     <header
       className={cn(
-        "h-16 border-b border-border bg-background sticky top-0 z-50 px-6 md:px-8",
+        "h-16 sticky top-0 z-50 px-6 md:px-8 transition-colors duration-300",
+        headerTransparent
+          ? "bg-transparent border-b border-transparent"
+          : "bg-background border-b border-border",
         className
       )}
     >
       <div className="grid grid-cols-12 gap-6 h-full items-center">
         <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between">
       {/* ─── Left: Logo + mobile menu ─── */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4" style={frostedPill}>
         <button
           onClick={onMenuClick}
           className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
@@ -97,12 +126,12 @@ export function Header({
           </div>
         </Link>
 
-        {/* Universal breadcrumb trail (with leading separator) */}
-        <AppBreadcrumb className="ml-1" showLeadingSeparator />
+        {/* Universal breadcrumb trail */}
+        <AppBreadcrumb className="ml-1" />
       </div>
 
       {/* ─── Right: icon row ─── */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1" style={frostedPill}>
         {/* Search icon button */}
         <Button
           variant="ghost"
@@ -135,7 +164,7 @@ export function Header({
               className="flex items-center justify-between px-4 py-3"
               style={{ borderBottom: "1px solid var(--border)", background: "color-mix(in srgb, var(--muted) 30%, transparent)" }}
             >
-              <span className="text-sm font-semibold">Messages</span>
+              <span className="text-card-title">Messages</span>
             </div>
             <div className="max-h-[50vh] overflow-y-auto">
               {PREVIEW_MESSAGES.map((c) => (
@@ -147,20 +176,20 @@ export function Header({
                 >
                   <Avatar className="w-9 h-9 shrink-0" style={{ border: "1px solid var(--border)" }}>
                     <AvatarImage src={c.avatar} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs">{c.name.substring(0, 2)}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary text-caption">{c.name.substring(0, 2)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium truncate">{c.name}</span>
-                      <span className="text-[11px] text-muted-foreground shrink-0">{c.time}</span>
+                      <span className="text-body-emphasis truncate">{c.name}</span>
+                      <span className="text-caption text-muted-foreground shrink-0">{c.time}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5">{c.lastMessage}</p>
+                    <p className="text-caption text-muted-foreground truncate mt-0.5">{c.lastMessage}</p>
                   </div>
                 </button>
               ))}
             </div>
             <div className="p-2" style={{ borderTop: "1px solid var(--border)", background: "color-mix(in srgb, var(--muted) 30%, transparent)" }}>
-              <Button variant="ghost" size="sm" className="w-full h-8 text-xs" onClick={openMessages}>
+              <Button variant="ghost" size="sm" className="w-full h-8 text-caption" onClick={openMessages}>
                 Open all messages
               </Button>
             </div>
@@ -190,8 +219,8 @@ export function Header({
               className="flex items-center justify-between px-4 py-3"
               style={{ borderBottom: "1px solid var(--border)", background: "color-mix(in srgb, var(--muted) 30%, transparent)" }}
             >
-              <span className="text-sm font-semibold">Notifications</span>
-              <span className="text-xs text-primary font-medium cursor-pointer hover:opacity-80">Mark all as read</span>
+              <span className="text-card-title">Notifications</span>
+              <span className="text-caption font-medium text-primary cursor-pointer hover:opacity-80">Mark all as read</span>
             </div>
             <div className="max-h-[50vh] overflow-y-auto">
               {PREVIEW_NOTIFICATIONS.map((n) => (
@@ -207,7 +236,7 @@ export function Header({
                   <div className="shrink-0 mt-0.5 relative">
                     <Avatar className="w-8 h-8 md:w-10 md:h-10" style={{ border: "1px solid var(--border)" }}>
                       <AvatarImage src={n.avatar} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-xs">{n.author.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary text-caption">{n.author.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div
                       className="absolute -bottom-1 -right-1 rounded-full p-0.5"
@@ -219,12 +248,12 @@ export function Header({
                     </div>
                   </div>
                   <div className="flex-1 min-w-0 space-y-1">
-                    <p className="text-sm leading-snug">
+                    <p className="text-body leading-snug">
                       <span className="font-semibold">{n.author}</span>{" "}
                       {n.action}{" "}
                       <span className="font-medium opacity-80">{n.target}</span>
                     </p>
-                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <p className="flex items-center gap-1 text-caption text-muted-foreground">
                       <Clock className="w-3 h-3" />
                       {n.time}
                     </p>
@@ -238,7 +267,7 @@ export function Header({
               ))}
             </div>
             <div className="p-2" style={{ borderTop: "1px solid var(--border)", background: "color-mix(in srgb, var(--muted) 30%, transparent)" }}>
-              <Button variant="ghost" size="sm" className="w-full h-8 text-xs" onClick={openNotifications}>
+              <Button variant="ghost" size="sm" className="w-full h-8 text-caption" onClick={openNotifications}>
                 View all notifications
               </Button>
             </div>
@@ -280,10 +309,8 @@ export function Header({
               {/* Beta badge */}
               <Badge
                 variant="secondary"
-                className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border"
+                className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge"
                 style={{
-                  fontSize: "9px",
-                  fontWeight: 700,
                   fontFamily: "'Inter', sans-serif",
                   lineHeight: "14px",
                 }}
@@ -294,8 +321,7 @@ export function Header({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuLabel
-              className="uppercase tracking-wider text-muted-foreground"
-              style={{ fontSize: "11px" }}
+              className="text-label uppercase text-muted-foreground"
             >
               My Account
             </DropdownMenuLabel>

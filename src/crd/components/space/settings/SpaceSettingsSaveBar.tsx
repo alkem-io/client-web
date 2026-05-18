@@ -45,13 +45,13 @@ export function SpaceSettingsSaveBar({
   return (
     <section aria-live="polite" className={cn('flex items-center justify-end gap-3 pt-4', className)}>
       {saving ? (
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
+        <span className="flex items-center gap-2 text-body text-muted-foreground">
           <Loader2 aria-hidden="true" className="size-4 animate-spin" />
           {savingLabel}
         </span>
       ) : null}
       {isError ? (
-        <span className="flex items-center gap-2 text-sm text-destructive">
+        <span className="flex items-center gap-2 text-body text-destructive">
           <AlertCircle aria-hidden="true" className="size-4" />
           {state.message}
         </span>

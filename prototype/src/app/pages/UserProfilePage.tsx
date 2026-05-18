@@ -60,7 +60,7 @@ Always looking for collaborators on open source climate data projects. Feel free
           <div className="hidden lg:block lg:col-start-2 col-span-2 space-y-6 lg:sticky lg:top-24 self-start">
             {/* Bio Section */}
             <section>
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">About</h2>
+              <h2 className="text-section-title font-bold mb-4 flex items-center gap-2">About</h2>
               <div className="prose prose-sm dark:prose-invert text-muted-foreground whitespace-pre-line">
                 {user.bio}
               </div>
@@ -68,7 +68,7 @@ Always looking for collaborators on open source climate data projects. Feel free
 
             {/* Organizations Section */}
             <section>
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">Organizations</h2>
+              <h2 className="text-section-title font-bold mb-4 flex items-center gap-2">Organizations</h2>
               <div className="flex flex-col gap-3">
                 {organizations.map(org => (
                   <OrganizationCard 
@@ -93,7 +93,7 @@ Always looking for collaborators on open source climate data projects. Feel free
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={cn(
-                      "text-sm font-medium border-b-2 pb-2 whitespace-nowrap transition-colors",
+                      "text-control border-b-2 pb-2 whitespace-nowrap transition-colors",
                       activeTab === tab
                         ? "border-primary text-foreground"
                         : "border-transparent text-muted-foreground hover:text-foreground"
@@ -113,7 +113,7 @@ Always looking for collaborators on open source climate data projects. Feel free
                 {/* Only show main header if showing "All Resources", otherwise context is clear from tabs */}
                 {activeTab === "All Resources" && (
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">Resources Hosted</h2>
+                    <h2 className="text-page-title">Resources Hosted</h2>
                     <Badge variant="outline" className="text-muted-foreground">
                       {hostedSpaces.length + virtualContributors.length} Total
                     </Badge>
@@ -123,7 +123,7 @@ Always looking for collaborators on open source climate data projects. Feel free
                 {/* Hosted Spaces */}
                 {(activeTab === "All Resources" || activeTab === "Hosted Spaces") && (
                   <div className="mb-6">
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Spaces</h3>
+                    <h3 className="text-card-title text-muted-foreground uppercase tracking-wider mb-4">Spaces</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {hostedSpaces.map(space => (
                         // @ts-ignore
@@ -144,7 +144,7 @@ Always looking for collaborators on open source climate data projects. Feel free
                 {/* Virtual Contributors */}
                 {(activeTab === "All Resources" || activeTab === "Virtual Contributors") && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <h3 className="text-card-title text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                       <Bot className="w-4 h-4" /> Virtual Contributors
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -155,7 +155,7 @@ Always looking for collaborators on open source climate data projects. Feel free
                           </div>
                           <div>
                             <h4 className="font-semibold text-foreground">{vc.name}</h4>
-                            <p className="text-sm text-muted-foreground mb-2">{vc.description}</p>
+                            <p className="text-body text-muted-foreground mb-2">{vc.description}</p>
                             <Badge variant="secondary" className="text-[10px] h-5">{vc.type}</Badge>
                           </div>
                         </Link>
@@ -171,7 +171,7 @@ Always looking for collaborators on open source climate data projects. Feel free
             {/* Spaces Leading */}
             {(activeTab === "All Resources" || activeTab === "Leading") && (
               <section>
-                <h2 className="text-xl font-bold mb-4">Spaces Leading</h2>
+                <h2 className="text-section-title font-bold mb-4">Spaces Leading</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {leadingSpaces.map(space => (
                     // @ts-ignore
@@ -194,7 +194,7 @@ Always looking for collaborators on open source climate data projects. Feel free
             {/* Member Spaces */}
             {(activeTab === "All Resources" || activeTab === "Member Of") && (
               <section>
-                <h2 className="text-xl font-bold mb-4">Member of</h2>
+                <h2 className="text-section-title font-bold mb-4">Member of</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {memberSpaces.map(space => (
                     // @ts-ignore

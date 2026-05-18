@@ -6,6 +6,7 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useNow } from '@/crd/hooks/useNow';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -46,8 +47,17 @@ export function useCrdRoomComments({
   skipSubscription = false,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
+  // `tMain` resolves the default `translation` namespace, where the
+  // `common.time.*` keys used by `formatTimeElapsed` live. Following the
+  // dashboard mappers pattern (see DashboardWithMemberships → tMain).
+  const { t: tMain } = useTranslation();
   const { userModel, isAuthenticated } = useCurrentUserContext();
   const mentionSearch = useMentionableContributors();
+
+  // Tick every 30 s so relative-time strings ("2 minutes ago") in the
+  // mapper's output stay current while the thread is open. The returned
+  // value is unused; the state-change inside the hook triggers re-render.
+  useNow(30_000);
 
   const isSubscribed = useSubscribeOnRoomEvents(roomId, skipSubscription);
 
@@ -66,7 +76,7 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id });
+  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
 
   const currentUser = userModel
     ? {
@@ -78,12 +88,13 @@ export function useCrdRoomComments({
 
   const messagesLookup = new Map(room?.messages.map(message => [message.id, message]) ?? []);
 
-  // Mutation in-flight states for the inner CommentThread/CommentInput.
-  // External loading (e.g. the lazy contribution-comments query in
-  // CalloutCommentsConnector) is intentionally NOT folded in here — that
-  // window is invisible to the user (the connector is gated by useInView,
-  // so the user only sees the slot once the query has resolved).
-  const loading = postingMessage || postingReply || deletingMessage;
+  // Mutation in-flight state. Used ONLY to disable the input while a post
+  // is round-tripping; do NOT pass this to CommentThread as its `loading`
+  // prop — the thread would then replace the entire comment list with a
+  // spinner each time the user submits, making it feel like the section
+  // is reloading. Existing comments must stay visible; the new one snaps
+  // in via the cache update / subscription when the mutation resolves.
+  const inputBusy = postingMessage || postingReply || deletingMessage;
 
   // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
   // delete in a separate dialog before the mutation fires. `pendingDeleteId`
@@ -109,9 +120,10 @@ export function useCrdRoomComments({
   const thread = (
     <>
       <CommentThread
-        loading={loading}
+        loading={false}
         comments={comments}
         currentUser={currentUser}
+        canComment={canComment}
         mentionSearch={mentionSearch}
         onReply={(parentId, content) => {
           void postReply({ messageText: content, threadId: parentId });
@@ -149,15 +161,31 @@ export function useCrdRoomComments({
     </>
   );
 
+  // When the viewer cannot post — typically because they're signed out —
+  // show a hint in place of the input so the affordance is explicit
+  // (mirrors the MUI legacy's "you can't reply to this discussion" footer).
+  // The Reply/add-reaction affordances on each comment are independently
+  // hidden via `canComment` on the thread, so this is the only thing
+  // explaining *why* the viewer can't comment.
+  const cantCommentNotice = !isAuthenticated
+    ? t('comments.signInToComment')
+    : !canComment
+      ? t('comments.cantComment')
+      : undefined;
+
   const commentInput = canComment ? (
     <CommentInput
       currentUser={currentUser}
-      disabled={loading}
+      disabled={inputBusy}
       mentionSearch={mentionSearch}
       onSubmit={content => {
         void postMessage(content);
       }}
     />
+  ) : cantCommentNotice ? (
+    <p className="rounded-md border border-dashed border-border bg-muted/30 px-4 py-3 text-center text-body text-muted-foreground">
+      {cantCommentNotice}
+    </p>
   ) : null;
 
   return { thread, commentInput, commentCount: comments.length };

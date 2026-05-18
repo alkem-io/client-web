@@ -6,10 +6,12 @@ import crdDashboardEN from '@/crd/i18n/dashboard/dashboard.en.json';
 import crdExploreSpacesEN from '@/crd/i18n/exploreSpaces/exploreSpaces.en.json';
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import crdSpaceEN from '@/crd/i18n/space/space.en.json';
+import crdSpaceSettingsEN from '@/crd/i18n/spaceSettings/spaceSettings.en.json';
 import crdSubspaceEN from '@/crd/i18n/subspace/subspace.en.json';
 import crdMarkdownEN from '@/crd/i18n/markdown/markdown.en.json';
 import crdNotificationsEN from '@/crd/i18n/notifications/notifications.en.json';
 import crdProfilePagesEN from '@/crd/i18n/profilePages/profilePages.en.json';
+import crdTemplatesEN from '@/crd/i18n/templates/templates.en.json';
 import '@/crd/styles/crd.css';
 import { CrdApp } from './CrdApp';
 
@@ -21,10 +23,12 @@ i18n.use(initReactI18next).init({
       'crd-exploreSpaces': crdExploreSpacesEN,
       'crd-dashboard': crdDashboardEN,
       'crd-space': crdSpaceEN,
+      'crd-spaceSettings': crdSpaceSettingsEN,
       'crd-subspace': crdSubspaceEN,
       'crd-markdown': crdMarkdownEN,
       'crd-notifications': crdNotificationsEN,
       'crd-profilePages': crdProfilePagesEN,
+      'crd-templates': crdTemplatesEN,
     },
   },
   lng: 'en',
@@ -34,10 +38,12 @@ i18n.use(initReactI18next).init({
     'crd-exploreSpaces',
     'crd-dashboard',
     'crd-space',
+    'crd-spaceSettings',
     'crd-subspace',
     'crd-markdown',
     'crd-notifications',
     'crd-profilePages',
+    'crd-templates',
   ],
   defaultNS: 'crd-layout',
   fallbackLng: 'en',

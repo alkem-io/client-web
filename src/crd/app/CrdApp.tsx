@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
+import { BookOpen, Compass, FileText, Lightbulb, MessageCircle, Package, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
@@ -18,11 +18,16 @@ import {
   MOCK_PENDING_INVITATIONS,
   MOCK_PENDING_VC_INVITATIONS,
 } from './data/dashboard';
+import { CommunityGuidelinesPage } from './pages/CommunityGuidelinesPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { InnovationLibraryPage } from './pages/InnovationLibraryPage';
+import { InnovationPackAdminPage } from './pages/InnovationPackAdminPage';
+import { InnovationPackProfilePage } from './pages/InnovationPackProfilePage';
 import { OrganizationProfileDemoPage } from './pages/OrganizationProfileDemoPage';
 import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
 import { SubspacePage } from './pages/SubspacePage';
+import { TemplatesPage } from './pages/TemplatesPage';
 import { UserProfileOtherDemoPage } from './pages/UserProfileOtherDemoPage';
 import { UserProfileSelfDemoPage } from './pages/UserProfileSelfDemoPage';
 import { VCProfileDemoPage } from './pages/VCProfileDemoPage';
@@ -51,6 +56,11 @@ const MOCK_PLATFORM_NAVIGATION_ITEMS = [
   { icon: <MessageCircle className="h-4 w-4" />, label: 'Forum', href: '/forum' },
   { icon: <Compass className="h-4 w-4" />, label: 'Explore Spaces', href: '/spaces' },
   { icon: <BookOpen className="h-4 w-4" />, label: 'Documentation', href: '/docs' },
+  // Templates feature preview pages (T088) — exposed in nav so designers can reach them.
+  { icon: <FileText className="h-4 w-4" />, label: 'Templates (preview)', href: '/templates' },
+  { icon: <Package className="h-4 w-4" />, label: 'Pack profile (preview)', href: '/innovation-packs/pack-1' },
+  { icon: <Package className="h-4 w-4" />, label: 'Pack admin (preview)', href: '/innovation-packs/pack-1/settings' },
+  { icon: <ShieldCheck className="h-4 w-4" />, label: 'Community guidelines (preview)', href: '/community-guidelines' },
 ];
 
 const MOCK_LANGUAGES = [
@@ -105,6 +115,12 @@ export function CrdApp() {
           <Route path="/space/:spaceSlug" element={<SpacePage />} />
           <Route path="/space/:spaceSlug/challenges/:subspaceSlug" element={<SubspacePage />} />
           <Route path="/whiteboard" element={<WhiteboardPage />} />
+          {/* Templates feature preview pages (T088) */}
+          <Route path="/templates" element={<TemplatesPage />} />
+          <Route path="/innovation-library" element={<InnovationLibraryPage />} />
+          <Route path="/innovation-packs/:packSlug" element={<InnovationPackProfilePage />} />
+          <Route path="/innovation-packs/:packSlug/settings" element={<InnovationPackAdminPage />} />
+          <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
           <Route path="/user/me" element={<UserProfileSelfDemoPage />} />
           <Route path="/user/alex-rivera" element={<UserProfileOtherDemoPage />} />
           <Route path="/organization/alkemio" element={<OrganizationProfileDemoPage />} />

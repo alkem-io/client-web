@@ -163,9 +163,7 @@ export function SpaceSettingsSettingsView({
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
               <h3 className="text-subsection-title">{t('settings.visibility.title')}</h3>
-              <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.visibility.description')}
-              </p>
+              <p className="text-body text-muted-foreground text-left">{t('settings.visibility.description')}</p>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pb-6 pt-0">
@@ -188,13 +186,11 @@ export function SpaceSettingsSettingsView({
                   <RadioGroupItem value="public" id="visibility-public" className="mt-1" />
                 )}
                 <div className="space-y-1">
-                  <span className="text-base font-medium flex items-center gap-2">
+                  <span className="text-card-title flex items-center gap-2">
                     <Globe className="size-4 text-primary" />
                     {t('settings.visibility.public')}
                   </span>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.visibility.publicDescription')}
-                  </p>
+                  <p className="text-body text-muted-foreground">{t('settings.visibility.publicDescription')}</p>
                 </div>
               </label>
               <label
@@ -210,17 +206,15 @@ export function SpaceSettingsSettingsView({
                   <RadioGroupItem value="private" id="visibility-private" className="mt-1" />
                 )}
                 <div className="space-y-1">
-                  <span className="text-base font-medium flex items-center gap-2">
+                  <span className="text-card-title flex items-center gap-2">
                     <Lock className="size-4 text-muted-foreground" />
                     {t('settings.visibility.private')}
                   </span>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.visibility.privateDescription')}
-                  </p>
+                  <p className="text-body text-muted-foreground">{t('settings.visibility.privateDescription')}</p>
                 </div>
               </label>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
+            <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
           </AccordionContent>
         </AccordionItem>
 
@@ -229,9 +223,7 @@ export function SpaceSettingsSettingsView({
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
               <h3 className="text-subsection-title">{t('settings.membership.title')}</h3>
-              <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.membership.description')}
-              </p>
+              <p className="text-body text-muted-foreground text-left">{t('settings.membership.description')}</p>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pb-6 pt-0">
@@ -254,14 +246,12 @@ export function SpaceSettingsSettingsView({
                   <RadioGroupItem value="open" id="membership-open" className="mt-1" />
                 )}
                 <div className="space-y-1">
-                  <span className="text-base font-medium flex items-center gap-2">
+                  <span className="text-card-title flex items-center gap-2">
                     <UserPlus className="size-4 text-primary" />
                     {t('settings.membership.open')}
                   </span>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.openDescription')}
-                  </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
+                  <p className="text-body text-muted-foreground">{t('settings.membership.openDescription')}</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">{t('settings.membership.openHint')}</p>
                 </div>
               </label>
               <label
@@ -277,14 +267,12 @@ export function SpaceSettingsSettingsView({
                   <RadioGroupItem value="application" id="membership-application" className="mt-1" />
                 )}
                 <div className="space-y-1">
-                  <span className="text-base font-medium flex items-center gap-2">
+                  <span className="text-card-title flex items-center gap-2">
                     <Edit3 className="size-4 text-primary" />
                     {t('settings.membership.application')}
                   </span>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.applicationDescription')}
-                  </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">
+                  <p className="text-body text-muted-foreground">{t('settings.membership.applicationDescription')}</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">
                     {t('settings.membership.applicationHint')}
                   </p>
                 </div>
@@ -302,14 +290,14 @@ export function SpaceSettingsSettingsView({
                   <RadioGroupItem value="invitation" id="membership-invitation" className="mt-1" />
                 )}
                 <div className="space-y-1">
-                  <span className="text-base font-medium flex items-center gap-2">
+                  <span className="text-card-title flex items-center gap-2">
                     <Mail className="size-4 text-primary" />
                     {t('settings.membership.invitation')}
                   </span>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.membership.invitationDescription')}
+                  <p className="text-body text-muted-foreground">{t('settings.membership.invitationDescription')}</p>
+                  <p className="text-caption text-muted-foreground italic mt-1">
+                    {t('settings.membership.invitationHint')}
                   </p>
-                  <p className="text-xs text-muted-foreground italic mt-1">{t('settings.membership.invitationHint')}</p>
                 </div>
               </label>
             </RadioGroup>
@@ -323,7 +311,7 @@ export function SpaceSettingsSettingsView({
                     <Label htmlFor="host-org-trust" className="text-body-emphasis">
                       {t('settings.membership.trustedApplicants')}
                     </Label>
-                    <p className="text-xs text-muted-foreground max-w-md">
+                    <p className="text-caption text-muted-foreground max-w-md">
                       {t('settings.membership.hostOrgTrust', { host: providerDisplayName })}
                     </p>
                   </div>
@@ -347,9 +335,7 @@ export function SpaceSettingsSettingsView({
           <AccordionTrigger className="hover:no-underline py-6">
             <div className="flex flex-col items-start gap-1">
               <h3 className="text-subsection-title">{t('settings.allowedActions.title')}</h3>
-              <p className="text-sm text-muted-foreground font-normal text-left">
-                {t('settings.allowedActions.description')}
-              </p>
+              <p className="text-body text-muted-foreground text-left">{t('settings.allowedActions.description')}</p>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pb-6 pt-0">
@@ -372,10 +358,10 @@ export function SpaceSettingsSettingsView({
                         <ActionIcon className="size-5" />
                       </div>
                       <div className="space-y-0.5">
-                        <Label htmlFor={`action-${action.key}`} className="text-base font-medium cursor-pointer">
+                        <Label htmlFor={`action-${action.key}`} className="text-control font-medium cursor-pointer">
                           {t(`settings.allowedActions.${action.key}`)}
                         </Label>
-                        <p className="text-xs text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
+                        <p className="text-caption text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">
                           {t(`settings.allowedActions.${action.key}Description`, { defaultValue: meta.description })}
                         </p>
                       </div>

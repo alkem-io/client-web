@@ -6,6 +6,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -71,6 +72,7 @@ export default function CrdSpaceDashboardPage() {
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
           onAboutClick={() => setAboutOpen(true)}
           subspaces={subspaces}
+          subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}
           events={sidebarEvents}
           onShowCalendar={openCalendar}
           onAddEvent={canCreateEvents ? openCreateEvent : undefined}
@@ -79,7 +81,12 @@ export default function CrdSpaceDashboardPage() {
         />
       </SpaceSidebarPortal>
 
-      <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
+      <SpaceApplyButtonConnector
+        spaceId={space.id}
+        spaceProfileUrl={space.about.profile.url}
+        communityName={space.about.profile.displayName}
+        className="mb-6"
+      />
 
       <TabStateHeader
         description={tabDescription}

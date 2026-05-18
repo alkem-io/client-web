@@ -2,9 +2,11 @@ import { Bell, Briefcase, Cog, ShieldCheck, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import useUserSettingsAccessGuard from './useUserSettingsAccessGuard';
 import useUserSettingsTab, { type UserSettingsTabId } from './useUserSettingsTab';
@@ -34,6 +36,16 @@ const CrdUserSettingsPage = () => {
   const displayName = userModel?.profile?.displayName ?? '';
   const avatarUrl = userModel?.profile?.avatar?.uri ?? undefined;
   const avatarColor = userId ? pickColorFromId(userId) : undefined;
+
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    displayName && profileUrl
+      ? [
+          { label: displayName, href: profileUrl, icon: User },
+          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t(`shell.tabs.user.${activeTabId}`) },
+        ]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   const tabs: ReadonlyArray<SettingsTabDescriptor<UserSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.user.profile'), icon: User },

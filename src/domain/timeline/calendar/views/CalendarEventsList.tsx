@@ -18,7 +18,6 @@ import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { startOfDay } from '@/core/utils/time/utils';
 import useScrollToElement from '@/domain/shared/utils/scroll/useScrollToElement';
-import type { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import ExportEventsToIcsButton from '../components/ExportEventsToIcsButton';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
@@ -37,7 +36,11 @@ type CalendarEventsListProps = {
       description?: string;
     };
     subspace?: {
-      about: SpaceAboutMinimalUrlModel;
+      about: {
+        profile: {
+          displayName: string;
+        };
+      };
     };
   }[];
   highlightedDay?: Date | null;

@@ -7,7 +7,7 @@
 
 - Node >= 22.0.0, pnpm >= 10.17.1
 - `pnpm install` completed
-- CRD toggle enabled: `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload();`
+- CRD toggle enabled: `localStorage.setItem('alkemio-design-version', '2'); location.reload();`
 
 ## Implementation Order
 

@@ -1,8 +1,11 @@
 /**
  * SettingsShell + SettingsTabStrip + SettingsCard contracts.
  *
- * The shell is actor-agnostic — both User (7 tabs) and Organization (5 tabs)
- * pass their tab list via the `tabs` prop. See research.md Decision #9.
+ * The shell is actor-agnostic — User (7 tabs), Organization (5 tabs), and
+ * Virtual Contributor (3 tabs) all pass their tab list via the `tabs` prop.
+ * The component is generic over `TTabId extends string` so each actor's
+ * concrete tab-id union flows through without a primitive change. See
+ * research.md Decision #9.
  *
  * All components live under `src/crd/components/contributor/settings/`.
  */
@@ -10,9 +13,21 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+/** Per-actor tab-id unions used by the shell. */
+export type UserTabId =
+  | 'profile'
+  | 'account'
+  | 'membership'
+  | 'organizations'
+  | 'notifications'
+  | 'settings'
+  | 'security';
+export type OrgTabId = 'profile' | 'account' | 'community' | 'authorization' | 'settings';
+export type VcTabId = 'profile' | 'membership' | 'settings';
+
 /** A single tab descriptor. Hidden tabs are not rendered (used for User Security on non-owner viewers). */
 export type SettingsTab = {
-  id: string; // 'profile' | 'account' | 'membership' | ... — actor-specific union
+  id: string; // actor-specific tab-id union — UserTabId | OrgTabId | VcTabId
   label: string; // i18n-resolved label
   icon: LucideIcon; // lucide-react icon component
   hidden?: boolean; // optional — when true, the tab is omitted from the strip

@@ -74,11 +74,10 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onSaveSection,
     className,
   } = props;
+  // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
+  //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
+  //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
   const showPageBanner = level === 'L0';
-  // L0 spaces are presented with a full-width page banner and never display
-  // an avatar in cards/headers, so the avatar field is hidden at L0. L1/L2
-  // subspaces show the avatar overlaid on the parent's banner — see the MUI
-  // legacy `EditVisualsView` `visualTypes` filter.
   const showAvatar = level !== 'L0';
 
   return (
@@ -99,7 +98,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               ariaLabel="Space name"
               editAriaLabel="Edit space name"
               placeholder="Space Name"
-              className="mt-2 text-base"
+              className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
               hint={t('about.name.description')}
@@ -121,7 +120,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               ariaLabel="Tagline"
               editAriaLabel="Edit tagline"
               placeholder="Tagline"
-              className="mt-2 text-base"
+              className="mt-2 text-subheader font-normal"
             />
             <FieldFooter
               hint={t('about.tagline.description')}
@@ -321,7 +320,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         <div className="hidden min-w-0 lg:block">
           <div className="sticky top-6">
             <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
-            <SpaceCard space={previewCardToSpaceCardData(previewCard)} />
+            <SpaceCard space={previewCardToSpaceCardData(previewCard, level)} />
             {/* Live Preview info */}
             <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
               <span className="mt-0.5 text-muted-foreground">ⓘ</span>
@@ -337,15 +336,18 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   );
 }
 
-function previewCardToSpaceCardData(preview: SpaceCardPreview): SpaceCardData {
+function previewCardToSpaceCardData(preview: SpaceCardPreview, level: SpaceSettingsLevel): SpaceCardData {
+  const isL0 = level === 'L0';
   return {
     id: preview.href || 'preview',
     name: preview.name,
     description: preview.tagline,
     bannerImageUrl: preview.bannerUrl ?? undefined,
-    avatarUrl: preview.avatarUrl ?? undefined,
+    // L0 cards have no avatar (per canonical visual-fields rule).
+    avatarUrl: isL0 ? undefined : (preview.avatarUrl ?? undefined),
     initials: preview.initials,
     avatarColor: preview.color,
+    hideAvatar: isL0,
     isPrivate: false,
     tags: preview.tags,
     leads: [],

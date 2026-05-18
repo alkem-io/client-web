@@ -1,8 +1,11 @@
+import { Bot } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { VCPublicProfileView } from '@/crd/components/virtualContributor/VCPublicProfileView';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useCrdVCProfilePageData } from './useCrdVCProfilePageData';
 import {
   computeSettingsHref,
@@ -32,6 +35,12 @@ export const CrdVCProfilePage = () => {
   } = useCrdVCProfilePageData();
 
   usePageTitle(virtualContributor?.profile?.displayName);
+
+  const breadcrumbDisplayName = virtualContributor?.profile?.displayName ?? '';
+  const breadcrumbItems: BreadcrumbTrailItem[] = breadcrumbDisplayName
+    ? [{ label: breadcrumbDisplayName, icon: Bot }]
+    : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (isNotFoundError) {
     return <Error404 />;
