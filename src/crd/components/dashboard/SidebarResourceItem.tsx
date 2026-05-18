@@ -36,7 +36,7 @@ export function SidebarResourceItem({
       )}
     >
       <Avatar className={cn('size-6', shapeClass)}>
-        {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
+        {avatarUrl && <AvatarImage src={avatarUrl} alt={name} className="object-cover" />}
         <AvatarFallback
           className={cn('text-badge', shapeClass)}
           style={avatarColor ? { backgroundColor: avatarColor } : undefined}

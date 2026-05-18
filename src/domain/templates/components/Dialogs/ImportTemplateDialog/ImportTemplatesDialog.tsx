@@ -50,6 +50,14 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   selectedTemplateId?: string;
   onRemoveTemplate?: () => Promise<unknown>;
   removeTemplateLoading?: boolean;
+  /**
+   * Opt-in: when true, the inner PreviewTemplateDialog stays open after the
+   * user clicks SELECT (instead of auto-closing). Lets a parent flow stack a
+   * follow-up dialog on top of the preview so the user can navigate back
+   * through the chain. Default `false` preserves the original close-on-select
+   * behaviour for all other consumers.
+   */
+  keepPreviewOnSelect?: boolean;
 }
 
 const ImportTemplatesDialog = ({
@@ -65,6 +73,7 @@ const ImportTemplatesDialog = ({
   selectedTemplateId,
   onRemoveTemplate,
   removeTemplateLoading = false,
+  keepPreviewOnSelect = false,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
   const { levelZeroSpaceId } = useUrlResolver();
@@ -79,7 +88,9 @@ const ImportTemplatesDialog = ({
     if (previewTemplate) {
       await onSelectTemplate(previewTemplate);
     }
-    handleClosePreview();
+    if (!keepPreviewOnSelect) {
+      handleClosePreview();
+    }
   });
 
   const handleClosePreview = () => {
@@ -90,6 +101,16 @@ const ImportTemplatesDialog = ({
     onClose?.();
     handleClosePreview();
   };
+
+  // When the dialog is closed from outside (e.g. parent flow programmatically
+  // sets `open=false` after a successful apply), the internal preview state
+  // would otherwise persist and reappear if `open` were toggled back on — and
+  // with `keepPreviewOnSelect`, the preview is still mounted, so clear it.
+  useEffect(() => {
+    if (!open) {
+      setPreviewTemplate(undefined);
+    }
+  }, [open]);
 
   const handleRemoveClick = () => {
     setShowRemoveConfirmation(true);
