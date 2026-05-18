@@ -23,8 +23,7 @@
     "showGrid": "Afficher la grille",
     "hideGrid": "Masquer la grille",
     "designVersion": {
-      "label": "Nouveau design (bêta)",
-      "caption": "L'ancien design restera disponible pendant une courte période."
+      "label": "Nouveau design (aperçu)"
     }
   },
   "footer": {

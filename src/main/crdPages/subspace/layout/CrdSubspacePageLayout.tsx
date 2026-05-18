@@ -1,8 +1,9 @@
 import { Layers, Layout as LayoutIcon } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -112,6 +113,10 @@ export default function CrdSubspacePageLayout() {
   const handleCreateSubspace = data.canCreateSubspace
     ? () => {
         setMobileMenuOpen(false);
+        // Close the Subspaces (or any) quick-action dialog first. Leaving it
+        // open would stack two modal Radix dialogs whose focus traps fight each
+        // other, leaving the create form unresponsive.
+        setActiveDialog(null);
         createSubspace.openDialog();
       }
     : undefined;
@@ -184,7 +189,7 @@ export default function CrdSubspacePageLayout() {
               />
             }
           />
-          <main className="flex-1 w-full px-6 md:px-8 py-8">
+          <main className="flex-1 w-full px-6 md:px-8 pb-8">
             <div className="grid grid-cols-12 gap-6 items-start">
               <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
                 <Suspense fallback={<LoadingSpinner />}>
@@ -222,7 +227,7 @@ export default function CrdSubspacePageLayout() {
           overlayHeader={enableBannerOverlay}
         />
 
-        <main className="flex-1 w-full px-6 md:px-8 py-8">
+        <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
             {/* Left sidebar — cols 2-3, one col gap from left edge */}
             <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>

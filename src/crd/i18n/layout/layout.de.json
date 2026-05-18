@@ -23,8 +23,7 @@
     "showGrid": "Raster anzeigen",
     "hideGrid": "Raster ausblenden",
     "designVersion": {
-      "label": "Neues Design (Beta)",
-      "caption": "Das alte Design bleibt noch eine kurze Zeit verfügbar."
+      "label": "Neues Design (Vorschau)"
     }
   },
   "footer": {

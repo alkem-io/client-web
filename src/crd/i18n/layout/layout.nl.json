@@ -23,8 +23,7 @@
     "showGrid": "Raster tonen",
     "hideGrid": "Raster verbergen",
     "designVersion": {
-      "label": "Nieuw ontwerp (bèta)",
-      "caption": "Het oude ontwerp blijft nog korte tijd beschikbaar."
+      "label": "Nieuw ontwerp (preview)"
     }
   },
   "footer": {

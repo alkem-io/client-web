@@ -221,7 +221,11 @@
     "click-delete": "Klik om te verwijderen"
   },
   "topBar": {
-    "sign-in": "Inloggen | Aanmelden"
+    "sign-in": "Inloggen | Aanmelden",
+    "designVersion": {
+      "label": "New design (preview)",
+      "errorSaving": "Could not save your design preference. Please try again."
+    }
   },
   "authentication": {
     "or": "of ga door met",
@@ -578,7 +582,8 @@
         "LINK": "$t(common.Link)",
         "POST": "$t(common.Post)",
         "WHITEBOARD": "$t(common.Whiteboard)",
-        "MEMO": "$t(common.Memo)"
+        "MEMO": "$t(common.Memo)",
+        "COLLABORA_DOCUMENT": "Document"
       },
       "invitationStatus": {
         "invited": "Uitgenodigd",
@@ -636,7 +641,8 @@
         "year_one": "{{count}}j",
         "year_other": "{{count}}j",
         "moreThanYears_one": "{{count}}",
-        "moreThanYears_other": "> {{count}}y"
+        "moreThanYears_other": "> {{count}}y",
+        "justNow": "now"
       },
       "long": {
         "timeAgo": "{{time}} geleden",
@@ -653,7 +659,8 @@
         "year_one": "{{count}} jaar",
         "year_other": "{{count}} jaar",
         "moreThanYears_one": "> {{count}} jaar",
-        "moreThanYears_other": "> {{count}} jaren"
+        "moreThanYears_other": "> {{count}} jaren",
+        "justNow": "just now"
       }
     },
     "supportEmail": "support@alkem.io",
@@ -665,8 +672,10 @@
       "WHITEBOARD": "$t(common.Whiteboard)",
       "MEMO": "$t(common.Memo)",
       "NONE": "$t(common.Post)",
-      "POLL": "$t(common.Poll)"
-    }
+      "POLL": "$t(common.Poll)",
+      "COLLABORA_DOCUMENT": "Document"
+    },
+    "collaboraDocument": "Document"
   },
   "community": {
     "memberUsers": "$t(common.Member) gebruikers ({{count}})",
@@ -872,13 +881,32 @@
         "mediaGallery": {
           "title": "Mediagallerij",
           "tooltip": "Voeg een galerij met afbeeldingen toe aan deze $t(common.post)",
-          "nItems": "{{count}} afbeeldingen in de galerij",
+          "nItems": "{{count}} media in de gallerij",
           "deleteItem": "Verwijder afbeelding uit galerij",
           "emptyGallery": "Nog geen afbeeldingen. Klik op de + knop om afbeeldingen toe te voegen."
         },
         "poll": {
           "title": "$t(common.Poll)",
           "tooltip": "Maak een $t(common.poll) voor stemmen binnen de community"
+        },
+        "collaboraDocument": {
+          "title": "Document",
+          "tooltip": "Voeg een gezamenlijk document toe als aanvullende content",
+          "notEnabledTooltip": "Officedocumenten zijn niet ingeschakeld voor deze space.",
+          "upload": {
+            "or": "of",
+            "hint": "Sleep een bestand hierheen of klik om te uploaden",
+            "maxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+            "fileSizeMB": "{{value}} MB",
+            "removeFile": "Verwijder bestand",
+            "errors": {
+              "unsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
+              "tooLarge": "Bestand is te groot. De maximale grootte is {{cap}} MB.",
+              "multiple": "Sleep één bestand tegelijk hierheen.",
+              "folder": "Sleep een enkel bestand, geen map.",
+              "serviceUnavailable": "Documentservice is tijdelijk niet beschikbaar. Probeer het zo nog eens."
+            }
+          }
         }
       },
       "contributionSettings": {
@@ -943,7 +971,15 @@
               "explanation": "Bewerk het standaard $t(common.whiteboard)."
             }
           },
-          "tooltipDisabled": "Maak een nieuwe $t(common.post) aan als je een andere$t(common.collection) optie wil."
+          "tooltipDisabled": "Maak een nieuwe $t(common.post) aan als je een andere$t(common.collection) optie wil.",
+          "collaboraDocument": {
+            "title": "Documenten",
+            "tooltip": "Schakel antwoorden met gezamenlijke documenten in",
+            "settings": {
+              "label": "Standaard document:",
+              "explanation": "Bewerk het standaard document."
+            }
+          }
         }
       },
       "importTemplate": {
@@ -1016,6 +1052,9 @@
     },
     "memo": {
       "clickToSee": "Klik om de volledige $t(common.memo) te bekijken"
+    },
+    "collaboraDocument": {
+      "clickToSee": "Klik om het volledige $t(common.collaboraDocument) te bekijken"
     },
     "calloutsList": {
       "title": "Index",
@@ -1306,6 +1345,8 @@
       "guidelinesTitle": "Titel",
       "guidelinesDescription": "Richtlijnen"
     },
+    "spaceTemplatesSection": "Space $t(common.templates)",
+    "accountTemplates": "Account templates",
     "platformTemplates": "Platform $t(common.templates)",
     "loadPlatformTemplates": "Of klik hier om door alle platform $t(common.templates) te bladeren",
     "platformUseDisabled": "Houd er rekening mee dat je alleen de $t(common.templates) kunt gebruiken die voor deze $t(common.community) zijn geselecteerd. (zie hierboven). Als je een van de $t(common.templates) hieronder wilt gebruiken, vraag de $t(common.admin) of de $t(common.lead) van de $t(common.space) om deze toe te voegen in de $t(common.template) sectie in de $t(common.space) instellingen.",
@@ -1334,7 +1375,7 @@
       "typeReadonly": "Zodra een $t(common.template) is gemaakt, kan het type niet worden gewijzigd. Als je een ander type nodig hebt, maak dan een nieuwe $t(common.template)."
     },
     "shareSettings": {
-      "description": "Op basis van de $t(common.settings) van de $t(common.space) waarin {{elementName}} zich bevindt, kun je bewerken met meerdere gebruikers tegelijk. Als je niet wilt dat anderen bewerken, wijzig dan onderstaande $t(common.settings).",
+      "description": "Op basis van de $t(common.settings) van de $t(common.space) waar deze {{elementName}} zich bevindt, kun je met meerdere gebruikers tegelijk bewerken. Als je niet wilt dat anderen kunnen bewerken, pas dan de $t(common.settings) hieronder aan.",
       "disabled": "Omdat in de $t(common.space) waarin {{elementName}} zich bevindt real-time samenwerking niet is ingeschakeld, kan maar één gebruiker tegelijk bewerken.",
       "guestAccessWarning": "Let op: als je dit $t(common.whiteboard) openbaar maakt, kan iedereen in de $t(common.space) het $t(common.whiteboard) bewerken.",
       "ownedBy": {
@@ -2595,6 +2636,36 @@
           "confirmTitle": "Sub-subspace promoveren naar Subspace?",
           "confirmWarning": "Dit zal de sub-subspace promoveren tot een subspace. Adminrollen worden gereset."
         },
+        "move": "Verplaatsen",
+        "moveL1ToL0": {
+          "hint": "Verplaats deze subspace naar een andere Space. Deze blijft op Level 1. Alle communityleden, leads, admins, organisaties en virtual contributors worden verwijderd. Bestaande URL’s zijn niet langer geldig. Communityleden kunnen na de verplaatsing opnieuw worden uitgenodigd als hieronder daarvoor wordt gekozen.",
+          "targetLabel": "Target Space",
+          "button": "Verplaats Space (L1 → L1 cross-Space)",
+          "confirmTitle": "Subspace verplaatsen naar een andere Space?",
+          "confirmWarning": "Dit verplaatst de subspace en alle bijbehorende content naar de geselecteerde Space. Alle communityrollen worden verwijderd. Statussen binnen de innovation flow kunnen opnieuw worden toegewezen. Bestaande URL’s werken niet langer. Deze actie kan niet eenvoudig ongedaan worden gemaakt."
+        },
+        "moveL1ToL2": {
+          "hint": "Verplaats deze subspace onder een subspace in een andere Space. Deze wordt verplaatst naar Level 2. Alle communityrollen worden verwijderd, inclusief admins. Bestaande URL’s zijn niet langer geldig. Communityleden kunnen na de verplaatsing opnieuw worden uitgenodigd als hieronder daarvoor wordt gekozen.",
+          "targetL0Label": "Target Space",
+          "targetL1Label": "Target Subspace",
+          "button": "Verplaatsen & degraderen (L1 → L2 cross-Spaces)",
+          "confirmTitle": "Subspace verplaatsen en degraderen?",
+          "confirmWarning": "Dit verplaatst de subspace onder de geselecteerde subspace in een andere Space en degradeert deze naar Level 2. Alle communityrollen worden verwijderd, inclusief admins. Bestaande URL’s werken niet langer. Deze actie kan niet eenvoudig ongedaan worden gemaakt.",
+          "noL0Targets": "Geen andere Spaces beschikbaar.",
+          "noL1Targets": "Geen subspaces beschikbaar in de geselecteerde Space.",
+          "disabledHasChildren": "Kan niet degraderen naar L2: deze subspace bevat L2-sub-subspaces (maximale diepte zou worden overschreden)."
+        },
+        "moveType": {
+          "toL0": "Verplaatsen naar Space (blijft L1)",
+          "toL2": "Verplaatsen onder subspace (wordt L2)"
+        },
+        "autoInvite": {
+          "label": "Stuur uitnodigingen naar communityleden die al in de doel-Space zitten",
+          "tooltip": "Na de verplaatsing worden alle communityrollen verwijderd. Met deze optie wordt een uitnodiging gestuurd naar leden die al tot de doel-Space behoren, zodat zij zich opnieuw bij de verplaatste subspace kunnen aansluiten zonder deze zelf te hoeven opzoeken.",
+          "messagePlaceholder": "Je Space is verplaatst. Je bent uitgenodigd om opnieuw deel te nemen aan de community."
+        },
+        "moveSuccess": "Space succesvol verplaatst.",
+        "moveError": "Verplaatsen van Space mislukt.",
         "successMessage": "Space conversie succesvol voltooid.",
         "errorMessage": "Omzetten van de space is mislukt.",
         "urlNotFound": "URL niet gevonden.",
@@ -2890,6 +2961,11 @@
           },
           "privacy": {
             "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
+          },
+          "designSystem": {
+            "title": "Ontwerp",
+            "description": "Try the new Alkemio design. This setting only applies to this browser, so your other devices will keep the current design.",
+            "toggleLabel": "Gebruik het nieuwe design"
           }
         },
         "security": {
@@ -3335,7 +3411,16 @@
             "title": "...of zoek je $t(common.community) hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -3773,7 +3858,11 @@
     "recovery": {
       "header": "Wachtwoordherstel",
       "message": {
-        "initial": "Vul hieronder jouw email adres in om een link te ontvangen waarmee jouw wachtwoord gereset kan worden."
+        "initial": "Vul hieronder jouw email adres in om een link te ontvangen waarmee jouw wachtwoord gereset kan worden.",
+        "resend": "<strong>Haven't received the email?</strong><br/>Check your spam folder, confirm the address below is correct, then request a new recovery email once the timer ends."
+      },
+      "cooldown": {
+        "button": "{{label}} over {{seconds}}s"
       }
     },
     "verification": {
@@ -4137,8 +4226,8 @@
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
-      "account-disabled": "This account is disabled."
+      "oidc-account-linking-conflict": "U probeert in te loggen met {{provider}}, maar dat e-mailadres wordt al gebruikt door een ander account.",
+      "account-disabled": "Dit account is uitgeschakeld."
     },
     "fields": {
       "ID": "ID",
@@ -4335,27 +4424,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -4442,7 +4546,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 $t(common.members)", "Diverse tools, waaronder standaard $t(common.whiteboards)"],
+        "features": [
+          "Tot 10 $t(common.members)",
+          "Diverse tools, waaronder standaard $t(common.whiteboards)"
+        ],
         "disclaimer": "Gratis $t(common.spaces) zijn beperkt tot 1 $t(common.space) per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis $t(common.space) hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
@@ -4646,6 +4753,28 @@
     "onlineStatus": {
       "offline": "U bent momenteel offline. Bewaar alle lopende werkzaamheden lokaal omdat niet-opgeslagen gegevens mogelijk verloren gaan.",
       "restored": "Uw verbinding is hersteld."
+    }
+  },
+  "collaboraDocument": {
+    "create": {
+      "title": "Nieuw document",
+      "documentType": {
+        "label": "Documenttype",
+        "SPREADSHEET": "Spreadsheet",
+        "PRESENTATION": "Presentatie",
+        "TEXT_DOCUMENT": "Word Document"
+      }
+    },
+    "editor": {
+      "title": "Documenteditor",
+      "loading": "Document editor laden...",
+      "error": {
+        "unavailable": "De documenteditor is tijdelijk niet beschikbaar. Probeer het later opnieuw.",
+        "notFound": "Dit document kon niet worden gevonden. Mogelijk is het verwijderd."
+      }
+    },
+    "delete": {
+      "confirm": "Weet je zeker dat je dit document wil verwijderen?\nDeze actie kan niet ongedaan worden gemaakt."
     }
   }
 }

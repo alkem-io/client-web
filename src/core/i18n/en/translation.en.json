@@ -223,8 +223,7 @@
   "topBar": {
     "sign-in": "Log In | Sign Up",
     "designVersion": {
-      "label": "New design (beta)",
-      "caption": "The old design will remain available for a short time.",
+      "label": "New design (preview)",
       "errorSaving": "Could not save your design preference. Please try again."
     }
   },

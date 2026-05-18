@@ -1,5 +1,4 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
-import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
 import type { CrdDesignVersionSwitch, CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
@@ -53,7 +52,6 @@ export function UserMenu({
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
-  const designVersionCaptionId = useId();
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
@@ -90,38 +88,6 @@ export function UserMenu({
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-
-        {designVersionSwitch && (
-          <>
-            <DropdownMenuItem
-              onSelect={e => {
-                e.preventDefault();
-                if (!designVersionSwitch.disabled) {
-                  designVersionSwitch.onChange(!designVersionSwitch.enabled);
-                }
-              }}
-              disabled={designVersionSwitch.disabled}
-              role="switch"
-              aria-checked={designVersionSwitch.enabled}
-              aria-describedby={designVersionCaptionId}
-              className="flex flex-col items-stretch gap-1 cursor-pointer"
-            >
-              <div className="flex w-full items-center justify-between gap-2">
-                <span className="text-control">{t('header.designVersion.label')}</span>
-                <Switch
-                  checked={designVersionSwitch.enabled}
-                  disabled={designVersionSwitch.disabled}
-                  tabIndex={-1}
-                  aria-hidden="true"
-                />
-              </div>
-              <p id={designVersionCaptionId} className="text-caption text-muted-foreground">
-                {t('header.designVersion.caption')}
-              </p>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-          </>
-        )}
 
         {/* Navigation items */}
         <DropdownMenuItem asChild={true}>
@@ -211,7 +177,36 @@ export function UserMenu({
           </DropdownMenuItem>
         )}
 
-        {(isAdmin || onHelpClick || (languages && languages.length > 0)) && <DropdownMenuSeparator />}
+        {/* Design version switch */}
+        {designVersionSwitch && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={e => {
+                e.preventDefault();
+                if (!designVersionSwitch.disabled) {
+                  designVersionSwitch.onChange(!designVersionSwitch.enabled);
+                }
+              }}
+              disabled={designVersionSwitch.disabled}
+              role="switch"
+              aria-checked={designVersionSwitch.enabled}
+              className="flex w-full items-center justify-between gap-2 cursor-pointer"
+            >
+              <span className="text-control">{t('header.designVersion.label')}</span>
+              <Switch
+                checked={designVersionSwitch.enabled}
+                disabled={designVersionSwitch.disabled}
+                tabIndex={-1}
+                aria-hidden="true"
+              />
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {(isAdmin || onHelpClick || (languages && languages.length > 0) || designVersionSwitch) && (
+          <DropdownMenuSeparator />
+        )}
 
         {/* Logout */}
         <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={onLogout}>
