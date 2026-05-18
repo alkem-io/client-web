@@ -358,10 +358,14 @@ type ProfileShape = {
   avatar?: { uri: string };
 };
 
+type SpaceProfileShape = ProfileShape & {
+  cardBanner?: { uri: string };
+};
+
 type SpaceResourceEntry = {
   id: string;
   about: {
-    profile: ProfileShape;
+    profile: SpaceProfileShape;
   };
 };
 
@@ -378,9 +382,10 @@ type SidebarResources = {
 };
 
 // Sidebar items use the muted/prototype palette — they're small list rows where
-// per-space rainbow colours feel noisy. Spaces / hubs / packs fall back to the
-// default grey AvatarFallback; virtual contributors get the prototype's chart-2
-// accent so they remain visually distinct from spaces.
+// per-space rainbow colours feel noisy. Spaces fall back from AVATAR → CARD banner
+// → grey AvatarFallback (L0 spaces rarely have an AVATAR visual but usually have a
+// card banner); hubs / packs fall back to the default grey AvatarFallback; virtual
+// contributors get the prototype's chart-2 accent so they stay distinct from spaces.
 const mapProfileToSidebarItem = (id: string, profile: ProfileShape): SidebarResourceData => ({
   id,
   name: profile.displayName,
@@ -395,7 +400,12 @@ export const mapResourcesToSidebarItems = (resources: {
   innovationHubs?: ProfileResourceEntry[];
   innovationPacks?: ProfileResourceEntry[];
 }): SidebarResources => ({
-  spaces: (resources.spaces ?? []).map(s => mapProfileToSidebarItem(s.id, s.about.profile)),
+  spaces: (resources.spaces ?? []).map(s => ({
+    ...mapProfileToSidebarItem(s.id, s.about.profile),
+    // `||` (not `??`): an unset Alkemio visual is `{ uri: '' }`, so empty strings
+    // must fall through to the card banner, then to undefined → grey fallback.
+    avatarUrl: s.about.profile.avatar?.uri || s.about.profile.cardBanner?.uri || undefined,
+  })),
   virtualContributors: (resources.virtualContributors ?? [])
     .filter(vc => vc.profile)
     .map(vc => ({

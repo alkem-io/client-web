@@ -15,6 +15,7 @@ type SubspaceItem = {
   name: string;
   initials: string;
   href: string;
+  avatarUrl?: string;
 };
 
 type VirtualContributorItem = {

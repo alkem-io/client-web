@@ -483,13 +483,16 @@ export const MOCK_SIDEBAR = {
       name: 'Renewable Energy',
       initials: 'RE',
       href: '/space/green-energy/challenges/renewable-energy',
+      avatarUrl: SUBSPACE_BANNERS[0],
     },
     {
       name: 'Urban Planning',
       initials: 'UP',
       href: '/space/green-energy/challenges/urban-planning',
+      avatarUrl: SUBSPACE_BANNERS[1],
     },
     {
+      // No avatarUrl — demonstrates the retained grey initials fallback.
       name: 'Transportation',
       initials: 'TR',
       href: '/space/green-energy/challenges/transportation',
