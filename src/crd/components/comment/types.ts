@@ -2,6 +2,7 @@ export type CommentAuthor = {
   id: string;
   name: string;
   avatarUrl?: string;
+  profileUrl?: string;
 };
 
 export type CommentReactionSender = {

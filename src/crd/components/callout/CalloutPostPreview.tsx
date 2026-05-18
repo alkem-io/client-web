@@ -18,7 +18,7 @@ export type CalloutPostPreviewReference = {
 export type CalloutPostPreviewData = {
   id: string;
   title: string;
-  author?: { name: string; avatarUrl?: string };
+  author?: { name: string; avatarUrl?: string; profileUrl?: string };
   timestamp?: string;
   description?: string;
   tags?: string[];
@@ -58,19 +58,42 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
     >
       <header className="flex items-start justify-between gap-3 px-4 py-3 border-b border-border bg-primary/5">
         <div className="flex items-center gap-3 min-w-0">
-          {post.author && (
-            <Avatar className="w-9 h-9 border border-border shrink-0">
-              {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
-              <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          )}
+          {post.author &&
+            (post.author.profileUrl ? (
+              <a
+                href={post.author.profileUrl}
+                onClick={e => e.stopPropagation()}
+                aria-label={post.author.name}
+                className="relative z-10 block shrink-0 rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Avatar className="w-9 h-9 border border-border">
+                  {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                  <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </a>
+            ) : (
+              <Avatar className="w-9 h-9 border border-border shrink-0">
+                {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ))}
           <div className="min-w-0">
             <h3 className="text-card-title text-foreground truncate">
               {loading ? <Skeleton className="h-4 w-40" /> : post.title}
             </h3>
             {(post.author || post.timestamp) && (
               <p className="text-caption text-muted-foreground truncate">
-                {post.author?.name}
+                {post.author?.profileUrl ? (
+                  <a
+                    href={post.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {post.author.name}
+                  </a>
+                ) : (
+                  post.author?.name
+                )}
                 {post.author && post.timestamp && ' • '}
                 {post.timestamp}
               </p>
