@@ -47,7 +47,7 @@ export type CrdSubspacePageData = {
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
-  subspaces: Array<{ name: string; initials: string; href: string }>;
+  subspaces: Array<{ name: string; initials: string; href: string; avatarUrl?: string }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
@@ -160,6 +160,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
       name: child.displayName,
       initials: getInitials(child.displayName),
       href: child.url,
+      avatarUrl: child.avatar?.uri,
     })) ?? [];
 
   const visibilityData = mapSpaceVisibility(visibility);
