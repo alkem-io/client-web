@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   refetchInnovationFlowDetailsQuery,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { ImportFlowOptions } from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 
@@ -53,6 +55,8 @@ export function useFlowReplaceFlow({
   collaborationId,
   onApplyComplete,
 }: UseFlowReplaceFlowOptions): FlowReplaceFlowState {
+  const { t } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>();
   const [importing, setImporting] = useState(false);
@@ -109,6 +113,10 @@ export function useFlowReplaceFlow({
       onApplyComplete?.();
     } catch (err) {
       logError(new Error('Replace innovation flow failed', { cause: err as Error }));
+      // The dialog chain has already collapsed at this point, so without a
+      // visible error the admin would believe the replace succeeded. Surface
+      // it; the flow is unchanged and they can retry from the button.
+      notify(t('layout.replaceFlow.error'), 'error');
     } finally {
       setImporting(false);
     }

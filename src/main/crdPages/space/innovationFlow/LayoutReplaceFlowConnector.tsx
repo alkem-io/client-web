@@ -1,7 +1,6 @@
 import { Replace } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInnovationFlowSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -11,6 +10,20 @@ import { useFlowReplaceFlow } from './useFlowReplaceFlow';
 
 export type LayoutReplaceFlowConnectorProps = {
   collaborationId: string | undefined;
+  /**
+   * Number of callouts currently attached to this collaboration. Drives the
+   * destructive "replace all" confirmation in `ApplySpaceTemplateDialog`. Must
+   * come from data the parent has already resolved (the layout tab's
+   * InnovationFlowSettings query) — never a count that can still be 0 while the
+   * admin confirms, which would silently skip the delete confirmation.
+   */
+  existingCalloutsCount: number;
+  /**
+   * Disables the entry-point button. The parent passes the layout buffer's
+   * dirty flag here so the admin can't replace the flow (which reseeds from
+   * the server and discards the buffer) while there are unsaved layout edits.
+   */
+  disabled?: boolean;
   /** Called after the replace mutation completes + refetches land. */
   onApplyComplete?: () => void;
   /**
@@ -30,6 +43,8 @@ export type LayoutReplaceFlowConnectorProps = {
  */
 export function LayoutReplaceFlowConnector({
   collaborationId,
+  existingCalloutsCount,
+  disabled,
   onApplyComplete,
   onImportingChange,
 }: LayoutReplaceFlowConnectorProps) {
@@ -46,12 +61,6 @@ export function LayoutReplaceFlowConnector({
     onImportingChange?.(replaceFlow.importing);
   }, [replaceFlow.importing, onImportingChange]);
 
-  const { data: settingsData } = useInnovationFlowSettingsQuery({
-    variables: { collaborationId: collaborationId ?? '' },
-    skip: !replaceFlow.importDialogOpen || !collaborationId,
-  });
-  const existingCalloutsCount = settingsData?.lookup.collaboration?.calloutsSet.callouts?.length ?? 0;
-
   return (
     <>
       <Button
@@ -60,7 +69,7 @@ export function LayoutReplaceFlowConnector({
         size="sm"
         className="gap-2 shrink-0"
         onClick={replaceFlow.open}
-        disabled={!collaborationId || replaceFlow.importing}
+        disabled={!collaborationId || replaceFlow.importing || disabled}
       >
         <Replace aria-hidden="true" className="size-4" />
         {t('layout.replaceFlow.button')}

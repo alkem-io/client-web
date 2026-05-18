@@ -114,7 +114,12 @@ export function SpaceSettingsLayoutView({
   const [activeCallout, setActiveCallout] = useState<LayoutCallout | null>(null);
   const [addPhaseOpen, setAddPhaseOpen] = useState(false);
   const canManagePhases = level !== 'L0' && !!onCreatePhase;
-  const canAddPhase = canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating;
+  // `isReplacingFlow` also locks structural actions: starting a create-state
+  // mutation while the replace-flow mutation + refetch are in flight would race
+  // two structural changes against the same innovation flow, and the reseed
+  // would land on whichever refetch wins.
+  const canAddPhase =
+    canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating && !isReplacingFlow;
   const canReorderColumns = level !== 'L0' && !!onReorderColumns;
   // Sortable column items are prefixed so they don't collide with the per-column
   // droppable zones (those keep `column.id` as their droppable id — see
@@ -283,9 +288,10 @@ export function SpaceSettingsLayoutView({
 
         <SpaceSettingsSaveBar
           // Lock both Save and Reset while a structural mutation (phase
-          // create/delete) is in flight: the snapshot is being reseeded and
-          // a Save click in that window would race against the refetch.
-          state={isStructureMutating ? { kind: 'saving' } : saveBar}
+          // create/delete) or a flow replacement is in flight: the snapshot is
+          // being reseeded and a Save click in that window would race against
+          // the refetch.
+          state={isStructureMutating || isReplacingFlow ? { kind: 'saving' } : saveBar}
           onSave={onSave}
           onDiscard={onDiscardChanges}
           saveLabel={t('saveBar.save')}

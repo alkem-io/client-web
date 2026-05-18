@@ -102,7 +102,8 @@
     },
     "replaceFlow": {
       "button": "Remplacer le flux d'innovation",
-      "loading": "Chargement du nouveau flux…"
+      "loading": "Chargement du nouveau flux…",
+      "error": "Le remplacement du flux d'innovation a échoué. Le flux est inchangé — veuillez réessayer."
     },
     "row": {
       "drag": "Glisser pour réorganiser",

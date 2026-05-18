@@ -102,7 +102,8 @@
     },
     "replaceFlow": {
       "button": "Innovationsfluss ersetzen",
-      "loading": "Neuer Fluss wird geladen…"
+      "loading": "Neuer Fluss wird geladen…",
+      "error": "Das Ersetzen des Innovationsflusses ist fehlgeschlagen. Der Fluss ist unverändert — bitte versuchen Sie es erneut."
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",

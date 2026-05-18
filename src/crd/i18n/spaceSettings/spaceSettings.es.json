@@ -102,7 +102,8 @@
     },
     "replaceFlow": {
       "button": "Reemplazar flujo de innovación",
-      "loading": "Cargando nuevo flujo…"
+      "loading": "Cargando nuevo flujo…",
+      "error": "No se pudo reemplazar el flujo de innovación. El flujo no ha cambiado: inténtalo de nuevo."
     },
     "row": {
       "drag": "Arrastra para reordenar",

@@ -60,6 +60,14 @@ export type UseLayoutTabDataResult = {
   /** Min/max state count from the innovation-flow settings; drives Add/Delete enablement. */
   minimumNumberOfStates: number;
   maximumNumberOfStates: number;
+  /**
+   * Total callouts currently attached to this collaboration, read from the
+   * already-resolved InnovationFlowSettings query (the same query that seeds
+   * the columns). Drives the destructive "replace all" confirmation in the
+   * Replace-innovation-flow flow — must come from loaded data, never a
+   * separate query that can still be 0 while the user confirms.
+   */
+  existingCalloutsCount: number;
   /** True while a structural mutation (create/delete state) is in flight. */
   isStructureMutating: boolean;
   /**
@@ -512,6 +520,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     onDeleteState,
     minimumNumberOfStates: flowSettings?.minimumNumberOfStates ?? 0,
     maximumNumberOfStates: flowSettings?.maximumNumberOfStates ?? Number.POSITIVE_INFINITY,
+    existingCalloutsCount: flowData?.lookup.collaboration?.calloutsSet.callouts?.length ?? 0,
     isStructureMutating,
     reseedFromServer: resetSnapshotForReseed,
   };

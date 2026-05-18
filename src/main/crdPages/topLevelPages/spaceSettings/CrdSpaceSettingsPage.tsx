@@ -322,6 +322,8 @@ export default function CrdSpaceSettingsPage() {
                   level !== 'L0' ? (
                     <LayoutReplaceFlowConnector
                       collaborationId={layout.collaborationId}
+                      existingCalloutsCount={layout.existingCalloutsCount}
+                      disabled={layout.isDirty}
                       onApplyComplete={layout.reseedFromServer}
                       onImportingChange={setIsReplacingFlow}
                     />
