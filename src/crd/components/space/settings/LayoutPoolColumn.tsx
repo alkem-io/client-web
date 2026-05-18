@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Check, GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
@@ -35,6 +35,8 @@ type LayoutPoolColumnProps = {
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;
+  /** Enables the column drag handle + sortable behaviour (off at L0). */
+  draggable?: boolean;
   className?: string;
 };
 
@@ -46,21 +48,63 @@ export function LayoutPoolColumn({
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
+  draggable = false,
   className,
 }: LayoutPoolColumnProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const calloutIds = column.callouts.map(c => c.id);
-  const { setNodeRef, isOver } = useDroppable({ id: column.id });
+  // Drop target for cross-column callout moves — keeps `column.id` as the
+  // droppable id so the view's `resolveTargetColumn` continues to work unchanged.
+  const { setNodeRef: setCalloutDropRef, isOver } = useDroppable({ id: column.id });
+  // Column-level sortable — registers the card under the prefixed sortable id
+  // `col:${column.id}` so it doesn't collide with the callout droppable above.
+  // Disabled at L0 (`draggable={false}`), in which case it's inert.
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setSortableRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: `col:${column.id}`,
+    data: { type: 'column' },
+    disabled: !draggable,
+  });
+  const sortableStyle = draggable
+    ? {
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }
+    : undefined;
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
   const [pendingPhaseDelete, setPendingPhaseDelete] = useState(false);
 
   return (
     <>
       <Card
-        className={cn('flex min-w-0 flex-1 flex-col overflow-hidden', isOver && 'ring-2 ring-primary/30', className)}
+        ref={draggable ? setSortableRef : undefined}
+        style={sortableStyle}
+        className={cn(
+          'flex min-w-0 flex-1 flex-col overflow-hidden',
+          isOver && 'ring-2 ring-primary/30',
+          isDragging && 'opacity-50',
+          className
+        )}
       >
         <div className="bg-muted/40 px-4 pt-4 pb-3">
           <div className="flex items-center justify-between gap-2">
+            {draggable && (
+              <button
+                type="button"
+                aria-label={t('layout.column.drag')}
+                className="shrink-0 cursor-grab touch-none rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
+                {...attributes}
+                {...listeners}
+              >
+                <GripVertical aria-hidden="true" className="size-4" />
+              </button>
+            )}
             <InlineEditText
               value={column.title}
               onChange={next => onRenameColumn(column.id, { title: next })}
@@ -81,7 +125,7 @@ export function LayoutPoolColumn({
             <p className="mt-1 line-clamp-3 text-body text-muted-foreground break-words">{column.description}</p>
           )}
         </div>
-        <CardContent ref={setNodeRef} className="flex flex-col gap-2 px-4 py-3">
+        <CardContent ref={setCalloutDropRef} className="flex flex-col gap-2 px-4 py-3">
           <SortableContext items={calloutIds} strategy={verticalListSortingStrategy}>
             {column.callouts.length === 0 && (
               <div className="rounded-md border border-dashed p-4 text-center text-caption text-muted-foreground">

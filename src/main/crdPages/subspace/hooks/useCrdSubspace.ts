@@ -51,6 +51,7 @@ export type CrdSubspacePageData = {
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
+  innovationFlowId: string | undefined;
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
@@ -92,6 +93,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     skip: !collaborationId,
   });
   const flow = flowData?.lookup.collaboration?.innovationFlow;
+  const innovationFlowId = flow?.id;
   const phases = mapInnovationFlowPhases(flow?.states);
   const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
@@ -187,6 +189,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaces,
     visibility: visibilityData,
 
+    innovationFlowId,
     phases,
     currentPhaseId,
     canEditFlow,
