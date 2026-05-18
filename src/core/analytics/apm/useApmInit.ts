@@ -6,7 +6,6 @@ import { useUserGeo } from '@/core/analytics/geo';
 import { error as logError } from '@/core/logging/sentry/log';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
 
@@ -20,7 +19,6 @@ const APM_ORIENTATION_TYPE_NOT_SUPPORTED = 'orientation type not supported on th
 export interface ApmCustomContext {
   authenticated?: boolean;
   ip?: string;
-  designVersion?: 1 | 2 | undefined;
   location?: {
     lat?: number;
     lon?: number;
@@ -106,11 +104,8 @@ const useUserObject = (user: Identifiable | undefined) => {
 };
 const useCustomContext = (user: CurrentUserModel | undefined) => {
   const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
-  const { designVersion } = useCurrentUserContext();
 
   const context: ApmCustomContext = {};
-
-  context.designVersion = designVersion;
 
   if (!userGeoLoading) {
     context.location = {

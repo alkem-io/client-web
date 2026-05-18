@@ -11,6 +11,7 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { useApmDesignVersionLabel } from '@/core/analytics/apm/useApmDesignVersionLabel';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesignVersionTag';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
@@ -57,6 +58,7 @@ function NotificationsGate() {
 function DesignVersionSyncMount() {
   useDesignVersionSync();
   useSentryDesignVersionTag();
+  useApmDesignVersionLabel();
   return null;
 }
 
