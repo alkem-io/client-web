@@ -101,9 +101,13 @@ function LazyCalloutItemContent({
   const { subspace } = useSubSpace();
   // Mirror MUI `CalloutView`: the description display mode is read from the
   // closest space context (subspace if we're inside one, otherwise the parent
-  // space). `useCalloutDescriptionDisplayMode` returns `true` when the setting
-  // is "Collapsed"; the PostCard expects the inverse.
-  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id ?? space?.id);
+  // space). `SubspaceContext` defaults `subspace.id` to `''` (not `undefined`)
+  // at the space root, so `||` — not `??` — is required to fall through to the
+  // space id; with `??` the empty string sticks, the settings query is skipped,
+  // and every callout wrongly defaults to Expanded regardless of the setting.
+  // `useCalloutDescriptionDisplayMode` returns `true` when the setting is
+  // "Collapsed"; the PostCard expects the inverse.
+  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id);
 
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),
