@@ -16,7 +16,6 @@ import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/s
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
-import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
@@ -51,12 +50,6 @@ export default function CrdSpaceSubspacesPage() {
   const sortedSubspaces = useSubspacesSorted(rawSubspaces, sortMode);
   const subspaces = mapSubspacesToCardDataList(sortedSubspaces, sortMode);
 
-  const sidebarSubspaces = subspaces.map(s => ({
-    name: s.name,
-    initials: getInitials(s.name),
-    href: s.href,
-  }));
-
   const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
   const createSubspace = useCreateSubspace(spaceId ?? '');
@@ -70,7 +63,6 @@ export default function CrdSpaceSubspacesPage() {
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-          subspaces={sidebarSubspaces}
         />
       </SpaceSidebarPortal>
 
