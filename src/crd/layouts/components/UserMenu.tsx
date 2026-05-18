@@ -75,7 +75,7 @@ export function UserMenu({
             variant="secondary"
             className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge leading-[14px]"
           >
-            {t('header.preview')}
+            {t('header.beta')}
           </Badge>
         </div>
       </DropdownMenuTrigger>

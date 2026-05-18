@@ -1,8 +1,9 @@
 import { Layers, Layout as LayoutIcon } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -112,6 +113,10 @@ export default function CrdSubspacePageLayout() {
   const handleCreateSubspace = data.canCreateSubspace
     ? () => {
         setMobileMenuOpen(false);
+        // Close the Subspaces (or any) quick-action dialog first. Leaving it
+        // open would stack two modal Radix dialogs whose focus traps fight each
+        // other, leaving the create form unresponsive.
+        setActiveDialog(null);
         createSubspace.openDialog();
       }
     : undefined;
