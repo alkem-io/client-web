@@ -113,8 +113,7 @@ export function CalloutDetailDialog({
       <div>
         <p className="text-card-title text-foreground">{author.name}</p>
         <p className="text-caption text-muted-foreground">
-          {callout.timestamp}
-          {author.role && ` • ${author.role}`}
+          {[callout.timestamp, author.role].filter(Boolean).join(' • ')}
         </p>
       </div>
     </div>

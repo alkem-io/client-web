@@ -216,10 +216,16 @@ export function PostCard({
             `relative z-10`, so they keep their own behaviour. Rendered only
             when the consumer wires a destination, so it never becomes a dead
             `#` click-trap. It's a sibling of the avatar/name anchors, not an
-            ancestor — no nested-anchor invalidity. */}
+            ancestor — no nested-anchor invalidity. `tabIndex={-1}` keeps it
+            out of the keyboard tab order so it doesn't duplicate the visible
+            title link's focus stop — the title link stays the keyboard
+            control. We deliberately don't add `aria-hidden` (Biome
+            `useAnchorContent` forbids a no-accessible-content link); the
+            `sr-only` label keeps it discoverable in AT browse mode. */}
         {(href || onClick) && (
           <a
             href={href ?? '#'}
+            tabIndex={-1}
             onClick={
               onClick
                 ? e => {
