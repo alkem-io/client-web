@@ -74,7 +74,19 @@ function FramingBody({ content }: { content: CalloutContent }) {
         </div>
       );
     case 'whiteboard':
-      return <p className="text-body text-muted-foreground">{t('framingKind.whiteboard')}</p>;
+      // D16 (2026-05-18): render the server-stamped preview image when present, falling back to
+      // the placeholder text only when the visual is genuinely missing.
+      return content.framingWhiteboardPreviewImageUrl ? (
+        <div className="overflow-hidden rounded-md border bg-muted">
+          <img
+            src={content.framingWhiteboardPreviewImageUrl}
+            alt={content.framingTitle || t('framingKind.whiteboard')}
+            className="w-full object-contain"
+          />
+        </div>
+      ) : (
+        <p className="text-body text-muted-foreground">{t('framingKind.whiteboard')}</p>
+      );
     default:
       return null;
   }

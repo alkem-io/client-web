@@ -104,6 +104,13 @@ export type TemplateContent =
       framingDescription: string;
       /** Excalidraw JSON — when framingKind === 'whiteboard' */
       framingWhiteboardContent?: string;
+      /**
+       * When `framingKind === 'whiteboard'` — the server-rendered preview image URL
+       * (`framing.whiteboard.profile.preview.uri`). The preview surface renders this as an
+       * `<img>` instead of the placeholder text. D16, 2026-05-18. Mirrors `previewImageUrl`
+       * on the `type: 'whiteboard'` branch.
+       */
+      framingWhiteboardPreviewImageUrl?: string;
       /** markdown — when framingKind === 'memo' */
       framingMemoContent?: string;
       /** when framingKind === 'document' — read-only title/placeholder (the live Collabora service is not embedded in a preview) */

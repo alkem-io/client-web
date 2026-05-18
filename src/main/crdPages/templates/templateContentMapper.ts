@@ -74,6 +74,11 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     framingTitle: framing.profile.displayName,
     framingDescription: framing.profile.description ?? '',
     framingWhiteboardContent: framingKind === 'whiteboard' ? framing.whiteboard?.content : undefined,
+    // Server-rendered whiteboard preview image — D16, 2026-05-18. The Preview dialog (and any
+    // read-only preview surface) renders an `<img>` of this when present; falls back to the
+    // placeholder text only when the visual is genuinely missing on the server.
+    framingWhiteboardPreviewImageUrl:
+      framingKind === 'whiteboard' ? framing.whiteboard?.profile.preview?.uri || undefined : undefined,
     framingMemoContent: framingKind === 'memo' ? (framing.memo?.markdown ?? undefined) : undefined,
     framingCollaboraDoc:
       framingKind === 'document' && framing.collaboraDocument

@@ -189,6 +189,54 @@ describe('templateContentMapper', () => {
     // `framingCollaboraDoc` so the consumer can render `CalloutCollaboraPreview` without a live document service.
   });
 
+  // D16, 2026-05-18 — when a Callout template's framing is a whiteboard with a server-rendered
+  // preview image, the mapper surfaces it on `framingWhiteboardPreviewImageUrl` so the Preview
+  // dialog renders an `<img>` instead of the literal "Whiteboard" placeholder.
+  it('maps the server-rendered whiteboard preview URL for whiteboard-framed callout templates (D16)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Whiteboard,
+          profile: { displayName: 'Roadmap WB', description: 'workshop' },
+          whiteboard: {
+            content: '{"elements":[]}',
+            profile: { preview: { uri: 'https://cdn.alkem.io/wb/preview.png' } },
+          },
+        },
+        settings: {
+          contribution: { allowedTypes: [] },
+          framing: { commentsEnabled: false },
+        },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({
+      type: 'callout',
+      framingKind: 'whiteboard',
+      framingWhiteboardContent: '{"elements":[]}',
+      framingWhiteboardPreviewImageUrl: 'https://cdn.alkem.io/wb/preview.png',
+    });
+  });
+
+  it('leaves framingWhiteboardPreviewImageUrl undefined when the whiteboard has no rendered preview (D16)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Whiteboard,
+          profile: { displayName: 'WB' },
+          whiteboard: { content: '{}', profile: { preview: null } },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'callout')).toMatchObject({
+      type: 'callout',
+      framingWhiteboardPreviewImageUrl: undefined,
+    });
+  });
+
   it('maps a poll-framed callout content payload', () => {
     const template = {
       callout: {

@@ -117,3 +117,6 @@
 .text-control {
   text-transform: uppercase;
 }
+textarea.text-control {
+  text-transform: none;
+}

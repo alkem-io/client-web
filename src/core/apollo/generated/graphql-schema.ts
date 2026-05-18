@@ -33215,7 +33215,10 @@ export type UpdateCalloutTemplateMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
+        canAddContributions: CalloutAllowedActors;
+        commentsEnabled: boolean;
       };
+      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
   };
 };

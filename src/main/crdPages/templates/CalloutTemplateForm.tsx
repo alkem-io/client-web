@@ -104,6 +104,8 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
           onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
           whiteboardContent={values.whiteboardContent}
           whiteboardPreviewSettings={values.whiteboardPreviewSettings}
+          whiteboardPreviewImages={values.whiteboardPreviewImages}
+          whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
           whiteboardConfigured={values.whiteboardConfigured}
           whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
           onWhiteboardChange={(content, previewImages, previewSettings) => {

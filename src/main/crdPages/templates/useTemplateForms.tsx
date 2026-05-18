@@ -30,6 +30,7 @@ import type {
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
 import {
@@ -222,6 +223,11 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
   const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
+  // D17, 2026-05-18 — Callout templates with whiteboard framing need a post-mutation upload step
+  // to persist the inline-editor's preview blobs against the whiteboard's `WHITEBOARD_PREVIEW`
+  // Visual; without it the server stores updated content but the preview image stays stale.
+  // Mirrors the live callout connector (`CalloutFormConnector` create/edit paths).
+  const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
@@ -415,6 +421,29 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     };
   }, [open, editingSpaceSourceSpaceId, spaceSourceDisplayName, fetchSpaceContent]);
 
+  /**
+   * D17, 2026-05-18 — post-save upload of the inline-editor's whiteboard preview blobs against the
+   * whiteboard's `WHITEBOARD_PREVIEW` Visual. Mirrors `CalloutFormConnector`'s live-callout step.
+   * Reads `previewVisual.id` from the mutation result (both `CreateTemplate` and
+   * `UpdateCalloutTemplate` already return it as an alias of `visual(type: WHITEBOARD_PREVIEW)`).
+   * No-op when (a) the framing isn't a whiteboard, (b) no fresh in-form blobs exist, or
+   * (c) the response didn't surface a preview Visual id.
+   */
+  type WhiteboardUploadHandle =
+    | {
+        nameID?: string;
+        profile?: { previewVisual?: { id: string } | null | undefined } | null | undefined;
+      }
+    | null
+    | undefined;
+  const uploadCalloutWhiteboardPreview = async (cv: CalloutFormValues, whiteboard: WhiteboardUploadHandle) => {
+    if (cv.framingChip !== 'whiteboard') return;
+    if (!cv.whiteboardPreviewImages || cv.whiteboardPreviewImages.length === 0) return;
+    const previewVisualId = whiteboard?.profile?.previewVisual?.id;
+    if (!previewVisualId) return;
+    await uploadWhiteboardVisuals(cv.whiteboardPreviewImages, { previewVisualId }, whiteboard?.nameID);
+  };
+
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
     const profileData = toProfileData(current);
     const tags = current.tags.length > 0 ? current.tags : undefined;
@@ -478,9 +507,13 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
         return;
       case 'callout': {
         const calloutData = calloutFormValuesToCreateCalloutInput(calloutForm.values, calloutFallbacks);
-        await createTemplate({
+        const result = await createTemplate({
           variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
         });
+        await uploadCalloutWhiteboardPreview(
+          calloutForm.values,
+          result.data?.createTemplate?.callout?.framing?.whiteboard
+        );
         return;
       }
     }
@@ -491,7 +524,7 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     if (!templatesSetId) throw new Error('No templates set');
     const merged: CalloutFormValues = { ...EMPTY_CALLOUT_FORM_VALUES, ...body };
     const calloutData = calloutFormValuesToCreateCalloutInput(merged, calloutFallbacks);
-    await createTemplate({
+    const result = await createTemplate({
       variables: {
         templatesSetId,
         type: GqlTemplateType.Callout,
@@ -500,6 +533,9 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
         calloutData,
       },
     });
+    // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
+    // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
+    await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
   };
 
   const submitEdit = async (
@@ -604,9 +640,13 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
       case 'callout': {
         if (!editCalloutId) throw new Error('Missing callout id for Callout template edit');
         await updateTemplate({ variables: { templateId, profile } });
-        await updateCalloutTemplate({
+        const result = await updateCalloutTemplate({
           variables: { calloutData: calloutFormValuesToUpdateCalloutEntityInput(calloutForm.values, editCalloutId) },
         });
+        // D17, 2026-05-18 — persist the inline-editor's whiteboard preview blobs against the
+        // whiteboard's `WHITEBOARD_PREVIEW` Visual; otherwise the server keeps the previous
+        // image even though the content was updated.
+        await uploadCalloutWhiteboardPreview(calloutForm.values, result.data?.updateCallout?.framing?.whiteboard);
         return;
       }
     }
