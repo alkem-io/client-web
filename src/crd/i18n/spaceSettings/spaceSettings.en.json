@@ -53,6 +53,7 @@
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
+      "drag": "Drag to reorder phase",
       "empty": "No callouts in this column yet.",
       "activePhase": {
         "set": "Mark as active phase",
@@ -100,7 +101,8 @@
       }
     },
     "replaceFlow": {
-      "button": "Replace innovation flow"
+      "button": "Replace innovation flow",
+      "loading": "Loading new flow…"
     },
     "row": {
       "drag": "Drag to reorder",

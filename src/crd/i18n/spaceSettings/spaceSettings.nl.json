@@ -53,6 +53,7 @@
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
+      "drag": "Sleep om de fase te herschikken",
       "empty": "Nog geen callouts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
@@ -100,7 +101,8 @@
       }
     },
     "replaceFlow": {
-      "button": "Innovatieflow vervangen"
+      "button": "Innovatieflow vervangen",
+      "loading": "Nieuwe flow laden…"
     },
     "row": {
       "drag": "Sleep om te herordenen",

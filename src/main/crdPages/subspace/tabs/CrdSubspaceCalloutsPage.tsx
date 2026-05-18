@@ -7,22 +7,12 @@ import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
-import { SubspaceFlowAdminConnector } from '../../space/innovationFlow/SubspaceFlowAdminConnector';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
   const { data, mobileMenu } = useOutletContext<SubspaceOutletContext>();
-  const {
-    innovationFlowId,
-    collaborationId,
-    phases,
-    currentPhaseId,
-    calloutsSetId,
-    canEditFlow,
-    canAddPost,
-    subspaceUrl,
-  } = data;
+  const { phases, currentPhaseId, calloutsSetId, canEditFlow, canAddPost, subspaceUrl } = data;
   const [createOpen, setCreateOpen] = useState(false);
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
@@ -38,16 +28,6 @@ export default function CrdSubspaceCalloutsPage() {
 
   const editFlowHref = subspaceUrl ? `${subspaceUrl}/settings/layout` : undefined;
 
-  const flowAdminSlot = canEditFlow ? (
-    <SubspaceFlowAdminConnector
-      innovationFlowId={innovationFlowId}
-      collaborationId={collaborationId}
-      states={phases.map(p => ({ id: p.id, label: p.label }))}
-      currentStateId={currentPhaseId}
-      editLayoutHref={editFlowHref}
-    />
-  ) : undefined;
-
   const flowTabs = (
     <SubspaceFlowTabs
       phases={phases}
@@ -56,7 +36,6 @@ export default function CrdSubspaceCalloutsPage() {
       canEditFlow={canEditFlow}
       canAddPost={canAddPost && phases.length > 0}
       editFlowHref={editFlowHref}
-      flowAdminSlot={flowAdminSlot}
       onAddPostClick={() => setCreateOpen(true)}
       mobileMenuOpen={mobileMenu.open}
       onMobileMenuOpenChange={mobileMenu.onOpenChange}

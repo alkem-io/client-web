@@ -21,13 +21,6 @@ export type SubspaceFlowTabsProps = {
   canAddPost?: boolean;
   editFlowHref?: string;
   onEditFlowClick?: () => void;
-  /**
-   * Admin slot rendered in place of the default edit-flow icon button.
-   * When provided, takes priority over `editFlowHref` / `onEditFlowClick`
-   * and lets the consumer inject e.g. a dropdown menu (`SubspaceFlowAdminMenu`).
-   * Still gated by `canEditFlow`.
-   */
-  flowAdminSlot?: ReactNode;
   onAddPostClick?: () => void;
   /** Controlled drawer open state for the mobile hamburger menu. */
   mobileMenuOpen?: boolean;
@@ -53,7 +46,6 @@ export function SubspaceFlowTabs({
   canAddPost,
   editFlowHref,
   onEditFlowClick,
-  flowAdminSlot,
   onAddPostClick,
   mobileMenuOpen,
   onMobileMenuOpenChange,
@@ -102,7 +94,6 @@ export function SubspaceFlowTabs({
       canAddPost={canAddPost}
       editFlowHref={editFlowHref}
       onEditFlowClick={onEditFlowClick}
-      flowAdminSlot={flowAdminSlot}
       onAddPostClick={onAddPostClick}
       className={className}
     />
@@ -121,7 +112,6 @@ function DesktopFlowStrip({
   canAddPost,
   editFlowHref,
   onEditFlowClick,
-  flowAdminSlot,
   onAddPostClick,
   className,
 }: {
@@ -132,7 +122,6 @@ function DesktopFlowStrip({
   canAddPost?: boolean;
   editFlowHref?: string;
   onEditFlowClick?: () => void;
-  flowAdminSlot?: ReactNode;
   onAddPostClick?: () => void;
   className?: string;
 }) {
@@ -146,9 +135,7 @@ function DesktopFlowStrip({
   return (
     <div className={cn('flex items-center gap-4', className)}>
       {canEditFlow &&
-        (flowAdminSlot ? (
-          flowAdminSlot
-        ) : editFlowHref ? (
+        (editFlowHref ? (
           <Button
             variant="ghost"
             size="icon"

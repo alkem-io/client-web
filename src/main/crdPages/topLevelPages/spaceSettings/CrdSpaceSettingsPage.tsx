@@ -159,6 +159,7 @@ export default function CrdSpaceSettingsPage() {
     onColumnSaved: (columnId, title, description) => {
       layout.markColumnSaved(columnId, title, description);
     },
+    onActivePhaseChanged: layout.markCurrentPhaseChanged,
     onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
@@ -186,6 +187,11 @@ export default function CrdSpaceSettingsPage() {
   }, [guard, layout.isDirty, applicationForm.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  // Drives the "Loading new flow…" overlay on the Layout columns container
+  // while the Replace-innovation-flow mutation + InnovationFlowSettings
+  // refetch are in flight. Set/cleared by `LayoutReplaceFlowConnector` via
+  // its `onImportingChange` callback.
+  const [isReplacingFlow, setIsReplacingFlow] = useState(false);
 
   // Member settings dialog state — owns the active subject so the dialog can be
   // re-mounted instantly when the admin switches between rows. The Remove flow
@@ -296,6 +302,7 @@ export default function CrdSpaceSettingsPage() {
                 postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
+                onReorderColumns={layout.onReorderColumns}
                 onRenameColumn={layout.onRenameColumn}
                 onMoveToColumn={layout.onMoveToColumn}
                 onViewPost={calloutId => {
@@ -310,7 +317,16 @@ export default function CrdSpaceSettingsPage() {
                 onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
-                headerActionsSlot={<LayoutReplaceFlowConnector collaborationId={layout.collaborationId} />}
+                isReplacingFlow={isReplacingFlow}
+                headerActionsSlot={
+                  level !== 'L0' ? (
+                    <LayoutReplaceFlowConnector
+                      collaborationId={layout.collaborationId}
+                      onApplyComplete={layout.reseedFromServer}
+                      onImportingChange={setIsReplacingFlow}
+                    />
+                  ) : undefined
+                }
               />
             )}
             {activeTab === 'community' && (

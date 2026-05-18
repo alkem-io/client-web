@@ -53,6 +53,7 @@
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
+      "drag": "Ziehen, um die Phase neu zu ordnen",
       "empty": "Noch keine Callouts in dieser Spalte.",
       "activePhase": {
         "set": "Als aktive Phase markieren",
@@ -100,7 +101,8 @@
       }
     },
     "replaceFlow": {
-      "button": "Innovationsfluss ersetzen"
+      "button": "Innovationsfluss ersetzen",
+      "loading": "Neuer Fluss wird geladen…"
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",

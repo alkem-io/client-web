@@ -17,13 +17,6 @@
     "connectorAlt": "Nächste Phase",
     "menu": "Menü"
   },
-  "flowAdmin": {
-    "trigger": "Innovationsfluss verwalten",
-    "setCurrentState": "Aktuellen Status setzen",
-    "currentStateMarker": "(aktuell)",
-    "replaceFlow": "Innovationsfluss ersetzen…",
-    "editLayout": "Layout des Flusses bearbeiten"
-  },
   "sidebar": {
     "about": "Über diesen SubSpace",
     "lead": "Lead",

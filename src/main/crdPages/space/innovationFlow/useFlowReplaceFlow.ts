@@ -20,6 +20,14 @@ import type { ImportFlowOptions } from '@/domain/collaboration/InnovationFlow/In
  */
 export type UseFlowReplaceFlowOptions = {
   collaborationId: string | undefined;
+  /**
+   * Called after the replace-flow mutation succeeds. The parent should use
+   * this to discard any local buffer derived from the old InnovationFlowSettings
+   * data so the UI re-seeds from the refetched server state. Without it, callers
+   * that buffer flow state locally would keep showing the pre-mutation phases
+   * until a page reload.
+   */
+  onApplyComplete?: () => void;
 };
 
 export type FlowReplaceFlowState = {
@@ -41,7 +49,10 @@ export type FlowReplaceFlowState = {
   onApplyConfirm: (options: ImportFlowOptions) => Promise<void>;
 };
 
-export function useFlowReplaceFlow({ collaborationId }: UseFlowReplaceFlowOptions): FlowReplaceFlowState {
+export function useFlowReplaceFlow({
+  collaborationId,
+  onApplyComplete,
+}: UseFlowReplaceFlowOptions): FlowReplaceFlowState {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>();
   const [importing, setImporting] = useState(false);
@@ -54,19 +65,27 @@ export function useFlowReplaceFlow({ collaborationId }: UseFlowReplaceFlowOption
   };
 
   const onTemplateSelected = async (template: Identifiable) => {
+    // Keep both the Import library + Preview dialogs open behind the Apply
+    // dialog so the user can dismiss them one at a time to walk back through
+    // the flow. ImportTemplatesDialog must be passed `keepPreviewOnSelect`
+    // so it doesn't auto-close the preview after this callback returns.
     setSelectedTemplateId(template.id);
-    setImportDialogOpen(false);
   };
 
   const onApplyDialogClose = () => {
+    // Cancel / X on the Apply dialog only dismisses the Apply layer; the
+    // Preview + Library remain so the admin can pick another template.
     setSelectedTemplateId(undefined);
   };
 
   const onApplyConfirm = async (options: ImportFlowOptions) => {
     if (!selectedTemplateId || !collaborationId) return;
     const templateId = selectedTemplateId;
-    // Close dialogs immediately and surface loading on the trigger.
+    // Successful apply collapses the whole 3-dialog chain — Apply (this
+    // dialog) + Preview + Library. The preview's internal state is reset by
+    // ImportTemplatesDialog's `open=false` effect.
     setSelectedTemplateId(undefined);
+    setImportDialogOpen(false);
     setImporting(true);
     try {
       await updateCollaborationFromSpaceTemplate({
@@ -76,12 +95,18 @@ export function useFlowReplaceFlow({ collaborationId }: UseFlowReplaceFlowOption
           addCallouts: options.addCallouts,
           deleteExistingCallouts: options.deleteExistingCallouts,
         },
+        // `awaitRefetchQueries` keeps `importing` true until the refetched
+        // InnovationFlowSettings result has landed in Apollo's cache, so when
+        // `onApplyComplete` discards the local snapshot the seed effect picks
+        // up the new server state on its next render rather than the stale one.
+        awaitRefetchQueries: true,
         refetchQueries: [
           refetchInnovationFlowDetailsQuery({ collaborationId }),
           'InnovationFlowSettings',
           'CalloutsOnCalloutsSetUsingClassification',
         ],
       });
+      onApplyComplete?.();
     } catch (err) {
       logError(new Error('Replace innovation flow failed', { cause: err as Error }));
     } finally {

@@ -53,6 +53,7 @@
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
+      "drag": "Arrastra para reordenar la fase",
       "empty": "Aún no hay callouts en esta columna.",
       "activePhase": {
         "set": "Marcar como fase activa",
@@ -100,7 +101,8 @@
       }
     },
     "replaceFlow": {
-      "button": "Reemplazar flujo de innovación"
+      "button": "Reemplazar flujo de innovación",
+      "loading": "Cargando nuevo flujo…"
     },
     "row": {
       "drag": "Arrastra para reordenar",
