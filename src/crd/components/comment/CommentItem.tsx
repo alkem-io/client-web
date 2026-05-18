@@ -62,10 +62,24 @@ export function CommentItem({
   return (
     <div className={cn('group/comment space-y-1.5', isReply && 'ml-6 md:ml-10')}>
       <div className="flex gap-3">
-        <Avatar className="h-8 w-8 shrink-0">
-          {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
-          <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
-        </Avatar>
+        {comment.author.profileUrl ? (
+          <a
+            href={comment.author.profileUrl}
+            onClick={e => e.stopPropagation()}
+            aria-label={comment.author.name}
+            className="relative z-10 block shrink-0 self-start rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Avatar className="h-8 w-8">
+              {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
+              <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+          </a>
+        ) : (
+          <Avatar className="h-8 w-8 shrink-0">
+            {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
+            <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+        )}
 
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className={cn(isLongComment ? 'w-full' : 'w-fit max-w-[min(460px,100%)]')}>
