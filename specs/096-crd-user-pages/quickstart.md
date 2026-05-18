@@ -19,14 +19,14 @@ pnpm start              # http://localhost:3001
 Once the dev server is up, enable CRD in the browser console:
 
 ```js
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 ```
 
 To toggle off:
 
 ```js
-localStorage.removeItem('alkemio-crd-enabled');
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
@@ -161,7 +161,7 @@ For each block below, toggle CRD on, sign in as a regular user, then sign in as 
 
 **Toggle**
 
-- [ ] With CRD off (`localStorage.removeItem('alkemio-crd-enabled')`): every URL above renders the existing MUI page unchanged for all three actor types.
+- [ ] With CRD off (`localStorage.setItem('alkemio-design-version', '1')`): every URL above renders the existing MUI page unchanged for all three actor types.
 
 ---
 

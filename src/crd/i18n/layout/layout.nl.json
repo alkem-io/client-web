@@ -6,6 +6,7 @@
     "messages": "Berichten",
     "notifications": "Meldingen",
     "unreadNotifications": "{{count}} ongelezen meldingen",
+    "unreadMessages": "{{count}} ongelezen berichten",
     "spaces": "Ruimtes",
     "platformNavigation": "Platformnavigatie",
     "myAccount": "Mijn account",
@@ -20,7 +21,10 @@
     "changeLanguage": "Taal wijzigen",
     "getHelp": "Hulp krijgen",
     "showGrid": "Raster tonen",
-    "hideGrid": "Raster verbergen"
+    "hideGrid": "Raster verbergen",
+    "designVersion": {
+      "label": "Nieuw ontwerp (preview)"
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

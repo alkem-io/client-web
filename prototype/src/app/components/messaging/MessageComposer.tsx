@@ -80,9 +80,8 @@ export function MessageComposer({
         >
           <div className="flex-1 min-w-0">
             <span
+              className="text-caption font-semibold"
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
                 color: "var(--primary)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -90,12 +89,10 @@ export function MessageComposer({
               {replyTo.senderName}
             </span>
             <p
-              className="truncate"
+              className="truncate text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 margin: 0,
-                lineHeight: 1.4,
                 fontFamily: "'Inter', sans-serif",
               }}
             >
@@ -168,13 +165,10 @@ export function MessageComposer({
             onFocus={() => setShowToolbar(true)}
             placeholder={placeholder}
             rows={1}
-            className="w-full resize-none outline-none bg-transparent"
+            className="w-full resize-none outline-none bg-transparent text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--foreground)",
               fontFamily: "'Inter', sans-serif",
-              fontWeight: "var(--font-weight-normal)" as any,
-              lineHeight: 1.5,
               padding: "8px 0",
               maxHeight: 120,
             }}

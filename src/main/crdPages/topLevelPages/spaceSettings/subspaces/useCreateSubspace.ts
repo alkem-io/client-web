@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
   refetchSubspacesInSpaceQuery,
   useDefaultVisualTypeConstraintsQuery,
-  useSpaceContentTemplatesOnSpaceQuery,
   useTemplateContentLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -12,10 +11,21 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import type {
   CreateSubspaceFieldErrors,
   CreateSubspaceFormValues,
-  CreateSubspaceTemplateChoice,
 } from '@/crd/components/space/settings/CreateSubspaceDialog';
+import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
+import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { resizeImageToConstraints, type VisualConstraints } from './resizeImageToConstraints';
+
+export type UseCreateSubspaceOptions = {
+  /** The owning account id — enables the Account source section in the template picker. */
+  accountId?: string;
+  /** The space's templates set id — enables the Space source section in the template picker. */
+  templatesSetId?: string;
+  /** The space's configured default subspace template — pre-selected when the dialog opens. */
+  defaultTemplateId?: string;
+};
 
 export type UseCreateSubspaceResult = {
   open: boolean;
@@ -23,8 +33,16 @@ export type UseCreateSubspaceResult = {
   closeDialog: () => void;
   values: CreateSubspaceFormValues;
   errors: CreateSubspaceFieldErrors;
-  templates: CreateSubspaceTemplateChoice[];
-  templatesLoading: boolean;
+  /** Props for the shared `TemplatePicker` (`mode: 'select'`) — the consumer renders `<TemplatePicker {...picker} />`. */
+  picker: TemplatePickerSelectProps;
+  onOpenTemplatePicker: () => void;
+  onClearTemplate: () => void;
+  selectedTemplateName: string | undefined;
+  selectedTemplateContent: TemplateContent | undefined;
+  selectedTemplateLoading: boolean;
+  overwriteConfirmOpen: boolean;
+  onConfirmOverwriteTemplate: () => void;
+  onCancelOverwriteTemplate: () => void;
   submitting: boolean;
   canSubmit: boolean;
   avatarConstraints: VisualConstraints | null;
@@ -47,21 +65,37 @@ const EMPTY_VALUES: CreateSubspaceFormValues = {
  * Drives the CRD CreateSubspaceDialog. Matches the MUI `useSubspaceCreation`
  * data flow (same underlying mutation + visual upload pipeline) but without
  * Formik — state is held locally and validated via yup on submit.
+ *
+ * The Space-template selector is the shared {@link useTemplatePicker} (`mode: 'select'`,
+ * `allowedTypes: ['space']`). Picking a template re-fetches its content, renders a
+ * preview, and pre-fills the form's text fields — guarded by an overwrite-confirm
+ * dialog when the form already holds user data. The space's configured default
+ * subspace template (if any) is pre-selected when the dialog opens.
  */
-export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
+export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOptions = {}): UseCreateSubspaceResult {
+  const { accountId, templatesSetId, defaultTemplateId } = options;
   const { t } = useTranslation('crd-spaceSettings');
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<CreateSubspaceFormValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<CreateSubspaceFieldErrors>({});
+
+  const [selectedTemplateName, setSelectedTemplateName] = useState<string | undefined>(undefined);
+  const [selectedTemplateContent, setSelectedTemplateContent] = useState<TemplateContent | undefined>(undefined);
+  const [selectedTemplateLoading, setSelectedTemplateLoading] = useState(false);
+  // The picker's `selectedTemplateId` we've already reconciled into form state — guards the effect below.
+  const [appliedTemplateId, setAppliedTemplateId] = useState<string | null>(null);
+  const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
+  const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
 
   const { createSubspace, loading: submitting } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
     awaitRefetchQueries: true,
   });
 
-  const { data: templatesData, loading: templatesLoading } = useSpaceContentTemplatesOnSpaceQuery({
-    variables: { spaceId },
-    skip: !spaceId || !open,
+  const templatePicker = useTemplatePicker({
+    allowedTypes: ['space'],
+    spaceTemplatesSetId: templatesSetId,
+    accountId,
   });
 
   const { data: avatarConstraintsData } = useDefaultVisualTypeConstraintsQuery({
@@ -83,12 +117,6 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
     : null;
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
-
-  const templates =
-    templatesData?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(tmpl => ({
-      id: tmpl.id,
-      name: tmpl.profile.displayName,
-    })) ?? [];
 
   // Messages are keys resolved via t() in `validate()` so yup never carries
   // user-visible English literals.
@@ -134,6 +162,100 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
 
   const isValid = values.displayName.trim().length >= 3 && Object.keys(validate()).length === 0;
 
+  const hasUserContent = () =>
+    values.displayName.trim().length > 0 ||
+    values.tagline.trim().length > 0 ||
+    values.description.trim().length > 0 ||
+    values.tags.length > 0 ||
+    values.avatarFile !== null ||
+    values.cardBannerFile !== null;
+
+  const clearSelectedTemplate = () => {
+    setSelectedTemplateName(undefined);
+    setSelectedTemplateContent(undefined);
+    setValues(prev => ({ ...prev, spaceTemplateId: '' }));
+  };
+
+  /**
+   * Fetch the chosen Space template's content: render its preview and pre-fill
+   * the form's text fields. Prefers the captured-space snapshot (`contentSpace`)
+   * for rich content, falling back to the template's own profile metadata when
+   * the snapshot fields are empty (templates created from thinly-populated
+   * subspaces often have blank tagline/description/tags on the snapshot).
+   */
+  const applyTemplate = async (templateId: string) => {
+    setSelectedTemplateLoading(true);
+    try {
+      const { data } = await getTemplateContent({ variables: { templateId, includeSpace: true } });
+      const template = data?.lookup.template;
+      if (!template) return;
+      setSelectedTemplateName(template.profile.displayName);
+      setSelectedTemplateContent(mapTemplateContent(template, 'space'));
+
+      const contentProfile = template.contentSpace?.about?.profile;
+      const templateProfile = template.profile;
+      const contentTagset =
+        contentProfile?.tagsets?.find(ts => ts.name === 'default' || ts.type === 'FREEFORM') ??
+        contentProfile?.tagsets?.[0];
+      const contentTags = contentTagset?.tags ?? [];
+      const templateTags = templateProfile?.defaultTagset?.tags ?? [];
+
+      const displayName = contentProfile?.displayName || templateProfile?.displayName || '';
+      const tagline = contentProfile?.tagline || '';
+      const description = contentProfile?.description || templateProfile?.description || '';
+      const tags = contentTags.length > 0 ? contentTags : templateTags;
+
+      setValues(prev => ({
+        ...prev,
+        spaceTemplateId: templateId,
+        displayName: displayName || prev.displayName,
+        tagline: tagline || prev.tagline,
+        description: description || prev.description,
+        tags: tags.length > 0 ? tags : prev.tags,
+      }));
+      setErrors({});
+    } finally {
+      setSelectedTemplateLoading(false);
+    }
+  };
+
+  // React to the picker's selection. A null selection (the picker's "No
+  // template" footer button, and the picker's initial state) is ignored here —
+  // the dialog's own "use blank" affordance clears the selection instead.
+  const pickerSelectedId = templatePicker.selectedTemplateId;
+  useEffect(() => {
+    if (!open || pickerSelectedId === null) return;
+    if (pickerSelectedId === appliedTemplateId || pickerSelectedId === pendingTemplateId) return;
+    if (hasUserContent()) {
+      setPendingTemplateId(pickerSelectedId);
+      setOverwriteConfirmOpen(true);
+    } else {
+      setAppliedTemplateId(pickerSelectedId);
+      void applyTemplate(pickerSelectedId);
+    }
+  }, [open, pickerSelectedId, appliedTemplateId, pendingTemplateId, hasUserContent, applyTemplate]);
+
+  const onConfirmOverwriteTemplate = () => {
+    if (pendingTemplateId === null) return;
+    const id = pendingTemplateId;
+    setAppliedTemplateId(id);
+    setPendingTemplateId(null);
+    setOverwriteConfirmOpen(false);
+    void applyTemplate(id);
+  };
+
+  const onCancelOverwriteTemplate = () => {
+    templatePicker.clearSelection();
+    setPendingTemplateId(null);
+    setOverwriteConfirmOpen(false);
+  };
+
+  const onClearTemplate = () => {
+    templatePicker.clearSelection();
+    setAppliedTemplateId(null);
+    clearSelectedTemplate();
+  };
+
   const applyImageResize = async (
     key: 'avatarFile' | 'cardBannerFile',
     source: File,
@@ -174,54 +296,27 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
     if ('cardBannerFile' in patch && patch.cardBannerFile instanceof File) {
       void applyImageResize('cardBannerFile', patch.cardBannerFile, cardBannerConstraints);
     }
-
-    // When the user picks a template, fetch its content and pre-fill the form's
-    // text fields. Picking "No template" (empty id) is left alone — we don't
-    // reset a form the user may have already edited.
-    if (patch.spaceTemplateId && patch.spaceTemplateId.length > 0) {
-      const templateId = patch.spaceTemplateId;
-      void getTemplateContent({ variables: { templateId, includeSpace: true } }).then(({ data }) => {
-        const template = data?.lookup.template;
-        if (!template) return;
-        // Prefer the snapshot of the original space (contentSpace) for rich content,
-        // but fall back to the template's own profile metadata when the snapshot
-        // fields are empty — templates created from thinly-populated subspaces
-        // often have blank tagline/description/tags on the snapshot, and the
-        // template-level profile is what the user actually saw when choosing it.
-        const contentProfile = template.contentSpace?.about?.profile;
-        const templateProfile = template.profile;
-
-        const contentTagset =
-          contentProfile?.tagsets?.find(ts => ts.name === 'default' || ts.type === 'FREEFORM') ??
-          contentProfile?.tagsets?.[0];
-        const contentTags = contentTagset?.tags ?? [];
-        const templateTags = templateProfile?.defaultTagset?.tags ?? [];
-
-        const displayName = contentProfile?.displayName || templateProfile?.displayName || '';
-        const tagline = contentProfile?.tagline || '';
-        const description = contentProfile?.description || templateProfile?.description || '';
-        const tags = contentTags.length > 0 ? contentTags : templateTags;
-
-        setValues(prev => ({
-          ...prev,
-          displayName: displayName || prev.displayName,
-          tagline: tagline || prev.tagline,
-          description: description || prev.description,
-          tags: tags.length > 0 ? tags : prev.tags,
-        }));
-        // Drop any stale errors on the pre-filled fields.
-        setErrors({});
-      });
-    }
   };
 
   const reset = () => {
     setValues(EMPTY_VALUES);
     setErrors({});
+    setSelectedTemplateName(undefined);
+    setSelectedTemplateContent(undefined);
+    setPendingTemplateId(null);
+    setOverwriteConfirmOpen(false);
+    templatePicker.clearSelection();
   };
 
   const openDialog = () => {
     reset();
+    if (defaultTemplateId) {
+      setAppliedTemplateId(defaultTemplateId);
+      setValues(prev => ({ ...prev, spaceTemplateId: defaultTemplateId }));
+      void applyTemplate(defaultTemplateId);
+    } else {
+      setAppliedTemplateId(null);
+    }
     setOpen(true);
   };
 
@@ -264,8 +359,15 @@ export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
     closeDialog,
     values,
     errors,
-    templates,
-    templatesLoading,
+    picker: templatePicker.pickerProps,
+    onOpenTemplatePicker: templatePicker.openPicker,
+    onClearTemplate,
+    selectedTemplateName,
+    selectedTemplateContent,
+    selectedTemplateLoading,
+    overwriteConfirmOpen,
+    onConfirmOverwriteTemplate,
+    onCancelOverwriteTemplate,
     submitting,
     canSubmit: isValid && !submitting,
     avatarConstraints,

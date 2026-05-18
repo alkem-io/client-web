@@ -10,13 +10,19 @@ import type { ColumnMenuActions, LayoutColumnId } from '@/crd/components/space/s
 
 export type UseColumnMenuOptions = {
   innovationFlowId: string;
-  availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
+  /** Open the shared Callout-template picker for the given flow state — the page hosts the picker. */
+  onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** All callouts with their current flowState tag + tagset ID, needed for rename cascade. */
   callouts: ReadonlyArray<{ id: string; flowStateTagsetId: string; currentStateName: string }>;
   /** Map column ID → current displayName, needed to find the old name during rename. */
   columnNames: ReadonlyArray<{ id: string; title: string }>;
   /** Called after a successful save to update the local buffer/snapshot. */
   onColumnSaved?: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Optimistic mirror for "Mark as active phase" — fired BEFORE the mutation
+   * so the column kebab menu reflects the new active state immediately.
+   */
+  onActivePhaseChanged?: (columnId: LayoutColumnId) => void;
   /**
    * Phase-delete handler from the layout data hook. Provided only at L1/L2;
    * passed through to `ColumnMenuActions.onDeletePhase` when defined and the
@@ -30,10 +36,11 @@ export type UseColumnMenuOptions = {
 
 export function useColumnMenu({
   innovationFlowId,
-  availablePostTemplates,
+  onOpenDefaultCalloutTemplatePicker,
   callouts,
   columnNames,
   onColumnSaved,
+  onActivePhaseChanged,
   onDeleteState,
   columnCount,
   minimumNumberOfStates,
@@ -47,6 +54,11 @@ export function useColumnMenu({
 
   const onChangeActivePhase = (columnId: LayoutColumnId) => {
     if (!innovationFlowId) return;
+    // Optimistic UI: flip the active-phase marker locally first so the kebab
+    // menu reflects the new state immediately. The server mutation reconciles
+    // asynchronously; if it fails the next InnovationFlowSettings refetch (or
+    // a page reload) will restore the correct state.
+    onActivePhaseChanged?.(columnId);
     startTransition(() => {
       void updateCurrentState({
         variables: { innovationFlowId, currentStateId: columnId },
@@ -54,7 +66,7 @@ export function useColumnMenu({
     });
   };
 
-  const onSetAsDefaultPostTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
+  const onSetAsDefaultCalloutTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
     startTransition(() => {
       if (templateId) {
         void setDefaultTemplate({ variables: { flowStateId: columnId, templateId } });
@@ -127,9 +139,9 @@ export function useColumnMenu({
 
   return {
     onChangeActivePhase,
-    onSetAsDefaultPostTemplate,
+    onSetAsDefaultCalloutTemplate,
+    onOpenDefaultCalloutTemplatePicker,
     onSaveColumnDetails,
-    availablePostTemplates,
     onDeletePhase,
   };
 }

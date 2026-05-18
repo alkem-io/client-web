@@ -15,6 +15,15 @@ type MarkdownEditorProps = {
   maxLength?: number;
   disabled?: boolean;
   className?: string;
+  /** Upload callback. When provided, the image toolbar dialog shows an upload button.
+   *  Must resolve to a public URL for the uploaded file. */
+  onImageUpload?: (file: File) => Promise<string>;
+  /** Allowed iframe origins for the embed dialog. When unset/empty, no origin check is performed. */
+  iframeAllowedUrls?: string[];
+  /** Called with a user-facing error message when image / embed insertion fails validation. */
+  onError?: (message: string) => void;
+  /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
+  hideImageOptions?: boolean;
 };
 
 export function MarkdownEditor(props: MarkdownEditorProps) {
@@ -26,13 +35,26 @@ export function MarkdownEditor(props: MarkdownEditorProps) {
   );
 }
 
-function MarkdownEditorLazy({ value, onChange, placeholder, maxLength, disabled, className }: MarkdownEditorProps) {
+function MarkdownEditorLazy({
+  value,
+  onChange,
+  placeholder,
+  maxLength,
+  disabled,
+  className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+  hideImageOptions,
+}: MarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
   const editorOptions = buildCrdMarkdownExtensions({
     collaborative: false,
     disabled,
     ariaLabel: placeholder ?? t('editor.toolbar'),
+    onImageUpload,
+    onError,
   });
 
   const { editor } = useMarkdownEditorState({
@@ -54,7 +76,14 @@ function MarkdownEditorLazy({ value, onChange, placeholder, maxLength, disabled,
         className
       )}
     >
-      <MarkdownToolbar editor={editor} className="border-b border-border bg-muted/30" />
+      <MarkdownToolbar
+        editor={editor}
+        className="border-b border-border bg-muted/30"
+        onImageUpload={onImageUpload}
+        iframeAllowedUrls={iframeAllowedUrls}
+        onError={onError}
+        hideImageOptions={hideImageOptions}
+      />
 
       <EditorContent
         editor={editor}

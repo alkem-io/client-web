@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router";
-import {
-  User, Layout, CreditCard, Users, Bell, Settings,
+import { 
+  User, Layout, CreditCard, Users, Bell, Settings, 
   Camera, Plus, Link as LinkIcon, Github, Twitter, Linkedin, Mail, MapPin, Check, Loader2, Save, Undo2
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -37,14 +37,6 @@ export default function UserProfileSettingsPage() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormData] = useState(formData);
-
-  const hasChanges = JSON.stringify(formData) !== JSON.stringify(initialFormData);
-
-  const handleDiscard = () => {
-    setFormData(initialFormData);
-    toast.info("Changes discarded");
-  };
 
   // Navigation Tabs - Consistent with Account Page
   const tabs = [
@@ -88,10 +80,10 @@ export default function UserProfileSettingsPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
 
@@ -101,7 +93,7 @@ export default function UserProfileSettingsPage() {
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -122,32 +114,32 @@ export default function UserProfileSettingsPage() {
           <div className="col-span-12 lg:col-start-2 lg:col-span-10">
         {/* Removed max-w-5xl mx-auto wrapper to fix spacing issue on the left */}
         <div className="flex flex-col lg:flex-row gap-12 items-start">
-
+          
           {/* Left Column: Profile Form */}
           <div className="flex-1 space-y-8 min-w-0 max-w-3xl">
-
+            
             {/* Identity Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <User className="w-5 h-5 text-primary" />
                 Identity
               </h3>
-
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  <Input 
+                    id="firstName" 
+                    value={formData.firstName} 
+                    onChange={(e) => setFormData({...formData, firstName: e.target.value})} 
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  <Input 
+                    id="lastName" 
+                    value={formData.lastName} 
+                    onChange={(e) => setFormData({...formData, lastName: e.target.value})} 
                   />
                 </div>
               </div>
@@ -157,11 +149,11 @@ export default function UserProfileSettingsPage() {
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      value={formData.email}
-                      readOnly
-                      className="pl-9 bg-muted/50 cursor-not-allowed"
+                    <Input 
+                      id="email" 
+                      value={formData.email} 
+                      readOnly 
+                      className="pl-9 bg-muted/50 cursor-not-allowed" 
                     />
                   </div>
                   <p className="text-[10px] text-muted-foreground">Contact support to change email.</p>
@@ -170,10 +162,10 @@ export default function UserProfileSettingsPage() {
                   <Label htmlFor="organization">Organization</Label>
                   <div className="relative">
                     <Users className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="organization"
-                      value={formData.organization}
-                      onChange={(e) => setFormData({...formData, organization: e.target.value})}
+                    <Input 
+                      id="organization" 
+                      value={formData.organization} 
+                      onChange={(e) => setFormData({...formData, organization: e.target.value})} 
                       className="pl-9"
                     />
                   </div>
@@ -183,15 +175,15 @@ export default function UserProfileSettingsPage() {
 
             {/* Bio Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <Layout className="w-5 h-5 text-primary" />
                 About You
               </h3>
 
               <div className="space-y-2">
                 <Label htmlFor="tagline">Tagline</Label>
-                <Input
-                  id="tagline"
+                <Input 
+                  id="tagline" 
                   placeholder="Brief description (e.g. Designer at Acme)"
                   value={formData.tagline}
                   onChange={(e) => setFormData({...formData, tagline: e.target.value})}
@@ -203,10 +195,10 @@ export default function UserProfileSettingsPage() {
                 <Label htmlFor="location">City / Location</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="location"
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  <Input 
+                    id="location" 
+                    value={formData.city} 
+                    onChange={(e) => setFormData({...formData, city: e.target.value})} 
                     className="pl-9"
                   />
                 </div>
@@ -215,7 +207,7 @@ export default function UserProfileSettingsPage() {
               <div className="space-y-2">
                 <Label>Bio</Label>
                 <div className="prose-editor">
-                  <ReactQuill
+                  <ReactQuill 
                     theme="snow"
                     value={formData.bio}
                     onChange={(content) => setFormData({...formData, bio: content})}
@@ -229,7 +221,7 @@ export default function UserProfileSettingsPage() {
 
             {/* Social Links Section */}
             <section className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+              <h3 className="text-subsection-title flex items-center gap-2 border-b pb-2">
                 <LinkIcon className="w-5 h-5 text-primary" />
                 Social Links
               </h3>
@@ -239,8 +231,8 @@ export default function UserProfileSettingsPage() {
                   <div className="w-10 h-10 rounded-full bg-[#0077b5]/10 flex items-center justify-center text-[#0077b5] shrink-0">
                     <Linkedin className="w-5 h-5" />
                   </div>
-                  <Input
-                    placeholder="LinkedIn Profile URL"
+                  <Input 
+                    placeholder="LinkedIn Profile URL" 
                     value={formData.links.linkedin}
                     onChange={(e) => setFormData({...formData, links: { ...formData.links, linkedin: e.target.value }})}
                   />
@@ -250,8 +242,8 @@ export default function UserProfileSettingsPage() {
                   <div className="w-10 h-10 rounded-full bg-info/10 flex items-center justify-center text-info shrink-0">
                     <Twitter className="w-5 h-5" />
                   </div>
-                  <Input
-                    placeholder="Twitter / X Profile URL"
+                  <Input 
+                    placeholder="Twitter / X Profile URL" 
                     value={formData.links.twitter}
                     onChange={(e) => setFormData({...formData, links: { ...formData.links, twitter: e.target.value }})}
                   />
@@ -261,8 +253,8 @@ export default function UserProfileSettingsPage() {
                   <div className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center text-foreground shrink-0">
                     <Github className="w-5 h-5" />
                   </div>
-                  <Input
-                    placeholder="GitHub Profile URL"
+                  <Input 
+                    placeholder="GitHub Profile URL" 
                     value={formData.links.github}
                     onChange={(e) => setFormData({...formData, links: { ...formData.links, github: e.target.value }})}
                   />
@@ -272,8 +264,8 @@ export default function UserProfileSettingsPage() {
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <LinkIcon className="w-5 h-5" />
                   </div>
-                  <Input
-                    placeholder="Personal Website / Portfolio"
+                  <Input 
+                    placeholder="Personal Website / Portfolio" 
                     value={formData.links.website}
                     onChange={(e) => setFormData({...formData, links: { ...formData.links, website: e.target.value }})}
                   />
@@ -300,10 +292,10 @@ export default function UserProfileSettingsPage() {
                   <Undo2 className="w-4 h-4 mr-2" />
                   Discard Changes
                 </Button>
-                <Button
-                  size="lg"
-                  className="md:min-w-[200px]"
-                  onClick={handleSave}
+                <Button 
+                  size="lg" 
+                  className="md:min-w-[200px]" 
+                  onClick={handleSave} 
                   disabled={!hasChanges || isLoading}
                 >
                   {isLoading ? (
@@ -326,7 +318,7 @@ export default function UserProfileSettingsPage() {
           {/* Right Column: Profile Picture Preview */}
           <div className="hidden lg:block w-80 flex-shrink-0 sticky top-52">
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground">Profile Picture</h3>
+              <h3 className="text-body-emphasis text-muted-foreground">Profile Picture</h3>
               <div className="flex flex-col items-center text-center">
                 <div className="relative group mb-4">
                   <Avatar className="w-40 h-40 border-4 border-background shadow-lg text-4xl">
@@ -342,12 +334,12 @@ export default function UserProfileSettingsPage() {
                     <Camera className="w-5 h-5" />
                   </button>
                 </div>
-                <h2 className="text-lg font-bold">{formData.firstName} {formData.lastName}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{formData.tagline}</p>
+                <h2 className="text-subsection-title font-bold">{formData.firstName} {formData.lastName}</h2>
+                <p className="text-body text-muted-foreground mt-1">{formData.tagline}</p>
                 <Button variant="outline" size="sm" className="w-full mt-4">
                   Change Avatar
                 </Button>
-                <p className="text-xs text-muted-foreground mt-2 text-center px-2">
+                <p className="text-caption text-muted-foreground mt-2 text-center px-2">
                   Recommended: 400x400px. JPG, PNG or GIF.
                 </p>
               </div>

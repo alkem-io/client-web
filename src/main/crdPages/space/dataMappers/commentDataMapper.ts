@@ -1,22 +1,29 @@
+import type { TFunction } from 'i18next';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentData, CommentReaction } from '@/crd/components/comment/types';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
 type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization'>;
 
 type MapRoomToCommentDataOptions = {
   currentUserId?: string;
+  /** `t` from `useTranslation()` (default `translation` namespace). Required —
+   *  the mapper now pre-formats `timestamp` into a relative "X minutes ago"
+   *  string via `common.time.long.*` so the CRD component can render it
+   *  as-is. Pass `tMain` (typed against `translation`) from the consumer. */
+  t: TFunction;
 };
 
 export function mapRoomToCommentData(
   room: RoomWithMessages | undefined,
-  options: MapRoomToCommentDataOptions = {}
+  options: MapRoomToCommentDataOptions
 ): CommentData[] {
   if (!room) {
     return [];
   }
 
-  const { currentUserId } = options;
+  const { currentUserId, t } = options;
   const canDeleteAny = room.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
 
   const messageIds = new Set(room.messages.map(message => message.id));
@@ -31,14 +38,21 @@ export function mapRoomToCommentData(
         id: authorId ?? 'unknown',
         name: message.sender?.profile?.displayName ?? 'Unknown',
         avatarUrl: message.sender?.profile?.avatar?.uri,
+        profileUrl: message.sender?.profile?.url,
       },
       content: message.message,
-      timestamp: new Date(message.timestamp).toISOString(),
+      timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),
+      timestampMs: message.timestamp,
       parentId: message.threadID,
       reactions: mapReactions(message.reactions, currentUserId),
       canDelete,
     };
   });
+
+  // Track the raw epoch ms of each placeholder so we can compare ages with
+  // `message.timestamp` (also epoch ms). Comparing on `existing.timestamp`
+  // no longer works — it is now a pre-formatted display string, not a date.
+  const placeholderRawTimestamps = new Map<string, number>();
 
   const placeholders = room.messages.reduce<Record<string, CommentData>>((restored, message) => {
     const parentId = message.threadID;
@@ -48,7 +62,7 @@ export function mapRoomToCommentData(
     }
 
     const existing = restored[parentId];
-    const timestamp = new Date(message.timestamp).toISOString();
+    const formattedTimestamp = formatTimeElapsed(new Date(message.timestamp), t, 'long');
 
     if (!existing) {
       restored[parentId] = {
@@ -58,16 +72,20 @@ export function mapRoomToCommentData(
           name: 'Deleted user',
         },
         content: '',
-        timestamp,
+        timestamp: formattedTimestamp,
+        timestampMs: message.timestamp,
         reactions: [],
         canDelete: false,
         isDeleted: true,
       };
-    } else if (new Date(existing.timestamp).getTime() > message.timestamp) {
+      placeholderRawTimestamps.set(parentId, message.timestamp);
+    } else if ((placeholderRawTimestamps.get(parentId) ?? Number.POSITIVE_INFINITY) > message.timestamp) {
       restored[parentId] = {
         ...existing,
-        timestamp,
+        timestamp: formattedTimestamp,
+        timestampMs: message.timestamp,
       };
+      placeholderRawTimestamps.set(parentId, message.timestamp);
     }
 
     return restored;

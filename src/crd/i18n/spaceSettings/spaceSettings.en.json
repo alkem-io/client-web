@@ -53,16 +53,15 @@
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
+      "drag": "Drag to reorder phase",
       "empty": "No callouts in this column yet.",
       "activePhase": {
         "set": "Mark as active phase",
         "current": "Active phase (current)"
       },
-      "defaultPostTemplate": {
-        "label": "Default post template",
-        "header": "Pick a template",
-        "clear": "Clear default",
-        "none": "No templates available"
+      "defaultCalloutTemplate": {
+        "set": "Set default callout template…",
+        "clear": "Clear default callout template"
       },
       "editDetails": {
         "menuLabel": "Edit Details",
@@ -76,7 +75,15 @@
         "saving": "Saving…",
         "save": "Save"
       },
-      "deletePhase": "Delete phase"
+      "deletePhase": {
+        "menuLabel": "Delete phase",
+        "confirm": {
+          "title": "Delete this phase?",
+          "description": "Callouts currently tagged with this phase will lose the tag. This action cannot be undone.",
+          "confirm": "Delete phase",
+          "cancel": "Cancel"
+        }
+      }
     },
     "addPhase": {
       "button": "Add phase",
@@ -92,6 +99,11 @@
         "cancel": "Cancel",
         "confirm": "Add phase"
       }
+    },
+    "replaceFlow": {
+      "button": "Replace innovation flow",
+      "loading": "Loading new flow…",
+      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again."
     },
     "row": {
       "drag": "Drag to reorder",
@@ -245,6 +257,17 @@
       "description": "Establish rules and expectations for member behavior.",
       "hint": "Displayed to new members upon joining.",
       "placeholder": "Describe your space's code of conduct…",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Name your community guidelines",
+      "referencesLabel": "Related links",
+      "applyTemplate": "Use a template",
+      "saveAsTemplate": "Save as a template",
+      "applyConfirm": {
+        "title": "Replace the current guidelines?",
+        "description": "Applying a template overwrites the current title, body and links. This can't be undone.",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
       "save": "Save Guidelines",
       "saving": "Saving…"
     },
@@ -414,7 +437,18 @@
         "hint": "Optional — pick a subspace template to pre-fill content.",
         "loading": "Loading templates…",
         "placeholder": "Select a template (optional)",
-        "none": "No template"
+        "none": "No template",
+        "choose": "Choose a template",
+        "change": "Change",
+        "clear": "Use blank",
+        "selectedLabel": "Selected template",
+        "loadingPreview": "Loading template preview…",
+        "overwriteConfirm": {
+          "title": "Replace form contents?",
+          "description": "Applying this template will overwrite the name, tagline, description and tags you've already entered.",
+          "confirm": "Apply template",
+          "cancel": "Keep my changes"
+        }
       },
       "displayName": {
         "label": "Name",

@@ -3,19 +3,18 @@ import {
   useSpaceAboutDetailsQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
+import { getInitials } from '@/crd/lib/getInitials';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import {
-  mapMemberAvatars,
-  mapSpaceVisibility,
-  type SpaceVisibilityData,
-} from '../../space/dataMappers/spacePageDataMapper';
+import { mapSpaceVisibility, type SpaceVisibilityData } from '../../space/dataMappers/spacePageDataMapper';
 import {
   mapInnovationFlowPhases,
   mapSubspaceBanner,
@@ -46,11 +45,13 @@ export type CrdSubspacePageData = {
   /** Render data */
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
-  bannerAvatars: ReturnType<typeof mapMemberAvatars>;
   sidebar: SubspaceSidebarData;
+  /** Nested subspaces of the current subspace — fed into the sidebar widget. */
+  subspaces: Array<{ name: string; initials: string; href: string }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
+  innovationFlowId: string | undefined;
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
@@ -59,6 +60,7 @@ export type CrdSubspacePageData = {
   /** Permissions surfaced on the page */
   canRead: boolean;
   canUpdate: boolean;
+  canCreateSubspace: boolean;
 
   /** Apply / Join CTA — pass-through from useApplicationButton */
   applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
@@ -91,6 +93,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     skip: !collaborationId,
   });
   const flow = flowData?.lookup.collaboration?.innovationFlow;
+  const innovationFlowId = flow?.id;
   const phases = mapInnovationFlowPhases(flow?.states);
   const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
@@ -129,10 +132,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
   const banner = mapSubspaceBanner({
     subspaceId,
-    level: subspace.level,
     subspaceProfile,
-    parentSpaceId,
-    parentProfile,
+    levelZeroSpaceId,
+    levelZeroProfile,
   });
 
   const bannerActions = mapSubspaceHeaderActions({
@@ -142,8 +144,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
     videoCallUrl: videoCallUrl || undefined,
   });
 
-  const bannerAvatars = mapMemberAvatars(subspace.about.membership?.leadUsers);
-
   const sidebar = mapSubspaceSidebar({
     description: subspaceProfile.description,
     leadUsers: subspace.about.membership?.leadUsers,
@@ -151,6 +151,16 @@ export function useCrdSubspace(): CrdSubspacePageData {
     // Plan D13: hide section when none — keep undefined here, surface follow-up.
     virtualContributor: undefined,
   });
+
+  // Nested subspaces (L2s) shown by the sidebar widget. Reuses the same hook the
+  // L0 dashboard uses for its children list — it works for any space level.
+  const { dashboardNavigation } = useSpaceDashboardNavigation({ spaceId: subspaceId });
+  const subspaces =
+    dashboardNavigation?.children?.map(child => ({
+      name: child.displayName,
+      initials: getInitials(child.displayName),
+      href: child.url,
+    })) ?? [];
 
   const visibilityData = mapSpaceVisibility(visibility);
 
@@ -174,10 +184,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     banner,
     bannerActions,
-    bannerAvatars,
     sidebar,
+    subspaces,
     visibility: visibilityData,
 
+    innovationFlowId,
     phases,
     currentPhaseId,
     canEditFlow,
@@ -185,6 +196,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
+    // Spaces are capped at 3 levels (L0 → L1 → L2). An L2 cannot have children,
+    // so creation is offered only on L1 even if the backend grants the privilege.
+    canCreateSubspace: permissions.canCreateSubspace && subspace.level !== SpaceLevel.L2,
 
     applicationButtonProps,
     applicationLoading,

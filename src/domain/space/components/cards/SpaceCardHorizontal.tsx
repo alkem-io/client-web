@@ -112,8 +112,10 @@ const SpaceCardHorizontal = ({
             {indicator}
             <SpaceAvatar
               size={size}
-              // Use || instead of ?? here, because uri can be an empty string
-              src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
+              // Avatar position: read avatar only. Never fall back to cardBanner — the two fields
+              // have different aspect ratios and resolutions. `SpaceAvatar` itself handles the
+              // missing-avatar fallback via `getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)`.
+              src={space.about.profile.avatar?.uri}
               alt={space.about.profile.displayName}
               spaceId={space.id}
             />

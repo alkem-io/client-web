@@ -1,15 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
-import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
@@ -79,6 +86,7 @@ function LazyCalloutItemContent({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
+  const [initialPostId, setInitialPostId] = useState<string | undefined>();
   const [collaboraEditorOpen, setCollaboraEditorOpen] = useState(false);
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -89,8 +97,22 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
+  // Mirror MUI `CalloutView`: the description display mode is read from the
+  // closest space context (subspace if we're inside one, otherwise the parent
+  // space). `SubspaceContext` defaults `subspace.id` to `''` (not `undefined`)
+  // at the space root, so `||` — not `??` — is required to fall through to the
+  // space id; with `??` the empty string sticks, the settings query is skipped,
+  // and every callout wrongly defaults to Expanded regardless of the setting.
+  // `useCalloutDescriptionDisplayMode` returns `true` when the setting is
+  // "Collapsed"; the PostCard expects the inverse.
+  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id);
 
-  const postData = mapCalloutDetailsToPostCard(callout, t);
+  const postData = {
+    ...mapCalloutDetailsToPostCard(callout, t),
+    descriptionExpanded: !descriptionCollapsed,
+  };
 
   const moveActions = useCrdCalloutMoveActions({
     calloutsSetId,
@@ -98,9 +120,22 @@ function LazyCalloutItemContent({
     calloutId: callout.id,
   });
 
-  const openDialog = (contributionId?: string, memoId?: string) => {
+  // The second arg is the underlying entity id — memo id for memo contributions,
+  // post id for post contributions. The detail-dialog connector splits them by
+  // `contributionType` and uses each for the relevant overlay (memo edit,
+  // post edit pencil → CrdPostContributionDialog, etc.). Without `postId`
+  // plumbed through, the post-edit overlay would be gated on `postId &&
+  // postContributionId` and silently no-op.
+  const openDialog = (contributionId?: string, entityId?: string) => {
     setInitialContributionId(contributionId);
-    setInitialMemoId(memoId);
+    const contributionType = getCalloutContributionType(callout);
+    if (contributionType === CalloutContributionType.Post) {
+      setInitialPostId(entityId);
+      setInitialMemoId(undefined);
+    } else {
+      setInitialMemoId(entityId);
+      setInitialPostId(undefined);
+    }
     setDialogOpen(true);
   };
 
@@ -109,6 +144,7 @@ function LazyCalloutItemContent({
     if (!open) {
       setInitialContributionId(undefined);
       setInitialMemoId(undefined);
+      setInitialPostId(undefined);
     }
   };
 
@@ -160,10 +196,16 @@ function LazyCalloutItemContent({
       enabled: canEditMediaGallery && isMediaGalleryFraming,
     });
 
-  const contributionsEnabled = callout.settings.contribution.enabled;
+  // Gate the feed-level preview on the presence of `allowedTypes`, not on the
+  // `enabled` flag. Turning both Members/Admins switches off sets
+  // `enabled: false`, but the callout is still "a memo callout that collects
+  // memos" — the `Contributions (n)` header and any existing contributions
+  // must stay visible. The Add tile inside the preview is gated separately on
+  // `canCreateContribution`.
+  const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
 
-  const contributionsPreview = contributionsEnabled ? (
+  const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
       onShowAll={() => openDialog()}
@@ -248,6 +290,7 @@ function LazyCalloutItemContent({
         moveActions={moveActions}
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
+        initialPostId={initialPostId}
       />
 
       {collaboraDocumentId && (

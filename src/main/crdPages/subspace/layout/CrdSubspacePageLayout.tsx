@@ -1,15 +1,21 @@
 import { Layers, Layout as LayoutIcon } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
-import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { ShareDialog } from '@/crd/components/common/ShareDialog';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
+import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import {
   getVisibleSettingsTabs,
@@ -17,7 +23,10 @@ import {
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
@@ -44,7 +53,9 @@ export default function CrdSubspacePageLayout() {
   const { t } = useTranslation(['crd-spaceSettings', 'crd-subspace']);
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const createSubspace = useCreateSubspace(data.subspaceId ?? '');
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -96,6 +107,20 @@ export default function CrdSubspacePageLayout() {
 
   const editFlowHref = data.subspaceUrl ? `${data.subspaceUrl}/settings/layout` : undefined;
 
+  // Single source of truth for the create-subspace handler. Both the sidebar
+  // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
+  // call it; `data.canCreateSubspace` is the only privilege gate.
+  const handleCreateSubspace = data.canCreateSubspace
+    ? () => {
+        setMobileMenuOpen(false);
+        // Close the Subspaces (or any) quick-action dialog first. Leaving it
+        // open would stack two modal Radix dialogs whose focus traps fight each
+        // other, leaving the create form unresponsive.
+        setActiveDialog(null);
+        createSubspace.openDialog();
+      }
+    : undefined;
+
   const subspaceSidebar = (
     <SubspaceSidebar
       {...data.sidebar}
@@ -108,6 +133,16 @@ export default function CrdSubspacePageLayout() {
         setAboutOpen(true);
       }}
       onQuickActionClick={handleQuickAction}
+      subspaces={data.subspaces}
+      onShowAllSubspaces={() => {
+        setMobileMenuOpen(false);
+        setActiveDialog('subspaces');
+      }}
+      onSubspaceClick={href => {
+        setMobileMenuOpen(false);
+        navigate(href);
+      }}
+      onCreateSubspace={handleCreateSubspace}
     />
   );
 
@@ -133,11 +168,9 @@ export default function CrdSubspacePageLayout() {
     content: mobileMenuContent,
   };
 
-  const showApplyCta = !data.applicationButtonProps.isMember && !data.applicationLoading;
-
   if (isOnSettings) {
     return (
-      <>
+      <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
         {data.visibility.status !== 'active' && (
           <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
         )}
@@ -156,7 +189,7 @@ export default function CrdSubspacePageLayout() {
               />
             }
           />
-          <main className="flex-1 w-full px-6 md:px-8 py-8">
+          <main className="flex-1 w-full px-6 md:px-8 pb-8">
             <div className="grid grid-cols-12 gap-6 items-start">
               <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
                 <Suspense fallback={<LoadingSpinner />}>
@@ -166,15 +199,22 @@ export default function CrdSubspacePageLayout() {
             </div>
           </main>
         </div>
-      </>
+      </StorageConfigContextProvider>
     );
   }
 
+  // Transparent header + banner-under-header treatment is only safe on the
+  // active subspace home; suspended/archived shows a visibility notice that
+  // would collide with -mt-16, and `isOnSettings` is already a separate
+  // branch above with no banner image.
+  const enableBannerOverlay = data.visibility.status === 'active';
+
   return (
-    <>
+    <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
       {data.visibility.status !== 'active' && (
         <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
       )}
+      {enableBannerOverlay && <EnableBannerOverlay />}
 
       <div className="flex flex-col bg-background min-h-screen">
         <SubspaceHeader
@@ -182,34 +222,24 @@ export default function CrdSubspacePageLayout() {
           actions={{
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
+            onShareClick: () => setShareDialogOpen(true),
           }}
-          memberAvatars={data.bannerAvatars}
-          onMemberClick={() => setActiveDialog('community')}
+          overlayHeader={enableBannerOverlay}
         />
 
-        <main className="flex-1 w-full px-6 md:px-8 py-8">
+        <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
             {/* Left sidebar — cols 2-3, one col gap from left edge */}
             <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>
 
             {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
             <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
-              {showApplyCta && (
-                <SpaceAboutApplyButton
-                  isAuthenticated={data.applicationButtonProps.isAuthenticated}
-                  isMember={data.applicationButtonProps.isMember}
-                  isParentMember={data.applicationButtonProps.isParentMember}
-                  applicationState={data.applicationButtonProps.applicationState}
-                  userInvitation={data.applicationButtonProps.userInvitation}
-                  parentApplicationState={data.applicationButtonProps.parentApplicationState}
-                  canJoinCommunity={data.applicationButtonProps.canJoinCommunity}
-                  canAcceptInvitation={data.applicationButtonProps.canAcceptInvitation}
-                  canApplyToCommunity={data.applicationButtonProps.canApplyToCommunity}
-                  canJoinParentCommunity={data.applicationButtonProps.canJoinParentCommunity}
-                  canApplyToParentCommunity={data.applicationButtonProps.canApplyToParentCommunity}
-                  loading={data.applicationButtonProps.loading || data.applicationLoading}
-                />
-              )}
+              <SpaceApplyButtonConnector
+                spaceId={data.subspaceId}
+                spaceProfileUrl={data.subspaceUrl}
+                communityName={data.subspaceName}
+                parentSpaceId={data.parentSpaceId}
+              />
 
               <Suspense fallback={<LoadingSpinner />}>
                 <Outlet context={{ data, mobileMenu }} />
@@ -234,7 +264,7 @@ export default function CrdSubspacePageLayout() {
       <CrdSubspaceActivityDialogConnector
         open={activeDialog === 'activity'}
         onOpenChange={open => setActiveDialog(open ? 'activity' : null)}
-        subspaceId={data.subspaceId}
+        collaborationId={data.collaborationId}
       />
 
       <CrdSubspaceIndexDialogConnector
@@ -247,9 +277,69 @@ export default function CrdSubspacePageLayout() {
         open={activeDialog === 'subspaces'}
         onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
         subspaceId={data.subspaceId}
+        onCreateSubspace={handleCreateSubspace}
       />
 
       <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
-    </>
+
+      {/* Share dialog — opened from the SubspaceHeader share icon. Mirrors the L0 wiring in
+          CrdSpacePageLayout: URL + clipboard copy, plus a "Share on Alkemio" sub-view. */}
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        url={data.subspaceUrl}
+        shareOnAlkemioSlot={
+          data.subspaceUrl ? (
+            <CalloutShareOnAlkemioForm
+              key={data.subspaceUrl}
+              url={data.subspaceUrl}
+              entityLabel={t('common.subspace', { ns: 'translation' }).toLowerCase()}
+            />
+          ) : undefined
+        }
+      />
+
+      {data.canCreateSubspace && (
+        <>
+          <CreateSubspaceDialog
+            open={createSubspace.open}
+            onOpenChange={open => {
+              if (!open) createSubspace.closeDialog();
+            }}
+            values={createSubspace.values}
+            errors={createSubspace.errors}
+            selectedTemplateName={createSubspace.selectedTemplateName}
+            selectedTemplateContent={createSubspace.selectedTemplateContent}
+            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
+            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
+            onClearTemplate={createSubspace.onClearTemplate}
+            submitting={createSubspace.submitting}
+            canSubmit={createSubspace.canSubmit}
+            avatarConstraints={createSubspace.avatarConstraints}
+            cardBannerConstraints={createSubspace.cardBannerConstraints}
+            onChange={createSubspace.onChange}
+            onSubmit={() => void createSubspace.onSubmit()}
+          />
+          <TemplatePicker {...createSubspace.picker} />
+          <ConfirmationDialog
+            open={createSubspace.overwriteConfirmOpen}
+            onOpenChange={open => {
+              if (!open) createSubspace.onCancelOverwriteTemplate();
+            }}
+            title={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.title')}
+            description={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.description')}
+            confirmLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.confirm')}
+            cancelLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.cancel')}
+            onConfirm={createSubspace.onConfirmOverwriteTemplate}
+            onCancel={createSubspace.onCancelOverwriteTemplate}
+          />
+        </>
+      )}
+    </StorageConfigContextProvider>
   );
+}
+
+function EnableBannerOverlay() {
+  useEnableBannerOverlay();
+  return null;
 }

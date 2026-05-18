@@ -1,6 +1,6 @@
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
+import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
@@ -12,10 +12,12 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { useDesignVersionToggle } from '@/main/crdPages/useDesignVersionToggle';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
 import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -41,16 +43,25 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
-  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const { setIsOpen: setMessagingOpen, totalUnreadCount: messagesUnreadCount } = useUserMessagingContext();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const breadcrumbItems = useBreadcrumbs();
+  const overlayBanner = useBannerOverlay();
+  const designVersionToggle = useDesignVersionToggle();
+  const designVersionSwitch = designVersionToggle.isVisible
+    ? {
+        enabled: designVersionToggle.enabled,
+        onChange: designVersionToggle.onChange,
+        disabled: designVersionToggle.isPending,
+      }
+    : undefined;
 
   const handleLogout = () => {
-    navigate(IdentityRoutes.Logout);
+    navigate(AUTH_LOGOUT_PATH);
   };
 
   const handlePendingMembershipsClick = () => {
@@ -79,10 +90,12 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
+        unreadMessagesCount={messagesUnreadCount}
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
+        overlayBanner={overlayBanner}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
@@ -91,6 +104,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onHelpClick={() => setIsHelpDialogOpen(true)}
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
+        designVersionSwitch={designVersionSwitch}
       >
         {children ?? <Outlet />}
       </CrdLayout>
@@ -112,9 +126,11 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
   return (
     <BreadcrumbsProvider>
-      <SearchProvider>
-        <CrdLayoutConnector>{children}</CrdLayoutConnector>
-      </SearchProvider>
+      <BannerOverlayProvider>
+        <SearchProvider>
+          <CrdLayoutConnector>{children}</CrdLayoutConnector>
+        </SearchProvider>
+      </BannerOverlayProvider>
     </BreadcrumbsProvider>
   );
 }

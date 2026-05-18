@@ -1,11 +1,13 @@
-import { Briefcase, Cog, Shield, Users } from 'lucide-react';
+import { Briefcase, Building2, Cog, Shield, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useOrgSettingsAccessGuard from './useOrgSettingsAccessGuard';
 import useOrgSettingsTab, { type OrgSettingsTabId } from './useOrgSettingsTab';
 
@@ -34,6 +36,16 @@ const CrdOrgSettingsPage = () => {
   const displayName = organization?.profile?.displayName ?? '';
   const avatarUrl = organization?.profile?.avatar?.uri ?? undefined;
   const avatarColor = organizationId ? pickColorFromId(organizationId) : undefined;
+
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    displayName && profileUrl
+      ? [
+          { label: displayName, href: profileUrl, icon: Building2 },
+          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t(`shell.tabs.org.${activeTabId}`) },
+        ]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   const tabs: ReadonlyArray<SettingsTabDescriptor<OrgSettingsTabId>> = [
     { id: 'profile', label: t('shell.tabs.org.profile'), icon: Briefcase },

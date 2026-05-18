@@ -1,3 +1,4 @@
+import type { Reference } from '@apollo/client';
 import {
   MessageDetailsFragmentDoc,
   useRemoveMessageOnRoomMutation,
@@ -6,6 +7,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { refreshRoomMessagesCount } from './refreshRoomMessagesCount';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;
@@ -46,6 +48,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
           },
         },
       });
+      refreshRoomMessagesCount(cache, cacheRoomId);
     },
   });
 
@@ -81,6 +84,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
           },
         },
       });
+      refreshRoomMessagesCount(cache, cacheCommentsId);
     },
   });
 
@@ -110,8 +114,24 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   };
 
   const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
-    update: (cache, { data }) =>
-      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
+    update: (cache, { data }) => {
+      if (!data?.removeMessageOnRoom) return;
+      const messageId = String(data.removeMessageOnRoom);
+      const messageRef = cache.identify({ id: messageId, __typename: 'Message' });
+      const cacheRoomId = roomId ? cache.identify({ id: roomId, __typename: 'Room' }) : undefined;
+      if (cacheRoomId && messageRef) {
+        cache.modify({
+          id: cacheRoomId,
+          fields: {
+            messages(existing: readonly Reference[] = []) {
+              return existing.filter(ref => ref.__ref !== messageRef);
+            },
+          },
+        });
+        refreshRoomMessagesCount(cache, cacheRoomId);
+      }
+      evictFromCache(cache, messageId, 'Message');
+    },
   });
 
   const handleDeleteMessage = (commentsId: string, messageId: string) =>

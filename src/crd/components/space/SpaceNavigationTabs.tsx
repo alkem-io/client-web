@@ -79,8 +79,8 @@ function DesktopTabs({
               className={cn(
                 'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
-                  ? 'border-primary text-primary text-card-title'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted text-body-emphasis'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
               )}
               onClick={e => {
                 e.preventDefault();

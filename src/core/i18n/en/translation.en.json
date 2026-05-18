@@ -221,7 +221,11 @@
     "click-delete": "Click to delete"
   },
   "topBar": {
-    "sign-in": "Log In | Sign Up"
+    "sign-in": "Log In | Sign Up",
+    "designVersion": {
+      "label": "New design (preview)",
+      "errorSaving": "Could not save your design preference. Please try again."
+    }
   },
   "authentication": {
     "or": "or continue with",
@@ -637,7 +641,8 @@
         "year_one": "{{count}}y",
         "year_other": "{{count}}y",
         "moreThanYears_one": "> {{count}}y",
-        "moreThanYears_other": "> {{count}}y"
+        "moreThanYears_other": "> {{count}}y",
+        "justNow": "now"
       },
       "long": {
         "timeAgo": "{{time}} ago",
@@ -654,7 +659,8 @@
         "year_one": "{{count}} year",
         "year_other": "{{count}} years",
         "moreThanYears_one": "> {{count}} year",
-        "moreThanYears_other": "> {{count}} years"
+        "moreThanYears_other": "> {{count}} years",
+        "justNow": "just now"
       }
     },
     "supportEmail": "support@alkem.io",

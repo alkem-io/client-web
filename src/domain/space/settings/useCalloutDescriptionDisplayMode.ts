@@ -2,9 +2,9 @@ import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 
-export const useCalloutDescriptionDisplayMode = (spaceId: string): boolean => {
+export const useCalloutDescriptionDisplayMode = (spaceId: string | undefined): boolean => {
   const { data } = useSpaceSettingsQuery({
-    variables: { spaceId },
+    variables: { spaceId: spaceId ?? '' },
     skip: !spaceId,
   });
 

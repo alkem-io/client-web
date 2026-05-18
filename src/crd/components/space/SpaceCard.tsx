@@ -5,6 +5,7 @@ import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export type SpaceLead = {
   name: string;
@@ -28,7 +29,17 @@ export type SpaceCardData = {
   /** Optional avatar image. When omitted the avatar renders initials on a coloured background. */
   avatarUrl?: string;
   initials: string;
+  /**
+   * Accent colour used for (1) the deterministic gradient on the banner when `bannerImageUrl` is
+   * missing, and (2) the avatar fallback when `avatarUrl` is missing. Always required for the
+   * banner gradient, even for L0 spaces that suppress the avatar block entirely.
+   */
   avatarColor: string;
+  /**
+   * Suppress the avatar block (StackedAvatars) entirely. Set for L0 spaces, which per the
+   * canonical visual-fields rule do not show an avatar in cards (cards = title + cardBanner only).
+   */
+  hideAvatar?: boolean;
   isPrivate: boolean;
   isMember?: boolean;
   isPinned?: boolean;
@@ -127,31 +138,34 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
             </div>
           </div>
 
-          {/* Space avatar — overlaps banner and card body */}
-          <div className="absolute left-4 -bottom-[18px] z-10">
-            <StackedAvatars
-              primary={{
-                initials: space.initials,
-                avatarColor: space.avatarColor,
-                avatarUrl: space.avatarUrl,
-                name: space.name,
-              }}
-              secondary={
-                space.parent
-                  ? {
-                      initials: space.parent.initials,
-                      avatarUrl: space.parent.avatarUrl,
-                      avatarColor: space.parent.avatarColor,
-                      name: space.parent.name,
-                    }
-                  : undefined
-              }
-            />
-          </div>
+          {/* Space avatar — overlaps banner and card body. L0 cards (hideAvatar=true) suppress
+              this block entirely per the canonical visual-fields rule (L0 has no avatar). */}
+          {!space.hideAvatar && (
+            <div className="absolute left-4 -bottom-[18px] z-10">
+              <StackedAvatars
+                primary={{
+                  initials: space.initials,
+                  avatarColor: space.avatarColor,
+                  avatarUrl: space.avatarUrl,
+                  name: space.name,
+                }}
+                secondary={
+                  space.parent
+                    ? {
+                        initials: space.parent.initials,
+                        avatarUrl: space.parent.avatarUrl,
+                        avatarColor: space.parent.avatarColor,
+                        name: space.parent.name,
+                      }
+                    : undefined
+                }
+              />
+            </div>
+          )}
         </div>
 
-        {/* Card Body */}
-        <div className="flex flex-col flex-1 px-4 pt-6">
+        {/* Card Body. pt-6 leaves room for the avatar overlap; pt-4 when there's no avatar (L0). */}
+        <div className={cn('flex flex-col flex-1 px-4 pb-4', space.hideAvatar ? 'pt-4' : 'pt-6')}>
           {/* Name */}
           <h3 className="truncate text-card-title text-card-foreground transition-colors duration-200">{space.name}</h3>
 
@@ -176,18 +190,59 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Description */}
           <p className="line-clamp-2 text-body text-muted-foreground mt-2">{space.description}</p>
 
-          {/* Tags */}
+          {/* Tags — single row that fits the card width: long tags truncate (hover shows full),
+              remaining tags collapse into a +N badge (hover shows the rest).
+              Clicks inside this row don't trigger card navigation. */}
           {space.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2.5 mb-4">
+            // biome-ignore lint/a11y/noStaticElementInteractions: click-intercept wrapper (not an actionable element)
+            // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard activation happens on inner interactive elements; this only blocks pointer bubbling
+            <div
+              className="flex flex-nowrap items-center gap-1.5 mt-2.5 mb-4 min-w-0 overflow-hidden"
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
               {space.tags.slice(0, 3).map(tag => (
-                <Badge key={tag} variant="secondary" className="text-badge px-2 py-0 rounded-full">
-                  {tag}
-                </Badge>
+                <Tooltip key={tag}>
+                  <TooltipTrigger asChild={true}>
+                    <Badge
+                      variant="secondary"
+                      className="text-badge px-2 py-0 rounded-full min-w-[3.5rem] shrink cursor-default"
+                    >
+                      <span className="truncate">{tag}</span>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>{tag}</TooltipContent>
+                </Tooltip>
               ))}
               {space.tags.length > 3 && (
-                <Badge variant="outline" className="text-badge px-2 py-0 rounded-full text-muted-foreground">
-                  +{space.tags.length - 3}
-                </Badge>
+                <Tooltip>
+                  <TooltipTrigger asChild={true}>
+                    <Badge
+                      asChild={true}
+                      variant="outline"
+                      className="text-badge px-2 py-0 rounded-full text-muted-foreground shrink-0"
+                    >
+                      <button
+                        type="button"
+                        aria-label={t('spaces.moreTags', { count: space.tags.length - 3 })}
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        +{space.tags.length - 3}
+                      </button>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                    {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                    <ul role="list" className="flex flex-col gap-0.5">
+                      {space.tags.slice(3).map(tag => (
+                        <li key={tag}>{tag}</li>
+                      ))}
+                    </ul>
+                  </TooltipContent>
+                </Tooltip>
               )}
             </div>
           )}

@@ -2,12 +2,25 @@
  * Stateless markdown ↔ HTML conversion using the unified pipeline.
  *
  * Two pure async functions that lazily build their pipelines on first call.
- * Custom handlers mirror UnifiedConverter.ts for round-trip fidelity,
- * minus iframe handling (deferred to the iframe-whitelist spec).
+ * Custom handlers mirror UnifiedConverter.ts for round-trip fidelity.
  */
 
 import type { Element, ElementContent } from 'hast';
 import type { Html, Parent as MDASTParent, PhrasingContent } from 'mdast';
+
+const ALLOWED_IFRAME_ATTRIBUTES = [
+  'src',
+  'width',
+  'height',
+  'title',
+  'allow',
+  'loading',
+  'frameborder',
+  'referrerpolicy',
+  'allowfullscreen',
+  'webkitallowfullscreen',
+  'mozallowfullscreen',
+];
 
 // Extend MDAST Parent with optional tagName (always present at runtime for HTML elements)
 type Parent = MDASTParent & { tagName?: string } & { children: Element[] };
@@ -92,6 +105,10 @@ async function buildHtmlToMdPipeline() {
           },
           strong: trimmer('strong'),
           emphasis: trimmer('emphasis'),
+          iframe: (_state: unknown, element: Element) => ({
+            type: 'html',
+            value: `<iframe src="${element.properties?.src ?? ''}" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" title="${element.properties?.title ?? 'Embedded iframe'}" loading="lazy"></iframe>`,
+          }),
         },
       })
       .use(remarkGfm)
@@ -127,6 +144,15 @@ async function buildMdToHtmlPipeline() {
 
   const text = (value: string) => u('text', value);
   const emptyParagraph = () => u('element', { tagName: 'p', children: [], properties: {} });
+
+  const sanitizeSchema = {
+    ...defaultSchema,
+    tagNames: [...(defaultSchema.tagNames ?? []), 'iframe'],
+    attributes: {
+      ...(defaultSchema.attributes ?? {}),
+      iframe: ALLOWED_IFRAME_ATTRIBUTES,
+    },
+  };
 
   return unified()
     .use(remarkParse)
@@ -167,8 +193,8 @@ async function buildMdToHtmlPipeline() {
         },
       },
     })
-    .use(rehypeRaw)
-    .use(rehypeSanitize, defaultSchema)
+    .use(rehypeRaw, { passThrough: ['iframe'] })
+    .use(rehypeSanitize, sanitizeSchema)
     .use(rehypeStringify);
 }
 

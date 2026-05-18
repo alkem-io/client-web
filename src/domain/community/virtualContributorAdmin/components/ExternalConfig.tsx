@@ -56,7 +56,7 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
 
   const initialValues: FormValueType = {
     apiKey: '',
-    model: aiPersona?.externalConfig?.model || OpenAiModel.O1,
+    model: aiPersona?.externalConfig?.model || OpenAiModel.Gpt_5_4Nano,
     assistantId: aiPersona?.externalConfig?.assistantId || '',
   };
 
@@ -110,34 +110,41 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
             validateOnMount={true}
             onSubmit={() => {}}
           >
-            <FormikEffect
-              onChange={(values: FormValueType) => setExternalConfig({ ...externalConfig, ...values })}
-              onStatusChange={(isValid: boolean) => setIsValid(isValid)}
-            />
-            <FormikInputField
-              inputProps={{ ref: apiKeyRef }}
-              name="apiKey"
-              placeholder={t('pages.virtualContributorProfile.settings.externalConfig.apiKeyPlaceholder', {
-                value: aiPersona?.externalConfig?.apiKey,
-              })}
-              title={t('pages.virtualContributorProfile.settings.externalConfig.apiKey')}
-            />
-            {isAssistantFieldAvailable && (
-              <FormikInputField
-                name="assistantId"
-                title={t('pages.virtualContributorProfile.settings.externalConfig.assistantId')}
+            <>
+              <FormikEffect
+                onChange={(values: FormValueType) => setExternalConfig({ ...externalConfig, ...values })}
+                onStatusChange={(isValid: boolean) => setIsValid(isValid)}
               />
-            )}
-            <FormikSelect
-              name="model"
-              title={t('pages.virtualContributorProfile.settings.externalConfig.model')}
-              values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
-            />
-            <Actions>
-              <Button variant="contained" loading={loading || updateLoading} disabled={!isValid} onClick={handleSubmit}>
-                {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
-              </Button>
-            </Actions>
+              <FormikInputField
+                inputProps={{ ref: apiKeyRef }}
+                name="apiKey"
+                placeholder={t('pages.virtualContributorProfile.settings.externalConfig.apiKeyPlaceholder', {
+                  value: aiPersona?.externalConfig?.apiKey,
+                })}
+                title={t('pages.virtualContributorProfile.settings.externalConfig.apiKey')}
+              />
+              {isAssistantFieldAvailable && (
+                <FormikInputField
+                  name="assistantId"
+                  title={t('pages.virtualContributorProfile.settings.externalConfig.assistantId')}
+                />
+              )}
+              <FormikSelect
+                name="model"
+                title={t('pages.virtualContributorProfile.settings.externalConfig.model')}
+                values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
+              />
+              <Actions>
+                <Button
+                  variant="contained"
+                  loading={loading || updateLoading}
+                  disabled={!isValid}
+                  onClick={handleSubmit}
+                >
+                  {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
+                </Button>
+              </Actions>
+            </>
           </Formik>
         </PageContentBlock>
       </PageContentColumn>

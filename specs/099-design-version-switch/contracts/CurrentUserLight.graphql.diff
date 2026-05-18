@@ -1,0 +1,76 @@
+# Contract: CurrentUserLight query — additive change
+
+**File**: `src/domain/community/userCurrent/CurrentUserProvider/CurrentUserLight.graphql`
+**Operation**: query `CurrentUserLight`
+**Change type**: additive (no field removed, no rename)
+
+## Diff
+
+```diff
+ query CurrentUserLight {
+   me {
+     user {
+       ...UserDetailsLight
++      settings {
++        id
++        designVersion
++      }
+       account {
+         id
+         authorization {
+           id
+           myPrivileges
+         }
+         license {
+           id
+           availableEntitlements
+         }
+       }
+     }
+   }
+ }
+```
+
+## Result shape (post-codegen, confirmed against deployed schema 2026-05-13)
+
+```ts
+// Excerpt of the regenerated CurrentUserLightQuery type
+me: {
+  user: {
+    // ...existing UserDetailsLight fields
+    settings: {
+      id: string;
+      designVersion: number; // server returns Int (non-null): 1 (old), 2 (new), 3+ reserved
+    };
+    account: {
+      // ...unchanged
+    } | null;
+  } | null;
+}
+```
+
+## Consumer
+
+`CurrentUserProvider.tsx` exposes `designVersion: 1 | 2 | undefined` on its returned model. Mapping rule:
+
+```ts
+const raw = data?.me?.user?.settings?.designVersion;
+const designVersion: 1 | 2 | undefined =
+  raw === 1 || raw === 2 ? raw : undefined;
+```
+
+Values outside `{1, 2}` (e.g. `3+`, or absent because the user is unauthenticated and the query was skipped) collapse to `undefined` and are treated as "no preference" by `useDesignVersionSync` (no reconciliation).
+
+## Cache normalization
+
+The Apollo cache normalizes by `UserSettings.id`. We select `settings { id designVersion }` (rather than just `designVersion`) so the new field merges cleanly into the same cache entry already populated by the heavier `userSettings` query in `userSettingsFragment`. Without the `id`, Apollo would synthesize an object identity for the `settings` object and emit dev warnings when the two queries' results meet in the cache.
+
+## Codegen step
+
+Required before this contract is enforceable in TypeScript:
+
+```bash
+pnpm codegen   # backend must be running at localhost:4000
+```
+
+The PR for this feature MUST be opened after the server deploy that adds `UserSettings.designVersion` and MUST commit the regenerated `graphql-schema.ts` and `apollo-hooks.ts`.

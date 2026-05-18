@@ -98,6 +98,17 @@ fragment CalloutTemplateContent on Callout {
     mediaGallery {
       ...MediaGalleryVisuals
     }
+    poll {
+      ...PollDetails
+    }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+      }
+    }
   }
   settings {
     ...CalloutSettingsFull

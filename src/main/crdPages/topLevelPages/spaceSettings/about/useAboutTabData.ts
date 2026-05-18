@@ -12,6 +12,7 @@ import type {
   AboutReference,
   AboutSectionKey,
   AboutSectionSaveStatus,
+  SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
 
@@ -65,7 +66,7 @@ const SAVED_FLASH_MS = 1800;
  * cache and each section clears itself when saved. If the admin leaves the
  * tab with unsaved edits, the local buffer is discarded by a hard reload.
  */
-export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabDataResult {
+export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceSettingsLevel): UseAboutTabDataResult {
   const {
     data,
     loading: queryLoading,
@@ -390,7 +391,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     }
   };
 
-  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl) : null;
+  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
   return {
     values,

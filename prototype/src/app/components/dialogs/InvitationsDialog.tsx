@@ -78,10 +78,10 @@ export function InvitationsDialog({ open, onOpenChange }: InvitationsDialogProps
                     <AvatarFallback>{invite.sender.initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium">
+                    <span className="text-body-emphasis">
                       <span className="font-bold">{invite.sender.name}</span> invited you to <span className="font-bold text-primary">{invite.space}</span>
                     </span>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground">
                       <span>Role: {invite.role}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {invite.date}</span>

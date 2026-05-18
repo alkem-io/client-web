@@ -69,7 +69,7 @@ export function DocumentDetailDialog({ open, onOpenChange, document, author }: D
           <div className="flex items-center gap-3 min-w-0">
             {getDocIcon(document.docType)}
             <div className="flex flex-col min-w-0">
-              <DialogTitle className="text-sm font-semibold text-foreground line-clamp-1">
+              <DialogTitle className="text-card-title text-foreground line-clamp-1">
                 {document.title}
               </DialogTitle>
               <DialogDescription className="sr-only">
@@ -120,7 +120,7 @@ export function DocumentDetailDialog({ open, onOpenChange, document, author }: D
               <div className="w-5 h-5 rounded flex items-center justify-center" style={{ backgroundColor: collaboraColor }}>
                 <span className="text-white text-[9px] font-bold">C</span>
               </div>
-              <span className="text-xs font-medium text-muted-foreground">{collaboraLabel}</span>
+              <span className="text-caption font-medium text-muted-foreground">{collaboraLabel}</span>
             </div>
             {['File', 'Edit', 'View', 'Insert', 'Format', 'Tools', 'Help'].map((menu) => (
               <button key={menu} className="px-2.5 py-0.5 text-[11px] text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 rounded">
@@ -366,17 +366,17 @@ export function DocumentDetailDialog({ open, onOpenChange, document, author }: D
                 {/* Main slide area */}
                 <div className="flex-1 p-8 flex items-center justify-center">
                   <div className="w-full max-w-[900px] aspect-[16/9] bg-gradient-to-br from-primary/90 to-primary/60 rounded-lg shadow-xl flex flex-col items-center justify-center text-white p-10">
-                    <p className="text-xs uppercase tracking-widest opacity-60 mb-4">April 2026 Stakeholder Update</p>
-                    <h2 className="text-3xl font-bold text-center mb-3">2030 Renewable Transition</h2>
-                    <p className="text-base opacity-75 text-center max-w-md">Progress Report & Revised Timeline for Municipal Energy Strategy</p>
+                    <p className="text-label uppercase opacity-60 mb-4">April 2026 Stakeholder Update</p>
+                    <h2 className="text-hero text-center mb-3">2030 Renewable Transition</h2>
+                    <p className="text-subheader font-normal opacity-75 text-center max-w-md">Progress Report & Revised Timeline for Municipal Energy Strategy</p>
                     <div className="flex gap-10 mt-10">
                       <div className="text-center">
-                        <p className="text-4xl font-bold">42%</p>
-                        <p className="text-xs opacity-60">Current Renewable</p>
+                        <p className="text-display">42%</p>
+                        <p className="text-caption opacity-60">Current Renewable</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-4xl font-bold">100%</p>
-                        <p className="text-xs opacity-60">2030 Target</p>
+                        <p className="text-display">100%</p>
+                        <p className="text-caption opacity-60">2030 Target</p>
                       </div>
                     </div>
                   </div>

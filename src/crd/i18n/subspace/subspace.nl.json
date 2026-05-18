@@ -1,8 +1,4 @@
 {
-  "badge": {
-    "subspace": "SubSpace",
-    "subSubspace": "SubSubSpace"
-  },
   "actions": {
     "activity": "Recente activiteit",
     "videoCall": "Videogesprek starten",
@@ -10,7 +6,6 @@
     "settings": "Instellingen"
   },
   "members": {
-    "viewCommunity": "Communityleden bekijken",
     "memberCount_one": "{{count}} lid",
     "memberCount_other": "{{count}} leden"
   },
@@ -62,7 +57,6 @@
   },
   "a11y": {
     "subspaceBanner": "SubSpace-banner voor {{name}}",
-    "parentLink": "Ga naar bovenliggende space {{name}}",
     "flowTabs": "Innovatieflowfasen",
     "sidebarNavigation": "SubSpace-zijbalk",
     "communityDialog": "Communityleden-dialoog",

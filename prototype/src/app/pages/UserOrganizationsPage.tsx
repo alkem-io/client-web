@@ -124,20 +124,20 @@ export default function UserOrganizationsPage() {
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                 alt="Jeroen Nijkamp"
               />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">JN</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-card-title font-bold">JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Jeroen Nijkamp</h1>
+              <h1 className="text-page-title">Jeroen Nijkamp</h1>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <Link
                 key={tab.label}
                 to={tab.href}
                 className={cn(
-                  "flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex items-center gap-2 pb-4 text-control border-b-2 transition-colors whitespace-nowrap",
                   tab.active
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
@@ -275,31 +275,31 @@ export default function UserOrganizationsPage() {
               {/* Header */}
               <CardHeader className="p-4 pb-2">
                 <div className="flex justify-between items-start gap-2">
-                  <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
+                  <h3 className="text-subsection-title group-hover:text-primary transition-colors line-clamp-1">
                     {org.name}
                   </h3>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 font-normal border-primary/20 text-primary bg-primary/5">
+                  <Badge variant="outline" className="text-badge font-normal px-1.5 py-0 h-5 border-primary/20 text-primary bg-primary/5">
                     {org.role}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">•</span>
-                  <div className="flex items-center text-xs text-muted-foreground">
+                  <span className="text-caption text-muted-foreground">•</span>
+                  <div className="flex items-center text-caption text-muted-foreground">
                     <MapPin className="w-3 h-3 mr-1" />
                     {org.location}
                   </div>
                 </div>
               </CardHeader>
-              
+
               {/* Content */}
               <CardContent className="p-4 pt-2 flex-grow">
-                 <p className="text-sm text-muted-foreground line-clamp-2">
+                 <p className="text-body text-muted-foreground line-clamp-2">
                    {org.description}
                  </p>
               </CardContent>
-              
+
               {/* Footer */}
-              <CardFooter className="p-4 border-t bg-muted/30 text-xs text-muted-foreground flex justify-between items-center mt-auto">
+              <CardFooter className="p-4 border-t bg-muted/30 text-caption text-muted-foreground flex justify-between items-center mt-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1" title="Associates">
                     <Users className="w-3.5 h-3.5" />
@@ -326,8 +326,8 @@ export default function UserOrganizationsPage() {
           {filteredOrgs.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center py-16 border rounded-lg bg-muted/10 border-dashed">
               <Building2 className="w-10 h-10 text-muted-foreground/50 mb-3" />
-              <h3 className="text-lg font-medium">No organizations found</h3>
-              <p className="text-muted-foreground text-sm mb-4">Try searching for a different name.</p>
+              <h3 className="text-subsection-title font-medium">No organizations found</h3>
+              <p className="text-muted-foreground text-body mb-4">Try searching for a different name.</p>
               <Button variant="outline" onClick={() => setSearchQuery("")}>
                 Clear Search
               </Button>

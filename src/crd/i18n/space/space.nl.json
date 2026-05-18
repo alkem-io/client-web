@@ -25,6 +25,7 @@
     "aboutSpace": "Over deze Space",
     "subspaces": "Subspaces",
     "showAll": "Alles tonen",
+    "create": "Aanmaken",
     "events": "Evenementen",
     "noEvents": "Geen aankomende evenementen",
     "showCalendar": "Kalender tonen",
@@ -147,6 +148,7 @@
     "loading": "Inhoud laden..."
   },
   "callout": {
+    "openAria": "{{title}} openen",
     "draft": "Concept",
     "expand": "Meer tonen",
     "collapse": "Minder tonen",
@@ -185,6 +187,7 @@
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
     "moreContributions": "+{{count}} meer",
+    "contributionsHeader": "Bijdragen ({{count}})",
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
@@ -199,6 +202,32 @@
     "createMemo": "Nieuw memo aanmaken",
     "defaultMemoName": "Nieuwe memo",
     "memoNameLabel": "Memotitel",
+    "addLink": "Link toevoegen",
+    "createLink": "Voeg links of documenten toe",
+    "editLink": "Link bewerken",
+    "linkSave": "Opslaan",
+    "linkCreate": "Toevoegen",
+    "linkAddAnother": "Nog een link toevoegen",
+    "linkRemoveRow": "Deze link verwijderen",
+    "linkDefaultName": "Nieuwe link",
+    "linkDefaultNameNumbered": "Nieuwe link ({{count}})",
+    "linkCancelConfirmTitle": "Wijzigingen verwerpen?",
+    "linkCancelConfirmDescription": "Als je nu sluit, worden de toegevoegde links niet opgeslagen.",
+    "linkCancelConfirm": "Verwerpen",
+    "linkUrlLabel": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkNameLabel": "Weergavenaam",
+    "linkNamePlaceholder": "Geef je link een naam",
+    "linkDescriptionLabel": "Beschrijving",
+    "linkDescriptionPlaceholder": "Waar gaat deze link over?",
+    "linkTermsHelper": "<terms>Klik hier</terms> voor de algemene voorwaarden.",
+    "linkUrlInvalid": "Voer een geldige URL in (moet beginnen met http:// of https://).",
+    "linkNameRequired": "Weergavenaam is verplicht.",
+    "linkEditAriaLabel": "Link bewerken",
+    "linkDeleteAriaLabel": "Link verwijderen",
+    "linkDelete": "Link verwijderen",
+    "linkDeleteConfirmTitle": "Deze link verwijderen?",
+    "linkDeleteConfirmDescription": "Hiermee verwijder je de link permanent uit deze $t(common.callout). Deze actie kan niet ongedaan worden gemaakt.",
     "addPost": "Bericht toevoegen",
     "createPost": "Bericht aanmaken",
     "editPost": "Bericht bewerken",
@@ -218,7 +247,12 @@
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw."
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "clearTypeConfirm": {
+      "title": "Dit inhoudstype verwijderen?",
+      "description": "Zodra je opslaat, wordt de bestaande inhoud verwijderd en kun je geen ander type meer aan deze post koppelen. Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    }
   },
   "contribution": {
     "edit": "Bewerken",
@@ -244,7 +278,6 @@
     "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
     "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
@@ -347,7 +380,6 @@
     }
   },
   "mobile": {
-    "more": "Meer",
     "menu": "Menu",
     "activity": "Activiteit",
     "videoCall": "Videogesprek",
@@ -431,7 +463,8 @@
     "descriptionLabel": "Beschrijving",
     "descriptionPlaceholder": "Schrijf iets...",
     "tagsLabel": "Tags",
-    "tagsPlaceholder": "Tags gescheiden door komma's",
+    "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
+    "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
     "framingType": "Toevoegen aan bericht",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",
@@ -495,7 +528,14 @@
     "descriptionLabel": "Beschrijving",
     "descriptionPlaceholder": "Optionele beschrijving",
     "addRow": "Nog een referentie toevoegen",
-    "removeRow": "Referentie verwijderen"
+    "removeRow": "Referentie verwijderen",
+    "attachFile": "Bestand bijvoegen",
+    "removeConfirm": {
+      "title": "Deze referentie verwijderen?",
+      "description": "“{{name}}” wordt verwijderd zodra je opslaat. Dit kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "unnamed": "deze referentie"
+    }
   },
   "responseDefaults": {
     "srDescription": "Stel de standaardwaarden in voor nieuwe bijdragen in deze $t(common.callout).",
@@ -636,6 +676,27 @@
     "readMore": "… Lees meer",
     "readLess": "Lees minder"
   },
+  "postPreview": {
+    "label": "Voorbeeld van geselecteerde bijdrage",
+    "edit": "Reactie bewerken",
+    "share": "Reactie delen",
+    "close": "Voorbeeld sluiten",
+    "emptyDescription": "Geen beschrijving",
+    "references": "Referenties"
+  },
+  "postLocation": {
+    "label": "Postlocatie",
+    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere post te verplaatsen, verdwijnt deze uit de huidige post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Ruimte of Subruimte kunt verplaatsen.",
+    "moved": "Reactie succesvol verplaatst.",
+    "moveFailed": "Reactie kon niet worden verplaatst. Probeer het opnieuw."
+  },
+  "whiteboardPreview": {
+    "label": "Voorbeeld van geselecteerd whiteboard",
+    "edit": "Whiteboard bewerken",
+    "share": "Whiteboard delen",
+    "close": "Voorbeeld sluiten",
+    "openFull": "Klik om het volledige whiteboard te zien"
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
@@ -658,7 +719,9 @@
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
     "empty": "Nog geen opmerkingen",
-    "unknownUser": "Onbekende gebruiker"
+    "unknownUser": "Onbekende gebruiker",
+    "signInToComment": "Log in om te reageren, antwoorden of een reactie te geven.",
+    "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven."
   },
   "dialogs": {
     "cancel": "Annuleren",
@@ -674,6 +737,12 @@
       "description": "De framing-inhoud van deze $t(common.callout) wordt verwijderd. Dit kan niet ongedaan worden gemaakt.",
       "confirm": "Verwijderen",
       "cancel": "Behouden"
+    },
+    "confirmClose": {
+      "title": "Dit venster sluiten?",
+      "description": "Niet-opgeslagen opmerkingstekst gaat verloren.",
+      "confirm": "Sluiten",
+      "cancel": "Open houden"
     }
   },
   "poll": {
@@ -752,5 +821,8 @@
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
     "loadingPost": "Bericht laden"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
   }
 }

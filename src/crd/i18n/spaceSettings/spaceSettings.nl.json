@@ -53,16 +53,15 @@
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
+      "drag": "Sleep om de fase te herschikken",
       "empty": "Nog geen callouts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)"
       },
-      "defaultPostTemplate": {
-        "label": "Standaard publicatiesjabloon",
-        "header": "Kies een sjabloon",
-        "clear": "Standaard wissen",
-        "none": "Geen sjablonen beschikbaar"
+      "defaultCalloutTemplate": {
+        "set": "Standaard callout-sjabloon instellen…",
+        "clear": "Standaard callout-sjabloon wissen"
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
@@ -76,7 +75,15 @@
         "saving": "Opslaan…",
         "save": "Opslaan"
       },
-      "deletePhase": "Fase verwijderen"
+      "deletePhase": {
+        "menuLabel": "Fase verwijderen",
+        "confirm": {
+          "title": "Deze fase verwijderen?",
+          "description": "Callouts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Fase verwijderen",
+          "cancel": "Annuleren"
+        }
+      }
     },
     "addPhase": {
       "button": "Fase toevoegen",
@@ -92,6 +99,11 @@
         "cancel": "Annuleren",
         "confirm": "Fase toevoegen"
       }
+    },
+    "replaceFlow": {
+      "button": "Innovatieflow vervangen",
+      "loading": "Nieuwe flow laden…",
+      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw."
     },
     "row": {
       "drag": "Sleep om te herordenen",
@@ -245,6 +257,17 @@
       "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je ruimte…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Geef je communityrichtlijnen een naam",
+      "referencesLabel": "Gerelateerde links",
+      "applyTemplate": "Een sjabloon gebruiken",
+      "saveAsTemplate": "Opslaan als sjabloon",
+      "applyConfirm": {
+        "title": "De huidige richtlijnen vervangen?",
+        "description": "Het toepassen van een sjabloon overschrijft de huidige titel, tekst en links. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Vervangen",
+        "cancel": "Annuleren"
+      },
       "save": "Richtlijnen opslaan",
       "saving": "Opslaan…"
     },
@@ -414,7 +437,18 @@
         "hint": "Optioneel — kies een subspace-sjabloon om inhoud vooraf in te vullen.",
         "loading": "Sjablonen laden…",
         "placeholder": "Selecteer een sjabloon (optioneel)",
-        "none": "Geen sjabloon"
+        "none": "Geen sjabloon",
+        "choose": "Kies een sjabloon",
+        "change": "Wijzigen",
+        "clear": "Leeg gebruiken",
+        "selectedLabel": "Geselecteerd sjabloon",
+        "loadingPreview": "Sjabloonvoorbeeld laden…",
+        "overwriteConfirm": {
+          "title": "Formulierinhoud vervangen?",
+          "description": "Door dit sjabloon toe te passen worden de naam, tagline, beschrijving en tags die je al hebt ingevuld overschreven.",
+          "confirm": "Sjabloon toepassen",
+          "cancel": "Mijn wijzigingen behouden"
+        }
       },
       "displayName": {
         "label": "Naam",
