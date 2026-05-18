@@ -45,7 +45,7 @@ export function CollapsibleTagList({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLUListElement>(null);
   const [visibleCount, setVisibleCount] = useState(tags.length);
-  const itemsKey = tags.join('');
+  const itemsKey = tags.join('\u0001');
 
   // Shared pill geometry so the hidden mirror measures exactly what the real
   // row renders (selected-state classes don't change box size).

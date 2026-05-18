@@ -63,7 +63,8 @@ export function TagsInput({
     }
   }, [editingIndex]);
 
-  // Trim surrounding whitespace only — the user's casing is preserved verbatim.
+  // Trim surrounding whitespace only — the user's input is preserved verbatim,
+  // casing included. Dedupe is case-sensitive: `Foo` and `foo` are distinct tags.
   const normalize = (raw: string) => raw.trim();
 
   const addTags = (raw: string) => {
