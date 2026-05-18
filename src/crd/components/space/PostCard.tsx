@@ -208,7 +208,31 @@ export function PostCard({
         className
       )}
     >
-      <CardHeader className="flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
+      <CardHeader className="relative isolate flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
+        {/* Stretched-link overlay: clicking anywhere in the header (the empty
+            space, timestamp, badges, type label) opens the callout — the same
+            target as the title link in the body. The avatar/name profile
+            links and the action cluster (expand + 3-dot menu) sit above it via
+            `relative z-10`, so they keep their own behaviour. Rendered only
+            when the consumer wires a destination, so it never becomes a dead
+            `#` click-trap. It's a sibling of the avatar/name anchors, not an
+            ancestor — no nested-anchor invalidity. */}
+        {(href || onClick) && (
+          <a
+            href={href ?? '#'}
+            onClick={
+              onClick
+                ? e => {
+                    e.preventDefault();
+                    onClick();
+                  }
+                : undefined
+            }
+            className="absolute inset-0 z-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          >
+            <span className="sr-only">{t('callout.openAria', { title: post.title })}</span>
+          </a>
+        )}
         <div className="flex gap-3">
           {post.author &&
             (post.author.profileUrl ? (
@@ -263,7 +287,7 @@ export function PostCard({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="relative z-10 flex items-center gap-1">
           {onExpandClick && (
             <Button
               variant="ghost"
