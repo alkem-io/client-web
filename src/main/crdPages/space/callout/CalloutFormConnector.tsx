@@ -139,6 +139,10 @@ export function CalloutFormConnector({
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
   const markdownIntegration = useMarkdownEditorIntegration();
+  // Memo framing only renders on create — the memo entity doesn't exist yet,
+  // so its pasted/inserted images upload to a temporary location (server GCs
+  // them if the callout-create is abandoned). Mirrors the MUI create rule.
+  const memoFramingUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
   const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
@@ -592,6 +596,7 @@ export function CalloutFormConnector({
               whiteboardConfigured={values.whiteboardConfigured}
               whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
               whiteboardPreviewImages={values.whiteboardPreviewImages}
+              whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
               onWhiteboardChange={(content, previewImages, previewSettings) => {
                 setField('whiteboardContent', content);
                 setField('whiteboardPreviewImages', previewImages ?? []);
@@ -600,6 +605,7 @@ export function CalloutFormConnector({
               }}
               memoMarkdown={values.memoMarkdown}
               onMemoMarkdownChange={v => setField('memoMarkdown', v)}
+              memoUpload={memoFramingUpload}
               mediaGalleryVisuals={values.mediaGalleryVisuals}
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
               collaboraDocumentType={values.collaboraDocumentType}
@@ -718,6 +724,7 @@ export function CalloutFormConnector({
         type={values.responseType}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        markdownUpload={mode === 'edit' ? markdownIntegration : memoFramingUpload}
       />
       {mode === 'create' && (
         <TemplateImportConnector

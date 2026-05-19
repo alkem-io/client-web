@@ -85,7 +85,7 @@ export function TemplateFormDialog({
             <Button variant="outline" onClick={requestClose} disabled={submitting}>
               {t('form.cancel')}
             </Button>
-            <Button variant="default" onClick={onSubmit} disabled={submitting} aria-busy={submitting}>
+            <Button variant="default" onClick={onSubmit} disabled={submitting || !isDirty} aria-busy={submitting}>
               {submitting && <Loader2 aria-hidden="true" className="size-4 mr-2 animate-spin" />}
               {t('form.save')}
             </Button>

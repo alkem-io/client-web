@@ -7,6 +7,7 @@
  */
 
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 export type { SectionSaveStatus };
 
@@ -135,4 +136,4 @@ export type UserProfileViewProps = {
   pendingReferenceDelete: { id: string; name: string } | null;
   onConfirmRemoveReference: () => void;
   onCancelRemoveReference: () => void;
-};
+} & MarkdownUploadProps;

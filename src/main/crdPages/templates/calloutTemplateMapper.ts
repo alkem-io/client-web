@@ -126,11 +126,17 @@ export function calloutTemplateContentToFormValues(
   const { framing, settings, contributionDefaults } = callout;
   const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
   const collaboraDocumentType = framing.collaboraDocument?.documentType;
+  // `responseType` is the user's chosen contribution type — it must come from
+  // `allowedTypes` ALONE (spec D14, 2026-05-18). `enabled` / `canAddContributions`
+  // are an orthogonal "who can add right now?" concern that maps to the actor
+  // switches, NOT to the chip strip. AND-ing the chip on `enabled` here would
+  // silently reset it to "None" on every edit-dialog open whenever the toggles
+  // are off, and the update mapper would then commit that loss back to the
+  // server. Mirrors `mapCalloutDetailsToFormValues.ts:74-84`.
   const firstAllowedType = settings.contribution.allowedTypes[0];
-  const responseType: ResponseType =
-    settings.contribution.enabled && firstAllowedType
-      ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
-      : 'none';
+  const responseType: ResponseType = firstAllowedType
+    ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
+    : 'none';
 
   return {
     title: framing.profile.displayName,
@@ -152,6 +158,10 @@ export function calloutTemplateContentToFormValues(
     whiteboardContent: framing.whiteboard?.content || EmptyWhiteboardString,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    // Server-rendered preview image (D16, 2026-05-18) — shown by `InlineWhiteboardPreview` as the
+    // read-time fallback when no fresh in-form blob exists. `WhiteboardDetails.profile.preview` is
+    // the Visual selected on `WHITEBOARD_PREVIEW`; the backend stamps it when content changes.
+    whiteboardPreviewServerUrl: framing.whiteboard?.profile.preview?.uri || undefined,
     whiteboardConfigured: framing.type === CalloutFramingType.Whiteboard,
     mediaGalleryVisuals:
       framing.mediaGallery?.visuals.map(v => ({

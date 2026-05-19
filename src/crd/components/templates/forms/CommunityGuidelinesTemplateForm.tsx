@@ -5,7 +5,14 @@ import { Label } from '@/crd/primitives/label';
 import type { CommunityGuidelinesTemplateFormProps } from '../types';
 import { ReferenceRowsEditor } from './ReferenceRowsEditor';
 
-export function CommunityGuidelinesTemplateForm({ value, errors, onChange }: CommunityGuidelinesTemplateFormProps) {
+export function CommunityGuidelinesTemplateForm({
+  value,
+  errors,
+  onChange,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+}: CommunityGuidelinesTemplateFormProps) {
   const { t } = useTranslation('crd-templates');
   const referenceErrors: Record<string, string | undefined> = {};
   for (const key of Object.keys(errors)) {
@@ -37,6 +44,9 @@ export function CommunityGuidelinesTemplateForm({ value, errors, onChange }: Com
           value={value.guidelinesMarkdown}
           onChange={guidelinesMarkdown => onChange({ ...value, guidelinesMarkdown })}
           placeholder={t('form.communityGuidelines.bodyPlaceholder')}
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
         />
       </div>
 

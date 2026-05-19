@@ -20,6 +20,8 @@ type CollaborativeMarkdownEditorProps = {
   iframeAllowedUrls?: string[];
   onError?: (message: string) => void;
   hideImageOptions?: boolean;
+  /** Hides only the embed/iframe button (image stays). */
+  hideEmbedOption?: boolean;
 };
 
 // Local Suspense boundary contains the lazy `crd-markdown` namespace load. Without it the
@@ -45,6 +47,7 @@ function CollaborativeMarkdownEditorLazy({
   iframeAllowedUrls,
   onError,
   hideImageOptions,
+  hideEmbedOption,
 }: CollaborativeMarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
@@ -95,6 +98,7 @@ function CollaborativeMarkdownEditorLazy({
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
         hideImageOptions={hideImageOptions}
+        hideEmbedOption={hideEmbedOption}
       />
       <EditorContent
         editor={editor}

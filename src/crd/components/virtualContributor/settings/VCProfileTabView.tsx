@@ -5,7 +5,7 @@ import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -54,6 +54,9 @@ export function VCProfileTabView(props: VcProfileViewProps) {
     uploadingAvatar,
     metadata,
     footerSlot,
+    onImageUpload,
+    iframeAllowedUrls,
+    onError,
   } = props;
 
   const labels: SectionLabels = {
@@ -120,6 +123,9 @@ export function VCProfileTabView(props: VcProfileViewProps) {
             status={status('description')}
             onSave={() => onSaveSection('description')}
             labels={labels}
+            onImageUpload={onImageUpload}
+            iframeAllowedUrls={iframeAllowedUrls}
+            onError={onError}
           />
           <Separator className="my-4 opacity-50" />
           <TagsSection
@@ -276,14 +282,20 @@ type DescriptionSectionProps = {
   status: SectionSaveStatus;
   onSave: () => void;
   labels: SectionLabels;
-};
+} & MarkdownUploadProps;
 
 function DescriptionSection(p: DescriptionSectionProps) {
   return (
     <div>
       <SectionLabel>{p.label}</SectionLabel>
       <div className="mt-2">
-        <MarkdownEditor value={p.value} onChange={p.onChange} />
+        <MarkdownEditor
+          value={p.value}
+          onChange={p.onChange}
+          onImageUpload={p.onImageUpload}
+          iframeAllowedUrls={p.iframeAllowedUrls}
+          onError={p.onError}
+        />
       </div>
       <FF hint={p.hint} dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
     </div>
