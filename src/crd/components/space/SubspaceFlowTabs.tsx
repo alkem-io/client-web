@@ -36,8 +36,11 @@ export type SubspaceFlowTabsProps = {
 const TAB_LIST_CLASSES =
   'flex items-center gap-3 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none]';
 
+// Short (1rem) right-edge fade so the strip reads as "scrollable" without
+// swallowing the last tab. Paired with a wider trailing pad on the list (see
+// below) so the final phase can still be scrolled fully clear of the fade.
 const TAB_LIST_FADE_CLASSES =
-  '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]';
+  '[mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)]';
 
 export function SubspaceFlowTabs({
   phases,
@@ -193,9 +196,11 @@ function DesktopFlowStrip({
             canAddPost && TAB_LIST_FADE_CLASSES
           )}
         >
+          {/* Trailing pad wider than the 1rem fade so the last phase can be
+              scrolled fully clear of the gradient instead of fading under it. */}
           {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
           {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-          <ul role="list" className="flex items-center gap-3">
+          <ul role="list" className={cn('flex items-center gap-3', canAddPost && 'pr-8')}>
             {phases.map((phase, index) => {
               const isActive = phase.id === activePhaseId;
               return (

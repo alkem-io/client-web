@@ -1,4 +1,4 @@
-import { type PointerEvent as ReactPointerEvent, useRef } from 'react';
+import { type PointerEvent as ReactPointerEvent, useEffect, useRef } from 'react';
 
 /**
  * Enables click-and-drag horizontal scrolling on an overflowing scroll
@@ -18,6 +18,12 @@ import { type PointerEvent as ReactPointerEvent, useRef } from 'react';
  */
 export function useDragScroll<T extends HTMLElement>() {
   const ref = useRef<T>(null);
+  // The in-flight drag's AbortController, so the drag can be torn down if the
+  // component unmounts mid-drag (otherwise the window listeners — and the
+  // element they close over — leak).
+  const dragRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => dragRef.current?.abort(), []);
 
   const onPointerDown = (e: ReactPointerEvent<T>) => {
     // Primary button only; ignore when there's nothing to scroll.
@@ -28,6 +34,19 @@ export function useDragScroll<T extends HTMLElement>() {
     const startX = e.clientX;
     const startScroll = el.scrollLeft;
     let dragging = false;
+
+    // One controller per drag; aborting it removes all three listeners below
+    // at once and is also what the unmount cleanup calls.
+    const controller = new AbortController();
+    const { signal } = controller;
+    dragRef.current = controller;
+
+    const endDrag = () => {
+      el.style.cursor = '';
+      el.style.userSelect = '';
+      dragRef.current = null;
+      controller.abort();
+    };
 
     const onMove = (ev: PointerEvent) => {
       const dx = ev.clientX - startX;
@@ -43,11 +62,9 @@ export function useDragScroll<T extends HTMLElement>() {
     };
 
     const onUp = () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      el.style.cursor = '';
-      el.style.userSelect = '';
-      if (!dragging) return;
+      const wasDragging = dragging;
+      endDrag();
+      if (!wasDragging) return;
       // Suppress the click that fires after a drag so it doesn't activate the
       // tab the pointer happened to be released over.
       const swallow = (ce: MouseEvent) => {
@@ -60,8 +77,11 @@ export function useDragScroll<T extends HTMLElement>() {
       setTimeout(() => el.removeEventListener('click', swallow, true), 0);
     };
 
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointermove', onMove, { signal });
+    window.addEventListener('pointerup', onUp, { signal });
+    // OS gesture / tab switch cancels the pointer — treat it as drag end so
+    // styles reset and listeners detach.
+    window.addEventListener('pointercancel', endDrag, { signal });
   };
 
   return { ref, onPointerDown };

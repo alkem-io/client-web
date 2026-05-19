@@ -49,9 +49,10 @@ const collapsedMaxHeight = (maxLines: number) => `calc(${maxLines} * 1.625 * 0.8
  * the content actually overflows. Mirrors the MUI `ExpandableDescription` +
  * `AutomaticOverflowGradient` pattern (see `src/core/ui/markdown/ExpandableMarkdown.tsx`).
  *
- * Two decoupled concerns: overflow detection (does the text exceed `maxLines`?
- * — measured under `line-clamp-N`, re-measured by a `ResizeObserver` as layout
- * settles / the container resizes; depends only on text + clamp) and the
+ * Two decoupled concerns: overflow detection (does the content exceed
+ * `maxLines`? — measured under the `max-height` clamp, re-measured by a
+ * `ResizeObserver` as layout settles / the container resizes; depends only on
+ * content + clamp height) and the
  * expanded mode (`userExpanded ?? defaultExpanded` — the
  * `calloutDescriptionDisplayMode` setting drives it until the user clicks a
  * toggle). Keeping them independent is what makes the component adhere to the
@@ -91,9 +92,9 @@ export function ExpandableMarkdown({
   const isClamped = overflow === 'unknown' || (overflow === 'yes' && !isExpanded);
 
   // Measure while clamped. The clamped container's own box is fixed by
-  // `line-clamp`, so it never resizes as the markdown grows — observe the
-  // *content* element (its height reflects the unclamped markdown once
-  // react-markdown commits / web fonts load) plus the container (width changes
+  // `max-height` + `overflow: hidden`, so it never resizes as the markdown
+  // grows — observe the *content* element (its height reflects the unclamped
+  // markdown once react-markdown commits / web fonts load) plus the container (width changes
   // on sidebar resize / rotation) and re-evaluate on either. This re-measures
   // whenever layout settles, so a first pass that measured too early no longer
   // latches the wrong result. While expanded the clamp is off and we trust the
