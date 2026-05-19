@@ -15,6 +15,7 @@ type SubspaceItem = {
   name: string;
   initials: string;
   href: string;
+  avatarUrl?: string;
 };
 
 type VirtualContributorItem = {
@@ -181,8 +182,6 @@ export function SpaceSidebar({
           {guidelines.length > 0 && <CommunityGuidelinesSection guidelines={guidelines} />}
         </>
       )}
-
-      {variant === 'subspaces' && <SubspacesSection subspaces={subspaces} onSubspaceClick={onSubspaceClick} />}
 
       {children}
     </nav>

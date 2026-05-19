@@ -766,10 +766,10 @@ The components that participate in these treatments today:
 
 The accent colour is intentionally absent from a few spots — too many coloured tiles per row makes the layout feel noisy. These keep the muted prototype treatment:
 
-- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) — default grey `AvatarFallback`. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
+- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) and **`SubspacesSection`** (the left-sidebar subspaces list on the space home tab and the subspace page) — these rows render the entity's **real `avatarUrl`** when one exists; the **grey `AvatarFallback` is retained only as the no-avatar fallback**. `pickColorFromId` is still intentionally NOT applied here, so a space/subspace with no avatar stays muted grey rather than getting a coloured tile. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
 - **`CompactSpaceCard`'s initials tile** (the small rectangle next to the space name in the card body, *not* the banner) — `bg-primary text-primary-foreground`.
 
-The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles use the prototype's muted/primary treatment.**
+The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles show the real avatar when available and otherwise keep the prototype's muted/primary treatment (no `pickColorFromId`).**
 
 #### Data flow
 

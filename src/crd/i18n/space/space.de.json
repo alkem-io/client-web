@@ -148,6 +148,7 @@
     "loading": "Inhalt wird geladen..."
   },
   "callout": {
+    "openAria": "{{title}} öffnen",
     "draft": "Entwurf",
     "expand": "Mehr anzeigen",
     "collapse": "Weniger anzeigen",

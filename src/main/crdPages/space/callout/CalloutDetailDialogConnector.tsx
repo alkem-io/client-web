@@ -428,6 +428,7 @@ export function CalloutDetailDialogConnector({
             ? {
                 name: selectedWhiteboard.createdBy.profile.displayName,
                 avatarUrl: selectedWhiteboard.createdBy.profile.avatar?.uri,
+                profileUrl: selectedWhiteboard.createdBy.profile.url,
               }
             : undefined,
           timestamp: formatRelativeFromNow(
@@ -462,6 +463,7 @@ export function CalloutDetailDialogConnector({
             ? {
                 name: selectedPost.createdBy.profile.displayName,
                 avatarUrl: selectedPost.createdBy.profile.avatar?.uri,
+                profileUrl: selectedPost.createdBy.profile.url,
               }
             : undefined,
           // Match MUI's contribution-preview header ("1 hour ago" / "5 minutes ago")

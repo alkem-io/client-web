@@ -11,6 +11,7 @@ type SubspaceWidgetItem = {
   name: string;
   initials: string;
   href: string;
+  avatarUrl?: string;
 };
 
 export type SubspaceLeadData = {

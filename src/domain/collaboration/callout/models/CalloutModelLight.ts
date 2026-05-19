@@ -53,6 +53,7 @@ export type CalloutModelExtension<T> = T & {
         id: string;
         profile?: {
           displayName: string;
+          url: string;
           avatar?: {
             id: string;
             uri: string;
@@ -66,6 +67,7 @@ export type CalloutModelExtension<T> = T & {
         id: string;
         profile?: {
           displayName: string;
+          url: string;
           avatar?: {
             id: string;
             uri: string;

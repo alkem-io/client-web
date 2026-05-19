@@ -148,6 +148,7 @@
     "loading": "Cargando contenido..."
   },
   "callout": {
+    "openAria": "Abrir {{title}}",
     "draft": "Borrador",
     "expand": "Mostrar más",
     "collapse": "Mostrar menos",
