@@ -7,8 +7,7 @@ import type {
   VcReadOnlyMetadataRow,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcProfileTabData from './useVcProfileTabData';
 
@@ -17,9 +16,10 @@ import useVcProfileTabData from './useVcProfileTabData';
  * `useVcProfileTabData` (per-section save hook) → `VCProfileTabView`
  * (presentational).
  *
- * The settings shell mounts no ambient `StorageConfigContextProvider`, so the
- * outer mounts a `virtualContributor`-scoped one (description editing is always
- * EDIT mode → `temporaryLocation: false`); the upload hook runs only inside it.
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so
+ * `MarkdownUploadScope` mounts a `virtualContributor`-scoped one (description
+ * editing is always EDIT mode → `temporaryLocation: false`) and yields the
+ * upload wiring; before the id resolves it yields `undefined`.
  *
  * Mounts `ImageCropDialog` driven by `pendingAvatarCrop` (Decision #10 /
  * FR-163) and `ConfirmationDialog` driven by `pendingReferenceDelete`
@@ -27,19 +27,13 @@ import useVcProfileTabData from './useVcProfileTabData';
  */
 const CrdVCProfileTab = () => {
   const { vcId } = useUrlResolver();
-  if (!vcId) {
-    return <CrdVCProfileTabBody />;
-  }
   return (
-    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vcId}>
-      <CrdVCProfileTabWithUpload />
-    </StorageConfigContextProvider>
+    <MarkdownUploadScope
+      storage={vcId ? { locationType: 'virtualContributor', virtualContributorId: vcId } : undefined}
+    >
+      {markdownUpload => <CrdVCProfileTabBody markdownUpload={markdownUpload} />}
+    </MarkdownUploadScope>
   );
-};
-
-const CrdVCProfileTabWithUpload = () => {
-  const md = useMarkdownEditorIntegration();
-  return <CrdVCProfileTabBody markdownUpload={md} />;
 };
 
 const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {

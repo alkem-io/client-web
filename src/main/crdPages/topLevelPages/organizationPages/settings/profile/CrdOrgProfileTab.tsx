@@ -4,8 +4,7 @@ import { OrgProfileTabView } from '@/crd/components/organization/settings/OrgPro
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import useOrgProfileTabData from './useOrgProfileTabData';
 
 const EMPTY_VALUES = {
@@ -35,9 +34,10 @@ const EMPTY_VALUES = {
  * `useOrgProfileTabData` (per-section save hook, parallel to
  * `useUserProfileTabData`) → `OrgProfileTabView` (presentational).
  *
- * The settings shell mounts no ambient `StorageConfigContextProvider`, so the
- * outer mounts an `organization`-scoped one (description editing is always
- * EDIT mode → `temporaryLocation: false`); the upload hook runs only inside it.
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so
+ * `MarkdownUploadScope` mounts an `organization`-scoped one (description
+ * editing is always EDIT mode → `temporaryLocation: false`) and yields the
+ * upload wiring; before the id resolves it yields `undefined`.
  *
  * Save mutations and the references batch live in `useOrgProfileTabData`;
  * the country list comes from the existing domain `COUNTRIES` constants.
@@ -45,19 +45,11 @@ const EMPTY_VALUES = {
  */
 const CrdOrgProfileTab = () => {
   const { organizationId } = useOrganizationContext();
-  if (!organizationId) {
-    return <CrdOrgProfileTabBody />;
-  }
   return (
-    <StorageConfigContextProvider locationType="organization" organizationId={organizationId}>
-      <CrdOrgProfileTabWithUpload />
-    </StorageConfigContextProvider>
+    <MarkdownUploadScope storage={organizationId ? { locationType: 'organization', organizationId } : undefined}>
+      {markdownUpload => <CrdOrgProfileTabBody markdownUpload={markdownUpload} />}
+    </MarkdownUploadScope>
   );
-};
-
-const CrdOrgProfileTabWithUpload = () => {
-  const md = useMarkdownEditorIntegration();
-  return <CrdOrgProfileTabBody markdownUpload={md} />;
 };
 
 const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
