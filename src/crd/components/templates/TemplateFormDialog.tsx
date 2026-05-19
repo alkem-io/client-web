@@ -1,7 +1,6 @@
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -24,21 +23,18 @@ export function TemplateFormDialog({
   isDirty,
 }: TemplateFormDialogProps) {
   const { t } = useTranslation('crd-templates');
-  const [discardOpen, setDiscardOpen] = useState(false);
 
   const titleKey = intent === 'create' ? 'form.createTitle' : 'form.editTitle';
 
-  const requestClose = () => {
-    if (isDirty) {
-      setDiscardOpen(true);
-    } else {
-      onCancel();
-    }
-  };
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty: Boolean(isDirty),
+    onClose: onCancel,
+    blockClose: submitting,
+  });
 
   return (
     <>
-      <Dialog open={open} onOpenChange={isOpen => !isOpen && requestClose()}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="w-full sm:max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden">
           <DialogHeader className="px-6 pt-6 pb-4 pr-12 border-b">
             <DialogTitle>{t(`${titleKey}.${type}`)}</DialogTitle>
@@ -97,19 +93,7 @@ export function TemplateFormDialog({
         </DialogContent>
       </Dialog>
 
-      <ConfirmationDialog
-        open={discardOpen}
-        onOpenChange={setDiscardOpen}
-        title={t('discard.title')}
-        description={t('discard.body')}
-        confirmLabel={t('discard.confirm')}
-        cancelLabel={t('discard.cancel')}
-        variant="destructive"
-        onConfirm={() => {
-          setDiscardOpen(false);
-          onCancel();
-        }}
-      />
+      {guardElement}
     </>
   );
 }

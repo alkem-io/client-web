@@ -1,7 +1,7 @@
 import { Plus, Trash2, X } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -88,14 +88,12 @@ function LinkCreateDialog({
   const [rows, setRows] = useState<Row[]>(() => [
     { id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' },
   ]);
-  const [isCancelling, setIsCancelling] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const justAddedRowId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (!open) return;
     setRows([{ id: newRowId(), url: '', displayName: t('callout.linkDefaultName'), description: '' }]);
-    setIsCancelling(false);
   }, [open, t]);
 
   useEffect(() => {
@@ -106,6 +104,15 @@ function LinkCreateDialog({
   }, [rows.length]);
 
   const isDirty = rows.some(r => r.url.trim() || r.description.trim());
+
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: () => {
+      onCancel?.();
+      onOpenChange(false);
+    },
+    blockClose: saving,
+  });
 
   const updateRow = (id: string, patch: Partial<Row>) => {
     setRows(prev => prev.map(r => (r.id === id ? { ...r, ...patch } : r)));
@@ -129,22 +136,6 @@ function LinkCreateDialog({
       },
     ]);
     justAddedRowId.current = id;
-  };
-
-  const handleClose = () => {
-    if (saving) return;
-    if (isDirty) {
-      setIsCancelling(true);
-    } else {
-      onCancel?.();
-      onOpenChange(false);
-    }
-  };
-
-  const handleConfirmDiscard = () => {
-    setIsCancelling(false);
-    onCancel?.();
-    onOpenChange(false);
   };
 
   const handleSubmit = () => {
@@ -179,13 +170,7 @@ function LinkCreateDialog({
 
   return (
     <>
-      <Dialog
-        open={open}
-        onOpenChange={next => {
-          if (saving) return;
-          if (!next) handleClose();
-        }}
-      >
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>{t('callout.createLink')}</DialogTitle>
@@ -212,7 +197,7 @@ function LinkCreateDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose} disabled={saving}>
+            <Button variant="outline" onClick={requestClose} disabled={saving}>
               {t('dialogs.cancel')}
             </Button>
             <Button onClick={handleSubmit} disabled={saving} aria-busy={saving}>
@@ -221,18 +206,7 @@ function LinkCreateDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <ConfirmationDialog
-        open={isCancelling}
-        onOpenChange={next => {
-          if (!next) setIsCancelling(false);
-        }}
-        variant="destructive"
-        title={t('callout.linkCancelConfirmTitle')}
-        description={t('callout.linkCancelConfirmDescription')}
-        confirmLabel={t('callout.linkCancelConfirm')}
-        onConfirm={handleConfirmDiscard}
-        onCancel={() => setIsCancelling(false)}
-      />
+      {guardElement}
     </>
   );
 }
@@ -350,7 +324,6 @@ function LinkEditDialog({
   const [description, setDescription] = useState(initialValues?.description ?? '');
   const [urlError, setUrlError] = useState<string | undefined>();
   const [nameError, setNameError] = useState<string | undefined>();
-  const [isCancelling, setIsCancelling] = useState(false);
   // Local row id is stable per open-cycle so the upload-tracking consumer can key its Map by it.
   const rowIdRef = useRef<string>(newRowId());
 
@@ -362,7 +335,6 @@ function LinkEditDialog({
     setDescription(initialValues?.description ?? '');
     setUrlError(undefined);
     setNameError(undefined);
-    setIsCancelling(false);
   }, [open, initialValues?.url, initialValues?.displayName, initialValues?.description]);
 
   const isDirty =
@@ -370,21 +342,14 @@ function LinkEditDialog({
     displayName !== (initialValues?.displayName ?? '') ||
     description !== (initialValues?.description ?? '');
 
-  const handleClose = () => {
-    if (saving) return;
-    if (isDirty) {
-      setIsCancelling(true);
-    } else {
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: () => {
       onCancel?.();
       onOpenChange(false);
-    }
-  };
-
-  const handleConfirmDiscard = () => {
-    setIsCancelling(false);
-    onCancel?.();
-    onOpenChange(false);
-  };
+    },
+    blockClose: saving,
+  });
 
   const handleSubmit = () => {
     const trimmedUrl = url.trim();
@@ -408,13 +373,7 @@ function LinkEditDialog({
 
   return (
     <>
-      <Dialog
-        open={open}
-        onOpenChange={next => {
-          if (saving) return;
-          if (!next) handleClose();
-        }}
-      >
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{t('callout.editLink')}</DialogTitle>
@@ -502,7 +461,7 @@ function LinkEditDialog({
               <span />
             )}
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleClose} disabled={saving}>
+              <Button variant="outline" onClick={requestClose} disabled={saving}>
                 {t('dialogs.cancel')}
               </Button>
               <Button onClick={handleSubmit} disabled={saving} aria-busy={saving}>
@@ -512,18 +471,7 @@ function LinkEditDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <ConfirmationDialog
-        open={isCancelling}
-        onOpenChange={next => {
-          if (!next) setIsCancelling(false);
-        }}
-        variant="destructive"
-        title={t('callout.linkCancelConfirmTitle')}
-        description={t('callout.linkCancelConfirmDescription')}
-        confirmLabel={t('callout.linkCancelConfirm')}
-        onConfirm={handleConfirmDiscard}
-        onCancel={() => setIsCancelling(false)}
-      />
+      {guardElement}
     </>
   );
 }

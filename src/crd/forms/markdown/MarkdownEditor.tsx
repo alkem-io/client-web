@@ -83,7 +83,7 @@ function MarkdownEditorLazy({
   return (
     <div
       className={cn(
-        'crd-markdown-editor border border-border rounded-lg overflow-hidden bg-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
+        'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
         disabled && 'opacity-60',
         className
       )}
@@ -100,7 +100,7 @@ function MarkdownEditorLazy({
 
       <EditorContent
         editor={editor}
-        className="min-h-[120px]"
+        className="flex flex-col flex-1 min-h-0"
         {...(placeholder ? { 'data-placeholder': placeholder } : {})}
       />
 
