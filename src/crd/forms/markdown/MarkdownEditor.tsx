@@ -33,6 +33,8 @@ type MarkdownEditorProps = MarkdownUploadProps & {
   className?: string;
   /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
   hideImageOptions?: boolean;
+  /** Hides only the embed/iframe button (image stays) — e.g. memo, which doesn't support iframes. */
+  hideEmbedOption?: boolean;
 };
 
 export function MarkdownEditor(props: MarkdownEditorProps) {
@@ -55,6 +57,7 @@ function MarkdownEditorLazy({
   iframeAllowedUrls,
   onError,
   hideImageOptions,
+  hideEmbedOption,
 }: MarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
@@ -92,6 +95,7 @@ function MarkdownEditorLazy({
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
         hideImageOptions={hideImageOptions}
+        hideEmbedOption={hideEmbedOption}
       />
 
       <EditorContent

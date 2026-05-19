@@ -38,6 +38,7 @@ export function MemoFramingEditor({
         onImageUpload={onImageUpload}
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
+        hideEmbedOption={true}
       />
     </div>
   );
