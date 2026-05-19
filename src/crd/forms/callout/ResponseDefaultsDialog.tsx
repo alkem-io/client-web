@@ -15,6 +15,11 @@ import { Label } from '@/crd/primitives/label';
  * Replaces the older "connector writes via parent `onSave` → sync effect into draft" loop, which
  * (a) didn't populate `defaultDescription` because no sync effect existed for that field, and (b)
  * leaked the templated value to the parent even when the user cancelled.
+ *
+ * Scope: this is the **`post`** apply path. **Whiteboard** content is *not* applied through this
+ * helper — `whiteboardContent` is sourced from the parent `values` (see `handleSave` / the dirty
+ * check / the `values.whiteboardContent` sync effect), so the connector applies a whiteboard
+ * template through the parent `onSave` instead, matching the whiteboard-editor sub-flow.
  */
 type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
 
@@ -189,7 +194,7 @@ export function ResponseDefaultsDialog({
               onChange={e => setDraft(prev => ({ ...prev, defaultDisplayName: e.target.value }))}
               placeholder={t('responseDefaults.defaultTitlePlaceholder')}
               disabled={disabled}
-              className="w-full h-9 px-3 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+              className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
             />
           </div>
 
