@@ -12,10 +12,10 @@ import {
   Users,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import {
   DropdownMenu,
@@ -114,17 +114,7 @@ export function TemplateCard({
           )}
         </div>
 
-        {template.tags.length > 0 && (
-          <ul className="flex flex-wrap gap-1">
-            {template.tags.slice(0, 4).map(tag => (
-              <li key={tag}>
-                <Badge variant="secondary" className="text-badge">
-                  {tag}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        )}
+        {template.tags.length > 0 && <CollapsibleTagList tags={template.tags} />}
 
         <div className="mt-auto flex items-center justify-end pt-2">
           <DropdownMenu>

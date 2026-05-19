@@ -22,6 +22,15 @@ export function ReferenceRowsEditor({ value, onChange, errors, label }: Referenc
   const add = () => onChange([...value, { name: '', uri: '', description: '' }]);
   const remove = (index: number) => onChange(value.filter((_, i) => i !== index));
 
+  // On blur, prefix a bare URL with `https://` so `example.com` is stored as a
+  // valid absolute link. Anything that already carries a scheme (`http://`,
+  // `https://`, `mailto:`, …) or a protocol-relative `//` is left untouched.
+  const normalizeUri = (index: number) => {
+    const raw = value[index]?.uri.trim() ?? '';
+    if (!raw || raw.startsWith('//') || /^[a-z][\w+.-]*:/i.test(raw)) return;
+    update(index, { uri: `https://${raw}` });
+  };
+
   return (
     <div className="space-y-2">
       {label && <Label>{label}</Label>}
@@ -43,6 +52,7 @@ export function ReferenceRowsEditor({ value, onChange, errors, label }: Referenc
                 <Input
                   value={row.uri}
                   onChange={e => update(index, { uri: e.target.value })}
+                  onBlur={() => normalizeUri(index)}
                   placeholder={t('references.uri')}
                   aria-label={t('references.uri')}
                   aria-invalid={Boolean(errors?.[`${index}.uri`])}
@@ -56,6 +66,7 @@ export function ReferenceRowsEditor({ value, onChange, errors, label }: Referenc
                 />
               </div>
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className="size-8 text-destructive focus:text-destructive"
@@ -68,7 +79,7 @@ export function ReferenceRowsEditor({ value, onChange, errors, label }: Referenc
           </li>
         ))}
       </ul>
-      <Button variant="outline" size="sm" onClick={add}>
+      <Button type="button" variant="outline" size="sm" onClick={add}>
         <Plus aria-hidden="true" className="size-4 mr-2" />
         {t('references.add')}
       </Button>

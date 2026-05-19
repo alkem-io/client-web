@@ -1,6 +1,7 @@
 import { Folder, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
@@ -158,30 +159,9 @@ export function SpaceSubspacesList({
         </fieldset>
       )}
 
-      {/* Tag filter chips — wrap onto multiple rows */}
-      {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {allTags.map(tag => {
-            const isSelected = selectedTags.includes(tag);
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => toggleTag(tag)}
-                aria-pressed={isSelected}
-                className={cn(
-                  'px-3 py-1.5 text-caption font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isSelected
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                )}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Tag filter chips — capped at 2 rows, long tags truncate (full text on
+          hover), the overflow collapses into a +N that expands the full list. */}
+      {allTags.length > 0 && <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
 
       {/* Grid */}
       {filtered.length === 0 ? (
