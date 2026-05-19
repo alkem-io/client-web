@@ -1,6 +1,7 @@
 import { Activity, Home, Maximize2, Minimize2, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -77,12 +78,7 @@ export function SpaceHeader({
 
       <div className="w-full px-6 md:px-8 pt-8 pb-8">
         <div className="grid grid-cols-12 gap-6">
-          <div
-            className={cn(
-              'col-span-12 flex flex-col gap-1',
-              fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10'
-            )}
-          >
+          <div className={cn('col-span-12 flex flex-col gap-1', contentColumnClass(fullWidth))}>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <h1 className="text-hero text-foreground truncate">{title}</h1>

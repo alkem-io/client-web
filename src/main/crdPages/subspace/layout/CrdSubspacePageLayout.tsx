@@ -14,6 +14,7 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
@@ -212,9 +213,7 @@ export default function CrdSubspacePageLayout() {
             />
             <main className="flex-1 w-full px-6 md:px-8 pb-8">
               <div className="grid grid-cols-12 gap-6 items-start">
-                <div
-                  className={cn('col-span-12 min-w-0', fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10')}
-                >
+                <div className={cn('col-span-12 min-w-0', contentColumnClass(fullWidth))}>
                   <Suspense fallback={<LoadingSpinner />}>
                     <Outlet context={{ data }} />
                   </Suspense>

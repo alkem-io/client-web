@@ -11,6 +11,7 @@ import type {
   CrdPlatformNavigationItem,
   CrdUserInfo,
 } from '@/crd/layouts/types';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -156,12 +157,7 @@ export function Header({
           header items are not flush against the viewport edges. */}
       <div className="w-full h-full px-6 md:px-8">
         <div className="grid grid-cols-12 gap-6 h-full">
-          <div
-            className={cn(
-              'col-span-12 flex items-center justify-between h-full',
-              fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10'
-            )}
-          >
+          <div className={cn('col-span-12 flex items-center justify-between h-full', contentColumnClass(fullWidth))}>
             {/* Left: Logo + breadcrumbs */}
             <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>

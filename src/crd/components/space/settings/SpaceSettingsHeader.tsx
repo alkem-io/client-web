@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -54,7 +55,7 @@ export function SpaceSettingsHeader({
   fullWidth = false,
   className,
 }: SpaceSettingsHeaderProps) {
-  const innerColClass = cn('col-span-12', fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10');
+  const innerColClass = cn('col-span-12', contentColumnClass(fullWidth));
 
   return (
     <div className={cn('w-full', className)}>

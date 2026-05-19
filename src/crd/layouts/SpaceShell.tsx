@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 
 type SpaceShellProps = {
@@ -34,13 +35,7 @@ export function SpaceShell({ header, sidebar, tabs, children, fullWidth, classNa
           <div
             className={cn(
               'col-span-12 min-w-0',
-              hasSidebar
-                ? fullWidth
-                  ? 'lg:col-span-10'
-                  : 'lg:col-span-8'
-                : fullWidth
-                  ? 'lg:col-span-12'
-                  : 'lg:col-start-2 lg:col-span-10'
+              hasSidebar ? (fullWidth ? 'lg:col-span-10' : 'lg:col-span-8') : contentColumnClass(fullWidth)
             )}
           >
             {hasTabs && <div className="sm:mb-6">{tabs}</div>}
