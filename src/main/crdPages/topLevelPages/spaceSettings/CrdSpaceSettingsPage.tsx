@@ -25,6 +25,7 @@ import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceS
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
@@ -74,6 +75,15 @@ export default function CrdSpaceSettingsPage() {
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
   const guard = useDirtyTabGuard();
 
+  // Markdown image upload. The ambient `StorageConfigContextProvider`
+  // (locationType="space") is mounted by `CrdSpacePageLayout` /
+  // `CrdSubspacePageLayout`, so editing existing sections uploads to the
+  // space's own bucket (temporaryLocation: false). Creating a subspace has no
+  // bucket yet, so it uploads against the parent space's bucket flagged
+  // temporary (server GCs it if the create is abandoned) — mirrors MUI.
+  const md = useMarkdownEditorIntegration();
+  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
+
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
   const about = useAboutTabData(spaceId, spaceUrl, level);
@@ -110,6 +120,8 @@ export default function CrdSpaceSettingsPage() {
     templatesSetId,
     spaceId,
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
+    // Save-as always opens the create flow → temporary bucket.
+    markdownUpload: { create: mdCreate, edit: md },
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
@@ -291,6 +303,9 @@ export default function CrdSpaceSettingsPage() {
                   onUpdateReference={about.onUpdateReference}
                   onRemoveReference={about.onRequestRemoveReference}
                   onSaveSection={section => void about.onSaveSection(section)}
+                  onImageUpload={md.onImageUpload}
+                  iframeAllowedUrls={md.iframeAllowedUrls}
+                  onError={md.onError}
                 />
               ) : (
                 <LoadingSpinner />
@@ -318,6 +333,9 @@ export default function CrdSpaceSettingsPage() {
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
                 headerActionsSlot={
                   level !== 'L0' ? (
                     <LayoutReplaceFlowConnector
@@ -353,6 +371,9 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
                     />
                   ) : undefined
                 }
@@ -374,6 +395,9 @@ export default function CrdSpaceSettingsPage() {
                           references: communityGuidelines.value.references,
                         })
                       }
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
                     />
                   ) : undefined
                 }
@@ -419,6 +443,9 @@ export default function CrdSpaceSettingsPage() {
                 onDraftChange={updatesTab.onDraftChange}
                 onSubmit={() => void updatesTab.onSubmit()}
                 onRequestRemove={updatesTab.onRequestRemove}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
               />
             )}
             {activeTab === 'storage' && isTabVisible('storage') && (
@@ -501,6 +528,9 @@ export default function CrdSpaceSettingsPage() {
         cardBannerConstraints={createSubspace.cardBannerConstraints}
         onChange={createSubspace.onChange}
         onSubmit={() => void createSubspace.onSubmit()}
+        onImageUpload={mdCreate.onImageUpload}
+        iframeAllowedUrls={mdCreate.iframeAllowedUrls}
+        onError={mdCreate.onError}
       />
       <TemplatePicker {...createSubspace.picker} />
       <ConfirmationDialog
