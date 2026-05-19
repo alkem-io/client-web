@@ -14,6 +14,7 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { cn } from '@/crd/lib/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
@@ -33,6 +34,7 @@ import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDi
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
+import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
 
 export type SubspaceMobileMenu = {
   open: boolean;
@@ -55,6 +57,7 @@ export default function CrdSubspacePageLayout() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const createSubspace = useCreateSubspace(data.subspaceId ?? '');
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
@@ -121,34 +124,39 @@ export default function CrdSubspacePageLayout() {
       }
     : undefined;
 
-  const subspaceSidebar = (
-    <SubspaceSidebar
-      {...data.sidebar}
-      onEditClick={() => {
-        setMobileMenuOpen(false);
-        navigate(`${data.subspaceUrl}/settings/about`);
-      }}
-      onAboutClick={() => {
-        setMobileMenuOpen(false);
-        setAboutOpen(true);
-      }}
-      onQuickActionClick={handleQuickAction}
-      subspaces={data.subspaces}
-      onShowAllSubspaces={() => {
-        setMobileMenuOpen(false);
-        setActiveDialog('subspaces');
-      }}
-      onSubspaceClick={href => {
-        setMobileMenuOpen(false);
-        navigate(href);
-      }}
-      onCreateSubspace={handleCreateSubspace}
-    />
+  const sidebarCommonProps = {
+    ...data.sidebar,
+    onEditClick: () => {
+      setMobileMenuOpen(false);
+      navigate(`${data.subspaceUrl}/settings/about`);
+    },
+    onAboutClick: () => {
+      setMobileMenuOpen(false);
+      setAboutOpen(true);
+    },
+    onQuickActionClick: handleQuickAction,
+    subspaces: data.subspaces,
+    onShowAllSubspaces: () => {
+      setMobileMenuOpen(false);
+      setActiveDialog('subspaces');
+    },
+    onSubspaceClick: (href: string) => {
+      setMobileMenuOpen(false);
+      navigate(href);
+    },
+    onCreateSubspace: handleCreateSubspace,
+  };
+
+  // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
+  // the full sidebar and has no collapse affordance.
+  const desktopSidebar = (
+    <SubspaceSidebar {...sidebarCommonProps} collapsed={sidebarCollapsed} onToggleCollapse={toggleSidebarCollapsed} />
   );
+  const mobileSidebar = <SubspaceSidebar {...sidebarCommonProps} />;
 
   const mobileMenuContent = (
     <div className="flex flex-col gap-4">
-      {subspaceSidebar}
+      {mobileSidebar}
       {data.canEditFlow && editFlowHref && (
         <a
           href={editFlowHref}
@@ -223,17 +231,32 @@ export default function CrdSubspacePageLayout() {
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
             onShareClick: () => setShareDialogOpen(true),
+            onMenuClick: () => setMobileMenuOpen(true),
           }}
           overlayHeader={enableBannerOverlay}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Left sidebar — cols 2-3, one col gap from left edge */}
-            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>
+            {/* Left sidebar — cols 2-3 when expanded; a single-col icon rail
+                when collapsed, freeing a column for the content area. */}
+            <div
+              className={cn(
+                'hidden lg:block sticky top-24 self-start',
+                sidebarCollapsed ? 'lg:col-start-2 lg:col-span-1' : 'lg:col-start-2 col-span-2'
+              )}
+            >
+              {desktopSidebar}
+            </div>
 
-            {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
-            <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
+            {/* Main content — cols 4-11 when the sidebar is expanded; widens to
+                cols 3-11 when collapsed. One col gap from the right edge. */}
+            <div
+              className={cn(
+                'col-span-12 min-w-0 space-y-6',
+                sidebarCollapsed ? 'lg:col-start-3 lg:col-span-9' : 'lg:col-start-4 lg:col-span-8'
+              )}
+            >
               <SpaceApplyButtonConnector
                 spaceId={data.subspaceId}
                 spaceProfileUrl={data.subspaceUrl}
