@@ -24,6 +24,14 @@ import {
   mapInnovationPackToDetail,
 } from './innovationPackMapper';
 
+/**
+ * Stable, comparable snapshot of the form values. `avatarFile` is a `File`
+ * (not JSON-serialisable in a meaningful way), so it's reduced to a name+size
+ * key — picking a new avatar therefore registers as a change.
+ */
+const dirtySnapshot = (v: InnovationPackFormValues): string =>
+  JSON.stringify({ ...v, avatarFile: v.avatarFile ? `${v.avatarFile.name}:${v.avatarFile.size}` : undefined });
+
 export type UseInnovationPackAdminResult = {
   loading: boolean;
   notFound: boolean;
@@ -199,12 +207,17 @@ export function useInnovationPackAdmin({
     searchVisibility: 'account',
   };
 
+  // Dirty = the live buffer differs from the last-seeded server snapshot.
+  // While loading (`values` null) there's nothing to save, so it's pristine.
+  const isDirty = values != null && detail != null && dirtySnapshot(values) !== dirtySnapshot(detail.formValues);
+
   const form: InnovationPackFormProps = {
     value: formValues,
     errors,
     onChange,
     onSubmit,
     submitting: submitting || pendingSubmit,
+    isDirty,
     providerName: detail?.providerName ?? '',
     avatarUrl: detail ? undefined : undefined,
     // Pack admin only ever EDITS an existing pack → uploads go to the pack's
