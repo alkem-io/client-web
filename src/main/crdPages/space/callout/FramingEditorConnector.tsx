@@ -89,10 +89,19 @@ type FramingEditorConnectorProps = {
    * Preview blobs returned from the last save of the inline whiteboard editor —
    * used to render the current canvas as a thumbnail in the inline preview
    * (MUI parity with `FormikWhiteboardPreview`). Empty array when the user
-   * hasn't opened the editor yet, in which case the preview falls back to a
-   * placeholder icon.
+   * hasn't opened the editor yet, in which case the preview falls back to
+   * `whiteboardPreviewServerUrl` (when set — Callout-template edit / callout-from-template
+   * prefill) and finally to a placeholder icon.
    */
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
+  /**
+   * Server-rendered whiteboard preview image URL — the `WHITEBOARD_PREVIEW` Visual the
+   * backend stamps when content changes. Read-time fallback for the inline preview when
+   * no fresh in-form blob exists yet (D16, 2026-05-18). Fresh blobs (from a just-saved
+   * inline edit) take precedence — they reflect the current canvas; this URL only fills
+   * the "loaded but not re-edited" gap.
+   */
+  whiteboardPreviewServerUrl?: string;
   onWhiteboardChange?: (
     content: string,
     previewImages: WhiteboardPreviewImage[] | undefined,
@@ -169,6 +178,7 @@ export function FramingEditorConnector({
   whiteboardPreviewSettings,
   whiteboardTitle,
   whiteboardPreviewImages,
+  whiteboardPreviewServerUrl,
   onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
@@ -249,7 +259,7 @@ export function FramingEditorConnector({
           <InlineWhiteboardPreview
             onEdit={() => setWhiteboardEditorOpen(true)}
             editLabel={t('framing.edit')}
-            previewImageUrl={whiteboardPreviewUrl}
+            previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
             imageAlt={whiteboardTitle || t('callout.whiteboard')}
           />
           <Suspense fallback={<Loading />}>

@@ -1,5 +1,6 @@
 import { ExternalLink, FileText, ImageIcon, MessageSquare, MessageSquareOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Badge } from '@/crd/primitives/badge';
 import type { TemplateContent } from '../types';
@@ -74,7 +75,19 @@ function FramingBody({ content }: { content: CalloutContent }) {
         </div>
       );
     case 'whiteboard':
-      return <p className="text-body text-muted-foreground">{t('framingKind.whiteboard')}</p>;
+      // D16 (2026-05-18): render the server-stamped preview image when present, falling back to
+      // the placeholder text only when the visual is genuinely missing.
+      return content.framingWhiteboardPreviewImageUrl ? (
+        <div className="overflow-hidden rounded-md border bg-muted">
+          <img
+            src={content.framingWhiteboardPreviewImageUrl}
+            alt={content.framingTitle || t('framingKind.whiteboard')}
+            className="w-full object-contain"
+          />
+        </div>
+      ) : (
+        <p className="text-body text-muted-foreground">{t('framingKind.whiteboard')}</p>
+      );
     default:
       return null;
   }
@@ -106,6 +119,13 @@ export function CalloutTemplatePreview({ content }: { content: CalloutContent })
         {content.framingDescription && <MarkdownContent content={content.framingDescription} />}
         <FramingBody content={content} />
       </div>
+
+      {/* References (D19, 2026-05-18) — `framing.profile.references`, the *calloutReferences* the
+          template editor produces. Rendered via the same component the in-feed `CalloutDetailDialog`
+          uses so the styling is identical between preview and feed. */}
+      {content.references && content.references.length > 0 && (
+        <ReferencesAndTagsStrip references={content.references} />
+      )}
 
       <div className="space-y-1.5">
         <p className="text-label uppercase text-muted-foreground">{t('preview.callout.allowedContributions')}</p>
