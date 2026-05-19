@@ -44,6 +44,12 @@ export type UseAboutTabDataResult = {
   onCancelRemoveReference: () => void;
   /** Save a single section — only that section's fields are persisted. */
   onSaveSection: (section: AboutSectionKey) => Promise<void>;
+  /** True when any section differs from the server-saved value. */
+  isDirty: boolean;
+  /** Persist every dirty section (used by the tab-switch guard's "Save"). */
+  onSaveAll: () => Promise<void>;
+  /** Discard all local edits back to the server-saved snapshot (guard's "Discard"). */
+  onResetAll: () => void;
 };
 
 const TEMP_PREFIX = 'temp-';
@@ -62,9 +68,10 @@ const SAVED_FLASH_MS = 1800;
  * section's patch via updateSpace. Branding uploads remain immediate
  * (the file picker IS the commit).
  *
- * There is intentionally NO global reset — dirty is derived from the Apollo
- * cache and each section clears itself when saved. If the admin leaves the
- * tab with unsaved edits, the local buffer is discarded by a hard reload.
+ * Dirty is derived from the Apollo cache and each section clears itself when
+ * saved. `onSaveAll` / `onResetAll` exist for the tab-switch guard: switching
+ * away with unsaved edits prompts the discard dialog, which either persists
+ * every dirty section or drops the local buffer back to the cached snapshot.
  */
 export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceSettingsLevel): UseAboutTabDataResult {
   const {
@@ -391,6 +398,24 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
   };
 
+  const isDirty = Object.values(dirtyByField).some(Boolean);
+
+  const onSaveAll = async () => {
+    const sections = (Object.keys(dirtyByField) as AboutSectionKey[]).filter(section => dirtyByField[section]);
+    for (const section of sections) {
+      await onSaveSection(section);
+    }
+  };
+
+  // The per-section model has no global reset — discarding means dropping the
+  // local buffer back to the cache-derived snapshot. Temp (unsaved) references
+  // disappear because they only exist in the buffer.
+  const onResetAll = () => {
+    if (!saved) return;
+    setValues(saved);
+    valuesRef.current = saved;
+  };
+
   const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
   return {
@@ -414,6 +439,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onConfirmRemoveReference,
     onCancelRemoveReference,
     onSaveSection,
+    isDirty,
+    onSaveAll,
+    onResetAll,
   };
 }
 

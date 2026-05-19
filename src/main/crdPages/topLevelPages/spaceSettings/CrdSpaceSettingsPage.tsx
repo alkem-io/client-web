@@ -38,6 +38,7 @@ import {
 } from './community/useAddCommunityMemberDialog';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
+import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
 import { useColumnMenu } from './layout/useColumnMenu';
 import { useLayoutTabData } from './layout/useLayoutTabData';
 import { useApplicationFormData } from './settings/useApplicationFormData';
@@ -47,7 +48,6 @@ import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
-import { useDirtyTabGuard } from './useDirtyTabGuard';
 import { useSettingsScope } from './useSettingsScope';
 import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
@@ -72,7 +72,7 @@ export default function CrdSpaceSettingsPage() {
 
   const visibleTabs = getVisibleSettingsTabs(level);
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
-  const guard = useDirtyTabGuard();
+  const guard = useDirtyTabGuardContext();
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
@@ -175,16 +175,17 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.clearSelection();
   }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
 
-  // About uses per-section inline Save, so it does NOT participate in the
-  // tab-switch guard. Only Layout and the Application Form can enter a
-  // buffered-dirty state that needs protection.
+  // About uses per-section inline Save, but its edits still live in a local
+  // buffer that survives a tab switch. Without the guard the admin can wander
+  // off and never notice they never hit Save, so About participates too —
+  // alongside Layout and the Application Form.
   useEffect(() => {
-    if (layout.isDirty || applicationForm.isDirty) {
+    if (about.isDirty || layout.isDirty || applicationForm.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, layout.isDirty, applicationForm.isDirty]);
+  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
   // Drives the "Loading new flow…" overlay on the Layout columns container
@@ -237,6 +238,7 @@ export default function CrdSpaceSettingsPage() {
   }, [subspacesTab, saveAs]);
 
   const handleConfirmSwitchSave = async () => {
+    if (about.isDirty) await about.onSaveAll();
     if (layout.isDirty) await layout.onSave();
     if (applicationForm.isDirty) applicationForm.onSave();
     guard.clearDirty();
@@ -247,6 +249,7 @@ export default function CrdSpaceSettingsPage() {
     }
   };
   const handleConfirmSwitchDiscard = () => {
+    about.onResetAll();
     layout.onReset();
     applicationForm.onReset();
     guard.clearDirty();

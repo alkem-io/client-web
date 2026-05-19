@@ -15,8 +15,13 @@ import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettin
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
-import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
+import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
+import {
+  type SpaceSettingsTabId,
+  useSpaceSettingsTab,
+} from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
@@ -69,6 +74,15 @@ export default function CrdSubspacePageLayout() {
   const visibleSettingsTabs = getVisibleSettingsTabs(settingsLevel);
   const settingsTabDescriptors = useSettingsTabDescriptors(settingsLevel);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab(visibleSettingsTabs);
+  // Shared with the Settings page (rendered via <Outlet>) via
+  // DirtyTabGuardContext so a tab click consults the guard before navigating
+  // and the discard-changes dialog (owned by the page) can open.
+  const settingsDirtyGuard = useDirtyTabGuard();
+  const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
+    if (await settingsDirtyGuard.requestSwitch(next)) {
+      setActiveSettingsTab(next);
+    }
+  };
 
   // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
   // parent — collapse to a single hop. At L2 the L0 hop is distinct, so we render
@@ -170,36 +184,38 @@ export default function CrdSubspacePageLayout() {
 
   if (isOnSettings) {
     return (
-      <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
-        {data.visibility.status !== 'active' && (
-          <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
-        )}
-        <div className="flex flex-col bg-background min-h-screen">
-          <SpaceSettingsHeader
-            title={data.banner.title}
-            tagline={data.banner.tagline ?? null}
-            avatarUrl={data.banner.subspaceAvatarUrl ?? null}
-            initials={data.banner.subspaceInitials}
-            avatarColor={data.banner.subspaceColor}
-            tabs={
-              <SpaceSettingsTabStrip
-                activeTab={activeSettingsTab}
-                onTabChange={setActiveSettingsTab}
-                tabs={settingsTabDescriptors}
-              />
-            }
-          />
-          <main className="flex-1 w-full px-6 md:px-8 pb-8">
-            <div className="grid grid-cols-12 gap-6 items-start">
-              <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Outlet context={{ data }} />
-                </Suspense>
+      <DirtyTabGuardContext.Provider value={settingsDirtyGuard}>
+        <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
+          {data.visibility.status !== 'active' && (
+            <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
+          )}
+          <div className="flex flex-col bg-background min-h-screen">
+            <SpaceSettingsHeader
+              title={data.banner.title}
+              tagline={data.banner.tagline ?? null}
+              avatarUrl={data.banner.subspaceAvatarUrl ?? null}
+              initials={data.banner.subspaceInitials}
+              avatarColor={data.banner.subspaceColor}
+              tabs={
+                <SpaceSettingsTabStrip
+                  activeTab={activeSettingsTab}
+                  onTabChange={handleSettingsTabChange}
+                  tabs={settingsTabDescriptors}
+                />
+              }
+            />
+            <main className="flex-1 w-full px-6 md:px-8 pb-8">
+              <div className="grid grid-cols-12 gap-6 items-start">
+                <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Outlet context={{ data }} />
+                  </Suspense>
+                </div>
               </div>
-            </div>
-          </main>
-        </div>
-      </StorageConfigContextProvider>
+            </main>
+          </div>
+        </StorageConfigContextProvider>
+      </DirtyTabGuardContext.Provider>
     );
   }
 
