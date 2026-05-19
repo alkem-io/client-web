@@ -257,7 +257,7 @@ export function CreateSubspaceDialog({
             <Button type="button" variant="ghost" onClick={requestClose} disabled={submitting}>
               {t('subspaces.createDialog.cancel')}
             </Button>
-            <Button type="button" onClick={onSubmit} disabled={!canSubmit} aria-busy={submitting}>
+            <Button type="button" onClick={onSubmit} disabled={!canSubmit || submitting} aria-busy={submitting}>
               {submitting ? (
                 <>
                   <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />
