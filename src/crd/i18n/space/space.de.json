@@ -676,7 +676,8 @@
   },
   "postSnippet": {
     "readMore": "… Mehr lesen",
-    "readLess": "Weniger lesen"
+    "readLess": "Weniger lesen",
+    "seeFullDescription": "Vollständige Beschreibung anzeigen"
   },
   "postPreview": {
     "label": "Vorschau des ausgewählten Beitrags",

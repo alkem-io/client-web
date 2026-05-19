@@ -676,7 +676,8 @@
   },
   "postSnippet": {
     "readMore": "… Прочети повече",
-    "readLess": "Прочети по-малко"
+    "readLess": "Прочети по-малко",
+    "seeFullDescription": "Виж пълното описание"
   },
   "postPreview": {
     "label": "Преглед на избрания отговор",

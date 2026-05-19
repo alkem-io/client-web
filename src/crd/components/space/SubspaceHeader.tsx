@@ -1,4 +1,4 @@
-import { Activity, Maximize2, Minimize2, Settings, Share2, Video } from 'lucide-react';
+import { Activity, Maximize2, Menu, Minimize2, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
@@ -20,6 +20,13 @@ export type SubspaceHeaderActionsData = {
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
   onToggleFullWidth?: () => void;
+  /**
+   * Opens the sidebar drawer. When provided, a hamburger button is shown
+   * before the other action icons — but only on tablet widths (640–1023px),
+   * where the desktop sidebar is hidden and the mobile bottom-bar hamburger is
+   * not shown. Hidden on phones (`<640px`) and desktop (`>=1024px`).
+   */
+  onMenuClick?: () => void;
 };
 
 export type SubspaceHeaderProps = {
@@ -113,6 +120,20 @@ export function SubspaceHeader({
                 <h1 className="text-hero text-foreground truncate">{title}</h1>
               </div>
               <div className="shrink-0 flex items-center gap-2">
+                {actions.onMenuClick && (
+                  <div className="hidden sm:flex lg:hidden">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9"
+                      onClick={actions.onMenuClick}
+                      aria-label={t('a11y.openMenu')}
+                      aria-haspopup="dialog"
+                    >
+                      <Menu className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </div>
+                )}
                 {actions.showActivity && (
                   <Button
                     variant="ghost"

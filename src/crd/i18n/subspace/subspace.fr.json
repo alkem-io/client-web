@@ -23,6 +23,8 @@
     "about": "À propos de ce SousEspace",
     "lead": "Responsable",
     "leads": "Responsables",
+    "collapse": "Réduire",
+    "expand": "Développer",
     "quickActions": {
       "heading": "Actions rapides",
       "community": "Communauté",

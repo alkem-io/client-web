@@ -216,6 +216,7 @@ export default function CrdSpacePageLayout() {
                 onTabChange={handleTabChange}
                 isSmallScreen={isSmallScreen}
                 onMenuClick={() => setMobileMenuOpen(true)}
+                action={<div id="crd-space-tabs-action" />}
               />
             )
           }

@@ -23,6 +23,8 @@
     "about": "About this Subspace",
     "lead": "Lead",
     "leads": "Leads",
+    "collapse": "Collapse",
+    "expand": "Expand",
     "quickActions": {
       "heading": "Quick Actions",
       "community": "Community",

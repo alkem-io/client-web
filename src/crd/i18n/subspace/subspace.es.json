@@ -23,6 +23,8 @@
     "about": "Acerca de este SubEspacio",
     "lead": "Líder",
     "leads": "Líderes",
+    "collapse": "Contraer",
+    "expand": "Expandir",
     "quickActions": {
       "heading": "Acciones rápidas",
       "community": "Comunidad",

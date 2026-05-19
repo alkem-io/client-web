@@ -676,7 +676,8 @@
   },
   "postSnippet": {
     "readMore": "… Leer más",
-    "readLess": "Leer menos"
+    "readLess": "Leer menos",
+    "seeFullDescription": "Ver descripción completa"
   },
   "postPreview": {
     "label": "Vista previa de la contribución seleccionada",

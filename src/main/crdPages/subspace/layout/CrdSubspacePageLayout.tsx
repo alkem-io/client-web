@@ -42,6 +42,7 @@ import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDi
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
+import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
 
 export type SubspaceMobileMenu = {
   open: boolean;
@@ -64,6 +65,7 @@ export default function CrdSubspacePageLayout() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const createSubspace = useCreateSubspace(data.subspaceId ?? '');
   const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(data.subspaceId);
 
@@ -140,34 +142,39 @@ export default function CrdSubspacePageLayout() {
       }
     : undefined;
 
-  const subspaceSidebar = (
-    <SubspaceSidebar
-      {...data.sidebar}
-      onEditClick={() => {
-        setMobileMenuOpen(false);
-        navigate(`${data.subspaceUrl}/settings/about`);
-      }}
-      onAboutClick={() => {
-        setMobileMenuOpen(false);
-        setAboutOpen(true);
-      }}
-      onQuickActionClick={handleQuickAction}
-      subspaces={data.subspaces}
-      onShowAllSubspaces={() => {
-        setMobileMenuOpen(false);
-        setActiveDialog('subspaces');
-      }}
-      onSubspaceClick={href => {
-        setMobileMenuOpen(false);
-        navigate(href);
-      }}
-      onCreateSubspace={handleCreateSubspace}
-    />
+  const sidebarCommonProps = {
+    ...data.sidebar,
+    onEditClick: () => {
+      setMobileMenuOpen(false);
+      navigate(`${data.subspaceUrl}/settings/about`);
+    },
+    onAboutClick: () => {
+      setMobileMenuOpen(false);
+      setAboutOpen(true);
+    },
+    onQuickActionClick: handleQuickAction,
+    subspaces: data.subspaces,
+    onShowAllSubspaces: () => {
+      setMobileMenuOpen(false);
+      setActiveDialog('subspaces');
+    },
+    onSubspaceClick: (href: string) => {
+      setMobileMenuOpen(false);
+      navigate(href);
+    },
+    onCreateSubspace: handleCreateSubspace,
+  };
+
+  // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
+  // the full sidebar and has no collapse affordance.
+  const desktopSidebar = (
+    <SubspaceSidebar {...sidebarCommonProps} collapsed={sidebarCollapsed} onToggleCollapse={toggleSidebarCollapsed} />
   );
+  const mobileSidebar = <SubspaceSidebar {...sidebarCommonProps} />;
 
   const mobileMenuContent = (
     <div className="flex flex-col gap-4">
-      {subspaceSidebar}
+      {mobileSidebar}
       {data.canEditFlow && editFlowHref && (
         <a
           href={editFlowHref}
@@ -232,6 +239,11 @@ export default function CrdSubspacePageLayout() {
   // branch above with no banner image.
   const enableBannerOverlay = data.visibility.status === 'active';
 
+  // Sidebar + content share one 12-col track. Two orthogonal toggles move the
+  // column boundaries: `sidebarCollapsed` (2-col sidebar → 1-col rail) and
+  // `fullWidth` (drop the empty edge gutter columns). See `subspaceHomeColumns`.
+  const homeGrid = subspaceHomeColumns(fullWidth, sidebarCollapsed);
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
       {data.visibility.status !== 'active' && (
@@ -251,29 +263,20 @@ export default function CrdSubspacePageLayout() {
             onActivityClick: () => setActiveDialog('activity'),
             onShareClick: () => setShareDialogOpen(true),
             onToggleFullWidth: toggleFullWidth,
+            onMenuClick: () => setMobileMenuOpen(true),
           }}
           overlayHeader={enableBannerOverlay}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Left sidebar — cols 2-3 (or 1-2 when full-width) */}
-            <div
-              className={cn(
-                'hidden lg:block col-span-2 sticky top-24 self-start',
-                fullWidth ? 'lg:col-start-1' : 'lg:col-start-2'
-              )}
-            >
-              {subspaceSidebar}
-            </div>
+            {/* Left sidebar — collapsible 1-col rail; `fullWidth` drops the
+                empty edge gutter so it starts at col 1 instead of col 2. */}
+            <div className={cn('hidden lg:block sticky top-24 self-start', homeGrid.sidebar)}>{desktopSidebar}</div>
 
-            {/* Main content — cols 4-11, or 3-12 when full-width */}
-            <div
-              className={cn(
-                'col-span-12 min-w-0 space-y-6',
-                fullWidth ? 'lg:col-start-3 lg:col-span-10' : 'lg:col-start-4 lg:col-span-8'
-              )}
-            >
+            {/* Main content — fills the remaining columns; widens when the
+                sidebar is collapsed and/or full-width removes the gutters. */}
+            <div className={cn('col-span-12 min-w-0 space-y-6', homeGrid.main)}>
               <SpaceApplyButtonConnector
                 spaceId={data.subspaceId}
                 spaceProfileUrl={data.subspaceUrl}
@@ -387,4 +390,25 @@ function EnableBannerOverlay() {
 function EnableSpaceFullWidth() {
   useEnableSpaceFullWidth();
   return null;
+}
+
+/**
+ * Grid placement for the subspace home's sidebar + content track, composing the
+ * two orthogonal toggles. Literal class strings (one per combination) so the
+ * Tailwind scanner emits them — never build `lg:col-start-${n}` dynamically.
+ *
+ * - `fullWidth`: removes the empty edge gutter column on each side
+ *   (sidebar shifts col 2 → col 1; content extends to the last column).
+ * - `collapsed`: shrinks the sidebar from 2 columns to a 1-column rail; the
+ *   freed column goes to the content area.
+ */
+function subspaceHomeColumns(fullWidth: boolean, collapsed: boolean): { sidebar: string; main: string } {
+  if (fullWidth) {
+    return collapsed
+      ? { sidebar: 'lg:col-start-1 lg:col-span-1', main: 'lg:col-start-2 lg:col-span-11' }
+      : { sidebar: 'lg:col-start-1 lg:col-span-2', main: 'lg:col-start-3 lg:col-span-10' };
+  }
+  return collapsed
+    ? { sidebar: 'lg:col-start-2 lg:col-span-1', main: 'lg:col-start-3 lg:col-span-9' }
+    : { sidebar: 'lg:col-start-2 lg:col-span-2', main: 'lg:col-start-4 lg:col-span-8' };
 }
