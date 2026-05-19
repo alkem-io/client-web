@@ -384,7 +384,9 @@
     "activity": "Активност",
     "videoCall": "Видеоразговор",
     "share": "Сподели",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "expandWidth": "Разшири до пълна ширина",
+    "collapseWidth": "Свий до центрирано оформление"
   },
   "contextMenu": {
     "edit": "Редактирай",

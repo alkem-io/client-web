@@ -14,6 +14,7 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { cn } from '@/crd/lib/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
@@ -29,8 +30,10 @@ import {
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { useSpaceWidthPreference } from '../../space/layout/useSpaceWidthPreference';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
@@ -61,6 +64,7 @@ export default function CrdSubspacePageLayout() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const createSubspace = useCreateSubspace(data.subspaceId ?? '');
+  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(data.subspaceId);
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -189,6 +193,7 @@ export default function CrdSubspacePageLayout() {
           {data.visibility.status !== 'active' && (
             <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
           )}
+          <EnableSpaceFullWidth />
           <div className="flex flex-col bg-background min-h-screen">
             <SpaceSettingsHeader
               title={data.banner.title}
@@ -196,6 +201,7 @@ export default function CrdSubspacePageLayout() {
               avatarUrl={data.banner.subspaceAvatarUrl ?? null}
               initials={data.banner.subspaceInitials}
               avatarColor={data.banner.subspaceColor}
+              fullWidth={fullWidth}
               tabs={
                 <SpaceSettingsTabStrip
                   activeTab={activeSettingsTab}
@@ -206,7 +212,9 @@ export default function CrdSubspacePageLayout() {
             />
             <main className="flex-1 w-full px-6 md:px-8 pb-8">
               <div className="grid grid-cols-12 gap-6 items-start">
-                <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
+                <div
+                  className={cn('col-span-12 min-w-0', fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10')}
+                >
                   <Suspense fallback={<LoadingSpinner />}>
                     <Outlet context={{ data }} />
                   </Suspense>
@@ -231,25 +239,42 @@ export default function CrdSubspacePageLayout() {
         <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
       )}
       {enableBannerOverlay && <EnableBannerOverlay />}
+      <EnableSpaceFullWidth />
 
       <div className="flex flex-col bg-background min-h-screen">
         <SubspaceHeader
           {...data.banner}
+          fullWidth={fullWidth}
           actions={{
             ...data.bannerActions,
+            showFullWidthToggle: true,
+            fullWidth,
             onActivityClick: () => setActiveDialog('activity'),
             onShareClick: () => setShareDialogOpen(true),
+            onToggleFullWidth: toggleFullWidth,
           }}
           overlayHeader={enableBannerOverlay}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Left sidebar — cols 2-3, one col gap from left edge */}
-            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>
+            {/* Left sidebar — cols 2-3 (or 1-2 when full-width) */}
+            <div
+              className={cn(
+                'hidden lg:block col-span-2 sticky top-24 self-start',
+                fullWidth ? 'lg:col-start-1' : 'lg:col-start-2'
+              )}
+            >
+              {subspaceSidebar}
+            </div>
 
-            {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
-            <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
+            {/* Main content — cols 4-11, or 3-12 when full-width */}
+            <div
+              className={cn(
+                'col-span-12 min-w-0 space-y-6',
+                fullWidth ? 'lg:col-start-3 lg:col-span-10' : 'lg:col-start-4 lg:col-span-8'
+              )}
+            >
               <SpaceApplyButtonConnector
                 spaceId={data.subspaceId}
                 spaceProfileUrl={data.subspaceUrl}
@@ -357,5 +382,10 @@ export default function CrdSubspacePageLayout() {
 
 function EnableBannerOverlay() {
   useEnableBannerOverlay();
+  return null;
+}
+
+function EnableSpaceFullWidth() {
+  useEnableSpaceFullWidth();
   return null;
 }

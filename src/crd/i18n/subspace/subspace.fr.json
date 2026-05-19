@@ -3,7 +3,9 @@
     "activity": "Activité récente",
     "videoCall": "Démarrer un appel vidéo",
     "share": "Partager",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "expandWidth": "Étendre à pleine largeur",
+    "collapseWidth": "Réduire à la mise en page centrée"
   },
   "members": {
     "memberCount_one": "{{count}} membre",

@@ -1,4 +1,4 @@
-import { Activity, Settings, Share2, Video } from 'lucide-react';
+import { Activity, Maximize2, Minimize2, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
@@ -9,11 +9,16 @@ export type SubspaceHeaderActionsData = {
   showVideoCall: boolean;
   showShare: boolean;
   showSettings: boolean;
+  /** Shows the expand/collapse (full-width) toggle next to Activity. */
+  showFullWidthToggle?: boolean;
+  /** Current full-width state — drives the icon and pressed state. */
+  fullWidth?: boolean;
   settingsHref?: string;
   videoCallUrl?: string;
   onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
+  onToggleFullWidth?: () => void;
 };
 
 export type SubspaceHeaderProps = {
@@ -39,6 +44,12 @@ export type SubspaceHeaderProps = {
   actions: SubspaceHeaderActionsData;
 
   /**
+   * When true, the title/actions row fills all 12 grid columns instead of the
+   * default `lg:col-start-2 lg:col-span-10` inset, aligning with a full-width body.
+   */
+  fullWidth?: boolean;
+
+  /**
    * When true, the banner slides under the sticky page header (h-16) so the header can render
    * transparently over it (spec 100-space-header-layout A8). The title/buttons row stays below
    * the banner — no in-banner overlay offset is needed in this layout because the only content
@@ -59,6 +70,7 @@ export function SubspaceHeader({
   color,
   actions,
   overlayHeader = false,
+  fullWidth = false,
   className,
 }: SubspaceHeaderProps) {
   const { t } = useTranslation('crd-subspace');
@@ -84,7 +96,12 @@ export function SubspaceHeader({
 
       <div className="w-full px-6 md:px-8 pt-8 pb-8">
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex flex-col gap-1">
+          <div
+            className={cn(
+              'col-span-12 flex flex-col gap-1',
+              fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10'
+            )}
+          >
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div
@@ -109,6 +126,22 @@ export function SubspaceHeader({
                     aria-label={t('actions.activity')}
                   >
                     <Activity className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                )}
+                {actions.showFullWidthToggle && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hidden lg:inline-flex"
+                    onClick={actions.onToggleFullWidth}
+                    aria-pressed={actions.fullWidth}
+                    aria-label={actions.fullWidth ? t('actions.collapseWidth') : t('actions.expandWidth')}
+                  >
+                    {actions.fullWidth ? (
+                      <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <Maximize2 className="h-4 w-4" aria-hidden="true" />
+                    )}
                   </Button>
                 )}
                 {actions.showVideoCall &&

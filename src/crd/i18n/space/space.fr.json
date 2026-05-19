@@ -384,7 +384,9 @@
     "activity": "Activité",
     "videoCall": "Appel vidéo",
     "share": "Partager",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "expandWidth": "Étendre à pleine largeur",
+    "collapseWidth": "Réduire à la mise en page centrée"
   },
   "contextMenu": {
     "edit": "Modifier",

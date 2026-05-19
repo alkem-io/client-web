@@ -3,7 +3,9 @@
     "activity": "Recente activiteit",
     "videoCall": "Videogesprek starten",
     "share": "Delen",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "expandWidth": "Volledige breedte",
+    "collapseWidth": "Gecentreerde weergave"
   },
   "members": {
     "memberCount_one": "{{count}} lid",

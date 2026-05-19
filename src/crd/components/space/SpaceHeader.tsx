@@ -1,4 +1,4 @@
-import { Activity, Home, Settings, Share2, Video } from 'lucide-react';
+import { Activity, Home, Maximize2, Minimize2, Settings, Share2, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
@@ -10,9 +10,14 @@ type SpaceHeaderActions = {
   showShare?: boolean;
   showSettings?: boolean;
   showActivity?: boolean;
+  /** Shows the expand/collapse (full-width) toggle next to Activity. */
+  showFullWidthToggle?: boolean;
+  /** Current full-width state — drives the icon and pressed state. */
+  fullWidth?: boolean;
   onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
+  onToggleFullWidth?: () => void;
   videoCallUrl?: string;
   settingsHref?: string;
   onSettingsClick?: () => void;
@@ -33,6 +38,12 @@ type SpaceHeaderProps = {
    * inside the banner div is the image/gradient itself.
    */
   overlayHeader?: boolean;
+  /**
+   * When true, the title/actions row fills all 12 grid columns instead of the
+   * default `lg:col-start-2 lg:col-span-10` inset, aligning with a full-width
+   * `SpaceShell` body.
+   */
+  fullWidth?: boolean;
   className?: string;
 };
 
@@ -44,6 +55,7 @@ export function SpaceHeader({
   isHomeSpace,
   actions,
   overlayHeader = false,
+  fullWidth = false,
   className,
 }: SpaceHeaderProps) {
   const { t } = useTranslation('crd-space');
@@ -65,7 +77,12 @@ export function SpaceHeader({
 
       <div className="w-full px-6 md:px-8 pt-8 pb-8">
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex flex-col gap-1">
+          <div
+            className={cn(
+              'col-span-12 flex flex-col gap-1',
+              fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10'
+            )}
+          >
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <h1 className="text-hero text-foreground truncate">{title}</h1>
@@ -86,6 +103,22 @@ export function SpaceHeader({
                     aria-label={t('mobile.activity')}
                   >
                     <Activity className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                )}
+                {actions.showFullWidthToggle && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hidden lg:inline-flex"
+                    onClick={actions.onToggleFullWidth}
+                    aria-pressed={actions.fullWidth}
+                    aria-label={actions.fullWidth ? t('mobile.collapseWidth') : t('mobile.expandWidth')}
+                  >
+                    {actions.fullWidth ? (
+                      <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <Maximize2 className="h-4 w-4" aria-hidden="true" />
+                    )}
                   </Button>
                 )}
                 {actions.showVideoCall &&

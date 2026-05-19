@@ -77,6 +77,12 @@ type HeaderProps = {
   showGridToggle?: boolean;
   designVersionSwitch?: CrdDesignVersionSwitch;
   /**
+   * When true the header's inner content group fills all 12 grid columns
+   * instead of the default `lg:col-start-2 lg:col-span-10` inset, keeping it
+   * aligned with a full-width `SpaceShell` body.
+   */
+  fullWidth?: boolean;
+  /**
    * When true the header renders transparently at the top of the page so a
    * banner image below shows through. The left and right element groups get
    * a frosted-glass pill background so they remain legible. After the user
@@ -116,6 +122,7 @@ export function Header({
   onLanguageChange,
   showGridToggle,
   designVersionSwitch,
+  fullWidth = false,
   overlayBanner = false,
   className,
 }: HeaderProps) {
@@ -149,7 +156,12 @@ export function Header({
           header items are not flush against the viewport edges. */}
       <div className="w-full h-full px-6 md:px-8">
         <div className="grid grid-cols-12 gap-6 h-full">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between h-full">
+          <div
+            className={cn(
+              'col-span-12 flex items-center justify-between h-full',
+              fullWidth ? 'lg:col-span-12' : 'lg:col-start-2 lg:col-span-10'
+            )}
+          >
             {/* Left: Logo + breadcrumbs */}
             <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>

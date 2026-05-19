@@ -349,9 +349,18 @@
     "signIn": "Sign in to apply",
     "signInHelper": "You'll be redirected to sign in to Alkemio first.",
     "context": {
-      "L0": { "why": "Why are we here?", "who": "Who is involved?" },
-      "L1": { "why": "Why this subspace?", "who": "Who is involved?" },
-      "L2": { "why": "Why this subspace?", "who": "Who is involved?" }
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
     }
   },
   "apply": {
@@ -375,7 +384,9 @@
     "activity": "Activity",
     "videoCall": "Video Call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centered layout"
   },
   "contextMenu": {
     "edit": "Edit",

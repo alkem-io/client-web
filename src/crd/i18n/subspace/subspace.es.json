@@ -3,7 +3,9 @@
     "activity": "Actividad reciente",
     "videoCall": "Iniciar videollamada",
     "share": "Compartir",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "expandWidth": "Ampliar a ancho completo",
+    "collapseWidth": "Contraer al diseño centrado"
   },
   "members": {
     "memberCount_one": "{{count}} miembro",
