@@ -79,7 +79,16 @@ export function ContributionsPreviewConnector({
           defaultContent={defaults?.whiteboardContent}
         />
       ) : contributionType === CalloutContributionType.Memo ? (
-        <MemoContributionAddConnector key="add-tile" calloutId={callout.id} />
+        <MemoContributionAddConnector
+          key="add-tile"
+          calloutId={callout.id}
+          // Posts and Memos share `contributionDefaults.defaultDisplayName` + `postDescription`
+          // (FR-33 / FR-42 / FR-43). Mirror the Post branch below — without these the create-memo
+          // dialog opens with the i18n fallback title and an empty body. T157, 2026-05-19; same
+          // bug present here on the feed-level preview surface as in `CalloutDetailDialogConnector`.
+          defaultDisplayName={defaults?.defaultDisplayName}
+          defaultMarkdown={defaults?.postDescription}
+        />
       ) : contributionType === CalloutContributionType.Post ? (
         <PostContributionAddConnector
           key="add-tile"

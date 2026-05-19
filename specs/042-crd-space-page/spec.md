@@ -484,10 +484,17 @@ The comment input is a multiline textarea that starts as a single line, auto-exp
 
 #### Display & Threading
 1. **Given** a callout with comments enabled, **When** no contribution is selected, **Then** callout-level comments display below the contributions section
-2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post
+2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post (and the callout-level comments are hidden — they don't stack)
 3. **Given** a comment exists, **When** it renders, **Then** it shows author avatar, name, timestamp, and message content
 4. **Given** a comment has replies, **When** the thread renders, **Then** replies display indented below the parent comment with a "Reply" action on each comment
 5. **Given** comments are disabled for a callout, **When** the callout renders, **Then** no comment section appears
+
+#### Post-contribution comment-swap (selected-post mode)
+The bottom of the detail dialog has exactly one comment surface at any time — either the **callout's** comments or the **selected post's** comments, never both. The swap is gated by `settings.contribution.commentsEnabled` (the *contribution*-level switch, distinct from the framing-level switch governing callout comments):
+2a. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === true`, **When** the dialog renders the post preview, **Then** the post's comment thread + a new-comment input are shown at the bottom; the callout's comments are hidden.
+2b. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has at least one existing message (`post.comments.messagesCount > 0`), **When** the dialog renders, **Then** the post's existing comment thread is shown read-only (no new-comment input); the callout's comments are hidden.
+2c. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has no messages, **When** the dialog renders, **Then** no comment section is shown at the bottom; the callout's comments stay hidden too.
+2d. **Given** the user closes the post preview (back to the contribution grid), **When** the dialog re-renders, **Then** the comment surface reverts to the callout-level thread (or stays hidden when the callout itself has `commentsEnabled === false` and no callout messages — per scenario 5 / the existing rule).
 
 #### Collapsible & Full-Height Modes
 6. **Given** the comment section is in collapsible mode and content exceeds ~250px, **When** it renders, **Then** a "Show more" / expand control appears and content is clipped
