@@ -6,6 +6,7 @@ import { Loading } from '@/crd/components/common/Loading';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import type { TemplateType } from '@/crd/components/templates/types';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import {
@@ -28,14 +29,33 @@ type PickerHandle = ReturnType<typeof useTemplatePicker>;
 /**
  * D20, 2026-05-19 — small inner component rendered inside the dialog's render-prop `templateSlot`.
  * Owns the picker-apply effect: when `picker.selectedTemplateContent` resolves to a freshly-picked
- * template, it writes the matching fields into the dialog's draft via `applyDraft`. The `applyDraft`
- * reference is stored in a ref so the effect's deps stay minimal and don't re-fire on each parent
- * render. State (`appliedFor`) resets each time the dialog re-opens — fresh apply per session.
+ * template, it applies the matching field. The apply target is **per type**:
+ *
+ * - `post` → the dialog's draft via `applyDraft` (D20: the markdown editor binds to the draft, so
+ *   the user sees the templated description immediately, can edit it, and Save/Cancel behave).
+ * - `whiteboard` → the **parent** form via `applyWhiteboardTemplate`, mirroring the
+ *   whiteboard-editor sub-flow's `onUpdate` (which also commits `whiteboardContent` through the
+ *   parent). The dialog's `handleSave`/dirty-check/sync-effect all source `whiteboardContent` from
+ *   the parent `values`, so a draft-only write would be discarded on Save — routing through the
+ *   parent keeps the single whiteboard source of truth consistent.
+ *
+ * Both callbacks are stored in refs so the effect's deps stay minimal and don't re-fire on each
+ * parent render. State (`appliedFor`) resets each time the dialog re-opens — fresh apply per session.
  */
-function TemplateApplyButton({ applyDraft, picker }: { applyDraft: ApplyDraft; picker: PickerHandle }) {
+function TemplateApplyButton({
+  applyDraft,
+  applyWhiteboardTemplate,
+  picker,
+}: {
+  applyDraft: ApplyDraft;
+  applyWhiteboardTemplate: (whiteboardContent: string) => void;
+  picker: PickerHandle;
+}) {
   const { t } = useTranslation('crd-space');
   const applyDraftRef = useRef(applyDraft);
   applyDraftRef.current = applyDraft;
+  const applyWhiteboardRef = useRef(applyWhiteboardTemplate);
+  applyWhiteboardRef.current = applyWhiteboardTemplate;
   const selectedContent = picker.selectedTemplateContent;
   const selectedId = picker.selectedTemplateId;
   const [appliedFor, setAppliedFor] = useState<string | null>(null);
@@ -46,7 +66,7 @@ function TemplateApplyButton({ applyDraft, picker }: { applyDraft: ApplyDraft; p
     if (selectedContent.type === 'post') {
       applyDraftRef.current({ postDescription: selectedContent.defaultDescription });
     } else if (selectedContent.type === 'whiteboard') {
-      applyDraftRef.current({ whiteboardContent: selectedContent.whiteboardContent });
+      applyWhiteboardRef.current(selectedContent.whiteboardContent);
     }
   }, [selectedContent, selectedId, appliedFor]);
 
@@ -70,6 +90,8 @@ type ResponseDefaultsConnectorProps = {
   spaceId?: string;
   values: ContributionDefaults;
   onSave: (next: ContributionDefaults) => void;
+  /** Image-upload wiring for the default post/memo description editor. */
+  markdownUpload?: MarkdownUploadProps;
 };
 
 /**
@@ -92,6 +114,7 @@ export function ResponseDefaultsConnector({
   spaceId,
   values,
   onSave,
+  markdownUpload,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const {
@@ -131,14 +154,27 @@ export function ResponseDefaultsConnector({
   const pickerType: TemplateType = type === 'whiteboard' ? 'whiteboard' : 'post';
   const picker = useTemplatePicker({ allowedTypes: [pickerType], spaceTemplatesSetId, accountId });
 
-  // D20, 2026-05-19 — the template-apply path now writes straight into the dialog's draft via the
-  // render-prop slot's `applyDraft` helper (see `TemplateApplyButton` above). The previous
-  // `onSave({...values, postDescription: ...})` route bypassed the dialog draft and (a) didn't
-  // populate `defaultDescription` because no sync effect existed for that field, (b) was
-  // overwritten by the dialog's stale draft on Save, and (c) leaked to the parent on Cancel.
+  // D20, 2026-05-19 — template-apply target is per type. `post` writes the dialog's draft via the
+  // render-prop slot's `applyDraft` helper (the markdown editor binds to the draft, so the value is
+  // visible/editable and Save/Cancel behave). This replaced the old
+  // `onSave({...values, postDescription: ...})` route, which bypassed the draft and (a) didn't
+  // populate `defaultDescription` (no sync effect for that field), (b) was overwritten by the
+  // dialog's stale draft on Save, and (c) leaked to the parent on Cancel.
+  // `whiteboard` instead commits through the parent `onSave` — the same channel the
+  // whiteboard-editor sub-flow already uses (`onUpdate` below). The dialog sources
+  // `whiteboardContent` from the parent `values` (handleSave/dirty-check/sync-effect), so a
+  // draft-only write would be silently discarded on Save; routing through the parent keeps the
+  // single whiteboard source of truth consistent.
   const supportsTemplate = type === 'post' || type === 'whiteboard';
+  const applyWhiteboardTemplate = (whiteboardContent: string) => onSave({ ...values, whiteboardContent });
   const templateSlot = supportsTemplate
-    ? ({ applyDraft }: { applyDraft: ApplyDraft }) => <TemplateApplyButton applyDraft={applyDraft} picker={picker} />
+    ? ({ applyDraft }: { applyDraft: ApplyDraft }) => (
+        <TemplateApplyButton
+          applyDraft={applyDraft}
+          applyWhiteboardTemplate={applyWhiteboardTemplate}
+          picker={picker}
+        />
+      )
     : undefined;
 
   const whiteboardSlot =
@@ -196,6 +232,9 @@ export function ResponseDefaultsConnector({
         onSave={onSave}
         templateSlot={templateSlot}
         whiteboardSlot={whiteboardSlot}
+        onImageUpload={markdownUpload?.onImageUpload}
+        iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
+        onError={markdownUpload?.onError}
       />
       <TemplatePicker {...picker.pickerProps} />
     </>

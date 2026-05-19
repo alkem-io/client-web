@@ -1,12 +1,12 @@
 import { ExternalLink, Package, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
 import type { TemplateCategorySection } from '@/crd/components/templates/types';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
 import type { InnovationPackCardData } from './types';
@@ -177,15 +177,7 @@ export function InnovationPackProfileView({
               <h3 id="pack-profile-tags" className="text-label uppercase text-muted-foreground">
                 {t('packProfile.tags')}
               </h3>
-              <ul className="flex flex-wrap gap-1.5">
-                {pack.tags.map(tag => (
-                  <li key={tag}>
-                    <Badge variant="secondary" className="text-badge">
-                      {tag}
-                    </Badge>
-                  </li>
-                ))}
-              </ul>
+              <CollapsibleTagList tags={pack.tags} />
             </section>
           )}
 

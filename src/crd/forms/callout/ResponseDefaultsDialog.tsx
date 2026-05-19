@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
@@ -15,6 +15,11 @@ import { Label } from '@/crd/primitives/label';
  * Replaces the older "connector writes via parent `onSave` → sync effect into draft" loop, which
  * (a) didn't populate `defaultDescription` because no sync effect existed for that field, and (b)
  * leaked the templated value to the parent even when the user cancelled.
+ *
+ * Scope: this is the **`post`** apply path. **Whiteboard** content is *not* applied through this
+ * helper — `whiteboardContent` is sourced from the parent `values` (see `handleSave` / the dirty
+ * check / the `values.whiteboardContent` sync effect), so the connector applies a whiteboard
+ * template through the parent `onSave` instead, matching the whiteboard-editor sub-flow.
  */
 type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
 
@@ -45,7 +50,7 @@ type ResponseDefaultsDialogProps = {
    */
   whiteboardSlot?: ReactNode;
   disabled?: boolean;
-};
+} & MarkdownUploadProps;
 
 /**
  * Nested "{Type} defaults" dialog shown when the user clicks "Set Default
@@ -61,6 +66,9 @@ export function ResponseDefaultsDialog({
   templateSlot,
   whiteboardSlot,
   disabled,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: ResponseDefaultsDialogProps) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<ContributionDefaults>(values);
@@ -201,6 +209,9 @@ export function ResponseDefaultsDialog({
                 onChange={value => setDraft(prev => ({ ...prev, postDescription: value }))}
                 disabled={disabled}
                 placeholder={t('responseDefaults.defaultDescriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
           )}

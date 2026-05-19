@@ -2,10 +2,14 @@
 
 .crd-markdown-editor .ProseMirror {
   outline: none;
-  /* Fill the flex parent so the whole visible area is a click target — without this the
-     editable div is only the height of its content (~120px when empty), and clicks below
-     that strip land outside the contenteditable and don't place a caret. */
-  min-height: 100%;
+  /* The contenteditable must fill its wrapper so the whole visible area is a click
+     target. `min-height: 100%` only worked when an ancestor had a *definite* height
+     (the collaborative/memo path) — for a plain MarkdownEditor the wrapper height is
+     auto, so the percentage collapsed to 0 and only the ~20px first line was clickable.
+     Both editors now make the EditorContent wrapper a flex column, so `flex: 1` grows
+     the editable to fill it (and beyond the 120px floor when an ancestor is taller). */
+  flex: 1 1 auto;
+  min-height: 120px;
   padding: 0.75rem;
   font-size: 0.875rem;
   line-height: 1.625;

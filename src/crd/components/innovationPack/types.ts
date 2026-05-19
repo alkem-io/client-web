@@ -8,6 +8,7 @@ import type {
   TemplateCategorySection,
   TemplatesManagerViewProps,
 } from '@/crd/components/templates/types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 export type InnovationPackCardData = {
   id: string;
@@ -68,11 +69,13 @@ export type InnovationPackFormProps = {
   onChange: (next: InnovationPackFormValues) => void;
   onSubmit: () => void;
   submitting: boolean;
+  /** Whether the form differs from the last-saved server state. The Save button stays disabled while `false`. */
+  isDirty: boolean;
   /** The provider organisation's display name — rendered read-only (no picker; mirrors the legacy `InnovationPackForm`). */
   providerName: string;
   /** Existing avatar URL (if any) — used to preview the current image. The form does not upload directly; `avatarFile` is queued via `onChange`. */
   avatarUrl?: string;
-};
+} & MarkdownUploadProps;
 
 /** Pack creation collects ONLY name + description (mirrors the legacy `CreateInnovationPackDialog`). */
 export type CreateInnovationPackValues = { name: string; description: string };

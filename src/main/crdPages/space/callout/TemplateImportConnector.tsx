@@ -60,16 +60,23 @@ export function TemplateImportConnector({
   useEffect(() => {
     if (!selectedId || appliedFor === selectedId) return;
     setAppliedFor(selectedId);
+    // Guard against a stale resolution: if the user picks another template (or the dialog
+    // closes) before the async fetch settles, the cleanup flips `cancelled` so the earlier
+    // request's continuation no-ops instead of applying values for a no-longer-selected template.
+    let cancelled = false;
     void getTemplateContent({ variables: { templateId: selectedId, includeCallout: true } }).then(async ({ data }) => {
+      if (cancelled) return;
       const callout = data?.lookup.template?.callout;
       if (!callout) return;
       const values = calloutTemplateContentToFormValues(callout);
       if (values.whiteboardPreviewServerUrl) {
         const blob = await fetchPreviewImageBlob(values.whiteboardPreviewServerUrl);
+        if (cancelled) return;
         if (blob) {
           values.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
         }
       }
+      if (cancelled) return;
       if (isFormDirty) {
         setPendingValues(values);
       } else {
@@ -77,6 +84,9 @@ export function TemplateImportConnector({
         onOpenChange(false);
       }
     });
+    return () => {
+      cancelled = true;
+    };
   }, [selectedId, appliedFor, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent]);
 
   const confirmOverwrite = () => {

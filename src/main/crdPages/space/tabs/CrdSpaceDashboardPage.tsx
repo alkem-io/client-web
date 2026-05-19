@@ -60,6 +60,7 @@ export default function CrdSpaceDashboardPage() {
       name: child.displayName,
       initials: getInitials(child.displayName),
       href: child.url,
+      avatarUrl: child.avatar?.uri,
     })) ?? [];
 
   return (

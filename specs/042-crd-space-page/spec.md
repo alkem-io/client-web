@@ -637,7 +637,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Subspaces Tab
 
 - **FR-027**: The sidebar MUST show the tab description and a create-subspace action (when the user has permission)
-- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces)
+- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces). Each row MUST show the subspace's real avatar image when one exists, falling back to grey initials (`AvatarFallback`, no `pickColorFromId` accent) when the subspace has no avatar
 - **FR-029**: The main content area MUST open with a subspaces section containing, in order: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a text search input, a wrapping row of tag chips aggregated from the subspaces themselves, and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
 - **FR-029a**: The Create Subspace action in the subspaces section header MUST trigger the reused MUI Create Subspace dialog; the button MUST be gated by the `canCreateSubspaces` permission
 - **FR-029b**: The subspaces section MUST show an empty state with a Clear filters action when the current filter yields no results

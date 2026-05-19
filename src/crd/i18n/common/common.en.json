@@ -21,6 +21,9 @@
     "person": "Person",
     "org": "Organization"
   },
+  "tags": {
+    "moreAria": "Show {{count}} more"
+  },
   "share": {
     "title": "Share",
     "button": "Share",

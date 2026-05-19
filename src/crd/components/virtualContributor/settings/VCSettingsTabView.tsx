@@ -169,7 +169,13 @@ function VCPromptCard(p: VcPromptCardProps & { labels: SectionLabels }) {
   const { t } = useTranslation('crd-contributorSettings');
   return (
     <SettingsCard icon={MessageSquare} title={t('vc.prompt.title')} description={p.helpText}>
-      <MarkdownEditor value={p.value} onChange={p.onChange} />
+      <MarkdownEditor
+        value={p.value}
+        onChange={p.onChange}
+        onImageUpload={p.onImageUpload}
+        iframeAllowedUrls={p.iframeAllowedUrls}
+        onError={p.onError}
+      />
       <FF dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
     </SettingsCard>
   );

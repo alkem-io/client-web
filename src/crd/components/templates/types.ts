@@ -10,6 +10,7 @@
 
 import type { ReactNode } from 'react';
 import type { FramingChip } from '@/crd/forms/callout/types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 // ---------------------------------------------------------------------------
 // Template type union + ordering
@@ -293,12 +294,12 @@ export type PostTemplateFormProps = {
   value: PostTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: PostTemplateValues) => void;
-};
+} & MarkdownUploadProps;
 export type CommunityGuidelinesTemplateFormProps = {
   value: CommunityGuidelinesTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: CommunityGuidelinesTemplateValues) => void;
-};
+} & MarkdownUploadProps;
 export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;
   errors: TemplateFormErrors;

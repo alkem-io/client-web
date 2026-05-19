@@ -53,6 +53,7 @@
       "titlePlaceholder": "Titre de la colonne",
       "descriptionPlaceholder": "Décrivez cette colonne…",
       "menu": "Actions de la colonne",
+      "drag": "Glisser pour réordonner la phase",
       "empty": "Aucun callout dans cette colonne pour le moment.",
       "activePhase": {
         "set": "Marquer comme phase active",
@@ -98,6 +99,11 @@
         "cancel": "Annuler",
         "confirm": "Ajouter la phase"
       }
+    },
+    "replaceFlow": {
+      "button": "Remplacer le flux d'innovation",
+      "loading": "Chargement du nouveau flux…",
+      "error": "Le remplacement du flux d'innovation a échoué. Le flux est inchangé — veuillez réessayer."
     },
     "row": {
       "drag": "Glisser pour réorganiser",
