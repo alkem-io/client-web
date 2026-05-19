@@ -16,6 +16,7 @@ import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -101,6 +102,12 @@ type FramingEditorConnectorProps = {
   // is wired into the form hook's `memoMarkdown` field (spec T010/T011).
   memoMarkdown?: string;
   onMemoMarkdownChange?: (value: string) => void;
+  /**
+   * Image-upload wiring for the create-mode memo framing editor. The memo
+   * doesn't exist yet → the consumer passes a `temporaryLocation: true`
+   * integration (server GCs the file if the callout create is abandoned).
+   */
+  memoUpload?: MarkdownUploadProps;
   // Media-gallery framing — required because a missing handler silently drops
   // user-selected files when `framingType === 'image'`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
@@ -165,6 +172,7 @@ export function FramingEditorConnector({
   onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
+  memoUpload,
   mediaGalleryVisuals,
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
@@ -302,7 +310,15 @@ export function FramingEditorConnector({
           </>
         );
       }
-      return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
+      return (
+        <MemoFramingEditor
+          value={memoMarkdown}
+          onChange={value => onMemoMarkdownChange?.(value)}
+          onImageUpload={memoUpload?.onImageUpload}
+          iframeAllowedUrls={memoUpload?.iframeAllowedUrls}
+          onError={memoUpload?.onError}
+        />
+      );
 
     case 'document':
       // Collabora document framing — type is fixed at creation time (Collabora

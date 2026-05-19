@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { OrgProfileTabView } from '@/crd/components/organization/settings/OrgProfileTabView';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import useOrgProfileTabData from './useOrgProfileTabData';
 
 const EMPTY_VALUES = {
@@ -32,11 +34,25 @@ const EMPTY_VALUES = {
  * `useOrgProfileTabData` (per-section save hook, parallel to
  * `useUserProfileTabData`) → `OrgProfileTabView` (presentational).
  *
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so
+ * `MarkdownUploadScope` mounts an `organization`-scoped one (description
+ * editing is always EDIT mode → `temporaryLocation: false`) and yields the
+ * upload wiring; before the id resolves it yields `undefined`.
+ *
  * Save mutations and the references batch live in `useOrgProfileTabData`;
  * the country list comes from the existing domain `COUNTRIES` constants.
  * CRD components never import that module directly per FR-006.
  */
 const CrdOrgProfileTab = () => {
+  const { organizationId } = useOrganizationContext();
+  return (
+    <MarkdownUploadScope storage={organizationId ? { locationType: 'organization', organizationId } : undefined}>
+      {markdownUpload => <CrdOrgProfileTabBody markdownUpload={markdownUpload} />}
+    </MarkdownUploadScope>
+  );
+};
+
+const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
@@ -60,6 +76,7 @@ const CrdOrgProfileTab = () => {
         pendingReferenceDelete={data.pendingReferenceDelete}
         onConfirmRemoveReference={data.onConfirmRemoveReference}
         onCancelRemoveReference={data.onCancelRemoveReference}
+        {...markdownUpload}
       />
       <ImageCropDialog
         open={data.pendingAvatarCrop !== null}

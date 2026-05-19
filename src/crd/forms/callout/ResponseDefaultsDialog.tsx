@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
@@ -32,7 +32,7 @@ type ResponseDefaultsDialogProps = {
    */
   whiteboardSlot?: ReactNode;
   disabled?: boolean;
-};
+} & MarkdownUploadProps;
 
 /**
  * Nested "{Type} defaults" dialog shown when the user clicks "Set Default
@@ -48,6 +48,9 @@ export function ResponseDefaultsDialog({
   templateSlot,
   whiteboardSlot,
   disabled,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: ResponseDefaultsDialogProps) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<ContributionDefaults>(values);
@@ -174,6 +177,9 @@ export function ResponseDefaultsDialog({
                 onChange={value => setDraft(prev => ({ ...prev, postDescription: value }))}
                 disabled={disabled}
                 placeholder={t('responseDefaults.defaultDescriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
           )}

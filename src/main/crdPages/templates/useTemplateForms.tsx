@@ -30,6 +30,7 @@ import type {
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
 import {
@@ -95,12 +96,29 @@ function toProfileData(values: TemplateFormValues): CreateProfileInput {
 // Hook
 // ---------------------------------------------------------------------------
 
+/**
+ * Image-upload wiring for the per-type template description editors, keyed by
+ * form intent. Templates have no storage bucket while being **created** (the
+ * server GCs abandoned uploads → `temporaryLocation: true`); an **edited**
+ * template uploads against the ambient holder bucket (`temporaryLocation:
+ * false`) — mirrors MUI. Passed in by the callsites that sit under a
+ * `StorageConfigContextProvider`; left undefined by read-only / test callers so
+ * `useTemplateForms` stays provider-agnostic (no throwing hook deep in a hook
+ * used by the public profile page + unit tests).
+ */
+export type TemplateMarkdownUploadByIntent = {
+  create?: MarkdownUploadProps;
+  edit?: MarkdownUploadProps;
+};
+
 export type UseTemplateFormsArgs = {
   templatesSetId: string | undefined;
   /** Parent space id — threaded through the Callout template form's `ResponseDefaultsConnector`. */
   spaceId?: string;
   /** Called after a successful create/update so the consumer can refetch / react. */
   onSaved?: () => void;
+  /** Markdown image-upload wiring per intent. Optional — see {@link TemplateMarkdownUploadByIntent}. */
+  markdownUpload?: TemplateMarkdownUploadByIntent;
 };
 
 export type UseTemplateFormsResult = {
@@ -168,7 +186,12 @@ export type UseTemplateFormsResult = {
  * `useCrdCalloutForm` instance (rendered via `CalloutTemplateForm`). Space edit is profile-only
  * (re-capture isn't wired); CG edit can't add new references via that mutation (existing rows only).
  */
-export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTemplateFormsArgs): UseTemplateFormsResult {
+export function useTemplateForms({
+  templatesSetId,
+  spaceId,
+  onSaved,
+  markdownUpload,
+}: UseTemplateFormsArgs): UseTemplateFormsResult {
   const { t } = useTranslation('crd-templates');
   const { t: tSpace } = useTranslation('crd-space');
   const [open, setOpen] = useState(false);
@@ -644,13 +667,27 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
     });
   };
 
+  // Pick the upload wiring for the current intent (create → temporary bucket,
+  // edit → holder bucket). `{}` when the callsite is provider-less (read-only
+  // listing / tests) so the editor simply renders without the upload affordance.
+  const markdownUploadProps: MarkdownUploadProps = markdownUpload?.[intent] ?? {};
+
   let perTypeFormSlot: ReactNode = null;
   switch (values.type) {
     case 'post':
-      perTypeFormSlot = <PostTemplateForm value={values} errors={errors} onChange={onPerTypeChange} />;
+      perTypeFormSlot = (
+        <PostTemplateForm value={values} errors={errors} onChange={onPerTypeChange} {...markdownUploadProps} />
+      );
       break;
     case 'communityGuidelines':
-      perTypeFormSlot = <CommunityGuidelinesTemplateForm value={values} errors={errors} onChange={onPerTypeChange} />;
+      perTypeFormSlot = (
+        <CommunityGuidelinesTemplateForm
+          value={values}
+          errors={errors}
+          onChange={onPerTypeChange}
+          {...markdownUploadProps}
+        />
+      );
       break;
     case 'whiteboard':
       perTypeFormSlot = (
@@ -679,7 +716,9 @@ export function useTemplateForms({ templatesSetId, spaceId, onSaved }: UseTempla
       );
       break;
     case 'callout':
-      perTypeFormSlot = <CalloutTemplateForm form={calloutForm} spaceId={spaceId} disabled={submitting} />;
+      perTypeFormSlot = (
+        <CalloutTemplateForm form={calloutForm} spaceId={spaceId} disabled={submitting} {...markdownUploadProps} />
+      );
       break;
   }
 
