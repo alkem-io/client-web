@@ -178,14 +178,14 @@ export default function CrdSpaceSettingsPage() {
   // About uses per-section inline Save, but its edits still live in a local
   // buffer that survives a tab switch. Without the guard the admin can wander
   // off and never notice they never hit Save, so About participates too —
-  // alongside Layout and the Application Form.
+  // alongside Layout, the Application Form, and an unpublished Updates draft.
   useEffect(() => {
-    if (about.isDirty || layout.isDirty || applicationForm.isDirty) {
+    if (about.isDirty || layout.isDirty || applicationForm.isDirty || updatesTab.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty]);
+  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
   // Drives the "Loading new flow…" overlay on the Layout columns container
@@ -241,6 +241,7 @@ export default function CrdSpaceSettingsPage() {
     if (about.isDirty) await about.onSaveAll();
     if (layout.isDirty) await layout.onSave();
     if (applicationForm.isDirty) applicationForm.onSave();
+    if (updatesTab.isDirty) await updatesTab.onSubmit();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
@@ -252,6 +253,7 @@ export default function CrdSpaceSettingsPage() {
     about.onResetAll();
     layout.onReset();
     applicationForm.onReset();
+    updatesTab.onResetDraft();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);

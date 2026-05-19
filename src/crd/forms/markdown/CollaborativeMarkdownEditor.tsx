@@ -98,7 +98,7 @@ function CollaborativeMarkdownEditorLazy({
       />
       <EditorContent
         editor={editor}
-        className="flex-1 min-h-0 overflow-y-auto"
+        className="flex flex-col flex-1 min-h-0 overflow-y-auto"
         {...(placeholder ? { 'data-placeholder': placeholder } : {})}
       />
     </div>
