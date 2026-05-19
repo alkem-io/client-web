@@ -200,6 +200,9 @@ export default function CrdSpaceSettingsPage() {
   }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  // Save-and-switch is async; disable the dialog while it runs so a double
+  // click can't fire duplicate saves, and keep it open if a save rejects.
+  const [switchingSave, setSwitchingSave] = useState(false);
   // Drives the "Loading new flow…" overlay on the Layout columns container
   // while the Replace-innovation-flow mutation + InnovationFlowSettings
   // refetch are in flight. Set/cleared by `LayoutReplaceFlowConnector` via
@@ -250,16 +253,27 @@ export default function CrdSpaceSettingsPage() {
   }, [subspacesTab, saveAs]);
 
   const handleConfirmSwitchSave = async () => {
-    if (about.isDirty) await about.onSaveAll();
-    if (layout.isDirty) await layout.onSave();
-    if (applicationForm.isDirty) applicationForm.onSave();
-    if (updatesTab.isDirty) await updatesTab.onSubmit();
+    if (switchingSave) return;
+    setSwitchingSave(true);
+    try {
+      if (about.isDirty) await about.onSaveAll();
+      if (layout.isDirty) await layout.onSave();
+      if (applicationForm.isDirty) applicationForm.onSave();
+      if (updatesTab.isDirty) await updatesTab.onSubmit();
+    } catch {
+      // A save failed — keep the dialog open so the user can retry or discard.
+      // The pending switch stays unresolved; per-section error status surfaces
+      // the failure in the tab itself.
+      setSwitchingSave(false);
+      return;
+    }
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
     if (target) {
       setActiveTab(target);
     }
+    setSwitchingSave(false);
   };
   const handleConfirmSwitchDiscard = () => {
     about.onResetAll();
@@ -833,6 +847,7 @@ export default function CrdSpaceSettingsPage() {
         saveLabel={t('dirtyGuard.save')}
         discardLabel={t('dirtyGuard.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
+        loading={switchingSave}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}

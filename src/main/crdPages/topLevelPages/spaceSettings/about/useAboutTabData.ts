@@ -414,6 +414,13 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     if (!saved) return;
     setValues(saved);
     valuesRef.current = saved;
+    // Drop any pending saved-flash timers and per-section status so the UI
+    // doesn't keep showing stale "saved"/"error" chips after a discard.
+    for (const timer of Object.values(savedFlashTimers.current)) {
+      if (timer) clearTimeout(timer);
+    }
+    savedFlashTimers.current = {};
+    setSaveStatusByField({});
   };
 
   const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
