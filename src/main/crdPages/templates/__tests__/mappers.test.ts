@@ -237,6 +237,52 @@ describe('templateContentMapper', () => {
     });
   });
 
+  // D19, 2026-05-18 — `framing.profile.references` (calloutReferences) are carried into the
+  // `TemplateContent.callout.references` field so the Preview dialog renders them via
+  // `ReferencesAndTagsStrip`. Distinct from `framingLinks` (the *cta* framing's single Link).
+  it('maps `framing.profile.references` into the callout-content references field (D19)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.None,
+          profile: {
+            displayName: 'My callout',
+            description: '',
+            references: [
+              { id: 'r-1', name: 'Docs', uri: 'https://docs.example', description: 'd' },
+              { id: 'r-2', name: 'Spec', uri: 'https://spec.example' },
+            ],
+          },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({
+      type: 'callout',
+      references: [
+        { id: 'r-1', name: 'Docs', uri: 'https://docs.example', description: 'd' },
+        { id: 'r-2', name: 'Spec', uri: 'https://spec.example', description: undefined },
+      ],
+    });
+  });
+
+  it('leaves `references` undefined when the framing profile has none (D19)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.None,
+          profile: { displayName: 'no refs', description: '' },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({ type: 'callout', references: undefined });
+  });
+
   it('maps a poll-framed callout content payload', () => {
     const template = {
       callout: {

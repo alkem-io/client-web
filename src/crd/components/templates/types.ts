@@ -121,6 +121,13 @@ export type TemplateContent =
       framingMediaImages?: { uri: string; alt?: string }[];
       /** when framingKind === 'poll' — rendered read-only in the preview */
       framingPoll?: { question: string; options?: string[] };
+      /**
+       * `framing.profile.references` — the *calloutReferences* the template editor produces
+       * (distinct from `framingLinks`, which is the *cta* framing's single Link entity).
+       * Rendered as external links in `CalloutTemplatePreview` via `ReferencesAndTagsStrip`,
+       * matching the in-feed `CalloutDetailDialog`'s rendering. D19, 2026-05-18.
+       */
+      references?: { id: string; name: string; uri: string; description?: string }[];
       allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
       commentsEnabled: boolean;
       /** markdown */

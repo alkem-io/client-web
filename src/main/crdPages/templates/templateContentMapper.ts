@@ -99,6 +99,18 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
       framingKind === 'poll' && framing.poll
         ? { question: framing.poll.title, options: framing.poll.options.map(o => o.text) }
         : undefined,
+    // Callout-references (distinct from the *cta* framing's single Link, which goes on framingLinks).
+    // D19, 2026-05-18 — the editor's References rows persist here and the legacy MUI preview rendered
+    // them; CRD now does the same via `ReferencesAndTagsStrip` in `CalloutTemplatePreview`.
+    references:
+      framing.profile.references && framing.profile.references.length > 0
+        ? framing.profile.references.map(r => ({
+            id: r.id,
+            name: r.name,
+            uri: r.uri,
+            description: r.description || undefined,
+          }))
+        : undefined,
     allowedContributionTypes: mapAllowedContributionTypes(settings.contribution.allowedTypes),
     commentsEnabled: settings.framing.commentsEnabled,
     defaultPostDescription: contributionDefaults.postDescription || undefined,
