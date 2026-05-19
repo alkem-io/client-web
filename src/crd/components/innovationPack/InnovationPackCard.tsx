@@ -1,10 +1,10 @@
 import { Package } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import type { InnovationPackCardData } from './types';
 
 export type InnovationPackCardProps = {
@@ -84,15 +84,9 @@ export function InnovationPackCard({ pack, className }: InnovationPackCardProps)
         )}
 
         {pack.tags.length > 0 && (
-          <ul className="mt-auto flex flex-wrap gap-1">
-            {pack.tags.slice(0, 3).map(tag => (
-              <li key={tag}>
-                <Badge variant="secondary" className="text-badge">
-                  {tag}
-                </Badge>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-auto">
+            <CollapsibleTagList tags={pack.tags} />
+          </div>
         )}
       </div>
     </a>

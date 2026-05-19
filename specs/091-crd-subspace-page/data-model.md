@@ -299,6 +299,16 @@ type CrdSubspacePageData = {
 };
 ```
 
+> **Nested-subspaces widget (`subspaces`)**: `useCrdSubspace` also returns
+> `subspaces: Array<{ name; initials; href; avatarUrl? }>` (derived from
+> `useSpaceDashboardNavigation` → `DashboardNavigationItem.children[].avatar?.uri`),
+> passed by `CrdSubspacePageLayout` into the shared `SubspaceSidebar` → `SubspacesSection`
+> widget. Each row renders the subspace's **real avatar image** when present and the
+> **grey `AvatarFallback` initials** otherwise — `pickColorFromId` is intentionally NOT
+> applied to these small rows (shared rule with the L0 home-tab `SubspacesSection` and
+> the dashboard `SidebarResourceItem`; see `src/crd/CLAUDE.md` → "Where the colour is
+> NOT applied" and spec 041 `SidebarResourceData`).
+
 ### `useCrdSpaceLeads` (L0 sidebar leads — polish addition)
 The L0 sidebar's leads are loaded by a new shared hook because `SpaceContext` only fetches the lightweight `SpaceAboutLight` fragment (which omits `leadUsers` / `leadOrganizations`). The hook lives at `src/main/crdPages/space/hooks/useCrdSpaceLeads.ts` and is invoked by the Dashboard, Subspaces, and Knowledge L0 tab pages (the Community tab already exposes leads via its own `useCrdSpaceCommunity` hook). Plan D15.
 
