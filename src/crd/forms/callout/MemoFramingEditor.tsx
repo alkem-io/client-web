@@ -1,12 +1,12 @@
 import { StickyNote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 type MemoFramingEditorProps = {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-};
+} & MarkdownUploadProps;
 
 /**
  * Inline memo framing editor shown on **create** (single-user mode). Wraps the
@@ -14,7 +14,14 @@ type MemoFramingEditorProps = {
  * the other framing cards (spec FR-21, plan D13). On **edit**, the connector
  * renders a read-only preview + Open-memo button instead (FR-21a / T048a).
  */
-export function MemoFramingEditor({ value, onChange, disabled }: MemoFramingEditorProps) {
+export function MemoFramingEditor({
+  value,
+  onChange,
+  disabled,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+}: MemoFramingEditorProps) {
   const { t } = useTranslation('crd-space');
 
   return (
@@ -28,6 +35,9 @@ export function MemoFramingEditor({ value, onChange, disabled }: MemoFramingEdit
         onChange={onChange}
         disabled={disabled}
         placeholder={t('framing.memoPlaceholder')}
+        onImageUpload={onImageUpload}
+        iframeAllowedUrls={iframeAllowedUrls}
+        onError={onError}
       />
     </div>
   );

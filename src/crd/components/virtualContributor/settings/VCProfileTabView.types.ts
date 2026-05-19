@@ -8,6 +8,7 @@
 
 import type { ReactNode } from 'react';
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 export type { SectionSaveStatus };
 
@@ -106,4 +107,4 @@ export type VcProfileViewProps = {
 
   /** Optional content slot below the form (used for tests / custom embeds). */
   footerSlot?: ReactNode;
-};
+} & MarkdownUploadProps;

@@ -8,13 +8,13 @@ import './styles.css';
 import { Suspense } from 'react';
 import { Loading } from '@/crd/components/common/Loading';
 
-type MarkdownEditorProps = {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  maxLength?: number;
-  disabled?: boolean;
-  className?: string;
+/**
+ * The image-upload wiring a `MarkdownEditor` needs to enable copy/paste and the
+ * insert-media toolbar button. Produced by `useMarkdownEditorIntegration` in the
+ * integration layer and forwarded — as three flat props — by every CRD component
+ * that hosts a markdown editor. Exported so those components share one definition.
+ */
+export type MarkdownUploadProps = {
   /** Upload callback. When provided, the image toolbar dialog shows an upload button.
    *  Must resolve to a public URL for the uploaded file. */
   onImageUpload?: (file: File) => Promise<string>;
@@ -22,6 +22,15 @@ type MarkdownEditorProps = {
   iframeAllowedUrls?: string[];
   /** Called with a user-facing error message when image / embed insertion fails validation. */
   onError?: (message: string) => void;
+};
+
+type MarkdownEditorProps = MarkdownUploadProps & {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  maxLength?: number;
+  disabled?: boolean;
+  className?: string;
   /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
   hideImageOptions?: boolean;
 };

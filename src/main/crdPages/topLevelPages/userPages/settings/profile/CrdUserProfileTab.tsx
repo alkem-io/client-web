@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { UserProfileTabView } from '@/crd/components/user/settings/UserProfileTabView';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import useUserProfileTabData from './useUserProfileTabData';
 
@@ -10,11 +13,34 @@ import useUserProfileTabData from './useUserProfileTabData';
  * `useUserPageRouteContext` (096) → `useUserProfileTabData` (per-section
  * save hook) → `UserProfileTabView` (presentational).
  *
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so the
+ * outer here mounts a `user`-scoped one (the bio editor is always EDIT mode →
+ * `temporaryLocation: false`). The upload hook may only run inside that
+ * provider, so the body is rendered: without upload when the id hasn't
+ * resolved (button absent — same as before), with upload otherwise.
+ *
  * Save mutations and the references batch live in `useUserProfileTabData`;
  * the country list is supplied by the existing domain `COUNTRIES`
  * constants. CRD components never import that module directly per FR-006.
  */
 const CrdUserProfileTab = () => {
+  const { userId } = useUserPageRouteContext();
+  if (!userId) {
+    return <CrdUserProfileTabBody />;
+  }
+  return (
+    <StorageConfigContextProvider locationType="user" userId={userId}>
+      <CrdUserProfileTabWithUpload />
+    </StorageConfigContextProvider>
+  );
+};
+
+const CrdUserProfileTabWithUpload = () => {
+  const md = useMarkdownEditorIntegration();
+  return <CrdUserProfileTabBody markdownUpload={md} />;
+};
+
+const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const { userId } = useUserPageRouteContext();
   const data = useUserProfileTabData(userId);
@@ -38,6 +64,7 @@ const CrdUserProfileTab = () => {
         pendingReferenceDelete={data.pendingReferenceDelete}
         onConfirmRemoveReference={data.onConfirmRemoveReference}
         onCancelRemoveReference={data.onCancelRemoveReference}
+        {...markdownUpload}
       />
       <ImageCropDialog
         open={data.pendingAvatarCrop !== null}

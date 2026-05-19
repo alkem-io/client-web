@@ -34,6 +34,9 @@ export function InnovationPackForm({
   submitting,
   providerName,
   avatarUrl,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: InnovationPackFormProps) {
   const { t } = useTranslation('crd-templates');
   const formId = useId();
@@ -99,6 +102,9 @@ export function InnovationPackForm({
           value={value.description}
           onChange={description => onChange({ ...value, description })}
           placeholder={t('packForm.descriptionPlaceholder')}
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
         />
       </div>
 

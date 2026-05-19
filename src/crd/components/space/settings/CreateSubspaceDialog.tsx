@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TemplateContentPreview } from '@/crd/components/templates/TemplateContentPreview';
 import type { TemplateContent } from '@/crd/components/templates/types';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -60,7 +60,7 @@ export type CreateSubspaceDialogProps = {
   cardBannerConstraints: CreateSubspaceVisualConstraints | null;
   onChange: (patch: Partial<CreateSubspaceFormValues>) => void;
   onSubmit: () => void;
-};
+} & MarkdownUploadProps;
 
 /**
  * CRD equivalent of the MUI `CreateSubspaceForm` wrapped in a dialog. Plain-
@@ -83,6 +83,9 @@ export function CreateSubspaceDialog({
   cardBannerConstraints,
   onChange,
   onSubmit,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: CreateSubspaceDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
@@ -192,6 +195,9 @@ export function CreateSubspaceDialog({
               value={values.description}
               onChange={next => onChange({ description: next })}
               placeholder={t('subspaces.createDialog.description.placeholder')}
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
             />
           </FieldShell>
 

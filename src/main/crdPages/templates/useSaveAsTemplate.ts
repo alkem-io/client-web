@@ -1,6 +1,6 @@
 import type { ReferenceRow, TemplateFormValues } from '@/crd/components/templates/types';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-import { type UseTemplateFormsResult, useTemplateForms } from './useTemplateForms';
+import { type TemplateMarkdownUploadByIntent, type UseTemplateFormsResult, useTemplateForms } from './useTemplateForms';
 
 /**
  * The source entity a "save X as a template" flow is launched from.
@@ -68,8 +68,15 @@ export function useSaveAsTemplate(args: {
   /** Parent space id — threaded into the Callout template form. */
   spaceId?: string;
   onSaved?: () => void;
+  /** Markdown image-upload wiring per intent — forwarded to `useTemplateForms`. */
+  markdownUpload?: TemplateMarkdownUploadByIntent;
 }): UseSaveAsTemplateResult {
-  const form = useTemplateForms({ templatesSetId: args.templatesSetId, spaceId: args.spaceId, onSaved: args.onSaved });
+  const form = useTemplateForms({
+    templatesSetId: args.templatesSetId,
+    spaceId: args.spaceId,
+    onSaved: args.onSaved,
+    markdownUpload: args.markdownUpload,
+  });
   return {
     form,
     openSaveAs: source => {

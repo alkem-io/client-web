@@ -6,6 +6,7 @@ import { Loading } from '@/crd/components/common/Loading';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import type { TemplateType } from '@/crd/components/templates/types';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import {
@@ -32,6 +33,8 @@ type ResponseDefaultsConnectorProps = {
   spaceId?: string;
   values: ContributionDefaults;
   onSave: (next: ContributionDefaults) => void;
+  /** Image-upload wiring for the default post/memo description editor. */
+  markdownUpload?: MarkdownUploadProps;
 };
 
 /**
@@ -54,6 +57,7 @@ export function ResponseDefaultsConnector({
   spaceId,
   values,
   onSave,
+  markdownUpload,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const {
@@ -172,6 +176,9 @@ export function ResponseDefaultsConnector({
         onSave={onSave}
         templateSlot={templateSlot}
         whiteboardSlot={whiteboardSlot}
+        onImageUpload={markdownUpload?.onImageUpload}
+        iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
+        onError={markdownUpload?.onError}
       />
       <TemplatePicker {...picker.pickerProps} />
     </>

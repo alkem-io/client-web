@@ -23,7 +23,7 @@ import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
@@ -37,9 +37,16 @@ export type CalloutTemplateFormProps = {
   spaceId?: string;
   /** Disable every control while the template create/update mutation is in flight. */
   disabled?: boolean;
-};
+} & MarkdownUploadProps;
 
-export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplateFormProps) {
+export function CalloutTemplateForm({
+  form,
+  spaceId,
+  disabled,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+}: CalloutTemplateFormProps) {
   const { t } = useTranslation('crd-space');
   const { values, errors, setField } = form;
   const [defaultsOpen, setDefaultsOpen] = useState(false);
@@ -73,6 +80,9 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
           value={values.description}
           onChange={v => setField('description', v)}
           placeholder={t('forms.descriptionPlaceholder')}
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
         />
       </div>
 
@@ -114,6 +124,7 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
           }}
           memoMarkdown={values.memoMarkdown}
           onMemoMarkdownChange={v => setField('memoMarkdown', v)}
+          memoUpload={{ onImageUpload, iframeAllowedUrls, onError }}
           mediaGalleryVisuals={values.mediaGalleryVisuals}
           onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
           collaboraDocumentType={values.collaboraDocumentType}
@@ -180,6 +191,7 @@ export function CalloutTemplateForm({ form, spaceId, disabled }: CalloutTemplate
         spaceId={spaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        markdownUpload={{ onImageUpload, iframeAllowedUrls, onError }}
       />
     </div>
   );

@@ -6,6 +6,9 @@ import type {
   VcProfileFormValues,
   VcReadOnlyMetadataRow,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcProfileTabData from './useVcProfileTabData';
 
@@ -14,11 +17,32 @@ import useVcProfileTabData from './useVcProfileTabData';
  * `useVcProfileTabData` (per-section save hook) → `VCProfileTabView`
  * (presentational).
  *
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so the
+ * outer mounts a `virtualContributor`-scoped one (description editing is always
+ * EDIT mode → `temporaryLocation: false`); the upload hook runs only inside it.
+ *
  * Mounts `ImageCropDialog` driven by `pendingAvatarCrop` (Decision #10 /
  * FR-163) and `ConfirmationDialog` driven by `pendingReferenceDelete`
  * (Rule #9 / FR-025 — handled inside the view component).
  */
 const CrdVCProfileTab = () => {
+  const { vcId } = useUrlResolver();
+  if (!vcId) {
+    return <CrdVCProfileTabBody />;
+  }
+  return (
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vcId}>
+      <CrdVCProfileTabWithUpload />
+    </StorageConfigContextProvider>
+  );
+};
+
+const CrdVCProfileTabWithUpload = () => {
+  const md = useMarkdownEditorIntegration();
+  return <CrdVCProfileTabBody markdownUpload={md} />;
+};
+
+const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
   const data = useVcProfileTabData(vcId);
@@ -72,6 +96,7 @@ const CrdVCProfileTab = () => {
         onConfirmRemoveReference={data.onConfirmRemoveReference}
         onCancelRemoveReference={data.onCancelRemoveReference}
         metadata={{ host, bodyOfKnowledge }}
+        {...markdownUpload}
       />
       <ImageCropDialog
         open={data.pendingAvatarCrop !== null}
