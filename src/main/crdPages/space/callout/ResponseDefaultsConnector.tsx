@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
@@ -21,6 +21,44 @@ import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
+
+type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
+type PickerHandle = ReturnType<typeof useTemplatePicker>;
+
+/**
+ * D20, 2026-05-19 — small inner component rendered inside the dialog's render-prop `templateSlot`.
+ * Owns the picker-apply effect: when `picker.selectedTemplateContent` resolves to a freshly-picked
+ * template, it writes the matching fields into the dialog's draft via `applyDraft`. The `applyDraft`
+ * reference is stored in a ref so the effect's deps stay minimal and don't re-fire on each parent
+ * render. State (`appliedFor`) resets each time the dialog re-opens — fresh apply per session.
+ */
+function TemplateApplyButton({ applyDraft, picker }: { applyDraft: ApplyDraft; picker: PickerHandle }) {
+  const { t } = useTranslation('crd-space');
+  const applyDraftRef = useRef(applyDraft);
+  applyDraftRef.current = applyDraft;
+  const selectedContent = picker.selectedTemplateContent;
+  const selectedId = picker.selectedTemplateId;
+  const [appliedFor, setAppliedFor] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedContent || !selectedId || appliedFor === selectedId) return;
+    setAppliedFor(selectedId);
+    if (selectedContent.type === 'post') {
+      applyDraftRef.current({ postDescription: selectedContent.defaultDescription });
+    } else if (selectedContent.type === 'whiteboard') {
+      applyDraftRef.current({ whiteboardContent: selectedContent.whiteboardContent });
+    }
+  }, [selectedContent, selectedId, appliedFor]);
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-body text-foreground">{t('responseDefaults.template')}</Label>
+      <Button variant="outline" size="sm" onClick={picker.openPicker}>
+        {t('responseDefaults.templatePlaceholder')}
+      </Button>
+    </div>
+  );
+}
 
 const WHITEBOARD_DEFAULT_TEMPLATE_ID = '__response_default_whiteboard';
 
@@ -93,29 +131,15 @@ export function ResponseDefaultsConnector({
   const pickerType: TemplateType = type === 'whiteboard' ? 'whiteboard' : 'post';
   const picker = useTemplatePicker({ allowedTypes: [pickerType], spaceTemplatesSetId, accountId });
 
-  // Apply the picked template's content to the matching contribution default.
-  const selectedContent = picker.selectedTemplateContent;
-  const selectedId = picker.selectedTemplateId;
-  const [appliedFor, setAppliedFor] = useState<string | null>(null);
-  useEffect(() => {
-    if (!selectedContent || !selectedId || appliedFor === selectedId) return;
-    setAppliedFor(selectedId);
-    if (selectedContent.type === 'post') {
-      onSave({ ...values, postDescription: selectedContent.defaultDescription });
-    } else if (selectedContent.type === 'whiteboard') {
-      onSave({ ...values, whiteboardContent: selectedContent.whiteboardContent });
-    }
-  }, [selectedContent, selectedId, appliedFor, values, onSave]);
-
+  // D20, 2026-05-19 — the template-apply path now writes straight into the dialog's draft via the
+  // render-prop slot's `applyDraft` helper (see `TemplateApplyButton` above). The previous
+  // `onSave({...values, postDescription: ...})` route bypassed the dialog draft and (a) didn't
+  // populate `defaultDescription` because no sync effect existed for that field, (b) was
+  // overwritten by the dialog's stale draft on Save, and (c) leaked to the parent on Cancel.
   const supportsTemplate = type === 'post' || type === 'whiteboard';
-  const templateSlot = supportsTemplate ? (
-    <div className="space-y-1.5">
-      <Label className="text-body text-foreground">{t('responseDefaults.template')}</Label>
-      <Button variant="outline" size="sm" onClick={picker.openPicker}>
-        {t('responseDefaults.templatePlaceholder')}
-      </Button>
-    </div>
-  ) : null;
+  const templateSlot = supportsTemplate
+    ? ({ applyDraft }: { applyDraft: ApplyDraft }) => <TemplateApplyButton applyDraft={applyDraft} picker={picker} />
+    : undefined;
 
   const whiteboardSlot =
     type === 'whiteboard' ? (
