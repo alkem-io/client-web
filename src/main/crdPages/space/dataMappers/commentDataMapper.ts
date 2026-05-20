@@ -38,6 +38,7 @@ export function mapRoomToCommentData(
         id: authorId ?? 'unknown',
         name: message.sender?.profile?.displayName ?? 'Unknown',
         avatarUrl: message.sender?.profile?.avatar?.uri,
+        profileUrl: message.sender?.profile?.url,
       },
       content: message.message,
       timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),

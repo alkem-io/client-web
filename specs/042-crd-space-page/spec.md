@@ -195,6 +195,12 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 - Q: Should CRD comments support real-time updates via WebSocket subscriptions? → A: Yes — reuse existing subscription infrastructure; new comments and reactions appear in real time without page refresh.
 - Q: Is the comment input visible when in collapsible mode (clipped at ~250px)? → A: Always visible — input shows at the bottom even when collapsed, within the 250px area.
 
+### Session 2026-05-20
+
+- Q: FR-086 / US11 AC-5 require that creating a callout in an Innovation-Flow state which has a configured default callout template auto-loads that template into the creation form. The legacy MUI L0 tab pages do this (each passes `defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}` and `useCalloutTemplateImport` auto-loads it on open), but the CRD create dialog opens blank. Why, and what is the rule? → A: **Regression during the CRD `TemplateImportConnector` rewrite.** The original auto-load (T076) was dropped when the connector was reimplemented for the manual "Find Template" path only (callout-dialog T080/T081); `CalloutFormConnector` never gained a `defaultTemplateId` prop and the CRD L0 tab pages never passed one. The rule (restating FR-086): **every CRD callout-creation entry point MUST pass the active flow state's `defaultCalloutTemplate.id` to the create form, and the form MUST auto-prefill from it once per dialog-open** — reusing the same template-content→form-values path the manual picker uses (incl. the D18 whiteboard-preview-image blob carry-through), guarded by a once-per-open ref that resets on close. The id comes from `flowStateForNewCallouts.defaultCalloutTemplate.id`, which is already in the SpaceTab query — no GraphQL/codegen change. A subsequent manual template pick or any user edit after auto-load is preserved (the guard does not re-apply). The same wiring applies to the subspace callouts page (spec 091, FR-013a) — its flow query already returns `defaultCalloutTemplate` via the `InnovationFlowStates` fragment, so it too is pure wiring.
+
+- Q: In the "Find Template" picker (FR-082..FR-084), after a user picks a template that triggers the overwrite confirmation and then cancels it, re-picking the **same** template does nothing — the confirmation never reappears. Why, and what is the rule? → A: **A template pick must be a one-shot, consume-once event.** The CRD picker (`useTemplatePicker`) keeps `selectedTemplateId` sticky after a pick, and `TemplateImportConnector` additionally guards re-fetch with a per-id ref; together they make re-selecting the **same** template a no-op once it has been picked, because `setSelectedTemplateId(sameId)` is not a state transition and the ref short-circuits the fetch. The rule (refining FR-084): once the connector has consumed a selection — whether it applied the template directly (clean form), the user confirmed the overwrite, or the user cancelled/dismissed the overwrite confirmation — it MUST clear the picker selection (`picker.clearSelection()`) and reset its fetched-for ref, so the same template can be picked again and re-run the apply/confirm flow. This is the established transient-pick pattern already used by the create-subspace and set-default flows. No data/GraphQL change.
+
 ## Scope
 
 ### In Scope
@@ -484,10 +490,17 @@ The comment input is a multiline textarea that starts as a single line, auto-exp
 
 #### Display & Threading
 1. **Given** a callout with comments enabled, **When** no contribution is selected, **Then** callout-level comments display below the contributions section
-2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post
+2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post (and the callout-level comments are hidden — they don't stack)
 3. **Given** a comment exists, **When** it renders, **Then** it shows author avatar, name, timestamp, and message content
 4. **Given** a comment has replies, **When** the thread renders, **Then** replies display indented below the parent comment with a "Reply" action on each comment
 5. **Given** comments are disabled for a callout, **When** the callout renders, **Then** no comment section appears
+
+#### Post-contribution comment-swap (selected-post mode)
+The bottom of the detail dialog has exactly one comment surface at any time — either the **callout's** comments or the **selected post's** comments, never both. The swap is gated by `settings.contribution.commentsEnabled` (the *contribution*-level switch, distinct from the framing-level switch governing callout comments):
+2a. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === true`, **When** the dialog renders the post preview, **Then** the post's comment thread + a new-comment input are shown at the bottom; the callout's comments are hidden.
+2b. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has at least one existing message (`post.comments.messagesCount > 0`), **When** the dialog renders, **Then** the post's existing comment thread is shown read-only (no new-comment input); the callout's comments are hidden.
+2c. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has no messages, **When** the dialog renders, **Then** no comment section is shown at the bottom; the callout's comments stay hidden too.
+2d. **Given** the user closes the post preview (back to the contribution grid), **When** the dialog re-renders, **Then** the comment surface reverts to the callout-level thread (or stays hidden when the callout itself has `commentsEnabled === false` and no callout messages — per scenario 5 / the existing rule).
 
 #### Collapsible & Full-Height Modes
 6. **Given** the comment section is in collapsible mode and content exceeds ~250px, **When** it renders, **Then** a "Show more" / expand control appears and content is clipped
@@ -630,7 +643,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Subspaces Tab
 
 - **FR-027**: The sidebar MUST show the tab description and a create-subspace action (when the user has permission)
-- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces)
+- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces). Each row MUST show the subspace's real avatar image when one exists, falling back to grey initials (`AvatarFallback`, no `pickColorFromId` accent) when the subspace has no avatar
 - **FR-029**: The main content area MUST open with a subspaces section containing, in order: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a text search input, a wrapping row of tag chips aggregated from the subspaces themselves, and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
 - **FR-029a**: The Create Subspace action in the subspaces section header MUST trigger the reused MUI Create Subspace dialog; the button MUST be gated by the `canCreateSubspaces` permission
 - **FR-029b**: The subspaces section MUST show an empty state with a Clear filters action when the current filter yields no results
@@ -730,9 +743,9 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 
 - **FR-082**: The template browser MUST display available callout templates with name, description, and framing type
 - **FR-083**: Selecting a template MUST pre-fill the creation form with the template's framing type, content, contribution settings, and profile data
-- **FR-084**: If the creation form contains existing data when importing a template, a confirmation dialog MUST warn about overwriting
+- **FR-084**: If the creation form contains existing data when importing a template, a confirmation dialog MUST warn about overwriting. A template pick is a one-shot, consume-once event: after the connector consumes a selection — applying it directly (clean form), confirming the overwrite, or cancelling/dismissing the overwrite confirmation — the picker selection MUST be cleared (`picker.clearSelection()` + fetched-for ref reset) so the user can re-select the **same** template and re-trigger the apply/confirm flow (Session 2026-05-20)
 - **FR-085**: "Save as Template" MUST open a form where the user names the template; the callout's full configuration MUST be saved as a reusable template
-- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template
+- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template. The creation form receives the state's `defaultCalloutTemplate.id` as a `defaultTemplateId` prop (sourced from `flowStateForNewCallouts.defaultCalloutTemplate.id`) and auto-prefills from it on open — once per dialog-open, reset on close — via the same template-content→form-values path the manual "Find Template" picker uses (including the whiteboard-preview-image carry-through). A subsequent manual template pick or user edit MUST NOT be overwritten by the auto-load (Session 2026-05-20).
 
 #### Callout Comments
 

@@ -20,6 +20,10 @@ The visual design is documented in the prototype (the source of truth for layout
 - Q: For an L2 (sub-of-sub) space, which space appears as the "behind" identity in the banner's layered avatar? → A: The immediate parent (the L1 SubSpace), consistent with the L1 case; the broader hierarchy is conveyed by breadcrumbs
 - Q: When a subspace has no innovation flow phases, what does the page render? → A: An empty-state message only — no action button, regardless of viewer privileges
 
+### Session 2026-05-20
+
+- Q: When a subspace flow phase has a default callout template configured, should "Add Post" pre-load it (as the L0 space does, spec 042 FR-086)? The CRD subspace callouts page currently opens the create form blank. → A: **Yes — parity with L0.** The subspace callouts page (`CrdSubspaceCalloutsPage`) must pass the active phase's `defaultCalloutTemplate.id` to `CalloutFormConnector` as `defaultTemplateId`. The data is already fetched (the subspace `InnovationFlowDetails` query spreads the `InnovationFlowStates` fragment, which includes `defaultCalloutTemplate`) but was dropped by the phase mapper — so this is pure wiring: surface it on `SubspaceFlowPhase` via `mapInnovationFlowPhases`, then pass `activePhase.defaultCalloutTemplateId`. See FR-013a.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — A SubSpace member can browse and act in the new design system (Priority: P1)
@@ -132,6 +136,7 @@ A user changes the platform language to one of the 6 supported languages (Englis
 - **FR-011**: The system MUST filter the content feed by the active flow phase. On first load, the active phase MUST default to the subspace's currently-active innovation-flow phase (matching the legacy behaviour); when no current phase is defined, it MUST default to the first phase in flow order.
 - **FR-012**: The system MUST show an "Edit Flow" entry point next to the flow tabs only when the user has permission to update the subspace's structure.
 - **FR-013**: The system MUST show an "Add Post" entry point next to the flow tabs only when the user has permission to create callouts in the subspace.
+- **FR-013a**: When the active flow phase has a configured **default callout template**, clicking "Add Post" MUST open the callout-creation form pre-loaded from that template — mirroring the L0 space behaviour (spec 042 FR-086 / US11 AC-5). The active phase's `defaultCalloutTemplate.id` (already returned by the subspace flow query via the `InnovationFlowStates` fragment, which `InnovationFlowDetails` spreads — no GraphQL change) is passed as the `defaultTemplateId` prop to the shared `CalloutFormConnector`, which auto-prefills once per dialog-open through the same template-content→form-values path the manual "Find Template" picker uses. A subsequent manual pick or user edit is not overwritten (Session 2026-05-20).
 
 #### Right sidebar (User Story 1)
 

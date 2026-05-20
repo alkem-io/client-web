@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
 import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
-import { TruncatedTag } from '@/crd/components/common/TruncatedTag';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -69,15 +69,7 @@ export function OrganizationProfileSidebar({
             {tagsets.map(tagset => (
               <li key={tagset.key}>
                 <h3 className="text-label uppercase text-muted-foreground mb-2">{tagset.name}</h3>
-                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-                <ul role="list" className="flex flex-wrap gap-2 list-none p-0 m-0">
-                  {tagset.tags.map(tag => (
-                    <li key={tag} className="max-w-full">
-                      <TruncatedTag text={tag} />
-                    </li>
-                  ))}
-                </ul>
+                <CollapsibleTagList tags={tagset.tags} />
               </li>
             ))}
           </ul>

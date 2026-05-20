@@ -1,4 +1,5 @@
 import type { Locale } from 'date-fns';
+import { isFileAttachmentUrl } from '@/core/utils/links';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 
 type ContributionCardData = {
@@ -25,9 +26,32 @@ type ContributionCardData = {
   canEditLink?: boolean;
   /** For link contributions: whether the current user can delete this specific link. */
   canDeleteLink?: boolean;
+  /** For link contributions: true when `linkUrl` points to our private storage (uploaded document) rather than an external URL. */
+  linkIsFile?: boolean;
 };
 
 export type { ContributionCardData };
+
+/** Shape consumed by `ContributionLinkList`. Kept identical across feed + dialog connectors so the mapping lives in one place. */
+export type LinkListItem = {
+  id: string;
+  url: string;
+  displayName: string;
+  description?: string;
+  isFile?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+};
+
+export const mapContributionToLinkItem = (c: ContributionCardData): LinkListItem => ({
+  id: c.id,
+  url: c.linkUrl ?? '',
+  displayName: c.title,
+  description: c.linkDescription,
+  isFile: c.linkIsFile,
+  canEdit: c.canEditLink,
+  canDelete: c.canDeleteLink,
+});
 
 type ContributionQueryData = {
   id: string;
@@ -74,6 +98,7 @@ export function mapContributionToCardData(
     createdDate: contribution.createdDate,
     linkUrl: contribution.link?.uri,
     linkDescription: contribution.link?.profile?.description ?? undefined,
+    linkIsFile: contribution.link?.uri ? isFileAttachmentUrl(contribution.link.uri) : undefined,
   };
 }
 
@@ -205,6 +230,7 @@ export function mapAnyContributionToCardData(
       linkId: link.id,
       canEditLink: privileges.includes('UPDATE'),
       canDeleteLink: privileges.includes('DELETE'),
+      linkIsFile: isFileAttachmentUrl(link.uri),
     };
   }
 

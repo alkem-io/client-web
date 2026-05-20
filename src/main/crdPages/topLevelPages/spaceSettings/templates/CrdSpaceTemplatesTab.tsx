@@ -6,6 +6,7 @@ import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
 import type { TemplateType } from '@/crd/components/templates/types';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 
 const allTypes = (_type: TemplateType) => true;
@@ -21,7 +22,18 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
   const { t } = useTranslation('crd-templates');
   const { data } = useSpaceTemplatesManagerQuery({ variables: { spaceId }, skip: !spaceId });
   const templatesSetId = data?.lookup.space?.templatesManager?.templatesSet?.id;
-  const tm = useTemplatesManager({ holderKind: 'space', templatesSetId, accountId, spaceId });
+  // Ambient space `StorageConfigContextProvider` (CrdSpacePageLayout). Editing
+  // a template uploads to the space bucket (temporaryLocation: false); creating
+  // one has no bucket yet → temporary (server GCs if abandoned) — mirrors MUI.
+  const mdEdit = useMarkdownEditorIntegration();
+  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
+  const tm = useTemplatesManager({
+    holderKind: 'space',
+    templatesSetId,
+    accountId,
+    spaceId,
+    markdownUpload: { create: mdCreate, edit: mdEdit },
+  });
 
   return (
     <>

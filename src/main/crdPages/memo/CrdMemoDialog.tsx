@@ -191,6 +191,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 onImageUpload={markdownIntegration.onImageUpload}
                 iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
                 onError={markdownIntegration.onError}
+                hideEmbedOption={true}
               />
             ) : (
               <Loading text={t('memo.footer.readonlyReason.connecting')} />

@@ -2,6 +2,7 @@ import { ChevronsRight, Layout, Menu, Plus } from 'lucide-react';
 import { type ReactNode, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useDragScroll } from '@/crd/hooks/useDragScroll';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -11,6 +12,8 @@ export type SubspaceFlowPhase = {
   id: string;
   label: string;
   description?: string;
+  /** Id of this phase's configured default callout template, if any — used to pre-load the create-callout form. */
+  defaultCalloutTemplateId?: string;
 };
 
 export type SubspaceFlowTabsProps = {
@@ -35,8 +38,11 @@ export type SubspaceFlowTabsProps = {
 const TAB_LIST_CLASSES =
   'flex items-center gap-3 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none]';
 
+// Short (1rem) right-edge fade so the strip reads as "scrollable" without
+// swallowing the last tab. Paired with a wider trailing pad on the list (see
+// below) so the final phase can still be scrolled fully clear of the fade.
 const TAB_LIST_FADE_CLASSES =
-  '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]';
+  '[mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)]';
 
 export function SubspaceFlowTabs({
   phases,
@@ -56,47 +62,70 @@ export function SubspaceFlowTabs({
   const { t } = useTranslation('crd-subspace');
   const isMobile = useMediaQuery('(max-width: 639px)');
 
+  // One drawer instance, always mounted and controlled by props. It is opened
+  // from multiple triggers at different breakpoints: the mobile bottom-bar
+  // hamburger (below, <=639px) and the tablet hamburger in `SubspaceHeader`
+  // (640–1023px, wired by the consumer). At >=lg the desktop sidebar replaces
+  // it and no trigger is shown — the Sheet just stays closed.
+  const drawer = (
+    <Sheet open={mobileMenuOpen ?? false} onOpenChange={onMobileMenuOpenChange}>
+      <SheetContent side="left" closeLabel={t('a11y.close')}>
+        <SheetHeader>
+          <SheetTitle>{mobileMenuTitle ?? t('flow.menu')}</SheetTitle>
+        </SheetHeader>
+        <div className="px-4 pb-6 overflow-y-auto">{mobileMenuContent}</div>
+      </SheetContent>
+    </Sheet>
+  );
+
   if (phases.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex items-center justify-center py-6 border-2 border-dashed border-border rounded-lg',
-          className
-        )}
-      >
-        <p className="text-body text-muted-foreground">{t('flow.emptyState')}</p>
-      </div>
+      <>
+        <div
+          className={cn(
+            'flex items-center justify-center py-6 border-2 border-dashed border-border rounded-lg',
+            className
+          )}
+        >
+          <p className="text-body text-muted-foreground">{t('flow.emptyState')}</p>
+        </div>
+        {drawer}
+      </>
     );
   }
 
   if (isMobile) {
     return (
-      <MobileFlowBar
-        phases={phases}
-        activePhaseId={activePhaseId}
-        onPhaseChange={onPhaseChange}
-        canAddPost={canAddPost}
-        onAddPostClick={onAddPostClick}
-        mobileMenuOpen={mobileMenuOpen}
-        onMobileMenuOpenChange={onMobileMenuOpenChange}
-        mobileMenuContent={mobileMenuContent}
-        mobileMenuTitle={mobileMenuTitle}
-      />
+      <>
+        <MobileFlowBar
+          phases={phases}
+          activePhaseId={activePhaseId}
+          onPhaseChange={onPhaseChange}
+          canAddPost={canAddPost}
+          onAddPostClick={onAddPostClick}
+          mobileMenuOpen={mobileMenuOpen}
+          onMobileMenuOpenChange={onMobileMenuOpenChange}
+        />
+        {drawer}
+      </>
     );
   }
 
   return (
-    <DesktopFlowStrip
-      phases={phases}
-      activePhaseId={activePhaseId}
-      onPhaseChange={onPhaseChange}
-      canEditFlow={canEditFlow}
-      canAddPost={canAddPost}
-      editFlowHref={editFlowHref}
-      onEditFlowClick={onEditFlowClick}
-      onAddPostClick={onAddPostClick}
-      className={className}
-    />
+    <>
+      <DesktopFlowStrip
+        phases={phases}
+        activePhaseId={activePhaseId}
+        onPhaseChange={onPhaseChange}
+        canEditFlow={canEditFlow}
+        canAddPost={canAddPost}
+        editFlowHref={editFlowHref}
+        onEditFlowClick={onEditFlowClick}
+        onAddPostClick={onAddPostClick}
+        className={className}
+      />
+      {drawer}
+    </>
   );
 }
 
@@ -127,6 +156,7 @@ function DesktopFlowStrip({
 }) {
   const { t } = useTranslation('crd-subspace');
   const activeTabRef = useRef<HTMLLIElement>(null);
+  const dragScroll = useDragScroll<HTMLDivElement>();
 
   useEffect(() => {
     activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -160,36 +190,51 @@ function DesktopFlowStrip({
         ))}
 
       <nav className="flex-1 min-w-0" aria-label={t('a11y.flowTabs')}>
-        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-        <ul role="list" className={cn(TAB_LIST_CLASSES, canAddPost && TAB_LIST_FADE_CLASSES)}>
-          {phases.map((phase, index) => {
-            const isActive = phase.id === activePhaseId;
-            return (
-              <li key={phase.id} ref={isActive ? activeTabRef : undefined} className="inline-flex items-start shrink-0">
-                {index > 0 && (
-                  <span className="mr-3" aria-hidden="true">
-                    <FlowArrow />
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => onPhaseChange(phase.id)}
-                  aria-current={isActive ? 'page' : undefined}
-                  aria-label={t('flow.phaseTab', { name: phase.label })}
-                  className={cn(
-                    'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    isActive
-                      ? 'border-primary text-primary font-semibold'
-                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
-                  )}
+        <div
+          ref={dragScroll.ref}
+          onPointerDown={dragScroll.onPointerDown}
+          className={cn(
+            'overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] cursor-grab',
+            canAddPost && TAB_LIST_FADE_CLASSES
+          )}
+        >
+          {/* Trailing pad wider than the 1rem fade so the last phase can be
+              scrolled fully clear of the gradient instead of fading under it. */}
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className={cn('flex items-center gap-3', canAddPost && 'pr-8')}>
+            {phases.map((phase, index) => {
+              const isActive = phase.id === activePhaseId;
+              return (
+                <li
+                  key={phase.id}
+                  ref={isActive ? activeTabRef : undefined}
+                  className="inline-flex items-start shrink-0"
                 >
-                  {phase.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                  {index > 0 && (
+                    <span className="mr-3" aria-hidden="true">
+                      <FlowArrow />
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => onPhaseChange(phase.id)}
+                    aria-current={isActive ? 'page' : undefined}
+                    aria-label={t('flow.phaseTab', { name: phase.label })}
+                    className={cn(
+                      'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                      isActive
+                        ? 'border-primary text-primary font-semibold'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
+                    )}
+                  >
+                    {phase.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </nav>
 
       {canAddPost && (
@@ -210,8 +255,6 @@ function MobileFlowBar({
   onAddPostClick,
   mobileMenuOpen,
   onMobileMenuOpenChange,
-  mobileMenuContent,
-  mobileMenuTitle,
 }: {
   phases: SubspaceFlowPhase[];
   activePhaseId: string | undefined;
@@ -220,8 +263,6 @@ function MobileFlowBar({
   onAddPostClick?: () => void;
   mobileMenuOpen?: boolean;
   onMobileMenuOpenChange?: (open: boolean) => void;
-  mobileMenuContent?: ReactNode;
-  mobileMenuTitle?: string;
 }) {
   const { t } = useTranslation('crd-subspace');
   const activeTabRef = useRef<HTMLLIElement>(null);
@@ -292,15 +333,6 @@ function MobileFlowBar({
         </>,
         document.body
       )}
-
-      <Sheet open={mobileMenuOpen ?? false} onOpenChange={onMobileMenuOpenChange}>
-        <SheetContent side="left" closeLabel={t('a11y.close')}>
-          <SheetHeader>
-            <SheetTitle>{mobileMenuTitle ?? t('flow.menu')}</SheetTitle>
-          </SheetHeader>
-          <div className="px-4 pb-6 overflow-y-auto">{mobileMenuContent}</div>
-        </SheetContent>
-      </Sheet>
     </>
   );
 }

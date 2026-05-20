@@ -14082,6 +14082,7 @@ export type UpdateCalloutContentMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -14096,6 +14097,7 @@ export type UpdateCalloutContentMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -14516,6 +14518,7 @@ export type UpdateCalloutVisibilityMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -14530,6 +14533,7 @@ export type UpdateCalloutVisibilityMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -14623,6 +14627,7 @@ export type CalloutContributionQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
+                            url: string;
                             avatar?:
                               | {
                                   __typename?: 'Visual';
@@ -14654,6 +14659,7 @@ export type CalloutContributionQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
+                            url: string;
                             avatar?:
                               | {
                                   __typename?: 'Visual';
@@ -14683,6 +14689,7 @@ export type CalloutContributionQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
+                            url: string;
                             avatar?:
                               | {
                                   __typename?: 'Visual';
@@ -14748,6 +14755,7 @@ export type CalloutContributionQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
+                            url: string;
                             avatar?:
                               | {
                                   __typename?: 'Visual';
@@ -15149,6 +15157,7 @@ export type CalloutPostCreatedSubscription = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?:
                     | {
                         __typename?: 'Visual';
@@ -15264,6 +15273,7 @@ export type CalloutContributionsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
+                              url: string;
                               avatar?:
                                 | {
                                     __typename?: 'Visual';
@@ -15295,6 +15305,7 @@ export type CalloutContributionsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
+                              url: string;
                               avatar?:
                                 | {
                                     __typename?: 'Visual';
@@ -15341,6 +15352,7 @@ export type CalloutContributionsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
+                              url: string;
                               avatar?:
                                 | {
                                     __typename?: 'Visual';
@@ -15387,6 +15399,7 @@ export type CalloutContributionsQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
+                              url: string;
                               avatar?:
                                 | {
                                     __typename?: 'Visual';
@@ -15468,6 +15481,7 @@ export type CalloutContributionsWhiteboardCardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -15498,6 +15512,7 @@ export type CalloutContributionsMemoCardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -15543,6 +15558,7 @@ export type CalloutContributionsPostCardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -15580,6 +15596,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -15603,6 +15620,7 @@ export type ContributionAuthorFragment = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        url: string;
         avatar?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -16220,6 +16238,7 @@ export type CreateCalloutMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -16234,6 +16253,7 @@ export type CreateCalloutMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -16793,6 +16813,7 @@ export type CalloutDetailsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      url: string;
                       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -16807,6 +16828,7 @@ export type CalloutDetailsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      url: string;
                       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -17259,6 +17281,7 @@ export type CalloutDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -17273,6 +17296,7 @@ export type CalloutDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -33191,7 +33215,10 @@ export type UpdateCalloutTemplateMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
+        canAddContributions: CalloutAllowedActors;
+        commentsEnabled: boolean;
       };
+      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
   };
 };

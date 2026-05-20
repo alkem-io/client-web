@@ -259,6 +259,12 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           sortOrder: newStateData.sortOrder,
         },
       },
+      // Await the refetch so the follow-up sort-order mutation (and any
+      // consumer that reseeds off this query) sees a settled cache. Without
+      // this, the create-stage refetch — which can carry the colliding
+      // sort-orders noted below — may resolve AFTER the sort-fix refetch and
+      // clobber the cache with the wrong column order until a page reload.
+      awaitRefetchQueries: true,
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
         'CalloutsOnCalloutsSetUsingClassification',
@@ -284,6 +290,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         innovationFlowID: requiredInnovationFlow.id,
         stateIDs: stateIdsSorted,
       },
+      // Await so `handleCreateState` only resolves once the cache reflects the
+      // final, de-collided ordering — callers can reseed immediately after.
+      awaitRefetchQueries: true,
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
         'CalloutsOnCalloutsSetUsingClassification',
@@ -305,6 +314,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           ID: stateId,
         },
       },
+      // Await so callers that reseed local state off this query (CRD Layout
+      // tab) see the post-delete column set immediately, not the stale list.
+      awaitRefetchQueries: true,
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
         'CalloutsOnCalloutsSetUsingClassification',

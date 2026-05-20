@@ -4,8 +4,10 @@ import {
   CalloutFramingType,
   CollaboraDocumentType,
 } from '@/core/apollo/generated/graphql-schema';
+import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
+import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
@@ -41,6 +43,27 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
 }
 
+/**
+ * Maps a GraphQL Reference to the plain CRD shape consumed by
+ * `ReferencesAndTagsStrip` and `CalloutPostPreview`. Centralised so the
+ * file-vs-link detection (`isFileAttachmentUrl`) lives in one place — every
+ * surface that lists references picks up new logic automatically.
+ */
+export function mapReferenceToStripData(ref: {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string | null;
+}): ReferencesAndTagsStripReference {
+  return {
+    id: ref.id,
+    name: ref.name,
+    uri: ref.uri,
+    description: ref.description ?? undefined,
+    isFile: isFileAttachmentUrl(ref.uri),
+  };
+}
+
 function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): CollaboraDocumentPreviewType | undefined {
   if (type === CollaboraDocumentType.Spreadsheet) return 'spreadsheet';
   if (type === CollaboraDocumentType.Presentation) return 'presentation';
@@ -55,9 +78,9 @@ function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): Collab
  * fields with the same shape. Kept narrow so callers can pass either.
  */
 type CalloutAuthorshipSource = {
-  publishedBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  publishedBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
   publishedDate?: Date;
-  createdBy?: { profile?: { displayName: string; avatar?: { uri: string } } };
+  createdBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
   createdDate?: Date;
 };
 
@@ -69,12 +92,16 @@ type CalloutAuthorshipSource = {
 function resolveAuthorAndTimestamp(
   source: CalloutAuthorshipSource,
   t: CrdSpaceTranslator
-): { author?: { name: string; avatarUrl?: string }; timestamp?: string } {
+): { author?: { name: string; avatarUrl?: string; profileUrl?: string }; timestamp?: string } {
   const authorSource = source.publishedBy ?? source.createdBy;
   const dateSource = source.publishedDate ?? source.createdDate;
   return {
     author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
+      ? {
+          name: authorSource.profile.displayName,
+          avatarUrl: authorSource.profile.avatar?.uri,
+          profileUrl: authorSource.profile.url,
+        }
       : undefined,
     timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
   };
@@ -148,12 +175,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     // on the feed card by `ReferencesAndTagsStrip` (the same component the
     // detail dialog uses). MUI parity: `CalloutHeader`.
     tags: callout.framing.profile.tagset?.tags ?? [],
-    references: (callout.framing.profile.references ?? []).map(ref => ({
-      id: ref.id,
-      name: ref.name,
-      uri: ref.uri,
-      description: ref.description ?? undefined,
-    })),
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }
 
@@ -198,11 +220,6 @@ export function mapCalloutDetailsToDialogData(
     // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a
     // separate `classification.tagsets` field and don't surface in this strip.
     tags: callout.framing.profile.tagset?.tags ?? [],
-    references: (callout.framing.profile.references ?? []).map(ref => ({
-      id: ref.id,
-      name: ref.name,
-      uri: ref.uri,
-      description: ref.description ?? undefined,
-    })),
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }

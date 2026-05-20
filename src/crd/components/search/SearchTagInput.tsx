@@ -70,7 +70,7 @@ export function SearchTagInput({
           onKeyDown={handleKeyDown}
           placeholder={t('search.placeholder')}
           aria-label={t('search.a11y.searchInput')}
-          className="flex-1 bg-transparent outline-none text-base md:text-control text-foreground placeholder:text-muted-foreground"
+          className="flex-1 bg-transparent outline-none text-base md:text-body text-foreground placeholder:text-muted-foreground"
         />
 
         {/* Scope dropdown */}

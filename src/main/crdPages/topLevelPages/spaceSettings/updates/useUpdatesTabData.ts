@@ -15,6 +15,10 @@ export type UseUpdatesTabDataResult = {
   removing: boolean;
   onDraftChange: (next: string) => void;
   onSubmit: () => Promise<void>;
+  /** True when the composer has an unpublished, non-whitespace draft. */
+  isDirty: boolean;
+  /** Discard the unpublished draft (tab-switch guard's "Discard"). */
+  onResetDraft: () => void;
   onRequestRemove: (messageId: string) => void;
   onConfirmRemove: () => Promise<void>;
   onCancelRemove: () => void;
@@ -87,6 +91,9 @@ export function useUpdatesTabData(communityId: string | undefined): UseUpdatesTa
 
   const pendingRemoveMessage = pendingRemoveId ? (messages.find(m => m.id === pendingRemoveId) ?? null) : null;
 
+  const isDirty = draft.trim().length > 0;
+  const onResetDraft = () => setDraft('');
+
   return {
     messages,
     draft,
@@ -95,6 +102,8 @@ export function useUpdatesTabData(communityId: string | undefined): UseUpdatesTa
     removing,
     onDraftChange,
     onSubmit,
+    isDirty,
+    onResetDraft,
     onRequestRemove,
     onConfirmRemove,
     onCancelRemove,

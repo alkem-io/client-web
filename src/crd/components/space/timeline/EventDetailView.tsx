@@ -4,11 +4,11 @@ import { enUS } from 'date-fns/locale';
 import { ExternalLink, MapPin } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { EventCardHeader } from './EventCardHeader';
@@ -150,15 +150,7 @@ export function EventDetailView({
               <span>{event.location}</span>
             </div>
           )}
-          {event.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {event.tags.map(tag => (
-                <Badge key={tag} variant="secondary" className="font-normal">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
+          {event.tags.length > 0 && <CollapsibleTagList tags={event.tags} />}
           {event.references.length > 0 && (
             <div>
               <h4 className="mb-2 text-label uppercase text-muted-foreground">{t('calendar.details.references')}</h4>
