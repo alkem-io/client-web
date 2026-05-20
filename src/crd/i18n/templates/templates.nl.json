@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Posts",
     "whiteboard": "Whiteboards",
-    "link": "Links"
+    "link": "Links",
+    "memo": "Memo's"
   },
   "preview": {
     "loading": "Sjabloon laden…",

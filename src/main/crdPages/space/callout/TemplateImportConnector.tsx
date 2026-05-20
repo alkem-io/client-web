@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery, useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -49,7 +49,16 @@ export function TemplateImportConnector({
   const picker = useTemplatePicker({ allowedTypes: ['callout'], accountId, spaceTemplatesSetId, open, onOpenChange });
   const [getTemplateContent] = useTemplateContentLazyQuery();
   const [pendingValues, setPendingValues] = useState<Partial<CalloutFormValues> | null>(null);
-  const [appliedFor, setAppliedFor] = useState<string | null>(null);
+  // 2026-05-19 — use a ref (not state) to track "which selectedId has the effect already fetched for".
+  // The previous `appliedFor` state had a subtle bug: calling `setAppliedFor(selectedId)` inside the
+  // effect's synchronous body triggered a re-render → React then fired the *cleanup* of the still-in-
+  // flight effect (because `appliedFor` is in deps) → `cancelled = true` → when the async fetch
+  // eventually resolved the apply step was silently skipped. Net effect: the picker closed but the
+  // form was never populated. Tracking the latest pick in a ref decouples the staleness check from
+  // React's effect lifecycle — refs don't trigger re-renders so the effect stays alive through the
+  // full async chain, while a *newer* pick (which DOES re-fire the effect by changing `selectedId`)
+  // still supersedes via the ref check at each await boundary.
+  const fetchedForRef = useRef<string | null>(null);
 
   // When the user picks a template, re-fetch its full callout content and apply (or stage the overwrite-confirm).
   // D18, 2026-05-18: when the template carries a server-rendered whiteboard preview, fetch the image as
@@ -58,25 +67,22 @@ export function TemplateImportConnector({
   // still shows the server URL via the D16 fallback; the new callout just ends up with no preview image).
   const selectedId = picker.selectedTemplateId;
   useEffect(() => {
-    if (!selectedId || appliedFor === selectedId) return;
-    setAppliedFor(selectedId);
-    // Guard against a stale resolution: if the user picks another template (or the dialog
-    // closes) before the async fetch settles, the cleanup flips `cancelled` so the earlier
-    // request's continuation no-ops instead of applying values for a no-longer-selected template.
-    let cancelled = false;
+    if (!selectedId || fetchedForRef.current === selectedId) return;
+    fetchedForRef.current = selectedId;
     void getTemplateContent({ variables: { templateId: selectedId, includeCallout: true } }).then(async ({ data }) => {
-      if (cancelled) return;
+      // If a newer pick has superseded this one, the ref's `current` will no longer match.
+      if (fetchedForRef.current !== selectedId) return;
       const callout = data?.lookup.template?.callout;
       if (!callout) return;
       const values = calloutTemplateContentToFormValues(callout);
       if (values.whiteboardPreviewServerUrl) {
         const blob = await fetchPreviewImageBlob(values.whiteboardPreviewServerUrl);
-        if (cancelled) return;
+        if (fetchedForRef.current !== selectedId) return;
         if (blob) {
           values.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
         }
       }
-      if (cancelled) return;
+      if (fetchedForRef.current !== selectedId) return;
       if (isFormDirty) {
         setPendingValues(values);
       } else {
@@ -84,10 +90,7 @@ export function TemplateImportConnector({
         onOpenChange(false);
       }
     });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedId, appliedFor, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent]);
+  }, [selectedId, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent]);
 
   const confirmOverwrite = () => {
     if (pendingValues) {
