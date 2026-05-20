@@ -63,7 +63,13 @@ export default function CrdSubspacePageLayout() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
-  const createSubspace = useCreateSubspace(data.subspaceId ?? '');
+  // Wire the Create-Subspace template picker with this subspace's own templates
+  // set + default subspace template (D21 / FR-031), matching the Settings flow.
+  // Account stays undefined at L1/L2 — the same as the Settings scope.
+  const createSubspace = useCreateSubspace(data.subspaceId ?? '', {
+    templatesSetId: data.templatesSetId,
+    defaultTemplateId: data.defaultSubspaceTemplateId,
+  });
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
