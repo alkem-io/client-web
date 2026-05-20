@@ -18,8 +18,16 @@ import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutCo
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
-import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
-import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
+import {
+  getCalloutContributionType,
+  mapCalloutDetailsToDialogData,
+  mapReferenceToStripData,
+} from '../dataMappers/calloutDataMapper';
+import {
+  type ContributionCardData,
+  mapAnyContributionToCardData,
+  mapContributionToLinkItem,
+} from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
@@ -174,14 +182,7 @@ function LinkContributionListSlot({
     | undefined
   >(undefined);
 
-  const links = contributions.map(c => ({
-    id: c.id,
-    url: c.linkUrl ?? '',
-    displayName: c.title,
-    description: c.linkDescription,
-    canEdit: c.canEditLink,
-    canDelete: c.canDeleteLink,
-  }));
+  const links = contributions.map(mapContributionToLinkItem);
 
   const openTarget = (contributionId: string, intent: 'edit' | 'delete') => {
     const c = contributions.find(item => item.id === contributionId);
@@ -475,12 +476,7 @@ export function CalloutDetailDialogConnector({
           ),
           description: selectedPost?.profile.description ?? undefined,
           tags: selectedPost?.profile.tagset?.tags ?? [],
-          references: selectedPost?.profile.references?.map(ref => ({
-            id: ref.id,
-            name: ref.name,
-            uri: ref.uri,
-            description: ref.description ?? undefined,
-          })),
+          references: selectedPost?.profile.references?.map(mapReferenceToStripData),
         }}
         onEdit={canEditSelectedPost ? () => setPostEditOpen(true) : undefined}
         onClose={() => {

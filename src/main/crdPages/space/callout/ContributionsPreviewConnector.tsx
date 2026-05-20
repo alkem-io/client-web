@@ -12,7 +12,11 @@ import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { getCalloutContributionType } from '../dataMappers/calloutDataMapper';
-import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
+import {
+  type ContributionCardData,
+  mapAnyContributionToCardData,
+  mapContributionToLinkItem,
+} from '../dataMappers/contributionDataMapper';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -127,14 +131,7 @@ export function ContributionsPreviewConnector({
 
   // Links render as a list, not a card grid.
   if (contributionType === CalloutContributionType.Link) {
-    const links = contributions.map(c => ({
-      id: c.id,
-      url: c.linkUrl ?? '',
-      displayName: c.title,
-      description: c.linkDescription,
-      canEdit: c.canEditLink,
-      canDelete: c.canDeleteLink,
-    }));
+    const links = contributions.map(mapContributionToLinkItem);
 
     const openLinkTarget = (contributionId: string, intent: 'edit' | 'delete') => {
       const c = contributions.find(item => item.id === contributionId);
