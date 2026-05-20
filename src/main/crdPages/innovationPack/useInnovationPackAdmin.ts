@@ -13,8 +13,10 @@ import type {
   InnovationPackFormValues,
 } from '@/crd/components/innovationPack/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import type { TemplateMarkdownUploadByIntent } from '@/main/crdPages/templates/useTemplateForms';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   formValuesToUpdateInnovationPackInput,
@@ -211,6 +213,10 @@ export function useInnovationPackAdmin({
   // While loading (`values` null) there's nothing to save, so it's pristine.
   const isDirty = values != null && detail != null && dirtySnapshot(values) !== dirtySnapshot(detail.formValues);
 
+  // Reference file upload (paperclip) — uploads land in the pack's own storage bucket.
+  const { storageConfig } = useStorageConfig({ locationType: 'innovationPack', innovationPackId });
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(storageConfig);
+
   const form: InnovationPackFormProps = {
     value: formValues,
     errors,
@@ -220,6 +226,8 @@ export function useInnovationPackAdmin({
     isDirty,
     providerName: detail?.providerName ?? '',
     avatarUrl: detail ? undefined : undefined,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     // Pack admin only ever EDITS an existing pack → uploads go to the pack's
     // own bucket (temporaryLocation: false). Spread last so the three upload
     // props land on the form props object consumed by `<InnovationPackForm>`.

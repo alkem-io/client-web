@@ -7,7 +7,9 @@ import type {
   VcReadOnlyMetadataRow,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcProfileTabData from './useVcProfileTabData';
 
@@ -40,6 +42,14 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
   const data = useVcProfileTabData(vcId);
+
+  // Reference file upload (paperclip) — uploads to the VC's storage bucket.
+  const { storageConfig } = useStorageConfig({
+    locationType: 'virtualContributor',
+    virtualContributorId: vcId ?? '',
+    skip: !vcId,
+  });
+  const referenceUpload = useReferenceFileUpload(storageConfig);
 
   // Read-only metadata rows: host + body-of-knowledge description. The host
   // comes from the separate `useVirtualContributorProviderQuery`; the BoK
@@ -80,15 +90,12 @@ const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUplo
         dirtyByField={data.dirtyByField}
         saveStatusByField={data.saveStatusByField}
         onChange={data.onChange}
-        onAddReference={data.onAddReference}
-        onUpdateReference={data.onUpdateReference}
-        onRequestRemoveReference={data.onRequestRemoveReference}
+        onReferencesChange={data.onReferencesChange}
+        onReferenceFileUpload={referenceUpload.onFileUpload}
+        referenceUploadAccept={referenceUpload.accept}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
         onSaveSection={data.onSaveSection}
-        pendingReferenceDelete={data.pendingReferenceDelete}
-        onConfirmRemoveReference={data.onConfirmRemoveReference}
-        onCancelRemoveReference={data.onCancelRemoveReference}
         metadata={{ host, bodyOfKnowledge }}
         {...markdownUpload}
       />

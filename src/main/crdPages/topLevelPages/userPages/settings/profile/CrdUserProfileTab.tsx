@@ -3,7 +3,9 @@ import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { UserProfileTabView } from '@/crd/components/user/settings/UserProfileTabView';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import useUserProfileTabData from './useUserProfileTabData';
 
@@ -35,6 +37,10 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
   const { userId } = useUserPageRouteContext();
   const data = useUserProfileTabData(userId);
 
+  // Reference file upload (paperclip) — uploads to the user's storage bucket.
+  const { storageConfig } = useStorageConfig({ locationType: 'user', userId: userId ?? '', skip: !userId });
+  const referenceUpload = useReferenceFileUpload(storageConfig);
+
   return (
     <>
       <UserProfileTabView
@@ -44,16 +50,13 @@ const CrdUserProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUp
         dirtyByField={data.dirtyByField}
         saveStatusByField={data.saveStatusByField}
         onChange={data.onChange}
-        onAddReference={data.onAddReference}
-        onUpdateReference={data.onUpdateReference}
+        onReferencesChange={data.onReferencesChange}
+        onReferenceFileUpload={referenceUpload.onFileUpload}
+        referenceUploadAccept={referenceUpload.accept}
         onUpdateRecognizedReference={data.onUpdateRecognizedReference}
-        onRequestRemoveReference={data.onRequestRemoveReference}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
         onSaveSection={data.onSaveSection}
-        pendingReferenceDelete={data.pendingReferenceDelete}
-        onConfirmRemoveReference={data.onConfirmRemoveReference}
-        onCancelRemoveReference={data.onCancelRemoveReference}
         {...markdownUpload}
       />
       <ImageCropDialog
