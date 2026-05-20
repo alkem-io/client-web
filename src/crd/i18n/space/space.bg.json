@@ -191,8 +191,6 @@
     "vote": "Гласувай",
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
-    "resultsCount": "{{count}} резултата",
-    "clearFilters": "Изчисти филтрите",
     "sendComment": "Изпрати коментар",
     "addResponse": "Добави отговор",
     "createWhiteboard": "Създаване на нова бяла дъска",
