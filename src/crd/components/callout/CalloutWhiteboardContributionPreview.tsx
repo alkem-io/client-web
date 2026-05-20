@@ -9,7 +9,7 @@ import { Skeleton } from '@/crd/primitives/skeleton';
 export type CalloutWhiteboardContributionPreviewData = {
   id: string;
   title: string;
-  author?: { name: string; avatarUrl?: string };
+  author?: { name: string; avatarUrl?: string; profileUrl?: string };
   timestamp?: string;
   /** Pre-rendered whiteboard thumbnail returned by the server (WHITEBOARD_PREVIEW visual). */
   previewUrl?: string;
@@ -55,21 +55,46 @@ export function CalloutWhiteboardContributionPreview({
     >
       <header className="flex items-start justify-between gap-3 px-4 py-3 border-b border-border bg-primary/5">
         <div className="flex items-center gap-3 min-w-0">
-          {whiteboard.author && (
-            <Avatar className="w-9 h-9 border border-border shrink-0">
-              {whiteboard.author.avatarUrl && (
-                <AvatarImage src={whiteboard.author.avatarUrl} alt={whiteboard.author.name} />
-              )}
-              <AvatarFallback>{whiteboard.author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          )}
+          {whiteboard.author &&
+            (whiteboard.author.profileUrl ? (
+              <a
+                href={whiteboard.author.profileUrl}
+                onClick={e => e.stopPropagation()}
+                aria-label={whiteboard.author.name}
+                className="relative z-10 block shrink-0 rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Avatar className="w-9 h-9 border border-border">
+                  {whiteboard.author.avatarUrl && (
+                    <AvatarImage src={whiteboard.author.avatarUrl} alt={whiteboard.author.name} />
+                  )}
+                  <AvatarFallback>{whiteboard.author.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </a>
+            ) : (
+              <Avatar className="w-9 h-9 border border-border shrink-0">
+                {whiteboard.author.avatarUrl && (
+                  <AvatarImage src={whiteboard.author.avatarUrl} alt={whiteboard.author.name} />
+                )}
+                <AvatarFallback>{whiteboard.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ))}
           <div className="min-w-0">
             <h3 className="text-card-title text-foreground truncate">
               {loading ? <Skeleton className="h-4 w-40" /> : whiteboard.title}
             </h3>
             {(whiteboard.author || whiteboard.timestamp) && (
               <p className="text-caption text-muted-foreground truncate">
-                {whiteboard.author?.name}
+                {whiteboard.author?.profileUrl ? (
+                  <a
+                    href={whiteboard.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {whiteboard.author.name}
+                  </a>
+                ) : (
+                  whiteboard.author?.name
+                )}
                 {whiteboard.author && whiteboard.timestamp && ' • '}
                 {whiteboard.timestamp}
               </p>

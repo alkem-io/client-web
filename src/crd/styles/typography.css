@@ -117,3 +117,10 @@
 .text-control {
   text-transform: uppercase;
 }
+/* `.text-control` uppercases UI-chrome labels (buttons, menu rows, tab triggers).
+   Editable fields use the same token for size/leading but must NOT uppercase the
+   user's typed value — scope the reset to the editable elements. */
+input.text-control,
+textarea.text-control {
+  text-transform: none;
+}

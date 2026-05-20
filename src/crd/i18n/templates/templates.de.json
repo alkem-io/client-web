@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Beiträge",
     "whiteboard": "Whiteboards",
-    "link": "Links"
+    "link": "Links",
+    "memo": "Memos"
   },
   "preview": {
     "loading": "Vorlage wird geladen…",

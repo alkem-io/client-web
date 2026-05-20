@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { InnovationPackAdminView } from '@/crd/components/innovationPack/InnovationPackAdminView';
 import type {
   InnovationPackFormErrors,
@@ -33,6 +33,7 @@ export function InnovationPackAdminPage() {
     searchVisibility: 'public',
   });
   const [submitting, setSubmitting] = useState(false);
+  const initialSnapshot = useRef(JSON.stringify(values));
 
   const errors: InnovationPackFormErrors = !values.name.trim() ? { name: 'A pack name is required.' } : {};
 
@@ -75,6 +76,7 @@ export function InnovationPackAdminPage() {
             window.setTimeout(() => setSubmitting(false), 1000);
           },
           submitting,
+          isDirty: JSON.stringify(values) !== initialSnapshot.current,
           providerName: 'Google Ventures',
           avatarUrl: undefined,
         }}

@@ -229,10 +229,10 @@ A real image always wins — the colour is purely a fallback.
 
 | Use the deterministic colour | Stick to the muted / prototype treatment |
 |---|---|
-| Display avatars (size-8+, e.g. invitation cards, dialogs, panel rows) | Sidebar resource items (`size-6` list rows) |
+| Display avatars (size-8+, e.g. invitation cards, dialogs, panel rows) | Sidebar resource items (`size-6` list rows) and the left-sidebar subspaces list (`SubspacesSection`) — these show the **real `avatarUrl`** when present, falling back to grey initials (no `pickColorFromId`) when missing |
 | Card banners and banner fallback areas | Initials label tiles inside compact cards (CompactSpaceCard's name-row tile uses `bg-primary`) |
 
-The rule of thumb: prominent display avatars and banner areas get the colour; small list rows and label tiles stay muted so the layout doesn't feel busy.
+The rule of thumb: prominent display avatars and banner areas get the colour; small list rows show the real avatar when available and otherwise stay muted grey (no deterministic accent) so the layout doesn't feel busy.
 
 **Components currently consuming the colour prop:**
 `SpaceCard` (`avatarColor`), `SpaceHeader` (`color`), `SubspaceHeader` (`subspaceColor`, `parentColor`), `SpaceSettingsHeader` (`avatarColor`), `SpaceHierarchyCard` (`color`), `CompactSpaceCard` (`color`), `PendingInvitationCard` (`color`), `PendingApplicationCard` (`color`), `StackedAvatars` (`avatarColor`), `SidebarResourceItem` (`avatarColor`, optional), `EventDetailView` (`resolveColor` callback), `AvatarFallback` primitive (`color`).

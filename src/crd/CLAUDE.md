@@ -256,6 +256,48 @@ Two hero tokens (`text-display`, `text-hero`) are **fluid via `clamp()`** — th
 
 **Why this rule exists:** an accidental click destroys user content with no undo at the server level. A dialog is cheap; a lost contribution or comment is not. This rule applies regardless of the entity's "importance" — once a user has typed it, they get to confirm before it goes away.
 
+#### Discard-on-close for dialogs — `useDialogCloseGuard`
+
+When a dialog holds **unsaved, user-authored input**, closing it (Esc, overlay/outside click, or the X button) must confirm via `DiscardChangesDialog` before the input is lost — never close silently. **Do not hand-roll this.** There is one shared hook:
+
+`useDialogCloseGuard` (`@/crd/components/dialogs/useDialogCloseGuard`) — the single source of truth. Radix routes Esc, outside-click, and X all through `onOpenChange(false)`, so the hook guards that one callback (no `onEscapeKeyDown`/`onInteractOutside` plumbing needed).
+
+```tsx
+const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+  isDirty,                       // what "unsaved" means — you compute this
+  onClose: () => onOpenChange(false), // the real close (and any onCancel())
+  blockClose: submitting,        // optional: ignore close entirely while a mutation is in flight
+});
+
+return (
+  <>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        …
+        <DialogFooter>
+          <Button variant="ghost" onClick={requestClose}>{t('cancel')}</Button>
+          …
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    {guardElement}
+  </>
+);
+```
+
+- Wire `handleOpenChange` to the `Dialog` and `requestClose` to the footer Cancel/Close button — both go through the same guard.
+- Render `{guardElement}` as a sibling of `<Dialog>` (wrap the return in a fragment).
+- Clean → closes immediately. Dirty → shows `DiscardChangesDialog`; only an explicit "Discard" closes. `blockClose` → no close, no prompt.
+
+**Only guard real data-loss.** Apply this when the user has authored content they can't trivially recreate (a filled-in form like Create Subspace, a template form, a link contribution). **Do NOT** guard:
+- Read-only dialogs (detail/preview/activity views) — nothing to lose.
+- Search / picker / selection dialogs (member picker, template picker, "change default") — transient selection, not authored content; a prompt there is friction, not protection.
+- Transient *steps* inside a flow (e.g. the image-crop step of an upload) — recoverable by redoing the step. A discard prompt here was tried and explicitly removed.
+
+Litmus test: *"If this closes, did the user lose something they typed and would have to retype?"* Only then guard it.
+
+**Reference implementations:** `CreateSubspaceDialog.tsx`, `TemplateFormDialog.tsx`, `LinkContributionDialog.tsx` (both create + edit flows) all use `useDialogCloseGuard`. New form dialogs supply `isDirty` + `onClose` and reuse the hook — never re-implement the discard-confirm flow inline.
+
 ### 10. Never Render Markdown / HTML-Tagged Strings As Plain Text
 
 Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders **must** be rendered through a markdown/rich-text renderer — never as `{someString}` inside a `<p>` or `<span>`. Doing so displays the raw markup to the user (bold asterisks, literal `<b>` tags, escaped entities), which is the bug this rule exists to prevent.
@@ -766,10 +808,10 @@ The components that participate in these treatments today:
 
 The accent colour is intentionally absent from a few spots — too many coloured tiles per row makes the layout feel noisy. These keep the muted prototype treatment:
 
-- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) — default grey `AvatarFallback`. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
+- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) and **`SubspacesSection`** (the left-sidebar subspaces list on the space home tab and the subspace page) — these rows render the entity's **real `avatarUrl`** when one exists; the **grey `AvatarFallback` is retained only as the no-avatar fallback**. `pickColorFromId` is still intentionally NOT applied here, so a space/subspace with no avatar stays muted grey rather than getting a coloured tile. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
 - **`CompactSpaceCard`'s initials tile** (the small rectangle next to the space name in the card body, *not* the banner) — `bg-primary text-primary-foreground`.
 
-The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles use the prototype's muted/primary treatment.**
+The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles show the real avatar when available and otherwise keep the prototype's muted/primary treatment (no `pickColorFromId`).**
 
 #### Data flow
 

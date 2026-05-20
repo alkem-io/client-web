@@ -14,9 +14,15 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { cn } from '@/crd/lib/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
-import { useSpaceSettingsTab } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
+import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
+import {
+  type SpaceSettingsTabId,
+  useSpaceSettingsTab,
+} from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
@@ -33,6 +39,7 @@ import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDi
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
+import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
 
 export type SubspaceMobileMenu = {
   open: boolean;
@@ -55,7 +62,14 @@ export default function CrdSubspacePageLayout() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const createSubspace = useCreateSubspace(data.subspaceId ?? '');
+  const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
+  // Wire the Create-Subspace template picker with this subspace's own templates
+  // set + default subspace template (D21 / FR-031), matching the Settings flow.
+  // Account stays undefined at L1/L2 — the same as the Settings scope.
+  const createSubspace = useCreateSubspace(data.subspaceId ?? '', {
+    templatesSetId: data.templatesSetId,
+    defaultTemplateId: data.defaultSubspaceTemplateId,
+  });
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -69,6 +83,15 @@ export default function CrdSubspacePageLayout() {
   const visibleSettingsTabs = getVisibleSettingsTabs(settingsLevel);
   const settingsTabDescriptors = useSettingsTabDescriptors(settingsLevel);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab(visibleSettingsTabs);
+  // Shared with the Settings page (rendered via <Outlet>) via
+  // DirtyTabGuardContext so a tab click consults the guard before navigating
+  // and the discard-changes dialog (owned by the page) can open.
+  const settingsDirtyGuard = useDirtyTabGuard();
+  const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
+    if (await settingsDirtyGuard.requestSwitch(next)) {
+      setActiveSettingsTab(next);
+    }
+  };
 
   // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
   // parent — collapse to a single hop. At L2 the L0 hop is distinct, so we render
@@ -79,6 +102,7 @@ export default function CrdSubspacePageLayout() {
   const baseTrail =
     data.parentSpaceName && data.subspaceName
       ? [
+          // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
           ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName!, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
           { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
           {
@@ -121,34 +145,39 @@ export default function CrdSubspacePageLayout() {
       }
     : undefined;
 
-  const subspaceSidebar = (
-    <SubspaceSidebar
-      {...data.sidebar}
-      onEditClick={() => {
-        setMobileMenuOpen(false);
-        navigate(`${data.subspaceUrl}/settings/about`);
-      }}
-      onAboutClick={() => {
-        setMobileMenuOpen(false);
-        setAboutOpen(true);
-      }}
-      onQuickActionClick={handleQuickAction}
-      subspaces={data.subspaces}
-      onShowAllSubspaces={() => {
-        setMobileMenuOpen(false);
-        setActiveDialog('subspaces');
-      }}
-      onSubspaceClick={href => {
-        setMobileMenuOpen(false);
-        navigate(href);
-      }}
-      onCreateSubspace={handleCreateSubspace}
-    />
+  const sidebarCommonProps = {
+    ...data.sidebar,
+    onEditClick: () => {
+      setMobileMenuOpen(false);
+      navigate(`${data.subspaceUrl}/settings/about`);
+    },
+    onAboutClick: () => {
+      setMobileMenuOpen(false);
+      setAboutOpen(true);
+    },
+    onQuickActionClick: handleQuickAction,
+    subspaces: data.subspaces,
+    onShowAllSubspaces: () => {
+      setMobileMenuOpen(false);
+      setActiveDialog('subspaces');
+    },
+    onSubspaceClick: (href: string) => {
+      setMobileMenuOpen(false);
+      navigate(href);
+    },
+    onCreateSubspace: handleCreateSubspace,
+  };
+
+  // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
+  // the full sidebar and has no collapse affordance.
+  const desktopSidebar = (
+    <SubspaceSidebar {...sidebarCommonProps} collapsed={sidebarCollapsed} onToggleCollapse={toggleSidebarCollapsed} />
   );
+  const mobileSidebar = <SubspaceSidebar {...sidebarCommonProps} />;
 
   const mobileMenuContent = (
     <div className="flex flex-col gap-4">
-      {subspaceSidebar}
+      {mobileSidebar}
       {data.canEditFlow && editFlowHref && (
         <a
           href={editFlowHref}
@@ -170,36 +199,38 @@ export default function CrdSubspacePageLayout() {
 
   if (isOnSettings) {
     return (
-      <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
-        {data.visibility.status !== 'active' && (
-          <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
-        )}
-        <div className="flex flex-col bg-background min-h-screen">
-          <SpaceSettingsHeader
-            title={data.banner.title}
-            tagline={data.banner.tagline ?? null}
-            avatarUrl={data.banner.subspaceAvatarUrl ?? null}
-            initials={data.banner.subspaceInitials}
-            avatarColor={data.banner.subspaceColor}
-            tabs={
-              <SpaceSettingsTabStrip
-                activeTab={activeSettingsTab}
-                onTabChange={setActiveSettingsTab}
-                tabs={settingsTabDescriptors}
-              />
-            }
-          />
-          <main className="flex-1 w-full px-6 md:px-8 pb-8">
-            <div className="grid grid-cols-12 gap-6 items-start">
-              <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Outlet context={{ data }} />
-                </Suspense>
+      <DirtyTabGuardContext.Provider value={settingsDirtyGuard}>
+        <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
+          {data.visibility.status !== 'active' && (
+            <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
+          )}
+          <div className="flex flex-col bg-background min-h-screen">
+            <SpaceSettingsHeader
+              title={data.banner.title}
+              tagline={data.banner.tagline ?? null}
+              avatarUrl={data.banner.subspaceAvatarUrl ?? null}
+              initials={data.banner.subspaceInitials}
+              avatarColor={data.banner.subspaceColor}
+              tabs={
+                <SpaceSettingsTabStrip
+                  activeTab={activeSettingsTab}
+                  onTabChange={handleSettingsTabChange}
+                  tabs={settingsTabDescriptors}
+                />
+              }
+            />
+            <main className="flex-1 w-full px-6 md:px-8 pb-8">
+              <div className="grid grid-cols-12 gap-6 items-start">
+                <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Outlet context={{ data }} />
+                  </Suspense>
+                </div>
               </div>
-            </div>
-          </main>
-        </div>
-      </StorageConfigContextProvider>
+            </main>
+          </div>
+        </StorageConfigContextProvider>
+      </DirtyTabGuardContext.Provider>
     );
   }
 
@@ -223,17 +254,32 @@ export default function CrdSubspacePageLayout() {
             ...data.bannerActions,
             onActivityClick: () => setActiveDialog('activity'),
             onShareClick: () => setShareDialogOpen(true),
+            onMenuClick: () => setMobileMenuOpen(true),
           }}
           overlayHeader={enableBannerOverlay}
         />
 
         <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Left sidebar — cols 2-3, one col gap from left edge */}
-            <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">{subspaceSidebar}</div>
+            {/* Left sidebar — cols 2-3 when expanded; a single-col icon rail
+                when collapsed, freeing a column for the content area. */}
+            <div
+              className={cn(
+                'hidden lg:block sticky top-24 self-start',
+                sidebarCollapsed ? 'lg:col-start-2 lg:col-span-1' : 'lg:col-start-2 col-span-2'
+              )}
+            >
+              {desktopSidebar}
+            </div>
 
-            {/* Main content — cols 4-11, one col gap from right edge (matches banner action row) */}
-            <div className="col-span-12 lg:col-start-4 lg:col-span-8 min-w-0 space-y-6">
+            {/* Main content — cols 4-11 when the sidebar is expanded; widens to
+                cols 3-11 when collapsed. One col gap from the right edge. */}
+            <div
+              className={cn(
+                'col-span-12 min-w-0 space-y-6',
+                sidebarCollapsed ? 'lg:col-start-3 lg:col-span-9' : 'lg:col-start-4 lg:col-span-8'
+              )}
+            >
               <SpaceApplyButtonConnector
                 spaceId={data.subspaceId}
                 spaceProfileUrl={data.subspaceUrl}

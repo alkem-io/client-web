@@ -1,10 +1,10 @@
-import { ExternalLink, Pencil, X } from 'lucide-react';
+import { ExternalLink, Paperclip, Pencil, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -13,12 +13,13 @@ export type CalloutPostPreviewReference = {
   name: string;
   uri: string;
   description?: string;
+  isFile?: boolean;
 };
 
 export type CalloutPostPreviewData = {
   id: string;
   title: string;
-  author?: { name: string; avatarUrl?: string };
+  author?: { name: string; avatarUrl?: string; profileUrl?: string };
   timestamp?: string;
   description?: string;
   tags?: string[];
@@ -58,19 +59,42 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
     >
       <header className="flex items-start justify-between gap-3 px-4 py-3 border-b border-border bg-primary/5">
         <div className="flex items-center gap-3 min-w-0">
-          {post.author && (
-            <Avatar className="w-9 h-9 border border-border shrink-0">
-              {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
-              <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          )}
+          {post.author &&
+            (post.author.profileUrl ? (
+              <a
+                href={post.author.profileUrl}
+                onClick={e => e.stopPropagation()}
+                aria-label={post.author.name}
+                className="relative z-10 block shrink-0 rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Avatar className="w-9 h-9 border border-border">
+                  {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                  <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </a>
+            ) : (
+              <Avatar className="w-9 h-9 border border-border shrink-0">
+                {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ))}
           <div className="min-w-0">
             <h3 className="text-card-title text-foreground truncate">
               {loading ? <Skeleton className="h-4 w-40" /> : post.title}
             </h3>
             {(post.author || post.timestamp) && (
               <p className="text-caption text-muted-foreground truncate">
-                {post.author?.name}
+                {post.author?.profileUrl ? (
+                  <a
+                    href={post.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {post.author.name}
+                  </a>
+                ) : (
+                  post.author?.name
+                )}
                 {post.author && post.timestamp && ' • '}
                 {post.timestamp}
               </p>
@@ -120,15 +144,7 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
 
         {(hasTags || hasReferences) && <hr className="border-border" />}
 
-        {hasTags && (
-          <div className="flex flex-wrap gap-1.5">
-            {post.tags?.map(tag => (
-              <Badge key={tag} variant="secondary" className="text-badge px-2 py-0.5 font-normal">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {hasTags && <CollapsibleTagList tags={post.tags ?? []} />}
 
         {hasReferences && (
           <div>
@@ -143,7 +159,11 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
                     className="inline-flex items-center gap-1.5 text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
                     {ref.name}
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    {ref.isFile ? (
+                      <Paperclip className="w-3.5 h-3.5" aria-hidden="true" />
+                    ) : (
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    )}
                   </a>
                   {ref.description && <p className="text-caption text-muted-foreground ml-0.5">{ref.description}</p>}
                 </li>

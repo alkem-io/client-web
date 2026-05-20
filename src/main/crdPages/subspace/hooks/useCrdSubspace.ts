@@ -1,9 +1,10 @@
 import {
   useInnovationFlowDetailsQuery,
   useSpaceAboutDetailsQuery,
+  useSpaceDefaultTemplatesQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
@@ -41,16 +42,20 @@ export type CrdSubspacePageData = {
   roleSetId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
+  /** Templates set + default subspace template — feed the Create-Subspace picker (FR-031, D21). */
+  templatesSetId: string | undefined;
+  defaultSubspaceTemplateId: string | undefined;
 
   /** Render data */
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
-  subspaces: Array<{ name: string; initials: string; href: string }>;
+  subspaces: Array<{ name: string; initials: string; href: string; avatarUrl?: string }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
+  innovationFlowId: string | undefined;
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
@@ -85,6 +90,18 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
+  // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
+  // so the Create-Subspace picker shows this space's own Space templates (D21).
+  const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
+
+  // Configured default subspace template for FR-031 pre-selection — light query, non-blocking.
+  const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
+    variables: { spaceId: subspaceId },
+    skip: !subspaceId,
+  });
+  const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
+    td => td.type === TemplateDefaultType.SpaceSubspace
+  )?.template?.id;
 
   // Innovation flow phases + currentState (for default tab resolution).
   const { data: flowData, loading: flowLoading } = useInnovationFlowDetailsQuery({
@@ -92,6 +109,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     skip: !collaborationId,
   });
   const flow = flowData?.lookup.collaboration?.innovationFlow;
+  const innovationFlowId = flow?.id;
   const phases = mapInnovationFlowPhases(flow?.states);
   const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
@@ -158,6 +176,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
       name: child.displayName,
       initials: getInitials(child.displayName),
       href: child.url,
+      avatarUrl: child.avatar?.uri,
     })) ?? [];
 
   const visibilityData = mapSpaceVisibility(visibility);
@@ -179,6 +198,8 @@ export function useCrdSubspace(): CrdSubspacePageData {
     roleSetId,
     collaborationId,
     calloutsSetId,
+    templatesSetId,
+    defaultSubspaceTemplateId,
 
     banner,
     bannerActions,
@@ -186,6 +207,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaces,
     visibility: visibilityData,
 
+    innovationFlowId,
     phases,
     currentPhaseId,
     canEditFlow,

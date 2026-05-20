@@ -49,12 +49,13 @@ export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
 
 function mapAllowedContributionTypes(
   allowedTypes: readonly CalloutContributionType[]
-): ('post' | 'whiteboard' | 'link')[] {
-  const out: ('post' | 'whiteboard' | 'link')[] = [];
+): ('post' | 'whiteboard' | 'link' | 'memo')[] {
+  const out: ('post' | 'whiteboard' | 'link' | 'memo')[] = [];
   for (const t of allowedTypes) {
     if (t === CalloutContributionType.Post) out.push('post');
     else if (t === CalloutContributionType.Whiteboard) out.push('whiteboard');
     else if (t === CalloutContributionType.Link) out.push('link');
+    else if (t === CalloutContributionType.Memo) out.push('memo');
   }
   return out;
 }
@@ -74,6 +75,11 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     framingTitle: framing.profile.displayName,
     framingDescription: framing.profile.description ?? '',
     framingWhiteboardContent: framingKind === 'whiteboard' ? framing.whiteboard?.content : undefined,
+    // Server-rendered whiteboard preview image — D16, 2026-05-18. The Preview dialog (and any
+    // read-only preview surface) renders an `<img>` of this when present; falls back to the
+    // placeholder text only when the visual is genuinely missing on the server.
+    framingWhiteboardPreviewImageUrl:
+      framingKind === 'whiteboard' ? framing.whiteboard?.profile.preview?.uri || undefined : undefined,
     framingMemoContent: framingKind === 'memo' ? (framing.memo?.markdown ?? undefined) : undefined,
     framingCollaboraDoc:
       framingKind === 'document' && framing.collaboraDocument
@@ -93,6 +99,18 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     framingPoll:
       framingKind === 'poll' && framing.poll
         ? { question: framing.poll.title, options: framing.poll.options.map(o => o.text) }
+        : undefined,
+    // Callout-references (distinct from the *cta* framing's single Link, which goes on framingLinks).
+    // D19, 2026-05-18 — the editor's References rows persist here and the legacy MUI preview rendered
+    // them; CRD now does the same via `ReferencesAndTagsStrip` in `CalloutTemplatePreview`.
+    references:
+      framing.profile.references && framing.profile.references.length > 0
+        ? framing.profile.references.map(r => ({
+            id: r.id,
+            name: r.name,
+            uri: r.uri,
+            description: r.description || undefined,
+          }))
         : undefined,
     allowedContributionTypes: mapAllowedContributionTypes(settings.contribution.allowedTypes),
     commentsEnabled: settings.framing.commentsEnabled,

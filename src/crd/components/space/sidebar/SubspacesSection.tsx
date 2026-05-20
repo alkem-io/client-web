@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
 const MAX_VISIBLE = 6;
 
@@ -8,6 +8,7 @@ type SubspaceItem = {
   name: string;
   initials: string;
   href: string;
+  avatarUrl?: string;
 };
 
 type SubspacesSectionProps = {
@@ -96,6 +97,9 @@ export function SubspacesSection({
               >
                 <div className="flex items-center gap-3">
                   <Avatar className="w-7 h-7 rounded-md">
+                    {subspace.avatarUrl && (
+                      <AvatarImage src={subspace.avatarUrl} alt={subspace.name} className="rounded-md object-cover" />
+                    )}
                     <AvatarFallback className="rounded-md text-badge">{subspace.initials}</AvatarFallback>
                   </Avatar>
                   <span className="text-body-emphasis text-foreground">{subspace.name}</span>

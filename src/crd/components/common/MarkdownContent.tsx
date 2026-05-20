@@ -46,7 +46,9 @@ export type MarkdownContentProps = {
  *
  * Iframes are supported when a MarkdownConfigProvider is present in the tree.
  * The provider carries a whitelist of allowed iframe origins; iframes from
- * non-whitelisted origins are stripped. Without a provider, all iframes are stripped.
+ * non-whitelisted origins are stripped. Without a provider (or with an empty
+ * list), all iframes are stripped — the platform must configure the allowed
+ * origins for embeds to render. Non-https iframes are always stripped.
  *
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.

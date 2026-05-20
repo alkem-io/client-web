@@ -144,6 +144,7 @@ fragment CalloutDetails on Callout {
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         id
         uri
@@ -155,6 +156,7 @@ fragment CalloutDetails on Callout {
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         id
         uri

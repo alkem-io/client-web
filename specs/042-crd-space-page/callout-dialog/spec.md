@@ -244,7 +244,7 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 - **FR-30** Response type chips are single-select. Clicking the active chip deselects (response type = None).
 - **FR-31** **Links**: per-type panel shows (i) a "Pre-populate collection" editor with title / url / description rows and an "Add another link" button, (ii) an actor-switches row ("Members can add", "Admins can add").
 - **FR-32** **Posts**: per-type panel shows actor switches + "Enable comments" switch + **Set Default Response** button.
-- **FR-33** **Memos**: per-type panel shows actor switches + **Set Default Response** button.
+- **FR-33** **Memos**: per-type panel shows actor switches + **Set Default Response** button. The defaults dialog reuses the same two fields as Posts (FR-42 default title + FR-43 default description) — `contributionDefaults.defaultDisplayName` + `contributionDefaults.postDescription`. The "Add memo" contribution-add flow MUST seed both fields from those defaults when creating a new memo on the callout — mirroring the Post-add flow.
 - **FR-34** **Whiteboards**: per-type panel shows actor switches + **Set Default Response** button.
 - **FR-35** **Documents**: per-type panel is a placeholder. No switches, no defaults button.
 - **FR-36** Actor switches enforce the hierarchy rule: Members OFF allows Admins either state; Admins OFF forces Members OFF + disabled.

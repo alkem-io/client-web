@@ -70,6 +70,7 @@ export type PostCardData = {
   author?: {
     name: string;
     avatarUrl?: string;
+    profileUrl?: string;
     role?: string;
   };
   title: string;
@@ -207,17 +208,71 @@ export function PostCard({
         className
       )}
     >
-      <CardHeader className="flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
+      <CardHeader className="relative isolate flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
+        {/* Stretched-link overlay: clicking anywhere in the header (the empty
+            space, timestamp, badges, type label) opens the callout — the same
+            target as the title link in the body. The avatar/name profile
+            links and the action cluster (expand + 3-dot menu) sit above it via
+            `relative z-10`, so they keep their own behaviour. Rendered only
+            when the consumer wires a destination, so it never becomes a dead
+            `#` click-trap. It's a sibling of the avatar/name anchors, not an
+            ancestor — no nested-anchor invalidity. `tabIndex={-1}` keeps it
+            out of the keyboard tab order so it doesn't duplicate the visible
+            title link's focus stop — the title link stays the keyboard
+            control. We deliberately don't add `aria-hidden` (Biome
+            `useAnchorContent` forbids a no-accessible-content link); the
+            `sr-only` label keeps it discoverable in AT browse mode. */}
+        {(href || onClick) && (
+          <a
+            href={href ?? '#'}
+            tabIndex={-1}
+            onClick={
+              onClick
+                ? e => {
+                    e.preventDefault();
+                    onClick();
+                  }
+                : undefined
+            }
+            className="absolute inset-0 z-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          >
+            <span className="sr-only">{t('callout.openAria', { title: post.title })}</span>
+          </a>
+        )}
         <div className="flex gap-3">
-          {post.author && (
-            <Avatar className="w-10 h-10 border border-border">
-              {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
-              <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          )}
+          {post.author &&
+            (post.author.profileUrl ? (
+              <a
+                href={post.author.profileUrl}
+                onClick={e => e.stopPropagation()}
+                aria-label={post.author.name}
+                className="relative z-10 block shrink-0 self-start rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Avatar className="w-10 h-10 border border-border">
+                  {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                  <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </a>
+            ) : (
+              <Avatar className="w-10 h-10 border border-border">
+                {post.author.avatarUrl && <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />}
+                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ))}
           <div>
             <div className="flex items-center gap-2">
-              {post.author && <span className="text-card-title text-foreground">{post.author.name}</span>}
+              {post.author &&
+                (post.author.profileUrl ? (
+                  <a
+                    href={post.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-card-title text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {post.author.name}
+                  </a>
+                ) : (
+                  <span className="text-card-title text-foreground">{post.author.name}</span>
+                ))}
               {post.timestamp && <span className="text-caption text-muted-foreground">• {post.timestamp}</span>}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
@@ -238,7 +293,7 @@ export function PostCard({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="relative z-10 flex items-center gap-1">
           {onExpandClick && (
             <Button
               variant="ghost"

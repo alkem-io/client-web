@@ -12,6 +12,8 @@ import type {
   InnovationPackFormProps,
   InnovationPackFormValues,
 } from '@/crd/components/innovationPack/types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import type { TemplateMarkdownUploadByIntent } from '@/main/crdPages/templates/useTemplateForms';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
@@ -21,6 +23,14 @@ import {
   mapInnovationPackToBasics,
   mapInnovationPackToDetail,
 } from './innovationPackMapper';
+
+/**
+ * Stable, comparable snapshot of the form values. `avatarFile` is a `File`
+ * (not JSON-serialisable in a meaningful way), so it's reduced to a name+size
+ * key — picking a new avatar therefore registers as a change.
+ */
+const dirtySnapshot = (v: InnovationPackFormValues): string =>
+  JSON.stringify({ ...v, avatarFile: v.avatarFile ? `${v.avatarFile.name}:${v.avatarFile.size}` : undefined });
 
 export type UseInnovationPackAdminResult = {
   loading: boolean;
@@ -54,7 +64,17 @@ export type UseInnovationPackAdminResult = {
  * that template's read-only Preview dialog (the legacy "pack deep-link →
  * straight to Edit" behaviour is intentionally dropped).
  */
-export function useInnovationPackAdmin(): UseInnovationPackAdminResult {
+export type UseInnovationPackAdminArgs = {
+  /** Markdown image-upload wiring per intent for the templates manager. */
+  templatesMarkdownUpload?: TemplateMarkdownUploadByIntent;
+  /** Markdown image-upload wiring for the pack-details description editor (edit-only). */
+  descriptionUpload?: MarkdownUploadProps;
+};
+
+export function useInnovationPackAdmin({
+  templatesMarkdownUpload,
+  descriptionUpload,
+}: UseInnovationPackAdminArgs = {}): UseInnovationPackAdminResult {
   const { t } = useTranslation('crd-templates');
   const { innovationPackId, templateId, loading: resolvingUrl } = useUrlResolver();
 
@@ -71,7 +91,11 @@ export function useInnovationPackAdmin(): UseInnovationPackAdminResult {
   const detail = gqlPack ? mapInnovationPackToDetail(gqlPack) : undefined;
   const templatesSetId = pack?.templatesSetId;
 
-  const tm = useTemplatesManager({ holderKind: 'innovationPack', templatesSetId });
+  const tm = useTemplatesManager({
+    holderKind: 'innovationPack',
+    templatesSetId,
+    markdownUpload: templatesMarkdownUpload,
+  });
 
   // Open the deep-linked template's Preview dialog once it (and the templates set) resolve.
   const [deepLinkedTemplateId, setDeepLinkedTemplateId] = useState<string | null>(null);
@@ -183,14 +207,23 @@ export function useInnovationPackAdmin(): UseInnovationPackAdminResult {
     searchVisibility: 'account',
   };
 
+  // Dirty = the live buffer differs from the last-seeded server snapshot.
+  // While loading (`values` null) there's nothing to save, so it's pristine.
+  const isDirty = values != null && detail != null && dirtySnapshot(values) !== dirtySnapshot(detail.formValues);
+
   const form: InnovationPackFormProps = {
     value: formValues,
     errors,
     onChange,
     onSubmit,
     submitting: submitting || pendingSubmit,
+    isDirty,
     providerName: detail?.providerName ?? '',
     avatarUrl: detail ? undefined : undefined,
+    // Pack admin only ever EDITS an existing pack → uploads go to the pack's
+    // own bucket (temporaryLocation: false). Spread last so the three upload
+    // props land on the form props object consumed by `<InnovationPackForm>`.
+    ...descriptionUpload,
     // The canonical avatar URL comes from `pack.avatarUrl`; we read it off the basics
     // mapping (which already strips empty strings) so the form preview stays in sync
     // when the user uploads a new image and the query refetches.

@@ -189,6 +189,100 @@ describe('templateContentMapper', () => {
     // `framingCollaboraDoc` so the consumer can render `CalloutCollaboraPreview` without a live document service.
   });
 
+  // D16, 2026-05-18 — when a Callout template's framing is a whiteboard with a server-rendered
+  // preview image, the mapper surfaces it on `framingWhiteboardPreviewImageUrl` so the Preview
+  // dialog renders an `<img>` instead of the literal "Whiteboard" placeholder.
+  it('maps the server-rendered whiteboard preview URL for whiteboard-framed callout templates (D16)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Whiteboard,
+          profile: { displayName: 'Roadmap WB', description: 'workshop' },
+          whiteboard: {
+            content: '{"elements":[]}',
+            profile: { preview: { uri: 'https://cdn.alkem.io/wb/preview.png' } },
+          },
+        },
+        settings: {
+          contribution: { allowedTypes: [] },
+          framing: { commentsEnabled: false },
+        },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({
+      type: 'callout',
+      framingKind: 'whiteboard',
+      framingWhiteboardContent: '{"elements":[]}',
+      framingWhiteboardPreviewImageUrl: 'https://cdn.alkem.io/wb/preview.png',
+    });
+  });
+
+  it('leaves framingWhiteboardPreviewImageUrl undefined when the whiteboard has no rendered preview (D16)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.Whiteboard,
+          profile: { displayName: 'WB' },
+          whiteboard: { content: '{}', profile: { preview: null } },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'callout')).toMatchObject({
+      type: 'callout',
+      framingWhiteboardPreviewImageUrl: undefined,
+    });
+  });
+
+  // D19, 2026-05-18 — `framing.profile.references` (calloutReferences) are carried into the
+  // `TemplateContent.callout.references` field so the Preview dialog renders them via
+  // `ReferencesAndTagsStrip`. Distinct from `framingLinks` (the *cta* framing's single Link).
+  it('maps `framing.profile.references` into the callout-content references field (D19)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.None,
+          profile: {
+            displayName: 'My callout',
+            description: '',
+            references: [
+              { id: 'r-1', name: 'Docs', uri: 'https://docs.example', description: 'd' },
+              { id: 'r-2', name: 'Spec', uri: 'https://spec.example' },
+            ],
+          },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({
+      type: 'callout',
+      references: [
+        { id: 'r-1', name: 'Docs', uri: 'https://docs.example', description: 'd' },
+        { id: 'r-2', name: 'Spec', uri: 'https://spec.example', description: undefined },
+      ],
+    });
+  });
+
+  it('leaves `references` undefined when the framing profile has none (D19)', () => {
+    const template = {
+      callout: {
+        framing: {
+          type: CalloutFramingType.None,
+          profile: { displayName: 'no refs', description: '' },
+        },
+        settings: { contribution: { allowedTypes: [] }, framing: { commentsEnabled: false } },
+        contributionDefaults: {},
+      },
+    } as unknown as TemplateContentTemplate;
+    const content = mapTemplateContent(template, 'callout');
+    expect(content).toMatchObject({ type: 'callout', references: undefined });
+  });
+
   it('maps a poll-framed callout content payload', () => {
     const template = {
       callout: {
