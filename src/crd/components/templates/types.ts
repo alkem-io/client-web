@@ -19,6 +19,8 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 /** String-union template type used everywhere in CRD (NOT the GraphQL `TemplateType` enum). */
 export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines';
 
+type ContributionType = 'post' | 'whiteboard' | 'link' | 'memo';
+
 /** Order in which sections render in the manager view (fixed). */
 export const TEMPLATE_TYPE_ORDER: readonly TemplateType[] = [
   'space',
@@ -129,7 +131,7 @@ export type TemplateContent =
        * matching the in-feed `CalloutDetailDialog`'s rendering. D19, 2026-05-18.
        */
       references?: { id: string; name: string; uri: string; description?: string }[];
-      allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
+      allowedContributionTypes: ContributionType[];
       commentsEnabled: boolean;
       /** markdown */
       defaultPostDescription?: string;
@@ -210,7 +212,7 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   framingLinks?: { name: string; uri: string }[];
   framingMediaFiles?: File[];
   framingPoll?: { question?: string; options?: string[] };
-  allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
+  allowedContributionTypes: ContributionType[];
   commentsEnabled: boolean;
   defaultPostDescription?: string;
   defaultWhiteboardContent?: string;

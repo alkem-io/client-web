@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Публикации",
     "whiteboard": "Бели дъски",
-    "link": "Връзки"
+    "link": "Връзки",
+    "memo": "Мемота"
   },
   "preview": {
     "loading": "Зареждане на шаблон…",

@@ -197,7 +197,7 @@ export function ResponseDefaultsDialog({
               onChange={e => setDraft(prev => ({ ...prev, defaultDisplayName: e.target.value }))}
               placeholder={t('responseDefaults.defaultTitlePlaceholder')}
               disabled={disabled}
-              className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+              className="w-full h-9 px-3 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
             />
           </div>
 

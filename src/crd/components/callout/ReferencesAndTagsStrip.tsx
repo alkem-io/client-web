@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Paperclip } from 'lucide-react';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { cn } from '@/crd/lib/utils';
 
@@ -7,6 +7,7 @@ export type ReferencesAndTagsStripReference = {
   name: string;
   uri: string;
   description?: string;
+  isFile?: boolean;
 };
 
 type ReferencesAndTagsStripProps = {
@@ -42,7 +43,11 @@ export function ReferencesAndTagsStrip({ references, tags, className }: Referenc
                 className="inline-flex items-center gap-1.5 text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                 title={ref.description || ref.name}
               >
-                <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                {ref.isFile ? (
+                  <Paperclip className="size-3.5 shrink-0" aria-hidden="true" />
+                ) : (
+                  <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                )}
                 <span>{ref.name}</span>
               </a>
             </li>
