@@ -83,7 +83,7 @@ export function ContributionLinkList({ links, canAdd, onAdd, onEdit, onDelete, c
       {canAdd && (
         <Button variant="outline" size="sm" className="gap-2 w-full" onClick={onAdd}>
           <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('callout.addLink')}
+          {t('callout.addLinkOrFile')}
         </Button>
       )}
     </div>

@@ -202,7 +202,7 @@
     "createMemo": "Nieuw memo aanmaken",
     "defaultMemoName": "Nieuwe memo",
     "memoNameLabel": "Memotitel",
-    "addLink": "Link toevoegen",
+    "addLinkOrFile": "Link of bestand toevoegen",
     "createLink": "Voeg links of documenten toe",
     "editLink": "Link bewerken",
     "linkSave": "Opslaan",

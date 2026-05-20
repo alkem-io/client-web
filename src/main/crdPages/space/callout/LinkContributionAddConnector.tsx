@@ -41,7 +41,7 @@ export function LinkContributionAddConnector({
   return (
     <>
       {!inlineTrigger && (
-        <ContributionAddCard label={t('callout.addLink')} icon={Link2} onClick={() => setOpen(true)} />
+        <ContributionAddCard label={t('callout.addLinkOrFile')} icon={Link2} onClick={() => setOpen(true)} />
       )}
       <StorageConfigContextProvider locationType="callout" calloutId={calloutId} skip={!open}>
         <LinkAddDialog calloutId={calloutId} open={open} onOpenChange={setOpen} onCreated={onCreated} />

@@ -202,7 +202,7 @@
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
-    "addLink": "Add link",
+    "addLinkOrFile": "Add link or file",
     "createLink": "Add links or attach documents",
     "editLink": "Edit link",
     "linkSave": "Save",
