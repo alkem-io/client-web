@@ -63,7 +63,9 @@ export function TagsInput({
     }
   }, [editingIndex]);
 
-  const normalize = (raw: string) => raw.trim().toLowerCase();
+  // Trim surrounding whitespace only — the user's input is preserved verbatim,
+  // casing included. Dedupe is case-sensitive: `Foo` and `foo` are distinct tags.
+  const normalize = (raw: string) => raw.trim();
 
   const addTags = (raw: string) => {
     // Mirrors MUI's `Comma-separated tags` input — `"foo, bar"` or a single
@@ -236,7 +238,7 @@ export function TagsInput({
           }}
           placeholder={value.length === 0 ? placeholder : ''}
           aria-label={placeholder}
-          className="flex-1 min-w-[120px] border-0 bg-transparent text-control outline-none text-foreground"
+          className="flex-1 min-w-[120px] border-0 bg-transparent text-body outline-none text-foreground"
         />
       </div>
       {tooShortError && (

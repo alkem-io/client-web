@@ -21,6 +21,9 @@
     "person": "Persoon",
     "org": "Organisatie"
   },
+  "tags": {
+    "moreAria": "Toon {{count}} meer"
+  },
   "share": {
     "title": "Delen",
     "button": "Delen",

@@ -62,6 +62,14 @@ export function useDirtyTabGuard(): DirtyTabGuard {
         resolve(true);
         return;
       }
+      // A confirmation is already pending (e.g. a second tab click before the
+      // user answered the dialog). Ignore the new request rather than
+      // overwriting the stored resolver, which would orphan the first promise
+      // and leave the guard inconsistent.
+      if (pendingSwitchResolver.current) {
+        resolve(false);
+        return;
+      }
       setPendingSwitch(next);
       pendingSwitchResolver.current = resolve;
     });

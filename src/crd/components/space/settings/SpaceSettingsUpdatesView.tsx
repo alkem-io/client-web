@@ -2,7 +2,7 @@ import { Calendar, Loader2, Megaphone, MoreHorizontal, Plus, Send, Trash2 } from
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -45,7 +45,7 @@ export type SpaceSettingsUpdatesViewProps = {
   onSubmit: () => void;
   onRequestRemove: (messageId: string) => void;
   className?: string;
-};
+} & MarkdownUploadProps;
 
 /**
  * Space Settings → Updates tab view. Mirrors the MUI `CommunityUpdatesView`
@@ -70,6 +70,9 @@ export function SpaceSettingsUpdatesView({
   onSubmit,
   onRequestRemove,
   className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: SpaceSettingsUpdatesViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [composerOpen, setComposerOpen] = useState(false);
@@ -130,7 +133,14 @@ export function SpaceSettingsUpdatesView({
       {canEdit && composerOpen && (
         <section className="rounded-lg border bg-muted p-5 flex flex-col gap-4">
           <h3 className="text-card-title">{t('updates.composer.title')}</h3>
-          <MarkdownEditor value={draft} onChange={onDraftChange} placeholder={t('updates.composer.placeholder')} />
+          <MarkdownEditor
+            value={draft}
+            onChange={onDraftChange}
+            placeholder={t('updates.composer.placeholder')}
+            onImageUpload={onImageUpload}
+            iframeAllowedUrls={iframeAllowedUrls}
+            onError={onError}
+          />
           <div className="flex items-center gap-3">
             <Button
               type="button"

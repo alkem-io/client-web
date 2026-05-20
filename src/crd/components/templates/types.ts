@@ -10,6 +10,7 @@
 
 import type { ReactNode } from 'react';
 import type { FramingChip } from '@/crd/forms/callout/types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 // ---------------------------------------------------------------------------
 // Template type union + ordering
@@ -104,6 +105,13 @@ export type TemplateContent =
       framingDescription: string;
       /** Excalidraw JSON — when framingKind === 'whiteboard' */
       framingWhiteboardContent?: string;
+      /**
+       * When `framingKind === 'whiteboard'` — the server-rendered preview image URL
+       * (`framing.whiteboard.profile.preview.uri`). The preview surface renders this as an
+       * `<img>` instead of the placeholder text. D16, 2026-05-18. Mirrors `previewImageUrl`
+       * on the `type: 'whiteboard'` branch.
+       */
+      framingWhiteboardPreviewImageUrl?: string;
       /** markdown — when framingKind === 'memo' */
       framingMemoContent?: string;
       /** when framingKind === 'document' — read-only title/placeholder (the live Collabora service is not embedded in a preview) */
@@ -114,6 +122,13 @@ export type TemplateContent =
       framingMediaImages?: { uri: string; alt?: string }[];
       /** when framingKind === 'poll' — rendered read-only in the preview */
       framingPoll?: { question: string; options?: string[] };
+      /**
+       * `framing.profile.references` — the *calloutReferences* the template editor produces
+       * (distinct from `framingLinks`, which is the *cta* framing's single Link entity).
+       * Rendered as external links in `CalloutTemplatePreview` via `ReferencesAndTagsStrip`,
+       * matching the in-feed `CalloutDetailDialog`'s rendering. D19, 2026-05-18.
+       */
+      references?: { id: string; name: string; uri: string; description?: string }[];
       allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
       commentsEnabled: boolean;
       /** markdown */
@@ -277,12 +292,12 @@ export type PostTemplateFormProps = {
   value: PostTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: PostTemplateValues) => void;
-};
+} & MarkdownUploadProps;
 export type CommunityGuidelinesTemplateFormProps = {
   value: CommunityGuidelinesTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: CommunityGuidelinesTemplateValues) => void;
-};
+} & MarkdownUploadProps;
 export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;
   errors: TemplateFormErrors;

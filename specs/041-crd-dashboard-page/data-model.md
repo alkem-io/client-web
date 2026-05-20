@@ -70,6 +70,8 @@ type SidebarResourceData = {
 **Source**: `useMyResourcesQuery`
 **Mapper**: `mapResourcesToSidebarItems()`
 
+**Avatar treatment**: `avatarUrl` is populated from the entity's real avatar (`profile.avatar?.uri`) and rendered as an `<AvatarImage>` (with `object-cover`) when present. **Spaces** additionally fall back to the **CARD banner** (`profile.cardBanner?.uri`) when they have no AVATAR visual — L0 spaces rarely have an avatar but usually have a card banner, so the My Spaces list shows the space's image rather than grey initials. `avatarColor` is intentionally left **undefined** for spaces / innovation hubs / innovation packs, so a resource with neither image falls back to the **grey `AvatarFallback` initials** — `pickColorFromId` is deliberately NOT applied to these small sidebar rows (see `src/crd/CLAUDE.md` → "Where the colour is NOT applied"). Only Virtual Contributors set a single shared `var(--chart-2)` accent. The same image-or-grey rule applies to the left-sidebar subspaces list (`SubspacesSection`, specs 042/091).
+
 ### SidebarMenuItemData
 
 ```typescript

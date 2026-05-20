@@ -28136,15 +28136,12 @@ export const UpdateCalloutTemplateDocument = gql`
       whiteboardContent
     }
     settings {
-      contribution {
-        enabled
-        allowedTypes
-      }
-      visibility
+      ...CalloutSettingsFull
     }
   }
 }
-    ${TagsetDetailsFragmentDoc}`;
+    ${TagsetDetailsFragmentDoc}
+${CalloutSettingsFullFragmentDoc}`;
 export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutTemplateMutation,
   SchemaTypes.UpdateCalloutTemplateMutationVariables

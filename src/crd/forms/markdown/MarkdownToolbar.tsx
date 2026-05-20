@@ -34,6 +34,8 @@ type MarkdownToolbarProps = {
   iframeAllowedUrls?: string[];
   onError?: (message: string) => void;
   hideImageOptions?: boolean;
+  /** Hides only the embed/iframe button (image stays). Memo doesn't support iframes. */
+  hideEmbedOption?: boolean;
 };
 
 export function MarkdownToolbar({
@@ -44,6 +46,7 @@ export function MarkdownToolbar({
   iframeAllowedUrls,
   onError,
   hideImageOptions = false,
+  hideEmbedOption = false,
 }: MarkdownToolbarProps) {
   const { t } = useTranslation('crd-markdown');
 
@@ -176,7 +179,7 @@ export function MarkdownToolbar({
       {!hideImageOptions && <ToolbarImageDialog editor={editor} onImageUpload={onImageUpload} onError={onError} />}
 
       {/* Embed */}
-      {!hideImageOptions && (
+      {!hideImageOptions && !hideEmbedOption && (
         <ToolbarEmbedDialog
           editor={editor}
           iframeAllowedUrls={iframeAllowedUrls}

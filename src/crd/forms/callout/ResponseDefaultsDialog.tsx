@@ -2,10 +2,26 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributionDefaults, ResponseType } from '@/crd/forms/callout/types';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
+
+/**
+ * Helper handed to the render-prop form of `templateSlot` (D20, 2026-05-19). Calling it merges a
+ * partial into the dialog's own `draft` state — so a connector applying a picked template's values
+ * populates the dialog's input fields immediately, the user can review / further edit them, the
+ * dialog's Save commits the final draft, and Cancel correctly discards the templated values.
+ * Replaces the older "connector writes via parent `onSave` → sync effect into draft" loop, which
+ * (a) didn't populate `defaultDescription` because no sync effect existed for that field, and (b)
+ * leaked the templated value to the parent even when the user cancelled.
+ *
+ * Scope: this is the **`post`** apply path. **Whiteboard** content is *not* applied through this
+ * helper — `whiteboardContent` is sourced from the parent `values` (see `handleSave` / the dirty
+ * check / the `values.whiteboardContent` sync effect), so the connector applies a whiteboard
+ * template through the parent `onSave` instead, matching the whiteboard-editor sub-flow.
+ */
+type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
 
 type ResponseDefaultsDialogProps = {
   open: boolean;
@@ -21,18 +37,20 @@ type ResponseDefaultsDialogProps = {
   /** Commits draft values back to the parent form. */
   onSave: (next: ContributionDefaults) => void;
   /**
-   * Optional template-picker entry-point slot — rendered for `post` and
-   * `whiteboard` types (the connector wires the shared `TemplatePicker` in
-   * `mode:'select'` and applies the picked template's content via `onSave`).
+   * Optional template-picker entry-point slot — rendered for `post` and `whiteboard` types.
+   * **Render-prop form (D20)**: when given a function, the dialog passes `{ applyDraft }` so the
+   * connector can push the picked template's values straight into the dialog's draft state
+   * (rather than going through the parent — see `ApplyDraft` above). `ReactNode` form is still
+   * accepted for callers that don't need draft access.
    */
-  templateSlot?: ReactNode;
+  templateSlot?: ReactNode | ((helpers: { applyDraft: ApplyDraft }) => ReactNode);
   /**
    * Optional whiteboard-editor launcher slot — rendered for the whiteboard
    * type (the connector wires `CrdSingleUserWhiteboardDialog`).
    */
   whiteboardSlot?: ReactNode;
   disabled?: boolean;
-};
+} & MarkdownUploadProps;
 
 /**
  * Nested "{Type} defaults" dialog shown when the user clicks "Set Default
@@ -48,6 +66,9 @@ export function ResponseDefaultsDialog({
   templateSlot,
   whiteboardSlot,
   disabled,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: ResponseDefaultsDialogProps) {
   const { t } = useTranslation('crd-space');
   const [draft, setDraft] = useState<ContributionDefaults>(values);
@@ -133,6 +154,15 @@ export function ResponseDefaultsDialog({
     onOpenChange(false);
   };
 
+  // D20 — `applyDraft` is the helper the connector receives via the render-prop `templateSlot`.
+  // It merges a partial into the dialog's local `draft` (not the parent). Resolved each render —
+  // React Compiler keeps the inline closure stable enough for the consumer's effect dependency.
+  const applyDraft: ApplyDraft = next => setDraft(prev => ({ ...prev, ...next }));
+  const renderedTemplateSlot =
+    typeof templateSlot === 'function'
+      ? (templateSlot as (helpers: { applyDraft: ApplyDraft }) => ReactNode)({ applyDraft })
+      : templateSlot;
+
   return (
     <Dialog
       open={open}
@@ -144,12 +174,17 @@ export function ResponseDefaultsDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-2xl">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription className="sr-only">{t('responseDefaults.srDescription')}</DialogDescription>
+      {/* Sticky-header + sticky-footer + scrollable-body layout (D20, 2026-05-19) — mirrors
+          `TemplateFormDialog` / `TemplatePreviewDialog`. Wider than the default `sm:max-w-2xl` so
+          the markdown editor + template-picker button row don't crowd at typical viewport widths. */}
+      <DialogContent className="w-full sm:max-w-[720px] max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden">
+        <div className="px-6 pt-6 pb-4 pr-12 border-b">
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription className="sr-only">{t('responseDefaults.srDescription')}</DialogDescription>
+        </div>
 
-        <div className="space-y-4 min-w-0">
-          {(type === 'post' || type === 'whiteboard') && templateSlot}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-w-0">
+          {(type === 'post' || type === 'whiteboard') && renderedTemplateSlot}
 
           <div className="space-y-1.5">
             <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
@@ -174,6 +209,9 @@ export function ResponseDefaultsDialog({
                 onChange={value => setDraft(prev => ({ ...prev, postDescription: value }))}
                 disabled={disabled}
                 placeholder={t('responseDefaults.defaultDescriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
           )}
@@ -186,7 +224,7 @@ export function ResponseDefaultsDialog({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="px-6 py-4 border-t">
           <Button variant="ghost" onClick={handleRequestClose} disabled={disabled}>
             {t('dialogs.cancel')}
           </Button>

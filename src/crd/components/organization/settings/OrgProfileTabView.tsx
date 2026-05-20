@@ -10,7 +10,7 @@ import LinkedInIcon from '@/crd/components/common/icons/social/LinkedIn.svg?reac
 import { type OrgVerificationStatus, OrgVerifiedBadge } from '@/crd/components/contributor/settings/OrgVerifiedBadge';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -98,7 +98,7 @@ export type OrgProfileViewProps = {
   pendingReferenceDelete: { id: string; name: string } | null;
   onConfirmRemoveReference: () => void;
   onCancelRemoveReference: () => void;
-};
+} & MarkdownUploadProps;
 
 type SectionLabels = { save: string; saving: string; saved: string; retry: string };
 
@@ -151,6 +151,9 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
     onConfirmRemoveReference,
     onCancelRemoveReference,
     uploadingAvatar,
+    onImageUpload,
+    iframeAllowedUrls,
+    onError,
   } = props;
 
   const labels: SectionLabels = {
@@ -226,6 +229,9 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
             status={status('description')}
             onSave={() => onSaveSection('description')}
             labels={labels}
+            onImageUpload={onImageUpload}
+            iframeAllowedUrls={iframeAllowedUrls}
+            onError={onError}
           />
           <Separator className="my-4 opacity-50" />
           <LocationSection
@@ -553,14 +559,20 @@ type DescriptionSectionProps = {
   status: SectionSaveStatus;
   onSave: () => void;
   labels: SectionLabels;
-};
+} & MarkdownUploadProps;
 
 function DescriptionSection(p: DescriptionSectionProps) {
   return (
     <div>
       <SectionLabel>{p.label}</SectionLabel>
       <div className="mt-2">
-        <MarkdownEditor value={p.value} onChange={p.onChange} />
+        <MarkdownEditor
+          value={p.value}
+          onChange={p.onChange}
+          onImageUpload={p.onImageUpload}
+          iframeAllowedUrls={p.iframeAllowedUrls}
+          onError={p.onError}
+        />
       </div>
       <FF hint={p.hint} dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
     </div>

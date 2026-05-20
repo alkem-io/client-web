@@ -16,6 +16,7 @@ import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceSettingsCard } from '@/crd/components/space/settings/SpaceSettingsCard';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Switch } from '@/crd/primitives/switch';
@@ -71,7 +72,7 @@ export type SpaceSettingsLayoutViewProps = {
    */
   isReplacingFlow?: boolean;
   className?: string;
-};
+} & MarkdownUploadProps;
 
 /**
  * Layout tab — dynamic column count driven by `innovationFlow.states`.
@@ -105,6 +106,9 @@ export function SpaceSettingsLayoutView({
   headerActionsSlot,
   isReplacingFlow = false,
   className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: SpaceSettingsLayoutViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const sensors = useSensors(
@@ -271,6 +275,9 @@ export function SpaceSettingsLayoutView({
                     onViewPost={onViewPost}
                     columnMenuActions={columnMenuActions}
                     draggable={canReorderColumns}
+                    onImageUpload={onImageUpload}
+                    iframeAllowedUrls={iframeAllowedUrls}
+                    onError={onError}
                   />
                 );
               })}

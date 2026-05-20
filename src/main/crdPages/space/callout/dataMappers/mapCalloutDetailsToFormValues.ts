@@ -102,6 +102,11 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    // Server-rendered preview image (D16, 2026-05-18) — the inline framing preview's read-time
+    // fallback when no fresh in-form blob exists. `CalloutContent.graphql` exposes
+    // `framing.whiteboard.profile.preview` as `visual(type: WHITEBOARD_PREVIEW)`. Mirrors
+    // `calloutTemplateContentToFormValues` (the Callout-template prefill mapper).
+    whiteboardPreviewServerUrl: framing.whiteboard?.profile.preview?.uri || undefined,
     whiteboardConfigured: framing.type === CalloutFramingType.Whiteboard,
     mediaGalleryVisuals:
       framing.mediaGallery?.visuals.map(v => ({
