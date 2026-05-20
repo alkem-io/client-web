@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
@@ -16,6 +15,7 @@ import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
@@ -89,7 +89,7 @@ export default function CrdSpaceDashboardPage() {
         className="mb-6"
       />
 
-      <TabStateHeader
+      <SpaceTabActionHeader
         description={tabDescription}
         action={
           canCreateCallout && (

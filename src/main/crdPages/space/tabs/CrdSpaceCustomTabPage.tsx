@@ -6,7 +6,6 @@ import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -15,6 +14,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 import { countTagOccurrences } from './calloutTagCount';
 
 type CrdSpaceCustomTabPageProps = {
@@ -104,7 +104,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </SpaceSidebarPortal>
 
       <div className="space-y-6">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
             canCreateCallout && (

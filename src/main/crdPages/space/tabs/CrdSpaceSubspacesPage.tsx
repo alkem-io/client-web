@@ -7,7 +7,6 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -20,6 +19,7 @@ import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMappe
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
@@ -67,28 +67,31 @@ export default function CrdSpaceSubspacesPage() {
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
-            canCreate &&
-            handleCreateClick && (
-              <Button size="sm" className="gap-2" onClick={handleCreateClick}>
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                {t('subspaces.createSubspace')}
-              </Button>
+            (canCreateCallout || (canCreate && handleCreateClick)) && (
+              <div className="flex items-center gap-2">
+                {canCreate && handleCreateClick && (
+                  <Button size="sm" className="gap-2" onClick={handleCreateClick}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('subspaces.createSubspace')}
+                  </Button>
+                )}
+                {canCreateCallout && (
+                  <Button size="sm" className="gap-2" onClick={() => setCreateCalloutOpen(true)}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('feed.addPost')}
+                  </Button>
+                )}
+              </div>
             )
           }
         />
 
         <SpaceSubspacesList subspaces={subspaces} />
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateCalloutOpen(true)}
-          loading={calloutsLoading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={calloutsLoading} />
       </div>
 
       {canCreateCallout && (

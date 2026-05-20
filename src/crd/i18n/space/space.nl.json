@@ -674,7 +674,8 @@
   },
   "postSnippet": {
     "readMore": "… Lees meer",
-    "readLess": "Lees minder"
+    "readLess": "Lees minder",
+    "seeFullDescription": "Volledige beschrijving"
   },
   "postPreview": {
     "label": "Voorbeeld van geselecteerde bijdrage",

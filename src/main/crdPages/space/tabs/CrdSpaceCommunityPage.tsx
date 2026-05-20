@@ -1,11 +1,10 @@
-import { UserPlus } from 'lucide-react';
+import { Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import {
   DirectMessageDialog,
@@ -18,6 +17,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['translation', 'crd-space']);
@@ -78,28 +78,31 @@ export default function CrdSpaceCommunityPage() {
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
-            canInvite &&
-            handleInvite && (
-              <Button size="sm" className="gap-2" onClick={handleInvite}>
-                <UserPlus className="w-4 h-4" aria-hidden="true" />
-                {t('crd-space:members.inviteMember')}
-              </Button>
+            (canCreateCallout || (canInvite && handleInvite)) && (
+              <div className="flex items-center gap-2">
+                {canInvite && handleInvite && (
+                  <Button size="sm" className="gap-2" onClick={handleInvite}>
+                    <UserPlus className="w-4 h-4" aria-hidden="true" />
+                    {t('crd-space:members.inviteMember')}
+                  </Button>
+                )}
+                {canCreateCallout && (
+                  <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('crd-space:feed.addPost')}
+                  </Button>
+                )}
+              </div>
             )
           }
         />
 
         <SpaceMembers members={members} />
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateOpen(true)}
-          loading={loading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
       </div>
 
       {canCreateCallout && (
