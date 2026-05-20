@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CalloutWhiteboardPreview } from '@/crd/components/callout/CalloutWhiteboardPreview';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
+import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
@@ -9,9 +10,14 @@ import type { PollOptionData } from '@/crd/components/callout/CalloutPoll';
 import { CalloutSidebarList } from '@/crd/components/callout/CalloutSidebarList';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
+import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
+import { ContributionGrid } from '@/crd/components/contribution/ContributionGrid';
+import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
+import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
 import { PostCard } from '@/crd/components/space/PostCard';
+import type { PostCardData } from '@/crd/components/space/PostCard';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
@@ -20,12 +26,16 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { MessageSquare, PenTool } from 'lucide-react';
 import {
+  AVATARS,
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
   MOCK_COMMENTS,
+  MOCK_LINK_CONTRIBUTIONS,
   MOCK_MEMO_CONTRIBUTIONS,
   MOCK_ORGANIZATIONS,
+  MOCK_POST_CONTRIBUTIONS,
   MOCK_WHITEBOARD_CONTRIBUTIONS,
   MOCK_POSTS,
   MOCK_SIDEBAR,
@@ -75,7 +85,17 @@ export function SpacePage() {
   const [activeTab, setActiveTab] = useState(0);
   const [pollSelected, setPollSelected] = useState<string[]>(['opt-1']);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogPost, setDialogPost] = useState<PostCardData | null>(null);
+  const [selectedContribution, setSelectedContribution] = useState<string | null>(null);
   const [whiteboardOpen, setWhiteboardOpen] = useState(false);
+
+  const openDialog = (post: PostCardData) => {
+    setDialogPost(post);
+    setSelectedContribution(null);
+    setDialogOpen(true);
+  };
+
+  const currentUser = { id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url };
 
   const sidebarVariant = (() => {
     switch (activeTab) {
@@ -197,6 +217,7 @@ export function SpacePage() {
                           </div>
                         </button>
                       )}
+                      <ContributionAddCard label="Add memo" icon={MessageSquare} onClick={() => openDialog(post)} />
                     </div>
                   );
                 }
@@ -227,7 +248,85 @@ export function SpacePage() {
                           </div>
                         </button>
                       )}
+                      <ContributionAddCard label="Add whiteboard" icon={PenTool} onClick={() => openDialog(post)} />
                     </div>
+                  );
+                }
+
+                // Design Sprint whiteboard contributions — reuses MOCK_WHITEBOARD_CONTRIBUTIONS
+                if (post.id === 'p-wb-contributions') {
+                  const visible = MOCK_WHITEBOARD_CONTRIBUTIONS.slice(0, 3);
+                  const total = MOCK_WHITEBOARD_CONTRIBUTIONS.length;
+                  const overlayItem = MOCK_WHITEBOARD_CONTRIBUTIONS[3];
+                  contributionsPreview = (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                      {visible.map(wb => (
+                        <ContributionWhiteboardCard
+                          key={wb.id}
+                          title={wb.title}
+                          previewUrl={wb.previewUrl}
+                          author={wb.author}
+                        />
+                      ))}
+                      {total > 4 && overlayItem && (
+                        <button
+                          type="button"
+                          className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 min-h-[180px] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <img src={overlayItem.previewUrl} alt="" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
+                            <span className="text-white font-bold text-subsection-title">+{total - 3} more</span>
+                          </div>
+                        </button>
+                      )}
+                      <ContributionAddCard label="Add whiteboard" icon={PenTool} onClick={() => openDialog(post)} />
+                    </div>
+                  );
+                }
+
+                // Post contributions — grid of post cards with "Add post" card
+                if (post.id === 'p-post-contributions') {
+                  const visible = MOCK_POST_CONTRIBUTIONS.slice(0, 4);
+                  contributionsPreview = (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                      {visible.map(pc => (
+                        <ContributionPostCard
+                          key={pc.id}
+                          title={pc.title}
+                          author={pc.author}
+                          createdDate={pc.createdDate}
+                          description={pc.description}
+                          tags={pc.tags}
+                          commentCount={pc.commentCount}
+                          onClick={() => openDialog(post)}
+                        />
+                      ))}
+                      <ContributionAddCard label="Add post" icon={MessageSquare} onClick={() => openDialog(post)} />
+                    </div>
+                  );
+                }
+
+                // Poll post — renders the poll component as children
+                let pollChildren: React.ReactNode;
+                if (post.id === 'p-poll') {
+                  pollChildren = (
+                    <CalloutPoll
+                      options={MOCK_POLL_OPTIONS}
+                      selectedOptionIds={pollSelected}
+                      isSingleChoice={true}
+                      isClosed={false}
+                      canVote={true}
+                      showResults={true}
+                      showTotalOnly={false}
+                      resultsDetail="full"
+                      totalVotes={25}
+                      hasVoted={true}
+                      isAnonymous={false}
+                      showAddCustomOption={false}
+                      isAddingCustomOption={false}
+                      onChange={setPollSelected}
+                      onRemoveVote={() => setPollSelected([])}
+                    />
                   );
                 }
 
@@ -235,19 +334,30 @@ export function SpacePage() {
                   <PostCard
                     key={post.id}
                     post={post}
-                    onClick={() => {
-                      if (post.type === 'whiteboard') {
-                        setWhiteboardOpen(true);
-                      }
-                    }}
+                    onClick={() => openDialog(post)}
                     contributionsPreview={contributionsPreview}
-                  />
+                    commentsSlot={
+                      <CommentThread
+                        comments={post.commentCount ? MOCK_COMMENTS : []}
+                        currentUser={currentUser}
+                        onReply={() => {}}
+                        onDelete={() => {}}
+                        onAddReaction={() => {}}
+                        onRemoveReaction={() => {}}
+                      />
+                    }
+                    commentInputSlot={
+                      <CommentInput currentUser={currentUser} onSubmit={() => {}} />
+                    }
+                  >
+                    {pollChildren}
+                  </PostCard>
                 );
               })}
             </SpaceFeed>
 
             <div className="border rounded-xl p-6 bg-card">
-              <h3 className="text-subsection-title font-bold mb-4">What should we prioritize next?</h3>
+              <h3 className="text-subsection-title mb-4">What should we prioritize next?</h3>
               <CalloutPoll
                 title="Vote for the next initiative"
                 options={MOCK_POLL_OPTIONS}
@@ -272,8 +382,12 @@ export function SpacePage() {
             <div className="flex justify-center">
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-control font-medium hover:bg-primary/90 transition-colors"
-                onClick={() => setDialogOpen(true)}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-control hover:bg-primary/90 transition-colors"
+                onClick={() => {
+                  setDialogPost(MOCK_POSTS[0]);
+                  setSelectedContribution(null);
+                  setDialogOpen(true);
+                }}
               >
                 View Callout Detail Dialog
               </button>
@@ -282,11 +396,133 @@ export function SpacePage() {
             <CalloutDetailDialog
               open={dialogOpen}
               onOpenChange={setDialogOpen}
-              callout={MOCK_CALLOUT_DIALOG}
+              callout={{
+                id: dialogPost?.id ?? 'callout-1',
+                title: dialogPost?.title ?? '',
+                author: dialogPost?.author,
+                description: dialogPost?.snippet,
+                timestamp: dialogPost?.timestamp,
+                commentCount: dialogPost?.commentCount,
+                tags: dialogPost?.tags,
+                references: dialogPost?.references,
+              }}
+              hasContributions={
+                dialogPost?.id === 'p2' ||
+                dialogPost?.id === 'p-wb-contributions' ||
+                dialogPost?.id === 'p-memo-contribs' ||
+                dialogPost?.id === 'p-post-contributions' ||
+                dialogPost?.id === 'p-references'
+              }
+              contributionsCount={
+                dialogPost?.id === 'p-post-contributions'
+                  ? MOCK_POST_CONTRIBUTIONS.length
+                  : dialogPost?.id === 'p-memo-contribs'
+                    ? MOCK_MEMO_CONTRIBUTIONS.length
+                    : dialogPost?.id === 'p-references'
+                      ? MOCK_LINK_CONTRIBUTIONS.length
+                      : (dialogPost?.id === 'p2' || dialogPost?.id === 'p-wb-contributions')
+                        ? MOCK_WHITEBOARD_CONTRIBUTIONS.length
+                        : undefined
+              }
+              contributionsSlot={
+                dialogPost?.id === 'p-post-contributions' ? (
+                  <ContributionGrid totalCount={MOCK_POST_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                    {MOCK_POST_CONTRIBUTIONS.map(pc => (
+                      <ContributionPostCard
+                        key={pc.id}
+                        title={pc.title}
+                        author={pc.author}
+                        createdDate={pc.createdDate}
+                        description={pc.description}
+                        tags={pc.tags}
+                        commentCount={pc.commentCount}
+                        onClick={() => setSelectedContribution(pc.id)}
+                      />
+                    ))}
+                    <ContributionAddCard label="Add post" icon={MessageSquare} />
+                  </ContributionGrid>
+                ) : dialogPost?.id === 'p-memo-contribs' ? (
+                  <ContributionGrid totalCount={MOCK_MEMO_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                    {MOCK_MEMO_CONTRIBUTIONS.map(memo => (
+                      <ContributionMemoCard
+                        key={memo.id}
+                        title={memo.title}
+                        markdownContent={memo.markdownContent}
+                        author={memo.author}
+                        onClick={() => setSelectedContribution(memo.id)}
+                      />
+                    ))}
+                    <ContributionAddCard label="Add memo" icon={MessageSquare} />
+                  </ContributionGrid>
+                ) : (dialogPost?.id === 'p2' || dialogPost?.id === 'p-wb-contributions') ? (
+                  <ContributionGrid totalCount={MOCK_WHITEBOARD_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                    {MOCK_WHITEBOARD_CONTRIBUTIONS.map(wb => (
+                      <ContributionWhiteboardCard
+                        key={wb.id}
+                        title={wb.title}
+                        previewUrl={wb.previewUrl}
+                        author={wb.author}
+                        onClick={() => setSelectedContribution(wb.id)}
+                      />
+                    ))}
+                    <ContributionAddCard label="Add whiteboard" icon={PenTool} />
+                  </ContributionGrid>
+                ) : dialogPost?.id === 'p-references' ? (
+                  <ContributionLinkList
+                    links={MOCK_LINK_CONTRIBUTIONS}
+                    canAdd={true}
+                    onAdd={() => {}}
+                    onEdit={() => {}}
+                    onDelete={() => {}}
+                  />
+                ) : undefined
+              }
+              selectedContributionSlot={
+                selectedContribution ? (
+                  <CalloutPostPreview
+                    post={{
+                      id: selectedContribution,
+                      title:
+                        MOCK_POST_CONTRIBUTIONS.find(p => p.id === selectedContribution)?.title ??
+                        MOCK_WHITEBOARD_CONTRIBUTIONS.find(w => w.id === selectedContribution)?.title ??
+                        MOCK_MEMO_CONTRIBUTIONS.find(m => m.id === selectedContribution)?.title ??
+                        'Response',
+                      author: (() => {
+                        const pc = MOCK_POST_CONTRIBUTIONS.find(p => p.id === selectedContribution);
+                        if (pc) return { name: pc.author.name, avatarUrl: pc.author.avatarUrl, profileUrl: '/user/contributor' };
+                        const wb = MOCK_WHITEBOARD_CONTRIBUTIONS.find(w => w.id === selectedContribution);
+                        if (wb) return { name: wb.author, avatarUrl: AVATARS.david, profileUrl: '/user/contributor' };
+                        const memo = MOCK_MEMO_CONTRIBUTIONS.find(m => m.id === selectedContribution);
+                        if (memo) return { name: memo.author, avatarUrl: AVATARS.elena, profileUrl: '/user/contributor' };
+                        return { name: 'Unknown' };
+                      })(),
+                      timestamp: '2 hours ago',
+                      description:
+                        MOCK_POST_CONTRIBUTIONS.find(p => p.id === selectedContribution)?.description ??
+                        MOCK_MEMO_CONTRIBUTIONS.find(m => m.id === selectedContribution)?.markdownContent ??
+                        'Click to view the full contribution details.',
+                      tags: MOCK_POST_CONTRIBUTIONS.find(p => p.id === selectedContribution)?.tags ?? [],
+                    }}
+                    onEdit={() => {}}
+                    onClose={() => setSelectedContribution(null)}
+                  />
+                ) : undefined
+              }
+              whiteboardFramingSlot={
+                dialogPost?.type === 'whiteboard' ? (
+                  <div className="rounded-lg border border-border bg-muted/30 aspect-video flex items-center justify-center">
+                    <div className="text-center text-muted-foreground">
+                      <PenTool className="size-12 mx-auto mb-2 opacity-50" />
+                      <p className="text-body-emphasis">Whiteboard Preview</p>
+                      <p className="text-caption">Interactive editing not available in preview</p>
+                    </div>
+                  </div>
+                ) : undefined
+              }
               commentsSlot={
                 <CommentThread
                   comments={MOCK_COMMENTS}
-                  currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
+                  currentUser={currentUser}
                   onReply={() => {}}
                   onDelete={() => {}}
                   onAddReaction={() => {}}
@@ -294,10 +530,7 @@ export function SpacePage() {
                 />
               }
               commentInputSlot={
-                <CommentInput
-                  currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
-                  onSubmit={() => {}}
-                />
+                <CommentInput currentUser={currentUser} onSubmit={() => {}} />
               }
             />
           </div>

@@ -101,7 +101,7 @@ export function SubspaceHeader({
                   {subspaceAvatarUrl ? (
                     <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-subsection-title font-bold text-primary-foreground">{subspaceInitials}</span>
+                    <span className="text-subsection-title text-primary-foreground">{subspaceInitials}</span>
                   )}
                 </div>
                 <h1 className="text-hero text-foreground truncate">{title}</h1>

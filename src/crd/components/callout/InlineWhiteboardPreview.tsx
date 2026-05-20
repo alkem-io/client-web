@@ -94,7 +94,7 @@ export function InlineWhiteboardPreview({
           'bg-primary text-primary-foreground shadow-sm',
           'hover:bg-primary/90 transition-colors',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-          'disabled:cursor-not-allowed disabled:opacity-60 text-control font-medium'
+          'disabled:cursor-not-allowed disabled:opacity-60 text-control'
         )}
       >
         <Pencil className="size-4" aria-hidden="true" />
