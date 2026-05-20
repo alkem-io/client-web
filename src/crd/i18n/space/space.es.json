@@ -202,7 +202,7 @@
     "createMemo": "Crear nuevo memo",
     "defaultMemoName": "Nuevo memo",
     "memoNameLabel": "Título del memo",
-    "addLink": "Añadir enlace",
+    "addLinkOrFile": "Añadir enlace o archivo",
     "createLink": "Añade enlaces o adjunta documentos",
     "editLink": "Editar enlace",
     "linkSave": "Guardar",

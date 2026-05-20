@@ -1,4 +1,4 @@
-import { ExternalLink, Pencil, X } from 'lucide-react';
+import { ExternalLink, Paperclip, Pencil, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
@@ -13,6 +13,7 @@ export type CalloutPostPreviewReference = {
   name: string;
   uri: string;
   description?: string;
+  isFile?: boolean;
 };
 
 export type CalloutPostPreviewData = {
@@ -158,7 +159,11 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
                     className="inline-flex items-center gap-1.5 text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
                     {ref.name}
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    {ref.isFile ? (
+                      <Paperclip className="w-3.5 h-3.5" aria-hidden="true" />
+                    ) : (
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    )}
                   </a>
                   {ref.description && <p className="text-caption text-muted-foreground ml-0.5">{ref.description}</p>}
                 </li>
