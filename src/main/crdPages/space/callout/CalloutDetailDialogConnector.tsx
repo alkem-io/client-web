@@ -116,7 +116,15 @@ function ContributionsSlot({
         onCreated={onContributionCreated}
       />
     ) : contributionType === CalloutContributionType.Memo ? (
-      <MemoContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+      <MemoContributionAddConnector
+        calloutId={callout.id}
+        // Posts and Memos share `contributionDefaults.defaultDisplayName` + `postDescription`
+        // (FR-33 / FR-42 / FR-43). Mirror the Post branch below — without these the create-memo
+        // dialog always opens with the i18n fallback title and an empty body (T157, 2026-05-19).
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultMarkdown={defaults?.postDescription}
+        onCreated={onContributionCreated}
+      />
     ) : contributionType === CalloutContributionType.Post ? (
       <PostContributionAddConnector
         calloutId={callout.id}
@@ -581,17 +589,41 @@ export function CalloutDetailDialogConnector({
   // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
   // existing messages readable. The dialog itself hides the discussion section entirely
   // when commentsEnabled is false AND there are no existing messages.
-  const commentsEnabled = callout.settings.framing.commentsEnabled;
+  //
+  // Post-contribution comment-swap (Phase 22 / T155, 2026-05-19): when a post contribution is
+  // selected, the bottom comment surface swaps from callout-level to that post's comments.
+  // The two surfaces are mutually exclusive — never stacked. Gating switches to
+  // `settings.contribution.commentsEnabled` (the *contribution*-level switch, distinct from
+  // the framing-level one used for callout comments). The dialog's existing
+  // `showDiscussion = commentsEnabled !== false || commentCount > 0` rule handles all three
+  // commentsEnabled / messagesCount cases (US12 scenarios 2a / 2b / 2c) without extra branching:
+  // - 2a (enabled + any count)  → thread + input shown.
+  // - 2b (disabled + count > 0) → thread shown read-only (we pass commentInputSlot={null}).
+  // - 2c (disabled + count = 0) → entire section hidden by `showDiscussion`.
+  const isPostSelected = Boolean(postContributionId) && contributionType === CalloutContributionType.Post;
+  const calloutCommentsEnabled = callout.settings.framing.commentsEnabled;
+  const postCommentsEnabled = callout.settings.contribution.commentsEnabled ?? false;
+  const activeCommentsEnabled = isPostSelected ? postCommentsEnabled : calloutCommentsEnabled;
+  const postCommentsRoomId = selectedPost?.comments?.id;
+  const activeCommentsRoomId = isPostSelected ? postCommentsRoomId : callout.comments?.id;
+  const activeRoomData = isPostSelected ? undefined : callout.comments;
+  // Pre-load count fallback for case 2c — when comments are disabled and the live thread isn't
+  // mounted yet, this seeds the dialog's `showDiscussion` rule so the section stays hidden
+  // until/unless we actually have messages.
+  const postMessagesCount = selectedPost?.comments?.messagesCount ?? 0;
 
-  if (!callout.comments?.id) {
+  if (!activeCommentsRoomId) {
     return (
       <>
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
-          callout={mapCalloutDetailsToDialogData(callout, t)}
+          callout={{
+            ...mapCalloutDetailsToDialogData(callout, t),
+            commentCount: isPostSelected ? postMessagesCount : undefined,
+          }}
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
-          commentsEnabled={commentsEnabled}
+          commentsEnabled={activeCommentsEnabled}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
@@ -617,18 +649,36 @@ export function CalloutDetailDialogConnector({
 
   return (
     <>
-      <CalloutCommentsConnector roomId={callout.comments.id} calloutId={callout.id} roomData={callout.comments}>
+      <CalloutCommentsConnector
+        // `key` on `roomId` so the inner intersection-observer + subscription state resets
+        // cleanly when the user swaps between callout-level and post-level comment surfaces.
+        key={activeCommentsRoomId}
+        roomId={activeCommentsRoomId}
+        calloutId={callout.id}
+        contributionId={isPostSelected ? postContributionId : undefined}
+        roomData={activeRoomData}
+        // The connector's wrapper `<div ref={ref}>` ends up in the feed-card's React tree
+        // (alongside the dialog trigger), NOT inside the dialog's Radix portal. With the user
+        // scrolled away from that card, `useInView` never fires and the post-comments query
+        // stays skipped — surfacing as "Discussion · 0 comments" even when the post has them.
+        // Eager loading is correct here: the dialog is open, the section IS visible.
+        eager={true}
+      >
         {({ thread, commentInput, commentCount }) => (
           <CalloutDetailDialog
             open={open}
             onOpenChange={onOpenChange}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
-              commentCount,
+              // While the live thread is still loading, fall back to the post's `messagesCount`
+              // (already on the prefetched preview payload) so the dialog header doesn't say
+              // "0 comments" for a post that actually has them. The live count takes over once
+              // the thread resolves.
+              commentCount: isPostSelected ? Math.max(commentCount, postMessagesCount) : commentCount,
             }}
             commentsSlot={thread}
-            commentInputSlot={commentsEnabled ? commentInput : null}
-            commentsEnabled={commentsEnabled}
+            commentInputSlot={activeCommentsEnabled ? commentInput : null}
+            commentsEnabled={activeCommentsEnabled}
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
             contributionsCount={callout.contributions.length}

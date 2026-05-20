@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Publications",
     "whiteboard": "Tableaux blancs",
-    "link": "Liens"
+    "link": "Liens",
+    "memo": "Mémos"
   },
   "preview": {
     "loading": "Chargement du modèle…",

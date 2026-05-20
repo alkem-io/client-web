@@ -49,12 +49,13 @@ export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
 
 function mapAllowedContributionTypes(
   allowedTypes: readonly CalloutContributionType[]
-): ('post' | 'whiteboard' | 'link')[] {
-  const out: ('post' | 'whiteboard' | 'link')[] = [];
+): ('post' | 'whiteboard' | 'link' | 'memo')[] {
+  const out: ('post' | 'whiteboard' | 'link' | 'memo')[] = [];
   for (const t of allowedTypes) {
     if (t === CalloutContributionType.Post) out.push('post');
     else if (t === CalloutContributionType.Whiteboard) out.push('whiteboard');
     else if (t === CalloutContributionType.Link) out.push('link');
+    else if (t === CalloutContributionType.Memo) out.push('memo');
   }
   return out;
 }
