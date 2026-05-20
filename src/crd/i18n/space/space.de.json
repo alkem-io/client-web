@@ -192,7 +192,7 @@
     "votes": "{{count}} Stimmen",
     "totalVotes": "{{count}} Stimmen insgesamt",
     "sendComment": "Kommentar senden",
-    "addResponse": "Antwort hinzufügen",
+    "addWhiteboard": "Whiteboard hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
     "defaultWhiteboardName": "Neues Whiteboard",
     "whiteboardNameLabel": "Whiteboard-Titel",

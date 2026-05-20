@@ -9,6 +9,10 @@ type PostContributionAddConnectorProps = {
   defaultDisplayName?: string;
   defaultDescription?: string;
   onCreated?: () => void;
+  /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
+  inlineTrigger?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function PostContributionAddConnector({
@@ -16,13 +20,20 @@ export function PostContributionAddConnector({
   defaultDisplayName,
   defaultDescription,
   onCreated,
+  inlineTrigger,
+  open: controlledOpen,
+  onOpenChange,
 }: PostContributionAddConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   return (
     <>
-      <ContributionAddCard label={t('callout.addPost')} icon={MessageSquare} onClick={() => setOpen(true)} />
+      {!inlineTrigger && (
+        <ContributionAddCard label={t('callout.addPost')} icon={MessageSquare} onClick={() => setOpen(true)} />
+      )}
       {open && (
         <CrdPostContributionDialog
           open={open}

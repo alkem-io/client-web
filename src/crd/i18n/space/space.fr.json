@@ -192,7 +192,7 @@
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} votes au total",
     "sendComment": "Envoyer le commentaire",
-    "addResponse": "Ajouter une réponse",
+    "addWhiteboard": "Ajouter un tableau blanc",
     "createWhiteboard": "Créer un nouveau tableau blanc",
     "defaultWhiteboardName": "Nouveau tableau blanc",
     "whiteboardNameLabel": "Titre du tableau blanc",

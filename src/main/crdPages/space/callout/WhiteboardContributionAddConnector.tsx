@@ -1,5 +1,5 @@
 import { PenTool } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/graphql-schema';
@@ -18,6 +18,10 @@ type WhiteboardContributionAddConnectorProps = {
   defaultDisplayName?: string;
   defaultContent?: string;
   onCreated?: () => void;
+  /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
+  inlineTrigger?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function WhiteboardContributionAddConnector({
@@ -25,10 +29,15 @@ export function WhiteboardContributionAddConnector({
   defaultDisplayName,
   defaultContent,
   onCreated,
+  inlineTrigger,
+  open: controlledOpen,
+  onOpenChange,
 }: WhiteboardContributionAddConnectorProps) {
   const { t } = useTranslation('crd-space');
   const fallbackName = defaultDisplayName ?? t('callout.defaultWhiteboardName');
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const dialogOpen = controlledOpen ?? internalOpen;
+  const setDialogOpen = onOpenChange ?? setInternalOpen;
   const [whiteboardName, setWhiteboardName] = useState(fallbackName);
   const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
@@ -41,6 +50,12 @@ export function WhiteboardContributionAddConnector({
   const handleClose = () => {
     setDialogOpen(false);
   };
+
+  // When the parent opens the dialog (inline-trigger path), reset the name to the fallback.
+  // This mirrors what `handleOpen` does for the in-grid trigger card path.
+  useEffect(() => {
+    if (dialogOpen) setWhiteboardName(fallbackName);
+  }, [dialogOpen, fallbackName]);
 
   const [handleCreate, creating] = useLoadingState(async () => {
     const trimmed = whiteboardName.trim();
@@ -64,7 +79,7 @@ export function WhiteboardContributionAddConnector({
 
   return (
     <>
-      <ContributionAddCard label={t('callout.addResponse')} icon={PenTool} onClick={handleOpen} />
+      {!inlineTrigger && <ContributionAddCard label={t('callout.addWhiteboard')} icon={PenTool} onClick={handleOpen} />}
       <Dialog
         open={dialogOpen}
         onOpenChange={open => {
