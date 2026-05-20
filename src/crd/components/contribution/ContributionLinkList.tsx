@@ -1,4 +1,4 @@
-import { ExternalLink, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ExternalLink, Paperclip, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -8,6 +8,7 @@ type LinkItem = {
   url: string;
   displayName: string;
   description?: string;
+  isFile?: boolean;
   canEdit?: boolean;
   canDelete?: boolean;
 };
@@ -40,7 +41,11 @@ export function ContributionLinkList({ links, canAdd, onAdd, onEdit, onDelete, c
               rel="noopener noreferrer"
               className="flex items-center gap-3 flex-1 min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
             >
-              <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
+              {link.isFile ? (
+                <Paperclip className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
+              ) : (
+                <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
+              )}
               <div className="min-w-0">
                 <p className="text-body-emphasis text-foreground truncate">{link.displayName}</p>
                 {link.description && <p className="text-caption text-muted-foreground truncate">{link.description}</p>}
