@@ -25,15 +25,26 @@ export function ContributionPostCard({
   onClick,
   className,
 }: ContributionPostCardProps) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
-      type="button"
+    // biome-ignore lint/a11y/useSemanticElements: a <button> here would nest interactive descendants (CollapsibleTagList renders a "+N" <button>; MarkdownContent can render <a> links) which is invalid HTML
+    <div
+      role="button"
+      tabIndex={0}
       className={cn(
         'w-full text-left p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         'h-[180px] overflow-hidden flex flex-col',
         className
       )}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
     >
       <p className="text-body-emphasis text-foreground truncate">{title}</p>
       {author && (
@@ -60,6 +71,6 @@ export function ContributionPostCard({
           </span>
         )}
       </div>
-    </button>
+    </div>
   );
 }
