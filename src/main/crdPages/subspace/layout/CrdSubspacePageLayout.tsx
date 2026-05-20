@@ -102,6 +102,7 @@ export default function CrdSubspacePageLayout() {
   const baseTrail =
     data.parentSpaceName && data.subspaceName
       ? [
+          // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
           ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName!, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
           { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
           {

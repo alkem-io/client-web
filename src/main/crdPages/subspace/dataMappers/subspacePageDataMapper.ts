@@ -95,6 +95,7 @@ type InnovationFlowStateLike = {
   id?: string;
   displayName?: string | null;
   description?: string | null;
+  defaultCalloutTemplate?: { id: string } | null;
 };
 
 export function mapInnovationFlowPhases(states: InnovationFlowStateLike[] | undefined): SubspaceFlowPhase[] {
@@ -105,6 +106,7 @@ export function mapInnovationFlowPhases(states: InnovationFlowStateLike[] | unde
       id: state.id,
       label: state.displayName ?? '',
       description: state.description ?? undefined,
+      defaultCalloutTemplateId: state.defaultCalloutTemplate?.id,
     }));
 }
 

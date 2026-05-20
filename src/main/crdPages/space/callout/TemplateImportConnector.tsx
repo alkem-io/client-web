@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery, useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-import { calloutTemplateContentToFormValues } from '@/main/crdPages/templates/calloutTemplateMapper';
-import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
+import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type TemplateImportConnectorProps = {
@@ -69,20 +67,9 @@ export function TemplateImportConnector({
   useEffect(() => {
     if (!selectedId || fetchedForRef.current === selectedId) return;
     fetchedForRef.current = selectedId;
-    void getTemplateContent({ variables: { templateId: selectedId, includeCallout: true } }).then(async ({ data }) => {
+    void loadCalloutTemplateFormValues(getTemplateContent, selectedId).then(values => {
       // If a newer pick has superseded this one, the ref's `current` will no longer match.
-      if (fetchedForRef.current !== selectedId) return;
-      const callout = data?.lookup.template?.callout;
-      if (!callout) return;
-      const values = calloutTemplateContentToFormValues(callout);
-      if (values.whiteboardPreviewServerUrl) {
-        const blob = await fetchPreviewImageBlob(values.whiteboardPreviewServerUrl);
-        if (fetchedForRef.current !== selectedId) return;
-        if (blob) {
-          values.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
-        }
-      }
-      if (fetchedForRef.current !== selectedId) return;
+      if (fetchedForRef.current !== selectedId || !values) return;
       if (isFormDirty) {
         setPendingValues(values);
       } else {

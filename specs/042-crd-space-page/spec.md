@@ -195,6 +195,10 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 - Q: Should CRD comments support real-time updates via WebSocket subscriptions? → A: Yes — reuse existing subscription infrastructure; new comments and reactions appear in real time without page refresh.
 - Q: Is the comment input visible when in collapsible mode (clipped at ~250px)? → A: Always visible — input shows at the bottom even when collapsed, within the 250px area.
 
+### Session 2026-05-20
+
+- Q: FR-086 / US11 AC-5 require that creating a callout in an Innovation-Flow state which has a configured default callout template auto-loads that template into the creation form. The legacy MUI L0 tab pages do this (each passes `defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}` and `useCalloutTemplateImport` auto-loads it on open), but the CRD create dialog opens blank. Why, and what is the rule? → A: **Regression during the CRD `TemplateImportConnector` rewrite.** The original auto-load (T076) was dropped when the connector was reimplemented for the manual "Find Template" path only (callout-dialog T080/T081); `CalloutFormConnector` never gained a `defaultTemplateId` prop and the CRD L0 tab pages never passed one. The rule (restating FR-086): **every CRD callout-creation entry point MUST pass the active flow state's `defaultCalloutTemplate.id` to the create form, and the form MUST auto-prefill from it once per dialog-open** — reusing the same template-content→form-values path the manual picker uses (incl. the D18 whiteboard-preview-image blob carry-through), guarded by a once-per-open ref that resets on close. The id comes from `flowStateForNewCallouts.defaultCalloutTemplate.id`, which is already in the SpaceTab query — no GraphQL/codegen change. A subsequent manual template pick or any user edit after auto-load is preserved (the guard does not re-apply). The same wiring applies to the subspace callouts page (spec 091, FR-013a) — its flow query already returns `defaultCalloutTemplate` via the `InnovationFlowStates` fragment, so it too is pure wiring.
+
 ## Scope
 
 ### In Scope
@@ -739,7 +743,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-083**: Selecting a template MUST pre-fill the creation form with the template's framing type, content, contribution settings, and profile data
 - **FR-084**: If the creation form contains existing data when importing a template, a confirmation dialog MUST warn about overwriting
 - **FR-085**: "Save as Template" MUST open a form where the user names the template; the callout's full configuration MUST be saved as a reusable template
-- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template
+- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template. The creation form receives the state's `defaultCalloutTemplate.id` as a `defaultTemplateId` prop (sourced from `flowStateForNewCallouts.defaultCalloutTemplate.id`) and auto-prefills from it on open — once per dialog-open, reset on close — via the same template-content→form-values path the manual "Find Template" picker uses (including the whiteboard-preview-image carry-through). A subsequent manual template pick or user edit MUST NOT be overwritten by the auto-load (Session 2026-05-20).
 
 #### Callout Comments
 

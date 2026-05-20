@@ -129,6 +129,7 @@ export default function CrdSpaceSubspacesPage() {
           onOpenChange={setCreateCalloutOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
 

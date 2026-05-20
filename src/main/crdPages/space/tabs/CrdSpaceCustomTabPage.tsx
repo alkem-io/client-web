@@ -136,6 +136,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
     </>
