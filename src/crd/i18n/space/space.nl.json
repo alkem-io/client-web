@@ -191,8 +191,6 @@
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
-    "resultsCount": "{{count}} resultaten",
-    "clearFilters": "Filters wissen",
     "sendComment": "Reactie verzenden",
     "addResponse": "Reactie toevoegen",
     "createWhiteboard": "Nieuw whiteboard maken",

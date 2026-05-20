@@ -191,8 +191,6 @@
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
-    "resultsCount": "{{count}} resultados",
-    "clearFilters": "Limpiar filtros",
     "sendComment": "Enviar comentario",
     "addResponse": "Añadir respuesta",
     "createWhiteboard": "Crear nueva pizarra",
