@@ -18,6 +18,7 @@ import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 
 export type ForumDiscussionFormMode = 'initiate' | 'update';
 
@@ -84,6 +85,10 @@ const validationSchema = yup.object().shape({
 
 export function ForumDiscussionFormConnector(props: ForumDiscussionFormConnectorProps) {
   const navigate = useNavigate();
+  // Ambient `platform` StorageConfigContextProvider (ForumShell). Discussion
+  // uploads are mode-independent in MUI → temporaryLocation: false for both
+  // initiate (create) and update (edit).
+  const markdownUpload = useMarkdownEditorIntegration();
 
   const [createDiscussion, { loading: creating }] = useCreateDiscussionMutation({
     refetchQueries: [refetchPlatformDiscussionsQuery()],
@@ -145,6 +150,7 @@ export function ForumDiscussionFormConnector(props: ForumDiscussionFormConnector
         availableCategories={props.availableCategories}
         mutationBusy={creating || updating}
         onStateChange={props.onStateChange}
+        markdownUpload={markdownUpload}
       />
     </Formik>
   );
@@ -155,9 +161,16 @@ type FormBodyProps = {
   availableCategories: ForumDiscussionCategory[];
   mutationBusy: boolean;
   onStateChange: (state: ForumDiscussionFormState) => void;
+  markdownUpload: ReturnType<typeof useMarkdownEditorIntegration>;
 };
 
-function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, onStateChange }: FormBodyProps) {
+function ForumDiscussionFormBody({
+  editing,
+  availableCategories,
+  mutationBusy,
+  onStateChange,
+  markdownUpload,
+}: FormBodyProps) {
   const { t } = useTranslation('crd-forum');
   const { t: tDefault } = useTranslation();
   // The validators return either a plain TranslationKey string or a
@@ -271,6 +284,9 @@ function ForumDiscussionFormBody({ editing, availableCategories, mutationBusy, o
           maxLength={MARKDOWN_TEXT_LENGTH}
           disabled={isSubmitting}
           placeholder={t('dialog.fields.body')}
+          onImageUpload={markdownUpload.onImageUpload}
+          iframeAllowedUrls={markdownUpload.iframeAllowedUrls}
+          onError={markdownUpload.onError}
         />
         {descriptionError ? <p className="text-caption text-destructive">{descriptionError}</p> : null}
       </div>

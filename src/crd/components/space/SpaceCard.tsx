@@ -1,11 +1,10 @@
 import { Globe, Lock, Pin, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { StackedAvatars } from '@/crd/components/common/StackedAvatars';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export type SpaceLead = {
   name: string;
@@ -190,60 +189,21 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Description */}
           <p className="line-clamp-2 text-body text-muted-foreground mt-2">{space.description}</p>
 
-          {/* Tags — single row that fits the card width: long tags truncate (hover shows full),
-              remaining tags collapse into a +N badge (hover shows the rest).
-              Clicks inside this row don't trigger card navigation. */}
+          {/* Tags — capped at 2 rows that fit the card width: long tags
+              truncate (hover shows full), the overflow collapses into a +N
+              badge (hover lists the rest). Clicks inside this row don't
+              trigger card navigation. */}
           {space.tags.length > 0 && (
             // biome-ignore lint/a11y/noStaticElementInteractions: click-intercept wrapper (not an actionable element)
             // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard activation happens on inner interactive elements; this only blocks pointer bubbling
             <div
-              className="flex flex-nowrap items-center gap-1.5 mt-2.5 mb-4 min-w-0 overflow-hidden"
+              className="mt-2.5 mb-4 min-w-0"
               onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
             >
-              {space.tags.slice(0, 3).map(tag => (
-                <Tooltip key={tag}>
-                  <TooltipTrigger asChild={true}>
-                    <Badge
-                      variant="secondary"
-                      className="text-badge px-2 py-0 rounded-full min-w-[3.5rem] shrink cursor-default"
-                    >
-                      <span className="truncate">{tag}</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>{tag}</TooltipContent>
-                </Tooltip>
-              ))}
-              {space.tags.length > 3 && (
-                <Tooltip>
-                  <TooltipTrigger asChild={true}>
-                    <Badge
-                      asChild={true}
-                      variant="outline"
-                      className="text-badge px-2 py-0 rounded-full text-muted-foreground shrink-0"
-                    >
-                      <button
-                        type="button"
-                        aria-label={t('spaces.moreTags', { count: space.tags.length - 3 })}
-                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      >
-                        +{space.tags.length - 3}
-                      </button>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-                    {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-                    <ul role="list" className="flex flex-col gap-0.5">
-                      {space.tags.slice(3).map(tag => (
-                        <li key={tag}>{tag}</li>
-                      ))}
-                    </ul>
-                  </TooltipContent>
-                </Tooltip>
-              )}
+              <CollapsibleTagList tags={space.tags} />
             </div>
           )}
         </div>

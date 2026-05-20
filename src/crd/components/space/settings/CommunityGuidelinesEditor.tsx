@@ -2,7 +2,7 @@ import { Loader2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ReferenceRowsEditor } from '@/crd/components/templates/forms/ReferenceRowsEditor';
 import type { ReferenceRow } from '@/crd/components/templates/types';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
@@ -29,7 +29,7 @@ export type CommunityGuidelinesEditorProps = {
   onApplyTemplate?: () => void;
   /** Open the "save these guidelines as a template" dialog. Hidden when not provided. */
   onSaveAsTemplate?: () => void;
-};
+} & MarkdownUploadProps;
 
 /**
  * Presentational editor for the Community Guidelines (FR-038) — a title field, a markdown body, and a
@@ -45,6 +45,9 @@ export function CommunityGuidelinesEditor({
   onSave,
   onApplyTemplate,
   onSaveAsTemplate,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: CommunityGuidelinesEditorProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
@@ -87,6 +90,9 @@ export function CommunityGuidelinesEditor({
         value={value.body}
         onChange={body => onChange({ body })}
         placeholder={t('community.guidelines.placeholder')}
+        onImageUpload={onImageUpload}
+        iframeAllowedUrls={iframeAllowedUrls}
+        onError={onError}
       />
 
       <ReferenceRowsEditor

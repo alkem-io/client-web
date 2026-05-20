@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Publicaciones",
     "whiteboard": "Pizarras",
-    "link": "Enlaces"
+    "link": "Enlaces",
+    "memo": "Memos"
   },
   "preview": {
     "loading": "Cargando plantilla…",

@@ -1,13 +1,17 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceDefaultTemplatesQuery,
+  useSpaceSubspaceCardsQuery,
+  useSpaceTemplatesManagerQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -20,6 +24,7 @@ import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMappe
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
@@ -52,7 +57,31 @@ export default function CrdSpaceSubspacesPage() {
 
   const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
-  const createSubspace = useCreateSubspace(spaceId ?? '');
+
+  // Wire the Create-Subspace template picker with the same scope as the Settings
+  // flow (D21): the Space's own templates set (Space source) + account packs
+  // (Account source) + the configured default subspace template (FR-031).
+  // Without these the picker silently falls back to Platform templates only.
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
+  });
+  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
+  });
+  const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
+    td => td.type === TemplateDefaultType.SpaceSubspace
+  )?.template?.id;
+
+  const createSubspace = useCreateSubspace(spaceId ?? '', {
+    accountId: space.accountId || undefined,
+    templatesSetId,
+    defaultTemplateId: defaultSubspaceTemplateId,
+  });
   const handleCreateClick = canCreate ? createSubspace.openDialog : undefined;
 
   return (
@@ -67,28 +96,31 @@ export default function CrdSpaceSubspacesPage() {
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
-            canCreate &&
-            handleCreateClick && (
-              <Button size="sm" className="gap-2" onClick={handleCreateClick}>
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                {t('subspaces.createSubspace')}
-              </Button>
+            (canCreateCallout || (canCreate && handleCreateClick)) && (
+              <div className="flex items-center gap-2">
+                {canCreate && handleCreateClick && (
+                  <Button size="sm" className="gap-2" onClick={handleCreateClick}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('subspaces.createSubspace')}
+                  </Button>
+                )}
+                {canCreateCallout && (
+                  <Button size="sm" className="gap-2" onClick={() => setCreateCalloutOpen(true)}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('feed.addPost')}
+                  </Button>
+                )}
+              </div>
             )
           }
         />
 
         <SpaceSubspacesList subspaces={subspaces} />
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateCalloutOpen(true)}
-          loading={calloutsLoading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={calloutsLoading} />
       </div>
 
       {canCreateCallout && (
@@ -97,6 +129,7 @@ export default function CrdSpaceSubspacesPage() {
           onOpenChange={setCreateCalloutOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
 

@@ -25,6 +25,7 @@ import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceS
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
@@ -38,6 +39,7 @@ import {
 } from './community/useAddCommunityMemberDialog';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
+import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
 import { useColumnMenu } from './layout/useColumnMenu';
 import { useLayoutTabData } from './layout/useLayoutTabData';
 import { useApplicationFormData } from './settings/useApplicationFormData';
@@ -47,7 +49,6 @@ import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
-import { useDirtyTabGuard } from './useDirtyTabGuard';
 import { useSettingsScope } from './useSettingsScope';
 import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
@@ -72,7 +73,16 @@ export default function CrdSpaceSettingsPage() {
 
   const visibleTabs = getVisibleSettingsTabs(level);
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
-  const guard = useDirtyTabGuard();
+  const guard = useDirtyTabGuardContext();
+
+  // Markdown image upload. The ambient `StorageConfigContextProvider`
+  // (locationType="space") is mounted by `CrdSpacePageLayout` /
+  // `CrdSubspacePageLayout`, so editing existing sections uploads to the
+  // space's own bucket (temporaryLocation: false). Creating a subspace has no
+  // bucket yet, so it uploads against the parent space's bucket flagged
+  // temporary (server GCs it if the create is abandoned) — mirrors MUI.
+  const md = useMarkdownEditorIntegration();
+  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
@@ -110,6 +120,8 @@ export default function CrdSpaceSettingsPage() {
     templatesSetId,
     spaceId,
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
+    // Save-as always opens the create flow → temporary bucket.
+    markdownUpload: { create: mdCreate, edit: md },
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
@@ -175,18 +187,22 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.clearSelection();
   }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
 
-  // About uses per-section inline Save, so it does NOT participate in the
-  // tab-switch guard. Only Layout and the Application Form can enter a
-  // buffered-dirty state that needs protection.
+  // About uses per-section inline Save, but its edits still live in a local
+  // buffer that survives a tab switch. Without the guard the admin can wander
+  // off and never notice they never hit Save, so About participates too —
+  // alongside Layout, the Application Form, and an unpublished Updates draft.
   useEffect(() => {
-    if (layout.isDirty || applicationForm.isDirty) {
+    if (about.isDirty || layout.isDirty || applicationForm.isDirty || updatesTab.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, layout.isDirty, applicationForm.isDirty]);
+  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  // Save-and-switch is async; disable the dialog while it runs so a double
+  // click can't fire duplicate saves, and keep it open if a save rejects.
+  const [switchingSave, setSwitchingSave] = useState(false);
   // Drives the "Loading new flow…" overlay on the Layout columns container
   // while the Replace-innovation-flow mutation + InnovationFlowSettings
   // refetch are in flight. Set/cleared by `LayoutReplaceFlowConnector` via
@@ -237,18 +253,33 @@ export default function CrdSpaceSettingsPage() {
   }, [subspacesTab, saveAs]);
 
   const handleConfirmSwitchSave = async () => {
-    if (layout.isDirty) await layout.onSave();
-    if (applicationForm.isDirty) applicationForm.onSave();
+    if (switchingSave) return;
+    setSwitchingSave(true);
+    try {
+      if (about.isDirty) await about.onSaveAll();
+      if (layout.isDirty) await layout.onSave();
+      if (applicationForm.isDirty) applicationForm.onSave();
+      if (updatesTab.isDirty) await updatesTab.onSubmit();
+    } catch {
+      // A save failed — keep the dialog open so the user can retry or discard.
+      // The pending switch stays unresolved; per-section error status surfaces
+      // the failure in the tab itself.
+      setSwitchingSave(false);
+      return;
+    }
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
     if (target) {
       setActiveTab(target);
     }
+    setSwitchingSave(false);
   };
   const handleConfirmSwitchDiscard = () => {
+    about.onResetAll();
     layout.onReset();
     applicationForm.onReset();
+    updatesTab.onResetDraft();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
@@ -291,6 +322,9 @@ export default function CrdSpaceSettingsPage() {
                   onUpdateReference={about.onUpdateReference}
                   onRemoveReference={about.onRequestRemoveReference}
                   onSaveSection={section => void about.onSaveSection(section)}
+                  onImageUpload={md.onImageUpload}
+                  iframeAllowedUrls={md.iframeAllowedUrls}
+                  onError={md.onError}
                 />
               ) : (
                 <LoadingSpinner />
@@ -318,6 +352,9 @@ export default function CrdSpaceSettingsPage() {
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
                 headerActionsSlot={
                   level !== 'L0' ? (
                     <LayoutReplaceFlowConnector
@@ -353,6 +390,9 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
                     />
                   ) : undefined
                 }
@@ -374,6 +414,9 @@ export default function CrdSpaceSettingsPage() {
                           references: communityGuidelines.value.references,
                         })
                       }
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
                     />
                   ) : undefined
                 }
@@ -419,6 +462,9 @@ export default function CrdSpaceSettingsPage() {
                 onDraftChange={updatesTab.onDraftChange}
                 onSubmit={() => void updatesTab.onSubmit()}
                 onRequestRemove={updatesTab.onRequestRemove}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
               />
             )}
             {activeTab === 'storage' && isTabVisible('storage') && (
@@ -501,6 +547,9 @@ export default function CrdSpaceSettingsPage() {
         cardBannerConstraints={createSubspace.cardBannerConstraints}
         onChange={createSubspace.onChange}
         onSubmit={() => void createSubspace.onSubmit()}
+        onImageUpload={mdCreate.onImageUpload}
+        iframeAllowedUrls={mdCreate.iframeAllowedUrls}
+        onError={mdCreate.onError}
       />
       <TemplatePicker {...createSubspace.picker} />
       <ConfirmationDialog
@@ -798,6 +847,7 @@ export default function CrdSpaceSettingsPage() {
         saveLabel={t('dirtyGuard.save')}
         discardLabel={t('dirtyGuard.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
+        loading={switchingSave}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}

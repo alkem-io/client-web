@@ -16,6 +16,7 @@ import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -88,10 +89,19 @@ type FramingEditorConnectorProps = {
    * Preview blobs returned from the last save of the inline whiteboard editor —
    * used to render the current canvas as a thumbnail in the inline preview
    * (MUI parity with `FormikWhiteboardPreview`). Empty array when the user
-   * hasn't opened the editor yet, in which case the preview falls back to a
-   * placeholder icon.
+   * hasn't opened the editor yet, in which case the preview falls back to
+   * `whiteboardPreviewServerUrl` (when set — Callout-template edit / callout-from-template
+   * prefill) and finally to a placeholder icon.
    */
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
+  /**
+   * Server-rendered whiteboard preview image URL — the `WHITEBOARD_PREVIEW` Visual the
+   * backend stamps when content changes. Read-time fallback for the inline preview when
+   * no fresh in-form blob exists yet (D16, 2026-05-18). Fresh blobs (from a just-saved
+   * inline edit) take precedence — they reflect the current canvas; this URL only fills
+   * the "loaded but not re-edited" gap.
+   */
+  whiteboardPreviewServerUrl?: string;
   onWhiteboardChange?: (
     content: string,
     previewImages: WhiteboardPreviewImage[] | undefined,
@@ -101,6 +111,12 @@ type FramingEditorConnectorProps = {
   // is wired into the form hook's `memoMarkdown` field (spec T010/T011).
   memoMarkdown?: string;
   onMemoMarkdownChange?: (value: string) => void;
+  /**
+   * Image-upload wiring for the create-mode memo framing editor. The memo
+   * doesn't exist yet → the consumer passes a `temporaryLocation: true`
+   * integration (server GCs the file if the callout create is abandoned).
+   */
+  memoUpload?: MarkdownUploadProps;
   // Media-gallery framing — required because a missing handler silently drops
   // user-selected files when `framingType === 'image'`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
@@ -162,9 +178,11 @@ export function FramingEditorConnector({
   whiteboardPreviewSettings,
   whiteboardTitle,
   whiteboardPreviewImages,
+  whiteboardPreviewServerUrl,
   onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
+  memoUpload,
   mediaGalleryVisuals,
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
@@ -241,7 +259,7 @@ export function FramingEditorConnector({
           <InlineWhiteboardPreview
             onEdit={() => setWhiteboardEditorOpen(true)}
             editLabel={t('framing.edit')}
-            previewImageUrl={whiteboardPreviewUrl}
+            previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
             imageAlt={whiteboardTitle || t('callout.whiteboard')}
           />
           <Suspense fallback={<Loading />}>
@@ -302,7 +320,15 @@ export function FramingEditorConnector({
           </>
         );
       }
-      return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
+      return (
+        <MemoFramingEditor
+          value={memoMarkdown}
+          onChange={value => onMemoMarkdownChange?.(value)}
+          onImageUpload={memoUpload?.onImageUpload}
+          iframeAllowedUrls={memoUpload?.iframeAllowedUrls}
+          onError={memoUpload?.onError}
+        />
+      );
 
     case 'document':
       // Collabora document framing — type is fixed at creation time (Collabora

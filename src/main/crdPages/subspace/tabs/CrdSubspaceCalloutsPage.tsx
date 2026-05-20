@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
@@ -51,13 +51,10 @@ export default function CrdSubspaceCalloutsPage() {
         <div className="sticky top-16 z-10 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
       )}
 
-      {/* Active phase description — secondary title between tabs and feed (mirrors the prototype). */}
-      {activePhase?.description && (
-        <MarkdownContent
-          content={activePhase.description}
-          className="text-body text-muted-foreground [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p:last-child]:mb-0"
-        />
-      )}
+      {/* Active phase description — collapsible (2 lines, 3 on small screens)
+          with a "See full description" toggle, identical to the L0 tab
+          flow-state description. */}
+      {activePhase?.description && <TabStateHeader description={activePhase.description} />}
 
       {phases.length > 0 && (
         <CalloutListConnector
@@ -78,6 +75,7 @@ export default function CrdSubspaceCalloutsPage() {
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={activePhase?.label}
+          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
         />
       )}
     </div>

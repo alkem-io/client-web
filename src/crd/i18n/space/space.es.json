@@ -191,8 +191,6 @@
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
-    "resultsCount": "{{count}} resultados",
-    "clearFilters": "Limpiar filtros",
     "sendComment": "Enviar comentario",
     "addResponse": "Añadir respuesta",
     "createWhiteboard": "Crear nueva pizarra",
@@ -202,7 +200,7 @@
     "createMemo": "Crear nuevo memo",
     "defaultMemoName": "Nuevo memo",
     "memoNameLabel": "Título del memo",
-    "addLink": "Añadir enlace",
+    "addLinkOrFile": "Añadir enlace o archivo",
     "createLink": "Añade enlaces o adjunta documentos",
     "editLink": "Editar enlace",
     "linkSave": "Guardar",
@@ -674,7 +672,8 @@
   },
   "postSnippet": {
     "readMore": "… Leer más",
-    "readLess": "Leer menos"
+    "readLess": "Leer menos",
+    "seeFullDescription": "Ver descripción completa"
   },
   "postPreview": {
     "label": "Vista previa de la contribución seleccionada",

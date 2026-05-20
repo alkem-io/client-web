@@ -244,6 +244,52 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.framingChip).toBe('whiteboard');
     expect(v.whiteboardContent).toBe('{"elements":[42]}');
     expect(v.whiteboardConfigured).toBe(true);
+    // D16 (2026-05-18): server preview URL is undefined when the loaded whiteboard has no Visual.
+    expect(v.whiteboardPreviewServerUrl).toBeUndefined();
+  });
+
+  // D16, 2026-05-18 — when a Callout template with whiteboard framing carries a server-rendered
+  // preview image (`framing.whiteboard.profile.preview.uri`), the prefill MUST surface it on
+  // `whiteboardPreviewServerUrl` so `InlineWhiteboardPreview` can render it as the read-time
+  // fallback (instead of the placeholder Excalidraw icon).
+  it('exposes the server-rendered whiteboard preview URL (D16)', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.Whiteboard,
+        whiteboard: {
+          __typename: 'Whiteboard',
+          content: '{"elements":[]}',
+          id: 'wb-1',
+          nameID: 'wb-1',
+          createdDate: new Date(),
+          guestContributionsAllowed: false,
+          contentUpdatePolicy: 'CONTRIBUTORS' as never,
+          profile: {
+            __typename: 'Profile',
+            id: 'wbp-1',
+            url: '/wb',
+            displayName: 'WB',
+            description: undefined,
+            visual: undefined,
+            preview: {
+              __typename: 'Visual',
+              id: 'vis-1',
+              uri: 'https://cdn.alkem.io/wb/preview.png',
+            } as never,
+            tagset: undefined,
+            storageBucket: { __typename: 'StorageBucket', id: 'sb', allowedMimeTypes: [], maxFileSize: 0 },
+          },
+          authorization: undefined,
+          createdBy: undefined,
+          previewSettings: {
+            __typename: 'WhiteboardPreviewSettings',
+            mode: WhiteboardPreviewMode.Auto,
+            coordinates: undefined,
+          },
+        },
+      })
+    );
+    expect(v.whiteboardPreviewServerUrl).toBe('https://cdn.alkem.io/wb/preview.png');
   });
 
   it('falls back to the empty-whiteboard sentinel when whiteboard framing has no drawing', () => {
@@ -348,9 +394,42 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.collaboraDocumentType).toBe(CollaboraDocumentType.Presentation);
   });
 
-  it('treats disabled / empty contribution settings as the "none" response type', () => {
+  it('falls back to the "none" response type only when allowedTypes is empty', () => {
     const frag = baseFragment();
-    frag.settings.contribution.enabled = false;
+    frag.settings.contribution.allowedTypes = [];
     expect(calloutTemplateContentToFormValues(frag).responseType).toBe('none');
+  });
+
+  // Spec D14, 2026-05-18 — the response-type chip derives from `allowedTypes[0]` ALONE.
+  // `enabled` and `canAddContributions` are an orthogonal "who-can-add" concern that maps
+  // to the actor switches, not to the chip. AND-ing the chip on `enabled` would silently
+  // reset it whenever both Members/Admins toggles are off — and the update mapper would
+  // then commit that loss back to the server.
+  it('preserves the response-type chip when both actor toggles are off (D14)', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.Link];
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.None;
+    frag.settings.contribution.enabled = false;
+
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.responseType).toBe('link');
+    expect(v.allowedActors).toEqual({ members: false, admins: false });
+  });
+
+  it('keeps response-type and actor-switch derivations independent across the three actor states', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.Whiteboard];
+
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.Members;
+    expect(calloutTemplateContentToFormValues(frag).responseType).toBe('whiteboard');
+    expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: true, admins: true });
+
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.Admins;
+    expect(calloutTemplateContentToFormValues(frag).responseType).toBe('whiteboard');
+    expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: false, admins: true });
+
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.None;
+    expect(calloutTemplateContentToFormValues(frag).responseType).toBe('whiteboard');
+    expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: false, admins: false });
   });
 });

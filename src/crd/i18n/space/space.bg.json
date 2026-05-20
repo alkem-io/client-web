@@ -191,8 +191,6 @@
     "vote": "Гласувай",
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
-    "resultsCount": "{{count}} резултата",
-    "clearFilters": "Изчисти филтрите",
     "sendComment": "Изпрати коментар",
     "addResponse": "Добави отговор",
     "createWhiteboard": "Създаване на нова бяла дъска",
@@ -202,7 +200,7 @@
     "createMemo": "Създай нова бележка",
     "defaultMemoName": "Нова бележка",
     "memoNameLabel": "Заглавие на бележка",
-    "addLink": "Добави връзка",
+    "addLinkOrFile": "Добави връзка или файл",
     "createLink": "Добави връзки или прикачи документи",
     "editLink": "Редактиране на връзка",
     "linkSave": "Запази",
@@ -674,7 +672,8 @@
   },
   "postSnippet": {
     "readMore": "… Прочети повече",
-    "readLess": "Прочети по-малко"
+    "readLess": "Прочети по-малко",
+    "seeFullDescription": "Виж пълното описание"
   },
   "postPreview": {
     "label": "Преглед на избрания отговор",

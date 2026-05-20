@@ -174,8 +174,6 @@
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
-    "resultsCount": "{{count}} results",
-    "clearFilters": "Clear filters",
     "sendComment": "Send comment",
     "addResponse": "Add Response",
     "createWhiteboard": "Create new whiteboard",
@@ -202,7 +200,7 @@
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
-    "addLink": "Add link",
+    "addLinkOrFile": "Add link or file",
     "createLink": "Add links or attach documents",
     "editLink": "Edit link",
     "linkSave": "Save",
@@ -665,7 +663,8 @@
   },
   "postSnippet": {
     "readMore": "… Read more",
-    "readLess": "Read less"
+    "readLess": "Read less",
+    "seeFullDescription": "See full description"
   },
   "postPreview": {
     "label": "Selected contribution preview",
