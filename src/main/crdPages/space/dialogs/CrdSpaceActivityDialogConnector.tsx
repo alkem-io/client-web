@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
@@ -38,12 +38,20 @@ export function CrdSpaceActivityDialogConnector({ open, onOpenChange, spaceId }:
 
   // Mirror the MUI ActivityDialog behaviour (RecentContributionsBlock): refetch
   // once with the expanded limit as soon as the initial page comes back full.
-  // The query has no cursor pagination, so this is a single one-shot expansion.
+  // The query has no cursor pagination — the ref guards against the underlying
+  // list having exactly INITIAL items, where the refetch would return the same
+  // length and re-trigger the effect.
+  const expandedOnceRef = useRef(false);
   useEffect(() => {
-    if (activities?.length === RECENT_ACTIVITIES_LIMIT_INITIAL) {
+    if (!open) {
+      expandedOnceRef.current = false;
+      return;
+    }
+    if (!expandedOnceRef.current && activities?.length === RECENT_ACTIVITIES_LIMIT_INITIAL) {
+      expandedOnceRef.current = true;
       fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
     }
-  }, [activities, fetchMoreActivities]);
+  }, [open, activities, fetchMoreActivities]);
 
   const items = mapActivityToFeedItems(activities ?? [], tMain);
 

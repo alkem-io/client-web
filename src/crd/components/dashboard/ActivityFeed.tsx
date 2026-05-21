@@ -191,7 +191,7 @@ export function ActivityFeed({
         )}
       </div>
 
-      {(onShowMore || hasMoreInline) && visibleItems.length > 0 && (
+      {onShowMore && hasMoreInline && visibleItems.length > 0 && (
         <div className="mt-auto border-t border-border pt-4 shrink-0">
           <button
             type="button"
