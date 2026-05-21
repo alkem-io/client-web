@@ -1,7 +1,8 @@
-import { Loader2, Paperclip, Plus, Trash2 } from 'lucide-react';
-import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
@@ -206,45 +207,5 @@ export function ReferencesEditor({
         }}
       />
     </div>
-  );
-}
-
-type RowAttachFileButtonProps = {
-  accept?: string;
-  disabled?: boolean;
-  uploading: boolean;
-  ariaLabel: string;
-  onFile: (file: File | undefined) => void;
-};
-
-function RowAttachFileButton({ accept, disabled, uploading, ariaLabel, onFile }: RowAttachFileButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    onFile(file);
-    if (inputRef.current) inputRef.current.value = '';
-  };
-
-  return (
-    <>
-      <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={handleChange} />
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        disabled={disabled || uploading}
-        aria-busy={uploading}
-        aria-label={ariaLabel}
-        onClick={() => inputRef.current?.click()}
-        className="shrink-0"
-      >
-        {uploading ? (
-          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-        ) : (
-          <Paperclip className="size-4" aria-hidden="true" />
-        )}
-      </Button>
-    </>
   );
 }

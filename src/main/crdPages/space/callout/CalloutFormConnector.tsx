@@ -684,6 +684,8 @@ export function CalloutFormConnector({
               prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
               onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
+              prePopulateLinkFileUpload={referenceUpload.onFileUpload}
+              prePopulateLinkUploadAccept={referenceUpload.accept}
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />

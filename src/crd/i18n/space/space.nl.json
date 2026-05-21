@@ -513,7 +513,8 @@
       "descriptionLabel": "Beschrijving",
       "descriptionPlaceholder": "Optionele beschrijving",
       "addRow": "Nog een link toevoegen",
-      "removeRow": "Link verwijderen"
+      "removeRow": "Link verwijderen",
+      "attachFile": "Bestand bijvoegen"
     }
   },
   "references": {

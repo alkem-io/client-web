@@ -91,6 +91,12 @@ export type TemplatesManagerViewProps = {
   onCreate: (type: TemplateType) => void;
   onImport: (type: TemplateType) => void;
   onTemplateAction: (id: string, action: TemplateAction) => void;
+  /**
+   * Read-only presentation (pack public profile). When true, each card's kebab is reduced to Preview only —
+   * Duplicate/Edit/Delete are omitted regardless of the `can*` predicates (Duplicate writes into the holder's
+   * own set, which a public-profile viewer cannot do). Management contexts leave this unset.
+   */
+  readOnly?: boolean;
   className?: string;
 };
 

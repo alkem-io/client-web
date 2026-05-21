@@ -32,12 +32,10 @@ function mapProfilePackToCard(gql: GqlProfilePack): InnovationPackProfileViewPro
     id: gql.id,
     name: profile.displayName,
     description: profile.description ?? '',
-    tagline: profile.tagline,
     tags: profile.tagset?.tags ?? [],
     bannerUrl: profile.avatar?.uri || undefined,
     color: pickColorFromId(gql.id),
-    // We don't have aggregate counts here — the templates manager exposes them per-section
-    // (and the public profile is not the place to show a "{N} templates" badge anyway).
+    // The header's "{N} templates" badge is computed by the view from the per-type sections, not here.
     templateCount: 0,
     url: profile.url,
     providerName: provider?.profile?.displayName,
