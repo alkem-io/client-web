@@ -86,27 +86,41 @@ export default function CrdSpaceSettingsPage() {
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
-  const about = useAboutTabData(spaceId, spaceUrl, level);
-  const layout = useLayoutTabData(spaceId);
-  const community = useCommunityTabData(roleSetId);
-  const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
+  // Each tab's data hook is gated on `activeTab` so only the visible tab's
+  // queries fire — mirroring MUI's per-route architecture without splitting
+  // this page into separate routes. Apollo's cache lets re-visited tabs return
+  // instantly. Local buffers (about edits, layout buffer, updates draft) live
+  // in `useState` inside each hook and survive the gating, so the dirty-tab
+  // guard still sees `isDirty=true` at the moment of a tab switch.
+  const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
+  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
+  const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+  const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
     templatesSetId: subspacesTab.templatesSetId,
     defaultTemplateId: subspacesTab.defaultTemplateId,
   });
   // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
-  const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
-  const settingsTab = useSettingsTabData(spaceId);
-  const applicationForm = useApplicationFormData(settingsTab.roleSetId);
-  const accountTab = useAccountTabData(isTabVisible('account') ? spaceId : '');
-  const updatesTab = useUpdatesTabData(communityId || undefined);
+  const storageTab = useStorageTabData(activeTab === 'storage' ? spaceId : '');
+  const settingsTab = useSettingsTabData(activeTab === 'settings' ? spaceId : '');
+  // ApplicationFormEditor renders inside the Community panel — pull `roleSetId`
+  // from the always-available scope instead of `settingsTab` so we don't have
+  // to fetch the Settings tab just to know the role set id.
+  const applicationForm = useApplicationFormData(activeTab === 'community' ? roleSetId : '');
+  const accountTab = useAccountTabData(activeTab === 'account' ? spaceId : '');
+  const updatesTab = useUpdatesTabData(activeTab === 'updates' ? communityId || undefined : undefined);
   const communityGuidelinesId = scope.guidelinesId;
-  const communityGuidelines = useCommunityGuidelinesData(communityGuidelinesId);
+  const communityGuidelines = useCommunityGuidelinesData(activeTab === 'community' ? communityGuidelinesId : undefined);
 
   // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
-  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache).
-  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({ variables: { spaceId }, skip: !spaceId });
+  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache). Only needed on tabs whose
+  // pickers / save-as flows consume `templatesSetId`.
+  const needsTemplatesSet = activeTab === 'community' || activeTab === 'layout' || activeTab === 'subspaces';
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId },
+    skip: !spaceId || !needsTemplatesSet,
+  });
   const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
   const guidelinesTemplatePicker = useTemplatePicker({
     allowedTypes: ['communityGuidelines'],
