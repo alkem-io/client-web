@@ -85,7 +85,7 @@ export function ActivityItem({
 
   const resolvedTitlePlain = titlePlain ?? (typeof title === 'string' ? title : '');
   const ariaLabel = [userName, activityIconLabel, resolvedTitlePlain, contextName, timestamp].filter(Boolean).join(' ');
-  const sharedClassName = cn('flex gap-4 rounded-md p-2 -mx-2 transition-colors hover:bg-accent/50', className);
+  const sharedClassName = cn('flex gap-4 rounded-xl p-3 transition-colors hover:bg-accent', className);
 
   if (titleHref) {
     return (
