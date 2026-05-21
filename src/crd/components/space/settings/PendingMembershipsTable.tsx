@@ -2,7 +2,7 @@ import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronU
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
-import { formatAbsoluteDateTime, formatShortDate } from '@/crd/lib/dateTimeFormat';
+import { formatAbsoluteDateTime, formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -234,7 +234,7 @@ export function PendingMembershipsTable({
             )}
             {paginated.map((row, index) => {
               const id = statusId(row.type, row.state);
-              const dateDisplay = formatShortDate(row.createdDate, locale);
+              const dateDisplay = formatRelativeFromNow(row.createdDate, locale);
               const dateTooltip = formatAbsoluteDateTime(row.createdDate, locale);
               return (
                 <TableRow key={`${row.type}-${row.id}`} className={cn(index % 2 === 1 && 'bg-muted/30')}>
