@@ -1,4 +1,5 @@
 import { defaultSchema } from 'hast-util-sanitize';
+import type { ComponentPropsWithoutRef } from 'react';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
@@ -95,9 +96,6 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
-        // Iframes (embedded videos etc.) — markdown stores them with width="100%" height="100%",
-        // so without an explicit aspect-ratio the height collapses and the embed visual gets clipped.
-        '[&_iframe]:block [&_iframe]:w-full [&_iframe]:h-auto [&_iframe]:aspect-video [&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0 [&_iframe]:my-3',
         className
       )}
     >
@@ -108,9 +106,58 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
           [rehypeSanitize, sanitizeSchema],
           rehypeSanitizeStyles,
         ]}
+        components={{ iframe: IframeRenderer }}
       >
         {content}
       </Markdown>
     </div>
   );
+}
+
+// Iframe rendering branches on the authored width/height attributes:
+//   1. Both pixel (e.g. pasted Figma `width="800" height="450"`) — passthrough so the iframe
+//      keeps its intrinsic box, capped to container width.
+//   2. Pixel height with non-pixel width (e.g. `width="100%" height="400"`) — wrap in a full-width
+//      container with the authored pixel height; iframe fills it.
+//   3. Anything else (e.g. the editor's `width="100%" height="100%"`) — wrap in a 16:9 responsive
+//      container so the iframe doesn't collapse to zero height.
+// `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+// reaches the DOM.
+type IframeRendererProps = ComponentPropsWithoutRef<'iframe'> & { node?: unknown };
+
+function IframeRenderer({ node: _node, width, height, className, ...props }: IframeRendererProps) {
+  const widthPx = toPixelValue(width);
+  const heightPx = toPixelValue(height);
+
+  if (widthPx && heightPx) {
+    return (
+      <iframe
+        {...props}
+        width={width}
+        height={height}
+        className={cn('block max-w-full rounded-lg border-0 my-3', className)}
+      />
+    );
+  }
+
+  if (heightPx) {
+    return (
+      <div className="relative w-full my-3" style={{ height: heightPx }}>
+        <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full my-3 aspect-video">
+      <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+    </div>
+  );
+}
+
+function toPixelValue(value: string | number | undefined): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === 'number') return Number.isFinite(value) ? `${value}px` : undefined;
+  const match = /^(\d+(?:\.\d+)?)(px)?$/i.exec(String(value).trim());
+  return match ? `${match[1]}px` : undefined;
 }
