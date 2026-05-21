@@ -3942,6 +3942,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
+  | 'mentionableContributors'
   | 'nameID'
   | 'pinned'
   | 'platformAccess'
@@ -3974,6 +3975,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4397,6 +4399,7 @@ export type SpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
+  | 'mentionableContributors'
   | 'nameID'
   | 'pinned'
   | 'platformAccess'
@@ -4429,6 +4432,7 @@ export type SpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
