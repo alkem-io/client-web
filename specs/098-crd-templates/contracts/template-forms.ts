@@ -8,7 +8,10 @@
  *    per-type form (so it never transitively imports Apollo/`@/domain/*`/MUI).
  *  - `src/crd/components/templates/forms/{Whiteboard,Post,CommunityGuidelines}TemplateForm.tsx` + the
  *    presentational `SpaceTemplateForm.tsx` — pure CRD-layer (reuse `MarkdownEditor`, `tags-input`,
- *    `WhiteboardEditorShell`, the CRD references-list editor). Mounted by the integration layer into `perTypeFormSlot`.
+ *    `WhiteboardEditorShell`, the shared `@/crd/forms/references/ReferencesEditor` — the one references editor used
+ *    everywhere, paperclip included; the CG template form receives `onReferenceFileUpload`/`referenceUploadAccept`
+ *    from `useTemplateForms`' `referenceUpload` arg, wired by the provider-wrapped hosts to the holder bucket with
+ *    `temporaryLocation: true` — see D24). Mounted by the integration layer into `perTypeFormSlot`.
  *    `WhiteboardTemplateForm` renders the shared `WhiteboardConfigCard` (`src/crd/components/whiteboard/`) for the
  *    "configure / edit drawing" row — the same component the callout whiteboard-framing editor (`FramingEditorConnector`)
  *    uses — and the integration-layer connector (`WhiteboardTemplateFormConnector`) wires it to the live editor dialog.

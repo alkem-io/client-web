@@ -93,10 +93,18 @@ export function useInnovationPackAdmin({
   const detail = gqlPack ? mapInnovationPackToDetail(gqlPack) : undefined;
   const templatesSetId = pack?.templatesSetId;
 
+  // Reference file upload (paperclip) — uploads land in the pack's own storage bucket. Shared by the
+  // pack-details form AND the CG template form (via `useTemplatesManager` → `useTemplateForms`);
+  // `useReferenceFileUpload` always uses `temporaryLocation: true`, so a file attached before a new
+  // template exists is GC'd if abandoned and claimed on save.
+  const { storageConfig } = useStorageConfig({ locationType: 'innovationPack', innovationPackId });
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(storageConfig);
+
   const tm = useTemplatesManager({
     holderKind: 'innovationPack',
     templatesSetId,
     markdownUpload: templatesMarkdownUpload,
+    referenceUpload: { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept },
   });
 
   // Open the deep-linked template's Preview dialog once it (and the templates set) resolve.
@@ -212,10 +220,6 @@ export function useInnovationPackAdmin({
   // Dirty = the live buffer differs from the last-seeded server snapshot.
   // While loading (`values` null) there's nothing to save, so it's pristine.
   const isDirty = values != null && detail != null && dirtySnapshot(values) !== dirtySnapshot(detail.formValues);
-
-  // Reference file upload (paperclip) — uploads land in the pack's own storage bucket.
-  const { storageConfig } = useStorageConfig({ locationType: 'innovationPack', innovationPackId });
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(storageConfig);
 
   const form: InnovationPackFormProps = {
     value: formValues,
