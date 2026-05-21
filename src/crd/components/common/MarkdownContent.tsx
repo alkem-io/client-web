@@ -1,4 +1,5 @@
 import { defaultSchema } from 'hast-util-sanitize';
+import type { ComponentPropsWithoutRef } from 'react';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
@@ -95,9 +96,6 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
-        // Iframes (embedded videos etc.) — markdown stores them with width="100%" height="100%",
-        // so without an explicit aspect-ratio the height collapses and the embed visual gets clipped.
-        '[&_iframe]:block [&_iframe]:w-full [&_iframe]:h-auto [&_iframe]:aspect-video [&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0 [&_iframe]:my-3',
         className
       )}
     >
@@ -108,9 +106,42 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
           [rehypeSanitize, sanitizeSchema],
           rehypeSanitizeStyles,
         ]}
+        components={{ iframe: IframeRenderer }}
       >
         {content}
       </Markdown>
     </div>
   );
+}
+
+// Iframes arrive in two shapes:
+//   1. Pixel-sized (e.g. pasted Figma `width="800" height="450"`) — render passthrough so the
+//      iframe keeps its intrinsic box; only enforce `max-width: 100%` for narrow viewports.
+//   2. Percent-sized or missing dimensions (the editor stores its embeds as `width="100%" height="100%"`) —
+//      wrap in a 16:9 responsive container so the iframe doesn't collapse to zero height.
+// The previous blanket `aspect-ratio: 16/9` on every iframe broke case #1 for Figma embeds, which
+// reserved phantom layout space below the iframe equal to its own height.
+function IframeRenderer({ width, height, className, ...props }: ComponentPropsWithoutRef<'iframe'>) {
+  if (isPixelDimension(width) && isPixelDimension(height)) {
+    return (
+      <iframe
+        {...props}
+        width={width}
+        height={height}
+        className={cn('block max-w-full rounded-lg border-0 my-3', className)}
+      />
+    );
+  }
+
+  return (
+    <div className="relative w-full my-3" style={{ paddingBottom: '56.25%' }}>
+      <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+    </div>
+  );
+}
+
+function isPixelDimension(value: string | number | undefined): boolean {
+  if (value === undefined || value === null) return false;
+  if (typeof value === 'number') return Number.isFinite(value);
+  return /^\d+(\.\d+)?(px)?$/i.test(String(value).trim());
 }
