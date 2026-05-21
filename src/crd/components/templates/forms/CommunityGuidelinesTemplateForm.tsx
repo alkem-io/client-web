@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import type { CommunityGuidelinesTemplateFormProps } from '../types';
-import { ReferenceRowsEditor } from './ReferenceRowsEditor';
 
 export function CommunityGuidelinesTemplateForm({
   value,
   errors,
   onChange,
+  onReferenceFileUpload,
+  referenceUploadAccept,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -50,11 +52,13 @@ export function CommunityGuidelinesTemplateForm({
         />
       </div>
 
-      <ReferenceRowsEditor
-        value={value.references}
+      <ReferencesEditor
+        rows={value.references}
         onChange={references => onChange({ ...value, references })}
         errors={referenceErrors}
         label={t('form.communityGuidelines.references')}
+        onFileUpload={onReferenceFileUpload}
+        uploadAccept={referenceUploadAccept}
       />
     </div>
   );

@@ -1,20 +1,19 @@
-import { Bot, Image as ImageIcon, Info, Link2, Plus, Trash2 } from 'lucide-react';
+import { Bot, Image as ImageIcon, Info, Link2 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
-import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Separator } from '@/crd/primitives/separator';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import type { VcProfileReference, VcProfileSectionKey, VcProfileViewProps } from './VCProfileTabView.types';
+import type { VcProfileSectionKey, VcProfileViewProps } from './VCProfileTabView.types';
 
 type SectionLabels = {
   save: string;
@@ -43,14 +42,11 @@ export function VCProfileTabView(props: VcProfileViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
-    onAddReference,
-    onUpdateReference,
-    onRequestRemoveReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onUploadAvatar,
     onSaveSection,
-    pendingReferenceDelete,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
     uploadingAvatar,
     metadata,
     footerSlot,
@@ -143,30 +139,12 @@ export function VCProfileTabView(props: VcProfileViewProps) {
 
         {/* References (Social Links) */}
         <SettingsCard icon={Link2} title={t('vc.profile.socialLinks.title')}>
-          <div className="space-y-3">
-            {values.references.map(ref => (
-              <ArbitraryReferenceRow
-                key={ref.id}
-                reference={ref}
-                onPatch={patch => onUpdateReference(ref.id, patch)}
-                onRemove={() => onRequestRemoveReference(ref.id)}
-                namePlaceholder={t('vc.profile.socialLinks.namePlaceholder')}
-                urlPlaceholder={t('vc.profile.socialLinks.urlPlaceholder')}
-                descriptionPlaceholder={t('vc.profile.socialLinks.descriptionPlaceholder')}
-                removeAriaLabel={t('vc.profile.socialLinks.removeAriaLabel')}
-              />
-            ))}
-            {values.references.length === 0 ? (
-              <p className="text-caption text-muted-foreground">{t('vc.profile.socialLinks.empty')}</p>
-            ) : null}
-          </div>
-
-          <div className="mt-4">
-            <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
-              <Plus aria-hidden="true" className="mr-2 size-4" />
-              {t('vc.profile.socialLinks.addAnother')}
-            </Button>
-          </div>
+          <ReferencesEditor
+            rows={values.references.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }))}
+            onChange={onReferencesChange}
+            onFileUpload={onReferenceFileUpload}
+            uploadAccept={referenceUploadAccept}
+          />
 
           <FF
             dirty={dirty('references')}
@@ -201,19 +179,6 @@ export function VCProfileTabView(props: VcProfileViewProps) {
           onAvatarFilePicked={onUploadAvatar}
         />
       </SettingsCard>
-
-      <ConfirmationDialog
-        open={Boolean(pendingReferenceDelete)}
-        onOpenChange={open => {
-          if (!open) onCancelRemoveReference();
-        }}
-        title={t('vc.profile.socialLinks.deleteDialog.title')}
-        description={t('vc.profile.socialLinks.deleteDialog.description')}
-        confirmLabel={t('vc.profile.socialLinks.deleteDialog.confirm')}
-        variant="destructive"
-        onConfirm={onConfirmRemoveReference}
-        onCancel={onCancelRemoveReference}
-      />
     </div>
   );
 }
@@ -322,55 +287,6 @@ function TagsSection(p: TagsSectionProps) {
         <TagsInput value={p.value} onChange={p.onChange} placeholder={p.placeholder} />
       </div>
       <FF hint={p.hint} dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
-    </div>
-  );
-}
-
-function ArbitraryReferenceRow({
-  reference,
-  onPatch,
-  onRemove,
-  namePlaceholder,
-  urlPlaceholder,
-  descriptionPlaceholder,
-  removeAriaLabel,
-}: {
-  reference: VcProfileReference;
-  onPatch: (patch: Partial<Omit<VcProfileReference, 'id'>>) => void;
-  onRemove: () => void;
-  namePlaceholder: string;
-  urlPlaceholder: string;
-  descriptionPlaceholder: string;
-  removeAriaLabel: string;
-}) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <div className="flex items-center justify-between gap-2">
-        <Input
-          value={reference.name}
-          onChange={e => onPatch({ name: e.target.value })}
-          placeholder={namePlaceholder}
-          aria-label={namePlaceholder}
-          className="flex-1"
-        />
-        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={removeAriaLabel}>
-          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-        </Button>
-      </div>
-      <Input
-        value={reference.uri}
-        onChange={e => onPatch({ uri: e.target.value })}
-        placeholder={urlPlaceholder}
-        aria-label={urlPlaceholder}
-        className="mt-2"
-      />
-      <Input
-        value={reference.description}
-        onChange={e => onPatch({ description: e.target.value })}
-        placeholder={descriptionPlaceholder}
-        aria-label={descriptionPlaceholder}
-        className="mt-2"
-      />
     </div>
   );
 }

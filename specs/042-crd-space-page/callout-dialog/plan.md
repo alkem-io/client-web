@@ -39,10 +39,11 @@ Three-layer split follows the parent plan:
 | `forms/callout/FramingChipStrip.tsx` | Horizontal 6-chip strip for ADD-TO-POST. Single-select with radiogroup semantics. Props: `value`, `onChange`, `disabled?`, `lockedTo?` (for edit mode). Document chip is rendered disabled. |
 | `forms/callout/ResponseTypeChipStrip.tsx` | Horizontal 5-chip strip for RESPONSES. Same semantics. |
 | `forms/callout/ResponsePanel.tsx` | Per-type expanded panel container; dispatches on the active type to render the right sub-panel (`LinksPanel` / `PostsPanel` / `MemosPanel` / `WhiteboardsPanel` / `DocumentsPanel`). |
-| `forms/callout/LinksPanel.tsx` | Pre-populate-links editor (rows of title/url/description + actor switches). |
+| `forms/callout/LinksPanel.tsx` | Pre-populate-links editor (rows of title/url/description + per-row paperclip file-attach + actor switches). The paperclip reuses the shared `RowAttachFileButton` and the connector's `useReferenceFileUpload` callback — identical to the References editor. |
 | `forms/callout/ActorSwitches.tsx` | Two-switch "Members can add" / "Admins can add" with the hierarchy rule baked in. Accepts `value: { members: boolean; admins: boolean }` and `onChange`. |
 | `forms/callout/ResponseDefaultsDialog.tsx` | Nested dialog shown when "Set Default Response" is clicked. Props: `open`, `onOpenChange`, `type`, `values`, `onChange`, `templateSlot?`, `whiteboardEditorSlot?`. The integration layer injects the template picker and the whiteboard-editor launcher. |
-| `forms/callout/ReferencesEditor.tsx` | Rows of (title, url, description) + Add Reference button + delete-row. |
+| `forms/callout/ReferencesEditor.tsx` | Rows of (title, url, description) + Add Reference button + delete-row + per-row paperclip file-attach (shared `RowAttachFileButton` + `useReferenceFileUpload`). |
+| `forms/references/RowAttachFileButton.tsx` | Shared per-row paperclip button (hidden file input + spinner during upload). Reused by both `ReferencesEditor` variants and `LinksPrePopulateRows`. Props: `accept?`, `disabled?`, `uploading`, `ariaLabel`, `onFile`. |
 | `forms/callout/MemoFramingEditor.tsx` | Inline card wrapping CRD `MarkdownEditor` with the memo icon and label. |
 | `forms/callout/DocumentFramingPlaceholder.tsx` | Coming-soon panel shown when Document chip would be active (unreachable until the chip is enabled). |
 | `components/callout/CalloutVisibilityChangeDialog.tsx` | CRD Radix `AlertDialog`. Props: `open`, `onOpenChange`, `action: 'publish' \| 'unpublish'`, `loading`, `notifyMembers?`, `onNotifyMembersChange?`, `onConfirm`. |

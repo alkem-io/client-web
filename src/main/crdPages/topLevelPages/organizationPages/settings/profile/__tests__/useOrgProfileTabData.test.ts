@@ -358,21 +358,15 @@ describe('useOrgProfileTabData — references batch', () => {
   it('patches existing rows + creates new ones via the References-section Save', async () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
 
-    // 1) Edit the existing arbitrary "Annual report" row.
+    // The shared ReferencesEditor emits the full arbitrary list: edit "Annual report" + append a new row.
     act(() => {
-      result.current.onUpdateReference('ref-2', { uri: 'https://alkemio.test/report-2026' });
+      result.current.onReferencesChange([
+        { id: 'ref-2', name: 'Annual report', uri: 'https://alkemio.test/report-2026', description: 'PDF' },
+        { name: 'Bluesky', uri: 'https://bsky.app/profile/alkemio', description: '' },
+      ]);
     });
 
-    // 2) Add a new arbitrary row.
-    act(() => result.current.onAddReference());
-    const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
-    expect(tempId).toBeDefined();
-    act(() => {
-      // biome-ignore lint/style/noNonNullAssertion: asserted defined above
-      result.current.onUpdateReference(tempId!, { name: 'Bluesky', uri: 'https://bsky.app/profile/alkemio' });
-    });
-
-    // 3) Edit the recognized LinkedIn row's URI.
+    // Edit the recognized LinkedIn row's URI (separate control, unchanged).
     act(() => {
       result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/company/alkemio-foundation');
     });
@@ -403,15 +397,11 @@ describe('useOrgProfileTabData — references batch', () => {
     expect(mockDeleteReference).not.toHaveBeenCalled();
   });
 
-  it('fires deleteReference for an existing row removed via Confirm in the dialog', async () => {
+  it('fires deleteReference for an existing row removed via the editor', async () => {
     const { result } = renderHook(() => useOrgProfileTabData('org-1'));
 
-    act(() => result.current.onRequestRemoveReference('ref-2'));
-    expect(result.current.pendingReferenceDelete?.id).toBe('ref-2');
-
-    act(() => result.current.onConfirmRemoveReference());
-    expect(result.current.pendingReferenceDelete).toBeNull();
-    // Locally, the row is gone from the buffer immediately.
+    // The editor emits the trimmed list (the only arbitrary row, ref-2, removed).
+    act(() => result.current.onReferencesChange([]));
     expect(result.current.values?.references.find(r => r.id === 'ref-2')).toBeUndefined();
 
     await act(async () => {
@@ -419,36 +409,6 @@ describe('useOrgProfileTabData — references batch', () => {
     });
 
     expect(mockDeleteReference).toHaveBeenCalledWith({ variables: { input: { ID: 'ref-2' } } });
-  });
-});
-
-describe('useOrgProfileTabData — pendingReferenceDelete state machine (Rule #9 / FR-025 / FR-092)', () => {
-  it('does NOT remove the row when the user cancels the dialog', () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-
-    const beforeCount = result.current.values?.references.length ?? 0;
-
-    act(() => result.current.onRequestRemoveReference('ref-2'));
-    expect(result.current.pendingReferenceDelete?.id).toBe('ref-2');
-
-    act(() => result.current.onCancelRemoveReference());
-
-    expect(result.current.pendingReferenceDelete).toBeNull();
-    expect(result.current.values?.references.length).toBe(beforeCount);
-  });
-
-  it('uses the URI as the dialog body label when the row name is blank', () => {
-    const { result } = renderHook(() => useOrgProfileTabData('org-1'));
-    act(() => result.current.onAddReference());
-    const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
-    expect(tempId).toBeDefined();
-    act(() => {
-      // biome-ignore lint/style/noNonNullAssertion: asserted defined above
-      result.current.onUpdateReference(tempId!, { uri: 'https://blank-name.example' });
-    });
-    // biome-ignore lint/style/noNonNullAssertion: asserted defined above
-    act(() => result.current.onRequestRemoveReference(tempId!));
-    expect(result.current.pendingReferenceDelete?.name).toBe('https://blank-name.example');
   });
 });
 

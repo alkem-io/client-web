@@ -12,9 +12,9 @@ import {
 
 /**
  * Standalone preview for `InnovationPackProfileView` (T088) — the anonymous-accessible
- * pack public profile. Hero + sidebar (provider / tags / references) + read-only
- * templates manager. Toggle the `canManage` knob to show/hide the "Manage this pack"
- * entry.
+ * pack public profile. Compact header (thumbnail / name / description / meta row) +
+ * full-width read-only templates manager. Toggle the `canManage` knob to show/hide the
+ * "Manage this pack" entry.
  */
 export function InnovationPackProfilePage() {
   const [canManage, setCanManage] = useState(false);

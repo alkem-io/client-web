@@ -513,7 +513,8 @@
       "descriptionLabel": "Описание",
       "descriptionPlaceholder": "По избор описание",
       "addRow": "Добави нова връзка",
-      "removeRow": "Премахни връзката"
+      "removeRow": "Премахни връзката",
+      "attachFile": "Прикачи файл"
     }
   },
   "references": {

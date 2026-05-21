@@ -504,7 +504,8 @@
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Optional description",
       "addRow": "Add another link",
-      "removeRow": "Remove link"
+      "removeRow": "Remove link",
+      "attachFile": "Attach file"
     }
   },
   "references": {
