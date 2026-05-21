@@ -10,24 +10,9 @@ This document is for developers verifying the migrated CRD authentication screen
 - The Alkemio backend running at `localhost:3000` (auth requests fail without it).
 - A working sign-in account on that backend (or use sign-up to create one).
 
-## Enable the CRD design version
+## No setup needed
 
-The CRD auth screens render only when the user's effective `designVersion` is `2`. The fastest way to flip the toggle on the local frontend:
-
-```js
-// In the browser dev console:
-localStorage.setItem('alkemio-design-version', '2');
-location.reload();
-```
-
-To revert and verify nothing regresses for MUI users:
-
-```js
-localStorage.setItem('alkemio-design-version', '1');
-location.reload();
-```
-
-(The user-menu "Design Version" switch achieves the same thing but requires being signed in first.)
+The CRD auth screens render for **every** visitor — just open an auth URL (e.g. `/identity/login`) and you get the CRD screen. There is nothing to enable or toggle: authentication screens are shown before a user is authenticated, so no per-user setting is involved.
 
 ## Run the app
 
@@ -44,7 +29,7 @@ For each screen below, verify:
 2. No MUI styling visible anywhere on the page (open dev tools, search the DOM tree for `MuiBox`, `MuiCard`, `Mui-` class prefixes; should find none on the auth pages).
 3. All visible strings are translated — flip the language switcher to Dutch / Spanish / Bulgarian / German / French and confirm every string changes; nothing falls back to English.
 4. Keyboard-only operation works — Tab through every control, confirm focus is visible at every step, submit with Enter, toggle the password show/hide with Space.
-5. Submitting with valid input succeeds; submitting with invalid input shows the same error the MUI version shows (compare side-by-side with `designVersion=1`).
+5. Submitting with valid input succeeds; submitting with invalid input shows the same error the pre-migration MUI screens showed (compare against a deployed environment that predates this feature, or the git history of the MUI auth pages).
 6. The same APM transaction name appears in network/dev tooling as the MUI screen would produce. The same analytics events fire (check with your analytics-stub of choice).
 
 ### `/identity/login` — Sign in
@@ -111,7 +96,7 @@ For each screen below, verify:
 
 ## Smoke check the MUI path
 
-After verifying the CRD path, flip `designVersion=1` and re-run the same verification checklist on the MUI side. Nothing about MUI auth must have regressed.
+The old MUI auth screens are no longer routed to — there is no "MUI auth path" to smoke-test. After signing in, just confirm the post-login application still loads correctly; that surface is unaffected by this feature and must not have regressed.
 
 ## Tests
 

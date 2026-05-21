@@ -3,7 +3,9 @@
 **Input**: Design documents from `/specs/101-crd-auth-pages/`
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
 
-**Tests**: Test tasks ARE included — per spec clarification `FR-023`, this migration matches the existing CRD-migration test pattern (unit tests on new CRD presentational components, integration tests on the new integration-layer dispatchers / adapters). No end-to-end Kratos round-trip tests.
+**Tests**: Test tasks ARE included — per spec clarification `FR-023`, this migration matches the existing CRD-migration test pattern (unit tests on new CRD presentational components, integration tests on the new integration-layer route components / adapters). No end-to-end Kratos round-trip tests.
+
+**Routing note**: `IdentityRoute.tsx` points each `/identity/*` auth route directly at its CRD route component — the auth routes are not conditional (authentication screens are shown before any user context exists; see spec Clarification 2026-05-21). The old MUI auth page components become orphaned dead code.
 
 **Organization**: Tasks are grouped by user story (US1–US5) so each story is an independently testable, independently shippable increment.
 
@@ -26,12 +28,12 @@
 
 **Purpose**: Establish the i18n namespace and shared provider-customisation data every screen depends on.
 
-- [ ] T001 Create `src/crd/i18n/auth/auth.en.json` with the `crd-auth` namespace file structure and the **shared** English keys only — `fields.*` (email, password, firstName, lastName, showPassword, hidePassword), `continueWith`, `tagline`, `providers.*` (linkedin, microsoft, github, apple, cleverbase, plus a generic fallback label). Per-screen keys are added by their owning user-story task.
-- [ ] T002 Create `src/crd/i18n/auth/auth.{nl,es,bg,de,fr}.json` mirroring the English file's key structure (values translated in Phase 8).
-- [ ] T003 Register the `crd-auth` namespace in the `crdNamespaceImports` registry in `src/core/i18n/config.ts` (all six languages; decide eager vs lazy English load — match `crd-layout` if a first-paint flash is observed).
-- [ ] T004 [P] Add the `crd-auth` namespace + key types to the i18next type declarations in `@types/i18next.d.ts` so `t()` calls are type-checked.
-- [ ] T005 [P] Create `src/main/crdPages/auth/socialProviderCustomizations.ts` — the MUI-free shared map of `SocialProviderCustomisation` (providerKey, iconSrc, i18nLabelKey, sortOrder) for linkedin / microsoft / github / apple / cleverbase, lifted from `KratosSocialButton.tsx`.
-- [ ] T006 Refactor `src/core/auth/authentication/components/Kratos/KratosSocialButton.tsx` to import the customisation map from `src/main/crdPages/auth/socialProviderCustomizations.ts` instead of declaring `socialCustomizations` inline (single source of truth; MUI behaviour unchanged).
+- [X] T001 Create `src/crd/i18n/auth/auth.en.json` with the `crd-auth` namespace file structure and the **shared** English keys only — `fields.*` (email, password, firstName, lastName, showPassword, hidePassword), `continueWith`, `tagline`, `providers.*` (linkedin, microsoft, github, apple, cleverbase, plus a generic fallback label). Per-screen keys are added by their owning user-story task.
+- [X] T002 Create `src/crd/i18n/auth/auth.{nl,es,bg,de,fr}.json` mirroring the English file's key structure (values translated in Phase 8).
+- [X] T003 Register the `crd-auth` namespace in the `crdNamespaceImports` registry in `src/core/i18n/config.ts` (all six languages; decide eager vs lazy English load — match `crd-layout` if a first-paint flash is observed).
+- [X] T004 [P] Add the `crd-auth` namespace + key types to the i18next type declarations in `@types/i18next.d.ts` so `t()` calls are type-checked.
+- [X] T005 [P] Create the MUI-free shared map of `SocialProviderCustomization` (providerKey, iconSrc, sortOrder) for linkedin / microsoft / github / apple / cleverbase, lifted from `KratosSocialButton.tsx`. **Placed in `src/core/auth/authentication/socialProviderCustomizations.ts`** (not `src/main/crdPages/auth/` as the plan stated) so the MUI `KratosSocialButton` can import it without a `core → main` layering inversion.
+- [X] T006 Refactor `src/core/auth/authentication/components/Kratos/KratosSocialButton.tsx` to source provider `sortOrder` from `src/core/auth/authentication/socialProviderCustomizations.ts` (single source of truth for provider ordering; MUI icon rendering unchanged).
 
 **Checkpoint**: i18n namespace registered, provider customisation data shared. No screens yet.
 
@@ -90,18 +92,18 @@
 
 ## Phase 3: User Story 1 - Sign in with email and password (Priority: P1) 🎯 MVP
 
-**Goal**: A `designVersion=2` user can sign in (email/password, social, or passkey) entirely inside the CRD shell, with parity to the MUI flow including `returnUrl` redirect and the account-lockout message.
+**Goal**: Any visitor can sign in (email/password, social, or passkey) inside the CRD shell, with parity to the old MUI flow including `returnUrl` redirect and the account-lockout message.
 
-**Independent Test**: Set `designVersion=2`, sign out, visit `/identity/login`, sign in with valid credentials → redirected to the home / `?returnUrl=` target inside the CRD shell. Invalid credentials → inline error. Visual parity with the sign-in screenshot.
+**Independent Test**: Sign out, visit `/identity/login`, sign in with valid credentials → redirected to the home / `?returnUrl=` target. Invalid credentials → inline error. Visual parity with the sign-in screenshot.
 
 ### Implementation for User Story 1
 
 - [ ] T027 [P] [US1] Create `src/crd/components/auth/SignInCard.tsx` — composes `AuthCardHeader` (title "Sign in", "No account? Sign up" link) + `CrdKratosFlow` (flowType `login`) + "Forgot password?" link; props per `SignInCardProps`; loading skeleton when `isLoading`.
 - [ ] T028 [US1] Create `src/main/crdPages/auth/SignInCrdRoute.tsx` — calls `useKratosFlow(FlowTypeName.Login)`, runs `flowDescriptorAdapter`, resolves `returnUrl` and `signUpHref` / `forgotPasswordHref`, wires `useAuthAnalytics`, binds `onPasskeyTrigger` to `passkeyTrigger.ts` and surfaces passkey errors in the card, ports the account-lockout message special-case (Kratos message id `9000429`) from `LoginPage.tsx`, wraps `SignInCard` in `AuthShellWrapper` and in the same `WithApmTransaction path="/identity/login"` the MUI route uses. (Depends on T008, T009, T010, T019, T020, T027.)
-- [ ] T029 [US1] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — dispatch the `login` route: `crdEnabled ? <SignInCrdRoute /> : <LoginRoute />`, preserving the `/login/*` sub-path matching and any existing wrappers.
+- [ ] T029 [US1] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `login` route (`/login/*`, preserving sub-path matching and existing route wrappers) directly at `<SignInCrdRoute />`. The route is not conditional. `LoginRoute` / `LoginPage` become orphaned dead code.
 - [ ] T030 [P] [US1] Add the English `signIn.*` keys (title, submit, forgotPassword, noAccount, signUp link) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T031 [P] [US1] Unit test `src/crd/components/auth/SignInCard.test.tsx` — renders email + password + submit + forgot-password link; loading skeleton; invokes analytics callbacks.
-- [ ] T032 [US1] Integration test `src/main/crdPages/auth/__tests__/SignInCrdRoute.test.tsx` — with `useCrdEnabled=true` the CRD route mounts; descriptor maps into `SignInCard`; flow-error messages render; the lockout message id `9000429` produces the special-case copy.
+- [ ] T032 [US1] Integration test `src/main/crdPages/auth/__tests__/SignInCrdRoute.test.tsx` — the route component mounts and maps the adapted descriptor into `SignInCard`; flow-error messages render; the lockout message id `9000429` produces the special-case copy.
 
 **Checkpoint**: Sign-in works end-to-end in the CRD shell. This is the MVP.
 
@@ -109,9 +111,9 @@
 
 ## Phase 4: User Story 2 - Create a new account (Priority: P2)
 
-**Goal**: A `designVersion=2` user can register via both `/identity/sign_up` (curated quick path) and `/identity/registration` (full Kratos flow), with the Terms-of-Use gate and the accepted-terms persistence working.
+**Goal**: Any visitor can register via both `/identity/sign_up` (curated quick path) and `/identity/registration` (full Kratos flow), with the Terms-of-Use gate and the accepted-terms persistence working.
 
-**Independent Test**: Set `designVersion=2`, visit `/identity/sign_up`, the "Next" button stays disabled until the checkbox is checked + fields valid; complete it → email-verification screen. Trigger a validation error → the accepted-terms checkbox stays checked. Visual parity with the sign-up screenshot.
+**Independent Test**: Visit `/identity/sign_up`, the "Next" button stays disabled until the checkbox is checked + fields valid; complete it → email-verification screen. Trigger a validation error → the accepted-terms checkbox stays checked. Visual parity with the sign-up screenshot.
 
 ### Implementation for User Story 2
 
@@ -119,10 +121,10 @@
 - [ ] T034 [P] [US2] Create `src/crd/components/auth/RegistrationCard.tsx` — same shell as `SignUpCard` but renders the full Kratos registration flow; supports the `mustAcceptTerms` gate-vs-form switch; props per `RegistrationCardProps`.
 - [ ] T035 [US2] Create `src/main/crdPages/auth/SignUpCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)`, curated-node filtering (CSRF + email + first/last name + OIDC + submit), the accepted-terms sessionStorage-by-flow-id workaround, `returnUrl` via `useSignUpReturnUrl`/`useGuestSessionReturn`, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/sign_up"`. (Depends on T008, T009, T010, T019, T020, T033.)
 - [ ] T036 [US2] Create `src/main/crdPages/auth/RegistrationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)` full flow, the same accepted-terms workaround, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/registration"`. (Depends on T008, T009, T010, T019, T020, T034.)
-- [ ] T037 [US2] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — dispatch the `sign_up` route (keeping the `<NotAuthenticatedRoute>` wrapper) and the `registration/*` route between CRD and MUI versions. (Sequential after T029 — same file.)
+- [ ] T037 [US2] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `sign_up` route (keeping the `<NotAuthenticatedRoute>` wrapper) directly at `<SignUpCrdRoute />` and the `registration/*` route directly at `<RegistrationCrdRoute />`. No dispatch. `SignUp` / `RegistrationRoute` / `RegistrationPage` become orphaned. (Sequential after T029 — same file.)
 - [ ] T038 [P] [US2] Add the English `signUp.*` keys (title, intro, acceptTerms with `<terms>`/`<privacy>` placeholders, haveAccount, signIn link, next) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T039 [P] [US2] Unit test `src/crd/components/auth/SignUpCard.test.tsx` — "Next" disabled until checkbox + fields valid; Terms/Privacy links present; analytics callbacks.
-- [ ] T040 [US2] Integration test `src/main/crdPages/auth/__tests__/SignUpCrdRoute.test.tsx` — the accepted-terms checkbox survives a simulated validation-error re-render (sessionStorage workaround); CRD route mounts when `useCrdEnabled=true`.
+- [ ] T040 [US2] Integration test `src/main/crdPages/auth/__tests__/SignUpCrdRoute.test.tsx` — the accepted-terms checkbox survives a simulated validation-error re-render (sessionStorage workaround); the route component mounts and maps the descriptor into `SignUpCard`.
 
 **Checkpoint**: Both registration entry points work end-to-end in the CRD shell.
 
@@ -130,7 +132,7 @@
 
 ## Phase 5: User Story 3 - Recover a forgotten password (Priority: P3)
 
-**Goal**: A `designVersion=2` user can request password recovery, follow the email link, and set a new password — entirely inside the CRD shell, with the two-stage email→code flow and the 30-second cooldown preserved.
+**Goal**: Any visitor can request password recovery, follow the email link, and set a new password — inside the CRD shell, with the two-stage email→code flow and the 30-second cooldown preserved.
 
 **Independent Test**: From CRD sign-in click "Forgot password?", submit an email → cooldown countdown appears on the button; receive the email, follow the link → CRD set-new-password screen; submit a valid password → signed in. Visual parity with the password-recovery screenshot.
 
@@ -140,7 +142,7 @@
 - [ ] T042 [P] [US3] Create `src/crd/components/auth/PasswordRecoveryCodeCard.tsx` — second-stage code-input screen; props per `PasswordRecoveryCodeCardProps`.
 - [ ] T043 [P] [US3] Create `src/crd/components/auth/SetNewPasswordCard.tsx` — post-recovery password-reset screen using `PasswordField`; props per `SetNewPasswordCardProps`.
 - [ ] T044 [US3] Create `src/main/crdPages/auth/PasswordRecoveryCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Recovery)`, detect email-vs-code stage, port the 30-second sessionStorage cooldown logic from `RecoveryPage.tsx`, render `PasswordRecoveryCard` / `PasswordRecoveryCodeCard` / `SetNewPasswordCard` accordingly, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/recovery"`. (Depends on T008, T010, T019, T020, T041, T042, T043.)
-- [ ] T045 [US3] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — dispatch the `recovery` route between CRD and MUI versions. (Sequential after T037 — same file.)
+- [ ] T045 [US3] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `recovery` route directly at `<PasswordRecoveryCrdRoute />`. No dispatch. `RecoveryRoute` / `RecoveryPage` become orphaned. (Sequential after T037 — same file.)
 - [ ] T046 [P] [US3] Add the English `recovery.*` keys (recovery.title, recovery.intro, recovery.continue, recovery.codeStage.*, recovery.cooldown) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T047 [P] [US3] Unit test `src/crd/components/auth/PasswordRecoveryCard.test.tsx` — button disabled + cooldown label rendered while `isInCooldown`; email field + submit render.
 - [ ] T048 [US3] Integration test `src/main/crdPages/auth/__tests__/PasswordRecoveryCrdRoute.test.tsx` — cooldown surfaces `submitDisabled=true`; email-stage vs code-stage selection driven by the descriptor.
@@ -151,7 +153,7 @@
 
 ## Phase 6: User Story 4 - Verify a new email address (Priority: P3)
 
-**Goal**: A `designVersion=2` user sees CRD-styled email-verification and verification-reminder screens and can complete verification inside the CRD shell.
+**Goal**: Any visitor sees CRD-styled email-verification and verification-reminder screens and can complete verification inside the CRD shell.
 
 **Independent Test**: Complete a fresh CRD sign-up → CRD "verify your email" screen; follow the verification link → verification completes in the CRD shell. Revisit unverified → CRD reminder screen.
 
@@ -161,10 +163,10 @@
 - [ ] T050 [P] [US4] Create `src/crd/components/auth/EmailVerificationRequiredCard.tsx` — the "please verify your email" reminder (logo + title + notice, optional `returnUrl`); props per `EmailVerificationRequiredCardProps`.
 - [ ] T051 [US4] Create `src/main/crdPages/auth/EmailVerificationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Verification)`, resolve `continueHref` from `flow.ui.action` / stored returnUrl, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/verify"`. (Depends on T008, T010, T019, T020, T049.)
 - [ ] T052 [US4] Create `src/main/crdPages/auth/EmailVerificationRequiredCrdRoute.tsx` — reads the stored returnUrl, wraps `EmailVerificationRequiredCard` in `AuthShellWrapper`. (Depends on T020, T050.)
-- [ ] T053 [US4] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — dispatch the `verify/*` route (verification + `/verify/reminder`) between CRD and MUI versions. (Sequential after T045 — same file.)
+- [ ] T053 [US4] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `verify/*` route (verification + `/verify/reminder`) directly at the CRD verification route components. No dispatch. `VerifyRoute` / `VerificationPage` / `EmailVerificationRequiredPage` become orphaned. (Sequential after T045 — same file.)
 - [ ] T054 [P] [US4] Add the English `verification.*` and `verificationReminder.*` keys to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T055 [P] [US4] Unit test `src/crd/components/auth/EmailVerificationRequiredCard.test.tsx` — renders title + notice; shows returnUrl when present, omits it when absent.
-- [ ] T056 [US4] Integration test `src/main/crdPages/auth/__tests__/EmailVerificationCrdRoute.test.tsx` — CRD route mounts when `useCrdEnabled=true`; `continueHref` resolved from the flow.
+- [ ] T056 [US4] Integration test `src/main/crdPages/auth/__tests__/EmailVerificationCrdRoute.test.tsx` — the route component mounts; `continueHref` resolved from the flow.
 
 **Checkpoint**: Verification + reminder work in the CRD shell.
 
@@ -172,7 +174,7 @@
 
 ## Phase 7: User Story 5 - Encounter an auth-flow error (Priority: P4)
 
-**Goal**: A `designVersion=2` user reaching `/identity/error` sees a CRD-styled error card with the same message and recovery action as the MUI version.
+**Goal**: Any visitor reaching `/identity/error` sees a CRD-styled error card with the same message and recovery action as the old MUI version.
 
 **Independent Test**: Force an auth error (stale recovery link, OIDC cancel) → arrive at `/identity/error?id=...` → CRD error card renders inside the auth shell with a "back to sign in" action.
 
@@ -180,7 +182,7 @@
 
 - [ ] T057 [P] [US5] Create `src/crd/components/auth/AuthErrorCard.tsx` — error card showing `errorCode` / `errorMessage` / `errorReason` + a "back to sign in" link; loading skeleton; props per `AuthErrorCardProps`.
 - [ ] T058 [US5] Create `src/main/crdPages/auth/AuthErrorCrdRoute.tsx` — reads `?id=` query param, fetches the Kratos error object the same way `ErrorRoute.tsx` does, wraps `AuthErrorCard` in `AuthShellWrapper`, `WithApmTransaction path="/identity/error"`. (Depends on T020, T057.)
-- [ ] T059 [US5] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — dispatch the `error` route between CRD and MUI versions. (Sequential after T053 — same file.)
+- [ ] T059 [US5] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `error` route directly at `<AuthErrorCrdRoute />`. No dispatch. The MUI `ErrorRoute` becomes orphaned. (Sequential after T053 — same file.)
 - [ ] T060 [P] [US5] Add the English `error.*` keys (error.title, error.backToSignIn) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T061 [P] [US5] Unit test `src/crd/components/auth/AuthErrorCard.test.tsx` — renders error fields + back-to-sign-in link; loading skeleton.
 
@@ -202,7 +204,7 @@
 - [ ] T069 Accessibility audit across all CRD auth screens — keyboard-only walkthrough, visible focus rings, `aria-describedby` on every field error, accessible names on icon-only social/passkey buttons, `aria-busy` on submitting buttons, contrast against the constellation background; fix WCAG 2.1 AA gaps.
 - [ ] T070 Verify CRD-layer hard restrictions across `src/crd/components/auth/`, `src/crd/forms/`, `src/crd/layouts/AuthShell.tsx` — zero `@mui/*` / `@emotion/*` / `@apollo/*` / `@/core/auth/*` / `react-router-dom` / `formik` imports, zero GraphQL/Kratos types in props.
 - [ ] T071 Run `pnpm lint` and `pnpm vitest run`; fix any type, Biome, ESLint, or test failures.
-- [ ] T072 Manual verification per `quickstart.md` — walk every CRD auth screen with `designVersion=2`, then flip to `designVersion=1` and smoke-test the MUI path for no regression.
+- [ ] T072 Manual verification per `quickstart.md` — walk every CRD auth screen (every visitor gets them); then sign in and confirm the post-login application still loads correctly. This feature does not touch the authenticated app shell, so this is just a regression smoke check.
 
 ---
 
@@ -221,7 +223,7 @@
 
 ### Critical-path note
 
-`src/core/auth/authentication/routing/IdentityRoute.tsx` is edited by T029, T037, T045, T053, T059 — these five tasks touch the **same file** and must run **sequentially in that order**, even though their respective user stories are otherwise independent. Each adds one `crdEnabled ? <Crd…/> : <Mui…/>` dispatch line.
+`src/core/auth/authentication/routing/IdentityRoute.tsx` is edited by T029, T037, T045, T053, T059 — these five tasks touch the **same file** and must run **sequentially in that order**, even though their respective user stories are otherwise independent. Each points one or more `/identity/*` auth routes directly at their CRD route component (the auth routes are not conditional).
 
 ### Within-story dependencies
 
@@ -255,7 +257,7 @@ all run in parallel — distinct files.
 
 ### MVP (minimum shippable)
 
-Setup + Foundational + **US1 only** (T001–T032). At this point a `designVersion=2` user can sign in (password, social, or passkey) entirely in the CRD shell. Demo-able and independently valuable.
+Setup + Foundational + **US1 only** (T001–T032). At this point any visitor can sign in (password, social, or passkey) through the CRD shell. Demo-able and independently valuable.
 
 ### Incremental delivery
 

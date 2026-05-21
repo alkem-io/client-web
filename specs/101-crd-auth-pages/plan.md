@@ -5,9 +5,9 @@
 
 ## Summary
 
-Build CRD-styled equivalents of every still-MUI-only authentication screen (sign-in, both registration entry points, password recovery, set-new-password, email verification, the verification-reminder, and the auth-error fallback) so that users on `designVersion=2` no longer drop out of the new shell when they sign in, register, or recover access. Visual treatment matches the supplied screenshots; backend behaviour is unchanged.
+Build CRD-styled equivalents of every MUI-only authentication screen (sign-in, both registration entry points, password recovery, set-new-password, email verification, the verification-reminder, and the auth-error fallback) and make the CRD auth flow the application's single authentication experience for every visitor. Authentication screens are shown before a user is authenticated, so there is no per-user context — they simply have one design. Visual treatment matches the supplied screenshots; backend behaviour is unchanged.
 
-**Technical approach**: Reuse the existing Kratos data layer (`useKratosFlow`, `useReturnUrl`, all sibling auth hooks). Introduce a thin **flow-descriptor adapter** in the integration layer that turns Kratos `UiNode[]` arrays into plain TypeScript prop types so the new CRD presentational components stay clean of Kratos imports. Reproduce the MUI `KratosUI` node-grouping logic inside a new `CrdKratosFlow` component that consumes the adapted descriptor. Extend `IdentityRoute.tsx` to dispatch each `/identity/*` route between MUI and CRD with `useCrdEnabled()` — same pattern already used for `/identity/required`. Wrap every CRD auth screen in a brand-new shared `AuthShell` layout (full-bleed constellation background, right-aligned card, footer); the already-shipped `CrdAuthRequiredPage` is **not** refactored onto this shell (per spec clarification).
+**Technical approach**: Reuse the existing Kratos data layer (`useKratosFlow`, `useReturnUrl`, all sibling auth hooks). Introduce a thin **flow-descriptor adapter** in the integration layer that turns Kratos `UiNode[]` arrays into plain TypeScript prop types so the new CRD presentational components stay clean of Kratos imports. Reproduce the MUI `KratosUI` node-grouping logic inside a new `CrdKratosFlow` component that consumes the adapted descriptor. Modify `IdentityRoute.tsx` to render the CRD route components directly for every `/identity/*` auth route — the auth routes are not conditional; the old MUI auth page components become orphaned dead code. Wrap every CRD auth screen in a brand-new shared `AuthShell` layout (full-bleed constellation background, right-aligned card, footer); the already-shipped `CrdAuthRequiredPage` is **not** refactored onto this shell (per spec clarification).
 
 ## Technical Context
 
@@ -17,9 +17,9 @@ Build CRD-styled equivalents of every still-MUI-only authentication screen (sign
 - `react-i18next` for the new `crd-auth` namespace
 - `@ory/kratos-client` (already loaded by the existing MUI auth layer — stays in `src/core/auth/`)
 - `react-router-dom` (integration layer only)
-- Apollo Client (only for the `useDesignVersionSync` reconciliation already wired upstream — no new GraphQL operations introduced by this feature)
-**Storage**: None new. The existing localStorage key `alkemio-design-version` and Kratos's session/cookie storage are reused unchanged.
-**Testing**: Vitest + `@testing-library/react` (jsdom). Per spec clarification, match the existing CRD-migration test pattern (unit tests on new CRD presentational components, integration tests on the new integration-layer dispatchers / data adapters where peer migrated pages cover the equivalent surface). No new end-to-end Kratos tests.
+- Apollo Client — present in the app but **not used** by this feature (the auth flow has no GraphQL)
+**Storage**: None new. The auth flow uses Kratos's own session/cookie storage, unchanged. This feature does not read or write any application-level preference or flag.
+**Testing**: Vitest + `@testing-library/react` (jsdom). Per spec clarification, match the existing CRD-migration test pattern (unit tests on new CRD presentational components, integration tests on the new integration-layer route components / data adapters where peer migrated pages cover the equivalent surface). No new end-to-end Kratos tests.
 **Target Platform**: Modern evergreen browsers (>90% caniuse coverage per project rule).
 **Project Type**: Web SPA (single project; existing repository layout).
 **Performance Goals**: No regression on the auth surface vs. MUI. The CRD bundle for these pages is lazy-loaded the same way every other migrated CRD page is.
@@ -29,7 +29,7 @@ Build CRD-styled equivalents of every still-MUI-only authentication screen (sign
 - **URL parity**: every `/identity/*` URL path must remain byte-identical to today (Kratos-issued emails contain these URLs).
 - **Behaviour parity**: every field, error, redirect, and supported method must match the MUI version exactly; the backend is unchanged.
 - **Observability parity** (FR-021, FR-022): same APM transaction wrapping and same analytics events as the MUI screens.
-**Scale/Scope**: 8 user-facing auth screens to migrate × 6 supported languages (en, nl, es, bg, de, fr). Estimated ~8–12 new CRD presentational components + 1 new shared layout + 1 new flow-descriptor adapter + per-route dispatchers under `IdentityRoute.tsx`.
+**Scale/Scope**: 8 user-facing auth screens to migrate × 6 supported languages (en, nl, es, bg, de, fr). Estimated ~8–12 new CRD presentational components + 1 new shared layout + 1 new flow-descriptor adapter + direct CRD route wiring in `IdentityRoute.tsx` (the auth routes are not conditional).
 
 ## Constitution Check
 
@@ -39,7 +39,7 @@ Build CRD-styled equivalents of every still-MUI-only authentication screen (sign
 |-----------|-----------|-------|
 | **I. Domain-Driven Frontend Boundaries** | ✅ Pass | All Kratos / domain logic stays in `src/core/auth/`; the integration layer in `src/main/crdPages/auth/` is the only place where Kratos types and CRD prop types meet (via the flow-descriptor adapter). CRD presentational components in `src/crd/components/auth/` know nothing about Kratos. |
 | **II. React 19 Concurrent UX Discipline** | ✅ Pass | Form submission is a native `<form action method>` POST that Kratos handles via full-page navigation — it is inherently non-blocking and needs no `useTransition`/Actions wrapper (introducing one would be ceremony with no behavioural benefit). The only async data-fetch this feature renders is the initial Kratos flow load, handled by the reused `useKratosFlow` hook and presented with an explicit skeleton loading state so paint is never blocked. Rendering is pure; no deprecated lifecycle patterns introduced. |
-| **III. GraphQL Contract Fidelity** | ✅ N/A | This feature does not introduce new GraphQL operations. The existing `useDesignVersionSync` GraphQL hook is consumed unchanged from upstream — no codegen needed. |
+| **III. GraphQL Contract Fidelity** | ✅ N/A | This feature introduces and consumes no GraphQL operations — the auth flow is entirely Kratos-driven. No codegen needed. |
 | **IV. State & Side-Effect Isolation** | ✅ Pass | Persistent state stays in existing Apollo caches and Kratos cookies. CRD components hold visual-only `useState` (show/hide password, transient cooldown UI). The 30-second recovery cooldown's `sessionStorage` write stays in the integration layer; the CRD component receives a `submitDisabled` prop + `submitLabelOverride` callback. |
 | **V. Experience Quality & Safeguards** | ✅ Pass | WCAG 2.1 AA enforced per `FR-019`, `FR-020`. APM + analytics parity per `FR-021`, `FR-022`. Tests follow the established CRD-migration pattern per `FR-023`. |
 | **Architecture standards** | ✅ Pass | Files placed in canonical locations: `src/crd/` (design system), `src/main/crdPages/auth/` (integration), `src/core/auth/` untouched on the MUI side. Existing barrel-export ban respected — every new file is imported by explicit path. |
@@ -118,10 +118,10 @@ src/main/crdPages/auth/                       # NEW — integration / glue layer
 ├── socialProviderCustomizations.ts           # shared icon/label map (reused from existing MUI map)
 ├── passkeyTrigger.ts                         # invokes the browser/Kratos passkey routine for a resolved trigger
 ├── useAuthAnalytics.ts                       # emits the same analytics events the MUI pages emit today
-└── __tests__/                                # integration tests for adapters + route dispatchers
+└── __tests__/                                # integration tests for adapters + route components
 
 src/core/auth/authentication/routing/
-└── IdentityRoute.tsx                         # MODIFIED — extend the per-route CRD dispatcher (already used for /required) to every /identity/* route
+└── IdentityRoute.tsx                         # MODIFIED — render the CRD auth route components directly for every /identity/* auth route (the auth routes are not conditional)
 
 src/core/i18n/
 └── config.ts                                 # MODIFIED — register `crd-auth` in crdNamespaceImports
@@ -147,7 +147,7 @@ This is plan-level guidance — `/speckit.tasks` will produce the formal task li
 
 2. **CrdKratosFlow** — the centrepiece. Reproduce the MUI `KratosUI` grouping logic against the descriptor (default → password → reset link → submit → divider → passkey/OIDC, with the login-specific icon-row vs. registration full-width-row split).
 
-3. **Sign-in screen** (P1) — first usable slice. Wire the route in `IdentityRoute.tsx`, prove the end-to-end pattern works against a real Kratos backend, smoke-test in browser.
+3. **Sign-in screen** (P1) — first usable slice. Point the `login` route in `IdentityRoute.tsx` directly at the CRD route component, prove the end-to-end pattern works against a real Kratos backend, smoke-test in browser.
 
 4. **Sign-up screens** (P2) — both `/identity/sign_up` (curated minimal) and `/identity/registration` (full Kratos UI). Reuses `CrdKratosFlow` and the form wrappers.
 
@@ -161,14 +161,14 @@ This is plan-level guidance — `/speckit.tasks` will produce the formal task li
 
 9. **Analytics + APM wiring** — verify parity with MUI by side-by-side instrumentation check.
 
-10. **Tests** — unit tests for each new CRD component (loading, error, submit states), integration tests for the per-route dispatcher behaviour + adapter correctness.
+10. **Tests** — unit tests for each new CRD component (loading, error, submit states), integration tests for the route components mounting + adapter correctness.
 
 ## Open Questions Resolved During Planning (see research.md for full rationale)
 
 - **Loading state UX during Kratos flow fetch** → minimal centred skeleton card; matches the perceived weight of the MUI `Loading` component used by `LoginRoute`.
 - **`PasswordField` placement** → `src/crd/forms/PasswordField.tsx` (form-field wrapper layer), not `primitives/`. It is a labelled, error-aware composition of the `input` primitive plus a `lucide-react` eye icon, which makes it a forms-layer concern.
 - **`CrdKratosFlow` placement** → `src/crd/components/auth/CrdKratosFlow.tsx`. It is an auth-feature composite, not a generic primitive, and lives alongside the screens that use it.
-- **Per-route dispatcher pattern** → extend `IdentityRoute.tsx` in place. The file already does `crdEnabled ? <CrdX /> : <MuiX />` for `/identity/required`; the same one-line dispatch repeats per route. Avoids a parallel `CrdIdentityRoute` and keeps both versions visible in one place.
+- **Auth routing** → `IdentityRoute.tsx` renders the CRD auth route components directly. The auth routes are not conditional — authentication screens are shown before any user context exists, so there is nothing to vary them by. The old MUI auth page components become orphaned (kept as dead code, deleted in a follow-up cleanup). Full rationale in research.md R-7.
 - **Flow-descriptor shape** → see `data-model.md`. Loose-typed enough to round-trip every node type the live Kratos backend can return today; tight-typed enough that the CRD layer never has to import `@ory/kratos-client`.
 
 ## Risks & Mitigations
@@ -180,7 +180,7 @@ This is plan-level guidance — `/speckit.tasks` will produce the formal task li
 | The 30-second recovery cooldown sessionStorage logic regresses | Low | Medium | Cooldown logic stays untouched in the integration layer (lift from `RecoveryPage.tsx`); the CRD card receives `submitDisabled` + `submitLabelOverride` as props. |
 | Accepted-terms checkbox session-state workaround (Kratos resets on validation error) breaks for the curated `SignUp.tsx` path | Medium | Medium | Mirror the existing sessionStorage-by-flow-id approach in the new integration layer; covered by an integration test that simulates a validation error and confirms the checkbox stays checked. |
 | Analytics events emit twice (once from a shared upstream + once from the new screens) when the user is on CRD | Medium | Low | Audit each MUI page's emit site during research; document exactly which events fire from page-level vs. KratosUI vs. wrapper, and replicate at exactly one site in the CRD path. |
-| Kratos email/verification links land on an MUI shell if the user's `designVersion` preference disagrees with localStorage | Medium | Low | The existing `useDesignVersionSync` already reconciles server-vs-localStorage on auth; covered. Anonymous-link clicks always read localStorage (default = MUI), which is the documented behaviour. |
+| Auth screens (CRD) and the post-login app (possibly still MUI) use different designs — brief visual seam | High (by design) | Low | Accepted and expected. The auth screens have one design for every visitor; the post-login app design is a separate, pre-existing concern. The seam disappears once the rest of the app is migrated. |
 
 ## Phase 0: Research
 

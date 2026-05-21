@@ -356,4 +356,4 @@ The CRD layer never owns these transitions; it just re-renders.
 - Persistent localStorage / sessionStorage keys (those stay in the integration layer's hooks).
 - `@ory/kratos-client` types (they exist only inside the adapter file, behind the boundary).
 - Backend / server-side schema (out of scope per `FR-024`).
-- The shape of the `designVersion` preference (consumed via the existing `useCrdEnabled()` hook; this feature does not change it).
+- Any application-level preference, feature flag, or design-toggle — the auth screens are shown before any user context exists, so nothing varies them; they render the CRD design for every visitor.

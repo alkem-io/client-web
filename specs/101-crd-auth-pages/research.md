@@ -144,39 +144,34 @@ type AuthShellProps = {
 
 ---
 
-## R-7: Per-route CRD dispatch in `IdentityRoute.tsx`
+## R-7: Auth routing is un-gated — `IdentityRoute.tsx` renders CRD directly
 
-**Decision**: Extend `IdentityRoute.tsx` in place. The file already does:
+**The problem with the original gated design.** The first draft of this spec assumed the auth screens would be selected MUI-vs-CRD by the `designVersion` preference via `useCrdEnabled()`, mirroring the pattern used for `/identity/required` and every authenticated page. **This is wrong.** `designVersion` is a *per-user, server-side* preference (`UserSettings.designVersion`), and the `localStorage('alkemio-design-version')` mirror is only written *after* a user has authenticated in that browser. Authentication screens are shown to **un**authenticated users — so for a brand-new visitor, a fresh browser, or an incognito session there is no preference to read. A gated design would default every such visitor to MUI and they would *never* see the CRD auth screens. The gate is meaningless before login.
 
-```tsx
-<Route path={IdentityRoutes.Required} element={
-  crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />
-} />
-```
-
-Repeat exactly this pattern for every route this spec covers:
+**Decision**: The auth surface is **not gated**. `IdentityRoute.tsx` renders the CRD auth route components directly for every `/identity/*` auth route — no `crdEnabled` ternary, no `useCrdEnabled()` call on the auth routes:
 
 ```tsx
-<Route path={IdentityRoutes.Login + '/*'} element={
-  crdEnabled ? <SignInCrdRoute /> : <LoginRoute />
-} />
-<Route path={IdentityRoutes.Registration + '/*'} element={
-  crdEnabled ? <RegistrationCrdRoute /> : <RegistrationRoute />
-} />
+<Route path={IdentityRoutes.Login + '/*'} element={<SignInCrdRoute />} />
+<Route path={IdentityRoutes.Registration + '/*'} element={<RegistrationCrdRoute />} />
 <Route path={IdentityRoutes.SignUp} element={
-  crdEnabled
-    ? <NotAuthenticatedRoute><SignUpCrdRoute /></NotAuthenticatedRoute>
-    : <NotAuthenticatedRoute><SignUp /></NotAuthenticatedRoute>
+  <NotAuthenticatedRoute><SignUpCrdRoute /></NotAuthenticatedRoute>
 } />
 { /* …and so on for Verify, Recovery, Error */ }
 ```
 
-**Rationale**: Same pattern, one file, both versions visible side by side. The existing convention already established by `/identity/required` is the convention this spec follows.
+The MUI auth page components (`LoginRoute`/`LoginPage`, `RegistrationRoute`/`RegistrationPage`, `SignUp`, `RecoveryRoute`/`RecoveryPage`, `VerifyRoute`/`VerificationPage`, `EmailVerificationRequiredPage`, the MUI auth-error route) are no longer referenced. They remain in the repo as orphaned dead code and are deleted in a dedicated follow-up cleanup PR once the CRD auth flow is validated in production. The shared Kratos MUI component layer (`KratosUI`, `KratosForm`, etc.) stays — the still-MUI `/identity/settings` flow depends on it.
+
+**Consequence (accepted)**: a user whose authenticated `designVersion` is `1` signs in through a CRD auth screen and then lands in the MUI application shell. This CRD-auth → MUI-app seam is brief, unavoidable (the preference cannot be known pre-login), and disappears entirely once the MUI app shell is itself retired.
+
+**`/identity/required`** keeps its existing `useCrdEnabled()` gate and shipped `CrdAuthRequiredPage` — out of scope per the earlier clarification, untouched by this spec. (It is technically subject to the same "preference unknown when logged out" critique, but it is reachable mid-session by users who *do* have the preference, and changing it is explicitly out of scope.)
+
+**Rationale**: Authentication is pre-authentication by definition; a per-user preference cannot gate it. The whole project is migrating to CRD, so the single un-gated auth design is simply CRD. This is also *simpler* than the gated design — no dual-dispatch, no parallel route trees.
 
 **Alternatives considered**:
 
-- (a) Add a `CrdIdentityRoute()` mounted in `TopLevelRoutes.tsx` next to `IdentityRoute()`. Rejected — splits the auth routing across two files and risks the two trees drifting apart.
-- (b) Mount the CRD routes under a different URL prefix (e.g. `/crd-identity/login`). Rejected — violates `FR-002` (URL paths must stay identical) and breaks Kratos-issued email links.
+- (a) Gate on `designVersion` via `useCrdEnabled()` (the original plan). Rejected — defeats the feature for every new/anonymous visitor, as shown above.
+- (b) Render CRD by default but let an existing `localStorage` `designVersion=1` value fall back to MUI auth. Rejected — adds conditional complexity for a marginal case (returning MUI users on a warm browser), while new/incognito users always get CRD anyway; not worth the branch. (Confirmed with the product owner.)
+- (c) Mount the CRD routes under a different URL prefix. Rejected — violates `FR-002` (URL paths must stay identical) and breaks Kratos-issued email links.
 
 ---
 
@@ -268,9 +263,9 @@ auth.tagline                       "Safe Spaces for Collaboration"
   - `CrdKratosFlow` renders the correct node groups for each `flowType`.
   - `AuthShell` renders the background, the card slot, the footer.
   - `SocialProviderButton` is reachable + has accessible name.
-- **Integration tests** for the integration-layer dispatcher and adapter:
+- **Integration tests** for the integration-layer route components and adapter:
   - `flowDescriptorAdapter` correctly buckets a representative LoginFlow / RegistrationFlow / RecoveryFlow.
-  - `IdentityRoute` extension: with `useCrdEnabled = true`, the CRD route component mounts; with `false`, the MUI one mounts.
+  - Each CRD route component mounts and maps the adapted descriptor into its card (the auth routes are un-gated — there is no MUI-vs-CRD branch to test).
   - The acceptedTerms sessionStorage workaround survives a simulated validation error in the registration flow.
   - The recovery cooldown surfaces `submitDisabled=true` and renders the cooldown label while active.
 
