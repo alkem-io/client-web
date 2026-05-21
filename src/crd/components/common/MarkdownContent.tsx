@@ -114,15 +114,22 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
   );
 }
 
-// Iframes arrive in two shapes:
-//   1. Pixel-sized (e.g. pasted Figma `width="800" height="450"`) — render passthrough so the
-//      iframe keeps its intrinsic box; only enforce `max-width: 100%` for narrow viewports.
-//   2. Percent-sized or missing dimensions (the editor stores its embeds as `width="100%" height="100%"`) —
-//      wrap in a 16:9 responsive container so the iframe doesn't collapse to zero height.
-// The previous blanket `aspect-ratio: 16/9` on every iframe broke case #1 for Figma embeds, which
-// reserved phantom layout space below the iframe equal to its own height.
-function IframeRenderer({ width, height, className, ...props }: ComponentPropsWithoutRef<'iframe'>) {
-  if (isPixelDimension(width) && isPixelDimension(height)) {
+// Iframe rendering branches on the authored width/height attributes:
+//   1. Both pixel (e.g. pasted Figma `width="800" height="450"`) — passthrough so the iframe
+//      keeps its intrinsic box, capped to container width.
+//   2. Pixel height with non-pixel width (e.g. `width="100%" height="400"`) — wrap in a full-width
+//      container with the authored pixel height; iframe fills it.
+//   3. Anything else (e.g. the editor's `width="100%" height="100%"`) — wrap in a 16:9 responsive
+//      container so the iframe doesn't collapse to zero height.
+// `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+// reaches the DOM.
+type IframeRendererProps = ComponentPropsWithoutRef<'iframe'> & { node?: unknown };
+
+function IframeRenderer({ node: _node, width, height, className, ...props }: IframeRendererProps) {
+  const widthPx = toPixelValue(width);
+  const heightPx = toPixelValue(height);
+
+  if (widthPx && heightPx) {
     return (
       <iframe
         {...props}
@@ -133,15 +140,24 @@ function IframeRenderer({ width, height, className, ...props }: ComponentPropsWi
     );
   }
 
+  if (heightPx) {
+    return (
+      <div className="relative w-full my-3" style={{ height: heightPx }}>
+        <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full my-3" style={{ paddingBottom: '56.25%' }}>
+    <div className="relative w-full my-3 aspect-video">
       <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
     </div>
   );
 }
 
-function isPixelDimension(value: string | number | undefined): boolean {
-  if (value === undefined || value === null) return false;
-  if (typeof value === 'number') return Number.isFinite(value);
-  return /^\d+(\.\d+)?(px)?$/i.test(String(value).trim());
+function toPixelValue(value: string | number | undefined): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === 'number') return Number.isFinite(value) ? `${value}px` : undefined;
+  const match = /^(\d+(?:\.\d+)?)(px)?$/i.exec(String(value).trim());
+  return match ? `${match[1]}px` : undefined;
 }
