@@ -11,6 +11,14 @@ const Toaster = (props: ToasterProps) => (
         '--normal-border': 'var(--border)',
       } as React.CSSProperties
     }
+    toastOptions={{
+      classNames: {
+        error: '!border-l-4 !border-l-destructive',
+        success: '!border-l-4 !border-l-success',
+        warning: '!border-l-4 !border-l-warning',
+        info: '!border-l-4 !border-l-info',
+      },
+    }}
     {...props}
   />
 );
