@@ -139,6 +139,15 @@
       "reject": "Afwijzen",
       "delete": "Verwijderen",
       "empty": "Geen lopende lidmaatschappen.",
+      "noMatch": "Geen lopende lidmaatschappen komen overeen met de geselecteerde filters.",
+      "filterLabel": "Filteren op status",
+      "sortBy": "Sorteren op {{column}}",
+      "pagination": {
+        "showing": "{{from}} tot {{to}} van {{total}} weergegeven",
+        "previous": "Vorige pagina",
+        "page": "Pagina {{page}} van {{total}}",
+        "next": "Volgende pagina"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",

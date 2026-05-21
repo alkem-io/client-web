@@ -139,6 +139,15 @@
       "reject": "Ablehnen",
       "delete": "Löschen",
       "empty": "Keine ausstehenden Mitgliedschaften.",
+      "noMatch": "Keine ausstehenden Mitgliedschaften entsprechen den gewählten Filtern.",
+      "filterLabel": "Nach Status filtern",
+      "sortBy": "Sortieren nach {{column}}",
+      "pagination": {
+        "showing": "Zeige {{from}} bis {{to}} von {{total}}",
+        "previous": "Vorherige Seite",
+        "page": "Seite {{page}} von {{total}}",
+        "next": "Nächste Seite"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Antrag erhalten",

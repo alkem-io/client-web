@@ -139,6 +139,15 @@
       "reject": "Rechazar",
       "delete": "Eliminar",
       "empty": "No hay membresías pendientes.",
+      "noMatch": "Ninguna membresía pendiente coincide con los filtros seleccionados.",
+      "filterLabel": "Filtrar por estado",
+      "sortBy": "Ordenar por {{column}}",
+      "pagination": {
+        "showing": "Mostrando {{from}} a {{to}} de {{total}}",
+        "previous": "Página anterior",
+        "page": "Página {{page}} de {{total}}",
+        "next": "Página siguiente"
+      },
       "status": {
         "column": "Estado",
         "applicationReceived": "Solicitud recibida",
