@@ -20,6 +20,19 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
+import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import type { FramingChipId } from '@/crd/forms/callout/FramingChipStrip';
+import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
+import type { ResponseTypeChipId } from '@/crd/forms/callout/ResponseTypeChipStrip';
+import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
+import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
+import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
+import type { ReferenceRow } from '@/crd/forms/callout/types';
+import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
+import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
+import { Button } from '@/crd/primitives/button';
 import {
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
@@ -77,6 +90,49 @@ export function SpacePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [whiteboardOpen, setWhiteboardOpen] = useState(false);
 
+  // Add Post modal state
+  const [addPostOpen, setAddPostOpen] = useState(false);
+  const [postTitle, setPostTitle] = useState('');
+  const [postDescription, setPostDescription] = useState('');
+  const [framingChip, setFramingChip] = useState<FramingChipId | 'none'>('none');
+  const [responseType, setResponseType] = useState<ResponseTypeChipId | 'none'>('none');
+  const [memoContent, setMemoContent] = useState('');
+  const [allowComments, setAllowComments] = useState(true);
+  const [references, setReferences] = useState<ReferenceRow[]>([{ title: '', url: '', description: '' }]);
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  const MOCK_ABOUT_DATA: SpaceAboutData = {
+    name: 'Green Energy Space',
+    tagline: 'Collaborating on the future of sustainable energy solutions and urban transformation.',
+    description:
+      'This space brings together municipalities, researchers, and community organizations to develop and implement renewable energy strategies. We focus on practical, scalable solutions that can be adopted by cities of all sizes.\n\n**Our mission:** Accelerate the transition to 100% renewable energy in urban areas by 2035 through collaborative innovation and shared knowledge.',
+    location: 'Netherlands',
+    metrics: [
+      { name: 'Members', value: '42' },
+    ],
+    why: 'Cities account for 70% of global energy consumption. By working together across municipalities, we can share learnings, reduce costs, and accelerate the transition to clean energy. This space exists to break silos between local governments and foster peer-to-peer knowledge exchange.',
+    who: 'Municipal sustainability officers, urban planners, energy researchers, community organizers, and technology providers working on the ground in European cities. We welcome anyone committed to practical climate action at the local level.',
+    provider: {
+      name: 'Alkemio Foundation',
+      avatarUrl: undefined,
+      type: 'organization',
+      location: 'The Hague, Netherlands',
+      href: '/organization/alkemio',
+    },
+    leadUsers: [
+      { name: 'Sarah Chen', avatarUrl: undefined, type: 'person', location: 'Amsterdam', href: '/user/sarah-chen' },
+      { name: 'David Kim', avatarUrl: undefined, type: 'person', location: 'Rotterdam', href: '/user/david-kim' },
+    ],
+    leadOrganizations: [
+      { name: 'GreenTech Initiative', avatarUrl: undefined, type: 'organization', location: 'Utrecht', href: '/organization/greentech' },
+    ],
+    references: [
+      { name: 'EU Green Deal Overview', uri: 'https://ec.europa.eu/info/strategy/priorities-2019-2024/european-green-deal_en', description: 'Official EU policy framework' },
+      { name: 'Municipal Transition Playbook', uri: 'https://example.com/playbook', description: 'Step-by-step guide for city-level energy transitions' },
+      { name: 'Community Solar Toolkit', uri: 'https://example.com/solar-toolkit' },
+    ],
+  };
+
   const sidebarVariant = (() => {
     switch (activeTab) {
       case 1:
@@ -95,7 +151,7 @@ export function SpacePage() {
       variant={sidebarVariant}
       description={MOCK_SIDEBAR.description}
       // Home
-      onAboutClick={() => {}}
+      onAboutClick={() => setAboutOpen(true)}
       subspaces={MOCK_SIDEBAR.subspaces}
       subspacesHref="/space/green-energy?tab=3"
       events={[]}
@@ -160,7 +216,7 @@ export function SpacePage() {
             <SpaceFeed
               title="Activity"
               canCreate={true}
-              onCreateClick={() => {}}
+              onCreateClick={() => setAddPostOpen(true)}
               hasMore={true}
               onShowMore={() => {}}
             >
@@ -318,7 +374,7 @@ export function SpacePage() {
         )}
 
         {activeTab === 3 && (
-          <SpaceFeed title="Knowledge Base" posts={MOCK_POSTS} canCreate={true} onCreateClick={() => {}} />
+          <SpaceFeed title="Knowledge Base" posts={MOCK_POSTS} canCreate={true} onCreateClick={() => setAddPostOpen(true)} />
         )}
       </SpaceShell>
 
@@ -354,6 +410,98 @@ export function SpacePage() {
           </div>
         </div>
       </WhiteboardEditorShell>
+
+      {/* About This Space Dialog */}
+      <SpaceAboutDialog
+        open={aboutOpen}
+        onOpenChange={setAboutOpen}
+        data={MOCK_ABOUT_DATA}
+        whyTitle="Why are we here?"
+        whoTitle="Who is involved?"
+        guidelinesSlot={
+          <div className="rounded-lg border border-border p-4 bg-muted/30">
+            <h4 className="text-body-emphasis font-medium mb-2">Community Guidelines</h4>
+            <p className="text-caption text-muted-foreground">
+              Be respectful, constructive, and focused on practical solutions. All contributions should be evidence-based
+              and actionable. We encourage open dialogue and diverse perspectives.
+            </p>
+          </div>
+        }
+        contactHostSlot={
+          <Button variant="outline" size="sm" onClick={() => console.log('Contact host')}>
+            Contact Host
+          </Button>
+        }
+      />
+
+      {/* Add Post Modal */}
+      <AddPostModal
+        open={addPostOpen}
+        onOpenChange={setAddPostOpen}
+        mode="create"
+        title={{ value: postTitle, onChange: setPostTitle }}
+        canSubmit={postTitle.trim().length > 0}
+        onSubmit={() => {
+          console.log('Publish post:', { postTitle, postDescription, framingChip, responseType, memoContent });
+          setAddPostOpen(false);
+          setPostTitle('');
+          setPostDescription('');
+          setFramingChip('none');
+          setResponseType('none');
+          setMemoContent('');
+        }}
+        onSaveDraft={() => console.log('Save draft')}
+        onFindTemplate={() => console.log('Find template')}
+        descriptionSlot={
+          <MarkdownEditor
+            value={postDescription}
+            onChange={setPostDescription}
+            placeholder="Describe what this post is about..."
+          />
+        }
+        framingZoneSlot={
+          <div className="space-y-4">
+            <FramingChipStrip value={framingChip} onChange={setFramingChip} />
+            {framingChip === 'memo' && (
+              <MemoFramingEditor value={memoContent} onChange={setMemoContent} />
+            )}
+            {framingChip === 'whiteboard' && (
+              <div className="p-4 border rounded-xl bg-muted/30 animate-in fade-in">
+                <p className="text-body text-muted-foreground">Whiteboard editor will appear here after publishing.</p>
+              </div>
+            )}
+            {framingChip === 'document' && (
+              <div className="p-4 border rounded-xl bg-muted/30 animate-in fade-in">
+                <p className="text-body text-muted-foreground">Document editor will be attached after publishing.</p>
+              </div>
+            )}
+            {framingChip === 'cta' && (
+              <div className="p-4 border rounded-xl bg-muted/30 animate-in fade-in">
+                <p className="text-body text-muted-foreground">Call-to-action link fields will appear here.</p>
+              </div>
+            )}
+            {framingChip === 'image' && (
+              <div className="p-4 border rounded-xl bg-muted/30 animate-in fade-in">
+                <p className="text-body text-muted-foreground">Image/media gallery upload zone will appear here.</p>
+              </div>
+            )}
+            {framingChip === 'poll' && (
+              <div className="p-4 border rounded-xl bg-muted/30 animate-in fade-in">
+                <p className="text-body text-muted-foreground">Poll options editor will appear here.</p>
+              </div>
+            )}
+          </div>
+        }
+        responsesZoneSlot={
+          <ResponseTypeChipStrip value={responseType} onChange={setResponseType} />
+        }
+        moreOptionsSlot={
+          <div className="space-y-4">
+            <AllowCommentsField value={allowComments} onChange={setAllowComments} />
+            <ReferencesEditor rows={references} onChange={setReferences} />
+          </div>
+        }
+      />
     </>
   );
 }
