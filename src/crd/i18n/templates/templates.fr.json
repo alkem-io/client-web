@@ -287,14 +287,7 @@
   },
   "packProfile": {
     "shareTooltip": "Partager cet Innovation Pack",
-    "manage": "Gérer ce pack",
-    "sidebarLabel": "Détails du pack",
-    "provider": "Fournisseur",
-    "providerUnknown": "Fournisseur inconnu",
-    "tags": "Étiquettes",
-    "references": "Références",
-    "referencesEmpty": "Aucune référence.",
-    "templatesHeading": "Modèles"
+    "manage": "Gérer ce pack"
   },
   "library": {
     "title": "Bibliothèque d'innovation",

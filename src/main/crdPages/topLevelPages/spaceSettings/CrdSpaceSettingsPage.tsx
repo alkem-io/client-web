@@ -136,6 +136,12 @@ export default function CrdSpaceSettingsPage() {
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
     // Save-as always opens the create flow → temporary bucket.
     markdownUpload: { create: mdCreate, edit: md },
+    // CG save-as opens the CG template form (title + body + references) — reuse the space-bucket
+    // reference upload the live CG editor already wires (same bucket, temporaryLocation: true).
+    referenceUpload: {
+      onFileUpload: communityGuidelines.onReferenceFileUpload,
+      accept: communityGuidelines.referenceUploadAccept,
+    },
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
@@ -332,9 +338,9 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
-                  onAddReference={about.onAddReference}
-                  onUpdateReference={about.onUpdateReference}
-                  onRemoveReference={about.onRequestRemoveReference}
+                  onReferencesChange={about.onReferencesChange}
+                  onReferenceFileUpload={about.onReferenceFileUpload}
+                  referenceUploadAccept={about.referenceUploadAccept}
                   onSaveSection={section => void about.onSaveSection(section)}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
@@ -431,6 +437,8 @@ export default function CrdSpaceSettingsPage() {
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
+                      onReferenceFileUpload={communityGuidelines.onReferenceFileUpload}
+                      referenceUploadAccept={communityGuidelines.referenceUploadAccept}
                     />
                   ) : undefined
                 }
@@ -820,22 +828,6 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
-      />
-
-      <ConfirmationDialog
-        open={about.pendingReferenceDelete !== null}
-        onOpenChange={open => {
-          if (!open) about.onCancelRemoveReference();
-        }}
-        variant="destructive"
-        title={t('about.references.deleteDialog.title')}
-        description={t('about.references.deleteDialog.description', {
-          name: about.pendingReferenceDelete?.title || t('about.references.deleteDialog.untitled'),
-        })}
-        confirmLabel={t('about.references.deleteDialog.confirm')}
-        cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={about.onConfirmRemoveReference}
-        onCancel={about.onCancelRemoveReference}
       />
 
       <ConfirmationDialog

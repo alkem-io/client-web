@@ -513,7 +513,8 @@
       "descriptionLabel": "Descripción",
       "descriptionPlaceholder": "Descripción opcional",
       "addRow": "Añadir otro enlace",
-      "removeRow": "Eliminar enlace"
+      "removeRow": "Eliminar enlace",
+      "attachFile": "Adjuntar archivo"
     }
   },
   "references": {

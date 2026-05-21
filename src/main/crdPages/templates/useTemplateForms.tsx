@@ -112,6 +112,18 @@ export type TemplateMarkdownUploadByIntent = {
   edit?: MarkdownUploadProps;
 };
 
+/**
+ * References paperclip file-upload for the CG template form (D24). Unlike the markdown upload it is
+ * not split by intent: `useReferenceFileUpload` always uploads with `temporaryLocation: true` to the
+ * holder bucket, so the same callback serves both create (file lands temporarily until the template
+ * exists) and edit. Passed in by the provider-wrapped callsites; left undefined by read-only / test
+ * callers so `useTemplateForms` stays provider-agnostic.
+ */
+export type TemplateReferenceUpload = {
+  onFileUpload?: (file: File) => Promise<string | null>;
+  accept?: string;
+};
+
 export type UseTemplateFormsArgs = {
   templatesSetId: string | undefined;
   /** Parent space id — threaded through the Callout template form's `ResponseDefaultsConnector`. */
@@ -120,6 +132,8 @@ export type UseTemplateFormsArgs = {
   onSaved?: () => void;
   /** Markdown image-upload wiring per intent. Optional — see {@link TemplateMarkdownUploadByIntent}. */
   markdownUpload?: TemplateMarkdownUploadByIntent;
+  /** References paperclip file-upload (CG template form). Optional — see {@link TemplateReferenceUpload}. */
+  referenceUpload?: TemplateReferenceUpload;
 };
 
 export type UseTemplateFormsResult = {
@@ -192,6 +206,7 @@ export function useTemplateForms({
   spaceId,
   onSaved,
   markdownUpload,
+  referenceUpload,
 }: UseTemplateFormsArgs): UseTemplateFormsResult {
   const { t } = useTranslation('crd-templates');
   const { t: tSpace } = useTranslation('crd-space');
@@ -725,6 +740,8 @@ export function useTemplateForms({
           value={values}
           errors={errors}
           onChange={onPerTypeChange}
+          onReferenceFileUpload={referenceUpload?.onFileUpload}
+          referenceUploadAccept={referenceUpload?.accept}
           {...markdownUploadProps}
         />
       );
@@ -757,7 +774,14 @@ export function useTemplateForms({
       break;
     case 'callout':
       perTypeFormSlot = (
-        <CalloutTemplateForm form={calloutForm} spaceId={spaceId} disabled={submitting} {...markdownUploadProps} />
+        <CalloutTemplateForm
+          form={calloutForm}
+          spaceId={spaceId}
+          disabled={submitting}
+          onReferenceFileUpload={referenceUpload?.onFileUpload}
+          referenceUploadAccept={referenceUpload?.accept}
+          {...markdownUploadProps}
+        />
       );
       break;
   }

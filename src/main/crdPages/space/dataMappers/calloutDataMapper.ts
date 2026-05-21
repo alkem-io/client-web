@@ -139,7 +139,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     isDraft: callout.draft,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
@@ -214,7 +214,7 @@ export function mapCalloutDetailsToDialogData(
     description: callout.framing.profile.description ?? undefined,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     reactionCount: 0,
     // `framing.profile.tagset` is the default (single) tagset for the
     // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a

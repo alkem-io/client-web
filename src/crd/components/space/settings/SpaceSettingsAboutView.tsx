@@ -1,4 +1,4 @@
-import { ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { ImageIcon } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -6,14 +6,13 @@ import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
-import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
 import type {
   AboutFormValues,
-  AboutReference,
   AboutSectionKey,
   AboutSectionSaveStatus,
   AboutVisual,
@@ -38,9 +37,11 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  onRemoveReference: (id: string) => void;
+  /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — passed through to the shared editor. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
   onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
 } & MarkdownUploadProps;
@@ -68,9 +69,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onUploadAvatar,
     onUploadPageBanner,
     onUploadCardBanner,
-    onAddReference,
-    onUpdateReference,
-    onRemoveReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onSaveSection,
     className,
     onImageUpload,
@@ -298,26 +299,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
 
           {/* References */}
           <FieldSection>
-            <div className="flex items-center justify-between">
-              <FieldLabel>{t('about.references.title')}</FieldLabel>
-              <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
-                <Plus aria-hidden="true" className="mr-1.5 size-3.5" />
-                {t('about.references.add')}
-              </Button>
-            </div>
-            <div className="flex flex-col gap-3 mt-3">
-              {references.length === 0 && (
-                <p className="text-body text-muted-foreground italic">{t('about.references.empty')}</p>
-              )}
-              {references.map(ref => (
-                <ReferenceRow
-                  key={ref.id}
-                  reference={ref}
-                  onPatch={patch => onUpdateReference(ref.id, patch)}
-                  onRemove={() => onRemoveReference(ref.id)}
-                />
-              ))}
-            </div>
+            <ReferencesEditor
+              label={t('about.references.title')}
+              rows={references.map(r => ({ id: r.id, name: r.title, uri: r.uri, description: r.description }))}
+              onChange={onReferencesChange}
+              onFileUpload={onReferenceFileUpload}
+              uploadAccept={referenceUploadAccept}
+            />
             <FieldFooter
               hint={t('about.references.description')}
               dirty={!!dirtyByField.references}
@@ -462,58 +450,6 @@ function BannerUpload({
         </button>
       )}
       <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />
-    </div>
-  );
-}
-
-function ReferenceRow({
-  reference,
-  onPatch,
-  onRemove,
-}: {
-  reference: AboutReference;
-  onPatch: (patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  onRemove: () => void;
-}) {
-  return (
-    <div className="rounded-lg border bg-card">
-      <div className="flex items-center justify-between px-3 pt-3">
-        <InlineEditText
-          value={reference.title}
-          onChange={next => onPatch({ title: next })}
-          ariaLabel="Reference title"
-          editAriaLabel="Edit title"
-          placeholder="Title (required)"
-          error={!reference.title.trim() ? 'Title is required' : undefined}
-          className="flex-1 font-medium"
-        />
-        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label="Remove reference">
-          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-        </Button>
-      </div>
-      <Separator className="my-1 opacity-30" />
-      <div className="px-3">
-        <InlineEditText
-          value={reference.uri}
-          onChange={next => onPatch({ uri: ensureHttps(next) })}
-          ariaLabel="Reference URL"
-          editAriaLabel="Edit URL"
-          placeholder="https://…"
-          className="text-control text-muted-foreground"
-        />
-      </div>
-      <Separator className="my-1 opacity-30" />
-      <div className="px-3 pb-3">
-        <InlineEditText
-          value={reference.description}
-          onChange={next => onPatch({ description: next })}
-          ariaLabel="Reference description"
-          editAriaLabel="Edit description"
-          placeholder="Description (optional)"
-          multiline={true}
-          className="text-body text-muted-foreground"
-        />
-      </div>
     </div>
   );
 }
