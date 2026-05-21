@@ -774,7 +774,14 @@ export function useTemplateForms({
       break;
     case 'callout':
       perTypeFormSlot = (
-        <CalloutTemplateForm form={calloutForm} spaceId={spaceId} disabled={submitting} {...markdownUploadProps} />
+        <CalloutTemplateForm
+          form={calloutForm}
+          spaceId={spaceId}
+          disabled={submitting}
+          onReferenceFileUpload={referenceUpload?.onFileUpload}
+          referenceUploadAccept={referenceUpload?.accept}
+          {...markdownUploadProps}
+        />
       );
       break;
   }
