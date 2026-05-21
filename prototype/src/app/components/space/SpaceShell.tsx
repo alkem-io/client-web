@@ -1,4 +1,4 @@
-import { useParams, useLocation, Outlet, Link } from "react-router";
+import { useParams, useLocation, useSearchParams, Outlet, Link } from "react-router";
 import { SpaceHeader } from "./SpaceHeader";
 import { SpaceNavigationTabs } from "./SpaceNavigationTabs";
 import { SpaceSidebar } from "./SpaceSidebar";
@@ -14,6 +14,8 @@ export function SpaceShell() {
   const { spaceSlug } = useParams<{ spaceSlug: string }>();
   const slug = spaceSlug || "default-space";
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const variant = (parseInt(searchParams.get("v") || "1") || 1) as 1 | 2 | 3 | 4 | 5;
 
   // Determine sidebar variant from current route
   const getSidebarVariant = () => {
@@ -105,34 +107,40 @@ export function SpaceShell() {
     );
   };
 
+  // V2+ use a max-width container so content scales into margins on zoom
+  const usesScaling = variant !== 1;
+  const scaledContainer = { maxWidth: 1536, margin: "0 auto", width: "100%" };
+
   return (
     <div className="flex flex-col bg-background">
-      <SpaceHeader spaceSlug={slug} />
+      <SpaceHeader spaceSlug={slug} variant={variant} />
 
-      {/* Content area: 12-column grid — 1 col margin each side, sidebar 2 cols, content 8 cols */}
-      <div className="w-full px-6 md:px-8 pt-0 pb-8">
-        <div className="grid grid-cols-12 gap-6 items-start">
-          <div className="hidden lg:block lg:col-start-2 col-span-2 sticky top-24 self-start">
-            <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} />
-          </div>
-          <div className="col-span-12 lg:col-span-8 min-w-0">
-            {/* Sticky tab bar */}
-            <div
-              className="sticky top-16 z-10 pt-4 pb-3 mb-4"
-              style={{
-                background:
-                  "color-mix(in srgb, var(--background) 95%, transparent)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                paddingLeft: 10,
-                paddingRight: 10,
-                marginLeft: -10,
-                marginRight: -10,
-              }}
-            >
-              <SpaceNavigationTabs spaceSlug={slug} actionButton={getActionButtons()} />
+      {/* Content area */}
+      <div className="w-full px-4 pt-0 pb-8" style={!usesScaling ? { paddingLeft: 32, paddingRight: 32 } : undefined}>
+        <div style={usesScaling ? scaledContainer : undefined}>
+          <div className="grid grid-cols-12 gap-6 items-start">
+            <div className={`hidden lg:block col-span-2 sticky top-24 self-start ${!usesScaling ? "lg:col-start-2" : ""}`}>
+              <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} />
             </div>
-            <Outlet />
+            <div className={`col-span-12 ${usesScaling ? "lg:col-span-10" : "lg:col-span-8"} min-w-0`}>
+              {/* Sticky tab bar */}
+              <div
+                className="sticky top-16 z-10 pt-4 pb-3 mb-4"
+                style={{
+                  background:
+                    "color-mix(in srgb, var(--background) 95%, transparent)",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  marginLeft: -10,
+                  marginRight: -10,
+                }}
+              >
+                <SpaceNavigationTabs spaceSlug={slug} actionButton={getActionButtons()} />
+              </div>
+              <Outlet />
+            </div>
           </div>
         </div>
       </div>
