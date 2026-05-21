@@ -5,7 +5,7 @@ import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
@@ -43,7 +43,7 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onRemoveReference: (id: string) => void;
   onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
-};
+} & MarkdownUploadProps;
 
 export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -73,6 +73,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onRemoveReference,
     onSaveSection,
     className,
+    onImageUpload,
+    iframeAllowedUrls,
+    onError,
   } = props;
   // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
   //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
@@ -182,6 +185,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               onChange={next => onChange({ what: next })}
               placeholder="What's this space about…"
               className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
             />
             <FieldFooter
               hint={t('about.what.description')}
@@ -202,6 +208,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               onChange={next => onChange({ why: next })}
               placeholder="Why does this space exist…"
               className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
             />
             <FieldFooter
               hint={t('about.why.description')}
@@ -222,6 +231,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               onChange={next => onChange({ who: next })}
               placeholder="Who is this space for…"
               className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
             />
             <FieldFooter
               hint={t('about.who.description')}

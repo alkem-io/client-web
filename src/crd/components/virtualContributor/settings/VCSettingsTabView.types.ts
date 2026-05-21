@@ -11,6 +11,7 @@
  */
 
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 export type { SectionSaveStatus };
 
@@ -49,7 +50,7 @@ export type VcPromptCardProps = {
   onSave: () => void;
   /** Pre-localized helper copy + variable list. */
   helpText: string;
-};
+} & MarkdownUploadProps;
 
 export type VcExternalConfigCardProps = {
   engine: 'libraFlow' | 'openaiAssistant' | 'genericOpenai';

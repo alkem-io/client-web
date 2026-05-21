@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -15,7 +14,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { countTagOccurrences } from './calloutTagCount';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -51,15 +50,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     },
     skip: !calloutsSetId,
   });
-  // The `CalloutsSetTags` query returns just `tags: string[]` (the universe of tags across the
-  // calloutsSet). Counts are tallied client-side from the currently visible (filtered) `callouts`
-  // array — so each chip shows "if I add this tag to the current filter, this many callouts remain".
-  // Tags in the universe that aren't on any visible callout legitimately get 0.
-  const tagCounts = countTagOccurrences(callouts);
-  const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(name => ({
-    name,
-    count: tagCounts[name] ?? 0,
-  }));
+  // The `CalloutsSetTags` query returns the full tag universe for the calloutsSet — chips stay
+  // stable when selected and don't disappear as the callout list filters down.
+  const allTags = tagsData?.lookup.calloutsSet?.tags ?? [];
 
   // Build sidebar list from light callout data (also used as knowledge entries)
   const sidebarItems = callouts.map(callout => {
@@ -73,16 +66,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     };
   });
 
-  const handleSelectTag = (tag: string) => {
-    setTagsFilter(prev => [...prev, tag]);
-  };
-
-  const handleDeselectTag = (tag: string) => {
-    setTagsFilter(prev => prev.filter(t => t !== tag));
-  };
-
-  const handleClear = () => {
-    setTagsFilter([]);
+  const handleToggleTag = (tag: string) => {
+    setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
   const handleScrollToCallout = (id: string) => {
@@ -104,7 +89,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </SpaceSidebarPortal>
 
       <div className="space-y-6">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
             canCreateCallout && (
@@ -116,15 +101,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           }
         />
 
-        {(allTags.length > 0 || tagsFilter.length > 0) && (
-          <CalloutTagCloud
-            tags={allTags}
-            selectedTags={tagsFilter}
-            resultsCount={callouts.length}
-            onSelectTag={handleSelectTag}
-            onDeselectTag={handleDeselectTag}
-            onClear={handleClear}
-          />
+        {allTags.length > 0 && (
+          <CollapsibleTagList tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         )}
 
         <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
@@ -136,6 +114,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
     </>

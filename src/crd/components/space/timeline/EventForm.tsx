@@ -6,7 +6,7 @@ import { type ReactNode, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DateField } from '@/crd/forms/DateField';
 import { DurationField } from '@/crd/forms/DurationField';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TimeField } from '@/crd/forms/TimeField';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
@@ -46,7 +46,7 @@ type EventFormProps = {
   /** date-fns Locale forwarded to nested DateField + DurationField. Resolved
    *  by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
   locale?: Locale;
-};
+} & MarkdownUploadProps;
 
 /** Controlled presentational form. Layout matches spec FR-020; responsive
  *  stacking at <768px (one column); errors rendered inline per field. */
@@ -60,6 +60,9 @@ export function EventForm({
   typeOptions,
   footerActionsLeft,
   locale = enUS,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: EventFormProps) {
   const { t } = useTranslation('crd-space');
   const displayNameId = useId();
@@ -203,6 +206,9 @@ export function EventForm({
           onChange={next => onChange('description', next)}
           disabled={isSubmitting}
           placeholder={t('calendar.fields.description')}
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
         />
         {errors.description && <span className="text-caption text-destructive">{errors.description}</span>}
       </div>

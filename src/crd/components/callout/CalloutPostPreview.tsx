@@ -1,10 +1,10 @@
-import { ExternalLink, Pencil, X } from 'lucide-react';
+import { ExternalLink, Paperclip, Pencil, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -13,6 +13,7 @@ export type CalloutPostPreviewReference = {
   name: string;
   uri: string;
   description?: string;
+  isFile?: boolean;
 };
 
 export type CalloutPostPreviewData = {
@@ -143,15 +144,7 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
 
         {(hasTags || hasReferences) && <hr className="border-border" />}
 
-        {hasTags && (
-          <div className="flex flex-wrap gap-1.5">
-            {post.tags?.map(tag => (
-              <Badge key={tag} variant="secondary" className="text-badge px-2 py-0.5 font-normal">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {hasTags && <CollapsibleTagList tags={post.tags ?? []} />}
 
         {hasReferences && (
           <div>
@@ -166,7 +159,11 @@ export function CalloutPostPreview({ post, loading, onEdit, shareSlot, onClose, 
                     className="inline-flex items-center gap-1.5 text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
                     {ref.name}
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    {ref.isFile ? (
+                      <Paperclip className="w-3.5 h-3.5" aria-hidden="true" />
+                    ) : (
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    )}
                   </a>
                   {ref.description && <p className="text-caption text-muted-foreground ml-0.5">{ref.description}</p>}
                 </li>

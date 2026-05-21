@@ -32,6 +32,8 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
+import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
 import {
   type SpaceSettingsTabId,
   useSpaceSettingsTab,
@@ -58,6 +60,16 @@ export default function CrdSpacePageLayout() {
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
+  // One guard instance, shared with the Settings page (rendered via <Outlet>)
+  // through DirtyTabGuardContext. The tab strip lives here in the layout, so
+  // the click must consult the guard before navigating — otherwise the
+  // discard-changes dialog (owned by the page) never opens.
+  const settingsDirtyGuard = useDirtyTabGuard();
+  const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
+    if (await settingsDirtyGuard.requestSwitch(next)) {
+      setActiveSettingsTab(next);
+    }
+  };
 
   // Sidebar links are portaled in (see SpaceSidebarPortal), so following one
   // doesn't go through any handler in this layout that could close the drawer.
@@ -153,107 +165,110 @@ export default function CrdSpacePageLayout() {
   ];
 
   return (
-    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
-      {visibilityData.status !== 'active' && (
-        <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
-      )}
-      {enableBannerOverlay && <EnableBannerOverlay />}
-      <SpaceShell
-        header={
-          isOnSettings ? (
-            <SpaceSettingsHeader
-              title={space.about.profile.displayName}
-              tagline={space.about.profile.tagline ?? null}
-              hideAvatar={true}
-              tabs={
-                <SpaceSettingsTabStrip
-                  activeTab={activeSettingsTab}
-                  onTabChange={setActiveSettingsTab}
-                  tabs={settingsTabs}
-                />
-              }
-            />
-          ) : (
-            <SpaceHeader
-              title={space.about.profile.displayName}
-              tagline={space.about.profile.tagline ?? undefined}
-              bannerUrl={space.about.profile.banner?.uri}
-              color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
-              actions={headerActions}
-              overlayHeader={enableBannerOverlay}
-            />
-          )
-        }
-        sidebar={isOnSettings ? undefined : sidebarSlot}
-        tabs={
-          isOnSettings ? undefined : (
-            <SpaceNavigationTabs
-              tabs={tabItems}
-              activeIndex={activeTabIndex}
-              onTabChange={handleTabChange}
-              isSmallScreen={isSmallScreen}
-              onMenuClick={() => setMobileMenuOpen(true)}
-            />
-          )
-        }
-      >
-        <Suspense fallback={<LoadingSpinner />}>
-          <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
-        </Suspense>
-      </SpaceShell>
-
-      {!isOnSettings && (
-        <MobileSidebarDrawer
-          open={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
-          title={t('crd-space:mobile.menu')}
-          closeLabel={t('crd-space:a11y.close')}
+    <DirtyTabGuardContext.Provider value={settingsDirtyGuard}>
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
+        {visibilityData.status !== 'active' && (
+          <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
+        )}
+        {enableBannerOverlay && <EnableBannerOverlay />}
+        <SpaceShell
+          header={
+            isOnSettings ? (
+              <SpaceSettingsHeader
+                title={space.about.profile.displayName}
+                tagline={space.about.profile.tagline ?? null}
+                hideAvatar={true}
+                tabs={
+                  <SpaceSettingsTabStrip
+                    activeTab={activeSettingsTab}
+                    onTabChange={handleSettingsTabChange}
+                    tabs={settingsTabs}
+                  />
+                }
+              />
+            ) : (
+              <SpaceHeader
+                title={space.about.profile.displayName}
+                tagline={space.about.profile.tagline ?? undefined}
+                bannerUrl={space.about.profile.banner?.uri}
+                color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
+                actions={headerActions}
+                overlayHeader={enableBannerOverlay}
+              />
+            )
+          }
+          sidebar={isOnSettings ? undefined : sidebarSlot}
+          tabs={
+            isOnSettings ? undefined : (
+              <SpaceNavigationTabs
+                tabs={tabItems}
+                activeIndex={activeTabIndex}
+                onTabChange={handleTabChange}
+                isSmallScreen={isSmallScreen}
+                onMenuClick={() => setMobileMenuOpen(true)}
+                action={<div id="crd-space-tabs-action" />}
+              />
+            )
+          }
         >
-          <div id="crd-space-sidebar-mobile" />
-        </MobileSidebarDrawer>
-      )}
+          <Suspense fallback={<LoadingSpinner />}>
+            <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
+          </Suspense>
+        </SpaceShell>
 
-      {/* L0 breadcrumbs — only mounted at L0 so this parent layout doesn't
+        {!isOnSettings && (
+          <MobileSidebarDrawer
+            open={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(false)}
+            title={t('crd-space:mobile.menu')}
+            closeLabel={t('crd-space:a11y.close')}
+          >
+            <div id="crd-space-sidebar-mobile" />
+          </MobileSidebarDrawer>
+        )}
+
+        {/* L0 breadcrumbs — only mounted at L0 so this parent layout doesn't
           clobber the subspace layout's trail at L1 / L2 (CrdSpacePageLayout
           runs hooks at every level; gating the mount on `isLevelZero` keeps
           the publish scoped to L0). On a plain L0 home this emits a single
           current-page crumb; on `/settings` it emits the 3-hop trail. */}
-      {isLevelZero && spaceDisplayName && (
-        <L0Breadcrumbs
-          spaceDisplayName={spaceDisplayName}
-          spaceUrl={spaceUrl}
-          isOnSettings={isOnSettings}
-          activeSettingsTab={activeSettingsTab}
-        />
-      )}
+        {isLevelZero && spaceDisplayName && (
+          <L0Breadcrumbs
+            spaceDisplayName={spaceDisplayName}
+            spaceUrl={spaceUrl}
+            isOnSettings={isOnSettings}
+            activeSettingsTab={activeSettingsTab}
+          />
+        )}
 
-      {/* Activity dialog — opened from header Activity icon. Matches the
+        {/* Activity dialog — opened from header Activity icon. Matches the
           legacy MUI ActivityDialog: queries activity-on-collaboration with
           includeChild so child callout events are included. */}
-      <CrdSpaceActivityDialogConnector
-        open={activityDialogOpen}
-        onOpenChange={setActivityDialogOpen}
-        spaceId={spaceId}
-      />
+        <CrdSpaceActivityDialogConnector
+          open={activityDialogOpen}
+          onOpenChange={setActivityDialogOpen}
+          spaceId={spaceId}
+        />
 
-      {/* Share dialog — opened from header share icon and the mobile "More" drawer.
+        {/* Share dialog — opened from header share icon and the mobile "More" drawer.
           `entityLabel` is lowercased so the default message reads "...this space
           interesting" mid-sentence (mirrors the callout flow's "post"). */}
-      <ShareDialog
-        open={shareDialogOpen}
-        onOpenChange={setShareDialogOpen}
-        url={spaceUrl}
-        shareOnAlkemioSlot={
-          spaceUrl ? (
-            <CalloutShareOnAlkemioForm
-              key={spaceUrl}
-              url={spaceUrl}
-              entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
-            />
-          ) : undefined
-        }
-      />
-    </StorageConfigContextProvider>
+        <ShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          url={spaceUrl}
+          shareOnAlkemioSlot={
+            spaceUrl ? (
+              <CalloutShareOnAlkemioForm
+                key={spaceUrl}
+                url={spaceUrl}
+                entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
+              />
+            ) : undefined
+          }
+        />
+      </StorageConfigContextProvider>
+    </DirtyTabGuardContext.Provider>
   );
 }
 

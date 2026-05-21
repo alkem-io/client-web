@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent } from '@/crd/primitives/card';
@@ -38,7 +38,7 @@ type LayoutPoolColumnProps = {
   /** Enables the column drag handle + sortable behaviour (off at L0). */
   draggable?: boolean;
   className?: string;
-};
+} & MarkdownUploadProps;
 
 export function LayoutPoolColumn({
   column,
@@ -50,6 +50,9 @@ export function LayoutPoolColumn({
   columnMenuActions,
   draggable = false,
   className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: LayoutPoolColumnProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const calloutIds = column.callouts.map(c => c.id);
@@ -157,6 +160,9 @@ export function LayoutPoolColumn({
           setEditDetailsOpen(false);
         }}
         onCancel={() => setEditDetailsOpen(false)}
+        onImageUpload={onImageUpload}
+        iframeAllowedUrls={iframeAllowedUrls}
+        onError={onError}
       />
 
       <ConfirmationDialog
@@ -242,7 +248,7 @@ type EditDetailsDialogProps = {
   description: string;
   onSave: (title: string, description: string) => void | Promise<void>;
   onCancel: () => void;
-};
+} & MarkdownUploadProps;
 
 function EditDetailsDialog({
   open,
@@ -250,6 +256,9 @@ function EditDetailsDialog({
   description: initialDescription,
   onSave,
   onCancel,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: EditDetailsDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [title, setTitle] = useState(initialTitle);
@@ -312,6 +321,9 @@ function EditDetailsDialog({
               value={description}
               onChange={setDescription}
               placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
             />
           </div>
         </div>

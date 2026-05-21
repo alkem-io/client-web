@@ -9,7 +9,7 @@ import GitHubIcon from '@/crd/components/common/icons/social/GitHub.svg?react';
 import LinkedInIcon from '@/crd/components/common/icons/social/LinkedIn.svg?react';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -60,6 +60,9 @@ export function UserProfileTabView(props: UserProfileViewProps) {
     onConfirmRemoveReference,
     onCancelRemoveReference,
     uploadingAvatar,
+    onImageUpload,
+    iframeAllowedUrls,
+    onError,
   } = props;
 
   const labels: SectionLabels = {
@@ -194,6 +197,9 @@ export function UserProfileTabView(props: UserProfileViewProps) {
             status={status('bio')}
             onSave={() => onSaveSection('bio')}
             labels={labels}
+            onImageUpload={onImageUpload}
+            iframeAllowedUrls={iframeAllowedUrls}
+            onError={onError}
           />
           <Separator className="my-4 opacity-50" />
           <TagsSection
@@ -478,14 +484,20 @@ type BioSectionProps = {
   status: SectionSaveStatus;
   onSave: () => void;
   labels: SectionLabels;
-};
+} & MarkdownUploadProps;
 
 function BioSection(p: BioSectionProps) {
   return (
     <div>
       <SectionLabel>{p.label}</SectionLabel>
       <div className="mt-2">
-        <MarkdownEditor value={p.value} onChange={p.onChange} />
+        <MarkdownEditor
+          value={p.value}
+          onChange={p.onChange}
+          onImageUpload={p.onImageUpload}
+          iframeAllowedUrls={p.iframeAllowedUrls}
+          onError={p.onError}
+        />
       </div>
       <FF hint={p.hint} dirty={p.dirty} status={p.status} onSave={p.onSave} labels={p.labels} />
     </div>

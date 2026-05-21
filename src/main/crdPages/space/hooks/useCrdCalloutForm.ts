@@ -53,6 +53,16 @@ export type CalloutFormValues = {
   whiteboardContent: string;
   whiteboardPreviewImages: WhiteboardPreviewImage[];
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
+  /**
+   * Server-rendered whiteboard preview image URL (`framing.whiteboard.profile.preview.uri`).
+   * Display-only — never sent back to the server; shown by the inline framing preview as the
+   * read-time fallback when no fresh in-form blob (`whiteboardPreviewImages`) exists. The
+   * blob URL wins when the user re-opens the inline editor and saves (it reflects the
+   * just-saved state); this URL is the placeholder for "loaded but not re-edited yet".
+   * Populated by `calloutTemplateContentToFormValues` (Callout-template edit/duplicate prefill)
+   * and by `mapCalloutDetailsToFormValues` (live-callout edit prefill, when present). D16, 2026-05-18.
+   */
+  whiteboardPreviewServerUrl?: string;
   whiteboardConfigured: boolean;
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   // Collabora document framing — only submitted when framingType is CollaboraDocument
@@ -113,6 +123,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardContent: EmptyWhiteboardString,
   whiteboardPreviewImages: [],
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
+  whiteboardPreviewServerUrl: undefined,
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,

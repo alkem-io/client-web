@@ -7,6 +7,7 @@ import { EventsCalendarView } from '@/crd/components/space/timeline/EventsCalend
 import { TimelineDialog } from '@/crd/components/space/timeline/TimelineDialog';
 import { Button } from '@/crd/primitives/button';
 import useCalendarEvents from '@/domain/timeline/calendar/useCalendarEvents';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapCalendarEventInfoToListItem } from '../dataMappers/calendarEventDataMapper';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
@@ -197,6 +198,11 @@ function EventFormDialogBody({
   locale,
 }: EventFormDialogBodyProps) {
   const { t } = useTranslation('crd-space');
+  // Calendar events live under the ambient space `StorageConfigContextProvider`
+  // (mounted by CrdSpacePageLayout / CrdSubspacePageLayout). MUI uploads here
+  // are mode-independent (temporaryLocation: false) — only the subspace-creation
+  // entry point uses temporary storage, which is out of CRD scope.
+  const md = useMarkdownEditorIntegration();
   const dialog = useCrdEventFormDialog({
     mode,
     editingEventId,
@@ -222,6 +228,9 @@ function EventFormDialogBody({
         isSubspace={dialog.isSubspace}
         typeOptions={dialog.typeOptions}
         locale={locale}
+        onImageUpload={md.onImageUpload}
+        iframeAllowedUrls={md.iframeAllowedUrls}
+        onError={md.onError}
         footerActionsLeft={
           <>
             {mode === 'edit' && canDeleteEvents && (

@@ -6,6 +6,8 @@ import type {
   VcProfileFormValues,
   VcReadOnlyMetadataRow,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useVcProfileTabData from './useVcProfileTabData';
 
@@ -14,11 +16,27 @@ import useVcProfileTabData from './useVcProfileTabData';
  * `useVcProfileTabData` (per-section save hook) → `VCProfileTabView`
  * (presentational).
  *
+ * The settings shell mounts no ambient `StorageConfigContextProvider`, so
+ * `MarkdownUploadScope` mounts a `virtualContributor`-scoped one (description
+ * editing is always EDIT mode → `temporaryLocation: false`) and yields the
+ * upload wiring; before the id resolves it yields `undefined`.
+ *
  * Mounts `ImageCropDialog` driven by `pendingAvatarCrop` (Decision #10 /
  * FR-163) and `ConfirmationDialog` driven by `pendingReferenceDelete`
  * (Rule #9 / FR-025 — handled inside the view component).
  */
 const CrdVCProfileTab = () => {
+  const { vcId } = useUrlResolver();
+  return (
+    <MarkdownUploadScope
+      storage={vcId ? { locationType: 'virtualContributor', virtualContributorId: vcId } : undefined}
+    >
+      {markdownUpload => <CrdVCProfileTabBody markdownUpload={markdownUpload} />}
+    </MarkdownUploadScope>
+  );
+};
+
+const CrdVCProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
   const data = useVcProfileTabData(vcId);
@@ -72,6 +90,7 @@ const CrdVCProfileTab = () => {
         onConfirmRemoveReference={data.onConfirmRemoveReference}
         onCancelRemoveReference={data.onCancelRemoveReference}
         metadata={{ host, bodyOfKnowledge }}
+        {...markdownUpload}
       />
       <ImageCropDialog
         open={data.pendingAvatarCrop !== null}
