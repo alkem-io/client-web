@@ -2,6 +2,7 @@ import { FolderCopyOutlined } from '@mui/icons-material';
 import HistoryIcon from '@mui/icons-material/History';
 import ImageIcon from '@mui/icons-material/Image';
 import type { TFunction } from 'i18next';
+import { cloneDeep } from 'lodash-es';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -230,7 +231,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
       }
 
       setTreeData(treeData => {
-        const next = structuredClone(treeData);
+        const next = cloneDeep(treeData);
         addStorageAggregator(storageAggregator, next.root);
         return next;
       });
@@ -241,7 +242,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
   // Just a helper to set row loading state
   const setBranchLoading = async (storageAggregatorId: string, loading: boolean) => {
     setTreeData(treeData => {
-      const next = structuredClone(treeData);
+      const next = cloneDeep(treeData);
       const branch = findBranch(next.root, storageAggregatorId);
       if (branch) {
         branch.loading = loading;
@@ -263,7 +264,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
         throw new Error(`Cannot load storageAggregator ${storageAggregatorId}`);
       }
       setTreeData(treeData => {
-        const next = structuredClone(treeData);
+        const next = cloneDeep(treeData);
         const branch = findBranch(next.root, storageAggregatorId);
         if (branch) {
           branch.collapsed = false;
@@ -280,7 +281,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
   // User clicks to Collapse or unCollapse branches:
   const openBranch = async (storageAggregatorId: string) => {
     setTreeData(treeData => {
-      const next = structuredClone(treeData);
+      const next = cloneDeep(treeData);
       const branch = findBranch(next.root, storageAggregatorId);
       if (branch?.collapsible) {
         if (branch.loaded) {
@@ -295,7 +296,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
 
   const closeBranch = (storageAggregatorId: string) => {
     setTreeData(treeData => {
-      const next = structuredClone(treeData);
+      const next = cloneDeep(treeData);
       const branch = findBranch(next.root, storageAggregatorId);
       if (branch?.collapsible) {
         branch.collapsed = true;

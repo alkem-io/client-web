@@ -134,11 +134,12 @@ Clicking **Set Default Response** opens a nested dialog with, per type:
 
 ### US8 — Pre-populate link contributions at create time (Priority P1)
 
-A user picks **Links & Files** as the response type. A "Pre-populate collection" editor appears: rows of (title, url, description), with an **Add another link** button and a delete affordance per row. On publish, each valid row becomes a `CreateCalloutContributionInput` of type `Link`.
+A user picks **Links & Files** as the response type. A "Pre-populate collection" editor appears: rows of (title, url, description), each with a **paperclip** file-attach button, an **Add another link** button, and a delete affordance per row. The paperclip uploads the chosen file and writes the resulting URL into that row's url field (filling an empty title with the filename, without extension) — the same per-row file-attach affordance the References editor uses (FR-50). On publish, each valid row becomes a `CreateCalloutContributionInput` of type `Link`, whether the URL was typed or produced by a file upload — which is what makes the type "Links **& Files**".
 
 **Acceptance**:
 1. **Given** the user adds two non-empty rows, **When** Publish runs, **Then** the create input includes `contributions: [{ type: Link, link: { uri, profile: { displayName } } }, …]` for each row.
 2. Empty rows (no uri) are dropped silently.
+3. **Given** the user clicks the paperclip on a row and selects a file, **When** the upload resolves, **Then** the row's url is set to the uploaded file URL and — if the title was empty — its title is set to the filename (without extension). On publish that row becomes a `Link` contribution pointing at the uploaded file.
 
 ### US9 — Add references to the callout framing (Priority P1)
 
@@ -242,7 +243,7 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 ### Responses zone
 
 - **FR-30** Response type chips are single-select. Clicking the active chip deselects (response type = None).
-- **FR-31** **Links**: per-type panel shows (i) a "Pre-populate collection" editor with title / url / description rows and an "Add another link" button, (ii) an actor-switches row ("Members can add", "Admins can add").
+- **FR-31** **Links**: per-type panel shows (i) a "Pre-populate collection" editor with title / url / description rows, an "Add another link" button, and a per-row **paperclip** file-attach button — the same affordance and upload path as the References editor (FR-50): the uploaded file's URL is written into the row's url and the filename fills an empty title. (ii) an actor-switches row ("Members can add", "Admins can add").
 - **FR-32** **Posts**: per-type panel shows actor switches + "Enable comments" switch + **Set Default Response** button.
 - **FR-33** **Memos**: per-type panel shows actor switches + **Set Default Response** button. The defaults dialog reuses the same two fields as Posts (FR-42 default title + FR-43 default description) — `contributionDefaults.defaultDisplayName` + `contributionDefaults.postDescription`. The "Add memo" contribution-add flow MUST seed both fields from those defaults when creating a new memo on the callout — mirroring the Post-add flow.
 - **FR-34** **Whiteboards**: per-type panel shows actor switches + **Set Default Response** button.
@@ -261,7 +262,7 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 
 ### References section
 
-- **FR-50** References editor in "More options": starts with zero rows. An **Add another reference** button inserts a new empty row of (title, url, description). Each row has a delete affordance; deleting the last row returns the editor to the empty state.
+- **FR-50** References editor in "More options": starts with zero rows. An **Add another reference** button inserts a new empty row of (title, url, description). Each row has a delete affordance (via `ConfirmationDialog`) and a **paperclip** file-attach button that uploads to the space storage bucket (`useReferenceFileUpload(useStorageConfigContext())`), writing the resulting URL into the row's url and filling an empty title with the filename; deleting the last row returns the editor to the empty state. The Links & Files "Pre-populate collection" editor (FR-31) reuses this same per-row file-attach affordance.
 - **FR-51** Empty rows are dropped on submit.
 - **FR-52** URL is not validated at form level — the server accepts arbitrary strings in the reference field.
 
@@ -284,7 +285,7 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 - **FR-82** Link framing: displayName required (trimmed); uri required, must start with `http://` or `https://`.
 - **FR-83** Poll framing: question required (trimmed); at least 2 option rows have non-empty text; each option text ≤ `SMALL_TEXT_LENGTH`.
 - **FR-84** References: each row with non-empty uri must have non-empty title.
-- **FR-85** Pre-populate links: each row with non-empty uri must have non-empty title.
+- **FR-85** Pre-populate links: each row with non-empty uri must have non-empty title. A file attached via the row's paperclip auto-fills the title from the filename when empty, so an uploaded row satisfies this rule without manual entry.
 - **FR-86** Messages are short codes translated via a `translateValidationMessage` helper into `crd-space` keys (pattern from `useCreateSubspace.ts`).
 - **FR-87** Validation runs on Save Draft / Publish / Save and gates the submission. Field-level errors show as red text under the field; the first invalid field scrolls into view.
 

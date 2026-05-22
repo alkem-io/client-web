@@ -2,62 +2,69 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import type { ReferenceRow } from '@/crd/forms/callout/types';
 import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
+import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
+
+/**
+ * Canonical reference row shared by every CRD form that edits a list of links
+ * (profiles, callouts, innovation packs, …). Mirrors the GraphQL `Reference`
+ * shape (`name` / `uri`). Consumers map their local field names to this at the
+ * boundary.
+ */
+export type ReferenceRow = {
+  /** Server id on edit; undefined for rows the user just added. */
+  id?: string;
+  name: string;
+  uri: string;
+  description?: string;
+};
 
 type ReferencesEditorProps = {
   rows: ReferenceRow[];
   onChange: (rows: ReferenceRow[]) => void;
-  /** Optional map keyed by `referenceRows.<index>.title` for title-required errors. */
+  /** Per-row error messages keyed by `${index}.name` / `${index}.uri` (any subset). */
   errors?: Record<string, string | undefined>;
   disabled?: boolean;
+  /** Heading override; defaults to the shared `references.heading` label. */
+  label?: string;
   /**
-   * Optional file-attach integration. When provided, each row exposes a
-   * paperclip button that opens a file picker; the resolved URL is written
-   * into `row.url`. The connector layer (which lives outside `src/crd/`)
-   * owns the upload mutation + storage-bucket config + user-facing errors.
-   * Returning `null` means the upload failed — the editor leaves the row
-   * unchanged and the connector is expected to have already notified the user.
+   * Optional file-attach integration. When provided, each row exposes a paperclip
+   * button that opens a file picker; the resolved URL is written into `row.uri`.
+   * The connector layer (outside `src/crd/`) owns the upload mutation + storage
+   * bucket config + user-facing errors. Returning `null` means the upload failed —
+   * the editor leaves the row unchanged and the connector has already notified.
    */
   onFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the file picker (extension list, e.g. ".pdf,.png"). */
   uploadAccept?: string;
 };
 
-const createEmptyRow = (): ReferenceRow => ({ title: '', url: '', description: '' });
+const createEmptyRow = (): ReferenceRow => ({ name: '', uri: '', description: '' });
 
 /**
- * References editor rendered inside "More options". Each row is (title, URL,
- * description). Empty rows are filtered out on submit by the mapper. URL is
- * not validated at the form level (FR-52).
+ * Shared references editor. Each row is (name, URL, description). Empty rows are
+ * filtered out by the consumer's mapper on submit. Deletion goes through
+ * `ConfirmationDialog` (CRD rule 9) since a saved removal has no client-side undo.
  */
 export function ReferencesEditor({
   rows,
   onChange,
   errors,
   disabled,
+  label,
   onFileUpload,
   uploadAccept,
 }: ReferencesEditorProps) {
-  const { t } = useTranslation('crd-space');
-  // Pending delete confirmation — CRD rule 9: "every destructive action…
-  // must go through ConfirmationDialog before the mutation fires."
-  // We treat staged-not-yet-saved removals the same way as server-side
-  // deletes, since once Save commits the row is gone with no client-side undo.
+  const { t } = useTranslation('crd-common');
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
-  // Per-row upload spinner state. Keyed by row index — fine because the
-  // editor is the sole owner of `rows` indexing inside any single render.
   const [uploadingRows, setUploadingRows] = useState<Record<number, boolean>>({});
-  // Mirror of `rows` for post-await reads. The file upload takes seconds; if
-  // the user types into any row while it's in flight, the closure-captured
-  // `rows` is stale by the time `await onFileUpload` resolves. Without this
-  // ref, `updateRow`'s `rows.map(...)` would rebuild the array from the
-  // pre-upload snapshot and revert every keystroke. Updating in an effect
-  // (not inline during render) keeps the mirror consistent under concurrent
-  // rendering.
+  // Mirror of `rows` for post-await reads: a file upload takes seconds, and if
+  // the user types into any row meanwhile the closure-captured `rows` is stale
+  // by the time `await onFileUpload` resolves. Reading from the ref avoids
+  // reverting concurrent keystrokes.
   const rowsRef = useRef(rows);
   useEffect(() => {
     rowsRef.current = rows;
@@ -71,15 +78,13 @@ export function ReferencesEditor({
     if (!file || !onFileUpload) return;
     setUploadingRows(prev => ({ ...prev, [index]: true }));
     try {
-      const url = await onFileUpload(file);
-      if (!url) return;
-      // Read from the ref, not the closure — `rows` here is the snapshot from
-      // the render that started the upload.
+      const uri = await onFileUpload(file);
+      if (!uri) return;
       const current = rowsRef.current[index];
-      const titleEmpty = !current?.title.trim();
+      const nameEmpty = !current?.name.trim();
       const filenameBase = file.name.replace(/\.[^./\\]+$/, '').trim();
-      const patch: Partial<ReferenceRow> = { url };
-      if (titleEmpty && filenameBase) patch.title = filenameBase;
+      const patch: Partial<ReferenceRow> = { uri };
+      if (nameEmpty && filenameBase) patch.name = filenameBase;
       updateRow(index, patch);
     } finally {
       setUploadingRows(prev => {
@@ -102,49 +107,44 @@ export function ReferencesEditor({
 
   return (
     <div className="space-y-3">
-      <Label className="text-body-emphasis text-foreground">{t('references.heading')}</Label>
+      <Label className="text-body-emphasis text-foreground">{label ?? t('references.heading')}</Label>
 
       {rows.length === 0 && <p className="text-caption text-muted-foreground italic">{t('references.empty')}</p>}
 
       {rows.map((row, index) => {
-        const titleError = errors?.[`referenceRows.${index}.title`];
-        const urlError = errors?.[`referenceRows.${index}.url`];
+        const nameError = errors?.[`${index}.name`];
+        const uriError = errors?.[`${index}.uri`];
         return (
-          // biome-ignore lint/suspicious/noArrayIndexKey: rows are append-and-delete; no stable id exists in the row model
-          <div key={index} className="border border-border rounded-lg p-3 space-y-2">
+          <div key={row.id ?? index} className="border border-border rounded-lg p-3 space-y-2">
             <div className="flex items-start gap-2">
               <div className="flex-1 space-y-2">
-                <input
-                  type="text"
-                  value={row.title}
-                  onChange={e => updateRow(index, { title: e.target.value })}
-                  placeholder={t('references.titlePlaceholder')}
+                <Input
+                  value={row.name}
+                  onChange={e => updateRow(index, { name: e.target.value })}
+                  placeholder={t('references.namePlaceholder')}
                   disabled={disabled}
-                  aria-label={t('references.titleLabel')}
-                  aria-invalid={!!titleError}
-                  aria-describedby={titleError ? `ref-row-${index}-title-error` : undefined}
-                  className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                  aria-label={t('references.nameLabel')}
+                  aria-invalid={!!nameError}
                 />
-                {titleError && (
-                  <p id={`ref-row-${index}-title-error`} className="text-caption text-destructive" aria-live="polite">
-                    {titleError}
+                {nameError && (
+                  <p className="text-caption text-destructive" aria-live="polite">
+                    {nameError}
                   </p>
                 )}
                 <div className="flex items-start gap-2">
-                  <input
+                  <Input
                     type="url"
-                    value={row.url}
-                    onChange={e => updateRow(index, { url: e.target.value })}
+                    value={row.uri}
+                    onChange={e => updateRow(index, { uri: e.target.value })}
                     onBlur={e => {
                       const normalized = ensureHttps(e.target.value);
-                      if (normalized !== e.target.value) updateRow(index, { url: normalized });
+                      if (normalized !== e.target.value) updateRow(index, { uri: normalized });
                     }}
-                    placeholder={t('references.urlPlaceholder')}
+                    placeholder={t('references.uriPlaceholder')}
                     disabled={disabled}
-                    aria-label={t('references.urlLabel')}
-                    aria-invalid={!!urlError}
-                    aria-describedby={urlError ? `ref-row-${index}-url-error` : undefined}
-                    className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                    aria-label={t('references.uriLabel')}
+                    aria-invalid={!!uriError}
+                    className="flex-1"
                   />
                   {onFileUpload && (
                     <RowAttachFileButton
@@ -156,19 +156,17 @@ export function ReferencesEditor({
                     />
                   )}
                 </div>
-                {urlError && (
-                  <p id={`ref-row-${index}-url-error`} className="text-caption text-destructive" aria-live="polite">
-                    {urlError}
+                {uriError && (
+                  <p className="text-caption text-destructive" aria-live="polite">
+                    {uriError}
                   </p>
                 )}
-                <input
-                  type="text"
-                  value={row.description}
+                <Input
+                  value={row.description ?? ''}
                   onChange={e => updateRow(index, { description: e.target.value })}
                   placeholder={t('references.descriptionPlaceholder')}
                   disabled={disabled}
                   aria-label={t('references.descriptionLabel')}
-                  className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
               </div>
               <Button
@@ -198,10 +196,10 @@ export function ReferencesEditor({
         }}
         title={t('references.removeConfirm.title')}
         description={t('references.removeConfirm.description', {
-          name: pendingDeleteRow?.title.trim() || pendingDeleteRow?.url || t('references.removeConfirm.unnamed'),
+          name: pendingDeleteRow?.name.trim() || pendingDeleteRow?.uri || t('references.removeConfirm.unnamed'),
         })}
         confirmLabel={t('references.removeConfirm.confirm')}
-        cancelLabel={t('dialogs.cancel')}
+        cancelLabel={t('cancel')}
         variant="destructive"
         onConfirm={() => {
           if (pendingDeleteIndex !== null) removeRow(pendingDeleteIndex);

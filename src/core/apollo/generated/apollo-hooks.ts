@@ -12249,33 +12249,22 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutationVariables
 >;
 export const MentionableContributorsDocument = gql`
-    query MentionableContributors($filter: UserFilterInput, $first: Int, $roleSetId: UUID! = "00000000-0000-0000-0000-000000000000", $includeVirtualContributors: Boolean!) {
-  usersPaginated(filter: $filter, first: $first) {
-    users {
-      id
-      profile {
+    query MentionableContributors($spaceID: UUID!, $filter: ContributorFilterInput, $limit: Int = 30) {
+  lookup {
+    space(ID: $spaceID) {
+      mentionableContributors(filter: $filter, limit: $limit) {
         id
-        url
-        displayName
-        location {
-          id
-          city
-          country
-        }
-        avatar: visual(type: AVATAR) {
-          ...VisualModel
-        }
-      }
-    }
-  }
-  lookup @include(if: $includeVirtualContributors) {
-    roleSet(ID: $roleSetId) {
-      virtualContributorsInRoleInHierarchy(role: MEMBER) {
-        id
+        type
+        nameID
         profile {
           id
           url
           displayName
+          location {
+            id
+            city
+            country
+          }
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }
@@ -12298,10 +12287,9 @@ export const MentionableContributorsDocument = gql`
  * @example
  * const { data, loading, error } = useMentionableContributorsQuery({
  *   variables: {
+ *      spaceID: // value for 'spaceID'
  *      filter: // value for 'filter'
- *      first: // value for 'first'
- *      roleSetId: // value for 'roleSetId'
- *      includeVirtualContributors: // value for 'includeVirtualContributors'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

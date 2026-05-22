@@ -21,6 +21,11 @@
     "demo": "Dies ist ein Demobereich zu Testzwecken.",
     "inactive": "Dieser Bereich ist derzeit inaktiv."
   },
+  "knowledge": {
+    "searchPlaceholder": "Wissensdatenbank durchsuchen...",
+    "searchLabel": "Wissensdatenbank durchsuchen",
+    "noResults": "Keine Treffer"
+  },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
     "subspaces": "Unterbereiche",
@@ -35,10 +40,6 @@
     "invite": "Einladen",
     "virtualContributors": "Virtuelle Mitwirkende",
     "communityGuidelines": "Gemeinschaftsrichtlinien",
-    "postIndex": "Beitragsverzeichnis",
-    "searchPlaceholder": "Suchen...",
-    "searchLabel": "Beiträge durchsuchen",
-    "noResults": "Keine Treffer",
     "readMore": "Mehr lesen",
     "editDescription": "Beschreibung bearbeiten",
     "addEvent": "Ereignis hinzufügen",
@@ -513,7 +514,8 @@
       "descriptionLabel": "Beschreibung",
       "descriptionPlaceholder": "Optionale Beschreibung",
       "addRow": "Weiteren Link hinzufügen",
-      "removeRow": "Link entfernen"
+      "removeRow": "Link entfernen",
+      "attachFile": "Datei anhängen"
     }
   },
   "references": {

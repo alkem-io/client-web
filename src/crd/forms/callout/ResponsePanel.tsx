@@ -19,6 +19,14 @@ export type ResponsePanelProps = {
   onPrePopulateLinkRowsChange?: (rows: LinkRow[]) => void;
   prePopulateLinkErrors?: Record<string, string | undefined>;
   /**
+   * Optional file-attach for pre-populate link rows — wires the per-row
+   * paperclip (the "& Files" half of "Links & Files"). Same upload callback
+   * the References editor uses. Returns the resolved URL, or `null` on failure.
+   */
+  prePopulateLinkFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the pre-populate link file picker. */
+  prePopulateLinkUploadAccept?: string;
+  /**
    * Click handler for "Set Default Response" button (opens the nested dialog
    * via the connector). Rendered for post / memo / whiteboard types.
    */
@@ -56,6 +64,8 @@ function LinksPanel(props: ResponsePanelProps) {
     prePopulateLinkRows,
     onPrePopulateLinkRowsChange,
     prePopulateLinkErrors,
+    prePopulateLinkFileUpload,
+    prePopulateLinkUploadAccept,
     disabled,
   } = props;
 
@@ -68,6 +78,8 @@ function LinksPanel(props: ResponsePanelProps) {
           onChange={onPrePopulateLinkRowsChange}
           errors={prePopulateLinkErrors}
           disabled={disabled}
+          onFileUpload={prePopulateLinkFileUpload}
+          uploadAccept={prePopulateLinkUploadAccept}
         />
       )}
     </PanelWrapper>

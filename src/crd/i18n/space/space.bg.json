@@ -21,6 +21,11 @@
     "demo": "Това е демонстрационно пространство за тестови цели.",
     "inactive": "Това пространство е неактивно в момента."
   },
+  "knowledge": {
+    "searchPlaceholder": "Търсене в базата знания...",
+    "searchLabel": "Търсене в базата знания",
+    "noResults": "Няма съвпадения"
+  },
   "sidebar": {
     "aboutSpace": "За това пространство",
     "subspaces": "Подпространства",
@@ -35,10 +40,6 @@
     "invite": "Покани",
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
-    "postIndex": "Индекс на публикациите",
-    "searchPlaceholder": "Търсене...",
-    "searchLabel": "Търсене в публикациите",
-    "noResults": "Няма съвпадения",
     "readMore": "Прочети повече",
     "editDescription": "Редактиране на описанието",
     "addEvent": "Добави събитие",
@@ -513,7 +514,8 @@
       "descriptionLabel": "Описание",
       "descriptionPlaceholder": "По избор описание",
       "addRow": "Добави нова връзка",
-      "removeRow": "Премахни връзката"
+      "removeRow": "Премахни връзката",
+      "attachFile": "Прикачи файл"
     }
   },
   "references": {

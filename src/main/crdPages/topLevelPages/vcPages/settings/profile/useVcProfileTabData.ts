@@ -16,6 +16,7 @@ import type {
   VcProfileReference,
   VcProfileSectionKey,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { mapVirtualContributorToProfileFormValues } from './vcProfileMapper';
 
 const TEMP_PREFIX = 'temp-';
@@ -40,16 +41,12 @@ export type UseVcProfileTabDataResult = {
   error: Error | null;
   dirtyByField: Partial<Record<VcProfileSectionKey, boolean>>;
   saveStatusByField: Partial<Record<VcProfileSectionKey, SectionSaveStatus>>;
-  pendingReferenceDelete: { id: string; name: string } | null;
   uploadingAvatar: boolean;
   pendingAvatarCrop: PendingAvatarCrop | null;
 
   onChange: (patch: Partial<VcProfileFormValues>) => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<VcProfileReference, 'id'>>) => void;
-  onRequestRemoveReference: (id: string) => void;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
+  /** Replace the references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
   onUploadAvatar: (file: File) => void;
   onAvatarCropComplete: (croppedFile: File, altText: string) => void;
   onAvatarCropCancel: () => void;
@@ -89,7 +86,6 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
   );
   const savedFlashTimers = useRef<Partial<Record<VcProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
 
-  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; name: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
@@ -157,59 +153,25 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     if ('references' in patch) clearSectionErrorIfPresent('references');
   };
 
-  const onAddReference = () => {
+  // The shared ReferencesEditor manages the references list (+ its own delete-confirm) and emits the
+  // full list. New rows arrive without an `id`; assign a temp id so the per-section save diffs them
+  // as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const newRef: VcProfileReference = {
-        id: `${TEMP_PREFIX}${Date.now()}`,
-        name: '',
-        uri: '',
-        description: '',
-      };
-      const next = { ...base, references: [...base.references, newRef] };
+      const mapped: VcProfileReference[] = rows.map((r, i) => ({
+        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+        name: r.name,
+        uri: r.uri,
+        description: r.description ?? '',
+      }));
+      const next = { ...base, references: mapped };
       valuesRef.current = next;
       return next;
     });
     clearSectionErrorIfPresent('references');
   };
-
-  const onUpdateReference = (id: string, patch: Partial<Omit<VcProfileReference, 'id'>>) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = {
-        ...base,
-        references: base.references.map(r => (r.id === id ? { ...r, ...patch } : r)),
-      };
-      valuesRef.current = next;
-      return next;
-    });
-    clearSectionErrorIfPresent('references');
-  };
-
-  const onRequestRemoveReference = (id: string) => {
-    const base = valuesRef.current;
-    const ref = base?.references.find(r => r.id === id);
-    if (!ref) return;
-    setPendingReferenceDelete({ id, name: ref.name || ref.uri || 'this reference' });
-  };
-
-  const onConfirmRemoveReference = () => {
-    const pending = pendingReferenceDelete;
-    if (!pending) return;
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = { ...base, references: base.references.filter(r => r.id !== pending.id) };
-      valuesRef.current = next;
-      return next;
-    });
-    setPendingReferenceDelete(null);
-    clearSectionErrorIfPresent('references');
-  };
-
-  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
   // ────────────────── Avatar (FR-163 — crop + commit) ──────────────────
 
@@ -441,15 +403,10 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     error: queryError ?? null,
     dirtyByField,
     saveStatusByField,
-    pendingReferenceDelete,
     uploadingAvatar,
     pendingAvatarCrop,
     onChange,
-    onAddReference,
-    onUpdateReference,
-    onRequestRemoveReference,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
+    onReferencesChange,
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,

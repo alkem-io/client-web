@@ -16,6 +16,7 @@ import type {
   UserProfileReference,
   UserProfileSectionKey,
 } from '@/crd/components/user/settings/UserProfileTabView.types';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { mapUserToProfileFormValues } from './userProfileMapper';
 
 const TEMP_PREFIX = 'temp-';
@@ -40,17 +41,13 @@ export type UseUserProfileTabDataResult = {
   error: Error | null;
   dirtyByField: Partial<Record<UserProfileSectionKey, boolean>>;
   saveStatusByField: Partial<Record<UserProfileSectionKey, SectionSaveStatus>>;
-  pendingReferenceDelete: { id: string; name: string } | null;
   uploadingAvatar: boolean;
   pendingAvatarCrop: PendingAvatarCrop | null;
 
   onChange: (patch: Partial<UserProfileFormValues>) => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => void;
+  /** Replace the arbitrary references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
   onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;
-  onRequestRemoveReference: (id: string) => void;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
   onUploadAvatar: (file: File) => void;
   onAvatarCropComplete: (croppedFile: File, altText: string) => void;
   onAvatarCropCancel: () => void;
@@ -95,7 +92,6 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
   );
   const savedFlashTimers = useRef<Partial<Record<UserProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
 
-  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; name: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
@@ -190,32 +186,21 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     if ('references' in patch || 'recognizedReferences' in patch) clearSectionErrorIfPresent('references');
   };
 
-  const onAddReference = () => {
+  // The shared ReferencesEditor manages the arbitrary references list (+ its own delete-confirm) and
+  // emits the full list. New rows arrive without an `id`; assign a temp id so the per-section save
+  // diffs them as creates. Recognized social links are handled separately (onUpdateRecognizedReference).
+  const onReferencesChange = (rows: ReferenceRow[]) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const newRef: UserProfileReference = {
-        id: `${TEMP_PREFIX}${Date.now()}`,
-        name: '',
-        uri: '',
-        description: '',
+      const mapped: UserProfileReference[] = rows.map((r, i) => ({
+        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+        name: r.name,
+        uri: r.uri,
+        description: r.description ?? '',
         recognized: false,
-      };
-      const next = { ...base, references: [...base.references, newRef] };
-      valuesRef.current = next;
-      return next;
-    });
-    clearSectionErrorIfPresent('references');
-  };
-
-  const onUpdateReference = (id: string, patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = {
-        ...base,
-        references: base.references.map(r => (r.id === id ? { ...r, ...patch } : r)),
-      };
+      }));
+      const next = { ...base, references: mapped };
       valuesRef.current = next;
       return next;
     });
@@ -245,31 +230,6 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     });
     clearSectionErrorIfPresent('references');
   };
-
-  const onRequestRemoveReference = (id: string) => {
-    const base = valuesRef.current;
-    const ref = base?.references.find(r => r.id === id);
-    if (!ref) return;
-    // Use the URI as the dialog body label when the ref has no human name yet
-    // (newly-added arbitrary rows often start blank).
-    setPendingReferenceDelete({ id, name: ref.name || ref.uri || 'this reference' });
-  };
-
-  const onConfirmRemoveReference = () => {
-    const pending = pendingReferenceDelete;
-    if (!pending) return;
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = { ...base, references: base.references.filter(r => r.id !== pending.id) };
-      valuesRef.current = next;
-      return next;
-    });
-    setPendingReferenceDelete(null);
-    clearSectionErrorIfPresent('references');
-  };
-
-  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
   // ────────────────── Avatar (FR-024 — crop + commit) ──────────────────
   // Picking a file opens the CRD `ImageCropDialog` first. Only the dialog's
@@ -554,16 +514,11 @@ export const useUserProfileTabData = (userId: string | undefined): UseUserProfil
     error: queryError ?? null,
     dirtyByField,
     saveStatusByField,
-    pendingReferenceDelete,
     uploadingAvatar,
     pendingAvatarCrop,
     onChange,
-    onAddReference,
-    onUpdateReference,
+    onReferencesChange,
     onUpdateRecognizedReference,
-    onRequestRemoveReference,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,

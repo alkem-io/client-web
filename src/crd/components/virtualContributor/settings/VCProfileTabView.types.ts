@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react';
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 
 export type { SectionSaveStatus };
 
@@ -77,12 +78,11 @@ export type VcProfileViewProps = {
   /** Patch the local buffer for any single field. */
   onChange: (patch: Partial<VcProfileFormValues>) => void;
 
-  /** Append a new arbitrary reference row in the local buffer (temp-id). */
-  onAddReference: () => void;
-  /** Patch a reference by id. */
-  onUpdateReference: (id: string, patch: Partial<Omit<VcProfileReference, 'id'>>) => void;
-  /** Open the destructive ConfirmationDialog for this row (Rule #9 / FR-025). */
-  onRequestRemoveReference: (id: string) => void;
+  /** Replace the references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — passed through to the shared editor. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
 
   /** Avatar upload — opens the CRD `ImageCropDialog` first (Decision #10). */
   onUploadAvatar: (file: File) => void;
@@ -90,11 +90,6 @@ export type VcProfileViewProps = {
 
   /** Save a single section (only that section's fields are persisted). */
   onSaveSection: (section: VcProfileSectionKey) => void;
-
-  /** ConfirmationDialog state for reference deletion (Rule #9 / FR-025). */
-  pendingReferenceDelete: { id: string; name: string } | null;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
 
   /**
    * Read-only metadata rendered under the form: host organization (link) +
