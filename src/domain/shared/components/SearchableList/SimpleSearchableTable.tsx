@@ -45,6 +45,7 @@ export interface SearchableListItem {
   accountId?: string;
   value: string;
   url: string;
+  email?: string;
   verified?: boolean;
   activeLicensePlanIds?: string[];
   avatar?: {

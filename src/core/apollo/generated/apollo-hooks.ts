@@ -1696,6 +1696,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
           push
         }
+        userEmailChanged {
+          email
+          inApp
+          push
+        }
       }
       forumDiscussionComment {
         email
@@ -1738,6 +1743,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
           push
         }
         communicationMessageReceived {
+          email
+          inApp
+          push
+        }
+        userEmailChanged {
           email
           inApp
           push
@@ -15778,6 +15788,11 @@ export const UpdateUserSettingsDocument = gql`
               inApp
               push
             }
+            userEmailChanged {
+              email
+              inApp
+              push
+            }
           }
         }
         platform {
@@ -15803,6 +15818,11 @@ export const UpdateUserSettingsDocument = gql`
               push
             }
             userGlobalRoleChanged {
+              email
+              inApp
+              push
+            }
+            userEmailChanged {
               email
               inApp
               push
@@ -19565,6 +19585,308 @@ export type SpaceLicensePlansQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceLicensePlansQuery(variables: SchemaTypes.SpaceLicensePlansQueryVariables) {
   return { query: SpaceLicensePlansDocument, variables: variables };
+}
+export const AdminUserEmailChangeDocument = gql`
+    mutation AdminUserEmailChange($userID: UUID!, $newEmail: String!, $reason: String!, $approver: EmailChangeApproverInput!) {
+  adminUserEmailChange(
+    adminUserEmailChangeData: {userID: $userID, newEmail: $newEmail, reason: $reason, approver: $approver}
+  ) {
+    success
+    email
+  }
+}
+    `;
+export type AdminUserEmailChangeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUserEmailChangeMutation,
+  SchemaTypes.AdminUserEmailChangeMutationVariables
+>;
+
+/**
+ * __useAdminUserEmailChangeMutation__
+ *
+ * To run a mutation, you first call `useAdminUserEmailChangeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUserEmailChangeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUserEmailChangeMutation, { data, loading, error }] = useAdminUserEmailChangeMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      newEmail: // value for 'newEmail'
+ *      reason: // value for 'reason'
+ *      approver: // value for 'approver'
+ *   },
+ * });
+ */
+export function useAdminUserEmailChangeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUserEmailChangeMutation,
+    SchemaTypes.AdminUserEmailChangeMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUserEmailChangeMutation,
+    SchemaTypes.AdminUserEmailChangeMutationVariables
+  >(AdminUserEmailChangeDocument, options);
+}
+export type AdminUserEmailChangeMutationHookResult = ReturnType<typeof useAdminUserEmailChangeMutation>;
+export type AdminUserEmailChangeMutationResult = Apollo.MutationResult<SchemaTypes.AdminUserEmailChangeMutation>;
+export type AdminUserEmailChangeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUserEmailChangeMutation,
+  SchemaTypes.AdminUserEmailChangeMutationVariables
+>;
+export const AdminUserEmailChangeDriftResolveDocument = gql`
+    mutation AdminUserEmailChangeDriftResolve($userID: UUID!, $canonicalEmail: String!) {
+  adminUserEmailChangeDriftResolve(
+    adminUserEmailChangeDriftResolveData: {userID: $userID, canonicalEmail: $canonicalEmail}
+  ) {
+    success
+    email
+  }
+}
+    `;
+export type AdminUserEmailChangeDriftResolveMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminUserEmailChangeDriftResolveMutation,
+  SchemaTypes.AdminUserEmailChangeDriftResolveMutationVariables
+>;
+
+/**
+ * __useAdminUserEmailChangeDriftResolveMutation__
+ *
+ * To run a mutation, you first call `useAdminUserEmailChangeDriftResolveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUserEmailChangeDriftResolveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUserEmailChangeDriftResolveMutation, { data, loading, error }] = useAdminUserEmailChangeDriftResolveMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      canonicalEmail: // value for 'canonicalEmail'
+ *   },
+ * });
+ */
+export function useAdminUserEmailChangeDriftResolveMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminUserEmailChangeDriftResolveMutation,
+    SchemaTypes.AdminUserEmailChangeDriftResolveMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminUserEmailChangeDriftResolveMutation,
+    SchemaTypes.AdminUserEmailChangeDriftResolveMutationVariables
+  >(AdminUserEmailChangeDriftResolveDocument, options);
+}
+export type AdminUserEmailChangeDriftResolveMutationHookResult = ReturnType<
+  typeof useAdminUserEmailChangeDriftResolveMutation
+>;
+export type AdminUserEmailChangeDriftResolveMutationResult =
+  Apollo.MutationResult<SchemaTypes.AdminUserEmailChangeDriftResolveMutation>;
+export type AdminUserEmailChangeDriftResolveMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminUserEmailChangeDriftResolveMutation,
+  SchemaTypes.AdminUserEmailChangeDriftResolveMutationVariables
+>;
+export const LatestUserEmailChangeAuditEntryDocument = gql`
+    query LatestUserEmailChangeAuditEntry($userID: UUID!) {
+  platformAdmin {
+    latestUserEmailChangeAuditEntry(userID: $userID) {
+      id
+      outcome
+      oldEmail
+      newEmail
+      timestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useLatestUserEmailChangeAuditEntryQuery__
+ *
+ * To run a query within a React component, call `useLatestUserEmailChangeAuditEntryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestUserEmailChangeAuditEntryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestUserEmailChangeAuditEntryQuery({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useLatestUserEmailChangeAuditEntryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+    SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+  > &
+    ({ variables: SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+    SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+  >(LatestUserEmailChangeAuditEntryDocument, options);
+}
+export function useLatestUserEmailChangeAuditEntryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+    SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+    SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+  >(LatestUserEmailChangeAuditEntryDocument, options);
+}
+export function useLatestUserEmailChangeAuditEntrySuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+        SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+    SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+  >(LatestUserEmailChangeAuditEntryDocument, options);
+}
+export type LatestUserEmailChangeAuditEntryQueryHookResult = ReturnType<typeof useLatestUserEmailChangeAuditEntryQuery>;
+export type LatestUserEmailChangeAuditEntryLazyQueryHookResult = ReturnType<
+  typeof useLatestUserEmailChangeAuditEntryLazyQuery
+>;
+export type LatestUserEmailChangeAuditEntrySuspenseQueryHookResult = ReturnType<
+  typeof useLatestUserEmailChangeAuditEntrySuspenseQuery
+>;
+export type LatestUserEmailChangeAuditEntryQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestUserEmailChangeAuditEntryQuery,
+  SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+>;
+export function refetchLatestUserEmailChangeAuditEntryQuery(
+  variables: SchemaTypes.LatestUserEmailChangeAuditEntryQueryVariables
+) {
+  return { query: LatestUserEmailChangeAuditEntryDocument, variables: variables };
+}
+export const UserEmailChangeAuditEntriesDocument = gql`
+    query UserEmailChangeAuditEntries($userID: UUID!, $first: Float, $after: String) {
+  platformAdmin {
+    userEmailChangeAuditEntries(userID: $userID, first: $first, after: $after) {
+      auditEntries {
+        id
+        timestamp
+        outcome
+        initiatorRole
+        initiator {
+          id
+          displayName
+        }
+        subject {
+          id
+          displayName
+        }
+        oldEmail
+        newEmail
+        failureReason
+        reason
+        approver {
+          name
+          role
+          organization
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserEmailChangeAuditEntriesQuery__
+ *
+ * To run a query within a React component, call `useUserEmailChangeAuditEntriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserEmailChangeAuditEntriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserEmailChangeAuditEntriesQuery({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useUserEmailChangeAuditEntriesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserEmailChangeAuditEntriesQuery,
+    SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+  > &
+    ({ variables: SchemaTypes.UserEmailChangeAuditEntriesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UserEmailChangeAuditEntriesQuery,
+    SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+  >(UserEmailChangeAuditEntriesDocument, options);
+}
+export function useUserEmailChangeAuditEntriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserEmailChangeAuditEntriesQuery,
+    SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserEmailChangeAuditEntriesQuery,
+    SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+  >(UserEmailChangeAuditEntriesDocument, options);
+}
+export function useUserEmailChangeAuditEntriesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserEmailChangeAuditEntriesQuery,
+        SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.UserEmailChangeAuditEntriesQuery,
+    SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+  >(UserEmailChangeAuditEntriesDocument, options);
+}
+export type UserEmailChangeAuditEntriesQueryHookResult = ReturnType<typeof useUserEmailChangeAuditEntriesQuery>;
+export type UserEmailChangeAuditEntriesLazyQueryHookResult = ReturnType<typeof useUserEmailChangeAuditEntriesLazyQuery>;
+export type UserEmailChangeAuditEntriesSuspenseQueryHookResult = ReturnType<
+  typeof useUserEmailChangeAuditEntriesSuspenseQuery
+>;
+export type UserEmailChangeAuditEntriesQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserEmailChangeAuditEntriesQuery,
+  SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+>;
+export function refetchUserEmailChangeAuditEntriesQuery(
+  variables: SchemaTypes.UserEmailChangeAuditEntriesQueryVariables
+) {
+  return { query: UserEmailChangeAuditEntriesDocument, variables: variables };
 }
 export const PlatformAdminUsersListDocument = gql`
     query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {

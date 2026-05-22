@@ -21,7 +21,7 @@
 
 - Q: What governance information must the admin record when changing a login email? → A: The change dialog also captures a mandatory free-text **reason** for the change and **approver** details — the name and role of the person who authorized the change within the subject user's organization, plus an optional approver organization. Reason and approver are submitted with the change, recorded on the resulting audit entry, and shown on every history entry. The server contract (spec 097) requires both. (Reflects the implemented contract.)
 - Q: How many partial-success ("committed but a follow-up step failed") outcomes exist? → A: Five — security-signal, new-address-notification, global-admin-notification, **space-admin-notification**, and session-invalidation failures — all classified success-with-warning. (The earlier draft listed four; the server enum adds a space-admin notification outcome.)
-- Q: Should platform administrators be able to opt in to a notification when any user's email changes? → A: Yes. Server spec 097 adds a `userEmailChanged` platform-admin notification; the client exposes it as a toggle in the existing user notification-settings surfaces (admin and CRD), alongside the other platform-admin notification preferences.
+- Q: Should administrators be able to opt in to a notification when a user's email changes? → A: Yes. Server spec 097 adds **two** `userEmailChanged` notifications — a platform-admin one (fires for any user) and a space-admin one (fires for a member of a space the recipient administers). The client exposes both as toggles in the existing user notification-settings surfaces (admin and CRD): the platform-admin toggle alongside the other platform-admin preferences, the space-admin toggle alongside the other space-admin preferences. (Revised 2026-05-22: the earlier answer listed only the platform-admin notification; the server contract has both.)
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -173,9 +173,12 @@ In the rare case where an email change applied to one part of the system but not
 
 - **FR-030**: A change MUST capture a free-text **reason** and the **approver** who authorized it (approver name and role required, approver organization optional). The reason and approver are submitted with the change mutation, recorded on the resulting audit entry, and displayed on the corresponding history entry (FR-019). The reason and the required approver fields MUST be validated client-side (non-empty, within length limits) before submission and gate the submit control (FR-006).
 
-**Platform-admin notification preference**
+**Email-change notification preferences**
 
-- **FR-031**: The user notification-settings surfaces MUST expose a platform-admin **"user email changed"** notification preference (in-app, email, and push channels), letting an administrator opt in or out of being notified when any user's login email changes. This preference is read and written through the existing user-settings update flow, alongside the other platform-admin notification preferences.
+- **FR-031**: The user notification-settings surfaces MUST expose two distinct **"user email changed"** notification preferences (each with in-app, email, and push channels), read and written through the existing user-settings update flow:
+  - a **platform-admin** preference, alongside the other platform-admin notification preferences, letting a platform administrator opt in or out of being notified when *any* user's login email changes;
+  - a **space-admin** preference, alongside the other space-admin notification preferences, letting a space administrator or lead opt in or out of being notified when the login email of a member of a space they administer changes.
+  Both preferences appear in both the MUI admin and CRD notification-settings surfaces.
 
 ### Key Entities
 

@@ -369,9 +369,11 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 101-change-user-email: Added TypeScript 5.x, React 19 (React Compiler enabled) + Apollo Client (GraphQL), MUI + Emotion, Formik + Yup,
 - 098-crd-templates: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`).
 
 
 ## Active Technologies
 - TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`). (098-crd-templates)
-- localStorage (`alkemio-crd-enabled`) for the CRD toggle (existing). GraphQL data layer unchanged. (098-crd-templates)
+- TypeScript 5.x, React 19 (React Compiler enabled) + Apollo Client (GraphQL), MUI + Emotion, Formik + Yup, (101-change-user-email)
+- None client-side. All state server-owned (spec 097), accessed via (101-change-user-email)

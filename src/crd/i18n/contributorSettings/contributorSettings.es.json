@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
           "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
-          "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad"
+          "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
+          "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
         },
         "user": {
           "commentReply": "Recibir una notificación cuando alguien responde a mi comentario",

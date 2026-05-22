@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Receive a notification when a new community application is submitted",
           "communityNewMember": "Receive a notification when a new member joins the community",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
-          "communicationMessageReceived": "Receive a notification when a community message is received"
+          "communicationMessageReceived": "Receive a notification when a community message is received",
+          "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
         },
         "user": {
           "commentReply": "Receive a notification when someone replies to my comment",
@@ -268,6 +269,7 @@
           "userProfileCreated": "Receive a notification when a new user profile is created",
           "userProfileRemoved": "Receive a notification when a user profile is removed",
           "userGlobalRoleChanged": "Receive a notification when a user's global role changes",
+          "userEmailChanged": "Receive a notification when a user's email address changes",
           "spaceCreated": "Receive a notification when a new space is created"
         },
         "organization": {

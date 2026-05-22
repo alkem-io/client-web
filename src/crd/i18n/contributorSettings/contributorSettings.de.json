@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
           "communityNewMember": "Benachrichtigung erhalten, wenn ein neues Mitglied der Community beitritt",
           "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
-          "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird"
+          "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
+          "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
         },
         "user": {
           "commentReply": "Benachrichtigung erhalten, wenn jemand auf meinen Kommentar antwortet",
