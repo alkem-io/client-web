@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useCreateReferenceOnProfileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateReferenceOnProfileMutation, useDeleteReferenceMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   CommunityGuidelinesEditorValue,
   CommunityGuidelinesReferenceRow,
@@ -46,6 +46,7 @@ export function useCommunityGuidelinesData(
   const { communityGuidelines, profileId, loading, onUpdateCommunityGuidelines, onSelectCommunityGuidelinesTemplate } =
     useCommunityGuidelines(communityGuidelinesId);
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   // The Community tab renders inside the space's ambient `StorageConfigContextProvider`, so reference
   // file uploads land in the space's own bucket (`temporaryLocation: true`) — same path as the About tab
   // references and the Innovation Pack form (spec 098 D24 / FR-038).
@@ -102,6 +103,16 @@ export function useCommunityGuidelinesData(
             },
           });
         }
+      }
+      // Delete references the user removed this session. The bulk update only upserts the references it's
+      // handed (keyed by ID) — it never deletes the ones omitted from the array — so removed rows have to be
+      // deleted explicitly. Do this before the update so its awaited refetch reflects the deletions.
+      const remainingIds = new Set(value.references.flatMap(r => (r.id ? [r.id] : [])));
+      const removedRefs = serverValue.references.filter(
+        (r): r is CommunityGuidelinesReferenceRow & { id: string } => !!r.id && !remainingIds.has(r.id)
+      );
+      for (const ref of removedRefs) {
+        await deleteReference({ variables: { input: { ID: ref.id } } });
       }
       await onUpdateCommunityGuidelines({
         displayName: value.title,

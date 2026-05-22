@@ -534,7 +534,11 @@ describe('mapFormToCalloutUpdateInput', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
         tags: ['a', 'b'],
-        editMeta: { framingProfileTagsetId: 'tagset-1' },
+        editMeta: {
+          framingProfileTagsetId: 'tagset-1',
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+        },
       }),
       updateOptions
     );
@@ -572,7 +576,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: 'X',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );
@@ -595,7 +599,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: '',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );
