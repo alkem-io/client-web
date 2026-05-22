@@ -1,4 +1,4 @@
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -6,8 +6,8 @@ import useNavigate from '@/core/routing/useNavigate';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { SearchField } from '@/crd/forms/SearchField';
 import { Button } from '@/crd/primitives/button';
-import { Input } from '@/crd/primitives/input';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
@@ -121,24 +121,14 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         {/* Search filters the feed and the sidebar index; tags live behind the
             filter button rather than on the board. */}
         <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
-              aria-hidden="true"
-            />
-            <Input
-              type="search"
-              value={searchQuery}
-              onChange={event => setSearchQuery(event.target.value)}
-              placeholder={t('knowledge.searchPlaceholder')}
-              aria-label={t('knowledge.searchLabel')}
-              className="pl-9"
-            />
-          </div>
-
-          <div className="flex h-9 shrink-0 items-center gap-0.5 rounded-md border border-border px-0.5">
-            <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
-          </div>
+          <SearchField
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            placeholder={t('knowledge.searchPlaceholder')}
+            ariaLabel={t('knowledge.searchLabel')}
+            className="flex-1"
+          />
+          <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         </div>
 
         <FilterResultsSummary searchTerm={searchQuery} tags={tagsFilter} onClear={handleClearFilters} />

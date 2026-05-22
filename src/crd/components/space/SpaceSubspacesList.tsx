@@ -1,8 +1,9 @@
-import { Folder, Search } from 'lucide-react';
+import { Folder } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
+import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
+import { SearchField } from '@/crd/forms/SearchField';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
@@ -115,20 +116,18 @@ export function SpaceSubspacesList({
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <input
-          type="text"
-          placeholder={t('subspaces.search')}
+      {/* Search + tag filter */}
+      <div className="flex items-center gap-2">
+        <SearchField
           value={searchQuery}
-          onChange={e => {
-            setSearchQuery(e.target.value);
+          onValueChange={value => {
+            setSearchQuery(value);
             setShowAll(false);
           }}
-          aria-label={t('subspaces.search')}
-          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+          placeholder={t('subspaces.search')}
+          className="flex-1"
         />
+        <TagFilterPopover tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />
       </div>
 
       {/* Status filter pills — only shown when subspaces have mixed statuses */}
@@ -159,10 +158,6 @@ export function SpaceSubspacesList({
           })}
         </fieldset>
       )}
-
-      {/* Tag filter chips — capped at 2 rows, long tags truncate (full text on
-          hover), the overflow collapses into a +N that expands the full list. */}
-      {allTags.length > 0 && <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
 
       {/* Active search/tag filters summary */}
       <FilterResultsSummary

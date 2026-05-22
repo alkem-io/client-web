@@ -2,7 +2,6 @@ import { Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
-import { ToolbarIconButton } from './ToolbarIconButton';
 
 type TagFilterPopoverProps = {
   tags: string[];
@@ -12,22 +11,34 @@ type TagFilterPopoverProps = {
 };
 
 /**
- * A toolbar filter button that opens a popover listing every tag as a
- * clickable toggle chip — the tags never take up space on the board itself.
- * The button highlights while any tag filter is active. Renders nothing when
- * there are no tags to filter by.
+ * A filter button — sized to sit beside the search field — that opens a
+ * popover listing every tag as a clickable toggle chip, so the tags never take
+ * up space on the board itself. The button highlights while any tag filter is
+ * active. Renders nothing when there are no tags to filter by.
  */
 export function TagFilterPopover({ tags, selectedTags, onTagClick, className }: TagFilterPopoverProps) {
   const { t } = useTranslation('crd-common');
 
   if (tags.length === 0) return null;
 
+  const active = selectedTags.length > 0;
+
   return (
     <Popover>
       <PopoverTrigger asChild={true}>
-        <ToolbarIconButton active={selectedTags.length > 0} aria-label={t('filters.filterByTag')} className={className}>
+        <button
+          type="button"
+          aria-label={t('filters.filterByTag')}
+          className={cn(
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            active
+              ? 'border-primary text-primary'
+              : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+            className
+          )}
+        >
           <Filter className="w-4 h-4" aria-hidden="true" />
-        </ToolbarIconButton>
+        </button>
       </PopoverTrigger>
       <PopoverContent
         side="bottom"
