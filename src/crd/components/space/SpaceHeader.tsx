@@ -1,4 +1,4 @@
-import { Activity, Home, Maximize2, Minimize2, Settings, Share2, Video } from 'lucide-react';
+import { Activity, FoldHorizontal, Home, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
@@ -111,9 +111,9 @@ export function SpaceHeader({
                     aria-label={actions.fullWidth ? t('mobile.collapseWidth') : t('mobile.expandWidth')}
                   >
                     {actions.fullWidth ? (
-                      <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                      <FoldHorizontal className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Maximize2 className="h-4 w-4" aria-hidden="true" />
+                      <UnfoldHorizontal className="h-4 w-4" aria-hidden="true" />
                     )}
                   </Button>
                 )}
