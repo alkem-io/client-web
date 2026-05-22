@@ -2,8 +2,8 @@ import { LayoutGrid, List, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import usePersistedState from '@/core/state/usePersistedState';
 import { CalloutListView } from '@/crd/components/callout/CalloutListView';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
@@ -13,9 +13,9 @@ import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
+import { mapCalloutsToListItems } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
@@ -37,15 +37,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<KnowledgeViewMode>(() =>
-    localStorage.getItem(KNOWLEDGE_VIEW_STORAGE_KEY) === 'list' ? 'list' : 'grid'
-  );
+  const [viewMode, setViewMode] = usePersistedState<KnowledgeViewMode>(KNOWLEDGE_VIEW_STORAGE_KEY, 'grid');
   const [createOpen, setCreateOpen] = useState(false);
-
-  const handleViewModeChange = (mode: KnowledgeViewMode) => {
-    setViewMode(mode);
-    localStorage.setItem(KNOWLEDGE_VIEW_STORAGE_KEY, mode);
-  };
 
   const {
     callouts,
@@ -91,40 +84,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     return haystack.includes(trimmedQuery);
   });
 
-  // Bracketed response summary for the list view, e.g. "2 memos". Built from
-  // the callout's contribution type + activity count; callouts that don't
-  // collect contributions get no summary.
-  const formatResponseMeta = (callout: (typeof callouts)[number]): string | undefined => {
-    const count = callout.activity ?? 0;
-    if (count <= 0) return undefined;
-    switch (callout.settings?.contribution?.allowedTypes?.[0]) {
-      case CalloutContributionType.Post:
-        return t('knowledge.count.post', { count });
-      case CalloutContributionType.Whiteboard:
-        return t('knowledge.count.whiteboard', { count });
-      case CalloutContributionType.Memo:
-        return t('knowledge.count.memo', { count });
-      case CalloutContributionType.Link:
-        return t('knowledge.count.link', { count });
-      case CalloutContributionType.CollaboraDocument:
-        return t('knowledge.count.document', { count });
-      default:
-        return undefined;
-    }
-  };
-
-  const listItems = visibleCallouts.map(callout => {
-    const url = callout.framing.profile.url;
-    return {
-      id: callout.id,
-      title: callout.framing.profile.displayName,
-      type: callout.framing.type === CalloutFramingType.Whiteboard ? ('whiteboard' as const) : ('text' as const),
-      // Carry the active tab (`?tab=N`) on the callout URL so the background
-      // space page stays on the Knowledge Base tab when the dialog opens.
-      href: url ? buildSpaceSectionUrl(url, sectionIndex + 1) : undefined,
-      meta: formatResponseMeta(callout),
-    };
-  });
+  const listItems = mapCalloutsToListItems(visibleCallouts, sectionIndex + 1, t);
 
   // SPA-navigate to the callout (opens the detail dialog over this tab) rather
   // than letting the native <a> do a full-page load that resets the tab.
@@ -185,7 +145,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
               type="button"
               aria-label={t('knowledge.viewGrid')}
               aria-pressed={viewMode === 'grid'}
-              onClick={() => handleViewModeChange('grid')}
+              onClick={() => setViewMode('grid')}
               className={cn(
                 'flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 viewMode === 'grid' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
@@ -197,7 +157,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
               type="button"
               aria-label={t('knowledge.viewList')}
               aria-pressed={viewMode === 'list'}
-              onClick={() => handleViewModeChange('list')}
+              onClick={() => setViewMode('list')}
               className={cn(
                 'flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 viewMode === 'list' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
