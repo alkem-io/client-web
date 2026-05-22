@@ -268,6 +268,7 @@
           "userProfileCreated": "Krijg een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
           "userProfileRemoved": "Krijg een melding wanneer een gebruikersprofiel wordt verwijderd",
           "userGlobalRoleChanged": "Krijg een melding wanneer de globale rol van een gebruiker verandert",
+          "userEmailChanged": "Krijg een melding wanneer het e-mailadres van een gebruiker verandert",
           "spaceCreated": "Krijg een melding wanneer er een nieuwe Space wordt aangemaakt"
         },
         "organization": {
