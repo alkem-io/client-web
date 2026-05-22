@@ -2,6 +2,7 @@ import { Folder, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
+import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
@@ -162,6 +163,17 @@ export function SpaceSubspacesList({
       {/* Tag filter chips — capped at 2 rows, long tags truncate (full text on
           hover), the overflow collapses into a +N that expands the full list. */}
       {allTags.length > 0 && <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
+
+      {/* Active search/tag filters summary */}
+      <FilterResultsSummary
+        searchTerm={searchQuery}
+        tags={selectedTags}
+        onClear={() => {
+          setSearchQuery('');
+          setSelectedTags([]);
+          setShowAll(false);
+        }}
+      />
 
       {/* Grid */}
       {filtered.length === 0 ? (

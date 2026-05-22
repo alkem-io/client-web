@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Search the knowledge base...",
     "searchLabel": "Search the knowledge base",
-    "noResults": "No matches"
+    "noResults": "No matches",
+    "viewGrid": "Card view",
+    "viewList": "List view",
+    "count": {
+      "post_one": "{{count}} post",
+      "post_other": "{{count}} posts",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memos",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
   },
   "sidebar": {
     "aboutSpace": "About this Space",

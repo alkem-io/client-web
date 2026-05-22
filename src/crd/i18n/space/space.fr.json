@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Rechercher dans la base de connaissances...",
     "searchLabel": "Rechercher dans la base de connaissances",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "viewGrid": "Vue en cartes",
+    "viewList": "Vue en liste",
+    "count": {
+      "post_one": "{{count}} publication",
+      "post_other": "{{count}} publications",
+      "whiteboard_one": "{{count}} tableau blanc",
+      "whiteboard_other": "{{count}} tableaux blancs",
+      "memo_one": "{{count}} mémo",
+      "memo_other": "{{count}} mémos",
+      "link_one": "{{count}} lien",
+      "link_other": "{{count}} liens",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
   },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",

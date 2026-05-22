@@ -24,6 +24,11 @@
   "tags": {
     "moreAria": "Toon {{count}} meer"
   },
+  "filters": {
+    "summary": "Resultaten voor {{criteria}}",
+    "and": "en",
+    "clear": "Filters wissen"
+  },
   "share": {
     "title": "Delen",
     "button": "Delen",

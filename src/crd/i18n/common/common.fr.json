@@ -24,6 +24,11 @@
   "tags": {
     "moreAria": "Afficher {{count}} de plus"
   },
+  "filters": {
+    "summary": "Résultats pour {{criteria}}",
+    "and": "et",
+    "clear": "Effacer les filtres"
+  },
   "share": {
     "title": "Partager",
     "button": "Partager",

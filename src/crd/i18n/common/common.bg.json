@@ -24,6 +24,11 @@
   "tags": {
     "moreAria": "Покажи още {{count}}"
   },
+  "filters": {
+    "summary": "Резултати за {{criteria}}",
+    "and": "и",
+    "clear": "Изчисти филтрите"
+  },
   "share": {
     "title": "Споделяне",
     "button": "Споделяне",
