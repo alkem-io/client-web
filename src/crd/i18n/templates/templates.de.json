@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Beiträge",
     "whiteboard": "Whiteboards",
-    "link": "Links"
+    "link": "Links",
+    "memo": "Memos"
   },
   "preview": {
     "loading": "Vorlage wird geladen…",
@@ -286,14 +287,7 @@
   },
   "packProfile": {
     "shareTooltip": "Dieses Innovation Pack teilen",
-    "manage": "Dieses Pack verwalten",
-    "sidebarLabel": "Pack-Details",
-    "provider": "Anbieter",
-    "providerUnknown": "Anbieter unbekannt",
-    "tags": "Tags",
-    "references": "Referenzen",
-    "referencesEmpty": "Keine Referenzen.",
-    "templatesHeading": "Vorlagen"
+    "manage": "Dieses Pack verwalten"
   },
   "library": {
     "title": "Innovationsbibliothek",

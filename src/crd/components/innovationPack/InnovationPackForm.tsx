@@ -1,8 +1,8 @@
 import { ImageIcon, Loader2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReferenceRowsEditor } from '@/crd/components/templates/forms/ReferenceRowsEditor';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -35,6 +35,8 @@ export function InnovationPackForm({
   isDirty,
   providerName,
   avatarUrl,
+  onReferenceFileUpload,
+  referenceUploadAccept,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -120,11 +122,13 @@ export function InnovationPackForm({
       </div>
 
       {/* References */}
-      <ReferenceRowsEditor
-        value={value.references}
+      <ReferencesEditor
+        rows={value.references}
         onChange={references => onChange({ ...value, references })}
         errors={referenceErrors}
         label={t('packForm.references')}
+        onFileUpload={onReferenceFileUpload}
+        uploadAccept={referenceUploadAccept}
       />
 
       {/* Listed in store */}

@@ -19,6 +19,8 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 /** String-union template type used everywhere in CRD (NOT the GraphQL `TemplateType` enum). */
 export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines';
 
+type ContributionType = 'post' | 'whiteboard' | 'link' | 'memo';
+
 /** Order in which sections render in the manager view (fixed). */
 export const TEMPLATE_TYPE_ORDER: readonly TemplateType[] = [
   'space',
@@ -89,6 +91,12 @@ export type TemplatesManagerViewProps = {
   onCreate: (type: TemplateType) => void;
   onImport: (type: TemplateType) => void;
   onTemplateAction: (id: string, action: TemplateAction) => void;
+  /**
+   * Read-only presentation (pack public profile). When true, each card's kebab is reduced to Preview only —
+   * Duplicate/Edit/Delete are omitted regardless of the `can*` predicates (Duplicate writes into the holder's
+   * own set, which a public-profile viewer cannot do). Management contexts leave this unset.
+   */
+  readOnly?: boolean;
   className?: string;
 };
 
@@ -129,7 +137,7 @@ export type TemplateContent =
        * matching the in-feed `CalloutDetailDialog`'s rendering. D19, 2026-05-18.
        */
       references?: { id: string; name: string; uri: string; description?: string }[];
-      allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
+      allowedContributionTypes: ContributionType[];
       commentsEnabled: boolean;
       /** markdown */
       defaultPostDescription?: string;
@@ -210,7 +218,7 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   framingLinks?: { name: string; uri: string }[];
   framingMediaFiles?: File[];
   framingPoll?: { question?: string; options?: string[] };
-  allowedContributionTypes: ('post' | 'whiteboard' | 'link')[];
+  allowedContributionTypes: ContributionType[];
   commentsEnabled: boolean;
   defaultPostDescription?: string;
   defaultWhiteboardContent?: string;
@@ -297,6 +305,14 @@ export type CommunityGuidelinesTemplateFormProps = {
   value: CommunityGuidelinesTemplateValues;
   errors: TemplateFormErrors;
   onChange: (next: CommunityGuidelinesTemplateValues) => void;
+  /**
+   * Per-row paperclip file-attach for the references editor (D24). Uploads a file and resolves the
+   * stored URL, written into the row's `uri`. Wired by `useTemplateForms`' `referenceUpload` arg to the
+   * holder bucket (`temporaryLocation: true`); omit to hide the paperclip (read-only / provider-less callers).
+   */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the references file picker. */
+  referenceUploadAccept?: string;
 } & MarkdownUploadProps;
 export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;

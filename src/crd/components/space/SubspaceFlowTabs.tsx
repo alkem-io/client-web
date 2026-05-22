@@ -12,6 +12,8 @@ export type SubspaceFlowPhase = {
   id: string;
   label: string;
   description?: string;
+  /** Id of this phase's configured default callout template, if any — used to pre-load the create-callout form. */
+  defaultCalloutTemplateId?: string;
 };
 
 export type SubspaceFlowTabsProps = {

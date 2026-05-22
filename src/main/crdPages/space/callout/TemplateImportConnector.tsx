@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery, useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-import { calloutTemplateContentToFormValues } from '@/main/crdPages/templates/calloutTemplateMapper';
-import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
+import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type TemplateImportConnectorProps = {
@@ -49,45 +47,55 @@ export function TemplateImportConnector({
   const picker = useTemplatePicker({ allowedTypes: ['callout'], accountId, spaceTemplatesSetId, open, onOpenChange });
   const [getTemplateContent] = useTemplateContentLazyQuery();
   const [pendingValues, setPendingValues] = useState<Partial<CalloutFormValues> | null>(null);
-  const [appliedFor, setAppliedFor] = useState<string | null>(null);
+  // 2026-05-19 — use a ref (not state) to track "which selectedId has the effect already fetched for".
+  // The previous `appliedFor` state had a subtle bug: calling `setAppliedFor(selectedId)` inside the
+  // effect's synchronous body triggered a re-render → React then fired the *cleanup* of the still-in-
+  // flight effect (because `appliedFor` is in deps) → `cancelled = true` → when the async fetch
+  // eventually resolved the apply step was silently skipped. Net effect: the picker closed but the
+  // form was never populated. Tracking the latest pick in a ref decouples the staleness check from
+  // React's effect lifecycle — refs don't trigger re-renders so the effect stays alive through the
+  // full async chain, while a *newer* pick (which DOES re-fire the effect by changing `selectedId`)
+  // still supersedes via the ref check at each await boundary.
+  const fetchedForRef = useRef<string | null>(null);
+  const selectedId = picker.selectedTemplateId;
+  const { clearSelection } = picker;
+
+  // FR-084: a template pick is a one-shot, consume-once event. After the connector consumes a
+  // selection (direct apply, overwrite-confirm, or overwrite-cancel/dismiss) it clears the picker's
+  // `selectedTemplateId` so re-picking the *same* template is a real null→id transition again — without
+  // this, `setSelectedTemplateId(sameId)` is a no-op and the flow never re-runs. The ref guard resets
+  // here whenever the selection clears, so the next pick of the same id is allowed to fetch again.
+  const consumeSelection = () => {
+    fetchedForRef.current = null;
+    clearSelection();
+  };
 
   // When the user picks a template, re-fetch its full callout content and apply (or stage the overwrite-confirm).
   // D18, 2026-05-18: when the template carries a server-rendered whiteboard preview, fetch the image as
   // a `Blob` and seed `whiteboardPreviewImages` so `CalloutFormConnector`'s post-create upload step carries
   // it through to the new callout's `WHITEBOARD_PREVIEW` Visual. Fetch failures are non-fatal (the form
   // still shows the server URL via the D16 fallback; the new callout just ends up with no preview image).
-  const selectedId = picker.selectedTemplateId;
   useEffect(() => {
-    if (!selectedId || appliedFor === selectedId) return;
-    setAppliedFor(selectedId);
-    // Guard against a stale resolution: if the user picks another template (or the dialog
-    // closes) before the async fetch settles, the cleanup flips `cancelled` so the earlier
-    // request's continuation no-ops instead of applying values for a no-longer-selected template.
-    let cancelled = false;
-    void getTemplateContent({ variables: { templateId: selectedId, includeCallout: true } }).then(async ({ data }) => {
-      if (cancelled) return;
-      const callout = data?.lookup.template?.callout;
-      if (!callout) return;
-      const values = calloutTemplateContentToFormValues(callout);
-      if (values.whiteboardPreviewServerUrl) {
-        const blob = await fetchPreviewImageBlob(values.whiteboardPreviewServerUrl);
-        if (cancelled) return;
-        if (blob) {
-          values.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
-        }
-      }
-      if (cancelled) return;
+    // Selection cleared (initial, or after a consume) — reset the per-id guard so the same template
+    // can be picked again later and re-run the fetch/confirm flow.
+    if (!selectedId) {
+      fetchedForRef.current = null;
+      return;
+    }
+    if (fetchedForRef.current === selectedId) return;
+    fetchedForRef.current = selectedId;
+    void loadCalloutTemplateFormValues(getTemplateContent, selectedId).then(values => {
+      // If a newer pick has superseded this one, the ref's `current` will no longer match.
+      if (fetchedForRef.current !== selectedId || !values) return;
       if (isFormDirty) {
         setPendingValues(values);
       } else {
         onTemplateSelected(values);
         onOpenChange(false);
+        consumeSelection();
       }
     });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedId, appliedFor, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent]);
+  }, [selectedId, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent, clearSelection]);
 
   const confirmOverwrite = () => {
     if (pendingValues) {
@@ -95,6 +103,12 @@ export function TemplateImportConnector({
       onOpenChange(false);
     }
     setPendingValues(null);
+    consumeSelection();
+  };
+
+  const cancelOverwrite = () => {
+    setPendingValues(null);
+    consumeSelection();
   };
 
   return (
@@ -102,13 +116,13 @@ export function TemplateImportConnector({
       <TemplatePicker {...picker.pickerProps} />
       <ConfirmationDialog
         open={pendingValues !== null}
-        onOpenChange={o => !o && setPendingValues(null)}
+        onOpenChange={o => !o && cancelOverwrite()}
         title={t('findTemplate.overwriteTitle')}
         description={t('findTemplate.overwriteDescription')}
         confirmLabel={t('findTemplate.overwriteConfirm')}
         cancelLabel={t('dialogs.cancel')}
         onConfirm={confirmOverwrite}
-        onCancel={() => setPendingValues(null)}
+        onCancel={cancelOverwrite}
       />
     </>
   );

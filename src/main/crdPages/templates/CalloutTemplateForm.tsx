@@ -37,12 +37,22 @@ export type CalloutTemplateFormProps = {
   spaceId?: string;
   /** Disable every control while the template create/update mutation is in flight. */
   disabled?: boolean;
+  /**
+   * Per-row paperclip file-attach for the "More options" References editor (D24). Wired by
+   * `useTemplateForms`' `referenceUpload` arg to the holder bucket (`temporaryLocation: true`); omit to
+   * hide the paperclip (read-only / provider-less callers). Mirrors the live Create-Callout dialog.
+   */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the references file picker. */
+  referenceUploadAccept?: string;
 } & MarkdownUploadProps;
 
 export function CalloutTemplateForm({
   form,
   spaceId,
   disabled,
+  onReferenceFileUpload,
+  referenceUploadAccept,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -183,6 +193,8 @@ export function CalloutTemplateForm({
           onChange={v => setField('referenceRows', v)}
           errors={errors as Record<string, string | undefined>}
           disabled={disabled}
+          onFileUpload={onReferenceFileUpload}
+          uploadAccept={referenceUploadAccept}
         />
       </div>
 

@@ -56,7 +56,8 @@
   "contributionType": {
     "post": "Publicaciones",
     "whiteboard": "Pizarras",
-    "link": "Enlaces"
+    "link": "Enlaces",
+    "memo": "Memos"
   },
   "preview": {
     "loading": "Cargando plantilla…",
@@ -286,14 +287,7 @@
   },
   "packProfile": {
     "shareTooltip": "Comparte este Innovation Pack",
-    "manage": "Administrar este paquete",
-    "sidebarLabel": "Detalles del paquete",
-    "provider": "Proveedor",
-    "providerUnknown": "Proveedor desconocido",
-    "tags": "Etiquetas",
-    "references": "Referencias",
-    "referencesEmpty": "Sin referencias.",
-    "templatesHeading": "Plantillas"
+    "manage": "Administrar este paquete"
   },
   "library": {
     "title": "Biblioteca de Innovación",

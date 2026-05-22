@@ -139,6 +139,26 @@
       "reject": "Ablehnen",
       "delete": "Löschen",
       "empty": "Keine ausstehenden Mitgliedschaften.",
+      "noMatch": "Keine ausstehenden Mitgliedschaften entsprechen den gewählten Filtern.",
+      "filterLabel": "Nach Status filtern",
+      "sortBy": "Sortieren nach {{column}}",
+      "viewApplication": "Antrag ansehen",
+      "viewInvitation": "Einladung ansehen",
+      "viewDialog": {
+        "created": "Erstellt am {{date}}",
+        "updated": "Aktualisiert am {{date}}",
+        "welcomeMessage": "Willkommensnachricht",
+        "noWelcomeMessage": "Keine Willkommensnachricht angegeben.",
+        "noAnswers": "Keine Antworten angegeben.",
+        "close": "Schließen",
+        "loading": "Details werden geladen"
+      },
+      "pagination": {
+        "showing": "Zeige {{from}} bis {{to}} von {{total}}",
+        "previous": "Vorherige Seite",
+        "page": "Seite {{page}} von {{total}}",
+        "next": "Nächste Seite"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Antrag erhalten",

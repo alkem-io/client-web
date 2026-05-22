@@ -139,6 +139,26 @@
       "reject": "Rejeter",
       "delete": "Supprimer",
       "empty": "Aucune adhésion en attente.",
+      "noMatch": "Aucune adhésion en attente ne correspond aux filtres sélectionnés.",
+      "filterLabel": "Filtrer par statut",
+      "sortBy": "Trier par {{column}}",
+      "viewApplication": "Voir la candidature",
+      "viewInvitation": "Voir l'invitation",
+      "viewDialog": {
+        "created": "Créé le {{date}}",
+        "updated": "Mis à jour le {{date}}",
+        "welcomeMessage": "Message de bienvenue",
+        "noWelcomeMessage": "Aucun message de bienvenue fourni.",
+        "noAnswers": "Aucune réponse fournie.",
+        "close": "Fermer",
+        "loading": "Chargement des détails"
+      },
+      "pagination": {
+        "showing": "Affichage de {{from}} à {{to}} sur {{total}}",
+        "previous": "Page précédente",
+        "page": "Page {{page}} sur {{total}}",
+        "next": "Page suivante"
+      },
       "status": {
         "column": "Statut",
         "applicationReceived": "Candidature reçue",

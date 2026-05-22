@@ -1,8 +1,7 @@
 import { Loader2, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { ReferenceRowsEditor } from '@/crd/components/templates/forms/ReferenceRowsEditor';
-import type { ReferenceRow } from '@/crd/components/templates/types';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
@@ -29,6 +28,14 @@ export type CommunityGuidelinesEditorProps = {
   onApplyTemplate?: () => void;
   /** Open the "save these guidelines as a template" dialog. Hidden when not provided. */
   onSaveAsTemplate?: () => void;
+  /**
+   * Per-row paperclip file-attach for the references editor (D24). Uploads a file and resolves the
+   * stored URL, written into the row's `uri`. Wired by the integration hook via
+   * `useReferenceFileUpload(useStorageConfigContext())`; omit to hide the paperclip.
+   */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the references file picker. */
+  referenceUploadAccept?: string;
 } & MarkdownUploadProps;
 
 /**
@@ -45,6 +52,8 @@ export function CommunityGuidelinesEditor({
   onSave,
   onApplyTemplate,
   onSaveAsTemplate,
+  onReferenceFileUpload,
+  referenceUploadAccept,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -95,10 +104,13 @@ export function CommunityGuidelinesEditor({
         onError={onError}
       />
 
-      <ReferenceRowsEditor
-        value={value.references}
+      <ReferencesEditor
+        rows={value.references}
         onChange={references => onChange({ references })}
         label={t('community.guidelines.referencesLabel')}
+        disabled={submitting}
+        onFileUpload={onReferenceFileUpload}
+        uploadAccept={referenceUploadAccept}
       />
 
       <div className="flex items-center justify-between gap-3">

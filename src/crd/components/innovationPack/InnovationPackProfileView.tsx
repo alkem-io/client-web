@@ -1,30 +1,32 @@
-import { ExternalLink, Package, Settings } from 'lucide-react';
+import { Package, Settings } from 'lucide-react';
+import { Fragment, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
 import type { TemplateCategorySection } from '@/crd/components/templates/types';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
 import type { InnovationPackCardData } from './types';
 
 export type InnovationPackProfileViewProps = {
-  /** Pack + references list (the public-profile query reads the references on the pack profile). */
   pack: InnovationPackCardData & {
     /** Optional tagline / short subtitle. */
     tagline?: string;
-    references: { id: string; name: string; uri: string; description?: string }[];
+    references?: { id: string; name: string; uri: string; description?: string }[];
   };
-  /** Read-only listing of the pack's templates by type. */
   templates: TemplateCategorySection[];
   templatesLoading?: boolean;
-  /** Show the "Manage this pack" entry point. */
+  /**
+   * Show the manage entry point. Rendered as the SAME settings cogwheel used by the User / Org / VC profile
+   * heroes: an icon-only `Button variant="secondary" size="icon"` linking to `adminHref`, `title` + `aria-label`
+   * from `packProfile.manage`.
+   */
   canManage: boolean;
   adminHref?: string;
-  /** Only 'preview' is meaningful on the public profile — kebab is hidden via the all-false `can*` predicates. */
+  /** Only 'preview' is meaningful on the public profile — the read-only manager emits nothing else. */
   onTemplatePreview: (templateId: string) => void;
   shareUrl: string;
   className?: string;
@@ -40,13 +42,12 @@ const READ_ONLY_PREDICATES = {
 /**
  * Public-profile view of an Innovation Pack — anonymous-accessible (FR-050).
  *
- * Layout:
- *  - Hero: banner (image or `color` gradient fallback) + avatar + name + tagline,
- *    with Share + "Manage this pack" actions on the right.
- *  - Sidebar (left, on lg+): provider card (avatar/name → providerUrl), tags, references.
- *  - Main (right, on lg+): the holder-agnostic `TemplatesManagerView` rendered read-only
- *    (`can*` all `() => false`); `onTemplateAction` is filtered to `'preview'` and routed
- *    to the consumer.
+ * Follows the prototype's `TemplatePackDetail` layout (NOT a banner/avatar hero):
+ *  - Compact header: a 64px rounded thumbnail (the pack avatar, or a `pickColorFromId` gradient + Package
+ *    fallback) + name + markdown description + a single meta row (`{N} templates` · `by {provider}` · tag chips),
+ *    with `ShareButton` + the manage cogwheel on the right. No top banner, no overlapping avatar, no sidebar.
+ *  - Body: the holder-agnostic `TemplatesManagerView`, full-width and read-only (`readOnly`, all `can*` false);
+ *    `onTemplateAction` is filtered to `'preview'` and routed to the consumer.
  *
  * Pure CRD — no Apollo, no routing, no business logic. The consumer fetches the data
  * and wires `onTemplatePreview` / `adminHref` / `shareUrl`.
@@ -65,166 +66,121 @@ export function InnovationPackProfileView({
 
   const handleTemplateAction = (id: string, action: 'preview' | 'edit' | 'duplicate' | 'delete') => {
     if (action === 'preview') onTemplatePreview(id);
-    // Edit/duplicate/delete are gated off by the `can*` predicates above — they never fire here.
+    // Read-only: the manager never emits edit/duplicate/delete here.
   };
 
-  const providerInitials = pack.providerName
-    ? pack.providerName
-        .split(/\s+/)
-        .map(part => part[0])
-        .filter(Boolean)
-        .slice(0, 2)
-        .join('')
-        .toUpperCase()
-    : '?';
+  const templateCount = templates.reduce((sum, section) => sum + section.templates.length, 0);
+
+  const providerLabel = pack.providerName ? t('packCard.byProvider', { name: pack.providerName }) : null;
+
+  // Meta segments are interleaved with vertical separators; building them as a list avoids a dangling
+  // leading separator when the count is still loading or the provider is unknown.
+  const metaSegments: { key: string; node: ReactNode }[] = [];
+  if (!templatesLoading && templateCount > 0) {
+    metaSegments.push({
+      key: 'count',
+      node: (
+        <Badge variant="secondary" className="text-caption">
+          {t('packCard.templateCount', { count: templateCount })}
+        </Badge>
+      ),
+    });
+  }
+  if (providerLabel) {
+    metaSegments.push({
+      key: 'provider',
+      node: pack.providerUrl ? (
+        <a
+          href={pack.providerUrl}
+          className="text-caption text-muted-foreground rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {providerLabel}
+        </a>
+      ) : (
+        <span className="text-caption text-muted-foreground">{providerLabel}</span>
+      ),
+    });
+  }
+  if (pack.tags.length > 0) {
+    metaSegments.push({
+      key: 'tags',
+      node: (
+        <ul className="flex flex-wrap gap-1.5">
+          {pack.tags.map(tag => (
+            <li key={tag} className="text-caption text-muted-foreground bg-muted/50 rounded px-1.5 py-0.5">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      ),
+    });
+  }
 
   return (
     <div className={className}>
-      {/* Hero */}
-      <section aria-labelledby="pack-profile-heading" className="space-y-4">
-        <div className="relative aspect-[6/1] w-full overflow-hidden rounded-md min-h-32" aria-hidden={!pack.bannerUrl}>
-          {pack.bannerUrl ? (
-            <img src={pack.bannerUrl} alt="" className="size-full object-cover" />
-          ) : (
-            <div className="flex size-full items-center justify-center" style={backgroundGradient(pack.color)}>
-              <Package aria-hidden="true" className="size-16 text-white/80" />
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="flex min-w-0 items-start gap-3">
-            <Avatar className="size-14 shrink-0 -mt-10 border-4 border-background shadow-sm">
-              {pack.bannerUrl ? (
-                <AvatarImage src={pack.bannerUrl} alt="" />
-              ) : (
-                <AvatarFallback aria-hidden="true" className="text-white" style={{ backgroundColor: pack.color }}>
-                  <Package aria-hidden="true" className="size-6" />
-                </AvatarFallback>
-              )}
-            </Avatar>
-            <div className="min-w-0 flex-1 pt-1">
-              <h1 id="pack-profile-heading" className="text-hero">
-                {pack.name}
-              </h1>
-              {pack.tagline && <p className="text-body text-muted-foreground">{pack.tagline}</p>}
-            </div>
+      {/* Header — compact, prototype TemplatePackDetail style (no banner, no sidebar). */}
+      <header className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
+          <div className="hidden size-16 shrink-0 overflow-hidden rounded-lg border sm:block">
+            {pack.bannerUrl ? (
+              <img src={pack.bannerUrl} alt="" className="size-full object-cover" />
+            ) : (
+              <div className="flex size-full items-center justify-center" style={backgroundGradient(pack.color)}>
+                <Package aria-hidden="true" className="size-7 text-white/80" />
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <ShareButton url={shareUrl} tooltip={t('packProfile.shareTooltip')} />
-            {canManage && adminHref && (
-              <Button asChild={true} variant="outline" size="sm">
-                <a href={adminHref}>
-                  <Settings aria-hidden="true" className="size-4 mr-2" />
-                  {t('packProfile.manage')}
-                </a>
-              </Button>
+          <div className="min-w-0">
+            <h1 className="text-page-title">{pack.name}</h1>
+            {pack.description && (
+              <MarkdownContent content={pack.description} className="text-body text-muted-foreground mt-1" />
+            )}
+
+            {metaSegments.length > 0 && (
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+                {metaSegments.map((segment, index) => (
+                  <Fragment key={segment.key}>
+                    {index > 0 && <Separator orientation="vertical" className="h-4" />}
+                    {segment.node}
+                  </Fragment>
+                ))}
+              </div>
             )}
           </div>
         </div>
 
-        {pack.description && <MarkdownContent content={pack.description} className="text-body text-muted-foreground" />}
-      </section>
+        <div className="flex shrink-0 items-center gap-2">
+          <ShareButton url={shareUrl} tooltip={t('packProfile.shareTooltip')} />
+          {canManage && adminHref && (
+            <Button
+              asChild={true}
+              variant="secondary"
+              size="icon"
+              className="shadow-sm"
+              title={t('packProfile.manage')}
+            >
+              <a href={adminHref} aria-label={t('packProfile.manage')}>
+                <Settings aria-hidden="true" className="size-4" />
+              </a>
+            </Button>
+          )}
+        </div>
+      </header>
 
       <Separator className="my-6" />
 
-      {/* Body: sidebar + templates */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">
-        {/* Sidebar */}
-        <aside aria-labelledby="pack-profile-sidebar" className="space-y-6">
-          <h2 id="pack-profile-sidebar" className="sr-only">
-            {t('packProfile.sidebarLabel')}
-          </h2>
-
-          {/* Provider */}
-          <section aria-labelledby="pack-profile-provider" className="space-y-2 rounded-md border bg-card p-4">
-            <h3 id="pack-profile-provider" className="text-label uppercase text-muted-foreground">
-              {t('packProfile.provider')}
-            </h3>
-            {pack.providerName ? (
-              <div className="flex items-center gap-2">
-                <Avatar className="size-9 shrink-0">
-                  {pack.providerAvatarUrl ? (
-                    <AvatarImage src={pack.providerAvatarUrl} alt="" />
-                  ) : (
-                    <AvatarFallback aria-hidden="true" className="text-white" style={{ backgroundColor: pack.color }}>
-                      {providerInitials}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  {pack.providerUrl ? (
-                    <a
-                      href={pack.providerUrl}
-                      className="text-body-emphasis hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm truncate block"
-                    >
-                      {pack.providerName}
-                    </a>
-                  ) : (
-                    <p className="text-body-emphasis truncate">{pack.providerName}</p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="text-body text-muted-foreground italic">{t('packProfile.providerUnknown')}</p>
-            )}
-          </section>
-
-          {/* Tags */}
-          {pack.tags.length > 0 && (
-            <section aria-labelledby="pack-profile-tags" className="space-y-2 rounded-md border bg-card p-4">
-              <h3 id="pack-profile-tags" className="text-label uppercase text-muted-foreground">
-                {t('packProfile.tags')}
-              </h3>
-              <CollapsibleTagList tags={pack.tags} />
-            </section>
-          )}
-
-          {/* References */}
-          <section aria-labelledby="pack-profile-references" className="space-y-2 rounded-md border bg-card p-4">
-            <h3 id="pack-profile-references" className="text-label uppercase text-muted-foreground">
-              {t('packProfile.references')}
-            </h3>
-            {pack.references.length === 0 ? (
-              <p className="text-body text-muted-foreground italic">{t('packProfile.referencesEmpty')}</p>
-            ) : (
-              <ul className="space-y-2">
-                {pack.references.map(ref => (
-                  <li key={ref.id} className="space-y-0.5">
-                    <a
-                      href={ref.uri}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm inline-flex items-center gap-1"
-                    >
-                      <span className="truncate">{ref.name}</span>
-                      <ExternalLink aria-hidden="true" className="size-3 shrink-0" />
-                    </a>
-                    {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </aside>
-
-        {/* Templates */}
-        <section aria-labelledby="pack-profile-templates" className="space-y-3 min-w-0">
-          <h2 id="pack-profile-templates" className="text-section-title">
-            {t('packProfile.templatesHeading')}
-          </h2>
-          <TemplatesManagerView
-            holderKind="innovationPack"
-            categories={templates}
-            loading={templatesLoading}
-            {...READ_ONLY_PREDICATES}
-            onCreate={() => undefined}
-            onImport={() => undefined}
-            onTemplateAction={handleTemplateAction}
-          />
-        </section>
-      </div>
+      {/* Body — full-width read-only templates manager. */}
+      <TemplatesManagerView
+        holderKind="innovationPack"
+        categories={templates}
+        loading={templatesLoading}
+        readOnly={true}
+        {...READ_ONLY_PREDICATES}
+        onCreate={() => undefined}
+        onImport={() => undefined}
+        onTemplateAction={handleTemplateAction}
+      />
     </div>
   );
 }

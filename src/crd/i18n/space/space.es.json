@@ -21,6 +21,11 @@
     "demo": "Este es un Espacio de demostración para pruebas.",
     "inactive": "Este Espacio está actualmente inactivo."
   },
+  "knowledge": {
+    "searchPlaceholder": "Buscar en la base de conocimiento...",
+    "searchLabel": "Buscar en la base de conocimiento",
+    "noResults": "Sin resultados"
+  },
   "sidebar": {
     "aboutSpace": "Acerca de este Espacio",
     "subspaces": "Subespacios",
@@ -35,10 +40,6 @@
     "invite": "Invitar",
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
-    "postIndex": "Índice de publicaciones",
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar publicaciones",
-    "noResults": "Sin resultados",
     "readMore": "Leer más",
     "editDescription": "Editar descripción",
     "addEvent": "Añadir evento",
@@ -191,8 +192,6 @@
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
-    "resultsCount": "{{count}} resultados",
-    "clearFilters": "Limpiar filtros",
     "sendComment": "Enviar comentario",
     "addResponse": "Añadir respuesta",
     "createWhiteboard": "Crear nueva pizarra",
@@ -202,7 +201,7 @@
     "createMemo": "Crear nuevo memo",
     "defaultMemoName": "Nuevo memo",
     "memoNameLabel": "Título del memo",
-    "addLink": "Añadir enlace",
+    "addLinkOrFile": "Añadir enlace o archivo",
     "createLink": "Añade enlaces o adjunta documentos",
     "editLink": "Editar enlace",
     "linkSave": "Guardar",
@@ -515,7 +514,8 @@
       "descriptionLabel": "Descripción",
       "descriptionPlaceholder": "Descripción opcional",
       "addRow": "Añadir otro enlace",
-      "removeRow": "Eliminar enlace"
+      "removeRow": "Eliminar enlace",
+      "attachFile": "Adjuntar archivo"
     }
   },
   "references": {

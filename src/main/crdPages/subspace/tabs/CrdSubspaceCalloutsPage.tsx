@@ -75,6 +75,7 @@ export default function CrdSubspaceCalloutsPage() {
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={activePhase?.label}
+          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
         />
       )}
     </div>
