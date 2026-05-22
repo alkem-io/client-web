@@ -21,6 +21,11 @@
     "demo": "Dit is een demo-Space voor testdoeleinden.",
     "inactive": "Deze Space is momenteel inactief."
   },
+  "knowledge": {
+    "searchPlaceholder": "Zoek in de kennisbank...",
+    "searchLabel": "Zoek in de kennisbank",
+    "noResults": "Geen resultaten"
+  },
   "sidebar": {
     "aboutSpace": "Over deze Space",
     "subspaces": "Subspaces",
@@ -35,10 +40,6 @@
     "invite": "Uitnodigen",
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
-    "postIndex": "Berichtenindex",
-    "searchPlaceholder": "Zoeken...",
-    "searchLabel": "Berichten zoeken",
-    "noResults": "Geen resultaten",
     "readMore": "Lees meer",
     "editDescription": "Beschrijving bewerken",
     "addEvent": "Evenement toevoegen",

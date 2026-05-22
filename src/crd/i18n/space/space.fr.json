@@ -21,6 +21,11 @@
     "demo": "Ceci est un Espace de démonstration à des fins de test.",
     "inactive": "Cet Espace est actuellement inactif."
   },
+  "knowledge": {
+    "searchPlaceholder": "Rechercher dans la base de connaissances...",
+    "searchLabel": "Rechercher dans la base de connaissances",
+    "noResults": "Aucun résultat"
+  },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",
     "subspaces": "Sous-espaces",
@@ -35,10 +40,6 @@
     "invite": "Inviter",
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
-    "postIndex": "Index des publications",
-    "searchPlaceholder": "Rechercher...",
-    "searchLabel": "Rechercher des publications",
-    "noResults": "Aucun résultat",
     "readMore": "Lire la suite",
     "editDescription": "Modifier la description",
     "addEvent": "Ajouter un événement",
