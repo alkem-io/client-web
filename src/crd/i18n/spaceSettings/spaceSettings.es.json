@@ -142,6 +142,17 @@
       "noMatch": "Ninguna membresía pendiente coincide con los filtros seleccionados.",
       "filterLabel": "Filtrar por estado",
       "sortBy": "Ordenar por {{column}}",
+      "viewApplication": "Ver solicitud",
+      "viewInvitation": "Ver invitación",
+      "viewDialog": {
+        "created": "Creada el {{date}}",
+        "updated": "Actualizada el {{date}}",
+        "welcomeMessage": "Mensaje de bienvenida",
+        "noWelcomeMessage": "No se proporcionó ningún mensaje de bienvenida.",
+        "noAnswers": "No se proporcionaron respuestas.",
+        "close": "Cerrar",
+        "loading": "Cargando detalles"
+      },
       "pagination": {
         "showing": "Mostrando {{from}} a {{to}} de {{total}}",
         "previous": "Página anterior",

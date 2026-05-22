@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Trash2, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Eye, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
@@ -30,6 +30,7 @@ export type PendingMembership = {
 
 export type PendingMembershipsTableProps = {
   items: PendingMembership[];
+  onView: (id: string) => void;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
@@ -96,6 +97,7 @@ function statusVariantClass(id: StatusId): string {
 
 export function PendingMembershipsTable({
   items,
+  onView,
   onApprove,
   onReject,
   onDelete,
@@ -294,7 +296,30 @@ export function PendingMembershipsTable({
                           <X aria-hidden="true" className="size-4" />
                         </Button>
                       )}
-                      {row.canDelete && (
+                      <Tooltip>
+                        <TooltipTrigger asChild={true}>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            onClick={() => onView(row.id)}
+                            aria-label={
+                              row.type === 'application'
+                                ? t('community.pendingMemberships.viewApplication')
+                                : t('community.pendingMemberships.viewInvitation')
+                            }
+                          >
+                            <Eye aria-hidden="true" className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {row.type === 'application'
+                            ? t('community.pendingMemberships.viewApplication')
+                            : t('community.pendingMemberships.viewInvitation')}
+                        </TooltipContent>
+                      </Tooltip>
+                      {row.canDelete ? (
                         <Button
                           type="button"
                           variant="ghost"
@@ -305,7 +330,10 @@ export function PendingMembershipsTable({
                         >
                           <Trash2 aria-hidden="true" className="size-4 text-destructive" />
                         </Button>
-                      )}
+                      ) : (
+                        <span className="size-8" />
+                      )}{' '}
+                      {/* Placeholder to keep actions aligned when delete is not allowed */}
                     </div>
                   </TableCell>
                 </TableRow>
