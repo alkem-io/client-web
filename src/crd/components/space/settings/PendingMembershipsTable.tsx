@@ -115,7 +115,7 @@ export function PendingMembershipsTable({
 
   const statusLabel = (id: StatusId) => t(`community.pendingMemberships.status.${id}`);
   const typeLabel = (row: PendingMembership) =>
-    t(`community.pendingMemberships.contributorType.${row.contributorType}`, { defaultValue: row.contributorType });
+    t(`community.pendingMemberships.contributorType.${row.contributorType}`);
 
   const toggleStatus = (id: StatusId) => {
     setActiveStatuses(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));

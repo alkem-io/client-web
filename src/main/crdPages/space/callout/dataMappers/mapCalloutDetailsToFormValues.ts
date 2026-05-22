@@ -145,6 +145,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
       pollId: framing.poll?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
+      framingProfileId: framing.profile.id,
+      originalReferenceIds: framing.profile.references?.map(r => r.id) ?? [],
     },
   };
 
