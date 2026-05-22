@@ -27,7 +27,8 @@
   "filters": {
     "summary": "Résultats pour {{criteria}}",
     "and": "et",
-    "clear": "Effacer les filtres"
+    "clear": "Effacer les filtres",
+    "filterByTag": "Filtrer par étiquette"
   },
   "share": {
     "title": "Partager",

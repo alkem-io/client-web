@@ -27,7 +27,8 @@
   "filters": {
     "summary": "Results for {{criteria}}",
     "and": "and",
-    "clear": "Clear filters"
+    "clear": "Clear filters",
+    "filterByTag": "Filter by tag"
   },
   "share": {
     "title": "Share",

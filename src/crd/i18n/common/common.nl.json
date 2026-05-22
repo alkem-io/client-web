@@ -27,7 +27,8 @@
   "filters": {
     "summary": "Resultaten voor {{criteria}}",
     "and": "en",
-    "clear": "Filters wissen"
+    "clear": "Filters wissen",
+    "filterByTag": "Filter op tag"
   },
   "share": {
     "title": "Delen",

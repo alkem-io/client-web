@@ -1,14 +1,11 @@
-import { LayoutGrid, List, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
-import usePersistedState from '@/core/state/usePersistedState';
-import { CalloutListView } from '@/crd/components/callout/CalloutListView';
-import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
+import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
@@ -25,11 +22,6 @@ type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
 };
 
-type KnowledgeViewMode = 'grid' | 'list';
-
-/** Persists the grid/list preference across visits and Knowledge Base tabs. */
-const KNOWLEDGE_VIEW_STORAGE_KEY = 'alkemio-knowledge-view';
-
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
@@ -37,7 +29,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = usePersistedState<KnowledgeViewMode>(KNOWLEDGE_VIEW_STORAGE_KEY, 'grid');
   const [createOpen, setCreateOpen] = useState(false);
 
   const {
@@ -69,7 +60,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
 
   // Client-side filtering — search + tags, mirroring the Subspaces tab. Tags
   // use AND (every selected tag must be present); search matches the title,
-  // description and tags case-insensitively.
+  // description and tags case-insensitively. The feed and the left-sidebar
+  // index both render this filtered set, so they stay in sync.
   const trimmedQuery = searchQuery.trim().toLowerCase();
   const visibleCallouts = callouts.filter(callout => {
     const profile = callout.framing.profile;
@@ -84,12 +76,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     return haystack.includes(trimmedQuery);
   });
 
-  const listItems = mapCalloutsToListItems(visibleCallouts, sectionIndex + 1, t);
+  const indexEntries = mapCalloutsToListItems(visibleCallouts, sectionIndex + 1, t);
 
   // SPA-navigate to the callout (opens the detail dialog over this tab) rather
   // than letting the native <a> do a full-page load that resets the tab.
-  const handleListItemClick = (id: string) => {
-    const href = listItems.find(item => item.id === id)?.href;
+  const handleEntryClick = (id: string) => {
+    const href = indexEntries.find(entry => entry.id === id)?.href;
     if (href) {
       navigate(href);
     }
@@ -108,6 +100,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          knowledgeEntries={indexEntries}
+          onKnowledgeEntryClick={handleEntryClick}
         />
       </SpaceSidebarPortal>
 
@@ -124,6 +118,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           }
         />
 
+        {/* Search filters the feed and the sidebar index; tags live behind the
+            filter button rather than on the board. */}
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Search
@@ -141,43 +137,14 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           </div>
 
           <div className="flex h-9 shrink-0 items-center gap-0.5 rounded-md border border-border px-0.5">
-            <button
-              type="button"
-              aria-label={t('knowledge.viewGrid')}
-              aria-pressed={viewMode === 'grid'}
-              onClick={() => setViewMode('grid')}
-              className={cn(
-                'flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                viewMode === 'grid' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <LayoutGrid className="w-4 h-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              aria-label={t('knowledge.viewList')}
-              aria-pressed={viewMode === 'list'}
-              onClick={() => setViewMode('list')}
-              className={cn(
-                'flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                viewMode === 'list' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <List className="w-4 h-4" aria-hidden="true" />
-            </button>
+            <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
           </div>
         </div>
-
-        {allTags.length > 0 && (
-          <CollapsibleTagList tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
-        )}
 
         <FilterResultsSummary searchTerm={searchQuery} tags={tagsFilter} onClear={handleClearFilters} />
 
         {(trimmedQuery || tagsFilter.length > 0) && visibleCallouts.length === 0 ? (
           <p className="text-body text-muted-foreground">{t('knowledge.noResults')}</p>
-        ) : viewMode === 'list' ? (
-          <CalloutListView items={listItems} onItemClick={handleListItemClick} />
         ) : (
           <CalloutListConnector callouts={visibleCallouts} calloutsSetId={calloutsSetId} loading={loading} />
         )}

@@ -54,6 +54,7 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
+    "postIndex": "$t(common.Callout) Index",
     "readMore": "Read more",
     "editDescription": "Edit description",
     "addEvent": "Add event",
