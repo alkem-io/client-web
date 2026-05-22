@@ -4,8 +4,10 @@ import {
   CalloutFramingType,
   CollaboraDocumentType,
 } from '@/core/apollo/generated/graphql-schema';
+import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
+import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
@@ -39,6 +41,27 @@ const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
+}
+
+/**
+ * Maps a GraphQL Reference to the plain CRD shape consumed by
+ * `ReferencesAndTagsStrip` and `CalloutPostPreview`. Centralised so the
+ * file-vs-link detection (`isFileAttachmentUrl`) lives in one place — every
+ * surface that lists references picks up new logic automatically.
+ */
+export function mapReferenceToStripData(ref: {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string | null;
+}): ReferencesAndTagsStripReference {
+  return {
+    id: ref.id,
+    name: ref.name,
+    uri: ref.uri,
+    description: ref.description ?? undefined,
+    isFile: isFileAttachmentUrl(ref.uri),
+  };
 }
 
 function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): CollaboraDocumentPreviewType | undefined {
@@ -116,7 +139,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     isDraft: callout.draft,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
@@ -152,12 +175,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     // on the feed card by `ReferencesAndTagsStrip` (the same component the
     // detail dialog uses). MUI parity: `CalloutHeader`.
     tags: callout.framing.profile.tagset?.tags ?? [],
-    references: (callout.framing.profile.references ?? []).map(ref => ({
-      id: ref.id,
-      name: ref.name,
-      uri: ref.uri,
-      description: ref.description ?? undefined,
-    })),
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }
 
@@ -196,17 +214,12 @@ export function mapCalloutDetailsToDialogData(
     description: callout.framing.profile.description ?? undefined,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     reactionCount: 0,
     // `framing.profile.tagset` is the default (single) tagset for the
     // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a
     // separate `classification.tagsets` field and don't surface in this strip.
     tags: callout.framing.profile.tagset?.tags ?? [],
-    references: (callout.framing.profile.references ?? []).map(ref => ({
-      id: ref.id,
-      name: ref.name,
-      uri: ref.uri,
-      description: ref.description ?? undefined,
-    })),
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }

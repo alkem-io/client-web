@@ -179,37 +179,41 @@ export function Header({
                 icon={<Search aria-hidden="true" className="w-5 h-5" />}
               />
 
-              <HeaderIconButton
-                onClick={onMessagesClick}
-                href={navigationHrefs.messages}
-                ariaLabel={t('header.messages')}
-                icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
-                badge={
-                  typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
-                    <>
-                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
-                      <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
-                    </>
-                  ) : undefined
-                }
-              />
+              {authenticated && (
+                <>
+                  <HeaderIconButton
+                    onClick={onMessagesClick}
+                    href={navigationHrefs.messages}
+                    ariaLabel={t('header.messages')}
+                    icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
+                    badge={
+                      typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
+                        <>
+                          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                          <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
+                        </>
+                      ) : undefined
+                    }
+                  />
 
-              <HeaderIconButton
-                onClick={onNotificationsClick}
-                href={navigationHrefs.notifications}
-                ariaLabel={t('header.notifications')}
-                icon={<Bell aria-hidden="true" className="w-5 h-5" />}
-                badge={
-                  typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 ? (
-                    <>
-                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
-                      <span className="sr-only">
-                        {t('header.unreadNotifications', { count: unreadNotificationsCount })}
-                      </span>
-                    </>
-                  ) : undefined
-                }
-              />
+                  <HeaderIconButton
+                    onClick={onNotificationsClick}
+                    href={navigationHrefs.notifications}
+                    ariaLabel={t('header.notifications')}
+                    icon={<Bell aria-hidden="true" className="w-5 h-5" />}
+                    badge={
+                      typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 ? (
+                        <>
+                          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                          <span className="sr-only">
+                            {t('header.unreadNotifications', { count: unreadNotificationsCount })}
+                          </span>
+                        </>
+                      ) : undefined
+                    }
+                  />
+                </>
+              )}
 
               {platformNavigationItems && platformNavigationItems.length > 0 ? (
                 <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />

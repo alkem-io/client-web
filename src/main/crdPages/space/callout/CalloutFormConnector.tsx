@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
+  useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
@@ -62,6 +63,8 @@ import {
   type PollOptionBefore,
   parseAddedSentinel,
 } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
+import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
@@ -69,7 +72,6 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
-import { useReferenceFileUpload } from './useReferenceFileUpload';
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -92,6 +94,13 @@ type CalloutFormConnectorProps = {
    * single-phase callouts sets). Create mode only.
    */
   activeFlowStateName?: string;
+  /**
+   * Create mode only: the active flow state's configured default callout template id
+   * (`flowStateForNewCallouts.defaultCalloutTemplate.id`). When set, the form auto-prefills
+   * from that template once per dialog-open (FR-086 / spec 042 Session 2026-05-20). A manual
+   * "Find Template" pick or user edit afterwards is preserved — the auto-load runs once.
+   */
+  defaultTemplateId?: string;
   onFindTemplate?: () => void;
 };
 
@@ -103,6 +112,7 @@ export function CalloutFormConnector({
   calloutsSetId,
   editCallout,
   activeFlowStateName,
+  defaultTemplateId,
   onFindTemplate,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -186,6 +196,27 @@ export function CalloutFormConnector({
       prefilledCalloutIdRef.current = callout.id;
     }
   }, [mode, open, editData, prefill]);
+
+  // Create-mode auto-prefill from the active flow state's default callout template (FR-086).
+  // Runs once per dialog-open (guarded by the ref, reset on close), reusing the same
+  // template-content→form-values path the manual "Find Template" picker uses. A manual pick
+  // or user edit afterwards is preserved — the guard prevents re-applying within a session.
+  const [getTemplateContent] = useTemplateContentLazyQuery();
+  const prefilledDefaultTemplateIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!open) {
+      prefilledDefaultTemplateIdRef.current = null;
+      return;
+    }
+    if (mode !== 'create' || !defaultTemplateId) return;
+    if (prefilledDefaultTemplateIdRef.current === defaultTemplateId) return;
+    prefilledDefaultTemplateIdRef.current = defaultTemplateId;
+    void loadCalloutTemplateFormValues(getTemplateContent, defaultTemplateId).then(values => {
+      // Bail if the dialog closed or the default changed while the content was loading.
+      if (!values || prefilledDefaultTemplateIdRef.current !== defaultTemplateId) return;
+      prefill(values);
+    });
+  }, [open, mode, defaultTemplateId, getTemplateContent, prefill]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
@@ -653,6 +684,8 @@ export function CalloutFormConnector({
               prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
               onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
+              prePopulateLinkFileUpload={referenceUpload.onFileUpload}
+              prePopulateLinkUploadAccept={referenceUpload.accept}
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />

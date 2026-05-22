@@ -48,6 +48,10 @@
 - Q: Settings tab? → A: Keep every current MUI toggle; adopt the prototype's unified layout and Danger Zone card with confirmation dialog for space deletion.
 - Q: Account tab? → A: Keep every current field, action, and permission. Add the prototype additions (URL copy field, entitlement usage progress, Visibility Status badge, Host card, support contact footer). There is no "Change Host" CTA today — a support-contact message appears instead; preserve that.
 
+### Session 2026-05-20 (About References & Links — shared editor + file upload)
+
+- Q: The About tab's **References & Links** section rendered a bespoke inline reference editor with no file-attach affordance, unlike the legacy MUI references field. Should it gain a paperclip file-upload, and share the same component as the User / Org / VC profiles (spec 097) and the Innovation Pack form (spec 098)? → A: **Yes.** The References & Links section MUST render the shared `@/crd/forms/references/ReferencesEditor` (canonical row `{ id?, name, uri, description? }`, paperclip per row, delete via its own `ConfirmationDialog`). `useAboutTabData` exposes a single `onReferencesChange(rows)` (replacing the granular add/update/request-remove handlers + the page-level reference-delete `ConfirmationDialog`, which the editor now owns); the per-section Save still batches patch-existing + create-new + delete-removed. The paperclip uploads to the space's storage bucket via `useReferenceFileUpload(useStorageConfigContext())` (the About tab renders inside the ambient space `StorageConfigContextProvider`). Recognized social rows are not part of the Space About section. The Community tab's **Community Guidelines** editor (the live one, owned by spec 098 FR-038 / D24) uses the same shared `ReferencesEditor` + paperclip, wired to the space bucket the same way — the About and Community Guidelines references share one component.
+
 ## User Scenarios & Testing
 
 **All nine tabs are P1 and ship together in a single release (FR-018 / FR-050).** The priority label exists only for traceability; the user stories below are equally important and each is independently testable within its own tab.

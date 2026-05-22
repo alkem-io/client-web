@@ -6,12 +6,17 @@
  * the FR-034(b)/US9 "save the current guidelines as a template" flows.
  *
  * CRD component: `src/crd/components/space/settings/CommunityGuidelinesEditor.tsx` — presentational, controlled.
- *   No MUI / Apollo / `@/domain/*` / router / formik. Reuses `MarkdownEditor`, the CRD references-list editor, and the
- *   guidelines-title field sub-component (shared with `CommunityGuidelinesTemplateForm` — see template-forms.ts).
+ *   No MUI / Apollo / `@/domain/*` / router / formik. Reuses `MarkdownEditor`, the shared
+ *   `@/crd/forms/references/ReferencesEditor` (canonical `{ id?, name, uri, description? }` rows, per-row paperclip
+ *   file-attach, delete via its own `ConfirmationDialog` — the same editor the Space About references and the Innovation
+ *   Pack form use, per D24), and the guidelines-title field sub-component (shared with `CommunityGuidelinesTemplateForm`
+ *   — see template-forms.ts).
  *
  * Integration layer: `src/main/crdPages/topLevelPages/spaceSettings/community/` — loads the live `CommunityGuidelines`
  *   (`profile.{displayName, description, references}` ⇄ `CommunityGuidelinesEditorValue`), saves via
- *   `useUpdateCommunityGuidelinesMutation` (in `useTransition`), and wires `onApplyTemplate` → `useTemplatePicker(mode:'select', allowedTypes:['communityGuidelines'])`
+ *   `useUpdateCommunityGuidelinesMutation` (in `useTransition`), wires the references paperclip via
+ *   `useReferenceFileUpload(useStorageConfigContext())` (the space's own bucket, `temporaryLocation: true`), and wires
+ *   `onApplyTemplate` → `useTemplatePicker(mode:'select', allowedTypes:['communityGuidelines'])`
  *   (replace `{title, bodyMarkdown, references}` behind a `ConfirmationDialog` when there is existing content) and
  *   `onSaveAsTemplate` → `useSaveAsTemplate(sourceKind:'communityGuidelines')` (open `TemplateFormDialog` pre-filled;
  *   if the editor has unsaved edits, prompt to save/discard first).
@@ -48,5 +53,13 @@ export type CommunityGuidelinesEditorProps = {
   canEdit: boolean;
   canApplyTemplate: boolean;
   canSaveAsTemplate: boolean;
+  /**
+   * Per-row paperclip file-attach for the references editor (D24). Uploads a file and resolves the
+   * stored URL, written into the row's `uri`. Wired by the integration hook via
+   * `useReferenceFileUpload(useStorageConfigContext())`; omit to hide the paperclip.
+   */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the references file picker. */
+  referenceUploadAccept?: string;
   className?: string;
 };

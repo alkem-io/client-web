@@ -1,12 +1,12 @@
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { Button } from '@/crd/primitives/button';
+import { Input } from '@/crd/primitives/input';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
@@ -15,7 +15,6 @@ import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
-import { countTagOccurrences } from './calloutTagCount';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -27,6 +26,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const navigate = useNavigate();
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
 
   const {
@@ -51,44 +51,26 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     },
     skip: !calloutsSetId,
   });
-  // The `CalloutsSetTags` query returns just `tags: string[]` (the universe of tags across the
-  // calloutsSet). Counts are tallied client-side from the currently visible (filtered) `callouts`
-  // array — so each chip shows "if I add this tag to the current filter, this many callouts remain".
-  // Tags in the universe that aren't on any visible callout legitimately get 0.
-  const tagCounts = countTagOccurrences(callouts);
-  const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(name => ({
-    name,
-    count: tagCounts[name] ?? 0,
-  }));
+  // The `CalloutsSetTags` query returns the full tag universe for the calloutsSet — chips stay
+  // stable when selected and don't disappear as the callout list filters down.
+  const allTags = tagsData?.lookup.calloutsSet?.tags ?? [];
 
-  // Build sidebar list from light callout data (also used as knowledge entries)
-  const sidebarItems = callouts.map(callout => {
-    const profile = callout.framing.profile;
-    return {
-      id: callout.id,
-      title: profile.displayName,
-      type: callout.framing.type === CalloutFramingType.Whiteboard ? ('collection' as const) : ('text' as const),
-      description: profile.description,
-      tags: profile.tagset?.tags,
-    };
-  });
-
-  const handleSelectTag = (tag: string) => {
-    setTagsFilter(prev => [...prev, tag]);
+  const handleToggleTag = (tag: string) => {
+    setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
-  const handleDeselectTag = (tag: string) => {
-    setTagsFilter(prev => prev.filter(t => t !== tag));
-  };
-
-  const handleClear = () => {
-    setTagsFilter([]);
-  };
-
-  const handleScrollToCallout = (id: string) => {
-    const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+  // Free-text search layered on top of the server-side tag filter. Matches
+  // case-insensitively against the callout title, description and tags.
+  const trimmedQuery = searchQuery.trim().toLowerCase();
+  const visibleCallouts = trimmedQuery
+    ? callouts.filter(callout => {
+        const profile = callout.framing.profile;
+        const haystack = [profile.displayName, profile.description ?? '', ...(profile.tagset?.tags ?? [])]
+          .join(' ')
+          .toLowerCase();
+        return haystack.includes(trimmedQuery);
+      })
+    : callouts;
 
   return (
     <>
@@ -98,8 +80,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-          knowledgeEntries={sidebarItems}
-          onKnowledgeEntryClick={handleScrollToCallout}
         />
       </SpaceSidebarPortal>
 
@@ -116,18 +96,30 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           }
         />
 
-        {(allTags.length > 0 || tagsFilter.length > 0) && (
-          <CalloutTagCloud
-            tags={allTags}
-            selectedTags={tagsFilter}
-            resultsCount={callouts.length}
-            onSelectTag={handleSelectTag}
-            onDeselectTag={handleDeselectTag}
-            onClear={handleClear}
+        <div className="relative">
+          <Search
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
+            aria-hidden="true"
           />
+          <Input
+            type="search"
+            value={searchQuery}
+            onChange={event => setSearchQuery(event.target.value)}
+            placeholder={t('knowledge.searchPlaceholder')}
+            aria-label={t('knowledge.searchLabel')}
+            className="pl-9"
+          />
+        </div>
+
+        {allTags.length > 0 && (
+          <CollapsibleTagList tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         )}
 
-        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
+        {trimmedQuery && visibleCallouts.length === 0 ? (
+          <p className="text-body text-muted-foreground">{t('knowledge.noResults')}</p>
+        ) : (
+          <CalloutListConnector callouts={visibleCallouts} calloutsSetId={calloutsSetId} loading={loading} />
+        )}
       </div>
 
       {canCreateCallout && (
@@ -136,6 +128,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
     </>

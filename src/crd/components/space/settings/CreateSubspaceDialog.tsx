@@ -108,13 +108,13 @@ export function CreateSubspaceDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] overflow-y-auto overflow-x-hidden [&>*]:min-w-0">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden [&>*]:min-w-0">
+          <DialogHeader className="px-6 pt-6 pb-4 pr-12 border-b">
             <DialogTitle>{t('subspaces.createDialog.dialog.title')}</DialogTitle>
             <DialogDescription>{t('subspaces.createDialog.dialog.subtitle')}</DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 py-2">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-4 flex flex-col gap-4">
             {/* Template */}
             <FieldShell
               id="subspace-template"
@@ -253,7 +253,7 @@ export function CreateSubspaceDialog({
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t">
             <Button type="button" variant="ghost" onClick={requestClose} disabled={submitting}>
               {t('subspaces.createDialog.cancel')}
             </Button>
@@ -331,9 +331,10 @@ function FileField({
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrl = file ? URL.createObjectURL(file) : null;
 
-  const acceptAttr = constraints?.allowedTypes?.length
-    ? constraints.allowedTypes.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)).join(',')
-    : 'image/*';
+  // `allowedTypes` are MIME types (e.g. "image/png") — use them verbatim, matching
+  // the legacy FileUploadWrapper. Prefixing a dot produced invalid accept tokens
+  // (".image/png") that matched no file, so the OS picker showed everything greyed out.
+  const acceptAttr = constraints?.allowedTypes?.length ? constraints.allowedTypes.join(',') : 'image/*';
 
   return (
     <div className="flex flex-col gap-1.5">

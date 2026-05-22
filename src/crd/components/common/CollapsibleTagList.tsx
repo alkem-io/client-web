@@ -208,15 +208,40 @@ export function CollapsibleTagList({
                 collisionPadding={8}
                 className="bg-card !text-card-foreground border border-border shadow-md w-max max-w-[20rem] p-2 [&_svg]:fill-card [&_svg]:bg-card"
               >
-                {/* Hidden tags shown as pills — identical style and size to the row tags. */}
+                {/* Hidden tags shown as pills — identical style and size to the row tags.
+                    In interactive mode they stay clickable so the user can filter by a
+                    collapsed tag without expanding the row. */}
                 {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
                 {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
                 <ul role="list" className="flex flex-wrap gap-1.5 list-none p-0 m-0">
-                  {hiddenTags.map(tag => (
-                    <li key={tag}>
-                      <span className={tooltipPillClass}>{tag}</span>
-                    </li>
-                  ))}
+                  {hiddenTags.map(tag => {
+                    if (!interactive) {
+                      return (
+                        <li key={tag}>
+                          <span className={tooltipPillClass}>{tag}</span>
+                        </li>
+                      );
+                    }
+                    const isSelected = selectedTags?.includes(tag) ?? false;
+                    return (
+                      <li key={tag}>
+                        <button
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => onTagClick?.(tag)}
+                          className={cn(
+                            tooltipPillClass,
+                            'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'hover:bg-muted hover:text-foreground'
+                          )}
+                        >
+                          {tag}
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </TooltipContent>
             </Tooltip>

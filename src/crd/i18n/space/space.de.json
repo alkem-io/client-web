@@ -21,6 +21,11 @@
     "demo": "Dies ist ein Demobereich zu Testzwecken.",
     "inactive": "Dieser Bereich ist derzeit inaktiv."
   },
+  "knowledge": {
+    "searchPlaceholder": "Wissensdatenbank durchsuchen...",
+    "searchLabel": "Wissensdatenbank durchsuchen",
+    "noResults": "Keine Treffer"
+  },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
     "subspaces": "Unterbereiche",
@@ -35,10 +40,6 @@
     "invite": "Einladen",
     "virtualContributors": "Virtuelle Mitwirkende",
     "communityGuidelines": "Gemeinschaftsrichtlinien",
-    "postIndex": "Beitragsverzeichnis",
-    "searchPlaceholder": "Suchen...",
-    "searchLabel": "Beiträge durchsuchen",
-    "noResults": "Keine Treffer",
     "readMore": "Mehr lesen",
     "editDescription": "Beschreibung bearbeiten",
     "addEvent": "Ereignis hinzufügen",
@@ -191,8 +192,6 @@
     "vote": "Abstimmen",
     "votes": "{{count}} Stimmen",
     "totalVotes": "{{count}} Stimmen insgesamt",
-    "resultsCount": "{{count}} Ergebnisse",
-    "clearFilters": "Filter zurücksetzen",
     "sendComment": "Kommentar senden",
     "addResponse": "Antwort hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
@@ -202,7 +201,7 @@
     "createMemo": "Neues Memo erstellen",
     "defaultMemoName": "Neues Memo",
     "memoNameLabel": "Memo-Titel",
-    "addLink": "Link hinzufügen",
+    "addLinkOrFile": "Link oder Datei hinzufügen",
     "createLink": "Links hinzufügen oder Dokumente anhängen",
     "editLink": "Link bearbeiten",
     "linkSave": "Speichern",
@@ -517,7 +516,8 @@
       "descriptionLabel": "Beschreibung",
       "descriptionPlaceholder": "Optionale Beschreibung",
       "addRow": "Weiteren Link hinzufügen",
-      "removeRow": "Link entfernen"
+      "removeRow": "Link entfernen",
+      "attachFile": "Datei anhängen"
     }
   },
   "references": {

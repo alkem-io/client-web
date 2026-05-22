@@ -21,6 +21,11 @@
     "demo": "This is a demo Space for testing purposes.",
     "inactive": "This Space is currently inactive."
   },
+  "knowledge": {
+    "searchPlaceholder": "Search the knowledge base...",
+    "searchLabel": "Search the knowledge base",
+    "noResults": "No matches"
+  },
   "sidebar": {
     "aboutSpace": "About this Space",
     "subspaces": "Subspaces",
@@ -35,10 +40,6 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
-    "postIndex": "$t(common.Callout) Index",
-    "searchPlaceholder": "Search...",
-    "searchLabel": "Search $t(common.callouts)",
-    "noResults": "No matches",
     "readMore": "Read more",
     "editDescription": "Edit description",
     "addEvent": "Add event",
@@ -174,8 +175,6 @@
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
-    "resultsCount": "{{count}} results",
-    "clearFilters": "Clear filters",
     "sendComment": "Send comment",
     "addResponse": "Add Response",
     "createWhiteboard": "Create new whiteboard",
@@ -202,7 +201,7 @@
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
-    "addLink": "Add link",
+    "addLinkOrFile": "Add link or file",
     "createLink": "Add links or attach documents",
     "editLink": "Edit link",
     "linkSave": "Save",
@@ -517,7 +516,8 @@
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Optional description",
       "addRow": "Add another link",
-      "removeRow": "Remove link"
+      "removeRow": "Remove link",
+      "attachFile": "Attach file"
     }
   },
   "references": {

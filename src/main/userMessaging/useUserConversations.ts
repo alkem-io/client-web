@@ -51,8 +51,17 @@ export const useUserConversations = () => {
     return (
       data.me.conversations.conversations
         .filter(conv => conv.room)
-        // Temporary: hide the guidance chat with the ChatGuidance Virtual Contributor from the conversations list
-        .filter(conv => !guidanceVcId || !conv.members.some(m => m.id === guidanceVcId))
+        // Hide the dedicated 1:1 guidance widget conversation (lives in its own
+        // UI). Group chats that happen to include the guidance VC alongside
+        // other participants must still appear here.
+        .filter(conv => {
+          if (!guidanceVcId) return true;
+          const includesGuidance = conv.members.some(m => m.id === guidanceVcId);
+          if (!includesGuidance) return true;
+          // 2 members = creator + guidance VC → the dedicated widget. 3+ members
+          // = a group that happens to include guidance → show.
+          return conv.members.length > 2;
+        })
         .map(conv => {
           // biome-ignore lint/style/noNonNullAssertion: filtered by conv.room check above
           const room = conv.room!;

@@ -31,6 +31,7 @@ import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
+import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import {
   useAddOrganizationDialog,
   useAddVirtualContributorDialog,
@@ -86,27 +87,41 @@ export default function CrdSpaceSettingsPage() {
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
-  const about = useAboutTabData(spaceId, spaceUrl, level);
-  const layout = useLayoutTabData(spaceId);
-  const community = useCommunityTabData(roleSetId);
-  const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
+  // Each tab's data hook is gated on `activeTab` so only the visible tab's
+  // queries fire — mirroring MUI's per-route architecture without splitting
+  // this page into separate routes. Apollo's cache lets re-visited tabs return
+  // instantly. Local buffers (about edits, layout buffer, updates draft) live
+  // in `useState` inside each hook and survive the gating, so the dirty-tab
+  // guard still sees `isDirty=true` at the moment of a tab switch.
+  const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
+  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
+  const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+  const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
     accountId,
     templatesSetId: subspacesTab.templatesSetId,
     defaultTemplateId: subspacesTab.defaultTemplateId,
   });
   // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
-  const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
-  const settingsTab = useSettingsTabData(spaceId);
-  const applicationForm = useApplicationFormData(settingsTab.roleSetId);
-  const accountTab = useAccountTabData(isTabVisible('account') ? spaceId : '');
-  const updatesTab = useUpdatesTabData(communityId || undefined);
+  const storageTab = useStorageTabData(activeTab === 'storage' ? spaceId : '');
+  const settingsTab = useSettingsTabData(activeTab === 'settings' ? spaceId : '');
+  // ApplicationFormEditor renders inside the Community panel — pull `roleSetId`
+  // from the always-available scope instead of `settingsTab` so we don't have
+  // to fetch the Settings tab just to know the role set id.
+  const applicationForm = useApplicationFormData(activeTab === 'community' ? roleSetId : '');
+  const accountTab = useAccountTabData(activeTab === 'account' ? spaceId : '');
+  const updatesTab = useUpdatesTabData(activeTab === 'updates' ? communityId || undefined : undefined);
   const communityGuidelinesId = scope.guidelinesId;
-  const communityGuidelines = useCommunityGuidelinesData(communityGuidelinesId);
+  const communityGuidelines = useCommunityGuidelinesData(activeTab === 'community' ? communityGuidelinesId : undefined);
 
   // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
-  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache).
-  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({ variables: { spaceId }, skip: !spaceId });
+  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache). Only needed on tabs whose
+  // pickers / save-as flows consume `templatesSetId`.
+  const needsTemplatesSet = activeTab === 'community' || activeTab === 'layout' || activeTab === 'subspaces';
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId },
+    skip: !spaceId || !needsTemplatesSet,
+  });
   const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
   const guidelinesTemplatePicker = useTemplatePicker({
     allowedTypes: ['communityGuidelines'],
@@ -122,6 +137,12 @@ export default function CrdSpaceSettingsPage() {
     onSaved: () => subspacesTab.closeSaveAsTemplate(),
     // Save-as always opens the create flow → temporary bucket.
     markdownUpload: { create: mdCreate, edit: md },
+    // CG save-as opens the CG template form (title + body + references) — reuse the space-bucket
+    // reference upload the live CG editor already wires (same bucket, temporaryLocation: true).
+    referenceUpload: {
+      onFileUpload: communityGuidelines.onReferenceFileUpload,
+      accept: communityGuidelines.referenceUploadAccept,
+    },
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
   const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
@@ -217,6 +238,9 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
+  const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
 
   const buildUserSubject = (m: CommunityMember): MemberSettingsSubject => ({
     type: 'user',
@@ -318,9 +342,9 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
-                  onAddReference={about.onAddReference}
-                  onUpdateReference={about.onUpdateReference}
-                  onRemoveReference={about.onRequestRemoveReference}
+                  onReferencesChange={about.onReferencesChange}
+                  onReferenceFileUpload={about.onReferenceFileUpload}
+                  referenceUploadAccept={about.referenceUploadAccept}
                   onSaveSection={section => void about.onSaveSection(section)}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
@@ -417,6 +441,8 @@ export default function CrdSpaceSettingsPage() {
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
+                      onReferenceFileUpload={communityGuidelines.onReferenceFileUpload}
+                      referenceUploadAccept={communityGuidelines.referenceUploadAccept}
                     />
                   ) : undefined
                 }
@@ -429,6 +455,10 @@ export default function CrdSpaceSettingsPage() {
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
+                onPendingView={id => {
+                  const target = community.pendingMemberships.find(m => m.id === id);
+                  if (target) setViewingMembership({ id: target.id, type: target.type });
+                }}
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
@@ -669,6 +699,13 @@ export default function CrdSpaceSettingsPage() {
         }}
       />
 
+      <MembershipDetailDialogConnector
+        membership={viewingMembership}
+        onOpenChange={open => {
+          if (!open) setViewingMembership(null);
+        }}
+      />
+
       {activeMemberSubject && (
         <MemberSettingsDialog
           open={true}
@@ -806,22 +843,6 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
-      />
-
-      <ConfirmationDialog
-        open={about.pendingReferenceDelete !== null}
-        onOpenChange={open => {
-          if (!open) about.onCancelRemoveReference();
-        }}
-        variant="destructive"
-        title={t('about.references.deleteDialog.title')}
-        description={t('about.references.deleteDialog.description', {
-          name: about.pendingReferenceDelete?.title || t('about.references.deleteDialog.untitled'),
-        })}
-        confirmLabel={t('about.references.deleteDialog.confirm')}
-        cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={about.onConfirmRemoveReference}
-        onCancel={about.onCancelRemoveReference}
       />
 
       <ConfirmationDialog
