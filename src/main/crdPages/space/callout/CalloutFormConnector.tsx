@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
+  useDeleteReferenceMutation,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -158,6 +159,7 @@ export function CalloutFormConnector({
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -443,6 +445,25 @@ export function CalloutFormConnector({
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
+        notify(t('callout.referencesSaveFailed'), 'error');
+        return;
+      }
+    }
+
+    // Removed references — rows present at edit-open but no longer in the form. The bulk
+    // `updateCallout` only upserts existing references by `ID` (it can't delete), so removed rows
+    // need an explicit `deleteReference`. Diff the open-time snapshot (`editMeta.originalReferenceIds`)
+    // against the current rows — mirrors the callout-template + CG branches in `useTemplateForms`.
+    const originalReferenceIds = values.editMeta?.originalReferenceIds ?? [];
+    const currentReferenceIds = new Set(values.referenceRows.flatMap(row => (row.id ? [row.id] : [])));
+    const removedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
+    if (removedReferenceIds.length > 0) {
+      try {
+        for (const id of removedReferenceIds) {
+          await deleteReference({ variables: { input: { ID: id } } });
+        }
+      } catch (err) {
+        logError(new Error('Callout reference deletion failed', { cause: err as Error }));
         notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
