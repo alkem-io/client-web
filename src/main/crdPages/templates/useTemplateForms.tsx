@@ -31,6 +31,7 @@ import type {
   TemplateType,
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
@@ -678,6 +679,41 @@ export function useTemplateForms({
       case 'callout': {
         if (!editCalloutId) throw new Error('Missing callout id for Callout template edit');
         await updateTemplate({ variables: { templateId, profile } });
+
+        // References live on the callout's framing profile. The callout update mutation can only
+        // *update existing* references (keyed by `ID`); it neither creates rows added in the form
+        // (no `id`) nor deletes rows removed in the form. Diff against the snapshot captured at
+        // edit-open (editMeta) and route adds → `createReferenceOnProfile`, removes →
+        // `deleteReference`, before the update — mirroring the communityGuidelines branch above.
+        const { editMeta, referenceRows } = calloutForm.values;
+        const framingProfileId = editMeta?.framingProfileId;
+        const originalReferenceIds = editMeta?.originalReferenceIds ?? [];
+        const currentReferenceIds = new Set(referenceRows.flatMap((r): string[] => (r.id ? [r.id] : [])));
+        const deletedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
+        const newReferenceRows = referenceRows.filter(
+          r => !r.id && r.title.trim().length > 0 && r.url.trim().length > 0
+        );
+
+        if (deletedReferenceIds.length > 0) {
+          await Promise.all(deletedReferenceIds.map(id => deleteReference({ variables: { input: { ID: id } } })));
+        }
+        if (framingProfileId && newReferenceRows.length > 0) {
+          await Promise.all(
+            newReferenceRows.map(r =>
+              createReferenceOnProfile({
+                variables: {
+                  input: {
+                    profileID: framingProfileId,
+                    name: r.title.trim() || 'Reference',
+                    uri: ensureHttps(r.url),
+                    description: r.description.trim() || undefined,
+                  },
+                },
+              })
+            )
+          );
+        }
+
         const result = await updateCalloutTemplate({
           variables: { calloutData: calloutFormValuesToUpdateCalloutEntityInput(calloutForm.values, editCalloutId) },
         });

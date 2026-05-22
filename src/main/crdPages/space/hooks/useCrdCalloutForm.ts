@@ -97,6 +97,10 @@ export type CalloutFormValues = {
     pollId?: string;
     memoId?: string;
     whiteboardId?: string;
+    /** Framing profile id — where references live. Used to create newly-added references on edit. */
+    framingProfileId: string;
+    /** Reference ids present at edit-open, so the submit can detect which references were removed. */
+    originalReferenceIds: string[];
   };
 };
 

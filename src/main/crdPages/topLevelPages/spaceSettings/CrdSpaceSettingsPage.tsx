@@ -31,6 +31,7 @@ import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
+import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import {
   useAddOrganizationDialog,
   useAddVirtualContributorDialog,
@@ -237,6 +238,9 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
+  const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
 
   const buildUserSubject = (m: CommunityMember): MemberSettingsSubject => ({
     type: 'user',
@@ -451,6 +455,10 @@ export default function CrdSpaceSettingsPage() {
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
+                onPendingView={id => {
+                  const target = community.pendingMemberships.find(m => m.id === id);
+                  if (target) setViewingMembership({ id: target.id, type: target.type });
+                }}
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
@@ -688,6 +696,13 @@ export default function CrdSpaceSettingsPage() {
         onCancel={() => {
           community.cancelRemoval();
           setRemoveOriginatedFromDialog(false);
+        }}
+      />
+
+      <MembershipDetailDialogConnector
+        membership={viewingMembership}
+        onOpenChange={open => {
+          if (!open) setViewingMembership(null);
         }}
       />
 
