@@ -6,6 +6,7 @@ import type { State as M2HState } from 'mdast-util-to-hast';
 import { useTranslation } from 'react-i18next';
 import { emptyParagraph, html, text } from '../utils/unist-builders';
 import type { Converter } from './Converter';
+import { remarkNormalizeLists } from './remarkNormalizeLists';
 
 // Not sure why it doesn't have the tagName property in TS, it's always there when debugging.
 // Also this overrides the children to be Element[] for cleaner code in this file, we don't access properties inside children, so it's safe.
@@ -132,6 +133,7 @@ const UnifiedConverter = (): Converter => {
           },
         })
         .use(remarkGfm)
+        .use(remarkNormalizeLists)
         .use(remarkStringify)
     );
   });
