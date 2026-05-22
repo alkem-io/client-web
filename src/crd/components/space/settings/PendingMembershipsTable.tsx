@@ -184,7 +184,7 @@ export function PendingMembershipsTable({
       <div className="flex items-center gap-2">
         <h3 className="text-subsection-title">{t('community.pendingMemberships.title')}</h3>
         <Badge variant="secondary" className="rounded-full">
-          {sorted.length}
+          {items.length}
         </Badge>
       </div>
 
