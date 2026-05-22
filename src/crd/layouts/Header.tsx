@@ -152,12 +152,18 @@ export function Header({
         className
       )}
     >
-      {/* Inner grid — left and right groups align with the inner content's left/right edges
-          (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width so the
-          header items are not flush against the viewport edges. */}
+      {/* Inner grid — left and right groups sit in the inner content band
+          (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width.
+          A small `lg:px-3` keeps the logo / icon row from sitting flush against
+          the inset banner edges below. */}
       <div className="w-full h-full px-6 md:px-8">
         <div className="grid grid-cols-12 gap-6 h-full">
-          <div className={cn('col-span-12 flex items-center justify-between h-full', contentColumnClass(fullWidth))}>
+          <div
+            className={cn(
+              'col-span-12 flex items-center justify-between h-full lg:px-3',
+              contentColumnClass(fullWidth)
+            )}
+          >
             {/* Left: Logo + breadcrumbs */}
             <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>

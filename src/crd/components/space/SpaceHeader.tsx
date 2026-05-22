@@ -65,15 +65,25 @@ export function SpaceHeader({
 
   return (
     <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
-      <div
-        className="relative w-full aspect-[6/1] overflow-hidden"
-        role="img"
-        aria-label={t('a11y.spaceBanner', { name: title })}
-      >
-        <div
-          className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && !color && 'bg-muted')}
-          style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined}
-        />
+      {/* Banner — the collapsed layout insets the banner into the content grid
+          on desktop (aligning with the title row below and matching the MUI
+          banner sizing); mobile/tablet and the expanded layout keep the
+          edge-to-edge full-bleed banner. */}
+      <div className={cn('w-full', !fullWidth && 'lg:px-8')}>
+        <div className="grid grid-cols-12 gap-6">
+          <div
+            className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}
+            role="img"
+            aria-label={t('a11y.spaceBanner', { name: title })}
+          >
+            <div
+              className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && !color && 'bg-muted')}
+              style={
+                bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined
+              }
+            />
+          </div>
+        </div>
       </div>
 
       <div className="w-full px-6 md:px-8 pt-8 pb-8">
