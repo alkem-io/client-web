@@ -4,6 +4,7 @@ import { AuthorizationPrivilege, type InnovationPackProfilePageQuery } from '@/c
 import type { InnovationPackProfileViewProps } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
+import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type GqlProfilePack = NonNullable<InnovationPackProfilePageQuery['lookup']['innovationPack']>;
@@ -73,7 +74,7 @@ export function useInnovationPackProfile(): UseInnovationPackProfileResult {
   const pack = gqlPack ? mapProfilePackToCard(gqlPack) : undefined;
   const templatesSetId = gqlPack?.templatesSet?.id;
   const canManage = gqlPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-  const adminHref = canManage && pack ? `${pack.url}/settings` : undefined;
+  const adminHref = canManage && pack ? buildInnovationPackSettingsUrl(pack.url) : undefined;
   const shareUrl = pack?.url ?? '';
 
   const tm = useTemplatesManager({ holderKind: 'innovationPack', templatesSetId });
