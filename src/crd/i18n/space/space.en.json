@@ -508,25 +508,6 @@
       "attachFile": "Attach file"
     }
   },
-  "references": {
-    "heading": "References",
-    "empty": "No references yet.",
-    "titleLabel": "Title",
-    "titlePlaceholder": "Reference title",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Optional description",
-    "addRow": "Add another reference",
-    "removeRow": "Remove reference",
-    "attachFile": "Attach file",
-    "removeConfirm": {
-      "title": "Remove this reference?",
-      "description": "“{{name}}” will be removed once you save. This cannot be undone.",
-      "confirm": "Remove",
-      "unnamed": "this reference"
-    }
-  },
   "responseDefaults": {
     "srDescription": "Configure the default values for new contributions in this $t(common.callout).",
     "title": {

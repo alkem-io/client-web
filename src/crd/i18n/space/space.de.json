@@ -517,25 +517,6 @@
       "attachFile": "Datei anhängen"
     }
   },
-  "references": {
-    "heading": "Referenzen",
-    "empty": "Noch keine Referenzen.",
-    "titleLabel": "Titel",
-    "titlePlaceholder": "Referenztitel",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Beschreibung",
-    "descriptionPlaceholder": "Optionale Beschreibung",
-    "addRow": "Weitere Referenz hinzufügen",
-    "removeRow": "Referenz entfernen",
-    "attachFile": "Datei anhängen",
-    "removeConfirm": {
-      "title": "Diese Referenz entfernen?",
-      "description": "„{{name}}“ wird beim Speichern entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
-      "confirm": "Entfernen",
-      "unnamed": "diese Referenz"
-    }
-  },
   "responseDefaults": {
     "srDescription": "Konfigurieren Sie die Standardwerte für neue Beiträge in diesem $t(common.Callout).",
     "title": {

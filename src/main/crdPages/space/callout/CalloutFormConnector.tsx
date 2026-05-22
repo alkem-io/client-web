@@ -33,10 +33,10 @@ import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
-import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Label } from '@/crd/primitives/label';
@@ -66,7 +66,7 @@ import {
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
@@ -425,7 +425,7 @@ export function CalloutFormConnector({
     // update payload below.
     const framingProfileId = editData?.lookup.callout?.framing.profile.id;
     const newReferenceRows = values.referenceRows.filter(
-      row => !row.id && row.title.trim().length > 0 && row.url.trim().length > 0
+      row => !row.id && row.name.trim().length > 0 && row.uri.trim().length > 0
     );
     if (framingProfileId && newReferenceRows.length > 0) {
       try {
@@ -434,9 +434,9 @@ export function CalloutFormConnector({
             variables: {
               input: {
                 profileID: framingProfileId,
-                name: row.title.trim(),
-                uri: ensureHttps(row.url),
-                description: row.description.trim() || undefined,
+                name: row.name.trim(),
+                uri: ensureHttps(row.uri),
+                description: row.description?.trim() || undefined,
               },
             },
           });
@@ -711,8 +711,8 @@ export function CalloutFormConnector({
             />
             <ReferencesEditor
               rows={values.referenceRows}
-              onChange={v => setField('referenceRows', v)}
-              errors={errors as Record<string, string | undefined>}
+              onChange={rows => setField('referenceRows', rows)}
+              errors={referenceRowErrors(errors)}
               disabled={submitting}
               onFileUpload={referenceUpload.onFileUpload}
               uploadAccept={referenceUpload.accept}

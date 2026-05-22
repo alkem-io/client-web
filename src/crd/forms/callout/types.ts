@@ -28,9 +28,10 @@ export type AllowedActors = {
 export type ReferenceRow = {
   /** Server id, set only when the row comes from an existing reference (edit mode). Rows added by the user during editing keep `id: undefined`. */
   id?: string;
-  title: string;
-  url: string;
-  description: string;
+  /** Field names mirror the GraphQL `Reference` type (`name` / `uri`) — the canonical shape shared with `@/crd/forms/references/ReferencesEditor`. */
+  name: string;
+  uri: string;
+  description?: string;
 };
 
 export type LinkRow = {
