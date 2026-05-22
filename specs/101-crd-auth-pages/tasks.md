@@ -47,35 +47,35 @@
 
 ### Contracts, adapter & integration utilities
 
-- [ ] T007 [P] Create `src/main/crdPages/auth/flowDescriptor.ts` with the `KratosFlowDescriptor` type and all sub-types (including `KratosPasskeyTrigger`), copied verbatim from `specs/101-crd-auth-pages/contracts/flow-descriptor.ts`.
-- [ ] T008 Implement `src/main/crdPages/auth/flowDescriptorAdapter.ts` — converts a Kratos `LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow` into a `KratosFlowDescriptor`: bucket every `flow.ui.nodes` entry (hidden / default / password / rest / submit / oidc / passkey / passkeyCredentials), pre-sort OIDC by `sortOrder`, pre-resolve passkey trigger flavour, attach `SocialProviderCustomisation`. Unknown groups fall back to `rest`. (Depends on T005, T007.)
-- [ ] T009 [P] Implement `src/main/crdPages/auth/passkeyTrigger.ts` — given a `KratosPasskeyTrigger`, invoke the matching browser/Kratos passkey routine (`window.__oryPasskeyLogin` / `__oryPasskeyRegistration` / etc.), mirroring the MUI `KratosPasskeyButton` logic: script-loaded check, browser-support check, and the not-supported / script-not-loaded / ceremony-failed error states (returned/thrown so the route can surface them). (Depends on T007.)
-- [ ] T010 [P] Implement `src/main/crdPages/auth/useAuthAnalytics.ts` — emits the same analytics events the MUI auth pages emit today (page view, submit attempt, submit success/failure, provider click). Audit each MUI page's emit sites first and replicate at one site per CRD page.
+- [X] T007 [P] Create `src/main/crdPages/auth/flowDescriptor.ts` with the `KratosFlowDescriptor` type and all sub-types (including `KratosPasskeyTrigger`), copied verbatim from `specs/101-crd-auth-pages/contracts/flow-descriptor.ts`.
+- [X] T008 Implement `src/main/crdPages/auth/flowDescriptorAdapter.ts` — converts a Kratos `LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow` into a `KratosFlowDescriptor`: bucket every `flow.ui.nodes` entry (hidden / default / password / rest / submit / oidc / passkey / passkeyCredentials), pre-sort OIDC by `sortOrder`, pre-resolve passkey trigger flavour, attach `SocialProviderCustomisation`. Unknown groups fall back to `rest`. (Depends on T005, T007.)
+- [X] T009 [P] Implement `src/main/crdPages/auth/passkeyTrigger.ts` — given a `KratosPasskeyTrigger`, invoke the matching browser/Kratos passkey routine (`window.__oryPasskeyLogin` / `__oryPasskeyRegistration` / etc.), mirroring the MUI `KratosPasskeyButton` logic: script-loaded check, browser-support check, and the not-supported / script-not-loaded / ceremony-failed error states (returned/thrown so the route can surface them). (Depends on T007.)
+- [X] T010 Audit complete — the MUI auth pages emit **no** auth-specific analytics events; their only observability is `useTransactionScope({ type: 'authentication' })` for APM. No `useAuthAnalytics.ts` is needed; the APM transaction scope is called directly in each CRD route component (`SignInCrdRoute`). Parity holds — same events as MUI = none.
 
 ### CRD form-field wrappers (`src/crd/forms/`)
 
-- [ ] T011 [P] Create `src/crd/forms/EmailField.tsx` — labelled email input with error rendering and `aria-describedby` wiring, props per `EmailFieldProps` in `contracts/crd-auth-components.ts`.
-- [ ] T012 [P] Create `src/crd/forms/PasswordField.tsx` — labelled password input with a keyboard-operable `lucide-react` eye-icon show/hide toggle (visual-only `useState`), accessible toggle label, error rendering, props per `PasswordFieldProps`.
-- [ ] T013 [P] Create `src/crd/forms/TextInputField.tsx` — labelled text input (First/Last Name), props per `TextInputFieldProps`.
-- [ ] T014 [P] Create `src/crd/forms/AcceptTermsCheckbox.tsx` — checkbox with a `ReactNode` rich-content label slot (consumer injects Terms/Privacy links), error rendering, props per `AcceptTermsCheckboxProps`.
+- [X] T011 [P] Create `src/crd/forms/EmailField.tsx` — labelled email input with error rendering and `aria-describedby` wiring, props per `EmailFieldProps` in `contracts/crd-auth-components.ts`.
+- [X] T012 [P] Create `src/crd/forms/PasswordField.tsx` — labelled password input with a keyboard-operable `lucide-react` eye-icon show/hide toggle (visual-only `useState`), accessible toggle label, error rendering, props per `PasswordFieldProps`.
+- [X] T013 [P] Create `src/crd/forms/TextInputField.tsx` — labelled text input (First/Last Name), props per `TextInputFieldProps`.
+- [X] T014 [P] Create `src/crd/forms/AcceptTermsCheckbox.tsx` — checkbox with a `ReactNode` rich-content label slot (consumer injects Terms/Privacy links), error rendering, props per `AcceptTermsCheckboxProps`.
 
 ### CRD shared auth components (`src/crd/components/auth/`)
 
-- [ ] T015 [P] Create `src/crd/components/auth/AuthCardHeader.tsx` — Alkemio logo + "Safe Spaces for Collaboration" tagline + contextual cross-link, props per `AuthCardHeaderProps`.
-- [ ] T016 [P] Create `src/crd/components/auth/SocialProviderButton.tsx` — circular icon-only button (tooltip + `aria-label` + focus ring); renders the `Globe` lucide-react icon as the fallback when no provider customisation is supplied; props per `SocialProviderButtonProps`.
-- [ ] T017 [P] Create `src/crd/components/auth/OrContinueWithDivider.tsx` — horizontal rule with a centred translated label, props per `OrContinueWithDividerProps`.
+- [X] T015 [P] Create `src/crd/components/auth/AuthCardHeader.tsx` — Alkemio logo + "Safe Spaces for Collaboration" tagline + contextual cross-link, props per `AuthCardHeaderProps`.
+- [X] T016 [P] Create `src/crd/components/auth/SocialProviderButton.tsx` — circular icon-only button (tooltip + `aria-label` + focus ring); renders the `Globe` lucide-react icon as the fallback when no provider customisation is supplied; props per `SocialProviderButtonProps`.
+- [X] T017 [P] Create `src/crd/components/auth/OrContinueWithDivider.tsx` — horizontal rule with a centred translated label, props per `OrContinueWithDividerProps`.
 
 ### CRD layout shell (`src/crd/layouts/`)
 
-- [ ] T018 Create `src/crd/layouts/AuthShell.tsx` — full-bleed background (`/alkemio-banner/global-banner.svg`), right-aligned card slot, footer (Terms/Privacy/Security/Support/About + language switcher), optional floating help-button slot, responsive single-column collapse at small viewports, props per `AuthShellProps`. Verify the existing CRD `Footer` works without an authenticated user; extract a minimal anonymous-safe footer if it does not.
+- [X] T018 Create `src/crd/layouts/AuthShell.tsx` — full-bleed background (`/alkemio-banner/global-banner.svg`), right-aligned card slot, footer (Terms/Privacy/Security/Support/About + language switcher), optional floating help-button slot, responsive single-column collapse at small viewports, props per `AuthShellProps`. Verify the existing CRD `Footer` works without an authenticated user; extract a minimal anonymous-safe footer if it does not.
 
 ### CRD flow renderer (`src/crd/components/auth/`)
 
-- [ ] T019 Create `src/crd/components/auth/CrdKratosFlow.tsx` — renders a `KratosFlowDescriptor` reproducing the MUI `KratosUI` node-grouping & ordering (hidden → messages → beforeInputs → default → password → resetPassword link → rest → children → submit → "or" divider → passkey credentials → passkey/OIDC row), with the `flowType`-dependent login-icon-row vs. registration-full-width-row split. Uses the form-field wrappers, `SocialProviderButton`, `OrContinueWithDivider`. Wires each passkey button's activation to the `onPasskeyTrigger` prop (the component never touches `window.__oryPasskey*`). Props per `CrdKratosFlowProps`; analytics surfaced as callback props. (Depends on T007, T011–T014, T016, T017.)
+- [X] T019 Create `src/crd/components/auth/CrdKratosFlow.tsx` — renders a `KratosFlowDescriptor` reproducing the MUI `KratosUI` node-grouping & ordering (hidden → messages → beforeInputs → default → password → resetPassword link → rest → children → submit → "or" divider → passkey credentials → passkey/OIDC row), with the `flowType`-dependent login-icon-row vs. registration-full-width-row split. Uses the form-field wrappers, `SocialProviderButton`, `OrContinueWithDivider`. Wires each passkey button's activation to the `onPasskeyTrigger` prop (the component never touches `window.__oryPasskey*`). Props per `CrdKratosFlowProps`; analytics surfaced as callback props. (Depends on T007, T011–T014, T016, T017.)
 
 ### Integration shell wrapper
 
-- [ ] T020 Create `src/main/crdPages/auth/AuthShellWrapper.tsx` — mounts `AuthShell`, derives `languages` from `supportedLngs`, wires `onLanguageChange` to `i18n.changeLanguage`, supplies footer link hrefs and the floating help button. (Depends on T018.)
+- [X] T020 Create `src/main/crdPages/auth/AuthShellWrapper.tsx` — mounts `AuthShell`, derives `languages` from `supportedLngs`, wires `onLanguageChange` to `i18n.changeLanguage`, supplies footer link hrefs and the floating help button. (Depends on T018.)
 
 ### Foundational tests
 
@@ -98,10 +98,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T027 [P] [US1] Create `src/crd/components/auth/SignInCard.tsx` — composes `AuthCardHeader` (title "Sign in", "No account? Sign up" link) + `CrdKratosFlow` (flowType `login`) + "Forgot password?" link; props per `SignInCardProps`; loading skeleton when `isLoading`.
-- [ ] T028 [US1] Create `src/main/crdPages/auth/SignInCrdRoute.tsx` — calls `useKratosFlow(FlowTypeName.Login)`, runs `flowDescriptorAdapter`, resolves `returnUrl` and `signUpHref` / `forgotPasswordHref`, wires `useAuthAnalytics`, binds `onPasskeyTrigger` to `passkeyTrigger.ts` and surfaces passkey errors in the card, ports the account-lockout message special-case (Kratos message id `9000429`) from `LoginPage.tsx`, wraps `SignInCard` in `AuthShellWrapper` and in the same `WithApmTransaction path="/identity/login"` the MUI route uses. (Depends on T008, T009, T010, T019, T020, T027.)
-- [ ] T029 [US1] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `login` route (`/login/*`, preserving sub-path matching and existing route wrappers) directly at `<SignInCrdRoute />`. The route is not conditional. `LoginRoute` / `LoginPage` become orphaned dead code.
-- [ ] T030 [P] [US1] Add the English `signIn.*` keys (title, submit, forgotPassword, noAccount, signUp link) to `src/crd/i18n/auth/auth.en.json`.
+- [X] T027 [P] [US1] Create `src/crd/components/auth/SignInCard.tsx` — composes `AuthCardHeader` (title "Sign in", "No account? Sign up" link) + `CrdKratosFlow` (flowType `login`) + "Forgot password?" link; props per `SignInCardProps`; loading skeleton when `isLoading`.
+- [X] T028 [US1] Create `src/main/crdPages/auth/SignInCrdRoute.tsx` — calls `useKratosFlow(FlowTypeName.Login)`, runs `flowDescriptorAdapter`, resolves `returnUrl` and `signUpHref` / `forgotPasswordHref`, wires `useAuthAnalytics`, binds `onPasskeyTrigger` to `passkeyTrigger.ts` and surfaces passkey errors in the card, ports the account-lockout message special-case (Kratos message id `9000429`) from `LoginPage.tsx`, wraps `SignInCard` in `AuthShellWrapper` and in the same `WithApmTransaction path="/identity/login"` the MUI route uses. (Depends on T008, T009, T010, T019, T020, T027.)
+- [X] T029 [US1] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `login` route (`/login/*`, preserving sub-path matching and existing route wrappers) directly at `<SignInCrdRoute />`. The route is not conditional. `LoginRoute` / `LoginPage` become orphaned dead code.
+- [X] T030 [P] [US1] Add the English `signIn.*` keys (title, submit, forgotPassword, noAccount, signUp link) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T031 [P] [US1] Unit test `src/crd/components/auth/SignInCard.test.tsx` — renders email + password + submit + forgot-password link; loading skeleton; invokes analytics callbacks.
 - [ ] T032 [US1] Integration test `src/main/crdPages/auth/__tests__/SignInCrdRoute.test.tsx` — the route component mounts and maps the adapted descriptor into `SignInCard`; flow-error messages render; the lockout message id `9000429` produces the special-case copy.
 
@@ -117,12 +117,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T033 [P] [US2] Create `src/crd/components/auth/SignUpCard.tsx` — `AuthCardHeader` (title "Sign up", "Have an account? Sign in"), intro paragraph with Terms/Privacy links, `AcceptTermsCheckbox`, `CrdKratosFlow` (flowType `registration`, curated nodes), disabled "Next" until terms accepted + valid; props per `SignUpCardProps`.
-- [ ] T034 [P] [US2] Create `src/crd/components/auth/RegistrationCard.tsx` — same shell as `SignUpCard` but renders the full Kratos registration flow; supports the `mustAcceptTerms` gate-vs-form switch; props per `RegistrationCardProps`.
-- [ ] T035 [US2] Create `src/main/crdPages/auth/SignUpCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)`, curated-node filtering (CSRF + email + first/last name + OIDC + submit), the accepted-terms sessionStorage-by-flow-id workaround, `returnUrl` via `useSignUpReturnUrl`/`useGuestSessionReturn`, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/sign_up"`. (Depends on T008, T009, T010, T019, T020, T033.)
-- [ ] T036 [US2] Create `src/main/crdPages/auth/RegistrationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)` full flow, the same accepted-terms workaround, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/registration"`. (Depends on T008, T009, T010, T019, T020, T034.)
-- [ ] T037 [US2] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `sign_up` route (keeping the `<NotAuthenticatedRoute>` wrapper) directly at `<SignUpCrdRoute />` and the `registration/*` route directly at `<RegistrationCrdRoute />`. No dispatch. `SignUp` / `RegistrationRoute` / `RegistrationPage` become orphaned. (Sequential after T029 — same file.)
-- [ ] T038 [P] [US2] Add the English `signUp.*` keys (title, intro, acceptTerms with `<terms>`/`<privacy>` placeholders, haveAccount, signIn link, next) to `src/crd/i18n/auth/auth.en.json`.
+- [X] T033 [P] [US2] Create `src/crd/components/auth/SignUpCard.tsx` — `AuthCardHeader` (title "Sign up", "Have an account? Sign in"), intro paragraph with Terms/Privacy links, `AcceptTermsCheckbox`, `CrdKratosFlow` (flowType `registration`, curated nodes), disabled "Next" until terms accepted + valid; props per `SignUpCardProps`.
+- [X] T034 [P] [US2] Create `src/crd/components/auth/RegistrationCard.tsx` — same shell as `SignUpCard` but renders the full Kratos registration flow; supports the `mustAcceptTerms` gate-vs-form switch; props per `RegistrationCardProps`.
+- [X] T035 [US2] Create `src/main/crdPages/auth/SignUpCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)`, curated-node filtering (CSRF + email + first/last name + OIDC + submit), the accepted-terms sessionStorage-by-flow-id workaround, `returnUrl` via `useSignUpReturnUrl`/`useGuestSessionReturn`, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/sign_up"`. (Depends on T008, T009, T010, T019, T020, T033.)
+- [X] T036 [US2] Create `src/main/crdPages/auth/RegistrationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Registration)` full flow, the same accepted-terms workaround, analytics, `onPasskeyTrigger` bound to `passkeyTrigger.ts`, `AuthShellWrapper`, `WithApmTransaction path="/identity/registration"`. (Depends on T008, T009, T010, T019, T020, T034.)
+- [X] T037 [US2] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `sign_up` route (keeping the `<NotAuthenticatedRoute>` wrapper) directly at `<SignUpCrdRoute />` and the `registration/*` route directly at `<RegistrationCrdRoute />`. No dispatch. `SignUp` / `RegistrationRoute` / `RegistrationPage` become orphaned. (Sequential after T029 — same file.)
+- [X] T038 [US2] Add the `signUp.*` keys to all six `crd-auth` files (title, intro + acceptTerms with `<terms>`/`<privacy>` tags, haveAccount, signIn). All six languages (en, nl, es, bg, de, fr) populated and key-parity verified.
 - [ ] T039 [P] [US2] Unit test `src/crd/components/auth/SignUpCard.test.tsx` — "Next" disabled until checkbox + fields valid; Terms/Privacy links present; analytics callbacks.
 - [ ] T040 [US2] Integration test `src/main/crdPages/auth/__tests__/SignUpCrdRoute.test.tsx` — the accepted-terms checkbox survives a simulated validation-error re-render (sessionStorage workaround); the route component mounts and maps the descriptor into `SignUpCard`.
 
@@ -138,12 +138,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T041 [P] [US3] Create `src/crd/components/auth/PasswordRecoveryCard.tsx` — `AuthCardHeader` (title "Password recovery", "No account? Sign up"), intro copy, email field, "Continue" button honouring `isInCooldown` + `cooldownSecondsRemaining`; props per `PasswordRecoveryCardProps`.
-- [ ] T042 [P] [US3] Create `src/crd/components/auth/PasswordRecoveryCodeCard.tsx` — second-stage code-input screen; props per `PasswordRecoveryCodeCardProps`.
-- [ ] T043 [P] [US3] Create `src/crd/components/auth/SetNewPasswordCard.tsx` — post-recovery password-reset screen using `PasswordField`; props per `SetNewPasswordCardProps`.
-- [ ] T044 [US3] Create `src/main/crdPages/auth/PasswordRecoveryCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Recovery)`, detect email-vs-code stage, port the 30-second sessionStorage cooldown logic from `RecoveryPage.tsx`, render `PasswordRecoveryCard` / `PasswordRecoveryCodeCard` / `SetNewPasswordCard` accordingly, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/recovery"`. (Depends on T008, T010, T019, T020, T041, T042, T043.)
-- [ ] T045 [US3] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `recovery` route directly at `<PasswordRecoveryCrdRoute />`. No dispatch. `RecoveryRoute` / `RecoveryPage` become orphaned. (Sequential after T037 — same file.)
-- [ ] T046 [P] [US3] Add the English `recovery.*` keys (recovery.title, recovery.intro, recovery.continue, recovery.codeStage.*, recovery.cooldown) to `src/crd/i18n/auth/auth.en.json`.
+- [X] T041 [P] [US3] Create `src/crd/components/auth/PasswordRecoveryCard.tsx` — `AuthCardHeader` (title "Password recovery", "No account? Sign up"), intro copy, email field, "Continue" button honouring `isInCooldown` + `cooldownSecondsRemaining`; props per `PasswordRecoveryCardProps`.
+- [X] T042 [P] [US3] Create `src/crd/components/auth/PasswordRecoveryCodeCard.tsx` — second-stage code-input screen; props per `PasswordRecoveryCodeCardProps`.
+- [X] T043 [P] [US3] Create `src/crd/components/auth/SetNewPasswordCard.tsx` — post-recovery password-reset screen using `PasswordField`; props per `SetNewPasswordCardProps`.
+- [X] T044 [US3] Create `src/main/crdPages/auth/PasswordRecoveryCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Recovery)`, detect email-vs-code stage, port the 30-second sessionStorage cooldown logic from `RecoveryPage.tsx`, render `PasswordRecoveryCard` / `PasswordRecoveryCodeCard` / `SetNewPasswordCard` accordingly, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/recovery"`. (Depends on T008, T010, T019, T020, T041, T042, T043.)
+- [X] T045 [US3] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `recovery` route directly at `<PasswordRecoveryCrdRoute />`. No dispatch. `RecoveryRoute` / `RecoveryPage` become orphaned. (Sequential after T037 — same file.)
+- [X] T046 [P] [US3] Add the English `recovery.*` keys (recovery.title, recovery.intro, recovery.continue, recovery.codeStage.*, recovery.cooldown) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T047 [P] [US3] Unit test `src/crd/components/auth/PasswordRecoveryCard.test.tsx` — button disabled + cooldown label rendered while `isInCooldown`; email field + submit render.
 - [ ] T048 [US3] Integration test `src/main/crdPages/auth/__tests__/PasswordRecoveryCrdRoute.test.tsx` — cooldown surfaces `submitDisabled=true`; email-stage vs code-stage selection driven by the descriptor.
 
@@ -159,12 +159,12 @@
 
 ### Implementation for User Story 4
 
-- [ ] T049 [P] [US4] Create `src/crd/components/auth/EmailVerificationCard.tsx` — verification screen rendering the verification flow (`CrdKratosFlow` flowType `verification`) plus the resolved `continueHref`; props per `EmailVerificationCardProps`.
-- [ ] T050 [P] [US4] Create `src/crd/components/auth/EmailVerificationRequiredCard.tsx` — the "please verify your email" reminder (logo + title + notice, optional `returnUrl`); props per `EmailVerificationRequiredCardProps`.
-- [ ] T051 [US4] Create `src/main/crdPages/auth/EmailVerificationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Verification)`, resolve `continueHref` from `flow.ui.action` / stored returnUrl, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/verify"`. (Depends on T008, T010, T019, T020, T049.)
-- [ ] T052 [US4] Create `src/main/crdPages/auth/EmailVerificationRequiredCrdRoute.tsx` — reads the stored returnUrl, wraps `EmailVerificationRequiredCard` in `AuthShellWrapper`. (Depends on T020, T050.)
-- [ ] T053 [US4] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `verify/*` route (verification + `/verify/reminder`) directly at the CRD verification route components. No dispatch. `VerifyRoute` / `VerificationPage` / `EmailVerificationRequiredPage` become orphaned. (Sequential after T045 — same file.)
-- [ ] T054 [P] [US4] Add the English `verification.*` and `verificationReminder.*` keys to `src/crd/i18n/auth/auth.en.json`.
+- [X] T049 [P] [US4] Create `src/crd/components/auth/EmailVerificationCard.tsx` — verification screen rendering the verification flow (`CrdKratosFlow` flowType `verification`) plus the resolved `continueHref`; props per `EmailVerificationCardProps`.
+- [X] T050 [P] [US4] Create `src/crd/components/auth/EmailVerificationRequiredCard.tsx` — the "please verify your email" reminder (logo + title + notice, optional `returnUrl`); props per `EmailVerificationRequiredCardProps`.
+- [X] T051 [US4] Create `src/main/crdPages/auth/EmailVerificationCrdRoute.tsx` — `useKratosFlow(FlowTypeName.Verification)`, resolve `continueHref` from `flow.ui.action` / stored returnUrl, analytics, `AuthShellWrapper`, `WithApmTransaction path="/identity/verify"`. (Depends on T008, T010, T019, T020, T049.)
+- [X] T052 [US4] Create `src/main/crdPages/auth/EmailVerificationRequiredCrdRoute.tsx` — reads the stored returnUrl, wraps `EmailVerificationRequiredCard` in `AuthShellWrapper`. (Depends on T020, T050.)
+- [X] T053 [US4] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `verify/*` route (verification + `/verify/reminder`) directly at the CRD verification route components. No dispatch. `VerifyRoute` / `VerificationPage` / `EmailVerificationRequiredPage` become orphaned. (Sequential after T045 — same file.)
+- [X] T054 [P] [US4] Add the English `verification.*` and `verificationReminder.*` keys to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T055 [P] [US4] Unit test `src/crd/components/auth/EmailVerificationRequiredCard.test.tsx` — renders title + notice; shows returnUrl when present, omits it when absent.
 - [ ] T056 [US4] Integration test `src/main/crdPages/auth/__tests__/EmailVerificationCrdRoute.test.tsx` — the route component mounts; `continueHref` resolved from the flow.
 
@@ -180,10 +180,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T057 [P] [US5] Create `src/crd/components/auth/AuthErrorCard.tsx` — error card showing `errorCode` / `errorMessage` / `errorReason` + a "back to sign in" link; loading skeleton; props per `AuthErrorCardProps`.
-- [ ] T058 [US5] Create `src/main/crdPages/auth/AuthErrorCrdRoute.tsx` — reads `?id=` query param, fetches the Kratos error object the same way `ErrorRoute.tsx` does, wraps `AuthErrorCard` in `AuthShellWrapper`, `WithApmTransaction path="/identity/error"`. (Depends on T020, T057.)
-- [ ] T059 [US5] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `error` route directly at `<AuthErrorCrdRoute />`. No dispatch. The MUI `ErrorRoute` becomes orphaned. (Sequential after T053 — same file.)
-- [ ] T060 [P] [US5] Add the English `error.*` keys (error.title, error.backToSignIn) to `src/crd/i18n/auth/auth.en.json`.
+- [X] T057 [P] [US5] Create `src/crd/components/auth/AuthErrorCard.tsx` — error card showing `errorCode` / `errorMessage` / `errorReason` + a "back to sign in" link; loading skeleton; props per `AuthErrorCardProps`.
+- [X] T058 [US5] Create `src/main/crdPages/auth/AuthErrorCrdRoute.tsx` — reads `?id=` query param, fetches the Kratos error object the same way `ErrorRoute.tsx` does, wraps `AuthErrorCard` in `AuthShellWrapper`, `WithApmTransaction path="/identity/error"`. (Depends on T020, T057.)
+- [X] T059 [US5] Modify `src/core/auth/authentication/routing/IdentityRoute.tsx` — point the `error` route directly at `<AuthErrorCrdRoute />`. No dispatch. The MUI `ErrorRoute` becomes orphaned. (Sequential after T053 — same file.)
+- [X] T060 [P] [US5] Add the English `error.*` keys (error.title, error.backToSignIn) to `src/crd/i18n/auth/auth.en.json`.
 - [ ] T061 [P] [US5] Unit test `src/crd/components/auth/AuthErrorCard.test.tsx` — renders error fields + back-to-sign-in link; loading skeleton.
 
 **Checkpoint**: All five user stories are functional in the CRD shell.
@@ -194,16 +194,16 @@
 
 **Purpose**: Translations, observability parity verification, accessibility audit, and regression smoke checks.
 
-- [ ] T062 [P] Translate every `crd-auth` key into Dutch — `src/crd/i18n/auth/auth.nl.json`.
-- [ ] T063 [P] Translate every `crd-auth` key into Spanish — `src/crd/i18n/auth/auth.es.json`.
-- [ ] T064 [P] Translate every `crd-auth` key into Bulgarian — `src/crd/i18n/auth/auth.bg.json`.
-- [ ] T065 [P] Translate every `crd-auth` key into German — `src/crd/i18n/auth/auth.de.json`.
-- [ ] T066 [P] Translate every `crd-auth` key into French — `src/crd/i18n/auth/auth.fr.json`.
-- [ ] T067 Verify no `crd-auth` key is missing or empty in any of the six language files (key-parity check across `src/crd/i18n/auth/*.json`).
-- [ ] T068 Observability parity audit: confirm each CRD route emits the same APM transaction name and the same analytics events as its MUI counterpart (compare `src/main/crdPages/auth/*` against the MUI pages side by side); fix any drift.
-- [ ] T069 Accessibility audit across all CRD auth screens — keyboard-only walkthrough, visible focus rings, `aria-describedby` on every field error, accessible names on icon-only social/passkey buttons, `aria-busy` on submitting buttons, contrast against the constellation background; fix WCAG 2.1 AA gaps.
-- [ ] T070 Verify CRD-layer hard restrictions across `src/crd/components/auth/`, `src/crd/forms/`, `src/crd/layouts/AuthShell.tsx` — zero `@mui/*` / `@emotion/*` / `@apollo/*` / `@/core/auth/*` / `react-router-dom` / `formik` imports, zero GraphQL/Kratos types in props.
-- [ ] T071 Run `pnpm lint` and `pnpm vitest run`; fix any type, Biome, ESLint, or test failures.
+- [X] T062 [P] Translate every `crd-auth` key into Dutch — `src/crd/i18n/auth/auth.nl.json`.
+- [X] T063 [P] Translate every `crd-auth` key into Spanish — `src/crd/i18n/auth/auth.es.json`.
+- [X] T064 [P] Translate every `crd-auth` key into Bulgarian — `src/crd/i18n/auth/auth.bg.json`.
+- [X] T065 [P] Translate every `crd-auth` key into German — `src/crd/i18n/auth/auth.de.json`.
+- [X] T066 [P] Translate every `crd-auth` key into French — `src/crd/i18n/auth/auth.fr.json`.
+- [X] T067 Verify no `crd-auth` key is missing or empty in any of the six language files (key-parity check across `src/crd/i18n/auth/*.json`).
+- [X] T068 Observability parity audit: confirm each CRD route emits the same APM transaction name and the same analytics events as its MUI counterpart (compare `src/main/crdPages/auth/*` against the MUI pages side by side); fix any drift.
+- [X] T069 Accessibility audit across all CRD auth screens — keyboard-only walkthrough, visible focus rings, `aria-describedby` on every field error, accessible names on icon-only social/passkey buttons, `aria-busy` on submitting buttons, contrast against the constellation background; fix WCAG 2.1 AA gaps.
+- [X] T070 Verify CRD-layer hard restrictions across `src/crd/components/auth/`, `src/crd/forms/`, `src/crd/layouts/AuthShell.tsx` — zero `@mui/*` / `@emotion/*` / `@apollo/*` / `@/core/auth/*` / `react-router-dom` / `formik` imports, zero GraphQL/Kratos types in props.
+- [X] T071 Run `pnpm lint` and `pnpm vitest run`; fix any type, Biome, ESLint, or test failures.
 - [ ] T072 Manual verification per `quickstart.md` — walk every CRD auth screen (every visitor gets them); then sign in and confirm the post-login application still loads correctly. This feature does not touch the authenticated app shell, so this is just a regression smoke check.
 
 ---

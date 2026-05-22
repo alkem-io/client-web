@@ -1,0 +1,53 @@
+{
+  "tagline": "Sichere Räume für Zusammenarbeit",
+  "continueWith": "oder weiter mit",
+  "loading": "Wird geladen",
+  "signIn": {
+    "title": "Anmelden",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Kein Konto?",
+    "signUp": "Registrieren"
+  },
+  "signUp": {
+    "title": "Registrieren",
+    "haveAccount": "Schon ein Konto?",
+    "signIn": "Anmelden",
+    "intro": "Alkemio dient dem Wohl der Gesellschaft. Bitte lies und akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>, bevor du fortfährst.",
+    "acceptTerms": "Ich akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>."
+  },
+  "recovery": {
+    "title": "Passwort-Wiederherstellung",
+    "intro": "Bitte gib unten deine E-Mail-Adresse ein, um einen Wiederherstellungslink zu erhalten, mit dem du dein Passwort zurücksetzen kannst."
+  },
+  "verification": {
+    "title": "E-Mail bestätigen",
+    "intro": "Bitte prüfe deinen Posteingang auf eine E-Mail mit Anweisungen zur Bestätigung deiner Adresse."
+  },
+  "verificationReminder": {
+    "title": "E-Mail bestätigen",
+    "body": "Der letzte Schritt ist die Bestätigung deiner E-Mail-Adresse. Bitte prüfe deinen Posteingang auf eine E-Mail mit Anweisungen."
+  },
+  "error": {
+    "title": "Etwas ist schiefgelaufen",
+    "generic": "Bei der Authentifizierung ist ein unerwarteter Fehler aufgetreten. Bitte versuche, dich erneut anzumelden.",
+    "code": "Fehlercode: {{code}}",
+    "backToSignIn": "Zurück zur Anmeldung"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
+  },
+  "providers": {
+    "connectWith": "Weiter mit {{provider}}",
+    "fallback": "Anderer Anbieter",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "tagline": "Espacios seguros para la colaboración",
+  "continueWith": "o continúa con",
+  "loading": "Cargando",
+  "signIn": {
+    "title": "Iniciar sesión",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "signUp": "Regístrate"
+  },
+  "signUp": {
+    "title": "Regístrate",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "signIn": "Iniciar sesión",
+    "intro": "Alkemio está diseñado para beneficiar a la sociedad. Lee y acepta las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy> antes de continuar.",
+    "acceptTerms": "Acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>."
+  },
+  "recovery": {
+    "title": "Recuperación de contraseña",
+    "intro": "Introduce tu correo electrónico a continuación para recibir un enlace de recuperación que te permitirá restablecer tu contraseña."
+  },
+  "verification": {
+    "title": "Verifica tu correo electrónico",
+    "intro": "Revisa tu bandeja de entrada para ver un correo con instrucciones para verificar tu dirección."
+  },
+  "verificationReminder": {
+    "title": "Verifica tu correo electrónico",
+    "body": "El último paso es verificar tu dirección de correo electrónico. Revisa tu bandeja de entrada para ver un correo con instrucciones."
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "generic": "Se produjo un error inesperado durante la autenticación. Vuelve a iniciar sesión.",
+    "code": "Código de error: {{code}}",
+    "backToSignIn": "Volver a iniciar sesión"
+  },
+  "fields": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña"
+  },
+  "providers": {
+    "connectWith": "Continuar con {{provider}}",
+    "fallback": "Otro proveedor",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  }
+}

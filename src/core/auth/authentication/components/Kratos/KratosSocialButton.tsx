@@ -5,6 +5,7 @@ import type React from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { socialProviderCustomizations } from '../../socialProviderCustomizations';
 import AppleIcon from '../AuthProviders/apple.svg?react';
 import CleverbaseIcon from '../AuthProviders/cleverbase.svg?react';
 import GithubIcon from '../AuthProviders/github.svg?react';
@@ -18,31 +19,34 @@ interface SocialCustomization {
   sortOrder: number;
 }
 
+// Icon components are MUI-layer specific; provider ordering is sourced from the
+// framework-agnostic `socialProviderCustomizations` so the MUI and CRD auth
+// layers never disagree on the order providers are shown in.
 export const socialCustomizations: Record<string, SocialCustomization> = {
   linkedin: {
     icon: LinkedInIcon,
     label: 'linkedin',
-    sortOrder: 2,
+    sortOrder: socialProviderCustomizations.linkedin.sortOrder,
   },
   microsoft: {
     icon: MicrosoftIcon,
     label: 'microsoft',
-    sortOrder: 1,
+    sortOrder: socialProviderCustomizations.microsoft.sortOrder,
   },
   github: {
     icon: GithubIcon,
     label: 'github',
-    sortOrder: 4,
+    sortOrder: socialProviderCustomizations.github.sortOrder,
   },
   apple: {
     icon: AppleIcon,
     label: 'apple',
-    sortOrder: 3,
+    sortOrder: socialProviderCustomizations.apple.sortOrder,
   },
   cleverbase: {
     icon: CleverbaseIcon,
     label: 'cleverbase',
-    sortOrder: 5,
+    sortOrder: socialProviderCustomizations.cleverbase.sortOrder,
   },
 };
 
