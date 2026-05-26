@@ -170,7 +170,7 @@ export function ContributionsPreviewConnector({
   const header = (
     <div className="mt-4 mb-2 flex items-center justify-between gap-2">
       <p className="text-label uppercase text-muted-foreground">{t('callout.contributionsHeader', { count: total })}</p>
-      {canCreateContribution && (
+      {canCreateContribution && addLabel && (
         <Button
           variant="ghost"
           size="sm"

@@ -9,6 +9,11 @@ import { Input } from '@/crd/primitives/input';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 
+// `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
+// (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
+type ControlledOpen = { open: boolean; onOpenChange: (open: boolean) => void };
+type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
+
 type MemoContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
@@ -16,9 +21,7 @@ type MemoContributionAddConnectorProps = {
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+} & (ControlledOpen | UncontrolledOpen);
 
 export function MemoContributionAddConnector({
   calloutId,
@@ -32,8 +35,12 @@ export function MemoContributionAddConnector({
   const { t } = useTranslation('crd-space');
   const fallbackName = defaultDisplayName ?? t('callout.defaultMemoName');
   const [internalOpen, setInternalOpen] = useState(false);
-  const createDialogOpen = controlledOpen ?? internalOpen;
-  const setCreateDialogOpen = onOpenChange ?? setInternalOpen;
+  const isControlled = controlledOpen !== undefined;
+  const createDialogOpen = isControlled ? controlledOpen : internalOpen;
+  const setCreateDialogOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
   const [memoName, setMemoName] = useState(fallbackName);
   const [editingMemoId, setEditingMemoId] = useState<string | undefined>();
   const [createMemo] = useCreateMemoOnCalloutMutation();

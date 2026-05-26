@@ -15,16 +15,18 @@ import {
 import { LinkTermsHelper } from './LinkTermsHelper';
 import { LinkUrlAttachFileButton } from './LinkUrlAttachFileButton';
 
+// `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
+// (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
+type ControlledOpen = { open: boolean; onOpenChange: (open: boolean) => void };
+type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
+
 type LinkContributionAddConnectorProps = {
   calloutId: string;
   onCreated?: () => void;
   /** When true, renders a small inline "+ Add link" button instead of the full add card.
    *  Used by the list-view feed branch where the Add affordance lives inside `ContributionLinkList`. */
   inlineTrigger?: boolean;
-  /** Controlled-open hook for the inline-trigger case: lets a parent open this connector's dialog. */
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+} & (ControlledOpen | UncontrolledOpen);
 
 export function LinkContributionAddConnector({
   calloutId,
@@ -35,8 +37,12 @@ export function LinkContributionAddConnector({
 }: LinkContributionAddConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [internalOpen, setInternalOpen] = useState(false);
-  const open = controlledOpen ?? internalOpen;
-  const setOpen = onOpenChange ?? setInternalOpen;
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   return (
     <>

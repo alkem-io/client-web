@@ -13,6 +13,11 @@ import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 
 type CreatedWhiteboard = NonNullable<CreateWhiteboardOnCalloutMutation['createContributionOnCallout']['whiteboard']>;
 
+// `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
+// (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
+type ControlledOpen = { open: boolean; onOpenChange: (open: boolean) => void };
+type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
+
 type WhiteboardContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
@@ -20,9 +25,7 @@ type WhiteboardContributionAddConnectorProps = {
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+} & (ControlledOpen | UncontrolledOpen);
 
 export function WhiteboardContributionAddConnector({
   calloutId,
@@ -36,8 +39,12 @@ export function WhiteboardContributionAddConnector({
   const { t } = useTranslation('crd-space');
   const fallbackName = defaultDisplayName ?? t('callout.defaultWhiteboardName');
   const [internalOpen, setInternalOpen] = useState(false);
-  const dialogOpen = controlledOpen ?? internalOpen;
-  const setDialogOpen = onOpenChange ?? setInternalOpen;
+  const isControlled = controlledOpen !== undefined;
+  const dialogOpen = isControlled ? controlledOpen : internalOpen;
+  const setDialogOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
   const [whiteboardName, setWhiteboardName] = useState(fallbackName);
   const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();

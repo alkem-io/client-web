@@ -4,6 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import { CrdPostContributionDialog } from '@/main/crdPages/post/CrdPostContributionDialog';
 
+// `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
+// (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
+type ControlledOpen = { open: boolean; onOpenChange: (open: boolean) => void };
+type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
+
 type PostContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
@@ -11,9 +16,7 @@ type PostContributionAddConnectorProps = {
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+} & (ControlledOpen | UncontrolledOpen);
 
 export function PostContributionAddConnector({
   calloutId,
@@ -26,8 +29,12 @@ export function PostContributionAddConnector({
 }: PostContributionAddConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [internalOpen, setInternalOpen] = useState(false);
-  const open = controlledOpen ?? internalOpen;
-  const setOpen = onOpenChange ?? setInternalOpen;
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   return (
     <>
