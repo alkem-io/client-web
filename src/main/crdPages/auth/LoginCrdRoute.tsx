@@ -21,6 +21,7 @@ import { LoginCard } from '@/crd/components/auth/LoginCard';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
+import { useKratosMessageCopy } from './useKratosMessageCopy';
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 // Client-side message id for account lockout (HTTP 429). Mirrors `LoginPage.tsx`.
@@ -38,6 +39,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
+  const translateMessages = useKratosMessageCopy();
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
@@ -65,7 +67,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           type: error.type as KratosMessage['type'],
           text: error.text,
         }))
-      : base.messages;
+      : translateMessages(base.messages);
     if (isLockedOut) {
       messages = [
         ...messages,

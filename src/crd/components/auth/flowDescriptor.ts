@@ -11,6 +11,8 @@
  * TypeScript — no `@ory/kratos-client` types leak across the boundary.
  */
 
+import type { ReactNode } from 'react';
+
 export type KratosFlowType = 'login' | 'registration' | 'recovery' | 'verification';
 
 export type KratosMessageType = 'info' | 'error' | 'success';
@@ -21,6 +23,18 @@ export type KratosMessage = {
   type: KratosMessageType;
   /** Already-translated text from the backend. */
   text: string;
+  /**
+   * Kratos interpolation context (e.g. `{ provider: 'GitHub' }`). Used by the
+   * integration layer to re-localise known message ids with Alkemio's own copy.
+   */
+  context?: Record<string, unknown>;
+  /**
+   * Pre-rendered rich content for messages whose Alkemio copy contains markup
+   * (e.g. the recovery "email sent" block, with `<strong>`/`<li>`/`<br/>`).
+   * When set, the banner renders this instead of `text`; the integration layer
+   * produces it via `<Trans>`.
+   */
+  content?: ReactNode;
 };
 
 export type KratosHiddenInputNode = {

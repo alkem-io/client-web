@@ -9,6 +9,7 @@ import { VerificationCard } from '@/crd/components/auth/VerificationCard';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
+import { useKratosMessageCopy } from './useKratosMessageCopy';
 
 /** `/verify` — the email-verification Kratos flow. */
 function CrdVerificationPage() {
@@ -18,7 +19,12 @@ function CrdVerificationPage() {
 
   const flowId = useQueryParams().get('flow') || undefined;
   const { flow: verificationFlow, loading } = useKratosFlow(FlowTypeName.Verification, flowId);
-  const descriptor = verificationFlow ? flowDescriptorAdapter(verificationFlow, 'verification') : undefined;
+  const translateMessages = useKratosMessageCopy();
+
+  const baseDescriptor = verificationFlow ? flowDescriptorAdapter(verificationFlow, 'verification') : undefined;
+  const descriptor = baseDescriptor
+    ? { ...baseDescriptor, messages: translateMessages(baseDescriptor.messages) }
+    : undefined;
 
   return (
     <AuthShellWrapper>

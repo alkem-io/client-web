@@ -7,6 +7,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { RecoveryCard } from '@/crd/components/auth/RecoveryCard';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
+import { useKratosMessageCopy } from './useKratosMessageCopy';
 
 /**
  * CRD `/recovery` route — the un-gated replacement for the MUI `RecoveryRoute`.
@@ -21,8 +22,12 @@ export function RecoveryCrdRoute() {
   const params = useQueryParams();
   const flowId = params.get('flow') || undefined;
   const { flow: recoveryFlow, loading } = useKratosFlow(FlowTypeName.Recovery, flowId);
+  const translateMessages = useKratosMessageCopy();
 
-  const descriptor = recoveryFlow ? flowDescriptorAdapter(recoveryFlow, 'recovery') : undefined;
+  const baseDescriptor = recoveryFlow ? flowDescriptorAdapter(recoveryFlow, 'recovery') : undefined;
+  const descriptor = baseDescriptor
+    ? { ...baseDescriptor, messages: translateMessages(baseDescriptor.messages) }
+    : undefined;
 
   return (
     <AuthShellWrapper>

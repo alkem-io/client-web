@@ -14,6 +14,7 @@ import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger } from './passkeyTrigger';
+import { useKratosMessageCopy } from './useKratosMessageCopy';
 
 /**
  * Shared sign-up page logic. Drives the Kratos registration flow and persists
@@ -29,6 +30,7 @@ function CrdSignUpPage() {
   const flowId = params.get('flow') || undefined;
   const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flowId);
   const { locations } = useConfig();
+  const translateMessages = useKratosMessageCopy();
   usePasskeyScript(registrationFlow?.ui?.nodes);
 
   const [accepted, setAccepted] = useState(false);
@@ -47,7 +49,10 @@ function CrdSignUpPage() {
     }
   };
 
-  const descriptor = registrationFlow ? flowDescriptorAdapter(registrationFlow, 'registration') : undefined;
+  const baseDescriptor = registrationFlow ? flowDescriptorAdapter(registrationFlow, 'registration') : undefined;
+  const descriptor = baseDescriptor
+    ? { ...baseDescriptor, messages: translateMessages(baseDescriptor.messages) }
+    : undefined;
 
   return (
     <AuthShellWrapper>

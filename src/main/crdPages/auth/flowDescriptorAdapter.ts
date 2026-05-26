@@ -23,6 +23,7 @@ import {
   isSubmitButton,
   isTextNode,
 } from '@/core/auth/authentication/components/Kratos/helpers';
+import { kratosMessageTranslationKeys } from '@/core/auth/authentication/components/Kratos/messages';
 import { socialProviderCustomizations } from '@/core/auth/authentication/socialProviderCustomizations';
 import type {
   KratosCheckboxNode,
@@ -49,7 +50,12 @@ const REMOVED_FIELD_NAMES = new Set(
 );
 
 function toMessage(text: UiText): KratosMessage {
-  return { id: text.id, type: (text.type as KratosMessageType) ?? 'info', text: text.text };
+  return {
+    id: text.id,
+    type: (text.type as KratosMessageType) ?? 'info',
+    text: text.text,
+    context: text.context as Record<string, unknown> | undefined,
+  };
 }
 
 function toInputType(type: string | undefined): KratosTextInputNode['type'] {
@@ -241,10 +247,16 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
     method: flow.ui.method?.toUpperCase() === 'GET' ? 'GET' : 'POST',
     // Drop Kratos's generic flow-level `info` notices on login / registration
     // (e.g. "Please choose a credential to authenticate yourself with") — they
-    // are non-actionable noise. Errors and success notices are always kept.
-    messages: (flow.ui.messages ?? [])
-      .map(toMessage)
-      .filter(message => !(message.type === 'info' && (flowType === 'login' || flowType === 'registration'))),
+    // are non-actionable noise. Errors and success notices are always kept, and
+    // so are `info` messages Alkemio has explicit copy for: those are actionable
+    // (most importantly the OIDC account-linking conflict, id 1010016, which
+    // tells the user the email already belongs to another account).
+    messages: (flow.ui.messages ?? []).map(toMessage).filter(message => {
+      if (message.type !== 'info' || (flowType !== 'login' && flowType !== 'registration')) {
+        return true;
+      }
+      return String(message.id) in kratosMessageTranslationKeys;
+    }),
     acceptTerms,
     groups,
   };

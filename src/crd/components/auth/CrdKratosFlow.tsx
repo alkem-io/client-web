@@ -93,14 +93,23 @@ export function CrdKratosFlow({
               key={`${message.id}-${message.text}`}
               role={message.type === 'error' ? 'alert' : 'status'}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2.5 text-body',
+                'flex gap-3 rounded-md px-3 py-2.5 text-body',
+                // Rich (multi-line) content aligns the icon to the top; plain
+                // single-line text stays vertically centred with the icon.
+                message.content ? 'items-start' : 'items-center',
                 message.type === 'error' && 'bg-destructive/10 text-destructive',
                 message.type === 'success' && 'bg-secondary text-foreground',
                 message.type === 'info' && 'border border-primary/15 bg-primary/5 text-primary'
               )}
             >
-              {message.type === 'info' ? <Info aria-hidden="true" className="size-4 shrink-0" /> : null}
-              <span>{message.text}</span>
+              {message.type === 'info' ? (
+                <Info aria-hidden="true" className={cn('size-4 shrink-0', message.content && 'mt-0.5')} />
+              ) : null}
+              {message.content ? (
+                <div className="[&_li]:ml-4 [&_li]:list-disc [&_strong]:font-semibold">{message.content}</div>
+              ) : (
+                <span>{message.text}</span>
+              )}
             </div>
           ))}
         </div>
