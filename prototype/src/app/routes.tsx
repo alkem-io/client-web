@@ -36,6 +36,8 @@ import PackSettingsPage from "./pages/PackSettingsPage";
 import TemplateSettingsPage from "./pages/TemplateSettingsPage";
 import VCProfilePage from "./pages/VCProfilePage";
 import ForumPage from "./pages/ForumPage";
+import InnovationHubPage from "./pages/InnovationHubPage";
+import InnovationHubSettingsPage from "./pages/InnovationHubSettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -112,6 +114,10 @@ export const router = createBrowserRouter([
       {
         Component: SpaceLayout,
         children: [
+          /* Innovation Hub */
+          { path: "/innovation-hub/:slug", Component: InnovationHubPage },
+          { path: "/innovation-hub/:slug/settings", Component: InnovationHubSettingsPage },
+          { path: "/innovation-hub/:slug/settings/:tab", Component: InnovationHubSettingsPage },
           /* Tab pages share SpaceShell (banner + navigation tabs) */
           {
             path: "/space/:spaceSlug",
