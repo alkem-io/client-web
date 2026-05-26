@@ -39,8 +39,8 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
 ### Scenario A — first-ever fresh session, no preference, anonymous user (FR-008b, FR-009, FR-003, SC-005)
 
 1. Open a clean private/incognito window. Visit `http://localhost:3001`.
-2. **Expected**: The MUI (old design) shell renders by default — `useCrdEnabled()` returns `false` when LS is unset. No reload occurs. The user menu does NOT show the design switch row (anonymous users never see it, FR-003).
-3. Open Local Storage — neither `alkemio-design-version` nor the legacy `alkemio-crd-enabled` key should be set.
+2. **Expected** *(updated 2026-05-26 — default flipped)*: The CRD (new design) shell renders by default — `useCrdEnabled()` returns `true` when LS is unset (FR-008b as revised 2026-05-26). No reload occurs. The user menu does NOT show the design switch row (anonymous users never see it, FR-003), and the migration-nudge modal does NOT appear (anonymous users have no server `designVersion`, so the gate fails).
+3. Open Local Storage — neither `alkemio-design-version` nor `alkemio-design-version-upgrade-dismissed` nor the legacy `alkemio-crd-enabled` key should be set.
 4. Open DevTools Network — no `updateUserSettings` mutation should have fired. The `CurrentUserLight` query may have fired but with no authenticated user.
 
 ### Scenario B — authenticated user, server says `1`, local cache says `'2'` (FR-007, SC-003)
@@ -65,7 +65,7 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
 
 1. Sign in as Scenario B's user (currently on MUI).
 2. Click the avatar → open user menu.
-3. Verify: switch labelled "New design (beta)" sits above "Dashboard"; caption reads "The old design will remain available for a short time."; switch is OFF.
+3. Verify *(updated 2026-05-26)*: switch labelled "New look (classic available for a limited time)" sits above "Dashboard"; no separate caption row (the `caption` key was removed); switch is OFF. *(The label does NOT change when the toggle is flipped ON — single neutral label, same pattern as "Dark mode".)*
 4. Click the switch.
 5. **Expected (within 5 seconds end-to-end):**
    - `updateUserSettings` mutation fires in Network with `variables.settingsData.settings.designVersion === 2` (integer, not string).
@@ -106,6 +106,17 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 3. **Expected**: The MUI shell renders briefly (LS unset → default = MUI). `CurrentUserLight` resolves with `designVersion: 2`, mismatch detected (LS is `null` vs. desired `2`), LS is set to `'2'`, exactly one reload fires.
 4. After the reload, the CRD shell renders. Total: one reconciliation reload, matching SC-003.
 
+### Scenario K — migration-nudge modal (FR-019, FR-020, US4) *(added 2026-05-26)*
+
+1. Sign in as a user whose server `designVersion === 1` (old design). If you need to set this up, sign in to a fresh account so it inherits the server default, OR use Scenario E first to land on MUI explicitly. Confirm the avatar menu's design-version toggle is OFF.
+2. Clear the dismissal marker: `localStorage.removeItem('alkemio-design-version-upgrade-dismissed')`. Reload any page in the app.
+3. **Expected**: a CRD-styled modal appears on top of the MUI shell. Title: "A fresh new Alkemio is here". Two buttons: "Maybe later" (secondary) and "Take me to the new design" (primary). The modal renders with CRD typography and spacing even though the underlying shell is MUI — this is the `.crd-root` className on `DialogContent` doing its job.
+4. Click **Maybe later** (or press Esc). Modal closes. MUI shell remains. Inspect LS: `alkemio-design-version-upgrade-dismissed === '1'`.
+5. Reload. **Expected**: modal does NOT reappear (gate fails on `isDismissed`).
+6. Remove the dismissal marker again, reload, and this time click **Take me to the new design**. **Expected**: the existing toggle flow runs — `updateUserSettings` mutation fires with `designVersion: 2`, LS becomes `'2'`, the dismissal marker is also set (so the modal won't return if the user later flips back to MUI), then `window.location.reload()` fires and CRD renders.
+7. While on CRD, flip the avatar-menu toggle back to OFF (re-runs the toggle flow → server now `1`, LS `'1'`, reload into MUI). **Expected**: the modal does NOT re-appear on this device because the dismissal marker is still set from step 6's confirm.
+8. **Negative cases**: with `designVersion === 2` (CRD user) or anonymous, confirm the modal never appears regardless of the dismissal-marker state.
+
 ### Scenario J — accessibility spot check (Constitution §V)
 
 1. With the menu open, Tab to the switch. Confirm focus ring is visible (both Radix and MUI switches).
@@ -121,7 +132,8 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 ## Definition of Done
 
 All scenarios pass, `pnpm lint`, `pnpm vitest run`, and `pnpm build` are green, and the regenerated GraphQL artifacts are committed. PR description includes:
-- A short note that the platform default is **unchanged** (link to clarification 2026-05-13, superseding 2026-05-12 Q3) — flipping the default to the new design is deferred to a later, separate milestone.
-- A short note that the LS format moved from `alkemio-crd-enabled = 'true'/'false'` to `alkemio-design-version = '1'/'2'`, with a one-time migration on first load.
-- Screenshots of both menus showing the switch + caption.
+- A short note that the platform default is now the **new design (CRD)** per clarification 2026-05-26 (superseding 2026-05-13). Anyone without an explicit preference lands on CRD; users who previously opted into MUI (`'1'` in LS or server) keep it.
+- A short note that the LS format moved from `alkemio-crd-enabled = 'true'/'false'` to `alkemio-design-version = '1'/'2'`, with a one-time migration on first load. **Added 2026-05-26**: a second per-device LS key `alkemio-design-version-upgrade-dismissed` gates the migration-nudge modal.
+- Screenshots of both menus showing the state-dependent switch label (the previously documented "caption" row has been removed).
+- A screenshot of the migration-nudge modal (Scenario K) showing the CRD styling rendered over the MUI shell.
 - Confirmation that the legacy toggle UIs are removed.

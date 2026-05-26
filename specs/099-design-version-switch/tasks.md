@@ -142,6 +142,24 @@ Single React SPA project (no backend/frontend split). All paths are `src/...` fr
 
 ---
 
+## Phase 8: Default flip & migration nudge (2026-05-26)
+
+**Purpose**: Land the deferred default flip (clarification 2026-05-26 superseding 2026-05-13) and add an active migration push for existing MUI users. Coordinates with a parallel backend default flip.
+
+- [X] T026 Invert the LS-default boolean in `src/main/crdPages/useCrdEnabled.ts:56`: `useCrdEnabled()` returns `readDesignVersionFromStorage() !== DESIGN_VERSION_OLD` instead of `=== DESIGN_VERSION_NEW`. Every "no preference known" state (anonymous, fresh device, missing or unrecognized LS) now renders CRD. Explicit `'1'` opt-ins continue to render MUI. No LS migration of existing `'1'` values — the backend default flip + `useDesignVersionSync` handles authenticated re-evaluation on next sign-in.
+- [X] T027 [P] Update the project CLAUDE.md note about the default (line ~347) to read "Default is `2` (CRD)" and explain the inverted condition.
+- [X] T028 [P] Refresh the toggle-label copy in all CRD layout locales: keep the single `header.designVersion.label` key, update its value to **"New look (classic available for a limited time)"** across `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json` (AI-translated for the five non-EN locales). Drop the previously-shipped `caption` key entirely. `src/crd/layouts/components/UserMenu.tsx` renders the single label regardless of toggle state. *(Briefly during this phase a `toCrd` / `toMui` pair was tried; reverted same session.)*
+- [X] T029 [P] Mirror the copy refresh on the MUI side: keep the single `topBar.designVersion.label` key in `src/core/i18n/en/translation.en.json` and update its value to match the CRD side (English source only — Crowdin handles other locales on the next sync). `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` renders the single label regardless of toggle state.
+- [X] T030 Create the CRD presentational dialog `src/crd/components/common/DesignVersionUpgradeDialog.tsx`. Props: `open`, `isPending?`, `onConfirm`, `onDismiss`. All strings via `useTranslation('crd-layout')` reading `header.designVersionUpgrade.{title,body,confirm,dismiss,closeLabel}`. Add those keys to all six `layout.*.json` files. Dialog content uses `className="crd-root"` so Tailwind preflight applies inside the Radix portal even when the surrounding shell is MUI.
+- [X] T031 Create the mount/controller `src/main/crdPages/DesignVersionUpgradePromptMount.tsx`. Gates: `isAuthenticated && !loadingMe && designVersion === DESIGN_VERSION_OLD && !isDismissed && toggle.isVisible`. Reads `useCurrentUserContext()` + `useDesignVersionToggle()`. Inline LS helpers for the per-device dismissal marker (`alkemio-design-version-upgrade-dismissed`, value `'1'`). `onConfirm` writes the marker and runs `toggle.onChange(true)` (which writes server + LS and reloads into CRD). `onDismiss` writes the marker only. Mount in `src/root.tsx` next to `DesignVersionSyncMount`, inside `UserProvider` + `AlkemioApolloProvider`, outside `TopLevelRoutes` so the prompt surfaces on any page. Depends on T026 + T028 + T030.
+- [X] T032 [P] Run `pnpm lint` and `pnpm vitest run` against the combined changes. Lint clean. Tests: 1205 passed / 3 skipped (122 files).
+- [X] T033 [P] Convert stylistic `—` (em-dash) and `–` (en-dash) in `header.designVersionUpgrade.body` to plain `-` (hyphen) across all six locale files. Manual review follow-up; no code change.
+- [X] T034 [P] Update the 099 spec set — spec.md (new 2026-05-26 clarification, US4, FR-018/FR-019/FR-020, FR-004/FR-008b superseded inline), plan.md (Subsequent Changes section), tasks.md (this Phase 8), data-model.md (default row flipped, dismissal-marker entity), quickstart.md (Scenario A expectation flipped, new Scenario K for the modal), research.md (R5 amendment + R7 for the modal pattern).
+
+**Checkpoint**: Default flip + migration push live. New visitors and signed-in users with no preference see CRD; existing MUI users see the modal once on next load. SC-001 through SC-007 from US1–US3 still hold; new acceptance scenarios from US4 (1–5) verifiable per quickstart Scenario K.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase dependencies

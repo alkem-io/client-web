@@ -10,9 +10,38 @@ Add a single-source-of-truth design-version toggle that:
 1. Lives in both user menus (legacy MUI `PlatformNavigationUserMenu` and new CRD `UserMenu` rendered by `src/crd/layouts/Header.tsx`), above the Dashboard link, with a beta caption — visible only to authenticated users.
 2. Persists the choice as `UserSettings.designVersion` server-side (`Int` — `1` = old, `2` = new, `3+` reserved by server for future design generations; field is non-null and defaults to `1` server-side) via the existing `updateUserSettings` mutation, with a localStorage fast-boot cache (`alkemio-design-version`, values `'1'`/`'2'`) read synchronously by `useCrdEnabled()` at app shell mount. The previous boolean key `alkemio-crd-enabled` is migrated transparently on first load.
 3. Reconciles cache vs. saved preference on every authenticated load — server preference wins, cache rewritten, exactly one `window.location.reload()` on mismatch. Renders the cached design immediately so first paint isn't blocked.
-4. Preserves the existing platform default — **old design** — when no preference is known (per clarification 2026-05-13, superseding 2026-05-12 Q3). `useCrdEnabled()` keeps its current "unset LS → returns `false`" behavior. Flipping the default to the new design is deferred to a later migration milestone, out of scope here.
+4. ~~Preserves the existing platform default — **old design** — when no preference is known (per clarification 2026-05-13, superseding 2026-05-12 Q3). `useCrdEnabled()` keeps its current "unset LS → returns `false`" behavior. Flipping the default to the new design is deferred to a later migration milestone, out of scope here.~~ **Superseded 2026-05-26 — see "Subsequent Changes" below.** The default has been flipped to the **new design (CRD)**; `useCrdEnabled()` now returns `true` for every "no preference known" state. The previously deferred milestone has shipped, and a one-shot migration-nudge modal pushes existing MUI users to switch.
 5. Removes the two existing legacy toggle UIs (`CrdUserSettingsTab.tsx` row and `AdminLayoutPage.tsx` button) so the user menu is the only entry point.
 6. Emits a Sentry `info` log on every successful toggle click using the existing `info` helper at `src/core/logging/sentry/log.ts`. Reconciliation reloads emit nothing.
+
+## Subsequent Changes (2026-05-26)
+
+After the original 099 feature shipped (with the platform default deliberately kept on the old design per the 2026-05-13 clarification), three further changes landed in this revision:
+
+1. **Default flipped to CRD** (supersedes 2026-05-13 clarification; coordinates with a parallel backend default flip).
+   - `src/main/crdPages/useCrdEnabled.ts:56` inverted from `=== DESIGN_VERSION_NEW` to `!== DESIGN_VERSION_OLD`. Every "no preference known" state (anonymous, fresh device, missing/unrecognized LS, server field unset) now returns `true` and renders CRD.
+   - Existing explicit MUI opt-ins (`LS === '1'` or server `designVersion === 1`) keep rendering MUI — the inversion is non-destructive.
+   - No client-side LS migration of existing `'1'` values: the backend default flip + `useDesignVersionSync` re-evaluates each authenticated user on their next sign-in, so the LS naturally migrates without us touching user state.
+   - Boot/login flash is now inverted: a returning MUI user briefly sees CRD before sync writes `'1'` and reloads. Same shape as the pre-flip flash, opposite population.
+   - Observability tag drift: `useSentryDesignVersionTag.ts` still reports `designVersion ?? readDesignVersionFromStorage() ?? undefined`, so anonymous CRD users report `undefined`. Acceptable; if the heuristic "filter by `designVersion=2` to see CRD sessions" becomes load-bearing, follow up by reporting `useCrdEnabled() ? 2 : 1` instead.
+
+2. **Single-label toggle copy** (supersedes FR-004's "beta caption"). The implementation went through one short iteration:
+   - *Initial draft (reverted same day)*: a `toCrd` / `toMui` pair picked off the toggle state.
+   - *Final*: a single `header.designVersion.label` / `topBar.designVersion.label` key reading **"New look (classic available for a limited time)"** across `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json` and `src/core/i18n/en/translation.en.json` (English source; Crowdin handles non-EN on the main namespace, all six locales edited directly for `crd-layout`).
+   - `src/crd/layouts/components/UserMenu.tsx` and `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` render the single label regardless of the toggle's state — same pattern as every other feature-toggle (e.g. "Dark mode").
+   - The previously shipped `caption` key is removed; the temporary-availability framing is folded into the label itself and reinforced in the new migration modal.
+
+3. **Migration-nudge modal** (new — User Story 4, FR-019/FR-020).
+   - New CRD presentational dialog: `src/crd/components/common/DesignVersionUpgradeDialog.tsx`. Props: `open`, `isPending?`, `onConfirm`, `onDismiss`. All strings read from the `crd-layout` namespace (`header.designVersionUpgrade.{title,body,confirm,dismiss,closeLabel}`). Adds `header.designVersionUpgrade.*` keys to all six layout locale files.
+   - New mount/controller: `src/main/crdPages/DesignVersionUpgradePromptMount.tsx`. Gates on `isAuthenticated && !loadingMe && designVersion === DESIGN_VERSION_OLD && !isDismissed && toggle.isVisible`. Reads `useCurrentUserContext()` + `useDesignVersionToggle()`. On confirm, runs the existing toggle flow (`toggle.onChange(true)`); on dismiss, just closes. Both write the LS dismissal marker.
+   - New per-device LS key: `alkemio-design-version-upgrade-dismissed` (single inline helper in the mount file — not added to `useCrdEnabled.ts` because it's prompt-state, not design-state). Values: `'1'` set, anything else absent. Try/catch guarded.
+   - Mounted in `src/root.tsx` next to `DesignVersionSyncMount`, inside `UserProvider` (for `useCurrentUserContext`) and `AlkemioApolloProvider` (for `useUpdateUserSettingsMutation`), and outside `TopLevelRoutes` so it surfaces on any page.
+   - Cross-shell rendering: the user is on MUI when this triggers (`designVersion === 1`). The CRD dialog's `DialogContent` carries `className="crd-root"` so Tailwind preflight applies inside the Radix portal even though the surrounding shell is MUI.
+   - No `useMemo` / `useCallback` (React Compiler).
+
+**Coordination with the backend**: the default flip on the client assumes the backend ships its parallel default flip (server-side `UserSettings.designVersion` defaults to `2` for new users / users with the field unset). If the backend ships later, returning authenticated users whose server record still reads `1` see MUI on their next sync — correct and safe (server stays authoritative). The "default is CRD" guarantee only fully takes effect once both halves are live.
+
+**Em-dash cleanup**: the modal body strings were authored with `—` (em-dash) and `–` (en-dash) for stylistic break points. Per follow-up review, both were replaced with plain `-` (hyphen) across all six locales to match house style.
 
 ## Technical Context
 

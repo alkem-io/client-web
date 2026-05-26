@@ -63,9 +63,11 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 - *Subscribe to `storage` events for cross-tab live sync* — rejected: spec edge case says "two browser tabs" only needs to follow saved preference on next reload.
 - *Block app rendering until preference resolves* — rejected by clarification 2026-05-12 Q1: render cached design immediately, reconcile asynchronously.
 
-## R5. Default behavior for `useCrdEnabled()` (unchanged) + versioned LS
+## R5. Default behavior for `useCrdEnabled()` (~~unchanged~~ → flipped 2026-05-26) + versioned LS
 
-**Decision**: The LS contract changes from boolean (`alkemio-crd-enabled = 'true'/'false'`) to versioned (`alkemio-design-version = '1'/'2'`) — mirroring the server's `Int` field. The default-when-unset semantic is unchanged: `useCrdEnabled()` returns `false` (MUI/old design) when the new key is unset. New exports in `useCrdEnabled.ts`:
+**Decision** *(original 2026-05-12)*: The LS contract changes from boolean (`alkemio-crd-enabled = 'true'/'false'`) to versioned (`alkemio-design-version = '1'/'2'`) — mirroring the server's `Int` field. The default-when-unset semantic is unchanged: `useCrdEnabled()` returns `false` (MUI/old design) when the new key is unset.
+
+**Amendment 2026-05-26**: The "unchanged" half no longer holds — the previously deferred default flip has shipped. `useCrdEnabled()` now returns `readDesignVersionFromStorage() !== DESIGN_VERSION_OLD`, so every "no preference known" state (anonymous, fresh device, missing/unrecognized LS, server field unset) renders CRD. Only an explicit `'1'` opt-in renders MUI. The inversion is non-destructive — existing `'1'` opt-ins are preserved, and authenticated users with a stale `'1'` in LS get corrected by the next `useDesignVersionSync` run after the backend's parallel default flip. The versioned LS half of this decision (boolean → integer key) is unchanged. New exports in `useCrdEnabled.ts`:
 - Constants `DESIGN_VERSION_OLD = 1`, `DESIGN_VERSION_NEW = 2` (with a `DesignVersion` union type).
 - `readDesignVersionFromStorage()` → `DesignVersion | null`.
 - `writeDesignVersionToStorage(version: DesignVersion): void`.
@@ -92,3 +94,26 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 
 **Alternatives considered**:
 - *Share a single key set across both menus* — rejected: namespaces are isolated by design (translation vs. crd-layout).
+
+## R7. Migration-nudge modal design *(added 2026-05-26)*
+
+**Decision**: A one-shot CRD-styled dialog mounted at the app shell (in `src/root.tsx`, next to `DesignVersionSyncMount`, outside `TopLevelRoutes`) gates on a 5-part predicate:
+
+```
+isAuthenticated && !loadingMe && designVersion === DESIGN_VERSION_OLD && !isDismissed && toggle.isVisible
+```
+
+The dialog itself is a pure CRD presentational component (`src/crd/components/common/DesignVersionUpgradeDialog.tsx`) that knows nothing about Apollo, auth, or LS. The controller (`src/main/crdPages/DesignVersionUpgradePromptMount.tsx`) reads `useCurrentUserContext()` for the `designVersion` gate, reads `useDesignVersionToggle()` for the confirm action, and owns the per-device dismissal LS marker (`alkemio-design-version-upgrade-dismissed`). Both buttons (Confirm / Dismiss) write the marker, so the modal never re-fires on this device — even if the user later switches back to MUI via the avatar-menu toggle.
+
+**Rationale**:
+- **Mount location**: above the route tree so the modal surfaces on any page, not just `/`. Below the providers it needs (UserProvider for current user, AlkemioApolloProvider for the mutation that the toggle hook uses).
+- **Cross-shell rendering**: target users are on MUI (`designVersion === 1`). To get the CRD look-and-feel in a Radix portal mounted at `document.body`, `DialogContent` carries `className="crd-root"` — Tailwind preflight scopes via `.crd-root *`, so the dialog's children pick up the CRD resets and theme even though the surrounding shell is MUI.
+- **Dismissal-on-confirm**: the confirm flow calls `toggle.onChange(true)` which reloads the page; once the user lands in CRD the gate's `designVersion === 1` check fails so the modal wouldn't re-fire anyway. Writing the marker on confirm is belt-and-suspenders for the case where the user later switches back to MUI.
+- **Inline LS helpers, not in `useCrdEnabled.ts`**: this marker is prompt-state, not design-state. Keeping the helpers inline avoids polluting the centralized design-version storage module with unrelated concerns. Two LS keys, two separate concerns.
+- **No `useMemo` / `useCallback`**: React Compiler handles memoization; inline handlers are fine.
+
+**Alternatives considered**:
+- *Server-side dismissal flag* — rejected for now: requires a new schema field, slower iteration. Per-device LS is acceptable for a one-time welcome — users who clear browser storage seeing it again is fine. Revisit if the modal's CTR is too high to attribute to genuine non-dismissal.
+- *Inline modal under each MUI page* — rejected: would require touching every page or every layout. Single mount at the shell is one file.
+- *Reuse MUI's Dialog* — rejected: defeats the whole point of giving users a CRD-styled preview of the new design before they commit.
+- *Make the modal blocking (no dismiss action, only confirm)* — rejected: contradicts the user-respect framing. Users can opt out for now; the eventual hard cutover is a separate, later decision (T025-style follow-up).

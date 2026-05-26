@@ -16,7 +16,13 @@
 
 ### Session 2026-05-13
 
-- Q (revision of 2026-05-12 Q3): Confirm the platform default for "no preference known" cases. → A: The **old design** is the default. The migration push that flips the default to the new design is deferred to a later, separate milestone. For this feature, the only behavioral change is the addition of the explicit toggle and server-backed persistence; the unset/anonymous default stays as it is today.
+- Q (revision of 2026-05-12 Q3): Confirm the platform default for "no preference known" cases. → A: The **old design** is the default. The migration push that flips the default to the new design is deferred to a later, separate milestone. For this feature, the only behavioral change is the addition of the explicit toggle and server-backed persistence; the unset/anonymous default stays as it is today. ~~Active~~ **Superseded by 2026-05-26 session below.**
+
+### Session 2026-05-26
+
+- Q (revision of 2026-05-13): The deferred default flip is now shipping. → A: The **new design (CRD)** is the default. `useCrdEnabled()` returns `true` for every "no preference known" state (anonymous visitor, fresh device, missing or unrecognized LS, signed-in user with the server field unset). Only an explicit `'1'` in LS (or server `designVersion === 1` synced to LS) renders MUI. Coordinated with a backend default flip; the backend continues to be authoritative for authenticated users via `useDesignVersionSync`.
+- Q: Should there be an active migration push for existing MUI users? → A: Yes — a one-shot CRD-styled modal nudges signed-in users whose server preference is `1` to switch. Dismissal is per-device (new LS key `alkemio-design-version-upgrade-dismissed`); either button (confirm or dismiss) sets the marker so the modal never re-fires on that device.
+- Q: How should the avatar-menu toggle label read now that "preview" no longer fits? → A *(initial)*: state-dependent — "Use the new design" off / "Switch back to the old UI (temporarily available)" on. **Revised same session**: state-dependent labels were briefly shipped, then reverted in favor of a single neutral label: **"New look (classic available for a limited time)"**. The single label describes the feature regardless of toggle state (same pattern as "Dark mode"), drops the deprecated `caption` key, and folds the temporary-availability framing into the label itself.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -69,6 +75,24 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 
 ---
 
+### User Story 4 — Migration nudge for existing MUI users (Priority: P2) *(added 2026-05-26)*
+
+A signed-in user whose server preference is still `1` (the old design) sees a one-shot CRD-styled modal on their next load inviting them to switch. The modal explains that the new design is now the default, that the classic UI will remain available from the avatar menu for a limited time, and to contact support if anything feels missing. Either button (Take me to the new design / Maybe later) sets a per-device dismissal marker so the modal never re-fires on that device.
+
+**Why this priority**: The default flip on its own only catches users with no preference. Authenticated users whose server preference says `1` (either explicit or auto-synced before the backend default flipped) stay on MUI indefinitely without active outreach. This is the only direct migration push to that population.
+
+**Independent Test**: Sign in as a user whose server `designVersion` is `1`. Clear `alkemio-design-version-upgrade-dismissed` from LS. Reload any page in the app. Confirm the CRD-styled modal appears. Click Maybe later → modal disappears, MUI shell remains. Reload again → modal does NOT reappear. Clear the dismissal marker, reload, and this time click Take me to the new design → the existing toggle flow runs (server write, LS update, page reload), and the user lands in CRD.
+
+**Acceptance Scenarios**:
+
+1. **Given** a signed-in user with `designVersion === 1` and no LS dismissal marker, **When** any page in the app finishes loading them in, **Then** the upgrade modal appears as an overlay over the MUI shell, styled with the CRD design tokens.
+2. **Given** the upgrade modal is open, **When** the user clicks Take me to the new design, **Then** the existing toggle flow runs (server `designVersion` becomes `2`, LS becomes `'2'`, the page reloads into CRD) AND the LS dismissal marker is set so the modal does not re-fire if the user later switches back to MUI.
+3. **Given** the upgrade modal is open, **When** the user clicks Maybe later (or closes via the X / overlay), **Then** the modal closes, the MUI shell remains active, AND the LS dismissal marker is set so the modal does not re-fire on this device.
+4. **Given** the LS dismissal marker is already set (either button was clicked previously), **When** the user loads any page, **Then** the modal does NOT appear regardless of the user's server preference.
+5. **Given** an anonymous visitor or a user already on CRD (`designVersion === 2`), **When** they load any page, **Then** the modal never appears (anonymous visitors have no server preference; CRD users have already made the choice).
+
+---
+
 ### Edge Cases
 
 - **Anonymous (signed-out) users**: The toggle is not rendered in either menu. The platform does not attempt any reconciliation reload for an anonymous session.
@@ -86,13 +110,13 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 - **FR-001**: The platform MUST expose a single toggle inside each user menu (legacy and new design shells) that lets a signed-in user switch between the new and old design versions.
 - **FR-002**: The toggle MUST appear above the "Dashboard" entry within each user menu.
 - **FR-003**: The toggle MUST be visible only when the viewer is signed in; anonymous users MUST NOT see it.
-- **FR-004**: The toggle MUST be accompanied by a short caption indicating that the new design is in beta and that the old design will remain available for a limited time.
+- **FR-004**: ~~The toggle MUST be accompanied by a short caption indicating that the new design is in beta and that the old design will remain available for a limited time.~~ **Superseded 2026-05-26.** The separate `caption` key has been removed; the temporary-availability framing now lives in the toggle's state-dependent label itself (see FR-018) and in the migration-nudge modal (see FR-019).
 - **FR-005**: The toggle's visible on/off state MUST at all times reflect the design version currently rendered to the user.
 - **FR-006**: When a signed-in user changes the toggle, the platform MUST persist the new value to that user's saved preferences before treating the change as confirmed.
 - **FR-007**: On every platform load for a signed-in user, the system MUST compare the saved preference against the locally cached value and, if they disagree, update the local cache to match the saved preference and reload the page exactly once so the correct design renders. The platform MUST NOT block initial render waiting for the saved preference: the cached design renders immediately, and the corrective reload fires only after the saved preference has resolved.
 - **FR-008**: If a signed-in user has no saved preference, the platform MUST use the locally cached value (or, if no cache exists, the platform default) without triggering a reload.
 - **FR-008a**: If the saved-preference fetch fails or never resolves (server error, network drop, timeout), the platform MUST keep the currently rendered design active, MUST NOT trigger a reconciliation reload for that session, and MUST NOT surface an error to the user.
-- **FR-008b**: When no preference is known and no local cache exists (e.g. first-ever visit, anonymous user, or signed-in user whose preference fetch failed and who has no cached value), the platform default MUST be the **old design**. The new design MUST only be rendered when explicitly selected via saved preference or local cache. (A future migration milestone will flip this default; it is intentionally out of scope for this feature.)
+- **FR-008b**: ~~When no preference is known and no local cache exists (e.g. first-ever visit, anonymous user, or signed-in user whose preference fetch failed and who has no cached value), the platform default MUST be the **old design**.~~ **Superseded 2026-05-26.** The platform default MUST be the **new design (CRD)** for every "no preference known" state — anonymous visitors, fresh devices, missing/unrecognized LS, and signed-in users with the server field unset. Only an explicit `'1'` in LS (or `designVersion === 1` synced from the server) MUST render MUI. The previously deferred default flip is now in scope and shipped via this revision.
 - **FR-009**: For anonymous users, the platform MUST NOT perform any preference reconciliation and MUST NOT trigger any preference-driven reload.
 - **FR-010**: If saving the preference fails (e.g. network error), the platform MUST keep the previously active design and surface a clear, non-blocking error message to the user.
 - **FR-011**: The platform MUST remove the previously existing design-toggle UIs from the user-settings sub-tab and the platform-admin layout page so the user menu is the sole user-facing entry point.
@@ -101,7 +125,10 @@ Existing scattered toggle controls (one inside a user-settings sub-tab, one insi
 - **FR-014**: Interacting with the toggle within the open menu MUST NOT cause the menu to close before the user has confirmed the change, and MUST NOT navigate the user away from their current page on its own.
 - **FR-015**: The toggle and its caption MUST be available in every language the platform's user menu otherwise supports.
 - **FR-016**: Every successful toggle interaction MUST emit an info-level observability log event capturing the resulting design version (and any context the existing logging helper already includes, such as user id). Reconciliation reloads MUST NOT emit a corresponding event.
-- **FR-017**: The toggle and its caption MUST meet WCAG 2.1 AA: keyboard-reachable via Tab and operable via Space/Enter, focus state visible against both menus' backgrounds, the switch's role and on/off state announced by assistive technology, and the beta caption programmatically associated with the switch (e.g. via `aria-describedby`) so it is read alongside the control.
+- **FR-017**: The toggle and its caption MUST meet WCAG 2.1 AA: keyboard-reachable via Tab and operable via Space/Enter, focus state visible against both menus' backgrounds, the switch's role and on/off state announced by assistive technology, and the beta caption programmatically associated with the switch (e.g. via `aria-describedby`) so it is read alongside the control. *(Note: the caption was removed 2026-05-26 per FR-004; the keyboard/screen-reader requirements on the switch itself still apply.)*
+- **FR-018** *(added 2026-05-26, revised same session)*: The toggle MUST render a single neutral label that does not depend on the toggle's current state — "New look (classic available for a limited time)" via translation key `header.designVersion.label` (CRD) / `topBar.designVersion.label` (MUI). Both shells (CRD `UserMenu` and MUI `PlatformNavigationUserMenu`) MUST use this single label. *(An earlier draft prescribed state-dependent `toCrd` / `toMui` labels; that approach was reverted before stabilization in favor of the single-label pattern, which matches every other feature-toggle in the platform.)*
+- **FR-019** *(added 2026-05-26)*: A one-shot CRD-styled migration-nudge modal MUST appear on every page load for any authenticated user whose server `designVersion === 1` AND who has no per-device dismissal marker. The modal MUST be mounted at the app shell (above the route tree) so it surfaces regardless of which page the user is on. Anonymous visitors and users with `designVersion === 2` MUST NOT see it. The modal MUST render even when the surrounding shell is MUI (achieved by wrapping the dialog content in `.crd-root` so Tailwind preflight applies inside the portal).
+- **FR-020** *(added 2026-05-26)*: The modal MUST provide two actions — a primary "Take me to the new design" that runs the existing toggle flow (server write → LS write → reload into CRD), and a secondary "Maybe later" (plus Esc / overlay / X) that closes without changing the design. Both actions MUST set a per-device LS dismissal marker (`alkemio-design-version-upgrade-dismissed`) so the modal never re-fires on that device, even if the user later switches back to MUI via the avatar-menu toggle.
 
 ### Key Entities
 

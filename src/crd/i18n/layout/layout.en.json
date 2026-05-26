@@ -23,7 +23,14 @@
     "showGrid": "Show Grid",
     "hideGrid": "Hide Grid",
     "designVersion": {
-      "label": "New design (preview)"
+      "label": "New look (classic available for a limited time)"
+    },
+    "designVersionUpgrade": {
+      "title": "A fresh new Alkemio is here",
+      "body": "We're rolling out a new design that's faster, clearer, and built for what's next. You're invited to switch now.\n\nIf you prefer the classic look, it'll stay available from your avatar menu for a limited time - and if something is missing, please let support know so we can carry it over before the classic design retires.",
+      "confirm": "Take me to the new design",
+      "dismiss": "Maybe later",
+      "closeLabel": "Close"
     }
   },
   "footer": {
