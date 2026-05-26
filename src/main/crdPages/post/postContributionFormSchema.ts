@@ -12,9 +12,9 @@ export type PostContributionFormValues = {
 
 export type PostReferenceRow = {
   id?: string;
-  title: string;
-  url: string;
-  description: string;
+  name: string;
+  uri: string;
+  description?: string;
 };
 
 export const postContributionFormSchema = object({
@@ -24,9 +24,9 @@ export const postContributionFormSchema = object({
   references: array(
     object({
       id: string().notRequired(),
-      title: string().defined(),
-      url: string().defined(),
-      description: string().defined(),
+      name: string().defined(),
+      uri: string().defined(),
+      description: string().notRequired(),
     })
   ).default([]),
 });

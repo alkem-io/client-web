@@ -3,7 +3,9 @@
     "activity": "Recent activity",
     "videoCall": "Start video call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centered layout"
   },
   "members": {
     "memberCount_one": "{{count}} member",
