@@ -151,7 +151,7 @@ or hint at the holder (FR-014, SC-004).
 ## 6. Codegen & verification
 
 - Run `pnpm codegen` against a backend that has spec 097 deployed
-  (`localhost:4000/graphql`). It regenerates `graphql-schema.ts` (additive types
+  (`localhost:3000/graphql`). It regenerates `graphql-schema.ts` (additive types
   from 097), `apollo-hooks.ts` (the six hooks above), and `apollo-helpers.ts`.
 - Commit all generated outputs in the same PR (Constitution III, Workflow #2).
 - **No client schema diff**: the client introduces no schema change; it only adds

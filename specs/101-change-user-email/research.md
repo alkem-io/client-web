@@ -80,7 +80,7 @@ and writes `src/core/apollo/generated/{graphql-schema,apollo-hooks,apollo-helper
 Constitution III mandates generated hooks only.
 
 **Codegen note**: `pnpm codegen` fetches the schema from the running backend
-(`localhost:4000/graphql`). Because server 097 is merged, the deployed schema already
+(`localhost:3000/graphql`). Because server 097 is merged, the deployed schema already
 exposes the new types; codegen regenerates `graphql-schema.ts` (additive only — the
 `UserEmailChange*` enums/object types, the `EmailChangeApprover` object + its input,
 the `AdminUserEmailChange*` inputs, 2 mutations, 2 `platformAdmin` query fields, and a
