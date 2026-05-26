@@ -42,10 +42,12 @@ import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuil
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
+import { useSpaceWidthPreference } from './useSpaceWidthPreference';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -53,6 +55,7 @@ export default function CrdSpacePageLayout() {
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
   const { isSmallScreen } = useScreenSize();
+  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(spaceId);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -136,9 +139,12 @@ export default function CrdSpacePageLayout() {
     showShare: true,
     showSettings,
     settingsHref,
+    showFullWidthToggle: true,
+    fullWidth,
     onActivityClick: () => setActivityDialogOpen(true),
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
+    onToggleFullWidth: toggleFullWidth,
   };
 
   if (!isLevelZero) {
@@ -171,13 +177,16 @@ export default function CrdSpacePageLayout() {
           <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
         )}
         {enableBannerOverlay && <EnableBannerOverlay />}
+        <EnableSpaceFullWidth />
         <SpaceShell
+          fullWidth={fullWidth}
           header={
             isOnSettings ? (
               <SpaceSettingsHeader
                 title={space.about.profile.displayName}
                 tagline={space.about.profile.tagline ?? null}
                 hideAvatar={true}
+                fullWidth={fullWidth}
                 tabs={
                   <SpaceSettingsTabStrip
                     activeTab={activeSettingsTab}
@@ -194,6 +203,7 @@ export default function CrdSpacePageLayout() {
                 color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
                 actions={headerActions}
                 overlayHeader={enableBannerOverlay}
+                fullWidth={fullWidth}
               />
             )
           }
@@ -274,6 +284,11 @@ export default function CrdSpacePageLayout() {
 
 function EnableBannerOverlay() {
   useEnableBannerOverlay();
+  return null;
+}
+
+function EnableSpaceFullWidth() {
+  useEnableSpaceFullWidth();
   return null;
 }
 

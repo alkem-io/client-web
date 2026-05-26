@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Wissensdatenbank durchsuchen...",
     "searchLabel": "Wissensdatenbank durchsuchen",
-    "noResults": "Keine Treffer"
+    "noResults": "Keine Treffer",
+    "viewGrid": "Kartenansicht",
+    "viewList": "Listenansicht",
+    "count": {
+      "post_one": "{{count}} Beitrag",
+      "post_other": "{{count}} Beiträge",
+      "whiteboard_one": "{{count}} Whiteboard",
+      "whiteboard_other": "{{count}} Whiteboards",
+      "memo_one": "{{count}} Notiz",
+      "memo_other": "{{count}} Notizen",
+      "link_one": "{{count}} Link",
+      "link_other": "{{count}} Links",
+      "document_one": "{{count}} Dokument",
+      "document_other": "{{count}} Dokumente"
+    }
   },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
@@ -40,6 +54,7 @@
     "invite": "Einladen",
     "virtualContributors": "Virtuelle Mitwirkende",
     "communityGuidelines": "Gemeinschaftsrichtlinien",
+    "postIndex": "Beitragsverzeichnis",
     "readMore": "Mehr lesen",
     "editDescription": "Beschreibung bearbeiten",
     "addEvent": "Ereignis hinzufügen",
@@ -193,7 +208,7 @@
     "votes": "{{count}} Stimmen",
     "totalVotes": "{{count}} Stimmen insgesamt",
     "sendComment": "Kommentar senden",
-    "addResponse": "Antwort hinzufügen",
+    "addWhiteboard": "Whiteboard hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
     "defaultWhiteboardName": "Neues Whiteboard",
     "whiteboardNameLabel": "Whiteboard-Titel",
@@ -383,7 +398,9 @@
     "activity": "Aktivität",
     "videoCall": "Videoanruf",
     "share": "Teilen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "expandWidth": "Auf volle Breite erweitern",
+    "collapseWidth": "Auf zentriertes Layout verkleinern"
   },
   "contextMenu": {
     "edit": "Bearbeiten",
@@ -516,25 +533,6 @@
       "addRow": "Weiteren Link hinzufügen",
       "removeRow": "Link entfernen",
       "attachFile": "Datei anhängen"
-    }
-  },
-  "references": {
-    "heading": "Referenzen",
-    "empty": "Noch keine Referenzen.",
-    "titleLabel": "Titel",
-    "titlePlaceholder": "Referenztitel",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Beschreibung",
-    "descriptionPlaceholder": "Optionale Beschreibung",
-    "addRow": "Weitere Referenz hinzufügen",
-    "removeRow": "Referenz entfernen",
-    "attachFile": "Datei anhängen",
-    "removeConfirm": {
-      "title": "Diese Referenz entfernen?",
-      "description": "„{{name}}“ wird beim Speichern entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
-      "confirm": "Entfernen",
-      "unnamed": "diese Referenz"
     }
   },
   "responseDefaults": {

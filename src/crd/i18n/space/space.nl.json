@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Zoek in de kennisbank...",
     "searchLabel": "Zoek in de kennisbank",
-    "noResults": "Geen resultaten"
+    "noResults": "Geen resultaten",
+    "viewGrid": "Kaartweergave",
+    "viewList": "Lijstweergave",
+    "count": {
+      "post_one": "{{count}} bericht",
+      "post_other": "{{count}} berichten",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memo's",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documenten"
+    }
   },
   "sidebar": {
     "aboutSpace": "Over deze Space",
@@ -40,6 +54,7 @@
     "invite": "Uitnodigen",
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
+    "postIndex": "Berichtenindex",
     "readMore": "Lees meer",
     "editDescription": "Beschrijving bewerken",
     "addEvent": "Evenement toevoegen",
@@ -193,7 +208,7 @@
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "sendComment": "Reactie verzenden",
-    "addResponse": "Reactie toevoegen",
+    "addWhiteboard": "Whiteboard toevoegen",
     "createWhiteboard": "Nieuw whiteboard maken",
     "defaultWhiteboardName": "Nieuw whiteboard",
     "whiteboardNameLabel": "Whiteboardtitel",
@@ -383,7 +398,9 @@
     "activity": "Activiteit",
     "videoCall": "Videogesprek",
     "share": "Delen",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "expandWidth": "Volledige breedte",
+    "collapseWidth": "Gecentreerde weergave"
   },
   "contextMenu": {
     "edit": "Bewerken",
@@ -516,25 +533,6 @@
       "addRow": "Nog een link toevoegen",
       "removeRow": "Link verwijderen",
       "attachFile": "Bestand bijvoegen"
-    }
-  },
-  "references": {
-    "heading": "Referenties",
-    "empty": "Nog geen referenties.",
-    "titleLabel": "Titel",
-    "titlePlaceholder": "Titel van de referentie",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Beschrijving",
-    "descriptionPlaceholder": "Optionele beschrijving",
-    "addRow": "Nog een referentie toevoegen",
-    "removeRow": "Referentie verwijderen",
-    "attachFile": "Bestand bijvoegen",
-    "removeConfirm": {
-      "title": "Deze referentie verwijderen?",
-      "description": "“{{name}}” wordt verwijderd zodra je opslaat. Dit kan niet ongedaan worden gemaakt.",
-      "confirm": "Verwijderen",
-      "unnamed": "deze referentie"
     }
   },
   "responseDefaults": {

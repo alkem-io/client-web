@@ -145,11 +145,11 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   const hasResponseType = responseType !== undefined;
 
   const referencesData = values.referenceRows
-    .filter(row => row.title.trim() && row.url.trim())
+    .filter(row => row.name.trim() && row.uri.trim())
     .map(row => ({
-      name: row.title.trim(),
-      uri: ensureHttps(row.url),
-      description: row.description.trim() || undefined,
+      name: row.name.trim(),
+      uri: ensureHttps(row.uri),
+      description: row.description?.trim() || undefined,
     }));
 
   // Settings: match MUI defaults (DefaultCalloutSettings) — `enabled: true`
@@ -365,13 +365,13 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   const references: UpdateReferenceInput[] = values.referenceRows
     .filter(
       (row): row is ReferenceRow & { id: string } =>
-        Boolean(row.id) && row.title.trim().length > 0 && row.url.trim().length > 0
+        Boolean(row.id) && row.name.trim().length > 0 && row.uri.trim().length > 0
     )
     .map(row => ({
       ID: row.id,
-      name: row.title.trim(),
-      uri: ensureHttps(row.url),
-      description: row.description.trim(),
+      name: row.name.trim(),
+      uri: ensureHttps(row.uri),
+      description: row.description?.trim() ?? '',
     }));
 
   const tagsetId = values.editMeta?.framingProfileTagsetId;
