@@ -40,7 +40,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
-import { useReferenceFileUpload } from '@/main/crdPages/space/callout/useReferenceFileUpload';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import {
   emptyPostContributionFormValues,
   type PostContributionFormValues,

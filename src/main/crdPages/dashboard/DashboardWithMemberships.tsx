@@ -9,7 +9,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
-  type ActivityFeedRoles,
+  ActivityFeedRoles,
   LicenseEntitlementType,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
@@ -47,7 +47,7 @@ type DashboardWithMembershipsProps = {
 };
 
 const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModified];
-const ACTIVITY_LIMIT = 10;
+const ACTIVITY_PAGE_SIZE = 20;
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -112,9 +112,9 @@ export default function DashboardWithMemberships({
 
   const roleFilterOptions = [
     { value: 'all', label: t('activity.filter.role.all') },
-    { value: 'member', label: t('activity.filter.role.member') },
-    { value: 'lead', label: t('activity.filter.role.lead') },
-    { value: 'admin', label: t('activity.filter.role.admin') },
+    { value: ActivityFeedRoles.Member, label: t('activity.filter.role.member') },
+    { value: ActivityFeedRoles.Lead, label: t('activity.filter.role.lead') },
+    { value: ActivityFeedRoles.Admin, label: t('activity.filter.role.admin') },
   ];
 
   const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];
@@ -124,28 +124,69 @@ export default function DashboardWithMemberships({
     dialogState.openDialog === 'my-activity' || dialogState.openDialog === 'my-space-activity';
   const needsActivityData = activityEnabled || isActivityDialogOpen;
 
-  const { data: spaceActivityData, loading: spaceActivityLoading } = useLatestContributionsQuery({
-    variables: {
-      first: ACTIVITY_LIMIT,
-      filter: {
-        spaceIds: spaceActivitySpaceIds,
-        roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
-        excludeTypes: EXCLUDED_ACTIVITY_TYPES,
-      },
-    },
+  const spaceActivityFilter_ = {
+    spaceIds: spaceActivitySpaceIds,
+    roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
+    excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+  };
+
+  const personalActivityFilter_ = {
+    spaceIds: personalSpaceIds,
+    myActivity: true,
+    excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+  };
+
+  const {
+    data: spaceActivityData,
+    loading: spaceActivityLoading,
+    fetchMore: fetchMoreSpaceActivity,
+  } = useLatestContributionsQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, filter: spaceActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
+    notifyOnNetworkStatusChange: true,
   });
 
-  const { data: personalActivityData, loading: personalActivityLoading } = useLatestContributionsQuery({
-    variables: {
-      first: ACTIVITY_LIMIT,
-      filter: { spaceIds: personalSpaceIds, myActivity: true, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
-    },
+  const {
+    data: personalActivityData,
+    loading: personalActivityLoading,
+    fetchMore: fetchMorePersonalActivity,
+  } = useLatestContributionsQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, filter: personalActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
+    notifyOnNetworkStatusChange: true,
   });
 
   const spaceActivityItems = mapActivityToFeedItems(spaceActivityData?.activityFeed?.activityFeed ?? [], tMain);
   const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
+
+  const spacePageInfo = spaceActivityData?.activityFeed?.pageInfo;
+  const personalPageInfo = personalActivityData?.activityFeed?.pageInfo;
+  const [loadingMoreSpaceActivity, setLoadingMoreSpaceActivity] = useState(false);
+  const [loadingMorePersonalActivity, setLoadingMorePersonalActivity] = useState(false);
+
+  const loadMoreSpaceActivity = async () => {
+    if (loadingMoreSpaceActivity || !spacePageInfo?.endCursor) return;
+    setLoadingMoreSpaceActivity(true);
+    try {
+      await fetchMoreSpaceActivity({
+        variables: { first: ACTIVITY_PAGE_SIZE, after: spacePageInfo.endCursor, filter: spaceActivityFilter_ },
+      });
+    } finally {
+      setLoadingMoreSpaceActivity(false);
+    }
+  };
+
+  const loadMorePersonalActivity = async () => {
+    if (loadingMorePersonalActivity || !personalPageInfo?.endCursor) return;
+    setLoadingMorePersonalActivity(true);
+    try {
+      await fetchMorePersonalActivity({
+        variables: { first: ACTIVITY_PAGE_SIZE, after: personalPageInfo.endCursor, filter: personalActivityFilter_ },
+      });
+    } finally {
+      setLoadingMorePersonalActivity(false);
+    }
+  };
 
   // Memberships panel
   const { data: myMembershipsData, loading } = useMyMembershipsQuery({
@@ -204,7 +245,7 @@ export default function DashboardWithMemberships({
               feedId="inline-spaces"
               title={t('activity.spacesTitle')}
               items={spaceActivityItems}
-              loading={spaceActivityLoading}
+              loading={spaceActivityLoading && spaceActivityItems.length === 0}
               spaceFilter={spaceActivityFilter}
               spaceFilterOptions={spaceFilterOptions}
               onSpaceFilterChange={setSpaceActivityFilter}
@@ -219,7 +260,7 @@ export default function DashboardWithMemberships({
               feedId="inline-personal"
               title={t('activity.personalTitle')}
               items={personalActivityItems}
-              loading={personalActivityLoading}
+              loading={personalActivityLoading && personalActivityItems.length === 0}
               spaceFilter={personalSpaceFilter}
               spaceFilterOptions={spaceFilterOptions}
               onSpaceFilterChange={setPersonalSpaceFilter}
@@ -249,10 +290,13 @@ export default function DashboardWithMemberships({
           feedId="dialog-personal"
           title=""
           items={personalActivityItems}
-          loading={personalActivityLoading}
+          loading={personalActivityLoading && personalActivityItems.length === 0}
           spaceFilter={personalSpaceFilter}
           spaceFilterOptions={spaceFilterOptions}
           onSpaceFilterChange={setPersonalSpaceFilter}
+          onLoadMore={loadMorePersonalActivity}
+          hasMore={personalPageInfo?.hasNextPage ?? false}
+          loadingMore={loadingMorePersonalActivity}
           embedded={true}
         />
       </ActivityDialog>
@@ -267,13 +311,16 @@ export default function DashboardWithMemberships({
           feedId="dialog-spaces"
           title=""
           items={spaceActivityItems}
-          loading={spaceActivityLoading}
+          loading={spaceActivityLoading && spaceActivityItems.length === 0}
           spaceFilter={spaceActivityFilter}
           spaceFilterOptions={spaceFilterOptions}
           onSpaceFilterChange={setSpaceActivityFilter}
           roleFilter={roleFilter}
           roleFilterOptions={roleFilterOptions}
           onRoleFilterChange={setRoleFilter}
+          onLoadMore={loadMoreSpaceActivity}
+          hasMore={spacePageInfo?.hasNextPage ?? false}
+          loadingMore={loadingMoreSpaceActivity}
           embedded={true}
         />
       </ActivityDialog>

@@ -6,8 +6,10 @@ import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
 import type { TemplateType } from '@/crd/components/templates/types';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 
 const allTypes = (_type: TemplateType) => true;
 
@@ -27,12 +29,18 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
   // one has no bucket yet → temporary (server GCs if abandoned) — mirrors MUI.
   const mdEdit = useMarkdownEditorIntegration();
   const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
+  // References paperclip — uploads land in the space bucket (`temporaryLocation: true`), so a file
+  // attached before a new template exists is GC'd if the create is abandoned, and claimed on save.
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
+    useStorageConfigContext()
+  );
   const tm = useTemplatesManager({
     holderKind: 'space',
     templatesSetId,
     accountId,
     spaceId,
     markdownUpload: { create: mdCreate, edit: mdEdit },
+    referenceUpload: { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept },
   });
 
   return (

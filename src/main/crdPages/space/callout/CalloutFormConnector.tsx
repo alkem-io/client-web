@@ -64,6 +64,7 @@ import {
   parseAddedSentinel,
 } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
@@ -71,7 +72,6 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
-import { useReferenceFileUpload } from './useReferenceFileUpload';
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -684,6 +684,8 @@ export function CalloutFormConnector({
               prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
               onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
+              prePopulateLinkFileUpload={referenceUpload.onFileUpload}
+              prePopulateLinkUploadAccept={referenceUpload.accept}
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />

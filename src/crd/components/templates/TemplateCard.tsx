@@ -39,6 +39,8 @@ export type TemplateCardProps = {
   /** Derived from the holder's `can*` predicates for this template's type. */
   canEdit?: boolean;
   canDelete?: boolean;
+  /** Read-only presentation (pack public profile): kebab is reduced to Preview only — no Duplicate/Edit/Delete. */
+  readOnly?: boolean;
   /** Shows a "Deleting…" overlay / hides the row optimistically. */
   deleting?: boolean;
   /** Shows a "Creating…" spinner (the card produced by a duplicate). */
@@ -54,6 +56,7 @@ export function TemplateCard({
   template,
   canEdit,
   canDelete,
+  readOnly,
   deleting,
   duplicating,
   onPreview,
@@ -62,7 +65,7 @@ export function TemplateCard({
 }: TemplateCardProps) {
   const { t } = useTranslation('crd-templates');
   const TypeIcon = TYPE_ICON[template.type];
-  const hasKebabExtras = canEdit || canDelete;
+  const hasKebabExtras = !readOnly && (canEdit || canDelete);
 
   return (
     <div
@@ -128,18 +131,20 @@ export function TemplateCard({
                 <Eye aria-hidden="true" className="size-4 mr-2" />
                 {t('card.preview')}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAction(template.id, 'duplicate')}>
-                <Copy aria-hidden="true" className="size-4 mr-2" />
-                {t('card.duplicate')}
-              </DropdownMenuItem>
+              {!readOnly && (
+                <DropdownMenuItem onClick={() => onAction(template.id, 'duplicate')}>
+                  <Copy aria-hidden="true" className="size-4 mr-2" />
+                  {t('card.duplicate')}
+                </DropdownMenuItem>
+              )}
               {hasKebabExtras && <DropdownMenuSeparator />}
-              {canEdit && (
+              {!readOnly && canEdit && (
                 <DropdownMenuItem onClick={() => onAction(template.id, 'edit')}>
                   <Pencil aria-hidden="true" className="size-4 mr-2" />
                   {t('card.edit')}
                 </DropdownMenuItem>
               )}
-              {canDelete && (
+              {!readOnly && canDelete && (
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive"
                   onClick={() => onAction(template.id, 'delete')}

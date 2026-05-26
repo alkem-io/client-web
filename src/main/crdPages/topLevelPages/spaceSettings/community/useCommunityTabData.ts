@@ -75,9 +75,11 @@ export type UseCommunityTabDataResult = {
   _adminRef: ReturnType<typeof useCommunityAdmin>;
 };
 
-const toDateString = (d: Date | string | undefined | null): string => {
+// Pass the raw ISO date through to the CRD layer; the table formats the
+// display string and the tooltip timestamp itself (locale-aware, via date-fns).
+const toIsoString = (d: Date | string | undefined | null): string => {
   if (!d) return '';
-  if (d instanceof Date) return d.toLocaleDateString();
+  if (d instanceof Date) return d.toISOString();
   return String(d);
 };
 
@@ -168,7 +170,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         displayName: app.actor.profile?.displayName ?? '',
         email: app.actor.profile?.email,
         url: app.actor.profile?.url,
-        createdDate: toDateString(app.createdDate),
+        createdDate: toIsoString(app.createdDate),
         canApprove: state === 'new',
         canReject: state === 'new',
         canDelete: state !== 'approved',
@@ -188,7 +190,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         displayName: inv.actor.profile?.displayName ?? '',
         email: inv.actor.profile?.email,
         url: inv.actor.profile?.url,
-        createdDate: toDateString(inv.createdDate),
+        createdDate: toIsoString(inv.createdDate),
         canApprove: false,
         canReject: false,
         canDelete: true,
@@ -204,7 +206,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     displayName: inv.email,
     email: inv.email,
     url: undefined,
-    createdDate: toDateString(inv.createdDate),
+    createdDate: toIsoString(inv.createdDate),
     canApprove: false,
     canReject: false,
     canDelete: true,

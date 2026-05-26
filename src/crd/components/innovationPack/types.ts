@@ -75,6 +75,10 @@ export type InnovationPackFormProps = {
   providerName: string;
   /** Existing avatar URL (if any) — used to preview the current image. The form does not upload directly; `avatarFile` is queued via `onChange`. */
   avatarUrl?: string;
+  /** Optional reference file-upload (paperclip). When provided, each reference row can attach a file whose URL fills `uri`. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the reference file picker, derived from the storage bucket's allowed mime types. */
+  referenceUploadAccept?: string;
 } & MarkdownUploadProps;
 
 /** Pack creation collects ONLY name + description (mirrors the legacy `CreateInnovationPackDialog`). */

@@ -4,7 +4,9 @@ import { OrgProfileTabView } from '@/crd/components/organization/settings/OrgPro
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useOrgProfileTabData from './useOrgProfileTabData';
 
 const EMPTY_VALUES = {
@@ -57,6 +59,10 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
 
+  // Reference file upload (paperclip) — uploads to the organization's storage bucket.
+  const { storageConfig } = useStorageConfig({ locationType: 'organization', organizationId });
+  const referenceUpload = useReferenceFileUpload(storageConfig);
+
   return (
     <>
       <OrgProfileTabView
@@ -66,16 +72,13 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
         dirtyByField={data.dirtyByField}
         saveStatusByField={data.saveStatusByField}
         onChange={data.onChange}
-        onAddReference={data.onAddReference}
-        onUpdateReference={data.onUpdateReference}
+        onReferencesChange={data.onReferencesChange}
+        onReferenceFileUpload={referenceUpload.onFileUpload}
+        referenceUploadAccept={referenceUpload.accept}
         onUpdateRecognizedReference={data.onUpdateRecognizedReference}
-        onRequestRemoveReference={data.onRequestRemoveReference}
         onUploadAvatar={data.onUploadAvatar}
         uploadingAvatar={data.uploadingAvatar}
         onSaveSection={data.onSaveSection}
-        pendingReferenceDelete={data.pendingReferenceDelete}
-        onConfirmRemoveReference={data.onConfirmRemoveReference}
-        onCancelRemoveReference={data.onCancelRemoveReference}
         {...markdownUpload}
       />
       <ImageCropDialog

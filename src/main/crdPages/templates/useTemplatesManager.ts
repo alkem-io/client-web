@@ -21,7 +21,12 @@ import { calloutTemplateContentToFormValues } from './calloutTemplateMapper';
 import { mapGqlTemplateType, mapTemplateToCardData, toGqlTemplateType } from './templateCardMapper';
 import { mapTemplateContent, templateContentIncludeVars, templateContentToFormValues } from './templateContentMapper';
 import { mapTemplatesSetToCategories } from './templatesManagerMapper';
-import { type TemplateMarkdownUploadByIntent, type UseTemplateFormsResult, useTemplateForms } from './useTemplateForms';
+import {
+  type TemplateMarkdownUploadByIntent,
+  type TemplateReferenceUpload,
+  type UseTemplateFormsResult,
+  useTemplateForms,
+} from './useTemplateForms';
 
 const EMPTY_STRING_SET: ReadonlySet<string> = new Set();
 
@@ -34,6 +39,8 @@ export type UseTemplatesManagerArgs = {
   spaceId?: string;
   /** Markdown image-upload wiring per intent — forwarded to `useTemplateForms`. */
   markdownUpload?: TemplateMarkdownUploadByIntent;
+  /** References paperclip file-upload — forwarded to `useTemplateForms` (CG template form). */
+  referenceUpload?: TemplateReferenceUpload;
 };
 
 export type TemplatesManagerPreviewState = {
@@ -81,6 +88,7 @@ export function useTemplatesManager({
   accountId,
   spaceId,
   markdownUpload,
+  referenceUpload,
 }: UseTemplatesManagerArgs): UseTemplatesManagerResult {
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
     variables: { templatesSetId: templatesSetId ?? '' },
@@ -91,7 +99,7 @@ export function useTemplatesManager({
   const findCard = (id: string) => allCards.find(c => c.id === id);
 
   // ── create/edit form lifecycle ──
-  const form = useTemplateForms({ templatesSetId, spaceId, markdownUpload });
+  const form = useTemplateForms({ templatesSetId, spaceId, markdownUpload, referenceUpload });
   const [getTemplateContent] = useTemplateContentLazyQuery();
   const [createTemplateFromContentSpace] = useCreateTemplateFromContentSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],

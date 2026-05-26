@@ -9,6 +9,11 @@
  *  - `src/crd/components/innovationPack/CreateInnovationPackDialog.tsx`
  *
  * Integration: `src/main/crdPages/innovationPack/{CrdInnovationPackAdminPage,CrdInnovationPackProfilePage}.tsx`
+ * Page width: the public-profile page (`CrdInnovationPackProfilePage`) renders its view inside the shared CRD
+ *   profile-page content width — `container mx-auto px-4 md:px-8` — to sit at the SAME width as the User /
+ *   Organization / VC public profiles (`UserPublicProfileView` etc.). It must NOT use the narrower `max-w-6xl`
+ *   admin/library wrapper, which would make the pack profile narrower than its peer profile pages. (The pack
+ *   ADMIN page keeps `max-w-6xl` — it is a management surface, grouped with the Library, not a public profile.)
  * Routing: BOTH the pack public profile (`<pack.profile.url>`) and the pack admin (`<pack.profile.url>/settings`) are routed
  *   from `src/domain/InnovationPack/InnovationPackRoute.tsx` (mounted in `TopLevelRoutes.tsx`) — toggle-gate THAT file.
  *   NOT `AdminInnovationPackRoutes.tsx` (that hosts only the platform-admin `/admin/innovation-packs` list, not migrated here).
@@ -75,12 +80,28 @@ export type CreateInnovationPackDialogProps = {
   creating: boolean;
 };
 
+/**
+ * The pack public-profile view follows the prototype's `TemplatePackDetail` layout, NOT a banner/avatar hero:
+ *  - Compact header: a small 64px rounded thumbnail (the pack avatar, or a `pickColorFromId` gradient + Package
+ *    icon fallback) + display name (`text-page-title`) + description (markdown) + a single meta row
+ *    (`{N} templates` badge · `by {provider}` link · tag chips). Actions on the right: `ShareButton` + the manage
+ *    cogwheel. NO full-width top banner, NO overlapping avatar, NO sidebar.
+ *  - Body: the holder-agnostic `TemplatesManagerView` rendered FULL-WIDTH and read-only (`readOnly`, all `can*()`
+ *    false) — the accordion section headers ARE the body's only headings (no separate "Templates" h2).
+ *  - References are NOT shown on the public profile (the prototype has none). The template count is computed from
+ *    `templates` (the per-section card lists), not from `pack.templateCount`.
+ */
 export type InnovationPackProfileViewProps = {
-  pack: InnovationPackCardData & { references: { id: string; name: string; uri: string; description?: string }[] };
-  /** Read-only listing of the pack's templates by type. */
+  pack: InnovationPackCardData;
+  /** Read-only listing of the pack's templates by type. Also the source of the header's total-count badge. */
   templates: TemplateCategorySection[];
   templatesLoading?: boolean;
-  /** Show the "Manage this pack" entry point. */
+  /**
+   * Show the manage entry point. Rendered as the SAME settings cogwheel used by the User / Org / VC
+   * profile heroes: an icon-only `Button variant="secondary" size="icon"` linking to `adminHref`, with a
+   * `Settings` (cogwheel) lucide icon, `title` + `aria-label` from `packProfile.manage` — NOT a labelled
+   * outline button. Keeps the pack profile's action row visually consistent with its peer profile pages.
+   */
   canManage: boolean;
   adminHref?: string;
   /** Only 'preview' is meaningful on the public profile. */
