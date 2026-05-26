@@ -100,7 +100,7 @@ const globalStyles = (theme: Theme) => ({
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },
-  '.tiptap p, .markdown p, .tiptap table, .markdown table': {
+  '.tiptap p, .markdown p, .markdown li, .tiptap table, .markdown table': {
     margin: 0,
     fontFamily: fontFamilySourceSans,
     fontSize: 12,
