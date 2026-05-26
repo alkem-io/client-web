@@ -200,27 +200,21 @@ describe('useUserProfileTabData — error → idle on next edit', () => {
 });
 
 describe('useUserProfileTabData — references batch', () => {
-  it('combines patch existing + create new + delete pending into ONE Save call', async () => {
+  it('combines patch existing + create new into ONE Save call', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 
-    // Capture the saved snapshot's "Personal" id before edits.
+    // Capture the saved snapshot's arbitrary "Personal" id before edits.
     const personalId = result.current.values?.references[0].id;
 
-    // 1) Edit the existing arbitrary "Personal" row.
+    // The shared ReferencesEditor emits the full arbitrary list: edit "Personal" + append a new row.
     act(() => {
-      result.current.onUpdateReference(personalId ?? '', { uri: 'https://ada.io' });
+      result.current.onReferencesChange([
+        { id: personalId, name: 'Personal', uri: 'https://ada.io', description: 'Blog' },
+        { name: 'Twitter', uri: 'https://x.com/ada', description: '' },
+      ]);
     });
 
-    // 2) Add a new arbitrary row.
-    act(() => {
-      result.current.onAddReference();
-    });
-    const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
-    act(() => {
-      result.current.onUpdateReference(tempId ?? '', { name: 'Twitter', uri: 'https://x.com/ada' });
-    });
-
-    // 3) Edit the recognized LinkedIn row's URI.
+    // Edit the recognized LinkedIn row's URI (separate control, unchanged).
     act(() => {
       result.current.onUpdateRecognizedReference('linkedin', 'https://linkedin.com/in/lovelace');
     });
@@ -252,20 +246,13 @@ describe('useUserProfileTabData — references batch', () => {
     expect(mockDeleteReference).not.toHaveBeenCalled();
   });
 
-  it('fires deleteReference for every arbitrary row removed via Confirm in the dialog', async () => {
+  it('fires deleteReference for an arbitrary row removed via the editor', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
 
-    // Request removal of the arbitrary "Personal" row.
+    // The editor emits the trimmed list (the only arbitrary row, ref-2, removed).
     act(() => {
-      result.current.onRequestRemoveReference('ref-2');
+      result.current.onReferencesChange([]);
     });
-    expect(result.current.pendingReferenceDelete?.id).toBe('ref-2');
-
-    act(() => {
-      result.current.onConfirmRemoveReference();
-    });
-    expect(result.current.pendingReferenceDelete).toBeNull();
-    // Locally, the row is gone from the buffer immediately.
     expect(result.current.values?.references.find(r => r.id === 'ref-2')).toBeUndefined();
 
     await act(async () => {
@@ -273,41 +260,6 @@ describe('useUserProfileTabData — references batch', () => {
     });
 
     expect(mockDeleteReference).toHaveBeenCalledWith({ variables: { input: { ID: 'ref-2' } } });
-  });
-});
-
-describe('useUserProfileTabData — pendingReferenceDelete state machine (Rule #9 / FR-025)', () => {
-  it('does NOT remove the row when the user cancels the dialog', () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-
-    const beforeCount = result.current.values?.references.length ?? 0;
-
-    act(() => {
-      result.current.onRequestRemoveReference('ref-2');
-    });
-    expect(result.current.pendingReferenceDelete?.id).toBe('ref-2');
-
-    act(() => {
-      result.current.onCancelRemoveReference();
-    });
-
-    expect(result.current.pendingReferenceDelete).toBeNull();
-    expect(result.current.values?.references.length).toBe(beforeCount);
-  });
-
-  it('uses the URI as the dialog body label when the row name is blank', () => {
-    const { result } = renderHook(() => useUserProfileTabData('user-1'));
-    act(() => {
-      result.current.onAddReference();
-    });
-    const tempId = result.current.values?.references.find(r => r.id.startsWith('temp-'))?.id;
-    act(() => {
-      result.current.onUpdateReference(tempId ?? '', { uri: 'https://blank-name.example' });
-    });
-    act(() => {
-      result.current.onRequestRemoveReference(tempId ?? '');
-    });
-    expect(result.current.pendingReferenceDelete?.name).toBe('https://blank-name.example');
   });
 });
 

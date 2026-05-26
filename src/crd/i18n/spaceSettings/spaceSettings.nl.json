@@ -139,6 +139,26 @@
       "reject": "Afwijzen",
       "delete": "Verwijderen",
       "empty": "Geen lopende lidmaatschappen.",
+      "noMatch": "Geen lopende lidmaatschappen komen overeen met de geselecteerde filters.",
+      "filterLabel": "Filteren op status",
+      "sortBy": "Sorteren op {{column}}",
+      "viewApplication": "Aanvraag bekijken",
+      "viewInvitation": "Uitnodiging bekijken",
+      "viewDialog": {
+        "created": "Aangemaakt op {{date}}",
+        "updated": "Bijgewerkt op {{date}}",
+        "welcomeMessage": "Welkomstbericht",
+        "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
+        "noAnswers": "Geen antwoorden opgegeven.",
+        "close": "Sluiten",
+        "loading": "Details laden"
+      },
+      "pagination": {
+        "showing": "{{from}} tot {{to}} van {{total}} weergegeven",
+        "previous": "Vorige pagina",
+        "page": "Pagina {{page}} van {{total}}",
+        "next": "Volgende pagina"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",

@@ -349,13 +349,13 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(blankTags.input.framing.tags).toBeUndefined();
   });
 
-  it('references: dropped when title or url is blank, kept ones go on profile.referencesData', () => {
+  it('references: dropped when name or uri is blank, kept ones go on profile.referencesData', () => {
     const result = mapFormToCalloutCreationInput(
       baseValues({
         referenceRows: [
-          { title: 'Site', url: 'https://example.org', description: 'docs' },
-          { title: '', url: 'https://no-title.example', description: '' },
-          { title: 'No URL', url: '', description: '' },
+          { name: 'Site', uri: 'https://example.org', description: 'docs' },
+          { name: '', uri: 'https://no-title.example', description: '' },
+          { name: 'No URL', uri: '', description: '' },
         ],
       }),
       createOptions
@@ -513,13 +513,13 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect(result.input.framing?.profile?.description).toBe('desc');
   });
 
-  it('references: only rows with id pass; blank title/url filtered out; tagsets absent without editMeta tagsetId', () => {
+  it('references: only rows with id pass; blank name/uri filtered out; tagsets absent without editMeta tagsetId', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
         referenceRows: [
-          { id: 'ref-1', title: 'A', url: 'https://a', description: 'desc' },
-          { id: undefined, title: 'New row no id yet', url: 'https://new', description: '' },
-          { id: 'ref-2', title: '', url: 'https://no-title', description: '' },
+          { id: 'ref-1', name: 'A', uri: 'https://a', description: 'desc' },
+          { id: undefined, name: 'New row no id yet', uri: 'https://new', description: '' },
+          { id: 'ref-2', name: '', uri: 'https://no-title', description: '' },
         ],
       }),
       updateOptions
@@ -534,7 +534,11 @@ describe('mapFormToCalloutUpdateInput', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
         tags: ['a', 'b'],
-        editMeta: { framingProfileTagsetId: 'tagset-1' },
+        editMeta: {
+          framingProfileTagsetId: 'tagset-1',
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+        },
       }),
       updateOptions
     );
@@ -572,7 +576,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: 'X',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );
@@ -595,7 +599,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: '',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );

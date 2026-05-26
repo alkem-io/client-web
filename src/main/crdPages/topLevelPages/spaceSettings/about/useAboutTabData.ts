@@ -14,6 +14,9 @@ import type {
   AboutSectionSaveStatus,
   SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
 
 export type { AboutFormValues };
@@ -34,14 +37,11 @@ export type UseAboutTabDataResult = {
   pendingCrop: PendingCrop | null;
   onCropComplete: (croppedFile: File, altText: string) => void;
   onCropCancel: () => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  /** Opens the removal confirmation dialog — consumer renders the dialog. */
-  onRequestRemoveReference: (id: string) => void;
-  /** The reference queued for removal, if the confirmation is open. */
-  pendingReferenceDelete: { id: string; title: string } | null;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
+  /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + its own delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
   /** Save a single section — only that section's fields are persisted. */
   onSaveSection: (section: AboutSectionKey) => Promise<void>;
   /** True when any section differs from the server-saved value. */
@@ -99,6 +99,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
+  // Reference file upload (paperclip) — the space settings tab is always rendered inside the
+  // ambient space StorageConfigContextProvider, so the bucket resolves from context.
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
+    useStorageConfigContext()
+  );
+
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
   useEffect(() => {
@@ -144,58 +150,23 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     });
   };
 
-  const onAddReference = () => {
+  // The shared ReferencesEditor manages rows + its own delete-confirm and emits the full list.
+  // New rows arrive without an `id`; assign a temp id so the per-section save diffs them as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const newRef: AboutReference = {
-        id: `${TEMP_PREFIX}${Date.now()}`,
-        title: '',
-        uri: '',
-        description: '',
-      };
-      const next: AboutFormValues = { ...base, references: [...base.references, newRef] };
+      const mapped: AboutReference[] = rows.map((r, i) => ({
+        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+        title: r.name,
+        uri: r.uri,
+        description: r.description ?? '',
+      }));
+      const next: AboutFormValues = { ...base, references: mapped };
       valuesRef.current = next;
       return next;
     });
   };
-
-  const onUpdateReference = (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next: AboutFormValues = {
-        ...base,
-        references: base.references.map(r => (r.id === id ? { ...r, ...patch } : r)),
-      };
-      valuesRef.current = next;
-      return next;
-    });
-  };
-
-  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; title: string } | null>(null);
-
-  const onRequestRemoveReference = (id: string) => {
-    const base = valuesRef.current;
-    const ref = base?.references.find(r => r.id === id);
-    if (!ref) return;
-    setPendingReferenceDelete({ id, title: ref.title });
-  };
-
-  const onConfirmRemoveReference = () => {
-    const pending = pendingReferenceDelete;
-    if (!pending) return;
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next: AboutFormValues = { ...base, references: base.references.filter(r => r.id !== pending.id) };
-      valuesRef.current = next;
-      return next;
-    });
-    setPendingReferenceDelete(null);
-  };
-
-  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
   // ────────────────── Image uploads (immediate) ──────────────────
 
@@ -439,12 +410,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     pendingCrop,
     onCropComplete,
     onCropCancel,
-    onAddReference,
-    onUpdateReference,
-    onRequestRemoveReference,
-    pendingReferenceDelete,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onSaveSection,
     isDirty,
     onSaveAll,

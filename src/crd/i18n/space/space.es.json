@@ -21,6 +21,25 @@
     "demo": "Este es un Espacio de demostración para pruebas.",
     "inactive": "Este Espacio está actualmente inactivo."
   },
+  "knowledge": {
+    "searchPlaceholder": "Buscar en la base de conocimiento...",
+    "searchLabel": "Buscar en la base de conocimiento",
+    "noResults": "Sin resultados",
+    "viewGrid": "Vista de tarjetas",
+    "viewList": "Vista de lista",
+    "count": {
+      "post_one": "{{count}} publicación",
+      "post_other": "{{count}} publicaciones",
+      "whiteboard_one": "{{count}} pizarra",
+      "whiteboard_other": "{{count}} pizarras",
+      "memo_one": "{{count}} nota",
+      "memo_other": "{{count}} notas",
+      "link_one": "{{count}} enlace",
+      "link_other": "{{count}} enlaces",
+      "document_one": "{{count}} documento",
+      "document_other": "{{count}} documentos"
+    }
+  },
   "sidebar": {
     "aboutSpace": "Acerca de este Espacio",
     "subspaces": "Subespacios",
@@ -36,9 +55,6 @@
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
     "postIndex": "Índice de publicaciones",
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar publicaciones",
-    "noResults": "Sin resultados",
     "readMore": "Leer más",
     "editDescription": "Editar descripción",
     "addEvent": "Añadir evento",
@@ -192,7 +208,7 @@
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
     "sendComment": "Enviar comentario",
-    "addResponse": "Añadir respuesta",
+    "addWhiteboard": "Añadir pizarra",
     "createWhiteboard": "Crear nueva pizarra",
     "defaultWhiteboardName": "Nueva pizarra",
     "whiteboardNameLabel": "Título de la pizarra",
@@ -382,7 +398,9 @@
     "activity": "Actividad",
     "videoCall": "Videollamada",
     "share": "Compartir",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "expandWidth": "Ampliar a ancho completo",
+    "collapseWidth": "Contraer al diseño centrado"
   },
   "contextMenu": {
     "edit": "Editar",
@@ -513,26 +531,8 @@
       "descriptionLabel": "Descripción",
       "descriptionPlaceholder": "Descripción opcional",
       "addRow": "Añadir otro enlace",
-      "removeRow": "Eliminar enlace"
-    }
-  },
-  "references": {
-    "heading": "Referencias",
-    "empty": "Todavía no hay referencias.",
-    "titleLabel": "Título",
-    "titlePlaceholder": "Título de la referencia",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Descripción",
-    "descriptionPlaceholder": "Descripción opcional",
-    "addRow": "Añadir otra referencia",
-    "removeRow": "Eliminar referencia",
-    "attachFile": "Adjuntar archivo",
-    "removeConfirm": {
-      "title": "¿Eliminar esta referencia?",
-      "description": "«{{name}}» se eliminará al guardar. Esta acción no se puede deshacer.",
-      "confirm": "Eliminar",
-      "unnamed": "esta referencia"
+      "removeRow": "Eliminar enlace",
+      "attachFile": "Adjuntar archivo"
     }
   },
   "responseDefaults": {
@@ -701,6 +701,7 @@
     "showMore": "Mostrar más",
     "showLess": "Mostrar menos",
     "reply": "Responder",
+    "replyInThread": "Responder en este hilo",
     "delete": "Eliminar",
     "deleted": "Este comentario fue eliminado",
     "deleteConfirmTitle": "¿Eliminar comentario?",

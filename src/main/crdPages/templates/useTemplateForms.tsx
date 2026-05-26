@@ -31,6 +31,7 @@ import type {
   TemplateType,
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { ensureHttps } from '@/crd/lib/ensureHttps';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
@@ -112,6 +113,18 @@ export type TemplateMarkdownUploadByIntent = {
   edit?: MarkdownUploadProps;
 };
 
+/**
+ * References paperclip file-upload for the CG template form (D24). Unlike the markdown upload it is
+ * not split by intent: `useReferenceFileUpload` always uploads with `temporaryLocation: true` to the
+ * holder bucket, so the same callback serves both create (file lands temporarily until the template
+ * exists) and edit. Passed in by the provider-wrapped callsites; left undefined by read-only / test
+ * callers so `useTemplateForms` stays provider-agnostic.
+ */
+export type TemplateReferenceUpload = {
+  onFileUpload?: (file: File) => Promise<string | null>;
+  accept?: string;
+};
+
 export type UseTemplateFormsArgs = {
   templatesSetId: string | undefined;
   /** Parent space id — threaded through the Callout template form's `ResponseDefaultsConnector`. */
@@ -120,6 +133,8 @@ export type UseTemplateFormsArgs = {
   onSaved?: () => void;
   /** Markdown image-upload wiring per intent. Optional — see {@link TemplateMarkdownUploadByIntent}. */
   markdownUpload?: TemplateMarkdownUploadByIntent;
+  /** References paperclip file-upload (CG template form). Optional — see {@link TemplateReferenceUpload}. */
+  referenceUpload?: TemplateReferenceUpload;
 };
 
 export type UseTemplateFormsResult = {
@@ -192,6 +207,7 @@ export function useTemplateForms({
   spaceId,
   onSaved,
   markdownUpload,
+  referenceUpload,
 }: UseTemplateFormsArgs): UseTemplateFormsResult {
   const { t } = useTranslation('crd-templates');
   const { t: tSpace } = useTranslation('crd-space');
@@ -663,6 +679,41 @@ export function useTemplateForms({
       case 'callout': {
         if (!editCalloutId) throw new Error('Missing callout id for Callout template edit');
         await updateTemplate({ variables: { templateId, profile } });
+
+        // References live on the callout's framing profile. The callout update mutation can only
+        // *update existing* references (keyed by `ID`); it neither creates rows added in the form
+        // (no `id`) nor deletes rows removed in the form. Diff against the snapshot captured at
+        // edit-open (editMeta) and route adds → `createReferenceOnProfile`, removes →
+        // `deleteReference`, before the update — mirroring the communityGuidelines branch above.
+        const { editMeta, referenceRows } = calloutForm.values;
+        const framingProfileId = editMeta?.framingProfileId;
+        const originalReferenceIds = editMeta?.originalReferenceIds ?? [];
+        const currentReferenceIds = new Set(referenceRows.flatMap((r): string[] => (r.id ? [r.id] : [])));
+        const deletedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
+        const newReferenceRows = referenceRows.filter(
+          r => !r.id && r.name.trim().length > 0 && r.uri.trim().length > 0
+        );
+
+        if (deletedReferenceIds.length > 0) {
+          await Promise.all(deletedReferenceIds.map(id => deleteReference({ variables: { input: { ID: id } } })));
+        }
+        if (framingProfileId && newReferenceRows.length > 0) {
+          await Promise.all(
+            newReferenceRows.map(r =>
+              createReferenceOnProfile({
+                variables: {
+                  input: {
+                    profileID: framingProfileId,
+                    name: r.name.trim() || 'Reference',
+                    uri: ensureHttps(r.uri),
+                    description: r.description?.trim() || undefined,
+                  },
+                },
+              })
+            )
+          );
+        }
+
         const result = await updateCalloutTemplate({
           variables: { calloutData: calloutFormValuesToUpdateCalloutEntityInput(calloutForm.values, editCalloutId) },
         });
@@ -725,6 +776,8 @@ export function useTemplateForms({
           value={values}
           errors={errors}
           onChange={onPerTypeChange}
+          onReferenceFileUpload={referenceUpload?.onFileUpload}
+          referenceUploadAccept={referenceUpload?.accept}
           {...markdownUploadProps}
         />
       );
@@ -757,7 +810,14 @@ export function useTemplateForms({
       break;
     case 'callout':
       perTypeFormSlot = (
-        <CalloutTemplateForm form={calloutForm} spaceId={spaceId} disabled={submitting} {...markdownUploadProps} />
+        <CalloutTemplateForm
+          form={calloutForm}
+          spaceId={spaceId}
+          disabled={submitting}
+          onReferenceFileUpload={referenceUpload?.onFileUpload}
+          referenceUploadAccept={referenceUpload?.accept}
+          {...markdownUploadProps}
+        />
       );
       break;
   }

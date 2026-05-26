@@ -20,15 +20,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
-import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
-import type { UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import { referenceRowErrors, type UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type CalloutTemplateFormProps = {
   /** The `useCrdCalloutForm` instance owned by `useTemplateForms` (controlled). */
@@ -37,12 +37,22 @@ export type CalloutTemplateFormProps = {
   spaceId?: string;
   /** Disable every control while the template create/update mutation is in flight. */
   disabled?: boolean;
+  /**
+   * Per-row paperclip file-attach for the "More options" References editor (D24). Wired by
+   * `useTemplateForms`' `referenceUpload` arg to the holder bucket (`temporaryLocation: true`); omit to
+   * hide the paperclip (read-only / provider-less callers). Mirrors the live Create-Callout dialog.
+   */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the references file picker. */
+  referenceUploadAccept?: string;
 } & MarkdownUploadProps;
 
 export function CalloutTemplateForm({
   form,
   spaceId,
   disabled,
+  onReferenceFileUpload,
+  referenceUploadAccept,
   onImageUpload,
   iframeAllowedUrls,
   onError,
@@ -180,9 +190,11 @@ export function CalloutTemplateForm({
         />
         <ReferencesEditor
           rows={values.referenceRows}
-          onChange={v => setField('referenceRows', v)}
-          errors={errors as Record<string, string | undefined>}
+          onChange={rows => setField('referenceRows', rows)}
+          errors={referenceRowErrors(errors)}
           disabled={disabled}
+          onFileUpload={onReferenceFileUpload}
+          uploadAccept={referenceUploadAccept}
         />
       </div>
 

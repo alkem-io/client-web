@@ -269,14 +269,7 @@
   },
   "packProfile": {
     "shareTooltip": "Share this Innovation Pack",
-    "manage": "Manage this pack",
-    "sidebarLabel": "Pack details",
-    "provider": "Provider",
-    "providerUnknown": "Provider unknown",
-    "tags": "Tags",
-    "references": "References",
-    "referencesEmpty": "No references.",
-    "templatesHeading": "Templates"
+    "manage": "Manage this pack"
   },
   "library": {
     "title": "Innovation Library",

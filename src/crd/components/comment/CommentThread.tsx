@@ -101,18 +101,34 @@ export function CommentThread({
 
                 {replies.length > 0 && (
                   <ul className="space-y-3">
-                    {replies.map(reply => (
-                      <li key={reply.id}>
-                        <CommentItem
-                          comment={reply}
-                          canComment={canComment}
-                          isReply={true}
-                          onDelete={onDelete}
-                          onAddReaction={onAddReaction}
-                          onRemoveReaction={onRemoveReaction}
-                        />
-                      </li>
-                    ))}
+                    {replies.map((reply, index) => {
+                      // The last reply gets a "Reply in this thread" button that
+                      // opens the SAME input as the root comment's Reply button,
+                      // so a user reading to the bottom of a long thread can
+                      // reply without scrolling back up.
+                      const isLastReply = index === replies.length - 1;
+
+                      return (
+                        <li key={reply.id}>
+                          <CommentItem
+                            comment={reply}
+                            canComment={canComment}
+                            isReply={true}
+                            isReplyOpen={isLastReply ? isReplyOpen : undefined}
+                            replyInputId={isLastReply ? replyInputId : undefined}
+                            onToggleReply={
+                              isLastReply && canComment
+                                ? () =>
+                                    setReplyingToCommentId(current => (current === comment.id ? undefined : comment.id))
+                                : undefined
+                            }
+                            onDelete={onDelete}
+                            onAddReaction={onAddReaction}
+                            onRemoveReaction={onRemoveReaction}
+                          />
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
 
@@ -121,6 +137,7 @@ export function CommentThread({
                     <CommentInput
                       currentUser={currentUser}
                       mentionSearch={mentionSearch}
+                      autoFocus={true}
                       onSubmit={content => {
                         onReply(comment.id, content);
                         setReplyingToCommentId(undefined);

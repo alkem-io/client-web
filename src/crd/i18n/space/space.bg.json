@@ -21,6 +21,25 @@
     "demo": "Това е демонстрационно пространство за тестови цели.",
     "inactive": "Това пространство е неактивно в момента."
   },
+  "knowledge": {
+    "searchPlaceholder": "Търсене в базата знания...",
+    "searchLabel": "Търсене в базата знания",
+    "noResults": "Няма съвпадения",
+    "viewGrid": "Изглед с карти",
+    "viewList": "Списъчен изглед",
+    "count": {
+      "post_one": "{{count}} публикация",
+      "post_other": "{{count}} публикации",
+      "whiteboard_one": "{{count}} дъска",
+      "whiteboard_other": "{{count}} дъски",
+      "memo_one": "{{count}} бележка",
+      "memo_other": "{{count}} бележки",
+      "link_one": "{{count}} връзка",
+      "link_other": "{{count}} връзки",
+      "document_one": "{{count}} документ",
+      "document_other": "{{count}} документа"
+    }
+  },
   "sidebar": {
     "aboutSpace": "За това пространство",
     "subspaces": "Подпространства",
@@ -36,9 +55,6 @@
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
-    "searchPlaceholder": "Търсене...",
-    "searchLabel": "Търсене в публикациите",
-    "noResults": "Няма съвпадения",
     "readMore": "Прочети повече",
     "editDescription": "Редактиране на описанието",
     "addEvent": "Добави събитие",
@@ -192,7 +208,7 @@
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "sendComment": "Изпрати коментар",
-    "addResponse": "Добави отговор",
+    "addWhiteboard": "Добави бяла дъска",
     "createWhiteboard": "Създаване на нова бяла дъска",
     "defaultWhiteboardName": "Нова бяла дъска",
     "whiteboardNameLabel": "Заглавие на бялата дъска",
@@ -382,7 +398,9 @@
     "activity": "Активност",
     "videoCall": "Видеоразговор",
     "share": "Сподели",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "expandWidth": "Разшири до пълна ширина",
+    "collapseWidth": "Свий до центрирано оформление"
   },
   "contextMenu": {
     "edit": "Редактирай",
@@ -513,26 +531,8 @@
       "descriptionLabel": "Описание",
       "descriptionPlaceholder": "По избор описание",
       "addRow": "Добави нова връзка",
-      "removeRow": "Премахни връзката"
-    }
-  },
-  "references": {
-    "heading": "Препратки",
-    "empty": "Все още няма препратки.",
-    "titleLabel": "Заглавие",
-    "titlePlaceholder": "Заглавие на препратката",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Описание",
-    "descriptionPlaceholder": "По избор описание",
-    "addRow": "Добави нова препратка",
-    "removeRow": "Премахни препратката",
-    "attachFile": "Прикачи файл",
-    "removeConfirm": {
-      "title": "Премахване на тази препратка?",
-      "description": "„{{name}}“ ще бъде премахната при запазване. Това действие не може да бъде отменено.",
-      "confirm": "Премахни",
-      "unnamed": "тази препратка"
+      "removeRow": "Премахни връзката",
+      "attachFile": "Прикачи файл"
     }
   },
   "responseDefaults": {
@@ -701,6 +701,7 @@
     "showMore": "Показване на повече",
     "showLess": "Показване на по-малко",
     "reply": "Отговор",
+    "replyInThread": "Отговор в тази тема",
     "delete": "Изтриване",
     "deleted": "Този коментар беше изтрит",
     "deleteConfirmTitle": "Изтриване на коментара?",
