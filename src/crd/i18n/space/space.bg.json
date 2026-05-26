@@ -193,7 +193,7 @@
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "sendComment": "Изпрати коментар",
-    "addResponse": "Добави отговор",
+    "addWhiteboard": "Добави бяла дъска",
     "createWhiteboard": "Създаване на нова бяла дъска",
     "defaultWhiteboardName": "Нова бяла дъска",
     "whiteboardNameLabel": "Заглавие на бялата дъска",

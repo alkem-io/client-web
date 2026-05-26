@@ -193,7 +193,7 @@
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
     "sendComment": "Enviar comentario",
-    "addResponse": "Añadir respuesta",
+    "addWhiteboard": "Añadir pizarra",
     "createWhiteboard": "Crear nueva pizarra",
     "defaultWhiteboardName": "Nueva pizarra",
     "whiteboardNameLabel": "Título de la pizarra",

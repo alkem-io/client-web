@@ -176,7 +176,7 @@
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
     "sendComment": "Send comment",
-    "addResponse": "Add Response",
+    "addWhiteboard": "Add whiteboard",
     "createWhiteboard": "Create new whiteboard",
     "defaultWhiteboardName": "New Whiteboard",
     "whiteboardNameLabel": "Whiteboard title",
