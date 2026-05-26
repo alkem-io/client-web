@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Търсене в базата знания...",
     "searchLabel": "Търсене в базата знания",
-    "noResults": "Няма съвпадения"
+    "noResults": "Няма съвпадения",
+    "viewGrid": "Изглед с карти",
+    "viewList": "Списъчен изглед",
+    "count": {
+      "post_one": "{{count}} публикация",
+      "post_other": "{{count}} публикации",
+      "whiteboard_one": "{{count}} дъска",
+      "whiteboard_other": "{{count}} дъски",
+      "memo_one": "{{count}} бележка",
+      "memo_other": "{{count}} бележки",
+      "link_one": "{{count}} връзка",
+      "link_other": "{{count}} връзки",
+      "document_one": "{{count}} документ",
+      "document_other": "{{count}} документа"
+    }
   },
   "sidebar": {
     "aboutSpace": "За това пространство",
@@ -40,6 +54,7 @@
     "invite": "Покани",
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
+    "postIndex": "Индекс на публикациите",
     "readMore": "Прочети повече",
     "editDescription": "Редактиране на описанието",
     "addEvent": "Добави събитие",

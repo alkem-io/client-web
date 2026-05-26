@@ -7,6 +7,7 @@ import { Button } from '@/crd/primitives/button';
 import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
+import { type KnowledgeEntry, KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection';
 
@@ -46,6 +47,9 @@ type SpaceSidebarProps = {
   onShowCalendar?: () => void;
   onAddEvent?: () => void;
   onEventClick?: (event: EventItem) => void;
+  // Knowledge
+  knowledgeEntries?: KnowledgeEntry[];
+  onKnowledgeEntryClick?: (id: string) => void;
   // Community
   leads?: LeadItem[];
   onContactLead?: () => void;
@@ -77,6 +81,8 @@ export function SpaceSidebar({
   onShowCalendar,
   onAddEvent,
   onEventClick,
+  knowledgeEntries = [],
+  onKnowledgeEntryClick,
   leads = [],
   onContactLead,
   onInvite,
@@ -119,6 +125,10 @@ export function SpaceSidebar({
             locale={locale}
           />
         </>
+      )}
+
+      {variant === 'knowledge' && knowledgeEntries.length > 0 && (
+        <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
       )}
 
       {variant === 'community' && (

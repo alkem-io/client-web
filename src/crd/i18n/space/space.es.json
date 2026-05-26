@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Buscar en la base de conocimiento...",
     "searchLabel": "Buscar en la base de conocimiento",
-    "noResults": "Sin resultados"
+    "noResults": "Sin resultados",
+    "viewGrid": "Vista de tarjetas",
+    "viewList": "Vista de lista",
+    "count": {
+      "post_one": "{{count}} publicación",
+      "post_other": "{{count}} publicaciones",
+      "whiteboard_one": "{{count}} pizarra",
+      "whiteboard_other": "{{count}} pizarras",
+      "memo_one": "{{count}} nota",
+      "memo_other": "{{count}} notas",
+      "link_one": "{{count}} enlace",
+      "link_other": "{{count}} enlaces",
+      "document_one": "{{count}} documento",
+      "document_other": "{{count}} documentos"
+    }
   },
   "sidebar": {
     "aboutSpace": "Acerca de este Espacio",
@@ -40,6 +54,7 @@
     "invite": "Invitar",
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
+    "postIndex": "Índice de publicaciones",
     "readMore": "Leer más",
     "editDescription": "Editar descripción",
     "addEvent": "Añadir evento",

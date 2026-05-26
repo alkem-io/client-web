@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { TruncatedTag } from '@/crd/components/common/TruncatedTag';
 import { cn } from '@/crd/lib/utils';
 import { badgeVariants } from '@/crd/primitives/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 type CollapsibleTagListProps = {
@@ -191,8 +192,10 @@ export function CollapsibleTagList({
         {tags.slice(0, visibleCount).map(renderTag)}
         {showMore && (
           <li key="__more__" className="shrink-0">
-            <Tooltip>
-              <TooltipTrigger asChild={true}>
+            {/* Click-triggered (not hover) so it works on touch devices and
+                stays open while the user picks tags. */}
+            <Popover>
+              <PopoverTrigger asChild={true}>
                 <button
                   type="button"
                   aria-label={t('tags.moreAria', { count: hiddenTags.length })}
@@ -200,13 +203,13 @@ export function CollapsibleTagList({
                 >
                   +{hiddenTags.length}
                 </button>
-              </TooltipTrigger>
-              <TooltipContent
+              </PopoverTrigger>
+              <PopoverContent
                 side="bottom"
                 align="start"
                 sideOffset={6}
                 collisionPadding={8}
-                className="bg-card !text-card-foreground border border-border shadow-md w-max max-w-[20rem] p-2 [&_svg]:fill-card [&_svg]:bg-card"
+                className="w-max max-w-[20rem] p-2"
               >
                 {/* Hidden tags shown as pills — identical style and size to the row tags.
                     In interactive mode they stay clickable so the user can filter by a
@@ -243,8 +246,8 @@ export function CollapsibleTagList({
                     );
                   })}
                 </ul>
-              </TooltipContent>
-            </Tooltip>
+              </PopoverContent>
+            </Popover>
           </li>
         )}
       </ul>
