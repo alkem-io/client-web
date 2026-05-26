@@ -208,7 +208,7 @@
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "sendComment": "Reactie verzenden",
-    "addResponse": "Reactie toevoegen",
+    "addWhiteboard": "Whiteboard toevoegen",
     "createWhiteboard": "Nieuw whiteboard maken",
     "defaultWhiteboardName": "Nieuw whiteboard",
     "whiteboardNameLabel": "Whiteboardtitel",
@@ -398,7 +398,9 @@
     "activity": "Activiteit",
     "videoCall": "Videogesprek",
     "share": "Delen",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "expandWidth": "Volledige breedte",
+    "collapseWidth": "Gecentreerde weergave"
   },
   "contextMenu": {
     "edit": "Bewerken",

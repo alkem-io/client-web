@@ -208,7 +208,7 @@
     "votes": "{{count}} Stimmen",
     "totalVotes": "{{count}} Stimmen insgesamt",
     "sendComment": "Kommentar senden",
-    "addResponse": "Antwort hinzufügen",
+    "addWhiteboard": "Whiteboard hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
     "defaultWhiteboardName": "Neues Whiteboard",
     "whiteboardNameLabel": "Whiteboard-Titel",
@@ -398,7 +398,9 @@
     "activity": "Aktivität",
     "videoCall": "Videoanruf",
     "share": "Teilen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "expandWidth": "Auf volle Breite erweitern",
+    "collapseWidth": "Auf zentriertes Layout verkleinern"
   },
   "contextMenu": {
     "edit": "Bearbeiten",

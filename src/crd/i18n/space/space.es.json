@@ -208,7 +208,7 @@
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
     "sendComment": "Enviar comentario",
-    "addResponse": "Añadir respuesta",
+    "addWhiteboard": "Añadir pizarra",
     "createWhiteboard": "Crear nueva pizarra",
     "defaultWhiteboardName": "Nueva pizarra",
     "whiteboardNameLabel": "Título de la pizarra",
@@ -398,7 +398,9 @@
     "activity": "Actividad",
     "videoCall": "Videollamada",
     "share": "Compartir",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "expandWidth": "Ampliar a ancho completo",
+    "collapseWidth": "Contraer al diseño centrado"
   },
   "contextMenu": {
     "edit": "Editar",

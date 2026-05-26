@@ -208,7 +208,7 @@
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "sendComment": "Изпрати коментар",
-    "addResponse": "Добави отговор",
+    "addWhiteboard": "Добави бяла дъска",
     "createWhiteboard": "Създаване на нова бяла дъска",
     "defaultWhiteboardName": "Нова бяла дъска",
     "whiteboardNameLabel": "Заглавие на бялата дъска",
@@ -398,7 +398,9 @@
     "activity": "Активност",
     "videoCall": "Видеоразговор",
     "share": "Сподели",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "expandWidth": "Разшири до пълна ширина",
+    "collapseWidth": "Свий до центрирано оформление"
   },
   "contextMenu": {
     "edit": "Редактирай",
