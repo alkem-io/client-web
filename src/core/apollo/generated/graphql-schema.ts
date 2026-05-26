@@ -22119,15 +22119,6 @@ export type UserDisplayNameFragment = {
   profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
 };
 
-export type CreateUserNewRegistrationMutationVariables = Exact<{
-  userData: CreateUserInput;
-}>;
-
-export type CreateUserNewRegistrationMutation = {
-  __typename?: 'Mutation';
-  createUser: { __typename?: 'User'; id: string };
-};
-
 export type DeleteUserMutationVariables = Exact<{
   input: DeleteUserInput;
 }>;
