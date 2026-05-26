@@ -2,7 +2,7 @@ import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { type CalloutFramingType, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
@@ -101,6 +101,14 @@ export type CalloutFormValues = {
     framingProfileId: string;
     /** Reference ids present at edit-open, so the submit can detect which references were removed. */
     originalReferenceIds: string[];
+    /**
+     * Framing type as loaded from the server at edit-open. The update mapper omits
+     * `framing.type` from the mutation input when the current form value matches
+     * this — sending an unchanged `type` makes the server treat the request as a
+     * type switch and reject it (e.g. `COLLABORA_DOCUMENT` then requires a
+     * `collaboraDocument` block we have no reason to send).
+     */
+    originalFramingType?: CalloutFramingType;
   };
 };
 

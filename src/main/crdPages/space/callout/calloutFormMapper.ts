@@ -385,8 +385,18 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
       ]
     : undefined;
 
+  // Only emit `framing.type` when it actually changes. The framing chip is
+  // locked on edit (`FramingChipStrip locked={mode === 'edit'}`); the only
+  // permitted transition is to `None`. Sending an unchanged `type` makes the
+  // server treat the request as a type switch — for `COLLABORA_DOCUMENT` that
+  // triggers "Collabora document input is required when switching to
+  // COLLABORA_DOCUMENT framing type", because we have no reason to send a
+  // `collaboraDocument` block on a no-op type.
+  const originalFramingType = values.editMeta?.originalFramingType;
+  const framingTypeChanged = originalFramingType !== undefined && framingType !== originalFramingType;
+
   const framing: UpdateCalloutEntityInput['framing'] = {
-    type: framingType,
+    ...(framingTypeChanged ? { type: framingType } : {}),
     profile: {
       displayName: values.title.trim(),
       description: values.description || undefined,

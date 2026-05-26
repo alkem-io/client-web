@@ -502,15 +502,58 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
 });
 
 describe('mapFormToCalloutUpdateInput', () => {
-  it('always emits ID + framing.type + trimmed displayName + description', () => {
+  it('always emits ID + trimmed displayName + description; omits framing.type when unchanged', () => {
     const result = mapFormToCalloutUpdateInput(
-      baseValues({ title: '  My title  ', description: 'desc' }),
+      baseValues({
+        title: '  My title  ',
+        description: 'desc',
+        editMeta: {
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+          originalFramingType: CalloutFramingType.None,
+        },
+      }),
       updateOptions
     );
     expect(result.input.ID).toBe('callout-1');
-    expect(result.input.framing?.type).toBe(CalloutFramingType.None);
+    // `framing.type` is intentionally omitted when the form's framing type matches
+    // the prefilled `editMeta.originalFramingType` — sending it unchanged makes the
+    // server treat the request as a type switch (regression: COLLABORA_DOCUMENT
+    // rejected the update with "Collabora document input is required when switching
+    // to COLLABORA_DOCUMENT framing type").
+    expect(result.input.framing?.type).toBeUndefined();
     expect(result.input.framing?.profile?.displayName).toBe('My title');
     expect(result.input.framing?.profile?.description).toBe('desc');
+  });
+
+  it('emits framing.type when the framing type is actually changing (e.g. clearing to None on edit)', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({
+        framingChip: 'none',
+        editMeta: {
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+          originalFramingType: CalloutFramingType.CollaboraDocument,
+        },
+      }),
+      updateOptions
+    );
+    expect(result.input.framing?.type).toBe(CalloutFramingType.None);
+  });
+
+  it('omits framing.type when the original is COLLABORA_DOCUMENT and the chip is unchanged (the original bug)', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({
+        framingChip: 'document',
+        editMeta: {
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+          originalFramingType: CalloutFramingType.CollaboraDocument,
+        },
+      }),
+      updateOptions
+    );
+    expect(result.input.framing?.type).toBeUndefined();
   });
 
   it('references: only rows with id pass; blank name/uri filtered out; tagsets absent without editMeta tagsetId', () => {
@@ -551,10 +594,15 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'whiteboard',
         whiteboardContent: '<wb/>',
         whiteboardPreviewImages: [previewBlob],
+        editMeta: {
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+          originalFramingType: CalloutFramingType.Whiteboard,
+        },
       }),
       updateOptions
     );
-    expect(result.input.framing?.type).toBe(CalloutFramingType.Whiteboard);
+    expect(result.input.framing?.type).toBeUndefined();
     expect(result.input.framing?.whiteboardContent).toBeUndefined();
     expect(result.input.framing?.whiteboardPreviewSettings).toBeUndefined();
     // Preview blobs still travel out-of-band when present
@@ -563,10 +611,18 @@ describe('mapFormToCalloutUpdateInput', () => {
 
   it('Memo framing on update never sends memo body (edited via dedicated dialog)', () => {
     const result = mapFormToCalloutUpdateInput(
-      baseValues({ framingChip: 'memo', memoMarkdown: '# body' }),
+      baseValues({
+        framingChip: 'memo',
+        memoMarkdown: '# body',
+        editMeta: {
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+          originalFramingType: CalloutFramingType.Memo,
+        },
+      }),
       updateOptions
     );
-    expect(result.input.framing?.type).toBe(CalloutFramingType.Memo);
+    expect(result.input.framing?.type).toBeUndefined();
     expect(result.input.framing?.memoContent).toBeUndefined();
   });
 

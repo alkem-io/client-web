@@ -147,6 +147,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
       whiteboardId: framing.whiteboard?.id,
       framingProfileId: framing.profile.id,
       originalReferenceIds: framing.profile.references?.map(r => r.id) ?? [],
+      originalFramingType: framing.type,
     },
   };
 
