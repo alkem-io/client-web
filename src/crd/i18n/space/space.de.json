@@ -383,7 +383,9 @@
     "activity": "Aktivität",
     "videoCall": "Videoanruf",
     "share": "Teilen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "expandWidth": "Auf volle Breite erweitern",
+    "collapseWidth": "Auf zentriertes Layout verkleinern"
   },
   "contextMenu": {
     "edit": "Bearbeiten",

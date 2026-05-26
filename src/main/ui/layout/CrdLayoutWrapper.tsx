@@ -18,6 +18,7 @@ import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotific
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
 import { BreadcrumbsProvider, useBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -51,6 +52,9 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
+  // Full-width is owned per-space by the space page; the global header reads
+  // the live value here only so its top bar stays aligned with the body.
+  const headerFullWidth = useSpaceFullWidthActive();
   const designVersionToggle = useDesignVersionToggle();
   const designVersionSwitch = designVersionToggle.isVisible
     ? {
@@ -96,6 +100,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
         overlayBanner={overlayBanner}
+        fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
@@ -127,9 +132,11 @@ export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
   return (
     <BreadcrumbsProvider>
       <BannerOverlayProvider>
-        <SearchProvider>
-          <CrdLayoutConnector>{children}</CrdLayoutConnector>
-        </SearchProvider>
+        <LayoutWidthProvider>
+          <SearchProvider>
+            <CrdLayoutConnector>{children}</CrdLayoutConnector>
+          </SearchProvider>
+        </LayoutWidthProvider>
       </BannerOverlayProvider>
     </BreadcrumbsProvider>
   );

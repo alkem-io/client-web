@@ -35,6 +35,8 @@ type CrdLayoutProps = {
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
   designVersionSwitch?: CrdDesignVersionSwitch;
+  /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
+  fullWidth?: boolean;
   /** When true the header renders transparently over a hero banner below it. */
   overlayBanner?: boolean;
   children: ReactNode;
@@ -63,6 +65,7 @@ export function CrdLayout({
   footerLinks,
   showGridToggle,
   designVersionSwitch,
+  fullWidth,
   overlayBanner,
   children,
 }: CrdLayoutProps) {
@@ -90,6 +93,7 @@ export function CrdLayout({
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
         designVersionSwitch={designVersionSwitch}
+        fullWidth={fullWidth}
         overlayBanner={overlayBanner}
       />
       <main className="flex-1 flex flex-col">{children}</main>
