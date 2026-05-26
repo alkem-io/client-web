@@ -6,7 +6,7 @@
     "createSpace": "Maak mijn eigen Space",
     "activityView": "Activiteitsweergave",
     "mySpaces": "Mijn Spaces",
-    "virtualContributors": "Virtuele Bijdragers",
+    "virtualContributors": "Virtual Contributors",
     "innovationHubs": "Innovatie Hubs",
     "innovationPacks": "Innovatie Pakketten",
     "openMenu": "Menu openen",
@@ -20,7 +20,7 @@
       "title": "Stel je Home Space in",
       "subtitle": "Pin je favoriete space aan het dashboard"
     },
-    "homeSpaceSettings": "Instellingen thuisruimte",
+    "homeSpaceSettings": "Instellingen Home Space",
     "private": "Privé"
   },
   "activity": {
@@ -51,7 +51,7 @@
       "CALLOUT_MEMO_CREATED": "Nieuwe memo",
       "CALLOUT_LINK_CREATED": "Nieuwe link",
       "MEMBER_JOINED": "Nieuw lid",
-      "SUBSPACE_CREATED": "Nieuwe subspace",
+      "SUBSPACE_CREATED": "Nieuwe Subspace",
       "CALENDAR_EVENT_CREATED": "Nieuwe gebeurtenis",
       "UPDATE_SENT": "Nieuwe update"
     }
@@ -145,9 +145,9 @@
     "noInvitations": "Geen openstaande uitnodigingen"
   },
   "campaign": {
-    "title": "Maak je Virtuele Bijdrager",
-    "description": "Begin met je eigen AI-aangedreven bijdrager",
-    "cta": "Virtuele Bijdrager Aanmaken"
+    "title": "Maak je Virtual Contributor",
+    "description": "Begin met je eigen AI-aangedreven Virtual Contributor",
+    "cta": "Virtual Contributor aanmaken"
   },
   "releaseNotes": {
     "dismiss": "Sluiten",
@@ -173,7 +173,7 @@
     "close": "Sluiten",
     "closeDialog": "Dialoog sluiten",
     "invitationsSection": "Uitnodigingen",
-    "vcInvitationsSection": "Virtuele Bijdrager Uitnodigingen",
+    "vcInvitationsSection": "Virtual Contributor Uitnodigingen",
     "applicationsSection": "Openstaande Aanvragen",
     "detail": {
       "back": "Terug naar lijst",

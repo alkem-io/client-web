@@ -16,7 +16,7 @@
   },
   "flow": {
     "editFlow": "Innovatieflow bewerken",
-    "addPost": "Bericht toevoegen",
+    "addPost": "Post toevoegen",
     "emptyState": "Er zijn nog geen fasen geconfigureerd voor deze subspace.",
     "phaseTab": "Schakel naar fase {{name}}",
     "connectorAlt": "Volgende fase",
@@ -31,11 +31,11 @@
       "community": "Community",
       "events": "Evenementen",
       "activity": "Recente activiteit",
-      "index": "Berichtenindex",
+      "index": "Post-index",
       "subspaces": "Subspaces"
     },
     "virtualContributor": {
-      "heading": "Virtuele bijdrager",
+      "heading": "Virtual Contributor",
       "open": "Openen"
     }
   },
@@ -50,8 +50,8 @@
     "dialogTitle": "Recente activiteit"
   },
   "index": {
-    "dialogTitle": "Berichtenindex",
-    "empty": "Nog geen berichten."
+    "dialogTitle": "Post-index",
+    "empty": "Nog geen Posts."
   },
   "subspaces": {
     "dialogTitle": "Subspaces",

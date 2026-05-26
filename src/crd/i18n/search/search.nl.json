@@ -2,7 +2,7 @@
   "search": {
     "placeholder": "Zoeken\u2026",
     "emptyTitle": "Typ een zoekterm en druk op Enter",
-    "emptyDescription": "Zoek in Spaces, Berichten, Reacties, Gebruikers en Organisaties.",
+    "emptyDescription": "Zoek in Spaces, Posts, Reacties, Gebruikers en Organisaties.",
     "noResultsTitle": "Geen resultaten gevonden voor {{terms}}",
     "noResultsSuggestion": "Probeer andere zoekwoorden of verbreed je zoekopdracht.",
     "searchAllSpaces": "Zoek in plaats daarvan op het gehele platform",
@@ -13,7 +13,7 @@
     "scopeTriggerLabel": "Zoek in: {{option}}",
     "categories": {
       "spaces": "Spaces",
-      "posts": "Berichten",
+      "posts": "Posts",
       "responses": "Reacties",
       "users": "Gebruikers",
       "organizations": "Organisaties"
@@ -24,10 +24,10 @@
       "subspacesOnly": "Alleen subspaces",
       "whiteboards": "Whiteboards",
       "memos": "Memo's",
-      "posts": "Berichten"
+      "posts": "Posts"
     },
     "postTypes": {
-      "post": "Bericht",
+      "post": "Post",
       "whiteboard": "Whiteboard",
       "memo": "Memo"
     },

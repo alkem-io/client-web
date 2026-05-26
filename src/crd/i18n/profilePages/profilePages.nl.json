@@ -22,8 +22,8 @@
       "bodyOfKnowledge": "Kennisbasis wordt geladen"
     },
     "spacePrivacy": {
-      "private": "Privéruimte",
-      "public": "Openbare ruimte"
+      "private": "Private Space",
+      "public": "Openbare Space"
     }
   },
   "userProfile": {
@@ -39,7 +39,7 @@
     },
     "sections": {
       "spacesSubsection": "Spaces",
-      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Lid van"
     },
@@ -56,7 +56,7 @@
       "leading": "Nog geen leiding over spaces.",
       "membership": "Nog geen lidmaatschappen."
     },
-    "vcType": "Virtuele bijdrager"
+    "vcType": "Virtual Contributor"
   },
   "orgProfile": {
     "hero": {
@@ -85,20 +85,20 @@
     },
     "sections": {
       "spacesSubsection": "Spaces",
-      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Alle lidmaatschappen"
     },
     "empty": {
       "leading": "Nog geen leiding over spaces."
     },
-    "vcType": "Virtuele bijdrager"
+    "vcType": "Virtual Contributor"
   },
   "vcProfile": {
-    "typeBadge": "Virtuele bijdrager",
+    "typeBadge": "Virtual Contributor",
     "hero": {
-      "settingsTooltip": "Instellingen virtuele bijdrager",
-      "settingsAriaLabel": "Instellingen virtuele bijdrager openen"
+      "settingsTooltip": "Instellingen Virtual Contributor",
+      "settingsAriaLabel": "Instellingen Virtual Contributor openen"
     },
     "sidebar": {
       "descriptionTitle": "Beschrijving",
