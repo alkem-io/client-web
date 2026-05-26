@@ -101,6 +101,26 @@ type WhiteboardSaveFooterProps = {
 };
 ```
 
+## WhiteboardSaveStatus
+
+```typescript
+type WhiteboardSaveStatusProps = {
+  /** Whether the last save succeeded — drives the cloud icon (success/error) and its colour */
+  saved: boolean;
+  /** Status text for the hover tooltip and the dialog body (e.g. "Auto-saved last changes: 5 minutes ago") */
+  message: ReactNode;
+  /**
+   * Visible dialog title (e.g. the save-error "Warning"). Omitted in the saved state → only the
+   * close button shows (an sr-only title is still kept for accessibility).
+   */
+  dialogTitle?: ReactNode;
+  /** Optional CSS class */
+  className?: string;
+};
+```
+
+The live elapsed-time formatting (re-formatted on a 500ms tick via the domain `formatTimeElapsed` util) and the message/title composition live in the integration wrapper `CrdWhiteboardSaveStatus` (`src/main/crdPages/whiteboard/`), not in the CRD component. The wrapper takes `{ isSaved: boolean; date: Date | undefined }` — the same shape as the legacy MUI `SaveRequestIndicatorIcon` — so call sites swap 1:1.
+
 ## JoinWhiteboardDialog
 
 ```typescript

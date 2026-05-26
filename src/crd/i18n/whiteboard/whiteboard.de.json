@@ -29,6 +29,10 @@
     "restart": "Zusammenarbeit neu starten",
     "guestContributionsWarning": "Gastbeiträge sind aktiviert",
     "closeWhiteboard": "Whiteboard schließen",
+    "saveStatus": {
+      "label": "Speicherstatus",
+      "close": "Schließen"
+    },
     "loadingWhiteboard": "Whiteboard wird geladen",
     "untitled": "Whiteboard",
     "unsavedChanges": {

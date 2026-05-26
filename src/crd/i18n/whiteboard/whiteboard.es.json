@@ -29,6 +29,10 @@
     "restart": "Reiniciar colaboración",
     "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
     "closeWhiteboard": "Cerrar pizarra",
+    "saveStatus": {
+      "label": "Estado de guardado",
+      "close": "Cerrar"
+    },
     "loadingWhiteboard": "Cargando pizarra",
     "untitled": "Pizarra",
     "unsavedChanges": {

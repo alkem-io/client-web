@@ -29,6 +29,10 @@
     "restart": "Samenwerking herstarten",
     "guestContributionsWarning": "Gastbijdragen zijn ingeschakeld",
     "closeWhiteboard": "Whiteboard sluiten",
+    "saveStatus": {
+      "label": "Opslagstatus",
+      "close": "Sluiten"
+    },
     "loadingWhiteboard": "Whiteboard laden",
     "untitled": "Whiteboard",
     "unsavedChanges": {

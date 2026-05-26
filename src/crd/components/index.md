@@ -97,6 +97,10 @@ Multi-user editor footer with delete button, readonly reason message slot, resta
 
 Single-user editor footer with Delete (left) and Save (right, primary variant with loading spinner) buttons. Used for template editing and callout creation.
 
+### WhiteboardSaveStatus (`whiteboard/WhiteboardSaveStatus.tsx`)
+
+Header save-status indicator: a cloud icon (`CloudCheck` success / `CloudOff` error) with a hover tooltip and a click-to-open detail dialog showing the last-saved time or a save-error warning. The dialog ships the CRD `Dialog` close (X) button and dismisses on outside-click/Escape. Derived text (`message`, `dialogTitle`) arrives as props; the live elapsed-time formatting lives in the `CrdWhiteboardSaveStatus` integration wrapper. Replaces the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces.
+
 ### PreviewSettingsDialog (`whiteboard/PreviewSettingsDialog.tsx`)
 
 Preview mode selector dialog with 3 mode buttons (Auto, Custom, Fixed). Each rendered as a bordered card with lucide-react icon, title, and description. Selected mode highlighted with primary border.

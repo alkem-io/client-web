@@ -146,10 +146,19 @@
   - **File**: new
   - **Description**: Integration component replacing MUI `WhiteboardView`. Same interface (`WhiteboardViewProps` shape). Maps authorization to `CrdWhiteboardDialog` props:
     - Calls `useWhiteboardViewState` (reused, unchanged) for privileges, guest access, actions
-    - Computes `headerActions` with MUI components in slots: `ShareButton` (with guest access controls as children), `FullscreenButton`, `SaveRequestIndicatorIcon`, `WhiteboardPreviewSettingsButton`
+    - Computes `headerActions` with slots: `ShareButton` (MUI, with guest access controls as children), `FullscreenButton` (MUI), `CrdWhiteboardSaveStatus` (CRD — see T13a), `WhiteboardPreviewSettingsButton` (MUI)
     - Renders `<CrdWhiteboardDialog>` with mapped props
-  - **Acceptance**: Whiteboard opens from callout contribution with correct privileges. Share, fullscreen, save indicator, preview settings all work.
+  - **Acceptance**: Whiteboard opens from callout contribution with correct privileges. Share, fullscreen, save status, preview settings all work.
   - **Dependencies**: T12
+
+- [X] T13a [P] Create CRD save-status indicator (FR-WB-012a) — replaces MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces
+  - **Files**: `src/crd/components/whiteboard/WhiteboardSaveStatus.tsx` (new), `src/main/crdPages/whiteboard/CrdWhiteboardSaveStatus.tsx` (new), `src/crd/i18n/whiteboard/whiteboard.{en,es,nl,bg,de,fr}.json` (modified), `CrdWhiteboardView.tsx` + `CrdPublicWhiteboardPage.tsx` (modified call sites)
+  - **Description**:
+    - **CRD component** `WhiteboardSaveStatus` (presentational): cloud icon (`CloudCheck` saved / `CloudOff` error, error tinted `text-destructive`) as a `ghost` / `size-icon` button; hover `Tooltip`; click opens a CRD `Dialog` (built-in close X + outside-click/Escape dismissal). Props per data-model `WhiteboardSaveStatusProps` (`saved`, `message`, `dialogTitle?`). aria-labels via `useTranslation('crd-whiteboard')` (`editor.saveStatus.label`, `editor.saveStatus.close`). Saved-state dialog uses an sr-only title; error-state shows a visible "Warning" title. Zero MUI / domain imports.
+    - **Integration wrapper** `CrdWhiteboardSaveStatus` (`crdPages`): owns the 500ms interval that re-formats elapsed time via the domain `formatTimeElapsed`; composes `message` (`pages.whiteboard.last-saved` / `pages.whiteboard.unsuccessful-save` `<Trans>`) and `dialogTitle` (`common.warning`). Props `{ isSaved, date }` — 1:1 with the MUI `SaveRequestIndicatorIcon`.
+    - Swap `SaveRequestIndicatorIcon` → `CrdWhiteboardSaveStatus` in `CrdWhiteboardView` and `CrdPublicWhiteboardPage`. The MUI component is retained for `WhiteboardView`, MUI `PublicWhiteboardPage`, and `UserPresencing`.
+  - **Acceptance**: In CRD whiteboards the save status renders a CRD cloud icon; hover shows the elapsed-time tooltip; click opens a CRD dialog that closes via its X and via outside-click in both saved and error states; elapsed time updates live. MUI surfaces unchanged. Zero MUI/domain imports in the CRD component; `tsc` + `biome` clean; `headerActions.spec.tsx` (MUI path) still passes.
+  - **Dependencies**: T3, T12
 
 **Checkpoint**: Opening a whiteboard from a CRD space page shows a CRD-styled editor shell. Excalidraw canvas works normally. All header actions and footer states render correctly. Real-time collaboration works. Delete, display name edit, template import all functional.
 
@@ -328,6 +337,7 @@ Phase 3 — Editor Shell (parallel, then sequential):
   T11 (whiteboardFooterMapper, no deps)
   T10, T11 ──> T12 (CrdWhiteboardDialog)
   T12 ──> T13 (CrdWhiteboardView)
+  T3, T12 ──> T13a (CRD save-status indicator — WhiteboardSaveStatus + CrdWhiteboardSaveStatus)
 
 Phase 4 — Single-User (after shell):
   T3 ──> T15 (WhiteboardSaveFooter)

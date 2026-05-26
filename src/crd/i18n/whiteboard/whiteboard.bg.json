@@ -29,6 +29,10 @@
     "restart": "Рестартиране на сътрудничеството",
     "guestContributionsWarning": "Приносите на гости са активирани",
     "closeWhiteboard": "Затваряне на бяла дъска",
+    "saveStatus": {
+      "label": "Състояние на запазване",
+      "close": "Затвори"
+    },
     "loadingWhiteboard": "Зареждане на бяла дъска",
     "untitled": "Бяла дъска",
     "unsavedChanges": {

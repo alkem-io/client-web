@@ -29,6 +29,10 @@
     "restart": "Restart collaboration",
     "guestContributionsWarning": "Guest contributions are enabled",
     "closeWhiteboard": "Close whiteboard",
+    "saveStatus": {
+      "label": "Save status",
+      "close": "Close"
+    },
     "loadingWhiteboard": "Loading whiteboard",
     "untitled": "Whiteboard",
     "unsavedChanges": {

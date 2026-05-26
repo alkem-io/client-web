@@ -79,7 +79,6 @@ The editor shell accepts `headerActions` and `titleExtra` as `ReactNode` slots. 
 |---|---|---|
 | `ShareButton` | `headerActions` | Opens MUI ShareDialog portal |
 | `FullscreenButton` | `headerActions` | Toggles fullscreen |
-| `SaveRequestIndicatorIcon` | `headerActions` | Save status dot |
 | `WhiteboardPreviewSettingsButton` | `headerActions` | Opens MUI preview settings dialog |
 | `WhiteboardDialogTemplatesLibrary` | `titleExtra` | Opens MUI template import dialog |
 
@@ -93,6 +92,7 @@ These stay MUI until their respective domains are migrated. They render as porta
 - CRD collaborative footer (delete, readonly reason, guest warning, restart, guest access badge)
 - CRD save footer (Save + Delete buttons for single-user mode)
 - CRD inline-editable display name component
+- CRD save-status indicator (cloud icon + hover tooltip + detail dialog) replacing the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces
 - CRD preview settings dialog (Auto/Custom/Fixed mode selector)
 - CRD preview crop dialog (image crop/zoom/pan with `react-image-crop`)
 - CRD public whiteboard page (`/public/whiteboard/:id` route)
@@ -136,6 +136,7 @@ These stay MUI until their respective domains are migrated. They render as porta
 | `crd/components/whiteboard/WhiteboardDisplayName` | `WhiteboardDialog/WhiteboardDisplayName` | -- |
 | `crd/components/whiteboard/WhiteboardCollabFooter` | `WhiteboardDialog/WhiteboardDialogFooter` | -- |
 | `crd/components/whiteboard/WhiteboardSaveFooter` | `SingleUserWhiteboardDialog` footer (Save+Delete) | -- |
+| `crd/components/whiteboard/WhiteboardSaveStatus` | `realTimeCollaboration/SaveRequestIndicatorIcon` (kept for MUI surfaces) | -- |
 | **Preview Settings** | | |
 | `crd/components/whiteboard/PreviewSettingsDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog` | -- |
 | `crd/components/whiteboard/PreviewCropDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewCustomSelectionDialog` | -- |
@@ -148,6 +149,7 @@ These stay MUI until their respective domains are migrated. They render as porta
 | `main/crdPages/whiteboard/CrdWhiteboardDialog` | `WhiteboardDialog` (multi-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog` | `SingleUserWhiteboardDialog` (single-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdWhiteboardView` | `WhiteboardsManagement/WhiteboardView` | -- |
+| `main/crdPages/whiteboard/CrdWhiteboardSaveStatus` | (live elapsed-time formatting wrapper for `WhiteboardSaveStatus`) | -- |
 | `main/crdPages/whiteboard/CrdPublicWhiteboardPage` | `main/public/whiteboard/PublicWhiteboardPage` | -- |
 | `main/crdPages/space/callout/WhiteboardContributionAddConnector` | `calloutContributions/whiteboard/CreateContributionButtonWhiteboard` | -- |
 
@@ -229,6 +231,7 @@ A community member with `Contribute` + `CreateWhiteboard` privilege opens a call
 
 - **FR-WB-011**: Editor shell must use CRD Dialog primitive in full-screen mode (or a full-viewport overlay)
 - **FR-WB-012**: Header must render: display name (left), headerActions slot (right), titleExtra slot (after title)
+- **FR-WB-012a**: The header's save-status indicator is a CRD component (`WhiteboardSaveStatus`): a cloud icon (success / error, error tinted `destructive`) with a hover tooltip and a click-to-open detail dialog showing the last-saved time (saved state) or a save-error warning (error state). The dialog uses the CRD `Dialog` primitive, so it ships a built-in close (X) button and dismisses on outside-click / Escape. Live elapsed-time formatting and message composition live in the integration wrapper (`CrdWhiteboardSaveStatus`); the CRD component receives plain text / `ReactNode` props only. The legacy MUI `SaveRequestIndicatorIcon` is retained for the MUI whiteboard surfaces (`WhiteboardView`, MUI `PublicWhiteboardPage`, `UserPresencing`).
 - **FR-WB-013**: Display name component must support three modes: read-only (plain text), view (text + edit button), edit (input + save/cancel)
 - **FR-WB-014**: Display name save must call `onSave` callback and show loading state on the save button
 - **FR-WB-015**: Footer must render: left section (delete button + status message + restart button), right section (guest warning + guest access badge)
