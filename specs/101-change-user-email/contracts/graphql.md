@@ -133,10 +133,12 @@ query LatestUserEmailChangeAuditEntry($userID: UUID!) {
 ```
 
 - **Generated hook**: `useLatestUserEmailChangeAuditEntryQuery`
-- **Purpose**: drift detection for (a) the row badge, (b) the dialog drift banner,
-  (c) the Resolve dialog's two address choices (D6). Returns `null` when the user has
-  no audit entry.
-- Issued **per visible row**; see research.md D6 for the N+1 rationale.
+- **Purpose**: drift detection for (a) the dialog drift banner and (b) the Resolve
+  dialog's two address choices (D6). Returns `null` when the user has no audit entry.
+- Issued **lazily on dialog open** — one query per opened change-email dialog,
+  scoped to the subject user. The global administration users list does NOT display
+  a per-row drift indicator and does NOT issue this query per visible row (spec
+  FR-024 / clarification 2026-05-20; see research.md D6).
 
 ---
 

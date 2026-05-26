@@ -195,7 +195,7 @@ across the same handful of files (research.md D15).
 - [x] T041 [P] Add `userEmailChanged?: NotificationChannels` to `PlatformAdminNotificationSettings` in `src/domain/community/userAdmin/tabs/model/NotificationSettings.model.ts`
 - [x] T042 Wire `userEmailChanged` into `src/domain/community/userAdmin/tabs/UserAdminNotificationsPage.tsx` (apply server overrides + build the notification channel) and `src/domain/community/userAdmin/tabs/components/CombinedPlatformNotificationsSettings.tsx` (option + the triple-switch admin grouping)
 - [x] T043 [P] Wire `userEmailChanged` into the CRD notification settings — `notificationPayloadBuilders.ts` (`buildPlatformAdmin`) and `userNotificationsMapper.ts` (`mapUserNotifications` row) under `src/main/crdPages/topLevelPages/userPages/settings/notifications/`
-- [x] T044 [P] Add the `adminUserEmailChanged` label to `src/core/i18n/en/translation.en.json` (`pages.userNotificationsSettings.platformAdmin.settings.*`) and the `userEmailChanged` label to `src/crd/i18n/contributorSettings/contributorSettings.en.json` (FR-029/FR-031)
+- [x] T044 [P] Add the `adminUserEmailChanged` label to `src/core/i18n/en/translation.en.json` (`pages.userNotificationsSettings.platformAdmin.settings.*`) and add the `userEmailChanged` label across all supported CRD locales (`en`, `nl`, `es`, `bg`, `de`, `fr`) under `src/crd/i18n/contributorSettings/` (per CRD i18n parity, CLAUDE.md "Internationalization"; FR-029/FR-031)
 
 **Checkpoint**: A platform admin can toggle the "user email changed" notification in both the MUI and CRD notification-settings surfaces; the preference persists via the existing user-settings update flow.
 

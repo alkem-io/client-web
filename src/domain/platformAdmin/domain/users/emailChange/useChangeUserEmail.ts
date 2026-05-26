@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAdminUserEmailChangeMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { mapEmailChangeErrorCode } from './emailChangeErrorMapping';
+import { EMAIL_CHANGE_GENERIC_ERROR_KEY, mapEmailChangeErrorCode } from './emailChangeErrorMapping';
 
 export type ChangeUserEmailRequest = {
   newEmail: string;
@@ -48,8 +48,12 @@ const useChangeUserEmail = (userId: string): UseChangeUserEmailProvided => {
           },
         },
       });
-      const committedEmail = data?.adminUserEmailChange.email ?? newEmail;
-      notify(t('pages.admin.users.emailChange.success', { email: committedEmail }), 'success');
+      const result = data?.adminUserEmailChange;
+      if (!result?.success || !result.email) {
+        setErrorMessage(t(EMAIL_CHANGE_GENERIC_ERROR_KEY));
+        return false;
+      }
+      notify(t('pages.admin.users.emailChange.success', { email: result.email }), 'success');
       return true;
     } catch (error) {
       const code =

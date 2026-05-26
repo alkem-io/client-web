@@ -119,7 +119,7 @@ Presentational components receive these; mapping from generated types happens in
 feature hooks / page (the "glue"), never inside a View.
 
 ### 3.1 `EmailChangeOutcomeView`
-```
+```ts
 type EmailChangeOutcomeClass = 'success' | 'success-with-warning' | 'failure';
 
 type EmailChangeOutcomeView = {
@@ -130,7 +130,7 @@ type EmailChangeOutcomeView = {
 ```
 
 ### 3.2 `EmailChangeHistoryEntryView` — one history row
-```
+```ts
 type EmailChangeHistoryEntryView = {
   id: string;
   timestamp: Date;
@@ -146,7 +146,7 @@ type EmailChangeHistoryEntryView = {
 ```
 
 ### 3.3 `EmailChangeHistoryView` — the paginated list
-```
+```ts
 type EmailChangeHistoryView = {
   entries: EmailChangeHistoryEntryView[];
   total: number;
@@ -157,7 +157,7 @@ type EmailChangeHistoryView = {
 ```
 
 ### 3.4 `DriftStateView` — drift context for the dialog banner / resolve
-```
+```ts
 type DriftStateView = {
   isDrifted: boolean;                // latest outcome is DRIFT_DETECTED | DRIFT_RESOLUTION_FAILED
   oldEmail: string | undefined;      // canonical-choice option A
@@ -170,7 +170,7 @@ type DriftStateView = {
 takes a minimal prop set and consumes the feature façade hooks internally —
 `useChangeUserEmail` (submit, pending, mapped error), `useLatestUserEmailChangeOutcome`
 (drift, queried lazily only while the dialog is open), `useNavigate` (history link).
-```
+```ts
 type ChangeUserEmailDialogProps = {
   open: boolean;
   userId: string;                    // subject; drives the façade hooks
@@ -230,7 +230,7 @@ Catch-all `apollo`/generic key for any unmapped or unexpected failure (FR-013).
 
 ## 6. State transitions (account, as seen by the client)
 
-```
+```text
             adminUserEmailChange
    [stable] ───────────────────────────▶ [stable]   (COMMITTED / *_FAILED warning outcomes)
        │                                      ▲

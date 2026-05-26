@@ -95,13 +95,20 @@ Drive each failure and confirm a distinct, human-readable message with the dialo
 21. For a user with no drift, opening the change dialog shows no drift warning and no
     Resolve action.
 
-### F. Platform-admin notification preference (FR-031)
+### F. Email-change notification preferences (FR-031)
 22. As a platform admin, open your **notification settings** (the MUI admin
     notifications tab and the CRD user notification settings page).
-23. Confirm a **"user email changed"** platform-admin notification row is present with
-    in-app / email / push channels, alongside the other platform-admin notifications.
+23. Confirm a **"user email changed"** row is present in the **platform-admin** group
+    with in-app / email / push channels, alongside the other platform-admin
+    notifications, on both surfaces.
 24. Toggle a channel and save → the preference persists through the existing
     user-settings update flow and survives a reload.
+25. As a user who is a **space admin / lead**, open the same notification settings
+    surfaces (MUI + CRD).
+26. Confirm a **"user email changed"** row is present in the **space-admin** group
+    with in-app / email / push channels, alongside the other space-admin
+    notifications, on both surfaces.
+27. Toggle a channel and save → the preference persists and survives a reload.
 
 ---
 

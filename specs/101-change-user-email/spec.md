@@ -167,7 +167,7 @@ In the rare case where an email change applied to one part of the system but not
 
 **General**
 
-- **FR-029**: All user-facing copy introduced by this feature MUST be in English only; no localised copy is added.
+- **FR-029**: This feature does NOT introduce Crowdin-managed translations: the only main-app strings added are in English (`src/core/i18n/en/translation.en.json`); non-English files under `src/core/i18n/` are unchanged. CRD i18n key-parity additions under `src/crd/i18n/contributorSettings/*.json` for the `userEmailChanged` preference label across all supported CRD locales (`en`, `nl`, `es`, `bg`, `de`, `fr`) are required by CRD policy (CLAUDE.md "Internationalization") and are in scope of this feature; they are not considered localised copy for the purposes of this requirement.
 
 **Reason & approval capture**
 

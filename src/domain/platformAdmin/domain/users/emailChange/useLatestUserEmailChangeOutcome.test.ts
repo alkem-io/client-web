@@ -25,6 +25,7 @@ describe('deriveDriftState', () => {
       UserEmailChangeAuditOutcome.SecuritySignalFailed,
       UserEmailChangeAuditOutcome.NewAddressNotificationFailed,
       UserEmailChangeAuditOutcome.GlobalAdminNotificationFailed,
+      UserEmailChangeAuditOutcome.SpaceAdminNotificationFailed,
       UserEmailChangeAuditOutcome.SessionInvalidationFailed,
       UserEmailChangeAuditOutcome.RejectedValidation,
       UserEmailChangeAuditOutcome.RejectedConflict,
