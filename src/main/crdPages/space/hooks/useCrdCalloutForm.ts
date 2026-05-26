@@ -106,6 +106,20 @@ export type CalloutFormValues = {
 
 export type CalloutFormErrors = Partial<Record<keyof CalloutFormValues | string, string>>;
 
+/**
+ * Reference-row errors in the shared `ReferencesEditor` contract — keyed `<index>.name` / `<index>.uri`.
+ * `validate()` namespaces them as `referenceRows.<index>.…` (symmetric with `prePopulateLinkRows.…`); the
+ * editor reads the un-prefixed shape, so consumers strip the prefix here before passing them in (mirroring
+ * how `InnovationPackForm` / `CommunityGuidelinesTemplateForm` feed the same editor).
+ */
+export const referenceRowErrors = (errors: CalloutFormErrors): Record<string, string | undefined> => {
+  const out: Record<string, string | undefined> = {};
+  for (const key of Object.keys(errors)) {
+    if (key.startsWith('referenceRows.')) out[key.slice('referenceRows.'.length)] = errors[key];
+  }
+  return out;
+};
+
 const createInitialPollOptions = (): PollOptionValue[] =>
   Array.from({ length: MIN_POLL_OPTIONS }, () => ({ text: '' }));
 
@@ -276,13 +290,13 @@ export function useCrdCalloutForm(): UseCrdCalloutFormResult {
 
   const validateReferences = (v: CalloutFormValues, next: CalloutFormErrors) => {
     v.referenceRows.forEach((row, idx) => {
-      const url = row.url.trim();
-      const title = row.title.trim();
-      if (url && !title) {
-        next[`referenceRows.${idx}.title`] = translateValidationMessage('referenceTitleRequired');
+      const uri = row.uri.trim();
+      const name = row.name.trim();
+      if (uri && !name) {
+        next[`referenceRows.${idx}.name`] = translateValidationMessage('referenceTitleRequired');
       }
-      if (url && !isValidHttpUrl(url)) {
-        next[`referenceRows.${idx}.url`] = translateValidationMessage('referenceUrlInvalid');
+      if (uri && !isValidHttpUrl(uri)) {
+        next[`referenceRows.${idx}.uri`] = translateValidationMessage('referenceUrlInvalid');
       }
     });
   };

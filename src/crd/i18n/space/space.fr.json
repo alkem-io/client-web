@@ -535,25 +535,6 @@
       "attachFile": "Joindre un fichier"
     }
   },
-  "references": {
-    "heading": "Références",
-    "empty": "Pas encore de références.",
-    "titleLabel": "Titre",
-    "titlePlaceholder": "Titre de la référence",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Description facultative",
-    "addRow": "Ajouter une autre référence",
-    "removeRow": "Supprimer la référence",
-    "attachFile": "Joindre un fichier",
-    "removeConfirm": {
-      "title": "Supprimer cette référence ?",
-      "description": "« {{name}} » sera supprimé lors de l’enregistrement. Cette action est irréversible.",
-      "confirm": "Supprimer",
-      "unnamed": "cette référence"
-    }
-  },
   "responseDefaults": {
     "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de ce $t(common.callout).",
     "title": {

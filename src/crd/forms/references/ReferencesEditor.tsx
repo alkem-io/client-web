@@ -125,9 +125,10 @@ export function ReferencesEditor({
                   disabled={disabled}
                   aria-label={t('references.nameLabel')}
                   aria-invalid={!!nameError}
+                  aria-describedby={nameError ? `ref-row-${index}-name-error` : undefined}
                 />
                 {nameError && (
-                  <p className="text-caption text-destructive" aria-live="polite">
+                  <p id={`ref-row-${index}-name-error`} className="text-caption text-destructive" aria-live="polite">
                     {nameError}
                   </p>
                 )}
@@ -144,6 +145,7 @@ export function ReferencesEditor({
                     disabled={disabled}
                     aria-label={t('references.uriLabel')}
                     aria-invalid={!!uriError}
+                    aria-describedby={uriError ? `ref-row-${index}-uri-error` : undefined}
                     className="flex-1"
                   />
                   {onFileUpload && (
@@ -157,7 +159,7 @@ export function ReferencesEditor({
                   )}
                 </div>
                 {uriError && (
-                  <p className="text-caption text-destructive" aria-live="polite">
+                  <p id={`ref-row-${index}-uri-error`} className="text-caption text-destructive" aria-live="polite">
                     {uriError}
                   </p>
                 )}
