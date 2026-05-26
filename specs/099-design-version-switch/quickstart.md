@@ -65,7 +65,7 @@ The app listens at `http://localhost:3001`. Have the browser DevTools console + 
 
 1. Sign in as Scenario B's user (currently on MUI).
 2. Click the avatar → open user menu.
-3. Verify *(updated 2026-05-26)*: switch labelled "New look (classic available for a limited time)" sits above "Dashboard"; no separate caption row (the `caption` key was removed); switch is OFF. *(The label does NOT change when the toggle is flipped ON — single neutral label, same pattern as "Dark mode".)*
+3. Verify *(updated 2026-05-26)*: switch labelled "New look (old design available for a limited time)" sits above "Dashboard"; no separate caption row (the `caption` key was removed); switch is OFF. *(The label does NOT change when the toggle is flipped ON — single neutral label, same pattern as "Dark mode".)*
 4. Click the switch.
 5. **Expected (within 5 seconds end-to-end):**
    - `updateUserSettings` mutation fires in Network with `variables.settingsData.settings.designVersion === 2` (integer, not string).

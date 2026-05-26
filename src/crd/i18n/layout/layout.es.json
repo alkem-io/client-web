@@ -23,11 +23,11 @@
     "showGrid": "Mostrar cuadrícula",
     "hideGrid": "Ocultar cuadrícula",
     "designVersion": {
-      "label": "Nuevo aspecto (clásico disponible temporalmente)"
+      "label": "Nuevo aspecto (diseño antiguo disponible temporalmente)"
     },
     "designVersionUpgrade": {
       "title": "El nuevo Alkemio ya está aquí",
-      "body": "Hemos diseñado una nueva versión más rápida, más clara y preparada para lo que viene. Te invitamos a cambiar ahora.\n\nSi prefieres el aspecto clásico, seguirá disponible desde el menú de tu avatar durante un tiempo limitado - y si echas algo de menos, avisa al equipo de soporte para que podamos trasladarlo antes de retirar el diseño clásico.",
+      "body": "Hemos diseñado una nueva versión más rápida, más clara y preparada para lo que viene. Te invitamos a cambiar ahora.\n\nSi prefieres el aspecto antiguo, seguirá disponible desde el menú de tu avatar durante un tiempo limitado - y si echas algo de menos, avisa al equipo de soporte para que podamos trasladarlo antes de retirar el diseño antiguo.",
       "confirm": "Llévame al nuevo diseño",
       "dismiss": "Quizás más tarde",
       "closeLabel": "Cerrar"

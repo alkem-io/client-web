@@ -23,7 +23,7 @@
     "showGrid": "Afficher la grille",
     "hideGrid": "Masquer la grille",
     "designVersion": {
-      "label": "Nouveau look (classique disponible temporairement)"
+      "label": "Nouveau look (ancien design disponible temporairement)"
     },
     "designVersionUpgrade": {
       "title": "Le nouvel Alkemio est arrivé",

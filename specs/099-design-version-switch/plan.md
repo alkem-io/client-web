@@ -27,7 +27,7 @@ After the original 099 feature shipped (with the platform default deliberately k
 
 2. **Single-label toggle copy** (supersedes FR-004's "beta caption"). The implementation went through one short iteration:
    - *Initial draft (reverted same day)*: a `toCrd` / `toMui` pair picked off the toggle state.
-   - *Final*: a single `header.designVersion.label` / `topBar.designVersion.label` key reading **"New look (classic available for a limited time)"** across `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json` and `src/core/i18n/en/translation.en.json` (English source; Crowdin handles non-EN on the main namespace, all six locales edited directly for `crd-layout`).
+   - *Final*: a single `header.designVersion.label` / `topBar.designVersion.label` key reading **"New look (old design available for a limited time)"** across `src/crd/i18n/layout/layout.{en,nl,es,bg,de,fr}.json` and `src/core/i18n/en/translation.en.json` (English source; Crowdin handles non-EN on the main namespace, all six locales edited directly for `crd-layout`).
    - `src/crd/layouts/components/UserMenu.tsx` and `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` render the single label regardless of the toggle's state — same pattern as every other feature-toggle (e.g. "Dark mode").
    - The previously shipped `caption` key is removed; the temporary-availability framing is folded into the label itself and reinforced in the new migration modal.
 
