@@ -691,7 +691,7 @@ export function useTemplateForms({
         const currentReferenceIds = new Set(referenceRows.flatMap((r): string[] => (r.id ? [r.id] : [])));
         const deletedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
         const newReferenceRows = referenceRows.filter(
-          r => !r.id && r.title.trim().length > 0 && r.url.trim().length > 0
+          r => !r.id && r.name.trim().length > 0 && r.uri.trim().length > 0
         );
 
         if (deletedReferenceIds.length > 0) {
@@ -704,9 +704,9 @@ export function useTemplateForms({
                 variables: {
                   input: {
                     profileID: framingProfileId,
-                    name: r.title.trim() || 'Reference',
-                    uri: ensureHttps(r.url),
-                    description: r.description.trim() || undefined,
+                    name: r.name.trim() || 'Reference',
+                    uri: ensureHttps(r.uri),
+                    description: r.description?.trim() || undefined,
                   },
                 },
               })

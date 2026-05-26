@@ -49,7 +49,7 @@ type UseReferenceFileUploadResult = {
  * Wires a CRD reference editor to the standard storage-bucket upload path.
  * Mirrors the MUI behaviour from `FormikFileInput` + `FileUploadButton` but
  * exposes only a plain `Promise<string | null>` callback so the presentational
- * layer (`src/crd/forms/callout/ReferencesEditor`) stays free of Apollo /
+ * layer (`src/crd/forms/references/ReferencesEditor`) stays free of Apollo /
  * domain imports.
  */
 export function useReferenceFileUpload(storageConfig: StorageConfig | undefined): UseReferenceFileUploadResult {

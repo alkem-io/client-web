@@ -134,8 +134,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     referenceRows:
       framing.profile.references?.map(r => ({
         id: r.id,
-        title: r.name,
-        url: r.uri,
+        name: r.name,
+        uri: r.uri,
         description: r.description ?? '',
       })) ?? [],
     notifyMembers: false,

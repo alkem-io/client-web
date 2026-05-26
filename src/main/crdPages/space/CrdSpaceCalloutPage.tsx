@@ -18,7 +18,14 @@ export default function CrdSpaceCalloutPage() {
     <>
       <CrdSpaceTabbedPages />
       <CrdCalloutDialogFromUrl
-        onClose={() => navigate(toRoutePath(space.about.profile.url), { replace: true, state: { keepScroll: true } })}
+        onClose={() =>
+          // Preserve the current `?tab=N` so closing the dialog leaves the user
+          // on the tab the callout was opened from, not the first tab.
+          navigate(
+            { pathname: toRoutePath(space.about.profile.url), search: window.location.search },
+            { replace: true, state: { keepScroll: true } }
+          )
+        }
       />
     </>
   );
