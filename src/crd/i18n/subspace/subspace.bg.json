@@ -3,7 +3,9 @@
     "activity": "Скорошна активност",
     "videoCall": "Стартиране на видеоразговор",
     "share": "Споделяне",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "expandWidth": "Разшири до пълна ширина",
+    "collapseWidth": "Свий до центрирано оформление"
   },
   "members": {
     "memberCount_one": "{{count}} член",

@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Rechercher dans la base de connaissances...",
     "searchLabel": "Rechercher dans la base de connaissances",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "viewGrid": "Vue en cartes",
+    "viewList": "Vue en liste",
+    "count": {
+      "post_one": "{{count}} publication",
+      "post_other": "{{count}} publications",
+      "whiteboard_one": "{{count}} tableau blanc",
+      "whiteboard_other": "{{count}} tableaux blancs",
+      "memo_one": "{{count}} mémo",
+      "memo_other": "{{count}} mémos",
+      "link_one": "{{count}} lien",
+      "link_other": "{{count}} liens",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
   },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",
@@ -40,6 +54,7 @@
     "invite": "Inviter",
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
+    "postIndex": "Index des publications",
     "readMore": "Lire la suite",
     "editDescription": "Modifier la description",
     "addEvent": "Ajouter un événement",
@@ -193,7 +208,7 @@
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} votes au total",
     "sendComment": "Envoyer le commentaire",
-    "addResponse": "Ajouter une réponse",
+    "addWhiteboard": "Ajouter un tableau blanc",
     "createWhiteboard": "Créer un nouveau tableau blanc",
     "defaultWhiteboardName": "Nouveau tableau blanc",
     "whiteboardNameLabel": "Titre du tableau blanc",
@@ -383,7 +398,9 @@
     "activity": "Activité",
     "videoCall": "Appel vidéo",
     "share": "Partager",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "expandWidth": "Étendre à pleine largeur",
+    "collapseWidth": "Réduire à la mise en page centrée"
   },
   "contextMenu": {
     "edit": "Modifier",

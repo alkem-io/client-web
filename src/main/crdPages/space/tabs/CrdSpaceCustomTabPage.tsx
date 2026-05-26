@@ -1,14 +1,16 @@
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
-import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
+import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
+import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { SearchField } from '@/crd/forms/SearchField';
 import { Button } from '@/crd/primitives/button';
-import { Input } from '@/crd/primitives/input';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { mapCalloutsToListItems } from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
@@ -37,10 +39,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     tabDescription,
     flowStateForNewCallouts,
     loading,
-  } = useCrdCalloutList({
-    tabPosition: sectionIndex,
-    tagsFilter: tagsFilter.length > 0 ? tagsFilter : undefined,
-  });
+  } = useCrdCalloutList({ tabPosition: sectionIndex });
 
   // Fetch tags via the same GraphQL query the MUI version uses
   const { data: tagsData } = useCalloutsSetTagsQuery({
@@ -59,18 +58,39 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
-  // Free-text search layered on top of the server-side tag filter. Matches
-  // case-insensitively against the callout title, description and tags.
+  // Client-side filtering — search + tags, mirroring the Subspaces tab. Tags
+  // use AND (every selected tag must be present); search matches the title,
+  // description and tags case-insensitively. The feed and the left-sidebar
+  // index both render this filtered set, so they stay in sync.
   const trimmedQuery = searchQuery.trim().toLowerCase();
-  const visibleCallouts = trimmedQuery
-    ? callouts.filter(callout => {
-        const profile = callout.framing.profile;
-        const haystack = [profile.displayName, profile.description ?? '', ...(profile.tagset?.tags ?? [])]
-          .join(' ')
-          .toLowerCase();
-        return haystack.includes(trimmedQuery);
-      })
-    : callouts;
+  const visibleCallouts = callouts.filter(callout => {
+    const profile = callout.framing.profile;
+    const calloutTags = profile.tagset?.tags ?? [];
+    if (!tagsFilter.every(tag => calloutTags.includes(tag))) {
+      return false;
+    }
+    if (!trimmedQuery) {
+      return true;
+    }
+    const haystack = [profile.displayName, profile.description ?? '', ...calloutTags].join(' ').toLowerCase();
+    return haystack.includes(trimmedQuery);
+  });
+
+  const indexEntries = mapCalloutsToListItems(visibleCallouts, sectionIndex + 1, t);
+
+  // SPA-navigate to the callout (opens the detail dialog over this tab) rather
+  // than letting the native <a> do a full-page load that resets the tab.
+  const handleEntryClick = (id: string) => {
+    const href = indexEntries.find(entry => entry.id === id)?.href;
+    if (href) {
+      navigate(href);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setTagsFilter([]);
+  };
 
   return (
     <>
@@ -80,6 +100,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          knowledgeEntries={indexEntries}
+          onKnowledgeEntryClick={handleEntryClick}
         />
       </SpaceSidebarPortal>
 
@@ -96,26 +118,22 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           }
         />
 
-        <div className="relative">
-          <Search
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
-            aria-hidden="true"
-          />
-          <Input
-            type="search"
+        {/* Search filters the feed and the sidebar index; tags live behind the
+            filter button rather than on the board. */}
+        <div className="flex items-center gap-2">
+          <SearchField
             value={searchQuery}
-            onChange={event => setSearchQuery(event.target.value)}
+            onValueChange={setSearchQuery}
             placeholder={t('knowledge.searchPlaceholder')}
-            aria-label={t('knowledge.searchLabel')}
-            className="pl-9"
+            ariaLabel={t('knowledge.searchLabel')}
+            className="flex-1"
           />
+          <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         </div>
 
-        {allTags.length > 0 && (
-          <CollapsibleTagList tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
-        )}
+        <FilterResultsSummary searchTerm={searchQuery} tags={tagsFilter} onClear={handleClearFilters} />
 
-        {trimmedQuery && visibleCallouts.length === 0 ? (
+        {(trimmedQuery || tagsFilter.length > 0) && visibleCallouts.length === 0 ? (
           <p className="text-body text-muted-foreground">{t('knowledge.noResults')}</p>
         ) : (
           <CalloutListConnector callouts={visibleCallouts} calloutsSetId={calloutsSetId} loading={loading} />
