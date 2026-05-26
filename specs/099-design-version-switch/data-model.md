@@ -32,6 +32,7 @@ This is a frontend feature with one new persisted field on the server, one exist
 - Read with a try/catch wrapper to tolerate SSR or private-mode environments.
 
 **Domain meaning** *(updated 2026-05-26 — default flipped per FR-008b revision)*:
+
 | Stored value | `useCrdEnabled()` returns | Notes |
 |--------------|---------------------------|-------|
 | `'2'`        | `true`                    | User has opted into the new design |
@@ -56,6 +57,7 @@ The implementation (`useCrdEnabled.ts:56`) returns `readDesignVersionFromStorage
 - Read with try/catch to tolerate private-mode failures.
 
 **Domain meaning**:
+
 | Stored value | Modal visibility | Notes |
 |--------------|-------------------|-------|
 | `'1'`        | hidden            | User has already seen the modal on this device |

@@ -10,7 +10,9 @@ function readDismissedFromStorage(): boolean {
   try {
     return localStorage.getItem(UPGRADE_PROMPT_DISMISSED_KEY) === '1';
   } catch {
-    return false;
+    // Private-mode / blocked storage: treat as dismissed so we don't loop-show
+    // a modal we can't persist the dismissal of.
+    return true;
   }
 }
 

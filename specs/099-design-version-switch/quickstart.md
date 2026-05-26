@@ -103,8 +103,9 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 
 1. In Browser 1: sign in, toggle to CRD.
 2. In Browser 2 (different browser, not just incognito): sign in as the same user with a clean LS.
-3. **Expected**: The MUI shell renders briefly (LS unset → default = MUI). `CurrentUserLight` resolves with `designVersion: 2`, mismatch detected (LS is `null` vs. desired `2`), LS is set to `'2'`, exactly one reload fires.
-4. After the reload, the CRD shell renders. Total: one reconciliation reload, matching SC-003.
+3. **Expected** *(updated 2026-05-26 — default flipped)*: The CRD shell renders briefly (LS unset → default = CRD post-flip). `CurrentUserLight` resolves with `designVersion: 2`, sync detects LS is `null` vs. desired `2`, writes `'2'`, fires exactly one reload (still one reload to satisfy SC-003; the only difference vs. pre-flip is that the user sees CRD both before and after the reload instead of MUI → CRD).
+4. After the reload, the CRD shell renders directly from LS `'2'`. Total: one reconciliation reload, matching SC-003.
+5. **Inverse case**: in Browser 1 toggle to MUI; in Browser 2 sign in with clean LS. Browser 2 renders CRD briefly (default), sync detects mismatch with server `1`, writes `'1'`, reloads, MUI renders. Same one-reload behavior, different end-state design.
 
 ### Scenario K — migration-nudge modal (FR-019, FR-020, US4) *(added 2026-05-26)*
 
@@ -121,19 +122,19 @@ Same as D, in reverse. Confirm the MUI shell takes over and the switch in the MU
 
 1. With the menu open, Tab to the switch. Confirm focus ring is visible (both Radix and MUI switches).
 2. Press Space — switch flips. Press Enter on the menu trigger to close.
-3. With a screen reader (VoiceOver: `Cmd-F5`), confirm the switch announces its label and current state. Confirm the caption is read out as supplementary text.
+3. With a screen reader (VoiceOver: `Cmd-F5`), confirm the switch announces its label and current state. *(The previously documented separate caption row has been removed; the temporary-availability framing is folded into the label itself.)*
 
 ## Translation key sanity
 
 1. Switch language to Dutch (or any non-English supported by CRD).
 2. Reopen the user menu.
-3. **Expected**: the label and caption show their Dutch translations. (Spot-check one CRD locale; the MUI side is English-only in this repo until Crowdin syncs.)
+3. **Expected**: the toggle label shows its Dutch translation ("Nieuwe look (oud ontwerp tijdelijk beschikbaar)"). The migration-nudge modal, if it appears (Scenario K), also renders in Dutch. (Spot-check one CRD locale; the MUI side is English-only in this repo until Crowdin syncs.)
 
 ## Definition of Done
 
 All scenarios pass, `pnpm lint`, `pnpm vitest run`, and `pnpm build` are green, and the regenerated GraphQL artifacts are committed. PR description includes:
 - A short note that the platform default is now the **new design (CRD)** per clarification 2026-05-26 (superseding 2026-05-13). Anyone without an explicit preference lands on CRD; users who previously opted into MUI (`'1'` in LS or server) keep it.
 - A short note that the LS format moved from `alkemio-crd-enabled = 'true'/'false'` to `alkemio-design-version = '1'/'2'`, with a one-time migration on first load. **Added 2026-05-26**: a second per-device LS key `alkemio-design-version-upgrade-dismissed` gates the migration-nudge modal.
-- Screenshots of both menus showing the state-dependent switch label (the previously documented "caption" row has been removed).
+- Screenshots of both menus showing the single neutral switch label ("New look (old design available for a limited time)" in EN); the previously documented "caption" row has been removed, and the brief state-dependent variant was reverted in favor of this single label.
 - A screenshot of the migration-nudge modal (Scenario K) showing the CRD styling rendered over the MUI shell.
 - Confirmation that the legacy toggle UIs are removed.

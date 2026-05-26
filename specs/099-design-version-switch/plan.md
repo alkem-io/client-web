@@ -56,10 +56,10 @@ After the original 099 feature shipped (with the platform default deliberately k
 - Sentry info-logger at `src/core/logging/sentry/log.ts` (existing — `info(msg, { label, category })`)
 
 **Storage**:
-- Client cache: `localStorage` key `alkemio-design-version` (new — stores the version directly as `'1'` or `'2'`, mirroring the server). The previous boolean key `alkemio-crd-enabled` is migrated transparently on first load and then deleted; a TODO in `useCrdEnabled.ts` tracks removing the migration in a future release (see T025). Default-when-unset semantics are **unchanged** from today: unset → `useCrdEnabled()` returns `false` → old (MUI) design renders.
+- Client cache: `localStorage` key `alkemio-design-version` (new — stores the version directly as `'1'` or `'2'`, mirroring the server). The previous boolean key `alkemio-crd-enabled` is migrated transparently on first load and then deleted; a TODO in `useCrdEnabled.ts` tracks removing the migration in a future release (see T025). ~~Default-when-unset semantics are **unchanged** from today: unset → `useCrdEnabled()` returns `false` → old (MUI) design renders.~~ **Superseded 2026-05-26**: unset → `useCrdEnabled()` returns `true` → new (CRD) design renders. See "Subsequent Changes (2026-05-26)" above.
 - Server: `User.settings.designVersion` field on the GraphQL schema. **Currently absent** from generated `graphql-schema.ts` — appears after `pnpm codegen` against the deployed server (server work tracked at https://github.com/alkem-io/server/blob/139119695a4d2745c10e559cb18c19e8629d6bc2/specs/096-user-design-version/plan.md).
 
-**Testing**: Vitest with jsdom (`pnpm vitest run`). Add unit tests for the new sync/toggle hooks and a render test for both menu integrations. Existing tests for `useCrdEnabled` consumers (`CrdAwareErrorComponent.test.tsx`, `AncestorRedirectDispatcher.test.tsx`) must continue to pass — they mock `useCrdEnabled` directly. Default-when-unset semantics are unchanged (still MUI), so no implicit-default assumptions break.
+**Testing**: Vitest with jsdom (`pnpm vitest run`). Add unit tests for the new sync/toggle hooks and a render test for both menu integrations. Existing tests for `useCrdEnabled` consumers (`CrdAwareErrorComponent.test.tsx`, `AncestorRedirectDispatcher.test.tsx`) must continue to pass — they mock `useCrdEnabled` directly. ~~Default-when-unset semantics are unchanged (still MUI), so no implicit-default assumptions break.~~ **Superseded 2026-05-26**: default-when-unset is now CRD; consumer tests still mock `useCrdEnabled` so they remain stable, but a fresh JSDOM with no LS now resolves to `true` instead of `false`.
 
 **Target Platform**: Modern evergreen browsers per project rule (>90% caniuse coverage). Single-page React 19 app served by Vite.
 
@@ -90,7 +90,7 @@ After the original 099 feature shipped (with the platform default deliberately k
 | II. React 19 Concurrent UX Discipline | Pass | No `useMemo`/`useCallback` introduced. The reconciliation reload is a deliberate full-page navigation, not concurrent state mutation. The reload guard is a module-level boolean (not React state) so Strict Mode double-render is safe. |
 | III. GraphQL Contract Fidelity | Pass with action | `pnpm codegen` MUST run once the server deploys `designVersion`. PR carries the generated diff. We add `settings { designVersion }` to `CurrentUserLight.graphql` and rely on the existing `useUpdateUserSettingsMutation`. No raw `useQuery`. |
 | IV. State & Side-Effect Isolation | Pass | LocalStorage access is the single existing wrapper in `src/main/crdPages/useCrdEnabled.ts`, extended (not duplicated). `window.location.reload()` and `localStorage.setItem` are isolated to `useDesignVersionSync` and `useDesignVersionToggle` — components never call them directly. |
-| V. Experience Quality & Safeguards | Pass | Toggle leverages existing Radix `Switch` (CRD) and MUI `Switch` (legacy) — both keyboard-operable and screen-reader-labelled by default. We pair each switch with a textual label and a caption via `aria-describedby`. Adds Vitest coverage for new hooks. |
+| V. Experience Quality & Safeguards | Pass | Toggle leverages existing Radix `Switch` (CRD) and MUI `Switch` (legacy) — both keyboard-operable and screen-reader-labelled by default. ~~We pair each switch with a textual label and a caption via `aria-describedby`.~~ **Superseded 2026-05-26**: the `caption` key was removed; the switch is now a single neutral label with no separate caption. Adds Vitest coverage for new hooks. |
 
 **Architecture Standards** (constitution §Architecture):
 - §1 directory mapping — respected (domain for data, `src/main/crdPages` for orchestration, presentation in `src/main/ui` + `src/crd/layouts`).
@@ -103,7 +103,7 @@ After the original 099 feature shipped (with the platform default deliberately k
 - §1 — this plan documents the GraphQL operations touched (`CurrentUserLight`, `updateUserSettings`) and the React 19 features (no manual memo, synchronous reconciliation hook). Constitution Check explicit above.
 - §2 — `pnpm codegen` step is in the verification checklist and `quickstart.md`.
 - §3 — domain-first: schema fragment → context exposure → app-shell hooks → menu integrations → cleanup of legacy toggles.
-- §5 — root cause analysis: the previous duplicated LS reads across three files is the actual reason for the centralization work, not a workaround. Per clarification 2026-05-13 (superseding 2026-05-12 Q3) the LS-unset default is intentionally kept as it is today (old design); flipping it to the new design is deferred to a separate, later migration milestone.
+- §5 — root cause analysis: the previous duplicated LS reads across three files is the actual reason for the centralization work, not a workaround. ~~Per clarification 2026-05-13 (superseding 2026-05-12 Q3) the LS-unset default is intentionally kept as it is today (old design); flipping it to the new design is deferred to a separate, later migration milestone.~~ **Superseded 2026-05-26**: the LS-unset default has been flipped to CRD; see clarification 2026-05-26 in `spec.md` and "Subsequent Changes" above.
 
 **No constitution violations to justify in the Complexity Tracking table.**
 
@@ -152,7 +152,7 @@ src/
 │       └── domain/layout/AdminLayoutPage.tsx        # Remove legacy toggle (FR-011)
 ├── main/
 │   ├── crdPages/
-│   │   ├── useCrdEnabled.ts                         # Extended: versioned LS helpers + constants (default unchanged)
+│   │   ├── useCrdEnabled.ts                         # Extended: versioned LS helpers + constants (default flipped to CRD on 2026-05-26)
 │   │   ├── useDesignVersionSync.ts                  # NEW — reconciliation hook (mounted in root.tsx)
 │   │   ├── useDesignVersionToggle.ts                # NEW — toggle hook (mutation + LS + reload + log)
 │   │   └── topLevelPages/userPages/settings/settings/

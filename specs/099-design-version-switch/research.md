@@ -99,7 +99,7 @@ logInfo(`Design version changed to "${enabled ? '2' : '1'}"`, {
 
 **Decision**: A one-shot CRD-styled dialog mounted at the app shell (in `src/root.tsx`, next to `DesignVersionSyncMount`, outside `TopLevelRoutes`) gates on a 5-part predicate:
 
-```
+```ts
 isAuthenticated && !loadingMe && designVersion === DESIGN_VERSION_OLD && !isDismissed && toggle.isVisible
 ```
 
