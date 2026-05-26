@@ -47,7 +47,9 @@ export function CalloutListView({ items, onItemClick, className }: CalloutListVi
             <a
               href={item.href}
               onClick={event => {
+                // Without a custom handler, fall through to native `href` navigation.
                 if (
+                  !onItemClick ||
                   event.defaultPrevented ||
                   event.button !== 0 ||
                   event.metaKey ||
@@ -58,7 +60,7 @@ export function CalloutListView({ items, onItemClick, className }: CalloutListVi
                   return;
                 }
                 event.preventDefault();
-                onItemClick?.(item.id);
+                onItemClick(item.id);
               }}
               className="group flex items-center gap-2.5 w-full px-3 py-2 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >

@@ -125,9 +125,10 @@ export function SpaceSubspacesList({
             setShowAll(false);
           }}
           placeholder={t('subspaces.search')}
+          ariaLabel={t('subspaces.search')}
           className="flex-1"
         />
-        <TagFilterPopover tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />
+        {!disableFilters && <TagFilterPopover tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
       </div>
 
       {/* Status filter pills — only shown when subspaces have mixed statuses */}
@@ -162,10 +163,12 @@ export function SpaceSubspacesList({
       {/* Active search/tag filters summary */}
       <FilterResultsSummary
         searchTerm={searchQuery}
-        tags={selectedTags}
+        tags={disableFilters ? undefined : selectedTags}
         onClear={() => {
           setSearchQuery('');
-          setSelectedTags([]);
+          if (!disableFilters) {
+            setSelectedTags([]);
+          }
           setShowAll(false);
         }}
       />

@@ -49,7 +49,9 @@ export function KnowledgeIndexSection({ entries, onEntryClick, className }: Know
               <a
                 href={entry.href}
                 onClick={event => {
+                  // Without a custom handler, fall through to native `href` navigation.
                   if (
+                    !onEntryClick ||
                     event.defaultPrevented ||
                     event.button !== 0 ||
                     event.metaKey ||
@@ -60,7 +62,7 @@ export function KnowledgeIndexSection({ entries, onEntryClick, className }: Know
                     return;
                   }
                   event.preventDefault();
-                  onEntryClick?.(entry.id);
+                  onEntryClick(entry.id);
                 }}
                 className="group flex items-center gap-2.5 w-full px-3 py-2 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
