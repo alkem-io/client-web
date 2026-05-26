@@ -52,7 +52,13 @@ export function WhiteboardSaveStatus({ saved, message, dialogTitle, className }:
       </TooltipProvider>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent closeLabel={t('editor.saveStatus.close')} className="sm:max-w-md">
+        {/* `z-[70]` (content + overlay): this dialog opens on top of the whiteboard editor shell
+            (`z-[60]`), so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
+        <DialogContent
+          closeLabel={t('editor.saveStatus.close')}
+          className="z-[70] sm:max-w-md"
+          overlayClassName="z-[70]"
+        >
           <DialogHeader>
             <DialogTitle className={cn(!dialogTitle && 'sr-only')}>
               {dialogTitle ?? t('editor.saveStatus.label')}

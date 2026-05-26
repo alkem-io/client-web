@@ -157,7 +157,7 @@
     - **CRD component** `WhiteboardSaveStatus` (presentational): cloud icon (`CloudCheck` saved / `CloudOff` error, error tinted `text-destructive`) as a `ghost` / `size-icon` button; hover `Tooltip`; click opens a CRD `Dialog` (built-in close X + outside-click/Escape dismissal). Props per data-model `WhiteboardSaveStatusProps` (`saved`, `message`, `dialogTitle?`). aria-labels via `useTranslation('crd-whiteboard')` (`editor.saveStatus.label`, `editor.saveStatus.close`). Saved-state dialog uses an sr-only title; error-state shows a visible "Warning" title. Zero MUI / domain imports.
     - **Integration wrapper** `CrdWhiteboardSaveStatus` (`crdPages`): owns the 500ms interval that re-formats elapsed time via the domain `formatTimeElapsed`; composes `message` (`pages.whiteboard.last-saved` / `pages.whiteboard.unsuccessful-save` `<Trans>`) and `dialogTitle` (`common.warning`). Props `{ isSaved, date }` — 1:1 with the MUI `SaveRequestIndicatorIcon`.
     - Swap `SaveRequestIndicatorIcon` → `CrdWhiteboardSaveStatus` in `CrdWhiteboardView` and `CrdPublicWhiteboardPage`. The MUI component is retained for `WhiteboardView`, MUI `PublicWhiteboardPage`, and `UserPresencing`.
-  - **Acceptance**: In CRD whiteboards the save status renders a CRD cloud icon; hover shows the elapsed-time tooltip; click opens a CRD dialog that closes via its X and via outside-click in both saved and error states; elapsed time updates live. MUI surfaces unchanged. Zero MUI/domain imports in the CRD component; `tsc` + `biome` clean; `headerActions.spec.tsx` (MUI path) still passes.
+  - **Acceptance**: In CRD whiteboards the save status renders a CRD cloud icon; hover shows the elapsed-time tooltip; click opens a CRD dialog that closes via its X and via outside-click in both saved and error states; elapsed time updates live. The dialog renders at `z-[70]` (content + overlay) so it stacks above the editor shell (FR-WB-011a). MUI surfaces unchanged. Zero MUI/domain imports in the CRD component; `tsc` + `biome` clean; `headerActions.spec.tsx` (MUI path) still passes.
   - **Dependencies**: T3, T12
 
 **Checkpoint**: Opening a whiteboard from a CRD space page shows a CRD-styled editor shell. Excalidraw canvas works normally. All header actions and footer states render correctly. Real-time collaboration works. Delete, display name edit, template import all functional.
@@ -202,14 +202,14 @@
   - **File**: new
   - **Description**: Preview mode selector dialog. CRD Dialog primitive. Renders 3 mode buttons as bordered cards: each with lucide-react icon (`Wand2`/`Crop`/`Lock`), title, description. Selected mode has `border-primary`. Loading spinner replaces icon when saving. Close button in header. Uses `useTranslation('crd-whiteboard')` for all text.
   - **Props**: `open`, `onClose`, `selectedMode: 'auto' | 'custom' | 'fixed'`, `onSelectAuto`, `onSelectCustom`, `onSelectFixed`, `loadingAuto?`, `loadingCrop?`
-  - **Acceptance**: 3 modes render with correct icons; selected state highlighted; loading states work; zero MUI imports
+  - **Acceptance**: 3 modes render with correct icons; selected state highlighted; loading states work; zero MUI imports; dialog renders at `z-[70]` (content + overlay) so it stacks above the editor shell (FR-WB-011a)
   - **Dependencies**: T3
 
 - [X] T18 [P] Create `src/crd/components/whiteboard/PreviewCropDialog.tsx`
   - **File**: new
   - **Description**: Image crop/zoom/pan dialog. CRD Dialog primitive. Content area: `react-image-crop` (`ReactCrop`) component wrapping an `<img>` rendered from a `Blob` prop (via `URL.createObjectURL`). Zoom: CRD Slider primitive (or `<input type="range">`) with 1x-8x range. Pan: pointer events on image container (pointerdown/move/up for drag). Buttons: Reset (`RotateCcw` icon), Cancel, Confirm (primary). Aspect ratio constraint from props. Internal state for crop region, zoom scale, pan offset.
   - **Props**: `open`, `onClose`, `title?`, `previewImage?: Blob`, `initialCrop?`, `aspectRatio: number`, `onCropSave: (crop) => void`
-  - **Acceptance**: Image renders from Blob; crop overlay enforces aspect ratio; zoom and pan work; Reset restores default crop; Confirm passes coordinates to callback; zero MUI imports; no Excalidraw imports
+  - **Acceptance**: Image renders from Blob; crop overlay enforces aspect ratio; zoom and pan work; Reset restores default crop; Confirm passes coordinates to callback; zero MUI imports; no Excalidraw imports; dialog renders at `z-[70]` (content + overlay) so it stacks above the editor shell (FR-WB-011a)
   - **Dependencies**: T3
 
 - [X] T19 Add i18n keys to `src/crd/i18n/whiteboard/whiteboard.en.json` under `preview.*`: `settings.title`, `settings.subtitle`, `modes.auto.title`, `modes.auto.description`, `modes.custom.title`, `modes.custom.description`, `modes.fixed.title`, `modes.fixed.description`, `crop.previewArea`, `crop.reset`, `crop.cancel`, `crop.confirm`; mirror to `whiteboard.{bg,de,es,fr,nl}.json`
