@@ -60,6 +60,10 @@
       }
     }
   },
+  "disconnected": {
+    "reconnect": "Reconnect",
+    "close": "Close"
+  },
   "preview": {
     "settings": {
       "title": "Preview Settings",

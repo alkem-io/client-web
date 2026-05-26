@@ -160,6 +160,15 @@
   - **Acceptance**: In CRD whiteboards the save status renders a CRD cloud icon; hover shows the elapsed-time tooltip; click opens a CRD dialog that closes via its X and via outside-click in both saved and error states; elapsed time updates live. The dialog renders at `z-[70]` (content + overlay) so it stacks above the editor shell (FR-WB-011a). MUI surfaces unchanged. Zero MUI/domain imports in the CRD component; `tsc` + `biome` clean; `headerActions.spec.tsx` (MUI path) still passes.
   - **Dependencies**: T3, T12
 
+- [X] T13b Create CRD whiteboard "disconnected" dialog (FR-WB-012b) — replaces the MUI collaboration-stopped notice for CRD whiteboards
+  - **Files**: `src/crd/components/whiteboard/WhiteboardDisconnectedDialog.tsx` (new), `src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx` (add `renderDisconnectNotice` slot + `DisconnectNoticeRenderProps`), `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx` (wire the slot), `src/crd/i18n/whiteboard/whiteboard.{en,es,nl,bg,de,fr}.json` (add `disconnected.reconnect` + `disconnected.close`)
+  - **Description**:
+    - **CRD component** `WhiteboardDisconnectedDialog` (presentational): CRD `Dialog` at `z-[70]` (content + overlay, FR-WB-011a). Title + online/offline message + optional last-saved line (all `ReactNode` props), plus a single Reconnect `Button` that appends the live countdown `(Xs)` and shows a `Loader2` spinner + `aria-busy` while reconnecting. **No "Ok" button** — the built-in `Dialog` close (X) / outside-click / Escape dismiss it. Owns only `disconnected.reconnect` / `disconnected.close` via `crd-whiteboard`.
+    - **Shared wrapper**: add optional `renderDisconnectNotice?: (props: DisconnectNoticeRenderProps) => ReactNode` to `CollaborativeExcalidrawWrapper`. When provided, render it instead of the built-in MUI dialog; the wrapper still owns the notice state (open, `autoReconnectSeconds` derived from `autoReconnectTime - time`, `isOnline`, `connecting`, `lastSuccessfulSavedDate`, reconnect/close handlers). When omitted, the MUI dialog renders unchanged.
+    - **Integration**: `CrdWhiteboardDialog` passes `renderDisconnectNotice`, resolving title/message/last-saved from the main `translation` namespace (`pages.whiteboard.whiteboardDisconnected.*`, `formatTimeElapsed`) and rendering `WhiteboardDisconnectedDialog`.
+  - **Acceptance**: On collaboration drop in a CRD whiteboard, a CRD dialog shows with the Reconnect button + live countdown and no Ok button; closing via X / outside-click / Escape dismisses it; reconnect re-establishes collaboration. MUI whiteboard surfaces (`WhiteboardDialog`, MUI `PublicWhiteboardPage`) still show the built-in MUI dialog (no `renderDisconnectNotice`). `tsc` + `biome` clean; `headerActions.spec.tsx` still passes.
+  - **Dependencies**: T3, T12
+
 **Checkpoint**: Opening a whiteboard from a CRD space page shows a CRD-styled editor shell. Excalidraw canvas works normally. All header actions and footer states render correctly. Real-time collaboration works. Delete, display name edit, template import all functional.
 
 ---
@@ -338,6 +347,7 @@ Phase 3 — Editor Shell (parallel, then sequential):
   T10, T11 ──> T12 (CrdWhiteboardDialog)
   T12 ──> T13 (CrdWhiteboardView)
   T3, T12 ──> T13a (CRD save-status indicator — WhiteboardSaveStatus + CrdWhiteboardSaveStatus)
+  T3, T12 ──> T13b (CRD disconnect dialog — WhiteboardDisconnectedDialog + wrapper renderDisconnectNotice slot)
 
 Phase 4 — Single-User (after shell):
   T3 ──> T15 (WhiteboardSaveFooter)

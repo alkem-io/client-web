@@ -101,6 +101,10 @@ Single-user editor footer with Delete (left) and Save (right, primary variant wi
 
 Header save-status indicator: a cloud icon (`CloudCheck` success / `CloudOff` error) with a hover tooltip and a click-to-open detail dialog showing the last-saved time or a save-error warning. The dialog ships the CRD `Dialog` close (X) button and dismisses on outside-click/Escape. Derived text (`message`, `dialogTitle`) arrives as props; the live elapsed-time formatting lives in the `CrdWhiteboardSaveStatus` integration wrapper. Replaces the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces.
 
+### WhiteboardDisconnectedDialog (`whiteboard/WhiteboardDisconnectedDialog.tsx`)
+
+CRD "whiteboard disconnected / collaboration stopped" dialog. Title + online/offline message + optional last-saved line (all props), plus a single Reconnect button that shows the live auto-reconnect countdown `(Xs)` and a spinner while reconnecting. No "Ok" button — dismissal is the `Dialog`'s built-in close (X) / outside-click / Escape. Rendered at `z-[70]` to stack over the editor shell. Wired via the shared `CollaborativeExcalidrawWrapper`'s optional `renderDisconnectNotice` slot; replaces the MUI notice in CRD whiteboards.
+
 ### PreviewSettingsDialog (`whiteboard/PreviewSettingsDialog.tsx`)
 
 Preview mode selector dialog with 3 mode buttons (Auto, Custom, Fixed). Each rendered as a bordered card with lucide-react icon, title, and description. Selected mode highlighted with primary border.

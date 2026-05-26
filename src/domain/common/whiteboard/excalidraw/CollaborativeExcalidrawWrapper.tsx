@@ -79,6 +79,18 @@ interface CollaborativeExcalidrawWrapperProvided extends CollabState {
   restartCollaboration: () => void;
 }
 
+/** State handed to a custom "collaboration stopped" notice renderer (see `renderDisconnectNotice`). */
+export type DisconnectNoticeRenderProps = {
+  open: boolean;
+  isOnline: boolean;
+  connecting: boolean;
+  /** Seconds until auto-reconnect, or `null` when no countdown is active (offline / not scheduled). */
+  autoReconnectSeconds: number | null;
+  lastSuccessfulSavedDate: Date | undefined;
+  onReconnect: () => void;
+  onClose: () => void;
+};
+
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options: WhiteboardWhiteboardOptions;
@@ -86,6 +98,13 @@ export interface WhiteboardWhiteboardProps {
   events?: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
   children: (props: PropsWithChildren<CollaborativeExcalidrawWrapperProvided>) => React.ReactNode;
+  /**
+   * Optional render-prop for the "collaboration stopped" notice. When provided (CRD consumers), it
+   * replaces the built-in MUI dialog so the notice renders with CRD chrome. MUI consumers omit it and
+   * keep the built-in MUI dialog. The wrapper still owns all the notice state (open, countdown,
+   * reconnect) and hands it to the renderer.
+   */
+  renderDisconnectNotice?: (props: DisconnectNoticeRenderProps) => React.ReactNode;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
@@ -98,6 +117,7 @@ const CollaborativeExcalidrawWrapper = ({
   options,
   collabApiRef,
   children: renderChildren,
+  renderDisconnectNotice,
 }: WhiteboardWhiteboardProps) => {
   const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -301,31 +321,46 @@ const CollaborativeExcalidrawWrapper = ({
         restartCollaboration,
         isReadOnly,
       })}
-      <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
-        <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
-        <DialogContent>
-          {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
-          {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
-          {lastSuccessfulSavedDate && (
-            <Text>
-              {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
-              })}
-            </Text>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
-            Reconnect
-            <Caption textTransform="none">
-              {autoReconnectTime !== null &&
-                autoReconnectTime - time > 0 &&
-                ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
-            </Caption>
-          </Button>
-          <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
-        </DialogActions>
-      </Dialog>
+      {renderDisconnectNotice ? (
+        renderDisconnectNotice({
+          open: collaborationStoppedNoticeOpen,
+          isOnline,
+          connecting,
+          autoReconnectSeconds:
+            autoReconnectTime !== null && autoReconnectTime - time > 0
+              ? Math.ceil((autoReconnectTime - time) / 1000)
+              : null,
+          lastSuccessfulSavedDate,
+          onReconnect: restartCollaboration,
+          onClose: () => setCollaborationStoppedNoticeOpen(false),
+        })
+      ) : (
+        <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
+          <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
+          <DialogContent>
+            {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
+            {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
+            {lastSuccessfulSavedDate && (
+              <Text>
+                {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                  lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
+                })}
+              </Text>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
+              Reconnect
+              <Caption textTransform="none">
+                {autoReconnectTime !== null &&
+                  autoReconnectTime - time > 0 &&
+                  ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
+              </Caption>
+            </Button>
+            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };

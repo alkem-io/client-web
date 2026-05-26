@@ -60,6 +60,10 @@
       }
     }
   },
+  "disconnected": {
+    "reconnect": "Свържи се отново",
+    "close": "Затвори"
+  },
   "preview": {
     "settings": {
       "title": "Настройки за визуализация",

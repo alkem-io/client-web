@@ -60,6 +60,10 @@
       }
     }
   },
+  "disconnected": {
+    "reconnect": "Opnieuw verbinden",
+    "close": "Sluiten"
+  },
   "preview": {
     "settings": {
       "title": "Voorbeeldinstellingen",
