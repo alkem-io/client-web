@@ -23,6 +23,7 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { DesignVersionUpgradePromptMount } from '@/main/crdPages/DesignVersionUpgradePromptMount';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
@@ -163,6 +164,7 @@ const Root: FC = () => {
                                         <NavigationHistoryTracker />
                                         <ApmUserSetter />
                                         <DesignVersionSyncMount />
+                                        <DesignVersionUpgradePromptMount />
                                         <ScrollToTop />
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />
