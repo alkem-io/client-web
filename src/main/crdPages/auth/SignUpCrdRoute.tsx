@@ -7,11 +7,11 @@ import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript'
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
-import { EmailVerificationRequiredCard } from '@/crd/components/auth/EmailVerificationRequiredCard';
 import { SignUpCard } from '@/crd/components/auth/SignUpCard';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
+import { CrdEmailVerificationRequiredPage } from './CrdEmailVerificationRequiredPage';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger } from './passkeyTrigger';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
@@ -77,19 +77,6 @@ export function SignUpCrdRoute() {
   return <CrdSignUpPage />;
 }
 
-/** `/registration/success` — registration complete, "verify your email" message. */
-function CrdRegistrationSuccessPage() {
-  useTransactionScope({ type: 'authentication' });
-  const { t } = useTranslation();
-  usePageTitle(t('pages.titles.signUp'));
-
-  return (
-    <AuthShellWrapper>
-      <EmailVerificationRequiredCard signInHref={buildLoginUrl()} />
-    </AuthShellWrapper>
-  );
-}
-
 /** CRD `/registration` route — the full Kratos registration flow + success handler. */
 export function RegistrationCrdRoute() {
   return (
@@ -102,7 +89,7 @@ export function RegistrationCrdRoute() {
           </NotAuthenticatedRoute>
         }
       />
-      <Route path="success" element={<CrdRegistrationSuccessPage />} />
+      <Route path="success" element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.titles.signUp" />} />
     </Routes>
   );
 }

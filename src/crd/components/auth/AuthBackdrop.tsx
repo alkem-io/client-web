@@ -46,7 +46,7 @@ export function AuthBackdrop() {
             {/* Sidebar */}
             <div className="col-span-2 space-y-1">
               {SIDEBAR_ROWS.map(row => (
-                <div key={row.w} className="flex items-center gap-2 py-2">
+                <div key={`${row.w}-${row.badge}`} className="flex items-center gap-2 py-2">
                   <div className="size-4 shrink-0 rounded" style={{ background: 'rgba(29,56,74,0.18)' }} />
                   <div className="h-2.5 rounded" style={{ background: 'rgba(29,56,74,0.1)', width: row.w }} />
                   {row.badge ? (
@@ -110,7 +110,7 @@ export function AuthBackdrop() {
                 <div className="col-span-4 rounded-md border border-border bg-card p-5">
                   <div className="mb-5 h-3.5 w-32 rounded" style={{ background: 'rgba(29,56,74,0.12)' }} />
                   <div className="space-y-5">
-                    {RIGHT_FEED.map((w, n) => (
+                    {RIGHT_FEED.map(w => (
                       <div key={`r-${w}`} className="flex items-start gap-3">
                         <div className="size-9 shrink-0 rounded-full" style={{ background: 'hsl(210, 22%, 78%)' }} />
                         <div className="flex-1 space-y-1.5 pt-1">
@@ -130,13 +130,14 @@ export function AuthBackdrop() {
         </div>
       </div>
 
-      {/* Frosted-glass overlay — blurs and pales the dashboard replica behind it */}
+      {/* Frosted-glass overlay — blurs and pales the dashboard replica behind it.
+          `backdropFilter` has no Tailwind equivalent; the bg-white/55 tint moves
+          to a Tailwind class per the CRD styling rule. */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-white/55"
         style={{
           backdropFilter: 'blur(16px) saturate(1.3)',
           WebkitBackdropFilter: 'blur(16px) saturate(1.3)',
-          background: 'rgba(255,255,255,0.55)',
         }}
       />
     </div>

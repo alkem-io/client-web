@@ -13,7 +13,9 @@
     "haveAccount": "Have an account?",
     "signIn": "Sign in",
     "intro": "Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.",
-    "acceptTerms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>."
+    "acceptTerms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
+    "openTerms": "Open Terms of Use in a new tab",
+    "openPrivacy": "Open Privacy Policy in a new tab"
   },
   "recovery": {
     "title": "Password recovery",

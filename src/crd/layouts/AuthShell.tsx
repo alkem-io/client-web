@@ -16,16 +16,13 @@ export type AuthShellProps = {
   footerLinks?: CrdFooterLinks;
   /** Footer "Support" entry handler. */
   onSupportClick?: () => void;
-
-  /** Optional floating help button, pinned bottom-right. */
-  helpButton?: ReactNode;
 };
 
 /**
  * Full-page shell shared by every CRD authentication screen: the frosted
  * dashboard backdrop, a vertically-centred / right-aligned card slot
- * (centred on small viewports), the shared CRD footer, and an optional
- * floating help button. Purely presentational — behaviour arrives via props.
+ * (centred on small viewports), and the shared CRD footer. Purely
+ * presentational — behaviour arrives via props.
  */
 export function AuthShell({
   children,
@@ -34,7 +31,6 @@ export function AuthShell({
   onLanguageChange,
   footerLinks,
   onSupportClick,
-  helpButton,
 }: AuthShellProps) {
   return (
     <div className="crd-root relative flex min-h-screen flex-col">
@@ -54,8 +50,6 @@ export function AuthShell({
           className="border-t-0 bg-transparent"
         />
       </div>
-
-      {helpButton ? <div className="fixed bottom-6 right-6 z-50">{helpButton}</div> : null}
     </div>
   );
 }

@@ -13,7 +13,9 @@
     "haveAccount": "Schon ein Konto?",
     "signIn": "Anmelden",
     "intro": "Alkemio dient dem Wohl der Gesellschaft. Bitte lies und akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>, bevor du fortfährst.",
-    "acceptTerms": "Ich akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>."
+    "acceptTerms": "Ich akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>.",
+    "openTerms": "Nutzungsbedingungen in einem neuen Tab öffnen",
+    "openPrivacy": "Datenschutzrichtlinie in einem neuen Tab öffnen"
   },
   "recovery": {
     "title": "Passwort-Wiederherstellung",

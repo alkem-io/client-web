@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
+import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
@@ -32,23 +33,22 @@ export function SignUpCard({
 }: SignUpCardProps) {
   const { t } = useTranslation('crd-auth');
 
-  const policyLink = (href: string) => (
+  const policyLink = (href: string, ariaLabel: string) => (
     // biome-ignore lint/a11y/useAnchorContent: <Trans> injects the link text.
-    <a href={href} target="_blank" rel="noreferrer" className="font-medium underline" />
+    <a href={href} target="_blank" rel="noreferrer" aria-label={ariaLabel} className="text-body-emphasis underline" />
   );
 
   return (
-    <div className="rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-      <div className="mb-6">
+    <AuthCard
+      title={t('signUp.title')}
+      header={
         <AuthCardHeader
           contextLabel={t('signUp.haveAccount')}
           contextLinkLabel={t('signUp.signIn')}
           contextLinkHref={signInHref}
         />
-      </div>
-
-      <h1 className="text-hero mb-6 text-foreground">{t('signUp.title')}</h1>
-
+      }
+    >
       {isLoading || !descriptor ? (
         <output aria-label={t('loading')} className="flex w-full flex-col gap-5">
           <Skeleton className="h-16 w-full" />
@@ -66,7 +66,10 @@ export function SignUpCard({
                 <Trans
                   t={t}
                   i18nKey="signUp.intro"
-                  components={{ terms: policyLink(termsOfUseHref), privacy: policyLink(privacyPolicyHref) }}
+                  components={{
+                    terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
+                    privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
+                  }}
                 />
               </p>
               {descriptor.acceptTerms ? (
@@ -80,7 +83,10 @@ export function SignUpCard({
                     <Trans
                       t={t}
                       i18nKey="signUp.acceptTerms"
-                      components={{ terms: policyLink(termsOfUseHref), privacy: policyLink(privacyPolicyHref) }}
+                      components={{
+                        terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
+                        privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
+                      }}
                     />
                   }
                 />
@@ -91,6 +97,6 @@ export function SignUpCard({
           onPasskeyTrigger={onPasskeyTrigger}
         />
       )}
-    </div>
+    </AuthCard>
   );
 }

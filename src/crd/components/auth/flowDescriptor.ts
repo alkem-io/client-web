@@ -103,10 +103,6 @@ export type KratosPasskeyButtonNode = {
   trigger: KratosPasskeyTrigger;
 };
 
-export type KratosTextNode = {
-  text: string;
-};
-
 export type KratosAnchorNode = {
   /** Destination the link navigates to (e.g. the post-verification "continue"). */
   href: string;
@@ -142,7 +138,6 @@ export type KratosFlowDescriptor = {
     submit: KratosSubmitButtonNode[];
     oidc: KratosOidcButtonNode[];
     passkey: KratosPasskeyButtonNode[];
-    passkeyCredentials: KratosTextNode[];
     /** Anchor links (e.g. the post-verification "Continue" button). */
     anchors: KratosAnchorNode[];
   };

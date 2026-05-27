@@ -67,7 +67,7 @@ export function CrdKratosFlow({
   // clicking Microsoft can't submit an unchecked-terms form which Kratos would
   // otherwise reject as a no-op flow re-render.
   const formSubmitDisabled = submitDisabled || !allRequiredFilled;
-  const alternativeSubmitDisabled = Boolean(submitDisabled);
+  const alternativeSubmitDisabled = !!submitDisabled;
 
   const fieldLabel = (node: KratosTextInputNode): string => {
     if (EMAIL_FIELD_NAMES.has(node.name)) return t('fields.email');
@@ -150,14 +150,18 @@ export function CrdKratosFlow({
           name={node.name}
           value={node.value}
           disabled={formSubmitDisabled || disableInputs || node.disabled}
-          className="h-12 w-full font-semibold uppercase tracking-wider"
+          className="text-control h-12 w-full font-semibold uppercase tracking-wider"
         >
           {node.label}
         </Button>
       ))}
 
       {groups.anchors.map(anchor => (
-        <Button key={anchor.href} asChild={true} className="h-12 w-full font-semibold uppercase tracking-wider">
+        <Button
+          key={anchor.href}
+          asChild={true}
+          className="text-control h-12 w-full font-semibold uppercase tracking-wider"
+        >
           <a href={anchor.href}>{anchor.label}</a>
         </Button>
       ))}
@@ -177,17 +181,28 @@ export function CrdKratosFlow({
               onClick={() => onPasskeyTrigger?.(node.trigger)}
             />
           ))}
-          {groups.oidc.map(node => (
-            <SocialProviderButton
-              key={`oidc-${node.value}`}
-              label={node.label || node.customisation?.providerKey || t('providers.fallback')}
-              iconSrc={node.customisation?.iconSrc}
-              formFieldName={node.name}
-              formFieldValue={node.value}
-              disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
-              onClick={() => onProviderClick?.(node.value)}
-            />
-          ))}
+          {groups.oidc.map(node => {
+            // Brand-cased name from the `crd-auth` namespace (e.g. "GitHub")
+            // — Kratos sends provider keys lower-cased, and the prototype's
+            // node label is the lower-cased key too. Falls back to the
+            // Kratos-supplied label, then to the generic "Other provider".
+            const brand = t(`providers.${node.value}` as 'providers.fallback', {
+              defaultValue: node.label || node.customisation?.providerKey || '',
+            });
+            const tooltip = brand || t('providers.fallback');
+            return (
+              <SocialProviderButton
+                key={`oidc-${node.value}`}
+                label={tooltip}
+                ariaLabel={t('providers.connectWith', { provider: tooltip })}
+                iconSrc={node.customisation?.iconSrc}
+                formFieldName={node.name}
+                formFieldValue={node.value}
+                disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
+                onClick={() => onProviderClick?.(node.value)}
+              />
+            );
+          })}
         </div>
       ) : null}
     </form>

@@ -13,7 +13,9 @@
     "haveAccount": "¿Ya tienes cuenta?",
     "signIn": "Iniciar sesión",
     "intro": "Alkemio está diseñado para beneficiar a la sociedad. Lee y acepta las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy> antes de continuar.",
-    "acceptTerms": "Acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>."
+    "acceptTerms": "Acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>.",
+    "openTerms": "Abrir las Condiciones de uso en una pestaña nueva",
+    "openPrivacy": "Abrir la Política de privacidad en una pestaña nueva"
   },
   "recovery": {
     "title": "Recuperación de contraseña",

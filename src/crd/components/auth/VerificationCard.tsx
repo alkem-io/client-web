@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor } from '@/crd/components/auth/flowDescriptor';
@@ -15,17 +16,16 @@ export function VerificationCard({ descriptor, signInHref, isLoading }: Verifica
   const { t } = useTranslation('crd-auth');
 
   return (
-    <div className="rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-      <div className="mb-6">
+    <AuthCard
+      title={t('verification.title')}
+      header={
         <AuthCardHeader
           contextLabel={t('signUp.haveAccount')}
           contextLinkLabel={t('signUp.signIn')}
           contextLinkHref={signInHref}
         />
-      </div>
-
-      <h1 className="text-hero mb-6 text-foreground">{t('verification.title')}</h1>
-
+      }
+    >
       {isLoading || !descriptor ? (
         <output aria-label={t('loading')} className="flex w-full flex-col gap-5">
           <Skeleton className="h-14 w-full" />
@@ -44,6 +44,6 @@ export function VerificationCard({ descriptor, signInHref, isLoading }: Verifica
           }
         />
       )}
-    </div>
+    </AuthCard>
   );
 }

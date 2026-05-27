@@ -1,20 +1,12 @@
 import type { ReactNode } from 'react';
 import { Trans, type TransProps, useTranslation } from 'react-i18next';
 import { kratosMessageTranslationKeys } from '@/core/auth/authentication/components/Kratos/messages';
+import { socialProviderCustomizations } from '@/core/auth/authentication/socialProviderCustomizations';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 
 /** HTML tags Alkemio's Kratos copy uses; mirrors the MUI `useKratosT` mapping. */
 const TRANS_COMPONENTS = { strong: <strong />, li: <li />, br: <br /> };
-
-/** Kratos sends OIDC provider keys lower-cased; show them with their brand casing. */
-const PROVIDER_DISPLAY_NAMES: Record<string, string> = {
-  github: 'GitHub',
-  linkedin: 'LinkedIn',
-  microsoft: 'Microsoft',
-  apple: 'Apple',
-  cleverbase: 'Cleverbase',
-};
 
 const MESSAGE_CODE_CLAIM_MISSING = 4000002;
 
@@ -36,12 +28,14 @@ const PROPERTY_TO_LABEL_KEY: Record<string, string> = {
   password: 'kratos.fields.Password',
 };
 
-/** Replaces a lower-cased `context.provider` with its brand-cased display name. */
+/** Replaces a lower-cased `context.provider` with its brand-cased display name
+ *  from `socialProviderCustomizations` (the single source of truth). */
 function withProviderDisplayName(context: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
   if (typeof context?.provider !== 'string') {
     return context;
   }
-  return { ...context, provider: PROVIDER_DISPLAY_NAMES[context.provider.toLowerCase()] ?? context.provider };
+  const displayName = socialProviderCustomizations[context.provider.toLowerCase()]?.displayName;
+  return { ...context, provider: displayName ?? context.provider };
 }
 
 /**
@@ -107,12 +101,19 @@ export function useKratosMessageCopy() {
 /**
  * Translates every message exposed by the descriptor — the top-level flow
  * messages, each field-level input's messages, and the accept-terms checkbox's
- * messages — through `useKratosMessageCopy`. Without this, raw Kratos text like
- * "Property last is missing." leaks through on field-level errors because the
- * route's existing call only covered `descriptor.messages`.
+ * messages — through `useKratosMessageCopy`. Also localises submit-button and
+ * anchor labels (e.g. "Sign in with password" → "Iniciar sesión") via the
+ * `kratos.fields.<label>` lookup, mirroring the MUI `getNodeTitle` helper —
+ * Kratos returns those labels in a fixed locale, so the UI has to translate
+ * them client-side.
  */
 export function useTranslateDescriptor() {
+  const { t } = useTranslation();
   const translateMessages = useKratosMessageCopy();
+  const translate = t as unknown as (key: string, options?: Record<string, unknown>) => string;
+
+  const translateButtonLabel = (label: string): string =>
+    label ? translate(`kratos.fields.${label}`, { defaultValue: label }) : label;
 
   return (descriptor: KratosFlowDescriptor): KratosFlowDescriptor => {
     const translateInputMessages = <T extends { messages: KratosMessage[] }>(node: T): T => ({
@@ -131,6 +132,8 @@ export function useTranslateDescriptor() {
         default: descriptor.groups.default.map(translateInputMessages),
         password: descriptor.groups.password.map(translateInputMessages),
         rest: descriptor.groups.rest.map(translateInputMessages),
+        submit: descriptor.groups.submit.map(node => ({ ...node, label: translateButtonLabel(node.label) })),
+        anchors: descriptor.groups.anchors.map(node => ({ ...node, label: translateButtonLabel(node.label) })),
       },
     };
   };

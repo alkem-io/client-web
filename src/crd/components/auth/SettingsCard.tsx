@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor } from '@/crd/components/auth/flowDescriptor';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -18,9 +19,7 @@ export function SettingsCard({ descriptor, isLoading }: SettingsCardProps) {
   const { t } = useTranslation('crd-auth');
 
   return (
-    <div className="rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-      <h1 className="text-hero mb-6 text-foreground">{t('settings.title')}</h1>
-
+    <AuthCard title={t('settings.title')}>
       {isLoading || !descriptor ? (
         <output aria-label={t('loading')} className="flex w-full flex-col gap-5">
           <Skeleton className="h-14 w-full" />
@@ -29,6 +28,6 @@ export function SettingsCard({ descriptor, isLoading }: SettingsCardProps) {
       ) : (
         <CrdKratosFlow descriptor={descriptor} />
       )}
-    </div>
+    </AuthCard>
   );
 }

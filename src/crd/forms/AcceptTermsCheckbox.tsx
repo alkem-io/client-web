@@ -32,7 +32,7 @@ export function AcceptTermsCheckbox({
 }: AcceptTermsCheckboxProps) {
   const id = useId();
   const errorId = `${id}-error`;
-  const hasError = Boolean(errorMessage);
+  const hasError = !!errorMessage;
 
   // When required and not yet checked, give the checkbox a destructive ring so
   // the user can see at a glance that ticking it is mandatory (matches the way

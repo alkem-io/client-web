@@ -18,7 +18,7 @@ export function AuthCardHeader({ contextLabel, contextLinkLabel, contextLinkHref
       <div>
         <div className="flex items-center gap-2">
           <AlkemioLogo aria-hidden="true" className="size-7 shrink-0" />
-          <span className="text-section-title font-bold uppercase tracking-tight text-foreground">Alkemio</span>
+          <span className="text-section-title font-bold uppercase text-foreground">Alkemio</span>
         </div>
         <p className="mt-1.5 text-caption text-muted-foreground">{t('tagline')}</p>
       </div>
@@ -27,7 +27,7 @@ export function AuthCardHeader({ contextLabel, contextLinkLabel, contextLinkHref
         <br />
         <a
           href={contextLinkHref}
-          className="text-body font-semibold text-foreground outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-sm"
+          className="text-body-emphasis font-semibold text-foreground outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-sm"
         >
           {contextLinkLabel}
         </a>

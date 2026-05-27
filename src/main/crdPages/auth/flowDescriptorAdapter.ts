@@ -5,7 +5,6 @@ import type {
   SettingsFlow,
   UiNode,
   UiNodeInputAttributes,
-  UiNodeTextAttributes,
   UiText,
   VerificationFlow,
 } from '@ory/kratos-client';
@@ -22,7 +21,6 @@ import {
   isPasskeyTrigger,
   isScriptNode,
   isSubmitButton,
-  isTextNode,
 } from '@/core/auth/authentication/components/Kratos/helpers';
 import { kratosMessageTranslationKeys } from '@/core/auth/authentication/components/Kratos/messages';
 import { socialProviderCustomizations } from '@/core/auth/authentication/socialProviderCustomizations';
@@ -155,7 +153,6 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
     submit: [],
     oidc: [],
     passkey: [],
-    passkeyCredentials: [],
     anchors: [],
   };
 
@@ -221,13 +218,15 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
         break;
       case 'webauthn':
       case 'passkey': {
+        // Only passkey trigger buttons (login / register / settings-register)
+        // are rendered. The existing-credentials list — Kratos's `webauthn`
+        // text nodes + per-credential remove buttons — only appears inside the
+        // user-settings page (not yet a CRD flow), so we skip those here.
         const trigger = isPasskeyTrigger(node)
           ? (getPasskeyTriggerType(node) as KratosPasskeyTrigger | undefined)
           : undefined;
         if (trigger && isInputNode(node)) {
           groups.passkey.push(toPasskeyNode(node, trigger));
-        } else if (isTextNode(node)) {
-          groups.passkeyCredentials.push({ text: (node.attributes as UiNodeTextAttributes).text?.text ?? '' });
         }
         break;
       }
@@ -276,6 +275,15 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
     seenSubmits.add(key);
     return true;
   });
+
+  // Verification's `sent_email` state also exposes a parallel `code`-method
+  // submit (name="email", value=<address>, label "Resend code") alongside the
+  // link-method submit. Both functionally just re-send a verification email;
+  // we keep only the link-method submit. The route layer relabels it to a
+  // clearer "Resend verification email" — adapter has no i18n.
+  if (flowType === 'verification') {
+    groups.submit = groups.submit.filter(node => node.name === 'method');
+  }
 
   return {
     flowType,

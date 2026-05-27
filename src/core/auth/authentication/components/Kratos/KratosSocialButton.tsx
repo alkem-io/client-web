@@ -15,7 +15,6 @@ import type { AuthActionButtonProps } from '../Button';
 
 interface SocialCustomization {
   icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }> | OverridableComponent<SvgIconTypeMap>;
-  label: string;
   sortOrder: number;
 }
 
@@ -23,31 +22,11 @@ interface SocialCustomization {
 // framework-agnostic `socialProviderCustomizations` so the MUI and CRD auth
 // layers never disagree on the order providers are shown in.
 export const socialCustomizations: Record<string, SocialCustomization> = {
-  linkedin: {
-    icon: LinkedInIcon,
-    label: 'linkedin',
-    sortOrder: socialProviderCustomizations.linkedin.sortOrder,
-  },
-  microsoft: {
-    icon: MicrosoftIcon,
-    label: 'microsoft',
-    sortOrder: socialProviderCustomizations.microsoft.sortOrder,
-  },
-  github: {
-    icon: GithubIcon,
-    label: 'github',
-    sortOrder: socialProviderCustomizations.github.sortOrder,
-  },
-  apple: {
-    icon: AppleIcon,
-    label: 'apple',
-    sortOrder: socialProviderCustomizations.apple.sortOrder,
-  },
-  cleverbase: {
-    icon: CleverbaseIcon,
-    label: 'cleverbase',
-    sortOrder: socialProviderCustomizations.cleverbase.sortOrder,
-  },
+  linkedin: { icon: LinkedInIcon, sortOrder: socialProviderCustomizations.linkedin.sortOrder },
+  microsoft: { icon: MicrosoftIcon, sortOrder: socialProviderCustomizations.microsoft.sortOrder },
+  github: { icon: GithubIcon, sortOrder: socialProviderCustomizations.github.sortOrder },
+  apple: { icon: AppleIcon, sortOrder: socialProviderCustomizations.apple.sortOrder },
+  cleverbase: { icon: CleverbaseIcon, sortOrder: socialProviderCustomizations.cleverbase.sortOrder },
 };
 
 interface KratosSocialButtonProps {

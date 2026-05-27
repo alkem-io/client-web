@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -15,9 +16,7 @@ export function ErrorCard({ errorCode, errorMessage, errorReason, signInHref, is
   const { t } = useTranslation('crd-auth');
 
   return (
-    <div className="rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-      <h1 className="text-hero mb-6 text-foreground">{t('error.title')}</h1>
-
+    <AuthCard title={t('error.title')}>
       {isLoading ? (
         <output aria-label={t('loading')} className="flex w-full flex-col gap-3">
           <Skeleton className="h-5 w-full" />
@@ -30,11 +29,11 @@ export function ErrorCard({ errorCode, errorMessage, errorReason, signInHref, is
           {errorCode ? (
             <p className="text-caption text-muted-foreground">{t('error.code', { code: errorCode })}</p>
           ) : null}
-          <Button asChild={true} className="mt-2 h-12 w-full font-semibold uppercase tracking-wider">
+          <Button asChild={true} className="text-control mt-2 h-12 w-full font-semibold uppercase tracking-wider">
             <a href={signInHref}>{t('error.backToSignIn')}</a>
           </Button>
         </div>
       )}
-    </div>
+    </AuthCard>
   );
 }
