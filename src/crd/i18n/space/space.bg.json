@@ -296,9 +296,7 @@
     "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
-    "filterAdmin": "Администратор",
     "filterLead": "Ръководител",
-    "filterMember": "Член",
     "filterOrganization": "Организация",
     "noMembers": "Не са намерени членове",
     "previousPage": "Предишна",
@@ -310,7 +308,6 @@
       "clearFilters": "Изчисти филтрите"
     },
     "role": {
-      "admin": "Администратор",
       "lead": "Ръководител",
       "member": "Член",
       "organization": "Организация"

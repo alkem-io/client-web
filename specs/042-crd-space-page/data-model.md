@@ -94,8 +94,8 @@ type CalendarEventData = {
 
 ### MemberCardData (exported from `src/crd/components/space/SpaceMembers.tsx`)
 ```typescript
-type MemberRoleType = 'admin' | 'moderator' | 'member';
-type MemberRoleKey = 'admin' | 'lead' | 'member' | 'organization';
+type MemberRoleType = 'moderator' | 'member';
+type MemberRoleKey = 'lead' | 'member' | 'organization';
 
 type MemberCardData = {
   id: string;
@@ -104,14 +104,15 @@ type MemberCardData = {
   type: 'user' | 'organization';
   /**
    * Primary role used for the displayed badge label. Derived from
-   * the user's full role list with precedence Admin > Lead > Member.
-   * For organizations this is always `'organization'`.
+   * the user's full role list with precedence Lead > Member.
+   * Administrative status is never surfaced. For organizations this
+   * is always `'organization'`.
    */
   role?: MemberRoleKey;
   /**
    * Full list of roles the member holds. Used by the filter pills
-   * so a user who is both Admin and Lead appears under both filters.
-   * For organizations this is always `['organization']`.
+   * so a user who is both a Lead and a Member appears under both
+   * filters. For organizations this is always `['organization']`.
    */
   roles?: MemberRoleKey[];
   /** Drives the role badge colour — only set for users. */
@@ -124,10 +125,10 @@ type MemberCardData = {
 ```
 
 The integration layer derives `role` + `roleType` + `roles` from the user's full `RoleName[]`:
-- `role` + `roleType` follow precedence `Admin > Lead > Member` — they drive the single badge rendered on the card.
-- `roles` is the full inclusive list — filter pills match against it so overlapping sets (e.g. an Admin who is also a Lead) surface under every applicable filter.
+- `role` + `roleType` follow precedence `Lead > Member` — they drive the single badge rendered on the card. Administrative status is never surfaced (no Admin badge).
+- `roles` is the full inclusive list (Lead, Member) — filter pills match against it so overlapping sets (e.g. a Lead who is also a Member) surface under every applicable filter.
 
-`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
+`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
 
 ### VirtualContributorData
 ```typescript

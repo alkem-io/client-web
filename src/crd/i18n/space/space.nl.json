@@ -1,13 +1,13 @@
 {
   "common": {
-    "Callout": "Oproep",
-    "callout": "oproep",
-    "Callouts": "Oproepen",
-    "callouts": "oproepen"
+    "Callout": "Post",
+    "callout": "post",
+    "Callouts": "Posts",
+    "callouts": "posts"
   },
   "banner": {
-    "homeSpace": "Hoofdruimte",
-    "homeSpaceSettings": "Instellingen hoofdruimte"
+    "homeSpace": "Home Space",
+    "homeSpaceSettings": "Instellingen Home Space"
   },
   "tabs": {
     "dashboard": "Dashboard",
@@ -28,8 +28,8 @@
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
     "count": {
-      "post_one": "{{count}} bericht",
-      "post_other": "{{count}} berichten",
+      "post_one": "{{count}} post",
+      "post_other": "{{count}} posts",
       "whiteboard_one": "{{count}} whiteboard",
       "whiteboard_other": "{{count}} whiteboards",
       "memo_one": "{{count}} memo",
@@ -52,9 +52,9 @@
     "spaceLeads": "Space-leiders",
     "contactLead": "Leiders contacteren",
     "invite": "Uitnodigen",
-    "virtualContributors": "Virtuele bijdragers",
+    "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Communityrichtlijnen",
-    "postIndex": "Berichtenindex",
+    "postIndex": "$t(common.Callout)-index",
     "readMore": "Lees meer",
     "editDescription": "Beschrijving bewerken",
     "addEvent": "Evenement toevoegen",
@@ -157,7 +157,7 @@
     }
   },
   "feed": {
-    "addPost": "Bericht toevoegen",
+    "addPost": "$t(common.Callout) toevoegen",
     "showMore": "Meer tonen",
     "activity": "Activiteit",
     "noCallouts": "Nog geen inhoud",
@@ -192,7 +192,7 @@
     "commentsZero": "0 reacties",
     "expandComments": "Reacties uitvouwen",
     "collapseComments": "Reacties inklappen",
-    "post": "Bericht",
+    "post": "Post",
     "whiteboard": "Whiteboard",
     "collection": "Collectie",
     "callForWhiteboards": "Oproep voor whiteboards",
@@ -242,19 +242,19 @@
     "linkDelete": "Link verwijderen",
     "linkDeleteConfirmTitle": "Deze link verwijderen?",
     "linkDeleteConfirmDescription": "Hiermee verwijder je de link permanent uit deze $t(common.callout). Deze actie kan niet ongedaan worden gemaakt.",
-    "addPost": "Bericht toevoegen",
-    "createPost": "Bericht aanmaken",
-    "editPost": "Bericht bewerken",
-    "defaultPostName": "Nieuw bericht",
+    "addPost": "Post toevoegen",
+    "createPost": "Post aanmaken",
+    "editPost": "Post bewerken",
+    "defaultPostName": "Nieuwe Post",
     "postNameLabel": "Titel",
     "postDescriptionLabel": "Beschrijving",
-    "postDescriptionPlaceholder": "Schrijf je bericht...",
+    "postDescriptionPlaceholder": "Schrijf je post...",
     "postTagsLabel": "Tags",
     "postSave": "Opslaan",
-    "postCreate": "Plaatsen",
-    "postDelete": "Bericht verwijderen",
-    "postDeleteConfirmTitle": "Dit bericht verwijderen?",
-    "postDeleteConfirmDescription": "Hiermee verwijder je het bericht en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
+    "postCreate": "Post",
+    "postDelete": "Post verwijderen",
+    "postDeleteConfirmTitle": "Deze post verwijderen?",
+    "postDeleteConfirmDescription": "Hiermee verwijder je de post en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
     "postUnsavedCloseTitle": "Niet-opgeslagen wijzigingen verwijderen?",
     "postUnsavedCloseDescription": "Je hebt niet-opgeslagen wijzigingen. Als je nu sluit, gaan ze verloren.",
     "postUnsavedCloseConfirm": "Wijzigingen verwijderen",
@@ -289,16 +289,14 @@
     "openMemo": "Memo openen",
     "openWhiteboard": "Whiteboard openen",
     "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt.",
-    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze ruimte."
+    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze Space."
   },
   "members": {
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
     "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
-    "filterAdmin": "Beheerder",
     "filterLead": "Leider",
-    "filterMember": "Lid",
     "filterOrganization": "Organisatie",
     "noMembers": "Geen leden gevonden",
     "previousPage": "Vorige",
@@ -310,7 +308,6 @@
       "clearFilters": "Filters wissen"
     },
     "role": {
-      "admin": "Beheerder",
       "lead": "Leider",
       "member": "Lid",
       "organization": "Organisatie"
@@ -408,7 +405,7 @@
     "unpublish": "Depubliceren",
     "share": "Delen",
     "sortContributions": "Bijdragen sorteren",
-    "saveAsTemplate": "Opslaan als sjabloon",
+    "saveAsTemplate": "Opslaan als template",
     "moveToTop": "Naar boven verplaatsen",
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",
@@ -441,13 +438,13 @@
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
   },
   "saveAsTemplate": {
-    "saveFailed": "Het sjabloon kon niet worden opgeslagen. Probeer het opnieuw."
+    "saveFailed": "De template kon niet worden opgeslagen. Probeer het opnieuw."
   },
   "findTemplate": {
     "overwriteTitle": "Huidige inhoud vervangen?",
-    "overwriteDescription": "Door dit sjabloon te laden worden de velden die je al hebt ingevuld overschreven. Dit kan niet ongedaan worden gemaakt.",
-    "overwriteConfirm": "Sjabloon laden",
-    "saveAsTemplateTitle": "Opslaan als sjabloon"
+    "overwriteDescription": "Door deze template te laden worden de velden die je al hebt ingevuld overschreven. Dit kan niet ongedaan worden gemaakt.",
+    "overwriteConfirm": "Template laden",
+    "saveAsTemplateTitle": "Opslaan als template"
   },
   "dates": {
     "today": "Vandaag",
@@ -474,25 +471,25 @@
   },
   "forms": {
     "titleLabel": "Titel",
-    "titlePlaceholder": "Geef je bericht een titel...",
+    "titlePlaceholder": "Geef je $t(common.callout) een titel...",
     "insertEmoji": "Emoji invoegen",
     "descriptionLabel": "Beschrijving",
     "descriptionPlaceholder": "Schrijf iets...",
     "tagsLabel": "Tags",
     "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
     "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
-    "framingType": "Toevoegen aan bericht",
+    "framingType": "Toevoegen aan post",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
-    "publish": "Publiceren",
-    "createPost": "Bericht maken",
-    "editPost": "Bericht bewerken",
+    "publish": "Post",
+    "createPost": "$t(common.Callout) maken",
+    "editPost": "$t(common.Callout) bewerken",
     "moreOptions": "Meer opties",
-    "findTemplate": "Sjabloon zoeken",
+    "findTemplate": "Template zoeken",
     "contributionTypes": "Toegestane bijdragen",
     "commentsEnabled": "Reacties inschakelen",
     "linkUrl": "URL",
@@ -509,7 +506,7 @@
     "heading": "Reacties",
     "types": {
       "link": "Links & bestanden",
-      "post": "Berichten",
+      "post": "Posts",
       "memo": "Memo's",
       "whiteboard": "Whiteboards",
       "document": "Documenten"
@@ -538,7 +535,7 @@
   "responseDefaults": {
     "srDescription": "Stel de standaardwaarden in voor nieuwe bijdragen in deze $t(common.callout).",
     "title": {
-      "post": "Standaardwaarden voor berichten",
+      "post": "Standaardwaarden voor Posts",
       "memo": "Standaardwaarden voor memo's",
       "whiteboard": "Standaardwaarden voor whiteboards",
       "document": "Standaardwaarden voor documenten",
@@ -551,9 +548,9 @@
     "defaultWhiteboard": "Standaardwhiteboard",
     "configureWhiteboard": "Whiteboard configureren",
     "editWhiteboard": "Whiteboard bewerken",
-    "template": "Sjabloon",
-    "templatePlaceholder": "Kies een sjabloon…",
-    "templateLoading": "Sjablonen laden…",
+    "template": "Template",
+    "templatePlaceholder": "Kies een template…",
+    "templateLoading": "Templates laden…",
     "save": "Opslaan"
   },
   "calloutDialog": {
@@ -685,7 +682,7 @@
   },
   "postLocation": {
     "label": "Postlocatie",
-    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere post te verplaatsen, verdwijnt deze uit de huidige post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Ruimte of Subruimte kunt verplaatsen.",
+    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere post te verplaatsen, verdwijnt deze uit de huidige post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Space of Subspace kunt verplaatsen.",
     "moved": "Reactie succesvol verplaatst.",
     "moveFailed": "Reactie kon niet worden verplaatst. Probeer het opnieuw."
   },
@@ -815,12 +812,12 @@
     "feedRegion": "Inhoudsfeed van de space",
     "membersGrid": "Ledenraster van de community",
     "subspacesGrid": "Subspace-raster",
-    "statusFilter": "Subruimtes filteren op status",
+    "statusFilter": "Subspaces filteren op status",
     "visibilityNotice": "Zichtbaarheidsmelding van de space",
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
-    "loadingPost": "Bericht laden"
+    "loadingPost": "$t(common.callout) laden"
   },
   "activity": {
     "dialogTitle": "Recente activiteit"

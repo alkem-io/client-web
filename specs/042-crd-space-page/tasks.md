@@ -78,7 +78,7 @@
 
 - [X] T029 Create `src/crd/components/space/PostCard.tsx` — Card matching prototype: author avatar + name + role Badge + timestamp header, title (text-lg font-bold), snippet (line-clamp-3), whiteboard framing preview (image + "Open Whiteboard" overlay when `type='whiteboard'`), `contributionsPreview?: ReactNode` slot for contribution cards rendered by integration layer, `children` slot for polls, comments footer with MessageSquare; accepts `PostCardData` with `type: 'text' | 'whiteboard'`, `onClick?`, `onSettingsClick?`, `onExpandClick?`, `contributionsPreview?`; uses Card/CardHeader/CardContent/CardFooter primitives. PostCard does NOT render contribution cards internally — all contribution rendering is delegated to the integration layer via the `contributionsPreview` slot
 - [X] T030 Create `src/crd/components/space/SpaceFeed.tsx` — vertical PostCard list matching prototype: title header + "Add Post" button, `space-y-6` card list, "Show More" button; accepts `title`, `posts: PostCardData[]`, `canCreate?`, `onCreateClick?`, `loading?`, `onShowMore?`, `hasMore?`; skeleton loading state; reusable across all tabs
-- [X] T031 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter pills + paginated grid matching prototype: search input, filter buttons (All/Host/Admin/Lead/Member/Organization), responsive grid (1/2/3 cols), UserCard and OrgCard sub-components, pagination (prev/next); accepts `members: MemberCardData[]`, `filters?`, `pageSize?`
+- [X] T031 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter pills + paginated grid matching prototype: search input, filter buttons (All/Lead/Organization — administrative status is never surfaced, and a Member filter is redundant with All), responsive grid (1/2/3 cols), UserCard and OrgCard sub-components, pagination (prev/next); accepts `members: MemberCardData[]`, `filters?`, `pageSize?`
 - [X] T032 Create `src/crd/components/space/SpaceSubspacesList.tsx` — status filter + SpaceCard grid matching prototype: header + "Create Subspace" button, filter buttons (All/Active/Archived), responsive grid, empty state (dashed border + FolderOpen icon); accepts `subspaces: SubspaceListCardData[]`, `canCreate?`, `onCreateClick?`; tag-based filtering (FR-030) reuses existing SpaceCard tag mechanism from 039 — pass `selectedTags?` and `onTagSelect?` props to enable filtering by tags displayed on cards
 
 ### Callout-specific components (hybrid decision D-proto-4 — not PostCard style):
@@ -387,15 +387,15 @@
 
 ### i18n
 
-- [X] T098 [P] Extend `src/crd/i18n/space/space.en.json` `members` keys: update `title` → `"Community"`, update `search` placeholder, add `subtitle` (with `{{users}}` and `{{organizations}}` interpolation), add `inviteMember`, add `empty.{title,description,clearFilters}`, add `role.{admin,lead,member,organization}`; drop unused `filterHost`
+- [X] T098 [P] Extend `src/crd/i18n/space/space.en.json` `members` keys: update `title` → `"Community"`, update `search` placeholder, add `subtitle` (with `{{users}}` and `{{organizations}}` interpolation), add `inviteMember`, add `empty.{title,description,clearFilters}`, add `role.{lead,member,organization}`; drop unused `filterHost`, `filterAdmin`, `filterMember` (only All/Lead/Organization pills exist — administrative status is never surfaced)
 - [X] T099 [P] Extend `src/crd/i18n/space/space.en.json` `subspaces` keys: add `subtitle`, add `empty.{title,description,clearFilters}`; drop unused `noSubspaces` / `noSubspacesDescription` in favour of the new `empty` group
 - [X] T100 [P] Mirror T098 + T099 key changes to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
 - [X] T101 [P] Add `pinned` key to `src/crd/i18n/common/common.en.json` and mirror to `common.{nl,es,bg,de,fr}.json` — used by SpaceCard's new pin indicator
 
 ### Data layer
 
-- [X] T102 Extend `MemberCardData` in `src/crd/components/space/SpaceMembers.tsx` with `role?: MemberRoleKey` (`'admin' | 'lead' | 'member' | 'organization'`) and `roleType?: MemberRoleType` (`'admin' | 'moderator' | 'member'`) — drives role badge styling
-- [X] T103 Extend `src/main/crdPages/space/dataMappers/communityDataMapper.ts` `mapRoleSetToMemberCards()` to derive `role` + `roleType` per user from `RoleSetMember.roles[]`: `Admin → 'admin'/'admin'`, `Lead → 'lead'/'moderator'`, default → `'member'/'member'`; organizations get `role: 'organization'` with no roleType
+- [X] T102 Extend `MemberCardData` in `src/crd/components/space/SpaceMembers.tsx` with `role?: MemberRoleKey` (`'lead' | 'member' | 'organization'`) and `roleType?: MemberRoleType` (`'moderator' | 'member'`) — drives role badge styling. Administrative status is never surfaced, so there is no `'admin'` role key or role type
+- [X] T103 Extend `src/main/crdPages/space/dataMappers/communityDataMapper.ts` `mapRoleSetToMemberCards()` to derive `role` + `roleType` per user from `RoleSetMember.roles[]`: `Lead → 'lead'/'moderator'`, default → `'member'/'member'` (administrative status is never surfaced — admins with no Lead role display as Member); organizations get `role: 'organization'` with no roleType
 - [X] T104 Rewrite `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts` to return `SpaceCardData[]` (from `@/crd/components/space/SpaceCard`) instead of the retired `SubspaceListCardData`: map `profile.displayName → name`, `tagline → description`, `cardBanner.uri || default → bannerImageUrl`, derive `initials` via `getInitials`, derive `avatarColor` via a new local `getAvatarColorFromId` helper (mirroring the explore-spaces palette), merge `leadUsers[] + leadOrganizations[] → leads: SpaceLead[]`, map `myMembershipStatus → isMember`. Accept a `sortMode?: SpaceSortMode` parameter and force `isPinned: false` unless `sortMode === SpaceSortMode.Alphabetical` (FR-031)
 - [X] T105 Update `src/main/crdPages/space/hooks/useCrdSpaceCommunity.ts` to fetch the full role set (`relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member]`) and return the deduplicated flat `users` / `organizations` arrays from `useRoleSetManager` (each entry carrying its full `roles[]`), plus `usersCount` + `organizationsCount` for the subtitle
 
@@ -405,7 +405,7 @@
 - [X] T107 Revise `src/crd/components/space/SpaceMembers.tsx` to match the prototype's `SpaceMembers`:
   - Section header: `<h2>` title (default `t('members.title')` = "Community"), subtitle `<p>` (default `t('members.subtitle', { users, organizations })`), optional "Invite Member" button (`UserPlus` icon) that only renders when both `canInvite && onInvite` are provided
   - New props: `title?`, `subtitle?`, `usersCount?`, `organizationsCount?`, `canInvite?`, `onInvite?`
-  - Drop the `'host'` filter (no matching data); keep `['all', 'admin', 'lead', 'member', 'organization']`
+  - Filter pills are `['all', 'lead', 'organization']` — no `'host'` filter (no matching data), no `'admin'` filter (administrative status is never surfaced), no `'member'` filter (redundant with All)
   - Add `aria-pressed` on filter pills
   - Differentiate `UserCard` (rounded-full avatar + role badge with color by `roleType`: `admin` → `primary`, `moderator` → `chart-2`, `member` → `muted`) vs `OrganizationCard` (rounded-md avatar + "Organization" badge with `Building2` icon)
   - Replace the simple "No members found" paragraph with a prototype-style empty state: muted circular User icon, `empty.title`, `empty.description`, and a "Clear filters" link button that resets search + filter + page
@@ -457,7 +457,7 @@
 
 - [X] T112 Extend `useCrdSpaceCommunity` to expose full sidebar data: pull `usersByRole[Lead]` / `organizationsByRole[Lead]` for the leads block (the richer profile payload from `useRoleSetManager` — with location, avatar, url), `virtualContributorsByRole[Member]` filtered for `SearchVisibility.Hidden` for the VC section, and the `hasVcEntitlement` flag derived from `LicenseEntitlementType.SpaceFlagVirtualContributorAccess` on the space entitlements. Add `VirtualContributor` to the `contributorTypes` arg
 - [X] T113 Add `mapRoleSetMemberToSidebarLead(member, type: 'person' | 'org')` and `mapVirtualContributorToSidebar` in `src/main/crdPages/space/dataMappers/communityDataMapper.ts`, returning new exported types `SidebarLeadData` + `SidebarVirtualContributorData`
-- [X] T114 Store the member's full role list on `MemberCardData`: add `roles: MemberRoleKey[]`, derive it in `mapRoleSetToMemberCards` via a new `deriveUserRolesList(roles)` helper that returns every applicable role key (Admin, Lead, Member — inclusive) rather than the single precedence role. Keep the existing `role` / `roleType` fields for the display badge
+- [X] T114 Store the member's full role list on `MemberCardData`: add `roles: MemberRoleKey[]`, derive it in `mapRoleSetToMemberCards` via a new `deriveUserRolesList(roles)` helper that returns every applicable role key (Lead, Member — inclusive; administrative status is never surfaced) rather than the single precedence role. Keep the existing `role` / `roleType` fields for the display badge
 
 ### CRD presentational layer
 
@@ -468,7 +468,7 @@
   - Add `showVirtualContributors?: boolean` (default true) — hides the VC section when the space lacks the VC entitlement even if VCs are present
   - Hide the Contact/Invite button row entirely when neither button is renderable
   - Keep `onContactLead`, `onInvite`, `canInvite` as already exposed
-- [X] T117 Update `src/crd/components/space/SpaceMembers.tsx` filter logic: match the active filter pill against the full `m.roles` list (`roles?.includes(activeFilter)`) instead of `m.role === activeFilter`. Admin + Lead + Member are overlapping sets — a user who holds multiple roles MUST appear under every applicable filter
+- [X] T117 Update `src/crd/components/space/SpaceMembers.tsx` filter logic: match the active filter pill against the full `m.roles` list (`roles?.includes(activeFilter)`) instead of `m.role === activeFilter`. Lead + Member are overlapping sets — a user who holds the Lead role MUST appear under the Lead filter even though their roles list also includes Member
 - [X] T118 Replace the `All / Active / Archived` status pills in `src/crd/components/space/SpaceSubspacesList.tsx` with:
   - A text search input (matches against `name` and `description`), styled to match the Community tab's members search
   - A wrapping row of tag chips aggregated from all subspaces via a pure `collectTags()` helper (sorted by frequency desc then alphabetically)

@@ -620,6 +620,23 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Only the main `translation` namespace uses Crowdin.
 
+### Do-not-translate platform terms (glossary)
+
+A set of Alkemio platform terms are **brand-specific English words** that must **never be translated** — they stay in English, and only the surrounding sentence is translated and inflected around them. **Currently this convention is enforced for Dutch (`nl`) only** — the other languages (es, bg, de, fr) still translate these terms and have not been reverted yet; the same rule is expected to extend to them later.
+
+| English term | Forbidden Dutch translation |
+|---|---|
+| **Space / Spaces** | "Ruimte" / "Ruimtes" |
+| **Subspace / Subspaces** | "Subruimte" / "Subruimtes" |
+| **Post / Posts** | "Bericht" / "Berichten" — also the user-facing name for a **Callout** ("Oproep"); `callout`/`callouts` resolve to "Post"/"Posts" |
+| **template / templates** | "sjabloon" / "sjablonen" — lowercase mid-sentence (capitalize "Template" when standalone: tab/heading/button) |
+| **Layout** | "Indeling" |
+| **Virtual Contributor(s)** | "Virtuele bijdrager(s)" |
+
+When a brand term combines with a translated word, keep the English term and hyphenate the Dutch grammar around it (e.g. `Space-leden`, `subspace-template`, `Post-index`). **Disambiguate carefully:** Dutch `Berichten` also means "Messages" (the messaging feature) — only keys whose English source uses "Post"/"Posts" get reverted; "Messages", "workspace" (`werkruimte`), "Call for whiteboards" (`Oproep`), etc. stay translated.
+
+Full term list, rationale, per-language localized forms, and the validation approach: **`specs/101-translation-glossary/`** (`glossary.md` human-readable, `glossary.json` machine-readable).
+
 ### Critical rules
 
 - Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
