@@ -29,6 +29,10 @@
     "restart": "Redémarrer la collaboration",
     "guestContributionsWarning": "Les contributions des invités sont activées",
     "closeWhiteboard": "Fermer le tableau blanc",
+    "saveStatus": {
+      "label": "État de sauvegarde",
+      "close": "Fermer"
+    },
     "loadingWhiteboard": "Chargement du tableau blanc",
     "untitled": "Tableau blanc",
     "unsavedChanges": {
@@ -55,6 +59,11 @@
         "generic": "Vous ne pouvez pas modifier ce tableau blanc pour l'une des raisons suivantes :\n\n- Vous êtes resté inactif pendant 2 heures ou plus\n- Vous n'êtes pas membre de l'espace\n- Cet espace n'autorise qu'un seul éditeur de tableau blanc à la fois\n- Cet espace autorise plus d'éditeurs, mais le maximum est atteint"
       }
     }
+  },
+  "disconnected": {
+    "reconnect": "Se reconnecter",
+    "countdown": "({{seconds}}s)",
+    "close": "Fermer"
   },
   "preview": {
     "settings": {

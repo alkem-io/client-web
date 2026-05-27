@@ -5,7 +5,7 @@
  * Consumed by:
  *  - `src/main/crdPages/topLevelPages/spaceSettings/templates/*` (Space Settings → Templates tab, holderKind='space')
  *  - `src/main/crdPages/innovationPack/CrdInnovationPackAdminPage.tsx` (holderKind='innovationPack', canImport(*) === false)
- *  - `src/crd/components/innovationPack/InnovationPackProfileView.tsx` (read-only: all can*() === false, onTemplateAction restricted to 'preview')
+ *  - `src/crd/components/innovationPack/InnovationPackProfileView.tsx` (read-only: `readOnly` set, all can*() === false, onTemplateAction restricted to 'preview')
  *
  * Plain TypeScript only — never GraphQL generated types. No MUI. Behaviour via callbacks.
  */
@@ -69,6 +69,13 @@ export type TemplatesManagerViewProps = {
   onCreate: (type: TemplateType) => void;
   onImport: (type: TemplateType) => void;
   onTemplateAction: (id: string, action: TemplateAction) => void;
+  /**
+   * Read-only presentation (pack public profile). When true, each `TemplateCard`'s kebab is reduced to
+   * **Preview only** — Duplicate/Edit/Delete are omitted regardless of the `can*` predicates. This enforces
+   * the spec's "read-only context ⇒ onTemplateAction limited to 'preview'": Duplicate writes into the holder's
+   * own templates set, which a non-owner public-profile viewer cannot do. Management contexts leave it unset.
+   */
+  readOnly?: boolean;
   className?: string;
 };
 

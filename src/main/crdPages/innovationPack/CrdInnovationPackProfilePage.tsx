@@ -27,12 +27,12 @@ export const CrdInnovationPackProfilePage = () => {
   // Until the pack resolves we render a minimal placeholder rather than mounting the View
   // with a half-formed prop shape. The Suspense fallback above this page renders the loader.
   if (!pack) {
-    return <div className="crd-root mx-auto w-full max-w-6xl px-4 py-6" aria-busy={true} />;
+    return <div className="crd-root container mx-auto px-4 md:px-8 py-6" aria-busy={true} />;
   }
 
   return (
     <>
-      <div className="crd-root mx-auto w-full max-w-6xl px-4 py-6">
+      <div className="crd-root container mx-auto px-4 md:px-8 py-6">
         <InnovationPackProfileView
           pack={pack}
           templates={tm.categories}

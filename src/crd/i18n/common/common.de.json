@@ -24,6 +24,12 @@
   "tags": {
     "moreAria": "{{count}} weitere anzeigen"
   },
+  "filters": {
+    "summary": "Ergebnisse für {{criteria}}",
+    "and": "und",
+    "clear": "Filter löschen",
+    "filterByTag": "Nach Tag filtern"
+  },
   "share": {
     "title": "Teilen",
     "button": "Teilen",
@@ -50,6 +56,25 @@
         "messageTooLong": "Nachricht darf höchstens {{max}} Zeichen enthalten.",
         "sendFailed": "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
       }
+    }
+  },
+  "references": {
+    "heading": "Referenzen",
+    "empty": "Noch keine Referenzen.",
+    "nameLabel": "Titel",
+    "namePlaceholder": "Referenztitel",
+    "uriLabel": "URL",
+    "uriPlaceholder": "https://",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Optionale Beschreibung",
+    "addRow": "Weitere Referenz hinzufügen",
+    "removeRow": "Referenz entfernen",
+    "attachFile": "Datei anhängen",
+    "removeConfirm": {
+      "title": "Diese Referenz entfernen?",
+      "description": "„{{name}}“ wird beim Speichern entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Entfernen",
+      "unnamed": "diese Referenz"
     }
   }
 }

@@ -6,7 +6,6 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { Separator } from '@/crd/primitives/separator';
-import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import WhiteboardPreviewSettingsButton from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
@@ -14,6 +13,7 @@ import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollabor
 import { CrdWhiteboardGuestAccessControls } from '@/main/crdPages/whiteboard/CrdWhiteboardGuestAccessControls';
 import type { WhiteboardDetails } from './CrdWhiteboardDialog';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
+import { CrdWhiteboardSaveStatus } from './CrdWhiteboardSaveStatus';
 
 export interface CrdWhiteboardViewProps {
   whiteboardId?: string;
@@ -112,7 +112,7 @@ const CrdWhiteboardView = ({
 
               {!isSmallScreen && <FullscreenButton />}
 
-              <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+              <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
               {hasUpdatePrivileges && collabState.mode === 'write' && (
                 <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />

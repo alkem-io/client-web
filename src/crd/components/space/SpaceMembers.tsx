@@ -1,4 +1,4 @@
-import { Building2, ChevronLeft, ChevronRight, Search, Shield, User, UserCheck } from 'lucide-react';
+import { Building2, ChevronLeft, ChevronRight, Search, User, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent } from '@/crd/primitives/card';
 
-export type MemberRoleType = 'admin' | 'moderator' | 'member';
-export type MemberRoleKey = 'admin' | 'lead' | 'member' | 'organization';
+export type MemberRoleType = 'moderator' | 'member';
+export type MemberRoleKey = 'lead' | 'member' | 'organization';
 
 export type MemberCardData = {
   id: string;
@@ -16,13 +16,13 @@ export type MemberCardData = {
   type: 'user' | 'organization';
   /**
    * Primary role used for the displayed badge label. Derived via
-   * precedence Admin > Lead > Member. For organizations this is
-   * always `'organization'`.
+   * precedence Lead > Member. Administrative status is never surfaced.
+   * For organizations this is always `'organization'`.
    */
   role?: MemberRoleKey;
   /**
    * Full list of roles the member holds. Used by the filter pills so a
-   * user who is both Admin and Lead appears under both filters. For
+   * user who is both a Lead and a Member appears under both filters. For
    * organizations this is always `['organization']`.
    */
   roles?: MemberRoleKey[];
@@ -34,7 +34,7 @@ export type MemberCardData = {
   href: string;
 };
 
-type MemberFilter = 'all' | 'admin' | 'lead' | 'member' | 'organization';
+type MemberFilter = 'all' | 'lead' | 'organization';
 
 type SpaceMembersProps = {
   members: MemberCardData[];
@@ -49,10 +49,9 @@ type SpaceMembersProps = {
 };
 
 const DEFAULT_PAGE_SIZE = 9;
-const FILTERS: MemberFilter[] = ['all', 'admin', 'lead', 'member', 'organization'];
+const FILTERS: MemberFilter[] = ['all', 'lead', 'organization'];
 
 const ROLE_BADGE_CLASSES: Record<MemberRoleType, string> = {
-  admin: 'bg-primary/10 text-primary border-primary/20',
   moderator: 'bg-chart-2/10 text-chart-2 border-chart-2/20',
   member: 'bg-muted text-muted-foreground border-border',
 };
@@ -72,14 +71,11 @@ export function SpaceMembers({
 
   const filterLabels: Record<MemberFilter, string> = {
     all: t('members.filterAll'),
-    admin: t('members.filterAdmin'),
     lead: t('members.filterLead'),
-    member: t('members.filterMember'),
     organization: t('members.filterOrganization'),
   };
 
   const roleLabels: Record<MemberRoleKey, string> = {
-    admin: t('members.role.admin'),
     lead: t('members.role.lead'),
     member: t('members.role.member'),
     organization: t('members.role.organization'),
@@ -94,9 +90,9 @@ export function SpaceMembers({
   if (activeFilter === 'organization') {
     filtered = filtered.filter(m => m.type === 'organization');
   } else if (activeFilter !== 'all') {
-    // Admin + Lead are not mutually exclusive — a user who holds both roles
-    // appears under both filters. Match against the full `roles` list, not
-    // just the derived primary `role` used for the display badge.
+    // The Lead filter matches against the full `roles` list, not just the
+    // derived primary `role` used for the display badge, so a user who is
+    // both a Lead and a Member still appears under Lead.
     filtered = filtered.filter(m => m.type === 'user' && (m.roles?.includes(activeFilter) ?? m.role === activeFilter));
   }
 
@@ -242,8 +238,6 @@ function getRoleBadgeClasses(roleType: MemberRoleType | undefined): string {
 
 function getRoleIcon(roleType: MemberRoleType | undefined) {
   switch (roleType) {
-    case 'admin':
-      return <Shield className="w-3 h-3 mr-1" aria-hidden="true" />;
     case 'moderator':
       return <UserCheck className="w-3 h-3 mr-1" aria-hidden="true" />;
     default:

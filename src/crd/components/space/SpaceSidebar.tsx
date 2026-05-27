@@ -7,7 +7,7 @@ import { Button } from '@/crd/primitives/button';
 import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
-import { KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
+import { type KnowledgeEntry, KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection';
 
@@ -31,14 +31,6 @@ type EventItem = {
   title: string;
   startDate: Date | undefined;
   url?: string;
-};
-
-type KnowledgeEntry = {
-  id: string;
-  title: string;
-  type: 'text' | 'collection';
-  description?: string;
-  tags?: string[];
 };
 
 type SpaceSidebarProps = {
@@ -119,26 +111,24 @@ export function SpaceSidebar({
       )}
 
       {/* Variant-specific content */}
-      {(variant === 'home' || variant === 'knowledge') && (
+      {variant === 'home' && (
         <>
-          {variant === 'home' && subspaces.length > 0 && (
+          {subspaces.length > 0 && (
             <SubspacesSection subspaces={subspaces} showAllHref={subspacesHref} onSubspaceClick={onSubspaceClick} />
           )}
 
-          {variant === 'knowledge' && knowledgeEntries.length > 0 && (
-            <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
-          )}
-
-          {variant === 'home' && (
-            <EventsSection
-              events={events}
-              onShowCalendar={onShowCalendar}
-              onAddEvent={onAddEvent}
-              onEventClick={onEventClick}
-              locale={locale}
-            />
-          )}
+          <EventsSection
+            events={events}
+            onShowCalendar={onShowCalendar}
+            onAddEvent={onAddEvent}
+            onEventClick={onEventClick}
+            locale={locale}
+          />
         </>
+      )}
+
+      {variant === 'knowledge' && knowledgeEntries.length > 0 && (
+        <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
       )}
 
       {variant === 'community' && (

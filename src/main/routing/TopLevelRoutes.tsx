@@ -30,7 +30,7 @@ const CrdPublicWhiteboardPage = lazyWithGlobalErrorHandler(
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const CrdSpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
-const CrdDashboardPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/dashboard/DashboardPage'));
+const CrdHomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/CrdHomePage'));
 const MuiSpaceExplorerPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
 );
@@ -96,26 +96,24 @@ export const TopLevelRoutes = () => {
         />
         {IdentityRoute()}
         {devRoute()}
-        {/* Dashboard page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {/* Dashboard page — toggleable between CRD (new) and MUI (old) via localStorage.
+            The CRD branch renders the CrdHomePage dispatcher, which mirrors the MUI HomePage:
+            it shows the (MUI) innovation-hub home page on a hub subdomain, else the CRD
+            dashboard. The CrdLayoutWrapper decision lives inside the dispatcher because the
+            hub page carries its own TopLevelLayout. */}
         {crdEnabled ? (
           <Route
+            path={TopLevelRoutePath.Home}
             element={
               <NonIdentity>
-                <CrdLayoutWrapper />
-              </NonIdentity>
-            }
-          >
-            <Route
-              path={TopLevelRoutePath.Home}
-              element={
                 <WithApmTransaction path={TopLevelRoutePath.Home}>
                   <Suspense fallback={<Loading />}>
-                    <CrdDashboardPage />
+                    <CrdHomePage />
                   </Suspense>
                 </WithApmTransaction>
-              }
-            />
-          </Route>
+              </NonIdentity>
+            }
+          />
         ) : (
           <Route
             path={TopLevelRoutePath.Home}

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -27,6 +28,12 @@ export type SpaceSettingsHeaderProps = SpaceSettingsHeaderAvatarProps & {
   tagline?: string | null;
   /** Optional tab strip rendered below the title block; gets a full-width bottom border. */
   tabs?: ReactNode;
+  /**
+   * When true, the title block and tab strip fill all 12 grid columns instead
+   * of the default `lg:col-start-2 lg:col-span-10` inset, aligning with a
+   * full-width `SpaceShell` body. The full-width bottom border is unaffected.
+   */
+  fullWidth?: boolean;
   className?: string;
 };
 
@@ -45,13 +52,16 @@ export function SpaceSettingsHeader({
   avatarColor,
   hideAvatar,
   tabs,
+  fullWidth = false,
   className,
 }: SpaceSettingsHeaderProps) {
+  const innerColClass = cn('col-span-12', contentColumnClass(fullWidth));
+
   return (
     <div className={cn('w-full', className)}>
       <div className="w-full px-6 md:px-8 pt-8 pb-4">
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+          <div className={innerColClass}>
             <div className="flex items-center gap-4">
               {!hideAvatar && (
                 <Avatar className="size-12 shrink-0">
@@ -73,7 +83,7 @@ export function SpaceSettingsHeader({
         <div className="w-full border-b border-border">
           <div className="w-full px-6 md:px-8">
             <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-start-2 lg:col-span-10">{tabs}</div>
+              <div className={innerColClass}>{tabs}</div>
             </div>
           </div>
         </div>
