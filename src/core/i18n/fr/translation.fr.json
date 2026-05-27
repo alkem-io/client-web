@@ -3685,7 +3685,9 @@
         "title": "$t(common.Whiteboards) connection lost",
         "message": "Apologies for the inconvenience! The $t(common.whiteboard) isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the $t(common.whiteboard) or refreshing the page. If the issue persists, reach out to your $t(common.space) $t(common.admin) for assistance.",
         "lastSaved": "The content of this $t(common.whiteboard) was last saved {{lastSaved}}.",
-        "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online."
+        "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online.",
+        "reconnect": "Se reconnecter",
+        "reconnectCountdown": "({{seconds}}s)"
       },
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",

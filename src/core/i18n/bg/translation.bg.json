@@ -3676,7 +3676,9 @@
         "title": "$t(common.Whiteboards) връзката е прекъсната",
         "message": "Съжаляваме за неудобството! $t(common.whiteboard) не е достъпен за редактиране в момента, вероятно поради проблем с мрежата или загуба на достъп. Моля, опитайте да затворите и отново отворите $t(common.whiteboard) или да презаредите страницата. Ако проблемът продължава, свържете се с вашия $t(common.space) $t(common.admin) за помощ.",
         "lastSaved": "Съдържанието на този $t(common.whiteboard) е запазено за последно {{lastSaved}}.",
-        "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн."
+        "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн.",
+        "reconnect": "Свържи се отново",
+        "reconnectCountdown": "({{seconds}}с)"
       },
       "readonlyReason": {
         "readonly": "<strong>Режим само за преглед</strong> <learnwhy>кликнете тук, за да научите защо</learnwhy>",

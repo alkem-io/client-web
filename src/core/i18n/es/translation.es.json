@@ -3685,7 +3685,9 @@
         "title": "Conexión perdida con $t(common.Whiteboards)",
         "message": "¡Disculpa las molestias! El $t(common.whiteboard) no está disponible para editar en este momento, posiblemente debido a un problema de red o pérdida de acceso. Por favor, intenta cerrar y volver a abrir el $t(common.whiteboard) o actualizar la página. Si el problema persiste, contacta al $t(common.admin) de tu $t(common.space) para obtener ayuda.",
         "lastSaved": "El contenido de este $t(common.whiteboard) se guardó por última vez {{lastSaved}}.",
-        "offline": "Actualmente estás desconectado. El $t(common.whiteboard) intentará reconectarse cuando vuelvas a estar en línea."
+        "offline": "Actualmente estás desconectado. El $t(common.whiteboard) intentará reconectarse cuando vuelvas a estar en línea.",
+        "reconnect": "Reconectar",
+        "reconnectCountdown": "({{seconds}}s)"
       },
       "readonlyReason": {
         "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",

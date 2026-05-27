@@ -109,17 +109,14 @@ type WhiteboardSaveStatusProps = {
   saved: boolean;
   /** Status text for the hover tooltip and the dialog body (e.g. "Auto-saved last changes: 5 minutes ago") */
   message: ReactNode;
-  /**
-   * Visible dialog title (e.g. the save-error "Warning"). Omitted in the saved state → only the
-   * close button shows (an sr-only title is still kept for accessibility).
-   */
-  dialogTitle?: ReactNode;
   /** Optional CSS class */
   className?: string;
 };
 ```
 
-The live elapsed-time formatting (re-formatted on a 500ms tick via the domain `formatTimeElapsed` util) and the message/title composition live in the integration wrapper `CrdWhiteboardSaveStatus` (`src/main/crdPages/whiteboard/`), not in the CRD component. The wrapper takes `{ isSaved: boolean; date: Date | undefined }` — the same shape as the legacy MUI `SaveRequestIndicatorIcon` — so call sites swap 1:1.
+The dialog has no visible title — only an sr-only one for accessibility (the `message` carries the "Warning:" prefix in the error state, so a separate heading would be redundant).
+
+The live elapsed-time formatting (re-formatted on a 500ms tick via the domain `formatTimeElapsed` util, and seeded synchronously on first render via a `useState` initializer so the message never interpolates an `undefined` datetime) and the message composition live in the integration wrapper `CrdWhiteboardSaveStatus` (`src/main/crdPages/whiteboard/`), not in the CRD component. The wrapper takes `{ isSaved: boolean; date: Date | undefined }` — the same shape as the legacy MUI `SaveRequestIndicatorIcon` — so call sites swap 1:1. In the error state it passes a localized `warningMessage` (`"Warning:"`) into the `unsuccessful-save` string so the prefix matches the legacy indicator and no leading blank is rendered.
 
 ## WhiteboardDisconnectedDialog
 

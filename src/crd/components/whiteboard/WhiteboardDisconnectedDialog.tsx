@@ -71,7 +71,9 @@ export function WhiteboardDisconnectedDialog({
           <Button onClick={onReconnect} disabled={!canReconnect || reconnecting} aria-busy={reconnecting}>
             {reconnecting && <Loader2 className="size-4 mr-1 animate-spin" aria-hidden="true" />}
             {t('disconnected.reconnect')}
-            {showCountdown && <span className="ml-1 font-normal">({countdownSeconds}s)</span>}
+            {showCountdown && (
+              <span className="ml-1 font-normal">{t('disconnected.countdown', { seconds: countdownSeconds })}</span>
+            )}
           </Button>
         </div>
       </DialogContent>

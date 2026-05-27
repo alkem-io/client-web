@@ -11,16 +11,20 @@ type CrdWhiteboardSaveStatusProps = {
 /**
  * Integration wrapper for the CRD `WhiteboardSaveStatus` indicator. Owns the live elapsed-time
  * formatting (re-formatted on a 500ms tick via the domain `formatTimeElapsed` util) and composes the
- * status message + dialog title, then hands plain props to the presentational CRD component.
+ * status message, then hands plain props to the presentational CRD component.
  */
 export const CrdWhiteboardSaveStatus = ({ isSaved, date }: CrdWhiteboardSaveStatusProps) => {
   const { t } = useTranslation();
-  const [formattedTime, setFormattedTime] = useState<string>();
+  // Initialise synchronously (and refresh immediately in the effect below on date/t change) so the
+  // message never interpolates an `undefined` datetime before the first interval tick.
+  const [formattedTime, setFormattedTime] = useState<string>(() =>
+    date ? formatTimeElapsed(date, t, 'long') : t('common.unknown')
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setFormattedTime(date ? formatTimeElapsed(date, t, 'long') : t('common.unknown'));
-    }, 500);
+    const update = () => setFormattedTime(date ? formatTimeElapsed(date, t, 'long') : t('common.unknown'));
+    update();
+    const interval = setInterval(update, 500);
 
     return () => {
       clearInterval(interval);
@@ -33,11 +37,9 @@ export const CrdWhiteboardSaveStatus = ({ isSaved, date }: CrdWhiteboardSaveStat
     <Trans
       i18nKey="pages.whiteboard.unsuccessful-save"
       components={{ p: <p />, strong: <strong /> }}
-      values={{ datetime: formattedTime, warningMessage: '' }}
+      values={{ datetime: formattedTime, warningMessage: `${t('common.warning')}:` }}
     />
   );
 
-  return (
-    <WhiteboardSaveStatus saved={isSaved} message={message} dialogTitle={isSaved ? undefined : t('common.warning')} />
-  );
+  return <WhiteboardSaveStatus saved={isSaved} message={message} />;
 };

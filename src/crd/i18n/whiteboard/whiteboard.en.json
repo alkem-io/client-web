@@ -62,6 +62,7 @@
   },
   "disconnected": {
     "reconnect": "Reconnect",
+    "countdown": "({{seconds}}s)",
     "close": "Close"
   },
   "preview": {

@@ -99,7 +99,7 @@ Single-user editor footer with Delete (left) and Save (right, primary variant wi
 
 ### WhiteboardSaveStatus (`whiteboard/WhiteboardSaveStatus.tsx`)
 
-Header save-status indicator: a cloud icon (`CloudCheck` success / `CloudOff` error) with a hover tooltip and a click-to-open detail dialog showing the last-saved time or a save-error warning. The dialog ships the CRD `Dialog` close (X) button and dismisses on outside-click/Escape. Derived text (`message`, `dialogTitle`) arrives as props; the live elapsed-time formatting lives in the `CrdWhiteboardSaveStatus` integration wrapper. Replaces the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces.
+Header save-status indicator: a cloud icon (`CloudCheck` success / `CloudOff` error) with a hover tooltip and a click-to-open detail dialog showing the last-saved time or a save-error warning. The dialog ships the CRD `Dialog` close (X) button and dismisses on outside-click/Escape. Derived text arrives via the `message` prop; the live elapsed-time formatting lives in the `CrdWhiteboardSaveStatus` integration wrapper. Replaces the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces.
 
 ### WhiteboardDisconnectedDialog (`whiteboard/WhiteboardDisconnectedDialog.tsx`)
 

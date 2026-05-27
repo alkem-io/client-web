@@ -11,11 +11,6 @@ type WhiteboardSaveStatusProps = {
   saved: boolean;
   /** Status text for the hover tooltip and the dialog body (e.g. "Auto-saved last changes: 5 minutes ago"). */
   message: ReactNode;
-  /**
-   * Visible dialog title (e.g. the save-error "Warning"). When omitted the saved state shows no
-   * visible title — only the close button — while still keeping an accessible (sr-only) title.
-   */
-  dialogTitle?: ReactNode;
   className?: string;
 };
 
@@ -23,9 +18,9 @@ type WhiteboardSaveStatusProps = {
  * Header save-status indicator for the whiteboard editor: a cloud icon (success/error) with a hover
  * tooltip and a click-to-open dialog showing the last-saved time or a save-error warning. The dialog
  * is the CRD `Dialog` primitive, so it ships a built-in close (X) button and dismisses on outside
- * click / Escape. All derived text (the elapsed-time message, the title) arrives as props.
+ * click / Escape. The status text (elapsed-time message or error warning) arrives via the `message` prop.
  */
-export function WhiteboardSaveStatus({ saved, message, dialogTitle, className }: WhiteboardSaveStatusProps) {
+export function WhiteboardSaveStatus({ saved, message, className }: WhiteboardSaveStatusProps) {
   const { t } = useTranslation('crd-whiteboard');
   const [open, setOpen] = useState(false);
 
@@ -60,9 +55,7 @@ export function WhiteboardSaveStatus({ saved, message, dialogTitle, className }:
           overlayClassName="z-[70]"
         >
           <DialogHeader>
-            <DialogTitle className={cn(!dialogTitle && 'sr-only')}>
-              {dialogTitle ?? t('editor.saveStatus.label')}
-            </DialogTitle>
+            <DialogTitle className="sr-only">{t('editor.saveStatus.label')}</DialogTitle>
           </DialogHeader>
           <div className={cn('text-body text-foreground', saved && 'text-center')}>{message}</div>
         </DialogContent>

@@ -350,11 +350,13 @@ const CollaborativeExcalidrawWrapper = ({
           </DialogContent>
           <DialogActions>
             <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
-              Reconnect
+              {t('pages.whiteboard.whiteboardDisconnected.reconnect')}
               <Caption textTransform="none">
                 {autoReconnectTime !== null &&
                   autoReconnectTime - time > 0 &&
-                  ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
+                  ` ${t('pages.whiteboard.whiteboardDisconnected.reconnectCountdown', {
+                    seconds: Math.ceil((autoReconnectTime - time) / 1000),
+                  })}`}
               </Caption>
             </Button>
             <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
