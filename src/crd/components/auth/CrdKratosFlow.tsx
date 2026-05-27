@@ -170,6 +170,16 @@ export function CrdKratosFlow({
         <OrContinueWithDivider label={t('continueWith')} />
       ) : null}
 
+      {/* Hidden inputs that mirror each passkey trigger node. Kratos's passkey
+          flow expects an input with the same `name` as the trigger button to be
+          present in the form — the Ory passkey script populates that input's
+          value with the WebAuthn credential before submission. Without these,
+          a successful ceremony has nowhere to deposit its output and the form
+          POST is missing the passkey payload. */}
+      {groups.passkey.map(node => (
+        <input key={`passkey-hidden-${node.name}-${node.value}`} type="hidden" name={node.name} />
+      ))}
+
       {hasAlternativeMethods ? (
         <div className="flex items-center justify-center gap-3">
           {groups.passkey.map(node => (

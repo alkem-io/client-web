@@ -11,6 +11,7 @@ import type {
 import {
   KRATOS_REMOVED_FIELDS_DEFAULT,
   KRATOS_REQUIRED_FIELDS,
+  KRATOS_VERIFICATION_CONTINUE_LINK_ID,
 } from '@/core/auth/authentication/components/Kratos/constants';
 import {
   getPasskeyTriggerType,
@@ -199,10 +200,15 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
       });
       continue;
     }
-    // Anchor nodes — e.g. the post-verification "Continue" link.
+    // Anchor nodes — e.g. the post-verification "Continue" link. For the
+    // verification continue anchor (Kratos label id 1070009) we rewrite the
+    // href to the flow's own action URL so the "Continue" button always lands
+    // on the right destination, matching the MUI `VerificationPage` rewrite.
     if (isAnchorNode(node)) {
+      const isVerificationContinue =
+        flowType === 'verification' && node.meta.label?.id === KRATOS_VERIFICATION_CONTINUE_LINK_ID;
       groups.anchors.push({
-        href: node.attributes.href,
+        href: isVerificationContinue ? (flow.ui.action ?? node.attributes.href) : node.attributes.href,
         label: node.meta.label?.text ?? node.attributes.title?.text ?? '',
       });
       continue;

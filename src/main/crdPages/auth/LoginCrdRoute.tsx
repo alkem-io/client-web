@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -94,12 +95,23 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         onPasskeyTrigger={trigger => {
           setPasskeyError(undefined);
           invokePasskeyTrigger(trigger).catch(error => {
-            setPasskeyError(error instanceof PasskeyTriggerError ? error.message : String(error));
+            setPasskeyError(translatePasskeyError(t, error));
           });
         }}
       />
     </AuthShellWrapper>
   );
+}
+
+/** Maps a passkey-trigger failure to its localised user-facing message. Falls
+ *  back to the existing `authentication.passkey.unknown-error` copy for any
+ *  shape we don't recognise (e.g. a non-PasskeyTriggerError thrown). */
+function translatePasskeyError(t: TFunction, error: unknown): string {
+  if (error instanceof PasskeyTriggerError) {
+    if (error.reason === 'not-supported') return t('authentication.passkey.not-supported');
+    if (error.reason === 'script-not-loaded') return t('authentication.passkey.script-loading');
+  }
+  return t('authentication.passkey.unknown-error');
 }
 
 /**

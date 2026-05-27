@@ -20,6 +20,20 @@ export function SettingsCrdRoute() {
 
   const params = useQueryParams();
   const flowId = params.get('flow') || undefined;
+
+  // Mirrors the MUI `SettingsRoute` guard: settings flow requires a `flow`
+  // query param (Kratos issues it after a recovery-link click). Without one,
+  // bounce to the home route rather than silently asking Kratos to spin up a
+  // brand-new settings flow against the current session.
+  if (!flowId) {
+    window.location.replace('/');
+    return null;
+  }
+
+  return <SettingsCrdPage flowId={flowId} />;
+}
+
+function SettingsCrdPage({ flowId }: { flowId: string }) {
   const { flow: settingsFlow, loading } = useKratosFlow(FlowTypeName.Settings, flowId);
   const translateDescriptor = useTranslateDescriptor();
 

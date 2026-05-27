@@ -87,10 +87,15 @@ For each screen below, verify:
 - Reached when Kratos redirects with `?id=<error-code>`.
 - Shows the resolved error code + message + reason in a CRD card with a "back to sign in" action.
 
+### `/identity/settings?flow=…` — Password-reset completion
+
+- Reached when a user clicks the link in the password-recovery email; Kratos issues a settings flow and redirects here.
+- The CRD card shows a single password field + Save button (with the same OIDC/passkey row as the other auth screens). The Kratos profile method (email + first + last + accept-terms + a second Save) is filtered out — only the password change is exposed.
+- Visiting `/identity/settings` without a `?flow=` query param redirects to `/` (mirrors the MUI guard); no new settings flow is auto-created.
+
 ## What to verify is NOT touched
 
 - `/identity/required` — keeps its existing `CrdAuthRequiredPage` rendering. This spec must NOT have changed it.
-- `/identity/settings` — out of scope.
 - `/identity/logout` — out of scope.
 - Every other already-migrated CRD page (dashboard, spaces, forum, etc.) — should look and behave identically to before this change.
 

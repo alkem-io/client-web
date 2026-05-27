@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { VerificationCard } from '@/crd/components/auth/VerificationCard';
@@ -56,6 +58,21 @@ export function VerifyCrdRoute() {
         path="reminder"
         element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.verification-required.header" />}
       />
+      {/* Unknown sub-path → bounce to login, mirroring the MUI VerifyRoute fallback. */}
+      <Route path="*" element={<RedirectToLogin />} />
     </Routes>
   );
+}
+
+function RedirectToLogin() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    error(`Kratos config error, redirecting to Login from ${pathname}`, {
+      category: TagCategoryValues.CONFIG,
+      label: 'Kratos',
+    });
+  }, [pathname]);
+
+  return <Navigate to={buildLoginUrl()} replace={true} />;
 }
