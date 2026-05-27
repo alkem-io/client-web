@@ -168,7 +168,12 @@
       "title": "Sicherheit",
       "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
       "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
-      "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite."
+      "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "password": {
+        "title": "Passwort ändern",
+        "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
+        "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert."
+      }
     },
     "settings": {
       "pageTitle": "Einstellungen",

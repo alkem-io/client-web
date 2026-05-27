@@ -168,7 +168,12 @@
       "title": "Security",
       "description": "Manage passkeys and WebAuthn credentials for your account.",
       "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
-      "errorDescription": "Couldn't load security settings — try refreshing the page."
+      "errorDescription": "Couldn't load security settings — try refreshing the page.",
+      "password": {
+        "title": "Change password",
+        "description": "Update the password used to sign in to your account.",
+        "notEnabled": "Password sign-in is not enabled on this account."
+      }
     },
     "settings": {
       "pageTitle": "Settings",

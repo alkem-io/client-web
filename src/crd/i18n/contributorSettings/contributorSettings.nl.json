@@ -168,7 +168,12 @@
       "title": "Beveiliging",
       "description": "Beheer passkeys en WebAuthn-aanmeldgegevens voor je account.",
       "notEnabled": "WebAuthn / Passkey is niet ingeschakeld op dit account.",
-      "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen."
+      "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen.",
+      "password": {
+        "title": "Wachtwoord wijzigen",
+        "description": "Wijzig het wachtwoord waarmee je inlogt op je account.",
+        "notEnabled": "Aanmelden met wachtwoord is niet ingeschakeld voor dit account."
+      }
     },
     "settings": {
       "pageTitle": "Instellingen",

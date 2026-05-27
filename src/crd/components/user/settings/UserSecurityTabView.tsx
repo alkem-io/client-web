@@ -1,4 +1,4 @@
-import { Info, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, ShieldAlert, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
@@ -9,33 +9,31 @@ const NS = 'crd-contributorSettings';
 export type UserSecurityViewState =
   | { kind: 'loading' }
   | { kind: 'error' }
-  | { kind: 'noWebauthn' }
-  | { kind: 'ready' };
+  | { kind: 'ready'; hasPassword: boolean; hasWebauthn: boolean };
 
 export type UserSecurityTabViewProps = {
   state: UserSecurityViewState;
   /**
-   * Slot for the rendered Kratos UI (the legacy `<KratosForm><KratosUI /></KratosForm>`
-   * mount). Provided by the integration page so the CRD view stays free of
-   * direct MUI / Kratos imports. Only rendered when `state.kind === 'ready'`.
+   * Slot for the password-section Kratos UI mount (`<KratosForm><KratosUI /></KratosForm>`
+   * filtered to the `password` group). Provided by the integration page so
+   * the CRD view stays free of direct Kratos imports. Only rendered when
+   * `state.kind === 'ready'` and `state.hasPassword === true`.
    */
-  kratosForm: ReactNode;
+  passwordForm: ReactNode;
+  /**
+   * Slot for the WebAuthn / Passkey Kratos UI mount. Provided by the
+   * integration page; rendered when `state.kind === 'ready'` and
+   * `state.hasWebauthn === true`.
+   */
+  webauthnForm: ReactNode;
 };
 
 /**
  * User Security tab — presentational chrome only. The CRD layer wraps the
- * Kratos passkey/WebAuthn form in a `SettingsCard` (heading + description
- * + body slot); the form fields themselves are NOT restyled (FR-080 — out
- * of scope for this spec).
- *
- * Four render states (driven by `useIdentityProviderSettingsFlow`):
- * - `loading` — full-card skeleton.
- * - `error` — Settings card with an error message.
- * - `noWebauthn` — Settings card with an info alert ("WebAuthn / Passkey
- *   is not enabled on this account").
- * - `ready` — Settings card containing the slot-mounted Kratos form.
+ * Kratos password and passkey forms in two `SettingsCard`s; the form
+ * fields themselves are NOT restyled (FR-080 — out of scope).
  */
-export function UserSecurityTabView({ state, kratosForm }: UserSecurityTabViewProps) {
+export function UserSecurityTabView({ state, passwordForm, webauthnForm }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
 
   if (state.kind === 'loading') {
@@ -58,15 +56,31 @@ export function UserSecurityTabView({ state, kratosForm }: UserSecurityTabViewPr
   }
 
   return (
-    <SettingsCard icon={ShieldCheck} title={t('user.security.title')} description={t('user.security.description')}>
-      {state.kind === 'noWebauthn' ? (
-        <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
-          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>{t('user.security.notEnabled')}</p>
-        </div>
-      ) : (
-        <div className="mt-2">{kratosForm}</div>
-      )}
-    </SettingsCard>
+    <div className="space-y-6">
+      <SettingsCard
+        icon={KeyRound}
+        title={t('user.security.password.title')}
+        description={t('user.security.password.description')}
+      >
+        {state.hasPassword ? (
+          <div className="mt-2">{passwordForm}</div>
+        ) : (
+          <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+            <p>{t('user.security.password.notEnabled')}</p>
+          </div>
+        )}
+      </SettingsCard>
+      <SettingsCard icon={ShieldCheck} title={t('user.security.title')} description={t('user.security.description')}>
+        {state.hasWebauthn ? (
+          <div className="mt-2">{webauthnForm}</div>
+        ) : (
+          <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+            <p>{t('user.security.notEnabled')}</p>
+          </div>
+        )}
+      </SettingsCard>
+    </div>
   );
 }

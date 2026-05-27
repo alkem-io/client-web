@@ -168,7 +168,12 @@
       "title": "Seguridad",
       "description": "Gestiona las claves de acceso y las credenciales WebAuthn de tu cuenta.",
       "notEnabled": "WebAuthn / Passkey no está habilitado en esta cuenta.",
-      "errorDescription": "No se pudieron cargar los ajustes de seguridad — intenta recargar la página."
+      "errorDescription": "No se pudieron cargar los ajustes de seguridad — intenta recargar la página.",
+      "password": {
+        "title": "Cambiar contraseña",
+        "description": "Actualiza la contraseña que usas para iniciar sesión en tu cuenta.",
+        "notEnabled": "El inicio de sesión con contraseña no está habilitado en esta cuenta."
+      }
     },
     "settings": {
       "pageTitle": "Ajustes",

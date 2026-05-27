@@ -168,7 +168,12 @@
       "title": "Sécurité",
       "description": "Gérez les passkeys et les identifiants WebAuthn de votre compte.",
       "notEnabled": "WebAuthn / Passkey n'est pas activé pour ce compte.",
-      "errorDescription": "Impossible de charger les paramètres de sécurité — essayez de recharger la page."
+      "errorDescription": "Impossible de charger les paramètres de sécurité — essayez de recharger la page.",
+      "password": {
+        "title": "Changer le mot de passe",
+        "description": "Mettez à jour le mot de passe utilisé pour vous connecter à votre compte.",
+        "notEnabled": "La connexion par mot de passe n'est pas activée pour ce compte."
+      }
     },
     "settings": {
       "pageTitle": "Paramètres",
