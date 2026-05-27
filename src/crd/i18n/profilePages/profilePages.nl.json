@@ -22,8 +22,8 @@
       "bodyOfKnowledge": "Kennisbasis wordt geladen"
     },
     "spacePrivacy": {
-      "private": "Privéruimte",
-      "public": "Openbare ruimte"
+      "private": "Private Space",
+      "public": "Openbare Space"
     }
   },
   "userProfile": {
@@ -39,7 +39,7 @@
     },
     "sections": {
       "spacesSubsection": "Spaces",
-      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Lid van"
     },
@@ -56,7 +56,7 @@
       "leading": "Nog geen leiding over spaces.",
       "membership": "Nog geen lidmaatschappen."
     },
-    "vcType": "Virtuele bijdrager"
+    "vcType": "Virtual Contributor"
   },
   "orgProfile": {
     "hero": {
@@ -85,20 +85,20 @@
     },
     "sections": {
       "spacesSubsection": "Spaces",
-      "virtualContributorsSubsection": "Virtuele bijdragers",
+      "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces onder leiding",
       "memberOf": "Alle lidmaatschappen"
     },
     "empty": {
       "leading": "Nog geen leiding over spaces."
     },
-    "vcType": "Virtuele bijdrager"
+    "vcType": "Virtual Contributor"
   },
   "vcProfile": {
-    "typeBadge": "Virtuele bijdrager",
+    "typeBadge": "Virtual Contributor",
     "hero": {
-      "settingsTooltip": "Instellingen virtuele bijdrager",
-      "settingsAriaLabel": "Instellingen virtuele bijdrager openen"
+      "settingsTooltip": "Instellingen Virtual contributor",
+      "settingsAriaLabel": "Instellingen Virtual contributor openen"
     },
     "sidebar": {
       "descriptionTitle": "Beschrijving",
@@ -111,13 +111,13 @@
       "capabilities": {
         "title": "Functionele mogelijkheden",
         "tagging": "Vragen in opmerkingen beantwoorden",
-        "createContent": "Nieuwe berichten aanmaken",
+        "createContent": "Nieuwe posts aanmaken",
         "communityManagement": "Andere bijdragers uitnodigen"
       },
       "dataAccess": {
         "title": "Gegevenstoegang vanuit de Space waarvan deze lid is",
         "about": "Over-pagina",
-        "content": "Berichten en bijdragen",
+        "content": "Posts en bijdragen",
         "subspaces": "Subspaces"
       },
       "roleRequirements": {

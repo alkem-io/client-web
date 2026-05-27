@@ -1,0 +1,111 @@
+{
+  "$comment": "Consolidated do-not-translate glossary for spec 101. Seeded from two sources: (1) the enforced terms in commit ed03141e on branch translations-NL (common.en.json / common.nl.json keys), and (2) the Initial Glossary Draft in spec.md. The commit is authoritative for what is actually enforced today; the spec draft contributed rationales, the de translations, and the locked/preferred status distinction. Provenance is recorded per entry in `source`. Schema follows spec.md F1 + Key Entities.",
+  "glossary": [
+    {
+      "term": "Space",
+      "status": "locked",
+      "translations": { "en": "Space", "nl": "Space", "de": "Space" },
+      "rationale": "Product branding; core organizational unit. Must remain unchanged across all languages. Was being translated to 'Ruimte' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141"
+    },
+    {
+      "term": "Spaces",
+      "status": "locked",
+      "translations": { "en": "Spaces", "nl": "Spaces", "de": "Spaces" },
+      "rationale": "Plural of Space; product branding consistency. Was being translated to 'Ruimtes' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141"
+    },
+    {
+      "term": "Subspace",
+      "status": "locked",
+      "translations": { "en": "Subspace", "nl": "Subspace", "de": "Subspace" },
+      "rationale": "Product branding; nested organizational unit. Was being translated to 'Subruimte' in NL. (Missing from spec.md Initial Glossary Draft — added from the commit.)",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141"
+    },
+    {
+      "term": "Subspaces",
+      "status": "locked",
+      "translations": { "en": "Subspaces", "nl": "Subspaces", "de": "Subspaces" },
+      "rationale": "Product branding; core organizational unit. Must remain unchanged across all languages. Was being translated to 'Subruimtes' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Post",
+      "status": "locked",
+      "translations": { "en": "Post", "nl": "Post", "de": "Post" },
+      "rationale": "Product branding; content creation unit. Avoid translations like 'Bericht', 'artikel' or 'Beitrag'. Was being translated to 'Bericht' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Posts",
+      "status": "locked",
+      "translations": { "en": "Posts", "nl": "Posts", "de": "Posts" },
+      "rationale": "Plural of Post; product branding consistency. Was being translated to 'Berichten' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Callout",
+      "status": "locked",
+      "translations": { "en": "Post", "nl": "Post", "de": "Post" },
+      "rationale": "Legacy/data-layer term mapped to 'Post' for consistency. Users see 'Post' across the UI. Was being translated to 'Oproep' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Callouts",
+      "status": "locked",
+      "translations": { "en": "Posts", "nl": "Posts", "de": "Posts" },
+      "rationale": "Legacy/data-layer plural mapped to 'Posts'. Was being translated to 'Oproepen' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "template",
+      "status": "preferred",
+      "translations": { "en": "template", "nl": "template", "de": "template" },
+      "rationale": "Technical term; avoid localized alternatives like 'sjabloon', 'Vorlage', 'plantilla'. Was being translated to 'sjabloon' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft",
+      "notes": "Stored lowercase in common.* for natural mid-sentence interpolation; capitalize ('Template') when standalone as a tab title, dialog heading, or button label."
+    },
+    {
+      "term": "templates",
+      "status": "preferred",
+      "translations": { "en": "templates", "nl": "templates", "de": "templates" },
+      "rationale": "Plural technical term; maintain consistency with singular. Was being translated to 'sjablonen' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft",
+      "notes": "Lowercase in common.*; capitalize ('Templates') when standalone."
+    },
+    {
+      "term": "Layout",
+      "status": "locked",
+      "translations": { "en": "Layout", "nl": "Layout", "de": "Layout" },
+      "rationale": "Product feature term; UX consistency across languages. Was being translated to 'Indeling' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Virtual Contributor",
+      "status": "locked",
+      "translations": { "en": "Virtual Contributor", "nl": "Virtual Contributor", "de": "Virtual Contributor" },
+      "rationale": "Product feature branding; AI agent role. Must remain consistent. Was being translated to 'Virtuele bijdrager' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "Virtual Contributors",
+      "status": "locked",
+      "translations": { "en": "Virtual Contributors", "nl": "Virtual Contributors", "de": "Virtual Contributors" },
+      "rationale": "Plural product feature branding. Was being translated to 'Virtuele bijdragers' in NL.",
+      "addedDate": "2026-05-27",
+      "source": "commit:ed03141,spec:draft"
+    }
+  ]
+}
