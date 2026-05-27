@@ -29,6 +29,10 @@
     "restart": "Zusammenarbeit neu starten",
     "guestContributionsWarning": "Gastbeiträge sind aktiviert",
     "closeWhiteboard": "Whiteboard schließen",
+    "saveStatus": {
+      "label": "Speicherstatus",
+      "close": "Schließen"
+    },
     "loadingWhiteboard": "Whiteboard wird geladen",
     "untitled": "Whiteboard",
     "unsavedChanges": {
@@ -55,6 +59,11 @@
         "generic": "Sie können dieses Whiteboard aus einem der folgenden Gründe nicht bearbeiten:\n\n- Sie waren 2 Stunden oder länger inaktiv\n- Sie sind kein Mitglied des Space\n- Dieser Space erlaubt nur einen Whiteboard-Bearbeiter gleichzeitig\n- Dieser Space erlaubt mehr Bearbeiter, aber das Maximum ist erreicht"
       }
     }
+  },
+  "disconnected": {
+    "reconnect": "Erneut verbinden",
+    "countdown": "({{seconds}}s)",
+    "close": "Schließen"
   },
   "preview": {
     "settings": {

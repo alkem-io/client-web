@@ -22,6 +22,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
+import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/WhiteboardDisconnectedDialog';
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -44,6 +45,7 @@ import type {
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -291,6 +293,37 @@ const CrdWhiteboardDialog = ({
           },
           onSceneInitChange: setSceneInitialized,
         }}
+        renderDisconnectNotice={({
+          open,
+          isOnline,
+          connecting,
+          autoReconnectSeconds,
+          lastSuccessfulSavedDate: lastSaved,
+          onReconnect,
+          onClose: onCloseNotice,
+        }) => (
+          <WhiteboardDisconnectedDialog
+            open={open}
+            onClose={onCloseNotice}
+            title={t('pages.whiteboard.whiteboardDisconnected.title')}
+            message={t(
+              isOnline
+                ? 'pages.whiteboard.whiteboardDisconnected.message'
+                : 'pages.whiteboard.whiteboardDisconnected.offline'
+            )}
+            lastSavedText={
+              lastSaved
+                ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                    lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
+                  })
+                : undefined
+            }
+            canReconnect={isOnline}
+            reconnecting={connecting}
+            countdownSeconds={autoReconnectSeconds}
+            onReconnect={onReconnect}
+          />
+        )}
       >
         {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
           const { readonlyReason, ...footerProps } = mapWhiteboardFooterProps({
