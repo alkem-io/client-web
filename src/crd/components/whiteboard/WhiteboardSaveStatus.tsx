@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/crd/primitives/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 type WhiteboardSaveStatusProps = {
   /** Whether the last save succeeded — drives the icon and its colour. */
@@ -28,23 +28,23 @@ export function WhiteboardSaveStatus({ saved, message, className }: WhiteboardSa
 
   return (
     <>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild={true}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setOpen(true)}
-              aria-label={t('editor.saveStatus.label')}
-              aria-haspopup="dialog"
-              className={cn('size-8', className)}
-            >
-              <Icon className={cn('size-4', !saved && 'text-destructive')} aria-hidden="true" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-xs">{message}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild={true}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setOpen(true)}
+            aria-label={t('editor.saveStatus.label')}
+            aria-haspopup="dialog"
+            className={cn('size-8', className)}
+          >
+            <Icon className={cn('size-4', !saved && 'text-destructive')} aria-hidden="true" />
+          </Button>
+        </TooltipTrigger>
+        {/* `z-[80]`: the trigger lives inside the whiteboard editor shell (`z-[60]`); the default
+            tooltip `z-50` would render the popover behind it. Lift it above the editor layering. */}
+        <TooltipContent className="z-[80] max-w-xs">{message}</TooltipContent>
+      </Tooltip>
 
       <Dialog open={open} onOpenChange={setOpen}>
         {/* `z-[70]` (content + overlay): this dialog opens on top of the whiteboard editor shell

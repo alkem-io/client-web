@@ -20,14 +20,13 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Caption, Text } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
-import Reconnectable from '@/core/utils/reconnectable';
-import { useTick } from '@/core/utils/time/tick';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
 import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
+import { useAutoReconnect } from './useAutoReconnect';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
@@ -108,8 +107,6 @@ export interface WhiteboardWhiteboardProps {
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
-
-const useReconnectable = Reconnectable();
 
 const CollaborativeExcalidrawWrapper = ({
   entities,
@@ -205,9 +202,8 @@ const CollaborativeExcalidrawWrapper = ({
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
-      if (isOnline) {
-        setupReconnectTimeout();
-      }
+      // The auto-reconnect countdown is driven by `useAutoReconnect` off the notice-open + connecting
+      // state below — no need to schedule anything from here.
       // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
       // with additional info here #7492
       logError('WB Connection Closed', {
@@ -253,14 +249,14 @@ const CollaborativeExcalidrawWrapper = ({
     setCollaborationStartTime(Date.now());
   };
 
-  const { autoReconnectTime, setupReconnectTimeout } = useReconnectable({
+  // Single source of truth for the reconnect countdown + backoff (5s → 10s → 30s → 60s…). It counts
+  // down while the notice is open and we're not yet collaborating, fires `restartCollaboration` at
+  // zero, and resets once the connection is restored.
+  const { secondsRemaining: autoReconnectSeconds } = useAutoReconnect({
+    active: collaborationStoppedNoticeOpen && !collaborating,
     isOnline,
-    reconnect: restartCollaboration,
-    skip: !collaborationStoppedNoticeOpen || collaborating,
-  });
-
-  const time = useTick({
-    skip: autoReconnectTime === null,
+    connecting,
+    onReconnect: restartCollaboration,
   });
 
   useEffect(() => {
@@ -326,10 +322,7 @@ const CollaborativeExcalidrawWrapper = ({
           open: collaborationStoppedNoticeOpen,
           isOnline,
           connecting,
-          autoReconnectSeconds:
-            autoReconnectTime !== null && autoReconnectTime - time > 0
-              ? Math.ceil((autoReconnectTime - time) / 1000)
-              : null,
+          autoReconnectSeconds,
           lastSuccessfulSavedDate,
           onReconnect: restartCollaboration,
           onClose: () => setCollaborationStoppedNoticeOpen(false),
@@ -352,10 +345,9 @@ const CollaborativeExcalidrawWrapper = ({
             <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
               {t('pages.whiteboard.whiteboardDisconnected.reconnect')}
               <Caption textTransform="none">
-                {autoReconnectTime !== null &&
-                  autoReconnectTime - time > 0 &&
+                {autoReconnectSeconds !== null &&
                   ` ${t('pages.whiteboard.whiteboardDisconnected.reconnectCountdown', {
-                    seconds: Math.ceil((autoReconnectTime - time) / 1000),
+                    seconds: autoReconnectSeconds,
                   })}`}
               </Caption>
             </Button>
