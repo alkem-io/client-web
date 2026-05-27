@@ -172,7 +172,9 @@
       "password": {
         "title": "Wachtwoord wijzigen",
         "description": "Wijzig het wachtwoord waarmee je inlogt op je account.",
-        "notEnabled": "Aanmelden met wachtwoord is niet ingeschakeld voor dit account."
+        "notEnabled": "Aanmelden met wachtwoord is niet ingeschakeld voor dit account.",
+        "confirmLabel": "Bevestig nieuw wachtwoord",
+        "mismatch": "Wachtwoorden komen niet overeen."
       }
     },
     "settings": {

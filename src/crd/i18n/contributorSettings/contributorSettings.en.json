@@ -172,7 +172,9 @@
       "password": {
         "title": "Change password",
         "description": "Update the password used to sign in to your account.",
-        "notEnabled": "Password sign-in is not enabled on this account."
+        "notEnabled": "Password sign-in is not enabled on this account.",
+        "confirmLabel": "Confirm new password",
+        "mismatch": "Passwords don't match."
       }
     },
     "settings": {

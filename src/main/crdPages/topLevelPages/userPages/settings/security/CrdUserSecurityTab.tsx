@@ -7,6 +7,7 @@ import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/component
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
+import PasswordChangeForm from './PasswordChangeForm';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
 /**
@@ -89,9 +90,7 @@ const CrdUserSecurityTab = () => {
 
   const passwordForm =
     flowResult.kind === 'ready' && flowResult.hasPassword ? (
-      <KratosForm ui={flowResult.flow.ui}>
-        <KratosUI ui={flowResult.flow.ui} removedFields={PASSWORD_REMOVED_FIELDS} flowType="settings" />
-      </KratosForm>
+      <PasswordChangeForm flow={flowResult.flow} removedFields={PASSWORD_REMOVED_FIELDS} />
     ) : null;
 
   const webauthnForm =

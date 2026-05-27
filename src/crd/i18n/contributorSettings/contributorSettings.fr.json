@@ -172,7 +172,9 @@
       "password": {
         "title": "Changer le mot de passe",
         "description": "Mettez à jour le mot de passe utilisé pour vous connecter à votre compte.",
-        "notEnabled": "La connexion par mot de passe n'est pas activée pour ce compte."
+        "notEnabled": "La connexion par mot de passe n'est pas activée pour ce compte.",
+        "confirmLabel": "Confirmer le nouveau mot de passe",
+        "mismatch": "Les mots de passe ne correspondent pas."
       }
     },
     "settings": {

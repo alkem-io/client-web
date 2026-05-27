@@ -172,7 +172,9 @@
       "password": {
         "title": "Cambiar contraseña",
         "description": "Actualiza la contraseña que usas para iniciar sesión en tu cuenta.",
-        "notEnabled": "El inicio de sesión con contraseña no está habilitado en esta cuenta."
+        "notEnabled": "El inicio de sesión con contraseña no está habilitado en esta cuenta.",
+        "confirmLabel": "Confirmar nueva contraseña",
+        "mismatch": "Las contraseñas no coinciden."
       }
     },
     "settings": {

@@ -172,7 +172,9 @@
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
-        "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert."
+        "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert.",
+        "confirmLabel": "Neues Passwort bestätigen",
+        "mismatch": "Passwörter stimmen nicht überein."
       }
     },
     "settings": {
