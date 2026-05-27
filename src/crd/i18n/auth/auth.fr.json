@@ -19,6 +19,9 @@
     "title": "Récupération du mot de passe",
     "intro": "Saisissez votre adresse e-mail ci-dessous pour recevoir un lien de récupération qui vous permettra de réinitialiser votre mot de passe."
   },
+  "settings": {
+    "title": "Définir un nouveau mot de passe"
+  },
   "verification": {
     "title": "Vérifiez votre e-mail",
     "intro": "Veuillez consulter votre boîte de réception pour un e-mail contenant les instructions de vérification de votre adresse."

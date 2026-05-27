@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Trans, type TransProps, useTranslation } from 'react-i18next';
 import { kratosMessageTranslationKeys } from '@/core/auth/authentication/components/Kratos/messages';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
-import type { KratosMessage } from '@/crd/components/auth/flowDescriptor';
+import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 
 /** HTML tags Alkemio's Kratos copy uses; mirrors the MUI `useKratosT` mapping. */
 const TRANS_COMPONENTS = { strong: <strong />, li: <li />, br: <br /> };
@@ -14,6 +14,26 @@ const PROVIDER_DISPLAY_NAMES: Record<string, string> = {
   microsoft: 'Microsoft',
   apple: 'Apple',
   cleverbase: 'Cleverbase',
+};
+
+const MESSAGE_CODE_CLAIM_MISSING = 4000002;
+
+/**
+ * Kratos sends id 4000002 ("Property X is missing.") for *two* scenarios:
+ * 1. A required form field is empty — `context.property` is the field's leaf
+ *    path (e.g. "last", "first", "email"). We rewrite the text to a friendly
+ *    "<label> is required" using the field's user-facing label.
+ * 2. The Cleverbase claim-missing scenario — `context.property` is not a
+ *    form-field name. We fall through to the existing `claim-missing` copy.
+ */
+const PROPERTY_TO_LABEL_KEY: Record<string, string> = {
+  email: 'kratos.fields.E-Mail',
+  'traits.email': 'kratos.fields.E-Mail',
+  first: 'kratos.fields.First Name',
+  'traits.name.first': 'kratos.fields.First Name',
+  last: 'kratos.fields.Last Name',
+  'traits.name.last': 'kratos.fields.Last Name',
+  password: 'kratos.fields.Password',
 };
 
 /** Replaces a lower-cased `context.provider` with its brand-cased display name. */
@@ -45,6 +65,22 @@ export function useKratosMessageCopy() {
 
   return (messages: KratosMessage[]): KratosMessage[] =>
     messages.map(message => {
+      // Field-level "Property X is missing." — substitute the field's friendly
+      // label so the user sees "Last Name is required." instead of "Property last
+      // is missing." Falls through to the existing claim-missing override when
+      // the property isn't a known form field (Cleverbase scenario).
+      if (message.id === MESSAGE_CODE_CLAIM_MISSING && typeof message.context?.property === 'string') {
+        const labelKey = PROPERTY_TO_LABEL_KEY[message.context.property];
+        if (labelKey) {
+          const label = translate(labelKey);
+          const text = translate('kratos.messages.property-missing', {
+            field: label,
+            defaultValue: message.text,
+          });
+          return { ...message, text };
+        }
+      }
+
       const key = kratosMessageTranslationKeys[String(message.id)];
       if (!key) {
         return message;
@@ -66,4 +102,36 @@ export function useKratosMessageCopy() {
       );
       return { ...message, content };
     });
+}
+
+/**
+ * Translates every message exposed by the descriptor — the top-level flow
+ * messages, each field-level input's messages, and the accept-terms checkbox's
+ * messages — through `useKratosMessageCopy`. Without this, raw Kratos text like
+ * "Property last is missing." leaks through on field-level errors because the
+ * route's existing call only covered `descriptor.messages`.
+ */
+export function useTranslateDescriptor() {
+  const translateMessages = useKratosMessageCopy();
+
+  return (descriptor: KratosFlowDescriptor): KratosFlowDescriptor => {
+    const translateInputMessages = <T extends { messages: KratosMessage[] }>(node: T): T => ({
+      ...node,
+      messages: translateMessages(node.messages),
+    });
+
+    return {
+      ...descriptor,
+      messages: translateMessages(descriptor.messages),
+      acceptTerms: descriptor.acceptTerms
+        ? { ...descriptor.acceptTerms, messages: translateMessages(descriptor.acceptTerms.messages) }
+        : undefined,
+      groups: {
+        ...descriptor.groups,
+        default: descriptor.groups.default.map(translateInputMessages),
+        password: descriptor.groups.password.map(translateInputMessages),
+        rest: descriptor.groups.rest.map(translateInputMessages),
+      },
+    };
+  };
 }

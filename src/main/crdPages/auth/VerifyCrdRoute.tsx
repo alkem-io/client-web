@@ -9,7 +9,7 @@ import { VerificationCard } from '@/crd/components/auth/VerificationCard';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
-import { useKratosMessageCopy } from './useKratosMessageCopy';
+import { useTranslateDescriptor } from './useKratosMessageCopy';
 
 /** `/verify` — the email-verification Kratos flow. */
 function CrdVerificationPage() {
@@ -19,11 +19,26 @@ function CrdVerificationPage() {
 
   const flowId = useQueryParams().get('flow') || undefined;
   const { flow: verificationFlow, loading } = useKratosFlow(FlowTypeName.Verification, flowId);
-  const translateMessages = useKratosMessageCopy();
+  const translateDescriptor = useTranslateDescriptor();
 
   const baseDescriptor = verificationFlow ? flowDescriptorAdapter(verificationFlow, 'verification') : undefined;
-  const descriptor = baseDescriptor
-    ? { ...baseDescriptor, messages: translateMessages(baseDescriptor.messages) }
+  const translatedDescriptor = baseDescriptor ? translateDescriptor(baseDescriptor) : undefined;
+
+  // Verification's sent_email state exposes two distinct submits: the link
+  // method (name="method", value="link", label "Continue") and the code method
+  // (name="email", value=<address>, label "Resend code"). Both functionally just
+  // re-send a verification email, so we keep only the link-method submit and
+  // relabel it for clarity — one "Resend verification email" button is enough.
+  const descriptor = translatedDescriptor
+    ? {
+        ...translatedDescriptor,
+        groups: {
+          ...translatedDescriptor.groups,
+          submit: translatedDescriptor.groups.submit
+            .filter(node => node.name === 'method')
+            .map(node => ({ ...node, label: t('pages.verification.resendEmail') })),
+        },
+      }
     : undefined;
 
   return (

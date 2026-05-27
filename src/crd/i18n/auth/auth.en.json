@@ -19,6 +19,9 @@
     "title": "Password recovery",
     "intro": "Please enter your email address below to receive a recovery link that will allow you to reset your password."
   },
+  "settings": {
+    "title": "Set new password"
+  },
   "verification": {
     "title": "Verify your email",
     "intro": "Please check your inbox for an email with instructions to verify your address."

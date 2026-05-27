@@ -19,6 +19,9 @@
     "title": "Passwort-Wiederherstellung",
     "intro": "Bitte gib unten deine E-Mail-Adresse ein, um einen Wiederherstellungslink zu erhalten, mit dem du dein Passwort zurücksetzen kannst."
   },
+  "settings": {
+    "title": "Neues Passwort festlegen"
+  },
   "verification": {
     "title": "E-Mail bestätigen",
     "intro": "Bitte prüfe deinen Posteingang auf eine E-Mail mit Anweisungen zur Bestätigung deiner Adresse."

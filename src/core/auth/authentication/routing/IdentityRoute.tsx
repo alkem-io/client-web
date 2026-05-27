@@ -4,13 +4,13 @@ import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { ErrorCrdRoute } from '@/main/crdPages/auth/ErrorCrdRoute';
 import { LoginCrdRoute } from '@/main/crdPages/auth/LoginCrdRoute';
 import { RecoveryCrdRoute } from '@/main/crdPages/auth/RecoveryCrdRoute';
+import { SettingsCrdRoute } from '@/main/crdPages/auth/SettingsCrdRoute';
 import { RegistrationCrdRoute, SignUpCrdRoute } from '@/main/crdPages/auth/SignUpCrdRoute';
 import { VerifyCrdRoute } from '@/main/crdPages/auth/VerifyCrdRoute';
 import { CrdAuthRequiredRoute } from '@/main/crdPages/error/CrdAuthRequiredRoute';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import LogoutRoute from './LogoutRoute';
-import SettingsRoute from './SettingsRoute';
 
 export enum IdentityRoutes {
   Login = 'login',
@@ -43,7 +43,7 @@ export const IdentityRoute = () => {
         path={`${IdentityRoutes.Settings}`}
         element={
           <NoIdentityRedirect>
-            <SettingsRoute />
+            <SettingsCrdRoute />
           </NoIdentityRedirect>
         }
       />

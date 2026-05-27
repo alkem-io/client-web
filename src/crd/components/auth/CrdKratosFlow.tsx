@@ -1,5 +1,5 @@
 import { Info, KeyRound } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
   KratosFlowDescriptor,
@@ -49,6 +49,26 @@ export function CrdKratosFlow({
   const { t } = useTranslation('crd-auth');
   const { groups } = descriptor;
 
+  // Track live values for required inputs to disable the submit button until
+  // every required field is filled. The form itself stays uncontrolled — these
+  // values are only used for the submit-disabled check.
+  const requiredInputs = [...groups.default, ...groups.password, ...groups.rest].filter(node => node.required);
+  const [requiredValues, setRequiredValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(requiredInputs.map(node => [node.name, node.value || '']))
+  );
+  const allRequiredFilled = requiredInputs.every(node => (requiredValues[node.name] ?? '').trim().length > 0);
+  const trackValue = (name: string) => (value: string) => {
+    setRequiredValues(previous => ({ ...previous, [name]: value }));
+  };
+  // The primary form-submit (non-OIDC/passkey) is blocked until every required
+  // input is filled; OIDC and passkey paths bypass the form's required values
+  // (the provider supplies those traits server-side). They are still blocked by
+  // `submitDisabled` — for registration that captures the accept-terms gate, so
+  // clicking Microsoft can't submit an unchecked-terms form which Kratos would
+  // otherwise reject as a no-op flow re-render.
+  const formSubmitDisabled = submitDisabled || !allRequiredFilled;
+  const alternativeSubmitDisabled = Boolean(submitDisabled);
+
   const fieldLabel = (node: KratosTextInputNode): string => {
     if (EMAIL_FIELD_NAMES.has(node.name)) return t('fields.email');
     if (node.name === 'password') return t('fields.password');
@@ -70,6 +90,7 @@ export function CrdKratosFlow({
       errorMessage={node.messages.find(message => message.type === 'error')?.text}
       showPasswordLabel={node.type === 'password' ? t('fields.showPassword') : undefined}
       hidePasswordLabel={node.type === 'password' ? t('fields.hidePassword') : undefined}
+      onValueChange={node.required ? trackValue(node.name) : undefined}
     />
   );
 
@@ -128,7 +149,7 @@ export function CrdKratosFlow({
           type="submit"
           name={node.name}
           value={node.value}
-          disabled={submitDisabled || disableInputs || node.disabled}
+          disabled={formSubmitDisabled || disableInputs || node.disabled}
           className="h-12 w-full font-semibold uppercase tracking-wider"
         >
           {node.label}
@@ -152,7 +173,7 @@ export function CrdKratosFlow({
               key={`passkey-${node.name}-${node.value}`}
               label={node.label || t('providers.fallback')}
               icon={<KeyRound aria-hidden="true" className="size-5" />}
-              disabled={disableInputs || node.disabled}
+              disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
               onClick={() => onPasskeyTrigger?.(node.trigger)}
             />
           ))}
@@ -163,7 +184,7 @@ export function CrdKratosFlow({
               iconSrc={node.customisation?.iconSrc}
               formFieldName={node.name}
               formFieldValue={node.value}
-              disabled={disableInputs || node.disabled}
+              disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
               onClick={() => onProviderClick?.(node.value)}
             />
           ))}

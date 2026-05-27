@@ -19,6 +19,9 @@
     "title": "Recuperación de contraseña",
     "intro": "Introduce tu correo electrónico a continuación para recibir un enlace de recuperación que te permitirá restablecer tu contraseña."
   },
+  "settings": {
+    "title": "Establecer nueva contraseña"
+  },
   "verification": {
     "title": "Verifica tu correo electrónico",
     "intro": "Revisa tu bandeja de entrada para ver un correo con instrucciones para verificar tu dirección."

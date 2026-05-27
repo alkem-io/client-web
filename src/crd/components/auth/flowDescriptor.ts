@@ -2,9 +2,9 @@
  * Flow Descriptor — the integration-layer ⇄ CRD-layer boundary type.
  *
  * The plain-TypeScript projection of a Kratos authentication flow
- * (LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow) that the
- * integration layer's `flowDescriptorAdapter` produces and the CRD auth
- * components consume.
+ * (LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow | SettingsFlow)
+ * that the integration layer's `flowDescriptorAdapter` produces and the CRD
+ * auth components consume.
  *
  * It lives in the CRD layer because it is the prop contract of `CrdKratosFlow`;
  * the integration-layer adapter imports it from here. It is deliberately pure
@@ -13,7 +13,7 @@
 
 import type { ReactNode } from 'react';
 
-export type KratosFlowType = 'login' | 'registration' | 'recovery' | 'verification';
+export type KratosFlowType = 'login' | 'registration' | 'recovery' | 'verification' | 'settings';
 
 export type KratosMessageType = 'info' | 'error' | 'success';
 

@@ -19,6 +19,9 @@
     "title": "Wachtwoordherstel",
     "intro": "Voer hieronder je e-mailadres in om een herstellink te ontvangen waarmee je je wachtwoord opnieuw kunt instellen."
   },
+  "settings": {
+    "title": "Nieuw wachtwoord instellen"
+  },
   "verification": {
     "title": "Verifieer je e-mail",
     "intro": "Controleer je inbox voor een e-mail met instructies om je adres te verifiëren."

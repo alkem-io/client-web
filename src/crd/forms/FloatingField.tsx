@@ -16,6 +16,10 @@ export type FloatingFieldProps = {
   showPasswordLabel?: string;
   /** Accessible label for the show/hide toggle when visible (password type only). */
   hidePasswordLabel?: string;
+  /** Fires on every input change. The field stays uncontrolled; the callback is
+   * for consumers that need to react to live values (e.g. disabling submit until
+   * required fields are filled). */
+  onValueChange?: (value: string) => void;
 };
 
 /**
@@ -35,6 +39,7 @@ export function FloatingField({
   errorMessage,
   showPasswordLabel,
   hidePasswordLabel,
+  onValueChange,
 }: FloatingFieldProps) {
   const id = useId();
   const errorId = `${id}-error`;
@@ -57,6 +62,7 @@ export function FloatingField({
           placeholder=" "
           aria-invalid={hasError || undefined}
           aria-describedby={hasError ? errorId : undefined}
+          onChange={onValueChange ? event => onValueChange(event.target.value) : undefined}
           className={cn(
             'peer h-14 w-full rounded border bg-card px-3.5 pb-2 pt-5 text-base text-foreground outline-none transition-colors',
             'placeholder:text-transparent disabled:cursor-not-allowed disabled:opacity-50',

@@ -2,6 +2,7 @@ import type {
   LoginFlow,
   RecoveryFlow,
   RegistrationFlow,
+  SettingsFlow,
   UiNode,
   UiNodeInputAttributes,
   UiNodeTextAttributes,
@@ -40,7 +41,7 @@ import type {
 
 const ACCEPT_TERMS_FIELD = 'traits.accepted_terms';
 
-type AnyKratosFlow = LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow;
+type AnyKratosFlow = LoginFlow | RegistrationFlow | RecoveryFlow | VerificationFlow | SettingsFlow;
 type InputNode = UiNode & { attributes: UiNodeInputAttributes };
 
 const REMOVED_FIELD_NAMES = new Set(
@@ -48,6 +49,18 @@ const REMOVED_FIELD_NAMES = new Set(
     (name): name is string => typeof name === 'string'
   )
 );
+
+// Kratos settings flow exposes the full profile method (email + name + accept-terms
+// + a "profile" submit button) alongside the password method. We use settings only
+// to complete password recovery, so the profile inputs and submit are stripped —
+// the user is just here to set a new password. Mirrors the MUI `SettingsPage`
+// `REMOVED_FIELDS` list.
+const SETTINGS_REMOVED_INPUT_NAMES = new Set([
+  'traits.email',
+  'traits.name.first',
+  'traits.name.last',
+  'traits.accepted_terms',
+]);
 
 function toMessage(text: UiText): KratosMessage {
   return {
@@ -76,7 +89,7 @@ function resolveAutocomplete(attrs: UiNodeInputAttributes, flowType: KratosFlowT
     return 'username';
   }
   if (attrs.type === 'password') {
-    return flowType === 'registration' ? 'new-password' : 'current-password';
+    return flowType === 'registration' || flowType === 'settings' ? 'new-password' : 'current-password';
   }
   return attrs.autocomplete;
 }
@@ -154,6 +167,16 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
     }
     if (isInputNode(node) && REMOVED_FIELD_NAMES.has(node.attributes.name)) {
       continue;
+    }
+    if (flowType === 'settings' && isInputNode(node)) {
+      // Drop the profile method's inputs and its dedicated submit button —
+      // settings flow is only used to finish password recovery here.
+      if (SETTINGS_REMOVED_INPUT_NAMES.has(node.attributes.name)) {
+        continue;
+      }
+      if (isSubmitButton(node) && node.attributes.value === 'profile') {
+        continue;
+      }
     }
     if (isPasskeyAutocompleteInit(node)) {
       continue;
@@ -239,6 +262,20 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
       (a.customisation?.sortOrder ?? Number.POSITIVE_INFINITY) -
       (b.customisation?.sortOrder ?? Number.POSITIVE_INFINITY)
   );
+
+  // Dedupe identical submit buttons by (name, value). Kratos can return
+  // duplicates in some flow states — observed on verification's `sent_email`
+  // state where the `link` method emits two byte-identical "Continue" submits.
+  // Rendering both produces a confusing duplicate button; one is enough.
+  const seenSubmits = new Set<string>();
+  groups.submit = groups.submit.filter(node => {
+    const key = `${node.name}|${node.value}`;
+    if (seenSubmits.has(key)) {
+      return false;
+    }
+    seenSubmits.add(key);
+    return true;
+  });
 
   return {
     flowType,
