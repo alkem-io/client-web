@@ -29,6 +29,10 @@
     "restart": "Restart collaboration",
     "guestContributionsWarning": "Guest contributions are enabled",
     "closeWhiteboard": "Close whiteboard",
+    "saveStatus": {
+      "label": "Save status",
+      "close": "Close"
+    },
     "loadingWhiteboard": "Loading whiteboard",
     "untitled": "Whiteboard",
     "unsavedChanges": {
@@ -55,6 +59,11 @@
         "generic": "You can't edit this whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the space\n- This space only allows one whiteboard editor at a time\n- This space allows for more editors, but the maximum is reached"
       }
     }
+  },
+  "disconnected": {
+    "reconnect": "Reconnect",
+    "countdown": "({{seconds}}s)",
+    "close": "Close"
   },
   "preview": {
     "settings": {

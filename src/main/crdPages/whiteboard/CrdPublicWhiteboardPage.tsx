@@ -9,7 +9,6 @@ import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { JoinWhiteboardDialog } from '@/crd/components/whiteboard/JoinWhiteboardDialog';
 import { WhiteboardErrorState } from '@/crd/components/whiteboard/WhiteboardErrorState';
-import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
 import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
@@ -20,6 +19,7 @@ import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGue
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
+import { CrdWhiteboardSaveStatus } from './CrdWhiteboardSaveStatus';
 
 const CrdPublicWhiteboardPageContent: FC = () => {
   const { whiteboardId } = useParams<{ whiteboardId: string }>();
@@ -221,7 +221,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
               <>
                 <ShareButton url={computedGuestShareUrl} disabled={!computedGuestShareUrl} />
                 {!isSmallScreen && <FullscreenButton />}
-                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+                <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
               </>
             ),
           }}

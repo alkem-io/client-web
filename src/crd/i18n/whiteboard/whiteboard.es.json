@@ -29,6 +29,10 @@
     "restart": "Reiniciar colaboración",
     "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
     "closeWhiteboard": "Cerrar pizarra",
+    "saveStatus": {
+      "label": "Estado de guardado",
+      "close": "Cerrar"
+    },
     "loadingWhiteboard": "Cargando pizarra",
     "untitled": "Pizarra",
     "unsavedChanges": {
@@ -55,6 +59,11 @@
         "generic": "No puedes editar esta pizarra por alguna de las siguientes razones:\n\n- Has estado inactivo durante 2 horas o más\n- No eres miembro del espacio\n- Este espacio solo permite un editor de pizarra a la vez\n- Este espacio permite más editores, pero se ha alcanzado el máximo."
       }
     }
+  },
+  "disconnected": {
+    "reconnect": "Reconectar",
+    "countdown": "({{seconds}}s)",
+    "close": "Cerrar"
   },
   "preview": {
     "settings": {
