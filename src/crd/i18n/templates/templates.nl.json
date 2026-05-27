@@ -287,14 +287,7 @@
   },
   "packProfile": {
     "shareTooltip": "Deel dit Innovation Pack",
-    "manage": "Beheer dit pakket",
-    "sidebarLabel": "Pakketgegevens",
-    "provider": "Aanbieder",
-    "providerUnknown": "Aanbieder onbekend",
-    "tags": "Labels",
-    "references": "Referenties",
-    "referencesEmpty": "Geen referenties.",
-    "templatesHeading": "Sjablonen"
+    "manage": "Beheer dit pakket"
   },
   "library": {
     "title": "Innovatiebibliotheek",

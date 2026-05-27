@@ -139,6 +139,26 @@
       "reject": "Reject",
       "delete": "Delete",
       "empty": "No pending memberships.",
+      "noMatch": "No pending memberships match the selected filters.",
+      "filterLabel": "Filter by status",
+      "sortBy": "Sort by {{column}}",
+      "viewApplication": "View application",
+      "viewInvitation": "View invitation",
+      "viewDialog": {
+        "created": "Created {{date}}",
+        "updated": "Updated {{date}}",
+        "welcomeMessage": "Welcome message",
+        "noWelcomeMessage": "No welcome message provided.",
+        "noAnswers": "No answers provided.",
+        "close": "Close",
+        "loading": "Loading details"
+      },
+      "pagination": {
+        "showing": "Showing {{from}} to {{to}} of {{total}}",
+        "previous": "Previous page",
+        "page": "Page {{page}} of {{total}}",
+        "next": "Next page"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Application received",

@@ -134,8 +134,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     referenceRows:
       framing.profile.references?.map(r => ({
         id: r.id,
-        title: r.name,
-        url: r.uri,
+        name: r.name,
+        uri: r.uri,
         description: r.description ?? '',
       })) ?? [],
     notifyMembers: false,
@@ -145,6 +145,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
       pollId: framing.poll?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
+      framingProfileId: framing.profile.id,
+      originalReferenceIds: framing.profile.references?.map(r => r.id) ?? [],
     },
   };
 

@@ -1,16 +1,18 @@
 import type { TFunction } from 'i18next';
 import {
-  type CalloutContributionType,
+  CalloutContributionType,
   CalloutFramingType,
   CollaboraDocumentType,
 } from '@/core/apollo/generated/graphql-schema';
 import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
+import type { CalloutListItem } from '@/crd/components/callout/CalloutListView';
 import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { mapLinkToCallToActionProps } from './callToActionDataMapper';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
@@ -139,7 +141,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     isDraft: callout.draft,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
@@ -188,6 +190,51 @@ export function getCalloutContributionType(callout: CalloutDetailsModelExtended)
   return allowedTypes.length > 0 ? allowedTypes[0] : undefined;
 }
 
+/** Maps a contribution type to its pluralised count key in the `crd-space` namespace. */
+const CONTRIBUTION_COUNT_KEY = {
+  [CalloutContributionType.Post]: 'knowledge.count.post',
+  [CalloutContributionType.Whiteboard]: 'knowledge.count.whiteboard',
+  [CalloutContributionType.Memo]: 'knowledge.count.memo',
+  [CalloutContributionType.Link]: 'knowledge.count.link',
+  [CalloutContributionType.CollaboraDocument]: 'knowledge.count.document',
+} as const satisfies Record<CalloutContributionType, string>;
+
+/**
+ * Bracketed response summary for the Knowledge Base list view, e.g. "2 memos".
+ * Derived from the callout's contribution type + activity count; callouts that
+ * do not collect contributions (or have none) return `undefined`.
+ */
+function formatCalloutResponseMeta(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): string | undefined {
+  const count = callout.activity ?? 0;
+  const contributionType = callout.settings?.contribution?.allowedTypes?.[0];
+  if (count <= 0 || !contributionType) {
+    return undefined;
+  }
+  return t(CONTRIBUTION_COUNT_KEY[contributionType], { count });
+}
+
+/**
+ * Maps light callout models to the Knowledge Base list-view row shape. The row
+ * link carries `?tab=<tabSectionNumber>` so the background space page keeps the
+ * active tab when the callout detail dialog opens.
+ */
+export function mapCalloutsToListItems(
+  callouts: CalloutModelLightExtended[],
+  tabSectionNumber: number,
+  t: CrdSpaceTranslator
+): CalloutListItem[] {
+  return callouts.map(callout => {
+    const url = callout.framing.profile.url;
+    return {
+      id: callout.id,
+      title: callout.framing.profile.displayName,
+      type: callout.framing.type === CalloutFramingType.Whiteboard ? 'whiteboard' : 'text',
+      href: url ? buildSpaceSectionUrl(url, tabSectionNumber) : undefined,
+      meta: formatCalloutResponseMeta(callout, t),
+    };
+  });
+}
+
 export function formatRelativeDate(date: Date, t: CrdSpaceTranslator): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
@@ -214,7 +261,7 @@ export function mapCalloutDetailsToDialogData(
     description: callout.framing.profile.description ?? undefined,
     timestamp,
     author,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    commentCount: callout.comments?.messagesCount ?? 0,
     reactionCount: 0,
     // `framing.profile.tagset` is the default (single) tagset for the
     // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a

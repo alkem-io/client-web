@@ -14,6 +14,7 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
@@ -30,8 +31,10 @@ import {
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { useSpaceWidthPreference } from '../../space/layout/useSpaceWidthPreference';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
@@ -70,6 +73,7 @@ export default function CrdSubspacePageLayout() {
     templatesSetId: data.templatesSetId,
     defaultTemplateId: data.defaultSubspaceTemplateId,
   });
+  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(data.subspaceId);
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -204,6 +208,7 @@ export default function CrdSubspacePageLayout() {
           {data.visibility.status !== 'active' && (
             <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
           )}
+          <EnableSpaceFullWidth />
           <div className="flex flex-col bg-background min-h-screen">
             <SpaceSettingsHeader
               title={data.banner.title}
@@ -211,6 +216,7 @@ export default function CrdSubspacePageLayout() {
               avatarUrl={data.banner.subspaceAvatarUrl ?? null}
               initials={data.banner.subspaceInitials}
               avatarColor={data.banner.subspaceColor}
+              fullWidth={fullWidth}
               tabs={
                 <SpaceSettingsTabStrip
                   activeTab={activeSettingsTab}
@@ -221,7 +227,7 @@ export default function CrdSubspacePageLayout() {
             />
             <main className="flex-1 w-full px-6 md:px-8 pb-8">
               <div className="grid grid-cols-12 gap-6 items-start">
-                <div className="col-span-12 lg:col-start-2 lg:col-span-10 min-w-0">
+                <div className={cn('col-span-12 min-w-0', contentColumnClass(fullWidth))}>
                   <Suspense fallback={<LoadingSpinner />}>
                     <Outlet context={{ data }} />
                   </Suspense>
@@ -240,20 +246,30 @@ export default function CrdSubspacePageLayout() {
   // branch above with no banner image.
   const enableBannerOverlay = data.visibility.status === 'active';
 
+  // Sidebar + content share one 12-col track. Two orthogonal toggles move the
+  // column boundaries: `sidebarCollapsed` (2-col sidebar → 1-col rail) and
+  // `fullWidth` (drop the empty edge gutter columns). See `subspaceHomeColumns`.
+  const homeGrid = subspaceHomeColumns(fullWidth, sidebarCollapsed);
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={data.subspaceId}>
       {data.visibility.status !== 'active' && (
         <SpaceVisibilityNotice status={data.visibility.status} contactHref={data.visibility.contactHref} />
       )}
       {enableBannerOverlay && <EnableBannerOverlay />}
+      <EnableSpaceFullWidth />
 
       <div className="flex flex-col bg-background min-h-screen">
         <SubspaceHeader
           {...data.banner}
+          fullWidth={fullWidth}
           actions={{
             ...data.bannerActions,
+            showFullWidthToggle: true,
+            fullWidth,
             onActivityClick: () => setActiveDialog('activity'),
             onShareClick: () => setShareDialogOpen(true),
+            onToggleFullWidth: toggleFullWidth,
             onMenuClick: () => setMobileMenuOpen(true),
           }}
           overlayHeader={enableBannerOverlay}
@@ -261,25 +277,13 @@ export default function CrdSubspacePageLayout() {
 
         <main className="flex-1 w-full px-6 md:px-8 pb-8">
           <div className="grid grid-cols-12 gap-6 items-start">
-            {/* Left sidebar — cols 2-3 when expanded; a single-col icon rail
-                when collapsed, freeing a column for the content area. */}
-            <div
-              className={cn(
-                'hidden lg:block sticky top-24 self-start',
-                sidebarCollapsed ? 'lg:col-start-2 lg:col-span-1' : 'lg:col-start-2 col-span-2'
-              )}
-            >
-              {desktopSidebar}
-            </div>
+            {/* Left sidebar — collapsible 1-col rail; `fullWidth` drops the
+                empty edge gutter so it starts at col 1 instead of col 2. */}
+            <div className={cn('hidden lg:block sticky top-24 self-start', homeGrid.sidebar)}>{desktopSidebar}</div>
 
-            {/* Main content — cols 4-11 when the sidebar is expanded; widens to
-                cols 3-11 when collapsed. One col gap from the right edge. */}
-            <div
-              className={cn(
-                'col-span-12 min-w-0 space-y-6',
-                sidebarCollapsed ? 'lg:col-start-3 lg:col-span-9' : 'lg:col-start-4 lg:col-span-8'
-              )}
-            >
+            {/* Main content — fills the remaining columns; widens when the
+                sidebar is collapsed and/or full-width removes the gutters. */}
+            <div className={cn('col-span-12 min-w-0 space-y-6', homeGrid.main)}>
               <SpaceApplyButtonConnector
                 spaceId={data.subspaceId}
                 spaceProfileUrl={data.subspaceUrl}
@@ -388,4 +392,30 @@ export default function CrdSubspacePageLayout() {
 function EnableBannerOverlay() {
   useEnableBannerOverlay();
   return null;
+}
+
+function EnableSpaceFullWidth() {
+  useEnableSpaceFullWidth();
+  return null;
+}
+
+/**
+ * Grid placement for the subspace home's sidebar + content track, composing the
+ * two orthogonal toggles. Literal class strings (one per combination) so the
+ * Tailwind scanner emits them — never build `lg:col-start-${n}` dynamically.
+ *
+ * - `fullWidth`: removes the empty edge gutter column on each side
+ *   (sidebar shifts col 2 → col 1; content extends to the last column).
+ * - `collapsed`: shrinks the sidebar from 2 columns to a 1-column rail; the
+ *   freed column goes to the content area.
+ */
+function subspaceHomeColumns(fullWidth: boolean, collapsed: boolean): { sidebar: string; main: string } {
+  if (fullWidth) {
+    return collapsed
+      ? { sidebar: 'lg:col-start-1 lg:col-span-1', main: 'lg:col-start-2 lg:col-span-11' }
+      : { sidebar: 'lg:col-start-1 lg:col-span-2', main: 'lg:col-start-3 lg:col-span-10' };
+  }
+  return collapsed
+    ? { sidebar: 'lg:col-start-2 lg:col-span-1', main: 'lg:col-start-3 lg:col-span-9' }
+    : { sidebar: 'lg:col-start-2 lg:col-span-2', main: 'lg:col-start-4 lg:col-span-8' };
 }

@@ -8,6 +8,7 @@
 
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 
 export type { SectionSaveStatus };
 
@@ -115,12 +116,11 @@ export type UserProfileViewProps = {
   /** Patch the local buffer for any single field. */
   onChange: (patch: Partial<UserProfileFormValues>) => void;
 
-  /** Append a new arbitrary reference row in the local buffer (temp-id). */
-  onAddReference: () => void;
-  /** Patch a reference (recognized OR arbitrary) by id. */
-  onUpdateReference: (id: string, patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => void;
-  /** Open the destructive ConfirmationDialog for this row (Rule #9 / FR-025). */
-  onRequestRemoveReference: (id: string) => void;
+  /** Replace the arbitrary references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — passed through to the shared editor. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
 
   /** Patch a recognized reference by network kind (linkedin/bsky/github). */
   onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;
@@ -131,9 +131,4 @@ export type UserProfileViewProps = {
 
   /** Save a single section (only that section's fields are persisted). */
   onSaveSection: (section: UserProfileSectionKey) => void;
-
-  /** ConfirmationDialog state for reference deletion (Rule #9 / FR-025). */
-  pendingReferenceDelete: { id: string; name: string } | null;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
 } & MarkdownUploadProps;

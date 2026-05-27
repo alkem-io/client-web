@@ -23,7 +23,14 @@
     "showGrid": "Afficher la grille",
     "hideGrid": "Masquer la grille",
     "designVersion": {
-      "label": "Nouveau design (aperçu)"
+      "label": "Nouveau look (ancien design disponible temporairement)"
+    },
+    "designVersionUpgrade": {
+      "title": "Le nouvel Alkemio est arrivé",
+      "body": "Nous déployons un nouveau design plus rapide, plus clair et prêt pour la suite. Vous êtes invité·e à passer dès maintenant.\n\nSi vous préférez l'ancien look, il restera disponible depuis le menu de votre avatar pendant une durée limitée - et si quelque chose vous manque, contactez le support pour que nous puissions le reporter avant le retrait de l'ancien design.",
+      "confirm": "Aller au nouveau design",
+      "dismiss": "Plus tard",
+      "closeLabel": "Fermer"
     }
   },
   "footer": {

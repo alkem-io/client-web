@@ -4,16 +4,19 @@ import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { userModel } = useCurrentUserContext();
+  const crdEnabled = useCrdEnabled();
 
   useUserScope(userModel);
 
@@ -50,7 +53,7 @@ const App = () => {
           <CookieConsent ref={cookieConsentRef} />
         </Suspense>
       )}
-      <NotificationHandler />
+      {crdEnabled ? <CrdNotificationHandler /> : <NotificationHandler />}
     </>
   );
 };

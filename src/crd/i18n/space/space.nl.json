@@ -21,6 +21,25 @@
     "demo": "Dit is een demo-Space voor testdoeleinden.",
     "inactive": "Deze Space is momenteel inactief."
   },
+  "knowledge": {
+    "searchPlaceholder": "Zoek in de kennisbank...",
+    "searchLabel": "Zoek in de kennisbank",
+    "noResults": "Geen resultaten",
+    "viewGrid": "Kaartweergave",
+    "viewList": "Lijstweergave",
+    "count": {
+      "post_one": "{{count}} bericht",
+      "post_other": "{{count}} berichten",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memo's",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documenten"
+    }
+  },
   "sidebar": {
     "aboutSpace": "Over deze Space",
     "subspaces": "Subspaces",
@@ -36,9 +55,6 @@
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
-    "searchPlaceholder": "Zoeken...",
-    "searchLabel": "Berichten zoeken",
-    "noResults": "Geen resultaten",
     "readMore": "Lees meer",
     "editDescription": "Beschrijving bewerken",
     "addEvent": "Evenement toevoegen",
@@ -192,7 +208,7 @@
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "sendComment": "Reactie verzenden",
-    "addResponse": "Reactie toevoegen",
+    "addWhiteboard": "Whiteboard toevoegen",
     "createWhiteboard": "Nieuw whiteboard maken",
     "defaultWhiteboardName": "Nieuw whiteboard",
     "whiteboardNameLabel": "Whiteboardtitel",
@@ -382,7 +398,9 @@
     "activity": "Activiteit",
     "videoCall": "Videogesprek",
     "share": "Delen",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "expandWidth": "Volledige breedte",
+    "collapseWidth": "Gecentreerde weergave"
   },
   "contextMenu": {
     "edit": "Bewerken",
@@ -513,26 +531,8 @@
       "descriptionLabel": "Beschrijving",
       "descriptionPlaceholder": "Optionele beschrijving",
       "addRow": "Nog een link toevoegen",
-      "removeRow": "Link verwijderen"
-    }
-  },
-  "references": {
-    "heading": "Referenties",
-    "empty": "Nog geen referenties.",
-    "titleLabel": "Titel",
-    "titlePlaceholder": "Titel van de referentie",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Beschrijving",
-    "descriptionPlaceholder": "Optionele beschrijving",
-    "addRow": "Nog een referentie toevoegen",
-    "removeRow": "Referentie verwijderen",
-    "attachFile": "Bestand bijvoegen",
-    "removeConfirm": {
-      "title": "Deze referentie verwijderen?",
-      "description": "“{{name}}” wordt verwijderd zodra je opslaat. Dit kan niet ongedaan worden gemaakt.",
-      "confirm": "Verwijderen",
-      "unnamed": "deze referentie"
+      "removeRow": "Link verwijderen",
+      "attachFile": "Bestand bijvoegen"
     }
   },
   "responseDefaults": {
@@ -701,6 +701,7 @@
     "showMore": "Meer tonen",
     "showLess": "Minder tonen",
     "reply": "Antwoorden",
+    "replyInThread": "Antwoorden in deze thread",
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
     "deleteConfirmTitle": "Opmerking verwijderen?",
