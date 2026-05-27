@@ -59,40 +59,35 @@ type RoleSetMember = {
 };
 
 /**
- * Derive the user's most elevated role from their role list — used only
- * for the display badge (precedence Admin > Lead > Member).
+ * Derive the user's display role from their role list — used only for the
+ * display badge (precedence Lead > Member). Administrative status is never
+ * surfaced, so an admin who is not also a Lead displays as Member.
  */
 function deriveUserRole(roles: RoleName[] | undefined): {
-  role: 'admin' | 'lead' | 'member';
+  role: 'lead' | 'member';
   roleType: MemberRoleType;
 } {
-  if (!roles || roles.length === 0) {
-    return { role: 'member', roleType: 'member' };
-  }
-  if (roles.includes(RoleName.Admin)) {
-    return { role: 'admin', roleType: 'admin' };
-  }
-  if (roles.includes(RoleName.Lead)) {
+  if (roles?.includes(RoleName.Lead)) {
     return { role: 'lead', roleType: 'moderator' };
   }
   return { role: 'member', roleType: 'member' };
 }
 
 /**
- * Convert the full `RoleName[]` into the `MemberRoleKey[]` array used
- * by the filter pills. Admin + Lead are NOT mutually exclusive — a user
- * who holds both roles should match both filters.
+ * Convert the full `RoleName[]` into the `MemberRoleKey[]` array used by the
+ * filter pills. Administrative status is never surfaced, so the Admin role is
+ * not mapped. Lead + Member are not mutually exclusive — a user who holds both
+ * should match both the Lead filter and the (implicit) member set.
  */
 function deriveUserRolesList(roles: RoleName[] | undefined): MemberRoleKey[] {
   const keys: MemberRoleKey[] = [];
   if (!roles || roles.length === 0) {
     return ['member'];
   }
-  if (roles.includes(RoleName.Admin)) keys.push('admin');
   if (roles.includes(RoleName.Lead)) keys.push('lead');
   if (roles.includes(RoleName.Member)) keys.push('member');
-  // Fallback: if the user has none of the three "member grid" roles
-  // (shouldn't happen in practice), still surface them under `member`.
+  // Fallback: if the user has neither the Lead nor Member role (e.g. an
+  // admin-only contributor), still surface them under `member`.
   return keys.length > 0 ? keys : ['member'];
 }
 

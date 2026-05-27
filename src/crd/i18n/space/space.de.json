@@ -296,9 +296,7 @@
     "inviteMember": "Mitglied einladen",
     "search": "Mitglieder oder Organisationen suchen...",
     "filterAll": "Alle",
-    "filterAdmin": "Administrator",
     "filterLead": "Leiter",
-    "filterMember": "Mitglied",
     "filterOrganization": "Organisation",
     "noMembers": "Keine Mitglieder gefunden",
     "previousPage": "Zurück",
@@ -310,7 +308,6 @@
       "clearFilters": "Filter zurücksetzen"
     },
     "role": {
-      "admin": "Administrator",
       "lead": "Leiter",
       "member": "Mitglied",
       "organization": "Organisation"
