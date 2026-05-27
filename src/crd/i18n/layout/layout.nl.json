@@ -23,7 +23,14 @@
     "showGrid": "Raster tonen",
     "hideGrid": "Raster verbergen",
     "designVersion": {
-      "label": "Nieuw ontwerp (preview)"
+      "label": "Nieuwe look (oud ontwerp tijdelijk beschikbaar)"
+    },
+    "designVersionUpgrade": {
+      "title": "Het vernieuwde Alkemio is er",
+      "body": "We rollen een nieuw ontwerp uit dat sneller, helderder en klaar voor de toekomst is. Je bent uitgenodigd om nu over te stappen.\n\nWil je liever het oude uiterlijk? Dat blijft een korte tijd beschikbaar via het menu onder je avatar - en mis je iets, laat het support weten zodat we het kunnen overzetten voordat het oude ontwerp wordt uitgefaseerd.",
+      "confirm": "Breng me naar het nieuwe ontwerp",
+      "dismiss": "Misschien later",
+      "closeLabel": "Sluiten"
     }
   },
   "footer": {

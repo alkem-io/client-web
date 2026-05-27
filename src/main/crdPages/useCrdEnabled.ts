@@ -53,5 +53,5 @@ export function writeDesignVersionToStorage(version: DesignVersion): void {
 }
 
 export function useCrdEnabled(): boolean {
-  return readDesignVersionFromStorage() === DESIGN_VERSION_NEW;
+  return readDesignVersionFromStorage() !== DESIGN_VERSION_OLD;
 }
