@@ -3676,9 +3676,7 @@
         "title": "$t(common.Whiteboards) verbinding verloren",
         "message": "Excuses voor het ongemak! Je kunt het $t(common.whiteboard) nu niet bewerken, mogelijk door een netwerkfout of geen toegang. Sluit en open het $t(common.whiteboard) opnieuw of ververs de pagina. Blijft het fout gaan? Vraag dan de $t(common.admin) van deze $t(common.space) om hulp.",
         "lastSaved": "De inhoud van dit $t(common.whiteboard) is voor het laatst opgeslagen op {{lastSaved}}.",
-        "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent.",
-        "reconnect": "Opnieuw verbinden",
-        "reconnectCountdown": "({{seconds}}s)"
+        "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent."
       },
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
