@@ -296,9 +296,7 @@
     "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
-    "filterAdmin": "Beheerder",
     "filterLead": "Leider",
-    "filterMember": "Lid",
     "filterOrganization": "Organisatie",
     "noMembers": "Geen leden gevonden",
     "previousPage": "Vorige",
@@ -310,7 +308,6 @@
       "clearFilters": "Filters wissen"
     },
     "role": {
-      "admin": "Beheerder",
       "lead": "Leider",
       "member": "Lid",
       "organization": "Organisatie"
