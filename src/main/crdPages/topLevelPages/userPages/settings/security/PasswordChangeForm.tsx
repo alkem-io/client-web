@@ -1,4 +1,4 @@
-import type { SettingsFlow, UiNode } from '@ory/kratos-client';
+import type { SettingsFlow, UiContainer, UiNode } from '@ory/kratos-client';
 import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
@@ -9,6 +9,16 @@ import KratosUI from '@/core/auth/authentication/components/KratosUI';
 
 const isPasswordInputNode = (node: UiNode): boolean =>
   node.group === 'password' && node.attributes.node_type === 'input' && node.attributes.name === 'password';
+
+// Scope the shared Kratos settings flow to non-passkey groups so the password
+// card doesn't render passkey buttons (which live in the separate WebAuthn
+// card). `default` is kept — it carries the CSRF token.
+const PASSWORD_CARD_EXCLUDED_GROUPS: ReadonlySet<string> = new Set(['webauthn', 'passkey']);
+
+const filterUiByGroups = (ui: UiContainer, excludedGroups: ReadonlySet<string>): UiContainer => ({
+  ...ui,
+  nodes: ui.nodes.filter(node => !excludedGroups.has(node.group)),
+});
 
 type PasswordChangeFormProps = {
   flow: SettingsFlow;
@@ -68,10 +78,12 @@ export const PasswordChangeForm = ({ flow, removedFields }: PasswordChangeFormPr
   const helperText =
     (showMismatch || mismatch) && confirmPassword.length > 0 ? t('user.security.password.mismatch') : '';
 
+  const scopedUi = filterUiByGroups(flow.ui, PASSWORD_CARD_EXCLUDED_GROUPS);
+
   return (
-    <KratosForm ui={flow.ui} onSubmit={handleSubmit}>
+    <KratosForm ui={scopedUi} onSubmit={handleSubmit}>
       <KratosUI
-        ui={flow.ui}
+        ui={scopedUi}
         removedFields={removedFields}
         flowType="settings"
         onInputChange={handleInputChange}
