@@ -1,16 +1,36 @@
+import { Suspense } from 'react';
 import { Route } from 'react-router-dom';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
-import { ErrorCrdRoute } from '@/main/crdPages/auth/ErrorCrdRoute';
-import { LoginCrdRoute } from '@/main/crdPages/auth/LoginCrdRoute';
-import { RecoveryCrdRoute } from '@/main/crdPages/auth/RecoveryCrdRoute';
-import { SettingsCrdRoute } from '@/main/crdPages/auth/SettingsCrdRoute';
-import { RegistrationCrdRoute, SignUpCrdRoute } from '@/main/crdPages/auth/SignUpCrdRoute';
-import { VerifyCrdRoute } from '@/main/crdPages/auth/VerifyCrdRoute';
-import { CrdAuthRequiredRoute } from '@/main/crdPages/error/CrdAuthRequiredRoute';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
-import AuthRequiredPage from '../pages/AuthRequiredPage';
-import LogoutRoute from './LogoutRoute';
+
+const LoginCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/LoginCrdRoute').then(m => ({ default: m.LoginCrdRoute }))
+);
+const RecoveryCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/RecoveryCrdRoute').then(m => ({ default: m.RecoveryCrdRoute }))
+);
+const SettingsCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/SettingsCrdRoute').then(m => ({ default: m.SettingsCrdRoute }))
+);
+const SignUpCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/SignUpCrdRoute').then(m => ({ default: m.SignUpCrdRoute }))
+);
+const RegistrationCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/SignUpCrdRoute').then(m => ({ default: m.RegistrationCrdRoute }))
+);
+const VerifyCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/VerifyCrdRoute').then(m => ({ default: m.VerifyCrdRoute }))
+);
+const ErrorCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/ErrorCrdRoute').then(m => ({ default: m.ErrorCrdRoute }))
+);
+const CrdAuthRequiredRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/error/CrdAuthRequiredRoute').then(m => ({ default: m.CrdAuthRequiredRoute }))
+);
+const AuthRequiredPage = lazyWithGlobalErrorHandler(() => import('../pages/AuthRequiredPage'));
+const LogoutRoute = lazyWithGlobalErrorHandler(() => import('./LogoutRoute'));
 
 export enum IdentityRoutes {
   Login = 'login',
@@ -29,21 +49,65 @@ export const IdentityRoute = () => {
   return (
     <>
       {/* Auth screens are un-gated: the CRD screens render for every visitor (see spec 101). */}
-      <Route path={`${IdentityRoutes.Login}/*`} element={<LoginCrdRoute />} />
-      <Route path={`${IdentityRoutes.Logout}`} element={<LogoutRoute />} />
-      <Route path={`${IdentityRoutes.Registration}/*`} element={<RegistrationCrdRoute />} />
-      <Route path={`${IdentityRoutes.Verify}/*`} element={<VerifyCrdRoute />} />
-      <Route path={`${IdentityRoutes.Recovery}`} element={<RecoveryCrdRoute />} />
+      <Route
+        path={`${IdentityRoutes.Login}/*`}
+        element={
+          <Suspense fallback={null}>
+            <LoginCrdRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`${IdentityRoutes.Logout}`}
+        element={
+          <Suspense fallback={null}>
+            <LogoutRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`${IdentityRoutes.Registration}/*`}
+        element={
+          <Suspense fallback={null}>
+            <RegistrationCrdRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`${IdentityRoutes.Verify}/*`}
+        element={
+          <Suspense fallback={null}>
+            <VerifyCrdRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`${IdentityRoutes.Recovery}`}
+        element={
+          <Suspense fallback={null}>
+            <RecoveryCrdRoute />
+          </Suspense>
+        }
+      />
       <Route
         path={`${IdentityRoutes.Required}`}
-        element={crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />}
+        element={<Suspense fallback={null}>{crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />}</Suspense>}
       />
-      <Route path={`${IdentityRoutes.Error}`} element={<ErrorCrdRoute />} />
+      <Route
+        path={`${IdentityRoutes.Error}`}
+        element={
+          <Suspense fallback={null}>
+            <ErrorCrdRoute />
+          </Suspense>
+        }
+      />
       <Route
         path={`${IdentityRoutes.Settings}`}
         element={
           <NoIdentityRedirect>
-            <SettingsCrdRoute />
+            <Suspense fallback={null}>
+              <SettingsCrdRoute />
+            </Suspense>
           </NoIdentityRedirect>
         }
       />
@@ -51,7 +115,9 @@ export const IdentityRoute = () => {
         path={`${IdentityRoutes.SignUp}`}
         element={
           <NotAuthenticatedRoute>
-            <SignUpCrdRoute />
+            <Suspense fallback={null}>
+              <SignUpCrdRoute />
+            </Suspense>
           </NotAuthenticatedRoute>
         }
       />
