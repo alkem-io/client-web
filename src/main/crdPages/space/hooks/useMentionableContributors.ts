@@ -93,6 +93,8 @@ export function useMentionableContributors(): CrdMentionSearch {
               filter: { displayName: search },
               limit: MAX_USERS_LISTED,
             },
+            fetchPolicy: 'network-only',
+            errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
           });
 
           const suggestions: CrdMentionSuggestion[] = [];
