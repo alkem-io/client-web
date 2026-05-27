@@ -1,7 +1,7 @@
 {
-  "space": "Ruimte",
-  "spaces": "Ruimtes",
-  "subspace": "Subruimte",
+  "space": "Space",
+  "spaces": "Spaces",
+  "subspace": "Subspace",
   "ok": "OK",
   "cancel": "Annuleren",
   "save": "Opslaan",
@@ -23,6 +23,12 @@
   },
   "tags": {
     "moreAria": "Toon {{count}} meer"
+  },
+  "filters": {
+    "summary": "Resultaten voor {{criteria}}",
+    "and": "en",
+    "clear": "Filters wissen",
+    "filterByTag": "Filter op tag"
   },
   "share": {
     "title": "Delen",

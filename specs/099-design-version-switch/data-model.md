@@ -31,15 +31,40 @@ This is a frontend feature with one new persisted field on the server, one exist
 - Per-browser, per-device. Not synced across devices (the server preference handles that).
 - Read with a try/catch wrapper to tolerate SSR or private-mode environments.
 
-**Domain meaning**:
+**Domain meaning** *(updated 2026-05-26 — default flipped per FR-008b revision)*:
+
 | Stored value | `useCrdEnabled()` returns | Notes |
 |--------------|---------------------------|-------|
 | `'2'`        | `true`                    | User has opted into the new design |
-| `'1'`        | `false`                   | User has opted into the old design |
-| _unset_      | `false`                   | Existing default — old design (per FR-008b; future migration milestone may flip this) |
-| LS access throws | `false`                | Fallback to the existing default |
+| `'1'`        | `false`                   | User has explicitly opted into the old design |
+| _unset_      | `true`                    | **Default — new design (CRD).** Anonymous visitors, fresh devices, and signed-in users with no server preference land here. |
+| LS access throws | `true`                | Fallback to the new-design default |
+| Any unrecognized value | `true`              | Anything other than the literal string `'1'` falls back to the new-design default |
+
+The implementation (`useCrdEnabled.ts:56`) returns `readDesignVersionFromStorage() !== DESIGN_VERSION_OLD`, so only the explicit `'1'` opt-in renders MUI. Pre-2026-05-26 the comparison was `=== DESIGN_VERSION_NEW`; the inversion is non-destructive (existing `'1'` opt-ins still render MUI).
 
 **Legacy key migration**: The previous boolean key `alkemio-crd-enabled` (values `'true'`/`'false'`) is migrated on first module load: existing `'true'` becomes `'2'`, anything else becomes `'1'`, and the legacy key is deleted. The migration block and the `CRD_TOGGLE_STORAGE_KEY` export are scheduled for removal in T025 (~3 releases after this ships).
+
+### 3. Upgrade-prompt dismissal marker (client) *(added 2026-05-26)*
+
+**Owner**: Client (`localStorage` on the user's browser).
+**Key**: `alkemio-design-version-upgrade-dismissed` (inline helper in `src/main/crdPages/DesignVersionUpgradePromptMount.tsx` — not exported from `useCrdEnabled.ts` because it's prompt-state, not design-state).
+**Type**: `string` — `'1'` when the modal has been dismissed at least once on this device; unset otherwise.
+**Mutability**: Written by `writeDismissedToStorage()` only — called from both modal actions (`onConfirm` and `onDismiss`).
+**Constraints**:
+- Per-browser, per-device. Not synced across devices.
+- Set on either action (confirm or dismiss). Never cleared by the app — users who clear browser storage will see the modal again, which is acceptable for a per-device welcome prompt.
+- Read with try/catch to tolerate private-mode failures.
+
+**Domain meaning**:
+
+| Stored value | Modal visibility | Notes |
+|--------------|-------------------|-------|
+| `'1'`        | hidden            | User has already seen the modal on this device |
+| _unset_      | shown (if other gates pass) | First load on this device |
+| LS access throws | hidden        | Treated as "dismissed" to avoid spamming the user in private-mode contexts |
+
+**Visibility gate** (all must be true): `isAuthenticated && !loadingMe && designVersion === DESIGN_VERSION_OLD && !isDismissed && toggle.isVisible`.
 
 ## Cache ↔ Server Mapping
 

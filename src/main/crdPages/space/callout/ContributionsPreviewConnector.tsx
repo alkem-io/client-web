@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
@@ -67,24 +68,30 @@ export function ContributionsPreviewConnector({
     .map(item => mapAnyContributionToCardData(item, locale))
     .filter(Boolean) as ContributionCardData[];
 
-  // The "+ Add" tile mirrors the detail-dialog flow (CalloutDetailDialogConnector → ContributionsSlot):
-  // appended as a trailing slot in the same grid using the existing add connectors, so the user can
-  // create a memo / whiteboard / post / link directly from the feed-level card. The Link branch renders
-  // an inline "+ Add link" button inside the link list (see below), not a card tile, since link
-  // contributions render as a list, not a grid.
+  // The add affordance moved from a trailing in-grid "+ Add" tile to a single `+` icon button in
+  // the section header (see `header` below). MUI parity: `CalloutContributionsBlock` places the
+  // create-button in the header next to the count. Rationale: the previous design hid the add
+  // affordance the moment the grid filled to 4 items (the dashed "+N more" tile replaced it),
+  // forcing users to open the detail dialog just to add another contribution.
   const defaults = callout.contributionDefaults;
-  const addTile: ReactNode =
+  const [addOpen, setAddOpen] = useState(false);
+
+  const addConnector: ReactNode =
     canCreateContribution && contributionType ? (
       contributionType === CalloutContributionType.Whiteboard ? (
         <WhiteboardContributionAddConnector
-          key="add-tile"
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
           calloutId={callout.id}
           defaultDisplayName={defaults?.defaultDisplayName}
           defaultContent={defaults?.whiteboardContent}
         />
       ) : contributionType === CalloutContributionType.Memo ? (
         <MemoContributionAddConnector
-          key="add-tile"
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
           calloutId={callout.id}
           // Posts and Memos share `contributionDefaults.defaultDisplayName` + `postDescription`
           // (FR-33 / FR-42 / FR-43). Mirror the Post branch below — without these the create-memo
@@ -95,17 +102,40 @@ export function ContributionsPreviewConnector({
         />
       ) : contributionType === CalloutContributionType.Post ? (
         <PostContributionAddConnector
-          key="add-tile"
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
           calloutId={callout.id}
           defaultDisplayName={defaults?.defaultDisplayName}
           defaultDescription={defaults?.postDescription}
         />
+      ) : contributionType === CalloutContributionType.Link ? (
+        <LinkContributionAddConnector
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          calloutId={callout.id}
+        />
       ) : null
     ) : null;
 
-  // Link-list edit/add state lives in this connector so the inline "+ Add link" button in the list
-  // and the per-row Edit / Delete affordances can drive a single set of dialogs.
-  const [linkAddOpen, setLinkAddOpen] = useState(false);
+  // Same per-type labels the in-grid placeholders used to show (`ContributionAddCard.label`),
+  // now rendered as the visible text on the header button. The button text doubles as the
+  // accessible name, so no separate `aria-label` is needed.
+  const addLabel =
+    contributionType === CalloutContributionType.Whiteboard
+      ? t('callout.addWhiteboard')
+      : contributionType === CalloutContributionType.Memo
+        ? t('callout.addMemo')
+        : contributionType === CalloutContributionType.Post
+          ? t('callout.addPost')
+          : contributionType === CalloutContributionType.Link
+            ? t('callout.addLinkOrFile')
+            : '';
+
+  // Link-list edit state. The "+ Add link" action lives in the section-header `+` button alongside
+  // every other contribution type (see `addConnector` above); per-row Edit / Delete still need their
+  // own state here.
   const [linkEditTarget, setLinkEditTarget] = useState<
     | {
         contributionId: string;
@@ -132,10 +162,26 @@ export function ContributionsPreviewConnector({
   // contributions and contributions disabled. Without the header, a memo
   // callout whose toggles are off looks like a plain post in the feed and
   // there's no signal that contributions ever lived here.
+  //
+  // The header also hosts the `+` icon button that opens the create-contribution dialog
+  // (any type — Post/Memo/Whiteboard/Link). This replaces the in-grid "+ Add" tile, which
+  // disappeared when the section filled up to `MAX_PREVIEW_ITEMS` and forced users into the
+  // detail dialog just to add another contribution.
   const header = (
-    <p className="text-label uppercase text-muted-foreground mt-4 mb-2">
-      {t('callout.contributionsHeader', { count: total })}
-    </p>
+    <div className="mt-4 mb-2 flex items-center justify-between gap-2">
+      <p className="text-label uppercase text-muted-foreground">{t('callout.contributionsHeader', { count: total })}</p>
+      {canCreateContribution && addLabel && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 gap-1 px-2 text-primary hover:bg-primary/10 hover:text-primary"
+          onClick={() => setAddOpen(true)}
+        >
+          <Plus className="size-4" aria-hidden="true" />
+          {addLabel}
+        </Button>
+      )}
+    </div>
   );
 
   // Links render as a list, not a card grid.
@@ -159,30 +205,20 @@ export function ContributionsPreviewConnector({
     return (
       <div ref={inViewRef}>
         {header}
-        {contributions.length > 0 ? (
+        {contributions.length > 0 && (
           <ContributionLinkList
             links={hasMore ? links.slice(0, ITEMS_BEFORE_MORE) : links}
-            canAdd={canCreateContribution}
-            onAdd={() => setLinkAddOpen(true)}
+            canAdd={false}
             onEdit={id => openLinkTarget(id, 'edit')}
             onDelete={id => openLinkTarget(id, 'delete')}
           />
-        ) : canCreateContribution ? (
-          <ContributionLinkList links={[]} canAdd={true} onAdd={() => setLinkAddOpen(true)} />
-        ) : null}
+        )}
         {hasMore && (
           <Button variant="ghost" size="sm" className="mt-2 text-muted-foreground" onClick={onShowAll}>
             {t('callout.moreContributions', { count: moreCount })}
           </Button>
         )}
-        {canCreateContribution && (
-          <LinkContributionAddConnector
-            calloutId={callout.id}
-            inlineTrigger={true}
-            open={linkAddOpen}
-            onOpenChange={setLinkAddOpen}
-          />
-        )}
+        {addConnector}
         <LinkContributionEditConnector
           calloutId={callout.id}
           target={linkEditTarget}
@@ -219,6 +255,7 @@ export function ContributionsPreviewConnector({
             onClick={onShowAll}
           />
         </div>
+        {addConnector}
       </div>
     );
   }
@@ -228,7 +265,7 @@ export function ContributionsPreviewConnector({
   return (
     <div ref={inViewRef}>
       {header}
-      {(visibleItems.length > 0 || hasMore || addTile) && (
+      {(visibleItems.length > 0 || hasMore) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {visibleItems.map(contribution => (
             <ContributionCard
@@ -238,7 +275,7 @@ export function ContributionsPreviewConnector({
               onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
             />
           ))}
-          {hasMore ? (
+          {hasMore && (
             <button
               type="button"
               className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -246,11 +283,10 @@ export function ContributionsPreviewConnector({
             >
               {t('callout.moreContributions', { count: moreCount })}
             </button>
-          ) : (
-            addTile
           )}
         </div>
       )}
+      {addConnector}
     </div>
   );
 }

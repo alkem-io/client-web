@@ -62,13 +62,15 @@ export function SpaceNavigationTabs({ spaceSlug, actionButton }: SpaceNavigation
               data-active={active}
               className={cn(
                 "pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none",
-                active ? "text-control font-semibold" : "text-control",
                 active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
               )}
               style={{
+                fontSize: 14,
+                fontWeight: active ? 600 : 500,
                 fontFamily: "'Inter', sans-serif",
+                lineHeight: "20px",
               }}
             >
               {tab.label}
@@ -85,10 +87,11 @@ export function SpaceNavigationTabs({ spaceSlug, actionButton }: SpaceNavigation
         <div className="mt-3">
           <ReadMoreText
             maxLines={2}
-            className="text-control"
             style={{
+              fontSize: "var(--text-sm)",
               color: "var(--muted-foreground)",
               fontFamily: "'Inter', sans-serif",
+              lineHeight: 1.6,
             }}
             toggleColor="var(--muted-foreground)"
           >

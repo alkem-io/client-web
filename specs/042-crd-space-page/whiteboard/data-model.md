@@ -101,6 +101,67 @@ type WhiteboardSaveFooterProps = {
 };
 ```
 
+## WhiteboardSaveStatus
+
+```typescript
+type WhiteboardSaveStatusProps = {
+  /** Whether the last save succeeded — drives the cloud icon (success/error) and its colour */
+  saved: boolean;
+  /** Status text for the hover tooltip and the dialog body (e.g. "Auto-saved last changes: 5 minutes ago") */
+  message: ReactNode;
+  /** Optional CSS class */
+  className?: string;
+};
+```
+
+The dialog has no visible title — only an sr-only one for accessibility (the `message` carries the "Warning:" prefix in the error state, so a separate heading would be redundant).
+
+The live elapsed-time formatting (re-formatted on a 500ms tick via the domain `formatTimeElapsed` util, and seeded synchronously on first render via a `useState` initializer so the message never interpolates an `undefined` datetime) and the message composition live in the integration wrapper `CrdWhiteboardSaveStatus` (`src/main/crdPages/whiteboard/`), not in the CRD component. The wrapper takes `{ isSaved: boolean; date: Date | undefined }` — the same shape as the legacy MUI `SaveRequestIndicatorIcon` — so call sites swap 1:1. In the error state it passes a localized `warningMessage` (`"Warning:"`) into the `unsuccessful-save` string so the prefix matches the legacy indicator and no leading blank is rendered.
+
+## WhiteboardDisconnectedDialog
+
+```typescript
+type WhiteboardDisconnectedDialogProps = {
+  open: boolean;
+  onClose: () => void;
+  /** Dialog heading (resolved by the consumer — feature text from the main `translation` namespace) */
+  title: ReactNode;
+  /** Body message — the consumer chooses the online vs offline variant */
+  message: ReactNode;
+  /** Optional "last saved …" line; omit to hide it */
+  lastSavedText?: ReactNode;
+  /** Online enables the Reconnect button; offline disables it */
+  canReconnect: boolean;
+  /** A reconnect attempt is in flight → spinner + busy state */
+  reconnecting?: boolean;
+  /** Seconds until auto-reconnect; appended to the Reconnect label as "(Xs)" when > 0 */
+  countdownSeconds?: number | null;
+  onReconnect: () => void;
+  className?: string;
+};
+```
+
+Dismissal is handled entirely by the CRD `Dialog` primitive (built-in close X + outside-click / Escape) — there is **no "Ok" button** (the MUI version had one; it is intentionally dropped). The component owns only its `Reconnect` / `Close` labels via `crd-whiteboard` (`disconnected.*`); all other text arrives as props.
+
+### DisconnectNoticeRenderProps (shared-wrapper slot contract)
+
+`CollaborativeExcalidrawWrapper` (domain, MUI) gains an optional `renderDisconnectNotice?: (props: DisconnectNoticeRenderProps) => ReactNode`. When provided, it replaces the wrapper's built-in MUI disconnect dialog; the wrapper still owns the notice state and hands it over:
+
+```typescript
+type DisconnectNoticeRenderProps = {
+  open: boolean;
+  isOnline: boolean;
+  connecting: boolean;
+  /** Seconds until auto-reconnect, or null when no countdown is active (offline / not scheduled) */
+  autoReconnectSeconds: number | null;
+  lastSuccessfulSavedDate: Date | undefined;
+  onReconnect: () => void;
+  onClose: () => void;
+};
+```
+
+`CrdWhiteboardDialog` supplies this slot, resolves the feature text + last-saved string (`formatTimeElapsed`) from the main `translation` namespace, and renders `WhiteboardDisconnectedDialog`. MUI consumers omit the slot and keep the built-in MUI dialog.
+
 ## JoinWhiteboardDialog
 
 ```typescript

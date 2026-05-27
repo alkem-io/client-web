@@ -24,7 +24,21 @@
   "knowledge": {
     "searchPlaceholder": "Search the knowledge base...",
     "searchLabel": "Search the knowledge base",
-    "noResults": "No matches"
+    "noResults": "No matches",
+    "viewGrid": "Card view",
+    "viewList": "List view",
+    "count": {
+      "post_one": "{{count}} post",
+      "post_other": "{{count}} posts",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memos",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
   },
   "sidebar": {
     "aboutSpace": "About this Space",
@@ -40,6 +54,7 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
+    "postIndex": "$t(common.Callout) Index",
     "readMore": "Read more",
     "editDescription": "Edit description",
     "addEvent": "Add event",
@@ -176,7 +191,7 @@
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
     "sendComment": "Send comment",
-    "addResponse": "Add Response",
+    "addWhiteboard": "Add whiteboard",
     "createWhiteboard": "Create new whiteboard",
     "defaultWhiteboardName": "New Whiteboard",
     "whiteboardNameLabel": "Whiteboard title",
@@ -281,9 +296,7 @@
     "inviteMember": "Invite Member",
     "search": "Search members or organizations...",
     "filterAll": "All",
-    "filterAdmin": "Admin",
     "filterLead": "Lead",
-    "filterMember": "Member",
     "filterOrganization": "Organization",
     "noMembers": "No members found",
     "previousPage": "Previous",
@@ -295,7 +308,6 @@
       "clearFilters": "Clear filters"
     },
     "role": {
-      "admin": "Admin",
       "lead": "Lead",
       "member": "Member",
       "organization": "Organization"
@@ -348,9 +360,18 @@
     "signIn": "Sign in to apply",
     "signInHelper": "You'll be redirected to sign in to Alkemio first.",
     "context": {
-      "L0": { "why": "Why are we here?", "who": "Who is involved?" },
-      "L1": { "why": "Why this subspace?", "who": "Who is involved?" },
-      "L2": { "why": "Why this subspace?", "who": "Who is involved?" }
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
     }
   },
   "apply": {
@@ -374,7 +395,9 @@
     "activity": "Activity",
     "videoCall": "Video Call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centered layout"
   },
   "contextMenu": {
     "edit": "Edit",
@@ -507,25 +530,6 @@
       "addRow": "Add another link",
       "removeRow": "Remove link",
       "attachFile": "Attach file"
-    }
-  },
-  "references": {
-    "heading": "References",
-    "empty": "No references yet.",
-    "titleLabel": "Title",
-    "titlePlaceholder": "Reference title",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Optional description",
-    "addRow": "Add another reference",
-    "removeRow": "Remove reference",
-    "attachFile": "Attach file",
-    "removeConfirm": {
-      "title": "Remove this reference?",
-      "description": "“{{name}}” will be removed once you save. This cannot be undone.",
-      "confirm": "Remove",
-      "unnamed": "this reference"
     }
   },
   "responseDefaults": {
@@ -694,6 +698,7 @@
     "showMore": "Show more",
     "showLess": "Show less",
     "reply": "Reply",
+    "replyInThread": "Reply in this thread",
     "delete": "Delete",
     "deleted": "This comment was deleted",
     "deleteConfirmTitle": "Delete comment?",

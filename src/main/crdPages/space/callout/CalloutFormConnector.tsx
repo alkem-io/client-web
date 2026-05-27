@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
+  useDeleteReferenceMutation,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -33,10 +34,10 @@ import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
-import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Label } from '@/crd/primitives/label';
@@ -66,7 +67,7 @@ import {
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
@@ -158,6 +159,7 @@ export function CalloutFormConnector({
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -425,7 +427,7 @@ export function CalloutFormConnector({
     // update payload below.
     const framingProfileId = editData?.lookup.callout?.framing.profile.id;
     const newReferenceRows = values.referenceRows.filter(
-      row => !row.id && row.title.trim().length > 0 && row.url.trim().length > 0
+      row => !row.id && row.name.trim().length > 0 && row.uri.trim().length > 0
     );
     if (framingProfileId && newReferenceRows.length > 0) {
       try {
@@ -434,15 +436,34 @@ export function CalloutFormConnector({
             variables: {
               input: {
                 profileID: framingProfileId,
-                name: row.title.trim(),
-                uri: ensureHttps(row.url),
-                description: row.description.trim() || undefined,
+                name: row.name.trim(),
+                uri: ensureHttps(row.uri),
+                description: row.description?.trim() || undefined,
               },
             },
           });
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
+        notify(t('callout.referencesSaveFailed'), 'error');
+        return;
+      }
+    }
+
+    // Removed references — rows present at edit-open but no longer in the form. The bulk
+    // `updateCallout` only upserts existing references by `ID` (it can't delete), so removed rows
+    // need an explicit `deleteReference`. Diff the open-time snapshot (`editMeta.originalReferenceIds`)
+    // against the current rows — mirrors the callout-template + CG branches in `useTemplateForms`.
+    const originalReferenceIds = values.editMeta?.originalReferenceIds ?? [];
+    const currentReferenceIds = new Set(values.referenceRows.flatMap(row => (row.id ? [row.id] : [])));
+    const removedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
+    if (removedReferenceIds.length > 0) {
+      try {
+        for (const id of removedReferenceIds) {
+          await deleteReference({ variables: { input: { ID: id } } });
+        }
+      } catch (err) {
+        logError(new Error('Callout reference deletion failed', { cause: err as Error }));
         notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
@@ -711,8 +732,8 @@ export function CalloutFormConnector({
             />
             <ReferencesEditor
               rows={values.referenceRows}
-              onChange={v => setField('referenceRows', v)}
-              errors={errors as Record<string, string | undefined>}
+              onChange={rows => setField('referenceRows', rows)}
+              errors={referenceRowErrors(errors)}
               disabled={submitting}
               onFileUpload={referenceUpload.onFileUpload}
               uploadAccept={referenceUpload.accept}

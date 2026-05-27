@@ -86,13 +86,13 @@ function FloatingInput({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full bg-transparent outline-none text-subheader font-normal"
+          className="w-full bg-transparent outline-none"
           style={{
             height: "56px",
             padding: "20px 14px 8px",
             paddingRight: endIcon ? "48px" : "14px",
+            fontSize: "var(--text-base)",
             color: "var(--foreground)",
-            fontFamily: "'Inter', sans-serif",
           }}
         />
         <label
@@ -104,7 +104,6 @@ function FloatingInput({
             color: focused ? "var(--primary)" : "var(--muted-foreground)",
             background: "white",
             padding: "0 4px",
-            fontFamily: "'Inter', sans-serif",
           }}
         >
           {label}{required && " *"}
@@ -155,7 +154,7 @@ function OrDivider() {
   return (
     <div className="flex items-center gap-3 my-5">
       <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-      <span className="text-body" style={{ color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
+      <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontFamily: "'Inter', sans-serif" }}>
         or continue with
       </span>
       <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
@@ -185,7 +184,6 @@ function AuthCard({
         borderRadius: "8px",
         boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
         padding: "32px 36px",
-        fontFamily: "'Inter', sans-serif",
       }}
     >
       {/* Logo + Account toggle row */}
@@ -195,20 +193,23 @@ function AuthCard({
             <AlkemioLogo />
           </div>
           <p
-            className="mt-1.5 text-caption"
-            style={{ color: "var(--muted-foreground)" }}
+            className="mt-1.5"
+            style={{
+              fontSize: "11px",
+              color: "var(--muted-foreground)",
+            }}
           >
             Safe Spaces for Collaboration
           </p>
         </div>
         {showSignUp && (
           <div className="text-right">
-            <span className="text-body" style={{ color: "var(--muted-foreground)" }}>No account?</span>
+            <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>No account?</span>
             <br />
             <button
               onClick={() => onNavigate("sign-up")}
-              className="font-semibold hover:underline text-body"
-              style={{ color: "var(--foreground)" }}
+              className="font-semibold hover:underline"
+              style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}
             >
               Sign up
             </button>
@@ -216,12 +217,12 @@ function AuthCard({
         )}
         {showSignIn && (
           <div className="text-right">
-            <span className="text-body" style={{ color: "var(--muted-foreground)" }}>Have an account?</span>
+            <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>Have an account?</span>
             <br />
             <button
               onClick={() => onNavigate("sign-in")}
-              className="font-semibold hover:underline text-body"
-              style={{ color: "var(--foreground)" }}
+              className="font-semibold hover:underline"
+              style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}
             >
               Sign in
             </button>
@@ -231,8 +232,13 @@ function AuthCard({
 
       {/* Title */}
       <h1
-        className="mb-6 text-hero"
-        style={{ color: "var(--foreground)" }}
+        className="mb-6"
+        style={{
+          fontSize: "var(--text-3xl)",
+          fontWeight: 700,
+          color: "var(--foreground)",
+          lineHeight: 1.2,
+        }}
       >
         {title}
       </h1>
@@ -252,11 +258,24 @@ interface Node {
   type: "person" | "dot";
   color: string;
   pulseOffset: number;
+  img?: HTMLImageElement;
+}
+
+interface EmergentSpace {
+  cx: number;
+  cy: number;
+  r: number;
+  memberCount: number;
+  age: number;             // frames alive
+  phase: "forming" | "popping" | "formed";
+  popStart: number;        // time when pop began
+  color: string;
 }
 
 function NetworkBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nodesRef = useRef<Node[]>([]);
+  const emergentRef = useRef<EmergentSpace[]>([]);
   const animRef = useRef<number>(0);
 
   useEffect(() => {
@@ -272,35 +291,44 @@ function NetworkBackground() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Create nodes — mix of "person" avatars and small dots
-    const nodeCount = 45;
+    // Create nodes — more people than spaces (Alkemio has many people, fewer spaces)
+    const nodeCount = 55;
     const nodes: Node[] = [];
     const personColors = [
-      "rgba(9, 188, 212, 0.7)",    // teal/cyan (Alkemio brand)
-      "rgba(29, 56, 74, 0.5)",     // primary dark
-      "rgba(100, 116, 139, 0.45)", // muted
-      "rgba(59, 130, 246, 0.5)",   // blue
-      "rgba(34, 197, 94, 0.4)",    // green
-      "rgba(168, 85, 247, 0.4)",   // purple
-      "rgba(234, 179, 8, 0.45)",   // amber
+      "rgba(29, 56, 74, 0.75)",    // primary dark
+      "rgba(55, 80, 100, 0.7)",    // dark slate
+      "rgba(60, 90, 110, 0.65)",   // medium slate
+      "rgba(40, 70, 90, 0.7)",     // ocean
+    ];
+    const spaceColors = [
+      "rgba(9, 188, 212, 0.5)",    // teal/cyan (Alkemio brand)
+      "rgba(59, 130, 246, 0.4)",   // blue
+      "rgba(34, 197, 94, 0.35)",   // green
+      "rgba(168, 85, 247, 0.35)",  // purple
+      "rgba(234, 179, 8, 0.4)",    // amber
+      "rgba(100, 140, 200, 0.4)",  // soft blue
     ];
 
     for (let i = 0; i < nodeCount; i++) {
-      const isPerson = i < 18; // ~18 people nodes, rest are dots
-      nodes.push({
+      const isPerson = i < 38; // ~38 people, ~17 spaces
+      const node: Node = {
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: isPerson ? 14 + Math.random() * 10 : 2 + Math.random() * 3,
+        vx: (Math.random() - 0.5) * 0.33,
+        vy: (Math.random() - 0.5) * 0.33,
+        r: isPerson ? 6 + Math.random() * 4 : 18 + Math.random() * 14,
         type: isPerson ? "person" : "dot",
-        color: personColors[Math.floor(Math.random() * personColors.length)],
+        color: isPerson
+          ? personColors[Math.floor(Math.random() * personColors.length)]
+          : spaceColors[Math.floor(Math.random() * spaceColors.length)],
         pulseOffset: Math.random() * Math.PI * 2,
-      });
+      };
+
+      nodes.push(node);
     }
     nodesRef.current = nodes;
 
-    const connectionDist = 220;
+    const connectionDist = 180;
 
     const draw = (time: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -309,71 +337,525 @@ function NetworkBackground() {
       for (const n of nodes) {
         n.x += n.vx;
         n.y += n.vy;
-        // Bounce off edges with padding
         if (n.x < -40) n.vx = Math.abs(n.vx);
         if (n.x > canvas.width + 40) n.vx = -Math.abs(n.vx);
         if (n.y < -40) n.vy = Math.abs(n.vy);
         if (n.y > canvas.height + 40) n.vy = -Math.abs(n.vy);
       }
 
-      // Draw connections
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
+      const spaceNodes = nodes.filter(n => n.type === "dot");
+      const personNodes = nodes.filter(n => n.type === "person");
+
+      // ─── Emergent spaces: when 3+ people cluster without a nearby space, one spawns ───
+      // Lifecycle: forming (dashed ring) → popping (scale pop) → formed (real space)
+      const personClusterDist = 60;
+      const personUsedInEmergent = new Set<number>();
+      const formingThreshold = 120; // frames before a forming space "pops" into reality
+      const popDuration = 400; // ms for pop animation
+
+      // Detect current clusters
+      interface ClusterInfo { cx: number; cy: number; r: number; memberCount: number; }
+      const currentClusters: ClusterInfo[] = [];
+
+      for (let i = 0; i < personNodes.length; i++) {
+        if (personUsedInEmergent.has(i)) continue;
+        const p = personNodes[i];
+
+        let nearSpace = false;
+        for (const s of spaceNodes) {
+          const d = Math.sqrt((p.x - s.x) ** 2 + (p.y - s.y) ** 2);
+          if (d < s.r + connectionDist * 0.5) { nearSpace = true; break; }
+        }
+        if (nearSpace) continue;
+
+        const cluster = [i];
+        for (let j = i + 1; j < personNodes.length; j++) {
+          if (personUsedInEmergent.has(j)) continue;
+          const p2 = personNodes[j];
+
+          let p2NearSpace = false;
+          for (const s of spaceNodes) {
+            const d = Math.sqrt((p2.x - s.x) ** 2 + (p2.y - s.y) ** 2);
+            if (d < s.r + connectionDist * 0.5) { p2NearSpace = true; break; }
+          }
+          if (p2NearSpace) continue;
+
+          for (const ci of cluster) {
+            const pc = personNodes[ci];
+            const d = Math.sqrt((p2.x - pc.x) ** 2 + (p2.y - pc.y) ** 2);
+            if (d < personClusterDist) {
+              cluster.push(j);
+              break;
+            }
+          }
+        }
+
+        if (cluster.length >= 3) {
+          let cx = 0, cy = 0;
+          for (const ci of cluster) {
+            cx += personNodes[ci].x;
+            cy += personNodes[ci].y;
+            personUsedInEmergent.add(ci);
+          }
+          cx /= cluster.length;
+          cy /= cluster.length;
+          const r = 14 + cluster.length * 3;
+          currentClusters.push({ cx, cy, r, memberCount: cluster.length });
+        }
+      }
+
+      // Update persistent emergent spaces
+      const emergent = emergentRef.current;
+      const matchDist = 80; // how close a cluster must be to "continue" an existing emergent
+
+      // Mark which emergent spaces still have a matching cluster
+      const matchedEmergent = new Set<number>();
+      const matchedCluster = new Set<number>();
+
+      for (let ei = 0; ei < emergent.length; ei++) {
+        const es = emergent[ei];
+        if (es.phase === "formed") { matchedEmergent.add(ei); continue; } // formed ones persist
+        for (let ci = 0; ci < currentClusters.length; ci++) {
+          if (matchedCluster.has(ci)) continue;
+          const c = currentClusters[ci];
+          const d = Math.sqrt((es.cx - c.cx) ** 2 + (es.cy - c.cy) ** 2);
+          if (d < matchDist) {
+            // Update position smoothly
+            es.cx += (c.cx - es.cx) * 0.1;
+            es.cy += (c.cy - es.cy) * 0.1;
+            es.r += (c.r - es.r) * 0.1;
+            es.memberCount = c.memberCount;
+            es.age++;
+            matchedEmergent.add(ei);
+            matchedCluster.add(ci);
+            break;
+          }
+        }
+      }
+
+      // Remove unmatched forming spaces (cluster dispersed)
+      emergentRef.current = emergent.filter((_, i) => matchedEmergent.has(i));
+
+      // Add new emergent spaces for unmatched clusters
+      for (let ci = 0; ci < currentClusters.length; ci++) {
+        if (matchedCluster.has(ci)) continue;
+        const c = currentClusters[ci];
+        const spaceColorOptions = [
+          "rgba(9, 188, 212, 0.5)",
+          "rgba(59, 130, 246, 0.4)",
+          "rgba(34, 197, 94, 0.35)",
+          "rgba(168, 85, 247, 0.35)",
+          "rgba(234, 179, 8, 0.4)",
+        ];
+        emergentRef.current.push({
+          cx: c.cx, cy: c.cy, r: c.r,
+          memberCount: c.memberCount,
+          age: 0,
+          phase: "forming",
+          popStart: 0,
+          color: spaceColorOptions[Math.floor(Math.random() * spaceColorOptions.length)],
+        });
+      }
+
+      // Transition forming → popping → formed
+      for (const es of emergentRef.current) {
+        if (es.phase === "forming" && es.age >= formingThreshold) {
+          es.phase = "popping";
+          es.popStart = time;
+        }
+        if (es.phase === "popping" && (time - es.popStart) > popDuration) {
+          es.phase = "formed";
+          // Graduate to a real node in the nodes array
+          const newNode: Node = {
+            x: es.cx,
+            y: es.cy,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            r: es.r,
+            type: "dot",
+            color: es.color,
+            pulseOffset: Math.random() * Math.PI * 2,
+          };
+          nodes.push(newNode);
+        }
+      }
+
+      // Remove fully formed ones from emergent tracking (they're now real nodes)
+      emergentRef.current = emergentRef.current.filter(es => es.phase !== "formed");
+
+      // ─── Determine merged space clusters ───
+      // When spaces overlap, they form a single larger merged circle
+      const mergedFlags = new Array(spaceNodes.length).fill(false);
+      interface MergedSpace {
+        cx: number;
+        cy: number;
+        r: number;
+        color: string;
+        members: number[];
+      }
+      const mergedSpaces: MergedSpace[] = [];
+
+      for (let i = 0; i < spaceNodes.length; i++) {
+        if (mergedFlags[i]) continue;
+        const s = spaceNodes[i];
+        const pulse = 1 + Math.sin(time * 0.001 + s.pulseOffset) * 0.05;
+        const ri = s.r * pulse;
+
+        // Find all spaces overlapping with this one (cluster)
+        const cluster = [i];
+        mergedFlags[i] = true;
+
+        for (let j = i + 1; j < spaceNodes.length; j++) {
+          if (mergedFlags[j]) continue;
+          const s2 = spaceNodes[j];
+          const pulse2 = 1 + Math.sin(time * 0.001 + s2.pulseOffset) * 0.05;
+          const rj = s2.r * pulse2;
+
+          // Check if this space overlaps with any in the current cluster
+          for (const ci of cluster) {
+            const sc = spaceNodes[ci];
+            const rc = sc.r * (1 + Math.sin(time * 0.001 + sc.pulseOffset) * 0.05);
+            const dx = s2.x - sc.x;
+            const dy = s2.y - sc.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < rc + rj * 0.6) {
+              cluster.push(j);
+              mergedFlags[j] = true;
+              break;
+            }
+          }
+        }
+
+        if (cluster.length === 1) {
+          // Single space — count nearby people for growth
+          let nearbyPeople = 0;
+          for (const p of personNodes) {
+            const dx = p.x - s.x;
+            const dy = p.y - s.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < ri + connectionDist * 0.6) nearbyPeople++;
+          }
+          const growFactor = 1 + nearbyPeople * 0.03; // Spaces grow slightly with people
+          mergedSpaces.push({
+            cx: s.x,
+            cy: s.y,
+            r: ri * growFactor,
+            color: s.color,
+            members: cluster,
+          });
+        } else {
+          // Merged cluster — compute combined centroid and radius
+          let totalArea = 0;
+          let cx = 0, cy = 0;
+          let dominantColor = spaceNodes[cluster[0]].color;
+          let maxR = 0;
+
+          for (const ci of cluster) {
+            const sc = spaceNodes[ci];
+            const rc = sc.r * (1 + Math.sin(time * 0.001 + sc.pulseOffset) * 0.05);
+            const area = Math.PI * rc * rc;
+            totalArea += area;
+            cx += sc.x * area;
+            cy += sc.y * area;
+            if (rc > maxR) {
+              maxR = rc;
+              dominantColor = sc.color;
+            }
+          }
+          cx /= totalArea;
+          cy /= totalArea;
+
+          // Merged radius from combined area (circle packing)
+          const mergedR = Math.sqrt(totalArea / Math.PI);
+
+          // Count nearby people for growth
+          let nearbyPeople = 0;
+          for (const p of personNodes) {
+            const dx = p.x - cx;
+            const dy = p.y - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mergedR + connectionDist * 0.5) nearbyPeople++;
+          }
+          const growFactor = 1 + nearbyPeople * 0.02;
+
+          mergedSpaces.push({
+            cx,
+            cy,
+            r: mergedR * growFactor,
+            color: dominantColor,
+            members: cluster,
+          });
+        }
+      }
+
+      // ─── Draw organic connections ───
+      // Person-to-space: fluid curves
+      for (const p of personNodes) {
+        for (const ms of mergedSpaces) {
+          const dx = ms.cx - p.x;
+          const dy = ms.cy - p.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectionDist) {
-            const opacity = (1 - dist / connectionDist) * 0.12;
+          const reachDist = ms.r + connectionDist * 0.7;
+
+          if (dist < reachDist && dist > ms.r * 0.8) {
+            const strength = 1 - dist / reachDist;
+            const opacity = strength * 0.14;
+
+            // Organic curve with time-based wobble
+            const midX = (p.x + ms.cx) / 2;
+            const midY = (p.y + ms.cy) / 2;
+            const perpX = -(dy / dist);
+            const perpY = (dx / dist);
+            const wobble = Math.sin(time * 0.0007 + p.pulseOffset + ms.members[0]) * dist * 0.06;
+
             ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.moveTo(p.x, p.y);
+            ctx.quadraticCurveTo(midX + perpX * wobble, midY + perpY * wobble, ms.cx, ms.cy);
             ctx.strokeStyle = `rgba(29, 56, 74, ${opacity})`;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 0.8 + strength * 0.4;
             ctx.stroke();
           }
         }
       }
 
-      // Draw nodes
-      for (const n of nodes) {
+      // Space-to-space (unmerged): soft connections between separate clusters
+      for (let i = 0; i < mergedSpaces.length; i++) {
+        for (let j = i + 1; j < mergedSpaces.length; j++) {
+          const a = mergedSpaces[i];
+          const b = mergedSpaces[j];
+          const dx = b.cx - a.cx;
+          const dy = b.cy - a.cy;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const reachDist = a.r + b.r + connectionDist * 0.8;
+
+          if (dist < reachDist && dist > a.r + b.r) {
+            const strength = 1 - (dist - a.r - b.r) / (connectionDist * 0.8);
+            const opacity = strength * 0.13;
+
+            const midX = (a.cx + b.cx) / 2;
+            const midY = (a.cy + b.cy) / 2;
+            const perpX = -(dy / dist);
+            const perpY = (dx / dist);
+            const wobble = Math.sin(time * 0.0006 + i * 3 + j * 7) * dist * 0.05;
+
+            ctx.beginPath();
+            ctx.moveTo(a.cx, a.cy);
+            ctx.quadraticCurveTo(midX + perpX * wobble, midY + perpY * wobble, b.cx, b.cy);
+            ctx.strokeStyle = `rgba(29, 56, 74, ${opacity})`;
+            ctx.lineWidth = 1.2 + strength * 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Person-to-person: only when both are connected to a shared space
+      // (people can't connect directly without a space in between — that's how Alkemio works)
+      for (let i = 0; i < personNodes.length; i++) {
+        for (let j = i + 1; j < personNodes.length; j++) {
+          const p1 = personNodes[i];
+          const p2 = personNodes[j];
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > connectionDist * 0.7) continue;
+
+          // Check if both people share a nearby space
+          let sharedSpace = false;
+          for (const ms of mergedSpaces) {
+            const d1 = Math.sqrt((p1.x - ms.cx) ** 2 + (p1.y - ms.cy) ** 2);
+            const d2 = Math.sqrt((p2.x - ms.cx) ** 2 + (p2.y - ms.cy) ** 2);
+            if (d1 < ms.r + connectionDist * 0.6 && d2 < ms.r + connectionDist * 0.6) {
+              sharedSpace = true;
+              break;
+            }
+          }
+          if (!sharedSpace) continue;
+
+          const strength = 1 - dist / (connectionDist * 0.7);
+          const opacity = strength * 0.08;
+
+          const midX = (p1.x + p2.x) / 2;
+          const midY = (p1.y + p2.y) / 2;
+          const perpX = -(dy / dist);
+          const perpY = (dx / dist);
+          const wobble = Math.sin(time * 0.0009 + i + j * 5) * dist * 0.07;
+
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.quadraticCurveTo(midX + perpX * wobble, midY + perpY * wobble, p2.x, p2.y);
+          ctx.strokeStyle = `rgba(29, 56, 74, ${opacity})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+
+      // ─── Draw emergent spaces (forming + popping phases) ───
+      for (const es of emergentRef.current) {
+        const formProgress = Math.min(1, es.age / formingThreshold); // 0→1 over forming phase
+        const alpha = formProgress * 0.7;
+
+        let scale = 1;
+        let ringAlpha = alpha * 0.5;
+        let useDash = true;
+
+        if (es.phase === "popping") {
+          // Pop animation: quick scale up then settle
+          const popProgress = Math.min(1, (time - es.popStart) / popDuration);
+          // Elastic ease out: overshoot then settle
+          const elastic = 1 + Math.sin(popProgress * Math.PI) * 0.35 * (1 - popProgress);
+          scale = elastic;
+          useDash = false; // solid ring during pop
+          ringAlpha = 0.7 * (1 - popProgress * 0.3);
+        }
+
+        const r = es.r * scale;
+
+        // Gentle glow behind
+        const grd = ctx.createRadialGradient(es.cx, es.cy, 0, es.cx, es.cy, r * 1.5);
+        const glowColor = es.color.replace(/[\d.]+\)$/, `${alpha * 0.3})`);
+        grd.addColorStop(0, glowColor);
+        grd.addColorStop(1, es.color.replace(/[\d.]+\)$/, "0)"));
+        ctx.beginPath();
+        ctx.arc(es.cx, es.cy, r * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        // Opaque base
+        ctx.beginPath();
+        ctx.arc(es.cx, es.cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(238, 244, 249, ${alpha})`;
+        ctx.fill();
+
+        // Colored fill
+        ctx.beginPath();
+        ctx.arc(es.cx, es.cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = es.color.replace(/[\d.]+\)$/, `${alpha * 0.35})`);
+        ctx.fill();
+
+        // Ring — dashed while forming, solid during pop
+        ctx.beginPath();
+        ctx.arc(es.cx, es.cy, r, 0, Math.PI * 2);
+        if (useDash) {
+          // Animate dash offset to show "activity"
+          const dashOffset = (es.age * 0.5) % 8;
+          ctx.setLineDash([4, 4]);
+          ctx.lineDashOffset = dashOffset;
+        } else {
+          ctx.setLineDash([]);
+        }
+        ctx.strokeStyle = es.color.replace(/[\d.]+\)$/, `${ringAlpha})`);
+        ctx.lineWidth = es.phase === "popping" ? 2.5 : 1.5;
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.lineDashOffset = 0;
+
+        // During pop: brief flash ring expanding outward
+        if (es.phase === "popping") {
+          const popProgress = Math.min(1, (time - es.popStart) / popDuration);
+          const flashR = r * (1 + popProgress * 0.6);
+          const flashAlpha = (1 - popProgress) * 0.4;
+          ctx.beginPath();
+          ctx.arc(es.cx, es.cy, flashR, 0, Math.PI * 2);
+          ctx.strokeStyle = es.color.replace(/[\d.]+\)$/, `${flashAlpha})`);
+          ctx.lineWidth = 2 * (1 - popProgress);
+          ctx.stroke();
+        }
+      }
+
+      // ─── Draw merged space circles ───
+      for (const ms of mergedSpaces) {
+        const r = ms.r;
+
+        // Opaque base — covers lines cleanly
+        ctx.beginPath();
+        ctx.arc(ms.cx, ms.cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = "#eef4f9";
+        ctx.fill();
+
+        // Soft outer glow
+        ctx.beginPath();
+        ctx.arc(ms.cx, ms.cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = ms.color.replace(/[\d.]+\)$/, "0.1)");
+        ctx.fill();
+
+        // Inner filled core
+        ctx.beginPath();
+        ctx.arc(ms.cx, ms.cy, r * 0.6, 0, Math.PI * 2);
+        ctx.fillStyle = ms.color.replace(/[\d.]+\)$/, "0.2)");
+        ctx.fill();
+
+        // Soft ring
+        ctx.beginPath();
+        ctx.arc(ms.cx, ms.cy, r * 0.6, 0, Math.PI * 2);
+        ctx.strokeStyle = ms.color.replace(/[\d.]+\)$/, "0.15)");
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // If merged (multi-member), show subtle internal structure
+        if (ms.members.length > 1) {
+          // Faint inner circles hinting at the original spaces within
+          for (const ci of ms.members) {
+            const sc = spaceNodes[ci];
+            const innerR = sc.r * 0.3 * (1 + Math.sin(time * 0.001 + sc.pulseOffset) * 0.1);
+            const dx = sc.x - ms.cx;
+            const dy = sc.y - ms.cy;
+            // Keep inner hints within the merged circle
+            const maxOff = r * 0.35;
+            const innerDist = Math.sqrt(dx * dx + dy * dy);
+            const scale = innerDist > maxOff ? maxOff / innerDist : 1;
+            const ix = ms.cx + dx * scale;
+            const iy = ms.cy + dy * scale;
+
+            ctx.beginPath();
+            ctx.arc(ix, iy, innerR, 0, Math.PI * 2);
+            ctx.fillStyle = sc.color.replace(/[\d.]+\)$/, "0.12)");
+            ctx.fill();
+          }
+        }
+      }
+
+      // ─── Draw people on top ───
+      for (const n of personNodes) {
         const pulse = 1 + Math.sin(time * 0.001 + n.pulseOffset) * 0.08;
+        const r = n.r * pulse;
 
-        if (n.type === "person") {
-          const r = n.r * pulse;
+        // Clip to circle and draw profile image
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.closePath();
 
-          // Outer glow
-          const grad = ctx.createRadialGradient(n.x, n.y, r * 0.5, n.x, n.y, r * 1.8);
-          grad.addColorStop(0, n.color.replace(/[\d.]+\)$/, "0.08)"));
-          grad.addColorStop(1, "rgba(0,0,0,0)");
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, r * 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
+        // Solid background first (covers lines)
+        ctx.fillStyle = "#eef4f9";
+        ctx.fill();
 
-          // Person circle
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        if (n.img && n.img.complete && n.img.naturalWidth > 0) {
+          // Draw profile photo clipped to circle
+          ctx.clip();
+          ctx.drawImage(n.img, n.x - r, n.y - r, r * 2, r * 2);
+        } else {
+          // Fallback: colored circle with head/shoulders
           ctx.fillStyle = n.color;
           ctx.fill();
 
-          // Head (small circle on top)
           ctx.beginPath();
-          ctx.arc(n.x, n.y - r * 0.2, r * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.6)";
+          ctx.arc(n.x, n.y - r * 0.28, r * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.7)";
           ctx.fill();
 
-          // Body (shoulders arc)
           ctx.beginPath();
-          ctx.arc(n.x, n.y + r * 0.55, r * 0.5, Math.PI, 0);
-          ctx.fillStyle = "rgba(255,255,255,0.4)";
-          ctx.fill();
-        } else {
-          // Small dot node
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
-          ctx.fillStyle = n.color.replace(/[\d.]+\)$/, "0.25)");
+          ctx.arc(n.x, n.y + r * 0.6, r * 0.45, Math.PI, 0);
+          ctx.fillStyle = "rgba(255,255,255,0.5)";
           ctx.fill();
         }
+        ctx.restore();
+
+        // Subtle border ring
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(29, 56, 74, 0.15)";
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
       }
 
       animRef.current = requestAnimationFrame(draw);
@@ -437,7 +919,6 @@ export default function AuthPageV2() {
   return (
     <div
       className="min-h-screen flex flex-col relative"
-      style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* Background: Network visualization */}
       <div
@@ -499,18 +980,19 @@ export default function AuthPageV2() {
               />
               <button
                 onClick={() => setView("recovery")}
-                className="hover:underline text-body"
-                style={{ color: "var(--primary)" }}
+                className="hover:underline"
+                style={{ fontSize: "var(--text-sm)", color: "var(--primary)" }}
               >
                 Forgot password?
               </button>
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold text-control"
+                className="w-full uppercase tracking-wider font-semibold"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleSignIn}
@@ -526,7 +1008,7 @@ export default function AuthPageV2() {
         {view === "sign-up" && (
           <AuthCard title="Sign up" showSignIn onNavigate={handleNavigate}>
             <div className="space-y-5">
-              <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
+              <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
                 Alkemio is designed to benefit society. Please read and accept the{" "}
                 <a href="#" className="underline font-medium" style={{ color: "var(--foreground)" }}>Terms of Use</a>{" "}
                 and{" "}
@@ -540,7 +1022,7 @@ export default function AuthPageV2() {
                   onCheckedChange={(v) => setTermsAccepted(!!v)}
                   className="mt-0.5"
                 />
-                <label className="text-body" style={{ color: "var(--foreground)" }}>
+                <label style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", lineHeight: 1.5 }}>
                   I accept the{" "}
                   <a href="#" className="underline font-medium">Terms of Use</a>{" "}
                   and{" "}
@@ -570,11 +1052,12 @@ export default function AuthPageV2() {
 
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold text-control"
+                className="w-full uppercase tracking-wider font-semibold"
                 style={{
                   background: termsAccepted ? "var(--primary)" : "var(--muted)",
                   color: termsAccepted ? "var(--primary-foreground)" : "var(--muted-foreground)",
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                   cursor: termsAccepted ? "pointer" : "not-allowed",
                 }}
@@ -601,7 +1084,7 @@ export default function AuthPageV2() {
                 }}
               >
                 <Info className="w-4 h-4 shrink-0" style={{ color: "var(--primary)" }} />
-                <span className="text-body" style={{ color: "var(--primary)" }}>
+                <span style={{ fontSize: "var(--text-sm)", color: "var(--primary)" }}>
                   Pick a password for your account
                 </span>
               </div>
@@ -621,11 +1104,12 @@ export default function AuthPageV2() {
 
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold text-control"
+                className="w-full uppercase tracking-wider font-semibold"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleSignUpSubmit}
@@ -636,9 +1120,10 @@ export default function AuthPageV2() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full uppercase tracking-wider font-semibold text-control"
+                className="w-full uppercase tracking-wider font-semibold"
                 style={{
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                   borderColor: "var(--primary)",
                   color: "var(--primary)",
@@ -652,11 +1137,12 @@ export default function AuthPageV2() {
 
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold gap-2 text-control"
+                className="w-full uppercase tracking-wider font-semibold gap-2"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
               >
@@ -673,10 +1159,10 @@ export default function AuthPageV2() {
         {view === "verify" && (
           <AuthCard title="Sign up" showSignIn onNavigate={handleNavigate}>
             <div className="space-y-6">
-              <p className="text-subheader font-normal" style={{ color: "var(--muted-foreground)" }}>
+              <p style={{ fontSize: "var(--text-base)", color: "var(--muted-foreground)", lineHeight: 1.7 }}>
                 The last step is to verify your email address. Please check your inbox for an email with instructions.
               </p>
-              <p className="text-subheader font-normal" style={{ color: "var(--foreground)" }}>
+              <p style={{ fontSize: "var(--text-base)", color: "var(--foreground)", lineHeight: 1.7 }}>
                 If you have not received an email,{" "}
                 <button className="underline font-medium hover:opacity-80">
                   click here to send it again.
@@ -689,7 +1175,7 @@ export default function AuthPageV2() {
         {view === "recovery" && (
           <AuthCard title="Password recovery" showSignUp onNavigate={handleNavigate}>
             <div className="space-y-5">
-              <p className="text-body" style={{ color: "var(--muted-foreground)" }}>
+              <p style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", lineHeight: 1.6 }}>
                 Please enter your email address below to receive a recovery link that will allow you to reset your password.
               </p>
               <FloatingInput
@@ -701,11 +1187,12 @@ export default function AuthPageV2() {
               />
               <Button
                 size="lg"
-                className="w-full uppercase tracking-wider font-semibold text-control"
+                className="w-full uppercase tracking-wider font-semibold"
                 style={{
                   background: "var(--primary)",
                   color: "var(--primary-foreground)",
                   height: "48px",
+                  fontSize: "var(--text-sm)",
                   letterSpacing: "0.5px",
                 }}
                 onClick={handleRecovery}

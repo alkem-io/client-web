@@ -344,7 +344,7 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 ## CRD Feature Toggle
 
-The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD). Default is `1`. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
+The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI/legacy, `2` = CRD/new). **Default is `2` (CRD)** — anyone without an explicit preference (anonymous visitors, fresh devices, users whose LS was cleared, or whose server record is unset) lands on CRD; users who previously opted into legacy (`1`) keep it. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
 
 For developers / QA who want to seed the toggle without going through the UI:
 
