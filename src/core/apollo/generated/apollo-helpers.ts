@@ -1604,6 +1604,12 @@ export type DocumentFieldPolicy = {
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type EmailChangeApproverKeySpecifier = ('name' | 'organization' | 'role' | EmailChangeApproverKeySpecifier)[];
+export type EmailChangeApproverFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ExternalConfigKeySpecifier = ('apiKey' | 'assistantId' | 'model' | ExternalConfigKeySpecifier)[];
 export type ExternalConfigFieldPolicy = {
   apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2708,6 +2714,8 @@ export type MutationKeySpecifier = (
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
   | 'adminUserAccountDelete'
+  | 'adminUserEmailChange'
+  | 'adminUserEmailChangeDriftResolve'
   | 'adminWingbackCreateTestCustomer'
   | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
@@ -2923,6 +2931,8 @@ export type MutationFieldPolicy = {
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3370,8 +3380,10 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | 'identity'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'latestUserEmailChangeAuditEntry'
   | 'organizations'
   | 'spaces'
+  | 'userEmailChangeAuditEntries'
   | 'users'
   | 'virtualContributors'
   | PlatformAdminQueryResultsKeySpecifier
@@ -3382,8 +3394,10 @@ export type PlatformAdminQueryResultsFieldPolicy = {
   identity?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestUserEmailChangeAuditEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChangeAuditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5092,6 +5106,62 @@ export type UserAuthenticationResultFieldPolicy = {
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   methods?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserEmailChangeAuditEntriesKeySpecifier = (
+  | 'auditEntries'
+  | 'pageInfo'
+  | 'total'
+  | UserEmailChangeAuditEntriesKeySpecifier
+)[];
+export type UserEmailChangeAuditEntriesFieldPolicy = {
+  auditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeAuditEntriesPageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'hasPreviousPage'
+  | 'startCursor'
+  | UserEmailChangeAuditEntriesPageInfoKeySpecifier
+)[];
+export type UserEmailChangeAuditEntriesPageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeAuditEntryKeySpecifier = (
+  | 'approver'
+  | 'failureReason'
+  | 'id'
+  | 'initiator'
+  | 'initiatorRole'
+  | 'newEmail'
+  | 'oldEmail'
+  | 'outcome'
+  | 'reason'
+  | 'subject'
+  | 'timestamp'
+  | UserEmailChangeAuditEntryKeySpecifier
+)[];
+export type UserEmailChangeAuditEntryFieldPolicy = {
+  approver?: FieldPolicy<any> | FieldReadFunction<any>;
+  failureReason?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  initiator?: FieldPolicy<any> | FieldReadFunction<any>;
+  initiatorRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  newEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  oldEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  outcome?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+  subject?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeResultKeySpecifier = ('email' | 'success' | UserEmailChangeResultKeySpecifier)[];
+export type UserEmailChangeResultFieldPolicy = {
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UserGroupKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -5110,6 +5180,11 @@ export type UserGroupFieldPolicy = {
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserProfileSummaryKeySpecifier = ('displayName' | 'id' | UserProfileSummaryKeySpecifier)[];
+export type UserProfileSummaryFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsKeySpecifier = (
   | 'authorization'
@@ -5194,6 +5269,7 @@ export type UserSettingsNotificationPlatformFieldPolicy = {
 };
 export type UserSettingsNotificationPlatformAdminKeySpecifier = (
   | 'spaceCreated'
+  | 'userEmailChanged'
   | 'userGlobalRoleChanged'
   | 'userProfileCreated'
   | 'userProfileRemoved'
@@ -5201,6 +5277,7 @@ export type UserSettingsNotificationPlatformAdminKeySpecifier = (
 )[];
 export type UserSettingsNotificationPlatformAdminFieldPolicy = {
   spaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5237,6 +5314,7 @@ export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'communicationMessageReceived'
   | 'communityApplicationReceived'
   | 'communityNewMember'
+  | 'userEmailChanged'
   | UserSettingsNotificationSpaceAdminKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceAdminFieldPolicy = {
@@ -5244,6 +5322,7 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
   communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
@@ -6061,6 +6140,10 @@ export type StrictTypedTypePolicies = {
   Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);
     fields?: DocumentFieldPolicy;
+  };
+  EmailChangeApprover?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | EmailChangeApproverKeySpecifier | (() => undefined | EmailChangeApproverKeySpecifier);
+    fields?: EmailChangeApproverFieldPolicy;
   };
   ExternalConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ExternalConfigKeySpecifier | (() => undefined | ExternalConfigKeySpecifier);
@@ -7023,9 +7106,38 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserAuthenticationResultKeySpecifier | (() => undefined | UserAuthenticationResultKeySpecifier);
     fields?: UserAuthenticationResultFieldPolicy;
   };
+  UserEmailChangeAuditEntries?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntriesKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntriesKeySpecifier);
+    fields?: UserEmailChangeAuditEntriesFieldPolicy;
+  };
+  UserEmailChangeAuditEntriesPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntriesPageInfoKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntriesPageInfoKeySpecifier);
+    fields?: UserEmailChangeAuditEntriesPageInfoFieldPolicy;
+  };
+  UserEmailChangeAuditEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntryKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntryKeySpecifier);
+    fields?: UserEmailChangeAuditEntryFieldPolicy;
+  };
+  UserEmailChangeResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserEmailChangeResultKeySpecifier | (() => undefined | UserEmailChangeResultKeySpecifier);
+    fields?: UserEmailChangeResultFieldPolicy;
+  };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
     fields?: UserGroupFieldPolicy;
+  };
+  UserProfileSummary?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserProfileSummaryKeySpecifier | (() => undefined | UserProfileSummaryKeySpecifier);
+    fields?: UserProfileSummaryFieldPolicy;
   };
   UserSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsKeySpecifier | (() => undefined | UserSettingsKeySpecifier);

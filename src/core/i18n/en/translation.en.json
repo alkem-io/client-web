@@ -3154,6 +3154,88 @@
       "users": {
         "notifications": {
           "user-removed": "User removed successfully."
+        },
+        "emailChange": {
+          "rowAction": {
+            "label": "Change login email",
+            "tooltip": "Change this user's login email",
+            "disabledTooltip": "Only platform administrators can change a user's login email."
+          },
+          "dialog": {
+            "title": "Change login email",
+            "currentEmailLabel": "Current login email",
+            "newEmailLabel": "New login email",
+            "confirmEmailLabel": "Confirm new login email",
+            "approvalSection": "Reason & approval",
+            "reasonLabel": "Reason for change",
+            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
+            "approverNameLabel": "Approved by",
+            "approverRoleLabel": "Approver's role",
+            "approverOrganizationLabel": "Approver's organization (optional)",
+            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
+            "submit": "Change email"
+          },
+          "validation": {
+            "unchanged": "The new email must be different from the current login email.",
+            "mismatch": "The email addresses do not match."
+          },
+          "success": "Login email changed to {{email}}. The user has been notified by email.",
+          "errors": {
+            "validation": "Enter a valid email address.",
+            "noChange": "The new email is the same as the current login email.",
+            "conflict": "This email address is already in use.",
+            "subjectNotFound": "This user has no login identity that can be changed.",
+            "kratosUnreachable": "The identity service is currently unavailable. Please try again shortly.",
+            "kratosWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "driftDetected": "The change was only partially applied. Use the Resolve action to reconcile this account.",
+            "driftResolutionFailed": "The account could not be reconciled. Please try again.",
+            "driftNotFound": "There is no outstanding drift to resolve for this user.",
+            "unauthorized": "You do not have permission to perform this action.",
+            "generic": "The change could not be completed. Please try again."
+          },
+          "outcomes": {
+            "committed": "Committed",
+            "driftResolved": "Drift resolved",
+            "securitySignalFailed": "Committed — security signal not sent",
+            "newAddressNotificationFailed": "Committed — new-address notification not sent",
+            "globalAdminNotificationFailed": "Committed — admin notification not sent",
+            "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
+            "sessionInvalidationFailed": "Committed — sessions not ended",
+            "rejectedValidation": "Rejected — invalid address",
+            "rejectedConflict": "Rejected — address in use",
+            "rolledBack": "Rolled back",
+            "driftDetected": "Drift detected",
+            "driftResolutionFailed": "Drift resolution failed",
+            "unknown": "Unknown outcome"
+          },
+          "history": {
+            "title": "Email-change history",
+            "linkLabel": "View change history",
+            "empty": "This user has no email-change history.",
+            "loadMore": "Load more",
+            "unknownInitiator": "—",
+            "fields": {
+              "timestamp": "When",
+              "outcome": "Outcome",
+              "initiator": "Initiated by",
+              "oldEmail": "Old email",
+              "newEmail": "New email",
+              "reason": "Reason for change",
+              "approver": "Approved by",
+              "failureReason": "Failure reason"
+            }
+          },
+          "drift": {
+            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
+            "resolveAction": "Resolve",
+            "resolveTitle": "Resolve email drift",
+            "resolveDescription": "Choose which address should be this user's canonical login email.",
+            "oldEmailChoice": "Previous address — {{email}}",
+            "newEmailChoice": "New address — {{email}}",
+            "resolveSubmit": "Resolve",
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
+          }
         }
       },
       "innovation-packs": {
@@ -4090,7 +4172,8 @@
           "communityApplicationReceived": "Receive a $t(common.notification) when a new application is received",
           "communityNewMember": "Receive a $t(common.notification) when a new $t(common.member) joins the $t(common.community)",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new $t(common.callout) is created",
-          "communicationMessageReceived": "Receive a $t(common.notification) when a new message is received"
+          "communicationMessageReceived": "Receive a $t(common.notification) when a new message is received",
+          "userEmailChanged": "Receive a $t(common.notification) when the login email of a $t(common.member) of a $t(common.space) you administer is changed"
         }
       },
       "organization": {
@@ -4125,7 +4208,8 @@
           "adminUserProfileCreated": "Receive a $t(common.notification) when a new user signs up",
           "adminUserProfileRemoved": "Receive a $t(common.notification) when a user $t(common.profile) is removed",
           "adminSpaceCreated": "Receive a $t(common.notification) when a new $t(common.space) is created",
-          "adminUserGlobalRoleChanged": "Receive a $t(common.notification) when a user's global role is changed"
+          "adminUserGlobalRoleChanged": "Receive a $t(common.notification) when a user's global role is changed",
+          "adminUserEmailChanged": "Receive a $t(common.notification) when a user's email address is changed"
         }
       },
       "forum": {

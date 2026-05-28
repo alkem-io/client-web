@@ -38,7 +38,7 @@ pnpm test
 # Test with coverage
 pnpm test:coverage
 
-# GraphQL codegen (requires running backend at localhost:4000/graphql)
+# GraphQL codegen (requires running backend at localhost:3000/graphql)
 pnpm codegen
 
 # Format code
@@ -147,7 +147,7 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
-2. Run `pnpm codegen` (requires backend running at `localhost:4000/graphql`)
+2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
