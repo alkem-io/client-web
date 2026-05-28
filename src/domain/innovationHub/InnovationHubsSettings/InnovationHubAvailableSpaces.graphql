@@ -1,7 +1,0 @@
-query InnovationHubAvailableSpaces {
-  spaces(filter: {
-    visibilities: [ACTIVE, DEMO, INACTIVE]
-  }) {
-    ...InnovationHubSpace
-  }
-}

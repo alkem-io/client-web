@@ -3281,6 +3281,16 @@
           "header": {
             "title": "Current Selection",
             "subtitle": "The order below is the order in which the $t(common.spaces) will be visible on the $t(common.customHomepage)"
+          },
+          "addByUrl": {
+            "dialogTitle": "Add $t(common.space) by URL",
+            "urlInputLabel": "$t(common.space) URL",
+            "urlInputPlaceholder": "{{origin}}/space-name",
+            "submit": "Add",
+            "cancel": "$t(buttons.cancel)",
+            "validating": "URL is being validated…",
+            "invalidSpaceUrl": "URL is not a valid top level $t(common.space)",
+            "alreadyAdded": "This $t(common.space) is already added to this $t(common.innovation-hub)"
           }
         },
         "notifications": {
