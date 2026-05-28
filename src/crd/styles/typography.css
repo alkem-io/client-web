@@ -124,3 +124,6 @@ input.text-control,
 textarea.text-control {
   text-transform: none;
 }
+.text-control .font-normal {
+  text-transform: none;
+}

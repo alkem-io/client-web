@@ -189,6 +189,8 @@ See [translations.md](./translations.md) for the full guide. Short version:
 3. Register types in `@types/i18next.d.ts`
 4. Use `useTranslation('crd-<feature>')` in components
 
+**Do-not-translate platform terms.** A set of brand terms — **Space, Subspace, Post (= Callout), template, Layout, Virtual Contributor** (and plurals) — must stay in **English**; only the surrounding sentence is translated and inflected around them (e.g. `Space-leden`, `subspace-template`). **For now this is enforced for Dutch (`nl`) only** — es/bg/de/fr still translate these terms and are expected to follow later. Watch the Dutch disambiguation traps: `Berichten` = "Messages" (not Post), `werkruimte` = "workspace", `Oproep voor whiteboards` = "Call for whiteboards" — these stay translated. The authoritative list, rationale, per-language localized forms, and validation approach live in **`specs/101-translation-glossary/`** (`glossary.md` / `glossary.json`). See also the "Do-not-translate platform terms (glossary)" section in `src/crd/CLAUDE.md`.
+
 ## Key Considerations
 
 ### CSS Isolation

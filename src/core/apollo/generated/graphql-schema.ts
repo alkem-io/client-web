@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -1631,6 +1641,11 @@ export type ContributionsFilterInput = {
   IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The contributions types to return. If omitted return all. */
   types?: InputMaybe<Array<CalloutContributionType>>;
+};
+
+export type ContributorFilterInput = {
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  nameID?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Conversation = {
@@ -7003,6 +7018,8 @@ export type RelayPaginatedSpace = ActorFull & {
   levelZeroSpaceID: Scalars['String']['output'];
   /** The License operating on this Space. */
   license: License;
+  /** Capped list of Contributors (Users, Virtual Contributors, …) that may be @mentioned in this Space. Scope adapts to the Space's privacy and the privacy of its ancestors: a private Space yields only its own Members; a public Space includes its Members plus the Members of each ancestor, walking up until the first private ancestor (inclusive) or until the public L0 root is reached, in which case all platform Contributors of the requested types are returned. Use `filter` for typeahead search and `types` to restrict which Contributor kinds are returned. */
+  mentionableContributors: Array<ActorFull>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** Whether this Space is pinned in its parent Space. */
@@ -7033,6 +7050,12 @@ export type RelayPaginatedSpace = ActorFull & {
   updatedDate: Scalars['DateTime']['output'];
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
+};
+
+export type RelayPaginatedSpaceMentionableContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  types?: InputMaybe<Array<ActorType>>;
 };
 
 export type RelayPaginatedSpaceSubspaceByNameIdArgs = {
@@ -7789,6 +7812,8 @@ export type Space = ActorFull & {
   levelZeroSpaceID: Scalars['String']['output'];
   /** The License operating on this Space. */
   license: License;
+  /** Capped list of Contributors (Users, Virtual Contributors, …) that may be @mentioned in this Space. Scope adapts to the Space's privacy and the privacy of its ancestors: a private Space yields only its own Members; a public Space includes its Members plus the Members of each ancestor, walking up until the first private ancestor (inclusive) or until the public L0 root is reached, in which case all platform Contributors of the requested types are returned. Use `filter` for typeahead search and `types` to restrict which Contributor kinds are returned. */
+  mentionableContributors: Array<ActorFull>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** Whether this Space is pinned in its parent Space. */
@@ -7819,6 +7844,12 @@ export type Space = ActorFull & {
   updatedDate: Scalars['DateTime']['output'];
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
+};
+
+export type SpaceMentionableContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  types?: InputMaybe<Array<ActorType>>;
 };
 
 export type SpaceSubspaceByNameIdArgs = {
@@ -19906,67 +19937,206 @@ export type VcInteractionsDetailsFragment = {
 };
 
 export type MentionableContributorsQueryVariables = Exact<{
-  filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  roleSetId?: Scalars['UUID']['input'];
-  includeVirtualContributors: Scalars['Boolean']['input'];
+  spaceID: Scalars['UUID']['input'];
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 export type MentionableContributorsQuery = {
   __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            avatar?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          }
-        | undefined;
-    }>;
-  };
-  lookup?: {
+  lookup: {
     __typename?: 'LookupQueryResults';
-    roleSet?:
+    space?:
       | {
-          __typename?: 'RoleSet';
-          virtualContributorsInRoleInHierarchy: Array<{
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile?:
-              | {
-                  __typename?: 'Profile';
-                  id: string;
-                  url: string;
-                  displayName: string;
-                  avatar?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: VisualType;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
-          }>;
+          __typename?: 'Space';
+          mentionableContributors: Array<
+            | {
+                __typename?: 'Account';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'Organization';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+          >;
         }
       | undefined;
   };
@@ -21947,15 +22117,6 @@ export type UserDisplayNameFragment = {
   __typename?: 'User';
   id: string;
   profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-};
-
-export type CreateUserNewRegistrationMutationVariables = Exact<{
-  userData: CreateUserInput;
-}>;
-
-export type CreateUserNewRegistrationMutation = {
-  __typename?: 'Mutation';
-  createUser: { __typename?: 'User'; id: string };
 };
 
 export type DeleteUserMutationVariables = Exact<{

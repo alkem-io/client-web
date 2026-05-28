@@ -352,7 +352,7 @@ A user views the Community tab to see space members, leadership, and community r
 6. **Given** a user is not authenticated, **When** the member section renders, **Then** individual user cards are hidden (only organizations shown)
 7. **Given** the space has community guidelines configured, **When** the tab renders, **Then** a community guidelines block appears in the sidebar
 8. **Given** a user enters a search query or picks a role filter that returns no matches, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
-9. **Given** a user holds multiple roles (e.g. Admin AND Lead), **When** the viewer selects the Lead filter, **Then** that user appears in the filtered results (the Admin and Lead filters are overlapping sets, not mutually exclusive); the user's display badge still reflects the highest-precedence role (Admin)
+9. **Given** a user holds the Lead role (possibly alongside an administrative role), **When** the viewer selects the Lead filter, **Then** that user appears in the filtered results (the Lead filter matches against the user's full role list); the user's display badge shows "Lead". Administrative status is never surfaced — there is no Admin filter pill and no Admin badge on any card
 
 ---
 
@@ -634,10 +634,10 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-022**: The sidebar MUST show an invite-contributors action when the user has invite privileges; the same action MUST be available in the members section header and MUST open the same dialog
 - **FR-023**: The sidebar MUST show a Virtual Contributors section ONLY when BOTH conditions are met: (a) the space has the virtual-contributor license entitlement AND (b) at least one visible (non-hidden) VC is assigned to the community. When either condition is false the section MUST be hidden entirely
 - **FR-024**: The sidebar MUST show a Community Guidelines block when guidelines are configured
-- **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Admin, Lead, Member, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
+- **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Lead, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
 - **FR-025a**: The Invite Member action in the members section header MUST trigger the same invite-contributors dialog as the sidebar action (FR-022); both entry points MUST be gated by the same permission flag
 - **FR-025b**: User cards in the members grid MUST be hidden for unauthenticated visitors (only organization cards shown)
-- **FR-025c**: Role filter pills MUST treat Admin and Lead as overlapping sets: a user who holds both roles MUST appear under both filters. The display badge MUST reflect the highest-precedence role (Admin > Lead > Member), but the filter MUST match against the user's full role list, not the display badge alone
+- **FR-025c**: Administrative status MUST NOT be surfaced in the members widget: there MUST be no Admin filter pill and no Admin badge on any card. The role filter pills MUST be All, Lead, and Organization. A user's display badge MUST show "Lead" when they hold the Lead role, otherwise "Member". The Lead filter MUST match against the user's full role list (so a user who is both a Lead and an administrator still appears under Lead), not the display badge alone
 - **FR-026**: The main content area MUST render callout content blocks in the CRD design system
 
 #### Subspaces Tab

@@ -18,7 +18,8 @@ type NotificationState = 'idle' | 'offline' | 'restored';
 
 /**
  * Tracks browser online/offline events and shows a non-intrusive toast:
- * - Offline  → persistent white toast, grey text, top-center (debounced — only after 3 s sustained)
+ * - Offline  → persistent white toast, grey text, top-center (debounced — only after 3 s sustained).
+ *   Not user-dismissable (no close button, Escape ignored) — it clears only when connectivity returns.
  * - Restored → white toast, green text, auto-dismisses after 6 s (only if offline toast was shown)
  *
  * Logs a single Sentry info event per restored-session, throttled to avoid noise.
@@ -63,6 +64,10 @@ export const OnlineStatusNotification = () => {
 
   const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') return;
+    // The offline toast is a persistent connectivity indicator — it must not be dismissable by the
+    // user (no X, and Escape is ignored here). It clears on its own once the connection is restored,
+    // when the effect above transitions it to the 'restored' state.
+    if (state === 'offline') return;
     setState('idle');
   };
 
@@ -99,9 +104,11 @@ export const OnlineStatusNotification = () => {
           },
         }}
         action={
-          <IconButton size="small" aria-label={t('buttons.close')} onClick={handleClose} sx={{ color: 'inherit' }}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
+          isOffline ? undefined : (
+            <IconButton size="small" aria-label={t('buttons.close')} onClick={handleClose} sx={{ color: 'inherit' }}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          )
         }
       />
     </NotificationView>

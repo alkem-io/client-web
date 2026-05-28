@@ -333,7 +333,7 @@ export const MOCK_INNOVATION_PACKS: InnovationPackCardData[] = [
   ),
 ];
 
-// ─── Pack profile (full detail for `InnovationPackProfileView`) ──────────────
+// ─── Pack profile (also feeds the standalone pack-admin form) ──────────────
 
 const MOCK_PACK_REFERENCES = [
   {

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 
 type SpaceShellProps = {
@@ -6,10 +7,16 @@ type SpaceShellProps = {
   sidebar?: ReactNode;
   tabs?: ReactNode;
   children: ReactNode;
+  /**
+   * When true, the body fills all 12 grid columns instead of the default
+   * `lg:col-start-2 lg:col-span-10` inset (one empty gutter column per side).
+   * The outer `px-6 md:px-8` edge padding is unaffected.
+   */
+  fullWidth?: boolean;
   className?: string;
 };
 
-export function SpaceShell({ header, sidebar, tabs, children, className }: SpaceShellProps) {
+export function SpaceShell({ header, sidebar, tabs, children, fullWidth, className }: SpaceShellProps) {
   const hasSidebar = !!sidebar;
   const hasTabs = !!tabs;
 
@@ -19,9 +26,18 @@ export function SpaceShell({ header, sidebar, tabs, children, className }: Space
 
       <div className={cn('w-full px-6 md:px-8 pb-8')}>
         <div className="grid grid-cols-12 gap-6 items-start">
-          {hasSidebar && <div className="hidden lg:block lg:col-start-2 col-span-2">{sidebar}</div>}
+          {hasSidebar && (
+            <div className={cn('hidden lg:block col-span-2', fullWidth ? 'lg:col-start-1' : 'lg:col-start-2')}>
+              {sidebar}
+            </div>
+          )}
 
-          <div className={cn('col-span-12 min-w-0', hasSidebar ? 'lg:col-span-8' : 'lg:col-start-2 lg:col-span-10')}>
+          <div
+            className={cn(
+              'col-span-12 min-w-0',
+              hasSidebar ? (fullWidth ? 'lg:col-span-10' : 'lg:col-span-8') : contentColumnClass(fullWidth)
+            )}
+          >
             {hasTabs && <div className="sm:mb-6">{tabs}</div>}
             {children}
           </div>

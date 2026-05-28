@@ -32,6 +32,7 @@ export function TemplatesManagerView({
   onCreate,
   onImport,
   onTemplateAction,
+  readOnly,
   className,
 }: TemplatesManagerViewProps) {
   const { t } = useTranslation('crd-templates');
@@ -123,6 +124,7 @@ export function TemplatesManagerView({
                                 template={card}
                                 canEdit={canEdit(type)}
                                 canDelete={canDelete(type)}
+                                readOnly={readOnly}
                                 deleting={card.id === deletingId}
                                 duplicating={card.id === duplicatingId}
                                 onPreview={id => onTemplateAction(id, 'preview')}
