@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
           "communityNewMember": "Krijg een melding wanneer een nieuw lid zich bij de community aansluit",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
-          "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen"
+          "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
+          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
         },
         "user": {
           "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
@@ -268,6 +269,7 @@
           "userProfileCreated": "Krijg een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
           "userProfileRemoved": "Krijg een melding wanneer een gebruikersprofiel wordt verwijderd",
           "userGlobalRoleChanged": "Krijg een melding wanneer de globale rol van een gebruiker verandert",
+          "userEmailChanged": "Krijg een melding wanneer het e-mailadres van een gebruiker verandert",
           "spaceCreated": "Krijg een melding wanneer er een nieuwe Space wordt aangemaakt"
         },
         "organization": {

@@ -159,6 +159,7 @@ const buildSpaceAdmin = (
     value,
     server?.communicationMessageReceived
   ),
+  userEmailChanged: channel(type, property, 'userEmailChanged', value, server?.userEmailChanged),
 });
 
 const buildUser = (
@@ -222,6 +223,7 @@ const buildPlatformAdmin = (
   userProfileCreated: channel(type, property, 'userProfileCreated', value, server?.userProfileCreated),
   userProfileRemoved: channel(type, property, 'userProfileRemoved', value, server?.userProfileRemoved),
   userGlobalRoleChanged: channel(type, property, 'userGlobalRoleChanged', value, server?.userGlobalRoleChanged),
+  userEmailChanged: channel(type, property, 'userEmailChanged', value, server?.userEmailChanged),
   spaceCreated: channel(type, property, 'spaceCreated', value, server?.spaceCreated),
 });
 

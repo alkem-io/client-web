@@ -3,6 +3,7 @@ import { IconButton } from '@mui/material';
 import { type FC, useState } from 'react';
 import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
 import LicensePlanDialog from '@/domain/platformAdmin/domain/organizations/LicensePlanDialog';
+import UserEmailChangeRowAction from '@/domain/platformAdmin/domain/users/emailChange/UserEmailChangeRowAction';
 import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
@@ -32,9 +33,12 @@ const AdminUsersPage: FC = () => {
 
   const getActions = (item: SearchableListItem) => {
     return (
-      <IconButton onClick={() => onSettingsClick(item)} size="large" aria-label={'License'}>
-        <TuneOutlined />
-      </IconButton>
+      <>
+        <UserEmailChangeRowAction userId={item.id} currentEmail={item.email ?? ''} />
+        <IconButton onClick={() => onSettingsClick(item)} size="large" aria-label={'License'}>
+          <TuneOutlined />
+        </IconButton>
+      </>
     );
   };
 

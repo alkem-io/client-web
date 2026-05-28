@@ -151,6 +151,13 @@ export const CombinedSpaceNotificationsSettings = ({
           },
         ],
       };
+
+      options.userEmailChanged = {
+        inAppChecked: currentSpaceAdminSettings?.userEmailChanged?.inApp || false,
+        emailChecked: currentSpaceAdminSettings?.userEmailChanged?.email || false,
+        pushChecked: currentSpaceAdminSettings?.userEmailChanged?.push || false,
+        label: t('pages.userNotificationsSettings.spaceAdmin.settings.userEmailChanged'),
+      };
     }
 
     return options;
@@ -186,6 +193,7 @@ export const CombinedSpaceNotificationsSettings = ({
                 'communityNewMember',
                 'spaceAdminCollaborationCalloutContributionCreated',
                 'communicationMessageReceived',
+                'userEmailChanged',
               ].includes(key)
           )
         )}
@@ -206,6 +214,7 @@ export const CombinedSpaceNotificationsSettings = ({
                   'communityNewMember',
                   'spaceAdminCollaborationCalloutContributionCreated',
                   'communicationMessageReceived',
+                  'userEmailChanged',
                 ].includes(key)
               )
             )}
