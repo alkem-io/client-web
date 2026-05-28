@@ -45,7 +45,7 @@ export type AccountResourcesShape =
       }>;
       virtualContributors?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
       innovationPacks?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
-      innovationHubs?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
+      innovationHubs?: Array<{ id: string; profile?: AccountResourceProfileLike; subdomain?: string }>;
     }
   | null
   | undefined;
@@ -114,7 +114,14 @@ export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: 
     .filter((card): card is SimpleResourceCardItem => card !== null);
 
   const hostedInnovationHubs = (input?.innovationHubs ?? [])
-    .map(toSimpleResourceCard)
+    .map(hub => {
+      const card = toSimpleResourceCard(hub);
+      if (!card) return null;
+      // Override the server-provided `profile.url` (legacy `/innovation-hub/<slug>`)
+      // with the canonical CRD `/hub/<subdomain>` path. Falls back to the profile
+      // url when no subdomain is available (defensive — every hub has one).
+      return hub.subdomain ? { ...card, href: `/hub/${hub.subdomain}` } : card;
+    })
     .filter((card): card is SimpleResourceCardItem => card !== null);
 
   return { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs };

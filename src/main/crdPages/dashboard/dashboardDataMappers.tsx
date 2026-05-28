@@ -374,6 +374,10 @@ type ProfileResourceEntry = {
   profile?: ProfileShape;
 };
 
+type InnovationHubResourceEntry = ProfileResourceEntry & {
+  subdomain?: string;
+};
+
 type SidebarResources = {
   spaces: SidebarResourceData[];
   virtualContributors: SidebarResourceData[];
@@ -397,7 +401,7 @@ const mapProfileToSidebarItem = (id: string, profile: ProfileShape): SidebarReso
 export const mapResourcesToSidebarItems = (resources: {
   spaces?: SpaceResourceEntry[];
   virtualContributors?: ProfileResourceEntry[];
-  innovationHubs?: ProfileResourceEntry[];
+  innovationHubs?: InnovationHubResourceEntry[];
   innovationPacks?: ProfileResourceEntry[];
 }): SidebarResources => ({
   spaces: (resources.spaces ?? []).map(s => ({
@@ -415,8 +419,14 @@ export const mapResourcesToSidebarItems = (resources: {
     })),
   innovationHubs: (resources.innovationHubs ?? [])
     .filter(hub => hub.profile)
-    // biome-ignore lint/style/noNonNullAssertion: Filtered before
-    .map(hub => mapProfileToSidebarItem(hub.id, hub.profile!)),
+    .map(hub => ({
+      // biome-ignore lint/style/noNonNullAssertion: Filtered before
+      ...mapProfileToSidebarItem(hub.id, hub.profile!),
+      // Override the server-provided `profile.url` (legacy `/innovation-hub/<slug>`)
+      // with the canonical CRD `/hub/<subdomain>` path. Falls back to the profile
+      // url when no subdomain is available (defensive — every hub has one).
+      href: hub.subdomain ? `/hub/${hub.subdomain}` : (hub.profile?.url ?? ''),
+    })),
   innovationPacks: (resources.innovationPacks ?? [])
     .filter(pack => pack.profile)
     // biome-ignore lint/style/noNonNullAssertion: Filtered before

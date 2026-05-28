@@ -1940,6 +1940,7 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
   nameID
+  subdomain
   profile {
     id
     displayName
@@ -1950,6 +1951,9 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       uri
       alternativeText
     }
+  }
+  spaceListFilter {
+    id
   }
   authorization {
     myPrivileges

@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { supportedLngs } from '@/core/i18n/config';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
+import { absolutiseToMainDomain } from '@/main/crdPages/innovationHub/lib/hubUrls';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 
@@ -22,8 +23,25 @@ export function useCrdNavigation() {
   const { t, i18n } = useTranslation();
   const { pathname, search } = useLocation();
   const { locations } = useConfig();
+  const canonicalDomain = locations?.domain;
 
-  const navigationHrefs = { ...STATIC_NAVIGATION_HREFS, login: buildLoginUrl(pathname, search) };
+  // When the visitor is on a hub subdomain (e.g. `acme.alkemio.org`), every
+  // top-nav / platform link must hop them off the subdomain back to the main
+  // domain. `absolutiseToMainDomain` is a no-op on dev and on the canonical
+  // host — it only prepends `<protocol>//<canonical-domain>` when we're on a
+  // sub-host of the canonical domain in production.
+  const absolutise = (path: string) => absolutiseToMainDomain(path, canonicalDomain);
+
+  const navigationHrefs = {
+    home: absolutise(STATIC_NAVIGATION_HREFS.home),
+    spaces: absolutise(STATIC_NAVIGATION_HREFS.spaces),
+    messages: absolutise(STATIC_NAVIGATION_HREFS.messages),
+    notifications: absolutise(STATIC_NAVIGATION_HREFS.notifications),
+    profile: absolutise(STATIC_NAVIGATION_HREFS.profile),
+    account: absolutise(STATIC_NAVIGATION_HREFS.account),
+    admin: absolutise(STATIC_NAVIGATION_HREFS.admin),
+    login: absolutise(buildLoginUrl(pathname, search)),
+  };
 
   const footerLinks = locations
     ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
@@ -39,22 +57,22 @@ export function useCrdNavigation() {
     {
       icon: createElement(Lightbulb, { className: 'h-4 w-4' }),
       label: t('pages.innovationLibrary.fullName'),
-      href: `/${TopLevelRoutePath.InnovationLibrary}`,
+      href: absolutise(`/${TopLevelRoutePath.InnovationLibrary}`),
     },
     {
       icon: createElement(MessageCircle, { className: 'h-4 w-4' }),
       label: t('pages.forum.fullName'),
-      href: `/${TopLevelRoutePath.Forum}`,
+      href: absolutise(`/${TopLevelRoutePath.Forum}`),
     },
     {
       icon: createElement(Compass, { className: 'h-4 w-4' }),
       label: t('pages.exploreSpaces.fullName'),
-      href: `/${TopLevelRoutePath.Spaces}`,
+      href: absolutise(`/${TopLevelRoutePath.Spaces}`),
     },
     {
       icon: createElement(BookOpen, { className: 'h-4 w-4' }),
       label: t('pages.documentation.title'),
-      href: `/${TopLevelRoutePath.Docs}`,
+      href: absolutise(`/${TopLevelRoutePath.Docs}`),
     },
   ];
 

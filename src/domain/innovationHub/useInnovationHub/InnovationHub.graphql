@@ -10,6 +10,7 @@ query InnovationHub($subdomain: String) {
 fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
   nameID
+  subdomain
   profile {
     id
     displayName

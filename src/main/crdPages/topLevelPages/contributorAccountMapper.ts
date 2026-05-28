@@ -9,6 +9,7 @@ import type {
   ContributorAccountViewProps,
 } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { buildHubHomePath, buildHubSettingsPath } from '@/main/crdPages/innovationHub/lib/hubUrls';
 
 export type AccountResourceKind = 'space' | 'virtualContributor' | 'innovationPack' | 'innovationHub';
 
@@ -198,15 +199,23 @@ export function mapAccountToViewProps(
     onCreate: callbacks.onCreateInnovationHub,
     capacity: hubCapacity,
     items:
-      account?.innovationHubs.map<AccountResourceCardItem>(hub => ({
-        id: hub.id,
-        displayName: hub.profile.displayName,
-        description: hub.profile.description,
-        avatarUrl: hub.profile.banner?.uri || undefined,
-        color: pickColorFromId(hub.id),
-        href: hub.profile.url,
-        actions: buildKebab('innovationHub', hub.id, hub.profile.displayName, hub.profile.url),
-      })) ?? [],
+      account?.innovationHubs.map<AccountResourceCardItem>(hub => {
+        // Use the canonical `/hub/<subdomain>` path for the card (public hub
+        // home) and `/hub/<subdomain>/settings` for the kebab Manage action —
+        // never the server-provided `profile.url` which still points at the
+        // legacy `/innovation-hub/<slug>` admin entry.
+        const hubHomePath = buildHubHomePath(hub.subdomain);
+        const hubSettingsPath = buildHubSettingsPath(hub.subdomain);
+        return {
+          id: hub.id,
+          displayName: hub.profile.displayName,
+          description: hub.profile.description,
+          avatarUrl: hub.profile.banner?.uri || undefined,
+          color: pickColorFromId(hub.id),
+          href: hubHomePath,
+          actions: buildKebab('innovationHub', hub.id, hub.profile.displayName, hubSettingsPath),
+        };
+      }) ?? [],
   };
 
   return {
