@@ -190,7 +190,7 @@ Run before opening a PR:
 ```bash
 pnpm lint                                     # Biome + ESLint + TypeScript
 pnpm vitest run                               # 57 files / 595 tests + the new ones
-pnpm codegen                                  # No-op for this feature; should NOT touch generated files
+pnpm codegen                                  # Required once for the InnovationHubHomeInnovationHub fragment extension (adds `spaceListFilter { id }`). After regenerating + committing src/core/apollo/generated/*, subsequent runs in this branch are no-op. Backend at localhost:3000/graphql must be up.
 pnpm vitest run src/main/crdPages/innovationHub --reporter=basic
 ```
 

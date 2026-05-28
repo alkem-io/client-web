@@ -297,7 +297,7 @@ All polish tasks except T054, T055 are `[P]` — they verify different surfaces 
 ### Incremental delivery
 
 After US1 ships:
-1. **US2** — admins on `designVersion=2` who click the gear now see the CRD About tab. The Spaces tab placeholder shows "coming soon" or, more simply, deep-links to the legacy `/hub/<slug>/settings` URL (this would mean the gear icon on the CRD home links to the legacy settings, briefly — that's an acceptable transitional state).
+1. **US2** — admins on `designVersion=2` who click the gear now see the CRD About tab. The Spaces tab renders an in-CRD "coming soon" placeholder inside `CrdInnovationHubSettingsPage` (still served by the CRD route, still inside the CRD shell) until US3 lands. **The gear icon MUST continue to deep-link to the CRD `/hub/<slug>/settings` URL — falling back to the legacy MUI settings page on `designVersion=2` would violate FR-027b and is not a shippable state, not even transitionally.** This sequencing only applies to dev/QA branches during the migration window; it does not change the merged-to-`develop` behaviour, which always keeps the gear inside the CRD shell.
 2. **US3** — the Spaces tab lights up. End-to-end CRD parity with the legacy settings is reached.
 3. **Polish** — Dutch glossary, bundle analysis, full a11y sweep.
 

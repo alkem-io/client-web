@@ -1,7 +1,7 @@
 # Contract — GraphQL Operations
 
 **Feature**: 102-crd-innovation-hub
-**Scope**: GraphQL operations the integration layer (`src/main/crdPages/innovationHub/`) invokes. Every operation listed here **already exists** in `src/core/apollo/generated/apollo-hooks.ts` and is reused unchanged. No `pnpm codegen` rerun is required for this feature.
+**Scope**: GraphQL operations the integration layer (`src/main/crdPages/innovationHub/`) invokes. Every **operation** (query / mutation) listed here already exists in `src/core/apollo/generated/apollo-hooks.ts` and is reused unchanged — no new query or mutation is introduced. The one **fragment-level** change is the extension of `InnovationHubHomeInnovationHub` with `spaceListFilter { id }` (see "Fragment extension" below). Per the project's GraphQL workflow rule (`src/**/*.graphql`: always regenerate types after editing `.graphql` files), `pnpm codegen` MUST be run and the regenerated `src/core/apollo/generated/*` outputs MUST be committed in the same PR. The PR description MUST include a brief schema/operation diff summary noting the new `spaceListFilter` field on the home-page fragment.
 
 ---
 
