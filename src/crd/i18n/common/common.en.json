@@ -21,6 +21,15 @@
     "person": "Person",
     "org": "Organization"
   },
+  "tags": {
+    "moreAria": "Show {{count}} more"
+  },
+  "filters": {
+    "summary": "Results for {{criteria}}",
+    "and": "and",
+    "clear": "Clear filters",
+    "filterByTag": "Filter by tag"
+  },
   "share": {
     "title": "Share",
     "button": "Share",
@@ -47,6 +56,25 @@
         "messageTooLong": "Message must be {{max}} characters or fewer.",
         "sendFailed": "Could not send the message. Please try again."
       }
+    }
+  },
+  "references": {
+    "heading": "References",
+    "empty": "No references yet.",
+    "nameLabel": "Title",
+    "namePlaceholder": "Reference title",
+    "uriLabel": "URL",
+    "uriPlaceholder": "https://",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional description",
+    "addRow": "Add another reference",
+    "removeRow": "Remove reference",
+    "attachFile": "Attach file",
+    "removeConfirm": {
+      "title": "Remove this reference?",
+      "description": "“{{name}}” will be removed once you save. This cannot be undone.",
+      "confirm": "Remove",
+      "unnamed": "this reference"
     }
   }
 }

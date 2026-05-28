@@ -1,0 +1,113 @@
+/**
+ * Prototype Typography Scale
+ *
+ * Semantic tokens registered via @theme inline. Tailwind v4 auto-generates
+ * a utility class for each --text-* token that bundles font-size, line-height,
+ * font-weight, and letter-spacing.
+ *
+ * Usage:  <h1 className="text-page-title">...</h1>
+ * Compose: <h1 className="text-section-title md:text-page-title text-destructive">...</h1>
+ *
+ * Two hero tokens (--text-display, --text-hero) use clamp() to scale fluidly
+ * with the viewport — they do not need responsive breakpoint composition.
+ *
+ * Source of truth: specs/042-crd-space-page/typography/fonts.md
+ *
+ * Prototype-readonly exception: this file is the one exception to
+ * prototype/CLAUDE.md's no-modify rule, granted for the typography
+ * unification pass. The same tokens will be copied into
+ * src/crd/styles/typography.css in a follow-up step.
+ */
+
+@theme inline {
+  /* Display — largest hero text on the platform (detail dialogs).
+     Fluid: scales 30px → 48px with viewport width. */
+  --text-display: clamp(30px, 4vw, 48px);
+  --text-display--line-height: 1;
+  --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.025em;
+
+  /* Hero — profile / space / user / org / VC hero pages.
+     Fluid: scales 22px → 32px with viewport width.
+     Also covers the public-profile hero slot (User / Organization / VC). */
+  --text-hero: clamp(22px, 3vw, 32px);
+  --text-hero--line-height: 1.2;
+  --text-hero--font-weight: 700;
+  --text-hero--letter-spacing: -0.025em;
+
+  /* Page title — standard page headings (settings, list pages, h1). */
+  --text-page-title: 24px;
+  --text-page-title--line-height: 1.3;
+  --text-page-title--font-weight: 700;
+  --text-page-title--letter-spacing: -0.015em;
+
+  /* Subheader — 16px content tier sitting between body (14px) and
+     subsection-title (18px). Used for: settings/form labels, RadioGroup
+     options, dialog body text, empty-state titles, comfortable-reading
+     paragraphs in wizards. Default weight is 500 (medium) — override with
+     `font-normal`, `font-semibold`, or `font-bold` to match the legacy
+     `text-base`, `text-base font-semibold`, etc. usage. */
+  --text-subheader: 16px;
+  --text-subheader--line-height: 1.5;
+  --text-subheader--font-weight: 500;
+
+  /* Section title — section headings within a page (h2). */
+  --text-section-title: 20px;
+  --text-section-title--line-height: 1.3;
+  --text-section-title--font-weight: 600;
+
+  /* Subsection title — subsection headings, dialog body titles,
+     and feed-tier card titles (PostCard, SpaceGridCard) (h3). */
+  --text-subsection-title: 18px;
+  --text-subsection-title--line-height: 1.4;
+  --text-subsection-title--font-weight: 600;
+
+  /* Card title — compact-tier card titles (SpaceCard, OrganizationCard) (h3). */
+  --text-card-title: 14px;
+  --text-card-title--line-height: 1.3;
+  --text-card-title--font-weight: 600;
+
+  /* Body — body text, descriptions (p). */
+  --text-body: 14px;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 400;
+
+  /* Body emphasis — form labels, link text, list-item emphasis (p/span). */
+  --text-body-emphasis: 14px;
+  --text-body-emphasis--line-height: 1.5;
+  --text-body-emphasis--font-weight: 500;
+
+  /* Control — UI-chrome in single-line interactive controls:
+     buttons, menu rows, dropdowns, select triggers, inputs, tab labels.
+     Same size as body, medium weight, tighter leading so rows stay compact. */
+  --text-control: 12px;
+  --text-control--line-height: 1.25;
+  --text-control--font-weight: 500;
+
+  /* Caption — timestamps, metadata, helper text (p/span). */
+  --text-caption: 12px;
+  --text-caption--line-height: 1.5;
+  --text-caption--font-weight: 400;
+
+  /* Label — uppercase section headers (compose with `uppercase`) (span). */
+  --text-label: 12px;
+  --text-label--line-height: 1.3;
+  --text-label--font-weight: 600;
+  --text-label--letter-spacing: 0.05em;
+
+  /* Sidebar label — the prototype's distinctive 11px uppercase section
+     header used in SpaceSidebar, SubspaceSidebar, DashboardSidebar,
+     SpaceChannelComposer, SearchOverlay. Smaller than text-label (12px)
+     because sidebars need denser vertical rhythm. Always compose with
+     `uppercase`. */
+  --text-sidebar-label: 11px;
+  --text-sidebar-label--line-height: 1.3;
+  --text-sidebar-label--font-weight: 600;
+  --text-sidebar-label--letter-spacing: 0.05em;
+
+  /* Badge — badges, tiny meta tags, "LEADS"-style chips (span). */
+  --text-badge: 10px;
+  --text-badge--line-height: 1.3;
+  --text-badge--font-weight: 600;
+  --text-badge--letter-spacing: 0.04em;
+}

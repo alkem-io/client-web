@@ -31,7 +31,13 @@ export type { AllowedActors, ContributionDefaults, FramingChip, LinkRow, Referen
 export type CalloutFormValues = {
   title: string;
   description: string;
-  tags: string;
+  /**
+   * Array of tag strings — the same shape the chip-based `TagsInput` from
+   * `@/crd/forms/tags-input` produces (used in profile / org / VC / space
+   * explorer). One `TagsInput`, one type, everywhere — no per-surface
+   * string ↔ array bridges.
+   */
+  tags: string[];
   // Zone 1 — framing
   framingChip: FramingChip;
   framingCommentsEnabled: boolean;
@@ -47,6 +53,16 @@ export type CalloutFormValues = {
   whiteboardContent: string;
   whiteboardPreviewImages: WhiteboardPreviewImage[];
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
+  /**
+   * Server-rendered whiteboard preview image URL (`framing.whiteboard.profile.preview.uri`).
+   * Display-only — never sent back to the server; shown by the inline framing preview as the
+   * read-time fallback when no fresh in-form blob (`whiteboardPreviewImages`) exists. The
+   * blob URL wins when the user re-opens the inline editor and saves (it reflects the
+   * just-saved state); this URL is the placeholder for "loaded but not re-edited yet".
+   * Populated by `calloutTemplateContentToFormValues` (Callout-template edit/duplicate prefill)
+   * and by `mapCalloutDetailsToFormValues` (live-callout edit prefill, when present). D16, 2026-05-18.
+   */
+  whiteboardPreviewServerUrl?: string;
   whiteboardConfigured: boolean;
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   // Collabora document framing — only submitted when framingType is CollaboraDocument
@@ -81,10 +97,28 @@ export type CalloutFormValues = {
     pollId?: string;
     memoId?: string;
     whiteboardId?: string;
+    /** Framing profile id — where references live. Used to create newly-added references on edit. */
+    framingProfileId: string;
+    /** Reference ids present at edit-open, so the submit can detect which references were removed. */
+    originalReferenceIds: string[];
   };
 };
 
 export type CalloutFormErrors = Partial<Record<keyof CalloutFormValues | string, string>>;
+
+/**
+ * Reference-row errors in the shared `ReferencesEditor` contract — keyed `<index>.name` / `<index>.uri`.
+ * `validate()` namespaces them as `referenceRows.<index>.…` (symmetric with `prePopulateLinkRows.…`); the
+ * editor reads the un-prefixed shape, so consumers strip the prefix here before passing them in (mirroring
+ * how `InnovationPackForm` / `CommunityGuidelinesTemplateForm` feed the same editor).
+ */
+export const referenceRowErrors = (errors: CalloutFormErrors): Record<string, string | undefined> => {
+  const out: Record<string, string | undefined> = {};
+  for (const key of Object.keys(errors)) {
+    if (key.startsWith('referenceRows.')) out[key.slice('referenceRows.'.length)] = errors[key];
+  }
+  return out;
+};
 
 const createInitialPollOptions = (): PollOptionValue[] =>
   Array.from({ length: MIN_POLL_OPTIONS }, () => ({ text: '' }));
@@ -92,7 +126,7 @@ const createInitialPollOptions = (): PollOptionValue[] =>
 export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   title: '',
   description: '',
-  tags: '',
+  tags: [],
   framingChip: 'none',
   framingCommentsEnabled: true,
   memoMarkdown: '',
@@ -107,6 +141,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardContent: EmptyWhiteboardString,
   whiteboardPreviewImages: [],
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
+  whiteboardPreviewServerUrl: undefined,
   whiteboardConfigured: false,
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
@@ -255,13 +290,13 @@ export function useCrdCalloutForm(): UseCrdCalloutFormResult {
 
   const validateReferences = (v: CalloutFormValues, next: CalloutFormErrors) => {
     v.referenceRows.forEach((row, idx) => {
-      const url = row.url.trim();
-      const title = row.title.trim();
-      if (url && !title) {
-        next[`referenceRows.${idx}.title`] = translateValidationMessage('referenceTitleRequired');
+      const uri = row.uri.trim();
+      const name = row.name.trim();
+      if (uri && !name) {
+        next[`referenceRows.${idx}.name`] = translateValidationMessage('referenceTitleRequired');
       }
-      if (url && !isValidHttpUrl(url)) {
-        next[`referenceRows.${idx}.url`] = translateValidationMessage('referenceUrlInvalid');
+      if (uri && !isValidHttpUrl(uri)) {
+        next[`referenceRows.${idx}.uri`] = translateValidationMessage('referenceUrlInvalid');
       }
     });
   };

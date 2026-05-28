@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
@@ -15,6 +16,7 @@ import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapMemoFooterProps } from './memoFooterMapper';
 import { useCrdMemoProvider } from './useCrdMemoProvider';
@@ -45,6 +47,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     useCrdMemoProvider({
       collaborationId: memoId,
     });
+
+  const markdownIntegration = useMarkdownEditorIntegration();
 
   const handleEditorReady = (editor: Editor) => {
     editorRef.current = editor;
@@ -136,7 +140,12 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     myMembershipStatus,
   });
 
-  const editorDisabled = !synced || isReadOnly || !hasContributePrivileges;
+  // The connection-loading overlay below blocks interaction until the provider
+  // is `connected` AND the initial sync packet has arrived. By the time the
+  // overlay disappears, the editor is built with the final disabled state
+  // (permission-driven only), so it does not need to rebuild mid-session.
+  const isConnectionReady = connectionStatus === 'connected' && synced;
+  const editorDisabled = isReadOnly || !hasContributePrivileges;
 
   const title = (
     <MemoDisplayName
@@ -158,19 +167,35 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     <>
       <MemoEditorShell open={open} onClose={handleClose} title={title} footer={<MemoCollabFooter {...footerProps} />}>
         {showLoadingState ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-body">
-            {t('memo.errors.loading')}
-          </div>
+          <Loading text={t('memo.errors.loading')} />
         ) : (
-          <div className="h-full p-3">
-            <CollaborativeMarkdownEditor
-              ydoc={ydoc as unknown as YDocLike}
-              provider={provider as unknown as CollabProviderLike}
-              user={{ name: user.name, color: user.color }}
-              disabled={editorDisabled}
-              onReady={handleEditorReady}
-              className="h-full"
-            />
+          <div className="h-full p-3 relative">
+            {/* The collaborative editor is only mounted once the Hocuspocus
+                provider is fully connected and the initial Yjs sync has
+                completed. Mounting earlier produces an editor instance that
+                attaches to an empty/partial ydoc, which Tiptap then has to
+                rebuild on the next render — and the rebuild race is what
+                made just-created memos appear stuck on the first 1–3 opens
+                (toolbar visible, typing ignored). Holding the mount means
+                the editor's first render is its final render, with
+                `disabled` driven purely by permissions. Mirrors the MUI
+                memo dialog's "Connecting to collaboration service…" overlay. */}
+            {isConnectionReady ? (
+              <CollaborativeMarkdownEditor
+                ydoc={ydoc as unknown as YDocLike}
+                provider={provider as unknown as CollabProviderLike}
+                user={{ name: user.name, color: user.color }}
+                disabled={editorDisabled}
+                onReady={handleEditorReady}
+                className="h-full"
+                onImageUpload={markdownIntegration.onImageUpload}
+                iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+                onError={markdownIntegration.onError}
+                hideEmbedOption={true}
+              />
+            ) : (
+              <Loading text={t('memo.footer.readonlyReason.connecting')} />
+            )}
           </div>
         )}
       </MemoEditorShell>

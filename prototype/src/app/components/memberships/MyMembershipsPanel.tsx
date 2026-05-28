@@ -158,7 +158,7 @@ export function MyMembershipsPanel({
 
   /* ── Role indicator — small dot + text ───────────────────── */
   const RoleIndicator = ({ role }: { role: MembershipRole }) => (
-    <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
       <span
         className="w-1.5 h-1.5 rounded-full shrink-0"
         style={{ backgroundColor: roleColor(role) }}
@@ -231,9 +231,9 @@ export function MyMembershipsPanel({
           onClick={() => goToSpace(parent.slug)}
           className="flex-1 min-w-0 text-left"
         >
-          <p className="text-sm font-medium truncate">{parent.name}</p>
+          <p className="text-control truncate">{parent.name}</p>
           {parent.tagline && (
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
+            <p className="text-caption text-muted-foreground truncate mt-0.5">
               {parent.tagline}
             </p>
           )}
@@ -242,7 +242,7 @@ export function MyMembershipsPanel({
         {/* Metadata — right side */}
         <div className="flex items-center gap-3 shrink-0">
           {subspaceCount > 0 && (
-            <Badge variant="outline" className="text-[11px] font-normal px-2 py-0 h-5">
+            <Badge variant="outline" className="text-caption font-normal px-2 py-0 h-5">
               {subspaceCount} subspace{subspaceCount > 1 ? "s" : ""}
             </Badge>
           )}
@@ -281,7 +281,7 @@ export function MyMembershipsPanel({
 
       {/* Name */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm truncate">{sub.name}</p>
+        <p className="text-body truncate">{sub.name}</p>
       </div>
 
       {/* Role */}
@@ -325,8 +325,8 @@ export function MyMembershipsPanel({
           <div className="px-6 py-5 border-b border-border">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold">My Spaces</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h2 className="text-subsection-title">My Spaces</h2>
+                <p className="mt-1 text-body text-muted-foreground">
                   {spaceCount} space{spaceCount !== 1 ? "s" : ""} you&apos;re
                   part of
                 </p>
@@ -419,7 +419,7 @@ export function MyMembershipsPanel({
             ) : !hasAnyMemberships ? (
               <div className="h-full min-h-[260px] flex flex-col items-center justify-center text-center px-4">
                 <Layers className="w-10 h-10 text-muted-foreground" />
-                <p className="mt-3 text-sm text-muted-foreground">
+                <p className="mt-3 text-body text-muted-foreground">
                   You&apos;re not part of any spaces yet.
                 </p>
                 <Button
@@ -433,7 +433,7 @@ export function MyMembershipsPanel({
             ) : spaceCount === 0 ? (
               <div className="h-full min-h-[260px] flex flex-col items-center justify-center text-center px-4">
                 <SearchX className="w-10 h-10 text-muted-foreground" />
-                <p className="mt-3 text-sm text-muted-foreground">
+                <p className="mt-3 text-body text-muted-foreground">
                   No spaces match your search.
                 </p>
                 <Button

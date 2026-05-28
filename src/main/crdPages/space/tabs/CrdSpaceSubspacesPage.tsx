@@ -1,26 +1,34 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceDefaultTemplatesQuery,
+  useSpaceSubspaceCardsQuery,
+  useSpaceTemplatesManagerQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
+import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
-import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
+import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
-import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
+  const { t: tSettings } = useTranslation('crd-spaceSettings');
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
@@ -47,16 +55,34 @@ export default function CrdSpaceSubspacesPage() {
   const sortedSubspaces = useSubspacesSorted(rawSubspaces, sortMode);
   const subspaces = mapSubspacesToCardDataList(sortedSubspaces, sortMode);
 
-  const sidebarSubspaces = subspaces.map(s => ({
-    name: s.name,
-    initials: getInitials(s.name),
-    href: s.href,
-  }));
-
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
-  const handleCreateClick = canCreate ? () => setIsCreateDialogOpen(true) : undefined;
+
+  // Wire the Create-Subspace template picker with the same scope as the Settings
+  // flow (D21): the Space's own templates set (Space source) + account packs
+  // (Account source) + the configured default subspace template (FR-031).
+  // Without these the picker silently falls back to Platform templates only.
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
+  });
+  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
+  });
+  const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
+    td => td.type === TemplateDefaultType.SpaceSubspace
+  )?.template?.id;
+
+  const createSubspace = useCreateSubspace(spaceId ?? '', {
+    accountId: space.accountId || undefined,
+    templatesSetId,
+    defaultTemplateId: defaultSubspaceTemplateId,
+  });
+  const handleCreateClick = canCreate ? createSubspace.openDialog : undefined;
 
   return (
     <>
@@ -66,33 +92,35 @@ export default function CrdSpaceSubspacesPage() {
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
-          subspaces={sidebarSubspaces}
         />
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <TabStateHeader
+        <SpaceTabActionHeader
           description={tabDescription}
           action={
-            canCreate &&
-            handleCreateClick && (
-              <Button size="sm" className="gap-2" onClick={handleCreateClick}>
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                {t('subspaces.createSubspace')}
-              </Button>
+            (canCreateCallout || (canCreate && handleCreateClick)) && (
+              <div className="flex items-center gap-2">
+                {canCreate && handleCreateClick && (
+                  <Button size="sm" className="gap-2" onClick={handleCreateClick}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('subspaces.createSubspace')}
+                  </Button>
+                )}
+                {canCreateCallout && (
+                  <Button size="sm" className="gap-2" onClick={() => setCreateCalloutOpen(true)}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('feed.addPost')}
+                  </Button>
+                )}
+              </div>
             )
           }
         />
 
         <SpaceSubspacesList subspaces={subspaces} />
 
-        <CalloutListConnector
-          callouts={callouts}
-          calloutsSetId={calloutsSetId}
-          canCreate={canCreateCallout}
-          onCreateClick={() => setCreateCalloutOpen(true)}
-          loading={calloutsLoading}
-        />
+        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={calloutsLoading} />
       </div>
 
       {canCreateCallout && (
@@ -101,15 +129,45 @@ export default function CrdSpaceSubspacesPage() {
           onOpenChange={setCreateCalloutOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
 
       {canCreate && (
-        <CreateSubspace
-          open={isCreateDialogOpen}
-          onClose={() => setIsCreateDialogOpen(false)}
-          parentSpaceId={spaceId}
-        />
+        <>
+          <CreateSubspaceDialog
+            open={createSubspace.open}
+            onOpenChange={open => {
+              if (!open) createSubspace.closeDialog();
+            }}
+            values={createSubspace.values}
+            errors={createSubspace.errors}
+            selectedTemplateName={createSubspace.selectedTemplateName}
+            selectedTemplateContent={createSubspace.selectedTemplateContent}
+            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
+            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
+            onClearTemplate={createSubspace.onClearTemplate}
+            submitting={createSubspace.submitting}
+            canSubmit={createSubspace.canSubmit}
+            avatarConstraints={createSubspace.avatarConstraints}
+            cardBannerConstraints={createSubspace.cardBannerConstraints}
+            onChange={createSubspace.onChange}
+            onSubmit={() => void createSubspace.onSubmit()}
+          />
+          <TemplatePicker {...createSubspace.picker} />
+          <ConfirmationDialog
+            open={createSubspace.overwriteConfirmOpen}
+            onOpenChange={open => {
+              if (!open) createSubspace.onCancelOverwriteTemplate();
+            }}
+            title={tSettings('subspaces.createDialog.template.overwriteConfirm.title')}
+            description={tSettings('subspaces.createDialog.template.overwriteConfirm.description')}
+            confirmLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.confirm')}
+            cancelLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.cancel')}
+            onConfirm={createSubspace.onConfirmOverwriteTemplate}
+            onCancel={createSubspace.onCancelOverwriteTemplate}
+          />
+        </>
       )}
     </>
   );

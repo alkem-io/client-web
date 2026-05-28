@@ -8,11 +8,13 @@ import NonSpaceAdminRedirect from '@/domain/spaceAdmin/routing/NonSpaceAdminRedi
 import { nameOfUrl } from '@/main/routing/urlParams';
 import CrdSubspacePageLayout from '../layout/CrdSubspacePageLayout';
 import CrdSubspaceCalloutsPage from '../tabs/CrdSubspaceCalloutsPage';
+import CrdSubspaceProtectedRoutes from './CrdSubspaceProtectedRoutes';
 
-const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/about/CrdSpaceAboutPage'));
+const CrdSubspaceAboutPage = lazyWithGlobalErrorHandler(() => import('../about/CrdSubspaceAboutPage'));
 const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
 );
+const CrdSubspaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../CrdSubspaceCalloutPage'));
 const LegacySubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
 
 /**
@@ -35,16 +37,44 @@ export default function CrdSubspaceRoutes() {
     <Routes>
       {/* L1 — /space/:spaceNameId/challenges/:subspaceNameId */}
       <Route element={<CrdSubspacePageLayout />}>
-        <Route index={true} element={<CrdSubspaceCalloutsPage />} />
+        {/* About is accessible without canRead permission */}
         <Route
           path={EntityPageSection.About}
           element={
             <Suspense fallback={<LoadingSpinner />}>
-              <CrdSpaceAboutPage />
+              <CrdSubspaceAboutPage />
             </Suspense>
           }
         />
-        <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
+
+        {/* Protected routes — require canRead permission */}
+        <Route element={<CrdSubspaceProtectedRoutes />}>
+          <Route index={true} element={<CrdSubspaceCalloutsPage />} />
+          <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
+          {/* Calendar dialog routes — render the callouts page so the URL resolver
+              populates calendarEventId; the dialog opens on top via
+              CrdSubspaceEventsDialogConnector mounted in CrdSubspacePageLayout. */}
+          <Route path="calendar" element={<CrdSubspaceCalloutsPage />} />
+          <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<CrdSubspaceCalloutsPage />} />
+          {/* Deep-link to a callout / contribution under the subspace renders the
+              same callouts page behind the CRD callout-detail dialog. */}
+          <Route
+            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CrdSubspaceCalloutPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CrdSubspaceCalloutPage />
+              </Suspense>
+            }
+          />
+        </Route>
       </Route>
 
       {/*
@@ -53,16 +83,39 @@ export default function CrdSubspaceRoutes() {
         subsubspaceNameId param appears in the URL.
       */}
       <Route path={`opportunities/:${nameOfUrl.subsubspaceNameId}`} element={<CrdSubspacePageLayout />}>
-        <Route index={true} element={<CrdSubspaceCalloutsPage />} />
+        {/* About is accessible without canRead permission */}
         <Route
           path={EntityPageSection.About}
           element={
             <Suspense fallback={<LoadingSpinner />}>
-              <CrdSpaceAboutPage />
+              <CrdSubspaceAboutPage />
             </Suspense>
           }
         />
-        <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
+
+        {/* Protected routes — require canRead permission */}
+        <Route element={<CrdSubspaceProtectedRoutes />}>
+          <Route index={true} element={<CrdSubspaceCalloutsPage />} />
+          <Route path={`${EntityPageSection.Settings}/*`} element={<CrdSubspaceSettingsRoute />} />
+          <Route path="calendar" element={<CrdSubspaceCalloutsPage />} />
+          <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<CrdSubspaceCalloutsPage />} />
+          <Route
+            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CrdSubspaceCalloutPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CrdSubspaceCalloutPage />
+              </Suspense>
+            }
+          />
+        </Route>
       </Route>
 
       {/* Fall-through: legacy MUI subspace routes (calendar, callout details). */}

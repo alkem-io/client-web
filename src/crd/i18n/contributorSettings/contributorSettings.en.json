@@ -1,0 +1,672 @@
+{
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Profile",
+        "account": "Account",
+        "membership": "Membership",
+        "organizations": "Organizations",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "security": "Security"
+      },
+      "org": {
+        "profile": "Profile",
+        "account": "Account",
+        "community": "Community",
+        "authorization": "Authorization",
+        "settings": "Settings"
+      },
+      "vc": {
+        "profile": "Profile",
+        "membership": "Membership",
+        "settings": "Settings"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Profile",
+      "identity": {
+        "title": "Identity",
+        "displayName": {
+          "label": "Display Name",
+          "hint": "How you'll appear across Alkemio.",
+          "required": "Display Name is required"
+        },
+        "firstName": {
+          "label": "First Name",
+          "hint": "Your given name.",
+          "required": "First Name is required"
+        },
+        "lastName": {
+          "label": "Last Name",
+          "hint": "Your family name.",
+          "required": "Last Name is required"
+        },
+        "email": {
+          "label": "Email",
+          "readOnlyCaption": "Contact support to change email"
+        },
+        "phone": {
+          "label": "Phone",
+          "hint": "Optional. We'll never share this.",
+          "invalidFormat": "Phone number not in supported format"
+        }
+      },
+      "aboutYou": {
+        "title": "About You",
+        "tagline": {
+          "label": "Tagline",
+          "hint": "A short line shown on your profile."
+        },
+        "location": {
+          "title": "Location",
+          "city": "City",
+          "country": "Country",
+          "countryPlaceholder": "Select a country"
+        },
+        "bio": {
+          "label": "Bio",
+          "hint": "Markdown supported."
+        },
+        "skills": {
+          "label": "Skills",
+          "hint": "Skills you can offer. Press Enter to add.",
+          "placeholder": "e.g. UX research, TypeScript, facilitation"
+        },
+        "keywords": {
+          "label": "Keywords",
+          "hint": "Keywords describing your interests. Press Enter to add.",
+          "placeholder": "e.g. climate, governance, open source"
+        }
+      },
+      "socialLinks": {
+        "title": "Social Links",
+        "linkedinPlaceholder": "https://linkedin.com/in/your-handle",
+        "bskyPlaceholder": "https://bsky.app/profile/your-handle",
+        "githubPlaceholder": "https://github.com/your-handle",
+        "addAnother": "Add another reference",
+        "namePlaceholder": "Reference name",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
+        "deleteDialog": {
+          "title": "Remove reference?",
+          "description": "Removing this reference will also delete it from your public profile after you save.",
+          "confirm": "Remove reference"
+        }
+      },
+      "avatar": {
+        "title": "Profile Picture",
+        "changeButton": "Change Avatar",
+        "helperText": "Recommended: 400×400px. JPG, PNG or GIF.",
+        "uploading": "Uploading…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Membership",
+      "homeSpace": {
+        "title": "Home Space",
+        "description": "Choose a Space to land on after sign-in. You can also enable auto-redirect.",
+        "selectLabel": "Home Space",
+        "noSelection": "No home space",
+        "autoRedirectLabel": "Auto-redirect to my Home Space after sign-in",
+        "autoRedirectDisabledHint": "Select a Home Space to enable auto-redirect."
+      },
+      "myMemberships": {
+        "title": "My Memberships",
+        "searchPlaceholder": "Search memberships...",
+        "empty": "You're not a member of any Spaces yet.",
+        "summary": "Showing {{shown}} of {{total}} memberships",
+        "filteredEmptyTitle": "No memberships found",
+        "filteredEmptyDescription": "Try adjusting your filters or search query.",
+        "clearFilters": "Clear Filters"
+      },
+      "menu": {
+        "viewByType": "View {{type}}"
+      },
+      "filter": {
+        "all": "All",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Admin",
+        "lead": "Lead",
+        "member": "Member"
+      },
+      "leave": {
+        "menuItem": "Leave",
+        "menuItemLabeled": "Leave {{type}}",
+        "dialogTitle": "Leave this membership?",
+        "dialogDescription": "You're about to leave \"{{spaceName}}\". You'll lose access to its members-only content and will need to re-apply to rejoin.",
+        "dialogConfirm": "Leave",
+        "success": "Membership left",
+        "error": "Couldn't leave — try again"
+      },
+      "pendingApplications": {
+        "title": "Pending Applications",
+        "empty": "You have no pending applications.",
+        "statusPending": "Pending"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Led by:",
+      "ledByAria": "{{count}} community leads",
+      "leadsMore": "and {{count}} more"
+    },
+    "security": {
+      "pageTitle": "Security",
+      "title": "Security",
+      "description": "Manage passkeys and WebAuthn credentials for your account.",
+      "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
+      "errorDescription": "Couldn't load security settings — try refreshing the page."
+    },
+    "settings": {
+      "pageTitle": "Settings",
+      "communication": {
+        "title": "Communication & Privacy",
+        "allowMessagesLabel": "Allow other users to send me direct messages",
+        "allowMessagesDescription": "When off, other users won't be able to start a direct-message conversation with you.",
+        "error": "Couldn't save preference — try again"
+      },
+      "designSystem": {
+        "title": "Design System",
+        "description": "Switch between the new (CRD) and the classic (MUI) design. This preference is stored locally on this device.",
+        "toggleLabel": "Use the new design (CRD)",
+        "reloadCaption": "The page will reload after the change."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Notifications",
+      "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
+      "toggleAria": "Toggle {{channel}} notification for: {{label}}",
+      "toggleError": "Couldn't save preference — try again",
+      "columns": {
+        "activity": "Activity",
+        "inApp": "In-App",
+        "email": "Email",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push notifications",
+        "masterToggleDescription": "Enable push notifications on this device. You can fine-tune which events trigger them below.",
+        "permissionDenied": "Notification permission was denied. Update browser settings to enable push.",
+        "unavailable": "Push notifications aren't available in this browser.",
+        "requiresPwa": "Push notifications require installing this app to your home screen.",
+        "error": "Couldn't update push subscription — try again"
+      },
+      "groups": {
+        "space": {
+          "title": "Space Notifications",
+          "description": "Manage notifications for space-related events like posts, comments, and community updates."
+        },
+        "spaceAdmin": {
+          "title": "Space Admin Notifications",
+          "description": "Notifications for spaces where you are an admin or lead."
+        },
+        "user": {
+          "title": "User Notifications",
+          "description": "Personalize alerts for interactions like replies, mentions, and invites."
+        },
+        "platform": {
+          "title": "Platform Notifications",
+          "description": "Stay updated on platform-level discussions, new features, and announcements."
+        },
+        "platformAdmin": {
+          "title": "Platform Admin Notifications",
+          "description": "Notifications for platform administrators (user lifecycle, space creation)."
+        },
+        "organization": {
+          "title": "Organization Notifications",
+          "description": "Control alerts for organization mentions, messaging, and team updates."
+        },
+        "virtualContributor": {
+          "title": "Virtual Contributor Notifications",
+          "description": "Notifications regarding virtual contributor activities and assignments."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Receive a notification when a new communication is shared on a community",
+          "collaborationCalloutPublished": "Receive a notification when a callout is published in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a post I follow",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
+          "collaborationCalloutComment": "Receive a notification when a new comment is added to a callout I follow",
+          "communityCalendarEvents": "Receive a notification for community calendar events",
+          "collaborationPollVoteCastOnOwnPoll": "Receive a notification when someone votes on my poll",
+          "collaborationPollVoteCastOnPollIVotedOn": "Receive a notification when someone votes on a poll I voted on",
+          "collaborationPollModifiedOnPollIVotedOn": "Receive a notification when a poll I voted on is modified",
+          "collaborationPollVoteAffectedByOptionChange": "Receive a notification when my vote is affected by a poll option change"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Receive a notification when a new community application is submitted",
+          "communityNewMember": "Receive a notification when a new member joins the community",
+          "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
+          "communicationMessageReceived": "Receive a notification when a community message is received",
+          "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
+        },
+        "user": {
+          "commentReply": "Receive a notification when someone replies to my comment",
+          "mentioned": "Receive a notification when I am mentioned",
+          "messageReceived": "Receive a notification when someone sends me a direct message",
+          "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
+          "membershipCommunityJoined": "Receive a notification when I join a new Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Receive a notification when a new comment is added to a discussion I follow",
+          "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Receive a notification when a new user profile is created",
+          "userProfileRemoved": "Receive a notification when a user profile is removed",
+          "userGlobalRoleChanged": "Receive a notification when a user's global role changes",
+          "userEmailChanged": "Receive a notification when a user's email address changes",
+          "spaceCreated": "Receive a notification when a new space is created"
+        },
+        "organization": {
+          "adminMentioned": "Receive a notification when my organization is mentioned",
+          "adminMessageReceived": "Receive direct messages to my organization"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organizations",
+      "searchPlaceholder": "Search organizations...",
+      "createButton": "Create Organization",
+      "summary": "Showing {{shown}} of {{total}} organizations",
+      "empty": "You're not associated with any organizations yet.",
+      "filteredEmptyTitle": "No organizations found",
+      "filteredEmptyDescription": "Try searching for a different name or location.",
+      "clearSearch": "Clear Search",
+      "verified": "Verified",
+      "associates": "Associates",
+      "associatesCount": "{{count}} Associates",
+      "role": {
+        "admin": "Admin",
+        "associate": "Associate"
+      },
+      "menu": {
+        "viewProfile": "View Profile",
+        "disassociate": "Disassociate"
+      },
+      "disassociate": {
+        "dialogTitle": "Disassociate from this organization?",
+        "dialogDescription": "You're about to leave \"{{name}}\". You'll lose your associate role and any related permissions.",
+        "dialogConfirm": "Disassociate",
+        "success": "Disassociated successfully",
+        "error": "Couldn't disassociate — try again"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Here you can view your active resources and manage your account allocation limits.",
+      "spaces": {
+        "title": "Hosted Spaces",
+        "createButton": "Create Space"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Add Contributor"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "New Pack"
+      },
+      "innovationHubs": {
+        "title": "Custom Homepages",
+        "createButton": "New Page"
+      },
+      "actions": {
+        "view": "View",
+        "manage": "Manage",
+        "transfer": "Transfer",
+        "delete": "Delete"
+      },
+      "deleteDialog": {
+        "title": "Delete this resource?",
+        "description": "This will permanently remove \"{{name}}\". This cannot be undone.",
+        "confirm": "Delete"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Profile",
+      "identity": {
+        "title": "Identity",
+        "displayName": {
+          "label": "Display Name",
+          "hint": "How your organization appears across Alkemio.",
+          "required": "Display Name is required"
+        },
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Cannot be changed after creation."
+        },
+        "tagline": {
+          "label": "Tagline",
+          "hint": "A short line shown next to your organization name."
+        }
+      },
+      "about": {
+        "title": "About",
+        "description": {
+          "label": "Description",
+          "hint": "Markdown supported."
+        },
+        "location": {
+          "title": "Location",
+          "city": "City",
+          "country": "Country",
+          "countryPlaceholder": "Select a country"
+        },
+        "keywords": {
+          "label": "Keywords",
+          "hint": "Topics your organization works on. Press Enter to add.",
+          "placeholder": "e.g. climate, governance, open source"
+        },
+        "capabilities": {
+          "label": "Capabilities",
+          "hint": "What your organization can do or offer. Press Enter to add.",
+          "placeholder": "e.g. research, funding, training"
+        }
+      },
+      "contactLegal": {
+        "title": "Contact & Legal",
+        "contactEmail": {
+          "label": "Contact Email",
+          "hint": "Public contact email for the organization.",
+          "invalidFormat": "Enter a valid email address"
+        },
+        "domain": {
+          "label": "Domain",
+          "hint": "Your organization's web domain (without protocol)."
+        },
+        "legalEntityName": {
+          "label": "Legal Entity Name",
+          "hint": "The official registered name."
+        },
+        "website": {
+          "label": "Website",
+          "hint": "Full URL including https://",
+          "invalidFormat": "Enter a valid URL"
+        }
+      },
+      "socialLinks": {
+        "title": "Social Links",
+        "linkedinPlaceholder": "https://linkedin.com/company/your-org",
+        "bskyPlaceholder": "https://bsky.app/profile/your-handle",
+        "githubPlaceholder": "https://github.com/your-org",
+        "addAnother": "Add another reference",
+        "namePlaceholder": "Reference name",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
+        "deleteDialog": {
+          "title": "Remove reference?",
+          "description": "Removing this reference will also delete it from the public profile after you save.",
+          "confirm": "Remove reference"
+        }
+      },
+      "logo": {
+        "title": "Logo",
+        "changeButton": "Change Logo",
+        "helperText": "Recommended: 400×400px. JPG, PNG or GIF.",
+        "uploading": "Uploading…"
+      },
+      "verification": {
+        "verified": "Verified",
+        "pending": "Verification Pending",
+        "notVerified": "Not Verified"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Here you can view your organization's active resources and manage account allocation limits.",
+      "spaces": { "title": "Hosted Spaces", "createButton": "Create Space" },
+      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Add Contributor" },
+      "innovationPacks": { "title": "Template Packs", "createButton": "New Pack" },
+      "innovationHubs": { "title": "Custom Homepages", "createButton": "New Page" },
+      "actions": { "view": "View", "manage": "Manage", "transfer": "Transfer", "delete": "Delete" },
+      "deleteDialog": {
+        "title": "Delete this resource?",
+        "description": "This will permanently remove \"{{name}}\". This cannot be undone.",
+        "confirm": "Delete"
+      }
+    },
+    "community": {
+      "pageTitle": "Community",
+      "title": "Associates",
+      "description": "Manage who is associated with this organization. Add new associates from the available users list; removing an associate revokes their organization role.",
+      "currentAssociatesTitle": "Current Associates",
+      "availableUsersTitle": "Available Users",
+      "searchPlaceholder": "Search users by name…",
+      "addAriaLabel": "Add {name} as Associate",
+      "removeAriaLabel": "Remove {name} as Associate",
+      "loadMore": "Load more",
+      "emptyCurrent": "No associates yet.",
+      "emptyAvailable": "No matching users found.",
+      "removeDialogTitle": "Remove this associate?",
+      "removeDialogDescription": "{{name}} will lose their associate role and any related permissions.",
+      "removeConfirmAssociate": "Remove {{name}} as Associate",
+      "removeSuccess": "Associate removed",
+      "removeError": "Couldn't remove associate — try again"
+    },
+    "authorization": {
+      "pageTitle": "Authorization",
+      "title": "Authorization",
+      "description": "Assign Admin and Owner roles for this organization. Admins can manage day-to-day settings; Owners have full control over the organization.",
+      "adminTabLabel": "Admin",
+      "ownerTabLabel": "Owner",
+      "loadMore": "Load more",
+      "admin": {
+        "currentTitle": "Current Admins",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Admin",
+        "removeAriaLabel": "Remove {name} as Admin",
+        "emptyCurrent": "No admins yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "owner": {
+        "currentTitle": "Current Owners",
+        "availableTitle": "Available Users",
+        "searchPlaceholder": "Search users by name…",
+        "addAriaLabel": "Add {name} as Owner",
+        "removeAriaLabel": "Remove {name} as Owner",
+        "emptyCurrent": "No owners yet.",
+        "emptyAvailable": "No matching users found."
+      },
+      "removeDialogTitle": "Remove this role?",
+      "removeDialogDescription": "{{name}} will lose this role and any related permissions.",
+      "removeConfirmAdmin": "Remove {{name}} as Admin",
+      "removeConfirmOwner": "Remove {{name}} as Owner",
+      "removeSuccessAdmin": "Admin role removed",
+      "removeSuccessOwner": "Owner role removed",
+      "removeError": "Couldn't remove role — try again"
+    },
+    "settings": {
+      "pageTitle": "Settings",
+      "title": "Organization Settings",
+      "membership": {
+        "title": "Membership",
+        "allowDomainLabel": "Allow users matching the organization's domain to join",
+        "allowDomainCaption": "When enabled, users whose email domain matches this organization can self-join without an invitation."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "contributionRolesLabel": "Show contribution roles publicly",
+        "contributionRolesCaption": "When enabled, the organization's role assignments (Admin, Owner, Associate) are visible on its public profile."
+      },
+      "errorToast": "Couldn't save preference — try again"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Settings",
+      "identity": {
+        "title": "Identity",
+        "displayName": {
+          "label": "Display Name",
+          "hint": "How this Virtual Contributor appears across Alkemio.",
+          "required": "Display Name is required"
+        },
+        "tagline": {
+          "label": "Tagline",
+          "hint": "A short line shown on the contributor's profile."
+        },
+        "description": {
+          "label": "Description",
+          "hint": "Explain what this Virtual Contributor does and how to work with it."
+        }
+      },
+      "keywords": {
+        "label": "Keywords",
+        "hint": "Add keywords to help users discover this Virtual Contributor.",
+        "placeholder": "Add a keyword and press Enter"
+      },
+      "socialLinks": {
+        "title": "References",
+        "addAnother": "Add another reference",
+        "namePlaceholder": "Name",
+        "urlPlaceholder": "https://example.com",
+        "descriptionPlaceholder": "Description (optional)",
+        "removeAriaLabel": "Remove reference",
+        "empty": "No references yet.",
+        "deleteDialog": {
+          "title": "Remove reference?",
+          "description": "This reference will be removed when you save the section. You can undo before saving.",
+          "confirm": "Remove"
+        }
+      },
+      "metadata": {
+        "title": "About this Virtual Contributor",
+        "hostLabel": "Hosted by",
+        "bodyOfKnowledgeLabel": "Body of Knowledge"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Change Avatar",
+        "uploading": "Uploading…",
+        "helperText": "Square JPEG or PNG, up to 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Memberships"
+      },
+      "empty": "This Virtual Contributor isn't a member of any space yet.",
+      "spaceBadge": "Space",
+      "subspaceBadge": "Subspace",
+      "viewLabel": "View",
+      "leaveLabel": "Leave",
+      "leaveSpaceConfirmTitle": "Leave this space?",
+      "leaveSubspaceConfirmTitle": "Leave this subspace?",
+      "leaveConfirmBody": "Remove this Virtual Contributor from {{name}}? This can be reversed by re-applying for membership.",
+      "leaveConfirmAction": "Leave",
+      "pendingInvitationsHeading": "Pending Invitations",
+      "acceptLabel": "Accept",
+      "declineLabel": "Decline",
+      "acceptInvitationConfirmTitle": "Accept invitation?",
+      "acceptInvitationConfirmBody": "Accept the invitation to join {{name}}?",
+      "acceptInvitationConfirmAction": "Accept"
+    },
+    "visibility": {
+      "title": "Visibility",
+      "helper": "Controls who can discover this Virtual Contributor.",
+      "publicLabel": "Public",
+      "publicDescription": "Everyone, including anonymous visitors, can find this Virtual Contributor.",
+      "accountLabel": "Account",
+      "accountDescription": "Only members of the host account can find this Virtual Contributor.",
+      "hiddenLabel": "Hidden",
+      "hiddenDescription": "This Virtual Contributor is hidden from search.",
+      "listedInStoreLabel": "Listed in the Alkemio store",
+      "listedInStoreHelper": "Only available when Visibility is Public."
+    },
+    "bodyOfKnowledge": {
+      "title": "Body of Knowledge",
+      "helper": "Manage how this Virtual Contributor's knowledge base is exposed.",
+      "privacyToggleLabel": "Hide knowledge-base content from non-members",
+      "privacyToggleHelper": "When enabled, the underlying content is hidden from users without access.",
+      "refreshLabel": "Refresh Knowledge",
+      "lastUpdated": "Last updated:",
+      "never": "never"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Available variables: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "External AI Configuration",
+      "helper": "Connect this Virtual Contributor to an external AI provider.",
+      "apiKeyLabel": "API Key",
+      "apiKeyPlaceholder": "Enter a new API key",
+      "apiKeyHelper": "Existing keys are never echoed back. Leave blank to keep the current key.",
+      "assistantIdLabel": "Assistant ID",
+      "modelLabel": "Model"
+    },
+    "settings": {
+      "commitErrorToast": "Couldn't save preference — try again"
+    }
+  },
+  "shared": {
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved!",
+    "saveFailed": "Couldn't save — try again",
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "delete": "Delete",
+    "yes": "Yes",
+    "no": "No",
+    "avatarCropDialog": {
+      "title": "Crop avatar",
+      "description": "Drag to reposition. The image will be cropped and resized before upload.",
+      "altTextLabel": "Alt text",
+      "altTextPlaceholder": "Describe the image (optional)"
+    },
+    "account": {
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Not available",
+        "notAvailableTooltip": "Contact the Alkemio team to enable this feature on your account.",
+        "spacesTooltip": "From the available Spaces in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free Spaces\n{{plusUsage}} out of {{plusLimit}} Plus Spaces\n{{premiumUsage}} out of {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "You have created {{usage}} out of your {{limit}} available Virtual Contributors in your account.",
+        "innovationPacksTooltip": "You have created {{usage}} out of your {{limit}} available Template Packs in your account.",
+        "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
+      },
+      "kebabAriaLabel": "More actions",
+      "emptySlot": "Empty Slot",
+      "createNewSpace": {
+        "ariaLabel": "Create new space",
+        "heading": "Create New Space",
+        "description": "Launch a new collaborative environment for your team."
+      },
+      "createNewVc": {
+        "ariaLabel": "Create new contributor",
+        "heading": "Create New Contributor"
+      },
+      "customHomepages": {
+        "emptyHeading": "No Custom Homepages",
+        "emptyDescription": "Create a personalized landing page for your account.",
+        "createCta": "Create Homepage",
+        "capacity": "Capacity: {{usage}}/{{limit}} Used"
+      },
+      "deleteSuccess": "Resource deleted",
+      "deleteError": "Couldn't delete resource — try again"
+    }
+  }
+}

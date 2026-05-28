@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.142.0",
+  "version": "0.146.4",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -170,6 +170,7 @@
     "remark-rehype": "^11.1.2",
     "remark-stringify": "^11.0.0",
     "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "ts-semaphore": "^1.0.0",
     "typescript": "~5.8.3",

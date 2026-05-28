@@ -29,6 +29,10 @@
     "restart": "Reiniciar colaboración",
     "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
     "closeWhiteboard": "Cerrar pizarra",
+    "saveStatus": {
+      "label": "Estado de guardado",
+      "close": "Cerrar"
+    },
     "loadingWhiteboard": "Cargando pizarra",
     "untitled": "Pizarra",
     "unsavedChanges": {
@@ -39,7 +43,27 @@
     }
   },
   "footer": {
-    "guestContributionsWarning": "Cualquiera con el enlace puede editar"
+    "guestContributionsWarning": "Cualquiera con el enlace puede editar",
+    "readonlyReason": {
+      "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",
+      "contentUpdatePolicy": "No tienes derechos para editar esta pizarra. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido si deseas contribuir.",
+      "noMembership": "Debes ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <spacelink>unirte/solicitar</spacelink>",
+      "unauthenticated": "Debes iniciar sesión y ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Modo solo lectura",
+      "reason": {
+        "inactivity": "No puedes editar esta pizarra porque has estado inactivo durante demasiado tiempo. Por favor, intenta volver a abrir la pizarra para continuar editando.",
+        "multiUserNotAllowed": "No puedes editar esta pizarra porque este espacio solo permite un editor de pizarra a la vez.",
+        "roomCapacityReached": "No puedes editar esta pizarra porque este espacio permite múltiples editores simultáneamente, pero se ha alcanzado el máximo.",
+        "generic": "No puedes editar esta pizarra por alguna de las siguientes razones:\n\n- Has estado inactivo durante 2 horas o más\n- No eres miembro del espacio\n- Este espacio solo permite un editor de pizarra a la vez\n- Este espacio permite más editores, pero se ha alcanzado el máximo."
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Reconectar",
+    "countdown": "({{seconds}}s)",
+    "close": "Cerrar"
   },
   "preview": {
     "settings": {

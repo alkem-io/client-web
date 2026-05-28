@@ -151,7 +151,7 @@ export function ImageCropDialog({
           )}
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="crop-alt-text" className="text-sm font-medium">
+            <label htmlFor="crop-alt-text" className="text-body-emphasis">
               {altTextLabel}
             </label>
             <Input
@@ -178,7 +178,15 @@ export function ImageCropDialog({
 
 /**
  * Crop + resize the image to a File that fits the config's constraints.
- * Uses canvas for the crop and react-image-file-resizer for final resize.
+ *
+ * Mirrors the legacy MUI `CropDialog.getCroppedImg`
+ * (`src/core/ui/upload/VisualUpload/CropDialog.tsx`) so the output respects
+ * the visual's full `min/maxWidth` and `min/maxHeight`. Critically, the
+ * resizer call passes **both** the upper bounds (args 2-3) AND the lower
+ * bounds (args 9-10) — without `minWidth`/`minHeight` the resizer never
+ * upscales, and the server rejects uploads below the visual's lower bound
+ * (e.g. `Upload image has a width resolution of '169' which is not in the
+ * allowed range of 190 - 410 pixels`).
  */
 async function getCroppedImg(
   image: HTMLImageElement,
@@ -187,12 +195,18 @@ async function getCroppedImg(
   fileName: string
 ): Promise<File> {
   const canvas = document.createElement('canvas');
+  const pixelRatio = window.devicePixelRatio || 1;
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
-  canvas.width = crop.width * scaleX;
-  canvas.height = crop.height * scaleY;
+
+  // Render the crop at devicePixelRatio for HiDPI clarity (matches MUI).
+  canvas.width = crop.width * pixelRatio * scaleX;
+  canvas.height = crop.height * pixelRatio * scaleY;
+
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas context unavailable');
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  ctx.imageSmoothingQuality = 'high';
 
   ctx.drawImage(
     image,
@@ -202,24 +216,32 @@ async function getCroppedImg(
     crop.height * scaleY,
     0,
     0,
-    canvas.width,
-    canvas.height
+    crop.width * scaleX,
+    crop.height * scaleY
   );
 
   const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), 'image/jpeg', 0.92);
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), 'image/jpeg', 1);
   });
 
-  const targetWidth = config.maxWidth ?? canvas.width;
-  const targetHeight = config.maxHeight ?? canvas.height;
+  // Resizer arguments — keep max >= min so the resizer never receives a
+  // contradictory range when the consumer passes only one side of the bound.
+  const minWidth = config.minWidth ?? 0;
+  const minHeight = config.minHeight ?? 0;
+  const maxWidth = Math.max(config.maxWidth ?? canvas.width, minWidth);
+  const maxHeight = Math.max(config.maxHeight ?? canvas.height, minHeight);
 
   return new Promise<File>((resolve, reject) => {
-    Resizer.imageFileResizer(
+    // Workaround for a Vite + react-image-file-resizer interop issue — the
+    // package occasionally exposes `Resizer` only under `.default`.
+    const resizer = (Resizer as unknown as { default?: typeof Resizer }).default ?? Resizer;
+
+    resizer.imageFileResizer(
       new File([blob], fileName, { type: 'image/jpeg' }),
-      targetWidth,
-      targetHeight,
+      maxWidth,
+      maxHeight,
       'JPEG',
-      92,
+      100,
       0,
       (result: unknown) => {
         if (result instanceof File) {
@@ -235,7 +257,9 @@ async function getCroppedImg(
           reject(new Error('Unexpected resizer output'));
         }
       },
-      'file'
+      'file',
+      minWidth,
+      minHeight
     );
   });
 }

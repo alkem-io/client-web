@@ -1,4 +1,5 @@
 import { defaultSchema } from 'hast-util-sanitize';
+import type { ComponentPropsWithoutRef } from 'react';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
@@ -46,7 +47,9 @@ export type MarkdownContentProps = {
  *
  * Iframes are supported when a MarkdownConfigProvider is present in the tree.
  * The provider carries a whitelist of allowed iframe origins; iframes from
- * non-whitelisted origins are stripped. Without a provider, all iframes are stripped.
+ * non-whitelisted origins are stripped. Without a provider (or with an empty
+ * list), all iframes are stripped — the platform must configure the allowed
+ * origins for embeds to render. Non-https iframes are always stripped.
  *
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.
@@ -57,7 +60,11 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
   return (
     <div
       className={cn(
-        'max-w-none text-body text-foreground',
+        // `break-words` (overflow-wrap: break-word) so an unbreakable token
+        // (long URL, gibberish word) wraps instead of forming one physical
+        // line — otherwise `-webkit-line-clamp` can never overflow vertically
+        // and the text spills out of the card.
+        'max-w-none break-words text-body text-foreground',
         // Headings
         '[&_h1]:text-page-title [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:text-foreground',
         '[&_h2]:text-section-title [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-foreground',
@@ -89,8 +96,6 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
-        // Iframes (embedded videos etc.)
-        '[&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0',
         className
       )}
     >
@@ -101,9 +106,58 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
           [rehypeSanitize, sanitizeSchema],
           rehypeSanitizeStyles,
         ]}
+        components={{ iframe: IframeRenderer }}
       >
         {content}
       </Markdown>
     </div>
   );
+}
+
+// Iframe rendering branches on the authored width/height attributes:
+//   1. Both pixel (e.g. pasted Figma `width="800" height="450"`) — passthrough so the iframe
+//      keeps its intrinsic box, capped to container width.
+//   2. Pixel height with non-pixel width (e.g. `width="100%" height="400"`) — wrap in a full-width
+//      container with the authored pixel height; iframe fills it.
+//   3. Anything else (e.g. the editor's `width="100%" height="100%"`) — wrap in a 16:9 responsive
+//      container so the iframe doesn't collapse to zero height.
+// `node` is the hast node react-markdown passes alongside DOM props; pluck it off so it never
+// reaches the DOM.
+type IframeRendererProps = ComponentPropsWithoutRef<'iframe'> & { node?: unknown };
+
+function IframeRenderer({ node: _node, width, height, className, ...props }: IframeRendererProps) {
+  const widthPx = toPixelValue(width);
+  const heightPx = toPixelValue(height);
+
+  if (widthPx && heightPx) {
+    return (
+      <iframe
+        {...props}
+        width={width}
+        height={height}
+        className={cn('block max-w-full rounded-lg border-0 my-3', className)}
+      />
+    );
+  }
+
+  if (heightPx) {
+    return (
+      <div className="relative w-full my-3" style={{ height: heightPx }}>
+        <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full my-3 aspect-video">
+      <iframe {...props} className={cn('absolute inset-0 w-full h-full rounded-lg border-0', className)} />
+    </div>
+  );
+}
+
+function toPixelValue(value: string | number | undefined): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === 'number') return Number.isFinite(value) ? `${value}px` : undefined;
+  const match = /^(\d+(?:\.\d+)?)(px)?$/i.exec(String(value).trim());
+  return match ? `${match[1]}px` : undefined;
 }

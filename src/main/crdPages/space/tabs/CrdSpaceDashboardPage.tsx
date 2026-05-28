@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -15,6 +15,7 @@ import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
+import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
@@ -59,6 +60,7 @@ export default function CrdSpaceDashboardPage() {
       name: child.displayName,
       initials: getInitials(child.displayName),
       href: child.url,
+      avatarUrl: child.avatar?.uri,
     })) ?? [];
 
   return (
@@ -71,6 +73,7 @@ export default function CrdSpaceDashboardPage() {
           onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
           onAboutClick={() => setAboutOpen(true)}
           subspaces={subspaces}
+          subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}
           events={sidebarEvents}
           onShowCalendar={openCalendar}
           onAddEvent={canCreateEvents ? openCreateEvent : undefined}
@@ -79,9 +82,14 @@ export default function CrdSpaceDashboardPage() {
         />
       </SpaceSidebarPortal>
 
-      <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
+      <SpaceApplyButtonConnector
+        spaceId={space.id}
+        spaceProfileUrl={space.about.profile.url}
+        communityName={space.about.profile.displayName}
+        className="mb-6"
+      />
 
-      <TabStateHeader
+      <SpaceTabActionHeader
         description={tabDescription}
         action={
           canCreateCallout && (
@@ -102,6 +110,7 @@ export default function CrdSpaceDashboardPage() {
           onOpenChange={setCreateOpen}
           calloutsSetId={calloutsSetId}
           activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
 

@@ -29,6 +29,10 @@
     "restart": "Restart collaboration",
     "guestContributionsWarning": "Guest contributions are enabled",
     "closeWhiteboard": "Close whiteboard",
+    "saveStatus": {
+      "label": "Save status",
+      "close": "Close"
+    },
     "loadingWhiteboard": "Loading whiteboard",
     "untitled": "Whiteboard",
     "unsavedChanges": {
@@ -39,7 +43,27 @@
     }
   },
   "footer": {
-    "guestContributionsWarning": "Anyone with the link can edit"
+    "guestContributionsWarning": "Anyone with the link can edit",
+    "readonlyReason": {
+      "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+      "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
+      "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+      "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "View only mode",
+      "reason": {
+        "inactivity": "You can't edit this whiteboard because you were inactive for too long. Please try reopening the whiteboard to continue editing.",
+        "multiUserNotAllowed": "You can't edit this whiteboard because this space only allows one whiteboard editor at a time",
+        "roomCapacityReached": "You can't edit this whiteboard because this space allows for multiple editors simultaneously, but the maximum is reached",
+        "generic": "You can't edit this whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the space\n- This space only allows one whiteboard editor at a time\n- This space allows for more editors, but the maximum is reached"
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Reconnect",
+    "countdown": "({{seconds}}s)",
+    "close": "Close"
   },
   "preview": {
     "settings": {

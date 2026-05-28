@@ -53,16 +53,15 @@
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
+      "drag": "Ziehen, um die Phase neu zu ordnen",
       "empty": "Noch keine Callouts in dieser Spalte.",
       "activePhase": {
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)"
       },
-      "defaultPostTemplate": {
-        "label": "Standard-Beitragsvorlage",
-        "header": "Vorlage auswählen",
-        "clear": "Standard löschen",
-        "none": "Keine Vorlagen verfügbar"
+      "defaultCalloutTemplate": {
+        "set": "Standard-Callout-Vorlage festlegen…",
+        "clear": "Standard-Callout-Vorlage entfernen"
       },
       "editDetails": {
         "menuLabel": "Details bearbeiten",
@@ -76,7 +75,15 @@
         "saving": "Speichern…",
         "save": "Speichern"
       },
-      "deletePhase": "Phase löschen"
+      "deletePhase": {
+        "menuLabel": "Phase löschen",
+        "confirm": {
+          "title": "Diese Phase löschen?",
+          "description": "Callouts, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Phase löschen",
+          "cancel": "Abbrechen"
+        }
+      }
     },
     "addPhase": {
       "button": "Phase hinzufügen",
@@ -92,6 +99,11 @@
         "cancel": "Abbrechen",
         "confirm": "Phase hinzufügen"
       }
+    },
+    "replaceFlow": {
+      "button": "Innovationsfluss ersetzen",
+      "loading": "Neuer Fluss wird geladen…",
+      "error": "Das Ersetzen des Innovationsflusses ist fehlgeschlagen. Der Fluss ist unverändert — bitte versuchen Sie es erneut."
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",
@@ -127,6 +139,26 @@
       "reject": "Ablehnen",
       "delete": "Löschen",
       "empty": "Keine ausstehenden Mitgliedschaften.",
+      "noMatch": "Keine ausstehenden Mitgliedschaften entsprechen den gewählten Filtern.",
+      "filterLabel": "Nach Status filtern",
+      "sortBy": "Sortieren nach {{column}}",
+      "viewApplication": "Antrag ansehen",
+      "viewInvitation": "Einladung ansehen",
+      "viewDialog": {
+        "created": "Erstellt am {{date}}",
+        "updated": "Aktualisiert am {{date}}",
+        "welcomeMessage": "Willkommensnachricht",
+        "noWelcomeMessage": "Keine Willkommensnachricht angegeben.",
+        "noAnswers": "Keine Antworten angegeben.",
+        "close": "Schließen",
+        "loading": "Details werden geladen"
+      },
+      "pagination": {
+        "showing": "Zeige {{from}} bis {{to}} von {{total}}",
+        "previous": "Vorherige Seite",
+        "page": "Seite {{page}} von {{total}}",
+        "next": "Nächste Seite"
+      },
       "status": {
         "column": "Status",
         "applicationReceived": "Antrag erhalten",
@@ -245,6 +277,17 @@
       "description": "Legen Sie Regeln und Erwartungen für das Verhalten der Mitglieder fest.",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Benennen Sie Ihre Community-Richtlinien",
+      "referencesLabel": "Verwandte Links",
+      "applyTemplate": "Vorlage verwenden",
+      "saveAsTemplate": "Als Vorlage speichern",
+      "applyConfirm": {
+        "title": "Aktuelle Richtlinien ersetzen?",
+        "description": "Beim Anwenden einer Vorlage werden der aktuelle Titel, der Inhalt und die Links überschrieben. Dies kann nicht rückgängig gemacht werden.",
+        "confirm": "Ersetzen",
+        "cancel": "Abbrechen"
+      },
       "save": "Richtlinien speichern",
       "saving": "Speichern…"
     },
@@ -414,7 +457,18 @@
         "hint": "Optional — wählen Sie eine Subspace-Vorlage aus, um Inhalte vorab zu füllen.",
         "loading": "Vorlagen laden…",
         "placeholder": "Vorlage auswählen (optional)",
-        "none": "Keine Vorlage"
+        "none": "Keine Vorlage",
+        "choose": "Vorlage auswählen",
+        "change": "Ändern",
+        "clear": "Leer verwenden",
+        "selectedLabel": "Ausgewählte Vorlage",
+        "loadingPreview": "Vorlagenvorschau wird geladen…",
+        "overwriteConfirm": {
+          "title": "Formularinhalt ersetzen?",
+          "description": "Durch das Anwenden dieser Vorlage werden der Name, der Slogan, die Beschreibung und die Tags überschrieben, die Sie bereits eingegeben haben.",
+          "confirm": "Vorlage anwenden",
+          "cancel": "Meine Änderungen behalten"
+        }
       },
       "displayName": {
         "label": "Name",

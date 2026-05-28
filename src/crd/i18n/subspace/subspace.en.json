@@ -1,16 +1,13 @@
 {
-  "badge": {
-    "subspace": "SubSpace",
-    "subSubspace": "SubSubSpace"
-  },
   "actions": {
     "activity": "Recent activity",
     "videoCall": "Start video call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centered layout"
   },
   "members": {
-    "viewCommunity": "View community members",
     "memberCount_one": "{{count}} member",
     "memberCount_other": "{{count}} members"
   },
@@ -26,6 +23,8 @@
     "about": "About this Subspace",
     "lead": "Lead",
     "leads": "Leads",
+    "collapse": "Collapse",
+    "expand": "Expand",
     "quickActions": {
       "heading": "Quick Actions",
       "community": "Community",
@@ -62,7 +61,6 @@
   },
   "a11y": {
     "subspaceBanner": "SubSpace banner for {{name}}",
-    "parentLink": "Go to parent space {{name}}",
     "flowTabs": "Innovation flow phases",
     "sidebarNavigation": "SubSpace sidebar",
     "communityDialog": "Community members dialog",

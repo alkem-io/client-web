@@ -107,12 +107,6 @@ export function SpacePage() {
       canInvite={sidebarVariant === 'community'}
       virtualContributors={sidebarVariant === 'community' ? MOCK_SIDEBAR.virtualContributors : undefined}
       guidelines={sidebarVariant === 'community' ? MOCK_SIDEBAR.guidelines : undefined}
-      // Knowledge
-      knowledgeEntries={sidebarVariant === 'knowledge' ? MOCK_SIDEBAR.knowledgeEntries : undefined}
-      onKnowledgeEntryClick={id => {
-        const el = document.getElementById(id);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }}
     >
       {sidebarVariant === 'knowledge' && (
         <CalloutSidebarList
@@ -140,17 +134,15 @@ export function SpacePage() {
             bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
             color={pickColorFromId('mock-space-green-energy')}
             isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
-            memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
             actions={{
-              showDocuments: true,
+              showActivity: true,
               showVideoCall: false,
               showShare: true,
               showSettings: true,
               settingsHref: '/space/green-energy/settings',
-              onDocumentsClick: () => {},
+              onActivityClick: () => {},
               onShareClick: () => {},
             }}
-            onMemberClick={() => setActiveTab(1)}
           />
         }
         sidebar={sidebar}

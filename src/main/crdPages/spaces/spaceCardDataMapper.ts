@@ -1,3 +1,4 @@
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -7,6 +8,7 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
   const { about } = space;
   const { profile, isContentPublic, membership } = about;
   const displayName = profile.displayName;
+  const isL0 = space.level === SpaceLevel.L0;
 
   const leads: SpaceLead[] = [];
   if (authenticated) {
@@ -29,11 +31,13 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
     }
   }
 
+  // Parent identity: L0 parents have no avatar (per the canonical visual-fields rule). L1/L2
+  // parents do have an avatar — pass it if present.
   const parent = space.parent
     ? {
         name: space.parent.about.profile.displayName,
         href: space.parent.about.profile.url,
-        avatarUrl: space.parent.about.profile.avatar?.uri,
+        avatarUrl: space.parent.level === SpaceLevel.L0 ? undefined : space.parent.about.profile.avatar?.uri,
         initials: getInitials(space.parent.about.profile.displayName),
         avatarColor: pickColorFromId(space.parent.id),
       }
@@ -42,12 +46,16 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
   return {
     id: space.id,
     name: displayName,
-    // Leave undefined when the space has no real card banner — the component will
-    // render the deterministic gradient from `avatarColor` instead of a stock default.
+    // L0 = title + cardBanner only (no avatar). L1/L2 = title + avatar + cardBanner. Per the
+    // canonical visual-fields rule, never substitute one for the other; missing values fall back
+    // to the deterministic gradient/initials from `avatarColor`.
     description: profile.tagline ?? '',
     bannerImageUrl: profile.cardBanner?.uri || undefined,
+    avatarUrl: isL0 ? undefined : profile.avatar?.uri || undefined,
     initials: getInitials(displayName),
     avatarColor: pickColorFromId(space.id),
+    // L0 cards = title + cardBanner only (no avatar). Per the canonical visual-fields rule.
+    hideAvatar: isL0,
     isPrivate: !isContentPublic,
     tags: profile.tagset?.tags ?? [],
     leads,

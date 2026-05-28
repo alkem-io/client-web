@@ -1,8 +1,8 @@
 import { MessageSquare } from 'lucide-react';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 
 type ContributionPostCardProps = {
   title: string;
@@ -25,15 +25,26 @@ export function ContributionPostCard({
   onClick,
   className,
 }: ContributionPostCardProps) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
-      type="button"
+    // biome-ignore lint/a11y/useSemanticElements: a <button> here would nest interactive descendants (CollapsibleTagList renders a "+N" <button>; MarkdownContent can render <a> links) which is invalid HTML
+    <div
+      role="button"
+      tabIndex={0}
       className={cn(
         'w-full text-left p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'min-h-[180px] flex flex-col',
+        'h-[180px] overflow-hidden flex flex-col',
         className
       )}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
     >
       <p className="text-body-emphasis text-foreground truncate">{title}</p>
       {author && (
@@ -47,21 +58,19 @@ export function ContributionPostCard({
         </div>
       )}
       {description && (
-        <MarkdownContent content={description} className="text-caption text-muted-foreground line-clamp-2 mt-1.5" />
+        <div className="mt-1.5 max-h-[3rem] overflow-hidden">
+          <MarkdownContent content={description} className="text-caption text-muted-foreground line-clamp-2" />
+        </div>
       )}
-      <div className="flex items-center gap-2 mt-2">
-        {tags?.slice(0, 3).map(tag => (
-          <Badge key={tag} variant="secondary" className="text-badge px-1 h-4">
-            {tag}
-          </Badge>
-        ))}
+      <div className="flex items-center gap-1.5 mt-auto pt-2 min-w-0">
+        {tags && tags.length > 0 && <CollapsibleTagList tags={tags} maxRows={1} className="flex-1 min-w-0" />}
         {commentCount !== undefined && commentCount > 0 && (
-          <span className="flex items-center gap-1 text-caption text-muted-foreground ml-auto">
+          <span className="flex items-center gap-1 text-caption text-muted-foreground ml-auto shrink-0">
             <MessageSquare className="w-3 h-3" aria-hidden="true" />
             {commentCount}
           </span>
         )}
       </div>
-    </button>
+    </div>
   );
 }

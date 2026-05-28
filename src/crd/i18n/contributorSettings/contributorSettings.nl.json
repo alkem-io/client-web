@@ -1,0 +1,652 @@
+{
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Profiel",
+        "account": "Account",
+        "membership": "Lidmaatschap",
+        "organizations": "Organisaties",
+        "notifications": "Meldingen",
+        "settings": "Instellingen",
+        "security": "Beveiliging"
+      },
+      "org": {
+        "profile": "Profiel",
+        "account": "Account",
+        "community": "Gemeenschap",
+        "authorization": "Autorisatie",
+        "settings": "Instellingen"
+      },
+      "vc": {
+        "profile": "Profiel",
+        "membership": "Lidmaatschap",
+        "settings": "Instellingen"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Profiel",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe je verschijnt op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "firstName": {
+          "label": "Voornaam",
+          "hint": "Je voornaam.",
+          "required": "Voornaam is verplicht"
+        },
+        "lastName": {
+          "label": "Achternaam",
+          "hint": "Je achternaam.",
+          "required": "Achternaam is verplicht"
+        },
+        "email": {
+          "label": "E-mailadres",
+          "readOnlyCaption": "Neem contact op met support om je e-mailadres te wijzigen"
+        },
+        "phone": {
+          "label": "Telefoon",
+          "hint": "Optioneel. We delen dit nooit.",
+          "invalidFormat": "Telefoonnummer heeft geen ondersteunde indeling"
+        }
+      },
+      "aboutYou": {
+        "title": "Over jou",
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte zin die op je profiel verschijnt."
+        },
+        "location": {
+          "title": "Locatie",
+          "city": "Plaats",
+          "country": "Land",
+          "countryPlaceholder": "Kies een land"
+        },
+        "bio": {
+          "label": "Biografie",
+          "hint": "Markdown wordt ondersteund."
+        },
+        "skills": {
+          "label": "Vaardigheden",
+          "hint": "Vaardigheden die je kunt aanbieden. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. UX-onderzoek, TypeScript, facilitatie"
+        },
+        "keywords": {
+          "label": "Trefwoorden",
+          "hint": "Trefwoorden die je interesses beschrijven. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. klimaat, governance, open source"
+        }
+      },
+      "socialLinks": {
+        "title": "Sociale links",
+        "linkedinPlaceholder": "https://linkedin.com/in/jouw-naam",
+        "bskyPlaceholder": "https://bsky.app/profile/jouw-naam",
+        "githubPlaceholder": "https://github.com/jouw-naam",
+        "addAnother": "Andere referentie toevoegen",
+        "namePlaceholder": "Naam van de referentie",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op je openbare profiel na opslaan.",
+          "confirm": "Referentie verwijderen"
+        }
+      },
+      "avatar": {
+        "title": "Profielfoto",
+        "changeButton": "Avatar wijzigen",
+        "helperText": "Aanbevolen: 400×400 px. JPG, PNG of GIF.",
+        "uploading": "Uploaden…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Lidmaatschap",
+      "homeSpace": {
+        "title": "Hoofd-Space",
+        "description": "Kies een Space waar je na inloggen op terechtkomt. Je kunt ook automatisch doorverwijzen inschakelen.",
+        "selectLabel": "Hoofd-Space",
+        "noSelection": "Geen hoofd-Space",
+        "autoRedirectLabel": "Automatisch doorverwijzen naar mijn hoofd-Space na inloggen",
+        "autoRedirectDisabledHint": "Kies een hoofd-Space om automatisch doorverwijzen in te schakelen."
+      },
+      "myMemberships": {
+        "title": "Mijn lidmaatschappen",
+        "searchPlaceholder": "Zoek lidmaatschappen...",
+        "empty": "Je bent nog geen lid van een Space.",
+        "summary": "{{shown}} van {{total}} lidmaatschappen weergegeven",
+        "filteredEmptyTitle": "Geen lidmaatschappen gevonden",
+        "filteredEmptyDescription": "Pas de filters of zoekterm aan.",
+        "clearFilters": "Filters wissen"
+      },
+      "menu": {
+        "viewByType": "{{type}} bekijken"
+      },
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Beheerder",
+        "lead": "Lead",
+        "member": "Lid"
+      },
+      "leave": {
+        "menuItem": "Verlaten",
+        "menuItemLabeled": "{{type}} verlaten",
+        "dialogTitle": "Dit lidmaatschap verlaten?",
+        "dialogDescription": "Je staat op het punt om \"{{spaceName}}\" te verlaten. Je verliest toegang tot inhoud voor leden en moet opnieuw aanmelden om terug te komen.",
+        "dialogConfirm": "Verlaten",
+        "success": "Lidmaatschap verlaten",
+        "error": "Verlaten mislukt — probeer opnieuw"
+      },
+      "pendingApplications": {
+        "title": "Openstaande aanvragen",
+        "empty": "Je hebt geen openstaande aanvragen.",
+        "statusPending": "In behandeling"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Geleid door:",
+      "ledByAria": "{{count}} community-leiders",
+      "leadsMore": "en nog {{count}}"
+    },
+    "security": {
+      "pageTitle": "Beveiliging",
+      "title": "Beveiliging",
+      "description": "Beheer passkeys en WebAuthn-aanmeldgegevens voor je account.",
+      "notEnabled": "WebAuthn / Passkey is niet ingeschakeld op dit account.",
+      "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen."
+    },
+    "settings": {
+      "pageTitle": "Instellingen",
+      "communication": {
+        "title": "Communicatie en privacy",
+        "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
+        "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
+        "error": "Voorkeur niet opgeslagen — probeer opnieuw"
+      },
+      "designSystem": {
+        "title": "Design System",
+        "description": "Schakel tussen het nieuwe (CRD) en het klassieke (MUI) ontwerp. Deze voorkeur wordt lokaal op dit apparaat opgeslagen.",
+        "toggleLabel": "Gebruik het nieuwe ontwerp (CRD)",
+        "reloadCaption": "De pagina wordt opnieuw geladen na de wijziging."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Meldingen",
+      "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
+      "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
+      "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
+      "columns": {
+        "activity": "Activiteit",
+        "inApp": "In-app",
+        "email": "E-mail",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push-meldingen",
+        "masterToggleDescription": "Schakel push-meldingen op dit apparaat in. Je kunt hieronder verfijnen welke gebeurtenissen ze activeren.",
+        "permissionDenied": "Toestemming voor meldingen werd geweigerd. Pas je browserinstellingen aan om push in te schakelen.",
+        "unavailable": "Push-meldingen zijn niet beschikbaar in deze browser.",
+        "requiresPwa": "Push-meldingen vereisen dat je deze app aan je beginscherm toevoegt.",
+        "error": "Push-abonnement bijwerken mislukt — probeer opnieuw"
+      },
+      "groups": {
+        "space": {
+          "title": "Space-meldingen",
+          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals posts, reacties en community-updates."
+        },
+        "spaceAdmin": {
+          "title": "Space-beheerdermeldingen",
+          "description": "Meldingen voor Spaces waarvoor je beheerder of lead bent."
+        },
+        "user": {
+          "title": "Gebruikersmeldingen",
+          "description": "Personaliseer waarschuwingen voor interacties zoals antwoorden, vermeldingen en uitnodigingen."
+        },
+        "platform": {
+          "title": "Platformmeldingen",
+          "description": "Blijf op de hoogte van platformbrede discussies, nieuwe functies en aankondigingen."
+        },
+        "platformAdmin": {
+          "title": "Platformbeheerdermeldingen",
+          "description": "Meldingen voor platformbeheerders (gebruikersbeheer, aanmaken van Spaces)."
+        },
+        "organization": {
+          "title": "Organisatiemeldingen",
+          "description": "Beheer waarschuwingen voor vermeldingen, berichten en teamupdates van je organisatie."
+        },
+        "virtualContributor": {
+          "title": "Meldingen voor Virtual Contributors",
+          "description": "Meldingen over activiteiten en toewijzingen van Virtual Contributors."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
+          "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
+          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een post die ik volg",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
+          "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",
+          "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",
+          "collaborationPollVoteCastOnOwnPoll": "Krijg een melding wanneer iemand op mijn poll stemt",
+          "collaborationPollVoteCastOnPollIVotedOn": "Krijg een melding wanneer iemand stemt op een poll waarop ik heb gestemd",
+          "collaborationPollModifiedOnPollIVotedOn": "Krijg een melding wanneer een poll waarop ik heb gestemd wordt gewijzigd",
+          "collaborationPollVoteAffectedByOptionChange": "Krijg een melding wanneer mijn stem wordt beïnvloed door een wijziging in een poll-optie"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Krijg een melding wanneer een nieuwe community-aanvraag wordt ingediend",
+          "communityNewMember": "Krijg een melding wanneer een nieuw lid zich bij de community aansluit",
+          "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
+          "communicationMessageReceived": "Krijg een melding wanneer er een community-bericht wordt ontvangen",
+          "userEmailChanged": "Krijg een melding wanneer het inloge-mailadres van een lid van een Space die je beheert wordt gewijzigd"
+        },
+        "user": {
+          "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
+          "mentioned": "Krijg een melding wanneer ik word vermeld",
+          "messageReceived": "Krijg een melding wanneer iemand mij een direct bericht stuurt",
+          "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
+          "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een discussie die ik volg",
+          "forumDiscussionCreated": "Krijg een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Krijg een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
+          "userProfileRemoved": "Krijg een melding wanneer een gebruikersprofiel wordt verwijderd",
+          "userGlobalRoleChanged": "Krijg een melding wanneer de globale rol van een gebruiker verandert",
+          "userEmailChanged": "Krijg een melding wanneer het e-mailadres van een gebruiker verandert",
+          "spaceCreated": "Krijg een melding wanneer er een nieuwe Space wordt aangemaakt"
+        },
+        "organization": {
+          "adminMentioned": "Krijg een melding wanneer mijn organisatie wordt vermeld",
+          "adminMessageReceived": "Ontvang directe berichten gericht aan mijn organisatie"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organisaties",
+      "searchPlaceholder": "Zoek organisaties...",
+      "createButton": "Organisatie aanmaken",
+      "summary": "{{shown}} van {{total}} organisaties weergegeven",
+      "empty": "Je bent nog niet gelinkt aan een organisatie.",
+      "filteredEmptyTitle": "Geen organisaties gevonden",
+      "filteredEmptyDescription": "Probeer een andere naam of locatie te zoeken.",
+      "clearSearch": "Zoekopdracht wissen",
+      "verified": "Geverifieerd",
+      "associates": "Geassocieerden",
+      "associatesCount": "{{count}} geassocieerden",
+      "role": {
+        "admin": "Beheerder",
+        "associate": "Geassocieerd"
+      },
+      "menu": {
+        "viewProfile": "Profiel bekijken",
+        "disassociate": "Ontkoppelen"
+      },
+      "disassociate": {
+        "dialogTitle": "Ontkoppelen van deze organisatie?",
+        "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als geassocieerde en alle bijbehorende rechten.",
+        "dialogConfirm": "Ontkoppelen",
+        "success": "Succesvol ontkoppeld",
+        "error": "Ontkoppelen mislukt — probeer opnieuw"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Hier kun je je actieve resources bekijken en je accountlimieten beheren.",
+      "spaces": {
+        "title": "Gehoste Spaces",
+        "createButton": "Space aanmaken"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Bijdrager toevoegen"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "Nieuw pakket"
+      },
+      "innovationHubs": {
+        "title": "Aangepaste startpagina's",
+        "createButton": "Nieuwe pagina"
+      },
+      "actions": {
+        "view": "Bekijken",
+        "manage": "Beheren",
+        "transfer": "Overdragen",
+        "delete": "Verwijderen"
+      },
+      "deleteDialog": {
+        "title": "Deze resource verwijderen?",
+        "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Verwijderen"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Profiel",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe je organisatie verschijnt op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "nameID": { "label": "Name ID", "caption": "Kan niet worden gewijzigd na aanmaken." },
+        "tagline": { "label": "Slogan", "hint": "Een korte zin naast je organisatienaam." }
+      },
+      "about": {
+        "title": "Over",
+        "description": { "label": "Beschrijving", "hint": "Markdown wordt ondersteund." },
+        "location": { "title": "Locatie", "city": "Plaats", "country": "Land", "countryPlaceholder": "Kies een land" },
+        "keywords": {
+          "label": "Trefwoorden",
+          "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. klimaat, governance, open source"
+        },
+        "capabilities": {
+          "label": "Capaciteiten",
+          "hint": "Wat je organisatie kan of biedt. Druk op Enter om toe te voegen.",
+          "placeholder": "bv. onderzoek, financiering, training"
+        }
+      },
+      "contactLegal": {
+        "title": "Contact en juridisch",
+        "contactEmail": {
+          "label": "Contact-e-mail",
+          "hint": "Openbaar contactadres voor de organisatie.",
+          "invalidFormat": "Voer een geldig e-mailadres in"
+        },
+        "domain": { "label": "Domein", "hint": "Het webdomein van je organisatie (zonder protocol)." },
+        "legalEntityName": { "label": "Juridische naam", "hint": "De officieel geregistreerde naam." },
+        "website": {
+          "label": "Website",
+          "hint": "Volledige URL inclusief https://",
+          "invalidFormat": "Voer een geldige URL in"
+        }
+      },
+      "socialLinks": {
+        "title": "Sociale links",
+        "linkedinPlaceholder": "https://linkedin.com/company/jouw-org",
+        "bskyPlaceholder": "https://bsky.app/profile/jouw-naam",
+        "githubPlaceholder": "https://github.com/jouw-org",
+        "addAnother": "Andere referentie toevoegen",
+        "namePlaceholder": "Naam van de referentie",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Het verwijderen van deze referentie verwijdert ook de vermelding op het openbare profiel na opslaan.",
+          "confirm": "Referentie verwijderen"
+        }
+      },
+      "logo": {
+        "title": "Logo",
+        "changeButton": "Logo wijzigen",
+        "helperText": "Aanbevolen: 400×400 px. JPG, PNG of GIF.",
+        "uploading": "Uploaden…"
+      },
+      "verification": {
+        "verified": "Geverifieerd",
+        "pending": "Verificatie in behandeling",
+        "notVerified": "Niet geverifieerd"
+      }
+    },
+    "account": {
+      "pageTitle": "Account",
+      "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
+      "spaces": { "title": "Gehoste Spaces", "createButton": "Space aanmaken" },
+      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Bijdrager toevoegen" },
+      "innovationPacks": { "title": "Template Packs", "createButton": "Nieuw pakket" },
+      "innovationHubs": { "title": "Aangepaste startpagina's", "createButton": "Nieuwe pagina" },
+      "actions": { "view": "Bekijken", "manage": "Beheren", "transfer": "Overdragen", "delete": "Verwijderen" },
+      "deleteDialog": {
+        "title": "Deze resource verwijderen?",
+        "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Verwijderen"
+      }
+    },
+    "community": {
+      "pageTitle": "Gemeenschap",
+      "title": "Geassocieerden",
+      "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
+      "currentAssociatesTitle": "Huidige geassocieerden",
+      "availableUsersTitle": "Beschikbare gebruikers",
+      "searchPlaceholder": "Zoek gebruikers op naam…",
+      "addAriaLabel": "{name} toevoegen als geassocieerde",
+      "removeAriaLabel": "{name} verwijderen als geassocieerde",
+      "loadMore": "Meer laden",
+      "emptyCurrent": "Nog geen geassocieerden.",
+      "emptyAvailable": "Geen overeenkomende gebruikers gevonden.",
+      "removeDialogTitle": "Deze geassocieerde verwijderen?",
+      "removeDialogDescription": "{{name}} verliest de rol van geassocieerde en alle bijbehorende rechten.",
+      "removeConfirmAssociate": "{{name}} verwijderen als geassocieerde",
+      "removeSuccess": "Geassocieerde verwijderd",
+      "removeError": "Verwijderen mislukt — probeer opnieuw"
+    },
+    "authorization": {
+      "pageTitle": "Autorisatie",
+      "title": "Autorisatie",
+      "description": "Wijs de rollen Beheerder en Eigenaar voor deze organisatie toe. Beheerders kunnen de dagelijkse instellingen beheren; Eigenaren hebben volledige controle over de organisatie.",
+      "adminTabLabel": "Beheerder",
+      "ownerTabLabel": "Eigenaar",
+      "loadMore": "Meer laden",
+      "admin": {
+        "currentTitle": "Huidige Beheerders",
+        "availableTitle": "Beschikbare Gebruikers",
+        "searchPlaceholder": "Zoek gebruikers op naam…",
+        "addAriaLabel": "{name} toevoegen als Beheerder",
+        "removeAriaLabel": "{name} verwijderen als Beheerder",
+        "emptyCurrent": "Nog geen beheerders.",
+        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
+      },
+      "owner": {
+        "currentTitle": "Huidige Eigenaren",
+        "availableTitle": "Beschikbare Gebruikers",
+        "searchPlaceholder": "Zoek gebruikers op naam…",
+        "addAriaLabel": "{name} toevoegen als Eigenaar",
+        "removeAriaLabel": "{name} verwijderen als Eigenaar",
+        "emptyCurrent": "Nog geen eigenaren.",
+        "emptyAvailable": "Geen overeenkomende gebruikers gevonden."
+      },
+      "removeDialogTitle": "Deze rol verwijderen?",
+      "removeDialogDescription": "{{name}} verliest deze rol en alle bijbehorende rechten.",
+      "removeConfirmAdmin": "{{name}} verwijderen als Beheerder",
+      "removeConfirmOwner": "{{name}} verwijderen als Eigenaar",
+      "removeSuccessAdmin": "Beheerdersrol verwijderd",
+      "removeSuccessOwner": "Eigenaarsrol verwijderd",
+      "removeError": "Verwijderen mislukt — probeer opnieuw"
+    },
+    "settings": {
+      "pageTitle": "Instellingen",
+      "title": "Organisatie-instellingen",
+      "membership": {
+        "title": "Lidmaatschap",
+        "allowDomainLabel": "Sta gebruikers met het domein van deze organisatie toe lid te worden",
+        "allowDomainCaption": "Wanneer ingeschakeld, kunnen gebruikers wier e-maildomein overeenkomt met deze organisatie zich aansluiten zonder uitnodiging."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "contributionRolesLabel": "Toon bijdragerollen openbaar",
+        "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Geassocieerde) zichtbaar op het openbare profiel."
+      },
+      "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Instellingen",
+      "identity": {
+        "title": "Identiteit",
+        "displayName": {
+          "label": "Weergavenaam",
+          "hint": "Hoe deze Virtual Contributor wordt weergegeven op Alkemio.",
+          "required": "Weergavenaam is verplicht"
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte regel die op het profiel van de bijdrager wordt getoond."
+        },
+        "description": {
+          "label": "Beschrijving",
+          "hint": "Leg uit wat deze Virtual Contributor doet en hoe ermee te werken."
+        }
+      },
+      "keywords": {
+        "label": "Trefwoorden",
+        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden.",
+        "placeholder": "Voeg een trefwoord toe en druk op Enter"
+      },
+      "socialLinks": {
+        "title": "Referenties",
+        "addAnother": "Nog een referentie toevoegen",
+        "namePlaceholder": "Naam",
+        "urlPlaceholder": "https://voorbeeld.com",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "removeAriaLabel": "Referentie verwijderen",
+        "empty": "Nog geen referenties.",
+        "deleteDialog": {
+          "title": "Referentie verwijderen?",
+          "description": "Deze referentie wordt verwijderd wanneer u de sectie opslaat. U kunt dit ongedaan maken voordat u opslaat.",
+          "confirm": "Verwijderen"
+        }
+      },
+      "metadata": {
+        "title": "Over deze Virtual Contributor",
+        "hostLabel": "Gehost door",
+        "bodyOfKnowledgeLabel": "Kennisbron"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Avatar wijzigen",
+        "uploading": "Bezig met uploaden…",
+        "helperText": "Vierkante JPEG of PNG, maximaal 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Lidmaatschappen"
+      },
+      "empty": "Deze Virtual Contributor is nog geen lid van een Space.",
+      "spaceBadge": "Space",
+      "subspaceBadge": "Subspace",
+      "viewLabel": "Bekijk",
+      "leaveLabel": "Verlaten",
+      "leaveSpaceConfirmTitle": "Deze Space verlaten?",
+      "leaveSubspaceConfirmTitle": "Deze Subspace verlaten?",
+      "leaveConfirmBody": "Deze Virtual Contributor verwijderen uit {{name}}? Dit kan ongedaan worden gemaakt door opnieuw lidmaatschap aan te vragen.",
+      "leaveConfirmAction": "Verlaten",
+      "pendingInvitationsHeading": "Openstaande uitnodigingen",
+      "acceptLabel": "Accepteren",
+      "declineLabel": "Afwijzen",
+      "acceptInvitationConfirmTitle": "Uitnodiging accepteren?",
+      "acceptInvitationConfirmBody": "De uitnodiging om {{name}} bij te wonen accepteren?",
+      "acceptInvitationConfirmAction": "Accepteren"
+    },
+    "visibility": {
+      "title": "Zichtbaarheid",
+      "helper": "Bepaalt wie deze Virtual Contributor kan vinden.",
+      "publicLabel": "Openbaar",
+      "publicDescription": "Iedereen, inclusief anonieme bezoekers, kan deze Virtual Contributor vinden.",
+      "accountLabel": "Account",
+      "accountDescription": "Alleen leden van het host-account kunnen deze Virtual Contributor vinden.",
+      "hiddenLabel": "Verborgen",
+      "hiddenDescription": "Deze Virtual Contributor is verborgen voor zoekopdrachten.",
+      "listedInStoreLabel": "Vermeld in de Alkemio-winkel",
+      "listedInStoreHelper": "Alleen beschikbaar wanneer Zichtbaarheid op Openbaar staat."
+    },
+    "bodyOfKnowledge": {
+      "title": "Kennisbron",
+      "helper": "Beheer hoe de kennisbron van deze Virtual Contributor wordt blootgesteld.",
+      "privacyToggleLabel": "Kennisbron-inhoud verbergen voor niet-leden",
+      "privacyToggleHelper": "Wanneer ingeschakeld, wordt de onderliggende inhoud verborgen voor gebruikers zonder toegang.",
+      "refreshLabel": "Kennis vernieuwen",
+      "lastUpdated": "Laatst bijgewerkt:",
+      "never": "nooit"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Beschikbare variabelen: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Externe AI-configuratie",
+      "helper": "Verbind deze Virtual Contributor met een externe AI-provider.",
+      "apiKeyLabel": "API-sleutel",
+      "apiKeyPlaceholder": "Voer een nieuwe API-sleutel in",
+      "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
+      "assistantIdLabel": "Assistant-ID",
+      "modelLabel": "Model"
+    },
+    "settings": {
+      "commitErrorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
+    }
+  },
+  "shared": {
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "saved": "Opgeslagen!",
+    "saveFailed": "Opslaan mislukt — probeer opnieuw",
+    "loading": "Laden…",
+    "cancel": "Annuleren",
+    "remove": "Verwijderen",
+    "delete": "Verwijderen",
+    "yes": "Ja",
+    "no": "Nee",
+    "avatarCropDialog": {
+      "title": "Avatar bijsnijden",
+      "description": "Sleep om de positie aan te passen. De afbeelding wordt bijgesneden en verkleind vóór de upload.",
+      "altTextLabel": "Alternatieve tekst",
+      "altTextPlaceholder": "Beschrijf de afbeelding (optioneel)"
+    },
+    "account": {
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Niet beschikbaar",
+        "notAvailableTooltip": "Neem contact op met het Alkemio-team om deze functie voor je account in te schakelen.",
+        "spacesTooltip": "Van de beschikbare Spaces in je account heb je aangemaakt:\n{{freeUsage}} van de {{freeLimit}} Free Spaces\n{{plusUsage}} van de {{plusLimit}} Plus Spaces\n{{premiumUsage}} van de {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Virtual Contributors in je account aangemaakt.",
+        "innovationPacksTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Template Packs in je account aangemaakt.",
+        "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
+      },
+      "kebabAriaLabel": "Meer acties",
+      "emptySlot": "Lege plek",
+      "createNewSpace": {
+        "ariaLabel": "Nieuwe space aanmaken",
+        "heading": "Nieuwe Space aanmaken",
+        "description": "Lanceer een nieuwe samenwerkingsomgeving voor je team."
+      },
+      "createNewVc": {
+        "ariaLabel": "Nieuwe bijdrager aanmaken",
+        "heading": "Nieuwe bijdrager aanmaken"
+      },
+      "customHomepages": {
+        "emptyHeading": "Geen aangepaste startpagina's",
+        "emptyDescription": "Maak een gepersonaliseerde landingspagina voor je account.",
+        "createCta": "Startpagina aanmaken",
+        "capacity": "Capaciteit: {{usage}}/{{limit}} gebruikt"
+      },
+      "deleteSuccess": "Resource verwijderd",
+      "deleteError": "Verwijderen mislukt — probeer opnieuw"
+    }
+  }
+}

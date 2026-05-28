@@ -78,7 +78,7 @@
 
 - [X] T029 Create `src/crd/components/space/PostCard.tsx` — Card matching prototype: author avatar + name + role Badge + timestamp header, title (text-lg font-bold), snippet (line-clamp-3), whiteboard framing preview (image + "Open Whiteboard" overlay when `type='whiteboard'`), `contributionsPreview?: ReactNode` slot for contribution cards rendered by integration layer, `children` slot for polls, comments footer with MessageSquare; accepts `PostCardData` with `type: 'text' | 'whiteboard'`, `onClick?`, `onSettingsClick?`, `onExpandClick?`, `contributionsPreview?`; uses Card/CardHeader/CardContent/CardFooter primitives. PostCard does NOT render contribution cards internally — all contribution rendering is delegated to the integration layer via the `contributionsPreview` slot
 - [X] T030 Create `src/crd/components/space/SpaceFeed.tsx` — vertical PostCard list matching prototype: title header + "Add Post" button, `space-y-6` card list, "Show More" button; accepts `title`, `posts: PostCardData[]`, `canCreate?`, `onCreateClick?`, `loading?`, `onShowMore?`, `hasMore?`; skeleton loading state; reusable across all tabs
-- [X] T031 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter pills + paginated grid matching prototype: search input, filter buttons (All/Host/Admin/Lead/Member/Organization), responsive grid (1/2/3 cols), UserCard and OrgCard sub-components, pagination (prev/next); accepts `members: MemberCardData[]`, `filters?`, `pageSize?`
+- [X] T031 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter pills + paginated grid matching prototype: search input, filter buttons (All/Lead/Organization — administrative status is never surfaced, and a Member filter is redundant with All), responsive grid (1/2/3 cols), UserCard and OrgCard sub-components, pagination (prev/next); accepts `members: MemberCardData[]`, `filters?`, `pageSize?`
 - [X] T032 Create `src/crd/components/space/SpaceSubspacesList.tsx` — status filter + SpaceCard grid matching prototype: header + "Create Subspace" button, filter buttons (All/Active/Archived), responsive grid, empty state (dashed border + FolderOpen icon); accepts `subspaces: SubspaceListCardData[]`, `canCreate?`, `onCreateClick?`; tag-based filtering (FR-030) reuses existing SpaceCard tag mechanism from 039 — pass `selectedTags?` and `onTagSelect?` props to enable filtering by tags displayed on cards
 
 ### Callout-specific components (hybrid decision D-proto-4 — not PostCard style):
@@ -183,7 +183,7 @@
 
 ## Phase 11: US11 — Callout Templates (Priority: P3)
 
-- [X] T076 Create `src/main/crdPages/space/callout/TemplateImportConnector.tsx` — "Find Template" opens MUI dialog; maps selection to Formik; overwrite confirmation; default template auto-loading _(currently a `null` stub — rewritten by `callout-dialog/` subspec T080–T081; moves off Formik per subspec D1)_
+- [X] T076 Create `src/main/crdPages/space/callout/TemplateImportConnector.tsx` — "Find Template" opens MUI dialog; maps selection to Formik; overwrite confirmation; default template auto-loading _(currently a `null` stub — rewritten by `callout-dialog/` subspec T080–T081; moves off Formik per subspec D1)_ **_(Session 2026-05-20: the callout-dialog rewrite (T080/T081) implemented only the manual "Find Template" path — the FR-086 default-template auto-load was dropped. Now restored: a shared `loadCalloutTemplateFormValues` helper backs both paths; `CalloutFormConnector` gained a `defaultTemplateId` prop + once-per-open auto-prefill effect; the L0 tab pages pass `flowStateForNewCallouts?.defaultCalloutTemplate?.id`.)_** **_(Session 2026-05-20: fixed transient-pick bug (FR-084) — cancelling the overwrite confirmation and re-picking the same template was a no-op because `useTemplatePicker.selectedTemplateId` stayed sticky and the connector's fetched-for ref short-circuited the re-fetch. The connector now calls `picker.clearSelection()` + resets the ref at every terminal point (direct apply, confirm, cancel, dismiss), and the effect resets the ref whenever `selectedId` clears.)_**
 - [X] T077 Wire TemplateImportConnector into CalloutFormConnector; wire "Save as Template" in CalloutManagementConnector
 
 ---
@@ -387,15 +387,15 @@
 
 ### i18n
 
-- [X] T098 [P] Extend `src/crd/i18n/space/space.en.json` `members` keys: update `title` → `"Community"`, update `search` placeholder, add `subtitle` (with `{{users}}` and `{{organizations}}` interpolation), add `inviteMember`, add `empty.{title,description,clearFilters}`, add `role.{admin,lead,member,organization}`; drop unused `filterHost`
+- [X] T098 [P] Extend `src/crd/i18n/space/space.en.json` `members` keys: update `title` → `"Community"`, update `search` placeholder, add `subtitle` (with `{{users}}` and `{{organizations}}` interpolation), add `inviteMember`, add `empty.{title,description,clearFilters}`, add `role.{lead,member,organization}`; drop unused `filterHost`, `filterAdmin`, `filterMember` (only All/Lead/Organization pills exist — administrative status is never surfaced)
 - [X] T099 [P] Extend `src/crd/i18n/space/space.en.json` `subspaces` keys: add `subtitle`, add `empty.{title,description,clearFilters}`; drop unused `noSubspaces` / `noSubspacesDescription` in favour of the new `empty` group
 - [X] T100 [P] Mirror T098 + T099 key changes to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
 - [X] T101 [P] Add `pinned` key to `src/crd/i18n/common/common.en.json` and mirror to `common.{nl,es,bg,de,fr}.json` — used by SpaceCard's new pin indicator
 
 ### Data layer
 
-- [X] T102 Extend `MemberCardData` in `src/crd/components/space/SpaceMembers.tsx` with `role?: MemberRoleKey` (`'admin' | 'lead' | 'member' | 'organization'`) and `roleType?: MemberRoleType` (`'admin' | 'moderator' | 'member'`) — drives role badge styling
-- [X] T103 Extend `src/main/crdPages/space/dataMappers/communityDataMapper.ts` `mapRoleSetToMemberCards()` to derive `role` + `roleType` per user from `RoleSetMember.roles[]`: `Admin → 'admin'/'admin'`, `Lead → 'lead'/'moderator'`, default → `'member'/'member'`; organizations get `role: 'organization'` with no roleType
+- [X] T102 Extend `MemberCardData` in `src/crd/components/space/SpaceMembers.tsx` with `role?: MemberRoleKey` (`'lead' | 'member' | 'organization'`) and `roleType?: MemberRoleType` (`'moderator' | 'member'`) — drives role badge styling. Administrative status is never surfaced, so there is no `'admin'` role key or role type
+- [X] T103 Extend `src/main/crdPages/space/dataMappers/communityDataMapper.ts` `mapRoleSetToMemberCards()` to derive `role` + `roleType` per user from `RoleSetMember.roles[]`: `Lead → 'lead'/'moderator'`, default → `'member'/'member'` (administrative status is never surfaced — admins with no Lead role display as Member); organizations get `role: 'organization'` with no roleType
 - [X] T104 Rewrite `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts` to return `SpaceCardData[]` (from `@/crd/components/space/SpaceCard`) instead of the retired `SubspaceListCardData`: map `profile.displayName → name`, `tagline → description`, `cardBanner.uri || default → bannerImageUrl`, derive `initials` via `getInitials`, derive `avatarColor` via a new local `getAvatarColorFromId` helper (mirroring the explore-spaces palette), merge `leadUsers[] + leadOrganizations[] → leads: SpaceLead[]`, map `myMembershipStatus → isMember`. Accept a `sortMode?: SpaceSortMode` parameter and force `isPinned: false` unless `sortMode === SpaceSortMode.Alphabetical` (FR-031)
 - [X] T105 Update `src/main/crdPages/space/hooks/useCrdSpaceCommunity.ts` to fetch the full role set (`relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member]`) and return the deduplicated flat `users` / `organizations` arrays from `useRoleSetManager` (each entry carrying its full `roles[]`), plus `usersCount` + `organizationsCount` for the subtitle
 
@@ -405,7 +405,7 @@
 - [X] T107 Revise `src/crd/components/space/SpaceMembers.tsx` to match the prototype's `SpaceMembers`:
   - Section header: `<h2>` title (default `t('members.title')` = "Community"), subtitle `<p>` (default `t('members.subtitle', { users, organizations })`), optional "Invite Member" button (`UserPlus` icon) that only renders when both `canInvite && onInvite` are provided
   - New props: `title?`, `subtitle?`, `usersCount?`, `organizationsCount?`, `canInvite?`, `onInvite?`
-  - Drop the `'host'` filter (no matching data); keep `['all', 'admin', 'lead', 'member', 'organization']`
+  - Filter pills are `['all', 'lead', 'organization']` — no `'host'` filter (no matching data), no `'admin'` filter (administrative status is never surfaced), no `'member'` filter (redundant with All)
   - Add `aria-pressed` on filter pills
   - Differentiate `UserCard` (rounded-full avatar + role badge with color by `roleType`: `admin` → `primary`, `moderator` → `chart-2`, `member` → `muted`) vs `OrganizationCard` (rounded-md avatar + "Organization" badge with `Building2` icon)
   - Replace the simple "No members found" paragraph with a prototype-style empty state: muted circular User icon, `empty.title`, `empty.description`, and a "Clear filters" link button that resets search + filter + page
@@ -457,7 +457,7 @@
 
 - [X] T112 Extend `useCrdSpaceCommunity` to expose full sidebar data: pull `usersByRole[Lead]` / `organizationsByRole[Lead]` for the leads block (the richer profile payload from `useRoleSetManager` — with location, avatar, url), `virtualContributorsByRole[Member]` filtered for `SearchVisibility.Hidden` for the VC section, and the `hasVcEntitlement` flag derived from `LicenseEntitlementType.SpaceFlagVirtualContributorAccess` on the space entitlements. Add `VirtualContributor` to the `contributorTypes` arg
 - [X] T113 Add `mapRoleSetMemberToSidebarLead(member, type: 'person' | 'org')` and `mapVirtualContributorToSidebar` in `src/main/crdPages/space/dataMappers/communityDataMapper.ts`, returning new exported types `SidebarLeadData` + `SidebarVirtualContributorData`
-- [X] T114 Store the member's full role list on `MemberCardData`: add `roles: MemberRoleKey[]`, derive it in `mapRoleSetToMemberCards` via a new `deriveUserRolesList(roles)` helper that returns every applicable role key (Admin, Lead, Member — inclusive) rather than the single precedence role. Keep the existing `role` / `roleType` fields for the display badge
+- [X] T114 Store the member's full role list on `MemberCardData`: add `roles: MemberRoleKey[]`, derive it in `mapRoleSetToMemberCards` via a new `deriveUserRolesList(roles)` helper that returns every applicable role key (Lead, Member — inclusive; administrative status is never surfaced) rather than the single precedence role. Keep the existing `role` / `roleType` fields for the display badge
 
 ### CRD presentational layer
 
@@ -468,7 +468,7 @@
   - Add `showVirtualContributors?: boolean` (default true) — hides the VC section when the space lacks the VC entitlement even if VCs are present
   - Hide the Contact/Invite button row entirely when neither button is renderable
   - Keep `onContactLead`, `onInvite`, `canInvite` as already exposed
-- [X] T117 Update `src/crd/components/space/SpaceMembers.tsx` filter logic: match the active filter pill against the full `m.roles` list (`roles?.includes(activeFilter)`) instead of `m.role === activeFilter`. Admin + Lead + Member are overlapping sets — a user who holds multiple roles MUST appear under every applicable filter
+- [X] T117 Update `src/crd/components/space/SpaceMembers.tsx` filter logic: match the active filter pill against the full `m.roles` list (`roles?.includes(activeFilter)`) instead of `m.role === activeFilter`. Lead + Member are overlapping sets — a user who holds the Lead role MUST appear under the Lead filter even though their roles list also includes Member
 - [X] T118 Replace the `All / Active / Archived` status pills in `src/crd/components/space/SpaceSubspacesList.tsx` with:
   - A text search input (matches against `name` and `description`), styled to match the Community tab's members search
   - A wrapping row of tag chips aggregated from all subspaces via a pure `collectTags()` helper (sorted by frequency desc then alphabetically)
@@ -696,6 +696,44 @@ Phase 1 (setup + primitives)
 - [X] T152 [P] Update `src/main/crdPages/space/callout/CalloutEditConnector.tsx` — remove stale `onSubmit` prop; pass `calloutsSetId` through
 
 **Checkpoint**: Clicking "Post" in the callout creation form sends the GraphQL `createCalloutOnCalloutsSet` mutation with correct field mapping. The new callout appears in the feed via Apollo cache update. "Save Draft" creates with `CalloutVisibility.Draft`.
+
+---
+
+## Phase 21: Tag-Cloud Count Fix (Post-MVP)
+
+**Goal**: each tag chip in the Knowledge Base tab's `CalloutTagCloud` shows the count of callouts (in the currently visible filtered set) that carry that tag — instead of the hardcoded `(0)` that ships today.
+
+**User-visible symptom**: every tag chip at the top of a Space's 4th (Knowledge Base / custom) tab displays `(0)` next to its name. The tags themselves are correct (from `CalloutsSetTags`); only the count is wrong.
+
+**Root cause**: `src/main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx:53` maps the `tags: string[]` from `useCalloutsSetTagsQuery` to `{ name, count: 0 }` literally — the query exposes no counts, and no client-side tally is computed. The `CalloutTagCloud` component (T048) already accepts `count` and renders `({count})`.
+
+- [X] T153 Add `src/main/crdPages/space/tabs/calloutTagCount.ts` — a pure `countTagOccurrences(callouts) → Record<string, number>` helper that tallies `callout.framing.profile.tagset?.tags` across the array (uses `lodash-es/countBy` like the precedent in `src/domain/shared/components/SearchTagsInput/uniqSortedByOccurrences.ts`). Plain TS, no Apollo, no React. Update `CrdSpaceCustomTabPage.tsx:53` to: `const tagCounts = countTagOccurrences(callouts); const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(name => ({ name, count: tagCounts[name] ?? 0 }));`. Tags from the full-set `CalloutsSetTags` query that aren't present in the visible set get `0` legitimately ("if I add this tag to the current filter the result would be 0 callouts" — useful faceted feedback). The count is **always tallied against the currently visible filtered `callouts` array** — so when no filter is selected each tag's count is its global occurrence; when a tag is already in `tagsFilter` the count is the size of the post-filter result for that tag combined with the rest of the filter.
+- [X] T154 [P] Unit test `src/main/crdPages/space/tabs/__tests__/calloutTagCount.test.ts` — covers: empty input → empty record; single callout / multiple tags; multi-callout same-tag tally; callouts with no tagset → ignored; classification-tagset noise is not counted (the helper reads only `framing.profile.tagset?.tags`).
+
+**Checkpoint**: tag-cloud chips render with accurate counts; no other surface is changed.
+
+---
+
+## Phase 22: Selected-Post Comment-Swap in Callout Detail Dialog (Post-MVP)
+
+**Goal**: when a post contribution is selected inside the callout detail dialog, the comment surface at the bottom of the dialog swaps from callout-level to that post's comments — matching the legacy MUI behaviour and US12 acceptance scenarios 2 / 2a–2d. The two surfaces are mutually exclusive (never stacked).
+
+**User-visible symptom (2026-05-19)**: opening a callout detail dialog that has post contributions, clicking a post card to see its preview — the post preview renders correctly in the body, but the comments at the bottom keep showing the **callout's** discussion thread instead of the **post's**. T089 was marked done but only wired the contribution-level comment surface inside the separate `CrdPostContributionDialog` (edit overlay) — not inside the read-only post preview that lives in the callout detail dialog.
+
+**Root cause**: `CalloutDetailDialogConnector.tsx` mounts a single `CalloutCommentsConnector` keyed to `callout.comments.id` and uses `callout.settings.framing.commentsEnabled` for the `commentsEnabled` flag. When a post is selected (`postContributionId` set) the connector still feeds the dialog those callout-level slots; there's no branch that swaps to the post's own room + the contribution-level `commentsEnabled` switch.
+
+**Gating semantics** (per US12 acceptance scenarios 2a / 2b / 2c / 2d):
+- The post-comment surface is gated by `callout.settings.contribution.commentsEnabled` (the *contribution*-level switch), **not** the framing-level switch.
+- `commentsEnabled === true` → render post's thread + new-comment input.
+- `commentsEnabled === false` + `post.comments.messagesCount > 0` → render post's existing thread read-only (no input).
+- `commentsEnabled === false` + no messages → render nothing at the bottom.
+- No post selected → revert to callout-level behaviour (the existing rule).
+
+- [ ] T155 Update `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx`: when `postContributionId` is set and `contributionType === CalloutContributionType.Post`, branch the comments rendering to use the post's room. Reuse the existing `CalloutCommentsConnector` (it already accepts `contributionId` and fetches `post.comments` via `useCalloutContributionCommentsQuery` — no new GraphQL). For the post branch, derive `commentsEnabled = callout.settings.contribution.commentsEnabled` and `commentCount = selectedPost?.comments?.messagesCount ?? 0`; pass the connector's `roomId` from `selectedPost.comments.id` (or skip the connector entirely when the post hasn't loaded yet). Pass `commentInputSlot={null}` when `commentsEnabled === false` (read-only thread) — the `CalloutDetailDialog`'s existing `showDiscussion = commentsEnabled !== false || commentCount > 0` rule already handles "hide entire section" when both are falsy. When `postContributionId` is unset, the callout-level branch keeps working as today. Mutual exclusivity is automatic — the two branches never both render. Add a `key` prop on the comments connector keyed to `roomId` so the internal `useInView` + subscription state resets cleanly on swap. *(Session 36, 2026-05-19. Follow-up to T089 — that task wired the post-comments thread inside `CrdPostContributionDialog` but missed the inline swap inside the callout detail dialog.)*
+- [ ] T156 **Bug fix** — Add an `eager?: boolean` prop to `CalloutCommentsConnector` and pass `eager={true}` from `CalloutDetailDialogConnector`. The connector's wrapper `<div ref={ref}>` (which the `useInView` lazy-load gate observes) ends up rendered in the parent's React tree — i.e. *alongside the dialog trigger on the feed PostCard*, NOT inside the dialog's Radix portal. When the user scrolls the feed and then opens the dialog, that wrapper is off-screen even though the dialog is centred and the comments slot is fully visible — so the gate stays `inView=false`, the post-comments query stays skipped, and the post's comments never render. Symptom (2026-05-19): selecting a post in the callout detail dialog shows "Discussion · 0 comments" even when the post has comments. The callout-level case worked accidentally because it always passes `roomData={callout.comments}`, short-circuiting the gate. The new `eager` flag bypasses the `useInView` gate for both the contribution-comments query AND the default subscription gate when set. T155's `key={roomId}` already resets the connector cleanly on swap. While the live thread loads, the dialog falls back to `selectedPost.comments.messagesCount` (already on the prefetched preview payload) for the header count so it doesn't briefly show "0 comments" for a post that has them. *(Session 36, 2026-05-19. Follow-up to T155.)*
+- [ ] T157 **Bug fix — "Add memo" dialog ignores `contributionDefaults` (TWO surfaces).** The Memo branch of the trailing-slot dispatch passes `calloutId` only, omitting `defaultDisplayName` + `defaultMarkdown`. Posts have it wired correctly just below. Result: clicking "Add memo" always opens with the i18n fallback title "New Memo" and an empty body, even when the callout's admin has configured `contributionDefaults.defaultDisplayName` / `postDescription`. Posts and Memos share the same two default fields (FR-33 / FR-42 / FR-43 — both read `defaultDisplayName` + `postDescription`), and `MemoContributionAddConnector` already accepts the props (`defaultDisplayName`, `defaultMarkdown` — lines 14-15) and applies them correctly inside its create-memo handler. The bug is parallel in TWO files: (a) `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` (trailing slot inside the detail dialog, ~line 110), and (b) `src/main/crdPages/space/callout/ContributionsPreviewConnector.tsx` (trailing slot on the feed-level PostCard contributions preview, ~line 82) — fixing only one of them leaves the other entry point broken. **Fix**: in both files, in the Memo branch, pass `defaultDisplayName={defaults?.defaultDisplayName}` and `defaultMarkdown={defaults?.postDescription}` — symmetric with the Post branch in the same file. *(Session 36, 2026-05-19. memos/spec.md "Create" bullet + callout-dialog FR-33 amended this session to make the shared-defaults wiring explicit. Initial fix landed in `CalloutDetailDialogConnector` only; user reported still happening from the feed-level entry point → fix extended to `ContributionsPreviewConnector`.)*
+
+**Checkpoint**: opening a callout with a post contribution selected → the dialog body shows the post preview AND the bottom comments are the post's; closing the post preview returns the bottom to the callout's comments. All three commentsEnabled / messagesCount cases verified.
 
 ---
 

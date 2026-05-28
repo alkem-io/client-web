@@ -3,6 +3,7 @@ import { isValidElement, type Key, type ReactNode } from 'react';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 
 function asListItems(nodes: ReactNode[]) {
@@ -83,9 +84,12 @@ export function OrganizationResourceSections({
                     href={vc.href}
                     className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   >
-                    <div className="p-2 bg-primary/10 rounded-md text-primary">
-                      <Sparkles className="w-5 h-5" aria-hidden="true" />
-                    </div>
+                    <Avatar className="size-9 rounded-md shrink-0">
+                      {vc.avatarImageUrl ? <AvatarImage src={vc.avatarImageUrl} alt="" /> : null}
+                      <AvatarFallback className="bg-primary/10 text-primary rounded-md">
+                        <Sparkles className="w-5 h-5" aria-hidden="true" />
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
                       <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
                       {vc.description ? <p className="text-body text-muted-foreground mb-2">{vc.description}</p> : null}
@@ -190,7 +194,10 @@ function SimpleResourceGrid({ items, icon }: SimpleResourceGridProps) {
             href={item.href}
             className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            <div className="p-2 bg-primary/10 rounded-md text-primary">{icon}</div>
+            <Avatar className="size-9 rounded-md shrink-0">
+              {item.avatarImageUrl ? <AvatarImage src={item.avatarImageUrl} alt="" /> : null}
+              <AvatarFallback className="bg-primary/10 text-primary rounded-md">{icon}</AvatarFallback>
+            </Avatar>
             <div>
               <h4 className="text-card-title text-foreground">{item.displayName}</h4>
               {item.description ? <p className="text-body text-muted-foreground">{item.description}</p> : null}

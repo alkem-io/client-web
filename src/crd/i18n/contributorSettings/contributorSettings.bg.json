@@ -1,0 +1,653 @@
+{
+  "breadcrumbs": {
+    "settings": "Настройки"
+  },
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Профил",
+        "account": "Акаунт",
+        "membership": "Членство",
+        "organizations": "Организации",
+        "notifications": "Известия",
+        "settings": "Настройки",
+        "security": "Сигурност"
+      },
+      "org": {
+        "profile": "Профил",
+        "account": "Акаунт",
+        "community": "Общност",
+        "authorization": "Оторизация",
+        "settings": "Настройки"
+      },
+      "vc": {
+        "profile": "Профил",
+        "membership": "Членство",
+        "settings": "Настройки"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Профил",
+      "identity": {
+        "title": "Самоличност",
+        "displayName": {
+          "label": "Показвано име",
+          "hint": "Как се показвате в Alkemio.",
+          "required": "Показваното име е задължително"
+        },
+        "firstName": {
+          "label": "Име",
+          "hint": "Личното ви име.",
+          "required": "Името е задължително"
+        },
+        "lastName": {
+          "label": "Фамилия",
+          "hint": "Фамилното ви име.",
+          "required": "Фамилията е задължителна"
+        },
+        "email": {
+          "label": "Имейл",
+          "readOnlyCaption": "Свържете се с поддръжката, за да промените имейла"
+        },
+        "phone": {
+          "label": "Телефон",
+          "hint": "По избор. Никога няма да го споделим.",
+          "invalidFormat": "Телефонният номер е в неподдържан формат"
+        }
+      },
+      "aboutYou": {
+        "title": "За вас",
+        "tagline": {
+          "label": "Слоган",
+          "hint": "Кратък ред, който се вижда в профила ви."
+        },
+        "location": {
+          "title": "Местоположение",
+          "city": "Град",
+          "country": "Държава",
+          "countryPlaceholder": "Изберете държава"
+        },
+        "bio": {
+          "label": "Биография",
+          "hint": "Поддържа Markdown."
+        },
+        "skills": {
+          "label": "Умения",
+          "hint": "Умения, които можете да предложите. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. UX изследване, TypeScript, фасилитация"
+        },
+        "keywords": {
+          "label": "Ключови думи",
+          "hint": "Ключови думи, описващи вашите интереси. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. климат, управление, отворен код"
+        }
+      },
+      "socialLinks": {
+        "title": "Социални връзки",
+        "linkedinPlaceholder": "https://linkedin.com/in/вашeто-име",
+        "bskyPlaceholder": "https://bsky.app/profile/вашeто-име",
+        "githubPlaceholder": "https://github.com/вашeто-име",
+        "addAnother": "Добави друга препратка",
+        "namePlaceholder": "Име на препратката",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
+        "deleteDialog": {
+          "title": "Премахване на препратката?",
+          "description": "Премахването на тази препратка ще я изтрие и от публичния ви профил след запис.",
+          "confirm": "Премахване на препратката"
+        }
+      },
+      "avatar": {
+        "title": "Профилна снимка",
+        "changeButton": "Смени аватара",
+        "helperText": "Препоръчано: 400×400 px. JPG, PNG или GIF.",
+        "uploading": "Качване…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Членство",
+      "homeSpace": {
+        "title": "Основен Space",
+        "description": "Изберете Space, в който да попадате след вход. Можете също да активирате автоматично пренасочване.",
+        "selectLabel": "Основен Space",
+        "noSelection": "Без основен Space",
+        "autoRedirectLabel": "Автоматично пренасочване към основния ми Space след вход",
+        "autoRedirectDisabledHint": "Изберете основен Space, за да активирате автоматичното пренасочване."
+      },
+      "myMemberships": {
+        "title": "Моите членства",
+        "searchPlaceholder": "Търсене на членства...",
+        "empty": "Все още не сте член на нито един Space.",
+        "summary": "Показани са {{shown}} от {{total}} членства",
+        "filteredEmptyTitle": "Не са намерени членства",
+        "filteredEmptyDescription": "Опитайте да промените филтрите или думите за търсене.",
+        "clearFilters": "Изчистване на филтрите"
+      },
+      "menu": {
+        "viewByType": "Преглед на {{type}}"
+      },
+      "filter": {
+        "all": "Всички",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Администратор",
+        "lead": "Лидер",
+        "member": "Член"
+      },
+      "leave": {
+        "menuItem": "Напускане",
+        "menuItemLabeled": "Напускане на {{type}}",
+        "dialogTitle": "Напускане на това членство?",
+        "dialogDescription": "На път сте да напуснете „{{spaceName}}“. Ще загубите достъп до съдържание само за членове и ще трябва да кандидатствате отново.",
+        "dialogConfirm": "Напускане",
+        "success": "Напуснахте членството",
+        "error": "Напускането не успя — опитайте отново"
+      },
+      "pendingApplications": {
+        "title": "Чакащи кандидатури",
+        "empty": "Нямате чакащи кандидатури.",
+        "statusPending": "Чакаща"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Ръководи се от:",
+      "ledByAria": "{{count}} ръководители на общност",
+      "leadsMore": "и още {{count}}"
+    },
+    "security": {
+      "pageTitle": "Сигурност",
+      "title": "Сигурност",
+      "description": "Управлявайте passkeys и WebAuthn идентификационни данни за вашия акаунт.",
+      "notEnabled": "WebAuthn / Passkey не е активиран в този акаунт.",
+      "errorDescription": "Настройките за сигурност не могат да бъдат заредени — опитайте да опресните страницата."
+    },
+    "settings": {
+      "pageTitle": "Настройки",
+      "communication": {
+        "title": "Комуникация и поверителност",
+        "allowMessagesLabel": "Позволи на други потребители да ми изпращат лични съобщения",
+        "allowMessagesDescription": "Когато е изключено, други потребители няма да могат да започнат разговор с лични съобщения с вас.",
+        "error": "Не успяхме да запазим предпочитанието — опитайте отново"
+      },
+      "designSystem": {
+        "title": "Дизайн система",
+        "description": "Превключете между новия (CRD) и класическия (MUI) дизайн. Тази настройка се съхранява локално на това устройство.",
+        "toggleLabel": "Използвай новия дизайн (CRD)",
+        "reloadCaption": "Страницата ще се презареди след промяната."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Известия",
+      "helpBanner": "Редактирайте предпочитанията си за известия. Промените се запазват автоматично.",
+      "toggleAria": "Превключване на {{channel}} известие за: {{label}}",
+      "toggleError": "Не успяхме да запазим предпочитанието — опитайте отново",
+      "columns": {
+        "activity": "Активност",
+        "inApp": "В приложението",
+        "email": "Имейл",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push известия",
+        "masterToggleDescription": "Активирайте push известията на това устройство. Можете да настроите по-долу кои събития ги задействат.",
+        "permissionDenied": "Разрешението за известия е отказано. Променете настройките на браузъра, за да активирате push.",
+        "unavailable": "Push известията не са налични в този браузър.",
+        "requiresPwa": "Push известията изискват инсталиране на това приложение на началния екран.",
+        "error": "Push абонаментът не може да бъде обновен — опитайте отново"
+      },
+      "groups": {
+        "space": {
+          "title": "Известия за Space",
+          "description": "Управлявайте известията за събития, свързани със Space — публикации, коментари и общностни обновления."
+        },
+        "spaceAdmin": {
+          "title": "Известия за админ на Space",
+          "description": "Известия за Spaces, в които сте администратор или лидер."
+        },
+        "user": {
+          "title": "Потребителски известия",
+          "description": "Персонализирайте предупрежденията за взаимодействия — отговори, споменавания и покани."
+        },
+        "platform": {
+          "title": "Платформени известия",
+          "description": "Бъдете в течение с дискусии на платформата, нови функции и съобщения."
+        },
+        "platformAdmin": {
+          "title": "Известия за админ на платформата",
+          "description": "Известия за администраторите на платформата (жизнен цикъл на потребителите, създаване на Spaces)."
+        },
+        "organization": {
+          "title": "Известия за организация",
+          "description": "Контролирайте предупрежденията за споменавания, съобщения и обновления на екипа на вашата организация."
+        },
+        "virtualContributor": {
+          "title": "Известия за виртуални сътрудници",
+          "description": "Известия относно дейности и възлагания на виртуални сътрудници."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Получавайте известие, когато се споделя ново съобщение в общност",
+          "collaborationCalloutPublished": "Получавайте известие, когато бъде публикувано нещо в общност, в която съм член",
+          "collaborationCalloutPostContributionComment": "Получавайте известие, когато се коментира публикация, която следвам",
+          "collaborationCalloutContributionCreated": "Получавайте известие, когато бъде създаден нов принос към оповестяване",
+          "collaborationCalloutComment": "Получавайте известие, когато бъде добавен нов коментар към оповестяване, което следвам",
+          "communityCalendarEvents": "Получавайте известия за събития от календара на общността",
+          "collaborationPollVoteCastOnOwnPoll": "Получавайте известие, когато някой гласува в моята анкета",
+          "collaborationPollVoteCastOnPollIVotedOn": "Получавайте известие, когато някой гласува в анкета, в която съм гласувал",
+          "collaborationPollModifiedOnPollIVotedOn": "Получавайте известие, когато анкета, в която съм гласувал, бъде променена",
+          "collaborationPollVoteAffectedByOptionChange": "Получавайте известие, когато гласът ми е засегнат от промяна на опция в анкета"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Получавайте известие, когато бъде подадена нова заявка за общност",
+          "communityNewMember": "Получавайте известие, когато нов член се присъедини към общността",
+          "collaborationCalloutContributionCreated": "Получавайте известие, когато бъде създаден нов принос към оповестяване",
+          "communicationMessageReceived": "Получавайте известие, когато бъде получено съобщение от общността",
+          "userEmailChanged": "Получавайте известие, когато имейл адресът за вход на член на Space, който управлявате, бъде променен"
+        },
+        "user": {
+          "commentReply": "Получавайте известие, когато някой отговори на моя коментар",
+          "mentioned": "Получавайте известие, когато бъда споменат",
+          "messageReceived": "Получавайте известие, когато някой ми изпрати лично съобщение",
+          "membershipInvitationReceived": "Получавайте известие, когато някой ме покани в общност",
+          "membershipCommunityJoined": "Получавайте известие, когато се присъединя към нов Space"
+        },
+        "platform": {
+          "forumDiscussionComment": "Получавайте известие, когато бъде добавен нов коментар към дискусия, която следвам",
+          "forumDiscussionCreated": "Получавайте известие, когато бъде създадена нова дискусия в платформата"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Получавайте известие, когато бъде създаден нов потребителски профил",
+          "userProfileRemoved": "Получавайте известие, когато бъде премахнат потребителски профил",
+          "userGlobalRoleChanged": "Получавайте известие, когато глобалната роля на потребител се промени",
+          "userEmailChanged": "Получавайте известие, когато имейл адресът на потребител се промени",
+          "spaceCreated": "Получавайте известие, когато бъде създаден нов Space"
+        },
+        "organization": {
+          "adminMentioned": "Получавайте известие, когато моята организация бъде спомената",
+          "adminMessageReceived": "Получавайте директни съобщения, адресирани до моята организация"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Получавайте известие, когато мениджър на VC бъде поканен в общност"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Организации",
+      "searchPlaceholder": "Търсене на организации...",
+      "createButton": "Създаване на организация",
+      "summary": "Показани са {{shown}} от {{total}} организации",
+      "empty": "Все още не сте свързани с нито една организация.",
+      "filteredEmptyTitle": "Не са намерени организации",
+      "filteredEmptyDescription": "Опитайте с друго име или местоположение.",
+      "clearSearch": "Изчистване на търсенето",
+      "verified": "Потвърдена",
+      "associates": "Асоциирани",
+      "associatesCount": "{{count}} асоциирани",
+      "role": {
+        "admin": "Администратор",
+        "associate": "Асоцииран"
+      },
+      "menu": {
+        "viewProfile": "Преглед на профила",
+        "disassociate": "Прекратяване на връзката"
+      },
+      "disassociate": {
+        "dialogTitle": "Прекратяване на връзката с тази организация?",
+        "dialogDescription": "На път сте да напуснете „{{name}}“. Ще загубите ролята си на асоцииран и свързаните права.",
+        "dialogConfirm": "Прекратяване",
+        "success": "Връзката е прекратена",
+        "error": "Прекратяването не успя — опитайте отново"
+      }
+    },
+    "account": {
+      "pageTitle": "Акаунт",
+      "helpBanner": "Тук можете да видите активните си ресурси и да управлявате лимитите на акаунта си.",
+      "spaces": {
+        "title": "Хоствани Spaces",
+        "createButton": "Създаване на Space"
+      },
+      "virtualContributors": {
+        "title": "Виртуални сътрудници",
+        "createButton": "Добавяне на сътрудник"
+      },
+      "innovationPacks": {
+        "title": "Шаблонни пакети",
+        "createButton": "Нов пакет"
+      },
+      "innovationHubs": {
+        "title": "Персонализирани начални страници",
+        "createButton": "Нова страница"
+      },
+      "actions": {
+        "view": "Преглед",
+        "manage": "Управление",
+        "transfer": "Прехвърляне",
+        "delete": "Изтриване"
+      },
+      "deleteDialog": {
+        "title": "Изтриване на този ресурс?",
+        "description": "Това ще премахне „{{name}}“ завинаги. Действието не може да се отмени.",
+        "confirm": "Изтриване"
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Профил",
+      "identity": {
+        "title": "Идентичност",
+        "displayName": {
+          "label": "Име",
+          "hint": "Как организацията ви се показва в Alkemio.",
+          "required": "Името е задължително"
+        },
+        "nameID": { "label": "Name ID", "caption": "Не може да бъде променяно след създаването." },
+        "tagline": { "label": "Слоган", "hint": "Кратък ред до името на организацията ви." }
+      },
+      "about": {
+        "title": "Информация",
+        "description": { "label": "Описание", "hint": "Поддържа се Markdown." },
+        "location": {
+          "title": "Местоположение",
+          "city": "Град",
+          "country": "Държава",
+          "countryPlaceholder": "Изберете държава"
+        },
+        "keywords": {
+          "label": "Ключови думи",
+          "hint": "Теми, по които работи вашата организация. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. климат, управление, отворен код"
+        },
+        "capabilities": {
+          "label": "Възможности",
+          "hint": "Какво може или предлага вашата организация. Натиснете Enter, за да добавите.",
+          "placeholder": "напр. изследвания, финансиране, обучение"
+        }
+      },
+      "contactLegal": {
+        "title": "Контакт и правни данни",
+        "contactEmail": {
+          "label": "Имейл за контакт",
+          "hint": "Публичен имейл за контакт с организацията.",
+          "invalidFormat": "Въведете валиден имейл адрес"
+        },
+        "domain": { "label": "Домейн", "hint": "Уеб домейнът на организацията (без протокол)." },
+        "legalEntityName": { "label": "Юридическо име", "hint": "Официално регистрираното име." },
+        "website": {
+          "label": "Уебсайт",
+          "hint": "Пълен URL, включително https://",
+          "invalidFormat": "Въведете валиден URL"
+        }
+      },
+      "socialLinks": {
+        "title": "Социални връзки",
+        "linkedinPlaceholder": "https://linkedin.com/company/your-org",
+        "bskyPlaceholder": "https://bsky.app/profile/your-handle",
+        "githubPlaceholder": "https://github.com/your-org",
+        "addAnother": "Добавяне на друга референция",
+        "namePlaceholder": "Име на референцията",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
+        "deleteDialog": {
+          "title": "Премахване на референция?",
+          "description": "Премахването на тази референция ще я изтрие и от публичния профил след запазване.",
+          "confirm": "Премахване"
+        }
+      },
+      "logo": {
+        "title": "Лого",
+        "changeButton": "Смяна на лого",
+        "helperText": "Препоръчително: 400×400 px. JPG, PNG или GIF.",
+        "uploading": "Качване…"
+      },
+      "verification": { "verified": "Потвърдена", "pending": "Очаква проверка", "notVerified": "Непотвърдена" }
+    },
+    "account": {
+      "pageTitle": "Акаунт",
+      "helpBanner": "Тук можете да видите активните ресурси на организацията и да управлявате лимитите на акаунта.",
+      "spaces": { "title": "Хоствани Spaces", "createButton": "Създаване на Space" },
+      "virtualContributors": { "title": "Виртуални сътрудници", "createButton": "Добавяне на сътрудник" },
+      "innovationPacks": { "title": "Шаблонни пакети", "createButton": "Нов пакет" },
+      "innovationHubs": { "title": "Персонализирани начални страници", "createButton": "Нова страница" },
+      "actions": { "view": "Преглед", "manage": "Управление", "transfer": "Прехвърляне", "delete": "Изтриване" },
+      "deleteDialog": {
+        "title": "Изтриване на този ресурс?",
+        "description": "Това ще премахне „{{name}}“ завинаги. Действието не може да се отмени.",
+        "confirm": "Изтриване"
+      }
+    },
+    "community": {
+      "pageTitle": "Общност",
+      "title": "Асоциирани",
+      "description": "Управлявайте кой е асоцииран с тази организация. Добавяйте нови асоциирани от списъка с налични потребители; премахването на асоцииран отнема ролята му в организацията.",
+      "currentAssociatesTitle": "Текущи асоциирани",
+      "availableUsersTitle": "Налични потребители",
+      "searchPlaceholder": "Търсене на потребители по име…",
+      "addAriaLabel": "Добавяне на {name} като асоцииран",
+      "removeAriaLabel": "Премахване на {name} като асоцииран",
+      "loadMore": "Зареди още",
+      "emptyCurrent": "Все още няма асоциирани.",
+      "emptyAvailable": "Няма намерени потребители.",
+      "removeDialogTitle": "Премахване на този асоцииран?",
+      "removeDialogDescription": "{{name}} ще загуби ролята си на асоцииран и всички свързани права.",
+      "removeConfirmAssociate": "Премахване на {{name}} като асоцииран",
+      "removeSuccess": "Асоциираният е премахнат",
+      "removeError": "Премахването не успя — опитайте отново"
+    },
+    "authorization": {
+      "pageTitle": "Оторизация",
+      "title": "Оторизация",
+      "description": "Назначете ролите Администратор и Собственик за тази организация. Администраторите управляват ежедневните настройки; Собствениците имат пълен контрол.",
+      "adminTabLabel": "Администратор",
+      "ownerTabLabel": "Собственик",
+      "loadMore": "Зареди още",
+      "admin": {
+        "currentTitle": "Текущи администратори",
+        "availableTitle": "Налични потребители",
+        "searchPlaceholder": "Търсене на потребители по име…",
+        "addAriaLabel": "Добавяне на {name} като администратор",
+        "removeAriaLabel": "Премахване на {name} като администратор",
+        "emptyCurrent": "Все още няма администратори.",
+        "emptyAvailable": "Не са намерени съответстващи потребители."
+      },
+      "owner": {
+        "currentTitle": "Текущи собственици",
+        "availableTitle": "Налични потребители",
+        "searchPlaceholder": "Търсене на потребители по име…",
+        "addAriaLabel": "Добавяне на {name} като собственик",
+        "removeAriaLabel": "Премахване на {name} като собственик",
+        "emptyCurrent": "Все още няма собственици.",
+        "emptyAvailable": "Не са намерени съответстващи потребители."
+      },
+      "removeDialogTitle": "Премахване на тази роля?",
+      "removeDialogDescription": "{{name}} ще загуби тази роля и всички свързани права.",
+      "removeConfirmAdmin": "Премахване на {{name}} като администратор",
+      "removeConfirmOwner": "Премахване на {{name}} като собственик",
+      "removeSuccessAdmin": "Ролята администратор е премахната",
+      "removeSuccessOwner": "Ролята собственик е премахната",
+      "removeError": "Премахването на ролята не успя — опитайте отново"
+    },
+    "settings": {
+      "pageTitle": "Настройки",
+      "title": "Настройки на организацията",
+      "membership": {
+        "title": "Членство",
+        "allowDomainLabel": "Разрешаване на потребители със съвпадащ домейн на организацията да се присъединяват",
+        "allowDomainCaption": "Когато е активирано, потребителите с имейл домейн, съвпадащ с този на организацията, могат да се присъединят без покана."
+      },
+      "privacy": {
+        "title": "Поверителност",
+        "contributionRolesLabel": "Показване на ролите на приноса публично",
+        "contributionRolesCaption": "Когато е активирано, ролите на организацията (Администратор, Собственик, Асоцииран) се виждат на публичния профил."
+      },
+      "errorToast": "Запазването на предпочитанието не успя — опитайте отново"
+    }
+  },
+  "vc": {
+    "profile": {
+      "pageTitle": "Настройки",
+      "identity": {
+        "title": "Самоличност",
+        "displayName": {
+          "label": "Показвано име",
+          "hint": "Как този Виртуален Сътрудник се появява в Alkemio.",
+          "required": "Показваното име е задължително"
+        },
+        "tagline": {
+          "label": "Слоган",
+          "hint": "Кратък ред, показан в профила на сътрудника."
+        },
+        "description": {
+          "label": "Описание",
+          "hint": "Обяснете какво прави този Виртуален Сътрудник и как да работите с него."
+        }
+      },
+      "keywords": {
+        "label": "Ключови думи",
+        "hint": "Добавете ключови думи, за да помогнете на потребителите да открият този Виртуален Сътрудник.",
+        "placeholder": "Добавете ключова дума и натиснете Enter"
+      },
+      "socialLinks": {
+        "title": "Препратки",
+        "addAnother": "Добавяне на друга препратка",
+        "namePlaceholder": "Име",
+        "urlPlaceholder": "https://example.com",
+        "descriptionPlaceholder": "Описание (по избор)",
+        "removeAriaLabel": "Премахване на препратката",
+        "empty": "Все още няма препратки.",
+        "deleteDialog": {
+          "title": "Премахване на препратката?",
+          "description": "Тази препратка ще бъде премахната при запазване на секцията. Можете да отмените, преди да запазите.",
+          "confirm": "Премахване"
+        }
+      },
+      "metadata": {
+        "title": "За този Виртуален Сътрудник",
+        "hostLabel": "Хостван от",
+        "bodyOfKnowledgeLabel": "База от знания"
+      },
+      "avatar": {
+        "title": "Аватар",
+        "changeButton": "Промяна на аватара",
+        "uploading": "Качване…",
+        "helperText": "Квадратно JPEG или PNG, до 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Членства"
+      },
+      "empty": "Този Виртуален Сътрудник все още не е член на никое пространство.",
+      "spaceBadge": "Пространство",
+      "subspaceBadge": "Подпространство",
+      "viewLabel": "Преглед",
+      "leaveLabel": "Напускане",
+      "leaveSpaceConfirmTitle": "Напускане на това пространство?",
+      "leaveSubspaceConfirmTitle": "Напускане на това подпространство?",
+      "leaveConfirmBody": "Премахване на този Виртуален Сътрудник от {{name}}? Това може да се отмени чрез повторно кандидатстване за членство.",
+      "leaveConfirmAction": "Напускане",
+      "pendingInvitationsHeading": "Изчакващи покани",
+      "acceptLabel": "Приемане",
+      "declineLabel": "Отказ",
+      "acceptInvitationConfirmTitle": "Приемане на поканата?",
+      "acceptInvitationConfirmBody": "Приемате ли поканата да се присъедините към {{name}}?",
+      "acceptInvitationConfirmAction": "Приемане"
+    },
+    "visibility": {
+      "title": "Видимост",
+      "helper": "Контролира кой може да открие този Виртуален Сътрудник.",
+      "publicLabel": "Публично",
+      "publicDescription": "Всички, включително анонимни посетители, могат да намерят този Виртуален Сътрудник.",
+      "accountLabel": "Акаунт",
+      "accountDescription": "Само членовете на хостинг акаунта могат да намерят този Виртуален Сътрудник.",
+      "hiddenLabel": "Скрит",
+      "hiddenDescription": "Този Виртуален Сътрудник е скрит от търсенето.",
+      "listedInStoreLabel": "В каталога на Alkemio",
+      "listedInStoreHelper": "Достъпно само когато видимостта е Публично."
+    },
+    "bodyOfKnowledge": {
+      "title": "База от знания",
+      "helper": "Управлявайте начина, по който се представя базата от знания на този Виртуален Сътрудник.",
+      "privacyToggleLabel": "Скриване на съдържанието на базата от знания от нечленове",
+      "privacyToggleHelper": "Когато е включено, основното съдържание е скрито от потребителите без достъп.",
+      "refreshLabel": "Обновяване на знанията",
+      "lastUpdated": "Последна актуализация:",
+      "never": "никога"
+    },
+    "prompt": {
+      "title": "Промпт",
+      "helpText": "Налични променливи: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Конфигурация на външен ИИ",
+      "helper": "Свържете този Виртуален Сътрудник с външен ИИ доставчик.",
+      "apiKeyLabel": "API ключ",
+      "apiKeyPlaceholder": "Въведете нов API ключ",
+      "apiKeyHelper": "Съществуващите ключове никога не се връщат. Оставете празно, за да запазите текущия ключ.",
+      "assistantIdLabel": "ID на асистент",
+      "modelLabel": "Модел"
+    },
+    "settings": {
+      "commitErrorToast": "Запазването на предпочитанието не успя — опитайте отново"
+    }
+  },
+  "shared": {
+    "save": "Запазване",
+    "saving": "Запазване…",
+    "saved": "Запазено!",
+    "saveFailed": "Записът не успя — опитайте отново",
+    "loading": "Зареждане…",
+    "cancel": "Отказ",
+    "remove": "Премахване",
+    "delete": "Изтриване",
+    "yes": "Да",
+    "no": "Не",
+    "avatarCropDialog": {
+      "title": "Изрязване на аватар",
+      "description": "Влачете, за да преместите. Изображението ще бъде изрязано и преоразмерено преди качване.",
+      "altTextLabel": "Алтернативен текст",
+      "altTextPlaceholder": "Опишете изображението (по избор)"
+    },
+    "account": {
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Не е налично",
+        "notAvailableTooltip": "Свържете се с екипа на Alkemio, за да активирате тази функция за акаунта си.",
+        "spacesTooltip": "От наличните Spaces във вашия акаунт сте създали:\n{{freeUsage}} от {{freeLimit}} Free Spaces\n{{plusUsage}} от {{plusLimit}} Plus Spaces\n{{premiumUsage}} от {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "Създали сте {{usage}} от {{limit}} налични Виртуални сътрудници във вашия акаунт.",
+        "innovationPacksTooltip": "Създали сте {{usage}} от {{limit}} налични Template Packs във вашия акаунт.",
+        "innovationHubsTooltip": "Създали сте {{usage}} от {{limit}} налични персонализирани начални страници във вашия акаунт."
+      },
+      "kebabAriaLabel": "Още действия",
+      "emptySlot": "Празен слот",
+      "createNewSpace": {
+        "ariaLabel": "Създаване на нов Space",
+        "heading": "Създаване на нов Space",
+        "description": "Стартирайте нова съвместна среда за вашия екип."
+      },
+      "createNewVc": {
+        "ariaLabel": "Създаване на нов сътрудник",
+        "heading": "Създаване на нов сътрудник"
+      },
+      "customHomepages": {
+        "emptyHeading": "Няма персонализирани начални страници",
+        "emptyDescription": "Създайте персонализирана начална страница за акаунта си.",
+        "createCta": "Създаване на начална страница",
+        "capacity": "Капацитет: {{usage}}/{{limit}} използвани"
+      },
+      "deleteSuccess": "Ресурсът е изтрит",
+      "deleteError": "Изтриването не успя — опитайте отново"
+    }
+  }
+}

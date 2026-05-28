@@ -30,12 +30,15 @@ const CrdPublicWhiteboardPage = lazyWithGlobalErrorHandler(
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const CrdSpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
-const CrdDashboardPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/dashboard/DashboardPage'));
+const CrdHomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/CrdHomePage'));
 const MuiSpaceExplorerPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
 );
 const InnovationLibraryPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
+);
+const CrdInnovationLibraryPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/innovationLibrary/CrdInnovationLibraryPage')
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const PlatformAdminRoute = lazyWithGlobalErrorHandler(
@@ -47,6 +50,10 @@ const OrganizationRoute = lazyWithGlobalErrorHandler(
 );
 const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
 const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
+const CrdForumRoute = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/forum/CrdForumRoute'));
+const CrdDocumentationPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/documentation/CrdDocumentationPage')
+);
 const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
@@ -89,26 +96,24 @@ export const TopLevelRoutes = () => {
         />
         {IdentityRoute()}
         {devRoute()}
-        {/* Dashboard page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {/* Dashboard page — toggleable between CRD (new) and MUI (old) via localStorage.
+            The CRD branch renders the CrdHomePage dispatcher, which mirrors the MUI HomePage:
+            it shows the (MUI) innovation-hub home page on a hub subdomain, else the CRD
+            dashboard. The CrdLayoutWrapper decision lives inside the dispatcher because the
+            hub page carries its own TopLevelLayout. */}
         {crdEnabled ? (
           <Route
+            path={TopLevelRoutePath.Home}
             element={
               <NonIdentity>
-                <CrdLayoutWrapper />
-              </NonIdentity>
-            }
-          >
-            <Route
-              path={TopLevelRoutePath.Home}
-              element={
                 <WithApmTransaction path={TopLevelRoutePath.Home}>
                   <Suspense fallback={<Loading />}>
-                    <CrdDashboardPage />
+                    <CrdHomePage />
                   </Suspense>
                 </WithApmTransaction>
-              }
-            />
-          </Route>
+              </NonIdentity>
+            }
+          />
         ) : (
           <Route
             path={TopLevelRoutePath.Home}
@@ -123,14 +128,36 @@ export const TopLevelRoutes = () => {
             }
           />
         )}
-        <Route
-          path={`${TopLevelRoutePath.Docs}/*`}
-          element={
-            <Suspense fallback={<Loading />}>
-              <DocumentationPage />
-            </Suspense>
-          }
-        />
+        {/* Documentation page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {crdEnabled ? (
+          <Route
+            element={
+              <NonIdentity>
+                <CrdLayoutWrapper />
+              </NonIdentity>
+            }
+          >
+            <Route
+              path={`${TopLevelRoutePath.Docs}/*`}
+              element={
+                <WithApmTransaction path={`/${TopLevelRoutePath.Docs}`}>
+                  <Suspense fallback={<Loading />}>
+                    <CrdDocumentationPage />
+                  </Suspense>
+                </WithApmTransaction>
+              }
+            />
+          </Route>
+        ) : (
+          <Route
+            path={`${TopLevelRoutePath.Docs}/*`}
+            element={
+              <Suspense fallback={<Loading />}>
+                <DocumentationPage />
+              </Suspense>
+            }
+          />
+        )}
         <Route
           path={`${TopLevelRoutePath.Documentation}/*`}
           element={
@@ -242,16 +269,31 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`/${TopLevelRoutePath.InnovationLibrary}`}
-                    element={
-                      <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
-                        <Suspense fallback={<Loading />}>
-                          <InnovationLibraryPage />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                        element={
+                          <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdInnovationLibraryPage />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                      element={
+                        <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                          <Suspense fallback={<Loading />}>
+                            <InnovationLibraryPage />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   <Route
                     path={`${TopLevelRoutePath.InnovationPacks}/*`}
                     element={
@@ -282,16 +324,32 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`/${TopLevelRoutePath.Forum}/*`}
-                    element={
-                      <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
-                        <Suspense fallback={<Loading />}>
-                          <ForumRoute />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {/* Forum page — toggleable between CRD (new) and MUI (old) via localStorage */}
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`/${TopLevelRoutePath.Forum}/*`}
+                        element={
+                          <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdForumRoute />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`/${TopLevelRoutePath.Forum}/*`}
+                      element={
+                        <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                          <Suspense fallback={<Loading />}>
+                            <ForumRoute />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   {/* Space page — toggleable between CRD (new) and MUI (old) via localStorage */}
                   {crdEnabled ? (
                     <Route element={<CrdLayoutWrapper />}>

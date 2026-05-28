@@ -29,6 +29,10 @@
     "restart": "Samenwerking herstarten",
     "guestContributionsWarning": "Gastbijdragen zijn ingeschakeld",
     "closeWhiteboard": "Whiteboard sluiten",
+    "saveStatus": {
+      "label": "Opslagstatus",
+      "close": "Sluiten"
+    },
     "loadingWhiteboard": "Whiteboard laden",
     "untitled": "Whiteboard",
     "unsavedChanges": {
@@ -39,7 +43,27 @@
     }
   },
   "footer": {
-    "guestContributionsWarning": "Iedereen met de link kan bewerken"
+    "guestContributionsWarning": "Iedereen met de link kan bewerken",
+    "readonlyReason": {
+      "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
+      "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
+      "noMembership": "Je moet lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
+      "unauthenticated": "Je moet ingelogd en lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Alleen bekijken modus",
+      "reason": {
+        "inactivity": "Je kunt dit whiteboard niet bewerken omdat je te lang inactief was. Probeer het whiteboard opnieuw te openen om door te gaan met bewerken.",
+        "multiUserNotAllowed": "Je kunt dit whiteboard niet bewerken omdat deze space slechts één whiteboard editor tegelijk toestaat",
+        "roomCapacityReached": "Je kunt dit whiteboard niet bewerken, hoewel deze space meerdere editors gelijktijdig toestaat, is het maximum deelnemers bereikt",
+        "generic": "Je kunt dit whiteboard niet bewerken om een van de volgende redenen:\n\n- Je bent 2 uur of langer inactief\n- Je bent geen lid van de space\n- Deze space staat slechts één whiteboard editor tegelijk toe\n- Deze space staat meer gelijktijdige editors toe, maar het maximum aantal deelnemers is bereikt"
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Opnieuw verbinden",
+    "countdown": "({{seconds}}s)",
+    "close": "Sluiten"
   },
   "preview": {
     "settings": {

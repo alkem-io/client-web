@@ -1,14 +1,18 @@
 import type { TFunction } from 'i18next';
 import {
-  type CalloutContributionType,
+  CalloutContributionType,
   CalloutFramingType,
   CollaboraDocumentType,
 } from '@/core/apollo/generated/graphql-schema';
+import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
+import type { CalloutListItem } from '@/crd/components/callout/CalloutListView';
+import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { mapLinkToCallToActionProps } from './callToActionDataMapper';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
@@ -41,6 +45,27 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   return FRAMING_TYPE_TO_POST_TYPE[framingType] ?? 'text';
 }
 
+/**
+ * Maps a GraphQL Reference to the plain CRD shape consumed by
+ * `ReferencesAndTagsStrip` and `CalloutPostPreview`. Centralised so the
+ * file-vs-link detection (`isFileAttachmentUrl`) lives in one place — every
+ * surface that lists references picks up new logic automatically.
+ */
+export function mapReferenceToStripData(ref: {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string | null;
+}): ReferencesAndTagsStripReference {
+  return {
+    id: ref.id,
+    name: ref.name,
+    uri: ref.uri,
+    description: ref.description ?? undefined,
+    isFile: isFileAttachmentUrl(ref.uri),
+  };
+}
+
 function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): CollaboraDocumentPreviewType | undefined {
   if (type === CollaboraDocumentType.Spreadsheet) return 'spreadsheet';
   if (type === CollaboraDocumentType.Presentation) return 'presentation';
@@ -50,24 +75,54 @@ function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): Collab
 }
 
 /**
+ * Structural subset shared by `CalloutModelLightExtended` and
+ * `CalloutDetailsModelExtended` — both expose published/created authorship
+ * fields with the same shape. Kept narrow so callers can pass either.
+ */
+type CalloutAuthorshipSource = {
+  publishedBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
+  publishedDate?: Date;
+  createdBy?: { profile?: { displayName: string; url?: string; avatar?: { uri: string } } };
+  createdDate?: Date;
+};
+
+/**
+ * Resolves the display author and timestamp for a callout, falling back from
+ * the published-* fields to the created-* fields. Shared by every callout
+ * mapper so the precedence rule lives in one place.
+ */
+function resolveAuthorAndTimestamp(
+  source: CalloutAuthorshipSource,
+  t: CrdSpaceTranslator
+): { author?: { name: string; avatarUrl?: string; profileUrl?: string }; timestamp?: string } {
+  const authorSource = source.publishedBy ?? source.createdBy;
+  const dateSource = source.publishedDate ?? source.createdDate;
+  return {
+    author: authorSource?.profile
+      ? {
+          name: authorSource.profile.displayName,
+          avatarUrl: authorSource.profile.avatar?.uri,
+          profileUrl: authorSource.profile.url,
+        }
+      : undefined,
+    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
+  };
+}
+
+/**
  * Maps a lightweight callout (from the list query) to PostCardData.
  * Only has title and type — no description, no content previews.
  */
 export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): PostCardData {
-  const postType = mapFramingTypeToPostType(callout.framing.type);
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
-    type: postType,
+    type: mapFramingTypeToPostType(callout.framing.type),
     title: callout.framing.profile.displayName,
     snippet: undefined, // Not available in list query
     isDraft: callout.draft,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
+    timestamp,
+    author,
     commentCount: callout.activity ?? 0,
   };
 }
@@ -77,21 +132,16 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
  * Has description, content previews, author details, contribution counts.
  */
 export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: CrdSpaceTranslator): PostCardData {
-  const postType = mapFramingTypeToPostType(callout.framing.type);
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
-    type: postType,
+    type: mapFramingTypeToPostType(callout.framing.type),
     title: callout.framing.profile.displayName,
     snippet: callout.framing.profile.description ?? undefined,
     isDraft: callout.draft,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    timestamp,
+    author,
+    commentCount: callout.comments?.messagesCount ?? 0,
     commentsEnabled: callout.settings.framing.commentsEnabled,
     framingImageUrl:
       callout.framing.type === CalloutFramingType.Whiteboard
@@ -123,6 +173,11 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
               : undefined;
           })()
         : undefined,
+    // User-authored tags (default tagset) and external references — surfaced
+    // on the feed card by `ReferencesAndTagsStrip` (the same component the
+    // detail dialog uses). MUI parity: `CalloutHeader`.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }
 
@@ -133,6 +188,51 @@ export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t:
 export function getCalloutContributionType(callout: CalloutDetailsModelExtended): CalloutContributionType | undefined {
   const allowedTypes = callout.settings.contribution.allowedTypes;
   return allowedTypes.length > 0 ? allowedTypes[0] : undefined;
+}
+
+/** Maps a contribution type to its pluralised count key in the `crd-space` namespace. */
+const CONTRIBUTION_COUNT_KEY = {
+  [CalloutContributionType.Post]: 'knowledge.count.post',
+  [CalloutContributionType.Whiteboard]: 'knowledge.count.whiteboard',
+  [CalloutContributionType.Memo]: 'knowledge.count.memo',
+  [CalloutContributionType.Link]: 'knowledge.count.link',
+  [CalloutContributionType.CollaboraDocument]: 'knowledge.count.document',
+} as const satisfies Record<CalloutContributionType, string>;
+
+/**
+ * Bracketed response summary for the Knowledge Base list view, e.g. "2 memos".
+ * Derived from the callout's contribution type + activity count; callouts that
+ * do not collect contributions (or have none) return `undefined`.
+ */
+function formatCalloutResponseMeta(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): string | undefined {
+  const count = callout.activity ?? 0;
+  const contributionType = callout.settings?.contribution?.allowedTypes?.[0];
+  if (count <= 0 || !contributionType) {
+    return undefined;
+  }
+  return t(CONTRIBUTION_COUNT_KEY[contributionType], { count });
+}
+
+/**
+ * Maps light callout models to the Knowledge Base list-view row shape. The row
+ * link carries `?tab=<tabSectionNumber>` so the background space page keeps the
+ * active tab when the callout detail dialog opens.
+ */
+export function mapCalloutsToListItems(
+  callouts: CalloutModelLightExtended[],
+  tabSectionNumber: number,
+  t: CrdSpaceTranslator
+): CalloutListItem[] {
+  return callouts.map(callout => {
+    const url = callout.framing.profile.url;
+    return {
+      id: callout.id,
+      title: callout.framing.profile.displayName,
+      type: callout.framing.type === CalloutFramingType.Whiteboard ? 'whiteboard' : 'text',
+      href: url ? buildSpaceSectionUrl(url, tabSectionNumber) : undefined,
+      meta: formatCalloutResponseMeta(callout, t),
+    };
+  });
 }
 
 export function formatRelativeDate(date: Date, t: CrdSpaceTranslator): string {
@@ -154,18 +254,19 @@ export function mapCalloutDetailsToDialogData(
   callout: CalloutDetailsModelExtended,
   t: CrdSpaceTranslator
 ): CalloutDetailDialogData {
-  const authorSource = callout.publishedBy ?? callout.createdBy;
-  const dateSource = callout.publishedDate ?? callout.createdDate;
-
+  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
   return {
     id: callout.id,
     title: callout.framing.profile.displayName,
     description: callout.framing.profile.description ?? undefined,
-    timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-    author: authorSource?.profile
-      ? { name: authorSource.profile.displayName, avatarUrl: authorSource.profile.avatar?.uri }
-      : undefined,
-    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    timestamp,
+    author,
+    commentCount: callout.comments?.messagesCount ?? 0,
     reactionCount: 0,
+    // `framing.profile.tagset` is the default (single) tagset for the
+    // user-authored tags. Classification tagsets (FLOW_STATE etc.) live on a
+    // separate `classification.tagsets` field and don't surface in this strip.
+    tags: callout.framing.profile.tagset?.tags ?? [],
+    references: (callout.framing.profile.references ?? []).map(mapReferenceToStripData),
   };
 }

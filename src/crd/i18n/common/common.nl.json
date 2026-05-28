@@ -1,7 +1,7 @@
 {
-  "space": "Ruimte",
-  "spaces": "Ruimtes",
-  "subspace": "Subruimte",
+  "space": "Space",
+  "spaces": "Spaces",
+  "subspace": "Subspace",
   "ok": "OK",
   "cancel": "Annuleren",
   "save": "Opslaan",
@@ -20,6 +20,15 @@
   "leadType": {
     "person": "Persoon",
     "org": "Organisatie"
+  },
+  "tags": {
+    "moreAria": "Toon {{count}} meer"
+  },
+  "filters": {
+    "summary": "Resultaten voor {{criteria}}",
+    "and": "en",
+    "clear": "Filters wissen",
+    "filterByTag": "Filter op tag"
   },
   "share": {
     "title": "Delen",
@@ -47,6 +56,25 @@
         "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
         "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
       }
+    }
+  },
+  "references": {
+    "heading": "Referenties",
+    "empty": "Nog geen referenties.",
+    "nameLabel": "Titel",
+    "namePlaceholder": "Titel van de referentie",
+    "uriLabel": "URL",
+    "uriPlaceholder": "https://",
+    "descriptionLabel": "Beschrijving",
+    "descriptionPlaceholder": "Optionele beschrijving",
+    "addRow": "Nog een referentie toevoegen",
+    "removeRow": "Referentie verwijderen",
+    "attachFile": "Bestand bijvoegen",
+    "removeConfirm": {
+      "title": "Deze referentie verwijderen?",
+      "description": "“{{name}}” wordt verwijderd zodra je opslaat. Dit kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "unnamed": "deze referentie"
     }
   }
 }

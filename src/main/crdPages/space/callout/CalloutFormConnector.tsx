@@ -21,20 +21,24 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
+  useDeleteReferenceMutation,
+  useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
-import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
+import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
@@ -52,14 +56,18 @@ import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/us
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import {
   diffPollOptions,
   isAddedSentinel,
   type PollOptionBefore,
   parseAddedSentinel,
 } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
+import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
@@ -72,8 +80,6 @@ type CalloutFormConnectorProps = {
   mode?: 'create' | 'edit';
   calloutId?: string;
   calloutsSetId?: string;
-  /** Space id used by `ResponseDefaultsConnector` to fetch content templates. */
-  spaceId?: string;
   /**
    * Edit-mode only: the rich callout from the parent. Threaded through to
    * `FramingEditorConnector` so the whiteboard "Open" button (T048) can launch
@@ -89,6 +95,13 @@ type CalloutFormConnectorProps = {
    * single-phase callouts sets). Create mode only.
    */
   activeFlowStateName?: string;
+  /**
+   * Create mode only: the active flow state's configured default callout template id
+   * (`flowStateForNewCallouts.defaultCalloutTemplate.id`). When set, the form auto-prefills
+   * from that template once per dialog-open (FR-086 / spec 042 Session 2026-05-20). A manual
+   * "Find Template" pick or user edit afterwards is preserved — the auto-load runs once.
+   */
+  defaultTemplateId?: string;
   onFindTemplate?: () => void;
 };
 
@@ -98,9 +111,9 @@ export function CalloutFormConnector({
   mode = 'create',
   calloutId,
   calloutsSetId,
-  spaceId,
   editCallout,
   activeFlowStateName,
+  defaultTemplateId,
   onFindTemplate,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -109,6 +122,13 @@ export function CalloutFormConnector({
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
+  // Pending "switch to None" confirmation — edit-mode only. Changing the
+  // framing type or response type to None permanently removes the existing
+  // memo/document/whiteboard/post-collection on save, and the lock then
+  // prevents adopting a different type. The user is warned before the chip
+  // visibly toggles (not at save time), so they can cancel without losing
+  // their existing context.
+  const [pendingClearKind, setPendingClearKind] = useState<'framing' | 'response' | null>(null);
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
   // change (handled inside the FramingChipStrip onChange wrapper below).
@@ -129,9 +149,17 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
+  const markdownIntegration = useMarkdownEditorIntegration();
+  // Memo framing only renders on create — the memo entity doesn't exist yet,
+  // so its pasted/inserted images upload to a temporary location (server GCs
+  // them if the callout-create is abandoned). Mirrors the MUI create rule.
+  const memoFramingUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
+  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
+
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -170,6 +198,27 @@ export function CalloutFormConnector({
       prefilledCalloutIdRef.current = callout.id;
     }
   }, [mode, open, editData, prefill]);
+
+  // Create-mode auto-prefill from the active flow state's default callout template (FR-086).
+  // Runs once per dialog-open (guarded by the ref, reset on close), reusing the same
+  // template-content→form-values path the manual "Find Template" picker uses. A manual pick
+  // or user edit afterwards is preserved — the guard prevents re-applying within a session.
+  const [getTemplateContent] = useTemplateContentLazyQuery();
+  const prefilledDefaultTemplateIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!open) {
+      prefilledDefaultTemplateIdRef.current = null;
+      return;
+    }
+    if (mode !== 'create' || !defaultTemplateId) return;
+    if (prefilledDefaultTemplateIdRef.current === defaultTemplateId) return;
+    prefilledDefaultTemplateIdRef.current = defaultTemplateId;
+    void loadCalloutTemplateFormValues(getTemplateContent, defaultTemplateId).then(values => {
+      // Bail if the dialog closed or the default changed while the content was loading.
+      if (!values || prefilledDefaultTemplateIdRef.current !== defaultTemplateId) return;
+      prefill(values);
+    });
+  }, [open, mode, defaultTemplateId, getTemplateContent, prefill]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
@@ -378,7 +427,7 @@ export function CalloutFormConnector({
     // update payload below.
     const framingProfileId = editData?.lookup.callout?.framing.profile.id;
     const newReferenceRows = values.referenceRows.filter(
-      row => !row.id && row.title.trim().length > 0 && row.url.trim().length > 0
+      row => !row.id && row.name.trim().length > 0 && row.uri.trim().length > 0
     );
     if (framingProfileId && newReferenceRows.length > 0) {
       try {
@@ -387,15 +436,34 @@ export function CalloutFormConnector({
             variables: {
               input: {
                 profileID: framingProfileId,
-                name: row.title.trim(),
-                uri: ensureHttps(row.url),
-                description: row.description.trim() || undefined,
+                name: row.name.trim(),
+                uri: ensureHttps(row.uri),
+                description: row.description?.trim() || undefined,
               },
             },
           });
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
+        notify(t('callout.referencesSaveFailed'), 'error');
+        return;
+      }
+    }
+
+    // Removed references — rows present at edit-open but no longer in the form. The bulk
+    // `updateCallout` only upserts existing references by `ID` (it can't delete), so removed rows
+    // need an explicit `deleteReference`. Diff the open-time snapshot (`editMeta.originalReferenceIds`)
+    // against the current rows — mirrors the callout-template + CG branches in `useTemplateForms`.
+    const originalReferenceIds = values.editMeta?.originalReferenceIds ?? [];
+    const currentReferenceIds = new Set(values.referenceRows.flatMap(row => (row.id ? [row.id] : [])));
+    const removedReferenceIds = originalReferenceIds.filter(id => !currentReferenceIds.has(id));
+    if (removedReferenceIds.length > 0) {
+      try {
+        for (const id of removedReferenceIds) {
+          await deleteReference({ variables: { input: { ID: id } } });
+        }
+      } catch (err) {
+        logError(new Error('Callout reference deletion failed', { cause: err as Error }));
         notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
@@ -518,6 +586,9 @@ export function CalloutFormConnector({
             value={values.description}
             onChange={v => setField('description', v)}
             placeholder={t('forms.descriptionPlaceholder')}
+            onImageUpload={markdownIntegration.onImageUpload}
+            iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
+            onError={markdownIntegration.onError}
           />
         }
         framingZoneSlot={
@@ -525,6 +596,14 @@ export function CalloutFormConnector({
             <FramingChipStrip
               value={values.framingChip}
               onChange={chip => {
+                // Edit-mode + transition to None: warn before the chip visibly
+                // clears. Once saved the framing is gone and the lock prevents
+                // adopting a different type, so this is the user's last chance
+                // to back out.
+                if (mode === 'edit' && chip === 'none' && values.framingChip !== 'none') {
+                  setPendingClearKind('framing');
+                  return;
+                }
                 // When switching framing AWAY from 'document', clear any staged
                 // upload so the file does not persist invisibly under another
                 // framing type (Edge Case in spec.md).
@@ -568,6 +647,8 @@ export function CalloutFormConnector({
               whiteboardPreviewSettings={values.whiteboardPreviewSettings}
               whiteboardConfigured={values.whiteboardConfigured}
               whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+              whiteboardPreviewImages={values.whiteboardPreviewImages}
+              whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
               onWhiteboardChange={(content, previewImages, previewSettings) => {
                 setField('whiteboardContent', content);
                 setField('whiteboardPreviewImages', previewImages ?? []);
@@ -576,6 +657,7 @@ export function CalloutFormConnector({
               }}
               memoMarkdown={values.memoMarkdown}
               onMemoMarkdownChange={v => setField('memoMarkdown', v)}
+              memoUpload={memoFramingUpload}
               mediaGalleryVisuals={values.mediaGalleryVisuals}
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
               collaboraDocumentType={values.collaboraDocumentType}
@@ -604,7 +686,14 @@ export function CalloutFormConnector({
           <div className="space-y-4">
             <ResponseTypeChipStrip
               value={values.responseType}
-              onChange={type => setField('responseType', type)}
+              onChange={type => {
+                // Same warning rule as the framing strip — see comment there.
+                if (mode === 'edit' && type === 'none' && values.responseType !== 'none') {
+                  setPendingClearKind('response');
+                  return;
+                }
+                setField('responseType', type);
+              }}
               locked={mode === 'edit'}
             />
             <ResponsePanel
@@ -616,6 +705,8 @@ export function CalloutFormConnector({
               prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
               onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
+              prePopulateLinkFileUpload={referenceUpload.onFileUpload}
+              prePopulateLinkUploadAccept={referenceUpload.accept}
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />
@@ -624,24 +715,15 @@ export function CalloutFormConnector({
         moreOptionsSlot={
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="add-post-tags" className="text-caption text-muted-foreground">
-                {t('forms.tagsLabel')}
-              </Label>
-              <div className="relative">
-                <Hash
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <input
-                  id="add-post-tags"
-                  type="text"
-                  value={values.tags}
-                  onChange={e => setField('tags', e.target.value)}
-                  placeholder={t('forms.tagsPlaceholder')}
-                  disabled={submitting}
-                  className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-                />
-              </div>
+              <Label className="text-caption text-muted-foreground">{t('forms.tagsLabel')}</Label>
+              <TagsInput
+                value={values.tags}
+                onChange={tags => setField('tags', tags)}
+                placeholder={t('forms.tagsPlaceholder')}
+                minLength={2}
+                formatTooShortErrorMessage={min => t('forms.tagsTooShort', { min })}
+                icon={<Hash className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />}
+              />
             </div>
             <AllowCommentsField
               value={values.framingCommentsEnabled}
@@ -650,9 +732,11 @@ export function CalloutFormConnector({
             />
             <ReferencesEditor
               rows={values.referenceRows}
-              onChange={v => setField('referenceRows', v)}
-              errors={errors as Record<string, string | undefined>}
+              onChange={rows => setField('referenceRows', rows)}
+              errors={referenceRowErrors(errors)}
               disabled={submitting}
+              onFileUpload={referenceUpload.onFileUpload}
+              uploadAccept={referenceUpload.accept}
             />
           </div>
         }
@@ -662,13 +746,39 @@ export function CalloutFormConnector({
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
+      <ConfirmationDialog
+        open={pendingClearKind !== null}
+        onOpenChange={open => {
+          if (!open) setPendingClearKind(null);
+        }}
+        title={t('callout.clearTypeConfirm.title')}
+        description={t('callout.clearTypeConfirm.description')}
+        confirmLabel={t('callout.clearTypeConfirm.confirm')}
+        cancelLabel={t('dialogs.cancel')}
+        variant="destructive"
+        onConfirm={() => {
+          if (pendingClearKind === 'framing') {
+            // Clearing the framing — also drop any staged Collabora upload so
+            // it doesn't reattach when the user picks a new type next session.
+            if (values.framingChip === 'document') {
+              setField('collaboraUploadFile', null);
+              setField('collaboraAutoPrefilledTitle', undefined);
+              setCollaboraImportError(null);
+            }
+            setField('framingChip', 'none');
+          } else if (pendingClearKind === 'response') {
+            setField('responseType', 'none');
+          }
+          setPendingClearKind(null);
+        }}
+      />
       <ResponseDefaultsConnector
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}
         type={values.responseType}
-        spaceId={spaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        markdownUpload={mode === 'edit' ? markdownIntegration : memoFramingUpload}
       />
       {mode === 'create' && (
         <TemplateImportConnector

@@ -33,8 +33,8 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
             {/* Info & Actions */}
             <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 w-full pt-2">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-1">{user.name}</h1>
-                <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
+                <h1 className="text-hero text-foreground mb-1">{user.name}</h1>
+                <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis">
                   <MapPin className="w-4 h-4" />
                   <span>{user.location}</span>
                 </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -12,7 +13,6 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { InviteMembersDialog } from '@/crd/components/space/settings/InviteMembersDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
-import { SaveSubspaceAsTemplateDialog } from '@/crd/components/space/settings/SaveSubspaceAsTemplateDialog';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
@@ -21,14 +21,17 @@ import { SpaceSettingsLayoutView } from '@/crd/components/space/settings/SpaceSe
 import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { SpaceSettingsStorageView } from '@/crd/components/space/settings/SpaceSettingsStorageView';
 import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
-import { SpaceSettingsTemplatesView } from '@/crd/components/space/settings/SpaceSettingsTemplatesView';
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
-import { TemplateEditDialog } from '@/crd/components/space/settings/TemplateEditDialog';
-import { TemplateLibraryDialog } from '@/crd/components/space/settings/TemplateLibraryDialog';
-import { TemplatePreviewDialog } from '@/crd/components/space/settings/TemplatePreviewDialog';
+import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
+import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import {
   useAddOrganizationDialog,
   useAddVirtualContributorDialog,
@@ -37,17 +40,16 @@ import {
 } from './community/useAddCommunityMemberDialog';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
+import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
 import { useColumnMenu } from './layout/useColumnMenu';
 import { useLayoutTabData } from './layout/useLayoutTabData';
 import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
 import { useStorageTabData } from './storage/useStorageTabData';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
-import { useSaveSubspaceAsTemplate } from './subspaces/useSaveSubspaceAsTemplate';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
-import { useTemplatesTabData } from './templates/useTemplatesTabData';
+import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
 import { useUpdatesTabData } from './updates/useUpdatesTabData';
-import { useDirtyTabGuard } from './useDirtyTabGuard';
 import { useSettingsScope } from './useSettingsScope';
 import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
@@ -72,27 +74,102 @@ export default function CrdSpaceSettingsPage() {
 
   const visibleTabs = getVisibleSettingsTabs(level);
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
-  const guard = useDirtyTabGuard();
+  const guard = useDirtyTabGuardContext();
+
+  // Markdown image upload. The ambient `StorageConfigContextProvider`
+  // (locationType="space") is mounted by `CrdSpacePageLayout` /
+  // `CrdSubspacePageLayout`, so editing existing sections uploads to the
+  // space's own bucket (temporaryLocation: false). Creating a subspace has no
+  // bucket yet, so it uploads against the parent space's bucket flagged
+  // temporary (server GCs it if the create is abandoned) — mirrors MUI.
+  const md = useMarkdownEditorIntegration();
+  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
-  const about = useAboutTabData(spaceId, spaceUrl);
-  const layout = useLayoutTabData(spaceId);
-  const community = useCommunityTabData(roleSetId);
-  const subspacesTab = useSubspacesTabData(isTabVisible('subspaces') ? spaceId : '');
-  const createSubspace = useCreateSubspace(spaceId);
-  const saveAsTemplate = useSaveSubspaceAsTemplate({
+  // Each tab's data hook is gated on `activeTab` so only the visible tab's
+  // queries fire — mirroring MUI's per-route architecture without splitting
+  // this page into separate routes. Apollo's cache lets re-visited tabs return
+  // instantly. Local buffers (about edits, layout buffer, updates draft) live
+  // in `useState` inside each hook and survive the gating, so the dirty-tab
+  // guard still sees `isDirty=true` at the moment of a tab switch.
+  const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
+  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
+  const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+  const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
+  const createSubspace = useCreateSubspace(spaceId, {
+    accountId,
     templatesSetId: subspacesTab.templatesSetId,
-    onSaved: () => subspacesTab.closeSaveAsTemplate(),
+    defaultTemplateId: subspacesTab.defaultTemplateId,
   });
-  const templatesTab = useTemplatesTabData(isTabVisible('templates') ? spaceId : '', accountId || undefined);
-  const storageTab = useStorageTabData(isTabVisible('storage') ? spaceId : '');
-  const settingsTab = useSettingsTabData(spaceId);
-  const applicationForm = useApplicationFormData(settingsTab.roleSetId);
-  const accountTab = useAccountTabData(isTabVisible('account') ? spaceId : '');
-  const updatesTab = useUpdatesTabData(communityId || undefined);
+  // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
+  const storageTab = useStorageTabData(activeTab === 'storage' ? spaceId : '');
+  const settingsTab = useSettingsTabData(activeTab === 'settings' ? spaceId : '');
+  // ApplicationFormEditor renders inside the Community panel — pull `roleSetId`
+  // from the always-available scope instead of `settingsTab` so we don't have
+  // to fetch the Settings tab just to know the role set id.
+  const applicationForm = useApplicationFormData(activeTab === 'community' ? roleSetId : '');
+  const accountTab = useAccountTabData(activeTab === 'account' ? spaceId : '');
+  const updatesTab = useUpdatesTabData(activeTab === 'updates' ? communityId || undefined : undefined);
   const communityGuidelinesId = scope.guidelinesId;
-  const communityGuidelines = useCommunityGuidelinesData(communityGuidelinesId);
+  const communityGuidelines = useCommunityGuidelinesData(activeTab === 'community' ? communityGuidelinesId : undefined);
+
+  // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
+  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache). Only needed on tabs whose
+  // pickers / save-as flows consume `templatesSetId`.
+  const needsTemplatesSet = activeTab === 'community' || activeTab === 'layout' || activeTab === 'subspaces';
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId },
+    skip: !spaceId || !needsTemplatesSet,
+  });
+  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const guidelinesTemplatePicker = useTemplatePicker({
+    allowedTypes: ['communityGuidelines'],
+    accountId,
+    spaceTemplatesSetId: templatesSetId,
+  });
+  // Unified "Save as a template" dialog driver — used by both the Community-guidelines editor (US5/T070,
+  // FR-038) and the Subspaces tab kebab (US4/T053). One dialog instance is enough because only one of
+  // the two flows can be open at a time; `openSaveAs` discriminates on the `kind` field.
+  const saveAs = useSaveAsTemplate({
+    templatesSetId,
+    spaceId,
+    onSaved: () => subspacesTab.closeSaveAsTemplate(),
+    // Save-as always opens the create flow → temporary bucket.
+    markdownUpload: { create: mdCreate, edit: md },
+    // CG save-as opens the CG template form (title + body + references) — reuse the space-bucket
+    // reference upload the live CG editor already wires (same bucket, temporaryLocation: true).
+    referenceUpload: {
+      onFileUpload: communityGuidelines.onReferenceFileUpload,
+      accept: communityGuidelines.referenceUploadAccept,
+    },
+  });
+  const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
+  const selectedGuidelinesTemplateId = guidelinesTemplatePicker.selectedTemplateId;
+  useEffect(() => {
+    if (!selectedGuidelinesTemplateId) return;
+    void communityGuidelines.onApplyTemplate(selectedGuidelinesTemplateId);
+    // Consume the selection so re-picking the same template (e.g. after a failed apply, or reopening the
+    // picker to retry) fires the effect again instead of short-circuiting on a stale "already applied" id.
+    guidelinesTemplatePicker.clearSelection();
+  }, [selectedGuidelinesTemplateId, communityGuidelines, guidelinesTemplatePicker]);
+  const openGuidelinesTemplatePicker = () => {
+    if (communityGuidelines.hasContent) setConfirmReplaceGuidelinesOpen(true);
+    else guidelinesTemplatePicker.openPicker();
+  };
+
+  // Layout-tab: per-flow-state default Callout template (T058) — the column kebab opens this picker.
+  const [defaultCalloutTemplateColumnId, setDefaultCalloutTemplateColumnId] = useState<string | null>(null);
+  const defaultCalloutTemplatePicker = useTemplatePicker({
+    allowedTypes: ['callout'],
+    accountId,
+    spaceTemplatesSetId: templatesSetId,
+  });
+  const openDefaultCalloutTemplatePicker = (columnId: string) => {
+    setDefaultCalloutTemplateColumnId(columnId);
+    defaultCalloutTemplatePicker.openPicker();
+  };
+
   const addOrgDialog = useAddOrganizationDialog({ community: community._adminRef });
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
@@ -107,7 +184,7 @@ export default function CrdSpaceSettingsPage() {
   const inviteDialog = useInviteUsersDialog({ community: community._adminRef });
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
-    availablePostTemplates: [],
+    onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
       col.callouts.map(c => ({ id: c.id, flowStateTagsetId: c.flowStateTagsetId, currentStateName: col.title }))
     ),
@@ -115,23 +192,43 @@ export default function CrdSpaceSettingsPage() {
     onColumnSaved: (columnId, title, description) => {
       layout.markColumnSaved(columnId, title, description);
     },
+    onActivePhaseChanged: layout.markCurrentPhaseChanged,
     onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
   });
-
-  // About uses per-section inline Save, so it does NOT participate in the
-  // tab-switch guard. Only Layout and the Application Form can enter a
-  // buffered-dirty state that needs protection.
+  // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
+  const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
   useEffect(() => {
-    if (layout.isDirty || applicationForm.isDirty) {
+    if (!selectedDefaultCalloutTemplateId || !defaultCalloutTemplateColumnId) return;
+    columnMenu.onSetAsDefaultCalloutTemplate(defaultCalloutTemplateColumnId, selectedDefaultCalloutTemplateId);
+    setDefaultCalloutTemplateColumnId(null);
+    // Consume the selection so re-picking the same template (different column, or same column after a
+    // failed apply) fires the effect again instead of short-circuiting on a stale "already applied" key.
+    defaultCalloutTemplatePicker.clearSelection();
+  }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
+
+  // About uses per-section inline Save, but its edits still live in a local
+  // buffer that survives a tab switch. Without the guard the admin can wander
+  // off and never notice they never hit Save, so About participates too —
+  // alongside Layout, the Application Form, and an unpublished Updates draft.
+  useEffect(() => {
+    if (about.isDirty || layout.isDirty || applicationForm.isDirty || updatesTab.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, layout.isDirty, applicationForm.isDirty]);
+  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
 
   const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  // Save-and-switch is async; disable the dialog while it runs so a double
+  // click can't fire duplicate saves, and keep it open if a save rejects.
+  const [switchingSave, setSwitchingSave] = useState(false);
+  // Drives the "Loading new flow…" overlay on the Layout columns container
+  // while the Replace-innovation-flow mutation + InnovationFlowSettings
+  // refetch are in flight. Set/cleared by `LayoutReplaceFlowConnector` via
+  // its `onImportingChange` callback.
+  const [isReplacingFlow, setIsReplacingFlow] = useState(false);
 
   // Member settings dialog state — owns the active subject so the dialog can be
   // re-mounted instantly when the admin switches between rows. The Remove flow
@@ -141,6 +238,9 @@ export default function CrdSpaceSettingsPage() {
   // flow originated from inside the dialog itself (FR-Story-3 AC #3 + AC #2).
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
+
+  // Pending-membership "view" dialog — holds the application/invitation being inspected (read-only).
+  const [viewingMembership, setViewingMembership] = useState<ViewingMembership | null>(null);
 
   const buildUserSubject = (m: CommunityMember): MemberSettingsSubject => ({
     type: 'user',
@@ -159,29 +259,51 @@ export default function CrdSpaceSettingsPage() {
     isLead: org.isLead,
   });
 
-  // Bridge: when Subspaces tab signals "save as template" for a subspace,
-  // hand it off to the dedicated dialog hook with the subspace's current name.
+  // Bridge: when Subspaces tab signals "save as template" for a subspace, open the unified
+  // `TemplateFormDialog` (`type: 'space'`) pre-filled from that subspace as the source.
+  // T053 — the legacy `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` plumbing is
+  // retained on disk (modify-not-delete) but no longer wired into the page.
   useEffect(() => {
     if (!subspacesTab.saveAsTemplateSubspaceId) return;
     const target = subspacesTab.subspaces.find(s => s.id === subspacesTab.saveAsTemplateSubspaceId);
     if (!target) return;
-    saveAsTemplate.onOpen({ subspaceId: target.id, subspaceName: target.name });
+    saveAs.openSaveAs({
+      kind: 'subspace',
+      subspaceId: target.id,
+      name: target.name,
+      description: target.description,
+    });
     subspacesTab.closeSaveAsTemplate();
-  }, [subspacesTab, saveAsTemplate]);
+  }, [subspacesTab, saveAs]);
 
   const handleConfirmSwitchSave = async () => {
-    if (layout.isDirty) await layout.onSave();
-    if (applicationForm.isDirty) applicationForm.onSave();
+    if (switchingSave) return;
+    setSwitchingSave(true);
+    try {
+      if (about.isDirty) await about.onSaveAll();
+      if (layout.isDirty) await layout.onSave();
+      if (applicationForm.isDirty) applicationForm.onSave();
+      if (updatesTab.isDirty) await updatesTab.onSubmit();
+    } catch {
+      // A save failed — keep the dialog open so the user can retry or discard.
+      // The pending switch stays unresolved; per-section error status surfaces
+      // the failure in the tab itself.
+      setSwitchingSave(false);
+      return;
+    }
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
     if (target) {
       setActiveTab(target);
     }
+    setSwitchingSave(false);
   };
   const handleConfirmSwitchDiscard = () => {
+    about.onResetAll();
     layout.onReset();
     applicationForm.onReset();
+    updatesTab.onResetDraft();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
@@ -220,10 +342,13 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
-                  onAddReference={about.onAddReference}
-                  onUpdateReference={about.onUpdateReference}
-                  onRemoveReference={about.onRequestRemoveReference}
+                  onReferencesChange={about.onReferencesChange}
+                  onReferenceFileUpload={about.onReferenceFileUpload}
+                  referenceUploadAccept={about.referenceUploadAccept}
                   onSaveSection={section => void about.onSaveSection(section)}
+                  onImageUpload={md.onImageUpload}
+                  iframeAllowedUrls={md.iframeAllowedUrls}
+                  onError={md.onError}
                 />
               ) : (
                 <LoadingSpinner />
@@ -235,6 +360,7 @@ export default function CrdSpaceSettingsPage() {
                 postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
+                onReorderColumns={layout.onReorderColumns}
                 onRenameColumn={layout.onRenameColumn}
                 onMoveToColumn={layout.onMoveToColumn}
                 onViewPost={calloutId => {
@@ -249,6 +375,21 @@ export default function CrdSpaceSettingsPage() {
                 onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
+                isReplacingFlow={isReplacingFlow}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
+                headerActionsSlot={
+                  level !== 'L0' ? (
+                    <LayoutReplaceFlowConnector
+                      collaborationId={layout.collaborationId}
+                      existingCalloutsCount={layout.existingCalloutsCount}
+                      disabled={layout.isDirty}
+                      onApplyComplete={layout.reseedFromServer}
+                      onImportingChange={setIsReplacingFlow}
+                    />
+                  ) : undefined
+                }
               />
             )}
             {activeTab === 'community' && (
@@ -273,18 +414,35 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
                     />
                   ) : undefined
                 }
                 communityGuidelinesSlot={
                   communityGuidelinesId ? (
                     <CommunityGuidelinesEditor
-                      value={communityGuidelines.description}
+                      value={communityGuidelines.value}
                       loading={communityGuidelines.loading}
                       submitting={communityGuidelines.submitting}
                       canSave={communityGuidelines.canSave}
-                      onChange={communityGuidelines.onDescriptionChange}
+                      onChange={communityGuidelines.onChange}
                       onSave={() => void communityGuidelines.onSave()}
+                      onApplyTemplate={openGuidelinesTemplatePicker}
+                      onSaveAsTemplate={() =>
+                        saveAs.openSaveAs({
+                          kind: 'communityGuidelines',
+                          title: communityGuidelines.value.title,
+                          bodyMarkdown: communityGuidelines.value.body,
+                          references: communityGuidelines.value.references,
+                        })
+                      }
+                      onImageUpload={md.onImageUpload}
+                      iframeAllowedUrls={md.iframeAllowedUrls}
+                      onError={md.onError}
+                      onReferenceFileUpload={communityGuidelines.onReferenceFileUpload}
+                      referenceUploadAccept={communityGuidelines.referenceUploadAccept}
                     />
                   ) : undefined
                 }
@@ -297,6 +455,10 @@ export default function CrdSpaceSettingsPage() {
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
+                onPendingView={id => {
+                  const target = community.pendingMemberships.find(m => m.id === id);
+                  if (target) setViewingMembership({ id: target.id, type: target.type });
+                }}
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
@@ -315,14 +477,7 @@ export default function CrdSpaceSettingsPage() {
               />
             )}
             {activeTab === 'templates' && isTabVisible('templates') && (
-              <SpaceSettingsTemplatesView
-                categories={templatesTab.categories}
-                loading={templatesTab.loading}
-                duplicatingCategory={templatesTab.actions.duplicatingCategory ?? templatesTab.library.importingCategory}
-                onCreateTemplate={templatesTab.onCreateTemplate}
-                onImportTemplate={templatesTab.onImportTemplate}
-                onTemplateAction={templatesTab.onTemplateAction}
-              />
+              <CrdSpaceTemplatesTab spaceId={spaceId} accountId={accountId || undefined} />
             )}
             {activeTab === 'updates' && (
               <SpaceSettingsUpdatesView
@@ -337,6 +492,9 @@ export default function CrdSpaceSettingsPage() {
                 onDraftChange={updatesTab.onDraftChange}
                 onSubmit={() => void updatesTab.onSubmit()}
                 onRequestRemove={updatesTab.onRequestRemove}
+                onImageUpload={md.onImageUpload}
+                iframeAllowedUrls={md.iframeAllowedUrls}
+                onError={md.onError}
               />
             )}
             {activeTab === 'storage' && isTabVisible('storage') && (
@@ -396,27 +554,10 @@ export default function CrdSpaceSettingsPage() {
         onCancel={updatesTab.onCancelRemove}
       />
 
-      <SaveSubspaceAsTemplateDialog
-        open={saveAsTemplate.open}
-        onOpenChange={open => {
-          if (!open) saveAsTemplate.onClose();
-        }}
-        subspaceName={saveAsTemplate.subspaceName}
-        activeSpaceName={saveAsTemplate.activeSpaceName}
-        values={saveAsTemplate.values}
-        errors={saveAsTemplate.errors}
-        submitting={saveAsTemplate.submitting}
-        canSubmit={saveAsTemplate.canSubmit}
-        preview={saveAsTemplate.preview}
-        previewLoading={saveAsTemplate.previewLoading}
-        urlLoader={saveAsTemplate.urlLoader}
-        onChange={saveAsTemplate.onChange}
-        onSubmit={() => void saveAsTemplate.onSubmit()}
-        onOpenUrlLoader={saveAsTemplate.onOpenUrlLoader}
-        onCloseUrlLoader={saveAsTemplate.onCloseUrlLoader}
-        onUrlChange={saveAsTemplate.onUrlChange}
-        onUseUrl={() => void saveAsTemplate.onUseUrl()}
-      />
+      {/* Subspace "Save as template" + Community-Guidelines "Save as template" both flow through the
+          unified `saveAs.form` → `<TemplateFormDialog>` mounted below (T053). The legacy
+          `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` remain on disk for reference
+          but are no longer wired to this page. */}
 
       <CreateSubspaceDialog
         open={createSubspace.open}
@@ -425,14 +566,33 @@ export default function CrdSpaceSettingsPage() {
         }}
         values={createSubspace.values}
         errors={createSubspace.errors}
-        templates={createSubspace.templates}
-        templatesLoading={createSubspace.templatesLoading}
+        selectedTemplateName={createSubspace.selectedTemplateName}
+        selectedTemplateContent={createSubspace.selectedTemplateContent}
+        selectedTemplateLoading={createSubspace.selectedTemplateLoading}
+        onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
+        onClearTemplate={createSubspace.onClearTemplate}
         submitting={createSubspace.submitting}
         canSubmit={createSubspace.canSubmit}
         avatarConstraints={createSubspace.avatarConstraints}
         cardBannerConstraints={createSubspace.cardBannerConstraints}
         onChange={createSubspace.onChange}
         onSubmit={() => void createSubspace.onSubmit()}
+        onImageUpload={mdCreate.onImageUpload}
+        iframeAllowedUrls={mdCreate.iframeAllowedUrls}
+        onError={mdCreate.onError}
+      />
+      <TemplatePicker {...createSubspace.picker} />
+      <ConfirmationDialog
+        open={createSubspace.overwriteConfirmOpen}
+        onOpenChange={open => {
+          if (!open) createSubspace.onCancelOverwriteTemplate();
+        }}
+        title={t('subspaces.createDialog.template.overwriteConfirm.title')}
+        description={t('subspaces.createDialog.template.overwriteConfirm.description')}
+        confirmLabel={t('subspaces.createDialog.template.overwriteConfirm.confirm')}
+        cancelLabel={t('subspaces.createDialog.template.overwriteConfirm.cancel')}
+        onConfirm={createSubspace.onConfirmOverwriteTemplate}
+        onCancel={createSubspace.onCancelOverwriteTemplate}
       />
 
       <ChangeDefaultSubspaceTemplateDialog
@@ -446,52 +606,6 @@ export default function CrdSpaceSettingsPage() {
         loading={subspacesTab.subspaceTemplatesLoading}
         onSave={subspacesTab.onSelectDefaultTemplate}
         saving={subspacesTab.subspaceTemplatesSaving}
-      />
-
-      <TemplatePreviewDialog
-        open={templatesTab.actions.previewOpen}
-        onOpenChange={open => {
-          if (!open) templatesTab.actions.onClosePreview();
-        }}
-        loading={templatesTab.actions.previewLoading}
-        template={templatesTab.actions.previewData}
-        canEdit={true}
-        canDuplicate={true}
-        onEdit={templatesTab.actions.onSwitchPreviewToEdit}
-        onDuplicate={() => void templatesTab.actions.onDuplicateFromPreview()}
-        duplicating={templatesTab.actions.duplicating}
-      />
-
-      <TemplateEditDialog
-        open={templatesTab.actions.editOpen}
-        onOpenChange={open => {
-          if (!open) templatesTab.actions.onCloseEdit();
-        }}
-        loading={templatesTab.actions.editLoading}
-        submitting={templatesTab.actions.editSubmitting}
-        values={templatesTab.actions.editValues}
-        errors={templatesTab.actions.editErrors}
-        isPostTemplate={templatesTab.actions.editIsPost}
-        advancedContentNotice={templatesTab.actions.editAdvancedNotice}
-        onChange={templatesTab.actions.onEditChange}
-        onSubmit={() => void templatesTab.actions.onEditSave()}
-        canSubmit={
-          !templatesTab.actions.editSubmitting && templatesTab.actions.editValues.displayName.trim().length >= 3
-        }
-      />
-
-      <TemplateLibraryDialog
-        open={templatesTab.library.open}
-        onOpenChange={open => {
-          if (!open) templatesTab.library.close();
-        }}
-        templateTypeLabel={templatesTab.library.templateTypeLabel}
-        sections={templatesTab.library.sections}
-        canLoadPlatform={templatesTab.library.canLoadPlatform}
-        platformLoaded={templatesTab.library.platformLoaded}
-        onLoadPlatform={templatesTab.library.onLoadPlatform}
-        onSelect={tmpl => void templatesTab.library.onSelect(tmpl)}
-        loadingSelect={templatesTab.library.loadingSelect}
       />
 
       <ImageCropDialog
@@ -520,21 +634,6 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={subspacesTab.confirmDelete}
         onCancel={subspacesTab.cancelDelete}
-      />
-
-      <ConfirmationDialog
-        open={templatesTab.pendingDelete !== null}
-        onOpenChange={open => {
-          if (!open && !templatesTab.deleting) templatesTab.cancelDelete();
-        }}
-        variant="destructive"
-        title={t('templates.deleteDialog.title')}
-        description={t('templates.deleteDialog.description', { name: templatesTab.pendingDelete?.name ?? '' })}
-        confirmLabel={t('templates.deleteDialog.confirm')}
-        cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={templatesTab.confirmDelete}
-        onCancel={templatesTab.cancelDelete}
-        loading={templatesTab.deleting}
       />
 
       <ConfirmationDialog
@@ -597,6 +696,13 @@ export default function CrdSpaceSettingsPage() {
         onCancel={() => {
           community.cancelRemoval();
           setRemoveOriginatedFromDialog(false);
+        }}
+      />
+
+      <MembershipDetailDialogConnector
+        membership={viewingMembership}
+        onOpenChange={open => {
+          if (!open) setViewingMembership(null);
         }}
       />
 
@@ -740,22 +846,6 @@ export default function CrdSpaceSettingsPage() {
       />
 
       <ConfirmationDialog
-        open={about.pendingReferenceDelete !== null}
-        onOpenChange={open => {
-          if (!open) about.onCancelRemoveReference();
-        }}
-        variant="destructive"
-        title={t('about.references.deleteDialog.title')}
-        description={t('about.references.deleteDialog.description', {
-          name: about.pendingReferenceDelete?.title || t('about.references.deleteDialog.untitled'),
-        })}
-        confirmLabel={t('about.references.deleteDialog.confirm')}
-        cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={about.onConfirmRemoveReference}
-        onCancel={about.onCancelRemoveReference}
-      />
-
-      <ConfirmationDialog
         open={layoutDiscardOpen}
         onOpenChange={setLayoutDiscardOpen}
         variant="destructive"
@@ -778,9 +868,45 @@ export default function CrdSpaceSettingsPage() {
         saveLabel={t('dirtyGuard.save')}
         discardLabel={t('dirtyGuard.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
+        loading={switchingSave}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}
+      />
+
+      {/* Community-guidelines + Subspace save-as both drive this shared `<TemplateFormDialog>`
+          via the unified `saveAs` instance (FR-038 / T070 / T053). Only one of the two flows can
+          be open at a time; the dialog state is reset every time `openSaveAs` is called. */}
+      <TemplatePicker {...guidelinesTemplatePicker.pickerProps} />
+      <TemplatePicker {...defaultCalloutTemplatePicker.pickerProps} />
+      <TemplateFormDialog
+        open={saveAs.form.open}
+        intent={saveAs.form.intent}
+        type={saveAs.form.type}
+        commonValue={saveAs.form.commonValue}
+        commonErrors={saveAs.form.commonErrors}
+        onCommonChange={saveAs.form.onCommonChange}
+        perTypeFormSlot={saveAs.form.perTypeFormSlot}
+        submitting={saveAs.form.submitting}
+        onSubmit={saveAs.form.onSubmit}
+        onCancel={saveAs.form.onCancel}
+        isDirty={saveAs.form.isDirty}
+      />
+      <ConfirmationDialog
+        open={confirmReplaceGuidelinesOpen}
+        onOpenChange={open => {
+          if (!open) setConfirmReplaceGuidelinesOpen(false);
+        }}
+        variant="destructive"
+        title={t('community.guidelines.applyConfirm.title')}
+        description={t('community.guidelines.applyConfirm.description')}
+        confirmLabel={t('community.guidelines.applyConfirm.confirm')}
+        cancelLabel={t('community.guidelines.applyConfirm.cancel')}
+        onConfirm={() => {
+          setConfirmReplaceGuidelinesOpen(false);
+          guidelinesTemplatePicker.openPicker();
+        }}
+        onCancel={() => setConfirmReplaceGuidelinesOpen(false)}
       />
     </div>
   );

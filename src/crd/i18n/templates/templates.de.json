@@ -1,0 +1,321 @@
+{
+  "manager": {
+    "title": "Vorlagen",
+    "subtitle": "Wiederverwendbare Vorlagen für diesen Bereich.",
+    "search": "Vorlagen suchen…",
+    "addNew": "Hinzufügen",
+    "createNew": "Neu erstellen",
+    "selectFromLibrary": "Aus Bibliothek auswählen",
+    "duplicating": "Wird erstellt…",
+    "deleting": "Wird gelöscht…",
+    "noTemplates": "Noch keine Vorlagen",
+    "noTemplatesHint": "Erstelle eine oder importiere eine aus der Bibliothek.",
+    "noTemplatesReadOnly": "Noch keine Vorlagen.",
+    "sectionList": "Vorlagen-Abschnitte",
+    "templateList": "Vorlagen",
+    "sections": {
+      "space": {
+        "title": "Bereichsvorlagen",
+        "subtitle": "Strukturiere einen Bereich mit vordefinierten Phasen und Starter-Tools."
+      },
+      "callout": {
+        "title": "Kollaborationswerkzeuge",
+        "subtitle": "Wiederverwendbare Callouts für Workshops, Brainstormings und Gruppenaktivitäten."
+      },
+      "whiteboard": {
+        "title": "Whiteboard-Vorlagen",
+        "subtitle": "Leinwand-Layouts für visuelle Zusammenarbeit."
+      },
+      "post": {
+        "title": "Beitragsvorlagen",
+        "subtitle": "Standardisierte Dokumente für Projekte und Entscheidungen."
+      },
+      "communityGuidelines": {
+        "title": "Vorlagen für Community-Richtlinien",
+        "subtitle": "Regeln und Erwartungen für eine Community."
+      }
+    }
+  },
+  "card": {
+    "actions": "Vorlagen-Aktionen",
+    "preview": "Vorschau",
+    "edit": "Bearbeiten",
+    "duplicate": "Duplizieren",
+    "delete": "Löschen",
+    "noPreview": "Keine Vorschau"
+  },
+  "framingKind": {
+    "none": "Text",
+    "whiteboard": "Whiteboard",
+    "memo": "Memo",
+    "document": "Dokument",
+    "cta": "Link",
+    "image": "Galerie",
+    "poll": "Umfrage"
+  },
+  "contributionType": {
+    "post": "Beiträge",
+    "whiteboard": "Whiteboards",
+    "link": "Links",
+    "memo": "Memos"
+  },
+  "preview": {
+    "loading": "Vorlage wird geladen…",
+    "edit": "Vorlage bearbeiten",
+    "close": "Schließen",
+    "empty": "—",
+    "callout": {
+      "framingKind": "Inhaltstyp",
+      "framing": "Inhalt",
+      "allowedContributions": "Erlaubte Beiträge",
+      "noContributions": "Keine Beiträge",
+      "comments": "Kommentare aktiviert",
+      "commentsDisabled": "Kommentare deaktiviert",
+      "defaultPostDescription": "Standard-Beitragsbeschreibung",
+      "defaultWhiteboard": "Standard-Whiteboard",
+      "links": "Links",
+      "gallery": "Galerie",
+      "pollQuestion": "Frage",
+      "pollOptions": "Optionen"
+    },
+    "whiteboard": {
+      "empty": "Diese Whiteboard-Vorlage enthält keine Zeichnung."
+    },
+    "post": {
+      "defaultDescription": "Standardbeschreibung"
+    },
+    "space": {
+      "phases": "Phasen",
+      "starterCallouts": "Starter-Tools",
+      "subspaceTemplates": "Vorlagen für Unterbereiche",
+      "none": "Keine"
+    },
+    "communityGuidelines": {
+      "title": "Titel der Richtlinien",
+      "body": "Richtlinien",
+      "references": "Referenzen"
+    }
+  },
+  "picker": {
+    "title": "Vorlage verwenden",
+    "importTitle": "Vorlagen-Bibliothek",
+    "search": "Vorlagen suchen…",
+    "noTemplates": "Keine Vorlagen verfügbar.",
+    "noTemplatesForType": "Keine Vorlagen für diesen Typ verfügbar.",
+    "sources": {
+      "space": "Dieser Bereich",
+      "account": "Dein Account",
+      "platform": "Plattform"
+    },
+    "select": "Diese Vorlage verwenden",
+    "noTemplate": "Keine Vorlage — leer beginnen",
+    "import": "Importieren",
+    "inThisSet": "In dieser Sammlung",
+    "remove": "Aus Sammlung entfernen",
+    "selectPreviewHint": "Wähle eine Vorlage, um eine Vorschau anzuzeigen.",
+    "close": "Schließen",
+    "done": "Fertig"
+  },
+  "form": {
+    "createTitle": {
+      "space": "Bereichsvorlage erstellen",
+      "callout": "Kollaborationswerkzeug-Vorlage erstellen",
+      "whiteboard": "Whiteboard-Vorlage erstellen",
+      "post": "Beitragsvorlage erstellen",
+      "communityGuidelines": "Vorlage für Community-Richtlinien erstellen"
+    },
+    "editTitle": {
+      "space": "Bereichsvorlage bearbeiten",
+      "callout": "Kollaborationswerkzeug-Vorlage bearbeiten",
+      "whiteboard": "Whiteboard-Vorlage bearbeiten",
+      "post": "Beitragsvorlage bearbeiten",
+      "communityGuidelines": "Vorlage für Community-Richtlinien bearbeiten"
+    },
+    "common": {
+      "name": "Vorlagenname",
+      "namePlaceholder": "z. B. Projekt-Kickoff",
+      "nameRequired": "Ein Vorlagenname ist erforderlich.",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Wofür ist diese Vorlage?",
+      "tags": "Tags",
+      "tagsPlaceholder": "Tag hinzufügen und Enter drücken",
+      "banner": "Vorschaubild",
+      "uploadBanner": "Vorschaubild hochladen"
+    },
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "whiteboard": {
+      "drawing": "Whiteboard",
+      "editDrawing": "Zeichnung bearbeiten",
+      "startDrawing": "Zeichnen beginnen",
+      "previewSettings": "Vorschau-Einstellungen",
+      "editPreview": "Vorschau bearbeiten",
+      "previewImage": "Vorschaubild",
+      "uploadPreviewImage": "Vorschaubild hochladen"
+    },
+    "post": {
+      "defaultDescription": "Standardbeschreibung",
+      "defaultDescriptionPlaceholder": "Vorausgefüllter Inhalt für neue Beiträge, die diese Vorlage nutzen"
+    },
+    "space": {
+      "source": "Quell-Bereich",
+      "sourceRequired": "Füge zuerst eine Bereichs-URL ein und klicke auf \"Diesen Bereich verwenden\".",
+      "recursive": "Verschachtelte Unterbereiche einbeziehen",
+      "capturedStructure": "Erfasste Struktur",
+      "urlLoader": {
+        "description": "Füge die URL eines Bereichs oder Unterbereichs ein, dessen Struktur du kopieren möchtest.",
+        "placeholder": "https://…",
+        "use": "Diesen Bereich verwenden",
+        "selectAnother": "Anderen Bereich auswählen",
+        "resolving": "Wird geprüft…",
+        "errors": {
+          "required": "Füge zuerst eine Bereichs-URL ein.",
+          "invalidUrl": "Diese URL verweist nicht auf einen Bereich.",
+          "notFound": "Bereich nicht gefunden.",
+          "noRights": "Du benötigst Adminrechte für den Bereich, den du als Vorlage kopieren möchtest."
+        }
+      }
+    },
+    "communityGuidelines": {
+      "title": "Titel der Richtlinien",
+      "titlePlaceholder": "z. B. Unsere Community-Werte",
+      "titleRequired": "Ein Titel für die Richtlinien ist erforderlich.",
+      "body": "Richtlinien",
+      "bodyPlaceholder": "Schreibe die Richtlinien für diese Community…",
+      "references": "Referenzen"
+    }
+  },
+  "references": {
+    "add": "Referenz hinzufügen",
+    "name": "Name",
+    "uri": "URL",
+    "description": "Beschreibung",
+    "remove": "Referenz entfernen",
+    "nameRequired": "Ein Name ist erforderlich.",
+    "uriRequired": "Eine URL ist erforderlich."
+  },
+  "discard": {
+    "title": "Änderungen verwerfen?",
+    "body": "Du hast nicht gespeicherte Änderungen. Möchtest du sie verwerfen?",
+    "confirm": "Verwerfen",
+    "cancel": "Weiter bearbeiten"
+  },
+  "delete": {
+    "title": "Vorlage löschen?",
+    "body": "„{{name}}“ wird endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Vorlage löschen",
+    "cancel": "Abbrechen"
+  },
+  "removeFromSet": {
+    "title": "Diese Vorlage entfernen?",
+    "body": "„{{name}}“ wird aus dieser Sammlung entfernt. Das Original in der Bibliothek bleibt unverändert.",
+    "confirm": "Entfernen",
+    "cancel": "Abbrechen"
+  },
+  "setDefault": {
+    "subspaceTitle": "Standard-Vorlage für Unterbereich",
+    "subspaceSubtitle": "Wird verwendet, um das Formular beim Erstellen eines Unterbereichs dieses Bereichs vorauszufüllen.",
+    "flowStateTitle": "Standard-Callout-Vorlage",
+    "flowStateSubtitle": "Wird verwendet, um das Formular beim Hinzufügen eines Callouts zu dieser Phase vorauszufüllen.",
+    "current": "Aktueller Standard",
+    "none": "Kein Standard",
+    "noCandidates": "In dieser Sammlung gibt es noch keine Bereichsvorlagen.",
+    "confirm": "Als Standard festlegen",
+    "clear": "Standard löschen",
+    "previewHint": "Wähle eine Vorlage, um eine Vorschau anzuzeigen.",
+    "cancel": "Abbrechen"
+  },
+  "saveAs": {
+    "fromCalloutTitle": "Callout als Vorlage speichern",
+    "fromGuidelinesTitle": "Richtlinien als Vorlage speichern",
+    "fromSubspaceTitle": "Unterbereich als Vorlage speichern",
+    "unsavedSourceTitle": "Speichere zuerst deine Änderungen",
+    "unsavedSourceBody": "Speichere oder verwerfe die ungespeicherten Änderungen, bevor du daraus eine Vorlage erstellst.",
+    "unsavedSourceConfirm": "OK"
+  },
+  "packAdmin": {
+    "subtitle": "Vorlagen in diesem Innovation Pack",
+    "detailsHeading": "Pack-Details",
+    "detailsSubtitle": "Aktualisiere den Namen, die Beschreibung, die Anbietereinstellungen und die Referenzen des Packs.",
+    "templatesHeading": "Vorlagen"
+  },
+  "packForm": {
+    "name": "Pack-Name",
+    "namePlaceholder": "z. B. Onboarding-Kit",
+    "nameRequired": "Ein Pack-Name ist erforderlich.",
+    "provider": "Anbieter",
+    "providerHint": "Der Anbieter ist die besitzende Organisation und kann hier nicht geändert werden.",
+    "avatar": "Avatar",
+    "avatarHint": "Quadratisches Bild, das in Pack-Karten und Headern verwendet wird.",
+    "uploadAvatar": "Avatar hochladen",
+    "changeAvatar": "Avatar ändern",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Worum geht es in diesem Innovation Pack?",
+    "tags": "Tags",
+    "tagsPlaceholder": "Tag hinzufügen und Enter drücken",
+    "references": "Referenzen",
+    "listedInStore": "Im Store gelistet",
+    "listedInStoreHint": "Zeige dieses Pack in der Innovation Library.",
+    "searchVisibility": "Such-Sichtbarkeit",
+    "searchVisibilityOptions": {
+      "public": "Öffentlich",
+      "authenticated": "Authentifizierte Benutzer",
+      "account": "Nur Account"
+    },
+    "searchVisibilityHints": {
+      "public": "Jeder — einschließlich nicht authentifizierter Besucher — kann dieses Pack über die Suche finden.",
+      "authenticated": "Angemeldete Benutzer können dieses Pack über die Suche finden.",
+      "account": "Nur Mitglieder des besitzenden Accounts können dieses Pack über die Suche finden."
+    },
+    "save": "Änderungen speichern"
+  },
+  "createPack": {
+    "title": "Innovation Pack erstellen",
+    "name": "Name",
+    "namePlaceholder": "z. B. Onboarding-Kit",
+    "nameRequired": "Ein Pack-Name ist erforderlich.",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Worum geht es in diesem Innovation Pack?",
+    "create": "Erstellen",
+    "cancel": "Abbrechen"
+  },
+  "deletePack": {
+    "title": "Innovation Pack löschen?",
+    "body": "„{{name}}“ und alle Vorlagen werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Pack löschen",
+    "cancel": "Abbrechen"
+  },
+  "packProfile": {
+    "shareTooltip": "Dieses Innovation Pack teilen",
+    "manage": "Dieses Pack verwalten"
+  },
+  "library": {
+    "title": "Innovationsbibliothek",
+    "subtitle": "Entdecke Vorlagen und Innovation Packs aus der gesamten Plattform.",
+    "pageTitle": "Innovationsbibliothek",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Es sind noch keine Innovation Packs verfügbar."
+    },
+    "templates": {
+      "heading": "Vorlagen",
+      "empty": "Keine Vorlagen entsprechen den gewählten Filtern."
+    },
+    "filter": {
+      "label": "Nach Typ filtern",
+      "all": "Alle",
+      "types": {
+        "space": "Bereiche",
+        "callout": "Kollaborationstools",
+        "whiteboard": "Whiteboards",
+        "post": "Beiträge",
+        "communityGuidelines": "Community-Richtlinien"
+      }
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} Vorlage",
+    "templateCount_other": "{{count}} Vorlagen",
+    "byProvider": "von {{name}}"
+  }
+}

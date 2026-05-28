@@ -205,9 +205,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
           <div>
             <div className="flex items-center gap-2">
               <span
+                className="text-subheader font-semibold"
                 style={{
-                  fontSize: "var(--text-base)",
-                  fontWeight: 600,
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -215,10 +214,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                 {fallbackChannel.name}
               </span>
               <span
+                className="text-body"
                 style={{
-                  fontSize: "var(--text-sm)",
                   color: "var(--muted-foreground)",
-                  fontWeight: "var(--font-weight-normal)" as any,
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
@@ -227,9 +225,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
             </div>
             <button
               onClick={() => navigate(`/space/${spaceSlug}/community`)}
-              className="transition-colors"
+              className="transition-colors text-caption"
               style={{
-                fontSize: "12px",
                 color: "var(--muted-foreground)",
                 fontFamily: "'Inter', sans-serif",
                 background: "none",
@@ -304,8 +301,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
               >
                 <Users style={{ width: 14, height: 14 }} />
                 <span
+                  className="text-control"
                   style={{
-                    fontSize: "var(--text-sm)",
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
@@ -316,8 +313,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
               <DropdownMenuItem className="gap-2 cursor-pointer">
                 <BellOff style={{ width: 14, height: 14 }} />
                 <span
+                  className="text-control"
                   style={{
-                    fontSize: "var(--text-sm)",
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
@@ -327,8 +324,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
               <DropdownMenuItem className="gap-2 cursor-pointer">
                 <Clock style={{ width: 14, height: 14 }} />
                 <span
+                  className="text-control"
                   style={{
-                    fontSize: "var(--text-sm)",
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
@@ -365,17 +362,16 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             autoFocus
-            className="flex-1 bg-transparent outline-none"
+            className="flex-1 bg-transparent outline-none text-body"
             style={{
-              fontSize: "var(--text-sm)",
               color: "var(--foreground)",
               fontFamily: "'Inter', sans-serif",
             }}
           />
           {searchQuery && (
             <span
+              className="text-caption"
               style={{
-                fontSize: "11px",
                 color: "var(--muted-foreground)",
                 whiteSpace: "nowrap",
                 fontFamily: "'Inter', sans-serif",
@@ -426,10 +422,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                   }}
                 />
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.6,
                     maxWidth: 320,
                     fontFamily: "'Inter', sans-serif",
                   }}
@@ -459,9 +454,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                   />
                 </div>
                 <h3
+                  className="text-section-title"
                   style={{
-                    fontSize: "var(--text-xl)",
-                    fontWeight: 600,
                     color: "var(--foreground)",
                     marginBottom: 8,
                     fontFamily: "'Inter', sans-serif",
@@ -470,10 +464,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                   Welcome to {fallbackChannel.name} chat!
                 </h3>
                 <p
+                  className="text-body"
                   style={{
-                    fontSize: "var(--text-sm)",
                     color: "var(--muted-foreground)",
-                    lineHeight: 1.7,
                     maxWidth: 420,
                     marginBottom: 24,
                     fontFamily: "'Inter', sans-serif",
@@ -487,11 +480,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                     (prompt) => (
                       <button
                         key={prompt}
-                        className="rounded-full transition-colors"
+                        className="rounded-full transition-colors text-control"
                         style={{
                           padding: "8px 20px",
-                          fontSize: "var(--text-sm)",
-                          fontWeight: "var(--font-weight-medium)" as any,
                           background: "var(--secondary)",
                           color: "var(--foreground)",
                           border: "1px solid var(--border)",
@@ -520,11 +511,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
               <button
                 onClick={handleLoadMore}
                 disabled={loadingMore}
-                className="flex items-center gap-2 rounded-full transition-colors"
+                className="flex items-center gap-2 rounded-full transition-colors text-caption font-medium"
                 style={{
                   padding: "6px 18px",
-                  fontSize: "12px",
-                  fontWeight: "var(--font-weight-medium)" as any,
                   color: "var(--muted-foreground)",
                   background: "var(--secondary)",
                   border: "1px solid var(--border)",
@@ -562,9 +551,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                       style={{ padding: "24px 0 16px" }}
                     >
                       <span
+                        className="text-caption font-medium"
                         style={{
-                          fontSize: "11px",
-                          fontWeight: "var(--font-weight-medium)" as any,
                           color: "var(--muted-foreground)",
                           background: "var(--secondary)",
                           padding: "4px 16px",
@@ -614,9 +602,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             alt={msg.senderName}
                           />
                           <AvatarFallback
+                            className="text-caption font-semibold"
                             style={{
-                              fontSize: "11px",
-                              fontWeight: 600,
                               fontFamily: "'Inter', sans-serif",
                             }}
                           >
@@ -635,9 +622,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                           style={{ marginBottom: 2 }}
                         >
                           <span
+                            className="text-card-title"
                             style={{
-                              fontSize: "var(--text-sm)",
-                              fontWeight: 600,
                               color: "var(--foreground)",
                               fontFamily: "'Inter', sans-serif",
                             }}
@@ -645,8 +631,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             {msg.senderName}
                           </span>
                           <span
+                            className="text-caption"
                             style={{
-                              fontSize: "11px",
                               color: "var(--muted-foreground)",
                               fontFamily: "'Inter', sans-serif",
                             }}
@@ -673,7 +659,6 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                       {msg.replyTo && (
                         <div
                           style={{
-                            fontSize: "12px",
                             color: "var(--muted-foreground)",
                             padding: "6px 12px",
                             borderRadius: "var(--radius)",
@@ -683,9 +668,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             maxWidth: 480,
                             fontFamily: "'Inter', sans-serif",
                           }}
-                          className="truncate"
+                          className="truncate text-caption"
                         >
-                          <span style={{ fontWeight: 600 }}>
+                          <span className="font-semibold">
                             {msg.replyTo.senderName}:
                           </span>{" "}
                           {msg.replyTo.content}
@@ -710,12 +695,10 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             }}
                             autoFocus
                             rows={2}
-                            className="w-full resize-none outline-none rounded-md"
+                            className="w-full resize-none outline-none rounded-md text-body"
                             style={{
-                              fontSize: "var(--text-sm)",
                               color: "var(--foreground)",
                               fontFamily: "'Inter', sans-serif",
-                              lineHeight: 1.6,
                               padding: "8px 12px",
                               border: "1px solid var(--primary)",
                               background: "var(--input-background)",
@@ -725,11 +708,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleEditSave(msg.id)}
-                              className="rounded-md transition-colors"
+                              className="rounded-md transition-colors text-caption font-medium"
                               style={{
                                 padding: "4px 14px",
-                                fontSize: "12px",
-                                fontWeight: "var(--font-weight-medium)" as any,
                                 background: "var(--primary)",
                                 color: "var(--primary-foreground)",
                                 border: "none",
@@ -744,11 +725,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                                 setEditingId(null);
                                 setEditText("");
                               }}
-                              className="rounded-md transition-colors"
+                              className="rounded-md transition-colors text-caption font-medium"
                               style={{
                                 padding: "4px 14px",
-                                fontSize: "12px",
-                                fontWeight: "var(--font-weight-medium)" as any,
                                 background: "transparent",
                                 color: "var(--muted-foreground)",
                                 border: "1px solid var(--border)",
@@ -771,11 +750,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                         </div>
                       ) : (
                         <div
+                          className="text-body"
                           style={{
-                            fontSize: "var(--text-sm)",
-                            fontWeight: "var(--font-weight-normal)" as any,
                             color: "var(--foreground)",
-                            lineHeight: 1.7,
                             fontFamily: "'Inter', sans-serif",
                             wordBreak: "break-word" as const,
                           }}
@@ -786,14 +763,13 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                               part.startsWith("@") ? (
                                 <span
                                   key={i}
+                                  className="text-card-title"
                                   style={{
                                     color: "var(--primary)",
-                                    fontWeight: 600,
                                     background:
                                       "color-mix(in srgb, var(--primary) 10%, transparent)",
                                     padding: "1px 4px",
                                     borderRadius: "var(--radius)",
-                                    fontSize: "var(--text-sm)",
                                   }}
                                 >
                                   {part}
@@ -827,10 +803,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                           </span>
                           <div className="min-w-0 flex-1">
                             <p
-                              className="truncate"
+                              className="truncate text-body-emphasis"
                               style={{
-                                fontSize: "var(--text-sm)",
-                                fontWeight: "var(--font-weight-medium)" as any,
                                 margin: 0,
                                 color: "var(--foreground)",
                                 fontFamily: "'Inter', sans-serif",
@@ -839,8 +813,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                               {msg.attachment.name}
                             </p>
                             <span
+                              className="text-caption"
                               style={{
-                                fontSize: "11px",
                                 color: "var(--muted-foreground)",
                                 fontFamily: "'Inter', sans-serif",
                               }}
@@ -860,10 +834,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                           {msg.reactions.map((r, ri) => (
                             <button
                               key={ri}
-                              className="flex items-center gap-1 rounded-full transition-colors"
+                              className="flex items-center gap-1 rounded-full transition-colors text-caption"
                               style={{
                                 padding: "2px 10px",
-                                fontSize: "12px",
                                 border: r.reacted
                                   ? "1px solid var(--primary)"
                                   : "1px solid var(--border)",
@@ -880,8 +853,8 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                             >
                               <span>{r.emoji}</span>
                               <span
+                                className="font-medium"
                                 style={{
-                                  fontWeight: "var(--font-weight-medium)" as any,
                                   color: r.reacted
                                     ? "var(--primary)"
                                     : "var(--muted-foreground)",
@@ -962,10 +935,9 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
                       ))}
                       {/* Reply */}
                       <button
-                        className="p-1 rounded-sm transition-colors"
+                        className="p-1 rounded-sm transition-colors text-caption"
                         style={{
                           color: "var(--muted-foreground)",
-                          fontSize: "12px",
                           lineHeight: 1,
                         }}
                         onMouseEnter={(e) =>
@@ -1023,13 +995,11 @@ export function SpaceChannelView({ spaceSlug }: SpaceChannelViewProps) {
         {showNewMessageToast && (
           <button
             onClick={scrollToBottom}
-            className="sticky bottom-4 left-1/2 flex items-center gap-1.5 rounded-full transition-all z-10"
+            className="sticky bottom-4 left-1/2 flex items-center gap-1.5 rounded-full transition-all z-10 text-caption font-medium"
             style={{
               marginLeft: "auto",
               marginRight: "auto",
               padding: "6px 16px",
-              fontSize: "12px",
-              fontWeight: "var(--font-weight-medium)" as any,
               background: "var(--primary)",
               color: "var(--primary-foreground)",
               boxShadow: "var(--elevation-sm)",

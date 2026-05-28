@@ -1,10 +1,18 @@
-import { Activity, Bot, CalendarDays, Info, Layers, List, Users } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Info, List, PanelLeftClose, PanelLeftOpen, Users } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
+import { SubspacesSection } from './sidebar/SubspacesSection';
+
+type SubspaceWidgetItem = {
+  name: string;
+  initials: string;
+  href: string;
+  avatarUrl?: string;
+};
 
 export type SubspaceLeadData = {
   id: string;
@@ -39,6 +47,24 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
   /** "About this Subspace" button — opens the read-only about dialog. */
   onAboutClick: () => void;
   onQuickActionClick: (id: SubspaceQuickActionId) => void;
+  /** Nested subspaces of the current subspace (used by the widget under the nav). */
+  subspaces?: SubspaceWidgetItem[];
+  /** Opens the Subspaces dialog with the full list. */
+  onShowAllSubspaces?: () => void;
+  /** Navigate to a nested subspace from the widget row. */
+  onSubspaceClick?: (href: string) => void;
+  /** Opens the Create Subspace dialog. Surfaced as a "Create" link in the
+   *  widget header when there are no nested subspaces yet. */
+  onCreateSubspace?: () => void;
+  /**
+   * Desktop collapse state. When `onToggleCollapse` is provided, a "Collapse"
+   * button is rendered; when `collapsed` is also true the sidebar shrinks to a
+   * thin icon rail (expand affordance + quick-action icons). Persistence lives
+   * in the consumer. When `onToggleCollapse` is omitted (e.g. the mobile
+   * drawer) the sidebar is always full and not collapsible.
+   */
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
   className?: string;
 };
 
@@ -49,7 +75,6 @@ const QUICK_ACTIONS: QuickActionDef[] = [
   { id: 'events', icon: CalendarDays },
   { id: 'activity', icon: Activity },
   { id: 'index', icon: List },
-  { id: 'subspaces', icon: Layers },
 ];
 
 export function SubspaceSidebar({
@@ -59,6 +84,12 @@ export function SubspaceSidebar({
   onEditClick,
   onAboutClick,
   onQuickActionClick,
+  subspaces,
+  onShowAllSubspaces,
+  onSubspaceClick,
+  onCreateSubspace,
+  collapsed,
+  onToggleCollapse,
   className,
 }: SubspaceSidebarProps) {
   const { t } = useTranslation('crd-subspace');
@@ -69,6 +100,40 @@ export function SubspaceSidebar({
     index: t('sidebar.quickActions.index'),
     subspaces: t('sidebar.quickActions.subspaces'),
   };
+
+  if (collapsed && onToggleCollapse) {
+    return (
+      <aside className={cn('flex flex-col items-center gap-2', className)} aria-label={t('a11y.sidebarNavigation')}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onToggleCollapse}
+          aria-label={t('sidebar.expand')}
+          title={t('sidebar.expand')}
+        >
+          <PanelLeftOpen className="w-4 h-4" aria-hidden="true" />
+        </Button>
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+        <ul role="list" className="flex flex-col items-center gap-1">
+          {QUICK_ACTIONS.map(({ id, icon: Icon }) => (
+            <li key={id}>
+              <button
+                type="button"
+                onClick={() => onQuickActionClick(id)}
+                aria-label={quickActionLabels[id]}
+                title={quickActionLabels[id]}
+                className="flex items-center justify-center size-9 rounded-md text-primary transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                style={{ background: 'color-mix(in srgb, var(--secondary) 30%, transparent)' }}
+              >
+                <Icon className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    );
+  }
 
   const leadItems: LeadItem[] = leads.map(lead => ({
     id: lead.id,
@@ -88,6 +153,13 @@ export function SubspaceSidebar({
         <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
         <span className="truncate text-body-emphasis">{t('sidebar.about')}</span>
       </Button>
+
+      {onToggleCollapse && (
+        <Button className="w-full uppercase gap-2 font-medium px-2" onClick={onToggleCollapse}>
+          <PanelLeftClose className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span className="truncate text-body-emphasis">{t('sidebar.collapse')}</span>
+        </Button>
+      )}
 
       <nav aria-label={t('sidebar.quickActions.heading')}>
         <p className="text-label uppercase mb-3 px-1 text-muted-foreground">{t('sidebar.quickActions.heading')}</p>
@@ -109,6 +181,15 @@ export function SubspaceSidebar({
           ))}
         </ul>
       </nav>
+
+      {subspaces && (subspaces.length > 0 || onCreateSubspace) && (
+        <SubspacesSection
+          subspaces={subspaces}
+          onShowAllClick={onShowAllSubspaces}
+          onSubspaceClick={onSubspaceClick}
+          onCreateClick={onCreateSubspace}
+        />
+      )}
 
       {virtualContributor && (
         <section className="p-4 rounded-lg bg-card border border-border">

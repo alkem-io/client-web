@@ -11,6 +11,7 @@ import {
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
   allowedActorsFromServer,
@@ -340,21 +341,21 @@ describe('mapFormToCalloutCreationInput — contribution settings', () => {
 
 describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
   it('tags: included on framing.tags only when non-empty; profile.tagsets is never set on create', () => {
-    const withTags = mapFormToCalloutCreationInput(baseValues({ tags: 'a, b' }), createOptions);
+    const withTags = mapFormToCalloutCreationInput(baseValues({ tags: ['a', 'b'] }), createOptions);
     expect(withTags.input.framing.tags).toEqual(['a', 'b']);
     expect((withTags.input.framing.profile as { tagsets?: unknown }).tagsets).toBeUndefined();
 
-    const blankTags = mapFormToCalloutCreationInput(baseValues({ tags: '   ' }), createOptions);
+    const blankTags = mapFormToCalloutCreationInput(baseValues({ tags: [] }), createOptions);
     expect(blankTags.input.framing.tags).toBeUndefined();
   });
 
-  it('references: dropped when title or url is blank, kept ones go on profile.referencesData', () => {
+  it('references: dropped when name or uri is blank, kept ones go on profile.referencesData', () => {
     const result = mapFormToCalloutCreationInput(
       baseValues({
         referenceRows: [
-          { title: 'Site', url: 'https://example.org', description: 'docs' },
-          { title: '', url: 'https://no-title.example', description: '' },
-          { title: 'No URL', url: '', description: '' },
+          { name: 'Site', uri: 'https://example.org', description: 'docs' },
+          { name: '', uri: 'https://no-title.example', description: '' },
+          { name: 'No URL', uri: '', description: '' },
         ],
       }),
       createOptions
@@ -397,7 +398,13 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(noResponse.input.contributionDefaults).toBeUndefined();
   });
 
-  it('contributionDefaults: empty whiteboardContent is omitted for whiteboard responses (create + update)', () => {
+  it('contributionDefaults on create: empty whiteboardContent falls back to EmptyWhiteboardString (MUI parity)', () => {
+    // MUI's CreateCalloutDialog (CreateCalloutDialog.tsx) always sends
+    // `contributionDefaults.whiteboardContent` when allowedTypes includes
+    // Whiteboard — its form initializes the field to `EmptyWhiteboardString`,
+    // not `''`. The server requires a valid initial canvas to seed new
+    // whiteboard contributions; omitting it makes "+ Add whiteboard" fail
+    // even though the callout itself was created.
     const create = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'whiteboard',
@@ -405,8 +412,14 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
       }),
       createOptions
     );
-    expect(create.input.contributionDefaults).toBeUndefined();
+    expect(create.input.contributionDefaults).toEqual({
+      defaultDisplayName: undefined,
+      postDescription: undefined,
+      whiteboardContent: EmptyWhiteboardString,
+    });
+  });
 
+  it('contributionDefaults on update: empty whiteboardContent stays undefined (server preserves existing default)', () => {
     const update = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'whiteboard',
@@ -500,13 +513,13 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect(result.input.framing?.profile?.description).toBe('desc');
   });
 
-  it('references: only rows with id pass; blank title/url filtered out; tagsets absent without editMeta tagsetId', () => {
+  it('references: only rows with id pass; blank name/uri filtered out; tagsets absent without editMeta tagsetId', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
         referenceRows: [
-          { id: 'ref-1', title: 'A', url: 'https://a', description: 'desc' },
-          { id: undefined, title: 'New row no id yet', url: 'https://new', description: '' },
-          { id: 'ref-2', title: '', url: 'https://no-title', description: '' },
+          { id: 'ref-1', name: 'A', uri: 'https://a', description: 'desc' },
+          { id: undefined, name: 'New row no id yet', uri: 'https://new', description: '' },
+          { id: 'ref-2', name: '', uri: 'https://no-title', description: '' },
         ],
       }),
       updateOptions
@@ -520,8 +533,12 @@ describe('mapFormToCalloutUpdateInput', () => {
   it('tagsets: included only when editMeta.framingProfileTagsetId is present', () => {
     const result = mapFormToCalloutUpdateInput(
       baseValues({
-        tags: 'a, b',
-        editMeta: { framingProfileTagsetId: 'tagset-1' },
+        tags: ['a', 'b'],
+        editMeta: {
+          framingProfileTagsetId: 'tagset-1',
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+        },
       }),
       updateOptions
     );
@@ -559,7 +576,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: 'X',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );
@@ -582,7 +599,7 @@ describe('mapFormToCalloutUpdateInput', () => {
         framingChip: 'cta',
         linkUrl: 'https://x',
         linkDisplayName: '',
-        editMeta: { framingLinkId: 'link-1' },
+        editMeta: { framingLinkId: 'link-1', framingProfileId: 'framing-profile-id', originalReferenceIds: [] },
       }),
       updateOptions
     );

@@ -1,16 +1,13 @@
 {
-  "badge": {
-    "subspace": "SousEspace",
-    "subSubspace": "SousSousEspace"
-  },
   "actions": {
     "activity": "Activité récente",
     "videoCall": "Démarrer un appel vidéo",
     "share": "Partager",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "expandWidth": "Étendre à pleine largeur",
+    "collapseWidth": "Réduire à la mise en page centrée"
   },
   "members": {
-    "viewCommunity": "Voir les membres de la communauté",
     "memberCount_one": "{{count}} membre",
     "memberCount_other": "{{count}} membres"
   },
@@ -26,6 +23,8 @@
     "about": "À propos de ce SousEspace",
     "lead": "Responsable",
     "leads": "Responsables",
+    "collapse": "Réduire",
+    "expand": "Développer",
     "quickActions": {
       "heading": "Actions rapides",
       "community": "Communauté",
@@ -62,7 +61,6 @@
   },
   "a11y": {
     "subspaceBanner": "Bannière du SousEspace pour {{name}}",
-    "parentLink": "Aller à l'espace parent {{name}}",
     "flowTabs": "Phases du flux d'innovation",
     "sidebarNavigation": "Barre latérale du SousEspace",
     "communityDialog": "Dialogue des membres de la communauté",

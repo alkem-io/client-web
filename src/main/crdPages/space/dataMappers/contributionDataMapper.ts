@@ -1,3 +1,7 @@
+import type { Locale } from 'date-fns';
+import { isFileAttachmentUrl } from '@/core/utils/links';
+import { formatShortDate } from '@/crd/lib/dateTimeFormat';
+
 type ContributionCardData = {
   id: string;
   type: 'post' | 'memo' | 'whiteboard' | 'link';
@@ -16,9 +20,38 @@ type ContributionCardData = {
   postId?: string;
   linkUrl?: string;
   linkDescription?: string;
+  /** For link contributions: the underlying link id (different from the contribution wrapper id). Used by update/delete mutations. */
+  linkId?: string;
+  /** For link contributions: whether the current user can update this specific link. */
+  canEditLink?: boolean;
+  /** For link contributions: whether the current user can delete this specific link. */
+  canDeleteLink?: boolean;
+  /** For link contributions: true when `linkUrl` points to our private storage (uploaded document) rather than an external URL. */
+  linkIsFile?: boolean;
 };
 
 export type { ContributionCardData };
+
+/** Shape consumed by `ContributionLinkList`. Kept identical across feed + dialog connectors so the mapping lives in one place. */
+export type LinkListItem = {
+  id: string;
+  url: string;
+  displayName: string;
+  description?: string;
+  isFile?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+};
+
+export const mapContributionToLinkItem = (c: ContributionCardData): LinkListItem => ({
+  id: c.id,
+  url: c.linkUrl ?? '',
+  displayName: c.title,
+  description: c.linkDescription,
+  isFile: c.linkIsFile,
+  canEdit: c.canEditLink,
+  canDelete: c.canDeleteLink,
+});
 
 type ContributionQueryData = {
   id: string;
@@ -65,6 +98,7 @@ export function mapContributionToCardData(
     createdDate: contribution.createdDate,
     linkUrl: contribution.link?.uri,
     linkDescription: contribution.link?.profile?.description ?? undefined,
+    linkIsFile: contribution.link?.uri ? isFileAttachmentUrl(contribution.link.uri) : undefined,
   };
 }
 
@@ -120,9 +154,10 @@ type AnyContributionItem = {
   } | null;
 };
 
-function toDateString(date: Date | string | undefined): string | undefined {
-  if (!date) return undefined;
-  return date instanceof Date ? date.toISOString() : date;
+function toDateString(date: Date | string | undefined, locale?: Locale): string | undefined {
+  // Short localized date (e.g. `05/13/2026` in en-US) — the contribution-card
+  // surface only needs the day, not the precise timestamp the server returns.
+  return formatShortDate(date, locale);
 }
 
 function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
@@ -133,7 +168,10 @@ function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
   };
 }
 
-export function mapAnyContributionToCardData(item: AnyContributionItem): ContributionCardData | undefined {
+export function mapAnyContributionToCardData(
+  item: AnyContributionItem,
+  locale?: Locale
+): ContributionCardData | undefined {
   // Use `item.id` (contribution wrapper ID) — this is the ID the backend uses
   // to look up a contribution inside a callout (e.g. WhiteboardFromCallout query).
   if (item.post) {
@@ -147,7 +185,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       tags: post.profile.tagset?.tags ?? [],
       previewUrl: post.profile.visual?.uri,
       author: extractAuthor(post.createdBy),
-      createdDate: toDateString(post.createdDate),
+      createdDate: toDateString(post.createdDate, locale),
       commentCount: post.comments?.messagesCount,
       postId: post.id,
     };
@@ -162,7 +200,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       href: wb.profile.url,
       previewUrl: wb.profile.visual?.uri,
       author: extractAuthor(wb.createdBy),
-      createdDate: toDateString(wb.createdDate),
+      createdDate: toDateString(wb.createdDate, locale),
     };
   }
 
@@ -176,18 +214,23 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
       markdownContent: memo.markdown,
       memoId: memo.id,
       author: extractAuthor(memo.createdBy),
-      createdDate: toDateString(memo.createdDate),
+      createdDate: toDateString(memo.createdDate, locale),
     };
   }
 
   if (item.link) {
     const link = item.link;
+    const privileges = link.authorization?.myPrivileges ?? [];
     return {
       id: item.id,
       type: 'link',
       title: link.profile.displayName,
       linkUrl: link.uri,
       linkDescription: link.profile.description ?? undefined,
+      linkId: link.id,
+      canEditLink: privileges.includes('UPDATE'),
+      canDeleteLink: privileges.includes('DELETE'),
+      linkIsFile: isFileAttachmentUrl(link.uri),
     };
   }
 

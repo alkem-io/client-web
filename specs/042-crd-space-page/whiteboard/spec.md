@@ -79,7 +79,6 @@ The editor shell accepts `headerActions` and `titleExtra` as `ReactNode` slots. 
 |---|---|---|
 | `ShareButton` | `headerActions` | Opens MUI ShareDialog portal |
 | `FullscreenButton` | `headerActions` | Toggles fullscreen |
-| `SaveRequestIndicatorIcon` | `headerActions` | Save status dot |
 | `WhiteboardPreviewSettingsButton` | `headerActions` | Opens MUI preview settings dialog |
 | `WhiteboardDialogTemplatesLibrary` | `titleExtra` | Opens MUI template import dialog |
 
@@ -93,6 +92,8 @@ These stay MUI until their respective domains are migrated. They render as porta
 - CRD collaborative footer (delete, readonly reason, guest warning, restart, guest access badge)
 - CRD save footer (Save + Delete buttons for single-user mode)
 - CRD inline-editable display name component
+- CRD save-status indicator (cloud icon + hover tooltip + detail dialog) replacing the MUI `SaveRequestIndicatorIcon` in CRD whiteboard surfaces
+- CRD "whiteboard disconnected" dialog (Reconnect + auto-reconnect countdown, no "Ok" button) replacing the MUI notice for CRD whiteboards, via an optional `renderDisconnectNotice` slot on the shared wrapper
 - CRD preview settings dialog (Auto/Custom/Fixed mode selector)
 - CRD preview crop dialog (image crop/zoom/pan with `react-image-crop`)
 - CRD public whiteboard page (`/public/whiteboard/:id` route)
@@ -109,7 +110,7 @@ These stay MUI until their respective domains are migrated. They render as porta
 
 ### Out of Scope (stays unchanged)
 
-- **Excalidraw engine**: `ExcalidrawWrapper`, `CollaborativeExcalidrawWrapper` -- rendered by integration layer, passed to CRD shell as opaque `children`
+- **Excalidraw engine**: `ExcalidrawWrapper`, `CollaborativeExcalidrawWrapper` -- rendered by integration layer, passed to CRD shell as opaque `children`. (One additive, backward-compatible exception: `CollaborativeExcalidrawWrapper` gains an optional `renderDisconnectNotice` render-prop so CRD consumers can swap the built-in MUI disconnect dialog for the CRD one — see FR-WB-012b. MUI consumers omit it and are unchanged.)
 - **Collaboration stack**: `Collab` class (scene sync, mode management), `Portal` class (WebSocket + Y.js)
 - **File management**: `useWhiteboardFilesManager`, `FileUploader`, `FileDownloader`, `WhiteboardFileCache`
 - **Preview image generation logic**: `useGenerateWhiteboardVisuals`, `getWhiteboardPreviewImage`, canvas-to-PNG export -- stays in integration layer, passes Blob to CRD crop dialog
@@ -136,6 +137,8 @@ These stay MUI until their respective domains are migrated. They render as porta
 | `crd/components/whiteboard/WhiteboardDisplayName` | `WhiteboardDialog/WhiteboardDisplayName` | -- |
 | `crd/components/whiteboard/WhiteboardCollabFooter` | `WhiteboardDialog/WhiteboardDialogFooter` | -- |
 | `crd/components/whiteboard/WhiteboardSaveFooter` | `SingleUserWhiteboardDialog` footer (Save+Delete) | -- |
+| `crd/components/whiteboard/WhiteboardSaveStatus` | `realTimeCollaboration/SaveRequestIndicatorIcon` (kept for MUI surfaces) | -- |
+| `crd/components/whiteboard/WhiteboardDisconnectedDialog` | the MUI "collaboration stopped" dialog inside `CollaborativeExcalidrawWrapper` (kept for MUI surfaces) | -- |
 | **Preview Settings** | | |
 | `crd/components/whiteboard/PreviewSettingsDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog` | -- |
 | `crd/components/whiteboard/PreviewCropDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewCustomSelectionDialog` | -- |
@@ -148,6 +151,7 @@ These stay MUI until their respective domains are migrated. They render as porta
 | `main/crdPages/whiteboard/CrdWhiteboardDialog` | `WhiteboardDialog` (multi-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog` | `SingleUserWhiteboardDialog` (single-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdWhiteboardView` | `WhiteboardsManagement/WhiteboardView` | -- |
+| `main/crdPages/whiteboard/CrdWhiteboardSaveStatus` | (live elapsed-time formatting wrapper for `WhiteboardSaveStatus`) | -- |
 | `main/crdPages/whiteboard/CrdPublicWhiteboardPage` | `main/public/whiteboard/PublicWhiteboardPage` | -- |
 | `main/crdPages/space/callout/WhiteboardContributionAddConnector` | `calloutContributions/whiteboard/CreateContributionButtonWhiteboard` | -- |
 
@@ -228,7 +232,10 @@ A community member with `Contribute` + `CreateWhiteboard` privilege opens a call
 ### Whiteboard Editor Shell (US-WB2)
 
 - **FR-WB-011**: Editor shell must use CRD Dialog primitive in full-screen mode (or a full-viewport overlay)
+- **FR-WB-011a**: Dialog stacking — the editor shell renders at `z-[60]` (overlay + content). Every dialog opened from **inside** the editor must render at `z-[70]` (content + overlay, via `DialogContent`'s `className` + `overlayClassName`) so it stacks above the shell: the readonly-reason ("learn why") dialog, the template picker (FR-039), the save-status detail dialog (FR-WB-012a), the disconnect dialog (FR-WB-012b), the preview-settings selector (FR-WB-034), and the preview-crop dialog (FR-WB-038). New editor-spawned dialogs follow the same `z-[70]` convention.
 - **FR-WB-012**: Header must render: display name (left), headerActions slot (right), titleExtra slot (after title)
+- **FR-WB-012b**: When the collaborative connection drops, the editor shows a CRD "whiteboard disconnected" dialog (`WhiteboardDisconnectedDialog`) replacing the MUI notice. It keeps the Reconnect action with its live auto-reconnect countdown (`(Xs)`) but drops the MUI "Ok" button — the CRD `Dialog`'s close (X) / outside-click / Escape dismiss the notice instead. The shared `CollaborativeExcalidrawWrapper` exposes the notice state via an optional `renderDisconnectNotice` render-prop (contract `DisconnectNoticeRenderProps`); MUI consumers omit it and keep the built-in MUI dialog. Feature text (title, online/offline message, last-saved line) is resolved by the integration layer (`CrdWhiteboardDialog`) from the main `translation` namespace and passed as props; the CRD component owns only its `Reconnect` / `Close` labels via `crd-whiteboard` (`disconnected.*`).
+- **FR-WB-012a**: The header's save-status indicator is a CRD component (`WhiteboardSaveStatus`): a cloud icon (success / error, error tinted `destructive`) with a hover tooltip and a click-to-open detail dialog showing the last-saved time (saved state) or a save-error warning (error state). The dialog uses the CRD `Dialog` primitive, so it ships a built-in close (X) button and dismisses on outside-click / Escape. Live elapsed-time formatting and message composition live in the integration wrapper (`CrdWhiteboardSaveStatus`); the CRD component receives plain text / `ReactNode` props only. The legacy MUI `SaveRequestIndicatorIcon` is retained for the MUI whiteboard surfaces (`WhiteboardView`, MUI `PublicWhiteboardPage`, `UserPresencing`).
 - **FR-WB-013**: Display name component must support three modes: read-only (plain text), view (text + edit button), edit (input + save/cancel)
 - **FR-WB-014**: Display name save must call `onSave` callback and show loading state on the save button
 - **FR-WB-015**: Footer must render: left section (delete button + status message + restart button), right section (guest warning + guest access badge)

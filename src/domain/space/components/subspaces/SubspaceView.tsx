@@ -77,7 +77,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
       title: entity.about.profile.displayName,
       icon: childEntitiesIcon,
       uri: entity.about.profile.url,
-      cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
+      avatar: entity.about.profile?.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
       isPrivate: !entity.about.isContentPublic,
       pinned:
         sortMode !== SpaceSortMode.Custom && 'pinned' in entity ? (entity as { pinned?: boolean }).pinned : undefined,

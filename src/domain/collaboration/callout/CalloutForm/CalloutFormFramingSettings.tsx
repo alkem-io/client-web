@@ -365,6 +365,17 @@ const CalloutFormFramingSettings = ({
     }
   };
 
+  // Once a callout has been saved with a specific framing type, the user can
+  // switch it to None (which deletes the existing memo/whiteboard/document) but
+  // cannot adopt a DIFFERENT specific type — that would silently swap the
+  // framing entity out from under existing contributors and references. So in
+  // edit mode every non-None option that doesn't match the saved type is
+  // disabled. (None stays enabled regardless so the user can always discard.)
+  const lockNonCurrentFraming = edit;
+  const savedFramingType = framing.type;
+  const isFramingLocked = (optionValue: CalloutFramingType) =>
+    lockNonCurrentFraming && optionValue !== CalloutFramingType.None && optionValue !== savedFramingType;
+
   // Instantiating them here to be able to move them when the screen is small
   const radioButtons = (
     <FormikRadioButtonsGroup
@@ -381,14 +392,14 @@ const CalloutFormFramingSettings = ({
           value: CalloutFramingType.Whiteboard,
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
-          disabled: calloutRestrictions?.disableWhiteboards,
+          disabled: calloutRestrictions?.disableWhiteboards || isFramingLocked(CalloutFramingType.Whiteboard),
         },
         {
           icon: MemoIcon,
           value: CalloutFramingType.Memo,
           label: t('callout.create.framingSettings.memo.title'),
           tooltip: t('callout.create.framingSettings.memo.tooltip'),
-          disabled: calloutRestrictions?.disableMemos,
+          disabled: calloutRestrictions?.disableMemos || isFramingLocked(CalloutFramingType.Memo),
         },
         {
           icon: DescriptionOutlined,
@@ -397,28 +408,28 @@ const CalloutFormFramingSettings = ({
           tooltip: officeDocumentsEnabled
             ? t('callout.create.framingSettings.collaboraDocument.tooltip')
             : t('callout.create.framingSettings.collaboraDocument.notEnabledTooltip'),
-          disabled: !officeDocumentsEnabled,
+          disabled: !officeDocumentsEnabled || isFramingLocked(CalloutFramingType.CollaboraDocument),
         },
         {
           icon: CampaignIcon,
           value: CalloutFramingType.Link,
           label: t('callout.create.framingSettings.link.title'),
           tooltip: t('callout.create.framingSettings.link.tooltip'),
-          disabled: calloutRestrictions?.disableLinks,
+          disabled: calloutRestrictions?.disableLinks || isFramingLocked(CalloutFramingType.Link),
         },
         {
           icon: BurstModeOutlinedIcon,
           value: CalloutFramingType.MediaGallery,
           label: t('callout.create.framingSettings.mediaGallery.title'),
           tooltip: t('callout.create.framingSettings.mediaGallery.tooltip'),
-          disabled: calloutRestrictions?.disableMediaGallery,
+          disabled: calloutRestrictions?.disableMediaGallery || isFramingLocked(CalloutFramingType.MediaGallery),
         },
         {
           icon: ChecklistRtlIcon,
           value: CalloutFramingType.Poll,
           label: t('callout.create.framingSettings.poll.title'),
           tooltip: t('callout.create.framingSettings.poll.tooltip'),
-          disabled: calloutRestrictions?.disablePolls,
+          disabled: calloutRestrictions?.disablePolls || isFramingLocked(CalloutFramingType.Poll),
         },
       ]}
       onChange={handleFramingTypeChange}

@@ -1,25 +1,24 @@
-import { Home, Settings, Share2, Video } from 'lucide-react';
+import { Activity, FoldHorizontal, Home, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 
-type MemberAvatar = {
-  id: string;
-  url?: string;
-  initials: string;
-};
-
 type SpaceHeaderActions = {
-  showDocuments?: boolean;
   showVideoCall?: boolean;
   showShare?: boolean;
   showSettings?: boolean;
-  onDocumentsClick?: () => void;
+  showActivity?: boolean;
+  /** Shows the expand/collapse (full-width) toggle next to Activity. */
+  showFullWidthToggle?: boolean;
+  /** Current full-width state — drives the icon and pressed state. */
+  fullWidth?: boolean;
+  onActivityClick?: () => void;
   onVideoCallClick?: () => void;
   onShareClick?: () => void;
+  onToggleFullWidth?: () => void;
   videoCallUrl?: string;
   settingsHref?: string;
   onSettingsClick?: () => void;
@@ -32,9 +31,20 @@ type SpaceHeaderProps = {
   /** Deterministic accent colour shown as a gradient when `bannerUrl` is missing. */
   color?: string;
   isHomeSpace?: boolean;
-  memberAvatars: MemberAvatar[];
   actions: SpaceHeaderActions;
-  onMemberClick?: () => void;
+  /**
+   * When true, the banner slides under the sticky page header (h-16) so the header can render
+   * transparently over it (spec 100-space-header-layout A8). The title/buttons row stays below
+   * the banner — no in-banner overlay offset is needed in this layout because the only content
+   * inside the banner div is the image/gradient itself.
+   */
+  overlayHeader?: boolean;
+  /**
+   * When true, the title/actions row fills all 12 grid columns instead of the
+   * default `lg:col-start-2 lg:col-span-10` inset, aligning with a full-width
+   * `SpaceShell` body.
+   */
+  fullWidth?: boolean;
   className?: string;
 };
 
@@ -44,69 +54,85 @@ export function SpaceHeader({
   bannerUrl,
   color,
   isHomeSpace,
-  memberAvatars,
   actions,
-  onMemberClick,
+  overlayHeader = false,
+  fullWidth = false,
   className,
 }: SpaceHeaderProps) {
   const { t } = useTranslation('crd-space');
-  const displayedAvatars = memberAvatars.slice(0, 5);
-  const showAvatarStack = displayedAvatars.length > 0;
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
 
   return (
-    <div className={cn('flex flex-col bg-background', className)}>
-      <div
-        className="relative w-full h-[256px] overflow-hidden group"
-        role="img"
-        aria-label={t('a11y.spaceBanner', { name: title })}
-      >
-        {/* Background image — falls back to the deterministic colour gradient
-            when no banner image is provided, matching SpaceCard / SubspaceHeader. */}
-        <div
-          className={cn(
-            'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105',
-            !bannerUrl && !color && 'bg-muted'
-          )}
-          style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined}
-        />
-        {/* Gradient overlay — theme-invariant darkening pass so the white hero
-            title/tagline stay readable in both light and dark mode. Values
-            match prototype/src/app/components/space/SpaceHeader.tsx. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to top, rgba(29,56,74,0.4), rgba(102,102,102,0.08))',
-          }}
-        />
+    <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
+      {/* Banner — the collapsed layout insets the banner into the content grid
+          on desktop (aligning with the title row below and matching the MUI
+          banner sizing); mobile/tablet and the expanded layout keep the
+          edge-to-edge full-bleed banner. */}
+      <div className={cn('w-full', !fullWidth && 'lg:px-8')}>
+        <div className="grid grid-cols-12 gap-6">
+          <div
+            className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}
+            role="img"
+            aria-label={t('a11y.spaceBanner', { name: title })}
+          >
+            <div
+              className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && !color && 'bg-muted')}
+              style={
+                bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined
+              }
+            />
+          </div>
+        </div>
+      </div>
 
-        {/* Top-right action buttons */}
-        <div className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8 pt-8">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
-              <div className="flex items-center gap-2">
-                {/* TODO: Documents action is not yet supported by the platform — re-enable
-                    once the activity/documents feature is wired up. Restore the `FileText`
-                    import from `lucide-react` at the top of this file when re-enabling.
-                {actions.showDocuments && (
+      <div className="w-full px-6 md:px-8 pt-8 pb-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className={cn('col-span-12 flex flex-col gap-1', contentColumnClass(fullWidth))}>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <h1 className="text-hero text-foreground truncate">{title}</h1>
+                {isHomeSpace && (
+                  <>
+                    <Home className="h-5 w-5 text-muted-foreground shrink-0" aria-hidden="true" />
+                    <span className="sr-only">{t('banner.homeSpace')}</span>
+                  </>
+                )}
+              </div>
+              <div className="shrink-0 flex items-center gap-2">
+                {actions.showActivity && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
-                    onClick={actions.onDocumentsClick}
+                    className="h-9 w-9"
+                    onClick={actions.onActivityClick}
                     aria-label={t('mobile.activity')}
                   >
-                    <FileText className="h-4 w-4" aria-hidden="true" />
+                    <Activity className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
-                */}
+                {actions.showFullWidthToggle && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hidden lg:inline-flex"
+                    onClick={actions.onToggleFullWidth}
+                    aria-pressed={actions.fullWidth}
+                    aria-label={actions.fullWidth ? t('mobile.collapseWidth') : t('mobile.expandWidth')}
+                  >
+                    {actions.fullWidth ? (
+                      <FoldHorizontal className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <UnfoldHorizontal className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </Button>
+                )}
                 {actions.showVideoCall &&
                   (safeVideoCallUrl ? (
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                      className="h-9 w-9"
                       aria-label={t('mobile.videoCall')}
                       asChild={true}
                     >
@@ -118,7 +144,7 @@ export function SpaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                      className="h-9 w-9"
                       onClick={actions.onVideoCallClick}
                       aria-label={t('mobile.videoCall')}
                     >
@@ -129,7 +155,7 @@ export function SpaceHeader({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                    className="h-9 w-9"
                     onClick={actions.onShareClick}
                     aria-label={t('mobile.share')}
                   >
@@ -141,7 +167,7 @@ export function SpaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                      className="h-9 w-9"
                       aria-label={t('mobile.settings')}
                       asChild={true}
                     >
@@ -153,7 +179,7 @@ export function SpaceHeader({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 rounded text-white bg-black/20 hover:text-white/80 hover:bg-black/30"
+                      className="h-9 w-9"
                       onClick={actions.onSettingsClick}
                       aria-label={t('mobile.settings')}
                     >
@@ -162,63 +188,10 @@ export function SpaceHeader({
                   ))}
               </div>
             </div>
+
+            {tagline && <p className="text-body text-muted-foreground truncate">{tagline}</p>}
           </div>
         </div>
-
-        {/* Bottom: title + tagline (left) */}
-        <div className="relative h-full flex flex-col justify-end w-full px-6 md:px-8 pb-6">
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
-              <div className="max-w-3xl text-primary-foreground">
-                <div className="flex items-center gap-2 mb-4">
-                  <h1 className="font-bold tracking-tight leading-tight" style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
-                    {title}
-                  </h1>
-                  {isHomeSpace && (
-                    <>
-                      <Home className="h-5 w-5 text-primary-foreground/80 shrink-0" aria-hidden="true" />
-                      <span className="sr-only">{t('banner.homeSpace')}</span>
-                    </>
-                  )}
-                </div>
-                {tagline && <p className="max-w-xl text-body text-primary-foreground/90">{tagline}</p>}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Member avatar stack — bottom-right, aligned with the action-icon row above */}
-        {showAvatarStack && (
-          <div className="absolute bottom-6 left-0 right-0 px-6 md:px-8">
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex justify-end">
-                <button
-                  type="button"
-                  className="flex items-center gap-4 cursor-pointer transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
-                  onClick={onMemberClick}
-                  aria-label={t('members.title')}
-                >
-                  <div className="flex -space-x-2">
-                    {displayedAvatars.map(avatar => (
-                      <Avatar
-                        key={avatar.id}
-                        className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
-                      >
-                        {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}
-                        <AvatarFallback
-                          style={{ background: 'color-mix(in srgb, var(--primary) 20%, transparent)' }}
-                          className="text-caption text-primary-foreground"
-                        >
-                          {avatar.initials}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

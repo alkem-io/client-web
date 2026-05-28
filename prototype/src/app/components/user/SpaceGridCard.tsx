@@ -36,7 +36,7 @@ export function SpaceGridCard({
         )}
         <div className="absolute top-2 right-2 flex gap-2">
            {role !== "member" && (
-            <Badge variant="secondary" className="bg-background/90 backdrop-blur text-xs font-medium shadow-sm">
+            <Badge variant="secondary" className="bg-background/90 backdrop-blur text-caption font-medium shadow-sm">
               {role === "host" ? "Host" : "Facilitator"}
             </Badge>
           )}
@@ -49,18 +49,18 @@ export function SpaceGridCard({
       </div>
       
       <CardHeader className="p-4 pb-2">
-        <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
+        <h3 className="text-subsection-title group-hover:text-primary transition-colors line-clamp-1">
           {title}
         </h3>
       </CardHeader>
-      
+
       <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-between gap-4">
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-body text-muted-foreground line-clamp-2">
           {description}
         </p>
-        
+
         <div className="flex items-center justify-between pt-2 border-t mt-auto">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-caption text-muted-foreground">
             <Users className="w-3.5 h-3.5" />
             <span>{memberCount} members</span>
           </div>
@@ -68,7 +68,7 @@ export function SpaceGridCard({
             {[1, 2, 3].map((i) => (
               <Avatar key={i} className="w-6 h-6 border-2 border-background">
                 <AvatarImage src={`https://i.pravatar.cc/150?u=${title}${i}`} />
-                <AvatarFallback className="text-[9px]">U{i}</AvatarFallback>
+                <AvatarFallback className="text-badge">U{i}</AvatarFallback>
               </Avatar>
             ))}
           </div>

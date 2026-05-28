@@ -86,7 +86,7 @@ pnpm vitest run
 
 Test both paths — the CRD toggle is off by default in deployed envs, so the MUI framing dialog is the production-default path.
 
-**Toggle CRD on**: in the browser console, run `localStorage.setItem('alkemio-crd-enabled', 'true'); location.reload();`
+**Toggle CRD on**: in the browser console, run `localStorage.setItem('alkemio-design-version', '2'); location.reload();`
 
 **Save state feedback (FR-013, SC-007)**:
 1. Open a Collabora-framed callout's editor.

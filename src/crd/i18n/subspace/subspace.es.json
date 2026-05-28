@@ -1,16 +1,13 @@
 {
-  "badge": {
-    "subspace": "SubEspacio",
-    "subSubspace": "SubSubEspacio"
-  },
   "actions": {
     "activity": "Actividad reciente",
     "videoCall": "Iniciar videollamada",
     "share": "Compartir",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "expandWidth": "Ampliar a ancho completo",
+    "collapseWidth": "Contraer al diseño centrado"
   },
   "members": {
-    "viewCommunity": "Ver miembros de la comunidad",
     "memberCount_one": "{{count}} miembro",
     "memberCount_other": "{{count}} miembros"
   },
@@ -26,6 +23,8 @@
     "about": "Acerca de este SubEspacio",
     "lead": "Líder",
     "leads": "Líderes",
+    "collapse": "Contraer",
+    "expand": "Expandir",
     "quickActions": {
       "heading": "Acciones rápidas",
       "community": "Comunidad",
@@ -62,7 +61,6 @@
   },
   "a11y": {
     "subspaceBanner": "Banner del SubEspacio {{name}}",
-    "parentLink": "Ir al espacio principal {{name}}",
     "flowTabs": "Fases del flujo de innovación",
     "sidebarNavigation": "Barra lateral del SubEspacio",
     "communityDialog": "Diálogo de miembros de la comunidad",

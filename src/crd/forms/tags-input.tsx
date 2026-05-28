@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { type KeyboardEvent, useRef } from 'react';
+import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 
 type TagsInputProps = {
@@ -8,79 +8,244 @@ type TagsInputProps = {
   placeholder?: string;
   className?: string;
   icon?: React.ReactNode;
+  /**
+   * Minimum number of characters per tag. When set, attempts to add tags
+   * shorter than this trigger the `formatTooShortErrorMessage` inline error
+   * and are silently dropped — matches the MUI `tagsetSegmentValidationObject`
+   * which enforces `minLength: 2` per tag.
+   */
+  minLength?: number;
+  /**
+   * Localized error-text formatter shown when a user-entered tag falls below
+   * `minLength`. The widget itself stays locale-agnostic; consumers wire
+   * this via their `useTranslation`. When omitted the widget just rejects the
+   * tag silently with no visible message.
+   */
+  formatTooShortErrorMessage?: (min: number) => string;
+  /**
+   * Localized aria-label formatters. Consumers should pass these from their
+   * `useTranslation` to keep user-visible (screen-reader) text out of this
+   * component. When omitted the aria-label falls back to the tag value itself
+   * — informative for screen readers and language-neutral.
+   */
+  formatEditTagAriaLabel?: (tag: string) => string;
+  formatEditButtonAriaLabel?: (tag: string) => string;
+  formatRemoveButtonAriaLabel?: (tag: string) => string;
 };
 
-export function TagsInput({ value, onChange, placeholder, className, icon }: TagsInputProps) {
+export function TagsInput({
+  value,
+  onChange,
+  placeholder,
+  className,
+  icon,
+  minLength,
+  formatTooShortErrorMessage,
+  formatEditTagAriaLabel,
+  formatEditButtonAriaLabel,
+  formatRemoveButtonAriaLabel,
+}: TagsInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const internalRef = useRef('');
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+  // Inline validation error — surfaced when the user tries to add (or
+  // commit a rename to) a tag below `minLength`. Cleared automatically on
+  // the next keystroke so the form doesn't stay in an error state once the
+  // user starts correcting.
+  const [tooShortError, setTooShortError] = useState<string | null>(null);
 
-  const addTag = (raw: string) => {
-    const tag = raw.trim().toLowerCase();
-    if (tag && !value.includes(tag)) {
-      onChange([...value, tag]);
+  useEffect(() => {
+    if (editingIndex !== null && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
     }
-    internalRef.current = '';
-    if (inputRef.current) inputRef.current.value = '';
+  }, [editingIndex]);
+
+  // Trim surrounding whitespace only — the user's input is preserved verbatim,
+  // casing included. Dedupe is case-sensitive: `Foo` and `foo` are distinct tags.
+  const normalize = (raw: string) => raw.trim();
+
+  const addTags = (raw: string) => {
+    // Mirrors MUI's `Comma-separated tags` input — `"foo, bar"` or a single
+    // `"foo"` both work, and pasting a list adds each entry as its own chip
+    // in one pass. Dedupe against existing values so re-entering a tag is a no-op.
+    const parts = raw
+      .split(',')
+      .map(part => normalize(part))
+      .filter(Boolean);
+    if (parts.length === 0) {
+      setInputValue('');
+      return;
+    }
+    // Min-length gate (MUI parity with `tagsetSegmentValidationObject`).
+    // Reject the entire commit if any part is too short and show an inline
+    // error — the user gets one clear message instead of a per-tag scatter.
+    if (minLength !== undefined && parts.some(tag => tag.length < minLength)) {
+      setTooShortError(formatTooShortErrorMessage ? formatTooShortErrorMessage(minLength) : null);
+      return;
+    }
+    setTooShortError(null);
+    const next = [...value];
+    for (const tag of parts) {
+      if (!next.includes(tag)) next.push(tag);
+    }
+    if (next.length !== value.length) onChange(next);
+    setInputValue('');
   };
+
+  const addTag = (raw: string) => addTags(raw);
 
   const removeTag = (tag: string) => {
     onChange(value.filter(t => t !== tag));
   };
 
+  const startEditing = (index: number) => {
+    setEditingIndex(index);
+    setEditingValue(value[index]);
+  };
+
+  const commitEdit = () => {
+    if (editingIndex === null) return;
+    const next = normalize(editingValue);
+    const original = value[editingIndex];
+    if (!next) {
+      onChange(value.filter((_, i) => i !== editingIndex));
+    } else if (next !== original && value.includes(next)) {
+      onChange(value.filter((_, i) => i !== editingIndex));
+    } else if (minLength !== undefined && next.length < minLength) {
+      // Block the rename — keep editing state open so the user can correct.
+      setTooShortError(formatTooShortErrorMessage ? formatTooShortErrorMessage(minLength) : null);
+      return;
+    } else {
+      onChange(value.map((t, i) => (i === editingIndex ? next : t)));
+    }
+    setTooShortError(null);
+    setEditingIndex(null);
+    setEditingValue('');
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+    setEditingValue('');
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && internalRef.current.trim()) {
+    if ((e.key === 'Enter' || e.key === ',') && inputValue.trim()) {
       e.preventDefault();
-      addTag(internalRef.current);
-    } else if (e.key === 'Backspace' && !internalRef.current && value.length > 0) {
+      addTag(inputValue);
+    } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
       removeTag(value[value.length - 1]);
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData('text');
+    if (text.includes(',')) {
+      e.preventDefault();
+      addTags(text);
+    }
+  };
+
+  const handleEditKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
+    }
+  };
+
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: click delegates focus to the inner input
-    // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard users interact with the inner input directly
-    <div
-      className={cn(
-        'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border border-border bg-background',
-        className
-      )}
-      onClick={() => inputRef.current?.focus()}
-    >
-      {icon}
-      {value.map(tag => (
-        <span
-          key={tag}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary"
-          style={{
-            background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
-          }}
-        >
-          {tag}
-          <button
-            type="button"
-            onClick={e => {
-              e.stopPropagation();
-              removeTag(tag);
-            }}
-            className="hover:opacity-70"
-            aria-label={`Remove ${tag}`}
-          >
-            <X className="size-3" />
-          </button>
-        </span>
-      ))}
-      <input
-        ref={inputRef}
-        type="text"
-        defaultValue=""
-        onChange={e => {
-          internalRef.current = e.target.value;
+    <div className="space-y-1">
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: click delegates focus to the inner input */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard users interact with the inner input directly */}
+      <div
+        className={cn(
+          'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border bg-background',
+          tooShortError ? 'border-destructive' : 'border-border',
+          className
+        )}
+        aria-invalid={tooShortError ? 'true' : undefined}
+        onClick={() => {
+          if (editingIndex === null) inputRef.current?.focus();
         }}
-        onKeyDown={handleKeyDown}
-        placeholder={value.length === 0 ? placeholder : ''}
-        aria-label={placeholder}
-        className="flex-1 min-w-[120px] border-0 bg-transparent text-control outline-none text-foreground"
-      />
+      >
+        {icon}
+        {value.map((tag, index) => {
+          if (editingIndex === index) {
+            return (
+              <input
+                key={tag}
+                ref={editInputRef}
+                type="text"
+                value={editingValue}
+                onChange={e => setEditingValue(e.target.value)}
+                onKeyDown={handleEditKeyDown}
+                onBlur={commitEdit}
+                aria-label={formatEditTagAriaLabel ? formatEditTagAriaLabel(tag) : tag}
+                className="px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-background outline-none focus:ring-2 focus:ring-ring min-w-[60px]"
+                style={{
+                  width: `${Math.max(editingValue.length, 4) + 2}ch`,
+                }}
+              />
+            );
+          }
+          return (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-primary/10"
+            >
+              <button
+                type="button"
+                onClick={e => {
+                  e.stopPropagation();
+                  startEditing(index);
+                }}
+                className="bg-transparent border-none p-0 text-inherit font-inherit cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                aria-label={formatEditButtonAriaLabel ? formatEditButtonAriaLabel(tag) : tag}
+              >
+                {tag}
+              </button>
+              <button
+                type="button"
+                onClick={e => {
+                  e.stopPropagation();
+                  removeTag(tag);
+                }}
+                className="hover:opacity-70 cursor-pointer rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                aria-label={formatRemoveButtonAriaLabel ? formatRemoveButtonAriaLabel(tag) : tag}
+              >
+                <X className="size-3" />
+              </button>
+            </span>
+          );
+        })}
+        <input
+          ref={inputRef}
+          type="text"
+          value={inputValue}
+          onChange={e => {
+            setInputValue(e.target.value);
+            if (tooShortError) setTooShortError(null);
+          }}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          onBlur={() => {
+            if (inputValue.trim()) addTag(inputValue);
+          }}
+          placeholder={value.length === 0 ? placeholder : ''}
+          aria-label={placeholder}
+          className="flex-1 min-w-[120px] border-0 bg-transparent text-body outline-none text-foreground"
+        />
+      </div>
+      {tooShortError && (
+        <p className="text-caption text-destructive" aria-live="polite">
+          {tooShortError}
+        </p>
+      )}
     </div>
   );
 }

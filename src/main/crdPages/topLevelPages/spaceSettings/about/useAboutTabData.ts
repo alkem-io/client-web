@@ -12,7 +12,11 @@ import type {
   AboutReference,
   AboutSectionKey,
   AboutSectionSaveStatus,
+  SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
+import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
 
 export type { AboutFormValues };
@@ -33,16 +37,19 @@ export type UseAboutTabDataResult = {
   pendingCrop: PendingCrop | null;
   onCropComplete: (croppedFile: File, altText: string) => void;
   onCropCancel: () => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  /** Opens the removal confirmation dialog — consumer renders the dialog. */
-  onRequestRemoveReference: (id: string) => void;
-  /** The reference queued for removal, if the confirmation is open. */
-  pendingReferenceDelete: { id: string; title: string } | null;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
+  /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + its own delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
   /** Save a single section — only that section's fields are persisted. */
   onSaveSection: (section: AboutSectionKey) => Promise<void>;
+  /** True when any section differs from the server-saved value. */
+  isDirty: boolean;
+  /** Persist every dirty section (used by the tab-switch guard's "Save"). */
+  onSaveAll: () => Promise<void>;
+  /** Discard all local edits back to the server-saved snapshot (guard's "Discard"). */
+  onResetAll: () => void;
 };
 
 const TEMP_PREFIX = 'temp-';
@@ -61,11 +68,12 @@ const SAVED_FLASH_MS = 1800;
  * section's patch via updateSpace. Branding uploads remain immediate
  * (the file picker IS the commit).
  *
- * There is intentionally NO global reset — dirty is derived from the Apollo
- * cache and each section clears itself when saved. If the admin leaves the
- * tab with unsaved edits, the local buffer is discarded by a hard reload.
+ * Dirty is derived from the Apollo cache and each section clears itself when
+ * saved. `onSaveAll` / `onResetAll` exist for the tab-switch guard: switching
+ * away with unsaved edits prompts the discard dialog, which either persists
+ * every dirty section or drops the local buffer back to the cached snapshot.
  */
-export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabDataResult {
+export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceSettingsLevel): UseAboutTabDataResult {
   const {
     data,
     loading: queryLoading,
@@ -90,6 +98,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
   const [uploadVisual] = useUploadVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+
+  // Reference file upload (paperclip) — the space settings tab is always rendered inside the
+  // ambient space StorageConfigContextProvider, so the bucket resolves from context.
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
+    useStorageConfigContext()
+  );
 
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
@@ -136,58 +150,23 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     });
   };
 
-  const onAddReference = () => {
+  // The shared ReferencesEditor manages rows + its own delete-confirm and emits the full list.
+  // New rows arrive without an `id`; assign a temp id so the per-section save diffs them as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const newRef: AboutReference = {
-        id: `${TEMP_PREFIX}${Date.now()}`,
-        title: '',
-        uri: '',
-        description: '',
-      };
-      const next: AboutFormValues = { ...base, references: [...base.references, newRef] };
+      const mapped: AboutReference[] = rows.map((r, i) => ({
+        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+        title: r.name,
+        uri: r.uri,
+        description: r.description ?? '',
+      }));
+      const next: AboutFormValues = { ...base, references: mapped };
       valuesRef.current = next;
       return next;
     });
   };
-
-  const onUpdateReference = (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next: AboutFormValues = {
-        ...base,
-        references: base.references.map(r => (r.id === id ? { ...r, ...patch } : r)),
-      };
-      valuesRef.current = next;
-      return next;
-    });
-  };
-
-  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; title: string } | null>(null);
-
-  const onRequestRemoveReference = (id: string) => {
-    const base = valuesRef.current;
-    const ref = base?.references.find(r => r.id === id);
-    if (!ref) return;
-    setPendingReferenceDelete({ id, title: ref.title });
-  };
-
-  const onConfirmRemoveReference = () => {
-    const pending = pendingReferenceDelete;
-    if (!pending) return;
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next: AboutFormValues = { ...base, references: base.references.filter(r => r.id !== pending.id) };
-      valuesRef.current = next;
-      return next;
-    });
-    setPendingReferenceDelete(null);
-  };
-
-  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
   // ────────────────── Image uploads (immediate) ──────────────────
 
@@ -390,7 +369,32 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     }
   };
 
-  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl) : null;
+  const isDirty = Object.values(dirtyByField).some(Boolean);
+
+  const onSaveAll = async () => {
+    const sections = (Object.keys(dirtyByField) as AboutSectionKey[]).filter(section => dirtyByField[section]);
+    for (const section of sections) {
+      await onSaveSection(section);
+    }
+  };
+
+  // The per-section model has no global reset — discarding means dropping the
+  // local buffer back to the cache-derived snapshot. Temp (unsaved) references
+  // disappear because they only exist in the buffer.
+  const onResetAll = () => {
+    if (!saved) return;
+    setValues(saved);
+    valuesRef.current = saved;
+    // Drop any pending saved-flash timers and per-section status so the UI
+    // doesn't keep showing stale "saved"/"error" chips after a discard.
+    for (const timer of Object.values(savedFlashTimers.current)) {
+      if (timer) clearTimeout(timer);
+    }
+    savedFlashTimers.current = {};
+    setSaveStatusByField({});
+  };
+
+  const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
   return {
     values,
@@ -406,13 +410,13 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     pendingCrop,
     onCropComplete,
     onCropCancel,
-    onAddReference,
-    onUpdateReference,
-    onRequestRemoveReference,
-    pendingReferenceDelete,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onSaveSection,
+    isDirty,
+    onSaveAll,
+    onResetAll,
   };
 }
 

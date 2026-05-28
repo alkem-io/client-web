@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
+- Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
 - Always use pnpm; the lockfile is authoritative
 - All commits must be signed
 
@@ -38,7 +38,7 @@ pnpm test
 # Test with coverage
 pnpm test:coverage
 
-# GraphQL codegen (requires running backend at localhost:4000/graphql)
+# GraphQL codegen (requires running backend at localhost:3000/graphql)
 pnpm codegen
 
 # Format code
@@ -147,7 +147,7 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
-2. Run `pnpm codegen` (requires backend running at `localhost:4000/graphql`)
+2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
@@ -344,26 +344,41 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 ## CRD Feature Toggle
 
-The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
+The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI/legacy, `2` = CRD/new). **Default is `2` (CRD)** — anyone without an explicit preference (anonymous visitors, fresh devices, users whose LS was cleared, or whose server record is unset) lands on CRD; users who previously opted into legacy (`1`) keep it. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
+
+For developers / QA who want to seed the toggle without going through the UI:
 
 ```js
-// Enable:  open browser console and run:
-localStorage.setItem('alkemio-crd-enabled', 'true');
+// Enable CRD (new design):
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 
-// Disable:
-localStorage.removeItem('alkemio-crd-enabled');
+// Back to MUI (old design):
+localStorage.setItem('alkemio-design-version', '1');
 location.reload();
 ```
 
-Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load (see `useCrdEnabled.ts`).
+
+Implementation surface:
+- `src/main/crdPages/useCrdEnabled.ts` — boot-time read of `localStorage('alkemio-design-version')`; the `useCrdEnabled()` hook is consumed by route dispatchers.
+- `src/main/crdPages/useDesignVersionToggle.ts` — user-menu switch: writes `UserSettings.designVersion` via `updateUserSettings`, mirrors to localStorage, hard-reloads.
+- `src/main/crdPages/useDesignVersionSync.ts` — reconciles server state with localStorage on auth.
+- `TopLevelRoutes.tsx` — picks MUI vs CRD route trees off `useCrdEnabled()`.
+
+When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 101-crd-auth-pages: Added TypeScript 5.x, React 19 (with React Compiler), Node 24.14.0 (Volta-pinned)
+- 098-crd-templates: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`).
 - 095-hub-add-space-url: Added TypeScript 5.x / React 19 / Node ≥22 (Volta-pinned to 24.14.0) + Apollo Client (existing — `useUrlResolverLazyQuery`, `useUpdateInnovationHubMutation`, both already generated); MUI (existing — the surrounding admin page is MUI, not CRD); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`)
 - 096-crd-user-pages: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `dropdown-menu`, `popover`, `avatar`, `badge`, `button`, `textarea`, `skeleton`, `tooltip`, `scroll-area`, `separator`) already exist under `src/crd/primitives/`. **Two new shared CRD components introduced by this spec** (both under `src/crd/components/common/`): (1) `CompactContributorCard` — used by the User profile's Organizations sidebar and the VC profile's Host section; (2) `MessagePopover` — recipient-agnostic in-hero compose surface used by the User and Organization profile heroes. **Three new VC content-view CRD components** added by the 2026-05-06 redesign (under `src/crd/components/virtualContributor/`): `VCFunctionalityGrid`, `VCAiEngineGrid` (with reusable `VCTransparencyCard` sub-component), `VCMonitoringSection`. No new runtime dependencies.
 - 096-crd-user-pages: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing), `react-i18next` (existing), `react-router-dom` (existing — only the integration layer touches it). All required CRD primitives (`tabs`, `card`, `dialog`, `alert-dialog`, `dropdown-menu`, `switch`, `popover`, `avatar`, `badge`, `button`, `input`, `label`, `select`, `textarea`, `skeleton`, `tooltip`, `breadcrumb`, `scroll-area`) already exist under `src/crd/primitives/`. Reuses existing CRD forms (`@/crd/forms/markdown/MarkdownEditor`, `@/crd/forms/tags-input`). Reuses existing CRD dialogs (`ConfirmationDialog` from `@/crd/components/dialogs/`). No new runtime dependencies.
 
 
 ## Active Technologies
+- TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`). (098-crd-templates)
+- TypeScript 5.x, React 19 (with React Compiler), Node 24.14.0 (Volta-pinned) (101-crd-auth-pages)
+- None new. The existing localStorage key `alkemio-design-version` and Kratos's session/cookie storage are reused unchanged. (101-crd-auth-pages)
 - TypeScript 5.x / React 19 / Node ≥22 (Volta-pinned to 24.14.0) + Apollo Client (existing — `useUrlResolverLazyQuery`, `useUpdateInnovationHubMutation`, both already generated); MUI (existing — the surrounding admin page is MUI, not CRD); `react-i18next` (existing); React Compiler (`babel-plugin-react-compiler`) (095-hub-add-space-url)
 - N/A — frontend SPA; data via existing GraphQL queries/mutations. No schema changes. (095-hub-add-space-url)

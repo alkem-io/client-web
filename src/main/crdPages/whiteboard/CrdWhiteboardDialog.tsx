@@ -3,10 +3,16 @@ import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/exc
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  type CommunityMembershipStatus,
+  SpaceLevel,
+  WhiteboardPreviewMode,
+} from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -16,8 +22,10 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
+import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/WhiteboardDisconnectedDialog';
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
   type WhiteboardFormSchema,
@@ -37,9 +45,13 @@ import type {
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
 
 export interface WhiteboardDetails {
@@ -126,6 +138,15 @@ const CrdWhiteboardDialog = ({
   const notify = useNotification();
   const { evictFromCache } = useApolloCache();
   const { whiteboard } = entities;
+  const { isAuthenticated } = useAuthenticationContext();
+  const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
+  const myMembershipStatus =
+    spaceLevel === SpaceLevel.L0
+      ? space.about.membership?.myMembershipStatus
+      : subspace.about.membership?.myMembershipStatus;
+  const spaceAboutProfile = spaceLevel === SpaceLevel.L0 ? space.about.profile : subspace.about.profile;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
@@ -201,10 +222,10 @@ const CrdWhiteboardDialog = ({
     actions.onCancel();
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
+  const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI) {
       try {
-        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -215,6 +236,10 @@ const CrdWhiteboardDialog = ({
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [learnWhyDialogOpen, setLearnWhyDialogOpen] = useState(false);
+  const [learnWhyReasonKey, setLearnWhyReasonKey] = useState<
+    'inactivity' | 'multiUserNotAllowed' | 'roomCapacityReached' | 'generic'
+  >('generic');
   const [handleDelete, isDeleting] = useLoadingState(async () => {
     if (!whiteboard) return;
     // Close both dialogs BEFORE awaiting the delete: the mutation evicts the whiteboard from the
@@ -268,18 +293,97 @@ const CrdWhiteboardDialog = ({
           },
           onSceneInitChange: setSceneInitialized,
         }}
+        renderDisconnectNotice={({
+          open,
+          isOnline,
+          connecting,
+          autoReconnectSeconds,
+          lastSuccessfulSavedDate: lastSaved,
+          onReconnect,
+          onClose: onCloseNotice,
+        }) => (
+          <WhiteboardDisconnectedDialog
+            open={open}
+            onClose={onCloseNotice}
+            title={t('pages.whiteboard.whiteboardDisconnected.title')}
+            message={t(
+              isOnline
+                ? 'pages.whiteboard.whiteboardDisconnected.message'
+                : 'pages.whiteboard.whiteboardDisconnected.offline'
+            )}
+            lastSavedText={
+              lastSaved
+                ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                    lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
+                  })
+                : undefined
+            }
+            canReconnect={isOnline}
+            reconnecting={connecting}
+            countdownSeconds={autoReconnectSeconds}
+            onReconnect={onReconnect}
+          />
+        )}
       >
         {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
-          const footerProps = mapWhiteboardFooterProps({
+          const { readonlyReason, ...footerProps } = mapWhiteboardFooterProps({
             myPrivileges: whiteboard.authorization?.myPrivileges,
             canEdit: !!options.canEdit,
             preventWhiteboardDeletion: !options.canDelete,
             collaboratorMode: mode,
             collaboratorModeReason: modeReason,
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,
-            isAuthenticated: true,
+            isAuthenticated,
             contentUpdatePolicy: whiteboard.contentUpdatePolicy,
+            myMembershipStatus: myMembershipStatus as CommunityMembershipStatus | undefined,
           });
+
+          const readonlyMessage = readonlyReason ? (
+            <Trans
+              t={tWb}
+              i18nKey={`footer.readonlyReason.${readonlyReason}` as const}
+              values={{
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
+                ownerName: whiteboard.createdBy?.profile?.displayName,
+              }}
+              components={{
+                strong: <strong className="font-semibold" />,
+                ownerlink: whiteboard.createdBy?.profile ? (
+                  // biome-ignore lint/a11y/useAnchorContent: content is injected by <Trans /> at runtime
+                  <a href={whiteboard.createdBy.profile.url} className="underline text-primary hover:text-primary/80" />
+                ) : (
+                  <span />
+                ),
+                spacelink: spaceAboutProfile?.url ? (
+                  <Link
+                    to={spaceAboutProfile.url}
+                    reloadDocument={true}
+                    className="underline text-primary hover:text-primary/80"
+                  />
+                ) : (
+                  <span />
+                ),
+                signinlink: (
+                  // biome-ignore lint/a11y/useAnchorContent: content is injected by <Trans /> at runtime
+                  <a
+                    href={buildLoginUrl(whiteboard.profile?.url)}
+                    className="underline text-primary hover:text-primary/80"
+                  />
+                ),
+                learnwhy: (
+                  // biome-ignore lint/a11y/useButtonType: type is fixed below
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLearnWhyReasonKey(modeReason ?? 'generic');
+                      setLearnWhyDialogOpen(true);
+                    }}
+                    className="underline text-primary hover:text-primary/80 bg-transparent border-0 p-0 cursor-pointer"
+                  />
+                ),
+              }}
+            />
+          ) : undefined;
 
           return (
             <Formik
@@ -312,16 +416,15 @@ const CrdWhiteboardDialog = ({
                     />
                   }
                   titleExtra={
-                    <WhiteboardDialogTemplatesLibrary
-                      editModeEnabled={!!editModeEnabled && mode === 'write'}
-                      disabled={!isSceneInitialized}
-                      onImportTemplate={handleImportTemplate}
-                    />
+                    editModeEnabled && mode === 'write' ? (
+                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
+                    ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}
+                      readonlyMessage={readonlyMessage}
                       onDelete={() => setDeleteDialogOpen(true)}
                       onRestart={restartCollaboration}
                       guestAccessBadge={undefined}
@@ -347,6 +450,17 @@ const CrdWhiteboardDialog = ({
         variant="destructive"
         loading={isDeleting}
       />
+
+      <Dialog open={learnWhyDialogOpen} onOpenChange={setLearnWhyDialogOpen}>
+        <DialogContent className="z-[70]" overlayClassName="z-[70]">
+          <DialogHeader>
+            <DialogTitle>{tWb('footer.readonlyDialog.title')}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-body whitespace-pre-line text-foreground">
+            {tWb(`footer.readonlyDialog.reason.${learnWhyReasonKey}` as const)}
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
 
       <PreviewSettingsDialog
         open={!!options.previewSettingsDialogOpen}

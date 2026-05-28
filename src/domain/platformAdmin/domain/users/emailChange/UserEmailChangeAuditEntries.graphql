@@ -1,0 +1,36 @@
+query UserEmailChangeAuditEntries($userID: UUID!, $first: Float, $after: String) {
+  platformAdmin {
+    userEmailChangeAuditEntries(userID: $userID, first: $first, after: $after) {
+      auditEntries {
+        id
+        timestamp
+        outcome
+        initiatorRole
+        initiator {
+          id
+          displayName
+        }
+        subject {
+          id
+          displayName
+        }
+        oldEmail
+        newEmail
+        failureReason
+        reason
+        approver {
+          name
+          role
+          organization
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      total
+    }
+  }
+}

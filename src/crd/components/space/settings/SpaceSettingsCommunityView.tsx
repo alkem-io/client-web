@@ -95,6 +95,7 @@ export type SpaceSettingsCommunityViewProps = {
   onVCAdd: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
+  onPendingView: (id: string) => void;
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
@@ -121,6 +122,7 @@ export function SpaceSettingsCommunityView({
   onVCAdd,
   onVCAddExternal,
   onVCRemove,
+  onPendingView,
   onPendingApprove,
   onPendingReject,
   onPendingDelete,
@@ -159,6 +161,7 @@ export function SpaceSettingsCommunityView({
 
       <PendingMembershipsTable
         items={pendingMemberships}
+        onView={onPendingView}
         onApprove={onPendingApprove}
         onReject={onPendingReject}
         onDelete={onPendingDelete}
@@ -186,7 +189,7 @@ export function SpaceSettingsCommunityView({
                 placeholder={t('community.members.search')}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
-                className="h-9 w-[220px] pl-9 text-sm"
+                className="h-9 w-[220px] pl-9 text-control"
               />
             </div>
             {permissions.canAddUsers && (

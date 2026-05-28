@@ -13,6 +13,7 @@ import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/callo
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -139,15 +140,16 @@ export type MapFormResult = {
 export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options: MapFormOptions): MapFormResult => {
   const framingType = framingChipToServer(values.framingChip);
   const responseType = responseTypeToServer(values.responseType);
-  const tagsArray = tagsStringToArray(values.tags);
+  // `values.tags` is already `string[]` from `TagsInput`. Dedup defensively.
+  const tagsArray = Array.from(new Set(values.tags.map(t => t.trim()).filter(Boolean)));
   const hasResponseType = responseType !== undefined;
 
   const referencesData = values.referenceRows
-    .filter(row => row.title.trim() && row.url.trim())
+    .filter(row => row.name.trim() && row.uri.trim())
     .map(row => ({
-      name: row.title.trim(),
-      uri: ensureHttps(row.url),
-      description: row.description.trim() || undefined,
+      name: row.name.trim(),
+      uri: ensureHttps(row.uri),
+      description: row.description?.trim() || undefined,
     }));
 
   // Settings: match MUI defaults (DefaultCalloutSettings) — `enabled: true`
@@ -195,18 +197,20 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   };
 
   // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
-  // filter: only send `postDescription` for post/memo responses, only send
-  // `whiteboardContent` for whiteboard responses. Sending whiteboardContent on
-  // a post callout (or vice-versa) trips backend DTO validation. An empty
-  // form value means "user did not configure a default" — omit it.
+  // filter (CreateCalloutDialog `contributionDefaults` block): only send
+  // `postDescription` for post/memo responses, and ALWAYS send
+  // `whiteboardContent` for whiteboard responses (falling back to the empty
+  // Excalidraw JSON when the user hasn't customised it). The server rejects
+  // whiteboard contributions on callouts that were created without a
+  // `contributionDefaults.whiteboardContent`, which is why this can't be
+  // gated on "user touched the default".
   if (hasResponseType) {
     const defaults = values.contributionDefaults;
     const isWhiteboardResponse = values.responseType === 'whiteboard';
     const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
     const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
     const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
-    const whiteboardContent =
-      isWhiteboardResponse && defaults.whiteboardContent ? defaults.whiteboardContent : undefined;
+    const whiteboardContent = isWhiteboardResponse ? defaults.whiteboardContent || EmptyWhiteboardString : undefined;
     if (defaultDisplayName || postDescription || whiteboardContent) {
       callout.contributionDefaults = { defaultDisplayName, postDescription, whiteboardContent };
     }
@@ -354,19 +358,20 @@ export type MapUpdateResult = {
 export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: MapUpdateOptions): MapUpdateResult => {
   const framingType = framingChipToServer(values.framingChip);
   const responseType = responseTypeToServer(values.responseType);
-  const tagsArray = tagsStringToArray(values.tags);
+  // `values.tags` is already `string[]` from `TagsInput`. Dedup defensively.
+  const tagsArray = Array.from(new Set(values.tags.map(t => t.trim()).filter(Boolean)));
   const hasResponseType = responseType !== undefined;
 
   const references: UpdateReferenceInput[] = values.referenceRows
     .filter(
       (row): row is ReferenceRow & { id: string } =>
-        Boolean(row.id) && row.title.trim().length > 0 && row.url.trim().length > 0
+        Boolean(row.id) && row.name.trim().length > 0 && row.uri.trim().length > 0
     )
     .map(row => ({
       ID: row.id,
-      name: row.title.trim(),
-      uri: ensureHttps(row.url),
-      description: row.description.trim(),
+      name: row.name.trim(),
+      uri: ensureHttps(row.uri),
+      description: row.description?.trim() ?? '',
     }));
 
   const tagsetId = values.editMeta?.framingProfileTagsetId;

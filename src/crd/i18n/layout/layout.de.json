@@ -6,6 +6,7 @@
     "messages": "Nachrichten",
     "notifications": "Benachrichtigungen",
     "unreadNotifications": "{{count}} ungelesene Benachrichtigungen",
+    "unreadMessages": "{{count}} ungelesene Nachrichten",
     "spaces": "Räume",
     "platformNavigation": "Plattform-Navigation",
     "myAccount": "Mein Konto",
@@ -20,7 +21,17 @@
     "changeLanguage": "Sprache ändern",
     "getHelp": "Hilfe erhalten",
     "showGrid": "Raster anzeigen",
-    "hideGrid": "Raster ausblenden"
+    "hideGrid": "Raster ausblenden",
+    "designVersion": {
+      "label": "Neuer Look (altes Design vorübergehend verfügbar)"
+    },
+    "designVersionUpgrade": {
+      "title": "Das neue Alkemio ist da",
+      "body": "Wir führen ein neues Design ein - schneller, klarer und bereit für das, was kommt. Du bist eingeladen, jetzt zu wechseln.\n\nWenn du das alte Aussehen bevorzugst, bleibt es für eine begrenzte Zeit über das Menü deines Avatars verfügbar - und falls etwas fehlt, melde dich bitte beim Support, damit wir es übertragen, bevor das alte Design eingestellt wird.",
+      "confirm": "Zum neuen Design",
+      "dismiss": "Vielleicht später",
+      "closeLabel": "Schließen"
+    }
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

@@ -174,9 +174,8 @@ export function SpaceChannelComposer({
         >
           <div className="flex-1 min-w-0">
             <span
+              className="text-caption font-semibold"
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
                 color: "var(--primary)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -184,12 +183,10 @@ export function SpaceChannelComposer({
               Replying to {replyTo.senderName}
             </span>
             <p
-              className="truncate"
+              className="truncate text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 margin: 0,
-                lineHeight: 1.4,
                 fontFamily: "'Inter', sans-serif",
               }}
             >
@@ -295,12 +292,9 @@ export function SpaceChannelComposer({
               }}
             >
               <span
+                className="text-sidebar-label uppercase"
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
                   color: "var(--muted-foreground)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
@@ -332,9 +326,8 @@ export function SpaceChannelComposer({
                 >
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback
+                    className="text-badge"
                     style={{
-                      fontSize: "9px",
-                      fontWeight: 600,
                       fontFamily: "'Inter', sans-serif",
                     }}
                   >
@@ -343,10 +336,8 @@ export function SpaceChannelComposer({
                 </Avatar>
                 <div className="flex flex-col min-w-0">
                   <span
-                    className="truncate"
+                    className="truncate text-control"
                     style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 500,
                       color: "var(--foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -354,8 +345,8 @@ export function SpaceChannelComposer({
                     {user.name}
                   </span>
                   <span
+                    className="text-caption"
                     style={{
-                      fontSize: "11px",
                       color: "var(--muted-foreground)",
                       fontFamily: "'Inter', sans-serif",
                     }}
@@ -395,13 +386,10 @@ export function SpaceChannelComposer({
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               rows={1}
-              className="w-full resize-none outline-none bg-transparent"
+              className="w-full resize-none outline-none bg-transparent text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--foreground)",
                 fontFamily: "'Inter', sans-serif",
-                fontWeight: "var(--font-weight-normal)" as any,
-                lineHeight: 1.5,
                 padding: "10px 0",
                 maxHeight: 140,
               }}

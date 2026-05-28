@@ -32,6 +32,8 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
+import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
 import {
   type SpaceSettingsTabId,
   useSpaceSettingsTab,
@@ -39,10 +41,13 @@ import {
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
+import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
-import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
-import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
+import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
+import { useSpaceWidthPreference } from './useSpaceWidthPreference';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -50,14 +55,24 @@ export default function CrdSpacePageLayout() {
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
   const { isSmallScreen } = useScreenSize();
+  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(spaceId);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
-  const [communityOpen, setCommunityOpen] = useState(false);
+  const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
+  // One guard instance, shared with the Settings page (rendered via <Outlet>)
+  // through DirtyTabGuardContext. The tab strip lives here in the layout, so
+  // the click must consult the guard before navigating — otherwise the
+  // discard-changes dialog (owned by the page) never opens.
+  const settingsDirtyGuard = useDirtyTabGuard();
+  const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
+    if (await settingsDirtyGuard.requestSwitch(next)) {
+      setActiveSettingsTab(next);
+    }
+  };
 
   // Sidebar links are portaled in (see SpaceSidebarPortal), so following one
   // doesn't go through any handler in this layout that could close the drawer.
@@ -106,21 +121,30 @@ export default function CrdSpacePageLayout() {
   };
 
   const visibilityData = mapSpaceVisibility(visibility);
-  const memberAvatars = mapMemberAvatars(space.about.membership?.leadUsers);
+
+  // The transparent header + banner-under-header treatment only applies on
+  // the active-space home tab(s). Suspended/archived spaces show a visibility
+  // notice above the banner — pulling the banner up under the header would
+  // collide with it. Settings pages render `SpaceSettingsHeader` (no banner
+  // image), so they stay opaque too.
+  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
 
   const headerActions = {
-    showDocuments: true,
+    showActivity: true,
     showVideoCall: isVideoCallEnabled && !!videoCallUrl,
     videoCallUrl: videoCallUrl || undefined,
     showShare: true,
     showSettings,
     settingsHref,
-    onDocumentsClick: () => setActivityDialogOpen(true),
+    showFullWidthToggle: true,
+    fullWidth,
+    onActivityClick: () => setActivityDialogOpen(true),
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
+    onToggleFullWidth: toggleFullWidth,
   };
 
   if (!isLevelZero) {
@@ -147,122 +171,146 @@ export default function CrdSpacePageLayout() {
   ];
 
   return (
-    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
-      {visibilityData.status !== 'active' && (
-        <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
-      )}
-      <SpaceShell
-        header={
-          isOnSettings ? (
-            <SpaceSettingsHeader
-              title={space.about.profile.displayName}
-              tagline={space.about.profile.tagline ?? null}
-              avatarUrl={space.about.profile.avatar?.uri ?? null}
-              initials={(space.about.profile.displayName ?? '').slice(0, 2).toUpperCase()}
-              avatarColor={pickColorFromId(spaceId ?? space.about.profile.displayName)}
-              tabs={
-                <SpaceSettingsTabStrip
-                  activeTab={activeSettingsTab}
-                  onTabChange={setActiveSettingsTab}
-                  tabs={settingsTabs}
-                />
-              }
-            />
-          ) : (
-            <SpaceHeader
-              title={space.about.profile.displayName}
-              tagline={space.about.profile.tagline ?? undefined}
-              bannerUrl={space.about.profile.banner?.uri}
-              color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
-              memberAvatars={memberAvatars}
-              onMemberClick={() => setCommunityOpen(true)}
-              actions={headerActions}
-            />
-          )
-        }
-        sidebar={isOnSettings ? undefined : sidebarSlot}
-        tabs={
-          isOnSettings ? undefined : (
-            <SpaceNavigationTabs
-              tabs={tabItems}
-              activeIndex={activeTabIndex}
-              onTabChange={handleTabChange}
-              isSmallScreen={isSmallScreen}
-              onMenuClick={() => setMobileMenuOpen(true)}
-            />
-          )
-        }
-      >
-        <Suspense fallback={<LoadingSpinner />}>
-          <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
-        </Suspense>
-      </SpaceShell>
-
-      {!isOnSettings && (
-        <MobileSidebarDrawer
-          open={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
-          title={t('crd-space:mobile.menu')}
-          closeLabel={t('crd-space:a11y.close')}
+    <DirtyTabGuardContext.Provider value={settingsDirtyGuard}>
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
+        {visibilityData.status !== 'active' && (
+          <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
+        )}
+        {enableBannerOverlay && <EnableBannerOverlay />}
+        <EnableSpaceFullWidth />
+        <SpaceShell
+          fullWidth={fullWidth}
+          header={
+            isOnSettings ? (
+              <SpaceSettingsHeader
+                title={space.about.profile.displayName}
+                tagline={space.about.profile.tagline ?? null}
+                hideAvatar={true}
+                fullWidth={fullWidth}
+                tabs={
+                  <SpaceSettingsTabStrip
+                    activeTab={activeSettingsTab}
+                    onTabChange={handleSettingsTabChange}
+                    tabs={settingsTabs}
+                  />
+                }
+              />
+            ) : (
+              <SpaceHeader
+                title={space.about.profile.displayName}
+                tagline={space.about.profile.tagline ?? undefined}
+                bannerUrl={space.about.profile.banner?.uri}
+                color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
+                actions={headerActions}
+                overlayHeader={enableBannerOverlay}
+                fullWidth={fullWidth}
+              />
+            )
+          }
+          sidebar={isOnSettings ? undefined : sidebarSlot}
+          tabs={
+            isOnSettings ? undefined : (
+              <SpaceNavigationTabs
+                tabs={tabItems}
+                activeIndex={activeTabIndex}
+                onTabChange={handleTabChange}
+                isSmallScreen={isSmallScreen}
+                onMenuClick={() => setMobileMenuOpen(true)}
+                action={<div id="crd-space-tabs-action" />}
+              />
+            )
+          }
         >
-          <div id="crd-space-sidebar-mobile" />
-        </MobileSidebarDrawer>
-      )}
+          <Suspense fallback={<LoadingSpinner />}>
+            <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
+          </Suspense>
+        </SpaceShell>
 
-      {/* L0 settings breadcrumbs — only mounted at L0 while on settings, so
-          this parent layout doesn't clobber the subspace layout's trail at
-          L1 / L2 (`pathname` includes `/settings` at those levels too). */}
-      {isLevelZero && isOnSettings && spaceDisplayName && (
-        <L0SettingsBreadcrumbs
-          spaceDisplayName={spaceDisplayName}
-          spaceUrl={spaceUrl}
-          activeSettingsTab={activeSettingsTab}
+        {!isOnSettings && (
+          <MobileSidebarDrawer
+            open={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(false)}
+            title={t('crd-space:mobile.menu')}
+            closeLabel={t('crd-space:a11y.close')}
+          >
+            <div id="crd-space-sidebar-mobile" />
+          </MobileSidebarDrawer>
+        )}
+
+        {/* L0 breadcrumbs — only mounted at L0 so this parent layout doesn't
+          clobber the subspace layout's trail at L1 / L2 (CrdSpacePageLayout
+          runs hooks at every level; gating the mount on `isLevelZero` keeps
+          the publish scoped to L0). On a plain L0 home this emits a single
+          current-page crumb; on `/settings` it emits the 3-hop trail. */}
+        {isLevelZero && spaceDisplayName && (
+          <L0Breadcrumbs
+            spaceDisplayName={spaceDisplayName}
+            spaceUrl={spaceUrl}
+            isOnSettings={isOnSettings}
+            activeSettingsTab={activeSettingsTab}
+          />
+        )}
+
+        {/* Activity dialog — opened from header Activity icon. Matches the
+          legacy MUI ActivityDialog: queries activity-on-collaboration with
+          includeChild so child callout events are included. */}
+        <CrdSpaceActivityDialogConnector
+          open={activityDialogOpen}
+          onOpenChange={setActivityDialogOpen}
+          spaceId={spaceId}
         />
-      )}
 
-      {/* Community dialog — opened from banner avatar stack (shared with L1) */}
-      <CrdSpaceCommunityDialogConnector
-        open={communityOpen}
-        onOpenChange={setCommunityOpen}
-        roleSetId={space.about.membership?.roleSetID || undefined}
-      />
-
-      {/* Share dialog — opened from header share icon and the mobile "More" drawer.
+        {/* Share dialog — opened from header share icon and the mobile "More" drawer.
           `entityLabel` is lowercased so the default message reads "...this space
           interesting" mid-sentence (mirrors the callout flow's "post"). */}
-      <ShareDialog
-        open={shareDialogOpen}
-        onOpenChange={setShareDialogOpen}
-        url={spaceUrl}
-        shareOnAlkemioSlot={
-          spaceUrl ? (
-            <CalloutShareOnAlkemioForm
-              key={spaceUrl}
-              url={spaceUrl}
-              entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
-            />
-          ) : undefined
-        }
-      />
-    </StorageConfigContextProvider>
+        <ShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          url={spaceUrl}
+          shareOnAlkemioSlot={
+            spaceUrl ? (
+              <CalloutShareOnAlkemioForm
+                key={spaceUrl}
+                url={spaceUrl}
+                entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
+              />
+            ) : undefined
+          }
+        />
+      </StorageConfigContextProvider>
+    </DirtyTabGuardContext.Provider>
   );
 }
 
-function L0SettingsBreadcrumbs({
+function EnableBannerOverlay() {
+  useEnableBannerOverlay();
+  return null;
+}
+
+function EnableSpaceFullWidth() {
+  useEnableSpaceFullWidth();
+  return null;
+}
+
+function L0Breadcrumbs({
   spaceDisplayName,
   spaceUrl,
+  isOnSettings,
   activeSettingsTab,
 }: {
   spaceDisplayName: string;
   spaceUrl: string;
+  isOnSettings: boolean;
   activeSettingsTab: SpaceSettingsTabId;
 }) {
   const { t } = useTranslation('crd-spaceSettings');
-  const items: BreadcrumbTrailItem[] = [
-    { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-    { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
-    { label: t(`tabs.${activeSettingsTab}`) },
-  ];
+  const items: BreadcrumbTrailItem[] = isOnSettings
+    ? [
+        { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+        { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+        { label: t(`tabs.${activeSettingsTab}`) },
+      ]
+    : [{ label: spaceDisplayName, icon: Layers }];
   useSetBreadcrumbs(items);
   return null;
 }

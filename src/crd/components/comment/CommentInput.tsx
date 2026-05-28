@@ -21,6 +21,14 @@ type CommentInputProps = {
    * surface that can't provide a contributor search).
    */
   mentionSearch?: CrdMentionSearch;
+  /**
+   * When true, focus the textarea and scroll it into view on mount. Used by the
+   * per-comment reply input: it renders at the end of the parent's reply group,
+   * so on a comment with many replies it lands below the fold — without this the
+   * user clicks Reply and sees nothing until they scroll down. The top-level
+   * input leaves this off so the page doesn't jump to the box on load.
+   */
+  autoFocus?: boolean;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
@@ -66,12 +74,27 @@ const mentionsInputStyle = {
   },
 };
 
+// `react-mentions` paints the styled mention chip in an overlay layer on top
+// of the underlying textarea, and BOTH layers paint their text (it relies on
+// pixel-perfect alignment to look like one). Any property that changes glyph
+// width on the overlay but not on the textarea — font-weight, font-size,
+// font-family — desyncs the two layers and the typed mention shows up
+// blurry/doubled. Keep this to non-metric-affecting properties only
+// (color + background-color are safe).
 const mentionStyle: CSSProperties = {
   color: 'var(--primary)',
-  fontWeight: 500,
+  backgroundColor: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+  borderRadius: 4,
 };
 
-export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000, mentionSearch }: CommentInputProps) {
+export function CommentInput({
+  currentUser,
+  onSubmit,
+  disabled,
+  maxLength = 2000,
+  mentionSearch,
+  autoFocus,
+}: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -97,6 +120,20 @@ export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000
   useEffect(() => {
     resizeTextarea();
   }, [content]);
+
+  // Reply input opens at the end of a (possibly long) reply group — reveal it
+  // and place the cursor so the user can type immediately. `preventScroll` on
+  // focus lets the explicit smooth scroll own the motion instead of the
+  // browser's instant default scroll fighting it.
+  useEffect(() => {
+    if (!autoFocus) return;
+
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.focus({ preventScroll: true });
+    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [autoFocus]);
 
   const handleSubmit = () => {
     if (!canSend) return;

@@ -104,6 +104,7 @@ export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: 
         description: profile.tagline ?? null,
         type: vcType,
         href: profile.url,
+        avatarImageUrl: profile.avatar?.uri ?? null,
       },
     ];
   });

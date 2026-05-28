@@ -1,6 +1,9 @@
-import { Folder, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Folder } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
+import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
+import { SearchField } from '@/crd/forms/SearchField';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
@@ -19,6 +22,8 @@ type SpaceSubspacesListProps = {
    * appears. Defaults to 6 (a 3-column grid with 2 rows).
    */
   initialVisibleCount?: number;
+  /** Hide the status filter pills and tag filter chips — keep only the search. */
+  disableFilters?: boolean;
   className?: string;
 };
 
@@ -50,6 +55,7 @@ export function SpaceSubspacesList({
   subtitle,
   onSubspaceClick,
   initialVisibleCount = DEFAULT_INITIAL_VISIBLE,
+  disableFilters = false,
   className,
 }: SpaceSubspacesListProps) {
   const { t } = useTranslation('crd-space');
@@ -58,17 +64,19 @@ export function SpaceSubspacesList({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
 
-  const allTags = collectTags(subspaces);
+  const allTags = disableFilters ? [] : collectTags(subspaces);
 
   // Show status filter pills only when subspaces carry status data and at least
   // one subspace has a non-active status (otherwise the pills add no value).
-  const hasStatusVariety = useMemo(() => subspaces.some(s => s.status && s.status !== 'active'), [subspaces]);
+  const hasStatusVariety = !disableFilters && subspaces.some(s => s.status && s.status !== 'active');
 
   const STATUS_OPTIONS: StatusFilter[] = ['all', 'active', 'archived'];
 
-  // Apply status + search + tag filters.
+  // Apply status + search + tag filters. When `disableFilters` is true, the
+  // status/tag controls are hidden — also skip their predicates so any residual
+  // state from before the prop flipped can't filter results invisibly.
   let filtered = subspaces;
-  if (statusFilter !== 'all') {
+  if (!disableFilters && statusFilter !== 'all') {
     filtered = filtered.filter(s => s.status === statusFilter);
   }
   if (searchQuery) {
@@ -77,7 +85,7 @@ export function SpaceSubspacesList({
       s => s.name.toLowerCase().includes(query) || s.description.toLowerCase().includes(query)
     );
   }
-  if (selectedTags.length > 0) {
+  if (!disableFilters && selectedTags.length > 0) {
     filtered = filtered.filter(s => selectedTags.every(tag => s.tags.includes(tag)));
   }
 
@@ -93,7 +101,8 @@ export function SpaceSubspacesList({
     setShowAll(false);
   };
 
-  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0 || statusFilter !== 'all';
+  const hasActiveFilter =
+    searchQuery.length > 0 || (!disableFilters && (selectedTags.length > 0 || statusFilter !== 'all'));
   const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
@@ -107,20 +116,19 @@ export function SpaceSubspacesList({
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <input
-          type="text"
-          placeholder={t('subspaces.search')}
+      {/* Search + tag filter */}
+      <div className="flex items-center gap-2">
+        <SearchField
           value={searchQuery}
-          onChange={e => {
-            setSearchQuery(e.target.value);
+          onValueChange={value => {
+            setSearchQuery(value);
             setShowAll(false);
           }}
-          aria-label={t('subspaces.search')}
-          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+          placeholder={t('subspaces.search')}
+          ariaLabel={t('subspaces.search')}
+          className="flex-1"
         />
+        {!disableFilters && <TagFilterPopover tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
       </div>
 
       {/* Status filter pills — only shown when subspaces have mixed statuses */}
@@ -152,30 +160,18 @@ export function SpaceSubspacesList({
         </fieldset>
       )}
 
-      {/* Tag filter chips — wrap onto multiple rows */}
-      {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {allTags.map(tag => {
-            const isSelected = selectedTags.includes(tag);
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => toggleTag(tag)}
-                aria-pressed={isSelected}
-                className={cn(
-                  'px-3 py-1.5 text-caption font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isSelected
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                )}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Active search/tag filters summary */}
+      <FilterResultsSummary
+        searchTerm={searchQuery}
+        tags={disableFilters ? undefined : selectedTags}
+        onClear={() => {
+          setSearchQuery('');
+          if (!disableFilters) {
+            setSelectedTags([]);
+          }
+          setShowAll(false);
+        }}
+      />
 
       {/* Grid */}
       {filtered.length === 0 ? (

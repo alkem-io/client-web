@@ -1,118 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutContributionType,
-  CalloutFramingType,
-  type TemplateContentQuery,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
-import { error as logError } from '@/core/logging/sentry/log';
+import { useSpaceTemplatesManagerQuery, useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { useSpace } from '@/domain/space/context/useSpace';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-import { allowedActorsFromServer } from './calloutFormMapper';
-
-type TemplateCallout = NonNullable<NonNullable<TemplateContentQuery['lookup']['template']>['callout']>;
+import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
+import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type TemplateImportConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /**
-   * Whether the parent form has user-entered content. When true, clicking a
-   * template triggers the overwrite-confirm dialog before prefilling (plan D22
-   * / US19). When false, the template loads directly.
+   * Whether the parent form has user-entered content. When true, selecting a template triggers the
+   * overwrite-confirm dialog before prefilling. When false, the template loads directly.
    */
   isFormDirty: boolean;
   /** Called with the mapped CRD form values after the user confirms. */
   onTemplateSelected: (values: Partial<CalloutFormValues>) => void;
 };
 
-const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, CalloutFormValues['framingChip']> = {
-  [CalloutFramingType.None]: 'none',
-  [CalloutFramingType.Whiteboard]: 'whiteboard',
-  [CalloutFramingType.Memo]: 'memo',
-  [CalloutFramingType.CollaboraDocument]: 'document',
-  [CalloutFramingType.Link]: 'cta',
-  [CalloutFramingType.MediaGallery]: 'image',
-  [CalloutFramingType.Poll]: 'poll',
-};
-
-// Documents are framing-only in P1 — see `mapCalloutDetailsToFormValues.ts`.
-const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, CalloutFormValues['responseType'] | 'none'> = {
-  [CalloutContributionType.Link]: 'link',
-  [CalloutContributionType.Post]: 'post',
-  [CalloutContributionType.Memo]: 'memo',
-  [CalloutContributionType.Whiteboard]: 'whiteboard',
-  [CalloutContributionType.CollaboraDocument]: 'none',
-};
-
-const findDefaultTagset = (tagsets: TemplateCallout['framing']['profile']['tagsets']): string => {
-  if (!tagsets || tagsets.length === 0) return '';
-  const defaultTagset = tagsets.find(ts => ts.name === 'default') ?? tagsets[0];
-  return defaultTagset?.tags.join(', ') ?? '';
-};
-
 /**
- * Pure mapper: template-content `callout` payload → partial CRD form values.
- * Kept local to this connector because it only feeds Find Template (plan D22 /
- * T080). Poll framing is currently not included in `TemplateContentQuery`, so
- * poll-only fields fall back to their empty state in `prefill()`.
- */
-const mapTemplateCalloutToFormValues = (tc: TemplateCallout): Partial<CalloutFormValues> => {
-  const { framing, settings, contributionDefaults } = tc;
-  const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
-  const firstAllowedType = settings.contribution.allowedTypes[0];
-  const responseType =
-    settings.contribution.enabled && firstAllowedType
-      ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
-      : 'none';
-
-  return {
-    title: framing.profile.displayName,
-    description: framing.profile.description ?? '',
-    tags: findDefaultTagset(framing.profile.tagsets),
-    framingChip,
-    framingCommentsEnabled: settings.framing.commentsEnabled,
-    linkUrl: framing.link?.uri ?? '',
-    linkDisplayName: framing.link?.profile.displayName ?? '',
-    memoMarkdown: framing.memo?.markdown ?? '',
-    whiteboardContent: framing.whiteboard?.content ?? '',
-    whiteboardConfigured: framing.type === CalloutFramingType.Whiteboard,
-    // MediaGallery visuals on templates are reference URIs; the media-gallery
-    // field accepts `{ id, uri, altText }` entries.
-    mediaGalleryVisuals:
-      framing.mediaGallery?.visuals.map(v => ({
-        id: v.id,
-        uri: v.uri,
-        altText: v.alternativeText,
-        sortOrder: v.sortOrder,
-      })) ?? [],
-    responseType,
-    allowedActors: allowedActorsFromServer(settings.contribution.canAddContributions),
-    contributionCommentsEnabled: settings.contribution.commentsEnabled,
-    contributionDefaults: {
-      defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
-      postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent: contributionDefaults.whiteboardContent ?? '',
-    },
-    referenceRows:
-      framing.profile.references?.map(r => ({
-        title: r.name,
-        url: r.uri,
-        description: r.description ?? '',
-      })) ?? [],
-  };
-};
-
-/**
- * Wires the MUI `ImportTemplatesDialog` (rendered as a sibling portal outside
- * `.crd-root`) to the CRD callout form. On template selection, fetches the
- * template's callout content via `useTemplateContentLazyQuery`, maps it to
- * CRD form values, and — when the form is dirty — shows an overwrite-confirm
- * dialog before handing the values to the parent (plan D22 / T080).
+ * Wires the CRD `TemplatePicker` (mode='select', callout templates) to the CRD callout-creation form.
+ * Sources: the owning level-zero space's templates set + the space's account + the platform library.
+ * On selection the connector re-fetches the picked template's **full** callout content (the picker's
+ * preview shape is lossy — no poll settings / tags / contribution actors) and maps it via the same
+ * `calloutTemplateContentToFormValues` the Callout-template editor uses, so every framing kind
+ * (incl. Collabora-document and poll) round-trips faithfully. The overwrite-confirm runs first when
+ * the form is dirty.
  */
 export function TemplateImportConnector({
   open,
@@ -122,62 +37,92 @@ export function TemplateImportConnector({
 }: TemplateImportConnectorProps) {
   const { t } = useTranslation('crd-space');
   const {
-    space: { accountId },
+    space: { accountId, levelZeroSpaceId },
   } = useSpace();
-  const [fetchTemplateContent, { loading: fetching }] = useTemplateContentLazyQuery();
+  const { data: tmData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !levelZeroSpaceId,
+  });
+  const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const picker = useTemplatePicker({ allowedTypes: ['callout'], accountId, spaceTemplatesSetId, open, onOpenChange });
+  const [getTemplateContent] = useTemplateContentLazyQuery();
   const [pendingValues, setPendingValues] = useState<Partial<CalloutFormValues> | null>(null);
+  // 2026-05-19 — use a ref (not state) to track "which selectedId has the effect already fetched for".
+  // The previous `appliedFor` state had a subtle bug: calling `setAppliedFor(selectedId)` inside the
+  // effect's synchronous body triggered a re-render → React then fired the *cleanup* of the still-in-
+  // flight effect (because `appliedFor` is in deps) → `cancelled = true` → when the async fetch
+  // eventually resolved the apply step was silently skipped. Net effect: the picker closed but the
+  // form was never populated. Tracking the latest pick in a ref decouples the staleness check from
+  // React's effect lifecycle — refs don't trigger re-renders so the effect stays alive through the
+  // full async chain, while a *newer* pick (which DOES re-fire the effect by changing `selectedId`)
+  // still supersedes via the ref check at each await boundary.
+  const fetchedForRef = useRef<string | null>(null);
+  const selectedId = picker.selectedTemplateId;
+  const { clearSelection } = picker;
 
-  const applyValues = (values: Partial<CalloutFormValues>) => {
-    onTemplateSelected(values);
-    onOpenChange(false);
+  // FR-084: a template pick is a one-shot, consume-once event. After the connector consumes a
+  // selection (direct apply, overwrite-confirm, or overwrite-cancel/dismiss) it clears the picker's
+  // `selectedTemplateId` so re-picking the *same* template is a real null→id transition again — without
+  // this, `setSelectedTemplateId(sameId)` is a no-op and the flow never re-runs. The ref guard resets
+  // here whenever the selection clears, so the next pick of the same id is allowed to fetch again.
+  const consumeSelection = () => {
+    fetchedForRef.current = null;
+    clearSelection();
   };
 
-  const handleSelectTemplate = async (template: AnyTemplate) => {
-    try {
-      const { data } = await fetchTemplateContent({
-        variables: { templateId: template.id, includeCallout: true },
-      });
-      const tc = data?.lookup.template?.callout;
-      if (!tc) {
-        logError(new Error(`Template ${template.id} has no callout content`));
-        return;
-      }
-      const values = mapTemplateCalloutToFormValues(tc);
+  // When the user picks a template, re-fetch its full callout content and apply (or stage the overwrite-confirm).
+  // D18, 2026-05-18: when the template carries a server-rendered whiteboard preview, fetch the image as
+  // a `Blob` and seed `whiteboardPreviewImages` so `CalloutFormConnector`'s post-create upload step carries
+  // it through to the new callout's `WHITEBOARD_PREVIEW` Visual. Fetch failures are non-fatal (the form
+  // still shows the server URL via the D16 fallback; the new callout just ends up with no preview image).
+  useEffect(() => {
+    // Selection cleared (initial, or after a consume) — reset the per-id guard so the same template
+    // can be picked again later and re-run the fetch/confirm flow.
+    if (!selectedId) {
+      fetchedForRef.current = null;
+      return;
+    }
+    if (fetchedForRef.current === selectedId) return;
+    fetchedForRef.current = selectedId;
+    void loadCalloutTemplateFormValues(getTemplateContent, selectedId).then(values => {
+      // If a newer pick has superseded this one, the ref's `current` will no longer match.
+      if (fetchedForRef.current !== selectedId || !values) return;
       if (isFormDirty) {
         setPendingValues(values);
       } else {
-        applyValues(values);
+        onTemplateSelected(values);
+        onOpenChange(false);
+        consumeSelection();
       }
-    } catch (err) {
-      logError(new Error('Fetching template content failed', { cause: err as Error }));
+    });
+  }, [selectedId, isFormDirty, onTemplateSelected, onOpenChange, getTemplateContent, clearSelection]);
+
+  const confirmOverwrite = () => {
+    if (pendingValues) {
+      onTemplateSelected(pendingValues);
+      onOpenChange(false);
     }
+    setPendingValues(null);
+    consumeSelection();
   };
 
-  const handleConfirmOverwrite = () => {
-    if (pendingValues) applyValues(pendingValues);
+  const cancelOverwrite = () => {
     setPendingValues(null);
+    consumeSelection();
   };
 
   return (
     <>
-      <ImportTemplatesDialog
-        open={open}
-        onClose={() => onOpenChange(false)}
-        templateType={TemplateType.Callout}
-        accountId={accountId}
-        enablePlatformTemplates={true}
-        onSelectTemplate={handleSelectTemplate}
-      />
+      <TemplatePicker {...picker.pickerProps} />
       <ConfirmationDialog
         open={pendingValues !== null}
-        onOpenChange={o => !o && setPendingValues(null)}
+        onOpenChange={o => !o && cancelOverwrite()}
         title={t('findTemplate.overwriteTitle')}
         description={t('findTemplate.overwriteDescription')}
         confirmLabel={t('findTemplate.overwriteConfirm')}
         cancelLabel={t('dialogs.cancel')}
-        onConfirm={handleConfirmOverwrite}
-        onCancel={() => setPendingValues(null)}
-        loading={fetching}
+        onConfirm={confirmOverwrite}
+        onCancel={cancelOverwrite}
       />
     </>
   );

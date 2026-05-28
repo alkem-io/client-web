@@ -1,11 +1,17 @@
 import { Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ReferencesAndTagsStrip,
+  type ReferencesAndTagsStripReference,
+} from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
+
+export type CalloutDetailDialogReference = ReferencesAndTagsStripReference;
 
 export type CalloutDetailDialogData = {
   id: string;
@@ -13,12 +19,17 @@ export type CalloutDetailDialogData = {
   author?: {
     name: string;
     avatarUrl?: string;
+    profileUrl?: string;
     role?: string;
   };
   description?: string;
   timestamp?: string;
   commentCount?: number;
   reactionCount?: number;
+  /** Default-tagset tags, displayed as a compact pill row below the title (MUI `CalloutHeader` parity). */
+  tags?: string[];
+  /** External references, rendered alongside the tag strip. Clicking a reference opens its URI. */
+  references?: CalloutDetailDialogReference[];
 };
 
 type CalloutDetailDialogProps = {
@@ -33,6 +44,14 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /**
+   * Inline preview of the currently-selected contribution (e.g. CalloutPostPreview).
+   * Rendered BELOW the contributions grid so the user keeps the full list in view
+   * while reading the selected response — mirrors the MUI flow where the
+   * `CalloutContributionsHorizontalPager` + `CalloutContributionPreview` stack
+   * coexist (`src/domain/collaboration/callout/CalloutView/CalloutView.tsx`).
+   */
+  selectedContributionSlot?: ReactNode;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
@@ -70,6 +89,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  selectedContributionSlot,
   pollSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
@@ -82,6 +102,22 @@ export function CalloutDetailDialog({
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
   const showDiscussion = commentsEnabled !== false || (callout.commentCount ?? 0) > 0;
+
+  const author = callout.author;
+  const authorCluster = author ? (
+    <div className="flex items-center gap-3">
+      <Avatar className="w-10 h-10 border border-border">
+        {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
+        <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>
+      </Avatar>
+      <div>
+        <p className="text-card-title text-foreground">{author.name}</p>
+        <p className="text-caption text-muted-foreground">
+          {[callout.timestamp, author.role].filter(Boolean).join(' • ')}
+        </p>
+      </div>
+    </div>
+  ) : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -100,7 +136,17 @@ export function CalloutDetailDialog({
                 id="callout-dialog-description"
                 className="text-caption text-muted-foreground truncate"
               >
-                {callout.author?.name}
+                {callout.author?.profileUrl ? (
+                  <a
+                    href={callout.author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 rounded-sm text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {callout.author.name}
+                  </a>
+                ) : (
+                  callout.author?.name
+                )}
               </DialogDescription>
             </div>
           </div>
@@ -137,25 +183,22 @@ export function CalloutDetailDialog({
             <div className="py-8 space-y-5">
               <h1 className="text-page-title text-foreground">{callout.title}</h1>
 
-              {callout.author && (
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-10 h-10 border border-border">
-                    {callout.author.avatarUrl && (
-                      <AvatarImage src={callout.author.avatarUrl} alt={callout.author.name} />
-                    )}
-                    <AvatarFallback>{callout.author.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-card-title text-foreground">{callout.author.name}</p>
-                    <p className="text-caption text-muted-foreground">
-                      {callout.timestamp}
-                      {callout.author.role && ` • ${callout.author.role}`}
-                    </p>
-                  </div>
-                </div>
-              )}
+              {authorCluster &&
+                (author?.profileUrl ? (
+                  <a
+                    href={author.profileUrl}
+                    onClick={e => e.stopPropagation()}
+                    className="relative z-10 block rounded-md -mx-1 px-1 py-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {authorCluster}
+                  </a>
+                ) : (
+                  authorCluster
+                ))}
 
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
+
+              <ReferencesAndTagsStrip references={callout.references} tags={callout.tags} />
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
@@ -165,32 +208,34 @@ export function CalloutDetailDialog({
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
-            {/* Reactions + share bar */}
-            <div className="flex items-center gap-4 py-4 border-y border-border">
-              {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+            {/* Reactions bar (sharing is consolidated to the sticky header). */}
+            {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
+              <div className="flex items-center gap-4 py-4 border-y border-border">
                 <span className="text-body-emphasis text-muted-foreground">
                   {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
                 </span>
-              )}
-              <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
-                <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                {t('calloutDialog.share')}
-              </Button>
-            </div>
+              </div>
+            )}
 
-            {/* Contributions section */}
-            {hasContributions && contributionsSlot && (
-              <div className="py-8 border-b border-border">
-                <div className="flex items-center gap-2 mb-6">
-                  <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
-                  {contributionsCount !== undefined && (
-                    <Badge variant="secondary" className="rounded-full px-2">
-                      {contributionsCount}
-                    </Badge>
-                  )}
-                </div>
-                {contributionsSlot}
+            {/* Contributions section — grid stays visible even when a contribution is
+                selected, so the user can switch between responses. The inline
+                preview (e.g. CalloutPostPreview) renders directly below the grid. */}
+            {hasContributions && (contributionsSlot || selectedContributionSlot) && (
+              <div className="py-8 border-b border-border space-y-6">
+                {contributionsSlot && (
+                  <>
+                    <div className="flex items-center gap-2 mb-6">
+                      <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
+                      {contributionsCount !== undefined && (
+                        <Badge variant="secondary" className="rounded-full px-2">
+                          {contributionsCount}
+                        </Badge>
+                      )}
+                    </div>
+                    {contributionsSlot}
+                  </>
+                )}
+                {selectedContributionSlot}
               </div>
             )}
 

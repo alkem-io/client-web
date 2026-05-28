@@ -130,11 +130,8 @@ export default function MessagesPage() {
           }}
         >
           <h2
-            style={{
-              fontSize: "var(--text-base)",
-              fontWeight: 600,
-              color: "var(--foreground)",
-            }}
+            className="text-subheader font-semibold"
+            style={{ color: "var(--foreground)" }}
           >
             Messages
           </h2>
@@ -157,9 +154,8 @@ export default function MessagesPage() {
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent outline-none"
+              className="flex-1 bg-transparent outline-none text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}
@@ -187,29 +183,22 @@ export default function MessagesPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <span
-                    className="truncate"
-                    style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: "var(--font-weight-normal)" as any,
-                      color: "var(--foreground)",
-                    }}
+                    className="truncate text-body"
+                    style={{ color: "var(--foreground)" }}
                   >
                     {c.name}
                   </span>
                   <span
-                    style={{
-                      fontSize: "11px",
-                      color: "var(--muted-foreground)",
-                    }}
+                    className="text-caption"
+                    style={{ color: "var(--muted-foreground)" }}
                   >
                     {c.time}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mt-0.5">
                   <span
-                    className="truncate"
+                    className="truncate text-caption"
                     style={{
-                      fontSize: "12px",
                       color: "var(--muted-foreground)",
                       maxWidth: "180px",
                     }}
@@ -255,11 +244,8 @@ export default function MessagesPage() {
                 </Avatar>
                 <div>
                   <span
-                    style={{
-                      fontSize: "var(--text-sm)",
-                      fontWeight: 600,
-                      color: "var(--foreground)",
-                    }}
+                    className="text-card-title"
+                    style={{ color: "var(--foreground)" }}
                   >
                     {contact.name}
                   </span>
@@ -303,9 +289,8 @@ export default function MessagesPage() {
                     }}
                   >
                     <p
+                      className="text-body"
                       style={{
-                        fontSize: "var(--text-sm)",
-                        lineHeight: 1.5,
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
@@ -342,10 +327,9 @@ export default function MessagesPage() {
                 placeholder="Type a message..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                className="flex-1 h-9 px-3 rounded-md bg-transparent outline-none"
+                className="flex-1 h-9 px-3 rounded-md bg-transparent outline-none text-body"
                 style={{
                   border: "1px solid var(--border)",
-                  fontSize: "var(--text-sm)",
                   color: "var(--foreground)",
                   fontFamily: "'Inter', sans-serif",
                 }}
@@ -368,8 +352,8 @@ export default function MessagesPage() {
               <MessageSquare className="w-7 h-7" style={{ color: "var(--muted-foreground)", opacity: 0.5 }} />
             </div>
             <p
+              className="text-body"
               style={{
-                fontSize: "var(--text-sm)",
                 color: "var(--muted-foreground)",
                 fontFamily: "'Inter', sans-serif",
               }}

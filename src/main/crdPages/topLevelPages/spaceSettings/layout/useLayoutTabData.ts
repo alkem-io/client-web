@@ -5,6 +5,7 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowStatesSortOrderMutation,
   useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
@@ -30,6 +31,7 @@ export type UseLayoutTabDataResult = {
   loading: boolean;
   error: Error | null;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
+  onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
   onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
@@ -38,7 +40,14 @@ export type UseLayoutTabDataResult = {
   isDirty: boolean;
   /** Update both buffer AND snapshot for a column saved via the Edit Details dialog. */
   markColumnSaved: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Optimistic update for "Mark as active phase" — flips `isCurrentPhase` on
+   * both buffer and snapshot so the kebab menu reflects the new state without
+   * waiting for the server refetch.
+   */
+  markCurrentPhaseChanged: (columnId: LayoutColumnId) => void;
   /** Underlying ids — useful for the view's useColumnMenu consumer. */
+  collaborationId: string;
   innovationFlowId: string;
   calloutsSetId: string;
   /**
@@ -51,8 +60,23 @@ export type UseLayoutTabDataResult = {
   /** Min/max state count from the innovation-flow settings; drives Add/Delete enablement. */
   minimumNumberOfStates: number;
   maximumNumberOfStates: number;
+  /**
+   * Total callouts currently attached to this collaboration, read from the
+   * already-resolved InnovationFlowSettings query (the same query that seeds
+   * the columns). Drives the destructive "replace all" confirmation in the
+   * Replace-innovation-flow flow — must come from loaded data, never a
+   * separate query that can still be 0 while the user confirms.
+   */
+  existingCalloutsCount: number;
   /** True while a structural mutation (create/delete state) is in flight. */
   isStructureMutating: boolean;
+  /**
+   * Discards the current local snapshot so the seed effect re-runs from the
+   * next InnovationFlowSettings query result. Call this after an out-of-band
+   * mutation (e.g. "Replace innovation flow") that the parent already
+   * refetched — without it the buffer keeps showing the pre-mutation columns.
+   */
+  reseedFromServer: () => void;
 };
 
 type Snapshot = {
@@ -115,10 +139,16 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
   const [saveBar, setSaveBar] = useState<LayoutSaveBarState>({ kind: 'clean' });
   const [, startTransition] = useTransition();
   const [isStructureMutating, setIsStructureMutating] = useState(false);
+  // Bumped by `reseedFromServer` to force the seed effect to re-run even when
+  // the flowData/settingsData references haven't changed since the last render
+  // (the refetch landed BEFORE the snapshot was dropped, so the effect already
+  // bailed once with the new data still in scope).
+  const [reseedToken, setReseedToken] = useState(0);
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
+  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
 
   // Borrow only the structural action handlers from the legacy hook —
@@ -140,7 +170,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     snapshotRef.current = toSnapshot(nextColumns, nextDisplay);
     setColumns(nextColumns);
     setPostDescriptionDisplay(nextDisplay);
-  }, [flowData, settingsData]);
+  }, [flowData, settingsData, reseedToken]);
 
   // Dirty flag — tracks whether the buffer differs from the snapshot.
   // Using state (not useMemo on a ref) so it updates when onSave/onReset clear it.
@@ -177,6 +207,28 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
       const index = Math.max(0, Math.min(target.index, targetCol.callouts.length));
       targetCol.callouts.splice(index, 0, removed);
       return next;
+    });
+  };
+
+  const onReorderColumns = (orderedColumnIds: LayoutColumnId[]) => {
+    setColumns(prev => {
+      // Build the new column list in the requested order. Any column not
+      // present in `orderedColumnIds` (defensive — shouldn't happen for a
+      // simple swap) is appended at the end in its current order.
+      const byId = new Map(prev.map(c => [c.id, c] as const));
+      const reordered: LayoutPoolColumn[] = [];
+      for (const id of orderedColumnIds) {
+        const found = byId.get(id);
+        if (found) {
+          reordered.push(found);
+          byId.delete(id);
+        }
+      }
+      // Preserve any unaccounted-for column at the end in its original order.
+      for (const col of prev) {
+        if (byId.has(col.id)) reordered.push(col);
+      }
+      return reordered;
     });
   };
 
@@ -251,6 +303,17 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     setSaveBar({ kind: 'clean' });
   };
 
+  const markCurrentPhaseChanged = (columnId: LayoutColumnId) => {
+    const updateCol = (cols: LayoutPoolColumn[]) => cols.map(c => ({ ...c, isCurrentPhase: c.id === columnId }));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+  };
+
   /** Update both buffer and snapshot for a column saved directly via the Edit Details dialog. */
   const markColumnSaved = (columnId: LayoutColumnId, title: string, description: string) => {
     const updateCol = (cols: LayoutPoolColumn[]) =>
@@ -271,6 +334,23 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     setSaveBar({ kind: 'saving' });
 
     try {
+      // 0) Column reorder — fire first so subsequent column-rename mutations
+      //    (and the local snapshot we set at the end) reflect the final order.
+      //    The mutation persists the new sortOrder; we already updated the
+      //    local buffer when the drag ended, so no UI shuffle on success.
+      const innovationFlowId = flowData?.lookup.collaboration?.innovationFlow.id ?? '';
+      const priorOrder = snap.columns.map(c => c.id);
+      const nextOrder = columns.map(c => c.id);
+      const orderChanged =
+        innovationFlowId.length > 0 &&
+        priorOrder.length === nextOrder.length &&
+        priorOrder.some((id, i) => id !== nextOrder[i]);
+      if (orderChanged) {
+        await updateInnovationFlowStatesSortOrder({
+          variables: { innovationFlowID: innovationFlowId, stateIDs: nextOrder },
+        });
+      }
+
       // 1) Column renames — only fire when title or description actually changed.
       const renames = columns.filter(col => {
         const prior = snap.columns.find(p => p.id === col.id);
@@ -358,6 +438,10 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     snapshotRef.current = null;
     setIsDirty(false);
     setSaveBar({ kind: 'clean' });
+    // Bump the seed token so the seed effect re-runs even when flowData /
+    // settingsData haven't changed since their last render — common when the
+    // refetched data landed BEFORE we nulled the snapshot.
+    setReseedToken(t => t + 1);
   };
 
   const onCreateState = async ({
@@ -375,6 +459,9 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
         { displayName, description, sortOrder: 0, settings: { allowNewCallouts: true } },
         afterStateId
       );
+      // `createState` now awaits its refetch queries, so by the time it
+      // resolves the InnovationFlowSettings cache holds the final, de-collided
+      // column order — safe to drop the snapshot and reseed straight away.
       resetSnapshotForReseed();
     } finally {
       setIsStructureMutating(false);
@@ -400,6 +487,8 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
         }
       }
       await innovationFlowSettings.actions.deleteState(stateId);
+      // `deleteState` now awaits its refetch, so the cache already reflects the
+      // post-delete column set — reseed directly.
       resetSnapshotForReseed();
     } finally {
       setIsStructureMutating(false);
@@ -415,6 +504,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     loading: settingsLoading || flowLoading,
     error: settingsError ?? flowError ?? null,
     onReorder,
+    onReorderColumns,
     onRenameColumn,
     onMoveToColumn,
     onPostDescriptionDisplayChange,
@@ -422,13 +512,17 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     onReset,
     isDirty,
     markColumnSaved,
+    markCurrentPhaseChanged,
+    collaborationId,
     innovationFlowId: flowData?.lookup.collaboration?.innovationFlow.id ?? '',
     calloutsSetId: flowData?.lookup.collaboration?.calloutsSet.id ?? '',
     onCreateState,
     onDeleteState,
     minimumNumberOfStates: flowSettings?.minimumNumberOfStates ?? 0,
     maximumNumberOfStates: flowSettings?.maximumNumberOfStates ?? Number.POSITIVE_INFINITY,
+    existingCalloutsCount: flowData?.lookup.collaboration?.calloutsSet.callouts?.length ?? 0,
     isStructureMutating,
+    reseedFromServer: resetSnapshotForReseed,
   };
 }
 

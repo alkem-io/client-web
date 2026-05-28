@@ -89,11 +89,9 @@ export const collectSubspaceAvatars = (
 ): { src: string; alt: string }[] => {
   const avatars: { src: string; alt: string }[] = [];
 
-  // Add subspace's own avatar
+  // Add subspace's own avatar. Avatar position — never substitute cardBanner.
   const subspaceAvatarUri =
-    subspace.about.profile.avatar?.uri ||
-    subspace.about.profile.cardBanner?.uri ||
-    getDefaultSpaceVisualUrl(VisualType.Avatar, subspace.id);
+    subspace.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, subspace.id);
 
   // Add parent avatar first if available (will be in the back)
   if (parentAvatarUri) {
@@ -142,11 +140,8 @@ export const useSubspaceCardData = (parentSpace?: ParentSpaceData | null) => {
       return undefined;
     }
 
-    return (
-      parentSpace.about.profile.avatar?.uri ||
-      parentSpace.about.profile.cardBanner?.uri ||
-      getDefaultSpaceVisualUrl(VisualType.Avatar, parentSpace.id)
-    );
+    // Parent avatar for stacking = avatar position. Never substitute cardBanner.
+    return parentSpace.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, parentSpace.id);
   })();
 
   const parentDisplayName = parentSpace?.about?.profile?.displayName;

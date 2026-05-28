@@ -21,10 +21,30 @@
     "demo": "Ceci est un Espace de démonstration à des fins de test.",
     "inactive": "Cet Espace est actuellement inactif."
   },
+  "knowledge": {
+    "searchPlaceholder": "Rechercher dans la base de connaissances...",
+    "searchLabel": "Rechercher dans la base de connaissances",
+    "noResults": "Aucun résultat",
+    "viewGrid": "Vue en cartes",
+    "viewList": "Vue en liste",
+    "count": {
+      "post_one": "{{count}} publication",
+      "post_other": "{{count}} publications",
+      "whiteboard_one": "{{count}} tableau blanc",
+      "whiteboard_other": "{{count}} tableaux blancs",
+      "memo_one": "{{count}} mémo",
+      "memo_other": "{{count}} mémos",
+      "link_one": "{{count}} lien",
+      "link_other": "{{count}} liens",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
+  },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",
     "subspaces": "Sous-espaces",
     "showAll": "Tout afficher",
+    "create": "Créer",
     "events": "Événements",
     "noEvents": "Aucun événement à venir",
     "showCalendar": "Afficher le calendrier",
@@ -35,9 +55,6 @@
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
     "postIndex": "Index des publications",
-    "searchPlaceholder": "Rechercher...",
-    "searchLabel": "Rechercher des publications",
-    "noResults": "Aucun résultat",
     "readMore": "Lire la suite",
     "editDescription": "Modifier la description",
     "addEvent": "Ajouter un événement",
@@ -147,6 +164,7 @@
     "loading": "Chargement du contenu..."
   },
   "callout": {
+    "openAria": "Ouvrir {{title}}",
     "draft": "Brouillon",
     "expand": "Afficher plus",
     "collapse": "Afficher moins",
@@ -185,13 +203,12 @@
     "memo": "Mémo",
     "moreWhiteboards": "+{{count}} de plus",
     "moreContributions": "+{{count}} de plus",
+    "contributionsHeader": "Contributions ({{count}})",
     "vote": "Voter",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} votes au total",
-    "resultsCount": "{{count}} résultats",
-    "clearFilters": "Effacer les filtres",
     "sendComment": "Envoyer le commentaire",
-    "addResponse": "Ajouter une réponse",
+    "addWhiteboard": "Ajouter un tableau blanc",
     "createWhiteboard": "Créer un nouveau tableau blanc",
     "defaultWhiteboardName": "Nouveau tableau blanc",
     "whiteboardNameLabel": "Titre du tableau blanc",
@@ -199,6 +216,32 @@
     "createMemo": "Créer un nouveau mémo",
     "defaultMemoName": "Nouveau mémo",
     "memoNameLabel": "Titre du mémo",
+    "addLinkOrFile": "Ajouter un lien ou un fichier",
+    "createLink": "Ajoutez des liens ou joignez des documents",
+    "editLink": "Modifier le lien",
+    "linkSave": "Enregistrer",
+    "linkCreate": "Ajouter",
+    "linkAddAnother": "Ajouter un autre lien",
+    "linkRemoveRow": "Supprimer ce lien",
+    "linkDefaultName": "Nouveau lien",
+    "linkDefaultNameNumbered": "Nouveau lien ({{count}})",
+    "linkCancelConfirmTitle": "Abandonner les modifications ?",
+    "linkCancelConfirmDescription": "Si vous fermez maintenant, les liens ajoutés ici ne seront pas enregistrés.",
+    "linkCancelConfirm": "Abandonner",
+    "linkUrlLabel": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkNameLabel": "Nom affiché",
+    "linkNamePlaceholder": "Donnez un nom à votre lien",
+    "linkDescriptionLabel": "Description",
+    "linkDescriptionPlaceholder": "De quoi parle ce lien ?",
+    "linkTermsHelper": "<terms>Cliquez ici</terms> pour les conditions générales.",
+    "linkUrlInvalid": "Saisissez une URL valide (doit commencer par http:// ou https://).",
+    "linkNameRequired": "Le nom affiché est obligatoire.",
+    "linkEditAriaLabel": "Modifier le lien",
+    "linkDeleteAriaLabel": "Supprimer le lien",
+    "linkDelete": "Supprimer le lien",
+    "linkDeleteConfirmTitle": "Supprimer ce lien ?",
+    "linkDeleteConfirmDescription": "Le lien sera définitivement supprimé de ce $t(common.callout). Cette action est irréversible.",
     "addPost": "Ajouter une publication",
     "createPost": "Créer une publication",
     "editPost": "Modifier la publication",
@@ -218,7 +261,12 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "clearTypeConfirm": {
+      "title": "Supprimer ce type de contenu ?",
+      "description": "Une fois enregistré, le contenu existant sera supprimé et vous ne pourrez plus rattacher un autre type à cette publication. Cette action est irréversible.",
+      "confirm": "Supprimer"
+    }
   },
   "contribution": {
     "edit": "Modifier",
@@ -244,14 +292,11 @@
     "officeDocumentsNotEnabled": "Les documents bureautiques ne sont pas activés pour cet espace."
   },
   "members": {
-    "title": "Communauté",
     "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
     "inviteMember": "Inviter un membre",
     "search": "Rechercher des membres ou organisations...",
     "filterAll": "Tous",
-    "filterAdmin": "Administrateur",
     "filterLead": "Responsable",
-    "filterMember": "Membre",
     "filterOrganization": "Organisation",
     "noMembers": "Aucun membre trouvé",
     "previousPage": "Précédent",
@@ -263,7 +308,6 @@
       "clearFilters": "Effacer les filtres"
     },
     "role": {
-      "admin": "Administrateur",
       "lead": "Responsable",
       "member": "Membre",
       "organization": "Organisation"
@@ -347,12 +391,13 @@
     }
   },
   "mobile": {
-    "more": "Plus",
     "menu": "Menu",
     "activity": "Activité",
     "videoCall": "Appel vidéo",
     "share": "Partager",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "expandWidth": "Étendre à pleine largeur",
+    "collapseWidth": "Réduire à la mise en page centrée"
   },
   "contextMenu": {
     "edit": "Modifier",
@@ -431,7 +476,8 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Écrivez quelque chose...",
     "tagsLabel": "Étiquettes",
-    "tagsPlaceholder": "Étiquettes séparées par des virgules",
+    "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
+    "tagsTooShort": "Chaque étiquette doit comporter au moins {{min}} caractères.",
     "framingType": "Ajouter à la publication",
     "visibility": "Visibilité",
     "publishedLabel": "Publié",
@@ -482,20 +528,9 @@
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Description facultative",
       "addRow": "Ajouter un autre lien",
-      "removeRow": "Supprimer le lien"
+      "removeRow": "Supprimer le lien",
+      "attachFile": "Joindre un fichier"
     }
-  },
-  "references": {
-    "heading": "Références",
-    "empty": "Pas encore de références.",
-    "titleLabel": "Titre",
-    "titlePlaceholder": "Titre de la référence",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Description facultative",
-    "addRow": "Ajouter une autre référence",
-    "removeRow": "Supprimer la référence"
   },
   "responseDefaults": {
     "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de ce $t(common.callout).",
@@ -634,13 +669,36 @@
   },
   "postSnippet": {
     "readMore": "… Lire la suite",
-    "readLess": "Réduire"
+    "readLess": "Réduire",
+    "seeFullDescription": "Voir la description complète"
+  },
+  "postPreview": {
+    "label": "Aperçu de la contribution sélectionnée",
+    "edit": "Modifier la réponse",
+    "share": "Partager la réponse",
+    "close": "Fermer l'aperçu",
+    "emptyDescription": "Aucune description",
+    "references": "Références"
+  },
+  "postLocation": {
+    "label": "Emplacement du post",
+    "warning": "Soyez prudent en modifiant l'emplacement de la réponse. La déplacer vers un autre post la fera disparaître du post actuel. Cela peut compliquer la récupération pour les utilisateurs — y compris l'auteur de la réponse. Vous ne pouvez déplacer les réponses qu'au sein du même Espace ou Sous-espace.",
+    "moved": "Réponse déplacée avec succès.",
+    "moveFailed": "Impossible de déplacer la réponse. Veuillez réessayer."
+  },
+  "whiteboardPreview": {
+    "label": "Aperçu du whiteboard sélectionné",
+    "edit": "Modifier le whiteboard",
+    "share": "Partager le whiteboard",
+    "close": "Fermer l'aperçu",
+    "openFull": "Cliquez pour voir le whiteboard complet"
   },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",
     "showLess": "Afficher moins",
     "reply": "Répondre",
+    "replyInThread": "Répondre dans ce fil",
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
     "deleteConfirmTitle": "Supprimer le commentaire ?",
@@ -658,7 +716,9 @@
     "count_one": "1 commentaire",
     "loading": "Chargement des commentaires...",
     "empty": "Pas encore de commentaires",
-    "unknownUser": "Utilisateur inconnu"
+    "unknownUser": "Utilisateur inconnu",
+    "signInToComment": "Connectez-vous pour commenter, répondre ou réagir.",
+    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici."
   },
   "dialogs": {
     "cancel": "Annuler",
@@ -674,6 +734,12 @@
       "description": "Le contenu de cadrage de ce $t(common.callout) va être supprimé. Cette action est irréversible.",
       "confirm": "Supprimer",
       "cancel": "Conserver"
+    },
+    "confirmClose": {
+      "title": "Fermer cette boîte de dialogue ?",
+      "description": "Tout commentaire non enregistré sera perdu.",
+      "confirm": "Fermer",
+      "cancel": "Garder ouvert"
     }
   },
   "poll": {
@@ -752,5 +818,8 @@
     "moreActionsDrawer": "Actions supplémentaires",
     "close": "Fermer",
     "loadingPost": "Chargement de la publication"
+  },
+  "activity": {
+    "dialogTitle": "Activité récente"
   }
 }

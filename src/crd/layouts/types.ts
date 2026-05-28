@@ -63,4 +63,11 @@ export type CrdNotificationItemData = {
 export type CrdNotificationFilter = {
   key: string;
   label: string;
+  hasUnread?: boolean;
+};
+
+export type CrdDesignVersionSwitch = {
+  enabled: boolean;
+  onChange: (enabled: boolean) => void;
+  disabled?: boolean;
 };

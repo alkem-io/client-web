@@ -160,41 +160,53 @@ const startOfToday = dayjs().startOf('day');
 
 **Avoid raw Tailwind typography class combos** like `text-sm font-semibold` or `text-2xl font-bold`. Use the semantic tokens defined in `src/crd/styles/typography.css`. Each token bundles font-size, line-height, font-weight, and letter-spacing into a single Tailwind utility via `@theme inline`.
 
-**Tokens:**
+**Tokens (14 total):**
 
-| Token | Size | Weight | Purpose | HTML |
-|-------|------|--------|---------|------|
-| `text-profile-title` | 36px | 700 | Public-profile hero names (User / Organization / VC). Reserved for the actor-identity slot — strongest heading on the platform. Not for ordinary page titles. | `<h1>` |
-| `text-page-title` | 30px | 700 | Main page headings | `<h1>` |
-| `text-section-title` | 20px | 700 | Section headings within a page | `<h2>` |
-| `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles | `<h3>` |
-| `text-card-title` | 14px | 600 | Card headings, list item titles | `<h3>` |
-| `text-body` | 14px | 400 | Body text, descriptions | `<p>` |
-| `text-body-emphasis` | 14px | 500 | Emphasized body text, links | `<p>`/`<span>` |
-| `text-control` | 14px | 400 | UI-chrome in single-line interactive controls (menu items, dropdown rows, select triggers, inputs, button labels). Same size as body but tighter leading (1.25) so rows don't gain vertical space. | `<span>`/inline |
-| `text-caption` | 12px | 400 | Timestamps, metadata, secondary text | `<p>`/`<span>` |
-| `text-label` | 11px | 600 | Uppercase section headers, sidebar labels (includes 0.05em tracking) | `<span>` |
-| `text-badge` | 10px | 500 | Badge text, tag labels, avatar fallback initials | `<span>` |
+Two hero tokens (`text-display`, `text-hero`) are **fluid via `clamp()`** — they scale smoothly with the viewport, no breakpoint composition needed.
+
+| Token | Size | Weight | Tracking | Purpose | HTML |
+|-------|------|--------|----------|---------|------|
+| `text-display` | `clamp(30px, 4vw, 48px)` | 700 | -0.025em | Largest hero on the platform (detail dialogs). Fluid. | `<h1>` |
+| `text-hero` | `clamp(22px, 3vw, 32px)` | 700 | -0.025em | Profile / Space / User / Organization / VC hero pages. Fluid. **This replaces the dropped `text-profile-title` — public-profile heroes now use `text-hero`.** | `<h1>` |
+| `text-page-title` | 24px | 700 | -0.015em | Standard page headings (settings, list pages) | `<h1>` |
+| `text-section-title` | 20px | 600 | — | Section headings within a page | `<h2>` |
+| `text-subsection-title` | 18px | 600 | — | Subsection headings, dialog body titles, **feed-tier card titles** (PostCard, SpaceGridCard) | `<h3>` |
+| `text-subheader` | 16px | 500 | — | 16px tier between `text-body` and `text-subsection-title` — settings/form labels, RadioGroup options, dialog body text, empty-state titles, comfortable-reading paragraphs in wizards. Override weight with `font-normal` / `font-semibold` / `font-bold` as needed. | `<h3>` / `<label>` / `<p>` |
+| `text-card-title` | 14px | 600 | — | **Compact-tier** card titles (SpaceCard, OrganizationCard) | `<h3>` |
+| `text-body` | 14px | 400 | — | Body text, descriptions | `<p>` |
+| `text-body-emphasis` | 14px | 500 | — | Form labels, link text, list-item emphasis | `<p>` / `<span>` |
+| `text-control` | 14px | 500 | — | UI-chrome in single-line interactive controls (buttons, menu rows, dropdowns, select triggers, inputs, tab labels). Same size as body but tighter leading (1.25) so rows stay compact. | `<button>` / `<span>` / inline |
+| `text-caption` | 12px | 400 | — | Timestamps, metadata, helper text | `<p>` / `<span>` |
+| `text-label` | 12px | 600 | 0.05em | Uppercase section headers in **main content** (always compose with `uppercase`) | `<span>` |
+| `text-sidebar-label` | 11px | 600 | 0.05em | Uppercase section headers in **sidebars** — denser vertical rhythm than `text-label` (always compose with `uppercase`) | `<span>` |
+| `text-badge` | 10px | 600 | 0.04em | Badges, tiny meta tags, "LEADS"-style chips | `<span>` |
 
 **Migration from raw classes:**
 
 | Raw Tailwind (DO NOT USE) | Semantic token |
 |---------------------------|---------------|
-| `text-2xl font-bold` / `text-3xl font-bold` | `text-page-title` |
-| `text-xl font-bold` / `text-xl font-semibold` | `text-section-title` |
-| `text-lg font-semibold` / `text-lg font-medium` | `text-subsection-title` |
-| `text-lg font-bold` (PostCard title) | `text-subsection-title font-bold` |
-| `text-sm font-semibold` | `text-card-title` |
-| `text-sm font-medium` | `text-body-emphasis` |
+| `text-4xl font-bold` / `text-3xl md:text-4xl font-bold` | `text-display` |
+| `text-3xl font-bold` (standalone) | `text-hero` |
+| `text-2xl font-bold tracking-tight` / `text-2xl font-bold` | `text-page-title` |
+| `text-2xl font-semibold` | `text-page-title font-semibold` |
+| `text-xl font-bold` | `text-section-title font-bold` |
+| `text-xl font-semibold` / `text-xl` | `text-section-title` |
+| `text-lg font-bold` (PostCard feed-tier title) | `text-subsection-title font-bold` |
+| `text-lg font-semibold` / `text-lg font-medium` / `text-lg` | `text-subsection-title` |
+| `text-base font-bold` | `text-subheader font-bold` |
+| `text-base font-semibold` | `text-subheader font-semibold` |
+| `text-base font-medium` | `text-subheader` (default weight matches — drop modifier) |
+| `text-base` (standalone) | `text-subheader font-normal` |
+| `text-sm font-semibold` / `text-sm font-bold` | `text-card-title` (+ `font-bold` if needed) |
+| `text-sm font-medium` (on labels, form text, inline emphasis) | `text-body-emphasis` |
+| `text-sm font-medium` (on buttons, menu rows, tab triggers, dropdown rows) | `text-control` |
 | `text-sm` / `text-sm leading-relaxed` / `text-sm leading-normal` (prose) | `text-body` |
-| `text-sm` (UI-chrome: menu/dropdown/select rows, inputs, buttons, calendar day cells) | `text-control` |
-| `text-sm font-medium` (button base label) | `text-control font-medium` |
-| `text-xs` | `text-caption` |
-| `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `tracking-wider` — token includes tracking) |
-| `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold`, `tracking-wider`) |
-| `text-[10px] font-medium` / `text-[10px] font-semibold` | `text-badge` |
-| `text-[9px]` (any weight) | `text-badge` |
-| `text-[12px]` (any weight) | `text-caption` (+ weight override if needed) |
+| `text-xs italic` / `text-xs font-medium` / `text-xs` | `text-caption` (+ modifier if needed) |
+| `text-xs uppercase tracking-wider` (main content) | `text-label uppercase` (drop `tracking-wider` — token supplies 0.05em) |
+| Inline `style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em-0.05em' }}` (sidebar headers) | `className="text-sidebar-label uppercase"` |
+| `text-[10px] font-medium` / `text-[10px] font-semibold` / `text-[9px]` | `text-badge` |
+| Inline `clamp(22px, 3vw, 32px)` / similar fluid heroes | `text-hero` (or `text-display` for the larger range) |
+| Dynamic conditional weight (`style={{ fontWeight: hasUnread ? 600 : 400 }}`) | `cn('text-body', hasUnread && 'font-semibold')` — token for size/leading/tracking, conditional className for the weight switch |
 
 **Composability** — tokens compose naturally with other Tailwind utilities:
 
@@ -209,9 +221,14 @@ const startOfToday = dayjs().startOf('day');
 <h3 className="text-subsection-title font-bold">Bolder heading</h3>
 ```
 
-**Exception: SpaceHeader hero text** — the `clamp(28px, 5vw, 48px)` inline style in `SpaceHeader.tsx` is a one-off exception (fluid font sizing, no Tailwind equivalent). Do not create a token for it.
+**Leave-alone list** (don't tokenize these):
 
-**Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/spec.md` for the full specification.
+- shadcn `Input.tsx` / `Textarea.tsx` `text-base md:text-sm` — the iOS-zoom-prevention pattern (mobile inputs under 16px trigger iOS to zoom the viewport on focus).
+- Rare/edge sizes (`text-[7px]`, `text-[8px]`, `text-[13px]`, etc.) that appear once or twice in chart axes, document-preview mocks, or design debt — decide individually.
+- Conditional **size** patterns (`fontSize: isFloating ? "12px" : "var(--text-base)"`) — only conditional weight tokenizes cleanly via `cn()`.
+- 14px uppercase patterns (`text-sm uppercase tracking-wider`) — no matching token; `text-label` is 12px, `text-sidebar-label` is 11px. Rare; leave inline.
+
+**Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/fonts.md` for the audit, decisions, and full migration rulebook.
 
 ### 9. All Deletions Must Be Confirmed
 
@@ -238,6 +255,48 @@ const startOfToday = dayjs().startOf('day');
 - `CrdMemoDialog.tsx` — memo deletion via `ConfirmationDialog`
 
 **Why this rule exists:** an accidental click destroys user content with no undo at the server level. A dialog is cheap; a lost contribution or comment is not. This rule applies regardless of the entity's "importance" — once a user has typed it, they get to confirm before it goes away.
+
+#### Discard-on-close for dialogs — `useDialogCloseGuard`
+
+When a dialog holds **unsaved, user-authored input**, closing it (Esc, overlay/outside click, or the X button) must confirm via `DiscardChangesDialog` before the input is lost — never close silently. **Do not hand-roll this.** There is one shared hook:
+
+`useDialogCloseGuard` (`@/crd/components/dialogs/useDialogCloseGuard`) — the single source of truth. Radix routes Esc, outside-click, and X all through `onOpenChange(false)`, so the hook guards that one callback (no `onEscapeKeyDown`/`onInteractOutside` plumbing needed).
+
+```tsx
+const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+  isDirty,                       // what "unsaved" means — you compute this
+  onClose: () => onOpenChange(false), // the real close (and any onCancel())
+  blockClose: submitting,        // optional: ignore close entirely while a mutation is in flight
+});
+
+return (
+  <>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        …
+        <DialogFooter>
+          <Button variant="ghost" onClick={requestClose}>{t('cancel')}</Button>
+          …
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    {guardElement}
+  </>
+);
+```
+
+- Wire `handleOpenChange` to the `Dialog` and `requestClose` to the footer Cancel/Close button — both go through the same guard.
+- Render `{guardElement}` as a sibling of `<Dialog>` (wrap the return in a fragment).
+- Clean → closes immediately. Dirty → shows `DiscardChangesDialog`; only an explicit "Discard" closes. `blockClose` → no close, no prompt.
+
+**Only guard real data-loss.** Apply this when the user has authored content they can't trivially recreate (a filled-in form like Create Subspace, a template form, a link contribution). **Do NOT** guard:
+- Read-only dialogs (detail/preview/activity views) — nothing to lose.
+- Search / picker / selection dialogs (member picker, template picker, "change default") — transient selection, not authored content; a prompt there is friction, not protection.
+- Transient *steps* inside a flow (e.g. the image-crop step of an upload) — recoverable by redoing the step. A discard prompt here was tried and explicitly removed.
+
+Litmus test: *"If this closes, did the user lose something they typed and would have to retype?"* Only then guard it.
+
+**Reference implementations:** `CreateSubspaceDialog.tsx`, `TemplateFormDialog.tsx`, `LinkContributionDialog.tsx` (both create + edit flows) all use `useDialogCloseGuard`. New form dialogs supply `isDirty` + `onClose` and reuse the hook — never re-implement the discard-confirm flow inline.
 
 ### 10. Never Render Markdown / HTML-Tagged Strings As Plain Text
 
@@ -561,6 +620,23 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Only the main `translation` namespace uses Crowdin.
 
+### Do-not-translate platform terms (glossary)
+
+A set of Alkemio platform terms are **brand-specific English words** that must **never be translated** — they stay in English, and only the surrounding sentence is translated and inflected around them. **Currently this convention is enforced for Dutch (`nl`) only** — the other languages (es, bg, de, fr) still translate these terms and have not been reverted yet; the same rule is expected to extend to them later.
+
+| English term | Forbidden Dutch translation |
+|---|---|
+| **Space / Spaces** | "Ruimte" / "Ruimtes" |
+| **Subspace / Subspaces** | "Subruimte" / "Subruimtes" |
+| **Post / Posts** | "Bericht" / "Berichten" — also the user-facing name for a **Callout** ("Oproep"); `callout`/`callouts` resolve to "Post"/"Posts" |
+| **template / templates** | "sjabloon" / "sjablonen" — lowercase mid-sentence (capitalize "Template" when standalone: tab/heading/button) |
+| **Layout** | "Indeling" |
+| **Virtual Contributor(s)** | "Virtuele bijdrager(s)" |
+
+When a brand term combines with a translated word, keep the English term and hyphenate the Dutch grammar around it (e.g. `Space-leden`, `subspace-template`, `Post-index`). **Disambiguate carefully:** Dutch `Berichten` also means "Messages" (the messaging feature) — only keys whose English source uses "Post"/"Posts" get reverted; "Messages", "workspace" (`werkruimte`), "Call for whiteboards" (`Oproep`), etc. stay translated.
+
+Full term list, rationale, per-language localized forms, and the validation approach: **`specs/101-translation-glossary/`** (`glossary.md` human-readable, `glossary.json` machine-readable).
+
 ### Critical rules
 
 - Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
@@ -749,10 +825,10 @@ The components that participate in these treatments today:
 
 The accent colour is intentionally absent from a few spots — too many coloured tiles per row makes the layout feel noisy. These keep the muted prototype treatment:
 
-- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) — default grey `AvatarFallback`. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
+- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) and **`SubspacesSection`** (the left-sidebar subspaces list on the space home tab and the subspace page) — these rows render the entity's **real `avatarUrl`** when one exists; the **grey `AvatarFallback` is retained only as the no-avatar fallback**. `pickColorFromId` is still intentionally NOT applied here, so a space/subspace with no avatar stays muted grey rather than getting a coloured tile. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
 - **`CompactSpaceCard`'s initials tile** (the small rectangle next to the space name in the card body, *not* the banner) — `bg-primary text-primary-foreground`.
 
-The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles use the prototype's muted/primary treatment.**
+The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles show the real avatar when available and otherwise keep the prototype's muted/primary treatment (no `pickColorFromId`).**
 
 #### Data flow
 

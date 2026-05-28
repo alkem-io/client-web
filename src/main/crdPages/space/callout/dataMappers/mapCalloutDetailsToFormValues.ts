@@ -39,9 +39,9 @@ const findDefaultTagset = (tagsets: CalloutData['framing']['profile']['tagsets']
   return tagsets.find(ts => ts.name === 'default') ?? tagsets[0];
 };
 
-const findTags = (tagsets: CalloutData['framing']['profile']['tagsets']): string => {
+const findTags = (tagsets: CalloutData['framing']['profile']['tagsets']): string[] => {
   const defaultTagset = findDefaultTagset(tagsets);
-  return defaultTagset?.tags.join(', ') ?? '';
+  return defaultTagset?.tags ?? [];
 };
 
 /**
@@ -71,11 +71,17 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
   const { framing, settings, contributionDefaults } = callout;
   const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
 
+  // `responseType` is the user's chosen contribution type — it must come from
+  // `allowedTypes` ALONE. `enabled` is a separate "is anyone currently allowed
+  // to add?" flag that flips to false when the user turns both Members/Admins
+  // toggles off, but the callout is still a contribution-collecting callout.
+  // AND-ing `responseType` on `enabled` here would silently reset the chip to
+  // "None" on every edit-dialog open whenever the toggles are off, and the
+  // update mapper would then commit that loss back to the server.
   const firstAllowedType = settings.contribution.allowedTypes[0];
-  const responseType: ResponseType =
-    settings.contribution.enabled && firstAllowedType
-      ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
-      : 'none';
+  const responseType: ResponseType = firstAllowedType
+    ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
+    : 'none';
 
   const values: Partial<CalloutFormValues> = {
     title: framing.profile.displayName,
@@ -96,6 +102,11 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    // Server-rendered preview image (D16, 2026-05-18) — the inline framing preview's read-time
+    // fallback when no fresh in-form blob exists. `CalloutContent.graphql` exposes
+    // `framing.whiteboard.profile.preview` as `visual(type: WHITEBOARD_PREVIEW)`. Mirrors
+    // `calloutTemplateContentToFormValues` (the Callout-template prefill mapper).
+    whiteboardPreviewServerUrl: framing.whiteboard?.profile.preview?.uri || undefined,
     whiteboardConfigured: framing.type === CalloutFramingType.Whiteboard,
     mediaGalleryVisuals:
       framing.mediaGallery?.visuals.map(v => ({
@@ -123,8 +134,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     referenceRows:
       framing.profile.references?.map(r => ({
         id: r.id,
-        title: r.name,
-        url: r.uri,
+        name: r.name,
+        uri: r.uri,
         description: r.description ?? '',
       })) ?? [],
     notifyMembers: false,
@@ -134,6 +145,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
       pollId: framing.poll?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
+      framingProfileId: framing.profile.id,
+      originalReferenceIds: framing.profile.references?.map(r => r.id) ?? [],
     },
   };
 

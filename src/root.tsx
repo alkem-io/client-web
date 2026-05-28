@@ -11,7 +11,9 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { useApmDesignVersionLabel } from '@/core/analytics/apm/useApmDesignVersionLabel';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesignVersionTag';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -21,7 +23,9 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { DesignVersionUpgradePromptMount } from '@/main/crdPages/DesignVersionUpgradePromptMount';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
+import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
@@ -50,6 +54,13 @@ function NotificationsGate() {
       {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
     </Suspense>
   );
+}
+
+function DesignVersionSyncMount() {
+  useDesignVersionSync();
+  useSentryDesignVersionTag();
+  useApmDesignVersionLabel();
+  return null;
 }
 
 // MARKDOWN_CLASS_NAME used in the styles below
@@ -90,7 +101,7 @@ const globalStyles = (theme: Theme) => ({
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },
-  '.tiptap p, .markdown p, .tiptap table, .markdown table': {
+  '.tiptap p, .markdown p, .markdown li, .tiptap table, .markdown table': {
     margin: 0,
     fontFamily: fontFamilySourceSans,
     fontSize: 12,
@@ -152,6 +163,8 @@ const Root: FC = () => {
                                       <UserMessagingProvider>
                                         <NavigationHistoryTracker />
                                         <ApmUserSetter />
+                                        <DesignVersionSyncMount />
+                                        <DesignVersionUpgradePromptMount />
                                         <ScrollToTop />
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />

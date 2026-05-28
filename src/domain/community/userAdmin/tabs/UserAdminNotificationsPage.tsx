@@ -305,6 +305,12 @@ const UserAdminNotificationsPage = () => {
               NotificationGroup.SPACE_ADMIN,
               'communicationMessageReceived'
             ),
+            userEmailChanged: applyOverrides(
+              serverSettings.spaceAdmin.userEmailChanged,
+              overrides,
+              NotificationGroup.SPACE_ADMIN,
+              'userEmailChanged'
+            ),
           }
         : undefined,
       user: serverSettings.user
@@ -391,6 +397,12 @@ const UserAdminNotificationsPage = () => {
               overrides,
               NotificationGroup.PLATFORM_ADMIN,
               'userGlobalRoleChanged'
+            ),
+            userEmailChanged: applyOverrides(
+              serverSettings.platformAdmin.userEmailChanged,
+              overrides,
+              NotificationGroup.PLATFORM_ADMIN,
+              'userEmailChanged'
             ),
             spaceCreated: applyOverrides(
               serverSettings.platformAdmin.spaceCreated,
@@ -529,6 +541,13 @@ const UserAdminNotificationsPage = () => {
       value,
       serverSettings.spaceAdmin?.communicationMessageReceived
     ),
+    userEmailChanged: createNotificationChannel(
+      type,
+      property,
+      'userEmailChanged',
+      value,
+      serverSettings.spaceAdmin?.userEmailChanged
+    ),
   });
 
   const buildUserSettings = (property: string, type: ChannelType, value: boolean) => ({
@@ -614,6 +633,13 @@ const UserAdminNotificationsPage = () => {
       'userGlobalRoleChanged',
       value,
       serverSettings.platformAdmin?.userGlobalRoleChanged
+    ),
+    userEmailChanged: createNotificationChannel(
+      type,
+      property,
+      'userEmailChanged',
+      value,
+      serverSettings.platformAdmin?.userEmailChanged
     ),
     spaceCreated: createNotificationChannel(
       type,

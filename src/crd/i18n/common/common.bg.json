@@ -21,6 +21,15 @@
     "person": "Лице",
     "org": "Организация"
   },
+  "tags": {
+    "moreAria": "Покажи още {{count}}"
+  },
+  "filters": {
+    "summary": "Резултати за {{criteria}}",
+    "and": "и",
+    "clear": "Изчисти филтрите",
+    "filterByTag": "Филтриране по таг"
+  },
   "share": {
     "title": "Споделяне",
     "button": "Споделяне",
@@ -47,6 +56,25 @@
         "messageTooLong": "Съобщението трябва да съдържа най-много {{max}} знака.",
         "sendFailed": "Неуспешно изпращане на съобщението. Моля, опитайте отново."
       }
+    }
+  },
+  "references": {
+    "heading": "Препратки",
+    "empty": "Все още няма препратки.",
+    "nameLabel": "Заглавие",
+    "namePlaceholder": "Заглавие на препратката",
+    "uriLabel": "URL",
+    "uriPlaceholder": "https://",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "По избор описание",
+    "addRow": "Добави нова препратка",
+    "removeRow": "Премахни препратката",
+    "attachFile": "Прикачи файл",
+    "removeConfirm": {
+      "title": "Премахване на тази препратка?",
+      "description": "„{{name}}“ ще бъде премахната при запазване. Това действие не може да бъде отменено.",
+      "confirm": "Премахни",
+      "unnamed": "тази препратка"
     }
   }
 }

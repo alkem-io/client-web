@@ -21,10 +21,30 @@
     "demo": "This is a demo Space for testing purposes.",
     "inactive": "This Space is currently inactive."
   },
+  "knowledge": {
+    "searchPlaceholder": "Search the knowledge base...",
+    "searchLabel": "Search the knowledge base",
+    "noResults": "No matches",
+    "viewGrid": "Card view",
+    "viewList": "List view",
+    "count": {
+      "post_one": "{{count}} post",
+      "post_other": "{{count}} posts",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memos",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
+  },
   "sidebar": {
     "aboutSpace": "About this Space",
     "subspaces": "Subspaces",
     "showAll": "Show all",
+    "create": "Create",
     "events": "Events",
     "noEvents": "No upcoming events",
     "showCalendar": "Show calendar",
@@ -35,9 +55,6 @@
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
     "postIndex": "$t(common.Callout) Index",
-    "searchPlaceholder": "Search...",
-    "searchLabel": "Search $t(common.callouts)",
-    "noResults": "No matches",
     "readMore": "Read more",
     "editDescription": "Edit description",
     "addEvent": "Add event",
@@ -147,6 +164,7 @@
     "loading": "Loading content..."
   },
   "callout": {
+    "openAria": "Open {{title}}",
     "draft": "Draft",
     "expand": "Show more",
     "collapse": "Show less",
@@ -168,13 +186,12 @@
     "document": "Document",
     "moreWhiteboards": "+{{count}} more",
     "moreContributions": "+{{count}} more",
+    "contributionsHeader": "Contributions ({{count}})",
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
-    "resultsCount": "{{count}} results",
-    "clearFilters": "Clear filters",
     "sendComment": "Send comment",
-    "addResponse": "Add Response",
+    "addWhiteboard": "Add whiteboard",
     "createWhiteboard": "Create new whiteboard",
     "defaultWhiteboardName": "New Whiteboard",
     "whiteboardNameLabel": "Whiteboard title",
@@ -199,6 +216,32 @@
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
+    "addLinkOrFile": "Add link or file",
+    "createLink": "Add links or attach documents",
+    "editLink": "Edit link",
+    "linkSave": "Save",
+    "linkCreate": "Add",
+    "linkAddAnother": "Add another link",
+    "linkRemoveRow": "Remove this link",
+    "linkDefaultName": "New link",
+    "linkDefaultNameNumbered": "New link ({{count}})",
+    "linkCancelConfirmTitle": "Discard your changes?",
+    "linkCancelConfirmDescription": "If you close now, the links you've added here will not be saved.",
+    "linkCancelConfirm": "Discard",
+    "linkUrlLabel": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkNameLabel": "Display name",
+    "linkNamePlaceholder": "Give your link a name",
+    "linkDescriptionLabel": "Description",
+    "linkDescriptionPlaceholder": "What is this link about?",
+    "linkTermsHelper": "<terms>Click here</terms> for the terms and conditions.",
+    "linkUrlInvalid": "Enter a valid URL (must start with http:// or https://).",
+    "linkNameRequired": "Display name is required.",
+    "linkEditAriaLabel": "Edit link",
+    "linkDeleteAriaLabel": "Delete link",
+    "linkDelete": "Delete link",
+    "linkDeleteConfirmTitle": "Delete this link?",
+    "linkDeleteConfirmDescription": "This will permanently remove the link from this $t(common.callout). This action cannot be undone.",
     "addPost": "Add post",
     "createPost": "Create post",
     "editPost": "Edit post",
@@ -218,7 +261,12 @@
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "clearTypeConfirm": {
+      "title": "Remove this content type?",
+      "description": "Once you save, the existing content will be deleted and you won't be able to attach a different type to this post. This action cannot be undone.",
+      "confirm": "Remove"
+    }
   },
   "contribution": {
     "edit": "Edit",
@@ -244,14 +292,11 @@
     "officeDocumentsNotEnabled": "Office documents are not enabled for this space."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} members and {{organizations}} organizations in this space.",
     "inviteMember": "Invite Member",
     "search": "Search members or organizations...",
     "filterAll": "All",
-    "filterAdmin": "Admin",
     "filterLead": "Lead",
-    "filterMember": "Member",
     "filterOrganization": "Organization",
     "noMembers": "No members found",
     "previousPage": "Previous",
@@ -263,7 +308,6 @@
       "clearFilters": "Clear filters"
     },
     "role": {
-      "admin": "Admin",
       "lead": "Lead",
       "member": "Member",
       "organization": "Organization"
@@ -316,9 +360,18 @@
     "signIn": "Sign in to apply",
     "signInHelper": "You'll be redirected to sign in to Alkemio first.",
     "context": {
-      "L0": { "why": "Why are we here?", "who": "Who is involved?" },
-      "L1": { "why": "Why this subspace?", "who": "Who is involved?" },
-      "L2": { "why": "Why this subspace?", "who": "Who is involved?" }
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
     }
   },
   "apply": {
@@ -338,12 +391,13 @@
     }
   },
   "mobile": {
-    "more": "More",
     "menu": "Menu",
     "activity": "Activity",
     "videoCall": "Video Call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centered layout"
   },
   "contextMenu": {
     "edit": "Edit",
@@ -422,7 +476,8 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
-    "tagsPlaceholder": "Comma-separated tags",
+    "tagsPlaceholder": "Add a tag and press Enter",
+    "tagsTooShort": "Each tag must be at least {{min}} characters.",
     "framingType": "Add to post",
     "visibility": "Visibility",
     "publishedLabel": "Published",
@@ -473,20 +528,9 @@
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Optional description",
       "addRow": "Add another link",
-      "removeRow": "Remove link"
+      "removeRow": "Remove link",
+      "attachFile": "Attach file"
     }
-  },
-  "references": {
-    "heading": "References",
-    "empty": "No references yet.",
-    "titleLabel": "Title",
-    "titlePlaceholder": "Reference title",
-    "urlLabel": "URL",
-    "urlPlaceholder": "https://",
-    "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Optional description",
-    "addRow": "Add another reference",
-    "removeRow": "Remove reference"
   },
   "responseDefaults": {
     "srDescription": "Configure the default values for new contributions in this $t(common.callout).",
@@ -625,13 +669,36 @@
   },
   "postSnippet": {
     "readMore": "… Read more",
-    "readLess": "Read less"
+    "readLess": "Read less",
+    "seeFullDescription": "See full description"
+  },
+  "postPreview": {
+    "label": "Selected contribution preview",
+    "edit": "Edit response",
+    "share": "Share response",
+    "close": "Close preview",
+    "emptyDescription": "No description",
+    "references": "References"
+  },
+  "postLocation": {
+    "label": "Post location",
+    "warning": "Be careful changing the response location. Moving the response to another post will make it disappear from the current post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
+    "moved": "Response moved successfully.",
+    "moveFailed": "Could not move the response. Please try again."
+  },
+  "whiteboardPreview": {
+    "label": "Selected whiteboard preview",
+    "edit": "Edit whiteboard",
+    "share": "Share whiteboard",
+    "close": "Close preview",
+    "openFull": "Click to see the full whiteboard"
   },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
     "showLess": "Show less",
     "reply": "Reply",
+    "replyInThread": "Reply in this thread",
     "delete": "Delete",
     "deleted": "This comment was deleted",
     "deleteConfirmTitle": "Delete comment?",
@@ -649,7 +716,9 @@
     "count_one": "1 comment",
     "loading": "Loading comments...",
     "empty": "No comments yet",
-    "unknownUser": "Unknown user"
+    "unknownUser": "Unknown user",
+    "signInToComment": "Sign in to comment, reply or react.",
+    "cantComment": "You don't have permission to comment, reply or react here."
   },
   "dialogs": {
     "cancel": "Cancel",
@@ -665,6 +734,12 @@
       "description": "The framing content for this $t(common.callout) will be removed. This cannot be undone.",
       "confirm": "Remove",
       "cancel": "Keep"
+    },
+    "confirmClose": {
+      "title": "Close this dialog?",
+      "description": "Any unsaved comment text will be lost.",
+      "confirm": "Close",
+      "cancel": "Keep open"
     }
   },
   "poll": {
@@ -743,5 +818,8 @@
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
     "loadingPost": "Loading $t(common.callout)"
+  },
+  "activity": {
+    "dialogTitle": "Recent Activity"
   }
 }

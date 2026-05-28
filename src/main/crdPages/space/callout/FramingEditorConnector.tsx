@@ -1,9 +1,11 @@
-import { Presentation, Settings, StickyNote } from 'lucide-react';
+import { Settings, StickyNote } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
@@ -14,6 +16,7 @@ import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -30,6 +33,7 @@ import CrdSingleUserWhiteboardDialog, {
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
+import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
@@ -81,6 +85,23 @@ type FramingEditorConnectorProps = {
   whiteboardPreviewSettings?: WhiteboardPreviewSettings;
   whiteboardConfigured?: boolean;
   whiteboardTitle?: string;
+  /**
+   * Preview blobs returned from the last save of the inline whiteboard editor —
+   * used to render the current canvas as a thumbnail in the inline preview
+   * (MUI parity with `FormikWhiteboardPreview`). Empty array when the user
+   * hasn't opened the editor yet, in which case the preview falls back to
+   * `whiteboardPreviewServerUrl` (when set — Callout-template edit / callout-from-template
+   * prefill) and finally to a placeholder icon.
+   */
+  whiteboardPreviewImages?: WhiteboardPreviewImage[];
+  /**
+   * Server-rendered whiteboard preview image URL — the `WHITEBOARD_PREVIEW` Visual the
+   * backend stamps when content changes. Read-time fallback for the inline preview when
+   * no fresh in-form blob exists yet (D16, 2026-05-18). Fresh blobs (from a just-saved
+   * inline edit) take precedence — they reflect the current canvas; this URL only fills
+   * the "loaded but not re-edited" gap.
+   */
+  whiteboardPreviewServerUrl?: string;
   onWhiteboardChange?: (
     content: string,
     previewImages: WhiteboardPreviewImage[] | undefined,
@@ -90,6 +111,12 @@ type FramingEditorConnectorProps = {
   // is wired into the form hook's `memoMarkdown` field (spec T010/T011).
   memoMarkdown?: string;
   onMemoMarkdownChange?: (value: string) => void;
+  /**
+   * Image-upload wiring for the create-mode memo framing editor. The memo
+   * doesn't exist yet → the consumer passes a `temporaryLocation: true`
+   * integration (server GCs the file if the callout create is abandoned).
+   */
+  memoUpload?: MarkdownUploadProps;
   // Media-gallery framing — required because a missing handler silently drops
   // user-selected files when `framingType === 'image'`.
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
@@ -149,11 +176,13 @@ export function FramingEditorConnector({
   onPollStatusChange,
   whiteboardContent,
   whiteboardPreviewSettings,
-  whiteboardConfigured,
   whiteboardTitle,
+  whiteboardPreviewImages,
+  whiteboardPreviewServerUrl,
   onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
+  memoUpload,
   mediaGalleryVisuals,
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
@@ -166,6 +195,7 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
+  const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(whiteboardPreviewImages);
 
   switch (framingType) {
     case 'whiteboard': {
@@ -185,26 +215,12 @@ export function FramingEditorConnector({
         const guestShareUrl = buildGuestShareUrl(editWhiteboard.id);
         return (
           <>
-            <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
-              <div className="flex items-center gap-3">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
-                    color: 'var(--primary)',
-                  }}
-                >
-                  <Presentation className="w-5 h-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-body-emphasis">{t('callout.whiteboard')}</p>
-                  <p className="text-caption text-muted-foreground">{t('framing.openWhiteboardHint')}</p>
-                </div>
-              </div>
-              <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
-                {t('framing.openWhiteboard')}
-              </Button>
-            </div>
+            <WhiteboardConfigCard
+              title={t('callout.whiteboard')}
+              status={t('framing.openWhiteboardHint')}
+              actionLabel={t('framing.openWhiteboard')}
+              onAction={() => setWhiteboardEditorOpen(true)}
+            />
             {whiteboardEditorOpen && (
               <CrdWhiteboardView
                 whiteboardId={editWhiteboard.id}
@@ -240,25 +256,12 @@ export function FramingEditorConnector({
 
       return (
         <>
-          <div className="p-4 border rounded-xl bg-muted/30 flex items-center justify-between animate-in fade-in">
-            <div className="flex items-center gap-3">
-              <div
-                className="p-2 rounded-lg"
-                style={{ background: 'color-mix(in srgb, var(--primary) 15%, transparent)', color: 'var(--primary)' }}
-              >
-                <Presentation className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-body-emphasis">{t('framing.newWhiteboard')}</p>
-                <p className="text-caption text-muted-foreground">
-                  {whiteboardConfigured ? t('framing.configured') : t('framing.readyToCreate')}
-                </p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm" className="h-8" onClick={() => setWhiteboardEditorOpen(true)}>
-              {whiteboardConfigured ? t('framing.edit') : t('framing.configure')}
-            </Button>
-          </div>
+          <InlineWhiteboardPreview
+            onEdit={() => setWhiteboardEditorOpen(true)}
+            editLabel={t('framing.edit')}
+            previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
+            imageAlt={whiteboardTitle || t('callout.whiteboard')}
+          />
           <Suspense fallback={<Loading />}>
             <CrdSingleUserWhiteboardDialog
               entities={{ whiteboard: templateWhiteboard }}
@@ -317,7 +320,15 @@ export function FramingEditorConnector({
           </>
         );
       }
-      return <MemoFramingEditor value={memoMarkdown} onChange={value => onMemoMarkdownChange?.(value)} />;
+      return (
+        <MemoFramingEditor
+          value={memoMarkdown}
+          onChange={value => onMemoMarkdownChange?.(value)}
+          onImageUpload={memoUpload?.onImageUpload}
+          iframeAllowedUrls={memoUpload?.iframeAllowedUrls}
+          onError={memoUpload?.onError}
+        />
+      );
 
     case 'document':
       // Collabora document framing — type is fixed at creation time (Collabora

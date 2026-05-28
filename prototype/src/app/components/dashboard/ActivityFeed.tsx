@@ -133,17 +133,10 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
         borderRadius: "var(--radius)",
         padding: "24px",
         boxShadow: "var(--elevation-sm)",
-        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3
-          style={{
-            fontWeight: 700,
-            fontSize: "var(--text-base)",
-            color: "var(--foreground)",
-          }}
-        >
+        <h3 className="text-base font-bold text-foreground">
           {title}
         </h3>
         <button className="text-muted-foreground hover:text-foreground transition-colors">
@@ -155,8 +148,7 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
       <div className="flex gap-2 mb-6">
         <Select defaultValue="all-spaces">
           <SelectTrigger
-            className="h-8 w-auto min-w-[140px]"
-            style={{ fontSize: "var(--text-sm)" }}
+            className="h-8 w-auto min-w-[140px] text-sm"
           >
             <SelectValue placeholder="Space: All Spaces" />
           </SelectTrigger>
@@ -169,8 +161,7 @@ export function ActivityFeed({ title, type }: ActivityFeedProps) {
         {type === "spaces" && (
           <Select defaultValue="all-roles">
             <SelectTrigger
-              className="h-8 w-auto min-w-[130px]"
-              style={{ fontSize: "var(--text-sm)" }}
+              className="h-8 w-auto min-w-[130px] text-sm"
             >
               <SelectValue placeholder="My role: All roles" />
             </SelectTrigger>

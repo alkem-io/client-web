@@ -1,5 +1,5 @@
 import { Menu } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
@@ -18,6 +18,12 @@ type SpaceNavigationTabsProps = {
   onTabChange: (index: number) => void;
   /** Mobile-only: opens the hamburger drawer. The drawer itself lives in the consumer layout. */
   onMenuClick?: () => void;
+  /**
+   * Desktop-only: right-aligned action slot rendered on the same row as the
+   * tabs (e.g. an "Add Post" / "Create Subspace" button). Not shown on the
+   * mobile bottom bar — consumers fall back to an in-content action there.
+   */
+  action?: ReactNode;
   isSmallScreen?: boolean;
   className?: string;
 };
@@ -27,6 +33,7 @@ export function SpaceNavigationTabs({
   activeIndex,
   onTabChange,
   onMenuClick,
+  action,
   isSmallScreen,
   className,
 }: SpaceNavigationTabsProps) {
@@ -34,18 +41,28 @@ export function SpaceNavigationTabs({
     return <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} onMenuClick={onMenuClick} />;
   }
 
-  return <DesktopTabs tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} className={className} />;
+  return (
+    <DesktopTabs
+      tabs={tabs}
+      activeIndex={activeIndex}
+      onTabChange={onTabChange}
+      action={action}
+      className={className}
+    />
+  );
 }
 
 function DesktopTabs({
   tabs,
   activeIndex,
   onTabChange,
+  action,
   className,
 }: {
   tabs: TabItem[];
   activeIndex: number;
   onTabChange: (index: number) => void;
+  action?: ReactNode;
   className?: string;
 }) {
   const { t } = useTranslation('crd-space');
@@ -62,35 +79,38 @@ function DesktopTabs({
 
   return (
     <nav className={cn('w-full', className)} aria-label={t('a11y.tabNavigation')}>
-      <div
-        ref={scrollRef}
-        className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain"
-        role="tablist"
-      >
-        {tabs.map(tab => {
-          const active = tab.index === activeIndex;
-          return (
-            <a
-              key={tab.index}
-              href={tab.href ?? '#'}
-              role="tab"
-              aria-selected={active}
-              data-active={active}
-              className={cn(
-                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                active
-                  ? 'border-primary text-primary text-card-title'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted text-body-emphasis'
-              )}
-              onClick={e => {
-                e.preventDefault();
-                onTabChange(tab.index);
-              }}
-            >
-              {tab.label}
-            </a>
-          );
-        })}
+      <div className="flex items-center gap-6">
+        <div
+          ref={scrollRef}
+          className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain flex-1 min-w-0"
+          role="tablist"
+        >
+          {tabs.map(tab => {
+            const active = tab.index === activeIndex;
+            return (
+              <a
+                key={tab.index}
+                href={tab.href ?? '#'}
+                role="tab"
+                aria-selected={active}
+                data-active={active}
+                className={cn(
+                  'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  active
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                )}
+                onClick={e => {
+                  e.preventDefault();
+                  onTabChange(tab.index);
+                }}
+              >
+                {tab.label}
+              </a>
+            );
+          })}
+        </div>
+        {action && <div className="shrink-0 pb-2">{action}</div>}
       </div>
     </nav>
   );
