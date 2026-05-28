@@ -28,7 +28,8 @@ describe('useHubAccessGuard', () => {
         platform: {
           innovationHub: {
             id: 'hub-1',
-            nameID: 'demo',
+            nameID: 'demo-name-id',
+            subdomain: 'demo',
             authorization: { myPrivileges: [AuthorizationPrivilege.Update] },
           },
         },
@@ -39,13 +40,18 @@ describe('useHubAccessGuard', () => {
     expect(result.current).toEqual({ state: 'allowed' });
   });
 
-  test('returns denied with hub home redirect when privilege missing', () => {
+  test('returns denied with hub home redirect using nameID (NOT subdomain)', () => {
     useInnovationHubByIdQueryMock.mockReturnValue({
       data: {
         platform: {
           innovationHub: {
             id: 'hub-1',
-            nameID: 'demo',
+            // Intentional mismatch: `nameID` and `subdomain` can diverge for
+            // hubs whose display-name slug differs from the chosen subdomain.
+            // The path-based redirect URL must use `nameID` — the route is
+            // `/hub/:innovationHubNameId`, resolved server-side by nameID.
+            nameID: 'demo-name-id',
+            subdomain: 'demo',
             authorization: { myPrivileges: [] },
           },
         },
@@ -53,7 +59,7 @@ describe('useHubAccessGuard', () => {
       loading: false,
     });
     const { result } = renderHook(() => useHubAccessGuard('hub-1'));
-    expect(result.current).toEqual({ state: 'denied', redirectTo: '/hub/demo' });
+    expect(result.current).toEqual({ state: 'denied', redirectTo: '/hub/demo-name-id' });
   });
 
   test('returns loading when hub data missing entirely', () => {

@@ -6,6 +6,10 @@ import { mapInnovationHubToSettingsHeader } from '../dataMappers/mapInnovationHu
 
 const baseHub: InnovationHubSettingsFragment = {
   id: 'hub-1',
+  // Intentional mismatch: `nameID` and `subdomain` can diverge. Path URLs use
+  // `nameID` (the route param); subdomain hostnames use `subdomain`. Tests
+  // below pin which identifier each URL shape uses.
+  nameID: 'demo-name-id',
   subdomain: 'demo',
   spaceVisibilityFilter: undefined,
   profile: {
@@ -38,14 +42,15 @@ const baseHub: InnovationHubSettingsFragment = {
 };
 
 describe('mapInnovationHubToSettingsHeader', () => {
-  test('maps display name, tagline, banner image, color, and canonical path URL', () => {
+  test('maps display name, tagline, banner image, color, and canonical path URL (uses nameID, not subdomain)', () => {
     const result = mapInnovationHubToSettingsHeader(baseHub);
     expect(result.name).toBe('Demo Innovation Hub');
     expect(result.tagline).toBe('innovation everywhere');
     expect(result.bannerImageUrl).toBe('https://example.com/banner.png');
     expect(result.thumbnailColor).toMatch(/^#/);
     expect(result.initials).toBeTruthy();
-    expect(result.viewHubUrl).toBe('/hub/demo');
+    // Dev / test mode → path-based URL using `nameID`, not `subdomain`.
+    expect(result.viewHubUrl).toBe('/hub/demo-name-id');
   });
 
   test('falls back when banner is absent', () => {

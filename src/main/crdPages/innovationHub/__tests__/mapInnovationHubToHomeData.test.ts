@@ -10,7 +10,11 @@ vi.mock('@/main/crdPages/spaces/spaceCardDataMapper', () => ({
 
 const baseHub: InnovationHubHomeInnovationHubFragment = {
   id: 'hub-1',
-  nameID: 'demo',
+  // Intentional mismatch: `nameID` and `subdomain` can diverge for hubs whose
+  // display name doesn't match the chosen subdomain. Path-based hub URLs MUST
+  // use `nameID` (the route param the server resolves) — assertions below pin
+  // this and reject any reversion to `subdomain` for paths.
+  nameID: 'demo-name-id',
   subdomain: 'demo',
   profile: {
     id: 'profile-1',
@@ -52,14 +56,17 @@ describe('mapInnovationHubToHomeData', () => {
     expect(data.bannerColor).toMatch(/^#/);
   });
 
-  test('admin with Update privilege gets settingsUrl', () => {
+  test('admin with Update privilege gets settingsUrl built from nameID (NOT subdomain)', () => {
     const data = mapInnovationHubToHomeData({
       hub: { ...baseHub, authorization: { myPrivileges: [AuthorizationPrivilege.Update] } },
       dashboardSpaces: undefined,
       authenticated: true,
       canonicalDomain: 'alkemio.org',
     });
-    expect(data.settingsUrl).toBe('/hub/demo/settings');
+    // baseHub has nameID 'demo-name-id' and subdomain 'demo' — the route is
+    // `/hub/:innovationHubNameId`, so the URL must use nameID, not subdomain.
+    expect(data.settingsUrl).toBe('/hub/demo-name-id/settings');
+    expect(data.settingsUrl).not.toBe('/hub/demo/settings');
   });
 
   test('non-admin gets no settingsUrl', () => {

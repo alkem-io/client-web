@@ -10,6 +10,7 @@ export const mapInnovationHubToSettingsHeader = (hub: InnovationHubSettingsFragm
   bannerImageUrl: hub.profile.visual?.uri || undefined,
   thumbnailColor: pickColorFromId(hub.id),
   initials: getInitials(hub.profile.displayName),
-  // Eye icon: prod → subdomain URL (`https://<sub>.<domain>`), dev → `/hub/<sub>`.
-  viewHubUrl: buildPublicHubViewUrl(hub.subdomain),
+  // Eye icon: prod → subdomain hostname (`https://<sub>.<domain>`), dev → path
+  // (`/hub/<nameID>`). The helper picks the right identifier per environment.
+  viewHubUrl: buildPublicHubViewUrl(hub.nameID, hub.subdomain),
 });

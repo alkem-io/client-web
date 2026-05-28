@@ -375,7 +375,7 @@ type ProfileResourceEntry = {
 };
 
 type InnovationHubResourceEntry = ProfileResourceEntry & {
-  subdomain?: string;
+  nameID?: string;
 };
 
 type SidebarResources = {
@@ -423,9 +423,9 @@ export const mapResourcesToSidebarItems = (resources: {
       // biome-ignore lint/style/noNonNullAssertion: Filtered before
       ...mapProfileToSidebarItem(hub.id, hub.profile!),
       // Override the server-provided `profile.url` (legacy `/innovation-hub/<slug>`)
-      // with the canonical CRD `/hub/<subdomain>` path. Falls back to the profile
-      // url when no subdomain is available (defensive — every hub has one).
-      href: hub.subdomain ? `/hub/${hub.subdomain}` : (hub.profile?.url ?? ''),
+      // with the canonical CRD `/hub/<nameID>` path. Falls back to the profile
+      // url when no nameID is available (defensive — every hub has one).
+      href: hub.nameID ? `/hub/${hub.nameID}` : (hub.profile?.url ?? ''),
     })),
   innovationPacks: (resources.innovationPacks ?? [])
     .filter(pack => pack.profile)

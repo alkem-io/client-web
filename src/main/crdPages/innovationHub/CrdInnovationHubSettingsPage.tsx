@@ -47,7 +47,9 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
   }
 
   const header = mapInnovationHubToSettingsHeader(hub);
-  const settingsBase = buildSettingsUrl(`/hub/${hub.subdomain}`);
+  // Path-based routes use `nameID` (the route param the server resolves).
+  // `subdomain` is for hostname URLs only.
+  const settingsBase = buildSettingsUrl(`/hub/${hub.nameID}`);
   const tabHrefs: Record<HubSettingsTabKey, string> = {
     about: `${settingsBase}/about`,
     spaces: `${settingsBase}/spaces`,

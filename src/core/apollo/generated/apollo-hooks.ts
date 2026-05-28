@@ -1925,6 +1925,7 @@ export const InnovationHubSpaceFragmentDoc = gql`
 export const InnovationHubSettingsFragmentDoc = gql`
     fragment InnovationHubSettings on InnovationHub {
   id
+  nameID
   subdomain
   profile {
     ...InnovationHubProfile
@@ -6547,6 +6548,7 @@ export const AccountInformationDocument = gql`
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
@@ -13571,6 +13573,7 @@ export const AccountResourcesInfoDocument = gql`
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {

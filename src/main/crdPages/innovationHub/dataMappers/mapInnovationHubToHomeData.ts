@@ -56,6 +56,8 @@ export const mapInnovationHubToHomeData = ({
     bannerImageUrl: hub.profile.banner?.uri || undefined,
     bannerColor: pickColorFromId(hub.id),
     bannerAlt: hub.profile.banner?.alternativeText ?? hub.profile.displayName,
+    // Use `nameID` — the route is `/hub/:innovationHubNameId` and the server's
+    // URL resolver expects nameID. `subdomain` is only for the hostname.
     settingsUrl: canEdit ? buildSettingsUrl(`/hub/${hub.nameID}`) : undefined,
     spaces: buildCuratedSpaces(hub, dashboardSpaces, authenticated),
     // Always points off the current host (subdomain or otherwise) to the canonical

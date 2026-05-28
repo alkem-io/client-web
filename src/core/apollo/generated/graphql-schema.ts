@@ -11527,6 +11527,7 @@ export type AccountInformationQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -21279,6 +21280,7 @@ export type AccountResourcesInfoQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -24573,6 +24575,7 @@ export type CreateInnovationHubMutation = {
   createInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24645,6 +24648,7 @@ export type UpdateInnovationHubMutation = {
   updateInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24773,6 +24777,7 @@ export type InnovationHubSettingsQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
+          nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
@@ -24841,6 +24846,7 @@ export type InnovationHubSettingsQuery = {
 export type InnovationHubSettingsFragment = {
   __typename?: 'InnovationHub';
   id: string;
+  nameID: string;
   subdomain: string;
   spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {

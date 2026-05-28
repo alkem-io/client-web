@@ -36,5 +36,7 @@ export const useHubAccessGuard = (innovationHubId: string | undefined): HubAcces
     return { state: 'allowed' };
   }
 
+  // Use `nameID` — the route is `/hub/:innovationHubNameId`. `subdomain` is
+  // the hostname identifier and can diverge from `nameID`.
   return { state: 'denied', redirectTo: `/hub/${hub.nameID}` };
 };

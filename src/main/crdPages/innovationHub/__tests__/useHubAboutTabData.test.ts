@@ -20,6 +20,7 @@ const { useHubAboutTabData } = await import('../hooks/useHubAboutTabData');
 
 const baseHub: InnovationHubSettingsFragment = {
   id: 'hub-1',
+  nameID: 'demo-name-id',
   subdomain: 'demo',
   spaceVisibilityFilter: undefined,
   profile: {

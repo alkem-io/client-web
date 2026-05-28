@@ -200,12 +200,12 @@ export function mapAccountToViewProps(
     capacity: hubCapacity,
     items:
       account?.innovationHubs.map<AccountResourceCardItem>(hub => {
-        // Use the canonical `/hub/<subdomain>` path for the card (public hub
-        // home) and `/hub/<subdomain>/settings` for the kebab Manage action —
-        // never the server-provided `profile.url` which still points at the
-        // legacy `/innovation-hub/<slug>` admin entry.
-        const hubHomePath = buildHubHomePath(hub.subdomain);
-        const hubSettingsPath = buildHubSettingsPath(hub.subdomain);
+        // Use the canonical `/hub/<nameID>` path for the card (public hub
+        // home) and `/hub/<nameID>/settings` for the kebab Manage action —
+        // never the server-provided `profile.url` (legacy `/innovation-hub/...`),
+        // and never `subdomain` (hostname identifier, can diverge from nameID).
+        const hubHomePath = buildHubHomePath(hub.nameID);
+        const hubSettingsPath = buildHubSettingsPath(hub.nameID);
         return {
           id: hub.id,
           displayName: hub.profile.displayName,
