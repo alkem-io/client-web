@@ -3,6 +3,7 @@ import type { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/gener
 import Loading from '@/core/ui/loading/Loading';
 import { InnovationHubHome } from '@/crd/components/innovationHub/InnovationHubHome';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useHubWidthPreference } from './hooks/useHubWidthPreference';
 import { useInnovationHubHomeData } from './hooks/useInnovationHubHomeData';
@@ -43,6 +44,9 @@ function useRedirectToHubSubdomain(hubSubdomain: string | undefined, isPathEntry
 const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationHubHomePageProps) => {
   const { innovationHubId, loading: resolverLoading } = useUrlResolver();
   useEnableSpaceFullWidth();
+  // Mirror the Spaces home: a banner-overlay topbar that goes transparent over
+  // the banner until the user scrolls. The page slides under by `-mt-16`.
+  useEnableBannerOverlay();
 
   const input = innovationHubFromSubdomain
     ? ({ kind: 'bySubdomain', hub: innovationHubFromSubdomain } as const)
@@ -56,7 +60,9 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
     return <Loading />;
   }
 
-  return <InnovationHubHome data={data} fullWidth={fullWidth} onToggleFullWidth={toggleFullWidth} />;
+  return (
+    <InnovationHubHome data={data} fullWidth={fullWidth} onToggleFullWidth={toggleFullWidth} overlayHeader={true} />
+  );
 };
 
 export default CrdInnovationHubHomePage;

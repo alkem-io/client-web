@@ -96,13 +96,35 @@ describe('mapInnovationHubToHomeData', () => {
     expect(data.spaces).toEqual([]);
   });
 
-  test('allSpacesUrl composes canonical host', () => {
+  test('allSpacesUrl composes a canonical absolute URL from a bare-host config', () => {
     const data = mapInnovationHubToHomeData({
       hub: baseHub,
       dashboardSpaces: undefined,
       authenticated: false,
       canonicalDomain: 'alkemio.org',
     });
-    expect(data.allSpacesUrl).toBe('//alkemio.org/spaces');
+    // jsdom defaults to `http:`; in production the page protocol is `https:`.
+    // `buildMainDomainUrl` inherits the page protocol for bare-host configs.
+    expect(data.allSpacesUrl).toMatch(/^https?:\/\/alkemio\.org\/spaces$/);
+  });
+
+  test('allSpacesUrl uses a full-URL config verbatim (dev shape)', () => {
+    const data = mapInnovationHubToHomeData({
+      hub: baseHub,
+      dashboardSpaces: undefined,
+      authenticated: false,
+      canonicalDomain: 'http://localhost:3000',
+    });
+    expect(data.allSpacesUrl).toBe('http://localhost:3000/spaces');
+  });
+
+  test('allSpacesUrl falls back to the path when no canonical domain is configured', () => {
+    const data = mapInnovationHubToHomeData({
+      hub: baseHub,
+      dashboardSpaces: undefined,
+      authenticated: false,
+      canonicalDomain: '',
+    });
+    expect(data.allSpacesUrl).toBe('/spaces');
   });
 });

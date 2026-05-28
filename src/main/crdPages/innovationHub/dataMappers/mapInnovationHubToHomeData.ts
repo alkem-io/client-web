@@ -6,7 +6,7 @@ import type { InnovationHubHomeData } from '@/crd/components/innovationHub/Innov
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { SpaceWithParent } from '@/main/crdPages/spaces/SpaceExplorerPage';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
-import { buildSettingsUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { buildMainDomainUrl, buildSettingsUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 
 /**
  * Builds the curated, ordered Spaces list shown on the hub home: intersects the hub's
@@ -58,6 +58,9 @@ export const mapInnovationHubToHomeData = ({
     bannerAlt: hub.profile.banner?.alternativeText ?? hub.profile.displayName,
     settingsUrl: canEdit ? buildSettingsUrl(`/hub/${hub.nameID}`) : undefined,
     spaces: buildCuratedSpaces(hub, dashboardSpaces, authenticated),
-    allSpacesUrl: `//${canonicalDomain}${URL_SPACE_EXPLORER}`,
+    // Always points off the current host (subdomain or otherwise) to the canonical
+    // platform Spaces explorer. `buildMainDomainUrl` tolerates `locations.domain`
+    // being either a bare host (`alkemio.org`) or a full URL (`http://localhost:3000`).
+    allSpacesUrl: buildMainDomainUrl(URL_SPACE_EXPLORER, canonicalDomain),
   };
 };

@@ -25,8 +25,8 @@ export type InnovationHubHomeProps = {
   onSettingsClick?: () => void;
   /**
    * Current full-width state — mirrors the Spaces "Wide layout" toggle. When
-   * `true`, the content band fills all 12 grid columns; when `false`, the band
-   * sits in the centered `col-start-2 col-span-10` inset.
+   * `true`, the content band (and banner) fill all 12 grid columns; when
+   * `false`, both sit in the centered `col-start-2 col-span-10` inset.
    */
   fullWidth?: boolean;
   /**
@@ -34,6 +34,14 @@ export type InnovationHubHomeProps = {
    * Omitting both `fullWidth` and `onToggleFullWidth` hides the toggle entirely.
    */
   onToggleFullWidth?: () => void;
+  /**
+   * When `true`, slides the page content (including banner) under the global
+   * sticky topbar by `-mt-16` so the topbar can render transparently over the
+   * banner — mirrors `SpaceHeader`'s `overlayHeader` behaviour. Pair with
+   * `useEnableBannerOverlay()` at the integration page so the global header
+   * actually goes transparent until the user scrolls.
+   */
+  overlayHeader?: boolean;
 };
 
 export const InnovationHubHome = ({
@@ -41,13 +49,19 @@ export const InnovationHubHome = ({
   onSettingsClick,
   fullWidth = false,
   onToggleFullWidth,
+  overlayHeader = false,
 }: InnovationHubHomeProps) => {
   const { t } = useTranslation('crd-innovationHub');
   const bandClass = contentColumnClass(fullWidth);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <InnovationHubBanner imageUrl={data.bannerImageUrl} color={data.bannerColor} alt={data.bannerAlt} />
+    <div className={cn('flex min-h-screen flex-col bg-background', overlayHeader && '-mt-16')}>
+      <InnovationHubBanner
+        imageUrl={data.bannerImageUrl}
+        color={data.bannerColor}
+        alt={data.bannerAlt}
+        fullWidth={fullWidth}
+      />
 
       <div className="w-full px-8 py-8">
         <div className="grid grid-cols-12 gap-6">
