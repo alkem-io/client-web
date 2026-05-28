@@ -32,6 +32,7 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 - [ ] T002 [P] Create skeleton i18n files `src/crd/i18n/innovationHub/innovationHub.{en,nl,es,bg,de,fr}.json` — start with `{}` placeholders for the section namespaces (`home`, `settings`); per-story tasks populate keys
 - [ ] T003 Register `'crd-innovationHub'` namespace in `src/core/i18n/config.ts` — add a lazy import entry to the `crdNamespaceImports` registry for all 6 supported languages (en, nl, es, bg, de, fr)
 - [ ] T004 Register the `'crd-innovationHub'` namespace + key types in `@types/i18next.d.ts` so `useTranslation('crd-innovationHub')` is type-checked
+- [ ] T004a Update `src/domain/innovationHub/useInnovationHub/InnovationHub.graphql` — add `spaceListFilter { id }` to the `InnovationHubHomeInnovationHub` fragment. Run `pnpm codegen` (backend at `localhost:3000/graphql` required) and commit the regenerated `src/core/apollo/generated/*` files. This unblocks T008 / T013 (US1) which intersect the id list with `DashboardSpaces`. **Note**: this edit has already been applied to the `.graphql` file by `/speckit.analyze` remediation; this task is the codegen + commit step.
 
 ---
 
@@ -57,7 +58,7 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 
 ### Data layer for US1
 
-- [ ] T008 [P] [US1] Create `src/main/crdPages/innovationHub/dataMappers/mapInnovationHubToHomeData.ts` — pure function: GraphQL `InnovationHubHomeInnovationHubFragment` + dashboard spaces + auth state + canonical domain → `InnovationHubHomeData`. Compute `pickColorFromId(hub.id)` for `bannerColor`. Build `settingsUrl` via `buildSettingsUrl(\`/hub/${hub.nameID}\`)` only when `authorization.myPrivileges` includes `Update`. Build `allSpacesUrl` as `//${config.locations.domain}/spaces`.
+- [ ] T008 [P] [US1] Create `src/main/crdPages/innovationHub/dataMappers/mapInnovationHubToHomeData.ts` — pure function: GraphQL `InnovationHubHomeInnovationHubFragment` (now including `spaceListFilter { id }` per T004a) + `DashboardSpacesQuery` result + auth state + canonical domain → `InnovationHubHomeData`. **Spaces grid is built by intersecting `hub.spaceListFilter.map(s => s.id)` with `dashboardSpaces`, then sorting by the `spaceListFilter` order — NOT the full dashboardSpaces list.** Compute `pickColorFromId(hub.id)` for `bannerColor`. Build `settingsUrl` via `buildSettingsUrl(\`/hub/${hub.nameID}\`)` only when `authorization.myPrivileges` includes `Update`. Build `allSpacesUrl` as `//${config.locations.domain}/spaces`.
 - [ ] T009 [P] [US1] Create `src/main/crdPages/innovationHub/dataMappers/spaceCardDataMapper.ts` — reuse the existing space-card mapping pattern from `src/main/crdPages/spaces/spaceCardDataMapper.ts`; alias or re-export it for hub-home consumption (NO duplication — import the shared mapper if present, otherwise extract a shared helper).
 - [ ] T010 [P] [US1] Add `src/main/crdPages/innovationHub/__tests__/mapInnovationHubToHomeData.test.ts` — covers: present/absent banner, admin vs non-admin privilege → settings URL present/absent, ordered Spaces, empty Spaces array, all-spaces URL composition.
 
@@ -71,7 +72,7 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 - [ ] T013 [US1] Create `src/main/crdPages/innovationHub/hooks/useInnovationHubHomeData.ts` — accepts a discriminator `{ kind: 'byId'; id: string } | { kind: 'bySubdomain' }`. Branches:
   - `byId`: calls `useInnovationHubByIdQuery({ variables: { id } })` directly (so the path-based `/hub/<slug>` route doesn't go through `useInnovationHub` / subdomain logic).
   - `bySubdomain`: returns the already-resolved hub from the caller's `useInnovationHub()` to avoid double-fetching.
-  Also calls `useDashboardSpacesQuery()`, `useConfig()`, and `useCurrentUserContext()`, then runs the result through `mapInnovationHubToHomeData`.
+  Also calls `useDashboardSpacesQuery()` (for the **rich Space-card shape only**), `useConfig()`, and `useCurrentUserContext()`. The mapper intersects `hub.spaceListFilter` (id list — sourced from the extended home-page fragment per T004a) with `dashboardSpaces`, sorting by the hub's `spaceListFilter` order. Runs the result through `mapInnovationHubToHomeData`.
 - [ ] T014 [US1] Create `src/main/crdPages/innovationHub/CrdInnovationHubHomePage.tsx` — accepts an optional `innovationHubFromSubdomain?: InnovationHubHomeInnovationHubFragment` prop (passed by the `CrdHomePage` dispatcher) OR resolves via `useUrlResolver()` on the `/hub/<slug>` route. Calls `useInnovationHubHomeData(...)`, shows `<Loading />` while pending, renders `<InnovationHubHome data={...} />` otherwise.
 - [ ] T015 [US1] Update `src/main/crdPages/innovationHub/routing/CrdHubRoute.tsx` — replace the placeholder for `/:nameID` with `<CrdInnovationHubHomePage />` (lazy-imported via `lazyWithGlobalErrorHandler`).
 
@@ -115,8 +116,16 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 - [ ] T026 [P] [US2] Create `src/main/crdPages/innovationHub/hooks/useInnovationHubSettingsData.ts` — wraps `useInnovationHubSettingsQuery` keyed by `useUrlResolver().innovationHubId`. Returns `{ hub, loading, refetch }`.
 - [ ] T027 [P] [US2] Create `src/main/crdPages/innovationHub/hooks/useHubAccessGuard.ts` — reads the hub's `authorization.myPrivileges` (from the home fragment in Apollo cache, since the settings fragment doesn't include it; falls back to `useInnovationHubByIdQuery` for cache priming). Returns `{ allowed: true } | { allowed: false; redirectTo: string }`. The `redirectTo` is `buildInnovationHubUrl(hub.subdomain)` or the hub's `profile.url`, whichever resolves first.
 - [ ] T028 [P] [US2] Add `src/main/crdPages/innovationHub/__tests__/useHubAccessGuard.test.ts` — verifies: privilege present → `{ allowed: true }`; privilege missing → `{ allowed: false, redirectTo: <hub-home> }`; hub still loading → `{ allowed: true }` (or a `loading` flag — match implementation choice).
-- [ ] T029 [US2] Create `src/main/crdPages/innovationHub/hooks/useHubAboutTabData.ts` — the per-section save state machine. Owns: `values` (local state seeded from `saved` via `useEffect`), `valuesRef`, `saveStatusByField`, `dirtyByField`, `savedFlashTimers`, `useTransition`. Exposes `onChange(patch)`, `onSaveSection(key)`, `onBannerFileSelected(file)`. Per-section `onSaveSection` calls `useUpdateInnovationHubMutation` with only that section's fields. Banner upload calls `useUploadVisualMutation` against `profile.visual.id`. Mirror the pattern of `src/main/crdPages/topLevelPages/spaceSettings/about/useAboutTabData.ts`.
-- [ ] T030 [P] [US2] Add `src/main/crdPages/innovationHub/__tests__/useHubAboutTabData.test.ts` — covers: dirty detection per section (subdomain, name, tagline, tags, description); `onSaveSection` triggers mutation with the right subset of fields; status transitions idle → saving → saved → idle; mutation failure → error surfaced and status returns to idle; banner-file-selected triggers upload mutation.
+- [ ] T028a [P] [US2] Create `src/main/crdPages/innovationHub/hooks/hubAboutValidators.ts` — port the four legacy validators to plain TypeScript functions returning `string | undefined` (i18n key for the error message, or `undefined` if valid):
+  - `validateSubdomain(value: string)` — matches the legacy `subdomainValidator` regex (lowercase alphanumeric + hyphens, length bounds).
+  - `validateDisplayName(value: string)` — required, length bounds matching `displayNameValidator({ required: true })`.
+  - `validateDescription(value: string)` — required, length ≤ `MARKDOWN_TEXT_LENGTH` (import the constant from `@/core/ui/forms/field-length.constants`).
+  - `validateTagline(value: string)` — length ≤ `MID_TEXT_LENGTH`.
+  - `validateTags(values: string[])` — pass-through for now (legacy `tagsetsSegmentSchema` is permissive); export a stub for future tightening.
+  Error message strings are i18n keys (e.g. `'settings.about.subdomain.errors.invalidFormat'`), resolved at render time in T025 via `t(errorKey)`. No Formik, no yup, no react-hook-form.
+- [ ] T029 [US2] Create `src/main/crdPages/innovationHub/hooks/useHubAboutTabData.ts` — the per-section save state machine. Owns: `values` (local state seeded from `saved` via `useEffect`), `valuesRef`, `saveStatusByField`, `dirtyByField`, `errorsByField`, `savedFlashTimers`, `useTransition`. Exposes `onChange(patch)`, `onSaveSection(key)`, `onBannerFileSelected(file)`. **On `onSaveSection(key)`, run the corresponding validator from T028a; if it returns an error, set `errorsByField[key]` and bail out (no mutation fired, status stays `idle`). On valid input, clear the error, call `useUpdateInnovationHubMutation` with only that section's fields, transition idle → saving → saved → idle.** Banner upload calls `useUploadVisualMutation` against `profile.visual.id`. Mirror the pattern of `src/main/crdPages/topLevelPages/spaceSettings/about/useAboutTabData.ts`.
+- [ ] T030 [P] [US2] Add `src/main/crdPages/innovationHub/__tests__/useHubAboutTabData.test.ts` — covers: dirty detection per section (subdomain, name, tagline, tags, description); **client-side validation blocks the mutation when invalid (invalid subdomain regex, empty displayName, description over `MARKDOWN_TEXT_LENGTH`, tagline over `MID_TEXT_LENGTH`) and the error appears in `errorsByField`**; `onSaveSection` triggers mutation with the right subset of fields **when valid**; status transitions idle → saving → saved → idle; mutation failure → error surfaced and status returns to idle; banner-file-selected triggers upload mutation.
+- [ ] T030a [P] [US2] Add `src/main/crdPages/innovationHub/__tests__/hubAboutValidators.test.ts` — table-driven cases per validator covering boundary values and rejection messages (invalid subdomain characters, subdomain too long/short, empty displayName, displayName too long, description over `MARKDOWN_TEXT_LENGTH`, description empty, tagline over `MID_TEXT_LENGTH`).
 - [ ] T031 [US2] Create `src/main/crdPages/innovationHub/CrdInnovationHubSettingsPage.tsx` — page entry. Runs `useHubAccessGuard()`; on `!allowed`, returns `<Navigate to={redirectTo} replace />`. Otherwise: `useInnovationHubSettingsData`, `useHubAboutTabData`, maps to shell props, renders `<InnovationHubSettingsShell header={...} activeTab={tab} tabHrefs={...}>` with the active tab's content (`<InnovationHubAboutTab>` for `about`, `<InnovationHubSpacesTab>` for `spaces` — wired in US3).
 
 ### Route wiring for US2
@@ -126,7 +135,7 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 
 ### i18n for US2
 
-- [ ] T034 [P] [US2] Add keys under `settings.*` to all 6 language files: `settings.tabs.about`, `settings.tabs.spaces`, `settings.header.viewHubAria`, `settings.guard.redirecting`, `settings.about.subdomain.{label,placeholder}`, `settings.about.name.{label,placeholder}`, `settings.about.tagline.{label,placeholder}`, `settings.about.description.label`, `settings.about.tags.{label,placeholder,emptyHelp}`, `settings.about.banner.{label,change,uploading,helperText}`, `settings.about.save.{save,saving,saved,errorPrefix}`. Dutch glossary: "Layout", "template", "Space" stay in English in any combined strings.
+- [ ] T034 [P] [US2] Add keys under `settings.*` to all 6 language files: `settings.tabs.about`, `settings.tabs.spaces`, `settings.header.viewHubAria`, `settings.guard.redirecting`, `settings.about.subdomain.{label,placeholder,errors.invalidFormat,errors.tooLong}`, `settings.about.name.{label,placeholder,errors.required,errors.tooLong}`, `settings.about.tagline.{label,placeholder,errors.tooLong}`, `settings.about.description.{label,errors.required,errors.tooLong}`, `settings.about.tags.{label,placeholder,emptyHelp}`, `settings.about.banner.{label,change,uploading,helperText,errors.uploadFailed}`, `settings.about.save.{save,saving,saved,errorPrefix}`. Dutch glossary: "Layout", "template", "Space" stay in English in any combined strings.
 
 ### Verification for US2
 
@@ -179,9 +188,10 @@ Single-project SPA. CRD presentational components: `src/crd/components/innovatio
 
 - [ ] T045 [P] Verify `designVersion=1` legacy paths: visit `/hub/<slug>`, `/hub/<slug>/settings`, and the subdomain entry — each renders the legacy MUI page unchanged. Confirm via DevTools Network that CRD chunks (`CrdInnovationHubHomePage`, `CrdInnovationHubSettingsPage`, `CrdHubRoute`) are NOT fetched on `designVersion=1`.
 - [ ] T046 [P] Verify `designVersion=2` lazy-loading: visit each of `/hub/<slug>`, `/hub/<slug>/settings/about`, `/hub/<slug>/settings/spaces`. Confirm via DevTools Network that the legacy `InnovationHubHomePage` and `InnovationHubSettingsPage` chunks are NOT fetched.
+- [ ] T046a [P] Lighthouse / web-vitals verification of SC-003: run Lighthouse on `localhost:3001/hub/<existing-slug>` with `designVersion=2`, throttled to "Fast 3G" + 4× CPU slowdown. Record FCP, LCP, TBT, CLS. Pass criterion: **LCP ≤ 2.5s** for the banner image, **FCP ≤ 1.8s** for the info-bar text, **CLS ≤ 0.1**. Capture the report in the PR description per constitution §V.
 - [ ] T047 [P] Run `pnpm lint` — must pass with zero new warnings or errors. CRD components are checked for forbidden imports (`@mui/*`, `@emotion/*`, `@/core/apollo/*`, `@/domain/*`, `react-router-dom`, `formik`).
 - [ ] T048 [P] Run `pnpm vitest run` — full suite passes (baseline 57 files / 595 tests + the new tests from T010, T021, T028, T030, T037).
-- [ ] T049 [P] Run `pnpm codegen` — must produce no diff (no schema changes in this feature).
+- [ ] T049 [P] Run `pnpm codegen` — must produce no diff **beyond the `spaceListFilter { id }` addition introduced in T004a**. No other schema changes are expected.
 - [ ] T050 [P] Run `pnpm analyze` and confirm the new `src/main/crdPages/innovationHub/` chunk does NOT contain any `@mui/*` or `@emotion/*` node_modules.
 - [ ] T051 [P] Accessibility sweep per `src/crd/CLAUDE.md` § Accessibility: every icon button has `aria-label`; decorative icons are `aria-hidden`; `<ul role="list">` for the Spaces grid; semantic `<table>` for the Spaces tab; focus-visible rings on every interactive element; the inline save indicator announces via `aria-live="polite"`; the privilege-guard redirect has an `sr-only` announcement; keyboard drag-reorder works via Space + arrow keys.
 - [ ] T052 [P] Dutch glossary verification on `src/crd/i18n/innovationHub/innovationHub.nl.json` — "Space", "Spaces", "Subspace", "Post", "template", "Layout", "Virtual Contributor" remain in English in every key that combines them with Dutch words. The surrounding sentence is translated and inflected around them. Cross-reference `specs/101-translation-glossary/glossary.md`.
@@ -302,16 +312,16 @@ After US1 ships:
 
 ## Format Validation
 
-All 55 tasks follow the strict checklist format `- [ ] T### [P?] [Story?] Description with file path`:
+All 59 tasks follow the strict checklist format `- [ ] T### [P?] [Story?] Description with file path`:
 
 - Checkbox `- [ ]` on every task ✓
-- Sequential task IDs T001–T055 ✓
+- Sequential / suffixed task IDs T001–T055 + T004a, T028a, T030a, T046a (4 tasks added during `/speckit.analyze` remediation) ✓
 - `[P]` markers only on tasks touching different files with no dependency on incomplete tasks ✓
-- `[USn]` labels on all per-story tasks (T008–T044) ✓
-- No `[USn]` labels on Setup (T001–T004), Foundational (T005–T007), or Polish (T045–T055) ✓
+- `[USn]` labels on all per-story tasks (T008–T018, T019–T035 + T028a + T030a, T036–T044) ✓
+- No `[USn]` labels on Setup (T001–T004 + T004a), Foundational (T005–T007), or Polish (T045–T055 + T046a) ✓
 - Every task names a concrete file path or a concrete verification step ✓
 
-**Total tasks**: 55
-**Tasks per story**: US1 = 11 (T008–T018), US2 = 17 (T019–T035), US3 = 9 (T036–T044), Setup = 4 (T001–T004), Foundational = 3 (T005–T007), Polish = 11 (T045–T055).
+**Total tasks**: 59
+**Tasks per story**: US1 = 11 (T008–T018), US2 = 19 (T019–T035 + T028a + T030a), US3 = 9 (T036–T044), Setup = 5 (T001–T004 + T004a), Foundational = 3 (T005–T007), Polish = 12 (T045–T055 + T046a).
 
-**MVP scope**: T001 through T018 (Setup + Foundational + US1).
+**MVP scope**: T001–T004a + T005–T007 + T008–T018 (Setup + Foundational + US1) = 19 tasks. The fragment-extension codegen step (T004a) is foundational for US1 because T008/T013 read `hub.spaceListFilter`.

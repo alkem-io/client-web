@@ -52,14 +52,33 @@
 
 ---
 
-### `DashboardSpaces` (existing — used by the hub home page's Spaces grid)
+### `DashboardSpaces` (existing — provides the rich Space-card shape for the hub home page's curated grid)
 
 **Hook**: `useDashboardSpacesQuery()`
 **Where invoked**: `useInnovationHubHomeData.ts`.
 
-The legacy home page renders `useDashboardSpacesQuery().data?.spaces` as the Spaces grid. The CRD page consumes the same data through a shared mapper that produces `SpaceCardData[]`.
+The CRD home page consumes `DashboardSpaces` **for the rich card data** (`cardBanner`, `tagset`, `membership.leadUsers/leadOrganizations`, `level`, `visibility`, etc.), then **filters and reorders** the result by the hub's `spaceListFilter` (id list, fetched via the extended `InnovationHubHomeInnovationHub` fragment — see "Fragment extension" below). The output is `SpaceCardData[]` consumed by `@/crd/components/space/SpaceCard`.
 
-> **TODO during implementation**: Confirm whether the Spaces grid on the hub home should render the hub's curated `spaceListFilter` (from `InnovationHubSettings`) or the platform's `DashboardSpaces`. The legacy `InnovationHubHomePage.tsx` uses `useDashboardSpacesQuery()` (the platform-wide list), but the prototype shows hub-specific curated spaces. Resolve in Phase 2 (`/speckit.tasks`) — likely the curated list, which would require fetching `InnovationHubSettings` from the hub-home page too (or a slimmer hub-spaces query). For now this contract documents both as options; the data mapper file in `dataMappers/` chooses one explicitly at implementation time.
+This is a deliberate departure from the legacy `InnovationHubHomePage.tsx` (which renders the unfiltered `DashboardSpaces` list) — see FR-004, the prototype, and the Q1/Q2/Q3 clarifications in `spec.md` § Clarifications.
+
+### Fragment extension for the hub-home curated list
+
+The home-page fragment is extended with `spaceListFilter { id }` so that one query returns both the hub identity and the curated id-list in a single round-trip:
+
+```graphql
+# src/domain/innovationHub/useInnovationHub/InnovationHub.graphql
+fragment InnovationHubHomeInnovationHub on InnovationHub {
+  id
+  nameID
+  profile { … }
+  spaceListFilter {       # ← new
+    id
+  }
+  authorization { myPrivileges }
+}
+```
+
+This is the only schema-adjacent change in the feature. It requires a single `pnpm codegen` run; the `InnovationHubHomeInnovationHubFragment` generated type gains a `spaceListFilter: { id }[]` field. No new operation is introduced; no server-side schema change.
 
 ---
 

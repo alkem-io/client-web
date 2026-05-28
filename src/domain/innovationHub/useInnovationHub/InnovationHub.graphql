@@ -21,6 +21,9 @@ fragment InnovationHubHomeInnovationHub on InnovationHub {
       alternativeText
     }
   }
+  spaceListFilter {
+    id
+  }
   authorization {
     myPrivileges
   }
