@@ -9,6 +9,9 @@
     },
     "allSpacesCta": "Разгледайте всички пространства в Alkemio"
   },
+  "breadcrumbs": {
+    "settings": "Настройки"
+  },
   "settings": {
     "tabs": {
       "about": "За",
@@ -16,7 +19,6 @@
       "navAria": "Раздели на настройките"
     },
     "header": {
-      "viewHubAria": "Преглед на хъба",
       "expandWidth": "Разшири до пълна ширина",
       "collapseWidth": "Свий до стандартна ширина"
     },

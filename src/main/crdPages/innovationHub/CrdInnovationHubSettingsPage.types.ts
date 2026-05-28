@@ -6,7 +6,6 @@ export type HubSettingsHeaderData = {
   bannerImageUrl?: string;
   thumbnailColor: string;
   initials: string;
-  viewHubUrl: string;
 };
 
 export type HubAboutSectionKey = 'subdomain' | 'name' | 'tagline' | 'description' | 'tags' | 'banner';

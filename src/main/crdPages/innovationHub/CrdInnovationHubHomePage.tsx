@@ -1,8 +1,11 @@
+import { PanelsTopLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import type { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationHubHome } from '@/crd/components/innovationHub/InnovationHubHome';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useHubWidthPreference } from './hooks/useHubWidthPreference';
@@ -55,6 +58,11 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
   const { data, loading, hub } = useInnovationHubHomeData(input);
   const { wide: fullWidth, toggle: toggleFullWidth } = useHubWidthPreference(hub?.id);
   useRedirectToHubSubdomain(hub?.subdomain, input.kind === 'byId', !loading && !resolverLoading);
+
+  // Top-bar breadcrumb: single `[PanelsTopLeft] HubName` chip, mirroring how
+  // Space / User / Org public profile pages identify themselves in the topbar.
+  const breadcrumbItems: BreadcrumbTrailItem[] = data ? [{ label: data.name, icon: PanelsTopLeft }] : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (resolverLoading || loading || !data) {
     return <Loading />;

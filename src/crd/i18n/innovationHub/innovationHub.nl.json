@@ -9,6 +9,9 @@
     },
     "allSpacesCta": "Bekijk alle Spaces op Alkemio"
   },
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
   "settings": {
     "tabs": {
       "about": "Over",
@@ -16,7 +19,6 @@
       "navAria": "Instellingen-secties"
     },
     "header": {
-      "viewHubAria": "Hub bekijken",
       "expandWidth": "Uitvouwen naar volledige breedte",
       "collapseWidth": "Inklappen naar standaardbreedte"
     },

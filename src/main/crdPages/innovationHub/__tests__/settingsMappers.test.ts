@@ -42,15 +42,13 @@ const baseHub: InnovationHubSettingsFragment = {
 };
 
 describe('mapInnovationHubToSettingsHeader', () => {
-  test('maps display name, tagline, banner image, color, and canonical path URL (uses nameID, not subdomain)', () => {
+  test('maps display name, tagline, banner image, color, and initials', () => {
     const result = mapInnovationHubToSettingsHeader(baseHub);
     expect(result.name).toBe('Demo Innovation Hub');
     expect(result.tagline).toBe('innovation everywhere');
     expect(result.bannerImageUrl).toBe('https://example.com/banner.png');
     expect(result.thumbnailColor).toMatch(/^#/);
     expect(result.initials).toBeTruthy();
-    // Dev / test mode → path-based URL using `nameID`, not `subdomain`.
-    expect(result.viewHubUrl).toBe('/hub/demo-name-id');
   });
 
   test('falls back when banner is absent', () => {

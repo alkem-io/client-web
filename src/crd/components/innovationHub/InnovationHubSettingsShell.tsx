@@ -1,4 +1,4 @@
-import { Eye, FoldHorizontal, Info, Layers, UnfoldHorizontal } from 'lucide-react';
+import { FoldHorizontal, Info, Layers, UnfoldHorizontal } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
@@ -14,7 +14,6 @@ export type HubSettingsHeaderData = {
   bannerImageUrl?: string;
   thumbnailColor: string;
   initials: string;
-  viewHubUrl: string;
 };
 
 export type InnovationHubSettingsShellProps = {
@@ -85,16 +84,6 @@ export const InnovationHubSettingsShell = ({
                     )}
                   </Button>
                 )}
-                <a
-                  href={header.viewHubUrl}
-                  className={cn(
-                    'rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
-                    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
-                  )}
-                  aria-label={t('settings.header.viewHubAria')}
-                >
-                  <Eye aria-hidden="true" className="size-4" />
-                </a>
               </div>
 
               {/* These triggers are navigation links (each `<a>` has its own `href`),

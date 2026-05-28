@@ -27,28 +27,3 @@ export const buildHubHomePath = (nameID: string): string => `/hub/${nameID}`;
 
 /** Hub settings entry — always the path-based form, on both dev and prod. */
 export const buildHubSettingsPath = (nameID: string): string => `/hub/${nameID}/settings`;
-
-/**
- * Public "view hub" URL — used by the eye icon on the Settings sticky header.
- *
- * - Prod: returns the absolute subdomain URL (`https://<subdomain>.<canonical-domain>`)
- *   so the URL bar shows the branded subdomain.
- * - Dev (no real subdomains on `localhost`): returns the path-based `/hub/<nameID>`.
- *
- * Takes BOTH identifiers because prod-vs-dev pick different ones: prod uses
- * the hostname (subdomain), dev uses the route param (nameID).
- */
-export const buildPublicHubViewUrl = (nameID: string, subdomain: string): string => {
-  if (import.meta.env.MODE !== 'production' || typeof window === 'undefined') {
-    return buildHubHomePath(nameID);
-  }
-  const { hostname, protocol } = window.location;
-  // Strip any existing subdomain by taking the last two parts of the hostname
-  // (e.g. `acme.alkemio.org` → `alkemio.org`). Falls back to the path-based
-  // form if we can't determine a domain (single-label hostnames).
-  const domain = hostname.split('.').slice(-2).join('.');
-  if (!domain.includes('.')) {
-    return buildHubHomePath(nameID);
-  }
-  return `${protocol}//${subdomain}.${domain}`;
-};

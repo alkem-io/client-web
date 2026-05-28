@@ -1,7 +1,9 @@
+import { PanelsTopLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { type HubAboutFormValues, InnovationHubAboutTab } from '@/crd/components/innovationHub/InnovationHubAboutTab';
@@ -10,6 +12,7 @@ import { type HubSpacesTableRow, InnovationHubSpacesTab } from '@/crd/components
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import type { HubAboutSectionKey, HubSettingsTabKey } from './CrdInnovationHubSettingsPage.types';
 import { mapInnovationHubToSettingsHeader } from './dataMappers/mapInnovationHubToSettingsHeader';
@@ -19,6 +22,7 @@ import { useHubAccessGuard } from './hooks/useHubAccessGuard';
 import { useHubSpacesTabData } from './hooks/useHubSpacesTabData';
 import { useHubWidthPreference } from './hooks/useHubWidthPreference';
 import { useInnovationHubSettingsData } from './hooks/useInnovationHubSettingsData';
+import { buildHubHomePath, buildHubSettingsPath } from './lib/hubUrls';
 
 type CrdInnovationHubSettingsPageProps = {
   tab: HubSettingsTabKey;
@@ -37,6 +41,18 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
 
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<HubSpacesTableRow | null>(null);
+
+  // Top-bar breadcrumbs: `[PanelsTopLeft] HubName → Settings → ActiveTab`.
+  // Same shape as Spaces / Org / User settings, so the topbar replaces the
+  // previous "eye" link as the way back to the public hub.
+  const breadcrumbItems: BreadcrumbTrailItem[] = hub
+    ? [
+        { label: hub.profile.displayName, href: buildHubHomePath(hub.nameID), icon: PanelsTopLeft },
+        { label: t('breadcrumbs.settings'), href: buildHubSettingsPath(hub.nameID) },
+        { label: t(`settings.tabs.${tab}` as 'settings.tabs.about' | 'settings.tabs.spaces') },
+      ]
+    : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (guard.state === 'denied') {
     return <Navigate to={guard.redirectTo} replace={true} />;

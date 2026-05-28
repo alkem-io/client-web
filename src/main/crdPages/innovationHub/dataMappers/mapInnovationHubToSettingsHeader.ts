@@ -2,7 +2,6 @@ import type { InnovationHubSettingsFragment } from '@/core/apollo/generated/grap
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { HubSettingsHeaderData } from '@/main/crdPages/innovationHub/CrdInnovationHubSettingsPage.types';
-import { buildPublicHubViewUrl } from '@/main/crdPages/innovationHub/lib/hubUrls';
 
 export const mapInnovationHubToSettingsHeader = (hub: InnovationHubSettingsFragment): HubSettingsHeaderData => ({
   name: hub.profile.displayName,
@@ -10,7 +9,4 @@ export const mapInnovationHubToSettingsHeader = (hub: InnovationHubSettingsFragm
   bannerImageUrl: hub.profile.visual?.uri || undefined,
   thumbnailColor: pickColorFromId(hub.id),
   initials: getInitials(hub.profile.displayName),
-  // Eye icon: prod → subdomain hostname (`https://<sub>.<domain>`), dev → path
-  // (`/hub/<nameID>`). The helper picks the right identifier per environment.
-  viewHubUrl: buildPublicHubViewUrl(hub.nameID, hub.subdomain),
 });

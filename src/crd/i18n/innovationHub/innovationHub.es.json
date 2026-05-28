@@ -9,6 +9,9 @@
     },
     "allSpacesCta": "Explorar todos los espacios en Alkemio"
   },
+  "breadcrumbs": {
+    "settings": "Configuración"
+  },
   "settings": {
     "tabs": {
       "about": "Acerca de",
@@ -16,7 +19,6 @@
       "navAria": "Secciones de configuración"
     },
     "header": {
-      "viewHubAria": "Ver hub",
       "expandWidth": "Expandir a ancho completo",
       "collapseWidth": "Contraer al ancho predeterminado"
     },
