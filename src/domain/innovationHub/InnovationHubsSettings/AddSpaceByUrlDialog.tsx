@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, FormHelperText, Stack, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -30,8 +30,10 @@ const AddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds }: AddSpac
 
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+  const requestIdRef = useRef(0);
 
   const handleClose = () => {
+    requestIdRef.current += 1;
     setUrl('');
     setStatus({ kind: 'idle' });
     onClose();
@@ -51,8 +53,13 @@ const AddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds }: AddSpac
     if (submitDisabled) {
       return;
     }
+    requestIdRef.current += 1;
+    const currentRequestId = requestIdRef.current;
     setStatus({ kind: 'validating' });
     const result = await resolve(trimmedUrl);
+    if (requestIdRef.current !== currentRequestId) {
+      return;
+    }
     if (result.kind === 'invalid') {
       setStatus({ kind: 'invalid' });
       return;
@@ -63,10 +70,16 @@ const AddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds }: AddSpac
     }
     try {
       await onAdd(result.spaceId);
+      if (requestIdRef.current !== currentRequestId) {
+        return;
+      }
       setUrl('');
       setStatus({ kind: 'idle' });
       onClose();
     } catch {
+      if (requestIdRef.current !== currentRequestId) {
+        return;
+      }
       setStatus({ kind: 'invalid' });
     }
   };
@@ -86,39 +99,47 @@ const AddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds }: AddSpac
         onClose={handleClose}
       />
       <Gutters>
-        <Stack spacing={1}>
-          <TextField
-            value={url}
-            onChange={handleUrlChange}
-            label={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputLabel')}
-            placeholder={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputPlaceholder', {
-              origin: window.location.origin,
-            })}
-            error={Boolean(errorMessage)}
-            fullWidth={true}
-            autoFocus={true}
-            inputProps={{ 'aria-describedby': errorMessage ? 'add-space-by-url-error' : undefined }}
-          />
-          {errorMessage && (
-            <FormHelperText id="add-space-by-url-error" error={true} role="alert" aria-live="polite">
-              {errorMessage}
-            </FormHelperText>
-          )}
-          {status.kind === 'validating' && (
-            <Box display="flex" alignItems="center" gap={1} aria-live="polite">
-              <CircularProgress size={16} />
-              <span>{t('pages.admin.innovationHub.spaceListFilter.addByUrl.validating')}</span>
-            </Box>
-          )}
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button variant="text" onClick={handleClose}>
-              {t('pages.admin.innovationHub.spaceListFilter.addByUrl.cancel')}
-            </Button>
-            <Button variant="contained" onClick={handleSubmit} disabled={submitDisabled}>
-              {t('pages.admin.innovationHub.spaceListFilter.addByUrl.submit')}
-            </Button>
+        <form
+          onSubmit={event => {
+            event.preventDefault();
+            void handleSubmit();
+          }}
+        >
+          <Stack spacing={1}>
+            <TextField
+              value={url}
+              onChange={handleUrlChange}
+              disabled={status.kind === 'validating'}
+              label={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputLabel')}
+              placeholder={t('pages.admin.innovationHub.spaceListFilter.addByUrl.urlInputPlaceholder', {
+                origin: window.location.origin,
+              })}
+              error={Boolean(errorMessage)}
+              fullWidth={true}
+              autoFocus={true}
+              inputProps={{ 'aria-describedby': errorMessage ? 'add-space-by-url-error' : undefined }}
+            />
+            {errorMessage && (
+              <FormHelperText id="add-space-by-url-error" error={true} role="alert" aria-live="polite">
+                {errorMessage}
+              </FormHelperText>
+            )}
+            {status.kind === 'validating' && (
+              <Box display="flex" alignItems="center" gap={1} aria-live="polite">
+                <CircularProgress size={16} />
+                <span>{t('pages.admin.innovationHub.spaceListFilter.addByUrl.validating')}</span>
+              </Box>
+            )}
+            <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <Button type="button" variant="text" onClick={handleClose}>
+                {t('pages.admin.innovationHub.spaceListFilter.addByUrl.cancel')}
+              </Button>
+              <Button type="submit" variant="contained" disabled={submitDisabled}>
+                {t('pages.admin.innovationHub.spaceListFilter.addByUrl.submit')}
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
+        </form>
       </Gutters>
     </DialogWithGrid>
   );
