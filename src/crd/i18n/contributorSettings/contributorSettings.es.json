@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Recibir una notificación cuando se envía una nueva solicitud a la comunidad",
           "communityNewMember": "Recibir una notificación cuando un nuevo miembro se une a la comunidad",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
-          "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad"
+          "communicationMessageReceived": "Recibir una notificación cuando se recibe un mensaje de la comunidad",
+          "userEmailChanged": "Recibir una notificación cuando se cambia el correo electrónico de inicio de sesión de un miembro de un Space que administras"
         },
         "user": {
           "commentReply": "Recibir una notificación cuando alguien responde a mi comentario",
@@ -268,6 +269,7 @@
           "userProfileCreated": "Recibir una notificación cuando se crea un nuevo perfil de usuario",
           "userProfileRemoved": "Recibir una notificación cuando se elimina un perfil de usuario",
           "userGlobalRoleChanged": "Recibir una notificación cuando cambia el rol global de un usuario",
+          "userEmailChanged": "Recibir una notificación cuando cambia la dirección de correo electrónico de un usuario",
           "spaceCreated": "Recibir una notificación cuando se crea un nuevo Space"
         },
         "organization": {

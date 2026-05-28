@@ -25,6 +25,7 @@ export interface SpaceAdminNotificationSettings {
   communityNewMember?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   communicationMessageReceived?: NotificationChannels;
+  userEmailChanged?: NotificationChannels;
 }
 
 // User notification settings
@@ -55,6 +56,7 @@ export interface PlatformAdminNotificationSettings {
   userProfileCreated?: NotificationChannels;
   userProfileRemoved?: NotificationChannels;
   userGlobalRoleChanged?: NotificationChannels;
+  userEmailChanged?: NotificationChannels;
   spaceCreated?: NotificationChannels;
 }
 

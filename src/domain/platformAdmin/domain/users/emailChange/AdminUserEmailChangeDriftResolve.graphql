@@ -1,0 +1,8 @@
+mutation AdminUserEmailChangeDriftResolve($userID: UUID!, $canonicalEmail: String!) {
+  adminUserEmailChangeDriftResolve(
+    adminUserEmailChangeDriftResolveData: { userID: $userID, canonicalEmail: $canonicalEmail }
+  ) {
+    success
+    email
+  }
+}
