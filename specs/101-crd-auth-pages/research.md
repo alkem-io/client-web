@@ -24,7 +24,7 @@ Resolve every plan-level unknown before task generation. Each decision below is 
 | `/identity/verify` (+ `/verify/reminder`) | `VerificationPage.tsx` + `EmailVerificationRequiredPage.tsx` → `VerifyRoute.tsx` | Email-verification flow + the "please verify" reminder. |
 | `/identity/error` | `ErrorRoute.tsx` | Auth-error fallback — fetches the error object from Kratos by `?id=`. |
 | `/identity/required` | **already on CRD** (`CrdAuthRequiredRoute`) | **Out of scope** per spec clarification — not touched. |
-| `/identity/settings` | `SettingsRoute.tsx` | **Out of scope** — protected identity-settings flow, covered by separate migration. |
+| `/identity/settings` | `SettingsRoute.tsx` | **In scope** — the set-new-password completion flow Kratos issues after a recovery-link click; migrated as `SettingsCrdRoute`. (Only this recovery-completion flow is in scope; the authenticated profile/account-settings surface remains out of scope per `spec.md` FR-001.) |
 
 **Rationale**: This is the precise enumeration the spec's `FR-001` lists. Every URL must keep its path because Kratos-issued emails contain these URLs.
 

@@ -18,7 +18,7 @@ Build CRD-styled equivalents of every MUI-only authentication screen (sign-in, b
 - `@ory/kratos-client` (already loaded by the existing MUI auth layer — stays in `src/core/auth/`)
 - `react-router-dom` (integration layer only)
 - Apollo Client — present in the app but **not used** by this feature (the auth flow has no GraphQL)
-**Storage**: None new. The auth flow uses Kratos's own session/cookie storage, unchanged. This feature does not read or write any application-level preference or flag.
+**Storage**: No new application-level preference or flag. Beyond Kratos's own session/cookie storage (and the pre-existing `returnUrl` handoff), the only key this feature writes is a transient per-tab `sessionStorage` entry for the registration accept-terms checkbox (`crd-auth-accepted-terms-<flowId>`), ported from the MUI screen because Kratos resets that trait on a validation-error re-render. It is per-tab and not persisted across browser restarts.
 **Testing**: Vitest + `@testing-library/react` (jsdom). Per spec clarification, match the existing CRD-migration test pattern (unit tests on new CRD presentational components, integration tests on the new integration-layer route components / data adapters where peer migrated pages cover the equivalent surface). No new end-to-end Kratos tests.
 **Target Platform**: Modern evergreen browsers (>90% caniuse coverage per project rule).
 **Project Type**: Web SPA (single project; existing repository layout).

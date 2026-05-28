@@ -52,7 +52,7 @@ The single most important type in this feature. It is what the adapter emits and
 
 ```ts
 type KratosFlowDescriptor = {
-  flowType: 'login' | 'registration' | 'recovery' | 'verification';
+  flowType: 'login' | 'registration' | 'recovery' | 'verification' | 'settings';
   action: string;                 // form POST URL (from flow.ui.action)
   method: 'POST' | 'GET';         // form method (from flow.ui.method)
 
@@ -153,7 +153,7 @@ type SocialProviderCustomisation = {
 };
 ```
 
-**Source of truth**: `src/main/crdPages/auth/socialProviderCustomizations.ts`. The MUI `KratosSocialButton.tsx` is refactored to import this same map (still inside the MUI layer, importing from an integration-layer shared module is fine because the integration layer has no MUI/CRD opinion).
+**Source of truth**: `src/core/auth/authentication/socialProviderCustomizations.ts`. The MUI `KratosSocialButton.tsx` is refactored to import this same map (it lives in shared `src/core/auth/` so both the MUI layer and the CRD integration layer can import it — the module has no MUI/CRD opinion).
 
 **Why this is a separate entity**: it answers the question "should the CRD layer know about LinkedIn vs. Microsoft?" — no, it should not. It receives `iconSrc` and `label` already resolved.
 

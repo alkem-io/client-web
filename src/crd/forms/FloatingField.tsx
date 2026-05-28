@@ -66,7 +66,7 @@ export function FloatingField({
           className={cn(
             // text-base md:text-sm — same iOS-zoom-prevention pattern shadcn's
             // <Input> uses; mobile inputs <16px trigger viewport zoom on focus.
-            'peer h-14 w-full rounded border bg-card px-3.5 pb-2 pt-5 text-base md:text-sm text-foreground outline-none transition-colors',
+            'peer h-14 w-full rounded border bg-card px-3.5 pb-2 pt-5 text-base md:text-sm text-foreground outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50',
             'placeholder:text-transparent disabled:cursor-not-allowed disabled:opacity-50',
             // Keep the field background white when the browser autofills it, so the
             // floating label's notch (also white) stays seamless instead of showing

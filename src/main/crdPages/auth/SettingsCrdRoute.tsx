@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -26,8 +27,7 @@ export function SettingsCrdRoute() {
   // bounce to the home route rather than silently asking Kratos to spin up a
   // brand-new settings flow against the current session.
   if (!flowId) {
-    window.location.replace('/');
-    return null;
+    return <Navigate to="/" replace={true} />;
   }
 
   return <SettingsCrdPage flowId={flowId} />;
