@@ -62,12 +62,16 @@ describe('useHubAccessGuard', () => {
     expect(result.current).toEqual({ state: 'denied', redirectTo: '/hub/demo-name-id' });
   });
 
-  test('returns loading when hub data missing entirely', () => {
+  test('returns denied with platform-home redirect when hub data is missing after loading', () => {
+    // Query has finished (loading=false) but the hub came back undefined — the
+    // hub is gone, the id is wrong, or the viewer can't see it exists. We have
+    // no hub slug to redirect to, so the guard must terminate at `/` rather
+    // than report `loading` forever.
     useInnovationHubByIdQueryMock.mockReturnValue({
       data: { platform: { innovationHub: undefined } },
       loading: false,
     });
     const { result } = renderHook(() => useHubAccessGuard('hub-1'));
-    expect(result.current).toEqual({ state: 'loading' });
+    expect(result.current).toEqual({ state: 'denied', redirectTo: '/' });
   });
 });

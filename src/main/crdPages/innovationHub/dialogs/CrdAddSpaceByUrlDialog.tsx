@@ -14,7 +14,12 @@ import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import useResolveSpaceUrl from '@/domain/innovationHub/InnovationHubsSettings/useResolveSpaceUrl';
 
-type Status = { kind: 'idle' } | { kind: 'validating' } | { kind: 'invalid' } | { kind: 'duplicate' };
+type Status =
+  | { kind: 'idle' }
+  | { kind: 'validating' }
+  | { kind: 'invalid' }
+  | { kind: 'duplicate' }
+  | { kind: 'submitError' };
 
 const isValidUrl = (value: string): boolean => {
   try {
@@ -85,7 +90,7 @@ export const CrdAddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds 
       onClose();
     } catch {
       if (requestIdRef.current !== currentRequestId) return;
-      setStatus({ kind: 'invalid' });
+      setStatus({ kind: 'submitError' });
     }
   };
 
@@ -94,7 +99,9 @@ export const CrdAddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds 
       ? t('settings.spaces.addDialog.invalid')
       : status.kind === 'duplicate'
         ? t('settings.spaces.addDialog.duplicate')
-        : undefined;
+        : status.kind === 'submitError'
+          ? t('settings.spaces.addDialog.submitError')
+          : undefined;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

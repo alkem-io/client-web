@@ -1,4 +1,3 @@
-import { sortBy } from 'lodash-es';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -51,6 +50,16 @@ export const useHubSpacesTabData = (
     async (nextIds: string[], successKey: 'added' | 'removed' | 'reordered') => {
       if (!hub) return;
       try {
+        // Rebuild the list from `nextIds` rather than reordering the existing
+        // `hub.spaceListFilter`. The previous `sortBy(..., indexOf)` approach
+        // kept removed items at the front (indexOf → -1) and broke removal/
+        // reordering in the optimistic UI. For ids we don't have full data
+        // for (i.e. a newly-added space), drop the entry from the optimistic
+        // response and let the refetch fill it in — better than a phantom row.
+        const existingById = new Map((hub.spaceListFilter ?? []).map(space => [space.id, space]));
+        const optimisticSpaceListFilter = nextIds
+          .map(id => existingById.get(id))
+          .filter((space): space is NonNullable<typeof space> => space !== undefined);
         await updateInnovationHub({
           variables: {
             hubData: { ID: hub.id, spaceListFilter: nextIds },
@@ -58,7 +67,7 @@ export const useHubSpacesTabData = (
           optimisticResponse: {
             updateInnovationHub: {
               ...hub,
-              spaceListFilter: sortBy(hub.spaceListFilter, ({ id }) => nextIds.indexOf(id)),
+              spaceListFilter: optimisticSpaceListFilter,
             },
           },
         });

@@ -12,7 +12,8 @@
   "settings": {
     "tabs": {
       "about": "Over",
-      "spaces": "Spaces"
+      "spaces": "Spaces",
+      "navAria": "Instellingen-secties"
     },
     "header": {
       "viewHubAria": "Hub bekijken",
@@ -128,7 +129,8 @@
         "cancel": "Annuleren",
         "validating": "URL valideren…",
         "invalid": "We konden geen Space op die URL vinden.",
-        "duplicate": "Die Space staat al in deze hub."
+        "duplicate": "Die Space staat al in deze hub.",
+        "submitError": "Er ging iets mis bij het toevoegen van de Space. Probeer het opnieuw."
       }
     }
   }

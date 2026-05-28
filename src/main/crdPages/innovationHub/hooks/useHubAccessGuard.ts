@@ -28,7 +28,11 @@ export const useHubAccessGuard = (innovationHubId: string | undefined): HubAcces
 
   const hub = data?.platform.innovationHub;
   if (!hub) {
-    return { state: 'loading' };
+    // Query finished but the hub is missing (deleted, wrong id, or the viewer
+    // can't even see it exists). Send them to the platform home — we don't
+    // have a hub slug to redirect to, and returning `loading` here would
+    // leave the page hanging on a spinner forever.
+    return { state: 'denied', redirectTo: '/' };
   }
 
   const canEdit = hub.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;

@@ -12,7 +12,8 @@
   "settings": {
     "tabs": {
       "about": "À propos",
-      "spaces": "Espaces"
+      "spaces": "Espaces",
+      "navAria": "Sections des paramètres"
     },
     "header": {
       "viewHubAria": "Voir le hub",
@@ -128,7 +129,8 @@
         "cancel": "Annuler",
         "validating": "Validation de l'URL…",
         "invalid": "Nous n'avons pas trouvé d'espace à cette URL.",
-        "duplicate": "Cet espace est déjà dans ce hub."
+        "duplicate": "Cet espace est déjà dans ce hub.",
+        "submitError": "Une erreur est survenue lors de l'ajout de l'espace. Réessayez."
       }
     }
   }

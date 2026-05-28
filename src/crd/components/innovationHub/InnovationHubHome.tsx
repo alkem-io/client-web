@@ -125,13 +125,17 @@ export const InnovationHubHome = ({
                   <p className="text-body">{t('home.spacesSection.empty')}</p>
                 </div>
               ) : (
-                <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {data.spaces.map(space => (
-                    <li key={space.id}>
-                      <SpaceCard space={space} />
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  {/* biome-ignore lint/a11y/noRedundantRoles: VoiceOver/JAWS strip implicit list semantics from a Tailwind grid `<ul>`; the role restores them */}
+                  {/* biome-ignore lint/a11y/useSemanticElements: the `<ul>` IS the semantic element — the role is reaffirming, not substituting */}
+                  <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {data.spaces.map(space => (
+                      <li key={space.id}>
+                        <SpaceCard space={space} />
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </section>
 

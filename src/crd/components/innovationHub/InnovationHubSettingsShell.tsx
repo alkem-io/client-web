@@ -97,9 +97,12 @@ export const InnovationHubSettingsShell = ({
                 </a>
               </div>
 
-              <div
-                role="tablist"
-                aria-label={t('settings.tabs.about')}
+              {/* These triggers are navigation links (each `<a>` has its own `href`),
+                  not in-page Radix tabs — so the right a11y model is a `<nav>` landmark
+                  with `aria-current="page"` on the active link, not `role="tablist"/"tab"`.
+                  ARIA tab roles imply keyboard arrow-key panel-switching that doesn't apply here. */}
+              <nav
+                aria-label={t('settings.tabs.navAria')}
                 className="no-scrollbar flex items-center gap-6 overflow-x-auto"
               >
                 {tabs.map(item => {
@@ -108,8 +111,7 @@ export const InnovationHubSettingsShell = ({
                   return (
                     <a
                       key={item.key}
-                      role="tab"
-                      aria-selected={isActive}
+                      aria-current={isActive ? 'page' : undefined}
                       href={tabHrefs[item.key]}
                       className={cn(
                         'text-control flex items-center gap-2 whitespace-nowrap border-b-2 pb-4 transition-colors',
@@ -124,7 +126,7 @@ export const InnovationHubSettingsShell = ({
                     </a>
                   );
                 })}
-              </div>
+              </nav>
             </div>
           </div>
         </div>

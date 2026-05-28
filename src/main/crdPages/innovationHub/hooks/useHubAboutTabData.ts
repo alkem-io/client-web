@@ -103,6 +103,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
 
   const [values, setValues] = useState<HubAboutFormValues | null>(null);
   const valuesRef = useRef<HubAboutFormValues | null>(null);
+  const initializedHubIdRef = useRef<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<Partial<Record<HubAboutSectionKey, HubAboutSectionSaveStatus>>>({});
   const [errors, setErrors] = useState<Partial<Record<HubAboutSectionKey, string>>>({});
   const savedFlashTimers = useRef<Partial<Record<HubAboutSectionKey, ReturnType<typeof setTimeout>>>>({});
@@ -111,15 +112,27 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
   const [updateInnovationHub] = useUpdateInnovationHubMutation();
   const [uploadVisual, { loading: bannerUploading }] = useUploadVisualMutation();
 
-  // Seed local state once the query first resolves. Subsequent cache updates
-  // (via mutation results) are picked up via `saved` for dirty detection,
-  // without overwriting user edits.
+  const [pendingBannerCrop, setPendingBannerCrop] = useState<PendingBannerCrop | null>(null);
+
+  // Seed local state when the query first resolves AND re-seed if the underlying
+  // hub identity changes (e.g. the same component instance now points at a
+  // different hub after a route change). Without the identity reset, the prior
+  // hub's edits, errors, and pending crop would leak into the new one.
   useEffect(() => {
-    if (saved && valuesRef.current === null) {
-      valuesRef.current = saved;
-      setValues(saved);
+    if (!hub) return;
+    if (initializedHubIdRef.current === hub.id) return;
+    const next = mapInnovationHubToAboutValues(hub);
+    initializedHubIdRef.current = hub.id;
+    valuesRef.current = next;
+    setValues(next);
+    setSaveStatus({});
+    setErrors({});
+    setPendingBannerCrop(null);
+    for (const timer of Object.values(savedFlashTimers.current)) {
+      if (timer) clearTimeout(timer);
     }
-  }, [saved]);
+    savedFlashTimers.current = {};
+  }, [hub]);
 
   useEffect(() => {
     return () => {
@@ -208,8 +221,6 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
   );
 
   // ────────────────── Banner crop + upload ──────────────────
-
-  const [pendingBannerCrop, setPendingBannerCrop] = useState<PendingBannerCrop | null>(null);
 
   const onBannerFileSelected = useCallback(
     (file: File) => {
