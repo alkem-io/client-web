@@ -646,7 +646,10 @@
         "capacity": "Capaciteit: {{usage}}/{{limit}} gebruikt"
       },
       "deleteSuccess": "Resource verwijderd",
-      "deleteError": "Verwijderen mislukt — probeer opnieuw"
+      "deleteError": "Verwijderen mislukt — probeer opnieuw",
+      "noEntitlement": {
+        "toast": "Je hebt geen beschikbaar entitlement voor deze resource. De contactpagina wordt geopend om meer capaciteit aan te vragen."
+      }
     }
   }
 }

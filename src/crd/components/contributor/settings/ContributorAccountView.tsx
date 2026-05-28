@@ -120,24 +120,26 @@ function BannerCardGroup({
 function SpaceResourceCard({ item }: { item: AccountResourceCardItem }) {
   return (
     <Card className="group flex h-full flex-col overflow-hidden border-border transition-colors hover:border-primary/50">
-      <a
-        href={item.href}
-        className="block aspect-video overflow-hidden bg-muted"
-        style={
-          item.avatarUrl
-            ? undefined
-            : { background: `linear-gradient(135deg, ${item.color}, color-mix(in srgb, ${item.color} 70%, black))` }
-        }
-      >
-        {item.avatarUrl ? (
-          <img
-            src={item.avatarUrl}
-            alt={item.displayName}
-            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : null}
-      </a>
-      <ResourceCardKebab actions={item.actions} />
+      <div className="relative aspect-video overflow-hidden bg-muted">
+        <a
+          href={item.href}
+          className="block size-full"
+          style={
+            item.avatarUrl
+              ? undefined
+              : { background: `linear-gradient(135deg, ${item.color}, color-mix(in srgb, ${item.color} 70%, black))` }
+          }
+        >
+          {item.avatarUrl ? (
+            <img
+              src={item.avatarUrl}
+              alt={item.displayName}
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : null}
+        </a>
+        <ResourceCardKebab actions={item.actions} />
+      </div>
       <CardHeader className="p-4 pb-2">
         <a
           href={item.href}

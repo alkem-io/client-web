@@ -647,7 +647,10 @@
         "capacity": "Capacité : {{usage}}/{{limit}} utilisé"
       },
       "deleteSuccess": "Ressource supprimée",
-      "deleteError": "Échec de la suppression — réessayez"
+      "deleteError": "Échec de la suppression — réessayez",
+      "noEntitlement": {
+        "toast": "Vous n'avez pas de droit disponible pour cette ressource. Ouverture de la page de contact pour demander plus de capacité."
+      }
     }
   }
 }

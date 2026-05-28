@@ -8,6 +8,7 @@ import {
   useDeleteVirtualContributorOnAccountMutation,
   useOrganizationAccountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributorAccountView } from '@/crd/components/contributor/settings/ContributorAccountView';
@@ -25,6 +26,8 @@ import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtu
 import { type AccountResourceKind, mapOrgAccountToViewProps, type OrgAccountMapperCallbacks } from './orgAccountMapper';
 
 type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
+
+const CONTACT_URL = 'https://welcome.alkem.io/contact/';
 
 /**
  * Integration page for the Org Account tab (US9). Mirrors
@@ -83,15 +86,43 @@ const CrdOrgAccountTab = () => {
   });
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 
+  // Per-group entitlement flags — mirror the MUI page's `isEntitledToCreate*`
+  // checks. When the relevant entitlement is absent, the Create button
+  // doesn't open its dialog — we surface a warning toast and open the
+  // contact page so the user can request more capacity.
+  const availableEntitlements = account?.license?.availableEntitlements ?? [];
+  const entitled = {
+    spaces: [
+      LicenseEntitlementType.AccountSpaceFree,
+      LicenseEntitlementType.AccountSpacePlus,
+      LicenseEntitlementType.AccountSpacePremium,
+    ].some(type => availableEntitlements.includes(type)),
+    virtualContributors: availableEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor),
+    innovationPacks: availableEntitlements.includes(LicenseEntitlementType.AccountInnovationPack),
+    innovationHubs: availableEntitlements.includes(LicenseEntitlementType.AccountInnovationHub),
+  };
+
+  const tryCreate = (isEntitled: boolean, openDialog: () => void) => {
+    if (!isEntitled) {
+      notify(t('shared.account.noEntitlement.toast'), 'warning');
+      window.open(CONTACT_URL, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    openDialog();
+  };
+
   const callbacks: OrgAccountMapperCallbacks = {
-    onCreateSpace: () => setCreateSpaceOpen(true),
+    onCreateSpace: () => tryCreate(entitled.spaces, () => setCreateSpaceOpen(true)),
     // Cast: `AccountInformation` returns `about.membership.myPrivileges`,
     // but `UserAccountProps` expects the full `SpaceAboutLightModel`
     // membership shape. The wizard only reads `id`, `host`, `spaces[].id`,
     // and `spaces[].authorization?.myPrivileges` at runtime — all present.
-    onCreateVc: () => startWizard(account as UserAccountProps | undefined, accountHostName),
-    onCreateInnovationPack: () => setCreatePackOpen(true),
-    onCreateInnovationHub: () => setCreateHubOpen(true),
+    onCreateVc: () =>
+      tryCreate(entitled.virtualContributors, () =>
+        startWizard(account as UserAccountProps | undefined, accountHostName)
+      ),
+    onCreateInnovationPack: () => tryCreate(entitled.innovationPacks, () => setCreatePackOpen(true)),
+    onCreateInnovationHub: () => tryCreate(entitled.innovationHubs, () => setCreateHubOpen(true)),
     onManage: (_kind, _id, href) => {
       if (href) navigate(href);
     },

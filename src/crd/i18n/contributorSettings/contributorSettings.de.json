@@ -646,7 +646,10 @@
         "capacity": "Kapazität: {{usage}}/{{limit}} genutzt"
       },
       "deleteSuccess": "Ressource gelöscht",
-      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen"
+      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
+      "noEntitlement": {
+        "toast": "Du hast keine verfügbare Berechtigung für diese Ressource. Die Kontaktseite wird geöffnet, um mehr Kapazität anzufordern."
+      }
     }
   }
 }

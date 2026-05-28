@@ -647,7 +647,10 @@
         "capacity": "Capacidad: {{usage}}/{{limit}} utilizada"
       },
       "deleteSuccess": "Recurso eliminado",
-      "deleteError": "No se pudo eliminar — inténtalo de nuevo"
+      "deleteError": "No se pudo eliminar — inténtalo de nuevo",
+      "noEntitlement": {
+        "toast": "No tienes una asignación disponible para este recurso. Abriendo la página de contacto para solicitar más capacidad."
+      }
     }
   }
 }

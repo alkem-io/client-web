@@ -64,6 +64,14 @@ export type AccountResourceGroup = {
   title: string;
   /** Visible only when the privilege resolves true. */
   canCreate: boolean;
+  /**
+   * True when the account's license still has an available entitlement for
+   * this resource (any of `AccountSpaceFree/Plus/Premium` for Spaces; the
+   * single matching entitlement for VC / Pack / Hub). Consumers gate the
+   * `onCreate` callback on this — when false, the integration page should
+   * redirect to the contact page rather than open the create dialog.
+   */
+  isEntitled: boolean;
   /** Pre-localized "Create" button label. */
   createButtonLabel: string;
   onCreate: () => void;

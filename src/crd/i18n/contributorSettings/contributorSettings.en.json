@@ -666,7 +666,10 @@
         "capacity": "Capacity: {{usage}}/{{limit}} Used"
       },
       "deleteSuccess": "Resource deleted",
-      "deleteError": "Couldn't delete resource — try again"
+      "deleteError": "Couldn't delete resource — try again",
+      "noEntitlement": {
+        "toast": "You don't have an available entitlement for this resource. Opening the contact page to request more capacity."
+      }
     }
   }
 }
