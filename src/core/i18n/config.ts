@@ -123,6 +123,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/error/error.de.json'),
     fr: () => import('@/crd/i18n/error/error.fr.json'),
   },
+  'crd-auth': {
+    en: () => import('@/crd/i18n/auth/auth.en.json'),
+    es: () => import('@/crd/i18n/auth/auth.es.json'),
+    nl: () => import('@/crd/i18n/auth/auth.nl.json'),
+    bg: () => import('@/crd/i18n/auth/auth.bg.json'),
+    de: () => import('@/crd/i18n/auth/auth.de.json'),
+    fr: () => import('@/crd/i18n/auth/auth.fr.json'),
+  },
   'crd-spaceSettings': {
     en: () => import('@/crd/i18n/spaceSettings/spaceSettings.en.json'),
     es: () => import('@/crd/i18n/spaceSettings/spaceSettings.es.json'),
