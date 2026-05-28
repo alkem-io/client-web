@@ -132,10 +132,7 @@ describe('useHubAboutTabData', () => {
     expect(result.current.saveStatus.name).toBe('idle');
   });
 
-  test('onBannerFileSelected fires uploadVisual against the banner visual id', async () => {
-    uploadVisualMock.mockResolvedValue({
-      data: { uploadImageOnVisual: { uri: 'https://new.example/banner2.png', alternativeText: 'alt' } },
-    });
+  test('onBannerFileSelected stages a pending crop and does NOT fire upload immediately', async () => {
     const { result } = renderHook(() => useHubAboutTabData(baseHub));
 
     const file = new File(['data'], 'banner.png', { type: 'image/png' });
@@ -143,9 +140,49 @@ describe('useHubAboutTabData', () => {
       result.current.onBannerFileSelected(file);
     });
 
-    expect(uploadVisualMock).toHaveBeenCalledWith({
-      variables: { file, uploadData: { visualID: 'banner-1' } },
+    // Upload is deferred — cropper must confirm first.
+    expect(uploadVisualMock).not.toHaveBeenCalled();
+    expect(result.current.pendingBannerCrop).not.toBeNull();
+    expect(result.current.pendingBannerCrop?.file).toBe(file);
+    // Crop config overrides `visual.aspectRatio` with HUB_BANNER_ASPECT_RATIO (=6)
+    // so the cropper preview matches the displayed banner exactly (WYSIWYG).
+    // The visual fixture's 1.5 aspectRatio is intentionally ignored.
+    expect(result.current.pendingBannerCrop?.config.aspectRatio).toBe(6);
+    // Width/height bounds from the visual ARE still respected.
+    expect(result.current.pendingBannerCrop?.config.maxWidth).toBe(1200);
+    expect(result.current.pendingBannerCrop?.config.minWidth).toBe(200);
+  });
+
+  test('onBannerCropComplete fires uploadVisual with the cropped file and alt text, clears pending crop', async () => {
+    uploadVisualMock.mockResolvedValue({
+      data: { uploadImageOnVisual: { uri: 'https://new.example/banner2.png', alternativeText: 'alt' } },
     });
+    const { result } = renderHook(() => useHubAboutTabData(baseHub));
+
+    const original = new File(['data'], 'banner.png', { type: 'image/png' });
+    act(() => result.current.onBannerFileSelected(original));
+
+    const cropped = new File(['cropped'], 'banner-cropped.png', { type: 'image/png' });
+    await act(async () => {
+      result.current.onBannerCropComplete({ file: cropped, altText: 'My banner' });
+    });
+
+    expect(uploadVisualMock).toHaveBeenCalledWith({
+      variables: { file: cropped, uploadData: { visualID: 'banner-1', alternativeText: 'My banner' } },
+    });
+    expect(result.current.pendingBannerCrop).toBeNull();
     await waitFor(() => expect(result.current.values.bannerImageUrl).toBe('https://new.example/banner2.png'));
+  });
+
+  test('onBannerCropCancel clears pending crop without uploading', () => {
+    const { result } = renderHook(() => useHubAboutTabData(baseHub));
+
+    const file = new File(['data'], 'banner.png', { type: 'image/png' });
+    act(() => result.current.onBannerFileSelected(file));
+    expect(result.current.pendingBannerCrop).not.toBeNull();
+
+    act(() => result.current.onBannerCropCancel());
+    expect(result.current.pendingBannerCrop).toBeNull();
+    expect(uploadVisualMock).not.toHaveBeenCalled();
   });
 });

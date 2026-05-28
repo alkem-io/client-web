@@ -67,6 +67,15 @@
         "helperText": "Wird oben auf der Innovation-Hub-Seite angezeigt.",
         "errors": {
           "uploadFailed": "Banner-Upload fehlgeschlagen."
+        },
+        "crop": {
+          "title": "Banner zuschneiden",
+          "description": "Schneide das Bild auf die Bannerabmessungen zu und füge eine kurze Beschreibung für die Barrierefreiheit hinzu.",
+          "save": "Banner speichern",
+          "saving": "Speichern…",
+          "cancel": "Abbrechen",
+          "altLabel": "Alt-Text",
+          "altPlaceholder": "Beschreibe das Bild für Screenreader"
         }
       },
       "save": {

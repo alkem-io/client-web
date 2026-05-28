@@ -67,6 +67,15 @@
         "helperText": "Se muestra en la parte superior de la página del Innovation Hub.",
         "errors": {
           "uploadFailed": "La carga del banner ha fallado."
+        },
+        "crop": {
+          "title": "Recortar banner",
+          "description": "Recorta la imagen para ajustarla a las dimensiones del banner y añade una breve descripción para la accesibilidad.",
+          "save": "Guardar banner",
+          "saving": "Guardando…",
+          "cancel": "Cancelar",
+          "altLabel": "Texto alternativo",
+          "altPlaceholder": "Describe la imagen para los lectores de pantalla"
         }
       },
       "save": {

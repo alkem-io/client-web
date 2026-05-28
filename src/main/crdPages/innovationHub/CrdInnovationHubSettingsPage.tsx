@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
+import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { type HubAboutFormValues, InnovationHubAboutTab } from '@/crd/components/innovationHub/InnovationHubAboutTab';
 import { InnovationHubSettingsShell } from '@/crd/components/innovationHub/InnovationHubSettingsShell';
@@ -112,6 +113,26 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
         confirmLabel={t('settings.spaces.confirmRemove.confirm')}
         cancelLabel={t('settings.spaces.confirmRemove.cancel')}
         onConfirm={handleConfirmRemove}
+      />
+
+      {/* Banner crop + resize dialog — mirrors the Space Settings flow. The
+          file picked in the About tab is staged here for cropping; only after
+          crop confirmation does `useUploadVisualMutation` fire, with the file
+          already resized within the visual's min/max bounds (the server
+          previously rejected oversized originals). */}
+      <ImageCropDialog
+        open={aboutData.pendingBannerCrop !== null}
+        file={aboutData.pendingBannerCrop?.file}
+        config={aboutData.pendingBannerCrop?.config ?? {}}
+        onSave={aboutData.onBannerCropComplete}
+        onCancel={aboutData.onBannerCropCancel}
+        title={t('settings.about.banner.crop.title')}
+        description={t('settings.about.banner.crop.description')}
+        saveLabel={t('settings.about.banner.crop.save')}
+        savingLabel={t('settings.about.banner.crop.saving')}
+        cancelLabel={t('settings.about.banner.crop.cancel')}
+        altTextLabel={t('settings.about.banner.crop.altLabel')}
+        altTextPlaceholder={t('settings.about.banner.crop.altPlaceholder')}
       />
     </StorageConfigContextProvider>
   );

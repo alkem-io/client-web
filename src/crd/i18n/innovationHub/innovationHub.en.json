@@ -67,6 +67,15 @@
         "helperText": "Shown at the top of the Innovation Hub page.",
         "errors": {
           "uploadFailed": "Banner upload failed."
+        },
+        "crop": {
+          "title": "Crop banner",
+          "description": "Crop the image to fit the banner dimensions, then add a short description for accessibility.",
+          "save": "Save banner",
+          "saving": "Saving…",
+          "cancel": "Cancel",
+          "altLabel": "Alt text",
+          "altPlaceholder": "Describe the image for screen readers"
         }
       },
       "save": {

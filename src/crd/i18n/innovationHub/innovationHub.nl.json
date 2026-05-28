@@ -67,6 +67,15 @@
         "helperText": "Wordt bovenaan de Innovation Hub-pagina weergegeven.",
         "errors": {
           "uploadFailed": "Banner uploaden mislukt."
+        },
+        "crop": {
+          "title": "Banner bijsnijden",
+          "description": "Snijd de afbeelding bij om binnen de bannerafmetingen te passen, en voeg een korte beschrijving toe voor toegankelijkheid.",
+          "save": "Banner opslaan",
+          "saving": "Opslaan…",
+          "cancel": "Annuleren",
+          "altLabel": "Alt-tekst",
+          "altPlaceholder": "Beschrijf de afbeelding voor schermlezers"
         }
       },
       "save": {

@@ -67,6 +67,15 @@
         "helperText": "Affichée en haut de la page Innovation Hub.",
         "errors": {
           "uploadFailed": "Le téléversement de la bannière a échoué."
+        },
+        "crop": {
+          "title": "Recadrer la bannière",
+          "description": "Recadrez l'image pour qu'elle corresponde aux dimensions de la bannière, puis ajoutez une courte description pour l'accessibilité.",
+          "save": "Enregistrer la bannière",
+          "saving": "Enregistrement…",
+          "cancel": "Annuler",
+          "altLabel": "Texte alternatif",
+          "altPlaceholder": "Décrivez l'image pour les lecteurs d'écran"
         }
       },
       "save": {

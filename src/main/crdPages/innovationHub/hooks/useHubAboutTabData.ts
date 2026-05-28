@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateInnovationHubMutation, useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { InnovationHubSettingsFragment, UpdateInnovationHubInput } from '@/core/apollo/generated/graphql-schema';
+import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
+import { HUB_BANNER_ASPECT_RATIO } from '@/crd/components/innovationHub/InnovationHubBanner';
 import type { HubAboutSectionKey, HubAboutSectionSaveStatus } from '../CrdInnovationHubSettingsPage.types';
 import { type HubAboutFormValues, mapInnovationHubToAboutValues } from '../dataMappers/mapInnovationHubToAboutValues';
 import {
@@ -15,6 +17,16 @@ import {
 
 const SAVED_FLASH_MS = 1800;
 
+/**
+ * In-flight banner crop. The user picked a file and the cropper is open;
+ * `onBannerCropComplete` will fire the actual upload once they confirm.
+ * Mirrors `PendingCrop` in `useAboutTabData` (Space Settings) — same pattern.
+ */
+export type PendingBannerCrop = {
+  file: File;
+  config: ImageCropConfig;
+};
+
 type HubAboutTabState = {
   values: HubAboutFormValues;
   dirty: Partial<Record<HubAboutSectionKey, boolean>>;
@@ -22,7 +34,14 @@ type HubAboutTabState = {
   errors: Partial<Record<HubAboutSectionKey, string>>;
   onChange: (patch: Partial<HubAboutFormValues>) => void;
   onSaveSection: (key: HubAboutSectionKey) => void;
+  /** Picks a file and opens the crop dialog. The upload does NOT fire until crop is confirmed. */
   onBannerFileSelected: (file: File) => void;
+  /** Pending crop state — drives the `<ImageCropDialog>` open state at the page level. */
+  pendingBannerCrop: PendingBannerCrop | null;
+  /** Crop confirmed — uploads the (already-resized) file and applies alt text. */
+  onBannerCropComplete: (data: { file: File; altText: string }) => void;
+  /** Crop cancelled — clears `pendingBannerCrop` without uploading. */
+  onBannerCropCancel: () => void;
   bannerUploading: boolean;
 };
 
@@ -188,9 +207,14 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     [hub, updateInnovationHub, t]
   );
 
+  // ────────────────── Banner crop + upload ──────────────────
+
+  const [pendingBannerCrop, setPendingBannerCrop] = useState<PendingBannerCrop | null>(null);
+
   const onBannerFileSelected = useCallback(
     (file: File) => {
-      if (!hub?.profile.visual?.id) {
+      const visual = hub?.profile.visual;
+      if (!visual?.id) {
         setErrors(prev => ({ ...prev, banner: t('settings.about.banner.errors.uploadFailed') }));
         return;
       }
@@ -199,10 +223,38 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
         delete next.banner;
         return next;
       });
+      // Open the cropper. The actual upload fires on `onBannerCropComplete`
+      // — by then the file has been resized within the visual's bounds, so the
+      // server stops rejecting oversized originals.
+      //
+      // `aspectRatio` is overridden with `HUB_BANNER_ASPECT_RATIO` (the same
+      // ratio the page displays at) so the cropper preview WYSIWYG-matches
+      // the rendered banner. The server's `visual.aspectRatio` for BANNER_WIDE
+      // is intentionally ignored on display; the width/height bounds it
+      // returns are still respected so uploads stay within accepted sizes.
+      setPendingBannerCrop({
+        file,
+        config: {
+          aspectRatio: HUB_BANNER_ASPECT_RATIO,
+          maxWidth: visual.maxWidth ?? undefined,
+          minWidth: visual.minWidth ?? undefined,
+          maxHeight: visual.maxHeight ?? undefined,
+          minHeight: visual.minHeight ?? undefined,
+        },
+      });
+    },
+    [hub, t]
+  );
+
+  const onBannerCropComplete = useCallback(
+    ({ file, altText }: { file: File; altText: string }) => {
+      setPendingBannerCrop(null);
+      const visualId = hub?.profile.visual?.id;
+      if (!visualId) return;
       void uploadVisual({
         variables: {
           file,
-          uploadData: { visualID: hub.profile.visual.id },
+          uploadData: { visualID: visualId, alternativeText: altText || undefined },
         },
       })
         .then(result => {
@@ -227,6 +279,8 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     [hub, uploadVisual, t]
   );
 
+  const onBannerCropCancel = useCallback(() => setPendingBannerCrop(null), []);
+
   return {
     values: values ??
       saved ?? {
@@ -243,6 +297,9 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     onChange,
     onSaveSection,
     onBannerFileSelected,
+    pendingBannerCrop,
+    onBannerCropComplete,
+    onBannerCropCancel,
     bannerUploading,
   };
 };
