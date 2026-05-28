@@ -114,7 +114,7 @@
       "addDialog": {
         "title": "Add Space by URL",
         "description": "Paste the full URL of an Alkemio Space to add it to this hub.",
-        "placeholder": "https://alkemio.org/space/...",
+        "placeholder": "https://alkem.io/welcome-space",
         "submit": "Add",
         "cancel": "Cancel",
         "validating": "Validating URL…",

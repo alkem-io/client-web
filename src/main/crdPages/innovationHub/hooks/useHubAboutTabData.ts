@@ -5,6 +5,7 @@ import type { InnovationHubSettingsFragment, UpdateInnovationHubInput } from '@/
 import type { HubAboutSectionKey, HubAboutSectionSaveStatus } from '../CrdInnovationHubSettingsPage.types';
 import { type HubAboutFormValues, mapInnovationHubToAboutValues } from '../dataMappers/mapInnovationHubToAboutValues';
 import {
+  type HubAboutErrorKey,
   validateDescription,
   validateDisplayName,
   validateSubdomain,
@@ -25,7 +26,7 @@ type HubAboutTabState = {
   bannerUploading: boolean;
 };
 
-const validateSection = (key: HubAboutSectionKey, values: HubAboutFormValues): string | undefined => {
+const validateSection = (key: HubAboutSectionKey, values: HubAboutFormValues): HubAboutErrorKey | undefined => {
   switch (key) {
     case 'subdomain':
       return validateSubdomain(values.subdomain);
@@ -149,9 +150,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
 
       const errorKey = validateSection(key, current);
       if (errorKey) {
-        // Validators return a fixed set of i18n keys from the `crd-innovationHub`
-        // namespace; the dynamic key bypasses the typed-key overload via unknown.
-        setErrors(prev => ({ ...prev, [key]: (t as (k: string) => string)(errorKey) }));
+        setErrors(prev => ({ ...prev, [key]: t(errorKey) }));
         return;
       }
 

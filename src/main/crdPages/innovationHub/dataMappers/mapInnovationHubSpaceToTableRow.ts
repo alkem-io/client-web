@@ -2,14 +2,23 @@ import { type InnovationHubSpaceFragment, SpaceVisibility } from '@/core/apollo/
 
 export type SpaceVisibilityVariant = 'active' | 'demo' | 'inactive' | 'archived' | 'unknown';
 
-export type HubSpacesTableRow = {
+/**
+ * Pure data shape for the Spaces tab table. The visibility *variant* is data
+ * (drives badge styling). The visibility *label* is presentation and lives on
+ * `HubSpacesTableRow` only after the hook resolves it via typed `t()` calls —
+ * see `useHubSpacesTabData`. Keeping label-resolution out of the mapper means
+ * the mapper has one job (GraphQL → plain TS) and is testable without an
+ * i18n stub.
+ */
+export type HubSpacesTableRowData = {
   id: string;
   name: string;
   visibility: SpaceVisibilityVariant;
-  visibilityLabel: string;
   hostAccount: string;
   spaceUrl: string;
 };
+
+export type HubSpacesTableRow = HubSpacesTableRowData & { visibilityLabel: string };
 
 export const normalizeSpaceVisibility = (value: SpaceVisibility | undefined | null): SpaceVisibilityVariant => {
   switch (value) {
@@ -26,16 +35,10 @@ export const normalizeSpaceVisibility = (value: SpaceVisibility | undefined | nu
   }
 };
 
-type TFunction = (key: string) => string;
-
-export const mapInnovationHubSpaceToTableRow = (space: InnovationHubSpaceFragment, t: TFunction): HubSpacesTableRow => {
-  const visibility = normalizeSpaceVisibility(space.visibility);
-  return {
-    id: space.id,
-    name: space.about.profile.displayName,
-    visibility,
-    visibilityLabel: t(`settings.spaces.visibility.${visibility}`),
-    hostAccount: space.about.provider?.profile?.displayName ?? '—',
-    spaceUrl: space.about.profile.url,
-  };
-};
+export const mapInnovationHubSpaceToTableRow = (space: InnovationHubSpaceFragment): HubSpacesTableRowData => ({
+  id: space.id,
+  name: space.about.profile.displayName,
+  visibility: normalizeSpaceVisibility(space.visibility),
+  hostAccount: space.about.provider?.profile?.displayName ?? '—',
+  spaceUrl: space.about.profile.url,
+});

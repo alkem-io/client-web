@@ -5,8 +5,6 @@ import {
   normalizeSpaceVisibility,
 } from '../dataMappers/mapInnovationHubSpaceToTableRow';
 
-const t = (key: string) => key;
-
 const buildSpace = (overrides: Partial<InnovationHubSpaceFragment> = {}): InnovationHubSpaceFragment => ({
   id: 'space-1',
   visibility: SpaceVisibility.Active,
@@ -42,27 +40,22 @@ describe('normalizeSpaceVisibility', () => {
 });
 
 describe('mapInnovationHubSpaceToTableRow', () => {
-  test('maps id, name, visibility variant, label, host account, and URL', () => {
-    const row = mapInnovationHubSpaceToTableRow(buildSpace(), t);
+  test('maps id, name, visibility variant, host account, and URL — no i18n dependency', () => {
+    const row = mapInnovationHubSpaceToTableRow(buildSpace());
     expect(row).toEqual({
       id: 'space-1',
       name: 'Digital Twin',
       visibility: 'active',
-      visibilityLabel: 'settings.spaces.visibility.active',
       hostAccount: 'VNG',
       spaceUrl: '/space/digital-twin',
     });
   });
   test('falls back to em-dash when no provider', () => {
-    const row = mapInnovationHubSpaceToTableRow(
-      buildSpace({ about: { ...buildSpace().about, provider: undefined } }),
-      t
-    );
+    const row = mapInnovationHubSpaceToTableRow(buildSpace({ about: { ...buildSpace().about, provider: undefined } }));
     expect(row.hostAccount).toBe('—');
   });
   test('emits demo variant for SpaceVisibility.Demo', () => {
-    const row = mapInnovationHubSpaceToTableRow(buildSpace({ visibility: SpaceVisibility.Demo }), t);
+    const row = mapInnovationHubSpaceToTableRow(buildSpace({ visibility: SpaceVisibility.Demo }));
     expect(row.visibility).toBe('demo');
-    expect(row.visibilityLabel).toBe('settings.spaces.visibility.demo');
   });
 });

@@ -7,6 +7,7 @@ import type { InnovationHubSettingsFragment } from '@/core/apollo/generated/grap
 import {
   type HubSpacesTableRow,
   mapInnovationHubSpaceToTableRow,
+  type SpaceVisibilityVariant,
 } from '../dataMappers/mapInnovationHubSpaceToTableRow';
 
 export type UseHubSpacesTabDataResult = {
@@ -24,14 +25,26 @@ export const useHubSpacesTabData = (
   const { t } = useTranslation('crd-innovationHub');
   const [updateInnovationHub, { loading: busy }] = useUpdateInnovationHubMutation();
 
-  // The mapper takes a `(key: string) => string` so it stays decoupled from i18next's
-  // typed-key signature. Wrap `t` here to keep the boundary clean and avoid tripping
-  // TS overload resolution.
-  const tFn = useCallback((key: string): string => t(key as 'settings.spaces.title'), [t]);
+  // Resolve visibility labels here with typed `t()` calls — keeps the mapper
+  // i18n-free (one job: GraphQL → plain TS, no i18n stub needed in tests).
+  const visibilityLabels: Record<SpaceVisibilityVariant, string> = {
+    active: t('settings.spaces.visibility.active'),
+    demo: t('settings.spaces.visibility.demo'),
+    inactive: t('settings.spaces.visibility.inactive'),
+    archived: t('settings.spaces.visibility.archived'),
+    unknown: t('settings.spaces.visibility.unknown'),
+  };
 
   const rows = useMemo(
-    () => (hub?.spaceListFilter ?? []).map(space => mapInnovationHubSpaceToTableRow(space, tFn)),
-    [hub?.spaceListFilter, tFn]
+    () =>
+      (hub?.spaceListFilter ?? []).map(space => {
+        const data = mapInnovationHubSpaceToTableRow(space);
+        return { ...data, visibilityLabel: visibilityLabels[data.visibility] } as HubSpacesTableRow;
+      }),
+    // `visibilityLabels` is reconstructed every render with i18n-stable values;
+    // React Compiler handles memoization. `t` change re-renders the whole hook.
+    // biome-ignore lint/correctness/useExhaustiveDependencies: see above
+    [hub?.spaceListFilter, t]
   );
 
   const writeFilter = useCallback(

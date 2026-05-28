@@ -5,9 +5,8 @@ import { useLocation } from 'react-router-dom';
 import { supportedLngs } from '@/core/i18n/config';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
-import { absolutiseToMainDomain } from '@/main/crdPages/innovationHub/lib/hubUrls';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
+import { absolutiseToMainDomain, buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 
 const STATIC_NAVIGATION_HREFS = {
   home: ROUTE_HOME,

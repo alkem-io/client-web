@@ -114,6 +114,41 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
   }
 };
 
+/**
+ * True when the current host is a sub-host of the configured canonical domain
+ * — used as the signal "we're on a hub subdomain" by the top navigation. On
+ * development (no real subdomains on `localhost`) this is always `false`.
+ *
+ * Lives here (not in a feature folder) because subdomain handling is a
+ * routing/URL concern shared across the layout, not a hub-feature detail.
+ */
+export const isOnHubSubdomain = (canonicalDomain: string | undefined): boolean => {
+  if (import.meta.env.MODE !== 'production' || !canonicalDomain || typeof window === 'undefined') {
+    return false;
+  }
+  const { hostname } = window.location;
+  return hostname !== canonicalDomain && hostname.endsWith(`.${canonicalDomain}`);
+};
+
+/**
+ * Absolutise an in-app path against the canonical platform host when the
+ * visitor is on a hub subdomain. Used by the top navigation so clicking "Home"
+ * or any other platform link hops the user off the subdomain back to the main
+ * domain. On dev (or when already on the canonical host), returns the path
+ * unchanged.
+ */
+export const absolutiseToMainDomain = (path: string, canonicalDomain: string | undefined): string => {
+  if (!isOnHubSubdomain(canonicalDomain) || !canonicalDomain) {
+    return path;
+  }
+  // Already absolute — leave alone.
+  if (/^[a-z]+:\/\//i.test(path) || path.startsWith('//')) {
+    return path;
+  }
+  const { protocol } = window.location;
+  return `${protocol}//${canonicalDomain}${path.startsWith('/') ? path : `/${path}`}`;
+};
+
 export const buildUserAccountUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/account` : '';
 };

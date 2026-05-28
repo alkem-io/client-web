@@ -114,7 +114,7 @@
       "addDialog": {
         "title": "Добавяне на пространство чрез URL",
         "description": "Поставете пълния URL на пространство в Alkemio, за да го добавите към този хъб.",
-        "placeholder": "https://alkemio.org/space/...",
+        "placeholder": "https://alkem.io/welcome-space",
         "submit": "Добави",
         "cancel": "Отказ",
         "validating": "Валидиране на URL…",
