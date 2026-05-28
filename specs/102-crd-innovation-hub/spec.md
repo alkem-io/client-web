@@ -13,6 +13,14 @@ The current Hub home page (rendered through the `/home` dispatcher when a subdom
 
 This spec covers two public-facing pages — **Innovation Hub Home** and **Innovation Hub Settings** — across **both** their entry points (subdomain `/`-or-`/home` AND main-domain `/hub/<slug>`), and the routing/dispatch wiring that lets either the legacy or the new version render based on the user's design preference.
 
+## Clarifications
+
+### Session 2026-05-28
+
+- Q: What fills the circular thumbnail in the Settings sticky header, given the hub model has only a `BANNER_WIDE` visual and no separate avatar field? → A: Use the cropped `BANNER_WIDE` image when present; fall back to the `pickColorFromId` deterministic gradient + hub initials when no banner is set. (Standard CRD avatar-fallback pattern.)
+- Q: Where does the "Browse all Spaces on Alkemio" footer CTA link to when the visitor is on a hub subdomain? → A: It links to the canonical platform host (`//<config.domain>/spaces`), so the visitor fully exits the hub's branded frame and lands on the platform-wide Spaces explorer. Matches the legacy "go to main page" behaviour and respects the CTA's purpose of escaping the hub's curated filter.
+- Q: What happens when a viewer without the `Update` privilege opens `/hub/<slug>/settings` directly (typed URL, bookmark, shared link)? → A: Redirect them to the hub home page (`/hub/<slug>`) immediately on detecting the missing privilege. Fail closed — no exposure of admin-only fields, no broken save buttons. This is a behavioural improvement over the legacy MUI page, which renders the form regardless of privilege and relies on mutations failing server-side.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Hub visitor sees the redesigned starting page when arriving on a hub subdomain (Priority: P1)
@@ -98,7 +106,7 @@ The user can flip between the legacy and new designs from the Design Version swi
 ### Edge Cases
 
 - **Hub not found / not authorized**: visiting `/hub/<unknown-slug>` on either design renders the existing 404 page — no change in behaviour, no new error surfaces.
-- **Non-admin opens `/hub/<slug>/settings` directly via URL**: the page must not 200-render an editable form to a user without `Update` privilege. The existing privilege-resolved load path is preserved — the page either redirects, surfaces a permission error, or hides edit controls, mirroring legacy behaviour.
+- **Non-admin opens `/hub/<slug>/settings` directly via URL**: the page MUST redirect the visitor to the hub home page (`/hub/<slug>`) as soon as the missing `Update` privilege is detected on data load. No editable form, no "Forbidden" page, no read-only render — a clean redirect, fail-closed. This is an intentional behavioural improvement over the legacy MUI page (which renders the form regardless of privilege and relies on mutations failing server-side).
 - **Subdomain rendering when there is no hub configured for that subdomain**: the existing fallback (render the regular dashboard) is preserved — the CRD dispatcher must not regress that branch. (E.g. visiting `unknown-name.alkem.io/` falls back to the generic dashboard for the active design version; it does not 404 and does not render an empty hub shell.)
 - **Subdomain resolution is racy / slow**: while `useInnovationHub()` is still loading, the page MUST show a non-jarring loading state (no flash of dashboard followed by flash of hub home). The existing loading-gate pattern in `HomePage` / `CrdHomePage` is preserved — only flip to the resolved branch once `innovationHubLoading` is false.
 - **Hub subdomain in local dev**: the dev environment routes the subdomain through the `?subdomain=<value>` query param rather than an actual subdomain on `localhost`. The CRD dispatch path MUST behave identically whether the subdomain came from a real host header or from the query-param fallback — both paths feed `useInnovationHub()` the same way.
@@ -128,14 +136,14 @@ The user can flip between the legacy and new designs from the Design Version swi
 - **FR-003**: The page MUST display the hub's **description** as a rich-content block, rendering the same rich text content that the legacy page renders (no content reshaping).
 - **FR-004**: The page MUST display the hub's curated Spaces (`spaceListFilter`) as a responsive grid of CRD Space cards (1 / 2 / 3 columns at small / medium / large viewports), in the order the admin has configured.
 - **FR-005**: The page MUST hide the Settings icon from any viewer who lacks the `Update` privilege on the hub; show it (deep-linked to the CRD Settings page) to viewers who have the privilege.
-- **FR-006**: The page MUST include a "Browse all Spaces on Alkemio" call-to-action that links back to the platform-wide Spaces explorer.
+- **FR-006**: The page MUST include a "Browse all Spaces on Alkemio" call-to-action that links to the **canonical platform host** (`//<config.domain>/spaces` — resolved via `useConfig().locations.domain`, identical to the legacy "go to main page" pattern). When a visitor is on a hub subdomain, clicking the CTA MUST navigate them off the subdomain to the platform-wide Spaces explorer; it MUST NOT stay subdomain-relative.
 - **FR-007**: When the hub has no Spaces in its filter, the Spaces section MUST render a graceful empty state — never a broken or empty grid.
 - **FR-008**: All Space cards MUST link to their respective Space URL using the existing `profile.url` on the Space (URL builder centralised, no inline path templating per the CRD URL-construction rule).
 
 #### Settings Page — Shell
 
-- **FR-009**: The new design MUST provide an Innovation Hub Settings page rendered through the CRD shell, reachable at `/hub/<slug>/settings` and `/hub/<slug>/settings/<tab>`.
-- **FR-010**: The Settings page MUST have a sticky header containing the hub's avatar thumbnail, display name, and tagline, and a tab strip below it.
+- **FR-009**: The new design MUST provide an Innovation Hub Settings page rendered through the CRD shell, reachable at `/hub/<slug>/settings` and `/hub/<slug>/settings/<tab>`. The page MUST verify the viewer holds the `Update` privilege on the resolved hub before rendering any edit affordances; on missing privilege, it MUST redirect to `/hub/<slug>` rather than render the form, surface a permission-denied page, or render in a read-only state.
+- **FR-010**: The Settings page MUST have a sticky header containing the hub's identity thumbnail (a circular `w-12 h-12` graphic), display name, and tagline, and a tab strip below it. The thumbnail MUST render the cropped `BANNER_WIDE` visual when one is set; when the hub has no banner, it MUST fall back to the deterministic `pickColorFromId` gradient + hub initials (the standard CRD avatar-fallback pattern). Stock placeholder images MUST NOT be used.
 - **FR-011**: The Settings page MUST expose two tabs: **About** (default) and **Spaces**. A URL with no tab segment redirects to (or renders as) the About tab.
 - **FR-012**: Switching tabs MUST update the URL (deep-linkable / refreshable / shareable) and update the active tab indicator accordingly.
 
