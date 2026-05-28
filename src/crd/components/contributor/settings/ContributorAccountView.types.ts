@@ -53,13 +53,12 @@ export type AccountCapacity = {
   perPlan?: AccountSpacePlanCapacity;
 };
 
+/** Discriminator for the four contributor-account resource groups. */
+export type AccountResourceGroupId = 'spaces' | 'virtualContributors' | 'innovationPacks' | 'innovationHubs';
+
 export type AccountResourceGroup = {
-  /**
-   * Group key — drives layout variant (banner card grid for Spaces / VCs,
-   * compact list with Empty Slot fallbacks for Innovation Packs, full
-   * empty-state for Innovation Hubs).
-   */
-  groupId: 'spaces' | 'virtualContributors' | 'innovationPacks' | 'innovationHubs';
+  /** Group key — drives the per-group card visual (banner card for Spaces, compact icon card for VCs / Packs / Hubs). */
+  groupId: AccountResourceGroupId;
   /** Pre-localized section heading. */
   title: string;
   /** Visible only when the privilege resolves true. */

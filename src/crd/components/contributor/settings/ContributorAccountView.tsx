@@ -1,4 +1,4 @@
-import { Bot, FileBox, Layout, MoreVertical, Plus } from 'lucide-react';
+import { Bot, FileBox, Layout, type LucideIcon, MoreVertical, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -20,19 +20,19 @@ import type {
   ContributorAccountViewProps,
 } from './ContributorAccountView.types';
 
-const TEMPLATE_PACK_VISIBLE_SLOTS = 3;
+type CardVariant = 'space' | 'vc' | 'pack' | 'hub';
+
 const NS = 'crd-contributorSettings';
 
 /**
  * Shared 4-card-group view consumed by User Account (US2) and Org Account
- * (US9). Renders prototype-faithful empty states per FR-033 / FR-103:
+ * (US9). All four groups now render as a 3-up card grid with a dashed
+ * "Create New" inline tile as the last cell when `canCreate`:
  *
- * - **Hosted Spaces** + **Virtual Contributors**: existing items followed by
- *   a dashed "Create New" inline tile (always present when `canCreate`).
- * - **Template Packs**: existing items + up to 3 "Empty Slot" placeholders.
- * - **Custom Homepages**: card grid when non-empty; full centered empty
- *   state with icon + heading + descriptive copy + CTA + capacity indicator
- *   when empty.
+ * - **Hosted Spaces**: banner cards (image with deterministic-color gradient
+ *   fallback) + tall "+" tile with heading and blurb.
+ * - **Virtual Contributors / Template Packs / Custom Homepages**: compact
+ *   icon-in-box cards + compact "+" tile.
  *
  * All `onCreate*` / per-row kebab actions are received as callback props;
  * the view never imports `react-router-dom` (FR-007). Pure presentational —
@@ -66,32 +66,44 @@ function HelpBanner({ label }: { label: string }) {
 
 // ─── Per-group dispatch ───────────────────────────────────────────────────
 
+// Hosted Spaces is the only group whose top-right Create button uses the
+// primary-filled variant; VCs / Packs / Hubs use outline.
+const CREATE_BUTTON_VARIANT: Record<CardVariant, 'default' | 'outline'> = {
+  space: 'default',
+  vc: 'outline',
+  pack: 'outline',
+  hub: 'outline',
+};
+
+// Icon used by the compact card variants (pack/hub/vc). Spaces use a banner image instead.
+const ICON_BY_VARIANT: Record<Exclude<CardVariant, 'space'>, LucideIcon> = {
+  vc: Bot,
+  pack: FileBox,
+  hub: Layout,
+};
+
+// Icon-wrapper tint per compact variant — matches the prototype's existing
+// colour identity for each resource type.
+const ICON_WRAPPER_CLASS: Record<Exclude<CardVariant, 'space'>, string> = {
+  vc: 'bg-primary/10 text-primary',
+  pack: 'bg-secondary text-secondary-foreground',
+  hub: 'bg-secondary text-secondary-foreground',
+};
+
 function AccountGroupSection({ group }: { group: AccountResourceGroup }) {
   switch (group.groupId) {
-    // Hosted Spaces is the only group whose Create button uses the
-    // primary-filled variant; VCs / Packs / Hubs use outline.
     case 'spaces':
-      return <BannerCardGroup group={group} variant="space" createVariant="default" />;
+      return <ResourceCardGroup group={group} variant="space" />;
     case 'virtualContributors':
-      return <BannerCardGroup group={group} variant="vc" createVariant="outline" />;
+      return <ResourceCardGroup group={group} variant="vc" />;
     case 'innovationPacks':
-      return <TemplatePackList group={group} />;
+      return <ResourceCardGroup group={group} variant="pack" />;
     case 'innovationHubs':
-      return <CustomHomepagesGroup group={group} />;
+      return <ResourceCardGroup group={group} variant="hub" />;
   }
 }
 
-// ─── Banner-card variant (Hosted Spaces + Virtual Contributors) ──────────
-
-function BannerCardGroup({
-  group,
-  variant,
-  createVariant,
-}: {
-  group: AccountResourceGroup;
-  variant: 'space' | 'vc';
-  createVariant: 'default' | 'outline';
-}) {
+function ResourceCardGroup({ group, variant }: { group: AccountResourceGroup; variant: CardVariant }) {
   return (
     <section>
       <SectionHeader
@@ -101,14 +113,19 @@ function BannerCardGroup({
         canCreate={group.canCreate}
         createButtonLabel={group.createButtonLabel}
         onCreate={group.onCreate}
-        createVariant={createVariant}
+        createVariant={CREATE_BUTTON_VARIANT[variant]}
       />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {group.items.map(item =>
           variant === 'space' ? (
             <SpaceResourceCard key={item.id} item={item} />
           ) : (
-            <VcResourceCard key={item.id} item={item} />
+            <IconResourceCard
+              key={item.id}
+              item={item}
+              icon={ICON_BY_VARIANT[variant]}
+              iconWrapperClass={ICON_WRAPPER_CLASS[variant]}
+            />
           )
         )}
         {group.canCreate ? <InlineCreateCard variant={variant} onClick={group.onCreate} /> : null}
@@ -155,20 +172,28 @@ function SpaceResourceCard({ item }: { item: AccountResourceCardItem }) {
   );
 }
 
-function VcResourceCard({ item }: { item: AccountResourceCardItem }) {
+function IconResourceCard({
+  item,
+  icon: Icon,
+  iconWrapperClass,
+}: {
+  item: AccountResourceCardItem;
+  icon: LucideIcon;
+  iconWrapperClass: string;
+}) {
   return (
     <Card className="group flex h-full flex-col overflow-hidden transition-colors hover:border-primary/50">
       <CardHeader className="flex flex-row items-start gap-4 p-5 pb-2">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className={cn('flex size-10 shrink-0 items-center justify-center rounded-lg', iconWrapperClass)}>
           {item.avatarUrl ? (
             <Avatar className="size-10 rounded-lg">
               <AvatarImage src={item.avatarUrl} alt={item.displayName} />
               <AvatarFallback color={item.color} className="rounded-lg text-white">
-                <Bot aria-hidden="true" className="size-5" />
+                <Icon aria-hidden="true" className="size-5" />
               </AvatarFallback>
             </Avatar>
           ) : (
-            <Bot aria-hidden="true" className="size-5" />
+            <Icon aria-hidden="true" className="size-5" />
           )}
         </div>
         <div className="min-w-0 flex-1">
@@ -188,167 +213,75 @@ function VcResourceCard({ item }: { item: AccountResourceCardItem }) {
   );
 }
 
-function InlineCreateCard({ variant, onClick }: { variant: 'space' | 'vc'; onClick: () => void }) {
+function InlineCreateCard({ variant, onClick }: { variant: CardVariant; onClick: () => void }) {
   const { t } = useTranslation(NS);
-  const ariaLabel =
-    variant === 'space' ? t('shared.account.createNewSpace.ariaLabel') : t('shared.account.createNewVc.ariaLabel');
-  const heading =
-    variant === 'space' ? t('shared.account.createNewSpace.heading') : t('shared.account.createNewVc.heading');
-  const blurb = variant === 'space' ? t('shared.account.createNewSpace.description') : null;
+  // Translation keys are spelled out per branch (instead of looked up from a
+  // record or via a helper that receives `t`) so i18next's strict
+  // literal-string typing of `t()` is preserved.
+  const copy = (() => {
+    switch (variant) {
+      case 'space':
+        return {
+          ariaLabel: t('shared.account.createNewSpace.ariaLabel'),
+          heading: t('shared.account.createNewSpace.heading'),
+          blurb: t('shared.account.createNewSpace.description') as string | undefined,
+        };
+      case 'vc':
+        return {
+          ariaLabel: t('shared.account.createNewVc.ariaLabel'),
+          heading: t('shared.account.createNewVc.heading'),
+          blurb: undefined,
+        };
+      case 'pack':
+        return {
+          ariaLabel: t('shared.account.createNewPack.ariaLabel'),
+          heading: t('shared.account.createNewPack.heading'),
+          blurb: undefined,
+        };
+      case 'hub':
+        return {
+          ariaLabel: t('shared.account.createNewHub.ariaLabel'),
+          heading: t('shared.account.createNewHub.heading'),
+          blurb: undefined,
+        };
+    }
+  })();
+  const isLarge = variant === 'space';
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={ariaLabel}
+      aria-label={copy.ariaLabel}
       className={cn(
         'group/create flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/5 transition-all hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-        variant === 'space' ? 'h-full min-h-[280px]' : 'h-full min-h-[160px]'
+        isLarge ? 'h-full min-h-[280px]' : 'h-full min-h-[160px]'
       )}
     >
       <div
         className={cn(
           'flex items-center justify-center rounded-full bg-muted shadow-sm transition-colors group-hover/create:bg-background',
-          variant === 'space' ? 'mb-4 size-12' : 'mb-3 size-10'
+          isLarge ? 'mb-4 size-12' : 'mb-3 size-10'
         )}
       >
         <Plus
           aria-hidden="true"
-          className={cn(
-            'text-muted-foreground group-hover/create:text-primary',
-            variant === 'space' ? 'size-6' : 'size-5'
-          )}
+          className={cn('text-muted-foreground group-hover/create:text-primary', isLarge ? 'size-6' : 'size-5')}
         />
       </div>
-      {variant === 'space' ? (
+      {isLarge ? (
         <h3 className="text-subsection-title text-foreground transition-colors group-hover/create:text-primary">
-          {heading}
+          {copy.heading}
         </h3>
       ) : (
         <span className="text-body-emphasis text-muted-foreground transition-colors group-hover/create:text-primary">
-          {heading}
+          {copy.heading}
         </span>
       )}
-      {blurb ? <p className="mt-2 max-w-[200px] text-center text-body text-muted-foreground">{blurb}</p> : null}
+      {copy.blurb ? (
+        <p className="mt-2 max-w-[200px] text-center text-body text-muted-foreground">{copy.blurb}</p>
+      ) : null}
     </button>
-  );
-}
-
-// ─── Template Packs (list + Empty Slots) ──────────────────────────────────
-
-function TemplatePackList({ group }: { group: AccountResourceGroup }) {
-  const { t } = useTranslation(NS);
-  const emptySlotCount = Math.max(0, TEMPLATE_PACK_VISIBLE_SLOTS - group.items.length);
-
-  return (
-    <section>
-      <SectionHeader
-        title={group.title}
-        groupId={group.groupId}
-        capacity={group.capacity}
-        canCreate={group.canCreate}
-        createButtonLabel={group.createButtonLabel}
-        onCreate={group.onCreate}
-      />
-      <div className="space-y-4">
-        {group.items.map(item => (
-          <Card key={item.id} className="group flex items-center gap-4 p-4 transition-colors hover:border-primary/50">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
-              <FileBox aria-hidden="true" className="size-6" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <a
-                href={item.href}
-                className="block text-card-title transition-colors hover:text-primary group-hover:text-primary"
-              >
-                {item.displayName}
-              </a>
-              {item.description ? (
-                <p className="truncate text-caption text-muted-foreground">{item.description}</p>
-              ) : null}
-            </div>
-            <ResourceCardKebab actions={item.actions} inline={true} />
-          </Card>
-        ))}
-        {Array.from({ length: emptySlotCount }).map((_, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: empty-slot placeholders are interchangeable; index IS the natural key
-          <div key={`empty-${i}`} className="flex items-center gap-4 rounded-xl border border-dashed p-4 opacity-60">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-              <Plus aria-hidden="true" className="size-5" />
-            </div>
-            <p className="flex-1 text-body-emphasis text-muted-foreground">{t('shared.account.emptySlot')}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ─── Custom Homepages (cards or full empty-state) ─────────────────────────
-
-function CustomHomepagesGroup({ group }: { group: AccountResourceGroup }) {
-  const { t } = useTranslation(NS);
-  const isEmpty = group.items.length === 0;
-
-  return (
-    <section>
-      <SectionHeader
-        title={group.title}
-        groupId={group.groupId}
-        capacity={group.capacity}
-        // Top section button stays visible regardless of items count — the
-        // empty-state CTA inside the dashed tile is additional, mirroring
-        // the prototype's layout exactly.
-        canCreate={group.canCreate}
-        createButtonLabel={group.createButtonLabel}
-        onCreate={group.onCreate}
-      />
-      {isEmpty ? (
-        <div className="flex h-[240px] flex-col items-center justify-center rounded-xl border border-dashed bg-muted/5 p-6 text-center">
-          <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
-            <Layout aria-hidden="true" className="size-6 text-muted-foreground" />
-          </div>
-          <h3 className="mb-1 text-card-title">{t('shared.account.customHomepages.emptyHeading')}</h3>
-          <p className="mb-4 max-w-[200px] text-caption text-muted-foreground">
-            {t('shared.account.customHomepages.emptyDescription')}
-          </p>
-          {group.canCreate ? (
-            <Button variant="outline" size="sm" onClick={group.onCreate}>
-              <Plus aria-hidden="true" className="mr-2 size-3.5" />
-              {t('shared.account.customHomepages.createCta')}
-            </Button>
-          ) : null}
-          <p className="mt-4 text-badge text-muted-foreground">
-            {t('shared.account.customHomepages.capacity', {
-              usage: group.capacity?.usage ?? 0,
-              limit: group.capacity?.limit ?? 0,
-            })}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {group.items.map(item => (
-            <Card key={item.id} className="group flex items-center gap-4 p-4 transition-colors hover:border-primary/50">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
-                <Layout aria-hidden="true" className="size-6" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <a
-                  href={item.href}
-                  className="block text-card-title transition-colors hover:text-primary group-hover:text-primary"
-                >
-                  {item.displayName}
-                </a>
-                {item.description ? (
-                  <p className="truncate text-caption text-muted-foreground">{item.description}</p>
-                ) : null}
-              </div>
-              <ResourceCardKebab actions={item.actions} inline={true} />
-            </Card>
-          ))}
-        </div>
-      )}
-    </section>
   );
 }
 

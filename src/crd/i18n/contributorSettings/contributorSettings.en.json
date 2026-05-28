@@ -649,7 +649,6 @@
         "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
       },
       "kebabAriaLabel": "More actions",
-      "emptySlot": "Empty Slot",
       "createNewSpace": {
         "ariaLabel": "Create new space",
         "heading": "Create New Space",
@@ -659,16 +658,26 @@
         "ariaLabel": "Create new contributor",
         "heading": "Create New Contributor"
       },
-      "customHomepages": {
-        "emptyHeading": "No Custom Homepages",
-        "emptyDescription": "Create a personalized landing page for your account.",
-        "createCta": "Create Homepage",
-        "capacity": "Capacity: {{usage}}/{{limit}} Used"
+      "createNewPack": {
+        "ariaLabel": "Create new pack",
+        "heading": "Create New Pack"
+      },
+      "createNewHub": {
+        "ariaLabel": "Create new custom homepage",
+        "heading": "Create New Homepage"
       },
       "deleteSuccess": "Resource deleted",
       "deleteError": "Couldn't delete resource — try again",
       "noEntitlement": {
-        "toast": "You don't have an available entitlement for this resource. Opening the contact page to request more capacity."
+        "title": "Capacity reached",
+        "description": {
+          "spaces": "You've reached your Spaces capacity. Contact the Alkemio team to request more.",
+          "virtualContributors": "You've reached your Virtual Contributors capacity. Contact the Alkemio team to request more.",
+          "innovationPacks": "You've reached your Template Packs capacity. Contact the Alkemio team to request more.",
+          "innovationHubs": "You've reached your Custom Homepages capacity. Contact the Alkemio team to request more."
+        },
+        "contactCta": "Contact us",
+        "cancel": "Cancel"
       }
     }
   }
