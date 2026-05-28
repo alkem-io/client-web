@@ -207,7 +207,7 @@
       "groups": {
         "space": {
           "title": "Space-meldingen",
-          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals berichten, reacties en community-updates."
+          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals posts, reacties en community-updates."
         },
         "spaceAdmin": {
           "title": "Space-beheerdermeldingen",
@@ -230,15 +230,15 @@
           "description": "Beheer waarschuwingen voor vermeldingen, berichten en teamupdates van je organisatie."
         },
         "virtualContributor": {
-          "title": "Meldingen voor virtuele bijdragers",
-          "description": "Meldingen over activiteiten en toewijzingen van virtuele bijdragers."
+          "title": "Meldingen voor Virtual Contributors",
+          "description": "Meldingen over activiteiten en toewijzingen van Virtual Contributors."
         }
       },
       "rows": {
         "space": {
           "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
           "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
-          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een bericht dat ik volg",
+          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een post die ik volg",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",
           "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",
@@ -317,11 +317,11 @@
         "createButton": "Space aanmaken"
       },
       "virtualContributors": {
-        "title": "Virtuele bijdragers",
+        "title": "Virtual Contributors",
         "createButton": "Bijdrager toevoegen"
       },
       "innovationPacks": {
-        "title": "Sjabloonpakketten",
+        "title": "Template Packs",
         "createButton": "Nieuw pakket"
       },
       "innovationHubs": {
@@ -416,8 +416,8 @@
       "pageTitle": "Account",
       "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
       "spaces": { "title": "Gehoste Spaces", "createButton": "Space aanmaken" },
-      "virtualContributors": { "title": "Virtuele bijdragers", "createButton": "Bijdrager toevoegen" },
-      "innovationPacks": { "title": "Sjabloonpakketten", "createButton": "Nieuw pakket" },
+      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Bijdrager toevoegen" },
+      "innovationPacks": { "title": "Template Packs", "createButton": "Nieuw pakket" },
       "innovationHubs": { "title": "Aangepaste startpagina's", "createButton": "Nieuwe pagina" },
       "actions": { "view": "Bekijken", "manage": "Beheren", "transfer": "Overdragen", "delete": "Verwijderen" },
       "deleteDialog": {
@@ -500,7 +500,7 @@
         "title": "Identiteit",
         "displayName": {
           "label": "Weergavenaam",
-          "hint": "Hoe deze Virtuele Bijdrager wordt weergegeven op Alkemio.",
+          "hint": "Hoe deze Virtual Contributor wordt weergegeven op Alkemio.",
           "required": "Weergavenaam is verplicht"
         },
         "tagline": {
@@ -509,12 +509,12 @@
         },
         "description": {
           "label": "Beschrijving",
-          "hint": "Leg uit wat deze Virtuele Bijdrager doet en hoe ermee te werken."
+          "hint": "Leg uit wat deze Virtual Contributor doet en hoe ermee te werken."
         }
       },
       "keywords": {
         "label": "Trefwoorden",
-        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtuele Bijdrager kunnen vinden.",
+        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden.",
         "placeholder": "Voeg een trefwoord toe en druk op Enter"
       },
       "socialLinks": {
@@ -532,7 +532,7 @@
         }
       },
       "metadata": {
-        "title": "Over deze Virtuele Bijdrager",
+        "title": "Over deze Virtual Contributor",
         "hostLabel": "Gehost door",
         "bodyOfKnowledgeLabel": "Kennisbron"
       },
@@ -547,14 +547,14 @@
       "confirmed": {
         "title": "Lidmaatschappen"
       },
-      "empty": "Deze Virtuele Bijdrager is nog geen lid van een ruimte.",
-      "spaceBadge": "Ruimte",
-      "subspaceBadge": "Subruimte",
+      "empty": "Deze Virtual Contributor is nog geen lid van een Space.",
+      "spaceBadge": "Space",
+      "subspaceBadge": "Subspace",
       "viewLabel": "Bekijk",
       "leaveLabel": "Verlaten",
-      "leaveSpaceConfirmTitle": "Deze ruimte verlaten?",
-      "leaveSubspaceConfirmTitle": "Deze subruimte verlaten?",
-      "leaveConfirmBody": "Deze Virtuele Bijdrager verwijderen uit {{name}}? Dit kan ongedaan worden gemaakt door opnieuw lidmaatschap aan te vragen.",
+      "leaveSpaceConfirmTitle": "Deze Space verlaten?",
+      "leaveSubspaceConfirmTitle": "Deze Subspace verlaten?",
+      "leaveConfirmBody": "Deze Virtual Contributor verwijderen uit {{name}}? Dit kan ongedaan worden gemaakt door opnieuw lidmaatschap aan te vragen.",
       "leaveConfirmAction": "Verlaten",
       "pendingInvitationsHeading": "Openstaande uitnodigingen",
       "acceptLabel": "Accepteren",
@@ -565,19 +565,19 @@
     },
     "visibility": {
       "title": "Zichtbaarheid",
-      "helper": "Bepaalt wie deze Virtuele Bijdrager kan vinden.",
+      "helper": "Bepaalt wie deze Virtual Contributor kan vinden.",
       "publicLabel": "Openbaar",
-      "publicDescription": "Iedereen, inclusief anonieme bezoekers, kan deze Virtuele Bijdrager vinden.",
+      "publicDescription": "Iedereen, inclusief anonieme bezoekers, kan deze Virtual Contributor vinden.",
       "accountLabel": "Account",
-      "accountDescription": "Alleen leden van het host-account kunnen deze Virtuele Bijdrager vinden.",
+      "accountDescription": "Alleen leden van het host-account kunnen deze Virtual Contributor vinden.",
       "hiddenLabel": "Verborgen",
-      "hiddenDescription": "Deze Virtuele Bijdrager is verborgen voor zoekopdrachten.",
+      "hiddenDescription": "Deze Virtual Contributor is verborgen voor zoekopdrachten.",
       "listedInStoreLabel": "Vermeld in de Alkemio-winkel",
       "listedInStoreHelper": "Alleen beschikbaar wanneer Zichtbaarheid op Openbaar staat."
     },
     "bodyOfKnowledge": {
       "title": "Kennisbron",
-      "helper": "Beheer hoe de kennisbron van deze Virtuele Bijdrager wordt blootgesteld.",
+      "helper": "Beheer hoe de kennisbron van deze Virtual Contributor wordt blootgesteld.",
       "privacyToggleLabel": "Kennisbron-inhoud verbergen voor niet-leden",
       "privacyToggleHelper": "Wanneer ingeschakeld, wordt de onderliggende inhoud verborgen voor gebruikers zonder toegang.",
       "refreshLabel": "Kennis vernieuwen",
@@ -590,7 +590,7 @@
     },
     "externalConfig": {
       "title": "Externe AI-configuratie",
-      "helper": "Verbind deze Virtuele Bijdrager met een externe AI-provider.",
+      "helper": "Verbind deze Virtual Contributor met een externe AI-provider.",
       "apiKeyLabel": "API-sleutel",
       "apiKeyPlaceholder": "Voer een nieuwe API-sleutel in",
       "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
@@ -624,7 +624,7 @@
         "notAvailable": "Niet beschikbaar",
         "notAvailableTooltip": "Neem contact op met het Alkemio-team om deze functie voor je account in te schakelen.",
         "spacesTooltip": "Van de beschikbare Spaces in je account heb je aangemaakt:\n{{freeUsage}} van de {{freeLimit}} Free Spaces\n{{plusUsage}} van de {{plusLimit}} Plus Spaces\n{{premiumUsage}} van de {{premiumLimit}} Premium Spaces",
-        "virtualContributorsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Virtuele Bijdragers in je account aangemaakt.",
+        "virtualContributorsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Virtual Contributors in je account aangemaakt.",
         "innovationPacksTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare Template Packs in je account aangemaakt.",
         "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
       },

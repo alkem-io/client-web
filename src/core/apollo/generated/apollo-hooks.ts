@@ -15037,54 +15037,6 @@ export type UserSelectorUserDetailsQueryResult = Apollo.QueryResult<
 export function refetchUserSelectorUserDetailsQuery(variables: SchemaTypes.UserSelectorUserDetailsQueryVariables) {
   return { query: UserSelectorUserDetailsDocument, variables: variables };
 }
-export const CreateUserNewRegistrationDocument = gql`
-    mutation createUserNewRegistration($userData: CreateUserInput!) {
-  createUser(userData: $userData) {
-    id
-  }
-}
-    `;
-export type CreateUserNewRegistrationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateUserNewRegistrationMutation,
-  SchemaTypes.CreateUserNewRegistrationMutationVariables
->;
-
-/**
- * __useCreateUserNewRegistrationMutation__
- *
- * To run a mutation, you first call `useCreateUserNewRegistrationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateUserNewRegistrationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createUserNewRegistrationMutation, { data, loading, error }] = useCreateUserNewRegistrationMutation({
- *   variables: {
- *      userData: // value for 'userData'
- *   },
- * });
- */
-export function useCreateUserNewRegistrationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateUserNewRegistrationMutation,
-    SchemaTypes.CreateUserNewRegistrationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateUserNewRegistrationMutation,
-    SchemaTypes.CreateUserNewRegistrationMutationVariables
-  >(CreateUserNewRegistrationDocument, options);
-}
-export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
-export type CreateUserNewRegistrationMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
-export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateUserNewRegistrationMutation,
-  SchemaTypes.CreateUserNewRegistrationMutationVariables
->;
 export const DeleteUserDocument = gql`
     mutation deleteUser($input: DeleteUserInput!) {
   deleteUser(deleteData: $input) {

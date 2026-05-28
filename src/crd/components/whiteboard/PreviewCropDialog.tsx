@@ -169,7 +169,13 @@ export function PreviewCropDialog({
         if (!isOpen) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-2xl p-0" closeLabel={t('preview.crop.cancel')}>
+      {/* `z-[70]` (content + overlay): opened on top of the whiteboard editor shell (`z-[60]`),
+          so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
+      <DialogContent
+        className="z-[70] sm:max-w-2xl p-0"
+        overlayClassName="z-[70]"
+        closeLabel={t('preview.crop.cancel')}
+      >
         <DialogHeader className="px-6 pt-6">
           <DialogTitle>{title ?? t('preview.modes.CUSTOM.title')}</DialogTitle>
         </DialogHeader>

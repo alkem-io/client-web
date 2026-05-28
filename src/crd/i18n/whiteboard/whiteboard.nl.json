@@ -29,6 +29,10 @@
     "restart": "Samenwerking herstarten",
     "guestContributionsWarning": "Gastbijdragen zijn ingeschakeld",
     "closeWhiteboard": "Whiteboard sluiten",
+    "saveStatus": {
+      "label": "Opslagstatus",
+      "close": "Sluiten"
+    },
     "loadingWhiteboard": "Whiteboard laden",
     "untitled": "Whiteboard",
     "unsavedChanges": {
@@ -55,6 +59,11 @@
         "generic": "Je kunt dit whiteboard niet bewerken om een van de volgende redenen:\n\n- Je bent 2 uur of langer inactief\n- Je bent geen lid van de space\n- Deze space staat slechts één whiteboard editor tegelijk toe\n- Deze space staat meer gelijktijdige editors toe, maar het maximum aantal deelnemers is bereikt"
       }
     }
+  },
+  "disconnected": {
+    "reconnect": "Opnieuw verbinden",
+    "countdown": "({{seconds}}s)",
+    "close": "Sluiten"
   },
   "preview": {
     "settings": {
