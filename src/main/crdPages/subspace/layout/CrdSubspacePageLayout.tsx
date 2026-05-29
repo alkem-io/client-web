@@ -32,9 +32,9 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
-import { useSpaceWidthPreference } from '../../space/layout/useSpaceWidthPreference';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
@@ -73,7 +73,7 @@ export default function CrdSubspacePageLayout() {
     templatesSetId: data.templatesSetId,
     defaultTemplateId: data.defaultSubspaceTemplateId,
   });
-  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(data.subspaceId);
+  const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
