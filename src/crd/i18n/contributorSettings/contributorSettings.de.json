@@ -629,7 +629,6 @@
         "innovationHubsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren eigenen Startseiten in deinem Konto erstellt."
       },
       "kebabAriaLabel": "Weitere Aktionen",
-      "emptySlot": "Leerer Platz",
       "createNewSpace": {
         "ariaLabel": "Neuen Space erstellen",
         "heading": "Neuen Space erstellen",
@@ -639,14 +638,27 @@
         "ariaLabel": "Neuen Mitwirkenden erstellen",
         "heading": "Neuen Mitwirkenden erstellen"
       },
-      "customHomepages": {
-        "emptyHeading": "Keine eigenen Startseiten",
-        "emptyDescription": "Erstelle eine personalisierte Landingpage für dein Konto.",
-        "createCta": "Startseite erstellen",
-        "capacity": "Kapazität: {{usage}}/{{limit}} genutzt"
+      "createNewPack": {
+        "ariaLabel": "Neues Pack erstellen",
+        "heading": "Neues Pack erstellen"
+      },
+      "createNewHub": {
+        "ariaLabel": "Neue eigene Startseite erstellen",
+        "heading": "Neue Startseite erstellen"
       },
       "deleteSuccess": "Ressource gelöscht",
-      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen"
+      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
+      "noEntitlement": {
+        "title": "Kapazität erreicht",
+        "description": {
+          "spaces": "Du hast die Kapazität für Spaces erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "virtualContributors": "Du hast die Kapazität für Virtuelle Mitwirkende erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationPacks": "Du hast die Kapazität für Template Packs erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationHubs": "Du hast die Kapazität für eigene Startseiten erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern."
+        },
+        "contactCta": "Kontakt aufnehmen",
+        "cancel": "Abbrechen"
+      }
     }
   }
 }
