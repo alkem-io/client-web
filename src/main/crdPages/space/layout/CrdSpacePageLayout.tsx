@@ -43,11 +43,11 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
-import { useSpaceWidthPreference } from './useSpaceWidthPreference';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -55,7 +55,7 @@ export default function CrdSpacePageLayout() {
   const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
   const { isSmallScreen } = useScreenSize();
-  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(spaceId);
+  const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
