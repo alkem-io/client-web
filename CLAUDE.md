@@ -1,5 +1,11 @@
 # CLAUDE.md
 
+> **Workspace context.** This repo is part of the Alkemio polyrepo at
+> [alkem-io/agents-hq](https://github.com/alkem-io/agents-hq).
+> Cross-repo (vertical) feature specs live there under `specs/NNN-*/`. When
+> working on a `feat/NNN-...` branch in this repo, the matching workspace
+> spec is the single source of truth.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
@@ -38,7 +44,7 @@ pnpm test
 # Test with coverage
 pnpm test:coverage
 
-# GraphQL codegen (requires running backend at localhost:4000/graphql)
+# GraphQL codegen (requires running backend at localhost:3000/graphql)
 pnpm codegen
 
 # Format code
@@ -147,7 +153,7 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
-2. Run `pnpm codegen` (requires backend running at `localhost:4000/graphql`)
+2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
@@ -369,9 +375,11 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 102-crd-innovation-hub: Added TypeScript 5.x, React 19 with React Compiler enabled (no manual `useMemo`/`useCallback`/`React.memo`). + shadcn/ui + Tailwind CSS v4 + Radix UI (existing, via `@/crd/primitives/*`); `class-variance-authority`, `lucide-react`, `react-i18next` (all existing). Apollo Client + generated hooks (`useInnovationHubByIdQuery`, `useInnovationHubQuery`, `useInnovationHubSettingsQuery`, `useUpdateInnovationHubMutation`, `useUploadVisualMutation` — all already generated; the `InnovationHubHomeInnovationHub` fragment is extended with `spaceListFilter { id }` so `pnpm codegen` MUST be run once and the regenerated `apollo-hooks.ts` / `graphql-schema.ts` committed in this PR). `@dnd-kit/core` + `@dnd-kit/sortable` (existing, used by the legacy Spaces field — reused for CRD drag-reorder). `date-fns` only for any date formatting (no `dayjs` in CRD/crdPages layers). No new runtime dependencies.
+- 101-crd-auth-pages: Added TypeScript 5.x, React 19 (with React Compiler), Node 24.14.0 (Volta-pinned)
 - 098-crd-templates: Added TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`).
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, react-i18next, react-router-dom (only the integration layer touches it), date-fns (CRD/crdPages date layer) — all existing; **no new runtime dependencies**. Whiteboard editing inside template forms reuses the existing CRD whiteboard editor (which itself wraps the Excalidraw stack already in `package.json`). (098-crd-templates)
-- localStorage (`alkemio-crd-enabled`) for the CRD toggle (existing). GraphQL data layer unchanged. (098-crd-templates)
+- TypeScript 5.x, React 19 with React Compiler enabled (no manual `useMemo`/`useCallback`/`React.memo`). + shadcn/ui + Tailwind CSS v4 + Radix UI (existing, via `@/crd/primitives/*`); `class-variance-authority`, `lucide-react`, `react-i18next` (all existing). Apollo Client + generated hooks (`useInnovationHubByIdQuery`, `useInnovationHubQuery`, `useInnovationHubSettingsQuery`, `useUpdateInnovationHubMutation`, `useUploadVisualMutation` — all already generated; the `InnovationHubHomeInnovationHub` fragment is extended with `spaceListFilter { id }` so `pnpm codegen` MUST be run once and the regenerated `apollo-hooks.ts` / `graphql-schema.ts` committed in this PR). `@dnd-kit/core` + `@dnd-kit/sortable` (existing, used by the legacy Spaces field — reused for CRD drag-reorder). `date-fns` only for any date formatting (no `dayjs` in CRD/crdPages layers). No new runtime dependencies. (102-crd-innovation-hub)
+- N/A — frontend SPA. Server-side persistence via existing `updateInnovationHub` mutation and `uploadVisual` mutation. Client-side persistence limited to the existing `localStorage('alkemio-design-version')` mirror for the design-version toggle (unchanged). (102-crd-innovation-hub)

@@ -1,0 +1,139 @@
+{
+  "home": {
+    "settingsAria": "Hub-instellingen",
+    "expandWidth": "Uitvouwen naar volledige breedte",
+    "collapseWidth": "Inklappen naar standaardbreedte",
+    "spacesSection": {
+      "title": "{{hubName}} Spaces",
+      "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd."
+    },
+    "allSpacesCta": "Bekijk alle Spaces op Alkemio"
+  },
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
+  "settings": {
+    "tabs": {
+      "about": "Over",
+      "spaces": "Spaces",
+      "navAria": "Instellingen-secties"
+    },
+    "header": {
+      "expandWidth": "Uitvouwen naar volledige breedte",
+      "collapseWidth": "Inklappen naar standaardbreedte"
+    },
+    "guard": {
+      "redirecting": "Doorverwijzen…"
+    },
+    "about": {
+      "subdomain": {
+        "label": "Subdomein",
+        "placeholder": "bijv. vng",
+        "readOnlyHelp": "Het subdomein wordt bij aanmaak vastgelegd en kan niet worden gewijzigd.",
+        "errors": {
+          "required": "Subdomein is verplicht.",
+          "invalidFormat": "Gebruik alleen kleine letters, cijfers en koppeltekens.",
+          "tooLong": "Moet 3 tot 25 tekens lang zijn."
+        }
+      },
+      "name": {
+        "label": "Naam",
+        "placeholder": "bijv. VNG Innovation Hub",
+        "errors": {
+          "required": "Naam is verplicht.",
+          "tooLong": "Moet tussen 3 en 128 tekens zijn."
+        }
+      },
+      "tagline": {
+        "label": "Tagline",
+        "placeholder": "Een korte, pakkende zin",
+        "errors": {
+          "tooLong": "Maximaal 512 tekens."
+        }
+      },
+      "description": {
+        "label": "Beschrijving",
+        "errors": {
+          "required": "Beschrijving is verplicht.",
+          "tooLong": "Maximaal 8000 tekens."
+        }
+      },
+      "tags": {
+        "label": "Tags",
+        "placeholder": "Typ een tag en druk op Enter",
+        "emptyHelp": "Standaard"
+      },
+      "banner": {
+        "label": "Banner",
+        "change": "Banner wijzigen",
+        "uploading": "Uploaden…",
+        "helperText": "Wordt bovenaan de Innovation Hub-pagina weergegeven.",
+        "errors": {
+          "uploadFailed": "Banner uploaden mislukt."
+        },
+        "crop": {
+          "title": "Banner bijsnijden",
+          "description": "Snijd de afbeelding bij om binnen de bannerafmetingen te passen, en voeg een korte beschrijving toe voor toegankelijkheid.",
+          "save": "Banner opslaan",
+          "saving": "Opslaan…",
+          "cancel": "Annuleren",
+          "altLabel": "Alt-tekst",
+          "altPlaceholder": "Beschrijf de afbeelding voor schermlezers"
+        }
+      },
+      "save": {
+        "save": "Opslaan",
+        "saving": "Opslaan…",
+        "saved": "Opgeslagen",
+        "errorPrefix": "Opslaan mislukt."
+      }
+    },
+    "spaces": {
+      "title": "Spaces",
+      "subtitle": "Beheer welke Spaces op de Innovation Hub-startpagina verschijnen. Sleep om de volgorde te wijzigen.",
+      "columns": {
+        "name": "Naam",
+        "visibility": "Zichtbaarheid",
+        "host": "Host-account",
+        "actions": "Acties"
+      },
+      "visibility": {
+        "active": "Actief",
+        "demo": "Demo",
+        "inactive": "Inactief",
+        "archived": "Gearchiveerd",
+        "unknown": "Onbekend"
+      },
+      "actions": {
+        "add": "Space toevoegen",
+        "remove": "Verwijderen"
+      },
+      "removeAria": "{{name}} uit deze hub verwijderen",
+      "dragHandle": "Sleep om te herordenen",
+      "empty": "Er zijn nog geen Spaces toegevoegd. Gebruik 'Space toevoegen' om er een toe te voegen.",
+      "confirmRemove": {
+        "title": "Space verwijderen?",
+        "body": "„{{name}}” uit deze Innovation Hub verwijderen? De Space zelf wordt niet verwijderd; alleen niet meer op de hub-startpagina getoond.",
+        "confirm": "Verwijderen",
+        "cancel": "Annuleren"
+      },
+      "toast": {
+        "added": "Space toegevoegd.",
+        "removed": "Space verwijderd.",
+        "reordered": "Volgorde bijgewerkt.",
+        "error": "Actie mislukt."
+      },
+      "addDialog": {
+        "title": "Space toevoegen via URL",
+        "description": "Plak de volledige URL van een Alkemio Space om deze aan de hub toe te voegen.",
+        "placeholder": "https://alkem.io/welcome-space",
+        "submit": "Toevoegen",
+        "cancel": "Annuleren",
+        "validating": "URL valideren…",
+        "invalid": "We konden geen Space op die URL vinden.",
+        "duplicate": "Die Space staat al in deze hub.",
+        "submitError": "Er ging iets mis bij het toevoegen van de Space. Probeer het opnieuw."
+      }
+    }
+  }
+}
