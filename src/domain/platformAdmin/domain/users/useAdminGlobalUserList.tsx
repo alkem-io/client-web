@@ -12,7 +12,7 @@ import {
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import type { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import type { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
@@ -20,8 +20,8 @@ type Provided = {
   loading: boolean;
   deleting: boolean;
   error?: ApolloError;
-  userList: SearchableTableItem[];
-  onDelete: (item: SearchableTableItem) => void;
+  userList: SearchableListItem[];
+  onDelete: (item: SearchableListItem) => void;
   fetchMore: (itemsNumber?: number) => Promise<void>;
   hasMore: boolean | undefined;
   pageSize: number;
@@ -84,9 +84,10 @@ const useAdminGlobalUserList = ({
 
   const platformLicensePlans = usePlatformLicensingPlansQuery();
 
-  const userList = (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(
+  const userList = (data?.platformAdmin.users.users ?? []).map<SearchableListItem>(
     ({ id, profile, email, account }) => ({
       id,
+      email,
       accountId: account?.id,
       value: `${profile?.displayName ?? ''} (${email})`,
       url: buildSettingsUrl(profile?.url ?? ''),
@@ -104,7 +105,7 @@ const useAdminGlobalUserList = ({
     onCompleted: () => notify(t('pages.admin.users.notifications.user-removed'), 'success'),
   });
 
-  const onDelete = (item: SearchableTableItem) => {
+  const onDelete = (item: SearchableListItem) => {
     deleteUser({
       variables: {
         input: {

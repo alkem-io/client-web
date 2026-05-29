@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Receive a notification when a new community application is submitted",
           "communityNewMember": "Receive a notification when a new member joins the community",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
-          "communicationMessageReceived": "Receive a notification when a community message is received"
+          "communicationMessageReceived": "Receive a notification when a community message is received",
+          "userEmailChanged": "Receive a notification when the login email of a member of a space you administer is changed"
         },
         "user": {
           "commentReply": "Receive a notification when someone replies to my comment",
@@ -268,6 +269,7 @@
           "userProfileCreated": "Receive a notification when a new user profile is created",
           "userProfileRemoved": "Receive a notification when a user profile is removed",
           "userGlobalRoleChanged": "Receive a notification when a user's global role changes",
+          "userEmailChanged": "Receive a notification when a user's email address changes",
           "spaceCreated": "Receive a notification when a new space is created"
         },
         "organization": {
@@ -647,7 +649,6 @@
         "innovationHubsTooltip": "You have created {{usage}} out of your {{limit}} available Custom Homepages in your account."
       },
       "kebabAriaLabel": "More actions",
-      "emptySlot": "Empty Slot",
       "createNewSpace": {
         "ariaLabel": "Create new space",
         "heading": "Create New Space",
@@ -657,14 +658,27 @@
         "ariaLabel": "Create new contributor",
         "heading": "Create New Contributor"
       },
-      "customHomepages": {
-        "emptyHeading": "No Custom Homepages",
-        "emptyDescription": "Create a personalized landing page for your account.",
-        "createCta": "Create Homepage",
-        "capacity": "Capacity: {{usage}}/{{limit}} Used"
+      "createNewPack": {
+        "ariaLabel": "Create new pack",
+        "heading": "Create New Pack"
+      },
+      "createNewHub": {
+        "ariaLabel": "Create new custom homepage",
+        "heading": "Create New Homepage"
       },
       "deleteSuccess": "Resource deleted",
-      "deleteError": "Couldn't delete resource — try again"
+      "deleteError": "Couldn't delete resource — try again",
+      "noEntitlement": {
+        "title": "Capacity reached",
+        "description": {
+          "spaces": "You've reached your Spaces capacity. Contact the Alkemio team to request more.",
+          "virtualContributors": "You've reached your Virtual Contributors capacity. Contact the Alkemio team to request more.",
+          "innovationPacks": "You've reached your Template Packs capacity. Contact the Alkemio team to request more.",
+          "innovationHubs": "You've reached your Custom Homepages capacity. Contact the Alkemio team to request more."
+        },
+        "contactCta": "Contact us",
+        "cancel": "Cancel"
+      }
     }
   }
 }

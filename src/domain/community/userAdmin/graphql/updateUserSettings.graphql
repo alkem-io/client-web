@@ -109,6 +109,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
               inApp
               push
             }
+            userEmailChanged {
+              email
+              inApp
+              push
+            }
           }
         }
         platform {
@@ -134,6 +139,11 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
               push
             }
             userGlobalRoleChanged {
+              email
+              inApp
+              push
+            }
+            userEmailChanged {
               email
               inApp
               push

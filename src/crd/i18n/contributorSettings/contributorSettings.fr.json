@@ -251,7 +251,8 @@
           "communityApplicationReceived": "Recevoir une notification lorsqu'une nouvelle candidature à la communauté est soumise",
           "communityNewMember": "Recevoir une notification lorsqu'un nouveau membre rejoint la communauté",
           "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est créée sur un callout",
-          "communicationMessageReceived": "Recevoir une notification lorsqu'un message de la communauté est reçu"
+          "communicationMessageReceived": "Recevoir une notification lorsqu'un message de la communauté est reçu",
+          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée"
         },
         "user": {
           "commentReply": "Recevoir une notification lorsque quelqu'un répond à mon commentaire",
@@ -268,6 +269,7 @@
           "userProfileCreated": "Recevoir une notification lorsqu'un nouveau profil utilisateur est créé",
           "userProfileRemoved": "Recevoir une notification lorsqu'un profil utilisateur est supprimé",
           "userGlobalRoleChanged": "Recevoir une notification lorsque le rôle global d'un utilisateur change",
+          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail d'un utilisateur change",
           "spaceCreated": "Recevoir une notification lorsqu'un nouveau Space est créé"
         },
         "organization": {
@@ -628,7 +630,6 @@
         "innovationHubsTooltip": "Vous avez créé {{usage}} sur les {{limit}} pages d'accueil personnalisées disponibles dans votre compte."
       },
       "kebabAriaLabel": "Plus d'actions",
-      "emptySlot": "Emplacement vide",
       "createNewSpace": {
         "ariaLabel": "Créer un nouveau Space",
         "heading": "Créer un nouveau Space",
@@ -638,14 +639,27 @@
         "ariaLabel": "Créer un nouveau contributeur",
         "heading": "Créer un nouveau contributeur"
       },
-      "customHomepages": {
-        "emptyHeading": "Aucune page d'accueil personnalisée",
-        "emptyDescription": "Créez une page d'accueil personnalisée pour votre compte.",
-        "createCta": "Créer une page d'accueil",
-        "capacity": "Capacité : {{usage}}/{{limit}} utilisé"
+      "createNewPack": {
+        "ariaLabel": "Créer un nouveau pack",
+        "heading": "Créer un nouveau pack"
+      },
+      "createNewHub": {
+        "ariaLabel": "Créer une nouvelle page d'accueil personnalisée",
+        "heading": "Créer une nouvelle page d'accueil"
       },
       "deleteSuccess": "Ressource supprimée",
-      "deleteError": "Échec de la suppression — réessayez"
+      "deleteError": "Échec de la suppression — réessayez",
+      "noEntitlement": {
+        "title": "Capacité atteinte",
+        "description": {
+          "spaces": "Vous avez atteint la capacité des Spaces. Contactez l'équipe Alkemio pour en demander davantage.",
+          "virtualContributors": "Vous avez atteint la capacité des Contributeurs Virtuels. Contactez l'équipe Alkemio pour en demander davantage.",
+          "innovationPacks": "Vous avez atteint la capacité des Template Packs. Contactez l'équipe Alkemio pour en demander davantage.",
+          "innovationHubs": "Vous avez atteint la capacité des pages d'accueil personnalisées. Contactez l'équipe Alkemio pour en demander davantage."
+        },
+        "contactCta": "Nous contacter",
+        "cancel": "Annuler"
+      }
     }
   }
 }

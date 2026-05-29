@@ -33,6 +33,11 @@ fragment userSettingsFragment on UserSettings {
           inApp
           push
         }
+        userEmailChanged {
+          email
+          inApp
+          push
+        }
       }
       # non-admin settings
       forumDiscussionComment {
@@ -77,6 +82,11 @@ fragment userSettingsFragment on UserSettings {
           push
         }
         communicationMessageReceived {
+          email
+          inApp
+          push
+        }
+        userEmailChanged {
           email
           inApp
           push

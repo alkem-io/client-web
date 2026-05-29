@@ -41,6 +41,7 @@ query AccountResourcesInfo($accountId: UUID!) {
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {
