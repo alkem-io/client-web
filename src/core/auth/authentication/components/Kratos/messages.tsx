@@ -10,7 +10,12 @@ import type TranslationKey from '@/core/i18n/utils/TranslationKey';
  * See https://www.ory.sh/docs/kratos/concepts/ui-user-interface
  */
 
-const messages: Record<string, string> = {
+/**
+ * Kratos message id → Alkemio translation-key suffix (under `kratos.messages.*`).
+ * Exported so the CRD auth integration layer can re-localise flow messages with
+ * the same copy this MUI hook applies.
+ */
+export const kratosMessageTranslationKeys: Record<string, string> = {
   '1060001': 'successfully-recovered-password',
   '1060002': 'request-recover-password',
   '1060003': 'request-recover-password',
@@ -29,8 +34,8 @@ export const useKratosT = () => {
   const { i18n } = useTranslation();
 
   const kratosT = (kratosMessage: UiText): ReactNode | string => {
-    if (has(messages, kratosMessage.id)) {
-      const label = messages[kratosMessage.id];
+    if (has(kratosMessageTranslationKeys, kratosMessage.id)) {
+      const label = kratosMessageTranslationKeys[kratosMessage.id];
       const replacement = kratosMessage.context as Record<string, string | number>;
 
       // It's hard to convince t() that the constructed label is a valid translation key
@@ -38,7 +43,7 @@ export const useKratosT = () => {
         <Trans
           i18nKey={`kratos.messages.${label}` as unknown as TransProps<TranslationKey>['i18nKey']}
           components={{ strong: <strong />, li: <li />, br: <br /> }}
-          default={replacement}
+          values={replacement}
         />
       );
     }

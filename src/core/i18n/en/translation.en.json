@@ -3281,6 +3281,16 @@
           "header": {
             "title": "Current Selection",
             "subtitle": "The order below is the order in which the $t(common.spaces) will be visible on the $t(common.customHomepage)"
+          },
+          "addByUrl": {
+            "dialogTitle": "Add $t(common.space) by URL",
+            "urlInputLabel": "$t(common.space) URL",
+            "urlInputPlaceholder": "{{origin}}/space-name",
+            "submit": "Add",
+            "cancel": "$t(buttons.cancel)",
+            "validating": "URL is being validated…",
+            "invalidSpaceUrl": "URL is not a valid top level $t(common.space)",
+            "alreadyAdded": "This $t(common.space) is already added to this $t(common.innovation-hub)"
           }
         },
         "notifications": {
@@ -3942,7 +3952,8 @@
     },
     "verification": {
       "header": "Email verification",
-      "message": "To receive a new verification email, please enter your email address below."
+      "message": "To receive a new verification email, please enter your email address below.",
+      "resendEmail": "Resend verification email"
     },
     "verification-required": {
       "header": "Email verification is pending.",
@@ -4302,6 +4313,7 @@
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
+      "property-missing": "{{field}} is required.",
       "pick-password": "Pick a password for your $t(common.account)",
       "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
       "account-disabled": "This account is disabled."

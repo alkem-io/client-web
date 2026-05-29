@@ -1,0 +1,58 @@
+{
+  "tagline": "Veilige ruimtes voor samenwerking",
+  "continueWith": "of ga verder met",
+  "loading": "Laden",
+  "signIn": {
+    "title": "Inloggen",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "noAccount": "Geen account?",
+    "signUp": "Registreren"
+  },
+  "signUp": {
+    "title": "Registreren",
+    "haveAccount": "Heb je al een account?",
+    "signIn": "Inloggen",
+    "intro": "Alkemio is ontworpen ten dienste van de samenleving. Lees en accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy> voordat je verdergaat.",
+    "acceptTerms": "Ik accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
+    "openTerms": "Open de Gebruiksvoorwaarden in een nieuw tabblad",
+    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad"
+  },
+  "recovery": {
+    "title": "Wachtwoordherstel",
+    "intro": "Voer hieronder je e-mailadres in om een herstellink te ontvangen waarmee je je wachtwoord opnieuw kunt instellen."
+  },
+  "settings": {
+    "title": "Nieuw wachtwoord instellen"
+  },
+  "verification": {
+    "title": "Verifieer je e-mail",
+    "intro": "Controleer je inbox voor een e-mail met instructies om je adres te verifiëren."
+  },
+  "verificationReminder": {
+    "title": "Verifieer je e-mail",
+    "body": "De laatste stap is het verifiëren van je e-mailadres. Controleer je inbox voor een e-mail met instructies."
+  },
+  "error": {
+    "title": "Er is iets misgegaan",
+    "generic": "Er is een onverwachte fout opgetreden tijdens het authenticeren. Probeer opnieuw in te loggen.",
+    "code": "Foutcode: {{code}}",
+    "backToSignIn": "Terug naar inloggen"
+  },
+  "fields": {
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "showPassword": "Wachtwoord tonen",
+    "hidePassword": "Wachtwoord verbergen"
+  },
+  "providers": {
+    "connectWith": "Doorgaan met {{provider}}",
+    "fallback": "Andere aanbieder",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  }
+}

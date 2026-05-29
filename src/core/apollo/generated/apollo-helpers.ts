@@ -1657,6 +1657,7 @@ export type ForumKeySpecifier = (
   | 'discussionCategories'
   | 'discussions'
   | 'id'
+  | 'mentionableContributors'
   | 'updatedDate'
   | ForumKeySpecifier
 )[];
@@ -1667,6 +1668,7 @@ export type ForumFieldPolicy = {
   discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('enabled' | 'endpoint' | GeoKeySpecifier)[];

@@ -637,7 +637,6 @@
         "innovationHubsTooltip": "Has creado {{usage}} de las {{limit}} páginas de inicio personalizadas disponibles en tu cuenta."
       },
       "kebabAriaLabel": "Más acciones",
-      "emptySlot": "Espacio vacío",
       "createNewSpace": {
         "ariaLabel": "Crear nuevo espacio",
         "heading": "Crear nuevo espacio",
@@ -647,14 +646,27 @@
         "ariaLabel": "Crear nuevo contribuidor",
         "heading": "Crear nuevo contribuidor"
       },
-      "customHomepages": {
-        "emptyHeading": "Sin páginas de inicio personalizadas",
-        "emptyDescription": "Crea una página de aterrizaje personalizada para tu cuenta.",
-        "createCta": "Crear página de inicio",
-        "capacity": "Capacidad: {{usage}}/{{limit}} utilizada"
+      "createNewPack": {
+        "ariaLabel": "Crear nuevo pack",
+        "heading": "Crear nuevo pack"
+      },
+      "createNewHub": {
+        "ariaLabel": "Crear nueva página de inicio personalizada",
+        "heading": "Crear nueva página de inicio"
       },
       "deleteSuccess": "Recurso eliminado",
-      "deleteError": "No se pudo eliminar — inténtalo de nuevo"
+      "deleteError": "No se pudo eliminar — inténtalo de nuevo",
+      "noEntitlement": {
+        "title": "Capacidad alcanzada",
+        "description": {
+          "spaces": "Has alcanzado la capacidad de Spaces. Contacta al equipo de Alkemio para solicitar más.",
+          "virtualContributors": "Has alcanzado la capacidad de Contribuidores Virtuales. Contacta al equipo de Alkemio para solicitar más.",
+          "innovationPacks": "Has alcanzado la capacidad de Template Packs. Contacta al equipo de Alkemio para solicitar más.",
+          "innovationHubs": "Has alcanzado la capacidad de páginas de inicio personalizadas. Contacta al equipo de Alkemio para solicitar más."
+        },
+        "contactCta": "Contáctanos",
+        "cancel": "Cancelar"
+      }
     }
   }
 }

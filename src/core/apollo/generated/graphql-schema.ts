@@ -2960,6 +2960,8 @@ export type Forum = {
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** Capped list of Contributors (Users, Virtual Contributors, …) that may be @mentioned in the platform Forum. The Forum is platform-wide, so all platform Contributors of the requested types are returned. Use `filter` for typeahead search and `types` to restrict which Contributor kinds are returned. */
+  mentionableContributors: Array<ActorFull>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2970,6 +2972,12 @@ export type ForumDiscussionArgs = {
 
 export type ForumDiscussionsArgs = {
   queryData?: InputMaybe<DiscussionsInput>;
+};
+
+export type ForumMentionableContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  types?: InputMaybe<Array<ActorType>>;
 };
 
 export type ForumCreateDiscussionInput = {
@@ -9184,7 +9192,7 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
-  /** Update the user's design version. Any integer accepted (1 = current default design generation; 2 = new design, opt-in for now and expected to become the default in a subsequent release; 3+ reserved). */
+  /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
@@ -9689,7 +9697,7 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The design version this User has selected (1 = current default design generation; 2 = new design, opt-in for now and expected to become the default in a subsequent release; 3+ reserved for future generations). */
+  /** The design version this User has selected (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
@@ -11537,6 +11545,7 @@ export type AccountInformationQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -20094,6 +20103,181 @@ export type VcInteractionsDetailsFragment = {
   virtualContributorID: string;
 };
 
+export type ForumMentionableContributorsQueryVariables = Exact<{
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type ForumMentionableContributorsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    forum: {
+      __typename?: 'Forum';
+      id: string;
+      mentionableContributors: Array<
+        | {
+            __typename?: 'Account';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'Organization';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'RelayPaginatedSpace';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'Space';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'User';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+      >;
+    };
+  };
+};
+
 export type MentionableContributorsQueryVariables = Exact<{
   spaceID: Scalars['UUID']['input'];
   filter?: InputMaybe<ContributorFilterInput>;
@@ -21289,6 +21473,7 @@ export type AccountResourcesInfoQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -24428,6 +24613,7 @@ export type InnovationHubByIdQuery = {
           __typename?: 'InnovationHub';
           id: string;
           nameID: string;
+          subdomain: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24438,6 +24624,7 @@ export type InnovationHubByIdQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24581,6 +24768,7 @@ export type CreateInnovationHubMutation = {
   createInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24653,6 +24841,7 @@ export type UpdateInnovationHubMutation = {
   updateInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24714,29 +24903,6 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
-};
-
-export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubAvailableSpacesQuery = {
-  __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    visibility: SpaceVisibility;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      provider?:
-        | {
-            __typename?: 'Actor';
-            id: string;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-          }
-        | undefined;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
-    };
-  }>;
 };
 
 export type InnovationHubSpaceFragment = {
@@ -24804,6 +24970,7 @@ export type InnovationHubSettingsQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
+          nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
@@ -24872,6 +25039,7 @@ export type InnovationHubSettingsQuery = {
 export type InnovationHubSettingsFragment = {
   __typename?: 'InnovationHub';
   id: string;
+  nameID: string;
   subdomain: string;
   spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
@@ -24948,6 +25116,7 @@ export type InnovationHubQuery = {
           __typename?: 'InnovationHub';
           id: string;
           nameID: string;
+          subdomain: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24958,6 +25127,7 @@ export type InnovationHubQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24970,6 +25140,7 @@ export type InnovationHubHomeInnovationHubFragment = {
   __typename?: 'InnovationHub';
   id: string;
   nameID: string;
+  subdomain: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -24978,6 +25149,7 @@ export type InnovationHubHomeInnovationHubFragment = {
     description?: string | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
   };
+  spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

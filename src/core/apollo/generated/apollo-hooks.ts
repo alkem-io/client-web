@@ -1925,6 +1925,7 @@ export const InnovationHubSpaceFragmentDoc = gql`
 export const InnovationHubSettingsFragmentDoc = gql`
     fragment InnovationHubSettings on InnovationHub {
   id
+  nameID
   subdomain
   profile {
     ...InnovationHubProfile
@@ -1940,6 +1941,7 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
   nameID
+  subdomain
   profile {
     id
     displayName
@@ -1950,6 +1952,9 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
       uri
       alternativeText
     }
+  }
+  spaceListFilter {
+    id
   }
   authorization {
     myPrivileges
@@ -6543,6 +6548,7 @@ export const AccountInformationDocument = gql`
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
@@ -12258,6 +12264,106 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
+export const ForumMentionableContributorsDocument = gql`
+    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
+  platform {
+    id
+    forum {
+      id
+      mentionableContributors(filter: $filter, limit: $limit) {
+        id
+        type
+        nameID
+        profile {
+          id
+          url
+          displayName
+          location {
+            id
+            city
+            country
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}
+    ${VisualModelFragmentDoc}`;
+
+/**
+ * __useForumMentionableContributorsQuery__
+ *
+ * To run a query within a React component, call `useForumMentionableContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useForumMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useForumMentionableContributorsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useForumMentionableContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ForumMentionableContributorsQuery,
+        SchemaTypes.ForumMentionableContributorsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export type ForumMentionableContributorsQueryHookResult = ReturnType<typeof useForumMentionableContributorsQuery>;
+export type ForumMentionableContributorsLazyQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsLazyQuery
+>;
+export type ForumMentionableContributorsSuspenseQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsSuspenseQuery
+>;
+export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ForumMentionableContributorsQuery,
+  SchemaTypes.ForumMentionableContributorsQueryVariables
+>;
+export function refetchForumMentionableContributorsQuery(
+  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
+) {
+  return { query: ForumMentionableContributorsDocument, variables: variables };
+}
 export const MentionableContributorsDocument = gql`
     query MentionableContributors($spaceID: UUID!, $filter: ContributorFilterInput, $limit: Int = 30) {
   lookup {
@@ -13567,6 +13673,7 @@ export const AccountResourcesInfoDocument = gql`
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {
@@ -18042,83 +18149,6 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
   SchemaTypes.UpdateInnovationHubMutationVariables
 >;
-export const InnovationHubAvailableSpacesDocument = gql`
-    query InnovationHubAvailableSpaces {
-  spaces(filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}) {
-    ...InnovationHubSpace
-  }
-}
-    ${InnovationHubSpaceFragmentDoc}`;
-
-/**
- * __useInnovationHubAvailableSpacesQuery__
- *
- * To run a query within a React component, call `useInnovationHubAvailableSpacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationHubAvailableSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationHubAvailableSpacesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInnovationHubAvailableSpacesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.InnovationHubAvailableSpacesQuery,
-    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.InnovationHubAvailableSpacesQuery,
-    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-  >(InnovationHubAvailableSpacesDocument, options);
-}
-export function useInnovationHubAvailableSpacesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationHubAvailableSpacesQuery,
-    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InnovationHubAvailableSpacesQuery,
-    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-  >(InnovationHubAvailableSpacesDocument, options);
-}
-export function useInnovationHubAvailableSpacesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.InnovationHubAvailableSpacesQuery,
-        SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.InnovationHubAvailableSpacesQuery,
-    SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-  >(InnovationHubAvailableSpacesDocument, options);
-}
-export type InnovationHubAvailableSpacesQueryHookResult = ReturnType<typeof useInnovationHubAvailableSpacesQuery>;
-export type InnovationHubAvailableSpacesLazyQueryHookResult = ReturnType<
-  typeof useInnovationHubAvailableSpacesLazyQuery
->;
-export type InnovationHubAvailableSpacesSuspenseQueryHookResult = ReturnType<
-  typeof useInnovationHubAvailableSpacesSuspenseQuery
->;
-export type InnovationHubAvailableSpacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationHubAvailableSpacesQuery,
-  SchemaTypes.InnovationHubAvailableSpacesQueryVariables
->;
-export function refetchInnovationHubAvailableSpacesQuery(
-  variables?: SchemaTypes.InnovationHubAvailableSpacesQueryVariables
-) {
-  return { query: InnovationHubAvailableSpacesDocument, variables: variables };
-}
 export const InnovationHubSettingsDocument = gql`
     query InnovationHubSettings($innovationHubId: UUID!) {
   platform {
