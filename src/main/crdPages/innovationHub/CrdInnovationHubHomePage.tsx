@@ -8,7 +8,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
-import { useHubWidthPreference } from './hooks/useHubWidthPreference';
+import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { useInnovationHubHomeData } from './hooks/useInnovationHubHomeData';
 
 type CrdInnovationHubHomePageProps = {
@@ -56,7 +56,7 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
     : ({ kind: 'byId', id: innovationHubId ?? '' } as const);
 
   const { data, loading, hub } = useInnovationHubHomeData(input);
-  const { wide: fullWidth, toggle: toggleFullWidth } = useHubWidthPreference(hub?.id);
+  const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
   useRedirectToHubSubdomain(hub?.subdomain, input.kind === 'byId', !loading && !resolverLoading);
 
   // Top-bar breadcrumb: single `[PanelsTopLeft] HubName` chip, mirroring how
