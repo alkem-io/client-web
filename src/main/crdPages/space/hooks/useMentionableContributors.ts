@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useForumMentionableContributorsLazyQuery,
+  useMentionableContributorsLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { CrdMentionSearch, CrdMentionSuggestion } from '@/crd/components/comment/types';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -31,9 +34,14 @@ const hasExcessiveSpaces = (searchTerm: string) => searchTerm.trim().split(' ').
  * The Space ID is taken from the innermost available Space context (subspace
  * first, then space). The server derives the visibility-aware Member scope
  * from that ID alone — no role-set / parent-space lookup happens here.
+ *
+ * Outside any Space (e.g. the platform Forum), no Space ID is available; the
+ * hook falls back to the Forum-level `mentionableContributors` field, which is
+ * platform-wide and returns all platform Contributors of the default types.
  */
 export function useMentionableContributors(): CrdMentionSearch {
-  const [queryUsers] = useMentionableContributorsLazyQuery();
+  const [querySpaceUsers] = useMentionableContributorsLazyQuery();
+  const [queryForumUsers] = useForumMentionableContributorsLazyQuery();
   const { space } = useSpace();
   const { subspace } = useSubSpace();
 
@@ -61,7 +69,6 @@ export function useMentionableContributors(): CrdMentionSearch {
 
     if (
       !search ||
-      !spaceID ||
       emptyQueries.some(query => search.startsWith(query)) ||
       hasExcessiveSpaces(search) ||
       MENTION_INVALID_CHARS_REGEXP.test(search) ||
@@ -87,19 +94,25 @@ export function useMentionableContributors(): CrdMentionSearch {
         const resolvers = pendingResolversRef.current.splice(0);
 
         try {
-          const { data } = await queryUsers({
-            variables: {
-              spaceID,
-              filter: { displayName: search },
-              limit: MAX_USERS_LISTED,
-            },
-            fetchPolicy: 'network-only',
-            errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
-          });
+          const contributors = spaceID
+            ? (
+                await querySpaceUsers({
+                  variables: { spaceID, filter: { displayName: search }, limit: MAX_USERS_LISTED },
+                  fetchPolicy: 'network-only',
+                  errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
+                })
+              ).data?.lookup?.space?.mentionableContributors
+            : (
+                await queryForumUsers({
+                  variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED },
+                  fetchPolicy: 'network-only',
+                  errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
+                })
+              ).data?.platform?.forum?.mentionableContributors;
 
           const suggestions: CrdMentionSuggestion[] = [];
 
-          data?.lookup?.space?.mentionableContributors?.forEach(contributor => {
+          contributors?.forEach(contributor => {
             if (!contributor.profile?.url) return;
             const isVc = contributor.type === ActorType.VirtualContributor;
             suggestions.push({
