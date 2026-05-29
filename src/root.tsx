@@ -17,6 +17,7 @@ import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesign
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
@@ -28,6 +29,7 @@ import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorCompo
 import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
@@ -54,6 +56,13 @@ function NotificationsGate() {
       {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
     </Suspense>
   );
+}
+
+/** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
+function CrdGuidanceChatGate() {
+  const crdEnabled = useCrdEnabled();
+  if (!crdEnabled) return null; // MUI layouts already render PlatformHelpButton themselves
+  return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
 }
 
 function DesignVersionSyncMount() {
@@ -167,6 +176,7 @@ const Root: FC = () => {
                                         <DesignVersionUpgradePromptMount />
                                         <ScrollToTop />
                                         <NotificationsGate />
+                                        <CrdGuidanceChatGate />
                                         <InAppNotificationCountSubscriber />
                                         <Suspense fallback={null}>
                                           <UserMessagingDialog />
