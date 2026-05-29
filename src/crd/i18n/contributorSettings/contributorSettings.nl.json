@@ -629,24 +629,36 @@
         "innovationHubsTooltip": "Je hebt {{usage}} van je {{limit}} beschikbare aangepaste startpagina's in je account aangemaakt."
       },
       "kebabAriaLabel": "Meer acties",
-      "emptySlot": "Lege plek",
       "createNewSpace": {
-        "ariaLabel": "Nieuwe space aanmaken",
+        "ariaLabel": "Nieuwe Space aanmaken",
         "heading": "Nieuwe Space aanmaken",
         "description": "Lanceer een nieuwe samenwerkingsomgeving voor je team."
       },
       "createNewVc": {
-        "ariaLabel": "Nieuwe bijdrager aanmaken",
-        "heading": "Nieuwe bijdrager aanmaken"
+        "ariaLabel": "Nieuwe Virtual Contributor aanmaken",
+        "heading": "Nieuwe Virtual Contributor aanmaken"
       },
-      "customHomepages": {
-        "emptyHeading": "Geen aangepaste startpagina's",
-        "emptyDescription": "Maak een gepersonaliseerde landingspagina voor je account.",
-        "createCta": "Startpagina aanmaken",
-        "capacity": "Capaciteit: {{usage}}/{{limit}} gebruikt"
+      "createNewPack": {
+        "ariaLabel": "Nieuwe Template Pack aanmaken",
+        "heading": "Nieuwe Template Pack aanmaken"
+      },
+      "createNewHub": {
+        "ariaLabel": "Nieuwe aangepaste startpagina aanmaken",
+        "heading": "Nieuwe startpagina aanmaken"
       },
       "deleteSuccess": "Resource verwijderd",
-      "deleteError": "Verwijderen mislukt — probeer opnieuw"
+      "deleteError": "Verwijderen mislukt — probeer opnieuw",
+      "noEntitlement": {
+        "title": "Capaciteit bereikt",
+        "description": {
+          "spaces": "Je hebt de capaciteit voor Spaces bereikt. Neem contact op met het Alkemio-team om meer aan te vragen.",
+          "virtualContributors": "Je hebt de capaciteit voor Virtual Contributors bereikt. Neem contact op met het Alkemio-team om meer aan te vragen.",
+          "innovationPacks": "Je hebt de capaciteit voor Template Packs bereikt. Neem contact op met het Alkemio-team om meer aan te vragen.",
+          "innovationHubs": "Je hebt de capaciteit voor aangepaste startpagina's bereikt. Neem contact op met het Alkemio-team om meer aan te vragen."
+        },
+        "contactCta": "Neem contact op",
+        "cancel": "Annuleren"
+      }
     }
   }
 }
