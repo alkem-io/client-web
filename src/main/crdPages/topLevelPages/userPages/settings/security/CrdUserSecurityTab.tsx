@@ -77,6 +77,19 @@ const CrdUserSecurityTab = () => {
     navigate(buildSettingsTabUrl(profileUrl, 'profile'), { replace: true });
   }, [predicateLoading, isOwner, profileUrl, navigate]);
 
+  // Mount the Kratos settings-flow and credential hooks only for owners.
+  // Both carry side effects (a Kratos Settings-flow init request, a GraphQL
+  // query); gating them behind the owner check keeps non-owners — including
+  // platform admins who pass the shell guard — from triggering those flows
+  // before the owner-only redirect above completes.
+  if (!isOwner) {
+    return <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} />;
+  }
+
+  return <OwnerSecurityTabContent />;
+};
+
+const OwnerSecurityTabContent = () => {
   const flowResult = useUserSecuritySettingsFlow();
 
   // Whether the account actually has a password credential is answered
@@ -85,14 +98,8 @@ const CrdUserSecurityTab = () => {
   // infer this from the presence of a `password` settings node, which Kratos
   // exposes config-dependently (e.g. offering first-time password set to
   // social-only accounts).
-  const { data: authData, loading: authMethodsLoading } = useUserSecurityAuthenticationMethodsQuery({
-    skip: !isOwner,
-  });
+  const { data: authData, loading: authMethodsLoading } = useUserSecurityAuthenticationMethodsQuery();
   const hasPasswordCredential = Boolean(authData?.me.user?.authentication?.methods.includes(AuthenticationType.Email));
-
-  if (!isOwner) {
-    return <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} />;
-  }
 
   const state: UserSecurityViewState =
     flowResult.kind === 'loading' || authMethodsLoading

@@ -13,9 +13,10 @@ type KratosConfirmPasswordFieldProps = {
   disabled?: boolean;
   autoComplete?: string;
   /**
-   * Sets the `name` attribute on the underlying input. Defaults to a
-   * client-only name (`password_confirm`) that Kratos ignores — the confirm
-   * value is never POSTed; this field is purely a UX guardrail.
+   * Optional `name` attribute for the underlying input. Left unset by
+   * default so the field is NOT serialized into the native form POST —
+   * the confirm value is purely a client-side UX guardrail and must never
+   * reach Kratos.
    */
   name?: string;
 };
@@ -36,7 +37,7 @@ export const KratosConfirmPasswordField: FC<KratosConfirmPasswordFieldProps> = (
   helperText,
   disabled,
   autoComplete = 'new-password',
-  name = 'password_confirm',
+  name,
 }) => {
   const { t } = useTranslation();
   const [obscured, setObscured] = useState(true);
