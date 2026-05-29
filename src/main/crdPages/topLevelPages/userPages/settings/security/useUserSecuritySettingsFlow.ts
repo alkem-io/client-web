@@ -5,7 +5,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 export type UserSecuritySettingsFlowResult =
   | { kind: 'loading' }
   | { kind: 'error'; error: Error }
-  | { kind: 'ready'; flow: SettingsFlow; hasPassword: boolean; hasWebauthn: boolean };
+  | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean };
 
 const hasWebauthnNode = (node: UiNode): boolean => {
   if (node.group === 'webauthn' || node.group === 'passkey') return true;
@@ -21,12 +21,6 @@ const hasWebauthnNode = (node: UiNode): boolean => {
   return false;
 };
 
-const hasPasswordNode = (node: UiNode): boolean => {
-  if (node.group !== 'password') return false;
-  const attrs = node.attributes;
-  return attrs.node_type === 'input' && attrs.name === 'password';
-};
-
 /**
  * Loader for the Kratos Settings flow that drives the User Security tab.
  *
@@ -40,6 +34,13 @@ const hasPasswordNode = (node: UiNode): boolean => {
  * The flow id query param drives Kratos's resume behaviour (e.g., after a
  * server-side redirect or self-service URL); when absent, Kratos auto-
  * provisions a fresh Settings flow.
+ *
+ * Note: whether the account actually *has* a password credential is NOT
+ * derived from the presence of a `password` node here — Kratos exposes that
+ * node whenever the password method is enabled (including offering first-time
+ * password set to social-only accounts), which is config-dependent. That gate
+ * is answered authoritatively by `User.authentication.methods` (EMAIL) in the
+ * consuming tab. This hook only reports the passkey method and the flow.
  */
 const useUserSecuritySettingsFlow = (): UserSecuritySettingsFlowResult => {
   const [searchParams] = useSearchParams();
@@ -55,7 +56,6 @@ const useUserSecuritySettingsFlow = (): UserSecuritySettingsFlowResult => {
   return {
     kind: 'ready',
     flow,
-    hasPassword: nodes.some(hasPasswordNode),
     hasWebauthn: nodes.some(hasWebauthnNode),
   };
 };

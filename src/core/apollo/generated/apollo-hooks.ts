@@ -29692,6 +29692,90 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const UserSecurityAuthenticationMethodsDocument = gql`
+    query UserSecurityAuthenticationMethods {
+  me {
+    user {
+      id
+      authentication {
+        methods
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserSecurityAuthenticationMethodsQuery__
+ *
+ * To run a query within a React component, call `useUserSecurityAuthenticationMethodsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSecurityAuthenticationMethodsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserSecurityAuthenticationMethodsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserSecurityAuthenticationMethodsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+    SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+    SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+  >(UserSecurityAuthenticationMethodsDocument, options);
+}
+export function useUserSecurityAuthenticationMethodsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+    SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+    SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+  >(UserSecurityAuthenticationMethodsDocument, options);
+}
+export function useUserSecurityAuthenticationMethodsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+        SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+    SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+  >(UserSecurityAuthenticationMethodsDocument, options);
+}
+export type UserSecurityAuthenticationMethodsQueryHookResult = ReturnType<
+  typeof useUserSecurityAuthenticationMethodsQuery
+>;
+export type UserSecurityAuthenticationMethodsLazyQueryHookResult = ReturnType<
+  typeof useUserSecurityAuthenticationMethodsLazyQuery
+>;
+export type UserSecurityAuthenticationMethodsSuspenseQueryHookResult = ReturnType<
+  typeof useUserSecurityAuthenticationMethodsSuspenseQuery
+>;
+export type UserSecurityAuthenticationMethodsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserSecurityAuthenticationMethodsQuery,
+  SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+>;
+export function refetchUserSecurityAuthenticationMethodsQuery(
+  variables?: SchemaTypes.UserSecurityAuthenticationMethodsQueryVariables
+) {
+  return { query: UserSecurityAuthenticationMethodsDocument, variables: variables };
+}
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
   resetConversationVc(input: $input) {

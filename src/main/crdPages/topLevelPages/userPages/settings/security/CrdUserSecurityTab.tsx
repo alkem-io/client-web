@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import type { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
 import KratosForm from '@/core/auth/authentication/components/Kratos/KratosForm';
 import KratosUI from '@/core/auth/authentication/components/KratosUI';
@@ -77,19 +79,30 @@ const CrdUserSecurityTab = () => {
 
   const flowResult = useUserSecuritySettingsFlow();
 
+  // Whether the account actually has a password credential is answered
+  // authoritatively by the server — `User.authentication.methods` includes
+  // EMAIL iff a Kratos password credential exists. We intentionally do NOT
+  // infer this from the presence of a `password` settings node, which Kratos
+  // exposes config-dependently (e.g. offering first-time password set to
+  // social-only accounts).
+  const { data: authData, loading: authMethodsLoading } = useUserSecurityAuthenticationMethodsQuery({
+    skip: !isOwner,
+  });
+  const hasPasswordCredential = Boolean(authData?.me.user?.authentication?.methods.includes(AuthenticationType.Email));
+
   if (!isOwner) {
     return <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} />;
   }
 
   const state: UserSecurityViewState =
-    flowResult.kind === 'loading'
+    flowResult.kind === 'loading' || authMethodsLoading
       ? { kind: 'loading' }
       : flowResult.kind === 'error'
         ? { kind: 'error' }
-        : { kind: 'ready', hasPassword: flowResult.hasPassword, hasWebauthn: flowResult.hasWebauthn };
+        : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
 
   const passwordForm =
-    flowResult.kind === 'ready' && flowResult.hasPassword ? (
+    flowResult.kind === 'ready' && hasPasswordCredential ? (
       <PasswordChangeForm flow={flowResult.flow} removedFields={PASSWORD_REMOVED_FIELDS} />
     ) : null;
 
