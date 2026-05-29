@@ -36,7 +36,7 @@ import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlk
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { useSpaceWidthPreference } from '../../space/layout/useSpaceWidthPreference';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
-import { CrdSubspaceAboutDialogConnector } from '../dialogs/CrdSubspaceAboutDialogConnector';
+import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
@@ -330,7 +330,7 @@ export default function CrdSubspacePageLayout() {
         onCreateSubspace={handleCreateSubspace}
       />
 
-      <CrdSubspaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
+      <CrdSubspaceAbout open={aboutOpen} onClose={() => setAboutOpen(false)} />
 
       {/* Share dialog — opened from the SubspaceHeader share icon. Mirrors the L0 wiring in
           CrdSpacePageLayout: URL + clipboard copy, plus a "Share on Alkemio" sub-view. */}
