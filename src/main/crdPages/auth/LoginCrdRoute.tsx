@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
@@ -7,6 +7,7 @@ import {
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
   AUTH_SIGN_UP_PATH,
+  OIDC_LOGIN_PATH,
   PARAM_NAME_RETURN_URL,
   STORAGE_KEY_RETURN_URL,
 } from '@/core/auth/authentication/constants/authentication.constants';
@@ -14,6 +15,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
 import LoginSuccessPage from '@/core/auth/authentication/pages/LoginSuccessPage';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -41,6 +43,36 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
   const translateDescriptor = useTranslateDescriptor();
+
+  // OIDC BFF entry (parity with the MUI `LoginPage`): when this page is reached
+  // without a Kratos flow id the user is starting a fresh sign-in — hand off to
+  // alkemio-server's OIDC login route so the request goes Hydra → consent →
+  // `/api/auth/oidc/callback`, which mints the `alkemio_session` BFF cookie.
+  // Rendering the Kratos form here instead would complete a standalone Kratos
+  // login that bypasses Hydra, leaving the server unable to see the user.
+  // When Kratos bounces back with `?flow=<id>` during the Hydra-initiated flow,
+  // render the form as normal (the flow id is opaque state Kratos owns).
+  const returnUrlFromParam = params.get(PARAM_NAME_RETURN_URL) ?? undefined;
+  const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const isOidcEntry = !flow;
+
+  useLayoutEffect(() => {
+    if (!isOidcEntry) return;
+    if (returnUrlFromParam) {
+      setReturnUrl(returnUrlFromParam);
+    }
+    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
+    // FR-017a — server-side validator requires a same-origin path-only value.
+    const returnTo = (() => {
+      try {
+        const u = new URL(raw, window.location.origin);
+        return u.origin === window.location.origin ? `${u.pathname}${u.search}${u.hash}` || '/' : '/';
+      } catch {
+        return raw.startsWith('/') ? raw : '/';
+      }
+    })();
+    window.location.replace(`${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+  }, [isOidcEntry, returnUrlFromParam]);
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
@@ -84,6 +116,22 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     return { ...base, messages };
   })();
+
+  // OIDC entry: a full-page redirect to the BFF login route is in flight (see
+  // the useLayoutEffect above). Show the card in its loading state rather than
+  // the interactive Kratos form so the user can't complete a bypassing login.
+  if (isOidcEntry) {
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={true}
+          signUpHref={AUTH_SIGN_UP_PATH}
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
 
   return (
     <AuthShellWrapper>
