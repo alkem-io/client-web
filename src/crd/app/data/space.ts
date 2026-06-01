@@ -846,12 +846,14 @@ export const MOCK_SIDEBAR = {
   ],
   virtualContributors: [
     {
+      id: 'vc-sustainability-advisor',
       name: 'Sustainability Advisor',
       description: 'AI assistant trained on sustainability frameworks and best practices.',
       avatarUrl: undefined,
       initials: 'SA',
     },
     {
+      id: 'vc-policy-researcher',
       name: 'Policy Researcher',
       description: 'Specialises in regulatory and policy analysis for urban environments.',
       avatarUrl: undefined,
