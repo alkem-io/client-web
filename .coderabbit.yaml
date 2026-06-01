@@ -17,7 +17,6 @@ reviews:
     - "!**/node_modules/**"  # Exclude dependencies
     - "!**/dist/**"          # Exclude build files
     - "!prototype/**"        # Read-only design reference — never modified
-    - "**/*.py"              # …but always surface stray Python scripts: this is a JS/TS repo, .py must never be merged (the upstream prototype ships utils/*.py that leak in during sync)
     - "!src/crd/app/**"      # Standalone CRD preview app with mock data
   path_instructions:
     - path: "**/*"

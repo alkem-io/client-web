@@ -1,4 +1,10 @@
-import { ActorType, LicenseEntitlementType, RoleName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  ActorType,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  RoleName,
+  SearchVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import type { MemberCardData } from '@/crd/components/space/SpaceMembers';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -76,6 +82,8 @@ export function useCrdSpaceCommunity() {
     callouts: calloutsSetProvided.callouts ?? [],
     calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
+    canReorderCallouts:
+      calloutsSetProvided.calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
     tabDescription: tabDescription ?? '',
     flowStateForNewCallouts,
     leadUsers,

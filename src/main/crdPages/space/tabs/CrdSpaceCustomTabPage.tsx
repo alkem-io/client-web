@@ -36,6 +36,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     calloutsSetId,
     classificationTagsets,
     canCreateCallout,
+    canReorderCallouts,
     tabDescription,
     flowStateForNewCallouts,
     loading,
@@ -136,7 +137,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         {(trimmedQuery || tagsFilter.length > 0) && visibleCallouts.length === 0 ? (
           <p className="text-body text-muted-foreground">{t('knowledge.noResults')}</p>
         ) : (
-          <CalloutListConnector callouts={visibleCallouts} calloutsSetId={calloutsSetId} loading={loading} />
+          <CalloutListConnector
+            callouts={visibleCallouts}
+            calloutsSetId={calloutsSetId}
+            canReorder={canReorderCallouts}
+            loading={loading}
+          />
         )}
       </div>
 

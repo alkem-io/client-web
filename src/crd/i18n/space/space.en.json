@@ -261,12 +261,7 @@
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
-    "clearTypeConfirm": {
-      "title": "Remove this content type?",
-      "description": "Once you save, the existing content will be deleted and you won't be able to attach a different type to this post. This action cannot be undone.",
-      "confirm": "Remove"
-    }
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
   },
   "contribution": {
     "edit": "Edit",
@@ -406,6 +401,7 @@
     "share": "Share",
     "sortContributions": "Sort Contributions",
     "saveAsTemplate": "Save as Template",
+    "saveAsTemplateUnsupported": "Saving documents as templates is not yet supported",
     "moveToTop": "Move to Top",
     "moveUp": "Move Up",
     "moveDown": "Move Down",
