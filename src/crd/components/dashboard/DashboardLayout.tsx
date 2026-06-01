@@ -86,7 +86,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
           <div className={cn('col-span-12', contentColumnClass())}>
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6">
               {/* Desktop sidebar */}
-              <nav aria-label="Dashboard navigation" className="hidden md:block">
+              <nav aria-label={t('sidebar.navigation')} className="hidden md:block">
                 {sidebar}
               </nav>
 
@@ -136,7 +136,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
             id="dashboard-mobile-drawer"
             role="dialog"
             aria-modal="true"
-            aria-label="Dashboard navigation"
+            aria-label={t('sidebar.navigation')}
             className={cn(
               'absolute inset-y-0 left-0 w-[280px] bg-background shadow-xl overflow-y-auto transition-transform duration-200 ease-out',
               visible ? 'translate-x-0' : '-translate-x-full'

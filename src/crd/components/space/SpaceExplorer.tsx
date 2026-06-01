@@ -62,6 +62,7 @@ export function SpaceExplorer({
   const [loadingMore, setLoadingMore] = useState(false);
 
   const gridCols = gridClassName ?? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
+  const cardsListClassName = cn('grid gap-6 list-none p-0 m-0', gridCols);
 
   // Client-side filters
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
@@ -234,7 +235,7 @@ export function SpaceExplorer({
                 <button
                   type="button"
                   onClick={() => setPrivacyFilter('all')}
-                  className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1"
+                  className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {privacyFilter === 'public' ? t('spaces.filterPublicOnly') : t('spaces.filterPrivateOnly')}
                   <X aria-hidden="true" className="size-2.5" />
@@ -245,7 +246,7 @@ export function SpaceExplorer({
                 <button
                   type="button"
                   onClick={() => setTypeFilter('all')}
-                  className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1"
+                  className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {typeFilter === 'spaces' ? t('spaces.filterSpacesOnly') : t('spaces.filterSubspacesOnly')}
                   <X aria-hidden="true" className="size-2.5" />
@@ -282,7 +283,9 @@ export function SpaceExplorer({
               ))}
             </output>
           ) : displayedSpaces.length > 0 ? (
-            <ul className={cn('grid gap-6 list-none p-0 m-0', gridCols)} aria-label={t('spaces.spacesLabel')}>
+            // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+            // biome-ignore lint/a11y/useSemanticElements: role="list" restores list semantics after the list-style reset
+            <ul role="list" className={cardsListClassName} aria-label={t('spaces.spacesLabel')}>
               {displayedSpaces.map(space => (
                 <li key={space.id}>
                   <SpaceCard space={space} onParentClick={onParentClick} />
