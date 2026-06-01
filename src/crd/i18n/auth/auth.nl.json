@@ -19,7 +19,8 @@
   },
   "recovery": {
     "title": "Wachtwoordherstel",
-    "intro": "Voer hieronder je e-mailadres in om een herstellink te ontvangen waarmee je je wachtwoord opnieuw kunt instellen."
+    "intro": "Voer hieronder je e-mailadres in om een herstellink te ontvangen waarmee je je wachtwoord opnieuw kunt instellen.",
+    "resendNotice": "<strong>Geen e-mail ontvangen?</strong><br/>Controleer je spammap, bevestig dat het onderstaande adres klopt en vraag daarna een nieuwe herstel-e-mail aan zodra de timer is afgelopen."
   },
   "settings": {
     "title": "Nieuw wachtwoord instellen"
@@ -44,7 +45,8 @@
     "firstName": "Voornaam",
     "lastName": "Achternaam",
     "showPassword": "Wachtwoord tonen",
-    "hidePassword": "Wachtwoord verbergen"
+    "hidePassword": "Wachtwoord verbergen",
+    "invalidEmail": "Voer een geldig e-mailadres in."
   },
   "providers": {
     "connectWith": "Doorgaan met {{provider}}",

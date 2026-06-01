@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
+import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -15,6 +17,13 @@ import { CrdEmailVerificationRequiredPage } from './CrdEmailVerificationRequired
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger } from './passkeyTrigger';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
+
+// Kratos returns this when registration is attempted with an email that already
+// has an account (e.g. one created via a social/OIDC login). Mirroring the MUI
+// `RegistrationPage`, we bounce the user to the login page — where they can sign
+// in with the existing method or reset their password — instead of stranding
+// them on a registration form they can never complete.
+const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 
 /**
  * Shared sign-up page logic. Drives the Kratos registration flow and persists
@@ -51,6 +60,14 @@ function CrdSignUpPage() {
 
   const baseDescriptor = registrationFlow ? flowDescriptorAdapter(registrationFlow, 'registration') : undefined;
   const descriptor = baseDescriptor ? translateDescriptor(baseDescriptor) : undefined;
+
+  // Account already exists for this email → redirect to login, carrying the
+  // Kratos messages so the login page can show the "this email is already
+  // associated with an account" notice (parity with MUI `RegistrationPage`).
+  if (registrationFlow?.ui.messages?.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID)) {
+    const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow.ui.messages };
+    return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace={true} />;
+  }
 
   return (
     <AuthShellWrapper>

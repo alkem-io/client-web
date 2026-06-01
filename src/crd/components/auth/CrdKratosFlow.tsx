@@ -1,5 +1,5 @@
 import { Info, KeyRound } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { type FormEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
   KratosFlowDescriptor,
@@ -22,6 +22,11 @@ export type CrdKratosFlowProps = {
   children?: ReactNode;
   submitDisabled?: boolean;
   disableInputs?: boolean;
+  /** Overrides the submit button label (e.g. the recovery resend cooldown countdown). */
+  submitLabelOverride?: (label: string) => ReactNode;
+  /** Fired on a native form submit, after the HTML5 validity gate passes. Consumers
+   *  use it for side effects like starting the recovery resend cooldown. */
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   /** Fired when an OIDC provider button is activated (for analytics). */
   onProviderClick?: (providerKey: string) => void;
   /** Fired when a passkey button is activated — the consumer runs the WebAuthn ceremony. */
@@ -43,6 +48,8 @@ export function CrdKratosFlow({
   children,
   submitDisabled,
   disableInputs,
+  submitLabelOverride,
+  onSubmit,
   onProviderClick,
   onPasskeyTrigger,
 }: CrdKratosFlowProps) {
@@ -77,24 +84,56 @@ export function CrdKratosFlow({
     return node.label;
   };
 
-  const renderInput = (node: KratosTextInputNode) => (
-    <FloatingField
-      key={node.name}
-      name={node.name}
-      label={fieldLabel(node)}
-      type={node.type}
-      defaultValue={node.value || undefined}
-      required={node.required}
-      disabled={disableInputs || node.disabled}
-      autoComplete={node.autocomplete}
-      errorMessage={node.messages.find(message => message.type === 'error')?.text}
-      showPasswordLabel={node.type === 'password' ? t('fields.showPassword') : undefined}
-      hidePasswordLabel={node.type === 'password' ? t('fields.hidePassword') : undefined}
-      onValueChange={node.required ? trackValue(node.name) : undefined}
-    />
-  );
+  const renderInput = (node: KratosTextInputNode) => {
+    // Treat a field as email if EITHER Kratos says so (`node.type === 'email'`)
+    // OR its name is a known email field (`identifier`, `password_identifier`,
+    // `traits.email`). The OR matters because Kratos sometimes ships these
+    // fields as `type="text"`, so a name-only or type-only check would miss
+    // the format validation in those flows.
+    const isEmailField = node.type === 'email' || EMAIL_FIELD_NAMES.has(node.name);
+    return (
+      <FloatingField
+        key={node.name}
+        name={node.name}
+        label={fieldLabel(node)}
+        // Force the input to `type="email"` so both the inline blur check and
+        // the on-submit `checkValidity` catch a malformed address — even when
+        // Kratos reports the field as plain text.
+        type={isEmailField ? 'email' : node.type}
+        defaultValue={node.value || undefined}
+        required={node.required}
+        disabled={disableInputs || node.disabled}
+        autoComplete={node.autocomplete}
+        errorMessage={node.messages.find(message => message.type === 'error')?.text}
+        showPasswordLabel={node.type === 'password' ? t('fields.showPassword') : undefined}
+        hidePasswordLabel={node.type === 'password' ? t('fields.hidePassword') : undefined}
+        invalidEmailMessage={isEmailField ? t('fields.invalidEmail') : undefined}
+        onValueChange={node.required ? trackValue(node.name) : undefined}
+      />
+    );
+  };
 
   const hasAlternativeMethods = groups.passkey.length > 0 || groups.oidc.length > 0;
+
+  // The form is `noValidate` so the OIDC submit buttons aren't blocked by native
+  // required-field validation (an empty/invalid email must not stop someone
+  // starting a social login). But the primary submits — Sign in, the
+  // registration "Next", the recovery request — still run HTML5 validation here,
+  // which is what catches a malformed email (e.g. "zamunda") client-side before
+  // the POST instead of letting it bounce off Kratos. Everything except the OIDC
+  // provider button (`name="provider"`) and the "Back" button (`value` ends in
+  // `:back`) is gated; passkey buttons are `type="button"` and never reach this.
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
+    const isProviderSubmit = submitter?.name === 'provider';
+    const isBackSubmit = (submitter?.value ?? '').includes(':back');
+    if (!isProviderSubmit && !isBackSubmit && !event.currentTarget.checkValidity()) {
+      event.preventDefault();
+      event.currentTarget.reportValidity();
+      return;
+    }
+    onSubmit?.(event);
+  };
 
   // `noValidate` on the form — the OIDC / passkey buttons are submit buttons
   // inside it; without it the browser's native `required`-field validation
@@ -102,7 +141,13 @@ export function CrdKratosFlow({
   // the provider flow. Kratos validates the password flow server-side. Mirrors
   // the MUI `KratosForm` (also `noValidate`).
   return (
-    <form action={descriptor.action} method={descriptor.method} noValidate={true} className="flex flex-col gap-5">
+    <form
+      action={descriptor.action}
+      method={descriptor.method}
+      noValidate={true}
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-5"
+    >
       {groups.hidden.map(node => (
         <input key={node.name} type="hidden" name={node.name} defaultValue={node.value} />
       ))}
@@ -152,7 +197,7 @@ export function CrdKratosFlow({
           disabled={formSubmitDisabled || disableInputs || node.disabled}
           className="text-control h-12 w-full font-semibold uppercase tracking-wider"
         >
-          {node.label}
+          {submitLabelOverride ? submitLabelOverride(node.label) : node.label}
         </Button>
       ))}
 
