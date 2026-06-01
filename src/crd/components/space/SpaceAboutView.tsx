@@ -181,7 +181,10 @@ export function SpaceAboutView({
           <section>
             <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
             <div className="flex items-center gap-3 p-4 border border-border rounded-lg">
-              <a href={data.provider.href} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+              <a
+                href={data.provider.href}
+                className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
                 <Avatar className="w-10 h-10">
                   {data.provider.avatarUrl && <AvatarImage src={data.provider.avatarUrl} alt={data.provider.name} />}
                   <AvatarFallback className="text-caption">{data.provider.name.charAt(0)}</AvatarFallback>
@@ -239,7 +242,10 @@ export function SpaceAboutView({
         <section>
           <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
           <div className="flex items-center gap-3 p-4 border border-border rounded-lg">
-            <a href={data.provider.href} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+            <a
+              href={data.provider.href}
+              className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
               <Avatar className="w-10 h-10">
                 {data.provider.avatarUrl && <AvatarImage src={data.provider.avatarUrl} alt={data.provider.name} />}
                 <AvatarFallback className="text-caption">{data.provider.name.charAt(0)}</AvatarFallback>
