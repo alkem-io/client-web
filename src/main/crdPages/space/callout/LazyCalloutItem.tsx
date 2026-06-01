@@ -33,6 +33,8 @@ type LazyCalloutItemProps = {
   calloutsSetId: string | undefined;
   /** Ordered list of all callout ids in the feed — drives move actions (plan T063/T066). */
   orderedCalloutIds?: string[];
+  /** Set-level Update privilege — gates the move/reorder menu items (FR-101). */
+  canReorder?: boolean;
   onClick?: () => void;
   onExpandClick?: () => void;
 };
@@ -41,6 +43,7 @@ export function LazyCalloutItem({
   calloutId,
   calloutsSetId,
   orderedCalloutIds = [],
+  canReorder = false,
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
@@ -56,6 +59,7 @@ export function LazyCalloutItem({
           callout={callout}
           calloutsSetId={calloutsSetId}
           orderedCalloutIds={orderedCalloutIds}
+          canReorder={canReorder}
           onClick={onClick}
           onExpandClick={onExpandClick}
         />
@@ -74,12 +78,14 @@ function LazyCalloutItemContent({
   callout,
   calloutsSetId,
   orderedCalloutIds,
+  canReorder,
   onClick,
   onExpandClick,
 }: {
   callout: CalloutDetailsModelExtended;
   calloutsSetId: string | undefined;
   orderedCalloutIds: string[];
+  canReorder: boolean;
   onClick?: () => void;
   onExpandClick?: () => void;
 }) {
@@ -114,11 +120,16 @@ function LazyCalloutItemContent({
     descriptionExpanded: !descriptionCollapsed,
   };
 
-  const moveActions = useCrdCalloutMoveActions({
+  // The hook must run unconditionally (rules of hooks), but the move menu items
+  // are only offered when the user has Update on the calloutsSet. Passing
+  // `undefined` makes `deriveCalloutMenuVisibility`'s `canMoveSet` false, so
+  // non-privileged users (incl. non-members) never see reorder controls.
+  const moveActionsRaw = useCrdCalloutMoveActions({
     calloutsSetId,
     orderedCalloutIds,
     calloutId: callout.id,
   });
+  const moveActions = canReorder ? moveActionsRaw : undefined;
 
   // The second arg is the underlying entity id — memo id for memo contributions,
   // post id for post contributions. The detail-dialog connector splits them by

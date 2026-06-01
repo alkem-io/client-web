@@ -27,6 +27,7 @@ export default function CrdSpaceCommunityPage() {
     callouts,
     calloutsSetId,
     canCreateCallout,
+    canReorderCallouts,
     tabDescription,
     flowStateForNewCallouts,
     leadUsers,
@@ -102,7 +103,12 @@ export default function CrdSpaceCommunityPage() {
 
         <SpaceMembers members={members} />
 
-        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
+        <CalloutListConnector
+          callouts={callouts}
+          calloutsSetId={calloutsSetId}
+          canReorder={canReorderCallouts}
+          loading={loading}
+        />
       </div>
 
       {canCreateCallout && (

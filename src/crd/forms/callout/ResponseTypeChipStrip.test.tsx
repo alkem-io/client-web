@@ -40,7 +40,7 @@ describe('ResponseTypeChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('none');
   });
 
-  test('locked mode: non-active chips are no-ops; active chip deselects', async () => {
+  test('locked mode: every chip click is a no-op — the response type cannot be changed or cleared', async () => {
     const onChange = vi.fn();
     render(<ResponseTypeChipStrip value="post" onChange={onChange} locked={true} />);
     const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
@@ -48,7 +48,7 @@ describe('ResponseTypeChipStrip', () => {
     expect(onChange).not.toHaveBeenCalled();
     const post = screen.getByRole('radio', { name: /contributionSettings.types.post/i });
     await userEvent.click(post);
-    expect(onChange).toHaveBeenCalledWith('none');
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   test('selected chip is aria-checked', () => {

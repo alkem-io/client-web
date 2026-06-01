@@ -261,12 +261,7 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
-    "clearTypeConfirm": {
-      "title": "Supprimer ce type de contenu ?",
-      "description": "Une fois enregistré, le contenu existant sera supprimé et vous ne pourrez plus rattacher un autre type à cette publication. Cette action est irréversible.",
-      "confirm": "Supprimer"
-    }
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
   },
   "contribution": {
     "edit": "Modifier",
@@ -406,6 +401,7 @@
     "share": "Partager",
     "sortContributions": "Trier les contributions",
     "saveAsTemplate": "Enregistrer comme modèle",
+    "saveAsTemplateUnsupported": "Enregistrer des documents comme modèle n'est pas encore pris en charge",
     "moveToTop": "Déplacer en haut",
     "moveUp": "Déplacer vers le haut",
     "moveDown": "Déplacer vers le bas",
