@@ -150,7 +150,12 @@ export function MediaGalleryField({
     };
   }, []);
 
-  const sorted = [...visuals].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  // Sort ascending by sortOrder; visuals without a sortOrder sort last, matching
+  // the rest of CRD (mediaGalleryDataMapper, the upload hook's index fallback) so
+  // legacy visuals with no sortOrder aren't unexpectedly moved to the front.
+  const sorted = [...visuals].sort(
+    (a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER)
+  );
   const itemIds = sorted.map(visualKey);
 
   const sensors = useSensors(
