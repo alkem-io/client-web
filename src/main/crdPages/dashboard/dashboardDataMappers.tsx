@@ -88,7 +88,7 @@ export type InvitationCardData = {
   color: string;
 };
 
-type RecentSpaceEntry = {
+export type RecentSpaceEntry = {
   space: {
     id: string;
     about: {
