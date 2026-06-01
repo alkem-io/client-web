@@ -265,12 +265,7 @@
     "postUnsavedCloseCancel": "Weiter bearbeiten",
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
-    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
-    "clearTypeConfirm": {
-      "title": "Diesen Inhaltstyp entfernen?",
-      "description": "Nach dem Speichern wird der vorhandene Inhalt gelöscht und Sie können diesem Beitrag keinen anderen Typ mehr zuweisen. Diese Aktion kann nicht rückgängig gemacht werden.",
-      "confirm": "Entfernen"
-    }
+    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut."
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -414,6 +409,7 @@
     "share": "Teilen",
     "sortContributions": "Beiträge sortieren",
     "saveAsTemplate": "Als Vorlage speichern",
+    "saveAsTemplateUnsupported": "Dokumente als Vorlage zu speichern wird noch nicht unterstützt",
     "moveToTop": "Nach ganz oben",
     "moveUp": "Nach oben",
     "moveDown": "Nach unten",
@@ -666,6 +662,7 @@
     },
     "altTextLabel": "Alternativtext",
     "deleteImage": "Bild löschen",
+    "reorderImage": "Bild neu anordnen",
     "dismissError": "Fehler schließen",
     "uploading": "Hochladen…",
     "downloadError": "Das Bild konnte nicht heruntergeladen werden.",

@@ -31,6 +31,7 @@ export default function CrdSpaceDashboardPage() {
     callouts,
     calloutsSetId,
     canCreateCallout,
+    canReorderCallouts,
     tabDescription,
     dashboardNavigation,
     flowStateForNewCallouts,
@@ -117,7 +118,12 @@ export default function CrdSpaceDashboardPage() {
         className="mb-6"
       />
 
-      <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
+      <CalloutListConnector
+        callouts={callouts}
+        calloutsSetId={calloutsSetId}
+        canReorder={canReorderCallouts}
+        loading={loading}
+      />
 
       {canCreateCallout && (
         <CalloutFormConnector
