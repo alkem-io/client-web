@@ -62,6 +62,8 @@ export function ReactionPill({ reaction, canReact, onToggle, emptyLabel }: React
           }}
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
           onPointerDown={event => {
             if (event.pointerType !== 'touch') return;
             clearLongPress();
@@ -73,6 +75,7 @@ export function ReactionPill({ reaction, canReact, onToggle, emptyLabel }: React
           onPointerUp={event => {
             if (event.pointerType === 'touch') clearLongPress();
           }}
+          onPointerCancel={clearLongPress}
           onPointerLeave={clearLongPress}
         >
           <span>{reaction.emoji}</span>

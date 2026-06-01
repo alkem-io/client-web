@@ -38,7 +38,7 @@ export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }
           key={reaction.emoji}
           reaction={reaction}
           canReact={canReact}
-          emptyLabel={t('comments.reactions.add')}
+          emptyLabel={t('comments.reactions.unknownReactors')}
           onToggle={() => (reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji))}
         />
       ))}
@@ -64,7 +64,7 @@ export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }
                   <div className="text-caption text-muted-foreground">
                     {reaction.senders?.length
                       ? reaction.senders.map(sender => sender.name).join(', ')
-                      : t('comments.reactions.add')}
+                      : t('comments.reactions.unknownReactors')}
                   </div>
                 </div>
               ))}

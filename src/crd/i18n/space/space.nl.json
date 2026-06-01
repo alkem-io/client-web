@@ -707,7 +707,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Reactie toevoegen",
-      "overflow": "+{{count}} meer"
+      "overflow": "+{{count}} meer",
+      "unknownReactors": "Onbekend"
     },
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",
