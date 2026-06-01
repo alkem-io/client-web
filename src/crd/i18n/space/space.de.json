@@ -654,6 +654,7 @@
     },
     "altTextLabel": "Alternativtext",
     "deleteImage": "Bild löschen",
+    "reorderImage": "Bild neu anordnen",
     "dismissError": "Fehler schließen",
     "uploading": "Hochladen…",
     "downloadError": "Das Bild konnte nicht heruntergeladen werden.",

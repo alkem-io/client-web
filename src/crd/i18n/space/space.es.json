@@ -654,6 +654,7 @@
     },
     "altTextLabel": "Texto alternativo",
     "deleteImage": "Eliminar imagen",
+    "reorderImage": "Reordenar imagen",
     "dismissError": "Descartar error",
     "uploading": "Subiendo…",
     "downloadError": "No se pudo descargar la imagen.",

@@ -654,6 +654,7 @@
     },
     "altTextLabel": "Alternatieve tekst",
     "deleteImage": "Afbeelding verwijderen",
+    "reorderImage": "Afbeelding herordenen",
     "dismissError": "Fout sluiten",
     "uploading": "Uploaden…",
     "downloadError": "De afbeelding kon niet worden gedownload.",
