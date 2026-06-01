@@ -715,7 +715,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Ajouter une réaction",
-      "overflow": "+{{count}} plus"
+      "overflow": "+{{count}} plus",
+      "unknownReactors": "Inconnu"
     },
     "count": "{{count}} commentaires",
     "count_one": "1 commentaire",
