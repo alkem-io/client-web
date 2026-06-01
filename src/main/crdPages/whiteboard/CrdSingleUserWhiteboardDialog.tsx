@@ -148,6 +148,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     }
   }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
+  // Keep the selected mode in sync with the persisted settings each time the dialog opens — the
+  // state initializer can capture a stale `Auto` if `whiteboard` populates after this mounts.
+  useEffect(() => {
+    if (options.previewSettingsDialogOpen) {
+      setSelectedPreviewMode(whiteboard.previewSettings.mode ?? WhiteboardPreviewMode.Auto);
+    }
+  }, [options.previewSettingsDialogOpen, whiteboard.previewSettings.mode]);
+
   const getExcalidrawState = () => {
     if (!excalidrawAPI) return undefined;
     return {
