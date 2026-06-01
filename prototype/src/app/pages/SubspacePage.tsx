@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, useNavigate, Link } from "react-router";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router";
 import { Plus, Layout, Activity, Video, FileText, Share2, Settings } from "lucide-react";
 import { ReadMoreText } from "@/app/components/ui/ReadMoreText";
 import {
@@ -241,6 +241,8 @@ export default function SubspacePage() {
     subspaceSlug = "renewable-energy-transition",
   } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const variant = (parseInt(searchParams.get("v") || "1") || 1) as 1 | 2 | 3 | 4 | 5;
 
   const info = SUBSPACE_MAP[subspaceSlug] || {
     ...DEFAULT_SUBSPACE,
@@ -280,6 +282,7 @@ export default function SubspacePage() {
         parentBannerImage={PARENT_SPACE_BANNER}
         memberCount={info.memberCount}
         onCommunityClick={() => setIsCommunityDialogOpen(true)}
+        variant={variant}
       />
 
       {/* ── Main Content Area ── */}

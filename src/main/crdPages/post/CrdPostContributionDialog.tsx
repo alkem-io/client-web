@@ -18,9 +18,9 @@ import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { ReferencesEditor } from '@/crd/forms/callout/ReferencesEditor';
 // MarkdownEditor lives at @/crd/forms/markdown/MarkdownEditor — non-collaborative editor (single-author posts).
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { Button } from '@/crd/primitives/button';
@@ -40,7 +40,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
-import { useReferenceFileUpload } from '@/main/crdPages/space/callout/useReferenceFileUpload';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import {
   emptyPostContributionFormValues,
   type PostContributionFormValues,
@@ -179,8 +179,8 @@ export function CrdPostContributionDialog({
       tags: post.profile.tagset?.tags ?? [],
       references: (post.profile.references ?? []).map(ref => ({
         id: ref.id,
-        title: ref.name,
-        url: ref.uri,
+        name: ref.name,
+        uri: ref.uri,
         description: ref.description ?? '',
       })),
     });
@@ -250,7 +250,7 @@ export function CrdPostContributionDialog({
       // `createReferenceOnProfile` call against the new post's profile id.
       // Mirrors the edit-mode "new rows" branch below.
       if (created) {
-        const newReferenceRows = values.references.filter(r => r.title.trim() && r.url.trim());
+        const newReferenceRows = values.references.filter(r => r.name.trim() && r.uri.trim());
         if (newReferenceRows.length > 0) {
           try {
             for (const row of newReferenceRows) {
@@ -258,9 +258,9 @@ export function CrdPostContributionDialog({
                 variables: {
                   input: {
                     profileID: created.profile.id,
-                    name: row.title.trim(),
-                    uri: ensureHttps(row.url),
-                    description: row.description.trim() || undefined,
+                    name: row.name.trim(),
+                    uri: ensureHttps(row.uri),
+                    description: row.description?.trim() || undefined,
                   },
                 },
               });
@@ -289,16 +289,16 @@ export function CrdPostContributionDialog({
         if (!r.id) return false;
         const original = originalById.get(r.id);
         if (!original) return false;
-        if (!r.title.trim() || !r.url.trim()) return false;
+        if (!r.name.trim() || !r.uri.trim()) return false;
         return (
-          original.name !== r.title.trim() ||
-          original.uri !== ensureHttps(r.url) ||
-          (original.description ?? '') !== r.description.trim()
+          original.name !== r.name.trim() ||
+          original.uri !== ensureHttps(r.uri) ||
+          (original.description ?? '') !== (r.description?.trim() ?? '')
         );
       });
       const modifiedIds = new Set(modifiedRows.map(r => r.id));
       const removedIds = originalReferences.map(r => r.id).filter(id => !currentIds.has(id) || modifiedIds.has(id));
-      const newRows = values.references.filter(r => !r.id && r.title.trim() && r.url.trim());
+      const newRows = values.references.filter(r => !r.id && r.name.trim() && r.uri.trim());
       const rowsToCreate = [...newRows, ...modifiedRows];
 
       try {
@@ -310,9 +310,9 @@ export function CrdPostContributionDialog({
             variables: {
               input: {
                 profileID: post.profile.id,
-                name: row.title.trim(),
-                uri: ensureHttps(row.url),
-                description: row.description.trim() || undefined,
+                name: row.name.trim(),
+                uri: ensureHttps(row.uri),
+                description: row.description?.trim() || undefined,
               },
             },
           });

@@ -62,7 +62,7 @@ export function Header({
 
   // Transparent header overlay on space/subspace pages (banner visible)
   const location = useLocation();
-  const hasBanner = location.pathname.startsWith("/space");
+  const hasBanner = location.pathname.startsWith("/space") || location.pathname.startsWith("/innovation-hub");
   const [scrolledPastBanner, setScrolledPastBanner] = useState(false);
 
   useEffect(() => {

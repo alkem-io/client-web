@@ -1,4 +1,4 @@
-import { Building2, Image as ImageIcon, Link2, Mail, Plus, Trash2 } from 'lucide-react';
+import { Building2, Image as ImageIcon, Link2, Mail } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -9,8 +9,8 @@ import GitHubIcon from '@/crd/components/common/icons/social/GitHub.svg?react';
 import LinkedInIcon from '@/crd/components/common/icons/social/LinkedIn.svg?react';
 import { type OrgVerificationStatus, OrgVerifiedBadge } from '@/crd/components/contributor/settings/OrgVerifiedBadge';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -88,16 +88,15 @@ export type OrgProfileViewProps = {
   dirtyByField: Partial<Record<OrgProfileSectionKey, boolean>>;
   saveStatusByField: Partial<Record<OrgProfileSectionKey, SectionSaveStatus>>;
   onChange: (patch: Partial<OrgProfileFormValuesData>) => void;
-  onAddReference: () => void;
-  onUpdateReference: (id: string, patch: Partial<Omit<OrgProfileReferenceData, 'id' | 'recognized'>>) => void;
+  /** Replace the arbitrary references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — passed through to the shared editor. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
   onUpdateRecognizedReference: (kind: 'linkedin' | 'bsky' | 'github', uri: string) => void;
-  onRequestRemoveReference: (id: string) => void;
   onUploadAvatar: (file: File) => void;
   uploadingAvatar: boolean;
   onSaveSection: (section: OrgProfileSectionKey) => void;
-  pendingReferenceDelete: { id: string; name: string } | null;
-  onConfirmRemoveReference: () => void;
-  onCancelRemoveReference: () => void;
 } & MarkdownUploadProps;
 
 type SectionLabels = { save: string; saving: string; saved: string; retry: string };
@@ -141,15 +140,12 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
-    onAddReference,
-    onUpdateReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onUpdateRecognizedReference,
-    onRequestRemoveReference,
     onUploadAvatar,
     onSaveSection,
-    pendingReferenceDelete,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
     uploadingAvatar,
     onImageUpload,
     iframeAllowedUrls,
@@ -358,28 +354,13 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
             onUriChange={uri => onUpdateRecognizedReference('github', uri)}
           />
 
-          {values.references.length > 0 ? <Separator className="my-4" /> : null}
-          <div className="space-y-3">
-            {values.references.map(ref => (
-              <ArbitraryReferenceRow
-                key={ref.id}
-                reference={ref}
-                onPatch={patch => onUpdateReference(ref.id, patch)}
-                onRemove={() => onRequestRemoveReference(ref.id)}
-                namePlaceholder={t('org.profile.socialLinks.namePlaceholder')}
-                urlPlaceholder={t('org.profile.socialLinks.urlPlaceholder')}
-                descriptionPlaceholder={t('org.profile.socialLinks.descriptionPlaceholder')}
-                removeAriaLabel={t('org.profile.socialLinks.removeAriaLabel')}
-              />
-            ))}
-          </div>
-
-          <div className="mt-4">
-            <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
-              <Plus aria-hidden="true" className="mr-2 size-4" />
-              {t('org.profile.socialLinks.addAnother')}
-            </Button>
-          </div>
+          <Separator className="my-4" />
+          <ReferencesEditor
+            rows={values.references.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }))}
+            onChange={onReferencesChange}
+            onFileUpload={onReferenceFileUpload}
+            uploadAccept={referenceUploadAccept}
+          />
 
           <FF
             dirty={dirty('references')}
@@ -403,19 +384,6 @@ export function OrgProfileTabView(props: OrgProfileViewProps) {
           verifiedStatus={values.verifiedStatus}
         />
       </SettingsCard>
-
-      <ConfirmationDialog
-        open={Boolean(pendingReferenceDelete)}
-        onOpenChange={open => {
-          if (!open) onCancelRemoveReference();
-        }}
-        title={t('org.profile.socialLinks.deleteDialog.title')}
-        description={t('org.profile.socialLinks.deleteDialog.description')}
-        confirmLabel={t('org.profile.socialLinks.deleteDialog.confirm')}
-        variant="destructive"
-        onConfirm={onConfirmRemoveReference}
-        onCancel={onCancelRemoveReference}
-      />
     </div>
   );
 }
@@ -656,55 +624,6 @@ function RecognizedReferenceRow({
         onChange={e => onUriChange(e.target.value)}
         placeholder={placeholder}
         aria-label={label}
-      />
-    </div>
-  );
-}
-
-function ArbitraryReferenceRow({
-  reference,
-  onPatch,
-  onRemove,
-  namePlaceholder,
-  urlPlaceholder,
-  descriptionPlaceholder,
-  removeAriaLabel,
-}: {
-  reference: OrgProfileReferenceData;
-  onPatch: (patch: Partial<Omit<OrgProfileReferenceData, 'id' | 'recognized'>>) => void;
-  onRemove: () => void;
-  namePlaceholder: string;
-  urlPlaceholder: string;
-  descriptionPlaceholder: string;
-  removeAriaLabel: string;
-}) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <div className="flex items-center justify-between gap-2">
-        <Input
-          value={reference.name}
-          onChange={e => onPatch({ name: e.target.value })}
-          placeholder={namePlaceholder}
-          aria-label={namePlaceholder}
-          className="flex-1"
-        />
-        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={removeAriaLabel}>
-          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-        </Button>
-      </div>
-      <Input
-        value={reference.uri}
-        onChange={e => onPatch({ uri: e.target.value })}
-        placeholder={urlPlaceholder}
-        aria-label={urlPlaceholder}
-        className="mt-2"
-      />
-      <Input
-        value={reference.description}
-        onChange={e => onPatch({ description: e.target.value })}
-        placeholder={descriptionPlaceholder}
-        aria-label={descriptionPlaceholder}
-        className="mt-2"
       />
     </div>
   );

@@ -13,7 +13,11 @@ import type React from 'react';
 import { type PropsWithChildren, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type OnChangeHandlerFunc, type SuggestionDataItem } from 'react-mentions';
-import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useForumMentionableContributorsLazyQuery,
+  useMentionableContributorsLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -29,6 +33,7 @@ export const MENTION_SYMBOL = '@';
 const MENTION_INVALID_CHARS_REGEXP = /[?]/; // skip mentions if any of these are used after MENTION_SYMBOL
 const MAX_SPACES_IN_MENTION = 2;
 const MAX_MENTION_LENGTH = 30;
+const MENTION_DEBOUNCE_MS = 300;
 
 interface EnrichedSuggestionDataItem extends SuggestionDataItem {
   // `id` and `display` are from SuggestionDataItem and used by react-mentions
@@ -173,13 +178,12 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const emptyQueries = useRef<string[]>([]).current;
 
-  const [queryUsers] = useMentionableContributorsLazyQuery();
+  const [querySpaceUsers] = useMentionableContributorsLazyQuery();
+  const [queryForumUsers] = useForumMentionableContributorsLazyQuery();
 
   const { space } = useSpace();
-  const spaceRoleSetId = space.about.membership?.roleSetID;
   const { subspace } = useSubSpace();
-  const subspaceRoleSetId = subspace.about.membership?.roleSetID;
-  const roleSetId = subspaceRoleSetId ? subspaceRoleSetId : spaceRoleSetId;
+  const spaceID = subspace.id || space.id;
 
   const isAlreadyMentioned = ({ profile }: { profile?: { url: string } }) =>
     currentMentionedUsersRef.current.some(mention => mention.id === profile?.url);
@@ -197,42 +201,39 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
       return [];
     }
 
-    const filter = { email: search, displayName: search };
-
-    const { data } = await queryUsers({
-      variables: {
-        filter,
-        first: MAX_USERS_LISTED,
-        roleSetId: roleSetId ? roleSetId : undefined,
-        includeVirtualContributors: roleSetId !== '',
-      },
-    });
+    // Outside any Space (e.g. the platform Forum) there is no Space ID; fall
+    // back to the platform-wide Forum-level mentionable contributors query.
+    const contributors = spaceID
+      ? (
+          await querySpaceUsers({
+            variables: { spaceID, filter: { displayName: search }, limit: MAX_USERS_LISTED },
+          })
+        ).data?.lookup?.space?.mentionableContributors
+      : (
+          await queryForumUsers({
+            variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED },
+          })
+        ).data?.platform?.forum?.mentionableContributors;
 
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
+    const suppressVcs = hasVcInteraction || !vcEnabled;
 
-    if (!hasVcInteraction && vcEnabled) {
-      data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
-        if (!isAlreadyMentioned(vc) && vc.profile?.displayName.toLowerCase().includes(search.toLowerCase())) {
-          mentionableContributors.push({
-            id: vc.profile?.url ?? '',
-            display: vc.profile?.displayName ?? '',
-            avatarUrl: vc.profile?.avatar?.uri,
-            virtualContributor: true,
-          });
-        }
+    contributors?.forEach(contributor => {
+      if (isAlreadyMentioned(contributor)) return;
+      if (!contributor.profile?.url || !contributor.profile.displayName) return;
+      const isVc = contributor.type === ActorType.VirtualContributor;
+      if (isVc && suppressVcs) return;
+      mentionableContributors.push({
+        id: contributor.profile.url,
+        display: contributor.profile.displayName,
+        avatarUrl: contributor.profile.avatar?.uri,
+        ...(isVc
+          ? { virtualContributor: true }
+          : {
+              city: contributor.profile.location?.city,
+              country: contributor.profile.location?.country,
+            }),
       });
-    }
-
-    data?.usersPaginated.users.forEach(user => {
-      if (!isAlreadyMentioned(user)) {
-        mentionableContributors.push({
-          id: user.profile?.url ?? '',
-          display: user.profile?.displayName ?? '',
-          avatarUrl: user.profile?.avatar?.uri,
-          city: user.profile?.location?.city,
-          country: user.profile?.location?.country,
-        });
-      }
     });
 
     if (!mentionableContributors.length) {
@@ -242,12 +243,36 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     return mentionableContributors;
   };
 
-  const findMentionableContributors = async (
-    search: string,
-    callback: (users: EnrichedSuggestionDataItem[]) => void
-  ) => {
-    const users = await getMentionableContributors(search);
-    callback(users);
+  const mentionDebounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mentionPendingCallbacksRef = useRef<Array<(users: EnrichedSuggestionDataItem[]) => void>>([]);
+
+  useEffect(
+    () => () => {
+      if (mentionDebounceTimerRef.current) {
+        clearTimeout(mentionDebounceTimerRef.current);
+      }
+    },
+    []
+  );
+
+  const findMentionableContributors = (search: string, callback: (users: EnrichedSuggestionDataItem[]) => void) => {
+    mentionPendingCallbacksRef.current.push(callback);
+    if (mentionDebounceTimerRef.current) {
+      clearTimeout(mentionDebounceTimerRef.current);
+    }
+    mentionDebounceTimerRef.current = setTimeout(async () => {
+      mentionDebounceTimerRef.current = null;
+      const callbacks = mentionPendingCallbacksRef.current.splice(0);
+      let users: EnrichedSuggestionDataItem[] = [];
+      try {
+        users = await getMentionableContributors(search);
+      } catch {
+        users = [];
+      }
+      for (const cb of callbacks) {
+        cb(users);
+      }
+    }, MENTION_DEBOUNCE_MS);
   };
 
   // Open a tooltip (which is the same Popper that contains the matching users) but with a helper message

@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import type { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
 import KratosForm from '@/core/auth/authentication/components/Kratos/KratosForm';
 import KratosUI from '@/core/auth/authentication/components/KratosUI';
@@ -7,16 +9,30 @@ import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/component
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
-import useIdentityProviderSettingsFlow from './useIdentityProviderSettingsFlow';
+import PasswordChangeForm from './PasswordChangeForm';
+import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
 /**
- * Hide everything except the WebAuthn/Passkey nodes — same filter the
- * existing MUI `UserSecuritySettingsPage` uses, lifted here unchanged for
- * parity. Removing this filter would surface the password / profile /
- * OIDC link/unlink fields, which are managed by other settings tabs (or
- * not surfaced at all).
+ * Field filter for the password card — keep `password` / `password_identifier`
+ * inputs and the `password` submit; strip everything else (profile traits,
+ * WebAuthn nodes, OIDC link/unlink).
  */
-const REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
+const PASSWORD_REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
+  { name: 'traits.name.first' },
+  { name: 'traits.name.last' },
+  { name: 'traits.email' },
+  { name: 'traits.accepted_terms' },
+  { name: 'traits.picture' },
+  { type: 'submit', value: 'profile' },
+  { name: 'link' },
+  { name: 'unlink' },
+];
+
+/**
+ * Field filter for the WebAuthn / Passkey card — mirrors the existing MUI
+ * `UserSecuritySettingsPage` filter: strip password, profile, OIDC.
+ */
+const WEBAUTHN_REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
   { name: 'password' },
   { name: 'password_identifier' },
   { name: 'traits.name.first' },
@@ -41,10 +57,11 @@ const REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
  * public profile, but a platform admin passes that guard; this page adds
  * the second-pass owner check.
  *
- * **Kratos integration**: the page mounts `<KratosForm><KratosUI /></KratosForm>`
- * directly with the same `REMOVED_FIELDS` filter the MUI page uses. The
- * form fields themselves are NOT restyled (FR-080 / Decision #6 — out of
- * scope for this spec). The CRD layer only restyles the surrounding card.
+ * **Kratos integration**: one Settings flow drives two cards — Change
+ * Password (password method) and Passkeys (webauthn/passkey method). Both
+ * mounts share the same flow instance; submitting one operates against
+ * the same flow id. The form fields themselves are NOT restyled — only
+ * the surrounding card chrome.
  */
 const CrdUserSecurityTab = () => {
   const navigate = useNavigate();
@@ -60,31 +77,50 @@ const CrdUserSecurityTab = () => {
     navigate(buildSettingsTabUrl(profileUrl, 'profile'), { replace: true });
   }, [predicateLoading, isOwner, profileUrl, navigate]);
 
-  const flowResult = useIdentityProviderSettingsFlow();
-
-  // Don't render the Kratos form for non-owners while the redirect is in
-  // flight — the effect above will navigate away. Loading state covers it.
+  // Mount the Kratos settings-flow and credential hooks only for owners.
+  // Both carry side effects (a Kratos Settings-flow init request, a GraphQL
+  // query); gating them behind the owner check keeps non-owners — including
+  // platform admins who pass the shell guard — from triggering those flows
+  // before the owner-only redirect above completes.
   if (!isOwner) {
-    return <UserSecurityTabView state={{ kind: 'loading' }} kratosForm={null} />;
+    return <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} />;
   }
 
+  return <OwnerSecurityTabContent />;
+};
+
+const OwnerSecurityTabContent = () => {
+  const flowResult = useUserSecuritySettingsFlow();
+
+  // Whether the account actually has a password credential is answered
+  // authoritatively by the server — `User.authentication.methods` includes
+  // EMAIL iff a Kratos password credential exists. We intentionally do NOT
+  // infer this from the presence of a `password` settings node, which Kratos
+  // exposes config-dependently (e.g. offering first-time password set to
+  // social-only accounts).
+  const { data: authData, loading: authMethodsLoading } = useUserSecurityAuthenticationMethodsQuery();
+  const hasPasswordCredential = Boolean(authData?.me.user?.authentication?.methods.includes(AuthenticationType.Email));
+
   const state: UserSecurityViewState =
-    flowResult.kind === 'loading'
+    flowResult.kind === 'loading' || authMethodsLoading
       ? { kind: 'loading' }
       : flowResult.kind === 'error'
         ? { kind: 'error' }
-        : flowResult.kind === 'noWebauthn'
-          ? { kind: 'noWebauthn' }
-          : { kind: 'ready' };
+        : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
 
-  const kratosForm =
-    flowResult.kind === 'ready' ? (
+  const passwordForm =
+    flowResult.kind === 'ready' && hasPasswordCredential ? (
+      <PasswordChangeForm flow={flowResult.flow} removedFields={PASSWORD_REMOVED_FIELDS} />
+    ) : null;
+
+  const webauthnForm =
+    flowResult.kind === 'ready' && flowResult.hasWebauthn ? (
       <KratosForm ui={flowResult.flow.ui}>
-        <KratosUI ui={flowResult.flow.ui} removedFields={REMOVED_FIELDS} flowType="settings" />
+        <KratosUI ui={flowResult.flow.ui} removedFields={WEBAUTHN_REMOVED_FIELDS} flowType="settings" />
       </KratosForm>
     ) : null;
 
-  return <UserSecurityTabView state={state} kratosForm={kratosForm} />;
+  return <UserSecurityTabView state={state} passwordForm={passwordForm} webauthnForm={webauthnForm} />;
 };
 
 export default CrdUserSecurityTab;

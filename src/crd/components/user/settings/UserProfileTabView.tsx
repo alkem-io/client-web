@@ -1,4 +1,4 @@
-import { Image as ImageIcon, Link2, Mail, Plus, Trash2, User as UserIcon } from 'lucide-react';
+import { Image as ImageIcon, Link2, Mail, User as UserIcon } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -8,8 +8,8 @@ import BlueSkyIcon from '@/crd/components/common/icons/social/BlueSky.svg?react'
 import GitHubIcon from '@/crd/components/common/icons/social/GitHub.svg?react';
 import LinkedInIcon from '@/crd/components/common/icons/social/LinkedIn.svg?react';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -18,7 +18,7 @@ import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Separator } from '@/crd/primitives/separator';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import type { UserProfileReference, UserProfileSectionKey, UserProfileViewProps } from './UserProfileTabView.types';
+import type { UserProfileSectionKey, UserProfileViewProps } from './UserProfileTabView.types';
 
 type RecognizedKind = 'linkedin' | 'bsky' | 'github';
 
@@ -50,15 +50,12 @@ export function UserProfileTabView(props: UserProfileViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
-    onAddReference,
-    onUpdateReference,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
     onUpdateRecognizedReference,
-    onRequestRemoveReference,
     onUploadAvatar,
     onSaveSection,
-    pendingReferenceDelete,
-    onConfirmRemoveReference,
-    onCancelRemoveReference,
     uploadingAvatar,
     onImageUpload,
     iframeAllowedUrls,
@@ -250,28 +247,13 @@ export function UserProfileTabView(props: UserProfileViewProps) {
             onUriChange={uri => onUpdateRecognizedReference('github', uri)}
           />
 
-          {values.references.length > 0 ? <Separator className="my-4" /> : null}
-          <div className="space-y-3">
-            {values.references.map(ref => (
-              <ArbitraryReferenceRow
-                key={ref.id}
-                reference={ref}
-                onPatch={patch => onUpdateReference(ref.id, patch)}
-                onRemove={() => onRequestRemoveReference(ref.id)}
-                namePlaceholder={t('user.profile.socialLinks.namePlaceholder')}
-                urlPlaceholder={t('user.profile.socialLinks.urlPlaceholder')}
-                descriptionPlaceholder={t('user.profile.socialLinks.descriptionPlaceholder')}
-                removeAriaLabel={t('user.profile.socialLinks.removeAriaLabel')}
-              />
-            ))}
-          </div>
-
-          <div className="mt-4">
-            <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
-              <Plus aria-hidden="true" className="mr-2 size-4" />
-              {t('user.profile.socialLinks.addAnother')}
-            </Button>
-          </div>
+          <Separator className="my-4" />
+          <ReferencesEditor
+            rows={values.references.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }))}
+            onChange={onReferencesChange}
+            onFileUpload={onReferenceFileUpload}
+            uploadAccept={referenceUploadAccept}
+          />
 
           <FF
             dirty={dirty('references')}
@@ -295,19 +277,6 @@ export function UserProfileTabView(props: UserProfileViewProps) {
           onAvatarFilePicked={onUploadAvatar}
         />
       </SettingsCard>
-
-      <ConfirmationDialog
-        open={Boolean(pendingReferenceDelete)}
-        onOpenChange={open => {
-          if (!open) onCancelRemoveReference();
-        }}
-        title={t('user.profile.socialLinks.deleteDialog.title')}
-        description={t('user.profile.socialLinks.deleteDialog.description')}
-        confirmLabel={t('user.profile.socialLinks.deleteDialog.confirm')}
-        variant="destructive"
-        onConfirm={onConfirmRemoveReference}
-        onCancel={onCancelRemoveReference}
-      />
     </div>
   );
 }
@@ -588,55 +557,6 @@ function RecognizedReferenceRow({
         onChange={e => onUriChange(e.target.value)}
         placeholder={placeholder}
         aria-label={label}
-      />
-    </div>
-  );
-}
-
-function ArbitraryReferenceRow({
-  reference,
-  onPatch,
-  onRemove,
-  namePlaceholder,
-  urlPlaceholder,
-  descriptionPlaceholder,
-  removeAriaLabel,
-}: {
-  reference: UserProfileReference;
-  onPatch: (patch: Partial<Omit<UserProfileReference, 'id' | 'recognized'>>) => void;
-  onRemove: () => void;
-  namePlaceholder: string;
-  urlPlaceholder: string;
-  descriptionPlaceholder: string;
-  removeAriaLabel: string;
-}) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <div className="flex items-center justify-between gap-2">
-        <Input
-          value={reference.name}
-          onChange={e => onPatch({ name: e.target.value })}
-          placeholder={namePlaceholder}
-          aria-label={namePlaceholder}
-          className="flex-1"
-        />
-        <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={removeAriaLabel}>
-          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-        </Button>
-      </div>
-      <Input
-        value={reference.uri}
-        onChange={e => onPatch({ uri: e.target.value })}
-        placeholder={urlPlaceholder}
-        aria-label={urlPlaceholder}
-        className="mt-2"
-      />
-      <Input
-        value={reference.description}
-        onChange={e => onPatch({ description: e.target.value })}
-        placeholder={descriptionPlaceholder}
-        aria-label={descriptionPlaceholder}
-        className="mt-2"
       />
     </div>
   );

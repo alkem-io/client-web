@@ -204,7 +204,7 @@ describe('calloutTemplateContentToFormValues', () => {
       postDescription: 'A post',
       whiteboardContent: '',
     });
-    expect(v.referenceRows).toEqual([{ id: 'ref-1', title: 'Docs', url: 'https://x.test', description: 'd' }]);
+    expect(v.referenceRows).toEqual([{ id: 'ref-1', name: 'Docs', uri: 'https://x.test', description: 'd' }]);
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
   });
 

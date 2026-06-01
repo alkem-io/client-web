@@ -17,16 +17,19 @@ import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesign
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { DesignVersionUpgradePromptMount } from '@/main/crdPages/DesignVersionUpgradePromptMount';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
@@ -53,6 +56,13 @@ function NotificationsGate() {
       {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
     </Suspense>
   );
+}
+
+/** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
+function CrdGuidanceChatGate() {
+  const crdEnabled = useCrdEnabled();
+  if (!crdEnabled) return null; // MUI layouts already render PlatformHelpButton themselves
+  return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
 }
 
 function DesignVersionSyncMount() {
@@ -100,7 +110,7 @@ const globalStyles = (theme: Theme) => ({
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },
-  '.tiptap p, .markdown p, .tiptap table, .markdown table': {
+  '.tiptap p, .markdown p, .markdown li, .tiptap table, .markdown table': {
     margin: 0,
     fontFamily: fontFamilySourceSans,
     fontSize: 12,
@@ -163,8 +173,10 @@ const Root: FC = () => {
                                         <NavigationHistoryTracker />
                                         <ApmUserSetter />
                                         <DesignVersionSyncMount />
+                                        <DesignVersionUpgradePromptMount />
                                         <ScrollToTop />
                                         <NotificationsGate />
+                                        <CrdGuidanceChatGate />
                                         <InAppNotificationCountSubscriber />
                                         <Suspense fallback={null}>
                                           <UserMessagingDialog />

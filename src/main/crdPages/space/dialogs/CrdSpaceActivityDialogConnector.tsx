@@ -1,11 +1,13 @@
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useActivityLogOnCollaborationQuery, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
+import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
+import { RECENT_ACTIVITIES_LIMIT_EXPANDED, RECENT_ACTIVITIES_LIMIT_INITIAL } from '@/domain/space/common/constants';
 import { mapActivityToFeedItems } from '../../dashboard/dashboardDataMappers';
 
-const ACTIVITY_LIMIT = 25;
 const ALLOWED_ACTIVITY_TYPES = Object.values(ActivityEventType).filter(
   type => type !== ActivityEventType.CalloutWhiteboardContentModified
 );
@@ -28,16 +30,30 @@ export function CrdSpaceActivityDialogConnector({ open, onOpenChange, spaceId }:
 
   const collaborationID = spacePageData?.lookup.space?.collaboration?.id;
 
-  const { data, loading } = useActivityLogOnCollaborationQuery({
-    variables: {
-      collaborationID: collaborationID!,
-      limit: ACTIVITY_LIMIT,
-      types: ALLOWED_ACTIVITY_TYPES,
-    },
+  const { activities, loading, fetchMoreActivities } = useActivityOnCollaboration(collaborationID, {
+    types: ALLOWED_ACTIVITY_TYPES,
+    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
     skip: !open || !collaborationID,
   });
 
-  const items = mapActivityToFeedItems(data?.activityLogOnCollaboration ?? [], tMain);
+  // Mirror the MUI ActivityDialog behaviour (RecentContributionsBlock): refetch
+  // once with the expanded limit as soon as the initial page comes back full.
+  // The query has no cursor pagination — the ref guards against the underlying
+  // list having exactly INITIAL items, where the refetch would return the same
+  // length and re-trigger the effect.
+  const expandedOnceRef = useRef(false);
+  useEffect(() => {
+    if (!open) {
+      expandedOnceRef.current = false;
+      return;
+    }
+    if (!expandedOnceRef.current && activities?.length === RECENT_ACTIVITIES_LIMIT_INITIAL) {
+      expandedOnceRef.current = true;
+      fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
+    }
+  }, [open, activities, fetchMoreActivities]);
+
+  const items = mapActivityToFeedItems(activities ?? [], tMain);
 
   return (
     <ActivityDialog open={open} onClose={() => onOpenChange(false)} title={t('activity.dialogTitle')}>

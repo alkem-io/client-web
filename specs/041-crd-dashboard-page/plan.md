@@ -113,10 +113,11 @@ src/
 │   │       ├── useDashboardDialogs.ts   # Dialog state management (URL param support)
 │   │       └── useDashboardSidebar.ts   # Sidebar data aggregation (resources, menu items)
 │   ├── topLevelPages/
-│   │   └── Home/                        # EXISTING: Old MUI page (rendered when toggle is OFF)
-│   │       └── HomePage.tsx
+│   │   └── Home/                        # MUI page (toggle OFF) + CRD dispatcher (toggle ON)
+│   │       ├── HomePage.tsx             # EXISTING: MUI home (hub vs MyDashboard branch)
+│   │       └── CrdHomePage.tsx          # NEW: CRD home dispatcher (hub vs CRD dashboard)
 │   ├── routing/
-│   │   └── TopLevelRoutes.tsx           # MODIFIED: conditional CRD/MUI routing for /home
+│   │   └── TopLevelRoutes.tsx           # MODIFIED: CRD /home renders <CrdHomePage />, MUI /home renders <HomePage />
 │   └── ui/
 │       └── layout/
 │           └── CrdLayoutWrapper.tsx     # EXISTING: reused as-is (CRD shell already migrated)
@@ -179,6 +180,16 @@ The `?dialog=invitations` URL parameter is handled in `useDashboardDialogs.ts` (
 
 On mobile (`< md` breakpoint), the sidebar is hidden via CSS (`hidden md:block`) and a hamburger button renders instead. Clicking it opens a custom left-side drawer (not a Radix Dialog) with CSS `translate-x` animation, backdrop overlay, focus trap, Escape-to-close, and body scroll lock. On desktop (`>= md`), the sidebar is a fixed left column (~240px). Both mobile and desktop navs are always in the DOM — CSS controls visibility, avoiding hydration mismatches between JS and CSS breakpoints.
 
+### D12: `/home` Dispatcher — Hub vs Dashboard
+
+The MUI `/home` page (`HomePage.tsx`) is itself a dispatcher: it calls `useInnovationHub()` and renders `InnovationHubHomePage` on a hub subdomain, else `MyDashboard`. The first CRD cut wired the route straight to `CrdDashboardPage` (mirroring `MyDashboard` only, per the deferred-hub decision), which dropped the hub branch — so hub subdomains rendered the dashboard. To restore parity without coupling MUI into `crdPages`, the CRD `/home` route renders a thin dispatcher **`CrdHomePage`** that lives in `src/main/topLevelPages/Home/` (the app layer, where MUI imports are allowed — `crdPages/` forbids them). It mirrors `HomePage`:
+
+- `innovationHubLoading` → `<Loading />`
+- hub present → lazy MUI `InnovationHubHomePage` (its own `TopLevelLayout`; **no** `CrdLayoutWrapper`)
+- otherwise → `CrdLayoutWrapper` + lazy `CrdDashboardPage`
+
+Because the layout differs per branch, the `CrdLayoutWrapper` decision moves out of `TopLevelRoutes.tsx` and into the dispatcher; the route just renders `<NonIdentity><WithApmTransaction><Suspense><CrdHomePage /></Suspense></WithApmTransaction></NonIdentity>`. The hub lookup is `cache-first` and pre-warmed by `RedirectToLanding`, so the dispatcher resolves without an extra round-trip. Both children stay lazily code-split. CRD-migrating `InnovationHubHomePage` is a separate ticket.
+
 ## Implementation Phases
 
 ### Phase 1: Foundation (Primitives + i18n)
@@ -237,24 +248,42 @@ On mobile (`< md` breakpoint), the sidebar is hidden via CSS (`hidden md:block`)
 
 ### Phase 6: Route Wiring
 
-29. Add CRD dashboard lazy import in `TopLevelRoutes.tsx`:
+29. Add the CRD home dispatcher `src/main/topLevelPages/Home/CrdHomePage.tsx` (mirrors MUI `HomePage`; see D12). Lazy-imports both children so each stays code-split:
     ```typescript
-    const CrdDashboardPage = lazyWithGlobalErrorHandler(
-      () => import('@/main/crdPages/dashboard/DashboardPage')
+    const CrdDashboardPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/dashboard/DashboardPage'));
+    const InnovationHubHomePage = lazyWithGlobalErrorHandler(
+      () => import('@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage')
     );
+
+    const CrdHomePage = () => {
+      const { t } = useTranslation();
+      usePageTitle(t('pages.titles.alkemio'), { skipSuffix: true });
+      const { innovationHub, innovationHubLoading } = useInnovationHub();
+      if (innovationHubLoading) return <Loading />;
+      if (innovationHub) {
+        return <Suspense fallback={<Loading />}><InnovationHubHomePage innovationHub={innovationHub} /></Suspense>;
+      }
+      return (
+        <CrdLayoutWrapper>
+          <Suspense fallback={<Loading />}><CrdDashboardPage /></Suspense>
+        </CrdLayoutWrapper>
+      );
+    };
     ```
-30. Add conditional route block for `/home`:
+30. Wire the `/home` route to the dispatcher. The `CrdLayoutWrapper` decision now lives inside `CrdHomePage` (the hub branch must not be wrapped), so the route no longer applies it:
     ```typescript
+    const CrdHomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/CrdHomePage'));
+
     {crdEnabled ? (
-      <Route element={<NonIdentity><CrdLayoutWrapper /></NonIdentity>}>
-        <Route path="/home" element={
+      <Route path="/home" element={
+        <NonIdentity>
           <WithApmTransaction path="/home">
-            <Suspense fallback={<Loading />}><CrdDashboardPage /></Suspense>
+            <Suspense fallback={<Loading />}><CrdHomePage /></Suspense>
           </WithApmTransaction>
-        } />
-      </Route>
+        </NonIdentity>
+      } />
     ) : (
-      // existing MUI route unchanged
+      // existing MUI route unchanged (<HomePage />)
     )}
     ```
 
@@ -267,6 +296,7 @@ On mobile (`< md` breakpoint), the sidebar is hidden via CSS (`hidden md:block`)
 35. Test recent spaces cards, home space card, home space placeholder
 36. Test `?dialog=invitations` URL parameter
 37. Test responsive layout: mobile sidebar collapse, single-column activity stacking
+38. Test innovation-hub dispatch: with CRD enabled, load `/?subdomain=<hubNameId>` (dev) — confirm `/home` renders the (MUI) innovation-hub home page (banner, description, selected spaces), not the dashboard; without a hub, confirm the CRD dashboard still renders
 38. Test CRD toggle OFF — MUI dashboard renders unchanged
 39. Run `pnpm lint` and `pnpm vitest run`
 40. Accessibility audit: keyboard navigation, screen reader testing, focus management on dialogs

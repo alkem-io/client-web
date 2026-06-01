@@ -23,10 +23,13 @@ type CommentItemProps = {
    *  by the parent CommentThread (positioned at the END of the reply group
    *  so it visually matches where the new reply will land). */
   isReplyOpen?: boolean;
-  /** Toggle the per-comment reply input. Only passed when the comment can
-   *  receive replies (top-level, not deleted, viewer canComment). */
+  /** Toggle the thread's reply input. Passed to the root comment (renders a
+   *  "Reply" button before Delete) and to the LAST reply in the thread
+   *  (renders a "Reply in this thread" button after Delete) — both open the
+   *  same input. Omitted for deleted comments, mid-thread replies, and when
+   *  the viewer can't comment. */
   onToggleReply?: () => void;
-  /** Stable id used for `aria-controls` on the Reply button — the parent
+  /** Stable id used for `aria-controls` on the reply button — the parent
    *  thread uses the same id on the input container so the relationship is
    *  exposed to assistive tech even though the input renders elsewhere. */
   replyInputId?: string;
@@ -147,6 +150,22 @@ export function CommentItem({
                   onClick={() => onDelete(comment.id)}
                 >
                   {t('comments.delete')}
+                </Button>
+              )}
+              {/* On the LAST reply of a thread the same reply box is reachable
+                  from the bottom of the group — so the user doesn't have to
+                  scroll back up to the root comment's Reply button. Rendered
+                  after Delete (Emoji · Delete · Reply in this thread). */}
+              {canComment && isReply && onToggleReply && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 px-2 text-caption"
+                  aria-expanded={isReplyOpen}
+                  aria-controls={replyInputId}
+                  onClick={onToggleReply}
+                >
+                  {t('comments.replyInThread')}
                 </Button>
               )}
             </div>

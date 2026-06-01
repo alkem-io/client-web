@@ -6,11 +6,12 @@
     "createSpace": "Maak mijn eigen Space",
     "activityView": "Activiteitsweergave",
     "mySpaces": "Mijn Spaces",
-    "virtualContributors": "Virtuele Bijdragers",
+    "virtualContributors": "Virtual Contributors",
     "innovationHubs": "Innovatie Hubs",
     "innovationPacks": "Innovatie Pakketten",
     "openMenu": "Menu openen",
     "closeMenu": "Menu sluiten",
+    "navigation": "Dashboardnavigatie",
     "pendingCount": "{{count}} openstaand"
   },
   "recentSpaces": {
@@ -20,7 +21,7 @@
       "title": "Stel je Home Space in",
       "subtitle": "Pin je favoriete space aan het dashboard"
     },
-    "homeSpaceSettings": "Instellingen thuisruimte",
+    "homeSpaceSettings": "Instellingen Home Space",
     "private": "Privé"
   },
   "activity": {
@@ -145,9 +146,9 @@
     "noInvitations": "Geen openstaande uitnodigingen"
   },
   "campaign": {
-    "title": "Maak je Virtuele Bijdrager",
+    "title": "Maak je Virtual Contributor",
     "description": "Begin met je eigen AI-aangedreven bijdrager",
-    "cta": "Virtuele Bijdrager Aanmaken"
+    "cta": "Virtual Contributor Aanmaken"
   },
   "releaseNotes": {
     "dismiss": "Sluiten",
@@ -173,7 +174,7 @@
     "close": "Sluiten",
     "closeDialog": "Dialoog sluiten",
     "invitationsSection": "Uitnodigingen",
-    "vcInvitationsSection": "Virtuele Bijdrager Uitnodigingen",
+    "vcInvitationsSection": "Virtual Contributor Uitnodigingen",
     "applicationsSection": "Openstaande Aanvragen",
     "detail": {
       "back": "Terug naar lijst",

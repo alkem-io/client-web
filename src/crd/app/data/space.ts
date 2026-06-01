@@ -858,11 +858,4 @@ export const MOCK_SIDEBAR = {
       initials: 'PR',
     },
   ],
-  knowledgeEntries: [
-    { id: 'kb-1', title: 'Transition Case Studies & Policy Docs', type: 'collection' as const },
-    { id: 'kb-2', title: 'Q1 Sustainability Report & Supporting Data', type: 'collection' as const },
-    { id: 'kb-3', title: 'Community Workshop Guidelines', type: 'text' as const },
-    { id: 'kb-4', title: 'Grid Modernisation Reference Materials', type: 'collection' as const },
-    { id: 'kb-5', title: 'Funding Opportunities for Municipal Energy Projects', type: 'text' as const },
-  ],
 };

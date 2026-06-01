@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
@@ -32,6 +33,12 @@ type ActivityFeedProps = {
   embedded?: boolean;
   /** Unique ID prefix for filter controls. Prevents duplicate IDs when multiple feeds render simultaneously. */
   feedId?: string;
+  /** Fired when the bottom-of-list sentinel scrolls into view. Pair with `hasMore` to enable infinite scroll. */
+  onLoadMore?: () => void;
+  /** When true, renders a sentinel at the bottom that triggers `onLoadMore` on intersection. */
+  hasMore?: boolean;
+  /** When true, renders a loading skeleton at the bottom while the next page is being fetched. */
+  loadingMore?: boolean;
   className?: string;
 };
 
@@ -50,19 +57,36 @@ export function ActivityFeed({
   maxItems,
   embedded,
   feedId,
+  onLoadMore,
+  hasMore,
+  loadingMore,
   className,
 }: ActivityFeedProps) {
   const { t } = useTranslation('crd-dashboard');
   const idPrefix = feedId ?? variant;
 
   const visibleItems = maxItems && maxItems > 0 ? items.slice(0, maxItems) : items;
-  const hasMore = maxItems && maxItems > 0 && items.length > maxItems;
+  const hasMoreInline = maxItems && maxItems > 0 && items.length > maxItems;
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const lazyLoadEnabled = Boolean(onLoadMore) && Boolean(hasMore) && !loadingMore && !loading;
+  useEffect(() => {
+    if (!lazyLoadEnabled || !sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries.some(e => e.isIntersecting)) onLoadMore?.();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [lazyLoadEnabled, onLoadMore]);
 
   return (
     <div
       className={cn(
         'flex flex-col overflow-hidden',
-        !embedded && 'h-full rounded-lg border border-border bg-card p-6 shadow-sm',
+        !embedded && 'h-full rounded-lg border border-border bg-card p-4 shadow-sm',
         className
       )}
     >
@@ -134,7 +158,7 @@ export function ActivityFeed({
 
       <div className="flex-1 min-w-0">
         {loading ? (
-          <div aria-busy="true" className="space-y-6">
+          <div aria-busy="true" className="space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
               <div key={i} className="flex gap-4">
@@ -149,15 +173,25 @@ export function ActivityFeed({
         ) : visibleItems.length === 0 ? (
           <output className="block py-8 text-center text-body text-muted-foreground">{t('activity.noActivity')}</output>
         ) : (
-          <div className="space-y-6 overflow-hidden">
+          <div className="space-y-0.5 overflow-hidden">
             {visibleItems.map(item => (
               <ActivityItem key={item.id} {...item} />
             ))}
+            {onLoadMore && hasMore && <div ref={sentinelRef} aria-hidden="true" className="h-px w-full" />}
+            {loadingMore && (
+              <div aria-busy="true" className="flex gap-4">
+                <Skeleton className="size-10 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/3" />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {(onShowMore || hasMore) && visibleItems.length > 0 && (
+      {onShowMore && hasMoreInline && visibleItems.length > 0 && (
         <div className="mt-auto border-t border-border pt-4 shrink-0">
           <button
             type="button"

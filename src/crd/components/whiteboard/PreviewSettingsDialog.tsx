@@ -55,7 +55,9 @@ export function PreviewSettingsDialog({
         if (!isOpen) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-md" closeLabel={t('preview.crop.cancel')}>
+      {/* `z-[70]` (content + overlay): opened on top of the whiteboard editor shell (`z-[60]`),
+          so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
+      <DialogContent className="z-[70] sm:max-w-md" overlayClassName="z-[70]" closeLabel={t('preview.crop.cancel')}>
         <DialogHeader>
           <DialogTitle>{t('preview.settings.title')}</DialogTitle>
           <p className="text-body text-muted-foreground">{t('preview.settings.subtitle')}</p>

@@ -127,12 +127,6 @@ export function SpacePage() {
       canInvite={sidebarVariant === 'community'}
       virtualContributors={sidebarVariant === 'community' ? MOCK_SIDEBAR.virtualContributors : undefined}
       guidelines={sidebarVariant === 'community' ? MOCK_SIDEBAR.guidelines : undefined}
-      // Knowledge
-      knowledgeEntries={sidebarVariant === 'knowledge' ? MOCK_SIDEBAR.knowledgeEntries : undefined}
-      onKnowledgeEntryClick={id => {
-        const el = document.getElementById(id);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }}
     >
       {sidebarVariant === 'knowledge' && (
         <CalloutSidebarList

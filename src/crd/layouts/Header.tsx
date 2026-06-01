@@ -11,6 +11,7 @@ import type {
   CrdPlatformNavigationItem,
   CrdUserInfo,
 } from '@/crd/layouts/types';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -77,6 +78,12 @@ type HeaderProps = {
   showGridToggle?: boolean;
   designVersionSwitch?: CrdDesignVersionSwitch;
   /**
+   * When true the header's inner content group fills all 12 grid columns
+   * instead of the default `lg:col-start-2 lg:col-span-10` inset, keeping it
+   * aligned with a full-width `SpaceShell` body.
+   */
+  fullWidth?: boolean;
+  /**
    * When true the header renders transparently at the top of the page so a
    * banner image below shows through. The left and right element groups get
    * a frosted-glass pill background so they remain legible. After the user
@@ -116,6 +123,7 @@ export function Header({
   onLanguageChange,
   showGridToggle,
   designVersionSwitch,
+  fullWidth = false,
   overlayBanner = false,
   className,
 }: HeaderProps) {
@@ -144,12 +152,18 @@ export function Header({
         className
       )}
     >
-      {/* Inner grid — left and right groups align with the inner content's left/right edges
-          (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width so the
-          header items are not flush against the viewport edges. */}
+      {/* Inner grid — left and right groups sit in the inner content band
+          (`lg:col-start-2 / lg:col-span-10`), matching `SpaceShell`'s body width.
+          A small `lg:px-3` keeps the logo / icon row from sitting flush against
+          the inset banner edges below. */}
       <div className="w-full h-full px-6 md:px-8">
         <div className="grid grid-cols-12 gap-6 h-full">
-          <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between h-full">
+          <div
+            className={cn(
+              'col-span-12 flex items-center justify-between h-full lg:px-3',
+              contentColumnClass(fullWidth)
+            )}
+          >
             {/* Left: Logo + breadcrumbs */}
             <div className={cn('flex items-center gap-4 min-w-0', pillClasses)}>
               <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
