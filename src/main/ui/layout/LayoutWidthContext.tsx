@@ -3,11 +3,12 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from '
 /**
  * Holds the *live* full-width state of the currently-mounted space page.
  *
- * The preference itself is owned per-space by the space page (persisted in
- * localStorage keyed by space id — see `useSpaceWidthPreference`). This context
- * only relays that live value upward so the global `Header` (an ancestor of the
- * route outlet) can keep its top bar aligned with a full-width body, exactly
- * the way `BannerOverlayContext` relays the transparent-header signal.
+ * The preference itself is owned by `useLayoutWidthPreference` (a single,
+ * app-wide value persisted in localStorage and shared across all spaces,
+ * subspaces and innovation hubs). This context only relays that live value
+ * upward so the global `Header` (an ancestor of the route outlet) can keep its
+ * top bar aligned with a full-width body, exactly the way `BannerOverlayContext`
+ * relays the transparent-header signal.
  */
 type LayoutWidthContextValue = {
   /** Current full-width value pushed by the active space page. */
@@ -32,8 +33,8 @@ export function LayoutWidthProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * The live full-width value + setter. Consumed by the space page, which is the
- * single owner of the (per-space, persisted) preference.
+ * The live full-width value + setter. Consumed by `useLayoutWidthPreference`,
+ * the single owner of the (app-wide, persisted) preference.
  */
 export function useSpaceFullWidthState(): { wide: boolean; setWide: (value: boolean) => void } {
   const ctx = useContext(LayoutWidthContext);
