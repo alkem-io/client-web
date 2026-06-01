@@ -35865,6 +35865,22 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type UserSecurityAuthenticationMethodsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSecurityAuthenticationMethodsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          authentication?: { __typename?: 'UserAuthenticationResult'; methods: Array<AuthenticationType> } | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type ResetConversationVcMutationVariables = Exact<{
   input: ConversationVcResetInput;
 }>;

@@ -11,6 +11,7 @@
     "innovationPacks": "Packs d'Innovation",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
+    "navigation": "Navigation du tableau de bord",
     "pendingCount": "{{count}} en attente"
   },
   "recentSpaces": {
