@@ -121,7 +121,7 @@ describe('CrdKratosFlow email validation gate', () => {
     expect(queryByText('fields.invalidEmail')).toBeNull();
   });
 
-  test.skip('OIDC provider submit bypasses validation (empty/invalid email is fine)', async () => {
+  test('OIDC provider submit bypasses validation (empty/invalid email is fine)', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn((event: FormEvent<HTMLFormElement>) => event.preventDefault());
     const { container } = render(<CrdKratosFlow descriptor={registrationDescriptor()} onSubmit={onSubmit} />);
