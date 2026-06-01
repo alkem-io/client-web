@@ -19,7 +19,8 @@
   },
   "recovery": {
     "title": "Récupération du mot de passe",
-    "intro": "Saisissez votre adresse e-mail ci-dessous pour recevoir un lien de récupération qui vous permettra de réinitialiser votre mot de passe."
+    "intro": "Saisissez votre adresse e-mail ci-dessous pour recevoir un lien de récupération qui vous permettra de réinitialiser votre mot de passe.",
+    "resendNotice": "<strong>Vous n'avez pas reçu l'e-mail ?</strong><br/>Vérifiez votre dossier spam, confirmez que l'adresse ci-dessous est correcte, puis demandez un nouvel e-mail de récupération une fois le minuteur écoulé."
   },
   "settings": {
     "title": "Définir un nouveau mot de passe"
@@ -44,7 +45,8 @@
     "firstName": "Prénom",
     "lastName": "Nom",
     "showPassword": "Afficher le mot de passe",
-    "hidePassword": "Masquer le mot de passe"
+    "hidePassword": "Masquer le mot de passe",
+    "invalidEmail": "Veuillez saisir une adresse e-mail valide."
   },
   "providers": {
     "connectWith": "Continuer avec {{provider}}",

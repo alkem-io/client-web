@@ -19,7 +19,8 @@
   },
   "recovery": {
     "title": "Passwort-Wiederherstellung",
-    "intro": "Bitte gib unten deine E-Mail-Adresse ein, um einen Wiederherstellungslink zu erhalten, mit dem du dein Passwort zurücksetzen kannst."
+    "intro": "Bitte gib unten deine E-Mail-Adresse ein, um einen Wiederherstellungslink zu erhalten, mit dem du dein Passwort zurücksetzen kannst.",
+    "resendNotice": "<strong>Keine E-Mail erhalten?</strong><br/>Überprüfe deinen Spam-Ordner, bestätige, dass die untenstehende Adresse korrekt ist, und fordere eine neue Wiederherstellungs-E-Mail an, sobald der Timer abgelaufen ist."
   },
   "settings": {
     "title": "Neues Passwort festlegen"
@@ -44,7 +45,8 @@
     "firstName": "Vorname",
     "lastName": "Nachname",
     "showPassword": "Passwort anzeigen",
-    "hidePassword": "Passwort verbergen"
+    "hidePassword": "Passwort verbergen",
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein."
   },
   "providers": {
     "connectWith": "Weiter mit {{provider}}",
