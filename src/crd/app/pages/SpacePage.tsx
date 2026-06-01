@@ -16,6 +16,7 @@ import { ContributionLinkList } from '@/crd/components/contribution/Contribution
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { PostCard } from '@/crd/components/space/PostCard';
 import type { PostCardData } from '@/crd/components/space/PostCard';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
@@ -182,7 +183,11 @@ export function SpacePage() {
       onInvite={sidebarVariant === 'community' ? () => {} : undefined}
       canInvite={sidebarVariant === 'community'}
       virtualContributors={sidebarVariant === 'community' ? MOCK_SIDEBAR.virtualContributors : undefined}
-      guidelines={sidebarVariant === 'community' ? MOCK_SIDEBAR.guidelines : undefined}
+      guidelinesSlot={
+        sidebarVariant === 'community' ? (
+          <CommunityGuidelinesBlock description={MOCK_SIDEBAR.guidelines.map(g => `- ${g}`).join('\n')} />
+        ) : undefined
+      }
     >
       {sidebarVariant === 'knowledge' && (
         <CalloutSidebarList

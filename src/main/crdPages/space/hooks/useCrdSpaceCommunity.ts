@@ -1,3 +1,4 @@
+import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActorType,
   AuthorizationPrivilege,
@@ -76,7 +77,25 @@ export function useCrdSpaceCommunity() {
     .map(mapVirtualContributorToSidebar)
     .filter((vc): vc is SidebarVirtualContributorData => vc !== undefined);
 
-  const guidelines = space.about.guidelines;
+  // Community guidelines (markdown title + description + references) for the
+  // sidebar block. The SpaceContext only carries the id, so fetch the content.
+  const guidelinesId = space.about.guidelines?.id || undefined;
+  const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
+    variables: { communityGuidelinesId: guidelinesId ?? '' },
+    skip: !guidelinesId,
+  });
+  const guidelinesProfile = guidelinesData?.lookup.communityGuidelines?.profile;
+  const guidelines = {
+    id: guidelinesId,
+    displayName: guidelinesProfile?.displayName,
+    description: guidelinesProfile?.description ?? undefined,
+    references: (guidelinesProfile?.references ?? []).map(r => ({
+      name: r.name,
+      uri: r.uri,
+      description: r.description ?? undefined,
+    })),
+    loading: guidelinesLoading,
+  };
 
   return {
     callouts: calloutsSetProvided.callouts ?? [],

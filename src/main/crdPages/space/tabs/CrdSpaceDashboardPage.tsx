@@ -2,7 +2,9 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
+import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
@@ -11,6 +13,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
+import { useCrdCommunityUpdates } from '../hooks/useCrdCommunityUpdates';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
@@ -38,9 +41,11 @@ export default function CrdSpaceDashboardPage() {
   const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const locale = useCrdSpaceLocale();
   const sidebarLeads = useCrdSpaceLeads(space.id);
+  const communityUpdates = useCrdCommunityUpdates(space.about.membership?.communityID);
   const [createOpen, setCreateOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [updatesOpen, setUpdatesOpen] = useState(false);
 
   const openCalendar = () => {
     setCalendarOpen(true);
@@ -62,6 +67,8 @@ export default function CrdSpaceDashboardPage() {
       initials: getInitials(child.displayName),
       href: child.url,
       avatarUrl: child.avatar?.uri,
+      isPrivate: child.private,
+      isPinned: child.pinned,
     })) ?? [];
 
   return (
@@ -80,6 +87,14 @@ export default function CrdSpaceDashboardPage() {
           onAddEvent={canCreateEvents ? openCreateEvent : undefined}
           onEventClick={openEventDetail}
           locale={locale}
+          updatesSlot={
+            <UpdatesSection
+              latest={communityUpdates.latest}
+              total={communityUpdates.total}
+              onSeeAll={() => setUpdatesOpen(true)}
+              locale={locale}
+            />
+          }
         />
       </SpaceSidebarPortal>
 
@@ -123,6 +138,14 @@ export default function CrdSpaceDashboardPage() {
       <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
 
       <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
+
+      <CommunityUpdatesDialog
+        open={updatesOpen}
+        onOpenChange={setUpdatesOpen}
+        updates={communityUpdates.updates}
+        loading={communityUpdates.loading}
+        locale={locale}
+      />
     </>
   );
 }
