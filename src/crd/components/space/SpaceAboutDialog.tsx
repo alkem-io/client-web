@@ -18,11 +18,14 @@ type SpaceAboutDialogProps = {
   whyTitle?: string;
   whoTitle?: string;
 
+  memberCount?: string;
+  isMember?: boolean;
   hasEditPrivilege?: boolean;
   onEditDescription?: () => void;
   onEditWhy?: () => void;
   onEditWho?: () => void;
   onEditReferences?: () => void;
+  onEditMembers?: () => void;
 
   className?: string;
 };
@@ -37,11 +40,14 @@ export function SpaceAboutDialog({
   lockTooltipSlot,
   whyTitle,
   whoTitle,
+  memberCount,
+  isMember,
   hasEditPrivilege,
   onEditDescription,
   onEditWhy,
   onEditWho,
   onEditReferences,
+  onEditMembers,
 }: SpaceAboutDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -92,11 +98,14 @@ export function SpaceAboutDialog({
             contactHostSlot={contactHostSlot}
             whyTitle={whyTitle}
             whoTitle={whoTitle}
+            memberCount={memberCount}
+            isMember={isMember}
             hasEditPrivilege={hasEditPrivilege}
             onEditDescription={onEditDescription}
             onEditWhy={onEditWhy}
             onEditWho={onEditWho}
             onEditReferences={onEditReferences}
+            onEditMembers={onEditMembers}
           />
         </div>
       </DialogContent>

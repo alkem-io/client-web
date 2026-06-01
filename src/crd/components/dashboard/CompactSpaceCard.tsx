@@ -41,7 +41,13 @@ export function CompactSpaceCard({
     <a
       href={href}
       className={cn(
-        'group block overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+        // `min-w-0` is essential: as a grid item, the card defaults to
+        // `min-width: auto` (= min-content). The body row's avatar + truncating
+        // name has a min-content equal to the avatar (no shrink for the text
+        // because `truncate` only kicks in once the line is already nowrap),
+        // which would push the card wider than its grid cell and visually
+        // overlap the neighbour card on narrow screens.
+        'group block min-w-0 overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         className
       )}
     >
@@ -86,7 +92,7 @@ export function CompactSpaceCard({
           </button>
         )}
       </div>
-      <div className="flex items-center gap-3 p-4">
+      <div className="flex min-w-0 items-center gap-3 p-4">
         {initials && (
           <div
             className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-body-emphasis font-bold text-primary-foreground"
@@ -103,7 +109,10 @@ export function CompactSpaceCard({
 
 export function CompactSpaceCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('overflow-hidden rounded-lg border border-border bg-card', className)} aria-hidden="true">
+    <div
+      className={cn('min-w-0 overflow-hidden rounded-lg border border-border bg-card', className)}
+      aria-hidden="true"
+    >
       <Skeleton className="aspect-video w-full rounded-b-none" />
       <div className="flex items-center gap-3 p-4">
         <Skeleton className="size-10 shrink-0 rounded-lg" />

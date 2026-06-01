@@ -6,41 +6,37 @@ import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidel
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
+import { useSpaceApplyFlow } from '../useSpaceApplyFlow';
 
-type CrdSubspaceAboutProps = {
+type CrdSpaceAboutProps = {
   open: boolean;
   onClose: () => void;
 };
 
 /**
- * Single subspace (L1/L2) About implementation, shared by both entry points:
- * the `/about` route (`CrdSubspaceAboutPage`, always open) and the sidebar
- * "About" trigger (controlled via `open`). Keeping it in one place guarantees
- * the apply flow — including the parent-community-first logic — behaves
- * identically regardless of how the About is opened.
+ * Single L0 Space About implementation, shared by both entry points: the
+ * `/about` route (`CrdSpaceAboutPage`, always open) and the sidebar "About
+ * this Space" trigger (`CrdSpaceAboutDialogConnector`, controlled via `open`).
+ * Keeping it in one place guarantees the apply flow, guidelines, host contact
+ * and lock/edit affordances behave identically regardless of the entry path.
  *
- * The apply flow is the same `useSpaceApplyFlow` hook the dashboard/banner
- * button uses; we pass `parentSpaceId` so `useApplicationButton` correctly
- * recognises this as a subspace and routes the user to apply to the parent
- * community first when required (instead of opening the apply form directly).
- *
- * No `StorageConfigContextProvider` is needed here: both call sites already
- * sit inside the provider mounted in `CrdSubspacePageLayout`.
+ * Mirrors the subspace's `CrdSubspaceAbout`. No `StorageConfigContextProvider`
+ * is mounted here: the route page wraps it explicitly, and the connector
+ * mounts inside `CrdSpacePageLayout` which already provides one.
  */
-export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
-  const { subspace, permissions, parentSpaceId } = useSubSpace();
+export function CrdSpaceAbout({ open, onClose }: CrdSpaceAboutProps) {
+  const { space, permissions } = useSpace();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { data } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: subspace.id },
-    skip: !open || !subspace.id,
+    variables: { spaceId: space.id },
+    skip: !open || !space.id,
   });
 
-  const profileUrl = data?.lookup.space?.about.profile.url ?? subspace.about.profile.url;
+  const profileUrl = data?.lookup.space?.about.profile.url ?? space.about.profile.url;
 
   const {
     loading: applyLoading,
@@ -48,10 +44,9 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     buttonProps,
     dialogs,
   } = useSpaceApplyFlow({
-    spaceId: subspace.id,
+    spaceId: space.id,
     spaceProfileUrl: profileUrl,
-    communityName: subspace.about.profile.displayName,
-    parentSpaceId,
+    communityName: space.about.profile.displayName,
   });
 
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
@@ -97,8 +92,8 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     : undefined;
 
   const aboutData: SpaceAboutData = {
-    name: profile?.displayName ?? subspace.about.profile.displayName,
-    tagline: profile?.tagline ?? subspace.about.profile.tagline ?? undefined,
+    name: profile?.displayName ?? space.about.profile.displayName,
+    tagline: profile?.tagline ?? space.about.profile.tagline ?? undefined,
     description: profile?.description ?? undefined,
     location: [profile?.location?.city, profile?.location?.country].filter(Boolean).join(', ') || undefined,
     metrics: (about?.metrics ?? []).map(m => ({ name: m.name, value: m.value })),
@@ -114,8 +109,8 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     })),
   };
 
-  const whyTitle = t(`about.context.${subspace.level}.why` as const, { ns: 'crd-space' });
-  const whoTitle = t(`about.context.${subspace.level}.who` as const, { ns: 'crd-space' });
+  const whyTitle = t(`about.context.${space.level}.why` as const, { ns: 'crd-space' });
+  const whoTitle = t(`about.context.${space.level}.who` as const, { ns: 'crd-space' });
 
   const lockTooltipSlot = !permissions.canRead ? (
     <span
@@ -129,7 +124,6 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
 
   const showApplyButton = !isMember && !applyLoading;
   const joinSlot = showApplyButton ? <SpaceAboutApplyButton {...buttonProps} /> : undefined;
-
   const memberCount = aboutData.metrics.find(m => m.name === 'members')?.value;
 
   const contactHostSlot = provider ? (
@@ -163,9 +157,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       <SpaceAboutDialog
         open={open}
         onOpenChange={isOpen => {
-          if (!isOpen) {
-            onClose();
-          }
+          if (!isOpen) onClose();
         }}
         data={aboutData}
         hasEditPrivilege={permissions.canUpdate}

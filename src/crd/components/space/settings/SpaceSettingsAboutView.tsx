@@ -179,7 +179,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <Separator />
 
           {/* What */}
-          <FieldSection>
+          <FieldSection id="description">
             <FieldLabel>{t('about.what.title')}</FieldLabel>
             <MarkdownEditor
               value={what}
@@ -202,7 +202,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <Separator />
 
           {/* Why */}
-          <FieldSection>
+          <FieldSection id="why">
             <FieldLabel>{t('about.why.title')}</FieldLabel>
             <MarkdownEditor
               value={why}
@@ -225,7 +225,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <Separator />
 
           {/* Who */}
-          <FieldSection>
+          <FieldSection id="who">
             <FieldLabel>{t('about.who.title')}</FieldLabel>
             <MarkdownEditor
               value={who}
@@ -298,7 +298,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
           <Separator />
 
           {/* References */}
-          <FieldSection>
+          <FieldSection id="references">
             <ReferencesEditor
               label={t('about.references.title')}
               rows={references.map(r => ({ id: r.id, name: r.title, uri: r.uri, description: r.description }))}
@@ -355,8 +355,12 @@ function previewCardToSpaceCardData(preview: SpaceCardPreview, level: SpaceSetti
   };
 }
 
-function FieldSection({ children }: { children: React.ReactNode }) {
-  return <div className="py-6">{children}</div>;
+function FieldSection({ id, children }: { id?: string; children: React.ReactNode }) {
+  return (
+    <div id={id} className="py-6 scroll-mt-32">
+      {children}
+    </div>
+  );
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
