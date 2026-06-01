@@ -54,6 +54,10 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
+    "updates": "Updates",
+    "updatesSeeAll": "See all updates",
+    "updatesEmpty": "No updates have been posted yet.",
+    "updatesLoading": "Loading updates",
     "postIndex": "$t(common.Callout) Index",
     "readMore": "Read more",
     "editDescription": "Edit description",
@@ -261,12 +265,7 @@
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
-    "clearTypeConfirm": {
-      "title": "Remove this content type?",
-      "description": "Once you save, the existing content will be deleted and you won't be able to attach a different type to this post. This action cannot be undone.",
-      "confirm": "Remove"
-    }
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
   },
   "contribution": {
     "edit": "Edit",
@@ -332,12 +331,16 @@
     }
   },
   "about": {
-    "title": "About",
+    "title": "About This Space",
     "location": "Location",
     "metrics": "Key Metrics",
     "who": "Who",
     "why": "Why",
     "host": "Host",
+    "hostedBy": "Hosted by",
+    "members": "members",
+    "editMembers": "Edit members",
+    "leads": "Leads",
     "leadUsers": "Lead Users",
     "leadOrganizations": "Lead Organizations",
     "guidelines": "Community Guidelines",
@@ -406,6 +409,7 @@
     "share": "Share",
     "sortContributions": "Sort Contributions",
     "saveAsTemplate": "Save as Template",
+    "saveAsTemplateUnsupported": "Saving documents as templates is not yet supported",
     "moveToTop": "Move to Top",
     "moveUp": "Move Up",
     "moveDown": "Move Down",
@@ -658,6 +662,7 @@
     },
     "altTextLabel": "Alt text",
     "deleteImage": "Delete image",
+    "reorderImage": "Reorder image",
     "dismissError": "Dismiss error",
     "uploading": "Uploading…",
     "downloadError": "Could not download the image.",
@@ -710,7 +715,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Add reaction",
-      "overflow": "+{{count}} more"
+      "overflow": "+{{count}} more",
+      "unknownReactors": "Unknown"
     },
     "count": "{{count}} comments",
     "count_one": "1 comment",

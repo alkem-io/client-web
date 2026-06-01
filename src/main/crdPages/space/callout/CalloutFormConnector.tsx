@@ -28,7 +28,6 @@ import {
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
@@ -122,13 +121,6 @@ export function CalloutFormConnector({
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
-  // Pending "switch to None" confirmation — edit-mode only. Changing the
-  // framing type or response type to None permanently removes the existing
-  // memo/document/whiteboard/post-collection on save, and the lock then
-  // prevents adopting a different type. The user is warned before the chip
-  // visibly toggles (not at save time), so they can cancel without losing
-  // their existing context.
-  const [pendingClearKind, setPendingClearKind] = useState<'framing' | 'response' | null>(null);
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
   // change (handled inside the FramingChipStrip onChange wrapper below).
@@ -596,14 +588,9 @@ export function CalloutFormConnector({
             <FramingChipStrip
               value={values.framingChip}
               onChange={chip => {
-                // Edit-mode + transition to None: warn before the chip visibly
-                // clears. Once saved the framing is gone and the lock prevents
-                // adopting a different type, so this is the user's last chance
-                // to back out.
-                if (mode === 'edit' && chip === 'none' && values.framingChip !== 'none') {
-                  setPendingClearKind('framing');
-                  return;
-                }
+                // The strip is `locked` in edit mode, so this only fires while
+                // creating a callout — the framing type can't be changed or
+                // cleared once the callout exists (matches the old UI).
                 // When switching framing AWAY from 'document', clear any staged
                 // upload so the file does not persist invisibly under another
                 // framing type (Edge Case in spec.md).
@@ -687,11 +674,9 @@ export function CalloutFormConnector({
             <ResponseTypeChipStrip
               value={values.responseType}
               onChange={type => {
-                // Same warning rule as the framing strip — see comment there.
-                if (mode === 'edit' && type === 'none' && values.responseType !== 'none') {
-                  setPendingClearKind('response');
-                  return;
-                }
+                // Locked in edit mode (see framing strip) — only fires during
+                // create, so the response type can't be changed or cleared on
+                // an existing callout.
                 setField('responseType', type);
               }}
               locked={mode === 'edit'}
@@ -746,32 +731,6 @@ export function CalloutFormConnector({
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
-      <ConfirmationDialog
-        open={pendingClearKind !== null}
-        onOpenChange={open => {
-          if (!open) setPendingClearKind(null);
-        }}
-        title={t('callout.clearTypeConfirm.title')}
-        description={t('callout.clearTypeConfirm.description')}
-        confirmLabel={t('callout.clearTypeConfirm.confirm')}
-        cancelLabel={t('dialogs.cancel')}
-        variant="destructive"
-        onConfirm={() => {
-          if (pendingClearKind === 'framing') {
-            // Clearing the framing — also drop any staged Collabora upload so
-            // it doesn't reattach when the user picks a new type next session.
-            if (values.framingChip === 'document') {
-              setField('collaboraUploadFile', null);
-              setField('collaboraAutoPrefilledTitle', undefined);
-              setCollaboraImportError(null);
-            }
-            setField('framingChip', 'none');
-          } else if (pendingClearKind === 'response') {
-            setField('responseType', 'none');
-          }
-          setPendingClearKind(null);
-        }}
-      />
       <ResponseDefaultsConnector
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}

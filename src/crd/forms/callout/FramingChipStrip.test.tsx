@@ -45,7 +45,7 @@ describe('FramingChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('document');
   });
 
-  test('locked mode: clicking a non-active chip is a no-op, clicking active fires onChange("none")', async () => {
+  test('locked mode: every chip click is a no-op — the framing type cannot be changed or cleared', async () => {
     const onChange = vi.fn();
     render(<FramingChipStrip value="poll" onChange={onChange} locked={true} />);
     const memo = screen.getByRole('radio', { name: /callout.memo/i });
@@ -53,7 +53,7 @@ describe('FramingChipStrip', () => {
     expect(onChange).not.toHaveBeenCalled();
     const poll = screen.getByRole('radio', { name: /callout.poll/i });
     await userEvent.click(poll);
-    expect(onChange).toHaveBeenCalledWith('none');
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   test('selected chip is aria-checked', () => {

@@ -6,7 +6,7 @@ import {
   useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CalloutVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutContextMenu } from '@/crd/components/callout/CalloutContextMenu';
@@ -110,6 +110,10 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     contributionsCount: callout.contributions.length,
     canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
     saveAsTemplateFeatureEnabled: true,
+    // Saving a document callout as a template is not yet supported — the menu
+    // item is shown greyed out rather than hidden (mirrors the old UI hiding
+    // it for documents, but with a visible "coming soon" affordance).
+    isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
@@ -188,12 +192,16 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         editable={perms.editable}
         movable={perms.movable}
         canSaveAsTemplate={perms.showSaveAsTemplate}
+        saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
+        saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
         onSortContributions={perms.showSortContributions ? () => setSortOpen(true) : undefined}
-        onSaveAsTemplate={perms.showSaveAsTemplate ? () => void handleSaveAsTemplate() : undefined}
+        onSaveAsTemplate={
+          perms.showSaveAsTemplate && !perms.saveAsTemplateDisabled ? () => void handleSaveAsTemplate() : undefined
+        }
         onShare={perms.showShare && onShare ? onShare : undefined}
         onMoveTop={moveActions?.onMoveToTop}
         onMoveUp={moveActions?.onMoveUp}

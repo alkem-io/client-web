@@ -18,11 +18,14 @@ type SpaceAboutDialogProps = {
   whyTitle?: string;
   whoTitle?: string;
 
+  memberCount?: string;
+  isMember?: boolean;
   hasEditPrivilege?: boolean;
   onEditDescription?: () => void;
   onEditWhy?: () => void;
   onEditWho?: () => void;
   onEditReferences?: () => void;
+  onEditMembers?: () => void;
 
   className?: string;
 };
@@ -37,11 +40,14 @@ export function SpaceAboutDialog({
   lockTooltipSlot,
   whyTitle,
   whoTitle,
+  memberCount,
+  isMember,
   hasEditPrivilege,
   onEditDescription,
   onEditWhy,
   onEditWho,
   onEditReferences,
+  onEditMembers,
 }: SpaceAboutDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -56,17 +62,10 @@ export function SpaceAboutDialog({
           <div className="flex items-start gap-2 min-w-0">
             {lockTooltipSlot && <div className="mt-1 shrink-0">{lockTooltipSlot}</div>}
             <div className="min-w-0">
-              <DialogTitle className="leading-tight text-foreground truncate">{data.name}</DialogTitle>
-              {data.tagline && (
-                <DialogDescription id="space-about-dialog-description" className="text-caption truncate">
-                  {data.tagline}
-                </DialogDescription>
-              )}
-              {!data.tagline && (
-                <DialogDescription id="space-about-dialog-description" className="sr-only">
-                  {t('about.title')}
-                </DialogDescription>
-              )}
+              <DialogTitle className="leading-tight text-foreground truncate">{t('about.title')}</DialogTitle>
+              <DialogDescription id="space-about-dialog-description" className="sr-only">
+                {data.name}
+              </DialogDescription>
             </div>
           </div>
 
@@ -92,11 +91,14 @@ export function SpaceAboutDialog({
             contactHostSlot={contactHostSlot}
             whyTitle={whyTitle}
             whoTitle={whoTitle}
+            memberCount={memberCount}
+            isMember={isMember}
             hasEditPrivilege={hasEditPrivilege}
             onEditDescription={onEditDescription}
             onEditWhy={onEditWhy}
             onEditWho={onEditWho}
             onEditReferences={onEditReferences}
+            onEditMembers={onEditMembers}
           />
         </div>
       </DialogContent>
