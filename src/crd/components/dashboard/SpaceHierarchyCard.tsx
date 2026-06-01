@@ -129,7 +129,7 @@ export function SpaceHierarchyCard({
                 )}
               </div>
               <div className="p-2">
-                <p className="truncate text-caption font-medium">{subspace.name}</p>
+                <p className="truncate text-body-emphasis">{subspace.name}</p>
               </div>
             </a>
           ))}

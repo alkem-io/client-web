@@ -69,7 +69,7 @@ export function EventDateBadge({
       aria-label={ariaLabel}
     >
       <span aria-hidden={true}>{monthLabel}</span>
-      <span className={cn('font-bold', dayTextSize)} aria-hidden={true}>
+      <span className={dayTextSize} aria-hidden={true}>
         {dayLabel}
       </span>
       {showRangeLabel && (

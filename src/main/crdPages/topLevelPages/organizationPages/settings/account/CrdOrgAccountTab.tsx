@@ -8,9 +8,11 @@ import {
   useDeleteVirtualContributorOnAccountMutation,
   useOrganizationAccountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributorAccountView } from '@/crd/components/contributor/settings/ContributorAccountView';
+import type { AccountResourceGroupId } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 // TEMP fallback: open existing MUI dialogs until CRD parity ports land
@@ -26,6 +28,8 @@ import { type AccountResourceKind, mapOrgAccountToViewProps, type OrgAccountMapp
 
 type PendingDelete = { kind: AccountResourceKind; id: string; name: string };
 
+const CONTACT_URL = 'https://welcome.alkem.io/contact/';
+
 /**
  * Integration page for the Org Account tab (US9). Mirrors
  * `CrdUserAccountTab` (US2) but reads from `useOrganizationAccountQuery`
@@ -40,6 +44,7 @@ const CrdOrgAccountTab = () => {
   const { organizationId } = useOrganizationContext();
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
+  const [noEntitlementResource, setNoEntitlementResource] = useState<AccountResourceGroupId | null>(null);
   const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createPackOpen, setCreatePackOpen] = useState(false);
@@ -83,15 +88,42 @@ const CrdOrgAccountTab = () => {
   });
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 
+  // Per-group entitlement flags — mirror the MUI page's `isEntitledToCreate*`
+  // checks. When the relevant entitlement is absent, the Create button opens
+  // a CRD dialog explaining the capacity is reached and offering to contact
+  // the Alkemio team.
+  const availableEntitlements = account?.license?.availableEntitlements ?? [];
+  const entitled = {
+    spaces: [
+      LicenseEntitlementType.AccountSpaceFree,
+      LicenseEntitlementType.AccountSpacePlus,
+      LicenseEntitlementType.AccountSpacePremium,
+    ].some(type => availableEntitlements.includes(type)),
+    virtualContributors: availableEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor),
+    innovationPacks: availableEntitlements.includes(LicenseEntitlementType.AccountInnovationPack),
+    innovationHubs: availableEntitlements.includes(LicenseEntitlementType.AccountInnovationHub),
+  };
+
+  const tryCreate = (resourceKey: AccountResourceGroupId, isEntitled: boolean, openDialog: () => void) => {
+    if (!isEntitled) {
+      setNoEntitlementResource(resourceKey);
+      return;
+    }
+    openDialog();
+  };
+
   const callbacks: OrgAccountMapperCallbacks = {
-    onCreateSpace: () => setCreateSpaceOpen(true),
+    onCreateSpace: () => tryCreate('spaces', entitled.spaces, () => setCreateSpaceOpen(true)),
     // Cast: `AccountInformation` returns `about.membership.myPrivileges`,
     // but `UserAccountProps` expects the full `SpaceAboutLightModel`
     // membership shape. The wizard only reads `id`, `host`, `spaces[].id`,
     // and `spaces[].authorization?.myPrivileges` at runtime — all present.
-    onCreateVc: () => startWizard(account as UserAccountProps | undefined, accountHostName),
-    onCreateInnovationPack: () => setCreatePackOpen(true),
-    onCreateInnovationHub: () => setCreateHubOpen(true),
+    onCreateVc: () =>
+      tryCreate('virtualContributors', entitled.virtualContributors, () =>
+        startWizard(account as UserAccountProps | undefined, accountHostName)
+      ),
+    onCreateInnovationPack: () => tryCreate('innovationPacks', entitled.innovationPacks, () => setCreatePackOpen(true)),
+    onCreateInnovationHub: () => tryCreate('innovationHubs', entitled.innovationHubs, () => setCreateHubOpen(true)),
     onManage: (_kind, _id, href) => {
       if (href) navigate(href);
     },
@@ -119,6 +151,23 @@ const CrdOrgAccountTab = () => {
     });
   };
 
+  // Per-resource description for the no-entitlement dialog. Keys are spelled
+  // out per branch so i18next's strict literal-string typing of `t()` is
+  // preserved (template-literal lookups don't narrow, and passing `t` as a
+  // parameter trips a TypeScript overload-resolution bug).
+  const noEntDescription = (() => {
+    switch (noEntitlementResource) {
+      case 'virtualContributors':
+        return t('shared.account.noEntitlement.description.virtualContributors');
+      case 'innovationPacks':
+        return t('shared.account.noEntitlement.description.innovationPacks');
+      case 'innovationHubs':
+        return t('shared.account.noEntitlement.description.innovationHubs');
+      default:
+        return t('shared.account.noEntitlement.description.spaces');
+    }
+  })();
+
   const props = mapOrgAccountToViewProps(account, loadingOrg || loadingAccount, t, callbacks);
 
   return (
@@ -136,6 +185,21 @@ const CrdOrgAccountTab = () => {
         onConfirm={handleConfirmDelete}
         onCancel={() => setPendingDelete(null)}
         loading={deletingAny}
+      />
+      <ConfirmationDialog
+        open={Boolean(noEntitlementResource)}
+        onOpenChange={open => {
+          if (!open) setNoEntitlementResource(null);
+        }}
+        title={t('shared.account.noEntitlement.title')}
+        description={noEntDescription}
+        confirmLabel={t('shared.account.noEntitlement.contactCta')}
+        cancelLabel={t('shared.account.noEntitlement.cancel')}
+        onConfirm={() => {
+          window.open(CONTACT_URL, '_blank', 'noopener,noreferrer');
+          setNoEntitlementResource(null);
+        }}
+        onCancel={() => setNoEntitlementResource(null)}
       />
       {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
       {account?.id && (

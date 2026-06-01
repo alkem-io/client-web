@@ -123,10 +123,7 @@ function LeadRow({ lead }: { lead: LeadItem }) {
           <AvatarImage src={lead.avatarUrl} alt={lead.name} className={cn(lead.type === 'org' && 'rounded-md')} />
         )}
         <AvatarFallback
-          className={cn(
-            'bg-white/15 text-primary-foreground text-badge font-bold',
-            lead.type === 'org' && 'rounded-md'
-          )}
+          className={cn('bg-white/15 text-primary-foreground text-badge', lead.type === 'org' && 'rounded-md')}
         >
           {lead.initials}
         </AvatarFallback>

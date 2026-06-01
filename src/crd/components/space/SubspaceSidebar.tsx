@@ -175,7 +175,7 @@ export function SubspaceSidebar({
                 style={{ background: 'color-mix(in srgb, var(--secondary) 30%, transparent)' }}
               >
                 <Icon className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
-                <span className="text-control font-medium text-foreground">{quickActionLabels[id]}</span>
+                <span className="text-control text-foreground">{quickActionLabels[id]}</span>
               </button>
             </li>
           ))}
@@ -206,7 +206,7 @@ export function SubspaceSidebar({
                 <AvatarImage src={virtualContributor.avatarUrl} alt={virtualContributor.name} />
               )}
               <AvatarFallback
-                className="text-badge font-bold"
+                className="text-badge"
                 style={{
                   background: 'color-mix(in srgb, var(--info) 15%, transparent)',
                   color: 'var(--info)',
@@ -216,7 +216,7 @@ export function SubspaceSidebar({
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-control font-medium text-foreground">{virtualContributor.name}</p>
+              <p className="text-control text-foreground">{virtualContributor.name}</p>
               {virtualContributor.description && (
                 <p className="line-clamp-2 mt-0.5 text-caption text-muted-foreground leading-snug">
                   {virtualContributor.description}

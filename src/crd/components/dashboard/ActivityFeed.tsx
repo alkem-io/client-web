@@ -92,7 +92,7 @@ export function ActivityFeed({
     >
       {title && (
         <div className="mb-4 flex items-center justify-between shrink-0">
-          <h3 className="text-subsection-title font-bold">{title}</h3>
+          <h3 className="text-subsection-title">{title}</h3>
         </div>
       )}
 

@@ -77,6 +77,13 @@ export const CombinedPlatformNotificationsSettings = ({
         label: t('pages.userNotificationsSettings.platformAdmin.settings.adminUserGlobalRoleChanged'),
       };
 
+      options.userEmailChanged = {
+        inAppChecked: currentPlatformAdminSettings?.userEmailChanged?.inApp || false,
+        emailChecked: currentPlatformAdminSettings?.userEmailChanged?.email || false,
+        pushChecked: currentPlatformAdminSettings?.userEmailChanged?.push || false,
+        label: t('pages.userNotificationsSettings.platformAdmin.settings.adminUserEmailChanged'),
+      };
+
       options.spaceCreated = {
         inAppChecked: currentPlatformAdminSettings?.spaceCreated?.inApp || false,
         emailChecked: currentPlatformAdminSettings?.spaceCreated?.email || false,
@@ -107,7 +114,13 @@ export const CombinedPlatformNotificationsSettings = ({
         options={Object.fromEntries(
           Object.entries(allOptions).filter(
             ([key]) =>
-              !['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'].includes(key)
+              ![
+                'userProfileCreated',
+                'userProfileRemoved',
+                'userGlobalRoleChanged',
+                'userEmailChanged',
+                'spaceCreated',
+              ].includes(key)
           )
         )}
         onChange={handlePlatformSettingsChange}
@@ -122,7 +135,13 @@ export const CombinedPlatformNotificationsSettings = ({
           <TripleSwitchSettingsGroup
             options={Object.fromEntries(
               Object.entries(allOptions).filter(([key]) =>
-                ['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'].includes(key)
+                [
+                  'userProfileCreated',
+                  'userProfileRemoved',
+                  'userGlobalRoleChanged',
+                  'userEmailChanged',
+                  'spaceCreated',
+                ].includes(key)
               )
             )}
             onChange={handlePlatformAdminSettingsChange}

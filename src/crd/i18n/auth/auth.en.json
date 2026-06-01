@@ -1,0 +1,60 @@
+{
+  "tagline": "Safe Spaces for Collaboration",
+  "continueWith": "or continue with",
+  "loading": "Loading",
+  "signIn": {
+    "title": "Sign in",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "No account?",
+    "signUp": "Sign up"
+  },
+  "signUp": {
+    "title": "Sign up",
+    "haveAccount": "Have an account?",
+    "signIn": "Sign in",
+    "intro": "Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.",
+    "acceptTerms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
+    "openTerms": "Open Terms of Use in a new tab",
+    "openPrivacy": "Open Privacy Policy in a new tab"
+  },
+  "recovery": {
+    "title": "Password recovery",
+    "intro": "Please enter your email address below to receive a recovery link that will allow you to reset your password.",
+    "resendNotice": "<strong>Haven't received the email?</strong><br/>Check your spam folder, confirm the address below is correct, then request a new recovery email once the timer ends."
+  },
+  "settings": {
+    "title": "Set new password"
+  },
+  "verification": {
+    "title": "Verify your email",
+    "intro": "Please check your inbox for an email with instructions to verify your address."
+  },
+  "verificationReminder": {
+    "title": "Verify your email",
+    "body": "The last step is to verify your email address. Please check your inbox for an email with instructions."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "generic": "An unexpected error occurred during authentication. Please try signing in again.",
+    "code": "Error code: {{code}}",
+    "backToSignIn": "Back to sign in"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "invalidEmail": "Please enter a valid email address."
+  },
+  "providers": {
+    "connectWith": "Continue with {{provider}}",
+    "fallback": "Other provider",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  }
+}

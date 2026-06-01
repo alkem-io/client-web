@@ -1,0 +1,60 @@
+{
+  "tagline": "Des espaces sûrs pour la collaboration",
+  "continueWith": "ou continuer avec",
+  "loading": "Chargement",
+  "signIn": {
+    "title": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas de compte ?",
+    "signUp": "S'inscrire"
+  },
+  "signUp": {
+    "title": "S'inscrire",
+    "haveAccount": "Vous avez un compte ?",
+    "signIn": "Se connecter",
+    "intro": "Alkemio est conçu pour servir la société. Veuillez lire et accepter les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy> avant de continuer.",
+    "acceptTerms": "J'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
+    "openTerms": "Ouvrir les Conditions d'utilisation dans un nouvel onglet",
+    "openPrivacy": "Ouvrir la Politique de confidentialité dans un nouvel onglet"
+  },
+  "recovery": {
+    "title": "Récupération du mot de passe",
+    "intro": "Saisissez votre adresse e-mail ci-dessous pour recevoir un lien de récupération qui vous permettra de réinitialiser votre mot de passe.",
+    "resendNotice": "<strong>Vous n'avez pas reçu l'e-mail ?</strong><br/>Vérifiez votre dossier spam, confirmez que l'adresse ci-dessous est correcte, puis demandez un nouvel e-mail de récupération une fois le minuteur écoulé."
+  },
+  "settings": {
+    "title": "Définir un nouveau mot de passe"
+  },
+  "verification": {
+    "title": "Vérifiez votre e-mail",
+    "intro": "Veuillez consulter votre boîte de réception pour un e-mail contenant les instructions de vérification de votre adresse."
+  },
+  "verificationReminder": {
+    "title": "Vérifiez votre e-mail",
+    "body": "La dernière étape consiste à vérifier votre adresse e-mail. Veuillez consulter votre boîte de réception pour un e-mail contenant les instructions."
+  },
+  "error": {
+    "title": "Une erreur s'est produite",
+    "generic": "Une erreur inattendue s'est produite lors de l'authentification. Veuillez réessayer de vous connecter.",
+    "code": "Code d'erreur : {{code}}",
+    "backToSignIn": "Retour à la connexion"
+  },
+  "fields": {
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "invalidEmail": "Veuillez saisir une adresse e-mail valide."
+  },
+  "providers": {
+    "connectWith": "Continuer avec {{provider}}",
+    "fallback": "Autre fournisseur",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  }
+}

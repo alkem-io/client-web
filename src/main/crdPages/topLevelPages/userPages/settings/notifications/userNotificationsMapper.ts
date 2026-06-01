@@ -229,6 +229,11 @@ export const mapUserNotifications = (
             'communicationMessageReceived'
           ),
         },
+        {
+          property: 'userEmailChanged',
+          label: t('user.notifications.rows.spaceAdmin.userEmailChanged'),
+          channels: resolveChannels(server.spaceAdmin?.userEmailChanged, overrides, 'spaceAdmin', 'userEmailChanged'),
+        },
       ],
     });
   }
@@ -341,6 +346,16 @@ export const mapUserNotifications = (
             overrides,
             'platformAdmin',
             'userGlobalRoleChanged'
+          ),
+        },
+        {
+          property: 'userEmailChanged',
+          label: t('user.notifications.rows.platformAdmin.userEmailChanged'),
+          channels: resolveChannels(
+            server.platformAdmin?.userEmailChanged,
+            overrides,
+            'platformAdmin',
+            'userEmailChanged'
           ),
         },
         {

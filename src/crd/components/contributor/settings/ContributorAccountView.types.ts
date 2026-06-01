@@ -53,17 +53,24 @@ export type AccountCapacity = {
   perPlan?: AccountSpacePlanCapacity;
 };
 
+/** Discriminator for the four contributor-account resource groups. */
+export type AccountResourceGroupId = 'spaces' | 'virtualContributors' | 'innovationPacks' | 'innovationHubs';
+
 export type AccountResourceGroup = {
-  /**
-   * Group key — drives layout variant (banner card grid for Spaces / VCs,
-   * compact list with Empty Slot fallbacks for Innovation Packs, full
-   * empty-state for Innovation Hubs).
-   */
-  groupId: 'spaces' | 'virtualContributors' | 'innovationPacks' | 'innovationHubs';
+  /** Group key — drives the per-group card visual (banner card for Spaces, compact icon card for VCs / Packs / Hubs). */
+  groupId: AccountResourceGroupId;
   /** Pre-localized section heading. */
   title: string;
   /** Visible only when the privilege resolves true. */
   canCreate: boolean;
+  /**
+   * True when the account's license still has an available entitlement for
+   * this resource (any of `AccountSpaceFree/Plus/Premium` for Spaces; the
+   * single matching entitlement for VC / Pack / Hub). Consumers gate the
+   * `onCreate` callback on this — when false, the integration page should
+   * redirect to the contact page rather than open the create dialog.
+   */
+  isEntitled: boolean;
   /** Pre-localized "Create" button label. */
   createButtonLabel: string;
   onCreate: () => void;
