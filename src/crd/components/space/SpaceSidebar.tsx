@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 import { type KnowledgeEntry, KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
@@ -16,6 +15,8 @@ type SubspaceItem = {
   initials: string;
   href: string;
   avatarUrl?: string;
+  isPrivate?: boolean;
+  isPinned?: boolean;
 };
 
 type VirtualContributorItem = {
@@ -47,6 +48,8 @@ type SpaceSidebarProps = {
   onShowCalendar?: () => void;
   onAddEvent?: () => void;
   onEventClick?: (event: EventItem) => void;
+  /** Home-variant only: the consumer renders <UpdatesSection> here (latest community update). */
+  updatesSlot?: ReactNode;
   // Knowledge
   knowledgeEntries?: KnowledgeEntry[];
   onKnowledgeEntryClick?: (id: string) => void;
@@ -60,7 +63,9 @@ type SpaceSidebarProps = {
   onVirtualContributorClick?: (href: string) => void;
   /** When false, the entire VC section is hidden even if `virtualContributors` is non-empty. */
   showVirtualContributors?: boolean;
-  guidelines?: string[];
+  /** Community-variant only: the consumer renders <CommunityGuidelinesBlock> here.
+   *  Kept as a slot so the sidebar stays free of guidelines data/edit wiring. */
+  guidelinesSlot?: ReactNode;
   // Extra
   children?: ReactNode;
   className?: string;
@@ -81,6 +86,7 @@ export function SpaceSidebar({
   onShowCalendar,
   onAddEvent,
   onEventClick,
+  updatesSlot,
   knowledgeEntries = [],
   onKnowledgeEntryClick,
   leads = [],
@@ -91,7 +97,7 @@ export function SpaceSidebar({
   virtualContributors = [],
   onVirtualContributorClick,
   showVirtualContributors = true,
-  guidelines = [],
+  guidelinesSlot,
   children,
   className,
   locale,
@@ -124,6 +130,8 @@ export function SpaceSidebar({
             onEventClick={onEventClick}
             locale={locale}
           />
+
+          {updatesSlot}
         </>
       )}
 
@@ -169,7 +177,7 @@ export function SpaceSidebar({
             />
           )}
 
-          {guidelines.length > 0 && <CommunityGuidelinesSection guidelines={guidelines} />}
+          {guidelinesSlot}
         </>
       )}
 

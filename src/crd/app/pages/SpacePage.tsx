@@ -11,6 +11,7 @@ import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
@@ -106,7 +107,11 @@ export function SpacePage() {
       onInvite={sidebarVariant === 'community' ? () => {} : undefined}
       canInvite={sidebarVariant === 'community'}
       virtualContributors={sidebarVariant === 'community' ? MOCK_SIDEBAR.virtualContributors : undefined}
-      guidelines={sidebarVariant === 'community' ? MOCK_SIDEBAR.guidelines : undefined}
+      guidelinesSlot={
+        sidebarVariant === 'community' ? (
+          <CommunityGuidelinesBlock description={MOCK_SIDEBAR.guidelines.map(g => `- ${g}`).join('\n')} />
+        ) : undefined
+      }
     >
       {sidebarVariant === 'knowledge' && (
         <CalloutSidebarList

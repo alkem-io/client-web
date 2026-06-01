@@ -33,33 +33,53 @@ export function VirtualContributorsSection({
         <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.virtualContributors')}</h3>
       </div>
       <div className="space-y-2">
-        {contributors.map(vc => (
-          <button
-            key={vc.name}
-            type="button"
-            className="flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            onClick={() => vc.href && onContributorClick?.(vc.href)}
-          >
-            <Avatar className="w-8 h-8 shrink-0">
-              {vc.avatarUrl && <AvatarImage src={vc.avatarUrl} alt={vc.name} />}
-              <AvatarFallback
-                style={{
-                  background: 'color-mix(in srgb, var(--info) 15%, transparent)',
-                  color: 'var(--info)',
-                }}
-                className="text-badge"
-              >
-                {vc.initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="text-body-emphasis text-foreground">{vc.name}</p>
-              {vc.description && (
-                <p className="line-clamp-2 text-caption text-muted-foreground mt-0.5">{vc.description}</p>
-              )}
+        {contributors.map(vc => {
+          const body = (
+            <>
+              <Avatar className="w-8 h-8 shrink-0">
+                {vc.avatarUrl && <AvatarImage src={vc.avatarUrl} alt={vc.name} />}
+                <AvatarFallback
+                  style={{
+                    background: 'color-mix(in srgb, var(--info) 15%, transparent)',
+                    color: 'var(--info)',
+                  }}
+                  className="text-badge"
+                >
+                  {vc.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="text-body-emphasis text-foreground">{vc.name}</p>
+                {vc.description && (
+                  <p className="line-clamp-2 text-caption text-muted-foreground mt-0.5">{vc.description}</p>
+                )}
+              </div>
+            </>
+          );
+
+          const rowClass =
+            'flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+
+          return vc.href ? (
+            <a
+              key={vc.name}
+              href={vc.href}
+              className={cn(rowClass, 'cursor-pointer')}
+              onClick={e => {
+                if (onContributorClick && vc.href) {
+                  e.preventDefault();
+                  onContributorClick(vc.href);
+                }
+              }}
+            >
+              {body}
+            </a>
+          ) : (
+            <div key={vc.name} className={rowClass}>
+              {body}
             </div>
-          </button>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
