@@ -71,7 +71,7 @@ export default function CrdSpaceCommunityPage() {
       references={guidelines.references}
       loading={guidelines.loading}
       canEdit={permissions.canUpdate}
-      onEditClick={() => navigate(`${buildSettingsUrl(space.about.profile.url)}/community`)}
+      onEditClick={() => navigate(`${buildSettingsUrl(space.about.profile.url)}/community#guidelines`)}
     />
   ) : undefined;
 

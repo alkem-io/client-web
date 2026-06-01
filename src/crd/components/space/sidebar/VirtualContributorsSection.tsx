@@ -4,6 +4,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
 type VirtualContributorItem = {
+  id: string;
   name: string;
   description?: string;
   avatarUrl?: string;
@@ -57,14 +58,16 @@ export function VirtualContributorsSection({
             </>
           );
 
-          const rowClass =
-            'flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+          const rowClass = 'flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md transition-colors';
 
           return vc.href ? (
             <a
-              key={vc.name}
+              key={vc.id}
               href={vc.href}
-              className={cn(rowClass, 'cursor-pointer')}
+              className={cn(
+                rowClass,
+                'cursor-pointer hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+              )}
               onClick={e => {
                 if (onContributorClick && vc.href) {
                   e.preventDefault();
@@ -75,7 +78,7 @@ export function VirtualContributorsSection({
               {body}
             </a>
           ) : (
-            <div key={vc.name} className={rowClass}>
+            <div key={vc.id} className={rowClass}>
               {body}
             </div>
           );

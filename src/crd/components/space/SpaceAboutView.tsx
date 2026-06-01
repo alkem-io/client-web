@@ -232,10 +232,7 @@ function MembersCard({
     <div className="bg-primary text-primary-foreground rounded-lg p-4 flex items-center justify-between gap-3 min-h-[72px]">
       <div className="flex items-center gap-3 min-w-0">
         {count !== undefined && (
-          <span
-            aria-hidden="true"
-            className="flex items-center justify-center size-8 rounded-full border-2 border-primary-foreground/80 text-body-emphasis"
-          >
+          <span className="flex items-center justify-center size-8 rounded-full border-2 border-primary-foreground/80 text-body-emphasis">
             {count}
           </span>
         )}
