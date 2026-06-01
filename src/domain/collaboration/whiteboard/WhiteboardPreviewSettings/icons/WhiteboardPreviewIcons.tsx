@@ -1,12 +1,10 @@
 import { SvgIcon, type SvgIconProps } from '@mui/material';
+import { ScanEye } from 'lucide-react';
 import WhiteboardPreviewModeAutoSvg from './WhiteboardPreviewModeAuto.svg?react';
 import WhiteboardPreviewModeCustomSvg from './WhiteboardPreviewModeCustom.svg?react';
 import WhiteboardPreviewModeFixedSvg from './WhiteboardPreviewModeFixed.svg?react';
-import WhiteboardPreviewSettingsSvg from './WhiteboardPreviewSettings.svg?react';
 
-const WhiteboardPreviewSettingsIcon = (props: SvgIconProps) => (
-  <SvgIcon component={WhiteboardPreviewSettingsSvg} inheritViewBox={true} {...props} />
-);
+const WhiteboardPreviewSettingsIcon = (props: SvgIconProps) => <ScanEye {...props} />;
 WhiteboardPreviewSettingsIcon.muiName = 'WhiteboardPreviewSettings';
 
 const WhiteboardPreviewModeAutoIcon = (props: SvgIconProps) => (
