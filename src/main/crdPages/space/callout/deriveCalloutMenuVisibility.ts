@@ -14,6 +14,12 @@ export type CalloutMenuPermissionsInput = {
   contributionsCount: number;
   canBeSavedAsTemplate: boolean;
   saveAsTemplateFeatureEnabled: boolean;
+  /**
+   * True when the callout's framing is a Collabora document. Saving a document
+   * callout as a template is not yet supported, so the menu item is shown but
+   * disabled (greyed out) rather than hidden — see `saveAsTemplateDisabled`.
+   */
+  isCollaboraDocument: boolean;
   hasMoveNeighbours: boolean;
 };
 
@@ -27,6 +33,12 @@ export type CalloutMenuPermissions = {
   showShare: boolean;
   showSortContributions: boolean;
   showSaveAsTemplate: boolean;
+  /**
+   * When `showSaveAsTemplate` is true, this marks the item as greyed-out /
+   * non-actionable. Set for document callouts, where save-as-template is not
+   * yet supported.
+   */
+  saveAsTemplateDisabled: boolean;
   movable: boolean;
 };
 
@@ -45,7 +57,10 @@ export type CalloutMenuPermissions = {
  * - Share is always shown.
  * - Save-as-Template additionally requires the local feature flag
  *   `CRD_SAVE_AS_TEMPLATE_ENABLED` (plan D12) and the backend-derived
- *   `canBeSavedAsTemplate` flag.
+ *   `canBeSavedAsTemplate` flag. Document (Collabora) callouts are an
+ *   exception: the item is still shown but greyed out
+ *   (`saveAsTemplateDisabled`) because saving them as templates is not yet
+ *   supported.
  * - Move items require `Update` on the calloutsSet (not the callout) **and**
  *   at least one neighbour to move to (hides entirely for single-callout feeds).
  */
@@ -62,7 +77,12 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
     showDelete: editable,
     showShare: true,
     showSortContributions: editable && input.contributionsEnabled && input.contributionsCount >= 2,
-    showSaveAsTemplate: editable && input.canBeSavedAsTemplate && input.saveAsTemplateFeatureEnabled,
+    // Documents show the item greyed out (`saveAsTemplateDisabled`) even though
+    // the backend `canBeSavedAsTemplate` flag may not cover them, so the
+    // affordance stays visible as "not yet supported".
+    showSaveAsTemplate:
+      editable && input.saveAsTemplateFeatureEnabled && (input.canBeSavedAsTemplate || input.isCollaboraDocument),
+    saveAsTemplateDisabled: editable && input.saveAsTemplateFeatureEnabled && input.isCollaboraDocument,
     movable: input.canMoveSet && input.hasMoveNeighbours,
   };
 };

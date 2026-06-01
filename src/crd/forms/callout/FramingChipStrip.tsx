@@ -28,8 +28,9 @@ export type FramingChipStripProps = {
   /** Called when the user activates a chip. Passing `'none'` means "deselect". */
   onChange: (next: FramingChipId | 'none') => void;
   /**
-   * When true, non-active chips are non-interactive and clicking the active chip
-   * fires `onChange('none')` (edit-mode "switch to None" flow — see plan D6).
+   * Edit-mode lock: the framing type is fixed once the callout exists, so every
+   * chip click (active or not) is a no-op and the remove affordance is hidden.
+   * The old UI never allowed changing or removing a callout's framing type.
    */
   locked?: boolean;
   /**
@@ -47,10 +48,9 @@ export function FramingChipStrip({ value, onChange, locked = false, disabledChip
 
   const handleClick = (chip: Chip) => {
     if (disabledChips?.[chip.id]) return;
-    if (locked) {
-      if (chip.id === value) onChange('none');
-      return;
-    }
+    // Edit-mode lock: the framing type is fixed once the callout exists — the
+    // old UI never allowed changing or removing it, so every click is a no-op.
+    if (locked) return;
     if (chip.id === value) {
       onChange('none');
     } else {
@@ -93,7 +93,8 @@ export function FramingChipStrip({ value, onChange, locked = false, disabledChip
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />
               <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-              {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+              {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
+              {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
           );
         })}

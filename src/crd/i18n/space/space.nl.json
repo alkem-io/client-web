@@ -261,12 +261,7 @@
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
-    "clearTypeConfirm": {
-      "title": "Dit inhoudstype verwijderen?",
-      "description": "Zodra je opslaat, wordt de bestaande inhoud verwijderd en kun je geen ander type meer aan deze post koppelen. Deze actie kan niet ongedaan worden gemaakt.",
-      "confirm": "Verwijderen"
-    }
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw."
   },
   "contribution": {
     "edit": "Bewerken",
@@ -406,6 +401,7 @@
     "share": "Delen",
     "sortContributions": "Bijdragen sorteren",
     "saveAsTemplate": "Opslaan als template",
+    "saveAsTemplateUnsupported": "Documenten opslaan als template wordt nog niet ondersteund",
     "moveToTop": "Naar boven verplaatsen",
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",

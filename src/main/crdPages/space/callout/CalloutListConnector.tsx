@@ -7,6 +7,8 @@ type CalloutListConnectorProps = {
   callouts: CalloutModelLightExtended[];
   calloutsSetId: string | undefined;
   canCreate?: boolean;
+  /** Set-level Update privilege — gates the per-callout move/reorder menu items. */
+  canReorder?: boolean;
   loading?: boolean;
   onCreateClick?: () => void;
 };
@@ -16,6 +18,7 @@ export function CalloutListConnector({
   callouts,
   calloutsSetId,
   canCreate,
+  canReorder,
   loading,
   onCreateClick,
 }: CalloutListConnectorProps) {
@@ -38,6 +41,7 @@ export function CalloutListConnector({
           calloutId={callout.id}
           calloutsSetId={calloutsSetId}
           orderedCalloutIds={orderedCalloutIds}
+          canReorder={canReorder}
         />
       ))}
     </SpaceFeed>
