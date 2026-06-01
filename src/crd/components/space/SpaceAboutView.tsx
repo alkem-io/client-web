@@ -46,7 +46,7 @@ type SpaceAboutViewProps = {
   contactHostSlot?: ReactNode;
   whyTitle?: string;
   whoTitle?: string;
-  /** Members count for the top-left card (`metrics` entry whose name === 'member'). */
+  /** Members count for the top-left card (`metrics` entry whose name === 'members'). */
   memberCount?: string;
   /** True when the viewer is already a member of this community — drives the UserCheck badge. */
   isMember?: boolean;

@@ -170,7 +170,7 @@ export function SpaceSettingsCommunityView({
       <Separator />
 
       {/* Space Members table */}
-      <div className="flex flex-col gap-4">
+      <div id="members" className="flex flex-col gap-4 scroll-mt-32">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h3 className="text-subsection-title flex items-center gap-2">
             {t('community.members.title')}

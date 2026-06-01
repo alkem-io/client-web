@@ -57,7 +57,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
   const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
     variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: !guidelinesId,
+    skip: !open || !guidelinesId,
   });
 
   const about = data?.lookup.space?.about;
