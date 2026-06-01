@@ -63,7 +63,7 @@ export const SearchResultSection = ({
                   type="button"
                   aria-label={t('search.a11y.filterBy', { category: label })}
                   className={cn(
-                    'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-control font-medium border border-border',
+                    'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-control border border-border',
                     'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isFilterActive ? 'text-primary bg-primary/10' : 'text-muted-foreground'
                   )}

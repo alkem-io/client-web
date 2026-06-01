@@ -11,6 +11,7 @@
     "innovationPacks": "Paquetes de Innovación",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
+    "navigation": "Navegación del panel",
     "pendingCount": "{{count}} pendiente(s)"
   },
   "recentSpaces": {

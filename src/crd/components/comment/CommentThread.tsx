@@ -61,9 +61,6 @@ export function CommentThread({
 
   return (
     <div className="space-y-4">
-      {/* Comment count header */}
-      <p className="text-body text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
-
       {/* Comment list */}
       {loading ? (
         <output
@@ -73,9 +70,7 @@ export function CommentThread({
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           <span>{t('comments.loading')}</span>
         </output>
-      ) : comments.length === 0 ? (
-        <p className="text-body text-muted-foreground py-4">{t('comments.empty')}</p>
-      ) : (
+      ) : comments.length === 0 ? null : (
         <ul className="space-y-4">
           {sortedTopLevel.map(comment => {
             const replies = repliesByParent.get(comment.id) ?? [];

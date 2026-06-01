@@ -19,7 +19,7 @@ export function ContributionAddCard({ label, icon: Icon, onClick, disabled, clas
         'group border-2 border-dashed border-muted-foreground/20 rounded-xl overflow-hidden',
         'hover:border-primary/50 hover:bg-muted/5 transition-all cursor-pointer',
         'flex flex-col items-center justify-center gap-2',
-        'text-muted-foreground hover:text-primary min-h-[180px]',
+        'text-muted-foreground hover:text-primary min-h-[160px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-muted-foreground/20 disabled:hover:bg-transparent disabled:hover:text-muted-foreground',
         className

@@ -24,7 +24,7 @@ import { LoginCard } from '@/crd/components/auth/LoginCard';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
-import { useTranslateDescriptor } from './useKratosMessageCopy';
+import { useKratosMessageCopy, useTranslateDescriptor } from './useKratosMessageCopy';
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 // Client-side message id for account lockout (HTTP 429). Mirrors `LoginPage.tsx`.
@@ -43,6 +43,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
   const translateDescriptor = useTranslateDescriptor();
+  const translateMessages = useKratosMessageCopy();
 
   // OIDC BFF entry (parity with the MUI `LoginPage`): when this page is reached
   // without a Kratos flow id the user is starting a fresh sign-in — hand off to
@@ -94,12 +95,19 @@ function CrdLoginPage({ flow }: { flow?: string }) {
       return undefined;
     }
     const base = translateDescriptor(flowDescriptorAdapter(loginFlow, 'login'));
+    // Redirected-in errors (e.g. the "account already exists" notice forwarded
+    // from the registration flow) arrive as raw Kratos text — run them through
+    // the same copy overrides as inline flow messages so the user sees Alkemio's
+    // wording, matching the MUI `LoginPage` → `KratosMessages` path.
     let messages: KratosMessage[] = kratosErrors
-      ? kratosErrors.map(error => ({
-          id: error.id,
-          type: error.type as KratosMessage['type'],
-          text: error.text,
-        }))
+      ? translateMessages(
+          kratosErrors.map(error => ({
+            id: error.id,
+            type: error.type as KratosMessage['type'],
+            text: error.text,
+            context: error.context as Record<string, unknown> | undefined,
+          }))
+        )
       : base.messages;
     if (isLockedOut) {
       messages = [

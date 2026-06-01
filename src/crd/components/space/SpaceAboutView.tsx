@@ -69,7 +69,7 @@ export function SpaceAboutView({
   const hasLeads = data.leadUsers.length > 0 || data.leadOrganizations.length > 0;
 
   return (
-    <div className={cn('max-w-3xl mx-auto space-y-8', className)}>
+    <div className={cn('space-y-8', className)}>
       {/* Header */}
       <div>
         <h1 className="text-page-title text-foreground">{data.name}</h1>
@@ -180,8 +180,27 @@ export function SpaceAboutView({
         data.provider && (
           <section>
             <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
-            <LeadCard lead={data.provider} />
-            {contactHostSlot && <div className="mt-3">{contactHostSlot}</div>}
+            <div className="flex items-center gap-3 p-4 border border-border rounded-lg">
+              <a
+                href={data.provider.href}
+                className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <Avatar className="w-10 h-10">
+                  {data.provider.avatarUrl && <AvatarImage src={data.provider.avatarUrl} alt={data.provider.name} />}
+                  <AvatarFallback className="text-caption">{data.provider.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="text-body-emphasis text-foreground">{data.provider.name}</p>
+                  {data.provider.location && (
+                    <p className="flex items-center gap-1 text-caption text-muted-foreground">
+                      <MapPin className="w-3 h-3" aria-hidden="true" />
+                      {data.provider.location}
+                    </p>
+                  )}
+                </div>
+              </a>
+              {contactHostSlot && <div className="shrink-0">{contactHostSlot}</div>}
+            </div>
           </section>
         )
       )}
@@ -222,8 +241,27 @@ export function SpaceAboutView({
       {hasLeads && data.provider && (
         <section>
           <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
-          <LeadCard lead={data.provider} />
-          {contactHostSlot && <div className="mt-3">{contactHostSlot}</div>}
+          <div className="flex items-center gap-3 p-4 border border-border rounded-lg">
+            <a
+              href={data.provider.href}
+              className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Avatar className="w-10 h-10">
+                {data.provider.avatarUrl && <AvatarImage src={data.provider.avatarUrl} alt={data.provider.name} />}
+                <AvatarFallback className="text-caption">{data.provider.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="text-body-emphasis text-foreground">{data.provider.name}</p>
+                {data.provider.location && (
+                  <p className="flex items-center gap-1 text-caption text-muted-foreground">
+                    <MapPin className="w-3 h-3" aria-hidden="true" />
+                    {data.provider.location}
+                  </p>
+                )}
+              </div>
+            </a>
+            {contactHostSlot && <div className="shrink-0">{contactHostSlot}</div>}
+          </div>
         </section>
       )}
     </div>
