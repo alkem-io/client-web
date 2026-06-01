@@ -300,17 +300,19 @@ function HostCard({
   return (
     <section className="bg-card border border-border rounded-lg p-4">
       <h2 className="text-body-emphasis text-foreground mb-3">{title}</h2>
-      <a
-        href={provider.href}
-        className="flex items-center gap-3 rounded-md hover:bg-muted/50 transition-colors p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Avatar className={cn(compact ? 'w-7 h-7' : 'w-10 h-10', 'shrink-0')}>
-          {provider.avatarUrl && <AvatarImage src={provider.avatarUrl} alt={provider.name} />}
-          <AvatarFallback className="text-caption">{provider.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <span className="text-body-emphasis text-foreground truncate">{provider.name}</span>
-      </a>
-      {contactHostSlot && <div className="mt-3">{contactHostSlot}</div>}
+      <div className="flex items-center gap-3">
+        <a
+          href={provider.href}
+          className="flex items-center gap-3 flex-1 min-w-0 rounded-md hover:bg-muted/50 transition-colors p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Avatar className={cn(compact ? 'w-7 h-7' : 'w-10 h-10', 'shrink-0')}>
+            {provider.avatarUrl && <AvatarImage src={provider.avatarUrl} alt={provider.name} />}
+            <AvatarFallback className="text-caption">{provider.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <span className="text-body-emphasis text-foreground truncate">{provider.name}</span>
+        </a>
+        {contactHostSlot && <div className="shrink-0">{contactHostSlot}</div>}
+      </div>
     </section>
   );
 }

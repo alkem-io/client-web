@@ -1,4 +1,4 @@
-import { BookOpen, Compass, FileText, Lightbulb, MessageCircle, Package, ShieldCheck } from 'lucide-react';
+import { BookOpen, Compass, FileText, Lightbulb, MessageCircle, Package, ShieldCheck, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
@@ -27,6 +27,7 @@ import { OrganizationProfileDemoPage } from './pages/OrganizationProfileDemoPage
 import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
 import { SubspacePage } from './pages/SubspacePage';
+import { TagsShowcasePage } from './pages/TagsShowcasePage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { UserProfileOtherDemoPage } from './pages/UserProfileOtherDemoPage';
 import { UserProfileSelfDemoPage } from './pages/UserProfileSelfDemoPage';
@@ -61,6 +62,7 @@ const MOCK_PLATFORM_NAVIGATION_ITEMS = [
   { icon: <Package className="h-4 w-4" />, label: 'Pack profile (preview)', href: '/innovation-packs/pack-1' },
   { icon: <Package className="h-4 w-4" />, label: 'Pack admin (preview)', href: '/innovation-packs/pack-1/settings' },
   { icon: <ShieldCheck className="h-4 w-4" />, label: 'Community guidelines (preview)', href: '/community-guidelines' },
+  { icon: <Tag className="h-4 w-4" />, label: 'Tags showcase', href: '/tags-showcase' },
 ];
 
 const MOCK_LANGUAGES = [
@@ -125,6 +127,7 @@ export function CrdApp() {
           <Route path="/user/alex-rivera" element={<UserProfileOtherDemoPage />} />
           <Route path="/organization/alkemio" element={<OrganizationProfileDemoPage />} />
           <Route path="/vc/datasynth-bot" element={<VCProfileDemoPage />} />
+          <Route path="/tags-showcase" element={<TagsShowcasePage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>

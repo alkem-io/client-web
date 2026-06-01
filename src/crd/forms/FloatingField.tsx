@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from 'lucide-react';
-import { useId, useState } from 'react';
+import { type FocusEvent, useId, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 
 export type FloatingFieldProps = {
@@ -20,6 +20,13 @@ export type FloatingFieldProps = {
    * for consumers that need to react to live values (e.g. disabling submit until
    * required fields are filled). */
   onValueChange?: (value: string) => void;
+  /**
+   * Localised message shown when an `type="email"` field is blurred with a value
+   * that's not a syntactically valid email (the native `validity.typeMismatch`).
+   * When omitted, no inline format error is shown — the on-submit `checkValidity`
+   * pass still catches the same case via the browser's native bubble.
+   */
+  invalidEmailMessage?: string;
 };
 
 /**
@@ -40,13 +47,27 @@ export function FloatingField({
   showPasswordLabel,
   hidePasswordLabel,
   onValueChange,
+  invalidEmailMessage,
 }: FloatingFieldProps) {
   const id = useId();
-  const errorId = `${id}-error`;
-  const hasError = !!errorMessage;
   const [visible, setVisible] = useState(false);
   const isPassword = type === 'password';
+  const isEmail = type === 'email';
   const inputType = isPassword && visible ? 'text' : type;
+  // Tracks the most recent blur on an email field — set when a non-empty value
+  // fails native email validation, cleared while the user is typing so the red
+  // border doesn't persist mid-edit. Re-evaluated on each blur.
+  const [emailFormatInvalid, setEmailFormatInvalid] = useState(false);
+  const inlineEmailError = emailFormatInvalid && invalidEmailMessage ? invalidEmailMessage : undefined;
+  const displayedError = errorMessage ?? inlineEmailError;
+  const hasError = !!displayedError;
+  const errorId = `${id}-error`;
+
+  const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+    if (!isEmail) return;
+    const value = event.target.value;
+    setEmailFormatInvalid(value !== '' && event.target.validity.typeMismatch);
+  };
 
   return (
     <div className="flex flex-col gap-1">
@@ -62,7 +83,13 @@ export function FloatingField({
           placeholder=" "
           aria-invalid={hasError || undefined}
           aria-describedby={hasError ? errorId : undefined}
-          onChange={onValueChange ? event => onValueChange(event.target.value) : undefined}
+          onChange={event => {
+            // Clear the inline format error while typing so the user isn't yelled
+            // at mid-edit; it re-evaluates on the next blur.
+            if (emailFormatInvalid) setEmailFormatInvalid(false);
+            onValueChange?.(event.target.value);
+          }}
+          onBlur={isEmail ? handleBlur : undefined}
           className={cn(
             // text-base md:text-sm — same iOS-zoom-prevention pattern shadcn's
             // <Input> uses; mobile inputs <16px trigger viewport zoom on focus.
@@ -109,7 +136,7 @@ export function FloatingField({
       </div>
       {hasError ? (
         <p id={errorId} className="text-caption text-destructive">
-          {errorMessage}
+          {displayedError}
         </p>
       ) : null}
     </div>

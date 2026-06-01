@@ -95,7 +95,7 @@ export function CompactSpaceCard({
       <div className="flex min-w-0 items-center gap-3 p-4">
         {initials && (
           <div
-            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-body-emphasis font-bold text-primary-foreground"
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-card-title text-primary-foreground"
             aria-hidden="true"
           >
             {initials}
