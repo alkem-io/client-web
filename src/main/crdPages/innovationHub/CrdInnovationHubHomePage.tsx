@@ -1,6 +1,7 @@
 import { PanelsTopLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import type { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import Loading from '@/core/ui/loading/Loading';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationHubHome } from '@/crd/components/innovationHub/InnovationHubHome';
@@ -57,14 +58,25 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
 
   const { data, loading, hub } = useInnovationHubHomeData(input);
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
-  useRedirectToHubSubdomain(hub?.subdomain, input.kind === 'byId', !loading && !resolverLoading);
+
+  // The URL resolver is only consulted on the `/hub/<slug>` path entry (to get the
+  // hub id). The subdomain entry already has the fully-resolved hub from the prop,
+  // so it must NOT block on `resolverLoading` — on a real hub subdomain the resolver
+  // never resolves `/home` to a handled type and its `loading` stays true forever.
+  const isPathEntry = input.kind === 'byId';
+  useRedirectToHubSubdomain(hub?.subdomain, isPathEntry, !loading && !resolverLoading);
+
+  // Browser tab title: "[Hub Name] | Alkemio". Covers both entry points —
+  // the subdomain branch (data from `innovationHubFromSubdomain`) and the
+  // `/hub/<slug>` path branch (resolved by id) both funnel through here.
+  usePageTitle(data?.name);
 
   // Top-bar breadcrumb: single `[PanelsTopLeft] HubName` chip, mirroring how
   // Space / User / Org public profile pages identify themselves in the topbar.
   const breadcrumbItems: BreadcrumbTrailItem[] = data ? [{ label: data.name, icon: PanelsTopLeft }] : [];
   useSetBreadcrumbs(breadcrumbItems);
 
-  if (resolverLoading || loading || !data) {
+  if ((isPathEntry && resolverLoading) || loading || !data) {
     return <Loading />;
   }
 

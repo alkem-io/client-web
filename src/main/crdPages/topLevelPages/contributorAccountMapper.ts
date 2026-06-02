@@ -9,7 +9,7 @@ import type {
   ContributorAccountViewProps,
 } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import { buildHubHomePath, buildHubSettingsPath } from '@/main/crdPages/innovationHub/lib/hubUrls';
+import { buildHubSettingsPath } from '@/main/crdPages/innovationHub/lib/hubUrls';
 
 export type AccountResourceKind = 'space' | 'virtualContributor' | 'innovationPack' | 'innovationHub';
 
@@ -219,11 +219,13 @@ export function mapAccountToViewProps(
     capacity: hubCapacity,
     items:
       account?.innovationHubs.map<AccountResourceCardItem>(hub => {
-        // Use the canonical `/hub/<nameID>` path for the card (public hub
-        // home) and `/hub/<nameID>/settings` for the kebab Manage action —
-        // never the server-provided `profile.url` (legacy `/innovation-hub/...`),
-        // and never `subdomain` (hostname identifier, can diverge from nameID).
-        const hubHomePath = buildHubHomePath(hub.nameID);
+        // Link the card to `/hub/<nameID>/settings`, not the public hub home.
+        // The public home redirects to the hub's subdomain in production, which
+        // shows a broken page when the subdomain isn't configured yet — so from
+        // the owner's account we land on settings, where the hub can be set up.
+        // Always use `nameID` (the route param the server resolves) — never the
+        // server-provided `profile.url` (legacy `/innovation-hub/...`), and never
+        // `subdomain` (hostname identifier, can diverge from nameID).
         const hubSettingsPath = buildHubSettingsPath(hub.nameID);
         return {
           id: hub.id,
@@ -231,7 +233,7 @@ export function mapAccountToViewProps(
           description: hub.profile.description,
           avatarUrl: hub.profile.banner?.uri || undefined,
           color: pickColorFromId(hub.id),
-          href: hubHomePath,
+          href: hubSettingsPath,
           actions: buildKebab('innovationHub', hub.id, hub.profile.displayName, hubSettingsPath),
         };
       }) ?? [],
