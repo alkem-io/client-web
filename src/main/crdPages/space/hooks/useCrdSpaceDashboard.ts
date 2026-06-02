@@ -1,3 +1,4 @@
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -29,6 +30,8 @@ export function useCrdSpaceDashboard() {
     callouts: calloutsSetProvided.callouts ?? [],
     calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
+    canReorderCallouts:
+      calloutsSetProvided.calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
     tabDescription: tabDescription ?? '',
     dashboardNavigation,
     flowStateForNewCallouts,

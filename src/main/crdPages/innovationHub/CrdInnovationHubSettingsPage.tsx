@@ -14,13 +14,13 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import type { HubAboutSectionKey, HubSettingsTabKey } from './CrdInnovationHubSettingsPage.types';
 import { mapInnovationHubToSettingsHeader } from './dataMappers/mapInnovationHubToSettingsHeader';
 import { CrdAddSpaceByUrlDialog } from './dialogs/CrdAddSpaceByUrlDialog';
 import { useHubAboutTabData } from './hooks/useHubAboutTabData';
 import { useHubAccessGuard } from './hooks/useHubAccessGuard';
 import { useHubSpacesTabData } from './hooks/useHubSpacesTabData';
-import { useHubWidthPreference } from './hooks/useHubWidthPreference';
 import { useInnovationHubSettingsData } from './hooks/useInnovationHubSettingsData';
 import { buildHubHomePath, buildHubSettingsPath } from './lib/hubUrls';
 
@@ -34,7 +34,7 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
   const guard = useHubAccessGuard(innovationHubId);
   const { hub, loading: hubLoading, refetch } = useInnovationHubSettingsData();
   useEnableSpaceFullWidth();
-  const { wide: fullWidth, toggle: toggleFullWidth } = useHubWidthPreference(hub?.id);
+  const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   const aboutData = useHubAboutTabData(hub);
   const spacesData = useHubSpacesTabData(hub, () => refetch());

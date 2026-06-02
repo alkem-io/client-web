@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 > **Workspace context.** This repo is part of the Alkemio polyrepo at
-> [alkem-io/alkemio-workspace](https://github.com/alkem-io/alkemio-workspace).
+> [alkem-io/agents-hq](https://github.com/alkem-io/agents-hq).
 > Cross-repo (vertical) feature specs live there under `specs/NNN-*/`. When
 > working on a `feat/NNN-...` branch in this repo, the matching workspace
 > spec is the single source of truth.
@@ -313,6 +313,8 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 ## prototype/ — Read-Only Reference (DO NOT MODIFY)
 
 The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
+
+**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The upstream prototype ships helper scripts under `prototype/utils/*.py` (font merging, corruption fixes) that leak in when the `prototype/` folder is synced. When syncing the prototype or resolving a merge, **strip every `*.py` file** before committing. `.coderabbit.yaml` re-includes `**/*.py` (despite the `prototype/**` review exclusion) and flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 

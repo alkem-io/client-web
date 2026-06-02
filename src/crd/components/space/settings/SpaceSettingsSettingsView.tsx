@@ -358,7 +358,7 @@ export function SpaceSettingsSettingsView({
                         <ActionIcon className="size-5" />
                       </div>
                       <div className="space-y-0.5">
-                        <Label htmlFor={`action-${action.key}`} className="text-control font-medium cursor-pointer">
+                        <Label htmlFor={`action-${action.key}`} className="text-control cursor-pointer">
                           {t(`settings.allowedActions.${action.key}`)}
                         </Label>
                         <p className="text-caption text-muted-foreground leading-snug max-w-[200px] sm:max-w-xs">

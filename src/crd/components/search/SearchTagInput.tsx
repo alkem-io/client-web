@@ -70,7 +70,7 @@ export function SearchTagInput({
           onKeyDown={handleKeyDown}
           placeholder={t('search.placeholder')}
           aria-label={t('search.a11y.searchInput')}
-          className="flex-1 bg-transparent outline-none text-base md:text-body text-foreground placeholder:text-muted-foreground"
+          className="flex-1 bg-transparent outline-none text-subheader md:text-body text-foreground placeholder:text-muted-foreground"
         />
 
         {/* Scope dropdown */}
@@ -83,7 +83,7 @@ export function SearchTagInput({
                   option: scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName,
                 })}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control font-medium whitespace-nowrap shrink-0 border border-primary',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control whitespace-nowrap shrink-0 border border-primary',
                   'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   'bg-primary text-primary-foreground'
                 )}
@@ -104,13 +104,13 @@ export function SearchTagInput({
             >
               <DropdownMenuItem
                 onSelect={() => onScopeChange('all')}
-                className="rounded-full px-3 py-1.5 text-control font-medium focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
+                className="rounded-full px-3 py-1.5 text-control focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
               >
                 {t('search.scopeAll')}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => onScopeChange(scope.currentSpaceName)}
-                className="rounded-full px-3 py-1.5 text-control font-medium focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
+                className="rounded-full px-3 py-1.5 text-control focus:bg-primary-foreground/15 focus:text-primary-foreground data-[highlighted]:bg-primary-foreground/15 data-[highlighted]:text-primary-foreground"
               >
                 {scope.currentSpaceName}
               </DropdownMenuItem>
@@ -135,7 +135,7 @@ export function SearchTagInput({
           {tags.map((tag, index) => (
             <li
               key={`tag-${tag}-${index}`}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-control font-medium bg-primary text-primary-foreground"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-control bg-primary text-primary-foreground"
             >
               {tag}
               <button

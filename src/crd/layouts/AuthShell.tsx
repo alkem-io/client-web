@@ -20,9 +20,9 @@ export type AuthShellProps = {
 
 /**
  * Full-page shell shared by every CRD authentication screen: the frosted
- * dashboard backdrop, a vertically-centred / right-aligned card slot
- * (centred on small viewports), and the shared CRD footer. Purely
- * presentational — behaviour arrives via props.
+ * dashboard backdrop, a vertically- and horizontally-centred card slot,
+ * and the shared CRD footer. Purely presentational — behaviour arrives
+ * via props.
  */
 export function AuthShell({
   children,
@@ -36,7 +36,7 @@ export function AuthShell({
     <div className="crd-root relative flex min-h-screen flex-col">
       <AuthBackdrop />
 
-      <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-12 md:justify-end md:px-12 lg:px-24 xl:px-32">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-12 md:px-12 lg:px-24 xl:px-32">
         <div className="w-full max-w-[420px]">{children}</div>
       </main>
 

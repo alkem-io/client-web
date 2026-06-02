@@ -5,7 +5,6 @@ import { PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/auth
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { CrdAuthRequiredPage } from '@/crd/components/error/CrdAuthRequiredPage';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
@@ -15,11 +14,12 @@ export function CrdAuthRequiredRoute() {
 
   const { t } = useTranslation('crd-error');
   const returnUrl = useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined;
-  const { locations } = useConfig();
 
   const signInHref = buildLoginUrl(returnUrl);
-  const domain = locations?.domain ? `https://${locations.domain}` : '';
-  const returnAsGuestHref = `${domain}/${TopLevelRoutePath.Home}`;
+  // Relative same-origin path: the auth-required page lives in the same app shell
+  // as /home, so the absolute `https://${locations.domain}/home` form previously
+  // used here was always either redundant (prod) or broken (dev — wrong port).
+  const returnAsGuestHref = `/${TopLevelRoutePath.Home}`;
 
   usePageTitle(t('authRequired.title'));
 

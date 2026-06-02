@@ -170,7 +170,7 @@ export function SpaceSettingsCommunityView({
       <Separator />
 
       {/* Space Members table */}
-      <div className="flex flex-col gap-4">
+      <div id="members" className="flex flex-col gap-4 scroll-mt-32">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h3 className="text-subsection-title flex items-center gap-2">
             {t('community.members.title')}
@@ -349,6 +349,7 @@ export function SpaceSettingsCommunityView({
 
       {communityGuidelinesSlot && (
         <SectionCard
+          id="guidelines"
           icon={Shield}
           title={t('community.guidelines.title')}
           description={t('community.guidelines.description')}
@@ -544,6 +545,7 @@ export function SpaceSettingsCommunityView({
 }
 
 function SectionCard({
+  id,
   icon: Icon,
   title,
   description,
@@ -551,6 +553,8 @@ function SectionCard({
   defaultOpen = false,
   children,
 }: {
+  /** Anchor id — when the URL hash matches `#${id}`, the card mounts open. */
+  id?: string;
   icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
   title: string;
   description: string;
@@ -558,9 +562,10 @@ function SectionCard({
   defaultOpen?: boolean;
   children: ReactNode;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const hashMatches = typeof window !== 'undefined' && !!id && window.location.hash === `#${id}`;
+  const [open, setOpen] = useState(defaultOpen || hashMatches);
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
+    <section id={id} className="rounded-xl border border-border bg-card p-6 scroll-mt-32">
       <button
         type="button"
         className="flex w-full items-start gap-4 text-left group rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"

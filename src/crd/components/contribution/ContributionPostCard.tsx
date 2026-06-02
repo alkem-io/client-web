@@ -39,14 +39,14 @@ export function ContributionPostCard({
       role="button"
       tabIndex={0}
       className={cn(
-        'w-full text-left p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'h-[180px] overflow-hidden flex flex-col',
+        'w-full text-left p-4 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'flex flex-col',
         className
       )}
       onClick={onClick}
       onKeyDown={handleKeyDown}
     >
-      <p className="text-body-emphasis text-foreground truncate">{title}</p>
+      <p className="text-card-title text-foreground truncate">{title}</p>
       {author && (
         <div className="flex items-center gap-2 mt-1.5">
           <Avatar className="w-5 h-5">
@@ -58,8 +58,8 @@ export function ContributionPostCard({
         </div>
       )}
       {description && (
-        <div className="mt-1.5 max-h-[3rem] overflow-hidden">
-          <MarkdownContent content={description} className="text-caption text-muted-foreground line-clamp-2" />
+        <div className="mt-2 max-h-[3.4rem] overflow-hidden">
+          <MarkdownContent content={description} className="text-body text-muted-foreground line-clamp-2" />
         </div>
       )}
       <div className="flex items-center gap-1.5 mt-auto pt-2 min-w-0">

@@ -22,7 +22,7 @@ import { LoginCard } from '@/crd/components/auth/LoginCard';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
-import { useTranslateDescriptor } from './useKratosMessageCopy';
+import { useKratosMessageCopy, useTranslateDescriptor } from './useKratosMessageCopy';
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 // Client-side message id for account lockout (HTTP 429). Mirrors `LoginPage.tsx`.
@@ -41,6 +41,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
   const translateDescriptor = useTranslateDescriptor();
+  const translateMessages = useKratosMessageCopy();
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
@@ -62,12 +63,19 @@ function CrdLoginPage({ flow }: { flow?: string }) {
       return undefined;
     }
     const base = translateDescriptor(flowDescriptorAdapter(loginFlow, 'login'));
+    // Redirected-in errors (e.g. the "account already exists" notice forwarded
+    // from the registration flow) arrive as raw Kratos text — run them through
+    // the same copy overrides as inline flow messages so the user sees Alkemio's
+    // wording, matching the MUI `LoginPage` → `KratosMessages` path.
     let messages: KratosMessage[] = kratosErrors
-      ? kratosErrors.map(error => ({
-          id: error.id,
-          type: error.type as KratosMessage['type'],
-          text: error.text,
-        }))
+      ? translateMessages(
+          kratosErrors.map(error => ({
+            id: error.id,
+            type: error.type as KratosMessage['type'],
+            text: error.text,
+            context: error.context as Record<string, unknown> | undefined,
+          }))
+        )
       : base.messages;
     if (isLockedOut) {
       messages = [
@@ -115,9 +123,19 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
 }
 
 /**
- * CRD login route — the un-gated replacement for the MUI `LoginRoute`.
+ * CRD login route — the replacement for the MUI `LoginRoute`.
  * Mirrors its structure: the login screen at `/` and the post-login
  * success handler at `/success`.
+ *
+ * A Kratos-initiated login arrives here with a `flow` id in the URL. This
+ * includes *refresh* (re-authentication) logins, which Kratos demands before
+ * privileged Settings changes — adding a passkey, changing the password —
+ * once the session is older than `privileged_session_max_age`. In that case
+ * the user already holds a (non-privileged) session, so the usual
+ * `NotAuthenticatedRoute` guard would bounce them to the dashboard and the
+ * re-auth form would never render, silently aborting the Settings change.
+ * Whenever a flow id is present we render the login page regardless of
+ * authentication state so the flow (incl. refresh / step-up) can complete.
  */
 export function LoginCrdRoute() {
   const params = useQueryParams();
@@ -130,16 +148,11 @@ export function LoginCrdRoute() {
     }
   }, [returnUrl]);
 
+  const loginPage = <CrdLoginPage flow={flow} />;
+
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <NotAuthenticatedRoute>
-            <CrdLoginPage flow={flow} />
-          </NotAuthenticatedRoute>
-        }
-      />
+      <Route path="/" element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
       <Route path="success" element={<LoginSuccessPage />} />
     </Routes>
   );

@@ -19,7 +19,8 @@
   },
   "recovery": {
     "title": "Recuperación de contraseña",
-    "intro": "Introduce tu correo electrónico a continuación para recibir un enlace de recuperación que te permitirá restablecer tu contraseña."
+    "intro": "Introduce tu correo electrónico a continuación para recibir un enlace de recuperación que te permitirá restablecer tu contraseña.",
+    "resendNotice": "<strong>¿No has recibido el correo?</strong><br/>Revisa tu carpeta de spam, confirma que la dirección de abajo es correcta y solicita un nuevo correo de recuperación cuando termine el temporizador."
   },
   "settings": {
     "title": "Establecer nueva contraseña"
@@ -44,7 +45,8 @@
     "firstName": "Nombre",
     "lastName": "Apellido",
     "showPassword": "Mostrar contraseña",
-    "hidePassword": "Ocultar contraseña"
+    "hidePassword": "Ocultar contraseña",
+    "invalidEmail": "Introduce una dirección de correo válida."
   },
   "providers": {
     "connectWith": "Continuar con {{provider}}",

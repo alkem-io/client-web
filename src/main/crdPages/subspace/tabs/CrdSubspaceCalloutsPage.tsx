@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
@@ -20,11 +20,17 @@ export default function CrdSubspaceCalloutsPage() {
   const activePhase = phases.find(p => p.id === activePhaseId);
   const classificationTagsets = activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [];
 
-  const { callouts, loading: calloutsLoading } = useCalloutsSet({
+  const {
+    callouts,
+    loading: calloutsLoading,
+    calloutsSetAuthorization,
+  } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
     skip: !calloutsSetId || phases.length === 0,
   });
+  // Reordering callouts requires Update on the calloutsSet (not the callout).
+  const canReorderCallouts = calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   const editFlowHref = subspaceUrl ? `${subspaceUrl}/settings/layout` : undefined;
 
@@ -61,6 +67,7 @@ export default function CrdSubspaceCalloutsPage() {
           callouts={callouts ?? []}
           calloutsSetId={calloutsSetId}
           canCreate={false}
+          canReorder={canReorderCallouts}
           loading={calloutsLoading}
         />
       )}

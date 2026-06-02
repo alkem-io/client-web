@@ -245,7 +245,7 @@ function ChannelHeader({ Icon, label }: { Icon: typeof Bell; label: string }) {
   return (
     <div className="flex w-12 flex-col items-center gap-1">
       <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
-      <span className="text-badge uppercase font-bold text-muted-foreground">{label}</span>
+      <span className="text-label text-muted-foreground">{label}</span>
     </div>
   );
 }

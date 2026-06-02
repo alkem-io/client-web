@@ -2,6 +2,7 @@ import { Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
+import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
@@ -12,6 +13,7 @@ import {
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
@@ -21,12 +23,13 @@ import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['translation', 'crd-space']);
-  const { space } = useSpace();
+  const { space, permissions } = useSpace();
   const navigate = useNavigate();
   const {
     callouts,
     calloutsSetId,
     canCreateCallout,
+    canReorderCallouts,
     tabDescription,
     flowStateForNewCallouts,
     leadUsers,
@@ -36,6 +39,7 @@ export default function CrdSpaceCommunityPage() {
     members,
     canInvite,
     communityId,
+    guidelines,
     loading,
   } = useCrdSpaceCommunity();
 
@@ -60,6 +64,17 @@ export default function CrdSpaceCommunityPage() {
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
+  const guidelinesSlot = guidelines.id ? (
+    <CommunityGuidelinesBlock
+      displayName={guidelines.displayName}
+      description={guidelines.description}
+      references={guidelines.references}
+      loading={guidelines.loading}
+      canEdit={permissions.canUpdate}
+      onEditClick={() => navigate(`${buildSettingsUrl(space.about.profile.url)}/community#guidelines`)}
+    />
+  ) : undefined;
+
   return (
     <>
       <SpaceSidebarPortal>
@@ -74,6 +89,8 @@ export default function CrdSpaceCommunityPage() {
           onInvite={handleInvite}
           virtualContributors={virtualContributors}
           showVirtualContributors={hasVcEntitlement}
+          onVirtualContributorClick={href => navigate(href)}
+          guidelinesSlot={guidelinesSlot}
         />
       </SpaceSidebarPortal>
 
@@ -102,7 +119,12 @@ export default function CrdSpaceCommunityPage() {
 
         <SpaceMembers members={members} />
 
-        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={loading} />
+        <CalloutListConnector
+          callouts={callouts}
+          calloutsSetId={calloutsSetId}
+          canReorder={canReorderCallouts}
+          loading={loading}
+        />
       </div>
 
       {canCreateCallout && (

@@ -10,6 +10,7 @@ const baseInput: CalloutMenuPermissionsInput = {
   contributionsCount: 0,
   canBeSavedAsTemplate: false,
   saveAsTemplateFeatureEnabled: false,
+  isCollaboraDocument: false,
   hasMoveNeighbours: false,
 };
 
@@ -88,6 +89,27 @@ describe('deriveCalloutMenuVisibility', () => {
       deriveCalloutMenuVisibility(withUpdate({ canBeSavedAsTemplate: true, saveAsTemplateFeatureEnabled: true }))
         .showSaveAsTemplate
     ).toBe(true);
+  });
+
+  it('document callout: Save-as-Template shown but greyed out (not yet supported)', () => {
+    const perms = deriveCalloutMenuVisibility(
+      withUpdate({
+        // Documents may not carry the backend flag, yet the item still appears…
+        canBeSavedAsTemplate: false,
+        saveAsTemplateFeatureEnabled: true,
+        isCollaboraDocument: true,
+      })
+    );
+    expect(perms.showSaveAsTemplate).toBe(true);
+    expect(perms.saveAsTemplateDisabled).toBe(true);
+  });
+
+  it('non-document callout: Save-as-Template is enabled (not greyed out)', () => {
+    const perms = deriveCalloutMenuVisibility(
+      withUpdate({ canBeSavedAsTemplate: true, saveAsTemplateFeatureEnabled: true })
+    );
+    expect(perms.showSaveAsTemplate).toBe(true);
+    expect(perms.saveAsTemplateDisabled).toBe(false);
   });
 
   it('Move items hidden when the feed has no neighbours (isTop === isBottom)', () => {

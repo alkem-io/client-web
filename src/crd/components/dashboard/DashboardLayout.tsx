@@ -1,6 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -80,19 +81,20 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
 
   return (
     <>
-      <div
-        className={cn(
-          'grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 max-w-[1600px] mx-auto px-4 sm:px-6 py-6',
-          className
-        )}
-      >
-        {/* Desktop sidebar */}
-        <nav aria-label="Dashboard navigation" className="hidden md:block">
-          {sidebar}
-        </nav>
+      <div className={cn('w-full px-6 md:px-8 py-6', className)}>
+        <div className="grid grid-cols-12 gap-6">
+          <div className={cn('col-span-12', contentColumnClass())}>
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6">
+              {/* Desktop sidebar */}
+              <nav aria-label={t('sidebar.navigation')} className="hidden md:block">
+                {sidebar}
+              </nav>
 
-        {/* Content. Bottom padding on mobile clears the fixed hamburger bar (h-14). */}
-        <div className="min-w-0 space-y-6 pb-14 md:pb-0">{children}</div>
+              {/* Content. Bottom padding on mobile clears the fixed hamburger bar (h-14). */}
+              <div className="min-w-0 space-y-6 pb-14 md:pb-0">{children}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Mobile-only fixed bottom bar — mirrors the SpaceNavigationTabs pattern. */}
@@ -134,7 +136,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
             id="dashboard-mobile-drawer"
             role="dialog"
             aria-modal="true"
-            aria-label="Dashboard navigation"
+            aria-label={t('sidebar.navigation')}
             className={cn(
               'absolute inset-y-0 left-0 w-[280px] bg-background shadow-xl overflow-y-auto transition-transform duration-200 ease-out',
               visible ? 'translate-x-0' : '-translate-x-full'

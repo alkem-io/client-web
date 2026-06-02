@@ -47,11 +47,27 @@ const useKratosFlow = <Name extends FlowTypeName>(
 
   const handleFlowError = (err: unknown) => {
     const response = (
-      err as { response?: { status: number; data: FlowTypes & { error?: { details: { redirect_to: string } } } } }
+      err as {
+        response?: {
+          status: number;
+          data: FlowTypes & {
+            error?: { id?: string; details?: { redirect_to?: string; redirect_browser_to?: string } };
+          };
+        };
+      }
     )?.response;
     if (response) {
-      if (response.status === 410) {
-        window.location.replace(response.data.error!.details.redirect_to);
+      const redirectTarget =
+        response.data.error?.details?.redirect_browser_to ?? response.data.error?.details?.redirect_to;
+      if (response.status === 410 && redirectTarget) {
+        window.location.replace(redirectTarget);
+      } else if (response.status === 403 && redirectTarget) {
+        // Kratos signals a stale-session re-auth requirement for privileged
+        // Settings changes (e.g. password change) as HTTP 403 with
+        // `error.id === 'session_refresh_required'` and a login-flow URL in
+        // `redirect_browser_to`. Follow the redirect so the user re-authenticates;
+        // Kratos will then return to the Settings flow.
+        window.location.replace(redirectTarget);
       } else if (response.status === 400 && response.data?.ui) {
         // Kratos v26.2.0+: OIDC account linking failures return HTTP 400
         // with the flow object containing error messages in the response body.
