@@ -1,5 +1,5 @@
 import { useDashboardSpacesQuery, useInnovationHubByIdQuery } from '@/core/apollo/generated/apollo-hooks';
-import type { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
+import { type InnovationHubHomeInnovationHubFragment, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type { InnovationHubHomeData } from '@/crd/components/innovationHub/InnovationHubHome';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -33,7 +33,17 @@ export const useInnovationHubHomeData = (input: UseInnovationHubHomeDataInput): 
   // as soon as the hub fragment resolves, and the curated Spaces section fills in
   // when `DashboardSpaces` returns. Mirrors the legacy pages, which never block
   // the whole page on the spaces query.
-  const { data: spacesData } = useDashboardSpacesQuery();
+  //
+  // Fetch ALL visibilities (not the default ACTIVE-only): the hub's curated
+  // `spaceListFilter` may include DEMO / INACTIVE / ARCHIVED Spaces, and those must
+  // still appear on the home. The mapper intersects this list with the curated ids,
+  // so only the hub's Spaces are ever shown — the extra visibilities just ensure none
+  // are dropped for being non-active.
+  const { data: spacesData } = useDashboardSpacesQuery({
+    variables: {
+      visibilities: [SpaceVisibility.Active, SpaceVisibility.Demo, SpaceVisibility.Inactive, SpaceVisibility.Archived],
+    },
+  });
 
   const { isAuthenticated } = useCurrentUserContext();
   const { locations } = useConfig();
