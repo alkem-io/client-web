@@ -29,12 +29,16 @@ export const useInnovationHubHomeData = (input: UseInnovationHubHomeDataInput): 
   const resolvedHub: InnovationHubHomeInnovationHubFragment | undefined =
     input.kind === 'byId' ? hubByIdData?.platform.innovationHub : input.hub;
 
-  const { data: spacesData, loading: spacesLoading } = useDashboardSpacesQuery();
+  // Spaces are secondary content: the page renders the hub (banner, description)
+  // as soon as the hub fragment resolves, and the curated Spaces section fills in
+  // when `DashboardSpaces` returns. Mirrors the legacy pages, which never block
+  // the whole page on the spaces query.
+  const { data: spacesData } = useDashboardSpacesQuery();
 
   const { isAuthenticated } = useCurrentUserContext();
   const { locations } = useConfig();
 
-  const loading = (byIdActive && hubByIdLoading) || spacesLoading;
+  const loading = byIdActive && hubByIdLoading;
 
   if (!resolvedHub) {
     return { data: undefined, hub: undefined, loading };
