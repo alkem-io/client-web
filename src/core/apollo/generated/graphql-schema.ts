@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -798,10 +788,12 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
+  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -5866,6 +5858,7 @@ export enum NotificationEvent {
   UserEmailChangeSpaceAdminNotification = 'USER_EMAIL_CHANGE_SPACE_ADMIN_NOTIFICATION',
   UserMentioned = 'USER_MENTIONED',
   UserMessage = 'USER_MESSAGE',
+  UserPasswordChangeSecuritySignal = 'USER_PASSWORD_CHANGE_SECURITY_SIGNAL',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -20073,36 +20066,6 @@ export type CommentsWithMessagesFragment = {
   vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
 
-export type RemoveReactionMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  reactionId: Scalars['MessageID']['input'];
-}>;
-
-export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
-
-export type ReplyToMessageMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  message: Scalars['String']['input'];
-  threadId: Scalars['MessageID']['input'];
-}>;
-
-export type ReplyToMessageMutation = {
-  __typename?: 'Mutation';
-  sendMessageReplyToRoom: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
-  };
-};
-
-export type VcInteractionsDetailsFragment = {
-  __typename?: 'VcInteraction';
-  threadID: string;
-  virtualContributorID: string;
-};
-
 export type ForumMentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -20276,6 +20239,36 @@ export type ForumMentionableContributorsQuery = {
       >;
     };
   };
+};
+
+export type RemoveReactionMutationVariables = Exact<{
+  roomId: Scalars['UUID']['input'];
+  reactionId: Scalars['MessageID']['input'];
+}>;
+
+export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
+
+export type ReplyToMessageMutationVariables = Exact<{
+  roomId: Scalars['UUID']['input'];
+  message: Scalars['String']['input'];
+  threadId: Scalars['MessageID']['input'];
+}>;
+
+export type ReplyToMessageMutation = {
+  __typename?: 'Mutation';
+  sendMessageReplyToRoom: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
+  };
+};
+
+export type VcInteractionsDetailsFragment = {
+  __typename?: 'VcInteraction';
+  threadID: string;
+  virtualContributorID: string;
 };
 
 export type MentionableContributorsQueryVariables = Exact<{
