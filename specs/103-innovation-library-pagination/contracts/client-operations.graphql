@@ -1,0 +1,128 @@
+# Client GraphQL operations — Paginated Innovation Library (design contract)
+#
+# These are the NEW client operation documents added under
+# src/main/crdPages/innovationLibrary/. They consume the server-101 fields
+# Library.templatesPaginated / Library.innovationPacksPaginated. The legacy
+# InnovationLibrary.graphql (unpaginated) is left UNCHANGED for the MUI page.
+#
+# Reuses existing fragments: TemplateProfileInfo, VisualModel, TagsetDetails,
+# InnovationPackProviderProfileWithAvatar (already in the repo).
+# Selection sets mirror the current InnovationLibrary query so the existing
+# mappers (mapTemplateToCardData, mapPackToInnovationPackCardData) and the
+# TemplatePreviewDialog keep their fields.
+#
+# Client pages FORWARD only: { first, after }. PAGE_SIZE = 25 (server default;
+# server caps at 100). Order is server-fixed newest-first (no orderBy).
+#
+# ARGS ARE FLAT (verified against the generated schema): the server resolver
+# uses NestJS `@Args() pagination: PaginationArgs` *without a name*, which spreads
+# the args inline — so the field takes `first/after/before/last` (+ `filter`)
+# directly, NOT a nested `pagination: {...}` input. Mirrors `spacesPaginated`.
+
+query InnovationLibraryTemplatesPaginated(
+  $first: Int!
+  $after: UUID
+  $filter: LibraryTemplatesFilterInput
+) {
+  platform {
+    id
+    library {
+      id
+      templatesPaginated(first: $first, after: $after, filter: $filter) {
+        total
+        templateResults {
+          template {
+            ...TemplateProfileInfo
+            callout {
+              id
+            }
+            contentSpace {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    ...VisualModel
+                  }
+                }
+              }
+            }
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+            provider {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+                url
+              }
+            }
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}
+
+query InnovationLibraryPacksPaginated($first: Int!, $after: UUID) {
+  platform {
+    id
+    library {
+      id
+      innovationPacksPaginated(first: $first, after: $after) {
+        total
+        innovationPacks {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            url
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            spaceTemplatesCount
+            communityGuidelinesTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}
+
+# CURSOR SCALAR (confirmed via codegen): the `after`/`before` field args are `UUID`
+# (so the operation variable is `$after: UUID`). `pageInfo.endCursor` is a nullable
+# `String`; passing it back into the `UUID` `after` variable is the same pattern
+# `SpaceExplorerAllSpaces` uses and works at runtime (UUID serializes as a string).
