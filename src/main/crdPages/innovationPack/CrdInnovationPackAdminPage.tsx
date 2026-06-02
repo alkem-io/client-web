@@ -39,6 +39,7 @@ export const CrdInnovationPackAdminPage = () => {
 
 const CrdInnovationPackAdminPageInner = () => {
   const { t } = useTranslation('crd-templates');
+  const { t: tDefault } = useTranslation();
   // Pack admin only ever EDITS an existing pack → its own bucket
   // (temporaryLocation: false). Creating a *template* inside the pack has no
   // template bucket yet → temporary against the pack bucket — mirrors MUI.
@@ -48,7 +49,11 @@ const CrdInnovationPackAdminPageInner = () => {
     templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
     descriptionUpload: mdEdit,
   });
-  usePageTitle(pack?.displayName);
+  // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
+  const pageTitle = pack?.displayName
+    ? `${pack.displayName}${tDefault('pages.titles.separator')}${tDefault('pages.titles.templateLibrary')}`
+    : undefined;
+  usePageTitle(pageTitle);
 
   if (notFound) {
     return <Error404 />;
