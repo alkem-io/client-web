@@ -11,8 +11,10 @@ import { buildMainDomainUrl, buildSettingsUrl, URL_SPACE_EXPLORER } from '@/main
 /**
  * Builds the curated, ordered Spaces list shown on the hub home: intersects the hub's
  * `spaceListFilter` (id list, from the home fragment) with the rich `DashboardSpaces`
- * shape, preserving the admin's configured order. Spaces present in `spaceListFilter`
- * but absent from `dashboardSpaces` (e.g. unpublished / out-of-visibility) are dropped.
+ * shape, preserving the admin's configured order. The caller fetches `DashboardSpaces`
+ * across ALL visibilities, so a curated Space is kept regardless of its own visibility
+ * (a `list` hub may include DEMO / INACTIVE Spaces) — only Spaces genuinely absent from
+ * the platform results (e.g. deleted / inaccessible) are dropped.
  */
 const buildCuratedSpaces = (
   hub: InnovationHubHomeInnovationHubFragment,
@@ -59,6 +61,10 @@ export const mapInnovationHubToHomeData = ({
     // Use `nameID` — the route is `/hub/:innovationHubNameId` and the server's
     // URL resolver expects nameID. `subdomain` is only for the hostname.
     settingsUrl: canEdit ? buildSettingsUrl(`/hub/${hub.nameID}`) : undefined,
+    // The home shows exactly the curated `spaceListFilter` (same set the admin
+    // manages in settings), preserving its order — never the full platform list.
+    // The caller passes `DashboardSpaces` fetched across all visibilities so the
+    // intersection keeps curated Spaces whatever their visibility.
     spaces: buildCuratedSpaces(hub, dashboardSpaces, authenticated),
     // Always points off the current host (subdomain or otherwise) to the canonical
     // platform Spaces explorer. `buildMainDomainUrl` tolerates `locations.domain`
