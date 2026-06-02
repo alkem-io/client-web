@@ -73,6 +73,15 @@
 
 **Checkpoint**: Library VC invites now carry an editable, pre-filled welcome message (MUI parity); account add unchanged; both permission-gated.
 
+> **Surface correction (user feedback):** The user's actual gap was on the **space Community page** (Home/Community/Subspaces/Knowledge), whose `VirtualContributorsSection` sidebar panel was read-only — MUI's `VirtualContributorsBlock` there has an "Invite Virtual Contributor" button opening `InviteVCsDialog` (account + library lists). The settings work above did not address that surface. Per the user's "single combined dialog (match MUI)" choice, a combined VC-invite dialog was added to the community page:
+
+- [X] T013 [US2] New pure CRD `src/crd/components/community/VirtualContributorInviteDialog.tsx` — single dialog, two sections (On account → add; In library → invite with a welcome-message step + Back), search, loading/busy/empty states, WCAG (`<output>` status, list semantics, icon-button `aria-label`s), labels via `useTranslation('crd-community')`.
+- [X] T014 [US2] New connector `src/main/crdPages/space/dialogs/VirtualContributorInviteConnector.tsx` — wires the dialog to `useCommunityAdmin` (`virtualContributorAdmin.onAdd` / `inviteContributors`) + `useVirtualContributorsAdmin` (`getAvailable` / `getAvailableInLibrary`), debounced search, pre-filled default welcome message.
+- [X] T015 [US2] `VirtualContributorsSection` gains optional `onInviteVc` (renders an "Invite Virtual Contributor" row + shows the panel even with 0 VCs); `SpaceSidebar` threads `onInviteVc` through; `CrdSpaceCommunityPage` gates it on `hasVcEntitlement && canInvite && roleSetId` and mounts the connector with `space.id` / `space.level` / `roleSetId` / display name.
+- [X] T016 [P] [US2] i18n: `crd-space` `sidebar.inviteVirtualContributor` + `crd-community` `inviteVc.*` block, all 6 languages (nl keeps "Virtual Contributor" English per glossary). Space i18n parity test passes.
+
+**Checkpoint (community page):** A space admin can now invite a VC from the space Community page VC panel — add an account VC or invite a library VC with a message — matching MUI. (Note: after add, the VC panel reflects the new member on the next role-set refetch.)
+
 ---
 
 ## Phase 5: User Story 3 - See the active Innovation Flow phase (Priority: P2)

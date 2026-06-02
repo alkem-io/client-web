@@ -64,6 +64,8 @@ type SpaceSidebarProps = {
   onVirtualContributorClick?: (href: string) => void;
   /** When false, the entire VC section is hidden even if `virtualContributors` is non-empty. */
   showVirtualContributors?: boolean;
+  /** When provided, the VC section shows an "Invite Virtual Contributor" entry (admins only). */
+  onInviteVc?: () => void;
   /** Community-variant only: the consumer renders <CommunityGuidelinesBlock> here.
    *  Kept as a slot so the sidebar stays free of guidelines data/edit wiring. */
   guidelinesSlot?: ReactNode;
@@ -98,6 +100,7 @@ export function SpaceSidebar({
   virtualContributors = [],
   onVirtualContributorClick,
   showVirtualContributors = true,
+  onInviteVc,
   guidelinesSlot,
   children,
   className,
@@ -171,10 +174,11 @@ export function SpaceSidebar({
             </div>
           )}
 
-          {showVirtualContributors && virtualContributors.length > 0 && (
+          {showVirtualContributors && (virtualContributors.length > 0 || onInviteVc) && (
             <VirtualContributorsSection
               contributors={virtualContributors}
               onContributorClick={onVirtualContributorClick}
+              onInviteVc={onInviteVc}
             />
           )}
 
