@@ -54,6 +54,10 @@
     "invite": "Invitar",
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
+    "updates": "Novedades",
+    "updatesSeeAll": "Ver todas las novedades",
+    "updatesEmpty": "Aún no se han publicado novedades.",
+    "updatesLoading": "Cargando novedades",
     "postIndex": "Índice de publicaciones",
     "readMore": "Leer más",
     "editDescription": "Editar descripción",
@@ -261,12 +265,7 @@
     "postUnsavedCloseCancel": "Seguir editando",
     "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
-    "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
-    "clearTypeConfirm": {
-      "title": "¿Quitar este tipo de contenido?",
-      "description": "Al guardar, el contenido existente se eliminará y no podrás adjuntar un tipo distinto a esta publicación. Esta acción no se puede deshacer.",
-      "confirm": "Quitar"
-    }
+    "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo."
   },
   "contribution": {
     "edit": "Editar",
@@ -338,6 +337,10 @@
     "who": "Quién",
     "why": "Por qué",
     "host": "Anfitrión",
+    "hostedBy": "Alojado por",
+    "members": "miembros",
+    "editMembers": "Editar miembros",
+    "leads": "Líderes",
     "leadUsers": "Usuarios líderes",
     "leadOrganizations": "Organizaciones líderes",
     "guidelines": "Directrices de la comunidad",
@@ -406,6 +409,7 @@
     "share": "Compartir",
     "sortContributions": "Ordenar contribuciones",
     "saveAsTemplate": "Guardar como plantilla",
+    "saveAsTemplateUnsupported": "Guardar documentos como plantilla aún no es compatible",
     "moveToTop": "Mover al inicio",
     "moveUp": "Mover arriba",
     "moveDown": "Mover abajo",
@@ -658,6 +662,7 @@
     },
     "altTextLabel": "Texto alternativo",
     "deleteImage": "Eliminar imagen",
+    "reorderImage": "Reordenar imagen",
     "dismissError": "Descartar error",
     "uploading": "Subiendo…",
     "downloadError": "No se pudo descargar la imagen.",
@@ -710,7 +715,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Añadir reacción",
-      "overflow": "+{{count}} más"
+      "overflow": "+{{count}} más",
+      "unknownReactors": "Desconocido"
     },
     "count": "{{count}} comentarios",
     "count_one": "1 comentario",

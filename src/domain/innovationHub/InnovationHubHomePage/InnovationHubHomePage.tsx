@@ -2,6 +2,7 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -27,6 +28,11 @@ import InnovationHubBanner from './InnovationHubBanner';
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
+
+  // Browser tab title: "[Hub Name] | Alkemio". This component is the single
+  // funnel for both the subdomain entry (via the Home dispatcher) and the
+  // `/hub/<slug>` path entry (via HubLandingPage).
+  usePageTitle(innovationHub.displayName);
 
   const { data: spacesData } = useDashboardSpacesQuery();
 

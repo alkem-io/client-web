@@ -1,4 +1,7 @@
-import { ImagePlus, X } from 'lucide-react';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
+import { GripVertical, ImagePlus, X } from 'lucide-react';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -31,6 +34,68 @@ type FieldError = { key: string; fileName: string; reason: 'type' | 'tooSmall' |
 
 const generateClientKey = (): string =>
   `mg-client-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
+function SortableTile({
+  id,
+  preview,
+  altText,
+  disabled,
+  dragLabel,
+  deleteLabel,
+  onDelete,
+}: {
+  id: string;
+  preview: string | undefined;
+  altText: string | undefined;
+  disabled: boolean;
+  dragLabel: string;
+  deleteLabel: string;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }}
+      className={cn(
+        'group/mgtile relative aspect-square rounded-md overflow-hidden border border-border bg-muted/30',
+        isDragging && 'opacity-50 z-10'
+      )}
+    >
+      {preview && (
+        <img
+          src={preview}
+          alt={altText ?? ''}
+          draggable={false}
+          className="w-full h-full object-cover pointer-events-none select-none"
+        />
+      )}
+      <button
+        type="button"
+        {...listeners}
+        {...attributes}
+        disabled={disabled}
+        className="absolute top-1 left-1 size-6 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity cursor-grab touch-none text-muted-foreground hover:text-foreground disabled:cursor-default disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label={dragLabel}
+      >
+        <GripVertical className="size-3.5" aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        className="absolute top-1 right-1 size-6 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity text-destructive hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        disabled={disabled}
+        onClick={onDelete}
+        aria-label={deleteLabel}
+      >
+        <X className="size-3.5" aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 export function MediaGalleryField({
   visuals,
@@ -85,7 +150,34 @@ export function MediaGalleryField({
     };
   }, []);
 
-  const sorted = [...visuals].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  // Sort ascending by sortOrder; visuals without a sortOrder sort last, matching
+  // the rest of CRD (mediaGalleryDataMapper, the upload hook's index fallback) so
+  // legacy visuals with no sortOrder aren't unexpectedly moved to the front.
+  const sorted = [...visuals].sort(
+    (a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER)
+  );
+  const itemIds = sorted.map(visualKey);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  // Reorder the displayed list and renumber every entry's sortOrder to its new
+  // index. Renumbering the whole list (not just the moved item) keeps the
+  // edit-mode diff against the server's originalSortOrders correct — the upload
+  // hook deletes + re-adds visuals whose sortOrder changed.
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = itemIds.indexOf(String(active.id));
+    const newIndex = itemIds.indexOf(String(over.id));
+    if (oldIndex === -1 || newIndex === -1) return;
+    const reordered = [...sorted];
+    const [moved] = reordered.splice(oldIndex, 1);
+    reordered.splice(newIndex, 0, moved);
+    onVisualsChange(reordered.map((visual, index) => ({ ...visual, sortOrder: index })));
+  };
 
   const nextSortOrder = (): number => {
     const max = visuals.reduce((m, v) => Math.max(m, v.sortOrder ?? 0), 0);
@@ -196,36 +288,27 @@ export function MediaGalleryField({
 
       {/* Tile grid */}
       {sorted.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {sorted.map(visual => {
-            const key = visualKey(visual);
-            const preview = getPreviewUrl(visual);
-            return (
-              <div
-                key={key}
-                className="group/mgtile relative aspect-square rounded-md overflow-hidden border border-border bg-muted/30"
-              >
-                {preview && (
-                  <img
-                    src={preview}
-                    alt={visual.altText ?? ''}
-                    draggable={false}
-                    className="w-full h-full object-cover pointer-events-none select-none"
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {sorted.map(visual => {
+                const key = visualKey(visual);
+                return (
+                  <SortableTile
+                    key={key}
+                    id={key}
+                    preview={getPreviewUrl(visual)}
+                    altText={visual.altText}
+                    disabled={disabled || uploading}
+                    dragLabel={t('mediaGallery.reorderImage')}
+                    deleteLabel={t('mediaGallery.deleteImage')}
+                    onDelete={() => handleDelete(visual)}
                   />
-                )}
-                <button
-                  type="button"
-                  className="absolute top-1 right-1 size-6 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity text-destructive hover:bg-destructive hover:text-destructive-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  disabled={disabled || uploading}
-                  onClick={() => handleDelete(visual)}
-                  aria-label={t('mediaGallery.deleteImage')}
-                >
-                  <X className="size-3.5" aria-hidden="true" />
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
