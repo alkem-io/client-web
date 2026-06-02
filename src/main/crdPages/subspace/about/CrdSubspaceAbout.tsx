@@ -57,7 +57,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
   const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
     variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: !guidelinesId,
+    skip: !open || !guidelinesId,
   });
 
   const about = data?.lookup.space?.about;
@@ -130,6 +130,8 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const showApplyButton = !isMember && !applyLoading;
   const joinSlot = showApplyButton ? <SpaceAboutApplyButton {...buttonProps} /> : undefined;
 
+  const memberCount = aboutData.metrics.find(m => m.name === 'members')?.value;
+
   const contactHostSlot = provider ? (
     <a
       href={provider.href}
@@ -152,7 +154,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       }))}
       loading={guidelinesLoading}
       canEdit={permissions.canUpdate}
-      onEditClick={() => navigate(`${buildSettingsUrl(profileUrl)}/community`)}
+      onEditClick={() => navigate(`${buildSettingsUrl(profileUrl)}/community#guidelines`)}
     />
   ) : undefined;
 
@@ -173,10 +175,13 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
         joinSlot={joinSlot}
         guidelinesSlot={guidelinesSlot}
         contactHostSlot={contactHostSlot}
+        memberCount={memberCount}
+        isMember={isMember}
         onEditDescription={() => navigate(`${buildSettingsUrl(profileUrl)}/about#description`)}
         onEditWhy={() => navigate(`${buildSettingsUrl(profileUrl)}/about#why`)}
         onEditWho={() => navigate(`${buildSettingsUrl(profileUrl)}/about#who`)}
-        onEditReferences={() => navigate(`${buildSettingsUrl(profileUrl)}/about`)}
+        onEditReferences={() => navigate(`${buildSettingsUrl(profileUrl)}/about#references`)}
+        onEditMembers={() => navigate(`${buildSettingsUrl(profileUrl)}/community#members`)}
       />
       {dialogs}
     </>

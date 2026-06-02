@@ -36,7 +36,7 @@ export function ForumDiscussionListHeader({
     <div className={cn('flex flex-col gap-3', className)}>
       {/* Row 1 — title + initiate (prototype: count left, button right). */}
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-card-title font-bold text-foreground">{countLabel}</h2>
+        <h2 className="text-card-title text-foreground">{countLabel}</h2>
         {initiateSlot ? <div className="flex items-center gap-2">{initiateSlot}</div> : null}
       </div>
       {/* Row 2 — search + sort (prototype: search grows, sort fixed-width). */}

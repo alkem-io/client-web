@@ -101,7 +101,7 @@ export function ForumInitiateDiscussionDialog({
               onClick={onSubmit}
               aria-busy={busy}
               disabled={busy || submitDisabled}
-              className="text-control font-medium"
+              className="text-control"
             >
               {busy ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : null}
               {submitLabel}

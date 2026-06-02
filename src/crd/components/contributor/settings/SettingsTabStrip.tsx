@@ -71,7 +71,7 @@ export function SettingsTabStrip<TTabId extends string>({
             onClick={() => onTabChange(id)}
             className={cn(
               'inline-flex shrink-0 items-center gap-2 whitespace-nowrap pb-4',
-              'text-control font-medium border-b-2 -mb-px transition-colors',
+              'text-control border-b-2 -mb-px transition-colors',
               'outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
               isActive
                 ? 'border-primary text-primary'

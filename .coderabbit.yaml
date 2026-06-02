@@ -90,5 +90,12 @@ reviews:
     - path: "**/*.md"
       instructions: |
         Ensure documentation stays current, references the constitution hierarchy, and captures new risks or mitigations.
+    - path: "**/*.py"
+      instructions: |
+        This is a JavaScript/TypeScript repository — Python files do not belong here, anywhere.
+        The upstream `prototype/` design reference ships helper scripts under `prototype/utils/*.py`
+        (font merging, corruption fixes) that leak in when the prototype folder is synced.
+        Flag EVERY added or modified `.py` file as a blocking issue and request its removal before merge.
+        Do not review the script's logic — the only acceptable resolution is deleting the file.
 chat:
   auto_reply: true

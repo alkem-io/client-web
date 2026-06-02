@@ -7,12 +7,14 @@ import useNavigate from '@/core/routing/useNavigate';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
+import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
@@ -32,9 +34,11 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
-import { useSpaceWidthPreference } from '../../space/layout/useSpaceWidthPreference';
+import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
+import { useCrdSpaceLocale } from '../../space/hooks/useCrdSpaceLocale';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
 import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
@@ -65,7 +69,10 @@ export default function CrdSubspacePageLayout() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [updatesOpen, setUpdatesOpen] = useState(false);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
+  const locale = useCrdSpaceLocale();
+  const communityUpdates = useCrdCommunityUpdates(data.communityId);
   // Wire the Create-Subspace template picker with this subspace's own templates
   // set + default subspace template (D21 / FR-031), matching the Settings flow.
   // Account stays undefined at L1/L2 — the same as the Settings scope.
@@ -73,7 +80,7 @@ export default function CrdSubspacePageLayout() {
     templatesSetId: data.templatesSetId,
     defaultTemplateId: data.defaultSubspaceTemplateId,
   });
-  const { wide: fullWidth, toggle: toggleFullWidth } = useSpaceWidthPreference(data.subspaceId);
+  const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
   // doesn't go through any handler in this layout. Watch pathname instead and
@@ -170,6 +177,17 @@ export default function CrdSubspacePageLayout() {
       navigate(href);
     },
     onCreateSubspace: handleCreateSubspace,
+    updatesSlot: (
+      <UpdatesSection
+        latest={communityUpdates.latest}
+        total={communityUpdates.total}
+        onSeeAll={() => {
+          setMobileMenuOpen(false);
+          setUpdatesOpen(true);
+        }}
+        locale={locale}
+      />
+    ),
   };
 
   // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
@@ -331,6 +349,14 @@ export default function CrdSubspacePageLayout() {
       />
 
       <CrdSubspaceAbout open={aboutOpen} onClose={() => setAboutOpen(false)} />
+
+      <CommunityUpdatesDialog
+        open={updatesOpen}
+        onOpenChange={setUpdatesOpen}
+        updates={communityUpdates.updates}
+        loading={communityUpdates.loading}
+        locale={locale}
+      />
 
       {/* Share dialog — opened from the SubspaceHeader share icon. Mirrors the L0 wiring in
           CrdSpacePageLayout: URL + clipboard copy, plus a "Share on Alkemio" sub-view. */}

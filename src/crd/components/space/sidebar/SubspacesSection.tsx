@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -9,6 +9,10 @@ type SubspaceItem = {
   initials: string;
   href: string;
   avatarUrl?: string;
+  /** Renders a lock icon to flag a private (non-public) subspace. */
+  isPrivate?: boolean;
+  /** Renders a pin icon to flag a pinned subspace. */
+  isPinned?: boolean;
 };
 
 type SubspacesSectionProps = {
@@ -32,6 +36,7 @@ export function SubspacesSection({
   className,
 }: SubspacesSectionProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tCommon } = useTranslation('crd-common');
 
   // When the consumer wires a "Show all" affordance, cap the list at 6 and
   // surface the top-right link. Without a wire-up (e.g. the dedicated Subspaces
@@ -104,10 +109,24 @@ export function SubspacesSection({
                   </Avatar>
                   <span className="text-body-emphasis text-foreground">{subspace.name}</span>
                 </div>
-                <ChevronRight
-                  className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-hidden="true"
-                />
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {subspace.isPinned && (
+                    <span className="text-muted-foreground">
+                      <Pin className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span className="sr-only">{tCommon('pinned')}</span>
+                    </span>
+                  )}
+                  {subspace.isPrivate && (
+                    <span className="text-muted-foreground">
+                      <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span className="sr-only">{tCommon('private')}</span>
+                    </span>
+                  )}
+                  <ChevronRight
+                    className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-hidden="true"
+                  />
+                </div>
               </a>
             </li>
           ))}

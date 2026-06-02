@@ -1,5 +1,5 @@
 import { Activity, Bot, CalendarDays, Info, List, PanelLeftClose, PanelLeftOpen, Users } from 'lucide-react';
-import type { ComponentType, SVGProps } from 'react';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -12,6 +12,8 @@ type SubspaceWidgetItem = {
   initials: string;
   href: string;
   avatarUrl?: string;
+  isPrivate?: boolean;
+  isPinned?: boolean;
 };
 
 export type SubspaceLeadData = {
@@ -65,6 +67,8 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
    */
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  /** Expanded view only: the consumer renders <UpdatesSection> here (latest community update). */
+  updatesSlot?: ReactNode;
   className?: string;
 };
 
@@ -90,6 +94,7 @@ export function SubspaceSidebar({
   onCreateSubspace,
   collapsed,
   onToggleCollapse,
+  updatesSlot,
   className,
 }: SubspaceSidebarProps) {
   const { t } = useTranslation('crd-subspace');
@@ -131,6 +136,42 @@ export function SubspaceSidebar({
             </li>
           ))}
         </ul>
+
+        {/* Nested subspaces stay reachable while collapsed — rendered as avatar
+            tiles below the quick-action rail (L2s on an L1 page). */}
+        {subspaces && subspaces.length > 0 && (
+          <>
+            <div className="w-6 border-t border-border my-1" aria-hidden="true" />
+            <p className="sr-only">{t('sidebar.quickActions.subspaces')}</p>
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+            <ul role="list" className="flex flex-col items-center gap-1">
+              {subspaces.map(subspace => (
+                <li key={subspace.href}>
+                  <a
+                    href={subspace.href}
+                    onClick={e => {
+                      if (onSubspaceClick) {
+                        e.preventDefault();
+                        onSubspaceClick(subspace.href);
+                      }
+                    }}
+                    aria-label={subspace.name}
+                    title={subspace.name}
+                    className="flex items-center justify-center size-9 rounded-md transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Avatar className="size-7 rounded-md">
+                      {subspace.avatarUrl && (
+                        <AvatarImage src={subspace.avatarUrl} alt="" className="rounded-md object-cover" />
+                      )}
+                      <AvatarFallback className="rounded-md text-badge">{subspace.initials}</AvatarFallback>
+                    </Avatar>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </aside>
     );
   }
@@ -175,7 +216,7 @@ export function SubspaceSidebar({
                 style={{ background: 'color-mix(in srgb, var(--secondary) 30%, transparent)' }}
               >
                 <Icon className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
-                <span className="text-control font-medium text-foreground">{quickActionLabels[id]}</span>
+                <span className="text-control text-foreground">{quickActionLabels[id]}</span>
               </button>
             </li>
           ))}
@@ -206,7 +247,7 @@ export function SubspaceSidebar({
                 <AvatarImage src={virtualContributor.avatarUrl} alt={virtualContributor.name} />
               )}
               <AvatarFallback
-                className="text-badge font-bold"
+                className="text-badge"
                 style={{
                   background: 'color-mix(in srgb, var(--info) 15%, transparent)',
                   color: 'var(--info)',
@@ -216,7 +257,7 @@ export function SubspaceSidebar({
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-control font-medium text-foreground">{virtualContributor.name}</p>
+              <p className="text-control text-foreground">{virtualContributor.name}</p>
               {virtualContributor.description && (
                 <p className="line-clamp-2 mt-0.5 text-caption text-muted-foreground leading-snug">
                   {virtualContributor.description}
@@ -226,6 +267,8 @@ export function SubspaceSidebar({
           </a>
         </section>
       )}
+
+      {updatesSlot}
     </aside>
   );
 }

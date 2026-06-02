@@ -10,6 +10,12 @@ type RecentSpacesProps = {
   loading?: boolean;
   hasHomeSpace: boolean;
   homeSpaceSettingsHref?: string;
+  /**
+   * Maximum cards shown in the single row, counting the pin / home-space slot.
+   * The grid is `lg:grid-cols-4`, so 4 keeps everything on one row; the rest is
+   * reachable via "Explore all". Default 4.
+   */
+  maxItems?: number;
   onExploreAllClick?: () => void;
   onPinClick?: () => void;
   className?: string;
@@ -20,11 +26,18 @@ export function RecentSpaces({
   loading,
   hasHomeSpace,
   homeSpaceSettingsHref,
+  maxItems = 4,
   onExploreAllClick,
   onPinClick,
   className,
 }: RecentSpacesProps) {
   const { t } = useTranslation('crd-dashboard');
+
+  // The pin-button placeholder (shown only when there is no home space) takes one
+  // of the row's slots, so the space cards fill the remainder. When a home space
+  // exists it is already the first entry in `spaces`, so no slot is reserved here.
+  const placeholderShown = !hasHomeSpace && !!homeSpaceSettingsHref;
+  const visibleSpaces = spaces.slice(0, Math.max(0, maxItems - (placeholderShown ? 1 : 0)));
 
   return (
     <section className={cn('space-y-4', className)}>
@@ -44,11 +57,11 @@ export function RecentSpaces({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {loading ? (
           // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
-          Array.from({ length: 4 }).map((_, i) => <CompactSpaceCardSkeleton key={i} />)
+          Array.from({ length: maxItems }).map((_, i) => <CompactSpaceCardSkeleton key={i} />)
         ) : (
           <>
-            {!hasHomeSpace && homeSpaceSettingsHref && <HomeSpacePlaceholder settingsHref={homeSpaceSettingsHref} />}
-            {spaces.map(space => (
+            {placeholderShown && homeSpaceSettingsHref && <HomeSpacePlaceholder settingsHref={homeSpaceSettingsHref} />}
+            {visibleSpaces.map(space => (
               <CompactSpaceCard key={space.id} {...space} onPinClick={space.isHomeSpace ? onPinClick : undefined} />
             ))}
           </>

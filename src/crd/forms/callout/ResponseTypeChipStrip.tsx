@@ -25,8 +25,9 @@ export type ResponseTypeChipStripProps = {
   /** Called when the user activates a chip. `'none'` means "deselect". */
   onChange: (next: ResponseTypeChipId | 'none') => void;
   /**
-   * Edit-mode lock: clicking a non-active chip is a no-op; clicking the
-   * active chip fires `onChange('none')` for the framing-to-None confirmation.
+   * Edit-mode lock: the response type is fixed once the callout exists, so
+   * every chip click (active or not) is a no-op and the remove affordance is
+   * hidden. The old UI never allowed changing or removing a callout's type.
    */
   locked?: boolean;
   className?: string;
@@ -37,10 +38,9 @@ export function ResponseTypeChipStrip({ value, onChange, locked = false, classNa
 
   const handleClick = (chip: Chip) => {
     if (chip.disabled) return;
-    if (locked) {
-      if (chip.id === value) onChange('none');
-      return;
-    }
+    // Edit-mode lock: the response type is fixed once the callout exists — the
+    // old UI never allowed changing or removing it, so every click is a no-op.
+    if (locked) return;
     if (chip.id === value) {
       onChange('none');
     } else {
@@ -81,7 +81,8 @@ export function ResponseTypeChipStrip({ value, onChange, locked = false, classNa
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />
               <span>{t(chip.labelKey as 'contributionSettings.types.link')}</span>
-              {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+              {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
+              {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
             </button>
           );
         })}

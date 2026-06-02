@@ -54,6 +54,10 @@
     "invite": "Uitnodigen",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Communityrichtlijnen",
+    "updates": "Updates",
+    "updatesSeeAll": "Alle updates bekijken",
+    "updatesEmpty": "Er zijn nog geen updates geplaatst.",
+    "updatesLoading": "Updates laden",
     "postIndex": "$t(common.Callout)-index",
     "readMore": "Lees meer",
     "editDescription": "Beschrijving bewerken",
@@ -261,12 +265,7 @@
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
-    "clearTypeConfirm": {
-      "title": "Dit inhoudstype verwijderen?",
-      "description": "Zodra je opslaat, wordt de bestaande inhoud verwijderd en kun je geen ander type meer aan deze post koppelen. Deze actie kan niet ongedaan worden gemaakt.",
-      "confirm": "Verwijderen"
-    }
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw."
   },
   "contribution": {
     "edit": "Bewerken",
@@ -338,6 +337,10 @@
     "who": "Wie",
     "why": "Waarom",
     "host": "Host",
+    "hostedBy": "Gehost door",
+    "members": "leden",
+    "editMembers": "Leden bewerken",
+    "leads": "Leiders",
     "leadUsers": "Leidende gebruikers",
     "leadOrganizations": "Leidende organisaties",
     "guidelines": "Communityrichtlijnen",
@@ -406,6 +409,7 @@
     "share": "Delen",
     "sortContributions": "Bijdragen sorteren",
     "saveAsTemplate": "Opslaan als template",
+    "saveAsTemplateUnsupported": "Documenten opslaan als template wordt nog niet ondersteund",
     "moveToTop": "Naar boven verplaatsen",
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",
@@ -658,6 +662,7 @@
     },
     "altTextLabel": "Alternatieve tekst",
     "deleteImage": "Afbeelding verwijderen",
+    "reorderImage": "Afbeelding herordenen",
     "dismissError": "Fout sluiten",
     "uploading": "Uploaden…",
     "downloadError": "De afbeelding kon niet worden gedownload.",
@@ -710,7 +715,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Reactie toevoegen",
-      "overflow": "+{{count}} meer"
+      "overflow": "+{{count}} meer",
+      "unknownReactors": "Onbekend"
     },
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",

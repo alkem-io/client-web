@@ -27,6 +27,10 @@ type CalloutContextMenuProps = {
   editable: boolean;
   movable: boolean;
   canSaveAsTemplate: boolean;
+  /** Render the Save-as-Template item greyed out / non-actionable (e.g. document callouts — not yet supported). */
+  saveAsTemplateDisabled?: boolean;
+  /** Tooltip explaining why Save-as-Template is disabled. */
+  saveAsTemplateDisabledReason?: string;
   onEdit?: () => void;
   onPublish?: () => void;
   onUnpublish?: () => void;
@@ -46,6 +50,8 @@ export function CalloutContextMenu({
   editable,
   movable,
   canSaveAsTemplate,
+  saveAsTemplateDisabled,
+  saveAsTemplateDisabledReason,
   onEdit,
   onPublish,
   onUnpublish,
@@ -108,8 +114,12 @@ export function CalloutContextMenu({
           </DropdownMenuItem>
         )}
 
-        {canSaveAsTemplate && onSaveAsTemplate && (
-          <DropdownMenuItem onClick={onSaveAsTemplate}>
+        {canSaveAsTemplate && (
+          <DropdownMenuItem
+            onClick={saveAsTemplateDisabled ? undefined : onSaveAsTemplate}
+            disabled={saveAsTemplateDisabled}
+            title={saveAsTemplateDisabled ? saveAsTemplateDisabledReason : undefined}
+          >
             <Bookmark className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('contextMenu.saveAsTemplate')}
           </DropdownMenuItem>

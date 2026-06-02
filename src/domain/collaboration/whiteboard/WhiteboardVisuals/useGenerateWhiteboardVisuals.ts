@@ -7,7 +7,7 @@ import cropImage, { type CropConfig } from '@/core/utils/images/cropImage';
 import resizeImage from '@/core/utils/images/resizeImage';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
+import getWhiteboardPreviewImage, { MAX_DIMENSION } from './getWhiteboardPreviewImage';
 import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
 import validateCropConfig from './utils/validateCropConfig';
 import type { PreviewImageDimensions, WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
@@ -87,7 +87,38 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
       );
     }
 
-    const originalPreview = resizeImage(cropImage(image, cropConfig), originalPreviewSettings.dimensions);
+    // The scene is exported at scale 1 (1px per Excalidraw unit), so a small crop region is a small
+    // raster that resizeImage would have to upscale → pixelation. Excalidraw is vector, so re-render
+    // the scene at a higher scale such that the crop natively meets the target width, then crop that.
+    //
+    // Carefully bounded: the re-render is the whole scene scaled up, and Chromium silently fails to
+    // produce canvases beyond ~10-12k px per axis. So we never let the re-render exceed MAX_DIMENSION
+    // (shared with the base export pipeline), and we skip it entirely when the scale-1 canvas is
+    // already that large (huge whiteboards) — that path is unchanged and never gets a second, bigger export.
+    let workingImage = image;
+    let workingCrop = cropConfig;
+    if (cropConfig && cropConfig.width > 0) {
+      const currentMaxDimension = Math.max(image.width, image.height);
+      const maxAchievableScale = MAX_DIMENSION / currentMaxDimension;
+      const desiredScale = originalPreviewSettings.dimensions.maxWidth / cropConfig.width;
+      const effectiveScale = Math.min(desiredScale, maxAchievableScale);
+      if (effectiveScale > 1.05) {
+        const { image: hiResImage, error: hiResError } = await getWhiteboardPreviewImage(excalidrawAPI, effectiveScale);
+        if (!hiResError && hiResImage) {
+          // padImage scales proportionally, so the achieved scale is just the width ratio.
+          const achievedScale = hiResImage.width / image.width;
+          workingImage = hiResImage;
+          workingCrop = {
+            x: cropConfig.x * achievedScale,
+            y: cropConfig.y * achievedScale,
+            width: cropConfig.width * achievedScale,
+            height: cropConfig.height * achievedScale,
+          };
+        }
+      }
+    }
+
+    const originalPreview = resizeImage(cropImage(workingImage, workingCrop), originalPreviewSettings.dimensions);
     const originalPreviewBlob = await toBlobPromise(originalPreview, { type: 'image/png' }).catch(ex => {
       logError(new Error('Error generating whiteboard preview image blob.', { cause: ex }));
       notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');

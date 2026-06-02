@@ -57,7 +57,7 @@ export function JoinWhiteboardDialog({
           <form onSubmit={handleSubmit} noValidate={true} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <p className="text-body text-muted-foreground">{t('join.welcome')}</p>
-              <h1 id={titleId} className="text-page-title font-medium text-primary">
+              <h1 id={titleId} className="text-page-title text-primary">
                 {t('join.title')}
               </h1>
             </div>

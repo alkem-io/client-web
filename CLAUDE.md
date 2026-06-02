@@ -314,6 +314,8 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
 
+**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The upstream prototype ships helper scripts under `prototype/utils/*.py` (font merging, corruption fixes) that leak in when the `prototype/` folder is synced. When syncing the prototype or resolving a merge, **strip every `*.py` file** before committing. `.coderabbit.yaml` re-includes `**/*.py` (despite the `prototype/**` review exclusion) and flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
+
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
 `src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
