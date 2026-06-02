@@ -6,7 +6,7 @@ import {
   useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CalloutVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutContextMenu } from '@/crd/components/callout/CalloutContextMenu';
@@ -20,6 +20,7 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
@@ -166,6 +167,16 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     if (loaded?.framing.whiteboard?.content) body.whiteboardContent = loaded.framing.whiteboard.content;
     else if (body.whiteboardConfigured) body.whiteboardContent = EmptyWhiteboardString;
     body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
+    // Seed the source whiteboard's server-rendered preview as a blob so the post-create upload step
+    // (uploadCalloutWhiteboardPreview) persists it onto the new template whiteboard's WHITEBOARD_PREVIEW
+    // Visual — otherwise the template is created with content but no preview image. Mirrors
+    // loadCalloutTemplateFormValues (D18). A failed fetch is non-fatal — the blob seed is just skipped.
+    if (body.whiteboardPreviewServerUrl) {
+      const blob = await fetchPreviewImageBlob(body.whiteboardPreviewServerUrl);
+      if (blob) {
+        body.whiteboardPreviewImages = [{ visualType: VisualType.WhiteboardPreview, imageData: blob }];
+      }
+    }
     saveAs.openSaveAs({
       kind: 'callout',
       name: callout.framing.profile.displayName,

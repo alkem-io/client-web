@@ -6,13 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
-
-type CropRegion = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+import { type CropRegion, displayCropToNatural, isCropWithinImage, naturalCropToDisplay } from './cropCoordinates';
 
 type PreviewCropDialogProps = {
   open: boolean;
@@ -110,17 +104,24 @@ export function PreviewCropDialog({
     setReady(true);
     setImgScale(MIN_SCALE);
     setImgPan({ x: 0, y: 0 });
-    if (initialCrop) {
-      applyCrop(initialCrop);
+    // `initialCrop` is persisted in natural-image pixels. The image is freshly loaded here at
+    // scale=1 / pan={0,0}, so convert it back to the displayed coordinate space react-image-crop uses.
+    const displayCrop = initialCrop ? naturalCropToDisplay(initialCrop, img, MIN_SCALE, { x: 0, y: 0 }) : undefined;
+    if (displayCrop && isCropWithinImage(displayCrop, aspectRatio, img)) {
+      applyCrop(displayCrop);
     } else {
-      const defaultCrop = getDefaultCrop(img.width, img.height, aspectRatio);
-      applyCrop(defaultCrop);
+      applyCrop(getDefaultCrop(img.width, img.height, aspectRatio));
     }
   };
 
   const handleConfirm = () => {
-    if (!crop || !imgRef.current) return;
-    onCropSave({ x: crop.x, y: crop.y, width: crop.width, height: crop.height });
+    const img = imgRef.current;
+    if (!crop || !img) return;
+    // react-image-crop reports the selection in displayed pixels; the preview generator crops the
+    // full-resolution canvas, so convert to natural pixels accounting for the current zoom/pan.
+    onCropSave(
+      displayCropToNatural({ x: crop.x, y: crop.y, width: crop.width, height: crop.height }, img, imgScale, imgPan)
+    );
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
