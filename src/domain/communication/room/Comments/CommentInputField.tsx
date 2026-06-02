@@ -209,9 +209,11 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
             variables: { spaceID, filter: { displayName: search }, limit: MAX_USERS_LISTED },
           })
         ).data?.lookup?.space?.mentionableContributors
-      : (
+      : // Forum is platform-wide and unscoped; restrict to Users so mentions there
+        // target people only.
+        (
           await queryForumUsers({
-            variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED },
+            variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED, types: [ActorType.User] },
           })
         ).data?.platform?.forum?.mentionableContributors;
 

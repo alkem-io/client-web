@@ -102,9 +102,11 @@ export function useMentionableContributors(): CrdMentionSearch {
                   errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
                 })
               ).data?.lookup?.space?.mentionableContributors
-            : (
+            : // Forum is platform-wide and has no membership scope; restrict to Users
+              // so mentions there target people only.
+              (
                 await queryForumUsers({
-                  variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED },
+                  variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED, types: [ActorType.User] },
                   fetchPolicy: 'network-only',
                   errorPolicy: 'all', // todo: temporarily ignore unsufficient VC read access
                 })
