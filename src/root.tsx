@@ -4,12 +4,13 @@ import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryPro
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
+import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { StyledEngineProvider, type Theme } from '@mui/material/styles';
 import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
 import { useApmDesignVersionLabel } from '@/core/analytics/apm/useApmDesignVersionLabel';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -58,10 +59,16 @@ function NotificationsGate() {
   );
 }
 
+/** Top-level path segments owned by the auth flow — the guidance chat is hidden on all of them. */
+const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
+
 /** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
 function CrdGuidanceChatGate() {
   const crdEnabled = useCrdEnabled();
-  if (!crdEnabled) return null; // MUI layouts already render PlatformHelpButton themselves
+  const { pathname } = useLocation();
+  const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
+  // MUI layouts already render PlatformHelpButton themselves; auth flows hide it entirely.
+  if (!crdEnabled || isAuthPage) return null;
   return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
 }
 
