@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
@@ -11,6 +13,7 @@ export const useSendMessageToUserHandler = (params: {
   recipientUserId: string | undefined;
 }): SendMessageHandlerResult => {
   const { recipientUserId } = params;
+  const { t } = useTranslation('crd-profilePages');
   const [sendMessageToUser] = useSendMessageToUsersMutation();
 
   const onSendMessage = async (messageText: string) => {
@@ -25,6 +28,7 @@ export const useSendMessageToUserHandler = (params: {
         },
       },
     });
+    toast.success(t('common.messagePopover.successToast'));
   };
 
   return { onSendMessage };
@@ -34,6 +38,7 @@ export const useSendMessageToOrganizationHandler = (params: {
   recipientOrganizationId: string | undefined;
 }): SendMessageHandlerResult => {
   const { recipientOrganizationId } = params;
+  const { t } = useTranslation('crd-profilePages');
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
 
   const onSendMessage = async (messageText: string) => {
@@ -48,6 +53,7 @@ export const useSendMessageToOrganizationHandler = (params: {
         },
       },
     });
+    toast.success(t('common.messagePopover.successToast'));
   };
 
   return { onSendMessage };

@@ -79,10 +79,13 @@ describe('mapInnovationHubToHomeData', () => {
     expect(data.settingsUrl).toBeUndefined();
   });
 
-  test('spaces are intersected with dashboardSpaces and reordered by filter order', () => {
+  test('shows only the curated spaceListFilter, in filter order — never the full platform list', () => {
     const data = mapInnovationHubToHomeData({
       hub: {
         ...baseHub,
+        // 's-2' precedes 's-1'; 's-missing' is curated but absent from the platform
+        // results (deleted/inaccessible) and is dropped. 's-3' is a platform Space
+        // NOT in the hub — it must NOT leak onto the hub home.
         spaceListFilter: [{ id: 's-2' }, { id: 's-1' }, { id: 's-missing' }],
       },
       // dashboardSpaces shape is structurally compatible with SpaceWithParent for the mapper test
@@ -91,6 +94,16 @@ describe('mapInnovationHubToHomeData', () => {
       canonicalDomain: 'alkemio.org',
     });
     expect(data.spaces.map(s => s.id)).toEqual(['s-2', 's-1']);
+  });
+
+  test('keeps a curated space regardless of its visibility (present in the all-visibilities results)', () => {
+    const data = mapInnovationHubToHomeData({
+      hub: { ...baseHub, spaceListFilter: [{ id: 's-1' }, { id: 's-2' }, { id: 's-3' }] },
+      dashboardSpaces: dashboardSpaces as never,
+      authenticated: false,
+      canonicalDomain: 'alkemio.org',
+    });
+    expect(data.spaces.map(s => s.id)).toEqual(['s-1', 's-2', 's-3']);
   });
 
   test('empty spaceListFilter yields empty spaces array', () => {

@@ -4,12 +4,15 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Напишете съобщение…",
+      "placeholder": "Напишете имейл…",
       "send": "Изпрати",
       "cancel": "Отмяна",
       "sending": "Изпращане…",
       "errorTitle": "Съобщението не може да бъде изпратено",
-      "ariaLabel": "Съставяне на съобщение"
+      "ariaLabel": "Съставяне на съобщение",
+      "emailTitle": "Изпрати имейл",
+      "emailNotice": "Доставя се в тяхната пощенска кутия.",
+      "successToast": "Вашият имейл беше изпратен."
     },
     "resourceTabsAriaLabel": "Раздели с ресурси",
     "loading": {

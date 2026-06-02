@@ -4,12 +4,15 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Write a message…",
+      "placeholder": "Write an email…",
       "send": "Send",
       "cancel": "Cancel",
       "sending": "Sending…",
       "errorTitle": "Could not send your message",
-      "ariaLabel": "Compose message"
+      "ariaLabel": "Compose message",
+      "emailTitle": "Send an email",
+      "emailNotice": "Delivered to their inbox.",
+      "successToast": "Your email has been sent."
     },
     "resourceTabsAriaLabel": "Resource sections",
     "loading": {
