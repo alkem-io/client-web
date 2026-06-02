@@ -2,6 +2,7 @@ import { PanelsTopLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
@@ -27,6 +28,15 @@ import { buildHubHomePath, buildHubSettingsPath } from './lib/hubUrls';
 type CrdInnovationHubSettingsPageProps = {
   tab: HubSettingsTabKey;
 };
+
+// A `visibility`-type hub has no curated Space list — its Spaces are every Space with the
+// chosen visibility, so the Spaces tab shows an explanatory message instead of the editor.
+const VISIBILITY_LABEL_KEY = {
+  [SpaceVisibility.Active]: 'settings.spaces.visibility.active',
+  [SpaceVisibility.Demo]: 'settings.spaces.visibility.demo',
+  [SpaceVisibility.Inactive]: 'settings.spaces.visibility.inactive',
+  [SpaceVisibility.Archived]: 'settings.spaces.visibility.archived',
+} as const;
 
 const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps) => {
   const { t } = useTranslation('crd-innovationHub');
@@ -102,15 +112,24 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
             bannerUploading={aboutData.bannerUploading}
           />
         )}
-        {tab === 'spaces' && (
-          <InnovationHubSpacesTab
-            rows={spacesData.rows}
-            busy={spacesData.busy}
-            onReorder={ids => void spacesData.reorder(ids)}
-            onAddClick={() => setAddDialogOpen(true)}
-            onRemoveRequest={row => setPendingRemove(row)}
-          />
-        )}
+        {tab === 'spaces' &&
+          (hub.spaceVisibilityFilter ? (
+            <div className="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
+              <p className="text-body text-muted-foreground">
+                {t('settings.spaces.visibilityManaged', {
+                  visibility: t(VISIBILITY_LABEL_KEY[hub.spaceVisibilityFilter]),
+                })}
+              </p>
+            </div>
+          ) : (
+            <InnovationHubSpacesTab
+              rows={spacesData.rows}
+              busy={spacesData.busy}
+              onReorder={ids => void spacesData.reorder(ids)}
+              onAddClick={() => setAddDialogOpen(true)}
+              onRemoveRequest={row => setPendingRemove(row)}
+            />
+          ))}
       </InnovationHubSettingsShell>
 
       <CrdAddSpaceByUrlDialog

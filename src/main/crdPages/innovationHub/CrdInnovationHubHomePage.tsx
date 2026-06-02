@@ -56,7 +56,7 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
     ? ({ kind: 'bySubdomain', hub: innovationHubFromSubdomain } as const)
     : ({ kind: 'byId', id: innovationHubId ?? '' } as const);
 
-  const { data, loading, hub } = useInnovationHubHomeData(input);
+  const { data, spaces, loading, hub, spacesLoading } = useInnovationHubHomeData(input);
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   // The URL resolver is only consulted on the `/hub/<slug>` path entry (to get the
@@ -81,7 +81,14 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
   }
 
   return (
-    <InnovationHubHome data={data} fullWidth={fullWidth} onToggleFullWidth={toggleFullWidth} overlayHeader={true} />
+    <InnovationHubHome
+      data={data}
+      spaces={spaces}
+      fullWidth={fullWidth}
+      onToggleFullWidth={toggleFullWidth}
+      overlayHeader={true}
+      spacesLoading={spacesLoading}
+    />
   );
 };
 

@@ -5,7 +5,8 @@
     "collapseWidth": "Auf Standardbreite zurücksetzen",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "Diesem Hub wurden noch keine Spaces hinzugefügt."
+      "empty": "Diesem Hub wurden noch keine Spaces hinzugefügt.",
+      "loading": "Spaces werden geladen…"
     },
     "allSpacesCta": "Alle Spaces auf Alkemio durchsuchen"
   },
@@ -91,6 +92,7 @@
     "spaces": {
       "title": "Spaces",
       "subtitle": "Verwalten Sie, welche Spaces auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "visibilityManaged": "Dieser Innovation Hub zeigt automatisch alle {{visibility}}-Spaces an. Seine Spaces werden durch die Sichtbarkeit bestimmt und können hier nicht verwaltet werden.",
       "columns": {
         "name": "Name",
         "visibility": "Sichtbarkeit",

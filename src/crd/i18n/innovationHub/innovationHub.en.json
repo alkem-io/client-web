@@ -5,7 +5,8 @@
     "collapseWidth": "Collapse to default width",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "No Spaces have been added to this hub yet."
+      "empty": "No Spaces have been added to this hub yet.",
+      "loading": "Loading Spaces…"
     },
     "allSpacesCta": "Browse all Spaces on Alkemio"
   },
@@ -91,6 +92,7 @@
     "spaces": {
       "title": "Spaces",
       "subtitle": "Manage which Spaces appear on the Innovation Hub home page. Drag to reorder.",
+      "visibilityManaged": "This Innovation Hub automatically shows every {{visibility}} Space. Its Spaces are determined by visibility and aren't managed here.",
       "columns": {
         "name": "Name",
         "visibility": "Visibility",

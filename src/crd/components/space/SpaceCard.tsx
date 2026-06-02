@@ -20,6 +20,17 @@ export type SpaceCardParent = {
   avatarColor: string;
 };
 
+/** Plain visibility variant (no GraphQL enum) used to drive the banner label. */
+export type SpaceCardVisibility = 'active' | 'demo' | 'inactive' | 'archived';
+
+// Label keys for the visibilities that get a banner ribbon. `active` is intentionally
+// absent — an active Space shows no ribbon.
+const VISIBILITY_LABEL_KEY = {
+  demo: 'crd-common:visibility.demo',
+  inactive: 'crd-common:visibility.inactive',
+  archived: 'crd-common:visibility.archived',
+} as const;
+
 export type SpaceCardData = {
   id: string;
   name: string;
@@ -49,6 +60,12 @@ export type SpaceCardData = {
   parent?: SpaceCardParent;
   /** Lifecycle status used for filter pills (e.g. 'active', 'archived'). */
   status?: string;
+  /**
+   * Space visibility. When provided and not `active`, a centered ribbon (Demo / Inactive /
+   * Archived) is shown at the top of the banner — mirrors the MUI card. Omit (or `active`)
+   * to show no ribbon.
+   */
+  visibility?: SpaceCardVisibility;
 };
 
 export type SpaceCardProps = {
@@ -103,6 +120,14 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               }}
             />
           </div>
+
+          {/* Visibility ribbon — centered at the top of the banner for non-active Spaces
+              (Demo / Inactive / Archived), mirroring the MUI card. */}
+          {space.visibility && space.visibility !== 'active' && (
+            <span className="absolute top-0 left-1/2 z-[3] -translate-x-1/2 rounded-b-xl bg-primary px-3 py-1 text-caption font-semibold text-primary-foreground">
+              {t(VISIBILITY_LABEL_KEY[space.visibility])}
+            </span>
+          )}
 
           {/* Member badge */}
           {space.isMember && (
