@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { InnovationPackProfileView } from '@/crd/components/innovationPack/InnovationPackProfileView';
@@ -17,8 +18,13 @@ import { useInnovationPackProfile } from './useInnovationPackProfile';
  * extends the same gate to wrap this public profile route).
  */
 export const CrdInnovationPackProfilePage = () => {
+  const { t } = useTranslation();
   const { loading, notFound, pack, tm, canManage, adminHref, shareUrl } = useInnovationPackProfile();
-  usePageTitle(pack?.name);
+  // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
+  const pageTitle = pack?.name
+    ? `${pack.name}${t('pages.titles.separator')}${t('pages.titles.templateLibrary')}`
+    : undefined;
+  usePageTitle(pageTitle);
 
   if (notFound) {
     return <Error404 />;
