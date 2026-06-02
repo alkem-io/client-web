@@ -32,6 +32,7 @@ import type {
   PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
@@ -348,7 +349,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             title={tWb(`preview.modes.${selectedPreviewMode}.title`)}
             previewImage={previewImageBlob}
             initialCrop={whiteboard.previewSettings.coordinates ?? undefined}
-            aspectRatio={options.previewImagesSettings?.[0]?.dimensions.aspectRatio ?? 16 / 9}
+            aspectRatio={
+              options.previewImagesSettings?.[0]?.dimensions.aspectRatio ??
+              WhiteboardPreviewVisualDimensions.aspectRatio
+            }
             onCropSave={async crop => {
               setCropDialogOpen(false);
               setLoadingPreviewCrop(true);

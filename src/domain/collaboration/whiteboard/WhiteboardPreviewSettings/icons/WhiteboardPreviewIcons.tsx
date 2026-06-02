@@ -4,7 +4,7 @@ import WhiteboardPreviewModeAutoSvg from './WhiteboardPreviewModeAuto.svg?react'
 import WhiteboardPreviewModeCustomSvg from './WhiteboardPreviewModeCustom.svg?react';
 import WhiteboardPreviewModeFixedSvg from './WhiteboardPreviewModeFixed.svg?react';
 
-const WhiteboardPreviewSettingsIcon = (props: SvgIconProps) => <ScanEye {...props} />;
+const WhiteboardPreviewSettingsIcon = (props: SvgIconProps) => <SvgIcon component={ScanEye} {...props} />;
 WhiteboardPreviewSettingsIcon.muiName = 'WhiteboardPreviewSettings';
 
 const WhiteboardPreviewModeAutoIcon = (props: SvgIconProps) => (

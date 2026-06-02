@@ -7,7 +7,7 @@ import cropImage, { type CropConfig } from '@/core/utils/images/cropImage';
 import resizeImage from '@/core/utils/images/resizeImage';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
+import getWhiteboardPreviewImage, { MAX_DIMENSION } from './getWhiteboardPreviewImage';
 import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
 import validateCropConfig from './utils/validateCropConfig';
 import type { PreviewImageDimensions, WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
@@ -25,14 +25,6 @@ interface VisualRequest {
   visualType: VisualType;
   dimensions: PreviewImageDimensions;
 }
-
-/**
- * Upper bound (px, per axis) for the high-resolution re-render used to keep small crop regions
- * sharp. Chromium-based browsers fail to produce canvases larger than ~10k px per axis, so the
- * quality re-export must stay under this — even though the base export pipeline's MAX_DIMENSION is
- * higher. Large whiteboards whose scale-1 canvas already meets/exceeds this skip the re-export.
- */
-const MAX_PREVIEW_REEXPORT_DIMENSION = 10000;
 
 const DefaultVisualsRequested: VisualRequest[] = [
   // By default, generate both a whiteboard preview and a card preview
@@ -100,14 +92,14 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
     // the scene at a higher scale such that the crop natively meets the target width, then crop that.
     //
     // Carefully bounded: the re-render is the whole scene scaled up, and Chromium silently fails to
-    // produce canvases beyond ~10k px per axis. So we never let the re-render exceed
-    // MAX_PREVIEW_REEXPORT_DIMENSION, and we skip it entirely when the scale-1 canvas is already that
-    // large (huge whiteboards) — that path is unchanged and never gets a second, bigger export.
+    // produce canvases beyond ~10-12k px per axis. So we never let the re-render exceed MAX_DIMENSION
+    // (shared with the base export pipeline), and we skip it entirely when the scale-1 canvas is
+    // already that large (huge whiteboards) — that path is unchanged and never gets a second, bigger export.
     let workingImage = image;
     let workingCrop = cropConfig;
     if (cropConfig && cropConfig.width > 0) {
       const currentMaxDimension = Math.max(image.width, image.height);
-      const maxAchievableScale = MAX_PREVIEW_REEXPORT_DIMENSION / currentMaxDimension;
+      const maxAchievableScale = MAX_DIMENSION / currentMaxDimension;
       const desiredScale = originalPreviewSettings.dimensions.maxWidth / cropConfig.width;
       const effectiveScale = Math.min(desiredScale, maxAchievableScale);
       if (effectiveScale > 1.05) {

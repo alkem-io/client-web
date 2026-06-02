@@ -15,7 +15,7 @@ type ExcalidrawUtils = {
  * The maximum depends on the browser, computer memory, and other factors.
  * This value has been chosen as a reasonable compromise to avoid crashes in most cases and avoid pixellation.
  */
-const MAX_DIMENSION = 16000;
+export const MAX_DIMENSION = 12000;
 
 /**
  * Generates the preview of the image calling Excalidraw's exportToCanvas function
