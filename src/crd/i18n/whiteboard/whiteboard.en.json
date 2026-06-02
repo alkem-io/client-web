@@ -66,6 +66,7 @@
     "close": "Close"
   },
   "preview": {
+    "editButton": "Edit whiteboard preview settings",
     "settings": {
       "title": "Preview Settings",
       "subtitle": "Choose how the whiteboard thumbnail looks in cards and previews"

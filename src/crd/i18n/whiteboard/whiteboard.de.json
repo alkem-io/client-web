@@ -66,6 +66,7 @@
     "close": "Schließen"
   },
   "preview": {
+    "editButton": "Vorschau-Einstellungen des Whiteboards bearbeiten",
     "settings": {
       "title": "Vorschau-Einstellungen",
       "subtitle": "Wählen Sie, wie die Whiteboard-Miniaturansicht in Karten und Vorschauen aussieht"

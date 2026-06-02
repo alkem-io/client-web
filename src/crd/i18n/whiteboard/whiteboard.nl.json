@@ -66,6 +66,7 @@
     "close": "Sluiten"
   },
   "preview": {
+    "editButton": "Voorbeeldinstellingen voor whiteboard bewerken",
     "settings": {
       "title": "Voorbeeldinstellingen",
       "subtitle": "Kies hoe de whiteboard-thumbnail eruitziet in kaarten en voorbeelden"

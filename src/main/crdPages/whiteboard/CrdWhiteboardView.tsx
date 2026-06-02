@@ -1,12 +1,14 @@
+import { ScanEye } from 'lucide-react';
 import { type ReactNode, Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
+import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
-import WhiteboardPreviewSettingsButton from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
@@ -42,6 +44,7 @@ const CrdWhiteboardView = ({
   preventWhiteboardDeletion,
   onWhiteboardDeleted,
 }: CrdWhiteboardViewProps) => {
+  const { t: tWb } = useTranslation('crd-whiteboard');
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
 
@@ -115,7 +118,14 @@ const CrdWhiteboardView = ({
               <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
               {hasUpdatePrivileges && collabState.mode === 'write' && (
-                <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setPreviewSettingsDialogOpen(true)}
+                  aria-label={tWb('preview.editButton')}
+                >
+                  <ScanEye />
+                </Button>
               )}
             </>
           ),
