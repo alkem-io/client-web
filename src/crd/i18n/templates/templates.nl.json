@@ -299,11 +299,13 @@
     "loadedOfTotal": "{{loaded}} van {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Er zijn nog geen innovation packs beschikbaar."
+      "empty": "Er zijn nog geen innovation packs beschikbaar.",
+      "searchPlaceholder": "Zoek innovation packs"
     },
     "templates": {
       "heading": "Templates",
-      "empty": "Geen templates voldoen aan de geselecteerde filters."
+      "empty": "Geen templates voldoen aan de geselecteerde filters.",
+      "searchPlaceholder": "Zoek templates"
     },
     "filter": {
       "label": "Filter op type",

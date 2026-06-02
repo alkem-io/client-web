@@ -299,11 +299,13 @@
     "loadedOfTotal": "{{loaded}} of {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "No innovation packs available yet."
+      "empty": "No innovation packs available yet.",
+      "searchPlaceholder": "Search innovation packs"
     },
     "templates": {
       "heading": "Templates",
-      "empty": "No templates match the selected filters."
+      "empty": "No templates match the selected filters.",
+      "searchPlaceholder": "Search templates"
     },
     "filter": {
       "label": "Filter by type",

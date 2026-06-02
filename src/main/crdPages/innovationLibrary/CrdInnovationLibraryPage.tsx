@@ -33,6 +33,8 @@ export const CrdInnovationLibraryPage = () => {
         hasMorePacks={lib.hasMorePacks}
         loadingMorePacks={lib.loadingMorePacks}
         onLoadMorePacks={lib.onLoadMorePacks}
+        packsSearch={lib.packsSearch}
+        onChangePacksSearch={lib.onChangePacksSearch}
         templates={lib.templates}
         templatesLoading={lib.templatesLoading}
         templatesTotal={lib.templatesTotal}
@@ -41,6 +43,8 @@ export const CrdInnovationLibraryPage = () => {
         onLoadMoreTemplates={lib.onLoadMoreTemplates}
         activeTypeFilter={lib.activeTypeFilter}
         onChangeTypeFilter={lib.onChangeTypeFilter}
+        templatesSearch={lib.templatesSearch}
+        onChangeTemplatesSearch={lib.onChangeTemplatesSearch}
         onTemplatePreview={lib.onTemplatePreview}
       />
 

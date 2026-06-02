@@ -18,6 +18,8 @@ import {
  */
 export function InnovationLibraryPage() {
   const [filter, setFilter] = useState<TemplateTypeFilterValue>('all');
+  const [packsSearch, setPacksSearch] = useState('');
+  const [templatesSearch, setTemplatesSearch] = useState('');
 
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -35,10 +37,13 @@ export function InnovationLibraryPage() {
     }, 350);
   };
 
-  const filteredTemplates =
-    filter === 'all'
-      ? MOCK_ALL_TEMPLATES
-      : MOCK_ALL_TEMPLATES.filter(t => filter.includes(t.type));
+  const templatesTerm = templatesSearch.trim().toLowerCase();
+  const filteredTemplates = MOCK_ALL_TEMPLATES.filter(t => filter === 'all' || filter.includes(t.type)).filter(
+    t => templatesTerm === '' || t.name.toLowerCase().includes(templatesTerm)
+  );
+
+  const packsTerm = packsSearch.trim().toLowerCase();
+  const filteredPacks = MOCK_INNOVATION_PACKS.filter(p => packsTerm === '' || p.name.toLowerCase().includes(packsTerm));
 
   return (
     <div className="crd-root mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
@@ -51,12 +56,14 @@ export function InnovationLibraryPage() {
       </header>
 
       <InnovationLibraryView
-        packs={MOCK_INNOVATION_PACKS}
+        packs={filteredPacks}
         packsLoading={false}
-        packsTotal={MOCK_INNOVATION_PACKS.length}
+        packsTotal={filteredPacks.length}
         hasMorePacks={false}
         loadingMorePacks={false}
         onLoadMorePacks={() => undefined}
+        packsSearch={packsSearch}
+        onChangePacksSearch={setPacksSearch}
         templates={filteredTemplates}
         templatesLoading={false}
         templatesTotal={filteredTemplates.length}
@@ -65,6 +72,8 @@ export function InnovationLibraryPage() {
         onLoadMoreTemplates={() => undefined}
         activeTypeFilter={filter}
         onChangeTypeFilter={setFilter}
+        templatesSearch={templatesSearch}
+        onChangeTemplatesSearch={setTemplatesSearch}
         onTemplatePreview={openPreview}
       />
 

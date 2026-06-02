@@ -1,9 +1,9 @@
-query InnovationLibraryPacksPaginated($first: Int!, $after: UUID) {
+query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
   platform {
     id
     library {
       id
-      innovationPacksPaginated(first: $first, after: $after) {
+      innovationPacksPaginated(first: $first, after: $after, filter: $filter) {
         total
         innovationPacks {
           id

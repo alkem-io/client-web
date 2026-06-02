@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { InnovationPackCard } from '@/crd/components/innovationPack/InnovationPackCard';
 import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { TemplateCardData } from '@/crd/components/templates/types';
+import { SearchField } from '@/crd/forms/SearchField';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { TemplateGallery } from './TemplateGallery';
@@ -19,6 +20,9 @@ export type InnovationLibraryViewProps = {
   /** Subsequent-page busy state (non-blocking; FR-011). */
   loadingMorePacks?: boolean;
   onLoadMorePacks: () => void;
+  /** Raw packs search term (server-side; debounced by the consumer; FR-015). */
+  packsSearch: string;
+  onChangePacksSearch: (next: string) => void;
   /** Templates for the current (server-side) type filter, in server order (newest-first). */
   templates: TemplateCardData[];
   templatesLoading?: boolean;
@@ -29,6 +33,9 @@ export type InnovationLibraryViewProps = {
   onLoadMoreTemplates: () => void;
   activeTypeFilter: TemplateTypeFilterValue;
   onChangeTypeFilter: (next: TemplateTypeFilterValue) => void;
+  /** Raw templates search term (composes with the type filter server-side; FR-016). */
+  templatesSearch: string;
+  onChangeTemplatesSearch: (next: string) => void;
   onTemplatePreview: (templateId: string) => void;
 };
 
@@ -90,6 +97,8 @@ export function InnovationLibraryView({
   hasMorePacks,
   loadingMorePacks,
   onLoadMorePacks,
+  packsSearch,
+  onChangePacksSearch,
   templates,
   templatesLoading,
   templatesTotal,
@@ -98,6 +107,8 @@ export function InnovationLibraryView({
   onLoadMoreTemplates,
   activeTypeFilter,
   onChangeTypeFilter,
+  templatesSearch,
+  onChangeTemplatesSearch,
   onTemplatePreview,
 }: InnovationLibraryViewProps) {
   const { t } = useTranslation('crd-templates');
@@ -105,9 +116,17 @@ export function InnovationLibraryView({
   return (
     <div className="space-y-10">
       <section aria-labelledby="crd-library-packs-heading" className="space-y-4">
-        <h2 id="crd-library-packs-heading" className="text-section-title">
-          {t('library.packs.heading')}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="crd-library-packs-heading" className="text-section-title">
+            {t('library.packs.heading')}
+          </h2>
+          <SearchField
+            value={packsSearch}
+            onValueChange={onChangePacksSearch}
+            placeholder={t('library.packs.searchPlaceholder')}
+            className="w-full sm:w-64"
+          />
+        </div>
         {packsLoading ? (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {PACK_SKELETON_KEYS.map(key => (
@@ -143,7 +162,15 @@ export function InnovationLibraryView({
           <h2 id="crd-library-templates-heading" className="text-section-title">
             {t('library.templates.heading')}
           </h2>
-          <TemplateTypeFilter value={activeTypeFilter} onChange={onChangeTypeFilter} />
+          <div className="flex flex-wrap items-center gap-3">
+            <TemplateTypeFilter value={activeTypeFilter} onChange={onChangeTypeFilter} />
+            <SearchField
+              value={templatesSearch}
+              onValueChange={onChangeTemplatesSearch}
+              placeholder={t('library.templates.searchPlaceholder')}
+              className="w-full sm:w-64"
+            />
+          </div>
         </div>
         <TemplateGallery
           templates={templates}

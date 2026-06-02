@@ -3611,6 +3611,7 @@ export type LibraryInnovationPacksArgs = {
 export type LibraryInnovationPacksPaginatedArgs = {
   after?: InputMaybe<Scalars['UUID']['input']>;
   before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -3627,7 +3628,14 @@ export type LibraryTemplatesPaginatedArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type LibraryInnovationPacksFilterInput = {
+  /** Return Innovation Packs whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type LibraryTemplatesFilterInput = {
+  /** Return Templates whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   /** Return Templates within the Library matching the specified Template Types. */
   types?: InputMaybe<Array<TemplateType>>;
 };
@@ -35014,6 +35022,7 @@ export type AuthorizationPrivilegesForUserQuery = {
 export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
 }>;
 
 export type InnovationLibraryPacksPaginatedQuery = {

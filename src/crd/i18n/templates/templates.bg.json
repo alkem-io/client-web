@@ -299,11 +299,13 @@
     "loadedOfTotal": "{{loaded}} от {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Все още няма налични Innovation Packs."
+      "empty": "Все още няма налични Innovation Packs.",
+      "searchPlaceholder": "Търсене на Innovation Packs"
     },
     "templates": {
       "heading": "Шаблони",
-      "empty": "Няма шаблони, които отговарят на избраните филтри."
+      "empty": "Няма шаблони, които отговарят на избраните филтри.",
+      "searchPlaceholder": "Търсене на шаблони"
     },
     "filter": {
       "label": "Филтриране по тип",

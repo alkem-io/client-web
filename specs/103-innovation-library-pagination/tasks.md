@@ -111,6 +111,36 @@ Single-project frontend. CRD design-system layer `src/crd/`, integration layer `
 
 ---
 
+## Phase 5b: User Story 4 - Filter each section by a search term (Priority: P2)
+
+**Goal**: A debounced text search per section, applied **server-side** via
+`searchTerm`, so totals/pages/Load-More reflect the searched (and, for templates,
+type-filtered) set. Reuses the existing server-filter + reset-paging machinery.
+
+**⚠️ Gated on server 101 name filter**: requires the backend to expose
+`LibraryTemplatesFilterInput.searchTerm` and the new `LibraryInnovationPacksFilterInput`
++ `innovationPacksPaginated(filter:)`. Until the backend at `localhost:3000` serves
+these, T029 (codegen) and everything after it cannot run.
+
+**Independent Test**: Type in the Packs search → total + first batch reflect only
+matching packs; page within it; clear → full set returns. Repeat for Templates;
+term + type filter together return only the intersection; blank term = no filter.
+
+### Implementation for User Story 4
+
+- [x] T028 [US4] Add `$filter: LibraryInnovationPacksFilterInput` + `innovationPacksPaginated(first, after, filter: $filter)` to `src/main/crdPages/innovationLibrary/InnovationLibraryPacksPaginated.graphql` (the templates op is unchanged — `searchTerm` rides inside the existing `$filter`). Source of truth: `contracts/client-operations.graphql`.
+- [x] T029 [US4] Run `pnpm codegen` (server-101 name-filter backend up) and commit the regenerated `apollo-hooks.ts` / `graphql-schema.ts`; confirm `LibraryTemplatesFilterInput.searchTerm` and `LibraryInnovationPacksFilterInput` now exist in the generated types (depends on T028 + backend).
+- [x] T030 [US4] In `src/core/apollo/config/typePolicies.ts`, change the packs policy from `paginationFieldPolicy(false, 'InnovationPack')` to `paginationFieldPolicy(['filter'], 'InnovationPack')` so a pack search term re-keys to a fresh first page (FR-017). Templates already key on `['filter']`.
+- [x] T031 [US4] In `src/main/crdPages/innovationLibrary/useInnovationLibrary.ts`, add per-section raw search state (`templatesSearch`/`packsSearch`) + a debounce (e.g. ~300ms) producing the debounced term; fold the debounced term into the query `filter`: templates `{ types?, searchTerm? }` (extend `toTemplatesFilter`), packs `{ searchTerm? }`; omit `searchTerm` when blank/whitespace; expose `onChangeTemplatesSearch`/`onChangePacksSearch` (FR-015–FR-018).
+- [x] T032 [P] [US4] In `src/crd/components/innovationLibrary/InnovationLibraryView.tsx`, add a `SearchField` (`@/crd/forms/SearchField`) beside the **Innovation Packs** heading and to the right of the template **type** filter; props `packsSearch`/`onChangePacksSearch`, `templatesSearch`/`onChangeTemplatesSearch`, with placeholders from the `crd-templates` namespace.
+- [x] T033 [US4] Thread the new search props through `src/main/crdPages/innovationLibrary/CrdInnovationLibraryPage.tsx`.
+- [x] T034 [P] [US4] Add search placeholder strings (`library.packs.searchPlaceholder`, `library.templates.searchPlaceholder`) to `src/crd/i18n/templates/templates.<lang>.json` for all six languages.
+- [x] T035 [US4] Tests: searched query narrows `total` + first page; blank/whitespace term sends no `searchTerm`; changing term re-keys to a fresh first page; templates term + type filter compose; packs policy keyArgs change verified.
+
+**Checkpoint**: Both sections searchable server-side; totals + paging stay search-accurate.
+
+---
+
 ## Phase 6: Polish & Cross-Cutting Concerns
 
 - [x] T024 [P] i18n: add the library count strings to `src/crd/i18n/templates/templates.<lang>.json` for all six languages (en, nl, es, bg, de, fr) — at minimum a `library.loadedOfTotal` key with interpolation (en: `"{{loaded}} of {{total}}"`) for the "X of T" progress count (FR-003), plus any section-total label; reuse the shared `crd-common:loadMore` label for the button (verify the `crd-common` key exists — it is used by `SpaceExplorer`).

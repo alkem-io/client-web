@@ -299,11 +299,13 @@
     "loadedOfTotal": "{{loaded}} sur {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Aucun Innovation Pack disponible pour le moment."
+      "empty": "Aucun Innovation Pack disponible pour le moment.",
+      "searchPlaceholder": "Rechercher des Innovation Packs"
     },
     "templates": {
       "heading": "Modèles",
-      "empty": "Aucun modèle ne correspond aux filtres sélectionnés."
+      "empty": "Aucun modèle ne correspond aux filtres sélectionnés.",
+      "searchPlaceholder": "Rechercher des modèles"
     },
     "filter": {
       "label": "Filtrer par type",

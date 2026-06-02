@@ -29246,12 +29246,12 @@ export function refetchAuthorizationPrivilegesForUserQuery(
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
 export const InnovationLibraryPacksPaginatedDocument = gql`
-    query InnovationLibraryPacksPaginated($first: Int!, $after: UUID) {
+    query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
   platform {
     id
     library {
       id
-      innovationPacksPaginated(first: $first, after: $after) {
+      innovationPacksPaginated(first: $first, after: $after, filter: $filter) {
         total
         innovationPacks {
           id
@@ -29303,6 +29303,7 @@ ${InnovationPackProviderProfileWithAvatarFragmentDoc}`;
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      filter: // value for 'filter'
  *   },
  * });
  */

@@ -19,6 +19,13 @@
 # the args inline — so the field takes `first/after/before/last` (+ `filter`)
 # directly, NOT a nested `pagination: {...}` input. Mirrors `spacesPaginated`.
 
+# NAME FILTER (server 101, additive): `LibraryTemplatesFilterInput` now also carries an
+# optional `searchTerm: String` (case-insensitive substring over title/description/tags,
+# OR-ed; provider name NOT searched; blank/omitted = no filter). It AND-composes with
+# `types`. The templates operation SIGNATURE is unchanged — `searchTerm` is supplied
+# inside the existing `$filter` variable. Packs gain a NEW `LibraryInnovationPacksFilterInput`
+# input + a `filter` arg (see the packs operation below).
+
 query InnovationLibraryTemplatesPaginated(
   $first: Int!
   $after: UUID
@@ -81,12 +88,12 @@ query InnovationLibraryTemplatesPaginated(
   }
 }
 
-query InnovationLibraryPacksPaginated($first: Int!, $after: UUID) {
+query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
   platform {
     id
     library {
       id
-      innovationPacksPaginated(first: $first, after: $after) {
+      innovationPacksPaginated(first: $first, after: $after, filter: $filter) {
         total
         innovationPacks {
           id

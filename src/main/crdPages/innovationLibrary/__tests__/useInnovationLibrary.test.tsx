@@ -262,7 +262,7 @@ describe('useInnovationLibrary — server-side filter (US2)', () => {
 describe('useInnovationLibrary — packs (US3)', () => {
   test('requests a bounded first page and exposes total + hasMore', () => {
     const { result } = renderHook(() => useInnovationLibrary());
-    expect(usePacksPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15 } });
+    expect(usePacksPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15, filter: undefined } });
     expect(result.current.packs).toHaveLength(2);
     expect(result.current.packsTotal).toBe(5);
     expect(result.current.hasMorePacks).toBe(true);
@@ -319,5 +319,61 @@ describe('useInnovationLibrary — preview during paging (FR-010)', () => {
     act(() => result.current.closePreview());
     expect(result.current.previewTemplate).toBeUndefined();
     expect(result.current.templates).toHaveLength(loadedBefore);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// US4 — server-side text search (debounced; FR-015..FR-018)
+// ---------------------------------------------------------------------------
+
+describe('useInnovationLibrary — search (US4)', () => {
+  test('a debounced packs term is sent as filter.searchTerm (FR-015)', async () => {
+    const { result } = renderHook(() => useInnovationLibrary());
+
+    act(() => result.current.onChangePacksSearch('design'));
+
+    // The raw term updates immediately; the query re-fires only after the debounce settles.
+    await waitFor(() =>
+      expect(usePacksPaginatedMock).toHaveBeenLastCalledWith({
+        variables: { first: 15, filter: { searchTerm: 'design' } },
+      })
+    );
+  });
+
+  test('a whitespace-only packs term is sent as no filter (FR-017)', async () => {
+    const { result } = renderHook(() => useInnovationLibrary());
+
+    act(() => result.current.onChangePacksSearch('   '));
+
+    await waitFor(() =>
+      expect(usePacksPaginatedMock).toHaveBeenLastCalledWith({
+        variables: { first: 15, filter: undefined },
+      })
+    );
+  });
+
+  test('a templates term composes with the type filter as an AND (FR-016)', async () => {
+    const { result } = renderHook(() => useInnovationLibrary());
+
+    act(() => result.current.onChangeTypeFilter(['whiteboard']));
+    act(() => result.current.onChangeTemplatesSearch('flow'));
+
+    await waitFor(() =>
+      expect(useTemplatesPaginatedMock).toHaveBeenLastCalledWith({
+        variables: { first: 15, filter: { types: [GqlTemplateType.Whiteboard], searchTerm: 'flow' } },
+      })
+    );
+  });
+
+  test('a templates term with no type filter sends only searchTerm', async () => {
+    const { result } = renderHook(() => useInnovationLibrary());
+
+    act(() => result.current.onChangeTemplatesSearch('flow'));
+
+    await waitFor(() =>
+      expect(useTemplatesPaginatedMock).toHaveBeenLastCalledWith({
+        variables: { first: 15, filter: { searchTerm: 'flow' } },
+      })
+    );
   });
 });

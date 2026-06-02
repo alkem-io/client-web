@@ -18,7 +18,8 @@ export const typePolicies: TypedTypePolicies = {
       // `TemplateResult` is a non-normalized wrapper (no own id) — the relay merge's
       // id-dedup is a no-op; continuity relies on the server's stable rowId-DESC cursors.
       templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult'),
-      innovationPacksPaginated: paginationFieldPolicy(false, 'InnovationPack'),
+      // Packs now take a `filter` (searchTerm); key on it so a search re-keys to a fresh first page (FR-017).
+      innovationPacksPaginated: paginationFieldPolicy(['filter'], 'InnovationPack'),
     },
   },
   MeQueryResults: {

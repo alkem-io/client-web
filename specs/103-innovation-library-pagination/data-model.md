@@ -40,8 +40,8 @@ Registered on the `Library` type in `src/core/apollo/config/typePolicies.ts`:
 
 | Field | `keyArgs` | typeName | Effect |
 |-------|-----------|----------|--------|
-| `templatesPaginated` | `['filter']` | `'TemplateResult'` | One independently-paged cached list **per filter** ⇒ changing the type filter starts a fresh first page (FR-007). |
-| `innovationPacksPaginated` | `false` | `'InnovationPack'` | Single paged list; `fetchMore` appends via the relay merge. |
+| `templatesPaginated` | `['filter']` | `'TemplateResult'` | One independently-paged cached list **per filter** (`filter` = `{ types?, searchTerm? }`) ⇒ changing the type filter **or the search term** starts a fresh first page (FR-007, FR-017). |
+| `innovationPacksPaginated` | `['filter']` | `'InnovationPack'` | Packs now take a `filter` (`{ searchTerm? }`), so the policy keys on it too ⇒ changing the pack search term starts a fresh first page (FR-017). **(Was `false` before the name filter.)** |
 
 `paginationFieldPolicy.merge` concatenates `prefix + incoming` when `after` is
 present and replaces the list when `after`/`before` are absent (the basis for the
@@ -54,8 +54,8 @@ id-dedup is a no-op; correctness relies on stable `rowId`-DESC cursors.
 
 | Operation | Variables | Notes |
 |-----------|-----------|-------|
-| `InnovationLibraryTemplatesPaginated` | `{ first: Int!, after?: UUID, filter?: LibraryTemplatesFilterInput }` | Flat field args `templatesPaginated(first, after, filter)`; `filter` omitted when type filter is `'all'`. |
-| `InnovationLibraryPacksPaginated` | `{ first: Int!, after?: UUID }` | Flat field args `innovationPacksPaginated(first, after)`; no filter. |
+| `InnovationLibraryTemplatesPaginated` | `{ first: Int!, after?: UUID, filter?: LibraryTemplatesFilterInput }` | Flat field args `templatesPaginated(first, after, filter)`. `filter = { types?, searchTerm? }`; omitted entirely when type is `'all'` AND the term is blank; `searchTerm` omitted when blank/whitespace. |
+| `InnovationLibraryPacksPaginated` | `{ first: Int!, after?: UUID, filter?: LibraryInnovationPacksFilterInput }` | Flat field args `innovationPacksPaginated(first, after, filter)`. `filter = { searchTerm? }`; omitted when the term is blank/whitespace. |
 
 `PAGE_SIZE = 15` (module constant; 3 rows of 5 cards on wide screens, ≤ server max 100).
 
@@ -84,6 +84,15 @@ UseInnovationLibraryResult {
   // type filter (now server-side)
   activeTypeFilter: TemplateTypeFilterValue
   onChangeTypeFilter: (next: TemplateTypeFilterValue) => void
+
+  // text search (server-side; debounced; per section)
+  templatesSearch: string                 // raw input value (immediate, for the controlled input)
+  onChangeTemplatesSearch: (next: string) => void
+  packsSearch: string
+  onChangePacksSearch: (next: string) => void
+  // The hook debounces each raw value and feeds the debounced term into the query
+  // `filter.searchTerm` (blank/whitespace ⇒ omitted). Changing the debounced term
+  // re-keys the cache (keyArgs `['filter']`) ⇒ fresh first page.
 
   // preview (unchanged)
   onTemplatePreview: (templateId: string) => void

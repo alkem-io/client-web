@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { debounce } from 'lodash-es';
+import { useEffect, useRef, useState } from 'react';
 import {
   useInnovationLibraryPacksPaginatedQuery,
   useInnovationLibraryTemplatesPaginatedQuery,
   useTemplateContentLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { LibraryTemplatesFilterInput } from '@/core/apollo/generated/graphql-schema';
+import type {
+  LibraryInnovationPacksFilterInput,
+  LibraryTemplatesFilterInput,
+} from '@/core/apollo/generated/graphql-schema';
 import type { TemplateTypeFilterValue } from '@/crd/components/innovationLibrary/TemplateTypeFilter';
 import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { TemplateCardData, TemplateContent } from '@/crd/components/templates/types';
@@ -14,6 +18,9 @@ import { mapPackToInnovationPackCardData } from './innovationLibraryMapper';
 
 /** Client page size — 3 rows of 5 cards on big screens (server caps at 100); FR-012. */
 const PAGE_SIZE = 15;
+
+/** Pause after the last keystroke before a search request fires (FR-018). */
+const SEARCH_DEBOUNCE_MS = 300;
 
 export type UseInnovationLibraryResult = {
   // templates
@@ -36,6 +43,12 @@ export type UseInnovationLibraryResult = {
   activeTypeFilter: TemplateTypeFilterValue;
   onChangeTypeFilter: (next: TemplateTypeFilterValue) => void;
 
+  // text search (server-side; debounced; per section)
+  templatesSearch: string;
+  onChangeTemplatesSearch: (next: string) => void;
+  packsSearch: string;
+  onChangePacksSearch: (next: string) => void;
+
   // preview (unchanged)
   onTemplatePreview: (templateId: string) => void;
   previewTemplate: TemplateCardData | undefined;
@@ -44,12 +57,29 @@ export type UseInnovationLibraryResult = {
   closePreview: () => void;
 };
 
-/** CRD type-filter value → server `LibraryTemplatesFilterInput` (`'all'` ⇒ no filter). */
-function toTemplatesFilter(value: TemplateTypeFilterValue): LibraryTemplatesFilterInput | undefined {
-  if (value === 'all') {
+/** Trim a raw search input to a server term, or `undefined` when blank/whitespace (FR-017). */
+function toSearchTerm(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+/**
+ * CRD type filter + search term → server `LibraryTemplatesFilterInput`.
+ * `'all'` types ⇒ no `types`; blank term ⇒ no `searchTerm`; both empty ⇒ no filter at all.
+ */
+function toTemplatesFilter(value: TemplateTypeFilterValue, search: string): LibraryTemplatesFilterInput | undefined {
+  const types = value === 'all' ? undefined : value.map(toGqlTemplateType);
+  const searchTerm = toSearchTerm(search);
+  if (!types && !searchTerm) {
     return undefined;
   }
-  return { types: value.map(toGqlTemplateType) };
+  return { ...(types ? { types } : {}), ...(searchTerm ? { searchTerm } : {}) };
+}
+
+/** Search term → server packs filter; `undefined` when blank. */
+function toPacksFilter(search: string): LibraryInnovationPacksFilterInput | undefined {
+  const searchTerm = toSearchTerm(search);
+  return searchTerm ? { searchTerm } : undefined;
 }
 
 /**
@@ -61,6 +91,33 @@ function toTemplatesFilter(value: TemplateTypeFilterValue): LibraryTemplatesFilt
  */
 export function useInnovationLibrary(): UseInnovationLibraryResult {
   const [filter, setFilter] = useState<TemplateTypeFilterValue>('all');
+  // Raw terms drive the inputs (immediate); the debounced terms drive the queries (FR-018).
+  const [templatesSearch, setTemplatesSearch] = useState('');
+  const [packsSearch, setPacksSearch] = useState('');
+  const [debouncedTemplatesSearch, setDebouncedTemplatesSearch] = useState('');
+  const [debouncedPacksSearch, setDebouncedPacksSearch] = useState('');
+
+  // The debounced target is a stable `useState` setter, so a ref-held lodash debounce never goes
+  // stale; cancel any pending trailing call on unmount so it can't set state after teardown.
+  const debounceTemplatesSearch = useRef(debounce(setDebouncedTemplatesSearch, SEARCH_DEBOUNCE_MS)).current;
+  const debouncePacksSearch = useRef(debounce(setDebouncedPacksSearch, SEARCH_DEBOUNCE_MS)).current;
+  useEffect(
+    () => () => {
+      debounceTemplatesSearch.cancel();
+      debouncePacksSearch.cancel();
+    },
+    [debounceTemplatesSearch, debouncePacksSearch]
+  );
+
+  const onChangeTemplatesSearch = (next: string) => {
+    setTemplatesSearch(next);
+    debounceTemplatesSearch(next);
+  };
+  const onChangePacksSearch = (next: string) => {
+    setPacksSearch(next);
+    debouncePacksSearch(next);
+  };
+
   const [loadingMoreTemplates, setLoadingMoreTemplates] = useState(false);
   const [loadingMorePacks, setLoadingMorePacks] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<TemplateCardData | undefined>(undefined);
@@ -75,7 +132,7 @@ export function useInnovationLibrary(): UseInnovationLibraryResult {
     fetchMore: fetchMoreTemplatesRaw,
     refetch: refetchTemplates,
   } = useInnovationLibraryTemplatesPaginatedQuery({
-    variables: { first: PAGE_SIZE, filter: toTemplatesFilter(filter) },
+    variables: { first: PAGE_SIZE, filter: toTemplatesFilter(filter, debouncedTemplatesSearch) },
   });
 
   const templatesConnection = templatesData?.platform.library.templatesPaginated;
@@ -110,7 +167,7 @@ export function useInnovationLibrary(): UseInnovationLibraryResult {
     fetchMore: fetchMorePacksRaw,
     refetch: refetchPacks,
   } = useInnovationLibraryPacksPaginatedQuery({
-    variables: { first: PAGE_SIZE },
+    variables: { first: PAGE_SIZE, filter: toPacksFilter(debouncedPacksSearch) },
   });
 
   const packsConnection = packsData?.platform.library.innovationPacksPaginated;
@@ -178,6 +235,11 @@ export function useInnovationLibrary(): UseInnovationLibraryResult {
 
     activeTypeFilter: filter,
     onChangeTypeFilter: setFilter,
+
+    templatesSearch,
+    onChangeTemplatesSearch,
+    packsSearch,
+    onChangePacksSearch,
 
     onTemplatePreview,
     previewTemplate,

@@ -299,11 +299,13 @@
     "loadedOfTotal": "{{loaded}} de {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Aún no hay Innovation Packs disponibles."
+      "empty": "Aún no hay Innovation Packs disponibles.",
+      "searchPlaceholder": "Buscar Innovation Packs"
     },
     "templates": {
       "heading": "Plantillas",
-      "empty": "Ninguna plantilla coincide con los filtros seleccionados."
+      "empty": "Ninguna plantilla coincide con los filtros seleccionados.",
+      "searchPlaceholder": "Buscar plantillas"
     },
     "filter": {
       "label": "Filtrar por tipo",

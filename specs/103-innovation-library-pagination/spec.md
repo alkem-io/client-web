@@ -168,6 +168,42 @@ duplicates.
 
 ---
 
+### User Story 4 - Filter each section by a search term (Priority: P2)
+
+A person types a word into a search box above the Innovation Packs section, or
+beside the template type filter, and the section narrows to items whose name,
+description, or tags contain that term — applied **on the server**, so the total,
+the batches, and "Load More" all reflect the searched (and, for templates, also
+type-filtered) set rather than just the pages already downloaded.
+
+**Why this priority**: Search makes a growing catalogue navigable, but the core
+pagination (US1–US3) is independently shippable first. Search is additive on top
+and reuses the same server-filter + reset-paging machinery as the type filter.
+
+**Independent Test**: Type a term in the Packs search and confirm the total and
+first batch reflect only matching packs; page within the search and confirm it
+stays within the term; clear it and confirm the full set returns. Repeat for the
+Templates search, and confirm a term + a type filter together return only the
+intersection.
+
+**Acceptance Scenarios**:
+
+1. **Given** a search term in a section, **When** results load, **Then** the total
+   and every batch reflect only items whose title, description, or tags contain the
+   term (case-insensitive substring); provider name is not matched.
+2. **Given** a templates search term and an active type filter, **When** templates
+   load, **Then** only the intersection (matching term AND chosen types) is shown,
+   counted, and paged.
+3. **Given** the user is several batches into a searched list, **When** they change
+   or clear the term, **Then** paging resets to the first batch of the new query and
+   previously appended batches are discarded.
+4. **Given** a blank or whitespace-only term, **When** it is applied, **Then** it
+   behaves as no text filter (the otherwise-filtered set is returned in full).
+5. **Given** a term matching nothing, **When** it is applied, **Then** the empty
+   state is shown, the total reads zero, and no "Load More" appears.
+
+---
+
 ### Edge Cases
 
 - **First load empty**: An empty library (or empty section) shows the existing
@@ -247,6 +283,23 @@ duplicates.
   invalid (an item was removed mid-browse), the page MUST recover by silently
   refetching the affected section from its first page with fresh cursors, rather
   than surfacing a hard error or leaving the section stuck.
+- **FR-015**: The page MUST provide a free-text search input per section — one
+  above/beside the **Innovation Packs** section, one to the right of the template
+  **type** filter — and MUST send the entered term to the server as part of the
+  paginated request (templates: `LibraryTemplatesFilterInput.searchTerm`; packs:
+  `LibraryInnovationPacksFilterInput.searchTerm`), so the total, the batches, and
+  the "Load More" all reflect the searched set. No client-side filtering of a
+  fully-downloaded list is introduced.
+- **FR-016**: For templates the search term MUST compose with the template-type
+  filter (server-side intersection): total and pages reflect items matching the
+  term AND the selected types.
+- **FR-017**: Changing the search term (for either section) MUST reset paging to
+  the first page for that section and discard previously appended pages. A blank or
+  whitespace-only term MUST be sent as "no term" (omitted), behaving as no text
+  filter.
+- **FR-018**: The search input MUST be debounced so a request is issued only after
+  the user pauses typing, not on every keystroke; the already-visible items remain
+  until the new first page arrives.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -311,8 +364,10 @@ duplicates.
 - Any user-facing sort control on the paginated sections — the server's paginated
   fields offer no ordering options (newest-first only); field-based ordering is a
   deferred server-side future upgrade.
-- Free-text or fuzzy search across the library (not offered by the server
-  feature).
+- Ranked / fuzzy / typo-tolerant search and per-field search operators (the server
+  offers only a plain case-insensitive substring term over title/description/tags;
+  the client adopts that as-is).
+- Searching by provider name (intentionally excluded by the server feature).
 - Removing or altering the server's unpaginated list fields (other consumers
   still use them).
 - New filtering dimensions beyond the existing template-type filter.
