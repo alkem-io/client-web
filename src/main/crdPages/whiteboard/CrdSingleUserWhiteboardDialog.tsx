@@ -32,6 +32,7 @@ import type {
   PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
@@ -147,6 +148,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
       notify(message, 'warning');
     }
   }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
+
+  // Keep the selected mode in sync with the persisted settings each time the dialog opens — the
+  // state initializer can capture a stale `Auto` if `whiteboard` populates after this mounts.
+  useEffect(() => {
+    if (options.previewSettingsDialogOpen) {
+      setSelectedPreviewMode(whiteboard.previewSettings.mode ?? WhiteboardPreviewMode.Auto);
+    }
+  }, [options.previewSettingsDialogOpen, whiteboard.previewSettings.mode]);
 
   const getExcalidrawState = () => {
     if (!excalidrawAPI) return undefined;
@@ -340,7 +349,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             title={tWb(`preview.modes.${selectedPreviewMode}.title`)}
             previewImage={previewImageBlob}
             initialCrop={whiteboard.previewSettings.coordinates ?? undefined}
-            aspectRatio={options.previewImagesSettings?.[0]?.dimensions.aspectRatio ?? 16 / 9}
+            aspectRatio={
+              options.previewImagesSettings?.[0]?.dimensions.aspectRatio ??
+              WhiteboardPreviewVisualDimensions.aspectRatio
+            }
             onCropSave={async crop => {
               setCropDialogOpen(false);
               setLoadingPreviewCrop(true);
