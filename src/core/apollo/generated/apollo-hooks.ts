@@ -12265,12 +12265,12 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutationVariables
 >;
 export const ForumMentionableContributorsDocument = gql`
-    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
+    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30, $types: [ActorType!]!) {
   platform {
     id
     forum {
       id
-      mentionableContributors(filter: $filter, limit: $limit) {
+      mentionableContributors(filter: $filter, limit: $limit, types: $types) {
         id
         type
         nameID

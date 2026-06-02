@@ -34,7 +34,10 @@ vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({
 }));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
-vi.mock('./useKratosMessageCopy', () => ({ useTranslateDescriptor: () => (descriptor: unknown) => descriptor }));
+vi.mock('./useKratosMessageCopy', () => ({
+  useTranslateDescriptor: () => (descriptor: unknown) => descriptor,
+  useKratosMessageCopy: () => (messages: unknown) => messages,
+}));
 vi.mock('./flowDescriptorAdapter', () => ({ flowDescriptorAdapter: () => ({}) }));
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger: vi.fn(),
