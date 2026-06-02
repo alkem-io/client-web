@@ -296,6 +296,7 @@
     "title": "Innovatiebibliotheek",
     "subtitle": "Ontdek templates en innovation packs van het platform.",
     "pageTitle": "Innovatiebibliotheek",
+    "loadedOfTotal": "{{loaded}} van {{total}}",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Er zijn nog geen innovation packs beschikbaar."

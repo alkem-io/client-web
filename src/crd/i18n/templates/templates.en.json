@@ -296,6 +296,7 @@
     "title": "Innovation Library",
     "subtitle": "Discover templates and innovation packs published across the platform.",
     "pageTitle": "Innovation Library",
+    "loadedOfTotal": "{{loaded}} of {{total}}",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "No innovation packs available yet."

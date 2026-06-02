@@ -35011,6 +35011,192 @@ export type AuthorizationPrivilegesForUserQuery = {
   };
 };
 
+export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+}>;
+
+export type InnovationLibraryPacksPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacksPaginated: {
+        __typename?: 'PaginatedInnovationPacks';
+        total: number;
+        innovationPacks: Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
+export type InnovationLibraryTemplatesPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+}>;
+
+export type InnovationLibraryTemplatesPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      templatesPaginated: {
+        __typename?: 'PaginatedLibraryTemplateResults';
+        total: number;
+        templateResults: Array<{
+          __typename?: 'TemplateResult';
+          template: {
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
+            contentSpace?:
+              | {
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+          innovationPack: {
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            provider: {
+              __typename?: 'Actor';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
 export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MySpacesExplorerPageQuery = {

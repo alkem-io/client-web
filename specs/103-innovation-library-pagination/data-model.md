@@ -57,7 +57,7 @@ id-dedup is a no-op; correctness relies on stable `rowId`-DESC cursors.
 | `InnovationLibraryTemplatesPaginated` | `{ first: Int!, after?: UUID, filter?: LibraryTemplatesFilterInput }` | Flat field args `templatesPaginated(first, after, filter)`; `filter` omitted when type filter is `'all'`. |
 | `InnovationLibraryPacksPaginated` | `{ first: Int!, after?: UUID }` | Flat field args `innovationPacksPaginated(first, after)`; no filter. |
 
-`PAGE_SIZE = 25` (module constant; matches server default, ≤ server max 100).
+`PAGE_SIZE = 15` (module constant; 3 rows of 5 cards on wide screens, ≤ server max 100).
 
 ---
 

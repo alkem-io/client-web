@@ -296,6 +296,7 @@
     "title": "Innovationsbibliothek",
     "subtitle": "Entdecke Vorlagen und Innovation Packs aus der gesamten Plattform.",
     "pageTitle": "Innovationsbibliothek",
+    "loadedOfTotal": "{{loaded}} von {{total}}",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Es sind noch keine Innovation Packs verfügbar."

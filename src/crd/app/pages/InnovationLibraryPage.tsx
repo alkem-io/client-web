@@ -53,8 +53,16 @@ export function InnovationLibraryPage() {
       <InnovationLibraryView
         packs={MOCK_INNOVATION_PACKS}
         packsLoading={false}
+        packsTotal={MOCK_INNOVATION_PACKS.length}
+        hasMorePacks={false}
+        loadingMorePacks={false}
+        onLoadMorePacks={() => undefined}
         templates={filteredTemplates}
         templatesLoading={false}
+        templatesTotal={filteredTemplates.length}
+        hasMoreTemplates={false}
+        loadingMoreTemplates={false}
+        onLoadMoreTemplates={() => undefined}
         activeTypeFilter={filter}
         onChangeTypeFilter={setFilter}
         onTemplatePreview={openPreview}

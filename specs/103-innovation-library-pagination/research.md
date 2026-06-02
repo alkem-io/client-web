@@ -46,7 +46,7 @@ is never triggered.
 **Rationale**: `useSpaceExplorer` is the canonical, recently-reviewed CRD
 pagination integration; matching it keeps the codebase consistent and is simpler
 than the generic `usePaginatedQuery` wrapper for this two-collection page.
-`PAGE_SIZE = 25` matches the server default (FR-012); the server caps at 100
+`PAGE_SIZE = 15` (3 rows of 5 cards on wide screens; FR-012); the server caps at 100
 regardless.
 
 **Alternatives considered**:

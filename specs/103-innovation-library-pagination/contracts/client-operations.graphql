@@ -11,7 +11,7 @@
 # mappers (mapTemplateToCardData, mapPackToInnovationPackCardData) and the
 # TemplatePreviewDialog keep their fields.
 #
-# Client pages FORWARD only: { first, after }. PAGE_SIZE = 25 (server default;
+# Client pages FORWARD only: { first, after }. PAGE_SIZE = 15 (3 rows of 5 cards;
 # server caps at 100). Order is server-fixed newest-first (no orderBy).
 #
 # ARGS ARE FLAT (verified against the generated schema): the server resolver

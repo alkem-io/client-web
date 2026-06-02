@@ -296,6 +296,7 @@
     "title": "Иновационна библиотека",
     "subtitle": "Открийте шаблони и Innovation Packs от платформата.",
     "pageTitle": "Иновационна библиотека",
+    "loadedOfTotal": "{{loaded}} от {{total}}",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Все още няма налични Innovation Packs."

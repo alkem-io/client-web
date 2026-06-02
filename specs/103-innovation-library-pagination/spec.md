@@ -238,9 +238,9 @@ duplicates.
 - **FR-011**: The page MUST show a first-load placeholder while the initial page
   is loading and a non-blocking, non-duplicating busy indicator while a subsequent
   page is loading, without clearing already-visible items.
-- **FR-012**: The page MUST request pages of at most the server's maximum page
-  size and rely on the server's default page size (25) rather than attempting to
-  request the whole collection in one page.
+- **FR-012**: The page MUST request bounded pages — a client page size of 15 (3
+  rows of 5 cards on wide screens), never exceeding the server's maximum page size
+  — rather than attempting to request the whole collection in one page.
 - **FR-013**: The page MUST present empty results (no items, total zero) using the
   existing empty-state messaging for each section, with no "load more" affordance.
 - **FR-014**: When a "load more" request fails because its cursor is stale or
@@ -291,8 +291,8 @@ duplicates.
 - **Load-more, not infinite scroll**: Additional pages are fetched via an explicit
   "Load More" control per section. Infinite scroll is a possible later enhancement
   and does not change the data contract.
-- **Page size**: The client relies on the server's default page size (25) and does
-  not request more than the server maximum (100).
+- **Page size**: The client requests a page size of 15 (3 rows of 5 cards on wide
+  screens) and never more than the server maximum (100).
 - **Scope is the CRD page**: The page being migrated is the CRD Innovation Library
   page under `src/main/crdPages/innovationLibrary/`. The legacy MUI Innovation
   Library page is out of scope and keeps its current behaviour until it is retired.

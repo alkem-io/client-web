@@ -8,9 +8,10 @@ import { useInnovationLibrary } from './useInnovationLibrary';
 
 /**
  * `/innovation-library` — CRD-native Innovation Library page. Anonymous access
- * (the route is not behind an identity gate; FR-050). Loads everything in a
- * single `useInnovationLibraryQuery`; filtering is client-side; selecting a
- * card opens the shared `TemplatePreviewDialog`.
+ * (the route is not behind an identity gate; FR-050). Loads each collection a
+ * cursor-paginated page at a time (templates + packs), filters templates by type
+ * on the server, and offers per-section "Load More"; selecting a card opens the
+ * shared `TemplatePreviewDialog`.
  */
 export const CrdInnovationLibraryPage = () => {
   const { t } = useTranslation('crd-templates');
@@ -27,9 +28,17 @@ export const CrdInnovationLibraryPage = () => {
 
       <InnovationLibraryView
         packs={lib.packs}
-        packsLoading={lib.loading}
+        packsLoading={lib.packsLoading}
+        packsTotal={lib.packsTotal}
+        hasMorePacks={lib.hasMorePacks}
+        loadingMorePacks={lib.loadingMorePacks}
+        onLoadMorePacks={lib.onLoadMorePacks}
         templates={lib.templates}
-        templatesLoading={lib.loading}
+        templatesLoading={lib.templatesLoading}
+        templatesTotal={lib.templatesTotal}
+        hasMoreTemplates={lib.hasMoreTemplates}
+        loadingMoreTemplates={lib.loadingMoreTemplates}
+        onLoadMoreTemplates={lib.onLoadMoreTemplates}
         activeTypeFilter={lib.activeTypeFilter}
         onChangeTypeFilter={lib.onChangeTypeFilter}
         onTemplatePreview={lib.onTemplatePreview}

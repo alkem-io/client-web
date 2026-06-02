@@ -296,6 +296,7 @@
     "title": "Bibliothèque d'innovation",
     "subtitle": "Découvrez les modèles et Innovation Packs publiés sur la plateforme.",
     "pageTitle": "Bibliothèque d'innovation",
+    "loadedOfTotal": "{{loaded}} sur {{total}}",
     "packs": {
       "heading": "Innovation Packs",
       "empty": "Aucun Innovation Pack disponible pour le moment."
