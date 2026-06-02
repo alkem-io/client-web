@@ -4,12 +4,15 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Écrire un message…",
+      "placeholder": "Écrire un e-mail…",
       "send": "Envoyer",
       "cancel": "Annuler",
       "sending": "Envoi…",
       "errorTitle": "Impossible d'envoyer le message",
-      "ariaLabel": "Composer un message"
+      "ariaLabel": "Composer un message",
+      "emailTitle": "Envoyer un e-mail",
+      "emailNotice": "Livré dans leur boîte de réception.",
+      "successToast": "Votre e-mail a été envoyé."
     },
     "resourceTabsAriaLabel": "Sections de ressources",
     "loading": {
