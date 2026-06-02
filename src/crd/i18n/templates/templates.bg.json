@@ -313,7 +313,9 @@
         "whiteboard": "Бели дъски",
         "post": "Публикации",
         "communityGuidelines": "Правила на общността"
-      }
+      },
+      "summary": "{{first}} и още {{count}}",
+      "pair": "{{first}} и {{second}}"
     }
   },
   "packCard": {

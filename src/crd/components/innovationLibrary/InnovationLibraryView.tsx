@@ -65,10 +65,12 @@ export function InnovationLibraryView({
       </section>
 
       <section aria-labelledby="crd-library-templates-heading" className="space-y-4">
-        <h2 id="crd-library-templates-heading" className="text-section-title">
-          {t('library.templates.heading')}
-        </h2>
-        <TemplateTypeFilter value={activeTypeFilter} onChange={onChangeTypeFilter} />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="crd-library-templates-heading" className="text-section-title">
+            {t('library.templates.heading')}
+          </h2>
+          <TemplateTypeFilter value={activeTypeFilter} onChange={onChangeTypeFilter} />
+        </div>
         <TemplateGallery
           templates={templates}
           loading={templatesLoading}

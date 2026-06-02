@@ -313,7 +313,9 @@
         "whiteboard": "Pizarras",
         "post": "Publicaciones",
         "communityGuidelines": "Normas de la comunidad"
-      }
+      },
+      "summary": "{{first}} y {{count}} más",
+      "pair": "{{first}} y {{second}}"
     }
   },
   "packCard": {

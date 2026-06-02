@@ -313,7 +313,9 @@
         "whiteboard": "Tableaux blancs",
         "post": "Publications",
         "communityGuidelines": "Règles de la communauté"
-      }
+      },
+      "summary": "{{first}} et {{count}} de plus",
+      "pair": "{{first}} et {{second}}"
     }
   },
   "packCard": {

@@ -46,7 +46,7 @@ export function InnovationLibraryPage() {
         <h1 className="text-page-title">Innovation Library</h1>
         <p className="text-body text-muted-foreground">
           Mock preview of the public <code className="text-caption">InnovationLibraryView</code> with packs + every
-          template type. Filter by type to drive the chip state; click a card to preview.
+          template type. Use the type combobox beside the Templates heading to filter; click a card to preview.
         </p>
       </header>
 

@@ -313,7 +313,9 @@
         "whiteboard": "Whiteboards",
         "post": "Posts",
         "communityGuidelines": "Communityrichtlijnen"
-      }
+      },
+      "summary": "{{first}} en {{count}} meer",
+      "pair": "{{first}} en {{second}}"
     }
   },
   "packCard": {
