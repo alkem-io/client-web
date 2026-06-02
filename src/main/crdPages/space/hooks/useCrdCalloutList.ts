@@ -1,3 +1,4 @@
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 
@@ -28,6 +29,10 @@ export function useCrdCalloutList({ tabPosition, tagsFilter, skip }: UseCrdCallo
     calloutsSetId,
     classificationTagsets,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
+    // Reordering callouts requires Update on the calloutsSet (not the callout).
+    // Mirrors the legacy `movable` gate in `useCalloutsSet`.
+    canReorderCallouts:
+      calloutsSetProvided.calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
     tabDescription: tabDescription ?? '',
     flowStateForNewCallouts,
     loading: tabLoading || calloutsSetProvided.loading,

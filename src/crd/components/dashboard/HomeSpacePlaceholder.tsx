@@ -14,7 +14,10 @@ export function HomeSpacePlaceholder({ settingsHref, className }: HomeSpacePlace
     <a
       href={settingsHref}
       className={cn(
-        'flex min-w-[180px] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-6 text-center hover:border-primary hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+        // `min-w-0` (not a hard `min-w-[180px]`) so the placeholder respects
+        // the grid cell width on narrow screens — otherwise it overruns its
+        // cell and pushes the neighbour cards out of alignment.
+        'flex min-w-0 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-6 text-center hover:border-primary hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         className
       )}
     >

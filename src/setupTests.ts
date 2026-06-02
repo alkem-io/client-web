@@ -9,6 +9,20 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
+// jsdom does not implement ResizeObserver, but several components (notably Radix
+// UI primitives like Tooltip/Popover via @radix-ui/react-use-size) instantiate
+// one in a layout effect. Without this stub the constructor throws
+// "ResizeObserver is not defined" mid-render, which surfaces as a flaky
+// unhandled error that can swallow the interaction under test (e.g. a form
+// submit triggered by a button wrapped in a Tooltip).
+if (!('ResizeObserver' in globalThis)) {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // Apollo Client 3.14 removes support for the canonizeResults flag on cache.diff.
 // MockedProvider still passes the flag in tests, so strip it to silence warnings.
 const originalDiff = InMemoryCache.prototype.diff;
