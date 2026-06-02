@@ -292,6 +292,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
       settings {
@@ -12159,6 +12160,106 @@ export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
   SchemaTypes.AddReactionMutationVariables
 >;
+export const ForumMentionableContributorsDocument = gql`
+    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
+  platform {
+    id
+    forum {
+      id
+      mentionableContributors(filter: $filter, limit: $limit) {
+        id
+        type
+        nameID
+        profile {
+          id
+          url
+          displayName
+          location {
+            id
+            city
+            country
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}
+    ${VisualModelFragmentDoc}`;
+
+/**
+ * __useForumMentionableContributorsQuery__
+ *
+ * To run a query within a React component, call `useForumMentionableContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useForumMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useForumMentionableContributorsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useForumMentionableContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ForumMentionableContributorsQuery,
+        SchemaTypes.ForumMentionableContributorsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export type ForumMentionableContributorsQueryHookResult = ReturnType<typeof useForumMentionableContributorsQuery>;
+export type ForumMentionableContributorsLazyQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsLazyQuery
+>;
+export type ForumMentionableContributorsSuspenseQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsSuspenseQuery
+>;
+export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ForumMentionableContributorsQuery,
+  SchemaTypes.ForumMentionableContributorsQueryVariables
+>;
+export function refetchForumMentionableContributorsQuery(
+  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
+) {
+  return { query: ForumMentionableContributorsDocument, variables: variables };
+}
 export const RemoveReactionDocument = gql`
     mutation RemoveReaction($roomId: UUID!, $reactionId: MessageID!) {
   removeReactionToMessageInRoom(
@@ -12264,106 +12365,6 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
-export const ForumMentionableContributorsDocument = gql`
-    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
-  platform {
-    id
-    forum {
-      id
-      mentionableContributors(filter: $filter, limit: $limit) {
-        id
-        type
-        nameID
-        profile {
-          id
-          url
-          displayName
-          location {
-            id
-            city
-            country
-          }
-          avatar: visual(type: AVATAR) {
-            ...VisualModel
-          }
-        }
-      }
-    }
-  }
-}
-    ${VisualModelFragmentDoc}`;
-
-/**
- * __useForumMentionableContributorsQuery__
- *
- * To run a query within a React component, call `useForumMentionableContributorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useForumMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useForumMentionableContributorsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *      limit: // value for 'limit'
- *   },
- * });
- */
-export function useForumMentionableContributorsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export function useForumMentionableContributorsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export function useForumMentionableContributorsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ForumMentionableContributorsQuery,
-        SchemaTypes.ForumMentionableContributorsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export type ForumMentionableContributorsQueryHookResult = ReturnType<typeof useForumMentionableContributorsQuery>;
-export type ForumMentionableContributorsLazyQueryHookResult = ReturnType<
-  typeof useForumMentionableContributorsLazyQuery
->;
-export type ForumMentionableContributorsSuspenseQueryHookResult = ReturnType<
-  typeof useForumMentionableContributorsSuspenseQuery
->;
-export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ForumMentionableContributorsQuery,
-  SchemaTypes.ForumMentionableContributorsQueryVariables
->;
-export function refetchForumMentionableContributorsQuery(
-  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
-) {
-  return { query: ForumMentionableContributorsDocument, variables: variables };
-}
 export const MentionableContributorsDocument = gql`
     query MentionableContributors($spaceID: UUID!, $filter: ContributorFilterInput, $limit: Int = 30) {
   lookup {

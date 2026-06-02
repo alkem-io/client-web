@@ -24,6 +24,13 @@ export type InviteMembersDialogConnectorProps = {
    * `onlyFromParentCommunity` behaviour.
    */
   onlyFromParentCommunity?: boolean;
+  /**
+   * Override the URL-resolved space. Required when the dialog is opened from
+   * (sub)space settings, where the route may resolve to a parent space but the
+   * invite must target the (sub)space being edited. `spaceName` + `roleSetId`
+   * are then derived from this id via `useInviteUsersDialogQuery`.
+   */
+  spaceId?: string;
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -50,10 +57,12 @@ export function InviteMembersDialogConnector({
   open,
   onClose,
   onlyFromParentCommunity = false,
+  spaceId: spaceIdOverride,
 }: InviteMembersDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
   const notify = useNotification();
-  const { spaceId, parentSpaceId } = useUrlResolver();
+  const { spaceId: resolvedSpaceId, parentSpaceId } = useUrlResolver();
+  const spaceId = spaceIdOverride ?? resolvedSpaceId;
   const { userModel: currentUser } = useCurrentUserContext();
 
   const { data: spaceData, loading: loadingSpace } = useInviteUsersDialogQuery({

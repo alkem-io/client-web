@@ -1,6 +1,26 @@
 import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  type DraggableAttributes,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  ArrowDownAZ,
   Filter,
   Grid,
+  GripVertical,
   LayoutTemplate,
   List as ListIcon,
   MoreVertical,
@@ -11,8 +31,9 @@ import {
   Search,
   Trash2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { type CSSProperties, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isSubspaceDragDisabled, type SubspaceSortMode } from '@/crd/lib/subspaceDrag';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -44,6 +65,17 @@ export type SubspaceTile = {
 
 export type SubspaceKebabAction = 'pinToggle' | 'saveAsTemplate' | 'delete';
 
+/** Drag-handle wiring passed from a sortable wrapper down into a card/row. */
+type SortableHandle = {
+  setNodeRef: (node: HTMLElement | null) => void;
+  style: CSSProperties;
+  attributes: DraggableAttributes;
+  listeners: ReturnType<typeof useSortable>['listeners'];
+  isDragging: boolean;
+  disabled: boolean;
+  dragLabel: string;
+};
+
 export type SpaceSettingsSubspacesViewProps = {
   subspaces: SubspaceTile[];
   canCreate: boolean;
@@ -57,6 +89,11 @@ export type SpaceSettingsSubspacesViewProps = {
    */
   onChangeDefaultTemplate?: () => void;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
+  /** Current ordering mode. 'manual' = custom drag order; 'alphabetical' = name order (pinned lead). */
+  sortMode: SubspaceSortMode;
+  onSortModeChange: (mode: SubspaceSortMode) => void;
+  /** Persist a new manual order (full id list, top-to-bottom). */
+  onReorder: (orderedIds: string[]) => void;
   className?: string;
 };
 
@@ -68,6 +105,9 @@ export function SpaceSettingsSubspacesView({
   onCreate,
   onChangeDefaultTemplate,
   onKebabAction,
+  sortMode,
+  onSortModeChange,
+  onReorder,
   className,
 }: SpaceSettingsSubspacesViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -75,7 +115,22 @@ export function SpaceSettingsSubspacesView({
   const [filter, setFilter] = useState<SubspaceFilter>('all');
   const [viewMode, setViewMode] = useState<SubspaceViewMode>('grid');
 
-  const filtered = subspaces.filter(s => {
+  // Optimistic manual order. Reset to the server order whenever the membership
+  // set changes (add/remove) — a pure-order change from our own reorder keeps
+  // the local order (membership unchanged) so the row doesn't snap back while
+  // the mutation + refetch are in flight.
+  const serverIds = subspaces.map(s => s.id);
+  const idSetKey = [...serverIds].sort().join('|');
+  const [orderedIds, setOrderedIds] = useState<string[]>(serverIds);
+  const [syncedSetKey, setSyncedSetKey] = useState(idSetKey);
+  if (idSetKey !== syncedSetKey) {
+    setSyncedSetKey(idSetKey);
+    setOrderedIds(serverIds);
+  }
+  const byId = new Map(subspaces.map(s => [s.id, s] as const));
+  const orderedSubspaces = orderedIds.map(id => byId.get(id)).filter((s): s is SubspaceTile => Boolean(s));
+
+  const filtered = orderedSubspaces.filter(s => {
     if (filter !== 'all' && s.visibility !== filter) return false;
     if (
       searchQuery &&
@@ -85,6 +140,76 @@ export function SpaceSettingsSubspacesView({
       return false;
     return true;
   });
+
+  // Drag-reorder is only coherent over the full, unfiltered list — reordering a
+  // searched/filtered subset can't map cleanly onto a full-order mutation.
+  const reorderable = searchQuery === '' && filter === 'all';
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = orderedIds.indexOf(String(active.id));
+    const newIndex = orderedIds.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
+    const next = arrayMove(orderedIds, oldIndex, newIndex);
+    setOrderedIds(next);
+    onReorder(next);
+  };
+
+  const renderGrid = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {filtered.map(subspace =>
+        reorderable ? (
+          <SortableSubspaceGridCard
+            key={subspace.id}
+            subspace={subspace}
+            sortMode={sortMode}
+            canSaveAsTemplate={canSaveAsTemplate}
+            onKebabAction={onKebabAction}
+            dragLabel={t('subspaces.dragAriaLabel', { name: subspace.name })}
+          />
+        ) : (
+          <SubspaceGridCard
+            key={subspace.id}
+            subspace={subspace}
+            canSaveAsTemplate={canSaveAsTemplate}
+            onKebabAction={onKebabAction}
+          />
+        )
+      )}
+    </div>
+  );
+
+  const renderList = (
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
+      {filtered.map((subspace, i) =>
+        reorderable ? (
+          <SortableSubspaceListItem
+            key={subspace.id}
+            subspace={subspace}
+            sortMode={sortMode}
+            canSaveAsTemplate={canSaveAsTemplate}
+            onKebabAction={onKebabAction}
+            isLast={i === filtered.length - 1}
+            dragLabel={t('subspaces.dragAriaLabel', { name: subspace.name })}
+          />
+        ) : (
+          <SubspaceListItem
+            key={subspace.id}
+            subspace={subspace}
+            canSaveAsTemplate={canSaveAsTemplate}
+            onKebabAction={onKebabAction}
+            isLast={i === filtered.length - 1}
+          />
+        )
+      )}
+    </div>
+  );
 
   return (
     <div className={cn('space-y-8', className)}>
@@ -138,6 +263,24 @@ export function SpaceSettingsSubspacesView({
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild={true}>
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  <ArrowDownAZ className="size-4" />
+                  {t('subspaces.sortMode.label')}{' '}
+                  {sortMode === 'manual' ? t('subspaces.sortMode.custom') : t('subspaces.sortMode.alphabetical')}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onSortModeChange('alphabetical')}>
+                  {t('subspaces.sortMode.alphabetical')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onSortModeChange('manual')}>
+                  {t('subspaces.sortMode.custom')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild={true}>
@@ -204,32 +347,106 @@ export function SpaceSettingsSubspacesView({
             <h3 className="text-subsection-title text-foreground">{t('subspaces.noResults')}</h3>
             <p className="text-body mt-1">{t('subspaces.noResultsHint')}</p>
           </div>
+        ) : reorderable ? (
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext
+              items={filtered.map(s => s.id)}
+              strategy={viewMode === 'grid' ? rectSortingStrategy : verticalListSortingStrategy}
+            >
+              {viewMode === 'grid' ? renderGrid : renderList}
+            </SortableContext>
+          </DndContext>
         ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(subspace => (
-              <SubspaceGridCard
-                key={subspace.id}
-                subspace={subspace}
-                canSaveAsTemplate={canSaveAsTemplate}
-                onKebabAction={onKebabAction}
-              />
-            ))}
-          </div>
+          renderGrid
         ) : (
-          <div className="border border-border rounded-xl overflow-hidden bg-card">
-            {filtered.map((subspace, i) => (
-              <SubspaceListItem
-                key={subspace.id}
-                subspace={subspace}
-                canSaveAsTemplate={canSaveAsTemplate}
-                onKebabAction={onKebabAction}
-                isLast={i === filtered.length - 1}
-              />
-            ))}
-          </div>
+          renderList
         )}
       </div>
     </div>
+  );
+}
+
+/* ──────────────── Sortable wrappers ──────────────── */
+
+function SortableSubspaceGridCard({
+  subspace,
+  sortMode,
+  canSaveAsTemplate,
+  onKebabAction,
+  dragLabel,
+}: {
+  subspace: SubspaceTile;
+  sortMode: SubspaceSortMode;
+  canSaveAsTemplate: boolean;
+  onKebabAction: (id: string, action: SubspaceKebabAction) => void;
+  dragLabel: string;
+}) {
+  const disabled = isSubspaceDragDisabled(sortMode, subspace.isPinned);
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+    id: subspace.id,
+    disabled,
+  });
+  const style: CSSProperties = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+  };
+  return (
+    <SubspaceGridCard
+      subspace={subspace}
+      canSaveAsTemplate={canSaveAsTemplate}
+      onKebabAction={onKebabAction}
+      sortable={{ setNodeRef, style, attributes, listeners, isDragging, disabled, dragLabel }}
+    />
+  );
+}
+
+function SortableSubspaceListItem({
+  subspace,
+  sortMode,
+  canSaveAsTemplate,
+  onKebabAction,
+  isLast,
+  dragLabel,
+}: {
+  subspace: SubspaceTile;
+  sortMode: SubspaceSortMode;
+  canSaveAsTemplate: boolean;
+  onKebabAction: (id: string, action: SubspaceKebabAction) => void;
+  isLast: boolean;
+  dragLabel: string;
+}) {
+  const disabled = isSubspaceDragDisabled(sortMode, subspace.isPinned);
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+    id: subspace.id,
+    disabled,
+  });
+  const style: CSSProperties = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+  };
+  return (
+    <SubspaceListItem
+      subspace={subspace}
+      canSaveAsTemplate={canSaveAsTemplate}
+      onKebabAction={onKebabAction}
+      isLast={isLast}
+      sortable={{ setNodeRef, style, attributes, listeners, isDragging, disabled, dragLabel }}
+    />
+  );
+}
+
+function DragHandle({ sortable }: { sortable: SortableHandle }) {
+  if (sortable.disabled) return null;
+  return (
+    <button
+      type="button"
+      aria-label={sortable.dragLabel}
+      className="cursor-grab touch-none rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 active:cursor-grabbing"
+      {...sortable.attributes}
+      {...sortable.listeners}
+    >
+      <GripVertical aria-hidden="true" className="size-4" />
+    </button>
   );
 }
 
@@ -237,13 +454,22 @@ function SubspaceGridCard({
   subspace,
   canSaveAsTemplate,
   onKebabAction,
+  sortable,
 }: {
   subspace: SubspaceTile;
   canSaveAsTemplate: boolean;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
+  sortable?: SortableHandle;
 }) {
   return (
-    <div className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col">
+    <div
+      ref={sortable?.setNodeRef}
+      style={sortable?.style}
+      className={cn(
+        'group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col',
+        sortable?.isDragging && 'opacity-50'
+      )}
+    >
       <div className="h-32 bg-muted relative overflow-hidden">
         {subspace.bannerUrl ? (
           <img
@@ -260,16 +486,23 @@ function SubspaceGridCard({
             aria-hidden="true"
           />
         )}
-        {subspace.isPinned && (
-          <div
-            className="absolute top-2 left-2 rounded-full bg-background/85 backdrop-blur-sm p-1 shadow-sm"
-            role="img"
-            aria-label="Pinned"
-            title="Pinned"
-          >
-            <Pin aria-hidden="true" className="size-3.5 text-amber-500" />
-          </div>
-        )}
+        <div className="absolute top-2 left-2 flex items-center gap-1">
+          {sortable && (
+            <div className="rounded-full bg-background/85 backdrop-blur-sm p-1 shadow-sm">
+              <DragHandle sortable={sortable} />
+            </div>
+          )}
+          {subspace.isPinned && (
+            <div
+              className="rounded-full bg-background/85 backdrop-blur-sm p-1 shadow-sm"
+              role="img"
+              aria-label="Pinned"
+              title="Pinned"
+            >
+              <Pin aria-hidden="true" className="size-3.5 text-amber-500" />
+            </div>
+          )}
+        </div>
         <div className="absolute top-2 right-2">
           <SubspaceKebab
             subspace={subspace}
@@ -306,19 +539,25 @@ function SubspaceListItem({
   canSaveAsTemplate,
   onKebabAction,
   isLast,
+  sortable,
 }: {
   subspace: SubspaceTile;
   canSaveAsTemplate: boolean;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
   isLast: boolean;
+  sortable?: SortableHandle;
 }) {
   return (
     <div
+      ref={sortable?.setNodeRef}
+      style={sortable?.style}
       className={cn(
         'flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors',
+        sortable?.isDragging && 'opacity-50',
         !isLast && 'border-b border-border'
       )}
     >
+      {sortable && <DragHandle sortable={sortable} />}
       <div className="w-16 h-12 rounded bg-muted overflow-hidden shrink-0">
         {subspace.bannerUrl ? (
           <img src={subspace.bannerUrl} alt="" className="w-full h-full object-cover" />

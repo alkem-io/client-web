@@ -57,7 +57,8 @@
       "empty": "Nog geen callouts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
-        "current": "Actieve fase (huidige)"
+        "current": "Actieve fase (huidige)",
+        "badge": "Actieve fase"
       },
       "defaultCalloutTemplate": {
         "set": "Standaard callout-template instellen…",
@@ -265,7 +266,10 @@
         "title": "Externe Virtual Contributor uitnodigen",
         "description": "Nodig een Virtual Contributor uit de Alkemio-bibliotheek uit. De eigenaar moet de uitnodiging accepteren.",
         "search": "Zoek in de bibliotheek…",
-        "empty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht."
+        "empty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+        "welcomeMessageLabel": "Welkomstbericht",
+        "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+        "defaultWelcomeMessage": "We willen je graag uitnodigen om met ons samen te werken."
       }
     },
     "applicationForm": {
@@ -390,6 +394,12 @@
     "noResults": "Geen subspaces gevonden",
     "noResultsHint": "Probeer je zoekopdracht of filters aan te passen.",
     "actions": "Subspace-acties",
+    "sortMode": {
+      "label": "Sorteren",
+      "alphabetical": "Alfabetisch",
+      "custom": "Aangepast"
+    },
+    "dragAriaLabel": "Sleep om {{name}} te herordenen",
     "kebab": {
       "pin": "Vastpinnen",
       "unpin": "Losmaken",

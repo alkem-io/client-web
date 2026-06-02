@@ -57,7 +57,8 @@
       "empty": "Noch keine Callouts in dieser Spalte.",
       "activePhase": {
         "set": "Als aktive Phase markieren",
-        "current": "Aktive Phase (aktuell)"
+        "current": "Aktive Phase (aktuell)",
+        "badge": "Aktive Phase"
       },
       "defaultCalloutTemplate": {
         "set": "Standard-Callout-Vorlage festlegen…",
@@ -265,7 +266,10 @@
         "title": "Externen virtuellen Mitwirkenden einladen",
         "description": "Laden Sie einen virtuellen Mitwirkenden aus der Alkemio-Bibliothek ein. Der Eigentümer muss die Einladung annehmen.",
         "search": "In der Bibliothek suchen…",
-        "empty": "Keine virtuellen Mitwirkenden in der Bibliothek entsprechen Ihrer Suche."
+        "empty": "Keine virtuellen Mitwirkenden in der Bibliothek entsprechen Ihrer Suche.",
+        "welcomeMessageLabel": "Willkommensnachricht",
+        "welcomeMessagePlaceholder": "Fügen Sie der Einladung eine Nachricht hinzu…",
+        "defaultWelcomeMessage": "Wir möchten Sie einladen, mit uns zusammenzuarbeiten."
       }
     },
     "applicationForm": {
@@ -390,6 +394,12 @@
     "noResults": "Keine Subspaces gefunden",
     "noResultsHint": "Versuchen Sie, Ihre Suche oder Filter anzupassen.",
     "actions": "Subspace-Aktionen",
+    "sortMode": {
+      "label": "Sortieren",
+      "alphabetical": "Alphabetisch",
+      "custom": "Benutzerdefiniert"
+    },
+    "dragAriaLabel": "Zum Neuordnen von {{name}} ziehen",
     "kebab": {
       "pin": "Anheften",
       "unpin": "Lösen",

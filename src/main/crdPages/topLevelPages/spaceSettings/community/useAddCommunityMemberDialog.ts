@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { AddCommunityMemberCandidate } from '@/crd/components/space/settings/AddCommunityMemberDialog';
 import type useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
@@ -171,7 +172,11 @@ export function useAddVirtualContributorExternalDialog({
   community: ReturnType<typeof useCommunityAdmin>;
   spaceId: string;
   spaceLevel: SpaceLevel | undefined;
-}): AddCommunityMemberDialogState {
+}): AddCommunityMemberDialogState & {
+  welcomeMessage: string;
+  onWelcomeMessageChange: (next: string) => void;
+} {
+  const { t } = useTranslation('crd-spaceSettings');
   const vcAdmin = useVirtualContributorsAdmin({
     level: spaceLevel ?? SpaceLevel.L0,
     currentMembers: community.virtualContributorAdmin.members,
@@ -184,6 +189,10 @@ export function useAddVirtualContributorExternalDialog({
   const [loading, setLoading] = useState(false);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [addingId, setAddingId] = useState<string | null>(null);
+  // Pre-filled, editable welcome message sent with the invitation — matches the
+  // legacy `InviteVirtualContributorDialog`, which requires a message for
+  // library (external) VC invites.
+  const [welcomeMessage, setWelcomeMessage] = useState('');
 
   const loadCandidates = async (filter: string | undefined) => {
     setLoading(true);
@@ -203,6 +212,7 @@ export function useAddVirtualContributorExternalDialog({
   const openDialog = () => {
     setAddedIds(new Set());
     setSearch('');
+    setWelcomeMessage(t('community.virtualContributors.addExternalDialog.defaultWelcomeMessage'));
     setOpen(true);
   };
   const closeDialog = () => setOpen(false);
@@ -212,7 +222,7 @@ export function useAddVirtualContributorExternalDialog({
     setAddingId(id);
     try {
       await community.virtualContributorAdmin.inviteContributors({
-        welcomeMessage: '',
+        welcomeMessage: welcomeMessage.trim(),
         invitedContributorIds: [id],
         invitedUserEmails: [],
       });
@@ -223,87 +233,6 @@ export function useAddVirtualContributorExternalDialog({
       });
     } finally {
       setAddingId(null);
-    }
-  };
-
-  return { open, search, candidates, loading, addedIds, addingId, openDialog, closeDialog, onSearchChange, onAdd };
-}
-
-/**
- * Drives the CRD "Invite Members" dialog. Lists users NOT already in the role
- * set (`userAdmin.getAvailable`); adding a row fires `userAdmin.inviteContributors`.
- * External email invitations share the same mutation shape.
- */
-export function useInviteUsersDialog({
-  community,
-}: {
-  community: ReturnType<typeof useCommunityAdmin>;
-}): AddCommunityMemberDialogState & {
-  inviteByEmail: (email: string) => Promise<void>;
-  inviting: boolean;
-} {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [candidates, setCandidates] = useState<AddCommunityMemberCandidate[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  const [addingId, setAddingId] = useState<string | null>(null);
-  const [inviting, setInviting] = useState(false);
-
-  const loadCandidates = async (filter: string | undefined) => {
-    setLoading(true);
-    try {
-      const available = await community.userAdmin.getAvailable(filter);
-      setCandidates(available.map(toCandidate));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    void loadCandidates(search.trim() || undefined);
-  }, [open, search]);
-
-  const openDialog = () => {
-    setAddedIds(new Set());
-    setSearch('');
-    setOpen(true);
-  };
-  const closeDialog = () => setOpen(false);
-  const onSearchChange = (next: string) => setSearch(next);
-
-  const onAdd = async (id: string) => {
-    setAddingId(id);
-    try {
-      await community.userAdmin.inviteContributors({
-        welcomeMessage: '',
-        invitedContributorIds: [id],
-        invitedUserEmails: [],
-      });
-      setAddedIds(prev => {
-        const next = new Set(prev);
-        next.add(id);
-        return next;
-      });
-      await loadCandidates(search.trim() || undefined);
-    } finally {
-      setAddingId(null);
-    }
-  };
-
-  const inviteByEmail = async (email: string) => {
-    const trimmed = email.trim();
-    if (!trimmed) return;
-    setInviting(true);
-    try {
-      await community.userAdmin.inviteContributors({
-        welcomeMessage: '',
-        invitedContributorIds: [],
-        invitedUserEmails: [trimmed],
-      });
-    } finally {
-      setInviting(false);
     }
   };
 
@@ -318,7 +247,12 @@ export function useInviteUsersDialog({
     closeDialog,
     onSearchChange,
     onAdd,
-    inviteByEmail,
-    inviting,
+    welcomeMessage,
+    onWelcomeMessageChange: setWelcomeMessage,
   };
 }
+
+// `useInviteUsersDialog` (the stripped member-invite hook) was removed: the
+// settings Community tab now uses the parity-complete `InviteMembersDialogConnector`
+// (single live-detect input + welcome message + role selection). VC add/invite
+// hooks below remain in use.
