@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Guarda o descarta los cambios sin guardar antes de crear una plantilla a partir de esto.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Ajustes"
+  },
   "packAdmin": {
     "subtitle": "Plantillas en este Innovation Pack",
     "detailsHeading": "Detalles del paquete",

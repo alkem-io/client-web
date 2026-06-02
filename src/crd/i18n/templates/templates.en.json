@@ -215,6 +215,9 @@
     "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
   "packAdmin": {
     "subtitle": "Templates in this Innovation Pack",
     "detailsHeading": "Pack details",

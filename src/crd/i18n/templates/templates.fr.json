@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Enregistrez ou abandonnez les modifications non enregistrées avant de créer un modèle à partir de ceci.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Paramètres"
+  },
   "packAdmin": {
     "subtitle": "Modèles de cet Innovation Pack",
     "detailsHeading": "Détails du pack",

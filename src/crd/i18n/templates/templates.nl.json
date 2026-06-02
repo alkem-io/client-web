@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Sla niet-opgeslagen wijzigingen op of negeer ze voordat je hier een template van maakt.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
   "packAdmin": {
     "subtitle": "Templates in dit Innovation Pack",
     "detailsHeading": "Pakketgegevens",

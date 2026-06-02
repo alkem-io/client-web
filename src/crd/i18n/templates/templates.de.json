@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Speichere oder verwerfe die ungespeicherten Änderungen, bevor du daraus eine Vorlage erstellst.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Einstellungen"
+  },
   "packAdmin": {
     "subtitle": "Vorlagen in diesem Innovation Pack",
     "detailsHeading": "Pack-Details",

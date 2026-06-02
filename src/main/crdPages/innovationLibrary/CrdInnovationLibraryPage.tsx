@@ -1,7 +1,9 @@
+import { Library } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { InnovationLibraryView } from '@/crd/components/innovationLibrary/InnovationLibraryView';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useInnovationLibrary } from './useInnovationLibrary';
 
 /**
@@ -14,6 +16,7 @@ export const CrdInnovationLibraryPage = () => {
   const { t } = useTranslation('crd-templates');
   const lib = useInnovationLibrary();
   usePageTitle(t('library.pageTitle'));
+  useSetBreadcrumbs([{ label: t('library.title'), icon: Library }]);
 
   return (
     <div className="crd-root mx-auto w-full max-w-7xl space-y-6 px-4 py-6">

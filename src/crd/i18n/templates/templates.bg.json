@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Запазете или отхвърлете незапазените промени, преди да създадете шаблон от това.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Настройки"
+  },
   "packAdmin": {
     "subtitle": "Шаблони в този Innovation Pack",
     "detailsHeading": "Детайли за пакета",
