@@ -92,7 +92,9 @@ export function LayoutCalloutRow({
               )}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuItem onClick={() => onViewPost(callout.id)}>{t('layout.row.viewPost')}</DropdownMenuItem>
+          {callout.profileUrl ? (
+            <DropdownMenuItem onClick={() => onViewPost(callout.id)}>{t('layout.row.viewPost')}</DropdownMenuItem>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

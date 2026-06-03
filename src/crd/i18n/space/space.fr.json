@@ -67,7 +67,8 @@
       "tomorrow": "Demain",
       "in_days_one": "dans 1 jour",
       "in_days_other": "dans {{count}} jours"
-    }
+    },
+    "inviteVirtualContributor": "Inviter un contributeur virtuel"
   },
   "calendar": {
     "title": "Événements",

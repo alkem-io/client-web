@@ -51,6 +51,12 @@ export function FloatingField({
 }: FloatingFieldProps) {
   const id = useId();
   const [visible, setVisible] = useState(false);
+  // Whether the field currently holds a value — seeded from `defaultValue` so a
+  // pre-filled field (Kratos hydration, browser autofill that fires `input`)
+  // floats the label immediately, not only after the first focus. Browser
+  // autofill that fires no `input` event is covered by the `peer-autofill:`
+  // label classes below.
+  const [hasValue, setHasValue] = useState(Boolean(defaultValue));
   const isPassword = type === 'password';
   const isEmail = type === 'email';
   const inputType = isPassword && visible ? 'text' : type;
@@ -87,6 +93,7 @@ export function FloatingField({
             // Clear the inline format error while typing so the user isn't yelled
             // at mid-edit; it re-evaluates on the next blur.
             if (emailFormatInvalid) setEmailFormatInvalid(false);
+            setHasValue(event.target.value.length > 0);
             onValueChange?.(event.target.value);
           }}
           onBlur={isEmail ? handleBlur : undefined}
@@ -108,9 +115,16 @@ export function FloatingField({
         <label
           htmlFor={id}
           className={cn(
-            'pointer-events-none absolute left-2.5 top-1.5 bg-card px-1 text-caption transition-all',
-            'peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base',
+            'pointer-events-none absolute left-2.5 bg-card px-1 transition-all',
+            // Resting (placeholder) position — centred, only while the field is
+            // empty AND unfocused.
+            'top-1/2 -translate-y-1/2 text-base',
+            // Floated position — on focus, on browser autofill, or whenever the
+            // field holds a value (React-tracked, so it never depends on the
+            // unreliable `:placeholder-shown` state for pre-filled/autofilled values).
             'peer-focus:top-1.5 peer-focus:translate-y-0 peer-focus:text-caption',
+            'peer-autofill:top-1.5 peer-autofill:translate-y-0 peer-autofill:text-caption',
+            hasValue && 'top-1.5 translate-y-0 text-caption',
             hasError ? 'text-destructive' : 'text-muted-foreground peer-focus:text-primary'
           )}
         >

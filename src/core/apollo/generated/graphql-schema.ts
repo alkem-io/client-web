@@ -11726,7 +11726,7 @@ export type InnovationFlowSettingsQuery = {
                 __typename?: 'CalloutFraming';
                 id: string;
                 type: CalloutFramingType;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
               settings: {
                 __typename?: 'CalloutSettings';
@@ -11906,7 +11906,7 @@ export type InnovationFlowCollaborationFragment = {
         __typename?: 'CalloutFraming';
         id: string;
         type: CalloutFramingType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
       settings: {
         __typename?: 'CalloutSettings';

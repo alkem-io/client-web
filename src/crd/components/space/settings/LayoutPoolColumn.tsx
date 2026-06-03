@@ -5,9 +5,11 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent } from '@/crd/primitives/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -90,6 +92,7 @@ export function LayoutPoolColumn({
         style={sortableStyle}
         className={cn(
           'flex min-w-0 flex-1 flex-col overflow-hidden',
+          column.isCurrentPhase && 'border-2 border-primary',
           isOver && 'ring-2 ring-primary/30',
           isDragging && 'opacity-50',
           className
@@ -124,8 +127,18 @@ export function LayoutPoolColumn({
               t={t}
             />
           </div>
+          {column.isCurrentPhase && (
+            <Badge variant="default" className="mt-1.5">
+              <Check aria-hidden="true" />
+              {t('layout.column.activePhase.badge')}
+            </Badge>
+          )}
           {column.description && (
-            <p className="mt-1 line-clamp-3 text-body text-muted-foreground break-words">{column.description}</p>
+            <InlineMarkdown
+              content={column.description}
+              clampLines={3}
+              className="mt-1 block text-body text-muted-foreground break-words"
+            />
           )}
         </div>
         <CardContent ref={setCalloutDropRef} className="flex flex-col gap-2 px-4 py-3">

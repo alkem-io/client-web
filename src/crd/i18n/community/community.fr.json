@@ -37,5 +37,27 @@
       "alreadyMember": "Déjà membre",
       "error": "Échec : {{message}}"
     }
+  },
+  "inviteVc": {
+    "title": "Inviter un contributeur virtuel",
+    "description": "Ajoutez un contributeur virtuel depuis votre compte ou invitez-en un depuis la bibliothèque Alkemio.",
+    "searchPlaceholder": "Rechercher des contributeurs virtuels…",
+    "loading": "Chargement des contributeurs virtuels",
+    "onAccount": "Sur votre compte",
+    "onAccountEmpty": "Aucun contributeur virtuel disponible sur votre compte.",
+    "inLibrary": "Dans la bibliothèque",
+    "inLibraryEmpty": "Aucun contributeur virtuel de la bibliothèque ne correspond à votre recherche.",
+    "add": "Ajouter",
+    "invite": "Inviter",
+    "addAriaLabel": "Ajouter {{name}}",
+    "inviteAriaLabel": "Inviter {{name}}",
+    "back": "Retour",
+    "welcomeMessageLabel": "Message de bienvenue",
+    "welcomeMessagePlaceholder": "Ajoutez un message à l'invitation…",
+    "sendInvite": "Envoyer l'invitation",
+    "defaultWelcomeMessage": "Nous aimerions vous inviter à contribuer à {{space}}.",
+    "addedNotice": "Contributeur virtuel ajouté.",
+    "invitedNotice": "Invitation envoyée.",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
   }
 }

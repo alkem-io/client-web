@@ -57,7 +57,8 @@
       "empty": "Nog geen callouts in deze kolom.",
       "activePhase": {
         "set": "Markeer als actieve fase",
-        "current": "Actieve fase (huidige)"
+        "current": "Actieve fase (huidige)",
+        "badge": "Actieve fase"
       },
       "defaultCalloutTemplate": {
         "set": "Standaard callout-template instellen…",
@@ -265,7 +266,10 @@
         "title": "Externe Virtual Contributor uitnodigen",
         "description": "Nodig een Virtual Contributor uit de Alkemio-bibliotheek uit. De eigenaar moet de uitnodiging accepteren.",
         "search": "Zoek in de bibliotheek…",
-        "empty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht."
+        "empty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+        "welcomeMessageLabel": "Welkomstbericht",
+        "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+        "defaultWelcomeMessage": "We willen je graag uitnodigen om met ons samen te werken."
       }
     },
     "applicationForm": {
@@ -390,6 +394,12 @@
     "noResults": "Geen subspaces gevonden",
     "noResultsHint": "Probeer je zoekopdracht of filters aan te passen.",
     "actions": "Subspace-acties",
+    "sortMode": {
+      "label": "Sorteren",
+      "alphabetical": "Alfabetisch",
+      "custom": "Aangepast"
+    },
+    "dragAriaLabel": "Sleep om {{name}} te herordenen",
     "kebab": {
       "pin": "Vastpinnen",
       "unpin": "Losmaken",
@@ -684,7 +694,8 @@
       "inheritMembershipRightsDescription": "Leden van de bovenliggende Space krijgen automatisch toegang tot deze Subspace.",
       "subspaceEvents": "Subspace-evenementen",
       "alkemioSupportAccess": "Alkemio-ondersteuning",
-      "trustHostOrganization": "Vertrouw hostorganisatie"
+      "trustHostOrganization": "Vertrouw hostorganisatie",
+      "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren."
     }
   },
   "storage": {
