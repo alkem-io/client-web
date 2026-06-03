@@ -32,6 +32,9 @@ vi.mock('@/core/auth/authentication/hooks/useKratosFlow', () => ({
 vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({
   default: () => ({ status: 'idle', error: null, isReady: false }),
 }));
+vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
+  useReturnUrl: () => ({ returnUrl: undefined, setReturnUrl: vi.fn(), clearReturnUrl: vi.fn() }),
+}));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
 vi.mock('./useKratosMessageCopy', () => ({

@@ -14,6 +14,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
 import LoginSuccessPage from '@/core/auth/authentication/pages/LoginSuccessPage';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -141,9 +142,13 @@ export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  const { setReturnUrl } = useReturnUrl();
 
   useEffect(() => {
     if (returnUrl) {
+      // The cookie is what `LoginSuccessPage` reads back via `useGetReturnUrl()`;
+      // the sessionStorage write is retained for the guest-whiteboard return flow.
+      setReturnUrl(returnUrl);
       sessionStorage.setItem(STORAGE_KEY_RETURN_URL, returnUrl);
     }
   }, [returnUrl]);
