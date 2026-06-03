@@ -164,7 +164,7 @@ afterEach(() => vi.clearAllMocks());
 // ---------------------------------------------------------------------------
 
 describe('useInnovationLibrary — templates (US1)', () => {
-  test('requests a bounded first page (first=25) and exposes total + hasMore', () => {
+  test('requests a bounded first page (first=15) and exposes total + hasMore', () => {
     const { result } = renderHook(() => useInnovationLibrary());
 
     expect(useTemplatesPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15, filter: undefined } });
