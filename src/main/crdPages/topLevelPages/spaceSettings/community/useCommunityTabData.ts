@@ -40,7 +40,7 @@ export type UseCommunityTabDataResult = {
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
   permissions: {
-    canAddUsers: boolean;
+    canInvite: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
@@ -343,7 +343,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     organizations,
     virtualContributors,
     permissions: {
-      canAddUsers: community.permissions.canAddUsers,
+      canInvite: community.permissions.canInvite,
       canAddOrganizations: community.permissions.canAddOrganizations,
       // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
       // EITHER the role-set assign privilege OR the account-assign privilege.
