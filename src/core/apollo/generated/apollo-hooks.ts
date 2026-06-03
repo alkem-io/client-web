@@ -1943,6 +1943,8 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   id
   nameID
   subdomain
+  type
+  spaceVisibilityFilter
   profile {
     id
     displayName

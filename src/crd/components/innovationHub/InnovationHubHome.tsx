@@ -2,7 +2,7 @@ import { FoldHorizontal, Settings, UnfoldHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
+import { SpaceCard, type SpaceCardData, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -16,12 +16,17 @@ export type InnovationHubHomeData = {
   bannerColor: string;
   bannerAlt: string;
   settingsUrl?: string;
-  spaces: SpaceCardData[];
   allSpacesUrl: string;
 };
 
 export type InnovationHubHomeProps = {
   data: InnovationHubHomeData;
+  /**
+   * The hub's Spaces, passed separately from `data` so that when they arrive the
+   * Spaces section re-renders on its own — the banner/header subtree (driven by the
+   * stable `data`) is left untouched, avoiding a full-page repaint.
+   */
+  spaces: SpaceCardData[];
   onSettingsClick?: () => void;
   /**
    * Current full-width state — mirrors the Spaces "Wide layout" toggle. When
@@ -42,14 +47,22 @@ export type InnovationHubHomeProps = {
    * actually goes transparent until the user scrolls.
    */
   overlayHeader?: boolean;
+  /**
+   * While the Spaces query is in flight, render skeleton cards instead of the
+   * empty state — the hub banner/description show immediately and the Spaces
+   * section fills in once they load.
+   */
+  spacesLoading?: boolean;
 };
 
 export const InnovationHubHome = ({
   data,
+  spaces,
   onSettingsClick,
   fullWidth = false,
   onToggleFullWidth,
   overlayHeader = false,
+  spacesLoading = false,
 }: InnovationHubHomeProps) => {
   const { t } = useTranslation('crd-innovationHub');
   const bandClass = contentColumnClass(fullWidth);
@@ -120,7 +133,17 @@ export const InnovationHubHome = ({
               <h2 className="text-section-title mb-6 text-foreground">
                 {t('home.spacesSection.title', { hubName: data.name })}
               </h2>
-              {data.spaces.length === 0 ? (
+              {spacesLoading && spaces.length === 0 ? (
+                <output
+                  aria-label={t('home.spacesSection.loading')}
+                  className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                >
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
+                    <SpaceCardSkeleton key={i} />
+                  ))}
+                </output>
+              ) : spaces.length === 0 ? (
                 <div className="rounded-lg border border-border bg-card/50 p-8 text-center text-muted-foreground">
                   <p className="text-body">{t('home.spacesSection.empty')}</p>
                 </div>
@@ -129,7 +152,7 @@ export const InnovationHubHome = ({
                   {/* biome-ignore lint/a11y/noRedundantRoles: VoiceOver/JAWS strip implicit list semantics from a Tailwind grid `<ul>`; the role restores them */}
                   {/* biome-ignore lint/a11y/useSemanticElements: the `<ul>` IS the semantic element — the role is reaffirming, not substituting */}
                   <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {data.spaces.map(space => (
+                    {spaces.map(space => (
                       <li key={space.id}>
                         <SpaceCard space={space} />
                       </li>

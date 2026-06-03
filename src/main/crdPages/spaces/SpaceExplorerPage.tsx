@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -29,6 +29,7 @@ type WithParent<ParentInfo extends {}> = {
 
 interface Space extends Identifiable {
   level: SpaceLevel;
+  visibility?: SpaceVisibility;
   about: SpaceAboutLightModel;
   matchedTerms?: string[];
 }
