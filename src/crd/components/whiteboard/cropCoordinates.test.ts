@@ -42,4 +42,11 @@ describe('cropCoordinates', () => {
     expect(isCropWithinImage({ x: 0, y: 0, width: 300, height: 300 }, aspectRatio, img)).toBe(false);
     expect(isCropWithinImage(undefined, aspectRatio, img)).toBe(false);
   });
+
+  it('accepts edge-aligned crops with sub-pixel float drift', () => {
+    // A full-frame crop that round-trips through scale/pan math can come back fractionally outside
+    // the bounds — these must still validate rather than reset to the default crop on reopen.
+    expect(isCropWithinImage({ x: -1e-10, y: -1e-10, width: 600, height: 337.5 }, aspectRatio, img)).toBe(true);
+    expect(isCropWithinImage({ x: 0, y: 0, width: 600 + 1e-9, height: 337.5 + 1e-9 }, aspectRatio, img)).toBe(true);
+  });
 });

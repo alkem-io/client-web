@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Guarda o descarta los cambios sin guardar antes de crear una plantilla a partir de esto.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Ajustes"
+  },
   "packAdmin": {
     "subtitle": "Plantillas en este Innovation Pack",
     "detailsHeading": "Detalles del paquete",
@@ -293,13 +296,16 @@
     "title": "Biblioteca de Innovación",
     "subtitle": "Descubre plantillas e Innovation Packs publicados en la plataforma.",
     "pageTitle": "Biblioteca de Innovación",
+    "loadedOfTotal": "{{loaded}} de {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Aún no hay Innovation Packs disponibles."
+      "empty": "Aún no hay Innovation Packs disponibles.",
+      "searchPlaceholder": "Buscar Innovation Packs"
     },
     "templates": {
       "heading": "Plantillas",
-      "empty": "Ninguna plantilla coincide con los filtros seleccionados."
+      "empty": "Ninguna plantilla coincide con los filtros seleccionados.",
+      "searchPlaceholder": "Buscar plantillas"
     },
     "filter": {
       "label": "Filtrar por tipo",
@@ -310,7 +316,9 @@
         "whiteboard": "Pizarras",
         "post": "Publicaciones",
         "communityGuidelines": "Normas de la comunidad"
-      }
+      },
+      "summary": "{{first}} y {{count}} más",
+      "pair": "{{first}} y {{second}}"
     }
   },
   "packCard": {

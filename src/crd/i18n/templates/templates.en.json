@@ -22,8 +22,14 @@
         "title": "Collaboration tools",
         "subtitle": "Reusable callouts for workshops, brainstorming and group activities."
       },
-      "whiteboard": { "title": "Whiteboard templates", "subtitle": "Canvas layouts for visual collaboration." },
-      "post": { "title": "Post templates", "subtitle": "Standardised documents for projects and decisions." },
+      "whiteboard": {
+        "title": "Whiteboard templates",
+        "subtitle": "Canvas layouts for visual collaboration."
+      },
+      "post": {
+        "title": "Post templates",
+        "subtitle": "Standardised documents for projects and decisions."
+      },
       "communityGuidelines": {
         "title": "Community guidelines templates",
         "subtitle": "Rules and expectations for a community."
@@ -72,15 +78,23 @@
       "pollQuestion": "Question",
       "pollOptions": "Options"
     },
-    "whiteboard": { "empty": "This whiteboard template has no drawing." },
-    "post": { "defaultDescription": "Default description" },
+    "whiteboard": {
+      "empty": "This whiteboard template has no drawing."
+    },
+    "post": {
+      "defaultDescription": "Default description"
+    },
     "space": {
       "phases": "Phases",
       "starterCallouts": "Starter tools",
       "subspaceTemplates": "Subspace templates",
       "none": "None"
     },
-    "communityGuidelines": { "title": "Guidelines title", "body": "Guidelines", "references": "References" }
+    "communityGuidelines": {
+      "title": "Guidelines title",
+      "body": "Guidelines",
+      "references": "References"
+    }
   },
   "picker": {
     "title": "Use a template",
@@ -88,7 +102,11 @@
     "search": "Search templates…",
     "noTemplates": "No templates available.",
     "noTemplatesForType": "No templates available for this type.",
-    "sources": { "space": "This space", "account": "Your account", "platform": "Platform" },
+    "sources": {
+      "space": "This space",
+      "account": "Your account",
+      "platform": "Platform"
+    },
     "select": "Use this template",
     "noTemplate": "No template — start blank",
     "import": "Import",
@@ -215,6 +233,9 @@
     "unsavedSourceBody": "Save or discard the unsaved changes before creating a template from this.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
   "packAdmin": {
     "subtitle": "Templates in this Innovation Pack",
     "detailsHeading": "Pack details",
@@ -275,13 +296,16 @@
     "title": "Innovation Library",
     "subtitle": "Discover templates and innovation packs published across the platform.",
     "pageTitle": "Innovation Library",
+    "loadedOfTotal": "{{loaded}} of {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "No innovation packs available yet."
+      "empty": "No innovation packs available yet.",
+      "searchPlaceholder": "Search innovation packs"
     },
     "templates": {
       "heading": "Templates",
-      "empty": "No templates match the selected filters."
+      "empty": "No templates match the selected filters.",
+      "searchPlaceholder": "Search templates"
     },
     "filter": {
       "label": "Filter by type",
@@ -292,7 +316,9 @@
         "whiteboard": "Whiteboards",
         "post": "Posts",
         "communityGuidelines": "Community guidelines"
-      }
+      },
+      "summary": "{{first}} and {{count}} more",
+      "pair": "{{first}} and {{second}}"
     }
   },
   "packCard": {
