@@ -41,6 +41,8 @@ export type TemplateCardProps = {
   canDelete?: boolean;
   /** Read-only presentation (pack public profile): kebab is reduced to Preview only — no Duplicate/Edit/Delete. */
   readOnly?: boolean;
+  /** Hides the kebab actions menu entirely (e.g. the Innovation Library gallery, where the card body already previews). */
+  hideActions?: boolean;
   /** Shows a "Deleting…" overlay / hides the row optimistically. */
   deleting?: boolean;
   /** Shows a "Creating…" spinner (the card produced by a duplicate). */
@@ -57,6 +59,7 @@ export function TemplateCard({
   canEdit,
   canDelete,
   readOnly,
+  hideActions,
   deleting,
   duplicating,
   onPreview,
@@ -119,43 +122,45 @@ export function TemplateCard({
 
         {template.tags.length > 0 && <CollapsibleTagList tags={template.tags} />}
 
-        <div className="mt-auto flex items-center justify-end pt-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild={true}>
-              <Button variant="ghost" size="icon" className="size-8" aria-label={t('card.actions')}>
-                <MoreHorizontal aria-hidden="true" className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onAction(template.id, 'preview')}>
-                <Eye aria-hidden="true" className="size-4 mr-2" />
-                {t('card.preview')}
-              </DropdownMenuItem>
-              {!readOnly && (
-                <DropdownMenuItem onClick={() => onAction(template.id, 'duplicate')}>
-                  <Copy aria-hidden="true" className="size-4 mr-2" />
-                  {t('card.duplicate')}
+        {!hideActions && (
+          <div className="mt-auto flex items-center justify-end pt-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild={true}>
+                <Button variant="ghost" size="icon" className="size-8" aria-label={t('card.actions')}>
+                  <MoreHorizontal aria-hidden="true" className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onAction(template.id, 'preview')}>
+                  <Eye aria-hidden="true" className="size-4 mr-2" />
+                  {t('card.preview')}
                 </DropdownMenuItem>
-              )}
-              {hasKebabExtras && <DropdownMenuSeparator />}
-              {!readOnly && canEdit && (
-                <DropdownMenuItem onClick={() => onAction(template.id, 'edit')}>
-                  <Pencil aria-hidden="true" className="size-4 mr-2" />
-                  {t('card.edit')}
-                </DropdownMenuItem>
-              )}
-              {!readOnly && canDelete && (
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onAction(template.id, 'delete')}
-                >
-                  <Trash2 aria-hidden="true" className="size-4 mr-2" />
-                  {t('card.delete')}
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                {!readOnly && (
+                  <DropdownMenuItem onClick={() => onAction(template.id, 'duplicate')}>
+                    <Copy aria-hidden="true" className="size-4 mr-2" />
+                    {t('card.duplicate')}
+                  </DropdownMenuItem>
+                )}
+                {hasKebabExtras && <DropdownMenuSeparator />}
+                {!readOnly && canEdit && (
+                  <DropdownMenuItem onClick={() => onAction(template.id, 'edit')}>
+                    <Pencil aria-hidden="true" className="size-4 mr-2" />
+                    {t('card.edit')}
+                  </DropdownMenuItem>
+                )}
+                {!readOnly && canDelete && (
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => onAction(template.id, 'delete')}
+                  >
+                    <Trash2 aria-hidden="true" className="size-4 mr-2" />
+                    {t('card.delete')}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
       </div>
     </div>
   );
