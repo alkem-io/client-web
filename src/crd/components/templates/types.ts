@@ -143,6 +143,8 @@ export type TemplateContent =
       defaultPostDescription?: string;
       /** Excalidraw JSON */
       defaultWhiteboardContent?: string;
+      /** The default title new whiteboard contributions are created with (`contributionDefaults.defaultDisplayName`). */
+      defaultWhiteboardName?: string;
     }
   | {
       type: 'whiteboard';
