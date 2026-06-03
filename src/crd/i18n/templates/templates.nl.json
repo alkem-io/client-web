@@ -305,6 +305,7 @@
     "templates": {
       "heading": "Templates",
       "empty": "Geen templates voldoen aan de geselecteerde filters.",
+      "loading": "Templates laden",
       "searchPlaceholder": "Zoek templates"
     },
     "filter": {

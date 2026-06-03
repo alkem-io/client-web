@@ -305,6 +305,7 @@
     "templates": {
       "heading": "Plantillas",
       "empty": "Ninguna plantilla coincide con los filtros seleccionados.",
+      "loading": "Cargando plantillas",
       "searchPlaceholder": "Buscar plantillas"
     },
     "filter": {
