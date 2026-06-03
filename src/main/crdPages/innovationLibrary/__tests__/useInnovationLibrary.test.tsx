@@ -164,10 +164,10 @@ afterEach(() => vi.clearAllMocks());
 // ---------------------------------------------------------------------------
 
 describe('useInnovationLibrary — templates (US1)', () => {
-  test('requests a bounded first page (first=15) and exposes total + hasMore', () => {
+  test('requests a bounded first page (first=10) and exposes total + hasMore', () => {
     const { result } = renderHook(() => useInnovationLibrary());
 
-    expect(useTemplatesPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15, filter: undefined } });
+    expect(useTemplatesPaginatedMock).toHaveBeenCalledWith({ variables: { first: 10, filter: undefined } });
     expect(result.current.templates).toHaveLength(2);
     expect(result.current.templatesTotal).toBe(7);
     expect(result.current.hasMoreTemplates).toBe(true);
@@ -180,7 +180,7 @@ describe('useInnovationLibrary — templates (US1)', () => {
       await result.current.onLoadMoreTemplates();
     });
 
-    expect(templatesFetchMore).toHaveBeenCalledWith({ variables: { first: 15, after: 'tcursor1' } });
+    expect(templatesFetchMore).toHaveBeenCalledWith({ variables: { first: 10, after: 'tcursor1' } });
   });
 
   test('hides Load More by reporting hasMoreTemplates=false on the last page', () => {
@@ -226,7 +226,7 @@ describe('useInnovationLibrary — templates (US1)', () => {
 describe('useInnovationLibrary — server-side filter (US2)', () => {
   test("'all' sends no filter", () => {
     renderHook(() => useInnovationLibrary());
-    expect(useTemplatesPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15, filter: undefined } });
+    expect(useTemplatesPaginatedMock).toHaveBeenCalledWith({ variables: { first: 10, filter: undefined } });
   });
 
   test('selecting a type sends { types: [...] } and re-queries', () => {
@@ -237,7 +237,7 @@ describe('useInnovationLibrary — server-side filter (US2)', () => {
     });
 
     expect(useTemplatesPaginatedMock).toHaveBeenLastCalledWith({
-      variables: { first: 15, filter: { types: [GqlTemplateType.Whiteboard] } },
+      variables: { first: 10, filter: { types: [GqlTemplateType.Whiteboard] } },
     });
   });
 
@@ -262,7 +262,7 @@ describe('useInnovationLibrary — server-side filter (US2)', () => {
 describe('useInnovationLibrary — packs (US3)', () => {
   test('requests a bounded first page and exposes total + hasMore', () => {
     const { result } = renderHook(() => useInnovationLibrary());
-    expect(usePacksPaginatedMock).toHaveBeenCalledWith({ variables: { first: 15, filter: undefined } });
+    expect(usePacksPaginatedMock).toHaveBeenCalledWith({ variables: { first: 10, filter: undefined } });
     expect(result.current.packs).toHaveLength(2);
     expect(result.current.packsTotal).toBe(5);
     expect(result.current.hasMorePacks).toBe(true);
@@ -273,7 +273,7 @@ describe('useInnovationLibrary — packs (US3)', () => {
     await act(async () => {
       await result.current.onLoadMorePacks();
     });
-    expect(packsFetchMore).toHaveBeenCalledWith({ variables: { first: 15, after: 'pcursor1' } });
+    expect(packsFetchMore).toHaveBeenCalledWith({ variables: { first: 10, after: 'pcursor1' } });
   });
 
   test('the legacy unpaginated useInnovationLibraryQuery is never used (FR-009)', () => {
@@ -335,7 +335,7 @@ describe('useInnovationLibrary — search (US4)', () => {
     // The raw term updates immediately; the query re-fires only after the debounce settles.
     await waitFor(() =>
       expect(usePacksPaginatedMock).toHaveBeenLastCalledWith({
-        variables: { first: 15, filter: { searchTerm: 'design' } },
+        variables: { first: 10, filter: { searchTerm: 'design' } },
       })
     );
   });
@@ -347,7 +347,7 @@ describe('useInnovationLibrary — search (US4)', () => {
 
     await waitFor(() =>
       expect(usePacksPaginatedMock).toHaveBeenLastCalledWith({
-        variables: { first: 15, filter: undefined },
+        variables: { first: 10, filter: undefined },
       })
     );
   });
@@ -360,7 +360,7 @@ describe('useInnovationLibrary — search (US4)', () => {
 
     await waitFor(() =>
       expect(useTemplatesPaginatedMock).toHaveBeenLastCalledWith({
-        variables: { first: 15, filter: { types: [GqlTemplateType.Whiteboard], searchTerm: 'flow' } },
+        variables: { first: 10, filter: { types: [GqlTemplateType.Whiteboard], searchTerm: 'flow' } },
       })
     );
   });
@@ -372,7 +372,7 @@ describe('useInnovationLibrary — search (US4)', () => {
 
     await waitFor(() =>
       expect(useTemplatesPaginatedMock).toHaveBeenLastCalledWith({
-        variables: { first: 15, filter: { searchTerm: 'flow' } },
+        variables: { first: 10, filter: { searchTerm: 'flow' } },
       })
     );
   });
