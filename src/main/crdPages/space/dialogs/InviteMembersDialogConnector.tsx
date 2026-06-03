@@ -10,8 +10,8 @@ import {
 } from '@/crd/components/community/InviteMembersDialog';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
-import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
@@ -61,7 +61,7 @@ export function InviteMembersDialogConnector({
 }: InviteMembersDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
   const notify = useNotification();
-  const { spaceId: resolvedSpaceId, parentSpaceId } = useUrlResolver();
+  const { spaceId: resolvedSpaceId } = useUrlResolver();
   const spaceId = spaceIdOverride ?? resolvedSpaceId;
   const { userModel: currentUser } = useCurrentUserContext();
 
@@ -103,37 +103,53 @@ export function InviteMembersDialogConnector({
     return () => window.clearTimeout(handle);
   }, [searchQuery]);
 
-  const {
-    data: contributors = [],
-    hasMore,
-    loading: contributorsLoading,
-    fetchMore,
-  } = useContributors({
-    filter: debouncedQuery ? { displayName: debouncedQuery, email: debouncedQuery } : undefined,
-    parentSpaceId,
-    onlyUsersInRole: onlyFromParentCommunity,
-    pageSize: 20,
-  });
+  // Search uses the role-set-scoped `availableUsersForEntryRole` query (the same
+  // one the legacy invite uses): the backend returns ONLY users eligible to be
+  // invited to this role-set — excluding existing members and honouring the
+  // role-set's entry policy — instead of an unscoped platform-wide user search
+  // (`usersPaginated`, which leaked every platform user into the picker).
+  const { findAvailableUsersForRoleSetEntryRole } = useRoleSetAvailableContributors({ roleSetId });
+  const [availableUsers, setAvailableUsers] = useState<
+    { id: string; profile?: { displayName: string }; email?: string }[]
+  >([]);
+  const [contributorsLoading, setContributorsLoading] = useState(false);
 
-  // Map raw contributor rows to the CRD prop shape and exclude self + already-selected.
+  useEffect(() => {
+    if (!open || !roleSetId) {
+      setAvailableUsers([]);
+      return;
+    }
+    let cancelled = false;
+    setContributorsLoading(true);
+    void (async () => {
+      try {
+        const res = await findAvailableUsersForRoleSetEntryRole(debouncedQuery || undefined);
+        if (!cancelled) setAvailableUsers(res.users);
+      } finally {
+        if (!cancelled) setContributorsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // `findAvailableUsersForRoleSetEntryRole` is recreated each render; key the
+    // fetch on the dialog being open, the resolved role set, and the debounced query.
+  }, [open, roleSetId, debouncedQuery]);
+
+  // Map available users to the CRD prop shape and exclude self + already-selected.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
   );
-  const searchResults: ContributorSelectorUserResult[] = contributors
+  const searchResults: ContributorSelectorUserResult[] = availableUsers
     .filter(c => c.id !== currentUser?.id)
     .filter(c => !selectedUserIds.has(c.id))
-    .map(c => {
-      const profile = c.profile;
-      const city = profile?.location?.city?.trim() ?? '';
-      const country = profile?.location?.country?.trim() ?? '';
-      const location = city && country ? `${city}, ${country}` : city ? city : country ? country : undefined;
-      return {
-        userId: c.id,
-        displayName: profile?.displayName ?? '',
-        avatarUrl: profile?.visual?.uri,
-        location,
-      };
-    });
+    .map(c => ({
+      userId: c.id,
+      displayName: c.profile?.displayName ?? '',
+      // The scoped query returns no avatar; show the email as the secondary line
+      // (matches the legacy invite, which lists name + email).
+      location: c.email,
+    }));
 
   // ---------- handlers ----------
   const handleSelectUser = (userId: string) => {
@@ -287,8 +303,8 @@ export function InviteMembersDialogConnector({
       onAddEmails={onlyFromParentCommunity ? undefined : handleAddEmails}
       onRemoveContributor={handleRemoveContributor}
       searchLoading={contributorsLoading || loadingSpace || loadingRoleSet}
-      hasMoreSearchResults={hasMore}
-      onLoadMoreSearchResults={fetchMore}
+      hasMoreSearchResults={false}
+      onLoadMoreSearchResults={() => {}}
       allowEmailInvites={!onlyFromParentCommunity}
       welcomeMessage={welcomeMessage}
       onWelcomeMessageChange={setWelcomeMessage}

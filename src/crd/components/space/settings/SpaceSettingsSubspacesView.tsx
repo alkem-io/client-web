@@ -31,7 +31,7 @@ import {
   Search,
   Trash2,
 } from 'lucide-react';
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isSubspaceDragDisabled, type SubspaceSortMode } from '@/crd/lib/subspaceDrag';
 import { cn } from '@/crd/lib/utils';
@@ -121,13 +121,16 @@ export function SpaceSettingsSubspacesView({
   // order change within the same mode is NOT resynced, so the row doesn't snap
   // back while the reorder mutation + refetch are in flight.
   const serverIds = subspaces.map(s => s.id);
+  // Resync only when the membership set or sort mode changes (keyed on
+  // `resyncKey`) — NOT on a pure order change, so a drag-reorder isn't
+  // overwritten while its mutation + refetch are in flight.
   const resyncKey = `${sortMode}|${[...serverIds].sort().join('|')}`;
   const [orderedIds, setOrderedIds] = useState<string[]>(serverIds);
-  const [syncedKey, setSyncedKey] = useState(resyncKey);
-  if (resyncKey !== syncedKey) {
-    setSyncedKey(resyncKey);
+  useEffect(() => {
     setOrderedIds(serverIds);
-  }
+    // `serverIds` is derived from the same data `resyncKey` summarises; keying on
+    // `resyncKey` alone is intentional (avoids resetting on every render).
+  }, [resyncKey]);
   const byId = new Map(subspaces.map(s => [s.id, s] as const));
   const orderedSubspaces = orderedIds.map(id => byId.get(id)).filter((s): s is SubspaceTile => Boolean(s));
 
