@@ -40,11 +40,11 @@ location.reload();
 ## Manual acceptance walkthrough (maps to spec scenarios)
 
 1. **First page bounded (US1.1, SC-001/002)** — On load, the Templates and
-   Innovation Packs sections each show at most 25 items and a total count.
+   Innovation Packs sections each show at most 10 items (`PAGE_SIZE`) and a total count.
    DevTools → Network shows the two bounded paginated requests and **no** legacy
    unbounded `InnovationLibrary` request (SC-005).
 2. **Load More appends (US1.2 / US3.2)** — Click "Load More" under Templates; the
-   next ≤25 templates append below the existing ones (no flicker, no duplicates).
+   next ≤10 templates append below the existing ones (no flicker, no duplicates).
    Repeat for Packs.
 3. **Last page hides control (US1.3 / US3.3, FR-008)** — Keep loading until the
    total is reached; the "Load More" control disappears.

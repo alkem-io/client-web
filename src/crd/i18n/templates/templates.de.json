@@ -305,6 +305,7 @@
     "templates": {
       "heading": "Vorlagen",
       "empty": "Keine Vorlagen entsprechen den gewählten Filtern.",
+      "loading": "Vorlagen werden geladen",
       "searchPlaceholder": "Vorlagen suchen"
     },
     "filter": {

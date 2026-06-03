@@ -50,7 +50,7 @@ Single-project frontend. CRD design-system layer `src/crd/`, integration layer `
 - [x] T004 [P] Author `src/main/crdPages/innovationLibrary/InnovationLibraryPacksPaginated.graphql` — query `InnovationLibraryPacksPaginated($first: Int!, $after: UUID)` selecting `platform.library.innovationPacksPaginated(first: $first, after: $after) { total innovationPacks { id profile { id displayName description tagset { ...TagsetDetails } url } templatesSet { id calloutTemplatesCount spaceTemplatesCount communityGuidelinesTemplatesCount postTemplatesCount whiteboardTemplatesCount } provider { ...InnovationPackProviderProfileWithAvatar } } pageInfo { startCursor endCursor hasNextPage hasPreviousPage } }`.
 - [x] T005 Run `pnpm codegen` (server-101 backend up) to generate the **operation hooks** for the two new docs and commit the regenerated `src/core/apollo/generated/apollo-hooks.ts` (and `graphql-schema.ts` if codegen re-touches it — the schema types already landed); confirm `useInnovationLibraryTemplatesPaginatedQuery` and `useInnovationLibraryPacksPaginatedQuery` now exist (they do **not** yet — depends on T003, T004).
 - [x] T006 [P] Register `Library` field policies in `src/core/apollo/config/typePolicies.ts`: add a `Library: { fields: { templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult'), innovationPacksPaginated: paginationFieldPolicy(false, 'InnovationPack') } }` entry (import `paginationFieldPolicy` already present). `keyArgs: ['filter']` on templates makes a filter change auto-reset paging (FR-007).
-- [x] T007 [P] Add a `PAGE_SIZE = 15` module constant in `src/main/crdPages/innovationLibrary/useInnovationLibrary.ts` (3 rows of 5 cards on wide screens; server caps at 100 — FR-012).
+- [x] T007 [P] Add a `PAGE_SIZE = 10` module constant in `src/main/crdPages/innovationLibrary/useInnovationLibrary.ts` (2 rows of 5 cards on wide screens; server caps at 100 — FR-012).
 
 **Checkpoint**: Generated hooks + cache merge + page size ready; story work can begin.
 
@@ -60,7 +60,7 @@ Single-project frontend. CRD design-system layer `src/crd/`, integration layer `
 
 **Goal**: The templates section loads a bounded first page (newest-first) with a total count and an appending "Load More", instead of the full catalogue.
 
-**Independent Test**: Open `/innovation-library`; the Templates section shows ≤25 cards + a total; "Load More" appends the next ≤25 with no duplicates and disappears on the last page; Network shows a bounded `InnovationLibraryTemplatesPaginated` request (not the unbounded `InnovationLibrary`).
+**Independent Test**: Open `/innovation-library`; the Templates section shows ≤10 cards + a total; "Load More" appends the next ≤10 with no duplicates and disappears on the last page; Network shows a bounded `InnovationLibraryTemplatesPaginated` request (not the unbounded `InnovationLibrary`).
 
 ### Implementation for User Story 1
 
@@ -96,7 +96,7 @@ Single-project frontend. CRD design-system layer `src/crd/`, integration layer `
 
 **Goal**: The packs section loads a bounded first page (newest-first) with a total and appending "Load More"; the page stops requesting the unpaginated lists entirely.
 
-**Independent Test**: The Innovation Packs section shows ≤25 cards + total; "Load More" appends the next ≤25 newest-first with no duplicates and disappears on the last page.
+**Independent Test**: The Innovation Packs section shows ≤10 cards + total; "Load More" appends the next ≤10 newest-first with no duplicates and disappears on the last page.
 
 ### Implementation for User Story 3
 

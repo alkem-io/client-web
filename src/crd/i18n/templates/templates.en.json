@@ -305,6 +305,7 @@
     "templates": {
       "heading": "Templates",
       "empty": "No templates match the selected filters.",
+      "loading": "Loading templates",
       "searchPlaceholder": "Search templates"
     },
     "filter": {

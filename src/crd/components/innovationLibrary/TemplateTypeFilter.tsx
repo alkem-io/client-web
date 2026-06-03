@@ -89,7 +89,9 @@ export function TemplateTypeFilter({ value, onChange, counts }: TemplateTypeFilt
             <DropdownMenuItem
               key={type}
               role="menuitemcheckbox"
-              aria-checked={active}
+              // In "All" mode every type row shows a (muted) check, so the ARIA
+              // state must match the rendered check (line below) — not just `active`.
+              aria-checked={active || isAll}
               className="pl-8"
               onSelect={event => {
                 event.preventDefault();

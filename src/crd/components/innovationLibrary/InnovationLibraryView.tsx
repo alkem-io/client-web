@@ -180,6 +180,7 @@ export function InnovationLibraryView({
           loading={templatesLoading}
           onPreview={onTemplatePreview}
           emptyLabel={t('library.templates.empty')}
+          loadingLabel={t('library.templates.loading')}
         />
         {!templatesLoading && (
           <LoadMoreFooter

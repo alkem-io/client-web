@@ -15,15 +15,16 @@ in existing patterns already in this repo.
 **Decision**: Register a `Library` type policy in
 `src/core/apollo/config/typePolicies.ts`:
 - `templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult')`
-- `innovationPacksPaginated: paginationFieldPolicy(false, 'InnovationPack')`
+- `innovationPacksPaginated: paginationFieldPolicy(['filter'], 'InnovationPack')`
 
 **Rationale**: `paginationFieldPolicy` (`src/core/apollo/config/paginationPolicy.ts`)
 already implements the relay forward/backward splice the server's `pageInfo`
 needs, and is the pattern used for `spacesPaginated` / `usersPaginated`. Putting
 `['filter']` in `keyArgs` for templates means **each distinct type-filter keeps
 its own cached, independently-paged list** — so changing the filter naturally
-starts a fresh first page (satisfies FR-007 with zero extra code). Packs have no
-filter ⇒ `keyArgs: false`.
+starts a fresh first page (satisfies FR-007 with zero extra code). Packs are keyed
+on `['filter']` too, so a pack search-term change re-keys to a fresh first page
+(FR-015/FR-017).
 
 **Alternatives considered**:
 - Apollo's built-in `relayStylePagination()` — rejected; the repo's custom policy
@@ -133,11 +134,19 @@ FR-015); the clarified decision is to accept newest-first with no sort control.
 Today the CRD page effectively shows templates in the unpaginated list's
 (alphabetical) order — this is an accepted, documented behaviour change.
 
-**Risk noted (Complexity Tracking)**: `TemplateResult` is a non-normalized
-wrapper (no own `id`), so the relay merge's id-based dedup is a no-op for
-templates; correctness relies on the server's stable `rowId`-DESC cursors never
-returning overlapping pages. Acceptable per the server's continuity guarantee
-(SC-004 server-side).
+**Risk noted (Complexity Tracking) — reviewed & accepted**: `TemplateResult` is a
+non-normalized wrapper (no own `id`), so the relay merge's id-based dedup
+(`createRecordFinder` / `fixDuplicates` in `paginationPolicy.ts`, which guards the
+`client-4586` duplicate-cursor case) is a **no-op for templates**. If the server
+ever returns the `after` boundary row again on the next page, the gallery would
+render duplicate templates at the page seam. CodeRabbit flagged this on
+`typePolicies.ts`; we **accept the risk**: correctness relies on the server's
+stable `rowId`-DESC cursors never returning overlapping pages (SC-004,
+server-side guarantee). **Remediation if it ever surfaces**: extend
+`paginationFieldPolicy` to take an optional identity extractor (e.g.
+`row => row.template.id`) so the dedup path works for non-normalized wrappers —
+deliberately deferred to avoid changing the shared, widely-used policy for a
+risk the server contract already precludes.
 
 ---
 
