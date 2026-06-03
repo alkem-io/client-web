@@ -24608,6 +24608,8 @@ export type InnovationHubByIdQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25111,6 +25113,8 @@ export type InnovationHubQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25135,6 +25139,8 @@ export type InnovationHubHomeInnovationHubFragment = {
   id: string;
   nameID: string;
   subdomain: string;
+  type: InnovationHubType;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;

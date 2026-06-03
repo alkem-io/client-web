@@ -14,6 +14,11 @@
   "private": "Частно",
   "public": "Публично",
   "member": "Член",
+  "visibility": {
+    "demo": "Демо",
+    "inactive": "Неактивно",
+    "archived": "Архивирано"
+  },
   "leads": "Лидери",
   "loadMore": "Зареди още",
   "pinned": "Закрепено",

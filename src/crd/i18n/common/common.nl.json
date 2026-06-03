@@ -14,6 +14,11 @@
   "private": "Privé",
   "public": "Openbaar",
   "member": "Lid",
+  "visibility": {
+    "demo": "Demo",
+    "inactive": "Inactief",
+    "archived": "Gearchiveerd"
+  },
   "leads": "Leiders",
   "loadMore": "Meer laden",
   "pinned": "Vastgezet",

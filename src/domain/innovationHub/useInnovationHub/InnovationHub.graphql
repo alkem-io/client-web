@@ -11,6 +11,8 @@ fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
   nameID
   subdomain
+  type
+  spaceVisibilityFilter
   profile {
     id
     displayName
