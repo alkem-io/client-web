@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { AddCommunityMemberCandidate } from '@/crd/components/space/settings/AddCommunityMemberDialog';
 import type useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
@@ -158,99 +157,11 @@ export function useAddVirtualContributorDialog({
   return { open, search, candidates, loading, addedIds, addingId, openDialog, closeDialog, onSearchChange, onAdd };
 }
 
-/**
- * Drives the CRD "Invite External Virtual Contributor" dialog. Uses the
- * library-scoped `getAvailableInLibrary` query for candidates; picking one
- * fires `virtualContributorAdmin.inviteContributors` (an invitation, not a
- * direct add — external VCs require the owner's acceptance).
- */
-export function useAddVirtualContributorExternalDialog({
-  community,
-  spaceId,
-  spaceLevel,
-}: {
-  community: ReturnType<typeof useCommunityAdmin>;
-  spaceId: string;
-  spaceLevel: SpaceLevel | undefined;
-}): AddCommunityMemberDialogState & {
-  welcomeMessage: string;
-  onWelcomeMessageChange: (next: string) => void;
-} {
-  const { t } = useTranslation('crd-spaceSettings');
-  const vcAdmin = useVirtualContributorsAdmin({
-    level: spaceLevel ?? SpaceLevel.L0,
-    currentMembers: community.virtualContributorAdmin.members,
-    spaceId,
-  });
-
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [candidates, setCandidates] = useState<AddCommunityMemberCandidate[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  const [addingId, setAddingId] = useState<string | null>(null);
-  // Pre-filled, editable welcome message sent with the invitation — matches the
-  // legacy `InviteVirtualContributorDialog`, which requires a message for
-  // library (external) VC invites.
-  const [welcomeMessage, setWelcomeMessage] = useState('');
-
-  const loadCandidates = async (filter: string | undefined) => {
-    setLoading(true);
-    try {
-      const available = await vcAdmin.virtualContributorAdmin.getAvailableInLibrary(filter);
-      setCandidates(available.map(toCandidate));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    void loadCandidates(search.trim() || undefined);
-  }, [open, search]);
-
-  const openDialog = () => {
-    setAddedIds(new Set());
-    setSearch('');
-    setWelcomeMessage(t('community.virtualContributors.addExternalDialog.defaultWelcomeMessage'));
-    setOpen(true);
-  };
-  const closeDialog = () => setOpen(false);
-  const onSearchChange = (next: string) => setSearch(next);
-
-  const onAdd = async (id: string) => {
-    setAddingId(id);
-    try {
-      await community.virtualContributorAdmin.inviteContributors({
-        welcomeMessage: welcomeMessage.trim(),
-        invitedContributorIds: [id],
-        invitedUserEmails: [],
-      });
-      setAddedIds(prev => {
-        const next = new Set(prev);
-        next.add(id);
-        return next;
-      });
-    } finally {
-      setAddingId(null);
-    }
-  };
-
-  return {
-    open,
-    search,
-    candidates,
-    loading,
-    addedIds,
-    addingId,
-    openDialog,
-    closeDialog,
-    onSearchChange,
-    onAdd,
-    welcomeMessage,
-    onWelcomeMessageChange: setWelcomeMessage,
-  };
-}
+// `useAddVirtualContributorExternalDialog` was removed: the settings "Invite
+// External Virtual Contributor" entry now uses the combined
+// `VirtualContributorInviteConnector` (library list + welcome-message step after
+// selection), matching MUI's `InviteVCsDialog` → `InviteVirtualContributorDialog`
+// flow instead of an inline message on the picker.
 
 // `useInviteUsersDialog` (the stripped member-invite hook) was removed: the
 // settings Community tab now uses the parity-complete `InviteMembersDialogConnector`

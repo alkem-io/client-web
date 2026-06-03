@@ -16,6 +16,8 @@ export type VirtualContributorInviteConnectorProps = {
   spaceId: string;
   spaceLevel: SpaceLevel;
   spaceName: string;
+  /** When true, only library VCs are listed (the account-add lives on a separate button). */
+  libraryOnly?: boolean;
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -39,6 +41,7 @@ export function VirtualContributorInviteConnector({
   spaceId,
   spaceLevel,
   spaceName,
+  libraryOnly = false,
 }: VirtualContributorInviteConnectorProps) {
   const { t } = useTranslation('crd-community');
   const notify = useNotification();
@@ -72,7 +75,7 @@ export function VirtualContributorInviteConnector({
     void (async () => {
       try {
         const [account, library] = await Promise.all([
-          lookup.getAvailable(debouncedQuery || undefined),
+          libraryOnly ? Promise.resolve([]) : lookup.getAvailable(debouncedQuery || undefined),
           lookup.getAvailableInLibrary(debouncedQuery || undefined),
         ]);
         if (cancelled) return;
@@ -136,6 +139,7 @@ export function VirtualContributorInviteConnector({
       loading={loading}
       busyId={busyId}
       defaultWelcomeMessage={t('inviteVc.defaultWelcomeMessage', { space: spaceName })}
+      libraryOnly={libraryOnly}
     />
   );
 }

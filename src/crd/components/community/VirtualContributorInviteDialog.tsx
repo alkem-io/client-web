@@ -32,6 +32,10 @@ export type VirtualContributorInviteDialogProps = {
   busyId?: string | null;
   /** Pre-fills the welcome-message step for library invites. */
   defaultWelcomeMessage?: string;
+  /** When true, only the library section is shown (used by the settings
+   * "Invite External Virtual Contributor" entry — account VCs are added via a
+   * separate button there). */
+  libraryOnly?: boolean;
   className?: string;
 };
 
@@ -53,6 +57,7 @@ export function VirtualContributorInviteDialog({
   loading,
   busyId,
   defaultWelcomeMessage = '',
+  libraryOnly = false,
   className,
 }: VirtualContributorInviteDialogProps) {
   const { t } = useTranslation('crd-community');
@@ -154,16 +159,18 @@ export function VirtualContributorInviteDialog({
               </output>
             ) : (
               <>
-                <VcSection
-                  title={t('inviteVc.onAccount')}
-                  emptyLabel={t('inviteVc.onAccountEmpty')}
-                  vcs={accountVcs}
-                  actionLabel={t('inviteVc.add')}
-                  actionIcon="add"
-                  busyId={busyId}
-                  onAction={onAddAccountVc}
-                  addAriaLabel={name => t('inviteVc.addAriaLabel', { name })}
-                />
+                {!libraryOnly && (
+                  <VcSection
+                    title={t('inviteVc.onAccount')}
+                    emptyLabel={t('inviteVc.onAccountEmpty')}
+                    vcs={accountVcs}
+                    actionLabel={t('inviteVc.add')}
+                    actionIcon="add"
+                    busyId={busyId}
+                    onAction={onAddAccountVc}
+                    addAriaLabel={name => t('inviteVc.addAriaLabel', { name })}
+                  />
+                )}
                 <VcSection
                   title={t('inviteVc.inLibrary')}
                   emptyLabel={t('inviteVc.inLibraryEmpty')}

@@ -25,19 +25,17 @@ import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceS
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
+import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
-import {
-  useAddOrganizationDialog,
-  useAddVirtualContributorDialog,
-  useAddVirtualContributorExternalDialog,
-} from './community/useAddCommunityMemberDialog';
+import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -177,12 +175,10 @@ export default function CrdSpaceSettingsPage() {
     spaceId,
     spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
   });
-  const addVCExternalDialog = useAddVirtualContributorExternalDialog({
-    community: community._adminRef,
-    spaceId,
-    spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
-  });
+  const [vcExternalOpen, setVcExternalOpen] = useState(false);
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
+  const { space: spaceContext } = useSpace();
+  const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
@@ -469,7 +465,7 @@ export default function CrdSpaceSettingsPage() {
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onVCAdd={addVCDialog.openDialog}
-                onVCAddExternal={addVCExternalDialog.openDialog}
+                onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
                 onPendingView={id => {
                   const target = community.pendingMemberships.find(m => m.id === id);
@@ -802,32 +798,23 @@ export default function CrdSpaceSettingsPage() {
         onAdd={id => void addVCDialog.onAdd(id)}
       />
 
-      <AddCommunityMemberDialog
-        open={addVCExternalDialog.open}
-        onOpenChange={open => {
-          if (!open) addVCExternalDialog.closeDialog();
-        }}
-        title={t('community.virtualContributors.addExternalDialog.title')}
-        description={t('community.virtualContributors.addExternalDialog.description')}
-        searchPlaceholder={t('community.virtualContributors.addExternalDialog.search')}
-        candidates={addVCExternalDialog.candidates}
-        loading={addVCExternalDialog.loading}
-        search={addVCExternalDialog.search}
-        addedIds={addVCExternalDialog.addedIds}
-        addingId={addVCExternalDialog.addingId}
-        emptyLabel={t('community.virtualContributors.addExternalDialog.empty')}
-        onSearchChange={addVCExternalDialog.onSearchChange}
-        onAdd={id => void addVCExternalDialog.onAdd(id)}
-        welcomeMessage={addVCExternalDialog.welcomeMessage}
-        onWelcomeMessageChange={addVCExternalDialog.onWelcomeMessageChange}
-        welcomeMessageLabel={t('community.virtualContributors.addExternalDialog.welcomeMessageLabel')}
-        welcomeMessagePlaceholder={t('community.virtualContributors.addExternalDialog.welcomeMessagePlaceholder')}
-      />
+      {roleSetId && (
+        <VirtualContributorInviteConnector
+          open={vcExternalOpen}
+          onClose={() => setVcExternalOpen(false)}
+          roleSetId={roleSetId}
+          spaceId={spaceId}
+          spaceLevel={spaceLevelEnum}
+          spaceName={spaceContext.about.profile.displayName}
+          libraryOnly={true}
+        />
+      )}
 
       <InviteMembersDialogConnector
         open={inviteMembersOpen}
         onClose={() => setInviteMembersOpen(false)}
         spaceId={spaceId}
+        onlyFromParentCommunity={level === 'L2'}
       />
 
       <ConfirmationDialog

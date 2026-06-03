@@ -1,6 +1,7 @@
 import { Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
@@ -145,7 +146,13 @@ export default function CrdSpaceCommunityPage() {
         />
       )}
 
-      {canInvite && <InviteMembersDialogConnector open={inviteOpen} onClose={() => setInviteOpen(false)} />}
+      {canInvite && (
+        <InviteMembersDialogConnector
+          open={inviteOpen}
+          onClose={() => setInviteOpen(false)}
+          onlyFromParentCommunity={space.level === SpaceLevel.L2}
+        />
+      )}
 
       {canInviteVc && roleSetId && (
         <VirtualContributorInviteConnector

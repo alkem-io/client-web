@@ -5,7 +5,6 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
-import { Textarea } from '@/crd/primitives/textarea';
 
 export type AddCommunityMemberCandidate = {
   id: string;
@@ -30,17 +29,6 @@ export type AddCommunityMemberDialogProps = {
   emptyLabel?: string;
   onSearchChange: (next: string) => void;
   onAdd: (id: string) => void;
-  /**
-   * Optional welcome-message field. When `onWelcomeMessageChange` is provided, a
-   * labelled textarea is shown above the picker and the message is sent with the
-   * invitation (used by the external/library Virtual Contributor invite to match
-   * the legacy `InviteVirtualContributorDialog`). Omit for add-flows that take no
-   * message (organizations, account VCs).
-   */
-  welcomeMessage?: string;
-  onWelcomeMessageChange?: (next: string) => void;
-  welcomeMessageLabel?: string;
-  welcomeMessagePlaceholder?: string;
 };
 
 /**
@@ -62,10 +50,6 @@ export function AddCommunityMemberDialog({
   emptyLabel,
   onSearchChange,
   onAdd,
-  welcomeMessage,
-  onWelcomeMessageChange,
-  welcomeMessageLabel,
-  welcomeMessagePlaceholder,
 }: AddCommunityMemberDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
@@ -78,18 +62,6 @@ export function AddCommunityMemberDialog({
         </DialogHeader>
 
         <div className="flex flex-col gap-4 py-2">
-          {onWelcomeMessageChange && (
-            <div className="flex flex-col gap-1">
-              {welcomeMessageLabel && <span className="text-body-emphasis">{welcomeMessageLabel}</span>}
-              <Textarea
-                value={welcomeMessage ?? ''}
-                onChange={e => onWelcomeMessageChange(e.target.value)}
-                placeholder={welcomeMessagePlaceholder}
-                aria-label={welcomeMessageLabel ?? welcomeMessagePlaceholder}
-                rows={3}
-              />
-            </div>
-          )}
           <div className="relative">
             <Search
               aria-hidden="true"

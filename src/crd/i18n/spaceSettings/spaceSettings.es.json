@@ -694,7 +694,8 @@
       "inheritMembershipRightsDescription": "Los miembros del espacio principal obtienen automáticamente acceso a este subespacio.",
       "subspaceEvents": "Eventos del subespacio",
       "alkemioSupportAccess": "Soporte de Alkemio",
-      "trustHostOrganization": "Confiar en la organización anfitriona"
+      "trustHostOrganization": "Confiar en la organización anfitriona",
+      "subspaceAdminInvitationsDescription": "Permite a los administradores de los Subspaces invitar a usuarios de la plataforma a su Subspace. Los usuarios que aún no eran miembros de este Space lo serán cuando acepten la invitación al Subspace."
     }
   },
   "storage": {

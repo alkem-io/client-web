@@ -115,16 +115,17 @@ export function SpaceSettingsSubspacesView({
   const [filter, setFilter] = useState<SubspaceFilter>('all');
   const [viewMode, setViewMode] = useState<SubspaceViewMode>('grid');
 
-  // Optimistic manual order. Reset to the server order whenever the membership
-  // set changes (add/remove) — a pure-order change from our own reorder keeps
-  // the local order (membership unchanged) so the row doesn't snap back while
-  // the mutation + refetch are in flight.
+  // Optimistic manual order. Resync to the server order when the membership set
+  // changes (add/remove) OR the sort mode changes (e.g. Custom→Alphabetical,
+  // which reorders the SAME set — pinned float to the top). A pure post-drag
+  // order change within the same mode is NOT resynced, so the row doesn't snap
+  // back while the reorder mutation + refetch are in flight.
   const serverIds = subspaces.map(s => s.id);
-  const idSetKey = [...serverIds].sort().join('|');
+  const resyncKey = `${sortMode}|${[...serverIds].sort().join('|')}`;
   const [orderedIds, setOrderedIds] = useState<string[]>(serverIds);
-  const [syncedSetKey, setSyncedSetKey] = useState(idSetKey);
-  if (idSetKey !== syncedSetKey) {
-    setSyncedSetKey(idSetKey);
+  const [syncedKey, setSyncedKey] = useState(resyncKey);
+  if (resyncKey !== syncedKey) {
+    setSyncedKey(resyncKey);
     setOrderedIds(serverIds);
   }
   const byId = new Map(subspaces.map(s => [s.id, s] as const));
@@ -245,16 +246,18 @@ export function SpaceSettingsSubspacesView({
 
       {/* Subspaces List */}
       <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-subsection-title flex items-center gap-2">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <h3 className="text-subsection-title flex shrink-0 items-center gap-2">
             {t('subspaces.listTitle')}
             <Badge variant="secondary" className="rounded-full">
               {filtered.length}
             </Badge>
           </h3>
 
-          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-            <div className="relative flex-1 sm:w-64">
+          {/* Wrapping, width-bounded controls — buttons flow onto extra rows on
+              narrow widths instead of overflowing the panel. */}
+          <div className="flex w-full flex-wrap items-center gap-2 md:flex-1 md:justify-end">
+            <div className="relative w-full sm:w-64">
               <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
                 placeholder={t('subspaces.search')}
