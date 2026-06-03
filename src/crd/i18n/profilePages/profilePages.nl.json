@@ -4,12 +4,15 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Schrijf een bericht…",
+      "placeholder": "Schrijf een e-mail…",
       "send": "Verstuur",
       "cancel": "Annuleren",
       "sending": "Versturen…",
       "errorTitle": "Bericht kon niet worden verzonden",
-      "ariaLabel": "Bericht opstellen"
+      "ariaLabel": "Bericht opstellen",
+      "emailTitle": "Stuur een e-mail",
+      "emailNotice": "Bezorgd in hun inbox.",
+      "successToast": "Je e-mail is verzonden."
     },
     "resourceTabsAriaLabel": "Resourcesecties",
     "loading": {

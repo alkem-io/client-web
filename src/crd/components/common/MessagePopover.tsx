@@ -73,6 +73,7 @@ export function MessagePopover({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-3" align="end" aria-label={t('common.messagePopover.ariaLabel')}>
+        <p className="text-body-emphasis mb-2">{t('common.messagePopover.emailTitle')}</p>
         <Textarea
           value={draft}
           onChange={e => setDraft(e.target.value)}
@@ -91,6 +92,7 @@ export function MessagePopover({
           disabled={sending}
           aria-label={t('common.messagePopover.ariaLabel')}
         />
+        <p className="text-caption text-muted-foreground mt-2">{t('common.messagePopover.emailNotice')}</p>
         {error ? (
           <p role="alert" className="text-caption text-destructive mt-2">
             {error}
