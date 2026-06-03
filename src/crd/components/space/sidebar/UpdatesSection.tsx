@@ -33,7 +33,10 @@ export function UpdatesSection({ latest, total, onSeeAll, locale, className }: U
 
       <InlineMarkdown content={latest.body} clampLines={3} className="mt-2 text-body text-muted-foreground" />
 
-      {onSeeAll && total > 1 && (
+      {/* Show "see all" whenever there's at least one update — the preview is
+          clamped to 3 lines, so even a single long update needs the dialog to be
+          read in full (matches MUI, which always offers it). */}
+      {onSeeAll && total >= 1 && (
         <Button variant="link" className="px-0 h-auto mt-2" onClick={onSeeAll}>
           {t('sidebar.updatesSeeAll')}
         </Button>

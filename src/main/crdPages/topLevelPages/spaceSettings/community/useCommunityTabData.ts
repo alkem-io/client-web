@@ -342,7 +342,16 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     pendingMemberships,
     organizations,
     virtualContributors,
-    permissions: community.permissions,
+    permissions: {
+      canAddUsers: community.permissions.canAddUsers,
+      canAddOrganizations: community.permissions.canAddOrganizations,
+      // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
+      // EITHER the role-set assign privilege OR the account-assign privilege.
+      // The CRD gate previously checked only the former, hiding the VC add
+      // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
+      canAddVirtualContributors:
+        community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
+    },
     leadPolicy,
     onUserRemove,
     onUserLeadChange,

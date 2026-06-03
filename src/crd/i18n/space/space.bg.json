@@ -67,7 +67,8 @@
       "tomorrow": "Утре",
       "in_days_one": "след 1 ден",
       "in_days_other": "след {{count}} дни"
-    }
+    },
+    "inviteVirtualContributor": "Покани виртуален сътрудник"
   },
   "calendar": {
     "title": "Събития",

@@ -1,6 +1,7 @@
 import { Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
@@ -17,6 +18,7 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
+import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
@@ -39,15 +41,21 @@ export default function CrdSpaceCommunityPage() {
     members,
     canInvite,
     communityId,
+    roleSetId,
     guidelines,
     loading,
   } = useCrdSpaceCommunity();
 
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [vcInviteOpen, setVcInviteOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
 
   const handleInvite = canInvite ? () => setInviteOpen(true) : undefined;
+  // VC invite is gated on the VC entitlement + the same admin (canUpdate) gate as
+  // member invites, and needs a resolved role set to mutate against.
+  const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
+  const handleInviteVc = canInviteVc ? () => setVcInviteOpen(true) : undefined;
   const handleContactLead = () => setContactOpen(true);
 
   // Merge user + organization leads into a single list for the sidebar.
@@ -90,6 +98,7 @@ export default function CrdSpaceCommunityPage() {
           virtualContributors={virtualContributors}
           showVirtualContributors={hasVcEntitlement}
           onVirtualContributorClick={href => navigate(href)}
+          onInviteVc={handleInviteVc}
           guidelinesSlot={guidelinesSlot}
         />
       </SpaceSidebarPortal>
@@ -137,7 +146,24 @@ export default function CrdSpaceCommunityPage() {
         />
       )}
 
-      {canInvite && <InviteMembersDialogConnector open={inviteOpen} onClose={() => setInviteOpen(false)} />}
+      {canInvite && (
+        <InviteMembersDialogConnector
+          open={inviteOpen}
+          onClose={() => setInviteOpen(false)}
+          onlyFromParentCommunity={space.level === SpaceLevel.L2}
+        />
+      )}
+
+      {canInviteVc && roleSetId && (
+        <VirtualContributorInviteConnector
+          open={vcInviteOpen}
+          onClose={() => setVcInviteOpen(false)}
+          roleSetId={roleSetId}
+          spaceId={space.id}
+          spaceLevel={space.level}
+          spaceName={space.about.profile.displayName}
+        />
+      )}
 
       {canContactLeads && (
         <DirectMessageDialog

@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Speichere oder verwerfe die ungespeicherten Änderungen, bevor du daraus eine Vorlage erstellst.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Einstellungen"
+  },
   "packAdmin": {
     "subtitle": "Vorlagen in diesem Innovation Pack",
     "detailsHeading": "Pack-Details",
@@ -293,13 +296,16 @@
     "title": "Innovationsbibliothek",
     "subtitle": "Entdecke Vorlagen und Innovation Packs aus der gesamten Plattform.",
     "pageTitle": "Innovationsbibliothek",
+    "loadedOfTotal": "{{loaded}} von {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Es sind noch keine Innovation Packs verfügbar."
+      "empty": "Es sind noch keine Innovation Packs verfügbar.",
+      "searchPlaceholder": "Innovation Packs suchen"
     },
     "templates": {
       "heading": "Vorlagen",
-      "empty": "Keine Vorlagen entsprechen den gewählten Filtern."
+      "empty": "Keine Vorlagen entsprechen den gewählten Filtern.",
+      "searchPlaceholder": "Vorlagen suchen"
     },
     "filter": {
       "label": "Nach Typ filtern",
@@ -310,7 +316,9 @@
         "whiteboard": "Whiteboards",
         "post": "Beiträge",
         "communityGuidelines": "Community-Richtlinien"
-      }
+      },
+      "summary": "{{first}} und {{count}} weitere",
+      "pair": "{{first}} und {{second}}"
     }
   },
   "packCard": {

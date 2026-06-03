@@ -15,6 +15,7 @@ type ImageDimensions = {
 };
 
 const ASPECT_RATIO_TOLERANCE = 0.01; // Allow 1% difference between aspect ratios
+const BOUNDS_TOLERANCE = 0.01; // Absorb float drift from the natural→display round-trip (scale/pan math)
 
 /**
  * Crop selections live in two coordinate spaces:
@@ -79,12 +80,12 @@ export function isCropWithinImage(
 ): crop is CropRegion {
   return (
     !!crop &&
-    crop.x >= 0 &&
-    crop.y >= 0 &&
+    crop.x >= -BOUNDS_TOLERANCE &&
+    crop.y >= -BOUNDS_TOLERANCE &&
     crop.width >= 1 &&
     crop.height >= 1 &&
     Math.abs(crop.width / crop.height - aspectRatio) <= ASPECT_RATIO_TOLERANCE &&
-    crop.x + crop.width <= img.width &&
-    crop.y + crop.height <= img.height
+    crop.x + crop.width <= img.width + BOUNDS_TOLERANCE &&
+    crop.y + crop.height <= img.height + BOUNDS_TOLERANCE
   );
 }

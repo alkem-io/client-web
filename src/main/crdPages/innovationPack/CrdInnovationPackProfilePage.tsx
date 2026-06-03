@@ -1,8 +1,12 @@
+import { Library, Package } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationPackProfileView } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useInnovationPackProfile } from './useInnovationPackProfile';
 
 /**
@@ -19,12 +23,21 @@ import { useInnovationPackProfile } from './useInnovationPackProfile';
  */
 export const CrdInnovationPackProfilePage = () => {
   const { t } = useTranslation();
+  const { t: tTemplates } = useTranslation('crd-templates');
   const { loading, notFound, pack, tm, canManage, adminHref, shareUrl } = useInnovationPackProfile();
   // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
   const pageTitle = pack?.name
     ? `${pack.name}${t('pages.titles.separator')}${t('pages.titles.templateLibrary')}`
     : undefined;
   usePageTitle(pageTitle);
+
+  const breadcrumbItems: BreadcrumbTrailItem[] = pack
+    ? [
+        { label: tTemplates('library.title'), href: `/${TopLevelRoutePath.InnovationLibrary}`, icon: Library },
+        { label: pack.name, icon: Package },
+      ]
+    : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (notFound) {
     return <Error404 />;

@@ -24,6 +24,7 @@ function calloutToLayoutCallout(callout: RawCallout): LayoutCallout | null {
     title: callout.framing.profile.displayName,
     description: '', // CalloutsSet query doesn't include description; left empty in the buffer, won't be edited here.
     flowStateTagsetId: tagset.id,
+    profileUrl: callout.framing.profile.url ?? '',
   };
 }
 

@@ -20,7 +20,10 @@ const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6'];
 export function TemplateGallery({ templates, loading, onPreview, emptyLabel }: TemplateGalleryProps) {
   if (loading) {
     return (
-      <ul aria-busy={true} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ul
+        aria-busy={true}
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      >
         {SKELETON_KEYS.map(key => (
           <li key={key}>
             <Skeleton className="aspect-video w-full rounded-lg" />
@@ -35,7 +38,7 @@ export function TemplateGallery({ templates, loading, onPreview, emptyLabel }: T
   }
 
   return (
-    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {templates.map(template => (
         <li key={template.id}>
           <TemplateCard template={template} onPreview={onPreview} onAction={() => undefined} />

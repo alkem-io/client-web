@@ -22,6 +22,7 @@ fragment InnovationFlowCollaboration on Collaboration {
         profile {
           id
           displayName
+          url
         }
       }
       settings {

@@ -2187,7 +2187,9 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'innovationPacksPaginated'
   | 'templates'
+  | 'templatesPaginated'
   | 'updatedDate'
   | 'virtualContributors'
   | LibraryKeySpecifier
@@ -2198,7 +2200,9 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacksPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3280,6 +3284,28 @@ export type PaginatedInAppNotificationsKeySpecifier = (
 export type PaginatedInAppNotificationsFieldPolicy = {
   inAppNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedInnovationPacksKeySpecifier = (
+  | 'innovationPacks'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedInnovationPacksKeySpecifier
+)[];
+export type PaginatedInnovationPacksFieldPolicy = {
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedLibraryTemplateResultsKeySpecifier = (
+  | 'pageInfo'
+  | 'templateResults'
+  | 'total'
+  | PaginatedLibraryTemplateResultsKeySpecifier
+)[];
+export type PaginatedLibraryTemplateResultsFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateResults?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PaginatedOrganizationKeySpecifier = (
@@ -6585,6 +6611,17 @@ export type StrictTypedTypePolicies = {
       | PaginatedInAppNotificationsKeySpecifier
       | (() => undefined | PaginatedInAppNotificationsKeySpecifier);
     fields?: PaginatedInAppNotificationsFieldPolicy;
+  };
+  PaginatedInnovationPacks?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedInnovationPacksKeySpecifier | (() => undefined | PaginatedInnovationPacksKeySpecifier);
+    fields?: PaginatedInnovationPacksFieldPolicy;
+  };
+  PaginatedLibraryTemplateResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedLibraryTemplateResultsKeySpecifier
+      | (() => undefined | PaginatedLibraryTemplateResultsKeySpecifier);
+    fields?: PaginatedLibraryTemplateResultsFieldPolicy;
   };
   PaginatedOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);
