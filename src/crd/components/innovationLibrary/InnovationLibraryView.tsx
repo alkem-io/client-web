@@ -111,7 +111,10 @@ export function InnovationLibraryView({
   onChangeTemplatesSearch,
   onTemplatePreview,
 }: InnovationLibraryViewProps) {
-  const { t } = useTranslation('crd-templates');
+  // Preload crd-common at the top boundary too, so LoadMoreFooter (which mounts on
+  // the loading→loaded flip and needs crd-common:loadMore) never suspends to an
+  // ancestor boundary. Mirrors the SpaceExplorer pattern.
+  const { t } = useTranslation(['crd-templates', 'crd-common']);
 
   return (
     <div className="space-y-10">

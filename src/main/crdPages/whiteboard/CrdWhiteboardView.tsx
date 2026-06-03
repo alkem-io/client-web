@@ -44,6 +44,9 @@ const CrdWhiteboardView = ({
   preventWhiteboardDeletion,
   onWhiteboardDeleted,
 }: CrdWhiteboardViewProps) => {
+  // aria-label-only use; disable suspense so this hook never suspends above the
+  // component's internal <Suspense>, which would tear down the live canvas
+  // (see docs/crd/suspense-teardown-audit.md).
   const { t: tWb } = useTranslation('crd-whiteboard', { useSuspense: false });
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
