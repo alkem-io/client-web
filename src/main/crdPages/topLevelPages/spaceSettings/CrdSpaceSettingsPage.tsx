@@ -378,7 +378,17 @@ export default function CrdSpaceSettingsPage() {
                   const target = layout.columns
                     .flatMap(column => column.callouts)
                     .find(callout => callout.id === calloutId);
-                  if (target?.profileUrl) navigate(target.profileUrl);
+                  if (!target?.profileUrl) return;
+                  // `profile.url` comes back as an absolute URL (incl. origin); React
+                  // Router's navigate() treats that as a relative segment and appends
+                  // it to the current path. Normalise to a pathname first.
+                  let path = target.profileUrl;
+                  try {
+                    path = new URL(target.profileUrl).pathname;
+                  } catch {
+                    // already a relative path — use as-is
+                  }
+                  navigate(path);
                 }}
                 onPostDescriptionDisplayChange={layout.onPostDescriptionDisplayChange}
                 onSave={layout.onSave}
