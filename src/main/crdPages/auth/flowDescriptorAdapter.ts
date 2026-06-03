@@ -166,14 +166,25 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
     if (isInputNode(node) && REMOVED_FIELD_NAMES.has(node.attributes.name)) {
       continue;
     }
-    if (flowType === 'settings' && isInputNode(node)) {
-      // Drop the profile method's inputs and its dedicated submit button —
-      // settings flow is only used to finish password recovery here.
-      if (SETTINGS_REMOVED_INPUT_NAMES.has(node.attributes.name)) {
+    if (flowType === 'settings') {
+      // The CRD settings flow is only ever reached to finish a password
+      // recovery (via the email link). Kratos also exposes social-account
+      // *linking* (oidc) and passkey/WebAuthn registration here — out of
+      // context for a recovery-completion page, and the link buttons
+      // (name="link", not "provider") trip CrdKratosFlow's validation gate.
+      // Strip them so only the new-password fields remain.
+      if (node.group === 'oidc' || node.group === 'passkey' || node.group === 'webauthn') {
         continue;
       }
-      if (isSubmitButton(node) && node.attributes.value === 'profile') {
-        continue;
+      // Drop the profile method's inputs and its dedicated submit button —
+      // settings flow is only used to finish password recovery here.
+      if (isInputNode(node)) {
+        if (SETTINGS_REMOVED_INPUT_NAMES.has(node.attributes.name)) {
+          continue;
+        }
+        if (isSubmitButton(node) && node.attributes.value === 'profile') {
+          continue;
+        }
       }
     }
     if (isPasskeyAutocompleteInit(node)) {

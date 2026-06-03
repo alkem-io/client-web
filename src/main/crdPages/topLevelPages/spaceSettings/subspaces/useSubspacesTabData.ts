@@ -6,6 +6,7 @@ import {
   useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
   useSpaceContentTemplatesOnSpaceQuery,
   useSubspacesInSpaceQuery,
+  useUpdateSpaceSettingsMutation,
   useUpdateSubspacePinnedMutation,
   useUpdateSubspacesSortOrderMutation,
   useUpdateTemplateDefaultMutation,
@@ -13,7 +14,7 @@ import {
 import { AuthorizationPrivilege, SpaceSortMode, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceKebabAction, SubspaceTile } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { mapSubspaceToTile } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/subspacesMapper';
+import { mapSortMode, mapSubspaceToTile } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/subspacesMapper';
 
 export type UseSubspacesTabDataResult = {
   subspaces: SubspaceTile[];
@@ -21,6 +22,9 @@ export type UseSubspacesTabDataResult = {
   canSaveAsTemplate: boolean;
   templatesSetId: string | undefined;
   loading: boolean;
+  /** 'alphabetical' | 'manual' — drives the sort-mode selector + drag-enabled rule. */
+  sortMode: 'alphabetical' | 'manual';
+  onSortModeChange: (mode: 'alphabetical' | 'manual') => void;
   onKebabAction: (id: string, action: SubspaceKebabAction) => void;
   onReorder: (subspaceIds: string[]) => void;
   onChangeDefaultTemplate: () => void;
@@ -88,7 +92,13 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
     awaitRefetchQueries: true,
   });
-  const [updateSubspacesSortOrder] = useUpdateSubspacesSortOrderMutation();
+  const [updateSubspacesSortOrder] = useUpdateSubspacesSortOrderMutation({
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
+  });
+  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation({
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
+    awaitRefetchQueries: true,
+  });
   const [updateTemplateDefault, { loading: updatingTemplateDefault }] = useUpdateTemplateDefaultMutation({
     refetchQueries: [refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery({ spaceId })],
     awaitRefetchQueries: true,
@@ -141,6 +151,17 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     });
   };
 
+  const onSortModeChange = (mode: 'alphabetical' | 'manual') => {
+    void updateSpaceSettings({
+      variables: {
+        settingsData: {
+          spaceID: spaceId,
+          settings: { sortMode: mode === 'manual' ? SpaceSortMode.Custom : SpaceSortMode.Alphabetical },
+        },
+      },
+    });
+  };
+
   const onSelectDefaultTemplate = (templateId: string) => {
     if (!defaultSubspaceTemplate) return;
     void updateTemplateDefault({
@@ -158,6 +179,8 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     canSaveAsTemplate,
     templatesSetId: templatesSet?.id,
     loading: subspacesLoading || templateLoading,
+    sortMode: mapSortMode(backendSortMode),
+    onSortModeChange,
     onKebabAction,
     onReorder,
     onChangeDefaultTemplate: () => setSelectDefaultTemplateOpen(true),

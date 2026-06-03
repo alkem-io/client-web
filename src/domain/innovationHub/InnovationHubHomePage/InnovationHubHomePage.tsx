@@ -2,6 +2,8 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { InnovationHubType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -28,9 +30,34 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
 
-  const { data: spacesData } = useDashboardSpacesQuery();
+  // Browser tab title: "[Hub Name] | Alkemio". This component is the single
+  // funnel for both the subdomain entry (via the Home dispatcher) and the
+  // `/hub/<slug>` path entry (via HubLandingPage).
+  usePageTitle(innovationHub.displayName);
 
-  const allSpaces = spacesData?.spaces;
+  // Show only the hub's configured Spaces — never the whole platform.
+  // - VISIBILITY hub: fetch Spaces matching the hub's visibility; those ARE its Spaces.
+  // - LIST hub: fetch across all visibilities, then keep the curated ids in their order
+  //   (so a curated DEMO/INACTIVE Space isn't dropped by an ACTIVE-only fetch).
+  const isVisibilityHub = innovationHub.type === InnovationHubType.Visibility;
+  const { data: spacesData } = useDashboardSpacesQuery({
+    variables: {
+      visibilities:
+        isVisibilityHub && innovationHub.spaceVisibilityFilter
+          ? [innovationHub.spaceVisibilityFilter]
+          : [SpaceVisibility.Active, SpaceVisibility.Demo, SpaceVisibility.Inactive, SpaceVisibility.Archived],
+    },
+  });
+
+  const fetchedSpaces = spacesData?.spaces;
+  const allSpaces = isVisibilityHub
+    ? fetchedSpaces
+    : (() => {
+        const byId = new Map((fetchedSpaces ?? []).map(space => [space.id, space]));
+        return innovationHub.spaceListFilterIds
+          .map(id => byId.get(id))
+          .filter((space): space is NonNullable<typeof space> => space !== undefined);
+      })();
 
   const { locations } = useConfig();
 

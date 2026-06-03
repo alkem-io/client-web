@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -798,10 +788,12 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
+  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -3602,8 +3594,12 @@ export type Library = {
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
+  /** Paginated Innovation Packs in the platform Innovation Library (newest first). */
+  innovationPacksPaginated: PaginatedInnovationPacks;
   /** The Templates in the Innovation Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
+  /** Paginated Templates in the Innovation Library, each with the InnovationPack that contributes it (newest first). */
+  templatesPaginated: PaginatedLibraryTemplateResults;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The VirtualContributors listed on this platform */
@@ -3614,11 +3610,34 @@ export type LibraryInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
 };
 
+export type LibraryInnovationPacksPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type LibraryTemplatesArgs = {
   filter?: InputMaybe<LibraryTemplatesFilterInput>;
 };
 
+export type LibraryTemplatesPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type LibraryInnovationPacksFilterInput = {
+  /** Return Innovation Packs whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type LibraryTemplatesFilterInput = {
+  /** Return Templates whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   /** Return Templates within the Library matching the specified Template Types. */
   types?: InputMaybe<Array<TemplateType>>;
 };
@@ -5866,6 +5885,7 @@ export enum NotificationEvent {
   UserEmailChangeSpaceAdminNotification = 'USER_EMAIL_CHANGE_SPACE_ADMIN_NOTIFICATION',
   UserMentioned = 'USER_MENTIONED',
   UserMessage = 'USER_MESSAGE',
+  UserPasswordChangeSecuritySignal = 'USER_PASSWORD_CHANGE_SECURITY_SIGNAL',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -6123,6 +6143,20 @@ export type PaginatedInAppNotifications = {
   __typename?: 'PaginatedInAppNotifications';
   inAppNotifications: Array<InAppNotification>;
   pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedInnovationPacks = {
+  __typename?: 'PaginatedInnovationPacks';
+  innovationPacks: Array<InnovationPack>;
+  pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedLibraryTemplateResults = {
+  __typename?: 'PaginatedLibraryTemplateResults';
+  pageInfo: PageInfo;
+  templateResults: Array<TemplateResult>;
   total: Scalars['Float']['output'];
 };
 
@@ -11733,7 +11767,7 @@ export type InnovationFlowSettingsQuery = {
                 __typename?: 'CalloutFraming';
                 id: string;
                 type: CalloutFramingType;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
               settings: {
                 __typename?: 'CalloutSettings';
@@ -11913,7 +11947,7 @@ export type InnovationFlowCollaborationFragment = {
         __typename?: 'CalloutFraming';
         id: string;
         type: CalloutFramingType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
       settings: {
         __typename?: 'CalloutSettings';
@@ -20073,36 +20107,6 @@ export type CommentsWithMessagesFragment = {
   vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
 
-export type RemoveReactionMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  reactionId: Scalars['MessageID']['input'];
-}>;
-
-export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
-
-export type ReplyToMessageMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  message: Scalars['String']['input'];
-  threadId: Scalars['MessageID']['input'];
-}>;
-
-export type ReplyToMessageMutation = {
-  __typename?: 'Mutation';
-  sendMessageReplyToRoom: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
-  };
-};
-
-export type VcInteractionsDetailsFragment = {
-  __typename?: 'VcInteraction';
-  threadID: string;
-  virtualContributorID: string;
-};
-
 export type ForumMentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -20276,6 +20280,36 @@ export type ForumMentionableContributorsQuery = {
       >;
     };
   };
+};
+
+export type RemoveReactionMutationVariables = Exact<{
+  roomId: Scalars['UUID']['input'];
+  reactionId: Scalars['MessageID']['input'];
+}>;
+
+export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
+
+export type ReplyToMessageMutationVariables = Exact<{
+  roomId: Scalars['UUID']['input'];
+  message: Scalars['String']['input'];
+  threadId: Scalars['MessageID']['input'];
+}>;
+
+export type ReplyToMessageMutation = {
+  __typename?: 'Mutation';
+  sendMessageReplyToRoom: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender?: { __typename?: 'Actor'; id: string; type: ActorType } | undefined;
+  };
+};
+
+export type VcInteractionsDetailsFragment = {
+  __typename?: 'VcInteraction';
+  threadID: string;
+  virtualContributorID: string;
 };
 
 export type MentionableContributorsQueryVariables = Exact<{
@@ -24614,6 +24648,8 @@ export type InnovationHubByIdQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25117,6 +25153,8 @@ export type InnovationHubQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25141,6 +25179,8 @@ export type InnovationHubHomeInnovationHubFragment = {
   id: string;
   nameID: string;
   subdomain: string;
+  type: InnovationHubType;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -34984,6 +35024,193 @@ export type AuthorizationPrivilegesForUserQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     authorizationPrivilegesForUser?: Array<AuthorizationPrivilege> | undefined;
+  };
+};
+
+export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+}>;
+
+export type InnovationLibraryPacksPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacksPaginated: {
+        __typename?: 'PaginatedInnovationPacks';
+        total: number;
+        innovationPacks: Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
+export type InnovationLibraryTemplatesPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+}>;
+
+export type InnovationLibraryTemplatesPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      templatesPaginated: {
+        __typename?: 'PaginatedLibraryTemplateResults';
+        total: number;
+        templateResults: Array<{
+          __typename?: 'TemplateResult';
+          template: {
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
+            contentSpace?:
+              | {
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+          innovationPack: {
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            provider: {
+              __typename?: 'Actor';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
   };
 };
 

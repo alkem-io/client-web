@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Enregistrez ou abandonnez les modifications non enregistrées avant de créer un modèle à partir de ceci.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Paramètres"
+  },
   "packAdmin": {
     "subtitle": "Modèles de cet Innovation Pack",
     "detailsHeading": "Détails du pack",
@@ -293,13 +296,17 @@
     "title": "Bibliothèque d'innovation",
     "subtitle": "Découvrez les modèles et Innovation Packs publiés sur la plateforme.",
     "pageTitle": "Bibliothèque d'innovation",
+    "loadedOfTotal": "{{loaded}} sur {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Aucun Innovation Pack disponible pour le moment."
+      "empty": "Aucun Innovation Pack disponible pour le moment.",
+      "searchPlaceholder": "Rechercher des Innovation Packs"
     },
     "templates": {
       "heading": "Modèles",
-      "empty": "Aucun modèle ne correspond aux filtres sélectionnés."
+      "empty": "Aucun modèle ne correspond aux filtres sélectionnés.",
+      "loading": "Chargement des modèles",
+      "searchPlaceholder": "Rechercher des modèles"
     },
     "filter": {
       "label": "Filtrer par type",
@@ -310,7 +317,9 @@
         "whiteboard": "Tableaux blancs",
         "post": "Publications",
         "communityGuidelines": "Règles de la communauté"
-      }
+      },
+      "summary": "{{first}} et {{count}} de plus",
+      "pair": "{{first}} et {{second}}"
     }
   },
   "packCard": {

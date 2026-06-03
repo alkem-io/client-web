@@ -292,6 +292,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
       settings {
@@ -1942,6 +1943,8 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   id
   nameID
   subdomain
+  type
+  spaceVisibilityFilter
   profile {
     id
     displayName
@@ -12159,6 +12162,106 @@ export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutation,
   SchemaTypes.AddReactionMutationVariables
 >;
+export const ForumMentionableContributorsDocument = gql`
+    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
+  platform {
+    id
+    forum {
+      id
+      mentionableContributors(filter: $filter, limit: $limit) {
+        id
+        type
+        nameID
+        profile {
+          id
+          url
+          displayName
+          location {
+            id
+            city
+            country
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}
+    ${VisualModelFragmentDoc}`;
+
+/**
+ * __useForumMentionableContributorsQuery__
+ *
+ * To run a query within a React component, call `useForumMentionableContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useForumMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useForumMentionableContributorsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useForumMentionableContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export function useForumMentionableContributorsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ForumMentionableContributorsQuery,
+        SchemaTypes.ForumMentionableContributorsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ForumMentionableContributorsQuery,
+    SchemaTypes.ForumMentionableContributorsQueryVariables
+  >(ForumMentionableContributorsDocument, options);
+}
+export type ForumMentionableContributorsQueryHookResult = ReturnType<typeof useForumMentionableContributorsQuery>;
+export type ForumMentionableContributorsLazyQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsLazyQuery
+>;
+export type ForumMentionableContributorsSuspenseQueryHookResult = ReturnType<
+  typeof useForumMentionableContributorsSuspenseQuery
+>;
+export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ForumMentionableContributorsQuery,
+  SchemaTypes.ForumMentionableContributorsQueryVariables
+>;
+export function refetchForumMentionableContributorsQuery(
+  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
+) {
+  return { query: ForumMentionableContributorsDocument, variables: variables };
+}
 export const RemoveReactionDocument = gql`
     mutation RemoveReaction($roomId: UUID!, $reactionId: MessageID!) {
   removeReactionToMessageInRoom(
@@ -12264,106 +12367,6 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
-export const ForumMentionableContributorsDocument = gql`
-    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
-  platform {
-    id
-    forum {
-      id
-      mentionableContributors(filter: $filter, limit: $limit) {
-        id
-        type
-        nameID
-        profile {
-          id
-          url
-          displayName
-          location {
-            id
-            city
-            country
-          }
-          avatar: visual(type: AVATAR) {
-            ...VisualModel
-          }
-        }
-      }
-    }
-  }
-}
-    ${VisualModelFragmentDoc}`;
-
-/**
- * __useForumMentionableContributorsQuery__
- *
- * To run a query within a React component, call `useForumMentionableContributorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useForumMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useForumMentionableContributorsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *      limit: // value for 'limit'
- *   },
- * });
- */
-export function useForumMentionableContributorsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export function useForumMentionableContributorsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export function useForumMentionableContributorsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ForumMentionableContributorsQuery,
-        SchemaTypes.ForumMentionableContributorsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.ForumMentionableContributorsQuery,
-    SchemaTypes.ForumMentionableContributorsQueryVariables
-  >(ForumMentionableContributorsDocument, options);
-}
-export type ForumMentionableContributorsQueryHookResult = ReturnType<typeof useForumMentionableContributorsQuery>;
-export type ForumMentionableContributorsLazyQueryHookResult = ReturnType<
-  typeof useForumMentionableContributorsLazyQuery
->;
-export type ForumMentionableContributorsSuspenseQueryHookResult = ReturnType<
-  typeof useForumMentionableContributorsSuspenseQuery
->;
-export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ForumMentionableContributorsQuery,
-  SchemaTypes.ForumMentionableContributorsQueryVariables
->;
-export function refetchForumMentionableContributorsQuery(
-  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
-) {
-  return { query: ForumMentionableContributorsDocument, variables: variables };
-}
 export const MentionableContributorsDocument = gql`
     query MentionableContributors($spaceID: UUID!, $filter: ContributorFilterInput, $limit: Int = 30) {
   lookup {
@@ -29244,6 +29247,259 @@ export function refetchAuthorizationPrivilegesForUserQuery(
   variables: SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
+}
+export const InnovationLibraryPacksPaginatedDocument = gql`
+    query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
+  platform {
+    id
+    library {
+      id
+      innovationPacksPaginated(first: $first, after: $after, filter: $filter) {
+        total
+        innovationPacks {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            url
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            spaceTemplatesCount
+            communityGuidelinesTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}
+    ${TagsetDetailsFragmentDoc}
+${InnovationPackProviderProfileWithAvatarFragmentDoc}`;
+
+/**
+ * __useInnovationLibraryPacksPaginatedQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryPacksPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryPacksPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryPacksPaginatedQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useInnovationLibraryPacksPaginatedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+    SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+    SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+  >(InnovationLibraryPacksPaginatedDocument, options);
+}
+export function useInnovationLibraryPacksPaginatedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+    SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+    SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+  >(InnovationLibraryPacksPaginatedDocument, options);
+}
+export function useInnovationLibraryPacksPaginatedSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+        SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+    SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+  >(InnovationLibraryPacksPaginatedDocument, options);
+}
+export type InnovationLibraryPacksPaginatedQueryHookResult = ReturnType<typeof useInnovationLibraryPacksPaginatedQuery>;
+export type InnovationLibraryPacksPaginatedLazyQueryHookResult = ReturnType<
+  typeof useInnovationLibraryPacksPaginatedLazyQuery
+>;
+export type InnovationLibraryPacksPaginatedSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationLibraryPacksPaginatedSuspenseQuery
+>;
+export type InnovationLibraryPacksPaginatedQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryPacksPaginatedQuery,
+  SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+>;
+export function refetchInnovationLibraryPacksPaginatedQuery(
+  variables: SchemaTypes.InnovationLibraryPacksPaginatedQueryVariables
+) {
+  return { query: InnovationLibraryPacksPaginatedDocument, variables: variables };
+}
+export const InnovationLibraryTemplatesPaginatedDocument = gql`
+    query InnovationLibraryTemplatesPaginated($first: Int!, $after: UUID, $filter: LibraryTemplatesFilterInput) {
+  platform {
+    id
+    library {
+      id
+      templatesPaginated(first: $first, after: $after, filter: $filter) {
+        total
+        templateResults {
+          template {
+            ...TemplateProfileInfo
+            callout {
+              id
+            }
+            contentSpace {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    ...VisualModel
+                  }
+                }
+              }
+            }
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+            provider {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+                url
+              }
+            }
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}
+    ${TemplateProfileInfoFragmentDoc}
+${VisualModelFragmentDoc}`;
+
+/**
+ * __useInnovationLibraryTemplatesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryTemplatesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryTemplatesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryTemplatesPaginatedQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useInnovationLibraryTemplatesPaginatedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+  >(InnovationLibraryTemplatesPaginatedDocument, options);
+}
+export function useInnovationLibraryTemplatesPaginatedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+  >(InnovationLibraryTemplatesPaginatedDocument, options);
+}
+export function useInnovationLibraryTemplatesPaginatedSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+        SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+    SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+  >(InnovationLibraryTemplatesPaginatedDocument, options);
+}
+export type InnovationLibraryTemplatesPaginatedQueryHookResult = ReturnType<
+  typeof useInnovationLibraryTemplatesPaginatedQuery
+>;
+export type InnovationLibraryTemplatesPaginatedLazyQueryHookResult = ReturnType<
+  typeof useInnovationLibraryTemplatesPaginatedLazyQuery
+>;
+export type InnovationLibraryTemplatesPaginatedSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationLibraryTemplatesPaginatedSuspenseQuery
+>;
+export type InnovationLibraryTemplatesPaginatedQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryTemplatesPaginatedQuery,
+  SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+>;
+export function refetchInnovationLibraryTemplatesPaginatedQuery(
+  variables: SchemaTypes.InnovationLibraryTemplatesPaginatedQueryVariables
+) {
+  return { query: InnovationLibraryTemplatesPaginatedDocument, variables: variables };
 }
 export const MySpacesExplorerPageDocument = gql`
     query MySpacesExplorerPage {

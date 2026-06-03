@@ -37,5 +37,27 @@
       "alreadyMember": "Is al lid",
       "error": "Mislukt: {{message}}"
     }
+  },
+  "inviteVc": {
+    "title": "Virtual Contributor uitnodigen",
+    "description": "Voeg een Virtual Contributor van je account toe, of nodig er een uit de Alkemio-bibliotheek uit.",
+    "searchPlaceholder": "Virtual Contributors zoeken…",
+    "loading": "Virtual Contributors laden",
+    "onAccount": "Op je account",
+    "onAccountEmpty": "Geen Virtual Contributors beschikbaar op je account.",
+    "inLibrary": "In de bibliotheek",
+    "inLibraryEmpty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+    "add": "Toevoegen",
+    "invite": "Uitnodigen",
+    "addAriaLabel": "{{name}} toevoegen",
+    "inviteAriaLabel": "{{name}} uitnodigen",
+    "back": "Terug",
+    "welcomeMessageLabel": "Welkomstbericht",
+    "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+    "sendInvite": "Uitnodiging versturen",
+    "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
+    "addedNotice": "Virtual Contributor toegevoegd.",
+    "invitedNotice": "Uitnodiging verzonden.",
+    "error": "Er ging iets mis. Probeer het opnieuw."
   }
 }

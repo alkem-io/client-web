@@ -37,5 +37,27 @@
       "alreadyMember": "Bereits Mitglied",
       "error": "Fehlgeschlagen: {{message}}"
     }
+  },
+  "inviteVc": {
+    "title": "Virtuellen Mitwirkenden einladen",
+    "description": "Fügen Sie einen virtuellen Mitwirkenden aus Ihrem Konto hinzu oder laden Sie einen aus der Alkemio-Bibliothek ein.",
+    "searchPlaceholder": "Virtuelle Mitwirkende suchen…",
+    "loading": "Virtuelle Mitwirkende werden geladen",
+    "onAccount": "In Ihrem Konto",
+    "onAccountEmpty": "Keine virtuellen Mitwirkenden in Ihrem Konto verfügbar.",
+    "inLibrary": "In der Bibliothek",
+    "inLibraryEmpty": "Keine virtuellen Mitwirkenden in der Bibliothek entsprechen Ihrer Suche.",
+    "add": "Hinzufügen",
+    "invite": "Einladen",
+    "addAriaLabel": "{{name}} hinzufügen",
+    "inviteAriaLabel": "{{name}} einladen",
+    "back": "Zurück",
+    "welcomeMessageLabel": "Willkommensnachricht",
+    "welcomeMessagePlaceholder": "Fügen Sie der Einladung eine Nachricht hinzu…",
+    "sendInvite": "Einladung senden",
+    "defaultWelcomeMessage": "Wir möchten Sie einladen, zu {{space}} beizutragen.",
+    "addedNotice": "Virtueller Mitwirkender hinzugefügt.",
+    "invitedNotice": "Einladung gesendet.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
   }
 }

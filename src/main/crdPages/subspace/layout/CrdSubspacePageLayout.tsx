@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -61,6 +62,12 @@ export type SubspaceOutletContext = {
 
 export default function CrdSubspacePageLayout() {
   const data = useCrdSubspace();
+
+  // Set browser tab title to the subspace name for L1/L2 subspaces. The parent
+  // CrdSpacePageLayout passes a stable `undefined` at non-L0, so this child wins
+  // once the subspace data resolves (mirrors MUI's SubspacePageLayout).
+  usePageTitle(data.subspaceName);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { spaceLevel } = useUrlResolver();

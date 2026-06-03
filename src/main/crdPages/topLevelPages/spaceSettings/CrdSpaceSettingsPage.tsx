@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
@@ -10,7 +11,6 @@ import { ApplicationFormEditor } from '@/crd/components/space/settings/Applicati
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
 import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
-import { InviteMembersDialog } from '@/crd/components/space/settings/InviteMembersDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
@@ -25,19 +25,17 @@ import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceS
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
+import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
-import {
-  useAddOrganizationDialog,
-  useAddVirtualContributorDialog,
-  useAddVirtualContributorExternalDialog,
-  useInviteUsersDialog,
-} from './community/useAddCommunityMemberDialog';
+import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -93,6 +91,7 @@ export default function CrdSpaceSettingsPage() {
   // instantly. Local buffers (about edits, layout buffer, updates draft) live
   // in `useState` inside each hook and survive the gating, so the dirty-tab
   // guard still sees `isDirty=true` at the moment of a tab switch.
+  const navigate = useNavigate();
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
   const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
@@ -176,12 +175,10 @@ export default function CrdSpaceSettingsPage() {
     spaceId,
     spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
   });
-  const addVCExternalDialog = useAddVirtualContributorExternalDialog({
-    community: community._adminRef,
-    spaceId,
-    spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
-  });
-  const inviteDialog = useInviteUsersDialog({ community: community._adminRef });
+  const [vcExternalOpen, setVcExternalOpen] = useState(false);
+  const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
+  const { space: spaceContext } = useSpace();
+  const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
@@ -378,9 +375,20 @@ export default function CrdSpaceSettingsPage() {
                 onRenameColumn={layout.onRenameColumn}
                 onMoveToColumn={layout.onMoveToColumn}
                 onViewPost={calloutId => {
-                  void calloutId;
-                  // TODO(US2): wire to the post's URL once SpaceCalloutPage route is finalized.
-                  // Leaving as a no-op for now keeps the contract shape without breaking navigation.
+                  const target = layout.columns
+                    .flatMap(column => column.callouts)
+                    .find(callout => callout.id === calloutId);
+                  if (!target?.profileUrl) return;
+                  // `profile.url` comes back as an absolute URL (incl. origin); React
+                  // Router's navigate() treats that as a relative segment and appends
+                  // it to the current path. Normalise to a pathname first.
+                  let path = target.profileUrl;
+                  try {
+                    path = new URL(target.profileUrl).pathname;
+                  } catch {
+                    // already a relative path — use as-is
+                  }
+                  navigate(path);
                 }}
                 onPostDescriptionDisplayChange={layout.onPostDescriptionDisplayChange}
                 onSave={layout.onSave}
@@ -467,7 +475,7 @@ export default function CrdSpaceSettingsPage() {
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onVCAdd={addVCDialog.openDialog}
-                onVCAddExternal={addVCExternalDialog.openDialog}
+                onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
                 onPendingView={id => {
                   const target = community.pendingMemberships.find(m => m.id === id);
@@ -476,7 +484,7 @@ export default function CrdSpaceSettingsPage() {
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
-                onInviteUsers={inviteDialog.openDialog}
+                onInviteUsers={() => setInviteMembersOpen(true)}
               />
             )}
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
@@ -488,6 +496,9 @@ export default function CrdSpaceSettingsPage() {
                 onCreate={() => createSubspace.openDialog()}
                 onChangeDefaultTemplate={level === 'L0' ? subspacesTab.onChangeDefaultTemplate : undefined}
                 onKebabAction={subspacesTab.onKebabAction}
+                sortMode={subspacesTab.sortMode}
+                onSortModeChange={subspacesTab.onSortModeChange}
+                onReorder={subspacesTab.onReorder}
               />
             )}
             {activeTab === 'templates' && isTabVisible('templates') && (
@@ -797,38 +808,23 @@ export default function CrdSpaceSettingsPage() {
         onAdd={id => void addVCDialog.onAdd(id)}
       />
 
-      <AddCommunityMemberDialog
-        open={addVCExternalDialog.open}
-        onOpenChange={open => {
-          if (!open) addVCExternalDialog.closeDialog();
-        }}
-        title={t('community.virtualContributors.addExternalDialog.title')}
-        description={t('community.virtualContributors.addExternalDialog.description')}
-        searchPlaceholder={t('community.virtualContributors.addExternalDialog.search')}
-        candidates={addVCExternalDialog.candidates}
-        loading={addVCExternalDialog.loading}
-        search={addVCExternalDialog.search}
-        addedIds={addVCExternalDialog.addedIds}
-        addingId={addVCExternalDialog.addingId}
-        emptyLabel={t('community.virtualContributors.addExternalDialog.empty')}
-        onSearchChange={addVCExternalDialog.onSearchChange}
-        onAdd={id => void addVCExternalDialog.onAdd(id)}
-      />
+      {roleSetId && (
+        <VirtualContributorInviteConnector
+          open={vcExternalOpen}
+          onClose={() => setVcExternalOpen(false)}
+          roleSetId={roleSetId}
+          spaceId={spaceId}
+          spaceLevel={spaceLevelEnum}
+          spaceName={spaceContext.about.profile.displayName}
+          libraryOnly={true}
+        />
+      )}
 
-      <InviteMembersDialog
-        open={inviteDialog.open}
-        onOpenChange={open => {
-          if (!open) inviteDialog.closeDialog();
-        }}
-        candidates={inviteDialog.candidates}
-        loading={inviteDialog.loading}
-        search={inviteDialog.search}
-        addedIds={inviteDialog.addedIds}
-        addingId={inviteDialog.addingId}
-        inviting={inviteDialog.inviting}
-        onSearchChange={inviteDialog.onSearchChange}
-        onInviteUser={id => void inviteDialog.onAdd(id)}
-        onInviteEmail={email => inviteDialog.inviteByEmail(email)}
+      <InviteMembersDialogConnector
+        open={inviteMembersOpen}
+        onClose={() => setInviteMembersOpen(false)}
+        spaceId={spaceId}
+        onlyFromParentCommunity={level === 'L2'}
       />
 
       <ConfirmationDialog
