@@ -305,6 +305,7 @@
     "templates": {
       "heading": "Modèles",
       "empty": "Aucun modèle ne correspond aux filtres sélectionnés.",
+      "loading": "Chargement des modèles",
       "searchPlaceholder": "Rechercher des modèles"
     },
     "filter": {

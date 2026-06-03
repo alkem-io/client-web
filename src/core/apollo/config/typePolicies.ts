@@ -17,6 +17,8 @@ export const typePolicies: TypedTypePolicies = {
       // so changing the template-type filter naturally serves a fresh first page (FR-007).
       // `TemplateResult` is a non-normalized wrapper (no own id) — the relay merge's
       // id-dedup is a no-op; continuity relies on the server's stable rowId-DESC cursors.
+      // Accepted risk (no page-seam dedup); see research.md Decision 6 for the rationale
+      // and the remediation path if the server ever returns overlapping pages.
       templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult'),
       // Packs now take a `filter` (searchTerm); key on it so a search re-keys to a fresh first page (FR-017).
       innovationPacksPaginated: paginationFieldPolicy(['filter'], 'InnovationPack'),
