@@ -1,8 +1,9 @@
-import type { InnovationLibraryQuery } from '@/core/apollo/generated/graphql-schema';
+import type { InnovationLibraryPacksPaginatedQuery } from '@/core/apollo/generated/graphql-schema';
 import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-type GqlLibraryPack = InnovationLibraryQuery['platform']['library']['innovationPacks'][number];
+type GqlLibraryPack =
+  InnovationLibraryPacksPaginatedQuery['platform']['library']['innovationPacksPaginated']['innovationPacks'][number];
 
 /** Sum of `templatesSet.*Count` (the InnovationLibrary query exposes counts, not full template lists). */
 export function packTemplateCount(pack: GqlLibraryPack): number {

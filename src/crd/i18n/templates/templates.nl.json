@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Sla niet-opgeslagen wijzigingen op of negeer ze voordat je hier een template van maakt.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
   "packAdmin": {
     "subtitle": "Templates in dit Innovation Pack",
     "detailsHeading": "Pakketgegevens",
@@ -293,13 +296,16 @@
     "title": "Innovatiebibliotheek",
     "subtitle": "Ontdek templates en innovation packs van het platform.",
     "pageTitle": "Innovatiebibliotheek",
+    "loadedOfTotal": "{{loaded}} van {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Er zijn nog geen innovation packs beschikbaar."
+      "empty": "Er zijn nog geen innovation packs beschikbaar.",
+      "searchPlaceholder": "Zoek innovation packs"
     },
     "templates": {
       "heading": "Templates",
-      "empty": "Geen templates voldoen aan de geselecteerde filters."
+      "empty": "Geen templates voldoen aan de geselecteerde filters.",
+      "searchPlaceholder": "Zoek templates"
     },
     "filter": {
       "label": "Filter op type",
@@ -310,7 +316,9 @@
         "whiteboard": "Whiteboards",
         "post": "Posts",
         "communityGuidelines": "Communityrichtlijnen"
-      }
+      },
+      "summary": "{{first}} en {{count}} meer",
+      "pair": "{{first}} en {{second}}"
     }
   },
   "packCard": {

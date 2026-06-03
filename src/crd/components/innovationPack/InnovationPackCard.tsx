@@ -80,7 +80,12 @@ export function InnovationPackCard({ pack, className }: InnovationPackCardProps)
         </div>
 
         {pack.description && (
-          <InlineMarkdown content={pack.description} clampLines={2} className="text-body text-muted-foreground" />
+          <InlineMarkdown
+            content={pack.description}
+            clampLines={2}
+            disableLinks={true}
+            className="text-body text-muted-foreground"
+          />
         )}
 
         {pack.tags.length > 0 && (

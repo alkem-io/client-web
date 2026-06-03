@@ -66,6 +66,7 @@
     "close": "Cerrar"
   },
   "preview": {
+    "editButton": "Editar los ajustes de vista previa de la pizarra",
     "settings": {
       "title": "Ajustes de vista previa",
       "subtitle": "Elige cómo se ve la miniatura de la pizarra en tarjetas y vistas previas"

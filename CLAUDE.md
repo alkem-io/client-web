@@ -377,11 +377,11 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 103-crd-settings-parity: Added TypeScript 5.x, React 19 (React Compiler — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/primitives/*`), `@dnd-kit/core` + `@dnd-kit/sortable` (already used in CRD), `lucide-react`, `react-i18next`, Apollo Client + generated hooks, `react-markdown` (via CRD `InlineMarkdown`/`MarkdownContent`)
+- 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
 - 102-crd-innovation-hub: Added TypeScript 5.x, React 19 with React Compiler enabled (no manual `useMemo`/`useCallback`/`React.memo`). + shadcn/ui + Tailwind CSS v4 + Radix UI (existing, via `@/crd/primitives/*`); `class-variance-authority`, `lucide-react`, `react-i18next` (all existing). Apollo Client + generated hooks (`useInnovationHubByIdQuery`, `useInnovationHubQuery`, `useInnovationHubSettingsQuery`, `useUpdateInnovationHubMutation`, `useUploadVisualMutation` — all already generated; the `InnovationHubHomeInnovationHub` fragment is extended with `spaceListFilter { id }` so `pnpm codegen` MUST be run once and the regenerated `apollo-hooks.ts` / `graphql-schema.ts` committed in this PR). `@dnd-kit/core` + `@dnd-kit/sortable` (existing, used by the legacy Spaces field — reused for CRD drag-reorder). `date-fns` only for any date formatting (no `dayjs` in CRD/crdPages layers). No new runtime dependencies.
 - 101-crd-auth-pages: Added TypeScript 5.x, React 19 (with React Compiler), Node 24.14.0 (Volta-pinned)
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/primitives/*`), `@dnd-kit/core` + `@dnd-kit/sortable` (already used in CRD), `lucide-react`, `react-i18next`, Apollo Client + generated hooks, `react-markdown` (via CRD `InlineMarkdown`/`MarkdownContent`) (103-crd-settings-parity)
-- N/A — server persistence via existing GraphQL mutations; no client-side storage changes (103-crd-settings-parity)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**. (103-innovation-library-pagination)
+- N/A (frontend SPA). Client-side: Apollo InMemoryCache relay-style field merge for the two new `Library` paginated fields. (103-innovation-library-pagination)

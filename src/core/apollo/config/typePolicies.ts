@@ -11,6 +11,17 @@ export const typePolicies: TypedTypePolicies = {
   Platform: {
     merge: true,
   },
+  Library: {
+    fields: {
+      // `keyArgs: ['filter']` keeps an independently-paged cached list per type filter,
+      // so changing the template-type filter naturally serves a fresh first page (FR-007).
+      // `TemplateResult` is a non-normalized wrapper (no own id) — the relay merge's
+      // id-dedup is a no-op; continuity relies on the server's stable rowId-DESC cursors.
+      templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult'),
+      // Packs now take a `filter` (searchTerm); key on it so a search re-keys to a fresh first page (FR-017).
+      innovationPacksPaginated: paginationFieldPolicy(['filter'], 'InnovationPack'),
+    },
+  },
   MeQueryResults: {
     merge: true,
   },

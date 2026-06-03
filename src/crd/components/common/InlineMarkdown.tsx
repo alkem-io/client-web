@@ -1,4 +1,5 @@
 import { defaultSchema } from 'hast-util-sanitize';
+import type { ReactNode } from 'react';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
@@ -22,6 +23,12 @@ export type InlineMarkdownProps = {
    * Defaults to 2 — suitable for notification/activity previews.
    */
   clampLines?: 0 | 1 | 2 | 3;
+  /**
+   * Render markdown links as plain (non-interactive) text instead of `<a>`. Use this
+   * when the preview is rendered inside a clickable container (e.g. a card that is
+   * itself an `<a>`), where a nested anchor is invalid HTML and causes a hydration error.
+   */
+  disableLinks?: boolean;
   className?: string;
 };
 
@@ -36,9 +43,14 @@ export type InlineMarkdownProps = {
  * this component exists to prevent. For full-width rich markdown content (callout
  * framing, post body, about view), use `MarkdownContent` instead.
  */
-export function InlineMarkdown({ content, clampLines = 2, className }: InlineMarkdownProps) {
+export function InlineMarkdown({ content, clampLines = 2, disableLinks, className }: InlineMarkdownProps) {
   const clampClass =
     clampLines === 0 ? '' : clampLines === 1 ? 'line-clamp-1' : clampLines === 3 ? 'line-clamp-3' : 'line-clamp-2';
+
+  // Render links as plain text inside clickable containers to avoid nested-<a> (invalid HTML).
+  const components = disableLinks
+    ? { a: ({ children }: { children?: ReactNode }) => <span>{children}</span> }
+    : undefined;
 
   return (
     <div
@@ -70,6 +82,7 @@ export function InlineMarkdown({ content, clampLines = 2, className }: InlineMar
       <Markdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[[rehypeRaw, { passThrough: [] }], [rehypeSanitize, sanitizeSchema], rehypeSanitizeStyles]}
+        components={components}
       >
         {content}
       </Markdown>

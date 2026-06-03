@@ -3594,8 +3594,12 @@ export type Library = {
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
+  /** Paginated Innovation Packs in the platform Innovation Library (newest first). */
+  innovationPacksPaginated: PaginatedInnovationPacks;
   /** The Templates in the Innovation Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
+  /** Paginated Templates in the Innovation Library, each with the InnovationPack that contributes it (newest first). */
+  templatesPaginated: PaginatedLibraryTemplateResults;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The VirtualContributors listed on this platform */
@@ -3606,11 +3610,34 @@ export type LibraryInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
 };
 
+export type LibraryInnovationPacksPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type LibraryTemplatesArgs = {
   filter?: InputMaybe<LibraryTemplatesFilterInput>;
 };
 
+export type LibraryTemplatesPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type LibraryInnovationPacksFilterInput = {
+  /** Return Innovation Packs whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type LibraryTemplatesFilterInput = {
+  /** Return Templates whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   /** Return Templates within the Library matching the specified Template Types. */
   types?: InputMaybe<Array<TemplateType>>;
 };
@@ -6116,6 +6143,20 @@ export type PaginatedInAppNotifications = {
   __typename?: 'PaginatedInAppNotifications';
   inAppNotifications: Array<InAppNotification>;
   pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedInnovationPacks = {
+  __typename?: 'PaginatedInnovationPacks';
+  innovationPacks: Array<InnovationPack>;
+  pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedLibraryTemplateResults = {
+  __typename?: 'PaginatedLibraryTemplateResults';
+  pageInfo: PageInfo;
+  templateResults: Array<TemplateResult>;
   total: Scalars['Float']['output'];
 };
 
@@ -34983,6 +35024,193 @@ export type AuthorizationPrivilegesForUserQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     authorizationPrivilegesForUser?: Array<AuthorizationPrivilege> | undefined;
+  };
+};
+
+export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+}>;
+
+export type InnovationLibraryPacksPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacksPaginated: {
+        __typename?: 'PaginatedInnovationPacks';
+        total: number;
+        innovationPacks: Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
+export type InnovationLibraryTemplatesPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+}>;
+
+export type InnovationLibraryTemplatesPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      templatesPaginated: {
+        __typename?: 'PaginatedLibraryTemplateResults';
+        total: number;
+        templateResults: Array<{
+          __typename?: 'TemplateResult';
+          template: {
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
+            contentSpace?:
+              | {
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+          innovationPack: {
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            provider: {
+              __typename?: 'Actor';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
   };
 };
 

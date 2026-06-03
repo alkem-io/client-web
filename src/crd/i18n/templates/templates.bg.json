@@ -233,6 +233,9 @@
     "unsavedSourceBody": "Запазете или отхвърлете незапазените промени, преди да създадете шаблон от това.",
     "unsavedSourceConfirm": "OK"
   },
+  "breadcrumbs": {
+    "settings": "Настройки"
+  },
   "packAdmin": {
     "subtitle": "Шаблони в този Innovation Pack",
     "detailsHeading": "Детайли за пакета",
@@ -293,13 +296,16 @@
     "title": "Иновационна библиотека",
     "subtitle": "Открийте шаблони и Innovation Packs от платформата.",
     "pageTitle": "Иновационна библиотека",
+    "loadedOfTotal": "{{loaded}} от {{total}}",
     "packs": {
       "heading": "Innovation Packs",
-      "empty": "Все още няма налични Innovation Packs."
+      "empty": "Все още няма налични Innovation Packs.",
+      "searchPlaceholder": "Търсене на Innovation Packs"
     },
     "templates": {
       "heading": "Шаблони",
-      "empty": "Няма шаблони, които отговарят на избраните филтри."
+      "empty": "Няма шаблони, които отговарят на избраните филтри.",
+      "searchPlaceholder": "Търсене на шаблони"
     },
     "filter": {
       "label": "Филтриране по тип",
@@ -310,7 +316,9 @@
         "whiteboard": "Бели дъски",
         "post": "Публикации",
         "communityGuidelines": "Правила на общността"
-      }
+      },
+      "summary": "{{first}} и още {{count}}",
+      "pair": "{{first}} и {{second}}"
     }
   },
   "packCard": {
