@@ -1,8 +1,15 @@
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceCardData, SpaceCardVisibility, SpaceLead } from '@/crd/components/space/SpaceCard';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { SpaceWithParent } from './SpaceExplorerPage';
+
+const VISIBILITY_VARIANT: Record<SpaceVisibility, SpaceCardVisibility> = {
+  [SpaceVisibility.Active]: 'active',
+  [SpaceVisibility.Demo]: 'demo',
+  [SpaceVisibility.Inactive]: 'inactive',
+  [SpaceVisibility.Archived]: 'archived',
+};
 
 export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolean): SpaceCardData {
   const { about } = space;
@@ -62,6 +69,7 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
     href: profile.url,
     matchedTerms: !!space.matchedTerms?.length,
     parent,
+    visibility: space.visibility ? VISIBILITY_VARIANT[space.visibility] : undefined,
   };
 }
 

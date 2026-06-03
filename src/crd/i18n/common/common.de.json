@@ -14,6 +14,11 @@
   "private": "Privat",
   "public": "Öffentlich",
   "member": "Mitglied",
+  "visibility": {
+    "demo": "Demo",
+    "inactive": "Inaktiv",
+    "archived": "Archiviert"
+  },
   "leads": "Leiter",
   "loadMore": "Mehr laden",
   "pinned": "Angeheftet",
