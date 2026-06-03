@@ -44,7 +44,7 @@ const CrdWhiteboardView = ({
   preventWhiteboardDeletion,
   onWhiteboardDeleted,
 }: CrdWhiteboardViewProps) => {
-  const { t: tWb } = useTranslation('crd-whiteboard');
+  const { t: tWb } = useTranslation('crd-whiteboard', { useSuspense: false });
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
 
