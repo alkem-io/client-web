@@ -16,8 +16,8 @@ import { mapTemplateToCardData, toGqlTemplateType } from '@/main/crdPages/templa
 import { mapTemplateContent, templateContentIncludeVars } from '@/main/crdPages/templates/templateContentMapper';
 import { mapPackToInnovationPackCardData } from './innovationLibraryMapper';
 
-/** Client page size — 3 rows of 5 cards on big screens (server caps at 100); FR-012. */
-const PAGE_SIZE = 15;
+/** Client page size — 2 rows of 5 cards on big screens (server caps at 100); FR-012. */
+const PAGE_SIZE = 10;
 
 /** Pause after the last keystroke before a search request fires (FR-018). */
 const SEARCH_DEBOUNCE_MS = 300;

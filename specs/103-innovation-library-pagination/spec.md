@@ -274,7 +274,7 @@ intersection.
 - **FR-011**: The page MUST show a first-load placeholder while the initial page
   is loading and a non-blocking, non-duplicating busy indicator while a subsequent
   page is loading, without clearing already-visible items.
-- **FR-012**: The page MUST request bounded pages — a client page size of 15 (3
+- **FR-012**: The page MUST request bounded pages — a client page size of 10 (2
   rows of 5 cards on wide screens), never exceeding the server's maximum page size
   — rather than attempting to request the whole collection in one page.
 - **FR-013**: The page MUST present empty results (no items, total zero) using the
