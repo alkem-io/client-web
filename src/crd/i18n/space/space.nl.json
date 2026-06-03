@@ -67,7 +67,8 @@
       "tomorrow": "Morgen",
       "in_days_one": "over 1 dag",
       "in_days_other": "over {{count}} dagen"
-    }
+    },
+    "inviteVirtualContributor": "Virtual Contributor uitnodigen"
   },
   "calendar": {
     "title": "Evenementen",

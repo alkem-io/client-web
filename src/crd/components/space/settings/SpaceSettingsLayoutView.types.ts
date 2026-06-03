@@ -11,6 +11,8 @@ export type LayoutCallout = {
   title: string;
   description: string;
   flowStateTagsetId: string;
+  /** Canonical post URL (callout `profile.url`). Empty when unavailable — "View post" is hidden in that case. */
+  profileUrl: string;
 };
 
 export type LayoutPoolColumn = {

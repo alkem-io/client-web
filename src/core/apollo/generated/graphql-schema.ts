@@ -788,10 +788,12 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
+  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -11765,7 +11767,7 @@ export type InnovationFlowSettingsQuery = {
                 __typename?: 'CalloutFraming';
                 id: string;
                 type: CalloutFramingType;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
               settings: {
                 __typename?: 'CalloutSettings';
@@ -11945,7 +11947,7 @@ export type InnovationFlowCollaborationFragment = {
         __typename?: 'CalloutFraming';
         id: string;
         type: CalloutFramingType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
       settings: {
         __typename?: 'CalloutSettings';
@@ -24646,6 +24648,8 @@ export type InnovationHubByIdQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25149,6 +25153,8 @@ export type InnovationHubQuery = {
           id: string;
           nameID: string;
           subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25173,6 +25179,8 @@ export type InnovationHubHomeInnovationHubFragment = {
   id: string;
   nameID: string;
   subdomain: string;
+  type: InnovationHubType;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;

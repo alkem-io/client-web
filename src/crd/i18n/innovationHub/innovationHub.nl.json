@@ -5,7 +5,8 @@
     "collapseWidth": "Inklappen naar standaardbreedte",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd."
+      "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd.",
+      "loading": "Spaces laden…"
     },
     "allSpacesCta": "Bekijk alle Spaces op Alkemio"
   },
@@ -91,6 +92,7 @@
     "spaces": {
       "title": "Spaces",
       "subtitle": "Beheer welke Spaces op de Innovation Hub-startpagina verschijnen. Sleep om de volgorde te wijzigen.",
+      "visibilityManaged": "Deze Innovation Hub toont automatisch elke {{visibility}} Space. De Spaces worden bepaald door zichtbaarheid en worden hier niet beheerd.",
       "columns": {
         "name": "Naam",
         "visibility": "Zichtbaarheid",

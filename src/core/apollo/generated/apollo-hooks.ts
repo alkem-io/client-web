@@ -292,6 +292,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         profile {
           id
           displayName
+          url
         }
       }
       settings {
@@ -1942,6 +1943,8 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   id
   nameID
   subdomain
+  type
+  spaceVisibilityFilter
   profile {
     id
     displayName
