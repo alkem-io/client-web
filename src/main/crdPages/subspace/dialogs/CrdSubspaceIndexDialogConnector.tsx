@@ -40,42 +40,44 @@ export function CrdSubspaceIndexDialogConnector({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto" closeLabel={t('a11y.close')}>
-        <DialogHeader>
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" aria-hidden="true" />
             {t('index.dialogTitle')}
           </DialogTitle>
         </DialogHeader>
 
-        {loading && groups.length === 0 && <p className="text-body text-muted-foreground py-6">…</p>}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {loading && groups.length === 0 && <p className="text-body text-muted-foreground py-6">…</p>}
 
-        {!loading && groups.length === 0 && (
-          <DialogDescription className="py-6 text-center">{t('index.empty')}</DialogDescription>
-        )}
+          {!loading && groups.length === 0 && (
+            <DialogDescription className="py-6 text-center">{t('index.empty')}</DialogDescription>
+          )}
 
-        <div className="space-y-6 mt-2">
-          {groups.map(group => (
-            <section key={group.state}>
-              <p className="text-label uppercase text-muted-foreground mb-2 px-1">{group.state}</p>
-              <ul className="space-y-1">
-                {group.items.map(callout => {
-                  const profile = callout.framing.profile;
-                  return (
-                    <li key={callout.id}>
-                      <a
-                        href={profile.url ?? '#'}
-                        className="flex items-start gap-3 w-full px-3 py-2.5 rounded-md transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <FileText className="w-4 h-4 shrink-0 mt-0.5 text-primary" aria-hidden="true" />
-                        <span className="text-body text-foreground truncate">{profile.displayName}</span>
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          ))}
+          <div className="space-y-6 mt-2">
+            {groups.map(group => (
+              <section key={group.state}>
+                <p className="text-label uppercase text-muted-foreground mb-2 px-1">{group.state}</p>
+                <ul className="space-y-1">
+                  {group.items.map(callout => {
+                    const profile = callout.framing.profile;
+                    return (
+                      <li key={callout.id}>
+                        <a
+                          href={profile.url ?? '#'}
+                          className="flex items-start gap-3 w-full px-3 py-2.5 rounded-md transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <FileText className="w-4 h-4 shrink-0 mt-0.5 text-primary" aria-hidden="true" />
+                          <span className="text-body text-foreground truncate">{profile.displayName}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
