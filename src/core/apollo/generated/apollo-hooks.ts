@@ -702,7 +702,10 @@ export const CalloutFragmentDoc = gql`
   settings {
     visibility
     contribution {
+      enabled
       allowedTypes
+      canAddContributions
+      commentsEnabled
     }
   }
 }

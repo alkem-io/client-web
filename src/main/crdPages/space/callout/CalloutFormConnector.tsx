@@ -141,10 +141,15 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  const markdownIntegration = useMarkdownEditorIntegration();
-  // Memo framing only renders on create — the memo entity doesn't exist yet,
-  // so its pasted/inserted images upload to a temporary location (server GCs
-  // them if the callout-create is abandoned). Mirrors the MUI create rule.
+  // Description / memo-framing image upload. Paste and the toolbar upload button share the same
+  // `onImageUpload` callback (see `ToolbarImageDialog` + `sharedExtensions` paste handler), so they
+  // behave identically. On CREATE the callout (and its own bucket) doesn't exist yet, so uploads use
+  // the temporary location on the ambient space bucket — the server relocates them to the new
+  // callout on save. On EDIT they target the callout's own bucket (scoped by `CalloutEditConnector`,
+  // `temporaryLocation: false`), mirroring the legacy `CalloutForm` (`temporaryLocation={!callout?.id}`).
+  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: mode === 'create' });
+  // Memo framing renders only on create — the memo entity doesn't exist yet, so its images upload to
+  // the temporary location too.
   const memoFramingUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
   const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
 

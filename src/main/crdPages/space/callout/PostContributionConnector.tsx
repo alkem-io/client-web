@@ -1,3 +1,4 @@
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CrdPostContributionDialog } from '@/main/crdPages/post/CrdPostContributionDialog';
 
 type PostContributionConnectorProps = {
@@ -28,17 +29,22 @@ export function PostContributionConnector({
 }: PostContributionConnectorProps) {
   if (!open) return null;
   return (
-    <CrdPostContributionDialog
-      open={open}
-      onOpenChange={isOpen => {
-        if (!isOpen) onClose();
-      }}
-      mode="edit"
-      calloutId={calloutId}
-      calloutsSetId={calloutsSetId}
-      postId={postId}
-      contributionId={contributionId}
-      onDeleted={onDeleted}
-    />
+    // Scope uploads to the post's own storage bucket (where the author/editor has FileUpload)
+    // rather than the ambient space bucket. Mirrors the legacy MUI post-edit dialog
+    // (`CalloutContributionDialogPost` → `locationType="post"`).
+    <StorageConfigContextProvider locationType="post" postId={postId} skip={!open}>
+      <CrdPostContributionDialog
+        open={open}
+        onOpenChange={isOpen => {
+          if (!isOpen) onClose();
+        }}
+        mode="edit"
+        calloutId={calloutId}
+        calloutsSetId={calloutsSetId}
+        postId={postId}
+        contributionId={contributionId}
+        onDeleted={onDeleted}
+      />
+    </StorageConfigContextProvider>
   );
 }

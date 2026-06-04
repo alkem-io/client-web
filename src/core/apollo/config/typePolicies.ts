@@ -74,6 +74,13 @@ export const typePolicies: TypedTypePolicies = {
   CalloutSettings: {
     merge: true,
   },
+  // Non-normalized (no id). The feed-list `Callout` fragment and the full
+  // `CalloutDetails` query both write `Callout.settings.contribution`; without a
+  // merge here a partial list write can replace the object and drop `enabled` /
+  // `canAddContributions`, which silently hides the "Add contribution" affordance.
+  CalloutSettingsContribution: {
+    merge: true,
+  },
   WhiteboardPreviewSettings: {
     merge: true,
   },
