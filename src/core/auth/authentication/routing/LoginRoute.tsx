@@ -18,16 +18,20 @@ export const LoginRoute: FC = () => {
     }
   }, [returnUrl]);
 
+  // A Kratos-initiated login arrives here with a `flow` id in the URL. This
+  // includes *refresh* (re-authentication) logins, which Kratos demands before
+  // privileged Settings changes — adding a passkey, changing the password —
+  // once the session is older than `privileged_session_max_age`. In that case
+  // the user already holds a (non-privileged) session, so the usual
+  // `NotAuthenticatedRoute` guard would bounce them to the dashboard and the
+  // re-auth form would never render, silently aborting the Settings change.
+  // Whenever a flow id is present we render the login page regardless of
+  // authentication state so the flow (incl. refresh / step-up) can complete.
+  const loginPage = <LoginPage flow={flow} />;
+
   return (
     <Routes>
-      <Route
-        path={'/'}
-        element={
-          <NotAuthenticatedRoute>
-            <LoginPage flow={flow} />
-          </NotAuthenticatedRoute>
-        }
-      />
+      <Route path={'/'} element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
       <Route path={'success'} element={<LoginSuccessPage />} />
     </Routes>
   );

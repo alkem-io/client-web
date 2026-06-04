@@ -39,6 +39,7 @@
   "card": {
     "actions": "Vorlagen-Aktionen",
     "preview": "Vorschau",
+    "use": "Vorlage verwenden",
     "edit": "Bearbeiten",
     "duplicate": "Duplizieren",
     "delete": "Löschen",

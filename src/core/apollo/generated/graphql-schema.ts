@@ -20117,6 +20117,7 @@ export type CommentsWithMessagesFragment = {
 export type ForumMentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  types: Array<ActorType> | ActorType;
 }>;
 
 export type ForumMentionableContributorsQuery = {
