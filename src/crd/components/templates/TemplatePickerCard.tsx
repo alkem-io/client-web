@@ -34,7 +34,7 @@ export function TemplatePickerCard(props: TemplatePickerCardProps) {
   return (
     <div
       className={cn(
-        'flex flex-col border rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-sm',
+        'flex flex-col h-full border rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-sm',
         selected && 'ring-2 ring-ring'
       )}
     >

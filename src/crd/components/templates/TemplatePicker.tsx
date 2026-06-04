@@ -132,8 +132,8 @@ export function TemplatePicker(props: TemplatePickerProps) {
           </ScrollArea>
 
           {/* Preview pane */}
-          <aside className="border rounded-md p-3 bg-muted/20 flex flex-col">
-            <div className="flex-1 min-h-0">
+          <aside className="border rounded-md p-3 bg-muted/20 flex flex-col max-h-[60vh]">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
               {previewLoading ? (
                 <TemplateContentPreview content={{ type: 'post', defaultDescription: '' }} loading={true} />
               ) : previewContent ? (
