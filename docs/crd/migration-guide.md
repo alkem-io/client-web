@@ -305,6 +305,66 @@ Tokens compose with Tailwind modifiers: `text-section-title md:text-page-title`,
 
 Full audit, decisions, and migration rulebook: `specs/042-crd-space-page/typography/fonts.md`
 
+### Dialog Layout: Sticky Header & Footer, Scrollable Middle
+
+Every CRD dialog must keep its **chrome** on screen no matter how tall the content is or how short the viewport is:
+
+- If the dialog has a **title bar** (and the built-in close button), it stays **pinned at the top** — it never scrolls away.
+- If the dialog has **action buttons at the bottom** (Save / Cancel / Send / Back, etc.), that footer stays **pinned at the bottom** — always reachable.
+- Only the **middle content** scrolls, and only when it doesn't fit.
+
+This guarantees the dialog is always usable: the user can always read the title, always dismiss it, and always reach the primary actions — even on a small laptop or a phone in landscape.
+
+#### The anti-pattern (do NOT do this)
+
+Putting the scroll on `DialogContent` itself makes the **whole** dialog — title and footer included — scroll as one block. The title slides off the top and the buttons slide off the bottom:
+
+```tsx
+// BAD — title and footer scroll away with the content
+<DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+  <DialogHeader>…</DialogHeader>
+  <div>…tall content…</div>
+  <DialogFooter>…</DialogFooter>
+</DialogContent>
+```
+
+A dialog with **no height cap at all** is just as broken — on a short screen the dialog grows past the viewport and the title/footer end up off-screen with no way to scroll to them.
+
+#### The pattern (do this)
+
+Make `DialogContent` a **flex column** with a height cap and `overflow-hidden`. Pin the header and footer with `shrink-0`, and give the scrollable middle `flex-1 min-h-0 overflow-y-auto`:
+
+```tsx
+// GOOD — header & footer pinned, only the middle scrolls
+<DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+  <DialogHeader className="shrink-0">
+    <DialogTitle>…</DialogTitle>
+  </DialogHeader>
+
+  <div className="flex-1 min-h-0 overflow-y-auto">
+    …tall content…
+  </div>
+
+  <DialogFooter className="shrink-0">…</DialogFooter>
+</DialogContent>
+```
+
+The three load-bearing pieces:
+
+- **`flex flex-col overflow-hidden` + `max-h-[xx vh]`** on `DialogContent` — establishes a bounded column and clips it to the viewport. Use a viewport-relative cap (`max-h-[85vh]`, `max-h-[90vh]`, `h-[95vh]` for full-height shells) so it adapts to the screen.
+- **`shrink-0`** on `DialogHeader` / `DialogFooter` — keeps the chrome at its natural size so it can't be squeezed or scrolled.
+- **`flex-1 min-h-0 overflow-y-auto`** on the body wrapper — fills the remaining space and scrolls. The `min-h-0` is essential: without it a flex item won't shrink below its content's intrinsic height, so the scroll never engages.
+
+#### Gotchas
+
+- **Children of the scrollable body shrink by default.** A flex column shrinks its children before it scrolls, which can collapse a tall, fixed-size element (an image cropper, a canvas, a chart) into a thin line. Mark such elements `shrink-0` so they keep their size and the body scrolls around them instead. (This is exactly the bug that hit `ImageCropDialog`.)
+- **Pinned search / sticky sub-headers.** If a dialog has a search field that filters a long list (member pickers, VC pickers), pin the search field too — put it outside the scroll container (as a `shrink-0` sibling above the `flex-1` list) so it stays usable while the results scroll. See `AddCommunityMemberDialog`, `VirtualContributorInviteDialog`.
+- **Content rendered after the footer.** If a feature appends content below the action bar (e.g. a comments thread under a form), it must move **into** the scrollable middle when the footer becomes sticky — the footer is now pinned to the bottom, so anything after it would be unreachable. See `CrdPostContributionDialog`.
+- **View-switching dialogs.** When one dialog swaps between views (form ↔ result, list ↔ message step), apply the pattern to **each** view: every view gets its own `flex-1 overflow-y-auto` body and its own pinned footer. See `InviteMembersDialog`, `VirtualContributorInviteDialog`.
+- **Short dialogs don't need it.** Confirmations, single-field forms, and other dialogs whose content can never exceed the viewport don't need the flex-column treatment — the default `DialogContent` is fine. Apply the pattern as soon as the body can grow unbounded (lists, feeds, long forms, rich-text, cropped images).
+
+**Reference implementations:** `TemplateFormDialog`, `CreateSubspaceDialog`, `ApplicationFormDialog`, `InvitationDetailDialog` (all sticky header + footer); `ActivityDialog`, `SpaceAboutDialog` (sticky header, no footer).
+
 ### Global Dialogs (Messages, Notifications)
 
 **Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.
