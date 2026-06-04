@@ -44,8 +44,9 @@ export type SubspaceSidebarData = {
 };
 
 export type SubspaceSidebarProps = SubspaceSidebarData & {
-  /** Pencil overlay on the InfoBlock — opens the settings/about page (edit mode). */
-  onEditClick: () => void;
+  /** Pencil overlay on the InfoBlock — opens the settings/about page (edit mode).
+   *  Omit when the user lacks edit permission; the InfoBlock then hides the pencil. */
+  onEditClick?: () => void;
   /** "About this Subspace" button — opens the read-only about dialog. */
   onAboutClick: () => void;
   onQuickActionClick: (id: SubspaceQuickActionId) => void;

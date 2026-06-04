@@ -67,7 +67,6 @@ export type CrdSubspacePageData = {
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
-  canAddPost: boolean;
 
   /** Permissions surfaced on the page */
   canRead: boolean;
@@ -122,7 +121,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const phases = mapInnovationFlowPhases(flow?.states);
   const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
-  const canAddPost = permissions.canCreate;
 
   // Parent's banner image — fetched via the same about-details query the parent
   // space already uses, so Apollo dedupes / serves from cache when navigating
@@ -223,7 +221,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
     phases,
     currentPhaseId,
     canEditFlow,
-    canAddPost,
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
