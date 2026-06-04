@@ -158,6 +158,12 @@ export function useTemplatePicker({
         const fetched = data?.lookup.template;
         setPreviewContent(fetched ? mapTemplateContent(fetched, primaryType) : undefined);
       })
+      .catch(() => {
+        // The request failed (network / auth / GraphQL). Leave the (already-cleared) preview empty
+        // rather than an ambiguous half-loaded state; the error itself surfaces via the Apollo error
+        // link / global handler.
+        if (activePreviewIdRef.current === templateId) setPreviewContent(undefined);
+      })
       .finally(() => {
         if (activePreviewIdRef.current === templateId) setPreviewLoading(false);
       });

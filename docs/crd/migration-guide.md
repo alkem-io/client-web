@@ -351,7 +351,7 @@ Make `DialogContent` a **flex column** with a height cap and `overflow-hidden`. 
 
 The three load-bearing pieces:
 
-- **`flex flex-col overflow-hidden` + `max-h-[xx vh]`** on `DialogContent` — establishes a bounded column and clips it to the viewport. Use a viewport-relative cap (`max-h-[85vh]`, `max-h-[90vh]`, `h-[95vh]` for full-height shells) so it adapts to the screen.
+- **`flex flex-col overflow-hidden` + `max-h-[xxvh]`** on `DialogContent` — establishes a bounded column and clips it to the viewport. Use a viewport-relative cap (`max-h-[85vh]`, `max-h-[90vh]`, `h-[95vh]` for full-height shells) so it adapts to the screen.
 - **`shrink-0`** on `DialogHeader` / `DialogFooter` — keeps the chrome at its natural size so it can't be squeezed or scrolled.
 - **`flex-1 min-h-0 overflow-y-auto`** on the body wrapper — fills the remaining space and scrolls. The `min-h-0` is essential: without it a flex item won't shrink below its content's intrinsic height, so the scroll never engages.
 
