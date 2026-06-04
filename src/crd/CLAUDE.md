@@ -322,6 +322,10 @@ Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders
 
 **Reference:** the legacy MUI stack uses `<Trans>` + `WrapperMarkdown plain={true}` for exactly these cases (see `src/main/inAppNotifications/views/InAppNotificationBaseView.tsx` and `src/domain/collaboration/activity/ActivityLog/views/ActivitySubjectMarkdown.tsx`). CRD's `InlineMarkdown` is the equivalent of `WrapperMarkdown plain={true}`.
 
+> **Editing markdown (the `MarkdownEditor`) + image upload:** for the editor components, how
+> `onImageUpload` is wired, and the storage / `temporaryLocation` rules that decide whether an upload
+> succeeds, see **`docs/crd/markdown-editor.md`**.
+
 ---
 
 ## Accessibility (WCAG 2.1 AA)
