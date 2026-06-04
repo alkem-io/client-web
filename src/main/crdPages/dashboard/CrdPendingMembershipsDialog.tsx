@@ -102,7 +102,7 @@ const InvitationDetailContainer = ({
   onBack: () => void;
 }) => {
   const { t } = useTranslation('crd-dashboard');
-  const { t: tMain } = useTranslation();
+  const { t: tMain, i18n } = useTranslation();
 
   const { invitation: hydrated, communityGuidelines } = useInvitationHydrator(currentInvitation, {
     withCommunityGuidelines: true,
@@ -131,12 +131,12 @@ const InvitationDetailContainer = ({
   const acceptLabel = isVC ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
   const rejectLabel = t('pendingMemberships.detail.reject');
 
-  const detailData = mapHydratedInvitationToDetailData(hydrated, tMain);
+  const detailData = mapHydratedInvitationToDetailData(hydrated, i18n.language);
 
   const descriptionSlot = (
     <Caption>
       <DetailedActivityDescription
-        i18nKey="community.pendingMembership.invitationTitle"
+        i18nKey="community.pendingMembership.invitationCardTitle"
         spaceDisplayName={hydrated.space.about.profile.displayName}
         spaceUrl={hydrated.space.about.profile.url}
         spaceLevel={hydrated.space.level}

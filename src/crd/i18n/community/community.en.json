@@ -34,7 +34,8 @@
     },
     "results": {
       "sent": "Invitation sent",
-      "alreadyMember": "Already a member",
+      "alreadyInvited": "Already invited",
+      "parentNotAuthorized": "Can't invite — they'd also need to join the parent space, and you don't have permission to invite there.",
       "error": "Failed: {{message}}"
     }
   },

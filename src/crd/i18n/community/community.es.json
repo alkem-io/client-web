@@ -34,7 +34,8 @@
     },
     "results": {
       "sent": "Invitación enviada",
-      "alreadyMember": "Ya es miembro",
+      "alreadyInvited": "Ya invitado",
+      "parentNotAuthorized": "No se puede invitar: también tendría que unirse al espacio principal y no tienes permiso para invitar allí.",
       "error": "Falló: {{message}}"
     }
   },

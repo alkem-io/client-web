@@ -34,7 +34,8 @@
     },
     "results": {
       "sent": "Einladung gesendet",
-      "alreadyMember": "Bereits Mitglied",
+      "alreadyInvited": "Bereits eingeladen",
+      "parentNotAuthorized": "Einladung nicht möglich — die Person müsste auch dem übergeordneten Space beitreten, und Sie haben dort keine Einladungsberechtigung.",
       "error": "Fehlgeschlagen: {{message}}"
     }
   },

@@ -34,7 +34,8 @@
     },
     "results": {
       "sent": "Invitation envoyée",
-      "alreadyMember": "Déjà membre",
+      "alreadyInvited": "Déjà invité",
+      "parentNotAuthorized": "Invitation impossible — la personne devrait aussi rejoindre l'espace parent, et vous n'avez pas la permission d'y inviter.",
       "error": "Échec : {{message}}"
     }
   },

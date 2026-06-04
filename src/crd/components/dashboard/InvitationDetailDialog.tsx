@@ -125,6 +125,9 @@ function InvitationDetailDialog({
               {guidelinesSlot && <div className="text-body">{guidelinesSlot}</div>}
             </div>
           </div>
+          {invitation.timeElapsed && (
+            <p className="text-caption text-muted-foreground text-right mt-3">{invitation.timeElapsed}</p>
+          )}
         </div>
 
         <DialogFooter className="shrink-0 border-t border-border pt-4 flex-col-reverse sm:flex-row gap-2">

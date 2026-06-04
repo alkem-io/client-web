@@ -4410,7 +4410,10 @@
           "userAlreadyRegistered": "User already registered.",
           "userNotRegistered": "User not registered.",
           "noAgentForUser": "No agent for user.",
-          "userIdentityDeletionFailed": "User identity deletion failed."
+          "userIdentityDeletionFailed": "User identity deletion failed.",
+          "roleSetOpenApplicationExists": "You already have a pending application to this space.",
+          "roleSetOpenInvitationExists": "You've already been invited to this space — accept the invitation instead of applying.",
+          "roleSetAlreadyMember": "You're already a member of this space."
         },
         "system": {
           "bootstrapFailed": "System initialization failed.",

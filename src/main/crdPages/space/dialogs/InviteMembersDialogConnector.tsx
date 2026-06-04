@@ -1,6 +1,6 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useAvailableUsersForEntryRoleQuery, useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -34,6 +34,7 @@ export type InviteMembersDialogConnectorProps = {
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
+const INVITE_PAGE_SIZE = 20;
 
 // Match the regex used by the legacy validation layer (FormikContributorsSelectorField.validation).
 // Inlined here to avoid coupling the CRD connector to a Yup schema we don't otherwise use.
@@ -103,40 +104,82 @@ export function InviteMembersDialogConnector({
     return () => window.clearTimeout(handle);
   }, [searchQuery]);
 
-  // Search the platform for invitable users — matches the legacy invite WIZARD
-  // (not the "Add member" picker): `onlyUsersInRole` restricts to the parent
-  // community only at L2 (set by the caller via `onlyFromParentCommunity`); at
-  // L0/L1 it returns platform users, who become members of the Space on accepting.
+  // Candidate-list source depends on level:
+  //  - L0 / L1 (`!onlyFromParentCommunity`): the (sub)space's OWN role set via
+  //    `availableUsersForEntryRole`. The server returns the setting-aware,
+  //    privilege-aware invitable set — the full platform list, or only parent-space
+  //    members when the caller can't invite to the parent — and already excludes
+  //    current members. This replaces the old global `usersPaginated` directory,
+  //    which ignored the space/setting and surfaced non-parent-members at L1.
+  //  - L2 (`onlyFromParentCommunity`): unchanged legacy behaviour — only existing
+  //    parent-community members, via `useContributors` (usersInRoles based).
+  const searchFilter = debouncedQuery ? { displayName: debouncedQuery, email: debouncedQuery } : undefined;
+
   const {
-    data: contributors = [],
-    hasMore,
-    loading: contributorsLoading,
-    fetchMore,
+    data: entryRoleData,
+    loading: entryRoleLoading,
+    fetchMore: entryRoleFetchMore,
+  } = useAvailableUsersForEntryRoleQuery({
+    variables: { roleSetId: roleSetId ?? '', first: INVITE_PAGE_SIZE, filter: searchFilter },
+    skip: !open || onlyFromParentCommunity || !roleSetId || !debouncedQuery,
+  });
+  const entryRolePage = entryRoleData?.lookup.roleSet?.availableUsersForEntryRole;
+
+  const {
+    data: parentMembers = [],
+    hasMore: parentHasMore,
+    loading: parentLoading,
+    fetchMore: parentFetchMore,
   } = useContributors({
-    filter: debouncedQuery ? { displayName: debouncedQuery, email: debouncedQuery } : undefined,
-    parentSpaceId,
-    onlyUsersInRole: onlyFromParentCommunity,
-    pageSize: 20,
+    filter: searchFilter,
+    // Only the L2 path consults the parent community; pass undefined otherwise so
+    // the hook short-circuits instead of firing the global usersPaginated query.
+    parentSpaceId: onlyFromParentCommunity ? parentSpaceId : undefined,
+    onlyUsersInRole: true,
+    pageSize: INVITE_PAGE_SIZE,
   });
 
-  // Map raw contributor rows to the CRD prop shape and exclude self + already-selected.
+  const contributorsLoading = onlyFromParentCommunity ? parentLoading : entryRoleLoading;
+  const hasMore = onlyFromParentCommunity ? parentHasMore : (entryRolePage?.pageInfo.hasNextPage ?? false);
+  const fetchMore = onlyFromParentCommunity
+    ? parentFetchMore
+    : () => {
+        if (!roleSetId || !entryRolePage) return;
+        void entryRoleFetchMore({
+          variables: {
+            roleSetId,
+            first: INVITE_PAGE_SIZE,
+            after: entryRolePage.pageInfo.endCursor,
+            filter: searchFilter,
+          },
+        });
+      };
+
+  // Normalise both sources to a common row shape, then exclude self + already-selected.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
   );
-  const searchResults: ContributorSelectorUserResult[] = contributors
+  // The entry-role query (L0/L1) filters server-side. The parent-members (L2)
+  // source ignores the `filter` arg, so the search box would otherwise do
+  // nothing — apply a client-side displayName match for that path.
+  const query = debouncedQuery.trim().toLowerCase();
+  const rawCandidates = (onlyFromParentCommunity ? parentMembers : (entryRolePage?.users ?? []))
+    .map(c => ({
+      id: c.id,
+      displayName: c.profile?.displayName ?? '',
+      avatarUrl: c.profile?.visual?.uri,
+      city: c.profile?.location?.city,
+      country: c.profile?.location?.country,
+    }))
+    .filter(c => !onlyFromParentCommunity || !query || c.displayName.toLowerCase().includes(query));
+  const searchResults: ContributorSelectorUserResult[] = rawCandidates
     .filter(c => c.id !== currentUser?.id)
     .filter(c => !selectedUserIds.has(c.id))
     .map(c => {
-      const profile = c.profile;
-      const city = profile?.location?.city?.trim() ?? '';
-      const country = profile?.location?.country?.trim() ?? '';
+      const city = c.city?.trim() ?? '';
+      const country = c.country?.trim() ?? '';
       const location = city && country ? `${city}, ${country}` : city ? city : country ? country : undefined;
-      return {
-        userId: c.id,
-        displayName: profile?.displayName ?? '',
-        avatarUrl: profile?.visual?.uri,
-        location,
-      };
+      return { userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl, location };
     });
 
   // ---------- handlers ----------
@@ -210,13 +253,23 @@ export function InviteMembersDialogConnector({
       if (!legacyResult) {
         return { invitee, outcome: 'error' as const, errorMessage: 'No result returned' };
       }
+      // TODO(backend-codegen): the running backend's `RoleSetInvitationResultType`
+      // still ships 5 values, so the two newer per-invitee results can't be
+      // referenced yet without a TS no-overlap error. Once the enum regenerates,
+      // add before the final 'error' fallback:
+      //   : legacyResult.type === 'ALREADY_MEMBER_OF_ROLE_SET' ? 'alreadyMember'
+      //   : legacyResult.type === 'ALREADY_HAS_OPEN_APPLICATION' ? 'alreadyHasApplication'
+      // (the latter also needs `application { id }` added to the mutation selection
+      // for the "approve/decline it" deep-link).
       const outcome: InvitationResult['outcome'] =
         legacyResult.type === 'INVITED_TO_ROLE_SET' || legacyResult.type === 'INVITED_TO_PLATFORM_AND_ROLE_SET'
           ? 'sent'
           : legacyResult.type === 'ALREADY_INVITED_TO_ROLE_SET' ||
               legacyResult.type === 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET'
-            ? 'alreadyMember'
-            : 'error';
+            ? 'alreadyInvited'
+            : legacyResult.type === 'INVITATION_TO_PARENT_NOT_AUTHORIZED'
+              ? 'parentNotAuthorized'
+              : 'error';
       return { invitee, outcome };
     });
   };
@@ -331,7 +384,8 @@ export function InviteMembersDialogConnector({
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
         resultOutcomeLabels: {
           sent: t('inviteMembers.results.sent'),
-          alreadyMember: t('inviteMembers.results.alreadyMember'),
+          alreadyInvited: t('inviteMembers.results.alreadyInvited'),
+          parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
           error: t('inviteMembers.results.error', { message: '' }),
         },
       }}

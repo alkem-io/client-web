@@ -16,7 +16,13 @@ export type InviteRole = 'Member' | 'Lead' | 'Admin';
 
 export type InvitationResult = {
   invitee: ContributorSelectorInvitee;
-  outcome: 'sent' | 'alreadyMember' | 'error';
+  /**
+   * `parentNotAuthorized` maps the server's `INVITATION_TO_PARENT_NOT_AUTHORIZED`
+   * result — the invitee would also need to join the parent space and the
+   * inviter lacks invite rights there. Its label carries the full explanation,
+   * so (unlike `error`) no `errorMessage` is appended.
+   */
+  outcome: 'sent' | 'alreadyInvited' | 'parentNotAuthorized' | 'error';
   errorMessage?: string;
 };
 
@@ -282,11 +288,11 @@ function ResultView({
 
 function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
   const labelText = result.invitee.kind === 'user' ? result.invitee.displayName : result.invitee.email;
-  const Icon = result.outcome === 'sent' ? CheckCircle2 : result.outcome === 'alreadyMember' ? UserMinus : MailWarning;
+  const Icon = result.outcome === 'sent' ? CheckCircle2 : result.outcome === 'alreadyInvited' ? UserMinus : MailWarning;
   const tone =
     result.outcome === 'sent'
       ? 'text-success'
-      : result.outcome === 'alreadyMember'
+      : result.outcome === 'alreadyInvited'
         ? 'text-muted-foreground'
         : 'text-destructive';
 

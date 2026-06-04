@@ -144,10 +144,18 @@ export const AvailableUserForRoleSetFragmentDoc = gql`
   profile {
     id
     displayName
+    location {
+      id
+      city
+      country
+    }
+    visual(type: AVATAR) {
+      ...VisualModel
+    }
   }
   email
 }
-    `;
+    ${VisualModelFragmentDoc}`;
 export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
     fragment AvailableUsersForRoleSetPaginated on PaginatedUsers {
   users {
@@ -5534,6 +5542,7 @@ export const AvailableUsersForEntryRoleDocument = gql`
     query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
     roleSet(ID: $roleSetId) {
+      id
       availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
         ...AvailableUsersForRoleSetPaginated
       }

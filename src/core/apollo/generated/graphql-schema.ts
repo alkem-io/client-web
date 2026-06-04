@@ -10931,7 +10931,19 @@ export type AvailableUserForRoleSetFragment = {
   __typename?: 'User';
   id: string;
   email: string;
-  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        location?:
+          | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+          | undefined;
+        visual?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type AvailableUsersForRoleSetPaginatedFragment = {
@@ -10940,7 +10952,19 @@ export type AvailableUsersForRoleSetPaginatedFragment = {
     __typename?: 'User';
     id: string;
     email: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        }
+      | undefined;
   }>;
   pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
 };
@@ -10959,7 +10983,25 @@ export type PlatformRoleAvailableUsersQuery = {
       __typename?: 'User';
       id: string;
       email: string;
-      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
     }>;
     pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
   };
@@ -10979,13 +11021,32 @@ export type AvailableUsersForEntryRoleQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
+          id: string;
           availableUsersForEntryRole: {
             __typename?: 'PaginatedUsers';
             users: Array<{
               __typename?: 'User';
               id: string;
               email: string;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             }>;
             pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
           };
@@ -11015,7 +11076,25 @@ export type AvailableUsersForElevatedRoleQuery = {
               __typename?: 'User';
               id: string;
               email: string;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             }>;
             pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
           };

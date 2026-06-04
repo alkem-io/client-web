@@ -34,7 +34,8 @@
     },
     "results": {
       "sent": "Uitnodiging verstuurd",
-      "alreadyMember": "Is al lid",
+      "alreadyInvited": "Al uitgenodigd",
+      "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
       "error": "Mislukt: {{message}}"
     }
   },
