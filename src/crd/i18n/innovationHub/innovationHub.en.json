@@ -1,0 +1,141 @@
+{
+  "home": {
+    "settingsAria": "Hub settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to default width",
+    "spacesSection": {
+      "title": "{{hubName}} Spaces",
+      "empty": "No Spaces have been added to this hub yet.",
+      "loading": "Loading Spaces…"
+    },
+    "allSpacesCta": "Browse all Spaces on Alkemio"
+  },
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
+  "settings": {
+    "tabs": {
+      "about": "About",
+      "spaces": "Spaces",
+      "navAria": "Settings sections"
+    },
+    "header": {
+      "expandWidth": "Expand to full width",
+      "collapseWidth": "Collapse to default width"
+    },
+    "guard": {
+      "redirecting": "Redirecting…"
+    },
+    "about": {
+      "subdomain": {
+        "label": "Subdomain",
+        "placeholder": "e.g. vng",
+        "readOnlyHelp": "The subdomain is fixed at creation and cannot be changed.",
+        "errors": {
+          "required": "Subdomain is required.",
+          "invalidFormat": "Use only lowercase letters, numbers, and hyphens.",
+          "tooLong": "Must be 3–25 characters long."
+        }
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "e.g. VNG Innovation Hub",
+        "errors": {
+          "required": "Name is required.",
+          "tooLong": "Must be between 3 and 128 characters."
+        }
+      },
+      "tagline": {
+        "label": "Tagline",
+        "placeholder": "A short, memorable line",
+        "errors": {
+          "tooLong": "Must be 512 characters or fewer."
+        }
+      },
+      "description": {
+        "label": "Description",
+        "errors": {
+          "required": "Description is required.",
+          "tooLong": "Must be 8000 characters or fewer."
+        }
+      },
+      "tags": {
+        "label": "Tags",
+        "placeholder": "Type a tag and press Enter",
+        "emptyHelp": "Default"
+      },
+      "banner": {
+        "label": "Banner",
+        "change": "Change Banner",
+        "uploading": "Uploading…",
+        "helperText": "Shown at the top of the Innovation Hub page.",
+        "errors": {
+          "uploadFailed": "Banner upload failed."
+        },
+        "crop": {
+          "title": "Crop banner",
+          "description": "Crop the image to fit the banner dimensions, then add a short description for accessibility.",
+          "save": "Save banner",
+          "saving": "Saving…",
+          "cancel": "Cancel",
+          "altLabel": "Alt text",
+          "altPlaceholder": "Describe the image for screen readers"
+        }
+      },
+      "save": {
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "errorPrefix": "Save failed."
+      }
+    },
+    "spaces": {
+      "title": "Spaces",
+      "subtitle": "Manage which Spaces appear on the Innovation Hub home page. Drag to reorder.",
+      "visibilityManaged": "This Innovation Hub automatically shows every {{visibility}} Space. Its Spaces are determined by visibility and aren't managed here.",
+      "columns": {
+        "name": "Name",
+        "visibility": "Visibility",
+        "host": "Host Account",
+        "actions": "Actions"
+      },
+      "visibility": {
+        "active": "Active",
+        "demo": "Demo",
+        "inactive": "Inactive",
+        "archived": "Archived",
+        "unknown": "Unknown"
+      },
+      "actions": {
+        "add": "Add Space",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Spaces have been added yet. Use Add Space to include one.",
+      "confirmRemove": {
+        "title": "Remove Space?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Space itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Space added.",
+        "removed": "Space removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      },
+      "addDialog": {
+        "title": "Add Space by URL",
+        "description": "Paste the full URL of an Alkemio Space to add it to this hub.",
+        "placeholder": "https://alkem.io/welcome-space",
+        "submit": "Add",
+        "cancel": "Cancel",
+        "validating": "Validating URL…",
+        "invalid": "We couldn't find a Space at that URL.",
+        "duplicate": "That Space is already in this hub.",
+        "submitError": "Something went wrong while adding the Space. Please try again."
+      }
+    }
+  }
+}

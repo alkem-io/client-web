@@ -1,0 +1,40 @@
+query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
+  platform {
+    id
+    library {
+      id
+      innovationPacksPaginated(first: $first, after: $after, filter: $filter) {
+        total
+        innovationPacks {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            url
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            spaceTemplatesCount
+            communityGuidelinesTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}

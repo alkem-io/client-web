@@ -6,33 +6,23 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Remove, Search } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import { Button, IconButton, TextField } from '@mui/material';
+import { Remove } from '@mui/icons-material';
+import { Button, IconButton } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { sortBy, without } from 'lodash-es';
+import { without } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import Gutters from '@/core/ui/grid/Gutters';
-import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
-
-type RenderParams = GridRenderCellParams<Space>;
-type GetterParams = Space | undefined;
+import AddSpaceByUrlDialog from './AddSpaceByUrlDialog';
 
 export interface Space extends Identifiable {
   id: string;
@@ -44,8 +34,6 @@ interface InnovationHubSpacesFieldProps {
   spaces: Space[] | undefined;
   onChange?: (spaces: string[]) => Promise<void>;
 }
-
-const PAGE_SIZE = 30;
 
 const SortableSpaceRow = ({ space, onRemove }: { space: Space; onRemove: (id: string) => void }) => {
   const { t } = useTranslation();
@@ -107,56 +95,9 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const { data: availableSpacesData } = useInnovationHubAvailableSpacesQuery({
-    skip: !isAddDialogOpen,
-  });
-
-  const columns: GridColDef[] = [
-    {
-      field: 'profile.displayName',
-      headerName: t('common.name'),
-      renderCell: ({ row }: RenderParams) => <>{row.about.profile.displayName}</>,
-      valueGetter: (_, row: GetterParams) => row?.about.profile.displayName,
-      filterable: false,
-      flex: 1,
-    },
-    {
-      field: 'visibility',
-      headerName: t('pages.admin.space.settings.visibility.title'),
-      renderCell: ({ row }: RenderParams) => <>{row.visibility}</>,
-      valueGetter: (_, row: GetterParams) => row?.visibility,
-      filterable: false,
-    },
-    {
-      field: 'host.profile.displayName',
-      headerName: t('pages.admin.innovationHubs.fields.host'),
-      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile?.displayName}</>,
-      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile?.displayName,
-      filterable: false,
-      flex: 1,
-    },
-  ];
-
-  const [loadingItemId, setLoadingItemId] = useState<string>();
-
-  const handleAdd = async (itemId: string) => {
-    try {
-      setLoadingItemId(itemId);
-      await onChange?.([...itemIds, itemId]);
-    } finally {
-      setLoadingItemId(undefined);
-    }
+  const handleAdd = async (spaceId: string) => {
+    await onChange?.([...itemIds, spaceId]);
   };
-
-  const [filter, setFilter] = useState('');
-
-  const filteredAvailableSpaces = availableSpacesData?.spaces?.filter(space => {
-    return space.about.profile.displayName.toLowerCase().includes(filter.toLowerCase());
-  });
-
-  const sortedAvailableSpaces = sortBy(filteredAvailableSpaces, space =>
-    space.about.profile.displayName.toLowerCase().indexOf(filter.toLowerCase())
-  );
 
   return (
     <>
@@ -173,55 +114,12 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
           </Button>
         }
       />
-      <DialogWithGrid
-        columns={8}
+      <AddSpaceByUrlDialog
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
-        aria-labelledby="add-space-dialog"
-      >
-        <DialogHeader
-          id="add-space-dialog"
-          title={t('common.add')}
-          onClose={() => setIsAddDialogOpen(false)}
-          actions={
-            <TextField
-              value={filter}
-              onChange={({ target }) => setFilter(target.value)}
-              size="small"
-              InputProps={{
-                endAdornment: <Search />,
-              }}
-            />
-          }
-        />
-        <Gutters>
-          <DataGridTable
-            rows={sortedAvailableSpaces}
-            columns={columns}
-            actions={[
-              {
-                name: 'add',
-                render: ({ row }: RenderParams) => {
-                  if (itemIds.includes(row.id)) {
-                    return <>{t('common.added')}</>;
-                  } else {
-                    return (
-                      <LoadingIconButton loading={loadingItemId === row.id} onClick={() => handleAdd(row.id)}>
-                        <AddIcon color="primary" />
-                      </LoadingIconButton>
-                    );
-                  }
-                },
-              },
-            ]}
-            paginationModel={{
-              page: 0,
-              pageSize: PAGE_SIZE,
-            }}
-            pageSizeOptions={[PAGE_SIZE]}
-          />
-        </Gutters>
-      </DialogWithGrid>
+        onAdd={handleAdd}
+        existingSpaceIds={itemIds}
+      />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
           <TableContainer>

@@ -30,6 +30,7 @@ import {
   mapActivityToFeedItems,
   mapMembershipsToPanelItems,
   mapRecentSpacesToCompactCards,
+  type RecentSpaceEntry,
 } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -78,10 +79,26 @@ export default function DashboardWithMemberships({
     skip: !homeSpaceId,
   });
 
+  const myRecentSpaces = recentSpacesData?.me.mySpaces ?? [];
+  const recentSpacesEmpty = !recentSpacesLoading && myRecentSpaces.length === 0;
+
+  // Memberships — drives the "Explore all" panel and, when the user has no recent
+  // contributions (empty mySpaces), serves as the fallback source for Recent spaces.
+  // Skipped while recent spaces are still loading: the fallback is only needed once
+  // mySpaces has resolved to empty.
+  const { data: myMembershipsData, loading: membershipsLoading } = useMyMembershipsQuery({
+    skip: dialogState.openDialog !== 'memberships' && (recentSpacesLoading || !recentSpacesEmpty),
+  });
+
   const recentSpaces = (() => {
-    const spaces = recentSpacesData?.me.mySpaces ?? [];
-    const filtered = spaces.filter(s => s.space.id !== homeSpaceId).slice(0, 3);
     const homeSpace = homeSpaceData?.lookup.space;
+    const memberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
+    // New members with no contributions have an empty mySpaces; fall back to the
+    // top-level spaces they're a member of. Subspaces are intentionally NOT flattened
+    // in — without activity we only surface the parent spaces, not sub-communities.
+    const source: RecentSpaceEntry[] = myRecentSpaces.length > 0 ? myRecentSpaces : memberships;
+    // Show every available space (home space first), not an arbitrary few.
+    const filtered = source.filter(s => s.space.id !== homeSpaceId);
     const all = homeSpace ? [{ space: homeSpace }, ...filtered] : filtered;
     return mapRecentSpacesToCompactCards(all, homeSpaceId);
   })();
@@ -188,10 +205,7 @@ export default function DashboardWithMemberships({
     }
   };
 
-  // Memberships panel
-  const { data: myMembershipsData, loading } = useMyMembershipsQuery({
-    skip: dialogState.openDialog !== 'memberships',
-  });
+  // Memberships panel — reuses the same query loaded above.
   const membershipsItems = mapMembershipsToPanelItems(myMembershipsData?.me?.spaceMembershipsHierarchical ?? []);
 
   // Campaign
@@ -229,7 +243,7 @@ export default function DashboardWithMemberships({
       >
         <RecentSpaces
           spaces={recentSpaces}
-          loading={recentSpacesLoading}
+          loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
           hasHomeSpace={!!homeSpaceId}
           homeSpaceSettingsHref={membershipSettingsUrl}
           onExploreAllClick={dialogState.openMemberships}
@@ -329,7 +343,7 @@ export default function DashboardWithMemberships({
         open={dialogState.openDialog === 'memberships'}
         onClose={dialogState.closeDialog}
         items={membershipsItems}
-        loading={loading}
+        loading={membershipsLoading}
         onNavigate={href => {
           dialogState.closeDialog();
           navigate(href);

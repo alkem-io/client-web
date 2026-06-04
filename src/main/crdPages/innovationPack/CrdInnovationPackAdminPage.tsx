@@ -1,6 +1,8 @@
+import { Library, Package, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { InnovationPackAdminView } from '@/crd/components/innovationPack/InnovationPackAdminView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
@@ -8,7 +10,9 @@ import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePrevie
 import type { TemplatesManagerViewProps, TemplateType } from '@/crd/components/templates/types';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useInnovationPackAdmin } from './useInnovationPackAdmin';
 
 const allTypes = (_type: TemplateType) => true;
@@ -39,6 +43,7 @@ export const CrdInnovationPackAdminPage = () => {
 
 const CrdInnovationPackAdminPageInner = () => {
   const { t } = useTranslation('crd-templates');
+  const { t: tDefault } = useTranslation();
   // Pack admin only ever EDITS an existing pack → its own bucket
   // (temporaryLocation: false). Creating a *template* inside the pack has no
   // template bucket yet → temporary against the pack bucket — mirrors MUI.
@@ -48,7 +53,20 @@ const CrdInnovationPackAdminPageInner = () => {
     templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
     descriptionUpload: mdEdit,
   });
-  usePageTitle(pack?.displayName);
+  // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
+  const pageTitle = pack?.displayName
+    ? `${pack.displayName}${tDefault('pages.titles.separator')}${tDefault('pages.titles.templateLibrary')}`
+    : undefined;
+  usePageTitle(pageTitle);
+
+  const breadcrumbItems: BreadcrumbTrailItem[] = pack
+    ? [
+        { label: t('library.title'), href: `/${TopLevelRoutePath.InnovationLibrary}`, icon: Library },
+        { label: pack.displayName, href: pack.url, icon: Package },
+        { label: t('breadcrumbs.settings'), icon: Settings },
+      ]
+    : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   if (notFound) {
     return <Error404 />;

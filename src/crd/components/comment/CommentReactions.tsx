@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
+import { ReactionPill } from './ReactionPill';
 import type { CommentReaction } from './types';
 
 // The add-NEW-reaction picker (smiley used to pick an emoji that isn't yet
@@ -33,28 +34,13 @@ export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       {visibleReactions.map(reaction => (
-        <button
+        <ReactionPill
           key={reaction.emoji}
-          type="button"
-          disabled={!canReact}
-          className={[
-            'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-caption transition-colors',
-            canReact ? 'cursor-pointer' : 'cursor-default',
-            reaction.hasReacted
-              ? 'border-primary/50 bg-primary/10 text-primary'
-              : canReact
-                ? 'border-border bg-background text-muted-foreground hover:bg-muted'
-                : 'border-border bg-background text-muted-foreground',
-          ].join(' ')}
-          aria-pressed={reaction.hasReacted}
-          onClick={() => {
-            if (!canReact) return;
-            return reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji);
-          }}
-        >
-          <span>{reaction.emoji}</span>
-          <span>{reaction.count}</span>
-        </button>
+          reaction={reaction}
+          canReact={canReact}
+          emptyLabel={t('comments.reactions.unknownReactors')}
+          onToggle={() => (reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji))}
+        />
       ))}
 
       {hiddenReactions.length > 0 && (
@@ -78,7 +64,7 @@ export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }
                   <div className="text-caption text-muted-foreground">
                     {reaction.senders?.length
                       ? reaction.senders.map(sender => sender.name).join(', ')
-                      : t('comments.reactions.add')}
+                      : t('comments.reactions.unknownReactors')}
                   </div>
                 </div>
               ))}

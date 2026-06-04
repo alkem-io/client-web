@@ -42,6 +42,7 @@ import type {
   PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
@@ -262,6 +263,15 @@ const CrdWhiteboardDialog = ({
   useEffect(() => {
     formikRef.current?.resetForm({ values: initialValues });
   }, [whiteboard?.id]);
+
+  // Unlike MUI (where the preview-settings dialog is a separate component that reads the persisted
+  // mode on mount), this state lives in the parent, which mounts before `whiteboard` has loaded — so
+  // the initial value is a stale `Auto`. Re-sync from the persisted mode each time the dialog opens.
+  useEffect(() => {
+    if (options.previewSettingsDialogOpen) {
+      setSelectedPreviewMode(whiteboard?.previewSettings.mode ?? WhiteboardPreviewMode.Auto);
+    }
+  }, [options.previewSettingsDialogOpen, whiteboard?.previewSettings.mode]);
 
   if (state?.loadingWhiteboardValue) {
     return <Loading text={tWb('editor.loadingWhiteboard')} />;
@@ -516,11 +526,9 @@ const CrdWhiteboardDialog = ({
         title={t(`pages.whiteboard.previewSettings.modes.${selectedPreviewMode}.title`)}
         previewImage={previewImageBlob}
         initialCrop={whiteboard.previewSettings.coordinates ?? undefined}
-        aspectRatio={
-          whiteboard.profile.visual?.maxWidth && whiteboard.profile.visual?.maxHeight
-            ? whiteboard.profile.visual.maxWidth / whiteboard.profile.visual.maxHeight
-            : 16 / 9
-        }
+        // Must match the ratio the preview generator crops/validates against
+        // (WhiteboardPreviewVisualDimensions, the WHITEBOARD_PREVIEW visual) — not the CARD visual.
+        aspectRatio={WhiteboardPreviewVisualDimensions.aspectRatio}
         onCropSave={async crop => {
           setCropDialogOpen(false);
           setLoadingPreviewCrop(true);

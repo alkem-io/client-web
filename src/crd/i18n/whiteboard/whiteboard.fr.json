@@ -66,6 +66,7 @@
     "close": "Fermer"
   },
   "preview": {
+    "editButton": "Modifier les paramètres d'aperçu du tableau blanc",
     "settings": {
       "title": "Paramètres d'aperçu",
       "subtitle": "Choisissez comment la miniature du tableau blanc apparaît dans les cartes et les aperçus"

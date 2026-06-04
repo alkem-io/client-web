@@ -16,7 +16,7 @@ const InnovationHubSettingsPage = () => {
   const notify = useNotification();
   const { innovationHubId } = useUrlResolver();
 
-  const { data, loading } = useInnovationHubSettingsQuery({
+  const { data, loading, refetch } = useInnovationHubSettingsQuery({
     variables: { innovationHubId: innovationHubId! },
     skip: !innovationHubId,
   });
@@ -72,6 +72,7 @@ const InnovationHubSettingsPage = () => {
     });
     if (data?.updateInnovationHub.id) {
       notify(t('pages.admin.innovationHubs.saved'), 'success');
+      await refetch();
     }
   };
 

@@ -54,6 +54,10 @@
     "invite": "Inviter",
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
+    "updates": "Actualités",
+    "updatesSeeAll": "Voir toutes les actualités",
+    "updatesEmpty": "Aucune actualité n'a encore été publiée.",
+    "updatesLoading": "Chargement des actualités",
     "postIndex": "Index des publications",
     "readMore": "Lire la suite",
     "editDescription": "Modifier la description",
@@ -63,7 +67,8 @@
       "tomorrow": "Demain",
       "in_days_one": "dans 1 jour",
       "in_days_other": "dans {{count}} jours"
-    }
+    },
+    "inviteVirtualContributor": "Inviter un contributeur virtuel"
   },
   "calendar": {
     "title": "Événements",
@@ -261,12 +266,7 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
-    "clearTypeConfirm": {
-      "title": "Supprimer ce type de contenu ?",
-      "description": "Une fois enregistré, le contenu existant sera supprimé et vous ne pourrez plus rattacher un autre type à cette publication. Cette action est irréversible.",
-      "confirm": "Supprimer"
-    }
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
   },
   "contribution": {
     "edit": "Modifier",
@@ -338,6 +338,10 @@
     "who": "Qui",
     "why": "Pourquoi",
     "host": "Hôte",
+    "hostedBy": "Hébergé par",
+    "members": "membres",
+    "editMembers": "Modifier les membres",
+    "leads": "Responsables de l'Espace",
     "leadUsers": "Utilisateurs responsables",
     "leadOrganizations": "Organisations responsables",
     "guidelines": "Directives de la communauté",
@@ -406,6 +410,7 @@
     "share": "Partager",
     "sortContributions": "Trier les contributions",
     "saveAsTemplate": "Enregistrer comme modèle",
+    "saveAsTemplateUnsupported": "Enregistrer des documents comme modèle n'est pas encore pris en charge",
     "moveToTop": "Déplacer en haut",
     "moveUp": "Déplacer vers le haut",
     "moveDown": "Déplacer vers le bas",
@@ -658,6 +663,7 @@
     },
     "altTextLabel": "Texte alternatif",
     "deleteImage": "Supprimer l'image",
+    "reorderImage": "Réorganiser l'image",
     "dismissError": "Ignorer l'erreur",
     "uploading": "Téléchargement…",
     "downloadError": "Impossible de télécharger l’image.",
@@ -710,7 +716,8 @@
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Ajouter une réaction",
-      "overflow": "+{{count}} plus"
+      "overflow": "+{{count}} plus",
+      "unknownReactors": "Inconnu"
     },
     "count": "{{count}} commentaires",
     "count_one": "1 commentaire",

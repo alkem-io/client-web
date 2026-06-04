@@ -168,7 +168,14 @@
       "title": "Sicherheit",
       "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
       "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
-      "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite."
+      "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "password": {
+        "title": "Passwort ändern",
+        "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
+        "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert.",
+        "confirmLabel": "Neues Passwort bestätigen",
+        "mismatch": "Passwörter stimmen nicht überein."
+      }
     },
     "settings": {
       "pageTitle": "Einstellungen",
@@ -251,7 +258,8 @@
           "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
           "communityNewMember": "Benachrichtigung erhalten, wenn ein neues Mitglied der Community beitritt",
           "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
-          "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird"
+          "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
+          "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
         },
         "user": {
           "commentReply": "Benachrichtigung erhalten, wenn jemand auf meinen Kommentar antwortet",
@@ -268,6 +276,7 @@
           "userProfileCreated": "Benachrichtigung erhalten, wenn ein neues Nutzerprofil erstellt wird",
           "userProfileRemoved": "Benachrichtigung erhalten, wenn ein Nutzerprofil entfernt wird",
           "userGlobalRoleChanged": "Benachrichtigung erhalten, wenn sich die globale Rolle eines Nutzers ändert",
+          "userEmailChanged": "Benachrichtigung erhalten, wenn sich die E-Mail-Adresse eines Nutzers ändert",
           "spaceCreated": "Benachrichtigung erhalten, wenn ein neuer Space erstellt wird"
         },
         "organization": {
@@ -627,7 +636,6 @@
         "innovationHubsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren eigenen Startseiten in deinem Konto erstellt."
       },
       "kebabAriaLabel": "Weitere Aktionen",
-      "emptySlot": "Leerer Platz",
       "createNewSpace": {
         "ariaLabel": "Neuen Space erstellen",
         "heading": "Neuen Space erstellen",
@@ -637,14 +645,27 @@
         "ariaLabel": "Neuen Mitwirkenden erstellen",
         "heading": "Neuen Mitwirkenden erstellen"
       },
-      "customHomepages": {
-        "emptyHeading": "Keine eigenen Startseiten",
-        "emptyDescription": "Erstelle eine personalisierte Landingpage für dein Konto.",
-        "createCta": "Startseite erstellen",
-        "capacity": "Kapazität: {{usage}}/{{limit}} genutzt"
+      "createNewPack": {
+        "ariaLabel": "Neues Pack erstellen",
+        "heading": "Neues Pack erstellen"
+      },
+      "createNewHub": {
+        "ariaLabel": "Neue eigene Startseite erstellen",
+        "heading": "Neue Startseite erstellen"
       },
       "deleteSuccess": "Ressource gelöscht",
-      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen"
+      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
+      "noEntitlement": {
+        "title": "Kapazität erreicht",
+        "description": {
+          "spaces": "Du hast die Kapazität für Spaces erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "virtualContributors": "Du hast die Kapazität für Virtuelle Mitwirkende erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationPacks": "Du hast die Kapazität für Template Packs erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationHubs": "Du hast die Kapazität für eigene Startseiten erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern."
+        },
+        "contactCta": "Kontakt aufnehmen",
+        "cancel": "Abbrechen"
+      }
     }
   }
 }

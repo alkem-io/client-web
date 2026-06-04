@@ -13,7 +13,10 @@ import type React from 'react';
 import { type PropsWithChildren, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type OnChangeHandlerFunc, type SuggestionDataItem } from 'react-mentions';
-import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useForumMentionableContributorsLazyQuery,
+  useMentionableContributorsLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -175,7 +178,8 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const emptyQueries = useRef<string[]>([]).current;
 
-  const [queryUsers] = useMentionableContributorsLazyQuery();
+  const [querySpaceUsers] = useMentionableContributorsLazyQuery();
+  const [queryForumUsers] = useForumMentionableContributorsLazyQuery();
 
   const { space } = useSpace();
   const { subspace } = useSubSpace();
@@ -197,22 +201,26 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
       return [];
     }
 
-    if (!spaceID) {
-      return [];
-    }
-
-    const { data } = await queryUsers({
-      variables: {
-        spaceID,
-        filter: { displayName: search },
-        limit: MAX_USERS_LISTED,
-      },
-    });
+    // Outside any Space (e.g. the platform Forum) there is no Space ID; fall
+    // back to the platform-wide Forum-level mentionable contributors query.
+    const contributors = spaceID
+      ? (
+          await querySpaceUsers({
+            variables: { spaceID, filter: { displayName: search }, limit: MAX_USERS_LISTED },
+          })
+        ).data?.lookup?.space?.mentionableContributors
+      : // Forum is platform-wide and unscoped; restrict to Users so mentions there
+        // target people only.
+        (
+          await queryForumUsers({
+            variables: { filter: { displayName: search }, limit: MAX_USERS_LISTED, types: [ActorType.User] },
+          })
+        ).data?.platform?.forum?.mentionableContributors;
 
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
     const suppressVcs = hasVcInteraction || !vcEnabled;
 
-    data?.lookup?.space?.mentionableContributors?.forEach(contributor => {
+    contributors?.forEach(contributor => {
       if (isAlreadyMentioned(contributor)) return;
       if (!contributor.profile?.url || !contributor.profile.displayName) return;
       const isVc = contributor.type === ActorType.VirtualContributor;

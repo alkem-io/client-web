@@ -25,7 +25,7 @@ export function StackedAvatars({ primary, secondary, className }: StackedAvatars
           {secondary.avatarUrl ? (
             <img src={secondary.avatarUrl} alt={secondary.name ?? ''} className="w-full h-full object-cover" />
           ) : (
-            <span className="text-badge font-bold text-primary-foreground">{secondary.initials}</span>
+            <span className="text-badge text-primary-foreground">{secondary.initials}</span>
           )}
         </div>
         {/* Primary avatar (in front) */}
@@ -54,7 +54,7 @@ export function StackedAvatars({ primary, secondary, className }: StackedAvatars
       {primary.avatarUrl ? (
         <img src={primary.avatarUrl} alt={primary.name ?? ''} className="w-full h-full object-cover" />
       ) : (
-        <span className="text-caption font-bold text-primary-foreground">{primary.initials}</span>
+        <span className="text-label text-primary-foreground">{primary.initials}</span>
       )}
     </div>
   );

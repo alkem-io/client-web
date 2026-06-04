@@ -5,7 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
+import { ShareButton } from '@/crd/components/common/ShareButton';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
@@ -49,6 +53,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     });
 
   const markdownIntegration = useMarkdownEditorIntegration();
+
+  // Fullscreen + share parity with the legacy MUI MemoDialog (which exposed both
+  // in its header). `FullscreenButton` reads/toggles fullscreen via `useFullscreen`
+  // internally; the shell switches to `inset-0` when `fullscreen` is set.
+  const { fullscreen } = useFullscreen();
+  const { isSmallScreen } = useScreenSize();
+  const isFullscreen = fullscreen || isSmallScreen;
 
   const handleEditorReady = (editor: Editor) => {
     editorRef.current = editor;
@@ -163,9 +174,23 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const showLoadingState = loading || !memo || !ydoc || !provider;
 
+  const headerActions = (
+    <>
+      <ShareButton url={memo?.profile.url} disabled={!memo?.profile.url} />
+      {!isSmallScreen && <FullscreenButton />}
+    </>
+  );
+
   return (
     <>
-      <MemoEditorShell open={open} onClose={handleClose} title={title} footer={<MemoCollabFooter {...footerProps} />}>
+      <MemoEditorShell
+        open={open}
+        fullscreen={isFullscreen}
+        onClose={handleClose}
+        title={title}
+        headerActions={headerActions}
+        footer={<MemoCollabFooter {...footerProps} />}
+      >
         {showLoadingState ? (
           <Loading text={t('memo.errors.loading')} />
         ) : (

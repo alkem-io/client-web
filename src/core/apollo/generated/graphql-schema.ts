@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -630,6 +620,24 @@ export type AddVisualToMediaGalleryInput = {
   visualType: VisualType;
 };
 
+export type AdminUserEmailChangeDriftResolveInput = {
+  /** The admin-chosen canonical email. MUST equal either the old or new email recorded on the drift_detected audit entry. Both sides are force-aligned to this value. */
+  canonicalEmail: Scalars['String']['input'];
+  /** The subject user whose latest audit entry is drift_detected. */
+  userID: Scalars['UUID']['input'];
+};
+
+export type AdminUserEmailChangeInput = {
+  /** Who authorized the change within the subject user's organization. Distinct from the acting platform admin. */
+  approver: EmailChangeApproverInput;
+  /** The proposed new email address. */
+  newEmail: Scalars['String']['input'];
+  /** Admin justification for the change (e.g. support-ticket reference). Recorded on every audit entry for this operation. */
+  reason: Scalars['String']['input'];
+  /** The subject user whose login email is being changed. */
+  userID: Scalars['UUID']['input'];
+};
+
 export type AiPersona = {
   __typename?: 'AiPersona';
   /** The authorization rules for the entity */
@@ -780,10 +788,12 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
+  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -2849,6 +2859,26 @@ export type Document = {
   url: Scalars['String']['output'];
 };
 
+/** Who authorized an email change within the subject user’s organization. */
+export type EmailChangeApprover = {
+  __typename?: 'EmailChangeApprover';
+  /** Name of the person who authorized the change. */
+  name: Scalars['String']['output'];
+  /** The organization within which the change was authorized. */
+  organization?: Maybe<Scalars['String']['output']>;
+  /** The approver's role or title within the organization. */
+  role: Scalars['String']['output'];
+};
+
+export type EmailChangeApproverInput = {
+  /** Name of the person who authorized the change. */
+  name: Scalars['String']['input'];
+  /** The organization within which the change was authorized, if applicable. */
+  organization?: InputMaybe<Scalars['String']['input']>;
+  /** The approver's role or title within the organization (e.g. 'Organization Administrator'). */
+  role: Scalars['String']['input'];
+};
+
 export type ExploreSpacesInput = {
   /** Take into account only the activity in the past X days. */
   daysOld?: InputMaybe<Scalars['Float']['input']>;
@@ -2922,6 +2952,8 @@ export type Forum = {
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** Capped list of Contributors (Users, Virtual Contributors, …) that may be @mentioned in the platform Forum. The Forum is platform-wide, so all platform Contributors of the requested types are returned. Use `filter` for typeahead search and `types` to restrict which Contributor kinds are returned. */
+  mentionableContributors: Array<ActorFull>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2932,6 +2964,12 @@ export type ForumDiscussionArgs = {
 
 export type ForumDiscussionsArgs = {
   queryData?: InputMaybe<DiscussionsInput>;
+};
+
+export type ForumMentionableContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  types?: InputMaybe<Array<ActorType>>;
 };
 
 export type ForumCreateDiscussionInput = {
@@ -3556,8 +3594,12 @@ export type Library = {
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
+  /** Paginated Innovation Packs in the platform Innovation Library (newest first). */
+  innovationPacksPaginated: PaginatedInnovationPacks;
   /** The Templates in the Innovation Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
+  /** Paginated Templates in the Innovation Library, each with the InnovationPack that contributes it (newest first). */
+  templatesPaginated: PaginatedLibraryTemplateResults;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The VirtualContributors listed on this platform */
@@ -3568,11 +3610,34 @@ export type LibraryInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
 };
 
+export type LibraryInnovationPacksPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type LibraryTemplatesArgs = {
   filter?: InputMaybe<LibraryTemplatesFilterInput>;
 };
 
+export type LibraryTemplatesPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type LibraryInnovationPacksFilterInput = {
+  /** Return Innovation Packs whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type LibraryTemplatesFilterInput = {
+  /** Return Templates whose title, description or tags contain this term (case-insensitive). */
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   /** Return Templates within the Library matching the specified Template Types. */
   types?: InputMaybe<Array<TemplateType>>;
 };
@@ -4551,6 +4616,10 @@ export type Mutation = {
   adminUpdateGeoLocationData: Scalars['Boolean']['output'];
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
+  /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_ADMIN. */
+  adminUserEmailChange: UserEmailChangeResult;
+  /** Reconcile an outstanding drift-detected state for a subject user by force-aligning Alkemio and Kratos to a canonical email chosen by the admin. Requires PLATFORM_ADMIN. */
+  adminUserEmailChangeDriftResolve: UserEmailChangeResult;
   /** Create a test customer on wingback. */
   adminWingbackCreateTestCustomer: Scalars['String']['output'];
   /** Get wingback customer entitlements. */
@@ -4993,6 +5062,14 @@ export type MutationAdminUpdateContributorAvatarsArgs = {
 
 export type MutationAdminUserAccountDeleteArgs = {
   userID: Scalars['UUID']['input'];
+};
+
+export type MutationAdminUserEmailChangeArgs = {
+  adminUserEmailChangeData: AdminUserEmailChangeInput;
+};
+
+export type MutationAdminUserEmailChangeDriftResolveArgs = {
+  adminUserEmailChangeDriftResolveData: AdminUserEmailChangeDriftResolveInput;
 };
 
 export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
@@ -5802,8 +5879,13 @@ export enum NotificationEvent {
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
   UserCommentReply = 'USER_COMMENT_REPLY',
+  UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
+  UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
+  UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
+  UserEmailChangeSpaceAdminNotification = 'USER_EMAIL_CHANGE_SPACE_ADMIN_NOTIFICATION',
   UserMentioned = 'USER_MENTIONED',
   UserMessage = 'USER_MESSAGE',
+  UserPasswordChangeSecuritySignal = 'USER_PASSWORD_CHANGE_SECURITY_SIGNAL',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -5847,6 +5929,9 @@ export enum NotificationEventPayload {
   SpaceCommunityInvitation = 'SPACE_COMMUNITY_INVITATION',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   User = 'USER',
+  UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
+  UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
+  UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
   UserMessageDirect = 'USER_MESSAGE_DIRECT',
   UserMessageRoom = 'USER_MESSAGE_ROOM',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
@@ -6061,6 +6146,20 @@ export type PaginatedInAppNotifications = {
   total: Scalars['Float']['output'];
 };
 
+export type PaginatedInnovationPacks = {
+  __typename?: 'PaginatedInnovationPacks';
+  innovationPacks: Array<InnovationPack>;
+  pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedLibraryTemplateResults = {
+  __typename?: 'PaginatedLibraryTemplateResults';
+  pageInfo: PageInfo;
+  templateResults: Array<TemplateResult>;
+  total: Scalars['Float']['output'];
+};
+
 export type PaginatedOrganization = {
   __typename?: 'PaginatedOrganization';
   organization: Array<Organization>;
@@ -6173,10 +6272,14 @@ export type PlatformAdminQueryResults = {
   innovationHubs: Array<InnovationHub>;
   /** Retrieve all Innovation Packs on the Platform. This is only available to Platform Admins. */
   innovationPacks: Array<InnovationPack>;
+  /** The most recent email-change audit entry for the named subject user. Returns null if no audit entry exists. */
+  latestUserEmailChangeAuditEntry?: Maybe<UserEmailChangeAuditEntry>;
   /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
   organizations: PaginatedOrganization;
   /** Retrieve all Spaces on the Platform. This is only available to Platform Admins. */
   spaces: Array<Space>;
+  /** Paginated email-change audit-entry history for the named subject user, ordered by timestamp descending. Cursor pagination per docs/Pagination.md. */
+  userEmailChangeAuditEntries: UserEmailChangeAuditEntries;
   /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
   users: PaginatedUsers;
   /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
@@ -6185,6 +6288,10 @@ export type PlatformAdminQueryResults = {
 
 export type PlatformAdminQueryResultsInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
+};
+
+export type PlatformAdminQueryResultsLatestUserEmailChangeAuditEntryArgs = {
+  userID: Scalars['UUID']['input'];
 };
 
 export type PlatformAdminQueryResultsOrganizationsArgs = {
@@ -6199,6 +6306,14 @@ export type PlatformAdminQueryResultsOrganizationsArgs = {
 export type PlatformAdminQueryResultsSpacesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   filter?: InputMaybe<SpaceFilterInput>;
+};
+
+export type PlatformAdminQueryResultsUserEmailChangeAuditEntriesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  userID: Scalars['UUID']['input'];
 };
 
 export type PlatformAdminQueryResultsUsersArgs = {
@@ -9111,7 +9226,7 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
-  /** Update the user's design version. Any integer accepted (1 = current default design generation; 2 = new design, opt-in for now and expected to become the default in a subsequent release; 3+ reserved). */
+  /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
@@ -9158,6 +9273,8 @@ export type UpdateUserSettingsNotificationOrganizationInput = {
 export type UpdateUserSettingsNotificationPlatformAdminInput = {
   /** [Admin] Receive a notification when a new L0 Space is created */
   spaceCreated?: InputMaybe<NotificationSettingInput>;
+  /** [Admin] Receive a notification when a user changes their login email address */
+  userEmailChanged?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive a notification user is assigned or removed from a global role */
   userGlobalRoleChanged?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive notification when a new user signs up */
@@ -9184,6 +9301,8 @@ export type UpdateUserSettingsNotificationSpaceAdminInput = {
   communityApplicationReceived?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a new member joins the community (admin) */
   communityNewMember?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when the login email of an admin or lead of a Space I administer is changed (admin) */
+  userEmailChanged?: InputMaybe<NotificationSettingInput>;
 };
 
 export type UpdateUserSettingsNotificationSpaceInput = {
@@ -9502,6 +9621,76 @@ export type UserAuthorizationResetInput = {
   userID: Scalars['UUID']['input'];
 };
 
+/** Cursor-paginated list of email-change audit entries (per docs/Pagination.md). */
+export type UserEmailChangeAuditEntries = {
+  __typename?: 'UserEmailChangeAuditEntries';
+  auditEntries: Array<UserEmailChangeAuditEntry>;
+  pageInfo: UserEmailChangeAuditEntriesPageInfo;
+  total: Scalars['Float']['output'];
+};
+
+export type UserEmailChangeAuditEntriesPageInfo = {
+  __typename?: 'UserEmailChangeAuditEntriesPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** A single email-change audit-trail entry. Append-only and retained indefinitely (FR-014a). */
+export type UserEmailChangeAuditEntry = {
+  __typename?: 'UserEmailChangeAuditEntry';
+  /** Who authorized the change within the subject user’s organization. Set for platform-admin-initiated changes; null for self-service entries. */
+  approver?: Maybe<EmailChangeApprover>;
+  /** Short non-leaky failure reason. Set on failure outcomes only. */
+  failureReason?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  /** The user who initiated the change. Null for entries whose initiator could not be resolved (early validation rejects); initiatorRole is still present. */
+  initiator?: Maybe<UserProfileSummary>;
+  initiatorRole: UserEmailChangeInitiatorRole;
+  /** For commit/rollback entries: the proposed/applied new address. For drift_detected entries: the value observed on the Kratos side at the moment of drift. */
+  newEmail?: Maybe<Scalars['String']['output']>;
+  /** Old email at the time of this audit entry. Null only for entries with no old-email context. */
+  oldEmail?: Maybe<Scalars['String']['output']>;
+  outcome: UserEmailChangeAuditOutcome;
+  /** Admin-supplied justification for the change. Set for platform-admin-initiated changes; null for self-service entries. */
+  reason?: Maybe<Scalars['String']['output']>;
+  /** The user whose email is being changed. */
+  subject: UserProfileSummary;
+  timestamp: Scalars['DateTime']['output'];
+};
+
+/** Outcome recorded for a single user-email-change audit entry. Spec 098 extends this enum additively with verification-flow outcomes. */
+export enum UserEmailChangeAuditOutcome {
+  Committed = 'COMMITTED',
+  DriftDetected = 'DRIFT_DETECTED',
+  DriftResolutionFailed = 'DRIFT_RESOLUTION_FAILED',
+  DriftResolved = 'DRIFT_RESOLVED',
+  GlobalAdminNotificationFailed = 'GLOBAL_ADMIN_NOTIFICATION_FAILED',
+  NewAddressNotificationFailed = 'NEW_ADDRESS_NOTIFICATION_FAILED',
+  RejectedConflict = 'REJECTED_CONFLICT',
+  RejectedValidation = 'REJECTED_VALIDATION',
+  RolledBack = 'ROLLED_BACK',
+  SecuritySignalFailed = 'SECURITY_SIGNAL_FAILED',
+  SessionInvalidationFailed = 'SESSION_INVALIDATION_FAILED',
+  SpaceAdminNotificationFailed = 'SPACE_ADMIN_NOTIFICATION_FAILED',
+}
+
+/** Role of the actor who initiated a user-email-change audit event. */
+export enum UserEmailChangeInitiatorRole {
+  PlatformAdmin = 'PLATFORM_ADMIN',
+  Self = 'SELF',
+}
+
+/** Result returned to the admin caller. Deliberately minimal — failures surface as typed GraphQL errors instead of returning false. Returned by both adminUserEmailChange and adminUserEmailChangeDriftResolve. */
+export type UserEmailChangeResult = {
+  __typename?: 'UserEmailChangeResult';
+  /** The committed (canonical) email. Present on success. */
+  email?: Maybe<Scalars['String']['output']>;
+  /** Always true on success. Failures throw typed GraphQL errors instead of returning false. */
+  success: Scalars['Boolean']['output'];
+};
+
 export type UserFilterInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
@@ -9527,6 +9716,13 @@ export type UserGroup = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
+/** Minimal user-profile summary identifying a user without exposing PII beyond id + displayName. */
+export type UserProfileSummary = {
+  __typename?: 'UserProfileSummary';
+  displayName: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+};
+
 export type UserSettings = {
   __typename?: 'UserSettings';
   /** The authorization rules for the entity */
@@ -9535,7 +9731,7 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The design version this User has selected (1 = current default design generation; 2 = new design, opt-in for now and expected to become the default in a subsequent release; 3+ reserved for future generations). */
+  /** The design version this User has selected (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
@@ -9609,6 +9805,8 @@ export type UserSettingsNotificationPlatformAdmin = {
   __typename?: 'UserSettingsNotificationPlatformAdmin';
   /** Receive a notification when a new L0 Space is created */
   spaceCreated: UserSettingsNotificationChannels;
+  /** Receive a notification when a user changes their login email address. */
+  userEmailChanged: UserSettingsNotificationChannels;
   /** Receive a notification when a user global role is assigned or removed. */
   userGlobalRoleChanged: UserSettingsNotificationChannels;
   /** Receive notification when a new user signs up */
@@ -9653,6 +9851,8 @@ export type UserSettingsNotificationSpaceAdmin = {
   communityApplicationReceived: UserSettingsNotificationChannels;
   /** Receive a notification when a new member joins the community (admin) */
   communityNewMember: UserSettingsNotificationChannels;
+  /** Receive a notification when the login email of an admin or lead of a Space I administer is changed (admin) */
+  userEmailChanged: UserSettingsNotificationChannels;
 };
 
 export type UserSettingsNotificationUser = {
@@ -11379,6 +11579,7 @@ export type AccountInformationQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -11566,7 +11767,7 @@ export type InnovationFlowSettingsQuery = {
                 __typename?: 'CalloutFraming';
                 id: string;
                 type: CalloutFramingType;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
               settings: {
                 __typename?: 'CalloutSettings';
@@ -11746,7 +11947,7 @@ export type InnovationFlowCollaborationFragment = {
         __typename?: 'CalloutFraming';
         id: string;
         type: CalloutFramingType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
       settings: {
         __typename?: 'CalloutSettings';
@@ -19906,6 +20107,182 @@ export type CommentsWithMessagesFragment = {
   vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
 
+export type ForumMentionableContributorsQueryVariables = Exact<{
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  types: Array<ActorType> | ActorType;
+}>;
+
+export type ForumMentionableContributorsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    forum: {
+      __typename?: 'Forum';
+      id: string;
+      mentionableContributors: Array<
+        | {
+            __typename?: 'Account';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'Organization';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'RelayPaginatedSpace';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'Space';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'User';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+      >;
+    };
+  };
+};
+
 export type RemoveReactionMutationVariables = Exact<{
   roomId: Scalars['UUID']['input'];
   reactionId: Scalars['MessageID']['input'];
@@ -21131,6 +21508,7 @@ export type AccountResourcesInfoQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
+            nameID: string;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -22616,6 +22994,12 @@ export type UpdateUserSettingsMutation = {
               inApp: boolean;
               push: boolean;
             };
+            userEmailChanged: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
           };
         };
         platform: {
@@ -22647,6 +23031,12 @@ export type UpdateUserSettingsMutation = {
               push: boolean;
             };
             userGlobalRoleChanged: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
+            userEmailChanged: {
               __typename?: 'UserSettingsNotificationChannels';
               email: boolean;
               inApp: boolean;
@@ -22725,6 +23115,12 @@ export type UserSettingsFragmentFragment = {
           inApp: boolean;
           push: boolean;
         };
+        userEmailChanged: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
       };
       forumDiscussionComment: {
         __typename?: 'UserSettingsNotificationChannels';
@@ -22777,6 +23173,12 @@ export type UserSettingsFragmentFragment = {
           push: boolean;
         };
         communicationMessageReceived: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        userEmailChanged: {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
@@ -22930,6 +23332,12 @@ export type UserSettingsQuery = {
                     inApp: boolean;
                     push: boolean;
                   };
+                  userEmailChanged: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                    push: boolean;
+                  };
                 };
                 forumDiscussionComment: {
                   __typename?: 'UserSettingsNotificationChannels';
@@ -22982,6 +23390,12 @@ export type UserSettingsQuery = {
                     push: boolean;
                   };
                   communicationMessageReceived: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                    push: boolean;
+                  };
+                  userEmailChanged: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
@@ -24234,6 +24648,9 @@ export type InnovationHubByIdQuery = {
           __typename?: 'InnovationHub';
           id: string;
           nameID: string;
+          subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24244,6 +24661,7 @@ export type InnovationHubByIdQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24387,6 +24805,7 @@ export type CreateInnovationHubMutation = {
   createInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24459,6 +24878,7 @@ export type UpdateInnovationHubMutation = {
   updateInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
+    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -24520,29 +24940,6 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
-};
-
-export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubAvailableSpacesQuery = {
-  __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    visibility: SpaceVisibility;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      provider?:
-        | {
-            __typename?: 'Actor';
-            id: string;
-            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-          }
-        | undefined;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
-    };
-  }>;
 };
 
 export type InnovationHubSpaceFragment = {
@@ -24610,6 +25007,7 @@ export type InnovationHubSettingsQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
+          nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
@@ -24678,6 +25076,7 @@ export type InnovationHubSettingsQuery = {
 export type InnovationHubSettingsFragment = {
   __typename?: 'InnovationHub';
   id: string;
+  nameID: string;
   subdomain: string;
   spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
@@ -24754,6 +25153,9 @@ export type InnovationHubQuery = {
           __typename?: 'InnovationHub';
           id: string;
           nameID: string;
+          subdomain: string;
+          type: InnovationHubType;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24764,6 +25166,7 @@ export type InnovationHubQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24776,6 +25179,9 @@ export type InnovationHubHomeInnovationHubFragment = {
   __typename?: 'InnovationHub';
   id: string;
   nameID: string;
+  subdomain: string;
+  type: InnovationHubType;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -24784,6 +25190,7 @@ export type InnovationHubHomeInnovationHubFragment = {
     description?: string | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
   };
+  spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -25224,6 +25631,93 @@ export type SpaceLicensePlansQuery = {
         type: LicensingCredentialBasedPlanType;
         licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
+    };
+  };
+};
+
+export type AdminUserEmailChangeMutationVariables = Exact<{
+  userID: Scalars['UUID']['input'];
+  newEmail: Scalars['String']['input'];
+  reason: Scalars['String']['input'];
+  approver: EmailChangeApproverInput;
+}>;
+
+export type AdminUserEmailChangeMutation = {
+  __typename?: 'Mutation';
+  adminUserEmailChange: { __typename?: 'UserEmailChangeResult'; success: boolean; email?: string | undefined };
+};
+
+export type AdminUserEmailChangeDriftResolveMutationVariables = Exact<{
+  userID: Scalars['UUID']['input'];
+  canonicalEmail: Scalars['String']['input'];
+}>;
+
+export type AdminUserEmailChangeDriftResolveMutation = {
+  __typename?: 'Mutation';
+  adminUserEmailChangeDriftResolve: {
+    __typename?: 'UserEmailChangeResult';
+    success: boolean;
+    email?: string | undefined;
+  };
+};
+
+export type LatestUserEmailChangeAuditEntryQueryVariables = Exact<{
+  userID: Scalars['UUID']['input'];
+}>;
+
+export type LatestUserEmailChangeAuditEntryQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    latestUserEmailChangeAuditEntry?:
+      | {
+          __typename?: 'UserEmailChangeAuditEntry';
+          id: string;
+          outcome: UserEmailChangeAuditOutcome;
+          oldEmail?: string | undefined;
+          newEmail?: string | undefined;
+          timestamp: Date;
+        }
+      | undefined;
+  };
+};
+
+export type UserEmailChangeAuditEntriesQueryVariables = Exact<{
+  userID: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Float']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type UserEmailChangeAuditEntriesQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    userEmailChangeAuditEntries: {
+      __typename?: 'UserEmailChangeAuditEntries';
+      total: number;
+      auditEntries: Array<{
+        __typename?: 'UserEmailChangeAuditEntry';
+        id: string;
+        timestamp: Date;
+        outcome: UserEmailChangeAuditOutcome;
+        initiatorRole: UserEmailChangeInitiatorRole;
+        oldEmail?: string | undefined;
+        newEmail?: string | undefined;
+        failureReason?: string | undefined;
+        reason?: string | undefined;
+        initiator?: { __typename?: 'UserProfileSummary'; id: string; displayName: string } | undefined;
+        subject: { __typename?: 'UserProfileSummary'; id: string; displayName: string };
+        approver?:
+          | { __typename?: 'EmailChangeApprover'; name: string; role: string; organization?: string | undefined }
+          | undefined;
+      }>;
+      pageInfo: {
+        __typename?: 'UserEmailChangeAuditEntriesPageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+      };
     };
   };
 };
@@ -34534,6 +35028,193 @@ export type AuthorizationPrivilegesForUserQuery = {
   };
 };
 
+export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryInnovationPacksFilterInput>;
+}>;
+
+export type InnovationLibraryPacksPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacksPaginated: {
+        __typename?: 'PaginatedInnovationPacks';
+        total: number;
+        innovationPacks: Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
+export type InnovationLibraryTemplatesPaginatedQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+}>;
+
+export type InnovationLibraryTemplatesPaginatedQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      templatesPaginated: {
+        __typename?: 'PaginatedLibraryTemplateResults';
+        total: number;
+        templateResults: Array<{
+          __typename?: 'TemplateResult';
+          template: {
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
+            contentSpace?:
+              | {
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+          innovationPack: {
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            provider: {
+              __typename?: 'Actor';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+        };
+      };
+    };
+  };
+};
+
 export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MySpacesExplorerPageQuery = {
@@ -35407,6 +36088,22 @@ export type SpaceExplorerWelcomeSpaceQuery = {
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
+        }
+      | undefined;
+  };
+};
+
+export type UserSecurityAuthenticationMethodsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSecurityAuthenticationMethodsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          authentication?: { __typename?: 'UserAuthenticationResult'; methods: Array<AuthenticationType> } | undefined;
         }
       | undefined;
   };

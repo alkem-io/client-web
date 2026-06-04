@@ -72,6 +72,7 @@ export interface useCommunityAdminProvided {
   };
   permissions: {
     canAddUsers: boolean;
+    canInvite: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
@@ -192,6 +193,9 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
 
   const permissions = {
     canAddUsers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
+    // Inviting (incl. by email) is gated by the dedicated invite privilege, which space admins
+    // hold even when they lack RolesetEntryRoleAssign (the direct-add privilege reserved for PAs).
+    canInvite: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleInvite),
     canAddOrganizations:
       authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssignOrganization) &&
       authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.Grant),

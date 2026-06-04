@@ -9,6 +9,7 @@ import type {
   ContributorAccountViewProps,
 } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { buildHubSettingsPath } from '@/main/crdPages/innovationHub/lib/hubUrls';
 
 export type AccountResourceKind = 'space' | 'virtualContributor' | 'innovationPack' | 'innovationHub';
 
@@ -69,6 +70,21 @@ export function mapAccountToViewProps(
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const canDelete = privileges.includes(AuthorizationPrivilege.Delete);
+
+  // Entitlement gating for the per-section Create buttons. Mirrors the MUI
+  // page (src/domain/community/contributor/Account/ContributorAccountView.tsx
+  // lines 241-249): a click on Create is only routed to the create dialog
+  // when the account still has an available entitlement; otherwise the
+  // integration page falls back to the contact page.
+  const availableEntitlements = account?.license?.availableEntitlements ?? [];
+  const isEntitledToCreateSpace = [
+    LicenseEntitlementType.AccountSpaceFree,
+    LicenseEntitlementType.AccountSpacePlus,
+    LicenseEntitlementType.AccountSpacePremium,
+  ].some(type => availableEntitlements.includes(type));
+  const isEntitledToCreateVc = availableEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor);
+  const isEntitledToCreateInnovationPack = availableEntitlements.includes(LicenseEntitlementType.AccountInnovationPack);
+  const isEntitledToCreateInnovationHub = availableEntitlements.includes(LicenseEntitlementType.AccountInnovationHub);
 
   // Capacity readouts from the account's license entitlements — drives the
   // X/Y badge + per-plan tooltip on each section header. Matches MUI parity
@@ -131,6 +147,7 @@ export function mapAccountToViewProps(
     groupId: 'spaces',
     title: labels.spaces.title,
     canCreate: canCreateSpace,
+    isEntitled: isEntitledToCreateSpace,
     createButtonLabel: labels.spaces.createButton,
     onCreate: callbacks.onCreateSpace,
     capacity: spacesCapacity,
@@ -153,6 +170,7 @@ export function mapAccountToViewProps(
     groupId: 'virtualContributors',
     title: labels.virtualContributors.title,
     canCreate: canCreateVc,
+    isEntitled: isEntitledToCreateVc,
     createButtonLabel: labels.virtualContributors.createButton,
     onCreate: callbacks.onCreateVc,
     capacity: vcCapacity,
@@ -175,6 +193,7 @@ export function mapAccountToViewProps(
     groupId: 'innovationPacks',
     title: labels.innovationPacks.title,
     canCreate: canCreateInnovationPack,
+    isEntitled: isEntitledToCreateInnovationPack,
     createButtonLabel: labels.innovationPacks.createButton,
     onCreate: callbacks.onCreateInnovationPack,
     capacity: packCapacity,
@@ -194,19 +213,30 @@ export function mapAccountToViewProps(
     groupId: 'innovationHubs',
     title: labels.innovationHubs.title,
     canCreate: canCreateInnovationHub,
+    isEntitled: isEntitledToCreateInnovationHub,
     createButtonLabel: labels.innovationHubs.createButton,
     onCreate: callbacks.onCreateInnovationHub,
     capacity: hubCapacity,
     items:
-      account?.innovationHubs.map<AccountResourceCardItem>(hub => ({
-        id: hub.id,
-        displayName: hub.profile.displayName,
-        description: hub.profile.description,
-        avatarUrl: hub.profile.banner?.uri || undefined,
-        color: pickColorFromId(hub.id),
-        href: hub.profile.url,
-        actions: buildKebab('innovationHub', hub.id, hub.profile.displayName, hub.profile.url),
-      })) ?? [],
+      account?.innovationHubs.map<AccountResourceCardItem>(hub => {
+        // Link the card to `/hub/<nameID>/settings`, not the public hub home.
+        // The public home redirects to the hub's subdomain in production, which
+        // shows a broken page when the subdomain isn't configured yet — so from
+        // the owner's account we land on settings, where the hub can be set up.
+        // Always use `nameID` (the route param the server resolves) — never the
+        // server-provided `profile.url` (legacy `/innovation-hub/...`), and never
+        // `subdomain` (hostname identifier, can diverge from nameID).
+        const hubSettingsPath = buildHubSettingsPath(hub.nameID);
+        return {
+          id: hub.id,
+          displayName: hub.profile.displayName,
+          description: hub.profile.description,
+          avatarUrl: hub.profile.banner?.uri || undefined,
+          color: pickColorFromId(hub.id),
+          href: hubSettingsPath,
+          actions: buildKebab('innovationHub', hub.id, hub.profile.displayName, hubSettingsPath),
+        };
+      }) ?? [],
   };
 
   return {

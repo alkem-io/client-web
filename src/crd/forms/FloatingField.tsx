@@ -1,0 +1,158 @@
+import { Eye, EyeOff } from 'lucide-react';
+import { type FocusEvent, useId, useState } from 'react';
+import { cn } from '@/crd/lib/utils';
+
+export type FloatingFieldProps = {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'tel' | 'password';
+  /** Initial value. The field is uncontrolled — the native form submits the live DOM value. */
+  defaultValue?: string;
+  required?: boolean;
+  disabled?: boolean;
+  autoComplete?: string;
+  errorMessage?: string;
+  /** Accessible label for the show/hide toggle when hidden (password type only). */
+  showPasswordLabel?: string;
+  /** Accessible label for the show/hide toggle when visible (password type only). */
+  hidePasswordLabel?: string;
+  /** Fires on every input change. The field stays uncontrolled; the callback is
+   * for consumers that need to react to live values (e.g. disabling submit until
+   * required fields are filled). */
+  onValueChange?: (value: string) => void;
+  /**
+   * Localised message shown when an `type="email"` field is blurred with a value
+   * that's not a syntactically valid email (the native `validity.typeMismatch`).
+   * When omitted, no inline format error is shown — the on-submit `checkValidity`
+   * pass still catches the same case via the browser's native bubble.
+   */
+  invalidEmailMessage?: string;
+};
+
+/**
+ * Floating-label text input — the label sits as a placeholder inside the field
+ * when empty and floats up onto the border when the field is focused or filled.
+ * Uncontrolled (native `defaultValue`); the floating behaviour is pure CSS via
+ * the `:placeholder-shown` peer trick, so it works without React state.
+ */
+export function FloatingField({
+  name,
+  label,
+  type = 'text',
+  defaultValue,
+  required,
+  disabled,
+  autoComplete,
+  errorMessage,
+  showPasswordLabel,
+  hidePasswordLabel,
+  onValueChange,
+  invalidEmailMessage,
+}: FloatingFieldProps) {
+  const id = useId();
+  const [visible, setVisible] = useState(false);
+  // Whether the field currently holds a value — seeded from `defaultValue` so a
+  // pre-filled field (Kratos hydration, browser autofill that fires `input`)
+  // floats the label immediately, not only after the first focus. Browser
+  // autofill that fires no `input` event is covered by the `peer-autofill:`
+  // label classes below.
+  const [hasValue, setHasValue] = useState(Boolean(defaultValue));
+  const isPassword = type === 'password';
+  const isEmail = type === 'email';
+  const inputType = isPassword && visible ? 'text' : type;
+  // Tracks the most recent blur on an email field — set when a non-empty value
+  // fails native email validation, cleared while the user is typing so the red
+  // border doesn't persist mid-edit. Re-evaluated on each blur.
+  const [emailFormatInvalid, setEmailFormatInvalid] = useState(false);
+  const inlineEmailError = emailFormatInvalid && invalidEmailMessage ? invalidEmailMessage : undefined;
+  const displayedError = errorMessage ?? inlineEmailError;
+  const hasError = !!displayedError;
+  const errorId = `${id}-error`;
+
+  const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+    if (!isEmail) return;
+    const value = event.target.value;
+    setEmailFormatInvalid(value !== '' && event.target.validity.typeMismatch);
+  };
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="relative">
+        <input
+          id={id}
+          name={name}
+          type={inputType}
+          defaultValue={defaultValue}
+          required={required}
+          disabled={disabled}
+          autoComplete={autoComplete}
+          placeholder=" "
+          aria-invalid={hasError || undefined}
+          aria-describedby={hasError ? errorId : undefined}
+          onChange={event => {
+            // Clear the inline format error while typing so the user isn't yelled
+            // at mid-edit; it re-evaluates on the next blur.
+            if (emailFormatInvalid) setEmailFormatInvalid(false);
+            setHasValue(event.target.value.length > 0);
+            onValueChange?.(event.target.value);
+          }}
+          onBlur={isEmail ? handleBlur : undefined}
+          className={cn(
+            // text-base md:text-sm — same iOS-zoom-prevention pattern shadcn's
+            // <Input> uses; mobile inputs <16px trigger viewport zoom on focus.
+            'peer h-14 w-full rounded border bg-card px-3.5 pb-2 pt-5 text-base md:text-sm text-foreground outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            'placeholder:text-transparent disabled:cursor-not-allowed disabled:opacity-50',
+            // Keep the field background white when the browser autofills it, so the
+            // floating label's notch (also white) stays seamless instead of showing
+            // as a pasted-on patch over Chrome's pale-blue autofill fill.
+            '[&:-webkit-autofill]:[-webkit-box-shadow:inset_0_0_0_1000px_var(--card)]',
+            '[&:-webkit-autofill]:[-webkit-text-fill-color:var(--foreground)]',
+            '[&:-webkit-autofill]:[caret-color:var(--foreground)]',
+            isPassword && 'pr-12',
+            hasError ? 'border-destructive' : 'border-border focus:border-primary'
+          )}
+        />
+        <label
+          htmlFor={id}
+          className={cn(
+            'pointer-events-none absolute left-2.5 bg-card px-1 transition-all',
+            // Resting (placeholder) position — centred, only while the field is
+            // empty AND unfocused.
+            'top-1/2 -translate-y-1/2 text-base',
+            // Floated position — on focus, on browser autofill, or whenever the
+            // field holds a value (React-tracked, so it never depends on the
+            // unreliable `:placeholder-shown` state for pre-filled/autofilled values).
+            'peer-focus:top-1.5 peer-focus:translate-y-0 peer-focus:text-caption',
+            'peer-autofill:top-1.5 peer-autofill:translate-y-0 peer-autofill:text-caption',
+            hasValue && 'top-1.5 translate-y-0 text-caption',
+            hasError ? 'text-destructive' : 'text-muted-foreground peer-focus:text-primary'
+          )}
+        >
+          {label}
+          {required ? ' *' : ''}
+        </label>
+        {isPassword ? (
+          <button
+            type="button"
+            onClick={() => setVisible(current => !current)}
+            disabled={disabled}
+            aria-label={visible ? hidePasswordLabel : showPasswordLabel}
+            aria-pressed={visible}
+            className={cn(
+              'absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-md',
+              'text-muted-foreground outline-none hover:text-foreground',
+              'focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50'
+            )}
+          >
+            {visible ? <EyeOff aria-hidden="true" className="size-5" /> : <Eye aria-hidden="true" className="size-5" />}
+          </button>
+        ) : null}
+      </div>
+      {hasError ? (
+        <p id={errorId} className="text-caption text-destructive">
+          {displayedError}
+        </p>
+      ) : null}
+    </div>
+  );
+}

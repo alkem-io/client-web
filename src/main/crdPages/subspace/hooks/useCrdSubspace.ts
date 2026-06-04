@@ -40,6 +40,7 @@ export type CrdSubspacePageData = {
   levelZeroSpaceUrl: string | undefined;
   levelZeroSpaceName: string | undefined;
   roleSetId: string | undefined;
+  communityId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   /** Templates set + default subspace template — feed the Create-Subspace picker (FR-031, D21). */
@@ -51,7 +52,14 @@ export type CrdSubspacePageData = {
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
-  subspaces: Array<{ name: string; initials: string; href: string; avatarUrl?: string }>;
+  subspaces: Array<{
+    name: string;
+    initials: string;
+    href: string;
+    avatarUrl?: string;
+    isPrivate?: boolean;
+    isPinned?: boolean;
+  }>;
   visibility: SpaceVisibilityData;
 
   /** Innovation flow */
@@ -79,6 +87,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const subspaceId = subspace.id;
   const subspaceNameId = subspace.nameId;
   const roleSetId = subspace.about.membership?.roleSetID || undefined;
+  const communityId = subspace.about.membership?.communityID || undefined;
 
   // Video call enablement & URL for the banner action icon (FR: show video icon when enabled).
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(subspaceId, subspaceNameId);
@@ -177,6 +186,8 @@ export function useCrdSubspace(): CrdSubspacePageData {
       initials: getInitials(child.displayName),
       href: child.url,
       avatarUrl: child.avatar?.uri,
+      isPrivate: child.private,
+      isPinned: child.pinned,
     })) ?? [];
 
   const visibilityData = mapSpaceVisibility(visibility);
@@ -196,6 +207,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     levelZeroSpaceUrl: levelZeroProfile?.url ?? undefined,
     levelZeroSpaceName: levelZeroProfile?.displayName ?? undefined,
     roleSetId,
+    communityId,
     collaborationId,
     calloutsSetId,
     templatesSetId,

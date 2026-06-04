@@ -205,10 +205,11 @@ export function PostCard({
     <Card
       className={cn(
         'group hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 border-border/60',
+        post.isDraft && 'border-l-4 border-l-amber-400',
         className
       )}
     >
-      <CardHeader className="relative isolate flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
+      <CardHeader className="relative isolate flex flex-row items-start justify-between pb-0 pt-5 px-6 space-y-0">
         {/* Stretched-link overlay: clicking anywhere in the header (the empty
             space, timestamp, badges, type label) opens the callout — the same
             target as the title link in the body. The avatar/name profile
@@ -282,7 +283,7 @@ export function PostCard({
                 </Badge>
               )}
               {post.isDraft && (
-                <Badge variant="outline" className="text-badge h-5 px-1.5 font-normal text-amber-600 border-amber-300">
+                <Badge className="text-badge h-5 px-1.5 font-semibold bg-amber-100 text-amber-700 border border-amber-300 hover:bg-amber-100">
                   {t('callout.draft')}
                 </Badge>
               )}
@@ -312,8 +313,8 @@ export function PostCard({
         </div>
       </CardHeader>
 
-      <CardContent className="px-6 pb-3">
-        <h3 className="text-subsection-title font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+      <CardContent className="px-6 pb-0">
+        <h3 className="text-subsection-title mb-2 text-foreground group-hover:text-primary transition-colors">
           <a
             href={href ?? '#'}
             className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
@@ -330,16 +331,11 @@ export function PostCard({
           </a>
         </h3>
         {post.snippet && (
-          <ExpandableMarkdown
-            content={post.snippet}
-            maxLines={3}
-            defaultExpanded={post.descriptionExpanded}
-            className="mb-4"
-          />
+          <ExpandableMarkdown content={post.snippet} maxLines={3} defaultExpanded={post.descriptionExpanded} />
         )}
 
         {/* References + tags row — same component as the detail dialog (DRY). */}
-        <ReferencesAndTagsStrip references={post.references} tags={post.tags} className="mb-4" />
+        <ReferencesAndTagsStrip references={post.references} tags={post.tags} />
 
         {/* Whiteboard framing preview — always render (even when empty), MUI parity. */}
         {post.type === 'whiteboard' && (
@@ -382,7 +378,7 @@ export function PostCard({
                 <StickyNote className="w-12 h-12 text-muted-foreground/50" aria-hidden="true" />
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 has-[:focus-visible]:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Button
                 variant="secondary"
                 className="shadow-sm"
@@ -481,7 +477,7 @@ export function PostCard({
                   <span>{commentLabel}</span>
                 </button>
               </CollapsibleTrigger>
-              <CollapsibleContent className="px-6 pb-4">
+              <CollapsibleContent className="px-6 pt-4 pb-4">
                 <div className="flex flex-col gap-3">
                   {commentInputSlot}
                   <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>

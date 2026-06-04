@@ -37,6 +37,7 @@ export default function CrdSpaceSubspacesPage() {
     callouts,
     calloutsSetId,
     canCreateCallout,
+    canReorderCallouts,
     tabDescription,
     flowStateForNewCallouts,
     loading: calloutsLoading,
@@ -120,7 +121,12 @@ export default function CrdSpaceSubspacesPage() {
 
         <SpaceSubspacesList subspaces={subspaces} />
 
-        <CalloutListConnector callouts={callouts} calloutsSetId={calloutsSetId} loading={calloutsLoading} />
+        <CalloutListConnector
+          callouts={callouts}
+          calloutsSetId={calloutsSetId}
+          canReorder={canReorderCallouts}
+          loading={calloutsLoading}
+        />
       </div>
 
       {canCreateCallout && (

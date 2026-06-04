@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection';
 import { EventsSection } from './sidebar/EventsSection';
 import { InfoBlock, type LeadItem } from './sidebar/InfoBlock';
 import { type KnowledgeEntry, KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
@@ -16,9 +15,12 @@ type SubspaceItem = {
   initials: string;
   href: string;
   avatarUrl?: string;
+  isPrivate?: boolean;
+  isPinned?: boolean;
 };
 
 type VirtualContributorItem = {
+  id: string;
   name: string;
   description?: string;
   avatarUrl?: string;
@@ -47,6 +49,8 @@ type SpaceSidebarProps = {
   onShowCalendar?: () => void;
   onAddEvent?: () => void;
   onEventClick?: (event: EventItem) => void;
+  /** Home-variant only: the consumer renders <UpdatesSection> here (latest community update). */
+  updatesSlot?: ReactNode;
   // Knowledge
   knowledgeEntries?: KnowledgeEntry[];
   onKnowledgeEntryClick?: (id: string) => void;
@@ -60,7 +64,11 @@ type SpaceSidebarProps = {
   onVirtualContributorClick?: (href: string) => void;
   /** When false, the entire VC section is hidden even if `virtualContributors` is non-empty. */
   showVirtualContributors?: boolean;
-  guidelines?: string[];
+  /** When provided, the VC section shows an "Invite Virtual Contributor" entry (admins only). */
+  onInviteVc?: () => void;
+  /** Community-variant only: the consumer renders <CommunityGuidelinesBlock> here.
+   *  Kept as a slot so the sidebar stays free of guidelines data/edit wiring. */
+  guidelinesSlot?: ReactNode;
   // Extra
   children?: ReactNode;
   className?: string;
@@ -81,6 +89,7 @@ export function SpaceSidebar({
   onShowCalendar,
   onAddEvent,
   onEventClick,
+  updatesSlot,
   knowledgeEntries = [],
   onKnowledgeEntryClick,
   leads = [],
@@ -91,7 +100,8 @@ export function SpaceSidebar({
   virtualContributors = [],
   onVirtualContributorClick,
   showVirtualContributors = true,
-  guidelines = [],
+  onInviteVc,
+  guidelinesSlot,
   children,
   className,
   locale,
@@ -124,6 +134,8 @@ export function SpaceSidebar({
             onEventClick={onEventClick}
             locale={locale}
           />
+
+          {updatesSlot}
         </>
       )}
 
@@ -162,14 +174,15 @@ export function SpaceSidebar({
             </div>
           )}
 
-          {showVirtualContributors && virtualContributors.length > 0 && (
+          {showVirtualContributors && (virtualContributors.length > 0 || onInviteVc) && (
             <VirtualContributorsSection
               contributors={virtualContributors}
               onContributorClick={onVirtualContributorClick}
+              onInviteVc={onInviteVc}
             />
           )}
 
-          {guidelines.length > 0 && <CommunityGuidelinesSection guidelines={guidelines} />}
+          {guidelinesSlot}
         </>
       )}
 
