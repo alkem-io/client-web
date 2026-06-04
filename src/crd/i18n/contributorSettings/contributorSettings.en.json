@@ -10,6 +10,7 @@
         "membership": "Membership",
         "organizations": "Organizations",
         "notifications": "Notifications",
+        "assistant": "Assistant",
         "settings": "Settings",
         "security": "Security"
       },
@@ -346,6 +347,24 @@
         "description": "This will permanently remove \"{{name}}\". This cannot be undone.",
         "confirm": "Delete"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistant",
+      "helpBanner": "Choose what the assistant may do on your behalf. Reading capabilities are on by default; capabilities that change content are off until you enable them. The assistant can never do more than you can do yourself.",
+      "empty": "No assistant capabilities are available right now.",
+      "destructiveBadge": "Can change existing content",
+      "toggleAria": "Toggle the “{{capability}}” capability",
+      "toggleError": "We couldn't save that change. Please try again.",
+      "groups": {
+        "read": {
+          "title": "Reading",
+          "description": "Let the assistant find and summarise content you can already access."
+        },
+        "write": {
+          "title": "Changing content",
+          "description": "Let the assistant create or change content for you. You'll always confirm before anything is changed."
+        }
+      }
     }
   },
   "org": {
@@ -442,11 +461,28 @@
     "account": {
       "pageTitle": "Account",
       "helpBanner": "Here you can view your organization's active resources and manage account allocation limits.",
-      "spaces": { "title": "Hosted Spaces", "createButton": "Create Space" },
-      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Add Contributor" },
-      "innovationPacks": { "title": "Template Packs", "createButton": "New Pack" },
-      "innovationHubs": { "title": "Custom Homepages", "createButton": "New Page" },
-      "actions": { "view": "View", "manage": "Manage", "transfer": "Transfer", "delete": "Delete" },
+      "spaces": {
+        "title": "Hosted Spaces",
+        "createButton": "Create Space"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Add Contributor"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "New Pack"
+      },
+      "innovationHubs": {
+        "title": "Custom Homepages",
+        "createButton": "New Page"
+      },
+      "actions": {
+        "view": "View",
+        "manage": "Manage",
+        "transfer": "Transfer",
+        "delete": "Delete"
+      },
       "deleteDialog": {
         "title": "Delete this resource?",
         "description": "This will permanently remove \"{{name}}\". This cannot be undone.",

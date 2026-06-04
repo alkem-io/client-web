@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -603,6 +613,7 @@ export enum ActorType {
   Organization = 'ORGANIZATION',
   Space = 'SPACE',
   User = 'USER',
+  VirtualAssistant = 'VIRTUAL_ASSISTANT',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
@@ -765,6 +776,40 @@ export type AssignUserGroupMemberInput = {
   userID: Scalars['UUID']['input'];
 };
 
+export type AssistantCapability = {
+  __typename?: 'AssistantCapability';
+  /** What the capability does (for the settings UI). */
+  description: Scalars['String']['output'];
+  /** Human-readable label for the capability toggle. */
+  displayName: Scalars['String']['output'];
+  /** READ | WRITE_ADDITIVE | WRITE_DESTRUCTIVE — drives the default (READ enabled, WRITE_* disabled) and confirmation behaviour. */
+  kind: AssistantCapabilityKind;
+  /** The MCP tool name, e.g. "search_content". */
+  name: Scalars['String']['output'];
+};
+
+/** The kind of an assistant capability — READ is enabled by default; WRITE_* are disabled by default and confirmation-gated. */
+export enum AssistantCapabilityKind {
+  Read = 'READ',
+  WriteAdditive = 'WRITE_ADDITIVE',
+  WriteDestructive = 'WRITE_DESTRUCTIVE',
+}
+
+export type AssistantCapabilityToggle = {
+  __typename?: 'AssistantCapabilityToggle';
+  /** The capability (MCP tool name) this toggle controls. */
+  capability: Scalars['String']['output'];
+  /** Whether the capability is enabled. */
+  enabled: Scalars['Boolean']['output'];
+};
+
+export type AssistantCapabilityToggleInput = {
+  /** The capability (MCP tool name) this toggle controls. */
+  capability: Scalars['String']['input'];
+  /** Whether the capability is enabled. */
+  enabled: Scalars['Boolean']['input'];
+};
+
 export type AuthenticationConfig = {
   __typename?: 'AuthenticationConfig';
   /** Alkemio Authentication Providers Config. */
@@ -788,10 +833,12 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
+  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -921,6 +968,7 @@ export enum AuthorizationPolicyType {
   User = 'USER',
   UserGroup = 'USER_GROUP',
   UserSettings = 'USER_SETTINGS',
+  VirtualAssistant = 'VIRTUAL_ASSISTANT',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
   Visual = 'VISUAL',
   Whiteboard = 'WHITEBOARD',
@@ -3010,6 +3058,13 @@ export type GeoLocation = {
   longitude?: Maybe<Scalars['Float']['output']>;
 };
 
+export type GrantAssistantActorCapabilitiesInput = {
+  /** Per-capability enable/disable toggles governing what the assistant may do system-invoked (default read-only). */
+  enabledCapabilities: Array<AssistantCapabilityToggleInput>;
+  /** The VirtualAssistant actor whose admin grant is being set. */
+  virtualAssistantID: Scalars['UUID']['input'];
+};
+
 export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
   resourceID?: InputMaybe<Scalars['UUID']['input']>;
@@ -4890,6 +4945,8 @@ export type Mutation = {
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
+  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires platform-admin. */
+  updateAssistantActorCapabilities: VirtualAssistant;
   /** Update the baseline License Plan on the specified Account. */
   updateBaselineLicensePlanOnAccount: Account;
   /** Updates the specified CalendarEvent. */
@@ -5586,6 +5643,10 @@ export type MutationUnsubscribeFromPushNotificationsArgs = {
 
 export type MutationUpdateApplicationFormOnRoleSetArgs = {
   applicationFormData: UpdateApplicationFormOnRoleSetInput;
+};
+
+export type MutationUpdateAssistantActorCapabilitiesArgs = {
+  grantData: GrantAssistantActorCapabilitiesInput;
 };
 
 export type MutationUpdateBaselineLicensePlanOnAccountArgs = {
@@ -6886,6 +6947,8 @@ export type Query = {
   platform: Platform;
   /** Allow looking up of information for Platform administration. */
   platformAdmin: PlatformAdminQueryResults;
+  /** The enumerable assistant capability surface (one per MCP tool), with each tool classified READ / WRITE_ADDITIVE / WRITE_DESTRUCTIVE. */
+  platformCapabilities: Array<AssistantCapability>;
   /** Get the list of restricted space names. */
   restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
@@ -9216,12 +9279,19 @@ export type UpdateUserPlatformSettingsInput = {
   userID: Scalars['String']['input'];
 };
 
+export type UpdateUserSettingsAssistantInput = {
+  /** Per-capability enable/disable toggles bounding what the assistant may do on behalf of this user. */
+  enabledCapabilities?: InputMaybe<Array<AssistantCapabilityToggleInput>>;
+};
+
 export type UpdateUserSettingsCommunicationInput = {
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsEntityInput = {
+  /** Settings related to the AI assistant authority for this User. */
+  assistant?: InputMaybe<UpdateUserSettingsAssistantInput>;
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
   /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
@@ -9723,6 +9793,8 @@ export type UserProfileSummary = {
 
 export type UserSettings = {
   __typename?: 'UserSettings';
+  /** The AI assistant authority settings for this User (per-capability toggles). */
+  assistant: UserSettingsAssistant;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The communication settings for this User. */
@@ -9741,6 +9813,12 @@ export type UserSettings = {
   privacy: UserSettingsPrivacy;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type UserSettingsAssistant = {
+  __typename?: 'UserSettingsAssistant';
+  /** Per-capability enable/disable toggles bounding what the assistant may do on behalf of this user (read-only by default). */
+  enabledCapabilities: Array<AssistantCapabilityToggle>;
 };
 
 export type UserSettingsCommunication = {
@@ -9904,6 +9982,28 @@ export type VcInteraction = {
   threadID: Scalars['MessageID']['output'];
   /** The actor ID (agent.id) of the Virtual Contributor */
   virtualContributorID: Scalars['String']['output'];
+};
+
+export type VirtualAssistant = ActorFull & {
+  __typename?: 'VirtualAssistant';
+  /** The authorization rules for the Actor */
+  authorization?: Maybe<Authorization>;
+  /** The admin per-capability grant governing system-invoked authority for this Virtual Assistant (default read-only). */
+  capabilityGrant: Array<AssistantCapabilityToggle>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The credentials held by this Actor */
+  credentials?: Maybe<Array<Credential>>;
+  /** The ID of the Actor */
+  id: Scalars['UUID']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
+  /** The profile for this Actor. */
+  profile?: Maybe<Profile>;
+  /** The type of Actor */
+  type: ActorType;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type VirtualContributor = ActorFull & {
@@ -20260,6 +20360,32 @@ export type ForumMentionableContributorsQuery = {
               | undefined;
           }
         | {
+            __typename?: 'VirtualAssistant';
+            id: string;
+            type: ActorType;
+            nameID: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | {
             __typename?: 'VirtualContributor';
             id: string;
             type: ActorType;
@@ -20460,6 +20586,37 @@ export type MentionableContributorsQuery = {
               }
             | {
                 __typename?: 'User';
+                id: string;
+                type: ActorType;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | {
+                __typename?: 'VirtualAssistant';
                 id: string;
                 type: ActorType;
                 nameID: string;
@@ -21366,6 +21523,13 @@ export type ActorDetailsQuery = {
         lastName: string;
         phone?: string | undefined;
         isContactable: boolean;
+        id: string;
+        type: ActorType;
+        nameID: string;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+      }
+    | {
+        __typename?: 'VirtualAssistant';
         id: string;
         type: ActorType;
         nameID: string;
@@ -35032,6 +35196,64 @@ export type AuthorizationPrivilegesForUserQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     authorizationPrivilegesForUser?: Array<AuthorizationPrivilege> | undefined;
+  };
+};
+
+export type PlatformCapabilitiesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformCapabilitiesQuery = {
+  __typename?: 'Query';
+  platformCapabilities: Array<{
+    __typename?: 'AssistantCapability';
+    name: string;
+    displayName: string;
+    description: string;
+    kind: AssistantCapabilityKind;
+  }>;
+};
+
+export type UserSettingsAssistantFragment = {
+  __typename?: 'UserSettingsAssistant';
+  enabledCapabilities: Array<{ __typename?: 'AssistantCapabilityToggle'; capability: string; enabled: boolean }>;
+};
+
+export type UserAssistantSettingsQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+export type UserAssistantSettingsQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    settings: {
+      __typename?: 'UserSettings';
+      id: string;
+      assistant: {
+        __typename?: 'UserSettingsAssistant';
+        enabledCapabilities: Array<{ __typename?: 'AssistantCapabilityToggle'; capability: string; enabled: boolean }>;
+      };
+    };
+  };
+};
+
+export type UpdateUserAssistantSettingsMutationVariables = Exact<{
+  settingsData: UpdateUserSettingsInput;
+}>;
+
+export type UpdateUserAssistantSettingsMutation = {
+  __typename?: 'Mutation';
+  updateUserSettings: {
+    __typename?: 'User';
+    id: string;
+    settings: {
+      __typename?: 'UserSettings';
+      id: string;
+      assistant: {
+        __typename?: 'UserSettingsAssistant';
+        enabledCapabilities: Array<{ __typename?: 'AssistantCapabilityToggle'; capability: string; enabled: boolean }>;
+      };
+    };
   };
 };
 

@@ -32,6 +32,8 @@ import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAp
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
+import { AssistantProvider } from './main/assistant/AssistantContext';
+import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
@@ -44,6 +46,7 @@ const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
   () => import('./main/inAppNotifications/InAppNotificationsDialog')
 );
 const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
+const AssistantDialog = lazyWithGlobalErrorHandler(() => import('./main/assistant/AssistantDialog'));
 
 const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
   () => import('./main/ui/layout/CrdNotificationsPanelConnector')
@@ -63,13 +66,24 @@ function NotificationsGate() {
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
 /** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
-function CrdGuidanceChatGate() {
+function CrdFloatingActionsGate() {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  // MUI layouts already render PlatformHelpButton themselves; auth flows hide it entirely.
+  // MUI layouts already render these themselves; auth flows hide them entirely.
   if (!crdEnabled || isAuthPage) return null;
-  return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
+  // The assistant button shares the help/guidance button's floating stack so it
+  // sits right next to it (bottom-right) with matching styling. Each self-gates.
+  return (
+    <FloatingActionButtons
+      floatingActions={
+        <>
+          <CrdAssistantButtonGate />
+          <PlatformHelpButton />
+        </>
+      }
+    />
+  );
 }
 
 function DesignVersionSyncMount() {
@@ -177,27 +191,32 @@ const Root: FC = () => {
                                   <InAppNotificationsProvider>
                                     <PushNotificationProvider>
                                       <UserMessagingProvider>
-                                        <NavigationHistoryTracker />
-                                        <ApmUserSetter />
-                                        <DesignVersionSyncMount />
-                                        <DesignVersionUpgradePromptMount />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <CrdGuidanceChatGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <Suspense fallback={null}>
-                                          <UserMessagingDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <Error40XBoundary
-                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                        >
-                                          <TopLevelRoutes />
+                                        <AssistantProvider>
+                                          <NavigationHistoryTracker />
+                                          <ApmUserSetter />
+                                          <DesignVersionSyncMount />
+                                          <DesignVersionUpgradePromptMount />
+                                          <ScrollToTop />
+                                          <NotificationsGate />
+                                          <CrdFloatingActionsGate />
+                                          <InAppNotificationCountSubscriber />
                                           <Suspense fallback={null}>
-                                            <GlobalErrorDialog />
+                                            <UserMessagingDialog />
                                           </Suspense>
-                                        </Error40XBoundary>
+                                          <Suspense fallback={null}>
+                                            <AssistantDialog />
+                                          </Suspense>
+                                          <VersionHandling />
+                                          <OnlineStatusNotification />
+                                          <Error40XBoundary
+                                            errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                          >
+                                            <TopLevelRoutes />
+                                            <Suspense fallback={null}>
+                                              <GlobalErrorDialog />
+                                            </Suspense>
+                                          </Error40XBoundary>
+                                        </AssistantProvider>
                                       </UserMessagingProvider>
                                     </PushNotificationProvider>
                                   </InAppNotificationsProvider>
