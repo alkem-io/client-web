@@ -598,8 +598,12 @@ export function useTemplateForms({
     });
     // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
     // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
-    await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
-    await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
+    try {
+      await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
+      await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
+    } catch {
+      // Errors are surfaced by the Apollo error link / global handler; don't fail the copy after create.
+    }
   };
 
   const submitEdit = async (
