@@ -31,7 +31,7 @@ const MAX_RECONNECTS = 1;
  */
 export const useAssistantConversation = () => {
   const { t } = useTranslation();
-  const { state, dispatch } = useAssistantContext();
+  const { state, dispatch, panelContext } = useAssistantContext();
   const { start, cancel } = useAssistantStream();
   // The current in-flight request + how many times it has been reconnected.
   const inFlightRef = useRef<InFlightRequest | null>(null);
@@ -90,7 +90,16 @@ export const useAssistantConversation = () => {
     reconnectsRef.current = 0;
     lastEventIdRef.current = null;
 
-    await runStream({ path: `/conversations/${conversationId}/messages`, body: { content: trimmed } });
+    // Optional, per-turn whiteboard scope so the model can resolve an ambiguous
+    // "this whiteboard" to a concrete id. `runStream` retains this same body for
+    // the Last-Event-ID reconnect, so context survives a dropped connection.
+    await runStream({
+      path: `/conversations/${conversationId}/messages`,
+      body: {
+        content: trimmed,
+        context: panelContext ? { whiteboardId: panelContext.whiteboardId } : undefined,
+      },
+    });
   };
 
   /**

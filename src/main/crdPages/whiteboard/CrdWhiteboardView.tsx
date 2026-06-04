@@ -13,6 +13,7 @@ import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/Whiteb
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import { CrdWhiteboardGuestAccessControls } from '@/main/crdPages/whiteboard/CrdWhiteboardGuestAccessControls';
+import { WhiteboardAssistantButton } from '@/main/crdPages/whiteboard/WhiteboardAssistantButton';
 import type { WhiteboardDetails } from './CrdWhiteboardDialog';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
 import { CrdWhiteboardSaveStatus } from './CrdWhiteboardSaveStatus';
@@ -130,6 +131,8 @@ const CrdWhiteboardView = ({
                   <ScanEye />
                 </Button>
               )}
+
+              {whiteboard && <WhiteboardAssistantButton whiteboard={whiteboard} />}
             </>
           ),
         }}

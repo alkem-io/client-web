@@ -24,7 +24,7 @@ import { useAssistantRehydrate } from './useAssistantRehydrate';
 const AssistantDialog = () => {
   const { t } = useTranslation();
   const isEnabled = useAssistantEnabled();
-  const { isOpen, setIsOpen } = useAssistantContext();
+  const { isOpen, setIsOpen, panelContext, clearPanelContext } = useAssistantContext();
   const { sendMessage, cancel, isStreaming, startNewConversation } = useAssistantConversation();
   const [draft, setDraft] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -46,6 +46,9 @@ const AssistantDialog = () => {
   const handleClose = () => {
     cancel();
     setIsOpen(false);
+    // Drop any per-turn whiteboard scope so it never leaks into a later
+    // globally-opened panel.
+    clearPanelContext();
   };
 
   return (
@@ -69,9 +72,16 @@ const AssistantDialog = () => {
           padding={gutters(0.5)}
           sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
         >
-          <Typography id="assistant-dialog-title" variant="h6">
-            {t('assistant.title')}
-          </Typography>
+          <Box>
+            <Typography id="assistant-dialog-title" variant="h6">
+              {t('assistant.title')}
+            </Typography>
+            {panelContext?.displayName && (
+              <Typography variant="caption" color="text.secondary">
+                {t('assistant.scopedTo', { name: panelContext.displayName })}
+              </Typography>
+            )}
+          </Box>
           <Box display="flex" alignItems="center">
             <IconButton onClick={() => setSettingsOpen(true)} aria-label={t('assistant.settings')}>
               <SettingsOutlinedIcon />

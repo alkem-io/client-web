@@ -2,6 +2,8 @@
   "assistant": {
     "title": "Assistant",
     "openButton": "Open the assistant",
+    "openInWhiteboard": "Ask the assistant about this whiteboard",
+    "scopedTo": "Working on: {{name}}",
     "closeButton": "Close the assistant",
     "settings": "Assistant settings",
     "newConversation": "New Chat",

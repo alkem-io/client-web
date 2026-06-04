@@ -233,11 +233,24 @@ function reducer(state: AssistantState, action: AssistantAction): AssistantState
   }
 }
 
+/**
+ * Per-turn whiteboard scope for the panel: when the assistant is opened from a
+ * whiteboard editor it carries that board's id (and display name for the header
+ * chip). It is OPTIONAL and PER-TURN — kept out of the reducer (like `isOpen`)
+ * because it is panel/UI state, not conversation state. It only lets the model
+ * resolve an ambiguous "this whiteboard" to a concrete id; it never bypasses the
+ * write-confirmation gate.
+ */
+export type AssistantPanelContext = { whiteboardId: string; displayName?: string };
+
 type AssistantContextValue = {
   state: AssistantState;
   dispatch: (action: AssistantAction) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  panelContext: AssistantPanelContext | null;
+  openForWhiteboard: (wb: AssistantPanelContext) => void;
+  clearPanelContext: () => void;
 };
 
 const AssistantContext = createContext<AssistantContextValue | undefined>(undefined);
@@ -245,8 +258,21 @@ const AssistantContext = createContext<AssistantContextValue | undefined>(undefi
 export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpen, setIsOpen] = useState(false);
+  const [panelContext, setPanelContext] = useState<AssistantPanelContext | null>(null);
 
-  return <AssistantContext value={{ state, dispatch, isOpen, setIsOpen }}>{children}</AssistantContext>;
+  const openForWhiteboard = (wb: AssistantPanelContext) => {
+    setPanelContext(wb);
+    setIsOpen(true);
+  };
+  const clearPanelContext = () => setPanelContext(null);
+
+  return (
+    <AssistantContext
+      value={{ state, dispatch, isOpen, setIsOpen, panelContext, openForWhiteboard, clearPanelContext }}
+    >
+      {children}
+    </AssistantContext>
+  );
 };
 
 export const useAssistantContext = (): AssistantContextValue => {
