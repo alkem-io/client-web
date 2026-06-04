@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   useImportTemplateDialogAccountTemplatesQuery,
   useImportTemplateDialogPlatformTemplatesQuery,
@@ -141,9 +141,26 @@ export function useTemplatePicker({
     }
   };
 
+  // Tracks the latest preview request so a slow response for template A doesn't overwrite the
+  // content shown for template B if the user previewed another card mid-fetch. `previewId` drives a
+  // committing action (Use/Import) in the preview pane, so a stale overwrite could apply the wrong template.
+  const activePreviewIdRef = useRef<string | null>(null);
+
   const onPreview = (templateId: string) => {
+    if (!primaryType) return;
+    activePreviewIdRef.current = templateId;
     setPreviewId(templateId);
-    void fetchContent(templateId, setPreviewContent, setPreviewLoading);
+    setPreviewContent(undefined);
+    setPreviewLoading(true);
+    void getTemplateContent({ variables: { templateId, ...templateContentIncludeVars(primaryType) } })
+      .then(({ data }) => {
+        if (activePreviewIdRef.current !== templateId) return;
+        const fetched = data?.lookup.template;
+        setPreviewContent(fetched ? mapTemplateContent(fetched, primaryType) : undefined);
+      })
+      .finally(() => {
+        if (activePreviewIdRef.current === templateId) setPreviewLoading(false);
+      });
   };
 
   const onSelect = (templateId: string | null) => {
