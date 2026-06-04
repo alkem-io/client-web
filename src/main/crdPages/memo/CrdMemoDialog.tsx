@@ -52,7 +52,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       collaborationId: memoId,
     });
 
-  const markdownIntegration = useMarkdownEditorIntegration();
+  // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
+  // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
+  // bucket explicitly. The memo always exists when this dialog is open, so no temporary location.
+  const markdownIntegration = useMarkdownEditorIntegration({ storageBucketId: memo?.profile.storageBucket.id });
 
   // Fullscreen + share parity with the legacy MUI MemoDialog (which exposed both
   // in its header). `FullscreenButton` reads/toggles fullscreen via `useFullscreen`

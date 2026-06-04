@@ -24,7 +24,7 @@ type CrdSpaceCustomTabPageProps = {
 
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
   const { t } = useTranslation('crd-space');
-  const { space } = useSpace();
+  const { space, permissions } = useSpace();
   const navigate = useNavigate();
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
@@ -100,7 +100,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           variant="knowledge"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
           knowledgeEntries={indexEntries}
           onKnowledgeEntryClick={handleEntryClick}
         />

@@ -25,7 +25,7 @@ import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
 export default function CrdSpaceDashboardPage() {
   const { t } = useTranslation('crd-space');
-  const { space } = useSpace();
+  const { space, permissions } = useSpace();
   const navigate = useNavigate();
   const {
     callouts,
@@ -78,7 +78,7 @@ export default function CrdSpaceDashboardPage() {
           variant="home"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
           onAboutClick={() => setAboutOpen(true)}
           subspaces={subspaces}
           subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}

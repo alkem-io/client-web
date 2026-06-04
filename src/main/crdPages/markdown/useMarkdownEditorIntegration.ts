@@ -7,6 +7,12 @@ import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageC
 type MarkdownEditorIntegrationOptions = {
   /** When true, uploads use the temporary location (cleaned up server-side if the form is abandoned). */
   temporaryLocation?: boolean;
+  /**
+   * Explicit storage bucket to upload into, overriding the ambient
+   * `StorageConfigContextProvider`. Used by editors whose entity owns its own bucket but has no
+   * dedicated `locationType` (e.g. memos upload into `memo.profile.storageBucket.id`).
+   */
+  storageBucketId?: string;
 };
 
 type MarkdownEditorIntegration = {
@@ -25,7 +31,7 @@ type MarkdownEditorIntegration = {
 export const useMarkdownEditorIntegration = (
   options: MarkdownEditorIntegrationOptions = {}
 ): MarkdownEditorIntegration => {
-  const { temporaryLocation = false } = options;
+  const { temporaryLocation = false, storageBucketId: storageBucketIdOverride } = options;
   const { t } = useTranslation();
   const notify = useNotification();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
@@ -35,11 +41,12 @@ export const useMarkdownEditorIntegration = (
   const onError = (message: string) => notify(message, 'error');
 
   const onImageUpload = async (file: File): Promise<string> => {
-    if (!storageConfig) {
+    const storageBucketId = storageBucketIdOverride ?? storageConfig?.storageBucketId;
+    if (!storageBucketId) {
       throw new Error(t('components.file-upload.file-upload-error'));
     }
     const result = await uploadFile({
-      variables: { file, uploadData: { storageBucketId: storageConfig.storageBucketId, temporaryLocation } },
+      variables: { file, uploadData: { storageBucketId, temporaryLocation } },
     });
     const url = result.data?.uploadFileOnStorageBucket?.url;
     if (!url) {
