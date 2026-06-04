@@ -27,8 +27,11 @@ export function DesignVersionUpgradeDialog({
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onDismiss()}>
-      <DialogContent className="crd-root" closeLabel={t('header.designVersionUpgrade.closeLabel')}>
-        <DialogHeader>
+      <DialogContent
+        className="crd-root max-h-[90vh] flex flex-col overflow-hidden"
+        closeLabel={t('header.designVersionUpgrade.closeLabel')}
+      >
+        <DialogHeader className="shrink-0">
           <div className="flex items-center gap-3">
             <div
               aria-hidden="true"
@@ -38,11 +41,11 @@ export function DesignVersionUpgradeDialog({
             </div>
             <DialogTitle className="text-section-title">{t('header.designVersionUpgrade.title')}</DialogTitle>
           </div>
-          <DialogDescription className="whitespace-pre-line pt-2">
-            {t('header.designVersionUpgrade.body')}
-          </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogDescription className="whitespace-pre-line pt-2 flex-1 min-h-0 overflow-y-auto">
+          {t('header.designVersionUpgrade.body')}
+        </DialogDescription>
+        <DialogFooter className="shrink-0">
           <Button variant="outline" onClick={onDismiss} disabled={isPending}>
             {t('header.designVersionUpgrade.dismiss')}
           </Button>
