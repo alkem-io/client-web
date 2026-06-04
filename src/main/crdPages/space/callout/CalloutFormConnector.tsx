@@ -141,12 +141,20 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  const markdownIntegration = useMarkdownEditorIntegration();
-  // Memo framing only renders on create — the memo entity doesn't exist yet,
-  // so its pasted/inserted images upload to a temporary location (server GCs
-  // them if the callout-create is abandoned). Mirrors the MUI create rule.
-  const memoFramingUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
-  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
+  // Image upload (toolbar upload button + paste/drop) is offered only in EDIT mode, where it targets
+  // the callout's own bucket (scoped by `CalloutEditConnector`). During CREATE the callout (and its
+  // bucket) doesn't exist yet, so — matching the legacy MUI callout form — the markdown editors offer
+  // only "add image by link": omitting `onImageUpload` hides the upload button (the URL field stays)
+  // and disables paste-to-upload. Embeds and validation messages stay available either way.
+  const ambientStorageConfig = useStorageConfigContext();
+  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: false });
+  const editorMarkdownUpload = {
+    onImageUpload: mode === 'edit' ? markdownIntegration.onImageUpload : undefined,
+    iframeAllowedUrls: markdownIntegration.iframeAllowedUrls,
+    onError: markdownIntegration.onError,
+  };
+  // Reference (file) attachments follow the same rule — only offered on edit, where the bucket exists.
+  const referenceUpload = useReferenceFileUpload(mode === 'edit' ? ambientStorageConfig : undefined);
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
@@ -578,9 +586,9 @@ export function CalloutFormConnector({
             value={values.description}
             onChange={v => setField('description', v)}
             placeholder={t('forms.descriptionPlaceholder')}
-            onImageUpload={markdownIntegration.onImageUpload}
-            iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
-            onError={markdownIntegration.onError}
+            onImageUpload={editorMarkdownUpload.onImageUpload}
+            iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
+            onError={editorMarkdownUpload.onError}
           />
         }
         framingZoneSlot={
@@ -644,7 +652,7 @@ export function CalloutFormConnector({
               }}
               memoMarkdown={values.memoMarkdown}
               onMemoMarkdownChange={v => setField('memoMarkdown', v)}
-              memoUpload={memoFramingUpload}
+              memoUpload={editorMarkdownUpload}
               mediaGalleryVisuals={values.mediaGalleryVisuals}
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
               collaboraDocumentType={values.collaboraDocumentType}
@@ -737,7 +745,7 @@ export function CalloutFormConnector({
         type={values.responseType}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
-        markdownUpload={mode === 'edit' ? markdownIntegration : memoFramingUpload}
+        markdownUpload={editorMarkdownUpload}
       />
       {mode === 'create' && (
         <TemplateImportConnector

@@ -44,7 +44,10 @@ fragment Callout on Callout {
   settings {
     visibility
     contribution {
+      enabled
       allowedTypes
+      canAddContributions
+      commentsEnabled
     }
   }
 }

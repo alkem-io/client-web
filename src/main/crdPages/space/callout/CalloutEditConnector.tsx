@@ -1,4 +1,5 @@
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CalloutFormConnector } from './CalloutFormConnector';
 
 type CalloutEditConnectorProps = {
@@ -29,13 +30,18 @@ export function CalloutEditConnector({
   editCallout,
 }: CalloutEditConnectorProps) {
   return (
-    <CalloutFormConnector
-      open={open}
-      onOpenChange={onOpenChange}
-      mode="edit"
-      calloutId={calloutId}
-      calloutsSetId={calloutsSetId}
-      editCallout={editCallout}
-    />
+    // Scope description/reference uploads to the callout's own framing bucket (where an editor has
+    // permanent FileUpload), not the ambient space bucket. Mirrors the legacy MUI `EditCalloutDialog`
+    // (`locationType="callout"`). Create mode keeps the ambient space bucket + temporaryLocation.
+    <StorageConfigContextProvider locationType="callout" calloutId={calloutId} skip={!open}>
+      <CalloutFormConnector
+        open={open}
+        onOpenChange={onOpenChange}
+        mode="edit"
+        calloutId={calloutId}
+        calloutsSetId={calloutsSetId}
+        editCallout={editCallout}
+      />
+    </StorageConfigContextProvider>
   );
 }
