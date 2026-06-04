@@ -116,6 +116,7 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     commentsEnabled: settings.framing.commentsEnabled,
     defaultPostDescription: contributionDefaults.postDescription || undefined,
     defaultWhiteboardContent: contributionDefaults.whiteboardContent || undefined,
+    defaultWhiteboardName: contributionDefaults.defaultDisplayName || undefined,
   };
 }
 

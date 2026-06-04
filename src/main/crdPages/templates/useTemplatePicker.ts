@@ -176,6 +176,7 @@ export function useTemplatePicker({
     onSearchChange: setSearch,
     loading: false,
     onPreview,
+    previewId: previewId ?? undefined,
     previewContent: previewId ? previewContent : undefined,
     previewLoading,
     allowedTypes,
