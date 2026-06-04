@@ -36,7 +36,10 @@
       "sent": "Einladung gesendet",
       "alreadyInvited": "Bereits eingeladen",
       "parentNotAuthorized": "Einladung nicht möglich — die Person müsste auch dem übergeordneten Space beitreten, und Sie haben dort keine Einladungsberechtigung.",
-      "error": "Fehlgeschlagen: {{message}}"
+      "error": "Einladung fehlgeschlagen."
+    },
+    "toast": {
+      "someFailed": "{{count}} Einladungen konnten nicht gesendet werden — Details siehe Ergebnisse."
     }
   },
   "inviteVc": {

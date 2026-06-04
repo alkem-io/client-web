@@ -36,7 +36,10 @@
       "sent": "Invitación enviada",
       "alreadyInvited": "Ya invitado",
       "parentNotAuthorized": "No se puede invitar: también tendría que unirse al espacio principal y no tienes permiso para invitar allí.",
-      "error": "Falló: {{message}}"
+      "error": "Error al enviar la invitación."
+    },
+    "toast": {
+      "someFailed": "No se pudieron enviar {{count}} invitaciones — consulta los resultados para más detalles."
     }
   },
   "inviteVc": {

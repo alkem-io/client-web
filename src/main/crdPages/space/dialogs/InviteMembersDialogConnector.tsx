@@ -237,21 +237,37 @@ export function InviteMembersDialogConnector({
 
   const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
+  // Each outcome's label is a complete sentence. Shared by the result rows and
+  // the completion toast so the wording stays in one place.
+  const resultOutcomeLabels = {
+    sent: t('inviteMembers.results.sent'),
+    alreadyInvited: t('inviteMembers.results.alreadyInvited'),
+    parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
+    error: t('inviteMembers.results.error'),
+  } satisfies Record<InvitationResult['outcome'], string>;
+
   const buildResults = (
     submittedInvitees: ContributorSelectorInvitee[],
     legacyResults: Awaited<ReturnType<typeof inviteContributorsOnRoleSet>>
   ): InvitationResult[] => {
-    // The legacy mutation returns one InvitationResultModel per invitee; we
-    // re-correlate by display name (users) or email (platform invitees).
+    // The mutation returns one result per invitee. Successful results carry the
+    // created `invitation`/`platformInvitation`, so we correlate those by
+    // actor id / email. Failure results (e.g. INVITATION_TO_PARENT_NOT_AUTHORIZED)
+    // come back with BOTH null, so they can't be matched that way — consume each
+    // result once and fall back to the next id-less result for those invitees.
+    const remaining = [...legacyResults];
+    const take = (predicate: (r: (typeof legacyResults)[number]) => boolean) => {
+      const idx = remaining.findIndex(predicate);
+      return idx === -1 ? undefined : remaining.splice(idx, 1)[0];
+    };
     return submittedInvitees.map(invitee => {
-      const legacyResult = legacyResults.find(r => {
-        if (invitee.kind === 'user') {
-          return r.invitation?.actor?.id === invitee.userId;
-        }
-        return r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase();
-      });
+      const matched =
+        invitee.kind === 'user'
+          ? take(r => r.invitation?.actor?.id === invitee.userId)
+          : take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase());
+      const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
       if (!legacyResult) {
-        return { invitee, outcome: 'error' as const, errorMessage: 'No result returned' };
+        return { invitee, outcome: 'error' as const };
       }
       // TODO(backend-codegen): the running backend's `RoleSetInvitationResultType`
       // still ships 5 values, so the two newer per-invitee results can't be
@@ -299,7 +315,19 @@ export function InviteMembersDialogConnector({
           welcomeMessage,
           extraRoles: extraRoles.map(role => ROLE_TO_NAME[role]),
         });
-        setResults(buildResults(validInvitees, legacyResults));
+        const built = buildResults(validInvitees, legacyResults);
+        setResults(built);
+        // The result rows show per-invitee detail, but a non-sent outcome is easy
+        // to miss inside the dialog — surface a toast too. A single failure shows
+        // its specific reason; a batch with several shows a count.
+        const failures = built.filter(r => r.outcome !== 'sent');
+        if (failures.length > 0) {
+          const message =
+            failures.length === 1
+              ? resultOutcomeLabels[failures[0].outcome]
+              : t('inviteMembers.toast.someFailed', { count: failures.length });
+          notify(message, 'error');
+        }
       } catch (_err) {
         notify(t('inviteMembers.errors.networkFailure'), 'error');
         // Stay on the form view with chips intact (per spec FR-007 edge case).
@@ -382,12 +410,7 @@ export function InviteMembersDialogConnector({
         backButtonLabel: t('inviteMembers.dialog.backButtonLabel'),
         closeButtonLabel: t('inviteMembers.dialog.closeButtonLabel'),
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
-        resultOutcomeLabels: {
-          sent: t('inviteMembers.results.sent'),
-          alreadyInvited: t('inviteMembers.results.alreadyInvited'),
-          parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
-          error: t('inviteMembers.results.error', { message: '' }),
-        },
+        resultOutcomeLabels,
       }}
     />
   );

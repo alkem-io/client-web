@@ -17,13 +17,11 @@ export type InviteRole = 'Member' | 'Lead' | 'Admin';
 export type InvitationResult = {
   invitee: ContributorSelectorInvitee;
   /**
-   * `parentNotAuthorized` maps the server's `INVITATION_TO_PARENT_NOT_AUTHORIZED`
-   * result — the invitee would also need to join the parent space and the
-   * inviter lacks invite rights there. Its label carries the full explanation,
-   * so (unlike `error`) no `errorMessage` is appended.
+   * Each outcome's label is a complete, self-contained sentence (e.g.
+   * `parentNotAuthorized` explains the inviter lacks parent-invite rights), so
+   * the result row renders the label as-is — no extra message is appended.
    */
   outcome: 'sent' | 'alreadyInvited' | 'parentNotAuthorized' | 'error';
-  errorMessage?: string;
 };
 
 export type InviteMembersDialogLabels = {
@@ -317,10 +315,7 @@ function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcome
         </p>
         <p className={cn('text-caption flex items-center gap-1', tone)}>
           <Icon className="size-3.5 shrink-0" aria-hidden="true" />
-          <span className="truncate">
-            {outcomeLabel}
-            {result.outcome === 'error' && result.errorMessage ? `: ${result.errorMessage}` : ''}
-          </span>
+          <span className="truncate">{outcomeLabel}</span>
         </p>
       </div>
     </li>

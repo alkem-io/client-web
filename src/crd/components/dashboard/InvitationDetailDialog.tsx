@@ -89,34 +89,39 @@ function InvitationDetailDialog({
 
         <div className="flex-1 min-h-0 overflow-y-auto py-1">
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* Space card */}
-            <a
-              href={invitation.spaceHref}
-              className="shrink-0 sm:w-[200px] rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none flex flex-col items-center text-center gap-2"
-            >
-              <Avatar className="size-16 rounded-lg">
-                {invitation.spaceAvatarUrl ? (
-                  <AvatarImage
-                    src={invitation.spaceAvatarUrl}
-                    alt={invitation.spaceName}
-                    className="rounded-lg object-cover"
-                  />
-                ) : null}
-                <AvatarFallback
-                  className={cn('rounded-lg text-subsection-title', invitation.color && 'text-white')}
-                  color={invitation.color}
-                >
-                  {getInitials(invitation.spaceName)}
-                </AvatarFallback>
-              </Avatar>
-              <p className="text-card-title leading-tight">{invitation.spaceName}</p>
-              {invitation.spaceTagline && (
-                <p className="text-caption text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
-              )}
+            {/* Space card. The tag list is intentionally OUTSIDE the link: it
+                contains an interactive `+N` popover button (invalid inside an
+                <a>), and tag/`+N` clicks must reveal the hidden tags rather than
+                navigate to the space — only the avatar/name/tagline navigate. */}
+            <div className="shrink-0 sm:w-[200px] rounded-lg border border-border bg-card p-4 flex flex-col items-center text-center gap-2">
+              <a
+                href={invitation.spaceHref}
+                className="-m-2 p-2 w-full rounded-md transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none flex flex-col items-center text-center gap-2"
+              >
+                <Avatar className="size-16 rounded-lg">
+                  {invitation.spaceAvatarUrl ? (
+                    <AvatarImage
+                      src={invitation.spaceAvatarUrl}
+                      alt={invitation.spaceName}
+                      className="rounded-lg object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback
+                    className={cn('rounded-lg text-subsection-title', invitation.color && 'text-white')}
+                    color={invitation.color}
+                  >
+                    {getInitials(invitation.spaceName)}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="text-card-title leading-tight">{invitation.spaceName}</p>
+                {invitation.spaceTagline && (
+                  <p className="text-caption text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
+                )}
+              </a>
               {invitation.spaceTags.length > 0 && (
                 <CollapsibleTagList tags={invitation.spaceTags} className="justify-center mt-1" />
               )}
-            </a>
+            </div>
 
             {/* Content area */}
             <div className="flex-1 min-w-0 space-y-3">

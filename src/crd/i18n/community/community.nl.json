@@ -36,7 +36,10 @@
       "sent": "Uitnodiging verstuurd",
       "alreadyInvited": "Al uitgenodigd",
       "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
-      "error": "Mislukt: {{message}}"
+      "error": "Uitnodiging mislukt."
+    },
+    "toast": {
+      "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."
     }
   },
   "inviteVc": {

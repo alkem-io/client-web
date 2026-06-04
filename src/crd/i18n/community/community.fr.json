@@ -36,7 +36,10 @@
       "sent": "Invitation envoyée",
       "alreadyInvited": "Déjà invité",
       "parentNotAuthorized": "Invitation impossible — la personne devrait aussi rejoindre l'espace parent, et vous n'avez pas la permission d'y inviter.",
-      "error": "Échec : {{message}}"
+      "error": "Échec de l'invitation."
+    },
+    "toast": {
+      "someFailed": "{{count}} invitations n'ont pas pu être envoyées — consultez les résultats pour plus de détails."
     }
   },
   "inviteVc": {

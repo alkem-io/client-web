@@ -15,6 +15,14 @@ export type UseSpaceApplyFlowParams = {
   spaceProfileUrl: string;
   communityName: string;
   parentSpaceId?: string;
+  /**
+   * Post-successful-join callback. When omitted (banner/dashboard button) the
+   * default navigates into the space. When the button lives inside the About
+   * dialog, pass the dialog's `onClose` so joining closes it via the normal
+   * Radix close path — otherwise the default route-change navigate yanks the
+   * still-open modal and leaves `pointer-events:none` stuck on the page.
+   */
+  onJoined?: () => void;
 };
 
 export type UseSpaceApplyFlowResult = {
@@ -29,6 +37,7 @@ export function useSpaceApplyFlow({
   spaceProfileUrl,
   communityName,
   parentSpaceId,
+  onJoined,
 }: UseSpaceApplyFlowParams): UseSpaceApplyFlowResult {
   const navigate = useNavigate();
 
@@ -41,7 +50,8 @@ export function useSpaceApplyFlow({
   const { applicationButtonProps, loading } = useApplicationButton({
     spaceId,
     parentSpaceId,
-    onJoin: () => navigate(spaceProfileUrl),
+    // On success, either close the hosting dialog (About) or navigate into the space.
+    onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });
 
   const preAppDialogVariant = isApplicationPending(applicationButtonProps.parentApplicationState)
@@ -65,7 +75,10 @@ export function useSpaceApplyFlow({
     loading: applicationButtonProps.loading || loading,
     onLoginClick: () => navigate(buildLoginUrl(applicationButtonProps.applyUrl ?? spaceProfileUrl)),
     onApplyClick: () => setIsApplyDialogOpen(true),
-    onJoinClick: () => setIsApplyDialogOpen(true),
+    // Joining is a direct, non-destructive action (the user already has join
+    // rights), so skip the confirmation dialog and join immediately — the empty
+    // "You're about to join" step added nothing. Apply still opens its form dialog.
+    onJoinClick: () => applicationButtonProps.onJoin(),
     onAcceptInvitationClick: () => setIsInvitationDialogOpen(true),
     onApplyParentClick: () => setIsPreAppDialogOpen(true),
     onJoinParentClick: () => setIsPreJoinDialogOpen(true),

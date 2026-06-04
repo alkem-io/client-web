@@ -36,7 +36,10 @@
       "sent": "Invitation sent",
       "alreadyInvited": "Already invited",
       "parentNotAuthorized": "Can't invite — they'd also need to join the parent space, and you don't have permission to invite there.",
-      "error": "Failed: {{message}}"
+      "error": "Invitation failed."
+    },
+    "toast": {
+      "someFailed": "{{count}} invitations couldn't be sent — see the results for details."
     }
   },
   "inviteVc": {
