@@ -12163,12 +12163,12 @@ export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddReactionMutationVariables
 >;
 export const ForumMentionableContributorsDocument = gql`
-    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30) {
+    query ForumMentionableContributors($filter: ContributorFilterInput, $limit: Int = 30, $types: [ActorType!]!) {
   platform {
     id
     forum {
       id
-      mentionableContributors(filter: $filter, limit: $limit) {
+      mentionableContributors(filter: $filter, limit: $limit, types: $types) {
         id
         type
         nameID
@@ -12205,14 +12205,16 @@ export const ForumMentionableContributorsDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      limit: // value for 'limit'
+ *      types: // value for 'types'
  *   },
  * });
  */
 export function useForumMentionableContributorsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ForumMentionableContributorsQuery,
     SchemaTypes.ForumMentionableContributorsQueryVariables
-  >
+  > &
+    ({ variables: SchemaTypes.ForumMentionableContributorsQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -12258,7 +12260,7 @@ export type ForumMentionableContributorsQueryResult = Apollo.QueryResult<
   SchemaTypes.ForumMentionableContributorsQueryVariables
 >;
 export function refetchForumMentionableContributorsQuery(
-  variables?: SchemaTypes.ForumMentionableContributorsQueryVariables
+  variables: SchemaTypes.ForumMentionableContributorsQueryVariables
 ) {
   return { query: ForumMentionableContributorsDocument, variables: variables };
 }
