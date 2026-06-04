@@ -165,10 +165,14 @@ export default function CrdSubspacePageLayout() {
 
   const sidebarCommonProps = {
     ...data.sidebar,
-    onEditClick: () => {
-      setMobileMenuOpen(false);
-      navigate(`${data.subspaceUrl}/settings/about`);
-    },
+    // Only offer the edit pencil to users with Update on the subspace — otherwise it just lands
+    // on the access-restricted page.
+    onEditClick: data.canUpdate
+      ? () => {
+          setMobileMenuOpen(false);
+          navigate(`${data.subspaceUrl}/settings/about`);
+        }
+      : undefined,
     onAboutClick: () => {
       setMobileMenuOpen(false);
       setAboutOpen(true);
