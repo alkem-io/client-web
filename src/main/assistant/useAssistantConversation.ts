@@ -32,7 +32,20 @@ const MAX_RECONNECTS = 1;
 export const useAssistantConversation = () => {
   const { t } = useTranslation();
   const { state, dispatch, panelContext } = useAssistantContext();
-  const { start, cancel } = useAssistantStream();
+  const { start, cancel: cancelStream } = useAssistantStream();
+
+  /**
+   * Stop the current turn (the Stop button). Aborting the fetch alone is NOT
+   * enough: the abort resolves the stream silently (no `done`/`error` dispatch),
+   * so `state.isStreaming` would stay true and the UI would look frozen — "Stop
+   * does nothing". Reset the streaming state here so the composer returns
+   * immediately. (The server turn may keep running orphaned; rehydrate reconciles
+   * the final state on the next open.)
+   */
+  const cancel = () => {
+    cancelStream();
+    dispatch({ type: 'end-turn' });
+  };
   // The current in-flight request + how many times it has been reconnected.
   const inFlightRef = useRef<InFlightRequest | null>(null);
   const reconnectsRef = useRef(0);
@@ -178,8 +191,10 @@ export const useAssistantConversation = () => {
    * round-trip — it is NOT what drives the server's routing.
    */
   const startNewConversation = async (): Promise<void> => {
-    // Abort any in-flight turn before switching threads.
-    cancel();
+    // Abort any in-flight turn before switching threads. Use the raw stream abort
+    // (not the public `cancel`): the `reset` dispatch below already clears
+    // isStreaming, so an extra `end-turn` would be redundant.
+    cancelStream();
     reconnectsRef.current = 0;
     lastEventIdRef.current = null;
     inFlightRef.current = null;
