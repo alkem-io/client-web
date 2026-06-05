@@ -141,20 +141,25 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  // Image upload (toolbar upload button + paste/drop) is offered only in EDIT mode, where it targets
-  // the callout's own bucket (scoped by `CalloutEditConnector`). During CREATE the callout (and its
-  // bucket) doesn't exist yet, so — matching the legacy MUI callout form — the markdown editors offer
-  // only "add image by link": omitting `onImageUpload` hides the upload button (the URL field stays)
-  // and disables paste-to-upload. Embeds and validation messages stay available either way.
+  // Image (markdown toolbar + paste/drop) and reference-file upload both work in CREATE and EDIT, and
+  // both follow the same `temporaryLocation` rule, keyed off `mode`:
+  //   • CREATE → `temporaryLocation: true`. The callout doesn't exist yet, so uploads go to the ambient
+  //     SPACE bucket's temporary area; the server relocates the file into the callout's bucket on save.
+  //     Temporary uploads are also what lets a regular member (no permanent FileUpload on the space
+  //     bucket) attach files while creating.
+  //   • EDIT → `temporaryLocation: false`. The ambient bucket is the callout's own (scoped by
+  //     `CalloutEditConnector`, `locationType="callout"`) and the editor can write to it directly.
+  // This mirrors the legacy MUI callout form (`temporaryLocation={!callout?.id}`) and the sibling
+  // `CrdPostContributionDialog`, and satisfies spec 042 callout-dialog FR-31 / FR-50.
+  const temporaryUpload = mode === 'create';
   const ambientStorageConfig = useStorageConfigContext();
-  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: false });
+  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: temporaryUpload });
   const editorMarkdownUpload = {
-    onImageUpload: mode === 'edit' ? markdownIntegration.onImageUpload : undefined,
+    onImageUpload: markdownIntegration.onImageUpload,
     iframeAllowedUrls: markdownIntegration.iframeAllowedUrls,
     onError: markdownIntegration.onError,
   };
-  // Reference (file) attachments follow the same rule — only offered on edit, where the bucket exists.
-  const referenceUpload = useReferenceFileUpload(mode === 'edit' ? ambientStorageConfig : undefined);
+  const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
