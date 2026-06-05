@@ -577,6 +577,10 @@ export function useTemplateForms({
             calloutForm.values,
             result.data?.createTemplate?.callout?.framing?.whiteboard
           );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
+        try {
           await uploadCalloutMediaGallery(
             calloutForm.values,
             result.data?.createTemplate?.callout?.framing?.mediaGallery?.id
