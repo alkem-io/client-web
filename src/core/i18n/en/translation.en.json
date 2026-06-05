@@ -3779,7 +3779,7 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this $t(common.whiteboard). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
-        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.whiteboard). The owner is not available anymore, but you can ask an administrator of the $t(common.space), to change the Share $t(common.settings) if you want to contribute.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.whiteboard). The owner is not available anymore, but you can ask an administrator of the $t(common.space) to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
