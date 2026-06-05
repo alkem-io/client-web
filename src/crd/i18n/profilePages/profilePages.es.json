@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} miembros"
     },
     "empty": {
+      "resourcesHosted": "Aún no aloja ningún recurso.",
       "leading": "Aún no lidera ningún espacio.",
       "membership": "Aún sin afiliaciones."
     },
@@ -93,6 +94,7 @@
       "memberOf": "Todas las afiliaciones"
     },
     "empty": {
+      "resourcesHosted": "Aún no aloja ningún recurso.",
       "leading": "Aún no lidera ningún espacio."
     },
     "vcType": "Colaborador virtual"

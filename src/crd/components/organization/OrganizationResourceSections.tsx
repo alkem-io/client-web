@@ -35,6 +35,7 @@ export type OrganizationResourceSectionsProps = {
     customHomepagesSubsection: string;
     spacesLeading: string;
     memberOf: string;
+    emptyResourcesHosted: string;
     emptyLeading: string;
     /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
     emptyMembership: string;
@@ -54,6 +55,20 @@ export function OrganizationResourceSections({
   labels,
 }: OrganizationResourceSectionsProps) {
   if (activeTab === 'resourcesHosted') {
+    const hasHostedResources =
+      hostedSpaces.length > 0 ||
+      hostedVirtualContributors.length > 0 ||
+      hostedInnovationPacks.length > 0 ||
+      hostedInnovationHubs.length > 0;
+
+    if (!hasHostedResources) {
+      return (
+        <section>
+          <p className="text-body text-muted-foreground">{labels.emptyResourcesHosted}</p>
+        </section>
+      );
+    }
+
     return (
       <div className="space-y-10">
         {hostedSpaces.length > 0 ? (
