@@ -40,18 +40,20 @@ export function CrdRedirectDialog({
 }: CrdRedirectDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Lock aria-hidden="true" className="size-5 text-muted-foreground" />
             {title}
           </DialogTitle>
+        </DialogHeader>
+        <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
           <DialogDescription asChild={true}>
             <div className="text-body text-muted-foreground">{message}</div>
           </DialogDescription>
-        </DialogHeader>
-        {ancestorSlot && <div className="py-2">{ancestorSlot}</div>}
-        <DialogFooter className="flex-row items-center justify-between gap-2 sm:justify-between">
+          {ancestorSlot && <div className="py-2">{ancestorSlot}</div>}
+        </div>
+        <DialogFooter className="shrink-0 flex-row items-center justify-between gap-2 sm:justify-between">
           <span className="text-caption text-muted-foreground">
             {!cancelled && countdownLabel && (
               <>

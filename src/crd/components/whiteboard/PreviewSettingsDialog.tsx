@@ -57,13 +57,17 @@ export function PreviewSettingsDialog({
     >
       {/* `z-[70]` (content + overlay): opened on top of the whiteboard editor shell (`z-[60]`),
           so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
-      <DialogContent className="z-[70] sm:max-w-md" overlayClassName="z-[70]" closeLabel={t('preview.crop.cancel')}>
-        <DialogHeader>
+      <DialogContent
+        className="z-[70] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden"
+        overlayClassName="z-[70]"
+        closeLabel={t('preview.crop.cancel')}
+      >
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('preview.settings.title')}</DialogTitle>
           <p className="text-body text-muted-foreground">{t('preview.settings.subtitle')}</p>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
           {modes.map(mode => {
             const config = modeConfig[mode];
             const Icon = config.icon;
@@ -98,7 +102,7 @@ export function PreviewSettingsDialog({
           })}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end shrink-0">
           <Button variant="outline" onClick={onClose}>
             {t('preview.crop.cancel')}
           </Button>

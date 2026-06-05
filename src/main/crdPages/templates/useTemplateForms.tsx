@@ -569,14 +569,25 @@ export function useTemplateForms({
         const result = await createTemplate({
           variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
         });
-        await uploadCalloutWhiteboardPreview(
-          calloutForm.values,
-          result.data?.createTemplate?.callout?.framing?.whiteboard
-        );
-        await uploadCalloutMediaGallery(
-          calloutForm.values,
-          result.data?.createTemplate?.callout?.framing?.mediaGallery?.id
-        );
+        // Best-effort post-create uploads: the template already exists, so an upload failure must not
+        // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
+        // copy path; upload errors surface via the Apollo error link / global handler.
+        try {
+          await uploadCalloutWhiteboardPreview(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.whiteboard
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
+        try {
+          await uploadCalloutMediaGallery(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.mediaGallery?.id
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
         return;
       }
     }

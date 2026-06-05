@@ -105,13 +105,13 @@ export const CrdAddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('settings.spaces.addDialog.title')}</DialogTitle>
           <DialogDescription>{t('settings.spaces.addDialog.description')}</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="space-y-1.5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
+          <div className="space-y-1.5 flex-1 min-h-0 overflow-y-auto">
             <Label htmlFor="add-space-by-url-input">{t('settings.spaces.addDialog.title')}</Label>
             <Input
               id="add-space-by-url-input"
@@ -136,7 +136,7 @@ export const CrdAddSpaceByUrlDialog = ({ open, onClose, onAdd, existingSpaceIds 
               </p>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="shrink-0">
             <Button type="button" variant="ghost" onClick={handleClose}>
               {t('settings.spaces.addDialog.cancel')}
             </Button>

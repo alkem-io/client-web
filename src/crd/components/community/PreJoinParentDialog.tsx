@@ -30,8 +30,8 @@ export function PreJoinParentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-md', className)}>
-        <DialogTitle>
+      <DialogContent className={cn('sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden', className)}>
+        <DialogTitle className="shrink-0">
           <Trans
             i18nKey="components.application-button.dialog-join-parent.title"
             values={{ parentCommunityName }}
@@ -39,7 +39,7 @@ export function PreJoinParentDialog({
           />
         </DialogTitle>
         <DialogDescription asChild={true}>
-          <div>
+          <div className="flex-1 min-h-0 overflow-y-auto">
             <Trans
               i18nKey="components.application-button.dialog-join-parent.body"
               values={{ spaceName: parentCommunityName, parentCommunityName, subspaceName }}
@@ -47,7 +47,7 @@ export function PreJoinParentDialog({
             />
           </div>
         </DialogDescription>
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           {parentApplyUrl ? (
             <a
               href={parentApplyUrl}

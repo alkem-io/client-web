@@ -154,66 +154,71 @@ export function InviteMembersDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-2xl', className)} closeLabel={labels.closeAriaLabel}>
-        <DialogTitle>{labels.title}</DialogTitle>
+      <DialogContent
+        className={cn('sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden', className)}
+        closeLabel={labels.closeAriaLabel}
+      >
+        <DialogTitle className="shrink-0">{labels.title}</DialogTitle>
 
         {view === 'form' ? (
           <>
-            <DialogDescription>{labels.searchHint}</DialogDescription>
+            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+              <DialogDescription>{labels.searchHint}</DialogDescription>
 
-            <ContributorSelector
-              selectedContributors={selectedContributors}
-              searchResults={searchResults}
-              searchQuery={searchQuery}
-              onSearchChange={onSearchChange}
-              onSelectUser={onSelectUser}
-              onAddEmails={onAddEmails}
-              onRemoveContributor={onRemoveContributor}
-              loading={searchLoading}
-              hasMore={hasMoreSearchResults}
-              onLoadMore={onLoadMoreSearchResults}
-              allowEmailInvites={allowEmailInvites}
-              placeholder={labels.searchPlaceholder}
-              searchAriaLabel={labels.searchAriaLabel}
-              noResultsLabel={labels.noResultsLabel}
-              loadingLabel={labels.loadingLabel}
-              loadMoreLabel={labels.loadMoreLabel}
-              removeAriaLabel={labels.removeAriaLabel}
-              validationErrorLabel={labels.validationErrorLabel}
-            />
-
-            <div className="flex flex-col gap-2">
-              <label className="text-body-emphasis text-foreground" htmlFor="invite-members-welcome">
-                {labels.welcomeMessageLabel}
-              </label>
-              <Textarea
-                id="invite-members-welcome"
-                value={welcomeMessage}
-                onChange={e => onWelcomeMessageChange(e.target.value)}
-                placeholder={labels.welcomeMessagePlaceholder}
-                className="min-h-[6rem]"
-                aria-label={labels.welcomeMessageLabel}
-                disabled={sending}
+              <ContributorSelector
+                selectedContributors={selectedContributors}
+                searchResults={searchResults}
+                searchQuery={searchQuery}
+                onSearchChange={onSearchChange}
+                onSelectUser={onSelectUser}
+                onAddEmails={onAddEmails}
+                onRemoveContributor={onRemoveContributor}
+                loading={searchLoading}
+                hasMore={hasMoreSearchResults}
+                onLoadMore={onLoadMoreSearchResults}
+                allowEmailInvites={allowEmailInvites}
+                placeholder={labels.searchPlaceholder}
+                searchAriaLabel={labels.searchAriaLabel}
+                noResultsLabel={labels.noResultsLabel}
+                loadingLabel={labels.loadingLabel}
+                loadMoreLabel={labels.loadMoreLabel}
+                removeAriaLabel={labels.removeAriaLabel}
+                validationErrorLabel={labels.validationErrorLabel}
               />
+
+              <div className="flex flex-col gap-2">
+                <label className="text-body-emphasis text-foreground" htmlFor="invite-members-welcome">
+                  {labels.welcomeMessageLabel}
+                </label>
+                <Textarea
+                  id="invite-members-welcome"
+                  value={welcomeMessage}
+                  onChange={e => onWelcomeMessageChange(e.target.value)}
+                  placeholder={labels.welcomeMessagePlaceholder}
+                  className="min-h-[6rem]"
+                  aria-label={labels.welcomeMessageLabel}
+                  disabled={sending}
+                />
+              </div>
+
+              {errorSlot}
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
+                <RoleMultiSelect<InviteRole>
+                  value={extraRoles}
+                  onChange={onExtraRolesChange}
+                  lockedRoles={LOCKED_ROLES}
+                  optionalRoles={OPTIONAL_ROLES}
+                  roleLabels={labels.roleLabels}
+                  triggerLabel={labels.inviteToRoleLabel}
+                  triggerAriaLabel={labels.rolePopoverAriaLabel}
+                  helperText={labels.rolePopoverHelper}
+                />
+              </div>
             </div>
 
-            {errorSlot}
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
-              <RoleMultiSelect<InviteRole>
-                value={extraRoles}
-                onChange={onExtraRolesChange}
-                lockedRoles={LOCKED_ROLES}
-                optionalRoles={OPTIONAL_ROLES}
-                roleLabels={labels.roleLabels}
-                triggerLabel={labels.inviteToRoleLabel}
-                triggerAriaLabel={labels.rolePopoverAriaLabel}
-                helperText={labels.rolePopoverHelper}
-              />
-            </div>
-
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-2 shrink-0">
               <Button type="button" disabled={sendDisabled} aria-busy={sending} onClick={onSend} className="gap-2">
                 <Send className="size-4" aria-hidden="true" />
                 {sending ? labels.sendingButtonLabel : labels.sendButtonLabel}
@@ -255,10 +260,10 @@ function ResultView({
 }) {
   return (
     <>
-      <DialogDescription>
+      <DialogDescription className="shrink-0">
         {results.length} invitation{results.length === 1 ? '' : 's'} processed for {spaceName}.
       </DialogDescription>
-      <ul className="flex flex-col gap-2 max-h-[20rem] overflow-y-auto">
+      <ul className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
         {results.map((result, index) => (
           <ResultRow
             // biome-ignore lint/suspicious/noArrayIndexKey: results array is stable for the lifetime of the result view
@@ -268,7 +273,7 @@ function ResultView({
           />
         ))}
       </ul>
-      <div className="flex justify-end gap-2 pt-2">
+      <div className="flex justify-end gap-2 pt-2 shrink-0">
         <Button type="button" variant="outline" onClick={onBack}>
           {backLabel}
         </Button>

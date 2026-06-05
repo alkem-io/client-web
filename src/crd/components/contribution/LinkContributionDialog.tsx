@@ -374,11 +374,11 @@ function LinkEditDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
             <DialogTitle>{t('callout.editLink')}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
             <div className="flex flex-col gap-1">
               <label htmlFor="crd-link-name" className="text-caption text-muted-foreground">
                 {t('callout.linkNameLabel')}
@@ -446,7 +446,7 @@ function LinkEditDialog({
               />
             </div>
           </div>
-          <DialogFooter className="sm:justify-between">
+          <DialogFooter className="shrink-0 sm:justify-between">
             {onDelete ? (
               <Button
                 variant="ghost"
