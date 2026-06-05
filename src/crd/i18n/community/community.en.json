@@ -35,6 +35,8 @@
     "results": {
       "sent": "Invitation sent",
       "alreadyInvited": "Already invited",
+      "alreadyMember": "Already a member of this space",
+      "alreadyHasApplication": "Already has an open application to this space",
       "parentNotAuthorized": "Can't invite — they'd also need to join the parent space, and you don't have permission to invite there.",
       "error": "Invitation failed."
     },

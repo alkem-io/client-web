@@ -35,6 +35,8 @@
     "results": {
       "sent": "Invitación enviada",
       "alreadyInvited": "Ya invitado",
+      "alreadyMember": "Ya es miembro de este espacio",
+      "alreadyHasApplication": "Ya tiene una solicitud pendiente en este espacio",
       "parentNotAuthorized": "No se puede invitar: también tendría que unirse al espacio principal y no tienes permiso para invitar allí.",
       "error": "Error al enviar la invitación."
     },

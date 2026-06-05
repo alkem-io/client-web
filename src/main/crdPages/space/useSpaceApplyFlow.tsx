@@ -6,6 +6,7 @@ import { PreJoinParentDialog } from '@/crd/components/community/PreJoinParentDia
 import type { SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
+import { ApplicationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { ApplyDialogConnector } from './about/ApplyDialogConnector';
 import { InvitationDetailConnector } from './about/InvitationDetailConnector';
@@ -46,6 +47,12 @@ export function useSpaceApplyFlow({
   const [isPreAppDialogOpen, setIsPreAppDialogOpen] = useState(false);
   const [isPreJoinDialogOpen, setIsPreJoinDialogOpen] = useState(false);
   const [isSubmittedDialogOpen, setIsSubmittedDialogOpen] = useState(false);
+  // Optimistic, session-only flag: the apply mutation returns no fresh
+  // membership state and we deliberately don't refetch on dialog open, so once
+  // the user applies we locally reflect the pending state. This keeps the button
+  // disabled until the next reload (when `useApplicationButton` reports the real
+  // pending application), preventing a duplicate apply that the server rejects.
+  const [hasApplied, setHasApplied] = useState(false);
 
   const { applicationButtonProps, loading } = useApplicationButton({
     spaceId,
@@ -64,7 +71,7 @@ export function useSpaceApplyFlow({
     isAuthenticated: applicationButtonProps.isAuthenticated,
     isMember: applicationButtonProps.isMember,
     isParentMember: applicationButtonProps.isParentMember,
-    applicationState: applicationButtonProps.applicationState,
+    applicationState: hasApplied ? ApplicationState.NEW : applicationButtonProps.applicationState,
     userInvitation: applicationButtonProps.userInvitation,
     parentApplicationState: applicationButtonProps.parentApplicationState,
     canJoinCommunity: applicationButtonProps.canJoinCommunity,
@@ -92,7 +99,10 @@ export function useSpaceApplyFlow({
         spaceId={spaceId}
         canJoinCommunity={applicationButtonProps.canJoinCommunity}
         onJoin={() => applicationButtonProps.onJoin()}
-        onApplied={() => setIsSubmittedDialogOpen(true)}
+        onApplied={() => {
+          setHasApplied(true);
+          setIsSubmittedDialogOpen(true);
+        }}
       />
       <ApplicationSubmittedDialog
         open={isSubmittedDialogOpen}

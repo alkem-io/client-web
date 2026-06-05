@@ -35,6 +35,8 @@
     "results": {
       "sent": "Uitnodiging verstuurd",
       "alreadyInvited": "Al uitgenodigd",
+      "alreadyMember": "Al lid van deze Space",
+      "alreadyHasApplication": "Heeft al een openstaande aanvraag voor deze Space",
       "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
       "error": "Uitnodiging mislukt."
     },

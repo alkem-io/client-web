@@ -1,4 +1,4 @@
-import { CheckCircle2, MailWarning, Send, UserMinus } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, MailWarning, Send, UserCheck, UserMinus } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import {
   ContributorSelector,
@@ -20,8 +20,13 @@ export type InvitationResult = {
    * Each outcome's label is a complete, self-contained sentence (e.g.
    * `parentNotAuthorized` explains the inviter lacks parent-invite rights), so
    * the result row renders the label as-is — no extra message is appended.
+   *
+   * `alreadyInvited`, `alreadyMember` and `alreadyHasApplication` are
+   * informational (the invite simply wasn't needed/possible), not failures, so
+   * they render in a neutral tone. Only `parentNotAuthorized` and `error` are
+   * treated as failures.
    */
-  outcome: 'sent' | 'alreadyInvited' | 'parentNotAuthorized' | 'error';
+  outcome: 'sent' | 'alreadyInvited' | 'alreadyMember' | 'alreadyHasApplication' | 'parentNotAuthorized' | 'error';
 };
 
 export type InviteMembersDialogLabels = {
@@ -291,13 +296,21 @@ function ResultView({
 
 function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
   const labelText = result.invitee.kind === 'user' ? result.invitee.displayName : result.invitee.email;
-  const Icon = result.outcome === 'sent' ? CheckCircle2 : result.outcome === 'alreadyInvited' ? UserMinus : MailWarning;
-  const tone =
+  const isNeutral =
+    result.outcome === 'alreadyInvited' ||
+    result.outcome === 'alreadyMember' ||
+    result.outcome === 'alreadyHasApplication';
+  const Icon =
     result.outcome === 'sent'
-      ? 'text-success'
-      : result.outcome === 'alreadyInvited'
-        ? 'text-muted-foreground'
-        : 'text-destructive';
+      ? CheckCircle2
+      : result.outcome === 'alreadyMember'
+        ? UserCheck
+        : result.outcome === 'alreadyHasApplication'
+          ? ClipboardCheck
+          : result.outcome === 'alreadyInvited'
+            ? UserMinus
+            : MailWarning;
+  const tone = result.outcome === 'sent' ? 'text-success' : isNeutral ? 'text-muted-foreground' : 'text-destructive';
 
   return (
     <li className="flex items-center gap-3 p-3 rounded-md border border-border">

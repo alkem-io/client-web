@@ -752,8 +752,10 @@
           "invitationsSent": "{{count}} invitations will be sent.",
           "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this $t(common.space)",
           "results": {
+            "ALREADY_HAS_OPEN_APPLICATION": "Already has an open application to this $t(common.space)",
             "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
             "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_MEMBER_OF_ROLE_SET": "Already a member of this $t(common.space)",
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent $t(common.community) was not authorized",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
             "INVITED_TO_ROLE_SET": "Invited to join the $t(common.community)"

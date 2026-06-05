@@ -35,6 +35,8 @@
     "results": {
       "sent": "Invitation envoyée",
       "alreadyInvited": "Déjà invité",
+      "alreadyMember": "Déjà membre de cet espace",
+      "alreadyHasApplication": "A déjà une candidature en cours pour cet espace",
       "parentNotAuthorized": "Invitation impossible — la personne devrait aussi rejoindre l'espace parent, et vous n'avez pas la permission d'y inviter.",
       "error": "Échec de l'invitation."
     },

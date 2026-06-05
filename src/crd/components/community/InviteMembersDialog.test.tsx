@@ -28,6 +28,8 @@ const labels: InviteMembersDialogLabels = {
   resultOutcomeLabels: {
     sent: 'Sent',
     alreadyInvited: 'Already invited',
+    alreadyMember: 'Already a member',
+    alreadyHasApplication: 'Already has an open application',
     parentNotAuthorized: "Can't invite to parent",
     error: 'Failed',
   },

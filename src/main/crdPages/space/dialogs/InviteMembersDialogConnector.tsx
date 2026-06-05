@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAvailableUsersForEntryRoleQuery, useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
@@ -242,6 +242,8 @@ export function InviteMembersDialogConnector({
   const resultOutcomeLabels = {
     sent: t('inviteMembers.results.sent'),
     alreadyInvited: t('inviteMembers.results.alreadyInvited'),
+    alreadyMember: t('inviteMembers.results.alreadyMember'),
+    alreadyHasApplication: t('inviteMembers.results.alreadyHasApplication'),
     parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
     error: t('inviteMembers.results.error'),
   } satisfies Record<InvitationResult['outcome'], string>;
@@ -269,23 +271,20 @@ export function InviteMembersDialogConnector({
       if (!legacyResult) {
         return { invitee, outcome: 'error' as const };
       }
-      // TODO(backend-codegen): the running backend's `RoleSetInvitationResultType`
-      // still ships 5 values, so the two newer per-invitee results can't be
-      // referenced yet without a TS no-overlap error. Once the enum regenerates,
-      // add before the final 'error' fallback:
-      //   : legacyResult.type === 'ALREADY_MEMBER_OF_ROLE_SET' ? 'alreadyMember'
-      //   : legacyResult.type === 'ALREADY_HAS_OPEN_APPLICATION' ? 'alreadyHasApplication'
-      // (the latter also needs `application { id }` added to the mutation selection
-      // for the "approve/decline it" deep-link).
       const outcome: InvitationResult['outcome'] =
-        legacyResult.type === 'INVITED_TO_ROLE_SET' || legacyResult.type === 'INVITED_TO_PLATFORM_AND_ROLE_SET'
+        legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet ||
+        legacyResult.type === RoleSetInvitationResultType.InvitedToPlatformAndRoleSet
           ? 'sent'
-          : legacyResult.type === 'ALREADY_INVITED_TO_ROLE_SET' ||
-              legacyResult.type === 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET'
+          : legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToRoleSet ||
+              legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToPlatformAndRoleSet
             ? 'alreadyInvited'
-            : legacyResult.type === 'INVITATION_TO_PARENT_NOT_AUTHORIZED'
-              ? 'parentNotAuthorized'
-              : 'error';
+            : legacyResult.type === RoleSetInvitationResultType.AlreadyMemberOfRoleSet
+              ? 'alreadyMember'
+              : legacyResult.type === RoleSetInvitationResultType.AlreadyHasOpenApplication
+                ? 'alreadyHasApplication'
+                : legacyResult.type === RoleSetInvitationResultType.InvitationToParentNotAuthorized
+                  ? 'parentNotAuthorized'
+                  : 'error';
       return { invitee, outcome };
     });
   };
@@ -318,15 +317,19 @@ export function InviteMembersDialogConnector({
         const built = buildResults(validInvitees, legacyResults);
         setResults(built);
         // The result rows show per-invitee detail, but a non-sent outcome is easy
-        // to miss inside the dialog — surface a toast too. A single failure shows
-        // its specific reason; a batch with several shows a count.
-        const failures = built.filter(r => r.outcome !== 'sent');
-        if (failures.length > 0) {
+        // to miss inside the dialog — surface a toast too. A single outcome shows
+        // its specific reason; a batch shows a count. `alreadyInvited`,
+        // `alreadyMember` and `alreadyHasApplication` are informational (the invite
+        // wasn't needed/possible), not failures, so they keep an 'info' severity —
+        // only a genuine failure turns the toast into an error.
+        const notSent = built.filter(r => r.outcome !== 'sent');
+        if (notSent.length > 0) {
+          const hasFailure = notSent.some(r => r.outcome === 'error' || r.outcome === 'parentNotAuthorized');
           const message =
-            failures.length === 1
-              ? resultOutcomeLabels[failures[0].outcome]
-              : t('inviteMembers.toast.someFailed', { count: failures.length });
-          notify(message, 'error');
+            notSent.length === 1
+              ? resultOutcomeLabels[notSent[0].outcome]
+              : t('inviteMembers.toast.someFailed', { count: notSent.length });
+          notify(message, hasFailure ? 'error' : 'info');
         }
       } catch (_err) {
         notify(t('inviteMembers.errors.networkFailure'), 'error');
