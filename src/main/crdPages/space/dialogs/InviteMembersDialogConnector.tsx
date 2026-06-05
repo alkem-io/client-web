@@ -113,7 +113,13 @@ export function InviteMembersDialogConnector({
   //    which ignored the space/setting and surfaced non-parent-members at L1.
   //  - L2 (`onlyFromParentCommunity`): unchanged legacy behaviour — only existing
   //    parent-community members, via `useContributors` (usersInRoles based).
-  const searchFilter = debouncedQuery ? { displayName: debouncedQuery, email: debouncedQuery } : undefined;
+  // Trim once: a pasted value with surrounding whitespace (e.g. an email with a
+  // trailing space) must not gate `skip` as non-empty while leaking the
+  // whitespace into the server-side filter — that yields zero matches. The same
+  // trimmed value drives the server filter, the skip gate, and the L2
+  // client-side match below.
+  const trimmedQuery = debouncedQuery.trim();
+  const searchFilter = trimmedQuery ? { displayName: trimmedQuery, email: trimmedQuery } : undefined;
 
   const {
     data: entryRoleData,
@@ -121,7 +127,7 @@ export function InviteMembersDialogConnector({
     fetchMore: entryRoleFetchMore,
   } = useAvailableUsersForEntryRoleQuery({
     variables: { roleSetId: roleSetId ?? '', first: INVITE_PAGE_SIZE, filter: searchFilter },
-    skip: !open || onlyFromParentCommunity || !roleSetId || !debouncedQuery,
+    skip: !open || onlyFromParentCommunity || !roleSetId || !trimmedQuery,
   });
   const entryRolePage = entryRoleData?.lookup.roleSet?.availableUsersForEntryRole;
 
@@ -162,7 +168,7 @@ export function InviteMembersDialogConnector({
   // The entry-role query (L0/L1) filters server-side. The parent-members (L2)
   // source ignores the `filter` arg, so the search box would otherwise do
   // nothing — apply a client-side displayName match for that path.
-  const query = debouncedQuery.trim().toLowerCase();
+  const query = trimmedQuery.toLowerCase();
   const rawCandidates = (onlyFromParentCommunity ? parentMembers : (entryRolePage?.users ?? []))
     .map(c => ({
       id: c.id,
