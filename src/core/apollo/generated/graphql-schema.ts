@@ -788,12 +788,10 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
-  Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
-  Passkey = 'PASSKEY',
   Unknown = 'UNKNOWN',
 }
 
@@ -16538,7 +16536,10 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               visibility: CalloutVisibility;
               contribution: {
                 __typename?: 'CalloutSettingsContribution';
+                enabled: boolean;
                 allowedTypes: Array<CalloutContributionType>;
+                canAddContributions: CalloutAllowedActors;
+                commentsEnabled: boolean;
               };
             };
             classification?:
@@ -16587,7 +16588,13 @@ export type CalloutFragment = {
   settings: {
     __typename?: 'CalloutSettings';
     visibility: CalloutVisibility;
-    contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    contribution: {
+      __typename?: 'CalloutSettingsContribution';
+      enabled: boolean;
+      allowedTypes: Array<CalloutContributionType>;
+      canAddContributions: CalloutAllowedActors;
+      commentsEnabled: boolean;
+    };
   };
 };
 

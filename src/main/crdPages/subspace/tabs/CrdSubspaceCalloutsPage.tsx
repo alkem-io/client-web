@@ -12,7 +12,7 @@ import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
   const { data, mobileMenu } = useOutletContext<SubspaceOutletContext>();
-  const { phases, currentPhaseId, calloutsSetId, canEditFlow, canAddPost, subspaceUrl } = data;
+  const { phases, currentPhaseId, calloutsSetId, canEditFlow, subspaceUrl } = data;
   const [createOpen, setCreateOpen] = useState(false);
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
@@ -24,6 +24,7 @@ export default function CrdSubspaceCalloutsPage() {
     callouts,
     loading: calloutsLoading,
     calloutsSetAuthorization,
+    canCreateCallout,
   } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
@@ -31,6 +32,10 @@ export default function CrdSubspaceCalloutsPage() {
   });
   // Reordering callouts requires Update on the calloutsSet (not the callout).
   const canReorderCallouts = calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  // Creating a post (callout) is gated by the calloutsSet's CreateCallout privilege — the same
+  // gate every L0 space tab uses. The previous `canAddPost` checked the space-entity `Create`
+  // privilege, which only admins hold, so members never saw the Add Post button on L1 even when
+  // contributions were enabled for them.
 
   const editFlowHref = subspaceUrl ? `${subspaceUrl}/settings/layout` : undefined;
 
@@ -40,7 +45,7 @@ export default function CrdSubspaceCalloutsPage() {
       activePhaseId={activePhaseId}
       onPhaseChange={setActivePhaseId}
       canEditFlow={canEditFlow}
-      canAddPost={canAddPost && phases.length > 0}
+      canAddPost={canCreateCallout && phases.length > 0}
       editFlowHref={editFlowHref}
       onAddPostClick={() => setCreateOpen(true)}
       mobileMenuOpen={mobileMenu.open}
@@ -76,7 +81,7 @@ export default function CrdSubspaceCalloutsPage() {
           (i.e. when there are phases — otherwise SubspaceFlowTabs renders the empty state). */}
       {phases.length > 0 && <div className="h-36 sm:hidden" aria-hidden="true" />}
 
-      {canAddPost && calloutsSetId && (
+      {canCreateCallout && calloutsSetId && (
         <CalloutFormConnector
           open={createOpen}
           onOpenChange={setCreateOpen}
