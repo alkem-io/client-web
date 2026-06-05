@@ -80,14 +80,15 @@ export type SpaceAboutViewContract = {
   onEditWho?: () => void;
   onEditReferences?: () => void;
   onEditMembers?: () => void;
-
-  /**
-   * OPTIONAL additive (R3): a distinct "edit space profile" action on the
-   * space-info panel. When omitted, the panel's profile-edit affordance falls
-   * back to `onEditDescription` so no integration site must change.
-   */
-  onEditProfile?: () => void;
 };
+
+/**
+ * Prop signature is UNCHANGED from today's components. The redesign is a pure
+ * re-skin: the prototype's dark-card "edit space profile" / "manage community"
+ * icons reuse the EXISTING `onEditDescription` / `onEditMembers` callbacks
+ * (same settings destinations). No new prop is added, and no integration site
+ * (CrdSpaceAbout, CrdSubspaceAbout) changes.
+ */
 
 /** Props for the redesigned dialog shell (adds name+tagline header, R2). */
 export type SpaceAboutDialogContract = SpaceAboutViewContract & {

@@ -7,7 +7,7 @@
 
 Re-skin the existing CRD Space About dialog so its visual layout matches the updated prototype (`prototype/src/app/components/space/AboutThisSpaceDialog.tsx`), while preserving every current behavior (apply-to-join, member status, per-section editing with the same settings destinations, community guidelines with read-more, references, host contact, private-space lock, level-aware Why/Who headings).
 
-The change is concentrated in the **CRD presentational layer**: `SpaceAboutView.tsx` (the body) and `SpaceAboutDialog.tsx` (the dialog shell + header). Because both the L0 `/about` route (`CrdSpaceAbout`) and the subspace `/about` route (`CrdSubspaceAbout`) — and the sidebar trigger via `CrdSpaceAboutDialogConnector` — all render these same two components, redesigning them delivers parity to every entry point at once. The integration layer (`CrdSpaceAbout`, `CrdSubspaceAbout`) changes only where the prototype layout needs an additional prop or callback (e.g. a profile/community edit affordance on the space-info panel). No GraphQL, no data-model, and no backend changes.
+The change is confined to the **CRD presentational layer**: `SpaceAboutView.tsx` (the body) and `SpaceAboutDialog.tsx` (the dialog shell + header), plus two new icon labels in the `crd-space` i18n files. Because both the L0 `/about` route (`CrdSpaceAbout`) and the subspace `/about` route (`CrdSubspaceAbout`) — and the sidebar trigger via `CrdSpaceAboutDialogConnector` — all render these same two components, redesigning them delivers parity to every entry point at once. The **prop signature is unchanged** and the **integration layer is not touched**: the prototype's space-info-panel icons reuse the existing `onEditDescription` ("edit space profile") and `onEditMembers` ("manage community") callbacks, which already navigate to the matching settings tabs. No new props, no GraphQL, no data-model, and no backend changes.
 
 ## Technical Context
 
@@ -19,7 +19,7 @@ The change is concentrated in the **CRD presentational layer**: `SpaceAboutView.
 **Project Type**: Web (single-page React app).
 **Performance Goals**: No regression; dialog open/scroll stays smooth (60 fps). Both detail queries remain gated by `skip: !open` so nothing fetches until the dialog opens.
 **Constraints**: Zero MUI/Emotion in `src/crd/`; props are plain TypeScript (no GraphQL types); event handlers are props; Tailwind + semantic typography tokens only; WCAG 2.1 AA; sticky dialog header with independently-scrolling body.
-**Scale/Scope**: 2 CRD presentational files redesigned; up to 2 integration files lightly adjusted; 1 standalone preview page kept building; 6 i18n files updated for any new keys. No new runtime dependencies.
+**Scale/Scope**: 2 CRD presentational files redesigned; 6 i18n files updated with 2 new icon labels; 1 standalone preview page verified (no edit expected). Integration files untouched. No new props, no new runtime dependencies.
 
 ## Constitution Check
 
@@ -67,20 +67,20 @@ src/crd/primitives/             # Reused as-is (no new primitives needed)
 ├── tooltip.tsx · scroll-area.tsx · avatar.tsx · separator.tsx · button.tsx · dialog.tsx
 
 src/crd/i18n/space/
-├── space.en.json               # New tooltip/label keys (source)
-├── space.{nl,es,bg,de,fr}.json # Same keys translated (parity test enforces)
+├── space.en.json               # +2 icon labels: about.editProfile, about.manageCommunity
+├── space.{nl,es,bg,de,fr}.json # Same 2 keys translated (parity test enforces)
 └── space.parity.test.ts        # Guards key parity (unchanged)
 
-src/main/crdPages/space/about/
-├── CrdSpaceAbout.tsx           # Integration — adjust props/callbacks if layout needs them
-├── CrdSpaceAboutPage.tsx       # Route wrapper (unchanged)
-└── ../dialogs/CrdSpaceAboutDialogConnector.tsx  # Sidebar trigger (unchanged)
+src/main/crdPages/space/about/         # UNCHANGED (no prop-signature change)
+├── CrdSpaceAbout.tsx                   # Integration — not touched
+├── CrdSpaceAboutPage.tsx               # Route wrapper — not touched
+└── ../dialogs/CrdSpaceAboutDialogConnector.tsx  # Sidebar trigger — not touched
 
-src/main/crdPages/subspace/about/
-└── CrdSubspaceAbout.tsx        # Integration — mirror any CrdSpaceAbout prop changes
+src/main/crdPages/subspace/about/      # UNCHANGED
+└── CrdSubspaceAbout.tsx                # Integration — not touched
 
 src/crd/app/pages/
-└── SpacePage.tsx               # Standalone preview consumer — keep building with mock data
+└── SpacePage.tsx               # Standalone preview — verify only (signature unchanged)
 ```
 
 **Structure Decision**: Web SPA, CRD design-system layer. The redesign lives in `src/crd/components/space/`; data wiring stays in `src/main/crdPages/{space,subspace}/about/`. No new directories. The single-shared-view architecture (both routes + sidebar consume `SpaceAboutView`/`SpaceAboutDialog`) is preserved so parity is automatic.

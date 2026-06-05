@@ -40,11 +40,10 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 
 **⚠️ CRITICAL**: The view/dialog rebuild in US1 references these keys/props.
 
-- [ ] T003 [P] Add any new design-system labels the redesign needs (e.g. specific edit-affordance `aria-label`s/tooltips such as "Edit space profile" and "Manage community", plus any section labels not already present) under the `about.*` group in `src/crd/i18n/space/space.en.json`. Reuse existing keys (`about.edit`, `about.members`, `about.leads`, `about.hostedBy`, `about.references`, `about.contactHost`, `about.readMore`, `about.close`, `about.lockTooltip`, `about.context.*`) wherever they already cover the label.
+- [ ] T003 [P] Add the two new dark-card icon labels — `about.editProfile` ("Edit space profile") and `about.manageCommunity` ("Manage community") — under the `about.*` group in `src/crd/i18n/space/space.en.json`. Reuse existing keys for everything else (`about.edit` for the section pencils, plus `about.members`, `about.leads`, `about.hostedBy`, `about.references`, `about.contactHost`, `about.readMore`, `about.close`, `about.lockTooltip`, `about.context.*`).
 - [ ] T004 [P] Mirror the exact keys added in T003 into `src/crd/i18n/space/space.nl.json`, `space.es.json`, `space.bg.json`, `space.de.json`, and `space.fr.json` (translated values; English brand terms per the Dutch glossary). All 6 files MUST end with identical key sets so `space.parity.test.ts` passes.
-- [ ] T005 Extend the prop contract per `contracts/SpaceAboutView.contract.ts`: add the OPTIONAL `onEditProfile?: () => void` to `SpaceAboutViewProps` (and pass-through on `SpaceAboutDialogProps`) in `src/crd/components/space/SpaceAboutView.tsx` and `src/crd/components/space/SpaceAboutDialog.tsx`, defaulting the panel's profile-edit affordance to `onEditDescription` when omitted so no integration site is forced to change.
 
-**Checkpoint**: Labels exist in all languages; optional prop surface is in place.
+**Checkpoint**: The two new icon labels exist in all 6 languages. **No prop-signature change** — the redesign reuses the existing prop surface as-is.
 
 ---
 
@@ -78,7 +77,7 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 ### Implementation for User Story 2
 
 - [ ] T014 [US2] Place the `joinSlot` in the redesigned `src/crd/components/space/SpaceAboutView.tsx` at the prototype-appropriate position and render the member indication (driven by `isMember`) — preserving the current "shown only to eligible non-members once apply data loaded" gating that the integration layer controls (FR-003, FR-004).
-- [ ] T015 [US2] Verify (no logic change expected) that `src/main/crdPages/space/about/CrdSpaceAbout.tsx` and `src/main/crdPages/subspace/about/CrdSubspaceAbout.tsx` still pass `joinSlot`/`isMember` unchanged and that the apply flow + its follow-up `dialogs` still mount correctly with the redesigned dialog (FR-003).
+- [ ] T015 [US2] Verification check (no code change): confirm `src/main/crdPages/space/about/CrdSpaceAbout.tsx` and `src/main/crdPages/subspace/about/CrdSubspaceAbout.tsx` still pass `joinSlot`/`isMember` unchanged and that the apply flow + its follow-up `dialogs` still mount correctly with the redesigned dialog. These integration files MUST NOT be edited (FR-003).
 
 **Checkpoint**: Apply/join and member states work identically to the pre-redesign dialog.
 
@@ -86,17 +85,15 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 
 ## Phase 5: User Story 3 - Admin edits space content from the dialog (Priority: P2)
 
-**Goal**: Edit affordances appear only for privileged users and navigate to the same settings destinations as today, including the prototype's space-info panel profile/community edits.
+**Goal**: Edit affordances appear only for privileged users and navigate to the same settings destinations as today, including the prototype's space-info panel profile/community edits — all wired to existing callbacks (no new props, no integration changes).
 
-**Independent Test**: As an admin, confirm edit pencils on description/panel, Why, Who, Guidelines, References, and members/community; activate each and confirm it lands on the same settings destination recorded in T001. As a non-admin, confirm no edit affordances.
+**Independent Test**: As an admin, confirm edit pencils on the panel (profile + community), Why, Who, Guidelines, References; activate each and confirm it lands on the same settings destination recorded in T001. As a non-admin, confirm no edit affordances.
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Render the edit affordances in the redesigned `src/crd/components/space/SpaceAboutView.tsx`, gated by `hasEditPrivilege`: per-section pencils (description, why, who, references) wired to the existing callbacks, the space-info panel's "edit space profile" wired to `onEditProfile ?? onEditDescription`, and "manage community" wired to `onEditMembers`; each icon-only control gets a `t()` `aria-label` (FR-005, FR-016; R3).
-- [ ] T017 [P] [US3] In `src/main/crdPages/space/about/CrdSpaceAbout.tsx`, pass `onEditProfile` if a distinct profile destination is desired (otherwise rely on the `onEditDescription` fallback); confirm all `onEdit*` callbacks still navigate to the same `buildSettingsUrl(...)` destinations as before (FR-005).
-- [ ] T018 [P] [US3] Mirror the T017 change in `src/main/crdPages/subspace/about/CrdSubspaceAbout.tsx` so the subspace About keeps identical edit-destination behavior (FR-005, FR-010).
+- [ ] T016 [US3] Render the edit affordances in the redesigned `src/crd/components/space/SpaceAboutView.tsx`, gated by `hasEditPrivilege`: per-section pencils (why, who, references) wired to the existing `onEditWhy`/`onEditWho`/`onEditReferences`; the space-info panel's "edit space profile" icon wired to the existing `onEditDescription` (aria-label `about.editProfile`); the panel's "manage community" icon wired to the existing `onEditMembers` (aria-label `about.manageCommunity`). Each icon-only control gets a `t()` `aria-label`. No new prop is introduced (FR-005, FR-016; R3).
 
-**Checkpoint**: All edit affordances visible only to admins and land on unchanged settings destinations across space + subspace.
+**Checkpoint**: All edit affordances are visible only to admins, reuse existing callbacks, and land on unchanged settings destinations — with zero edits to the integration files (`CrdSpaceAbout.tsx`, `CrdSubspaceAbout.tsx`).
 
 ---
 
@@ -120,7 +117,7 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 
 **Purpose**: Keep the standalone preview building, guard invariants, and run the verification gates from quickstart.md.
 
-- [ ] T022 [P] Update the standalone preview `src/crd/app/pages/SpacePage.tsx` so its mock props satisfy the redesigned `SpaceAboutDialog`/`SpaceAboutView` (including any new optional prop) and the About renders correctly under `pnpm crd:dev`.
+- [ ] T022 [P] Verify the standalone preview `src/crd/app/pages/SpacePage.tsx` still renders the redesigned About correctly under `pnpm crd:dev`. The prop signature is unchanged, so no edit is expected — only confirm visual correctness with the existing mock props.
 - [ ] T023 [P] Grep `src/crd/components/space/SpaceAboutView.tsx`, `SpaceAboutDialog.tsx`, and `CommunityGuidelinesBlock.tsx` for forbidden imports (`@mui/*`, `@emotion/*`, `@/core/apollo`, `@/domain/*`, `react-router-dom`) and any GraphQL generated types — confirm zero (CRD golden rules; Constitution II/III).
 - [ ] T024 Run `pnpm vitest run src/crd/i18n/space/space.parity.test.ts --reporter=basic` and confirm i18n key parity across all 6 language files passes.
 - [ ] T025 Run `pnpm lint` (TypeScript + Biome + ESLint incl. react-compiler) and `pnpm vitest run`; fix any issues introduced by the redesign.
@@ -136,7 +133,7 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 - **Foundational (Phase 2)**: After Setup. Blocks all story phases (US1 references the keys/props).
 - **US1 (Phase 3, P1)**: After Foundational. Rebuilds the shared layout — the MVP.
 - **US2 (Phase 4, P1)**: After US1 (places the join CTA inside the rebuilt view).
-- **US3 (Phase 5, P2)**: After US1 (edit affordances live inside the rebuilt view); T017/T018 (integration files) are parallel to each other.
+- **US3 (Phase 5, P2)**: After US1 (edit affordances live inside the rebuilt view; single task T016, no integration changes).
 - **US4 (Phase 6, P2)**: After US1 (guidelines/references/host live inside the rebuilt view); independent of US2/US3.
 - **Polish (Phase 7)**: After all desired stories complete.
 
@@ -148,13 +145,12 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 ### Within Each User Story
 
 - US1: shell header (T006) and view sections (T007–T012) can proceed once Foundational is done; the a11y pass (T013) comes last.
-- US3: the view-side affordances (T016) before/with the integration wiring (T017, T018).
+- US3: a single view-side task (T016) — no integration wiring.
 
 ### Parallel Opportunities
 
 - T003 and T004 (en vs. the 5 translated files) — different files, parallel.
-- T017 and T018 (space vs. subspace integration) — different files, parallel.
-- T022 and T023 (preview vs. import audit) — parallel.
+- T022 and T023 (preview verify vs. import audit) — parallel.
 - NOTE: T006–T013 mostly touch the two shared files (`SpaceAboutView.tsx`, `SpaceAboutDialog.tsx`); sequence them to avoid edit conflicts — they are NOT marked [P].
 
 ---
@@ -162,11 +158,8 @@ Integration layer: `src/main/crdPages/{space,subspace}/about/`. Reference: `prot
 ## Parallel Example: Foundational i18n
 
 ```bash
-# After T003 defines the keys in en, mirror them across languages in parallel:
-Task: "Mirror new about.* keys into src/crd/i18n/space/space.nl.json / es / bg / de / fr (T004)"
-# And later, integration wiring for both levels in parallel:
-Task: "Wire onEditProfile + confirm edit destinations in CrdSpaceAbout.tsx (T017)"
-Task: "Mirror onEditProfile + confirm edit destinations in CrdSubspaceAbout.tsx (T018)"
+# After T003 defines the two new keys in en, mirror them across languages in parallel:
+Task: "Mirror about.editProfile + about.manageCommunity into src/crd/i18n/space/space.nl.json / es / bg / de / fr (T004)"
 ```
 
 ---
@@ -183,7 +176,7 @@ Task: "Mirror onEditProfile + confirm edit destinations in CrdSubspaceAbout.tsx 
 1. Setup + Foundational → ready.
 2. US1 → visual parity (MVP) → demo.
 3. US2 → confirm apply/member parity.
-4. US3 → confirm admin edit parity (incl. subspace).
+4. US3 → confirm admin edit parity (panel + sections; existing callbacks, no integration edits).
 5. US4 → confirm guidelines/references/host parity.
 6. Polish → preview + lint + parity test + quickstart walk-through.
 

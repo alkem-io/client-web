@@ -14,12 +14,11 @@ The dialog is shared by the L0 `/about` route, the subspace `/about` route, and 
 | `src/crd/components/space/SpaceAboutView.tsx` | **Primary** — rebuild body layout (space-info panel, Why/Who cards, References tiles, Hosted-by card) to match the prototype, using Tailwind + design tokens. |
 | `src/crd/components/space/SpaceAboutDialog.tsx` | Header: visible title = space name, tagline beneath; keep sticky-header/scroll-body shell and `lockTooltipSlot`. |
 | `src/crd/components/space/CommunityGuidelinesBlock.tsx` | Reused as the guidelines slot; align header styling only (read-more already works). |
-| `src/crd/i18n/space/space.en.json` (+ `nl/es/bg/de/fr`) | Add any new edit/tooltip labels; keep all 6 files key-identical. |
-| `src/main/crdPages/space/about/CrdSpaceAbout.tsx` | Only if the panel needs a new optional prop (e.g. `onEditProfile`). |
-| `src/main/crdPages/subspace/about/CrdSubspaceAbout.tsx` | Mirror any `CrdSpaceAbout` prop change. |
-| `src/crd/app/pages/SpacePage.tsx` | Ensure the standalone preview still passes valid mock props. |
+| `src/crd/i18n/space/space.en.json` (+ `nl/es/bg/de/fr`) | Add 2 icon labels (`about.editProfile`, `about.manageCommunity`); keep all 6 files key-identical. |
+| `src/crd/app/pages/SpacePage.tsx` | Verify only — the prop signature is unchanged, so no edit is expected. |
 
-> Do **not** touch `src/domain/space/about/*` — that's the legacy MUI dialog (untouched, still default until the toggle is removed).
+> **Do NOT touch** the integration files — `CrdSpaceAbout.tsx`, `CrdSubspaceAbout.tsx`, `CrdSpaceAboutDialogConnector.tsx`. The prop signature is unchanged; the panel's "edit space profile" / "manage community" icons reuse the existing `onEditDescription` / `onEditMembers` callbacks.
+> **Do NOT touch** `src/domain/space/about/*` — that's the legacy MUI dialog (untouched, still default until the toggle is removed).
 
 ## Reference the prototype
 

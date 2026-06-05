@@ -64,7 +64,7 @@ Existing props on `SpaceAboutDialog` / `SpaceAboutView` that MUST keep working:
 | `hasEditPrivilege?` | gates edit affordances | FR-005 |
 | `onEditDescription / onEditWhy / onEditWho / onEditReferences / onEditMembers` | settings navigation | FR-005 (same destinations) |
 
-**Possible additive (optional) prop** — only if the prototype's space-info panel needs a distinct "edit space profile" action separate from description editing: an optional `onEditProfile?: () => void`. Default behavior maps "edit space profile" to the existing `onEditDescription` to avoid integration churn. Any new prop is **optional** so the standalone preview and both integration sites keep compiling.
+**No new props.** The prop signature stays identical to today's components. The prototype's space-info panel icons reuse existing callbacks: "edit space profile" → `onEditDescription`, "manage community" → `onEditMembers` (verified: same settings destinations). Because nothing in the signature changes, neither integration site (`CrdSpaceAbout`, `CrdSubspaceAbout`) nor the standalone preview (`SpacePage`) needs any change.
 
 ## Validation / rules (presentation-level)
 
