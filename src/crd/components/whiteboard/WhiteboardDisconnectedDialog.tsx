@@ -56,18 +56,20 @@ export function WhiteboardDisconnectedDialog({
       {/* `z-[70]` (content + overlay): opened on top of the whiteboard editor shell (`z-[60]`),
           so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
       <DialogContent
-        className={cn('z-[70] sm:max-w-md', className)}
+        className={cn('z-[70] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden', className)}
         overlayClassName="z-[70]"
         closeLabel={t('disconnected.close')}
       >
-        <DialogHeader>
+        <DialogHeader className="shrink-0">
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
 
-        {lastSavedText && <p className="text-caption text-muted-foreground">{lastSavedText}</p>}
+        <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
+          <DialogDescription>{message}</DialogDescription>
+          {lastSavedText && <p className="text-caption text-muted-foreground">{lastSavedText}</p>}
+        </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end shrink-0">
           <Button onClick={onReconnect} disabled={!canReconnect || reconnecting} aria-busy={reconnecting}>
             {reconnecting && <Loader2 className="size-4 mr-1 animate-spin" aria-hidden="true" />}
             {t('disconnected.reconnect')}

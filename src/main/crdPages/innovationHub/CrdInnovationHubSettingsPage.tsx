@@ -7,10 +7,15 @@ import Loading from '@/core/ui/loading/Loading';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-import { type HubAboutFormValues, InnovationHubAboutTab } from '@/crd/components/innovationHub/InnovationHubAboutTab';
+import {
+  type HubAboutFormValues,
+  InnovationHubAboutTab,
+  type InnovationHubAboutTabProps,
+} from '@/crd/components/innovationHub/InnovationHubAboutTab';
 import { InnovationHubSettingsShell } from '@/crd/components/innovationHub/InnovationHubSettingsShell';
 import { type HubSpacesTableRow, InnovationHubSpacesTab } from '@/crd/components/innovationHub/InnovationHubSpacesTab';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
@@ -27,6 +32,19 @@ import { buildHubHomePath, buildHubSettingsPath } from './lib/hubUrls';
 
 type CrdInnovationHubSettingsPageProps = {
   tab: HubSettingsTabKey;
+};
+
+/**
+ * Wires image upload into the About tab's description editor. Must be rendered *inside* the page's
+ * `locationType="innovationHub"` `StorageConfigContextProvider` (which the page mounts in its own
+ * JSX, not from an ancestor layout) so `useMarkdownEditorIntegration` resolves the hub's own bucket.
+ * Editing an existing hub is an edit flow → default `temporaryLocation: false`.
+ */
+const InnovationHubAboutTabConnector = (
+  props: Omit<InnovationHubAboutTabProps, 'onImageUpload' | 'iframeAllowedUrls' | 'onError'>
+) => {
+  const md = useMarkdownEditorIntegration();
+  return <InnovationHubAboutTab {...props} {...md} />;
 };
 
 // A `visibility`-type hub has no curated Space list — its Spaces are every Space with the
@@ -101,7 +119,7 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
         onToggleFullWidth={toggleFullWidth}
       >
         {tab === 'about' && (
-          <InnovationHubAboutTab
+          <InnovationHubAboutTabConnector
             values={aboutTabValues}
             dirty={aboutData.dirty}
             saveStatus={aboutData.saveStatus}

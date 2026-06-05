@@ -57,12 +57,12 @@ export function AddPhaseDialog({ open, onOpenChange, onSubmit, existingPhaseName
 
   return (
     <Dialog open={open} onOpenChange={open => (!submitting ? onOpenChange(open) : undefined)}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('layout.addPhase.dialog.title')}</DialogTitle>
           <DialogDescription>{t('layout.addPhase.dialog.description')}</DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1 min-h-0 overflow-y-auto">
           <div className="space-y-2">
             <Label htmlFor="phase-name">{t('layout.addPhase.dialog.nameLabel')}</Label>
             <Input
@@ -90,7 +90,7 @@ export function AddPhaseDialog({ open, onOpenChange, onSubmit, existingPhaseName
           </div>
           {error && <p className="text-caption text-destructive">{error}</p>}
         </div>
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
             {t('layout.addPhase.dialog.cancel')}
           </Button>

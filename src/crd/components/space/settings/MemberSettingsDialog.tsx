@@ -117,15 +117,15 @@ export function MemberSettingsDialog({
       }}
     >
       <DialogContent
-        className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
         closeLabel={t('community.memberSettings.close')}
       >
-        <DialogHeader>
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('community.memberSettings.title')}</DialogTitle>
           <DialogDescription className="sr-only">{t('community.memberSettings.title')}</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-5 py-2">
+        <div className="flex flex-col gap-5 py-2 flex-1 min-h-0 overflow-y-auto">
           {/* Member identification chip */}
           <div className="flex items-center gap-3 rounded-lg border bg-card px-3 py-2">
             <Avatar className="size-10">
@@ -215,7 +215,7 @@ export function MemberSettingsDialog({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={saveInFlight}>
             {t('community.memberSettings.footer.cancel')}
           </Button>

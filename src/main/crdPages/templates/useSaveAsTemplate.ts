@@ -18,9 +18,6 @@ export type SaveAsTemplateSource =
   | { kind: 'subspace'; subspaceId: string; name: string; description?: string; tags?: string[] }
   | {
       kind: 'callout';
-      name: string;
-      description?: string;
-      tags?: string[];
       /** CRD callout-form values pre-filled from the source callout (built by the caller). */
       calloutBody: Partial<CalloutFormValues>;
     };
@@ -89,10 +86,9 @@ export function useSaveAsTemplate(args: {
     form,
     openSaveAs: source => {
       if (source.kind === 'callout') {
-        form.openCreateCallout({
-          common: { name: source.name, description: source.description ?? '', tags: source.tags ?? [] },
-          body: source.calloutBody,
-        });
+        // The template's own name/description/tags start empty — the user names the template.
+        // Only the callout's content is carried over, via the pre-filled callout-form body.
+        form.openCreateCallout({ body: source.calloutBody });
         return;
       }
       form.openCreatePrefilled(toSaveAsValues(source));

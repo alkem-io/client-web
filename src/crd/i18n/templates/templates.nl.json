@@ -39,6 +39,7 @@
   "card": {
     "actions": "Template-acties",
     "preview": "Voorbeeld",
+    "use": "Gebruik template",
     "edit": "Bewerken",
     "duplicate": "Dupliceren",
     "delete": "Verwijderen",

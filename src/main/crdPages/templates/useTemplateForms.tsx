@@ -32,6 +32,7 @@ import type {
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
@@ -267,6 +268,11 @@ export function useTemplateForms({
   // Visual; without it the server stores updated content but the preview image stays stale.
   // Mirrors the live callout connector (`CalloutFormConnector` create/edit paths).
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
+  // Callout templates with media-gallery framing need a post-create upload step to re-store the
+  // source gallery's images against the freshly-created MediaGallery entity — the create mutation
+  // only stamps the framing type and returns the gallery id. Mirrors the live callout connector
+  // (`CalloutFormConnector` media-gallery post-create path).
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
@@ -483,6 +489,20 @@ export function useTemplateForms({
     await uploadWhiteboardVisuals(cv.whiteboardPreviewImages, { previewVisualId }, whiteboard?.nameID);
   };
 
+  /**
+   * Post-create upload of a media-gallery callout's images onto the new template's MediaGallery.
+   * The create mutation only sets the framing type and returns the gallery id — the visuals must be
+   * re-stored separately. `reuploadVisuals` makes the helper fetch each source visual by `uri` and
+   * recreate it on the template gallery (the form values carry `id`/`uri` but no `File`). Mirrors the
+   * live callout connector. No-op when the framing isn't a media gallery, there are no visuals, or
+   * the response didn't surface a gallery id.
+   */
+  const uploadCalloutMediaGallery = async (cv: CalloutFormValues, mediaGalleryId: string | undefined) => {
+    if (cv.framingChip !== 'image') return;
+    if (!mediaGalleryId || cv.mediaGalleryVisuals.length === 0) return;
+    await uploadMediaGalleryVisuals({ mediaGalleryId, visuals: cv.mediaGalleryVisuals, reuploadVisuals: true });
+  };
+
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
     const profileData = toProfileData(current);
     const tags = current.tags.length > 0 ? current.tags : undefined;
@@ -549,10 +569,25 @@ export function useTemplateForms({
         const result = await createTemplate({
           variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
         });
-        await uploadCalloutWhiteboardPreview(
-          calloutForm.values,
-          result.data?.createTemplate?.callout?.framing?.whiteboard
-        );
+        // Best-effort post-create uploads: the template already exists, so an upload failure must not
+        // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
+        // copy path; upload errors surface via the Apollo error link / global handler.
+        try {
+          await uploadCalloutWhiteboardPreview(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.whiteboard
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
+        try {
+          await uploadCalloutMediaGallery(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.mediaGallery?.id
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
         return;
       }
     }
@@ -574,7 +609,12 @@ export function useTemplateForms({
     });
     // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
     // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
-    await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
+    try {
+      await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
+      await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
+    } catch {
+      // Errors are surfaced by the Apollo error link / global handler; don't fail the copy after create.
+    }
   };
 
   const submitEdit = async (

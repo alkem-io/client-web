@@ -73,22 +73,24 @@ export function CommunityUpdatesDialog({ open, onOpenChange, updates, loading, l
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogTitle>{t('sidebar.updates')}</DialogTitle>
-        {loading ? (
-          <output aria-label={t('sidebar.updatesLoading')} className="block h-24 animate-pulse bg-muted rounded" />
-        ) : updates.length === 0 ? (
-          <p className="text-body text-muted-foreground">{t('sidebar.updatesEmpty')}</p>
-        ) : (
-          <ul className="space-y-6">
-            {updates.map(update => (
-              <li key={update.id} className="space-y-2 pb-6 border-b border-border last:border-b-0 last:pb-0">
-                <UpdateAuthorLine author={update.author} date={update.date} locale={locale} />
-                <MarkdownContent content={update.body} />
-              </li>
-            ))}
-          </ul>
-        )}
+      <DialogContent className="w-full sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+        <DialogTitle className="shrink-0">{t('sidebar.updates')}</DialogTitle>
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {loading ? (
+            <output aria-label={t('sidebar.updatesLoading')} className="block h-24 animate-pulse bg-muted rounded" />
+          ) : updates.length === 0 ? (
+            <p className="text-body text-muted-foreground">{t('sidebar.updatesEmpty')}</p>
+          ) : (
+            <ul className="space-y-6">
+              {updates.map(update => (
+                <li key={update.id} className="space-y-2 pb-6 border-b border-border last:border-b-0 last:pb-0">
+                  <UpdateAuthorLine author={update.author} date={update.date} locale={locale} />
+                  <MarkdownContent content={update.body} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

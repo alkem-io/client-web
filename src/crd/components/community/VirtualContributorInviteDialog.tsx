@@ -81,8 +81,10 @@ export function VirtualContributorInviteDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-xl md:max-w-2xl max-h-[80vh] overflow-y-auto [&>*]:min-w-0', className)}>
-        <DialogHeader>
+      <DialogContent
+        className={cn('sm:max-w-xl md:max-w-2xl max-h-[80vh] flex flex-col overflow-hidden [&>*]:min-w-0', className)}
+      >
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             {messageVc && (
               <button
@@ -101,22 +103,24 @@ export function VirtualContributorInviteDialog({
         </DialogHeader>
 
         {messageVc ? (
-          <div className="flex flex-col gap-4 py-2">
-            <div className="flex items-center gap-3">
-              <VcAvatar vc={messageVc} />
-              <span className="text-body-emphasis">{messageVc.displayName}</span>
+          <div className="flex flex-col flex-1 min-h-0">
+            <div className="flex flex-col gap-4 py-2 flex-1 min-h-0 overflow-y-auto">
+              <div className="flex items-center gap-3">
+                <VcAvatar vc={messageVc} />
+                <span className="text-body-emphasis">{messageVc.displayName}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-body-emphasis">{t('inviteVc.welcomeMessageLabel')}</span>
+                <Textarea
+                  value={welcomeMessage}
+                  onChange={e => setWelcomeMessage(e.target.value)}
+                  placeholder={t('inviteVc.welcomeMessagePlaceholder')}
+                  aria-label={t('inviteVc.welcomeMessageLabel')}
+                  rows={4}
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-body-emphasis">{t('inviteVc.welcomeMessageLabel')}</span>
-              <Textarea
-                value={welcomeMessage}
-                onChange={e => setWelcomeMessage(e.target.value)}
-                placeholder={t('inviteVc.welcomeMessagePlaceholder')}
-                aria-label={t('inviteVc.welcomeMessageLabel')}
-                rows={4}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 pt-4 shrink-0">
               <Button type="button" variant="ghost" onClick={() => setMessageVc(null)}>
                 {t('inviteVc.back')}
               </Button>
@@ -138,8 +142,8 @@ export function VirtualContributorInviteDialog({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-4 py-2">
-            <div className="relative">
+          <div className="flex flex-col flex-1 min-h-0">
+            <div className="relative shrink-0 py-2">
               <Search
                 aria-hidden="true"
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -153,39 +157,41 @@ export function VirtualContributorInviteDialog({
               />
             </div>
 
-            {loading ? (
-              <output className="block py-6 text-center text-muted-foreground" aria-label={t('inviteVc.loading')}>
-                <Loader2 aria-hidden="true" className="inline size-4 animate-spin" />
-              </output>
-            ) : (
-              <>
-                {!libraryOnly && (
+            <div className="flex flex-col gap-4 py-2 flex-1 min-h-0 overflow-y-auto">
+              {loading ? (
+                <output className="block py-6 text-center text-muted-foreground" aria-label={t('inviteVc.loading')}>
+                  <Loader2 aria-hidden="true" className="inline size-4 animate-spin" />
+                </output>
+              ) : (
+                <>
+                  {!libraryOnly && (
+                    <VcSection
+                      title={t('inviteVc.onAccount')}
+                      emptyLabel={t('inviteVc.onAccountEmpty')}
+                      vcs={accountVcs}
+                      actionLabel={t('inviteVc.add')}
+                      actionIcon="add"
+                      busyId={busyId}
+                      onAction={onAddAccountVc}
+                      addAriaLabel={name => t('inviteVc.addAriaLabel', { name })}
+                    />
+                  )}
                   <VcSection
-                    title={t('inviteVc.onAccount')}
-                    emptyLabel={t('inviteVc.onAccountEmpty')}
-                    vcs={accountVcs}
-                    actionLabel={t('inviteVc.add')}
-                    actionIcon="add"
+                    title={t('inviteVc.inLibrary')}
+                    emptyLabel={t('inviteVc.inLibraryEmpty')}
+                    vcs={libraryVcs}
+                    actionLabel={t('inviteVc.invite')}
+                    actionIcon="invite"
                     busyId={busyId}
-                    onAction={onAddAccountVc}
-                    addAriaLabel={name => t('inviteVc.addAriaLabel', { name })}
+                    onAction={id => {
+                      const vc = libraryVcs.find(v => v.id === id);
+                      if (vc) openMessageStep(vc);
+                    }}
+                    addAriaLabel={name => t('inviteVc.inviteAriaLabel', { name })}
                   />
-                )}
-                <VcSection
-                  title={t('inviteVc.inLibrary')}
-                  emptyLabel={t('inviteVc.inLibraryEmpty')}
-                  vcs={libraryVcs}
-                  actionLabel={t('inviteVc.invite')}
-                  actionIcon="invite"
-                  busyId={busyId}
-                  onAction={id => {
-                    const vc = libraryVcs.find(v => v.id === id);
-                    if (vc) openMessageStep(vc);
-                  }}
-                  addAriaLabel={name => t('inviteVc.inviteAriaLabel', { name })}
-                />
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         )}
       </DialogContent>
