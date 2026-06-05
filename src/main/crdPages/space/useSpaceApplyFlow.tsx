@@ -6,6 +6,7 @@ import { PreJoinParentDialog } from '@/crd/components/community/PreJoinParentDia
 import type { SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
+import { ApplicationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { ApplyDialogConnector } from './about/ApplyDialogConnector';
 import { InvitationDetailConnector } from './about/InvitationDetailConnector';
@@ -15,6 +16,14 @@ export type UseSpaceApplyFlowParams = {
   spaceProfileUrl: string;
   communityName: string;
   parentSpaceId?: string;
+  /**
+   * Post-successful-join callback. When omitted (banner/dashboard button) the
+   * default navigates into the space. When the button lives inside the About
+   * dialog, pass the dialog's `onClose` so joining closes it via the normal
+   * Radix close path — otherwise the default route-change navigate yanks the
+   * still-open modal and leaves `pointer-events:none` stuck on the page.
+   */
+  onJoined?: () => void;
 };
 
 export type UseSpaceApplyFlowResult = {
@@ -29,6 +38,7 @@ export function useSpaceApplyFlow({
   spaceProfileUrl,
   communityName,
   parentSpaceId,
+  onJoined,
 }: UseSpaceApplyFlowParams): UseSpaceApplyFlowResult {
   const navigate = useNavigate();
 
@@ -37,11 +47,18 @@ export function useSpaceApplyFlow({
   const [isPreAppDialogOpen, setIsPreAppDialogOpen] = useState(false);
   const [isPreJoinDialogOpen, setIsPreJoinDialogOpen] = useState(false);
   const [isSubmittedDialogOpen, setIsSubmittedDialogOpen] = useState(false);
+  // Optimistic, session-only flag: the apply mutation returns no fresh
+  // membership state and we deliberately don't refetch on dialog open, so once
+  // the user applies we locally reflect the pending state. This keeps the button
+  // disabled until the next reload (when `useApplicationButton` reports the real
+  // pending application), preventing a duplicate apply that the server rejects.
+  const [hasApplied, setHasApplied] = useState(false);
 
   const { applicationButtonProps, loading } = useApplicationButton({
     spaceId,
     parentSpaceId,
-    onJoin: () => navigate(spaceProfileUrl),
+    // On success, either close the hosting dialog (About) or navigate into the space.
+    onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });
 
   const preAppDialogVariant = isApplicationPending(applicationButtonProps.parentApplicationState)
@@ -54,7 +71,7 @@ export function useSpaceApplyFlow({
     isAuthenticated: applicationButtonProps.isAuthenticated,
     isMember: applicationButtonProps.isMember,
     isParentMember: applicationButtonProps.isParentMember,
-    applicationState: applicationButtonProps.applicationState,
+    applicationState: hasApplied ? ApplicationState.NEW : applicationButtonProps.applicationState,
     userInvitation: applicationButtonProps.userInvitation,
     parentApplicationState: applicationButtonProps.parentApplicationState,
     canJoinCommunity: applicationButtonProps.canJoinCommunity,
@@ -65,7 +82,10 @@ export function useSpaceApplyFlow({
     loading: applicationButtonProps.loading || loading,
     onLoginClick: () => navigate(buildLoginUrl(applicationButtonProps.applyUrl ?? spaceProfileUrl)),
     onApplyClick: () => setIsApplyDialogOpen(true),
-    onJoinClick: () => setIsApplyDialogOpen(true),
+    // Joining is a direct, non-destructive action (the user already has join
+    // rights), so skip the confirmation dialog and join immediately — the empty
+    // "You're about to join" step added nothing. Apply still opens its form dialog.
+    onJoinClick: () => applicationButtonProps.onJoin(),
     onAcceptInvitationClick: () => setIsInvitationDialogOpen(true),
     onApplyParentClick: () => setIsPreAppDialogOpen(true),
     onJoinParentClick: () => setIsPreJoinDialogOpen(true),
@@ -79,7 +99,10 @@ export function useSpaceApplyFlow({
         spaceId={spaceId}
         canJoinCommunity={applicationButtonProps.canJoinCommunity}
         onJoin={() => applicationButtonProps.onJoin()}
-        onApplied={() => setIsSubmittedDialogOpen(true)}
+        onApplied={() => {
+          setHasApplied(true);
+          setIsSubmittedDialogOpen(true);
+        }}
       />
       <ApplicationSubmittedDialog
         open={isSubmittedDialogOpen}
