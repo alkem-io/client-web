@@ -3,6 +3,7 @@ import SendIcon from '@mui/icons-material/Send';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import StopIcon from '@mui/icons-material/Stop';
 import { Box, DialogContent, IconButton, TextField, Typography } from '@mui/material';
+import { FocusScope } from '@radix-ui/react-focus-scope';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -77,75 +78,97 @@ const AssistantDialog = () => {
       }}
     >
       <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          padding={gutters(0.5)}
-          sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+        {/* Radix FocusScope: when the panel opens over a Radix-modal whiteboard
+            dialog, that dialog's own FocusScope keeps yanking the keyboard back to
+            the Excalidraw canvas (Radix scopes only pause for ANOTHER Radix scope —
+            a plain MUI focus trap can't). Mounting our own trapped FocusScope here
+            registers in Radix's stack and pauses the whiteboard's while the panel is
+            open, so the input below stays focusable. onMountAutoFocus is suppressed so
+            the explicit input focus (below) wins over the first tabbable (the gear). */}
+        <FocusScope
+          // Release the trap while the (MUI, portaled-outside) settings dialog is
+          // open so its own focus management works — otherwise this scope would
+          // yank focus back out of Settings.
+          trapped={!settingsOpen}
+          loop={true}
+          onMountAutoFocus={event => event.preventDefault()}
+          style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
         >
-          <Box>
-            <Typography id="assistant-dialog-title" variant="h6">
-              {t('assistant.title')}
-            </Typography>
-            {panelContext?.displayName && (
-              <Typography variant="caption" color="text.secondary">
-                {t('assistant.scopedTo', { name: panelContext.displayName })}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            padding={gutters(0.5)}
+            sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+          >
+            <Box>
+              <Typography id="assistant-dialog-title" variant="h6">
+                {t('assistant.title')}
               </Typography>
+              {panelContext?.displayName && (
+                <Typography variant="caption" color="text.secondary">
+                  {t('assistant.scopedTo', { name: panelContext.displayName })}
+                </Typography>
+              )}
+            </Box>
+            <Box display="flex" alignItems="center">
+              <IconButton onClick={() => setSettingsOpen(true)} aria-label={t('assistant.settings')}>
+                <SettingsOutlinedIcon />
+              </IconButton>
+              <IconButton onClick={handleClose} aria-label={t('assistant.closeButton')}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          <AssistantConversationView />
+
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={gutters(0.5)}
+            padding={gutters(0.5)}
+            sx={{ borderTop: theme => `1px solid ${theme.palette.divider}` }}
+          >
+            <AssistantNewConversationButton onClick={() => void startNewConversation()} />
+            <TextField
+              // Move focus to the input when the panel opens (T031 focus mgmt).
+              // MUI's Dialog focus trap restores focus to the trigger on close.
+              inputRef={inputRef}
+              autoFocus={true}
+              value={draft}
+              onChange={event => setDraft(event.target.value)}
+              onKeyDown={event => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  event.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder={t('assistant.inputPlaceholder')}
+              aria-label={t('assistant.inputPlaceholder')}
+              fullWidth={true}
+              multiline={true}
+              maxRows={6}
+              size="small"
+            />
+            {isStreaming ? (
+              <IconButton onClick={cancel} aria-label={t('assistant.stop')} color="primary">
+                <StopIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleSend}
+                aria-label={t('assistant.send')}
+                color="primary"
+                disabled={!draft.trim()}
+              >
+                <SendIcon />
+              </IconButton>
             )}
           </Box>
-          <Box display="flex" alignItems="center">
-            <IconButton onClick={() => setSettingsOpen(true)} aria-label={t('assistant.settings')}>
-              <SettingsOutlinedIcon />
-            </IconButton>
-            <IconButton onClick={handleClose} aria-label={t('assistant.closeButton')}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </Box>
 
-        <AssistantConversationView />
-
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={gutters(0.5)}
-          padding={gutters(0.5)}
-          sx={{ borderTop: theme => `1px solid ${theme.palette.divider}` }}
-        >
-          <AssistantNewConversationButton onClick={() => void startNewConversation()} />
-          <TextField
-            // Move focus to the input when the panel opens (T031 focus mgmt).
-            // MUI's Dialog focus trap restores focus to the trigger on close.
-            inputRef={inputRef}
-            autoFocus={true}
-            value={draft}
-            onChange={event => setDraft(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                handleSend();
-              }
-            }}
-            placeholder={t('assistant.inputPlaceholder')}
-            aria-label={t('assistant.inputPlaceholder')}
-            fullWidth={true}
-            multiline={true}
-            maxRows={6}
-            size="small"
-          />
-          {isStreaming ? (
-            <IconButton onClick={cancel} aria-label={t('assistant.stop')} color="primary">
-              <StopIcon />
-            </IconButton>
-          ) : (
-            <IconButton onClick={handleSend} aria-label={t('assistant.send')} color="primary" disabled={!draft.trim()}>
-              <SendIcon />
-            </IconButton>
-          )}
-        </Box>
-
-        <AssistantSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+          <AssistantSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        </FocusScope>
       </DialogContent>
     </DialogWithGrid>
   );
