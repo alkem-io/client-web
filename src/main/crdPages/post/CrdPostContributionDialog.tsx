@@ -86,11 +86,12 @@ export function CrdPostContributionDialog({
   const { t } = useTranslation('crd-space');
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
-  // Create mode: the post (and its storage bucket) doesn't exist yet, so uploads must use the
-  // temporary location against the callout bucket (scoped by the connector) — the server
-  // relocates them to the post on save. Edit mode uploads straight to the post's own bucket.
+  // Create mode: the post (and its storage bucket) doesn't exist yet, so both markdown-image and
+  // reference-file uploads must use the temporary location against the callout bucket (scoped by the
+  // connector) — the server relocates them to the post on save. Edit mode uploads straight to the
+  // post's own bucket (`temporaryLocation: false`).
   const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: mode === 'create' });
-  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
+  const referenceUpload = useReferenceFileUpload(useStorageConfigContext(), { temporaryLocation: mode === 'create' });
   const titleFieldId = useId();
   const descriptionFieldId = useId();
   const tagsFieldId = useId();
