@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} leden"
     },
     "empty": {
+      "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces.",
       "membership": "Nog geen lidmaatschappen."
     },
@@ -93,6 +94,7 @@
       "memberOf": "Alle lidmaatschappen"
     },
     "empty": {
+      "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces."
     },
     "vcType": "Virtual Contributor"
