@@ -81,9 +81,10 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
       // The whiteboard editor is a Radix-modal dialog whose own FocusScope keeps
       // reclaiming the keyboard for the Excalidraw canvas. A Radix scope only
       // pauses for ANOTHER Radix scope, so trapping here pauses the whiteboard's
-      // trap and keeps the input focusable. Released while the (portaled-outside)
-      // settings dialog is open so its own focus management works.
-      trapped={!settingsOpen}
+      // trap and keeps the input focusable. Stays trapped even while the settings
+      // dialog is open — that dialog mounts its OWN FocusScope on top of the stack,
+      // so the whiteboard never momentarily reclaims focus during the transition.
+      trapped={true}
       loop={true}
       onMountAutoFocus={event => event.preventDefault()}
       style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }}
@@ -154,7 +155,11 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
         )}
       </Box>
 
-      <AssistantSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <AssistantSettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        scope={panelContext ? 'whiteboard' : 'all'}
+      />
     </FocusScope>
   );
 };

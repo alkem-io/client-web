@@ -6,6 +6,7 @@
     "scopedTo": "Working on: {{name}}",
     "closeButton": "Close the assistant",
     "settings": "Assistant settings",
+    "settingsWhiteboardScope": "Whiteboard capabilities — manage all in Settings → Assistant",
     "newConversation": "New Chat",
     "intro": "Ask me about content on the platform. I can search and summarise what you have access to.",
     "inputPlaceholder": "Ask the assistant…",

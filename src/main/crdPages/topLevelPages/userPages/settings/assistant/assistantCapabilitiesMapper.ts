@@ -40,6 +40,16 @@ export const isWriteKind = (kind: AssistantCapabilityKind): boolean =>
   kind === AssistantCapabilityKind.WriteAdditive || kind === AssistantCapabilityKind.WriteDestructive;
 
 /**
+ * Whether a capability is relevant to whiteboards — used to contextualize the
+ * quick settings opened from the in-whiteboard assistant rail to just the
+ * capabilities that affect whiteboards (the user still manages the full grant in
+ * Settings → Assistant). Matched on the MCP tool name so new whiteboard/template
+ * tools are included automatically (e.g. `analyze_whiteboard`, `create_whiteboard`,
+ * `list_whiteboards`, `update_whiteboard_content`, `navigate_templates`).
+ */
+export const isWhiteboardCapability = (name: string): boolean => /whiteboard|template/i.test(name);
+
+/**
  * Resolve the effective enabled state for a capability:
  * optimistic override → stored user value → kind default.
  */

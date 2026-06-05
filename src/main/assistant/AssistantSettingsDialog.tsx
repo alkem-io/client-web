@@ -7,26 +7,29 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserAssistantTabView } from '@/crd/components/user/settings/UserAssistantTabView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
+  isWhiteboardCapability,
   mapAssistantCapabilities,
   type PlatformCapability,
 } from '@/main/crdPages/topLevelPages/userPages/settings/assistant/assistantCapabilitiesMapper';
 import useUserAssistantTabData from '@/main/crdPages/topLevelPages/userPages/settings/assistant/useUserAssistantTabData';
 
+/** Which slice of the capability grant the quick settings shows. */
+export type AssistantSettingsScope = 'all' | 'whiteboard';
+
 /**
  * Quick-access assistant settings, opened from the assistant panel header — the
- * "general access" settings for now (the per-capability grant of what the
- * assistant may do on the user's behalf).
+ * per-capability grant of what the assistant may do on the user's behalf.
  *
  * Reuses the EXACT data layer + presentational view of the User → Settings →
- * Assistant tab (`CrdUserAssistantTab`), so the grant edited here is the same
- * one shown in settings (`platformCapabilities` enumerates the toggles;
- * `updateUserSettings({ assistant })` persists them). Rendered as a MUI dialog
- * because the panel is MUI — MUI's modal manager stacks it above the panel,
- * which a CRD/Radix dialog (z-50) would not. The CRD view is wrapped in a
- * `.crd-root` scope so its Tailwind preflight/tokens apply (the established
- * convention for CRD content inside a MUI dialog).
+ * Assistant tab (`CrdUserAssistantTab`), so the grant edited here is the same one
+ * shown in settings (`platformCapabilities` enumerates the toggles;
+ * `updateUserSettings({ assistant })` persists them).
+ *
+ * When opened from the in-whiteboard rail (`scope === 'whiteboard'`) only the
+ * whiteboard-relevant capabilities are SHOWN; each toggle still persists the FULL
+ * grant (the data hook keeps the complete capability list), so nothing else is lost.
  */
-const AssistantSettingsContent = () => {
+const AssistantSettingsContent = ({ scope }: { scope: AssistantSettingsScope }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
   const { userModel } = useCurrentUserContext();
@@ -44,8 +47,12 @@ const AssistantSettingsContent = () => {
   const capabilities: PlatformCapability[] = capabilitiesData?.platformCapabilities ?? [];
   const storedToggles = settingsData?.user.settings.assistant.enabledCapabilities ?? [];
 
+  // The data hook keeps the FULL capability list so each toggle persists the
+  // complete grant (buildAssistantUpdatePayload sends every capability).
   const { overrides, onToggle } = useUserAssistantTabData({ userId, capabilities, storedToggles });
   const rows = mapAssistantCapabilities(capabilities, storedToggles, overrides);
+  // Only the DISPLAYED rows are scoped — never the persisted set.
+  const displayRows = scope === 'whiteboard' ? rows.filter(row => isWhiteboardCapability(row.name)) : rows;
 
   const handleToggle = async (capabilityName: string, next: boolean) => {
     try {
@@ -57,14 +64,34 @@ const AssistantSettingsContent = () => {
 
   const loading = (capabilitiesLoading && !capabilitiesData) || (settingsLoading && !settingsData);
 
-  return <UserAssistantTabView loading={loading} capabilities={rows} onToggle={handleToggle} />;
+  return <UserAssistantTabView loading={loading} capabilities={displayRows} onToggle={handleToggle} />;
 };
 
-const AssistantSettingsDialog = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const AssistantSettingsDialog = ({
+  open,
+  onClose,
+  scope = 'all',
+}: {
+  open: boolean;
+  onClose: () => void;
+  scope?: AssistantSettingsScope;
+}) => {
   const { t } = useTranslation();
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth="sm" aria-labelledby="assistant-settings-title">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth={true}
+      maxWidth="sm"
+      // Render IN PLACE (no portal) so the dialog stays inside the same focus
+      // containers as its host: the panel's FocusScope and, in a whiteboard, the
+      // whiteboard editor's Radix modal. A portaled dialog escapes those containers,
+      // so the whiteboard's focus trap reclaims the keyboard and the toggles can't
+      // be operated. Containment is exactly how the docked rail input works.
+      disablePortal={true}
+      aria-labelledby="assistant-settings-title"
+    >
       <Box
         display="flex"
         alignItems="center"
@@ -72,16 +99,23 @@ const AssistantSettingsDialog = ({ open, onClose }: { open: boolean; onClose: ()
         padding={gutters(0.5)}
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
-        <Typography id="assistant-settings-title" variant="h6">
-          {t('assistant.settings')}
-        </Typography>
+        <Box>
+          <Typography id="assistant-settings-title" variant="h6">
+            {t('assistant.settings')}
+          </Typography>
+          {scope === 'whiteboard' && (
+            <Typography variant="caption" color="text.secondary">
+              {t('assistant.settingsWhiteboardScope')}
+            </Typography>
+          )}
+        </Box>
         <IconButton onClick={onClose} aria-label={t('assistant.closeButton')}>
           <CloseIcon />
         </IconButton>
       </Box>
       <DialogContent>
         {/* CRD content inside a MUI dialog → scope it so Tailwind preflight/tokens apply. */}
-        <div className="crd-root">{open ? <AssistantSettingsContent /> : null}</div>
+        <div className="crd-root">{open ? <AssistantSettingsContent scope={scope} /> : null}</div>
       </DialogContent>
     </Dialog>
   );
