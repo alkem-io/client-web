@@ -4,7 +4,7 @@ This is a presentation-layer redesign. There is **no database, no GraphQL schema
 
 ## Source → View-Model flow (unchanged)
 
-```
+```text
 useSpaceAboutDetailsQuery  ─┐
 useCommunityGuidelinesQuery ┤→ CrdSpaceAbout / CrdSubspaceAbout (mapping)
 useSpaceApplyFlow           ┘        │  builds SpaceAboutData + slots

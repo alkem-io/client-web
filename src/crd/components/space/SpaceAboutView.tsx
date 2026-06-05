@@ -90,87 +90,92 @@ export function SpaceAboutView({
 
   const leads = [...data.leadUsers, ...data.leadOrganizations];
   const hasLeads = leads.length > 0;
+  const hasPanelEditIcons = hasEditPrivilege && Boolean(onEditDescription || onEditMembers);
+  const hasMeta = Boolean(data.location) || memberCount !== undefined || Boolean(isMember);
+  const showPanel = Boolean(data.description) || hasMeta || hasLeads || hasPanelEditIcons;
 
   return (
     <div className={cn('max-w-3xl mx-auto space-y-6', className)}>
       {/* ── Space info panel: description + meta + leads (dark accent) ── */}
-      <div className="rounded-lg bg-primary text-primary-foreground overflow-hidden">
-        {hasEditPrivilege && (onEditDescription || onEditMembers) && (
-          <div className="flex justify-end gap-1 px-4 pt-3">
-            {onEditDescription && (
-              <EditIconButton
-                icon={Pencil}
-                label={t('about.editProfile')}
-                onClick={onEditDescription}
-                className="text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              />
+      {showPanel && (
+        <div className="rounded-lg bg-primary text-primary-foreground overflow-hidden">
+          {hasEditPrivilege && (onEditDescription || onEditMembers) && (
+            <div className="flex justify-end gap-1 px-4 pt-3">
+              {onEditDescription && (
+                <EditIconButton
+                  icon={Pencil}
+                  label={t('about.editProfile')}
+                  onClick={onEditDescription}
+                  className="text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                />
+              )}
+              {onEditMembers && (
+                <EditIconButton
+                  icon={Users}
+                  label={t('about.manageCommunity')}
+                  onClick={onEditMembers}
+                  className="text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                />
+              )}
+            </div>
+          )}
+
+          <div className={cn(hasEditPrivilege && (onEditDescription || onEditMembers) ? 'px-5 pb-5 pt-2' : 'p-5')}>
+            {data.description && <MarkdownContent content={data.description} className={MARKDOWN_ON_DARK} />}
+
+            {/* Meta row: location + members + member badge */}
+            {hasMeta && (
+              <div className="flex flex-wrap items-center gap-4 mt-4 text-caption text-primary-foreground/70">
+                {data.location && (
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" aria-hidden="true" />
+                    {data.location}
+                  </span>
+                )}
+                {memberCount !== undefined && (
+                  <span className="flex items-center gap-1">
+                    <Users className="w-3 h-3" aria-hidden="true" />
+                    {memberCount} {t('about.members')}
+                  </span>
+                )}
+                {isMember && (
+                  <span className="flex items-center gap-1 text-primary-foreground">
+                    <UserCheck className="w-3 h-3" aria-hidden="true" />
+                    {t('about.member')}
+                  </span>
+                )}
+              </div>
             )}
-            {onEditMembers && (
-              <EditIconButton
-                icon={Users}
-                label={t('about.manageCommunity')}
-                onClick={onEditMembers}
-                className="text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              />
+
+            {/* Leads — name only (no per-lead location) */}
+            {hasLeads && (
+              <div className="mt-4 pt-4 border-t border-primary-foreground/15">
+                <h3 className="mb-3 text-label uppercase text-primary-foreground/60">{t('about.leads')}</h3>
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
+                <ul role="list" className="flex flex-wrap gap-x-6 gap-y-3">
+                  {leads.map(lead => (
+                    <li key={lead.href}>
+                      <a
+                        href={lead.href}
+                        className="flex items-center gap-3 rounded-md p-1 -m-1 hover:bg-primary-foreground/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50"
+                      >
+                        <Avatar className="w-9 h-9 border-2 border-primary-foreground/25">
+                          {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
+                          <AvatarFallback className="bg-primary-foreground/15 text-primary-foreground text-badge">
+                            {lead.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-card-title text-primary-foreground truncate">{lead.name}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
-        )}
-
-        <div className={cn(hasEditPrivilege && (onEditDescription || onEditMembers) ? 'px-5 pb-5 pt-2' : 'p-5')}>
-          {data.description && <MarkdownContent content={data.description} className={MARKDOWN_ON_DARK} />}
-
-          {/* Meta row: location + members + member badge */}
-          {(data.location || memberCount !== undefined || isMember) && (
-            <div className="flex flex-wrap items-center gap-4 mt-4 text-caption text-primary-foreground/70">
-              {data.location && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" aria-hidden="true" />
-                  {data.location}
-                </span>
-              )}
-              {memberCount !== undefined && (
-                <span className="flex items-center gap-1">
-                  <Users className="w-3 h-3" aria-hidden="true" />
-                  {memberCount} {t('about.members')}
-                </span>
-              )}
-              {isMember && (
-                <span className="flex items-center gap-1 text-primary-foreground">
-                  <UserCheck className="w-3 h-3" aria-hidden="true" />
-                  {t('about.member')}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Leads — name only (no per-lead location) */}
-          {hasLeads && (
-            <div className="mt-4 pt-4 border-t border-primary-foreground/15">
-              <h3 className="mb-3 text-label uppercase text-primary-foreground/60">{t('about.leads')}</h3>
-              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-              {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
-              <ul role="list" className="flex flex-wrap gap-x-6 gap-y-3">
-                {leads.map(lead => (
-                  <li key={lead.href}>
-                    <a
-                      href={lead.href}
-                      className="flex items-center gap-3 rounded-md p-1 -m-1 hover:bg-primary-foreground/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/50"
-                    >
-                      <Avatar className="w-9 h-9 border-2 border-primary-foreground/25">
-                        {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
-                        <AvatarFallback className="bg-primary-foreground/15 text-primary-foreground text-badge">
-                          {lead.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-card-title text-primary-foreground truncate">{lead.name}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Apply / Join CTA (self-contained — renders its own helper text when needed) */}
       {joinSlot && <div className="flex flex-col items-center">{joinSlot}</div>}

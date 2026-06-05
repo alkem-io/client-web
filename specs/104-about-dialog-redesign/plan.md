@@ -27,7 +27,7 @@ The change is confined to the **CRD presentational layer**: `SpaceAboutView.tsx`
 
 | Principle | Status | Notes |
 |---|---|---|
-| I. Domain-Driven Frontend Boundaries | PASS | Business logic stays in the integration layer (`src/main/crdPages/space|subspace/about`) and domain hooks; CRD components remain purely presentational with plain-TS props. |
+| I. Domain-Driven Frontend Boundaries | PASS | Business logic stays in the integration layer (`src/main/crdPages/{space,subspace}/about`) and domain hooks; CRD components remain purely presentational with plain-TS props. |
 | II. React 19 Concurrent UX Discipline | PASS | Pure render; visual-only `useState` (expand/scroll). No manual memoization (React Compiler). Loading states already provided by `CommunityGuidelinesBlock` and gated queries. |
 | III. GraphQL Contract Fidelity | PASS | No schema or query changes; existing generated hooks reused. No generated types exported through CRD prop contracts (mapping stays in the integration layer). |
 | IV. State & Side-Effect Isolation | PASS | No new global state; navigation/permissions/data come via props/callbacks from the integration layer. CRD components manage only visual toggles. |
