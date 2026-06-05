@@ -3,7 +3,7 @@ import SendIcon from '@mui/icons-material/Send';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import StopIcon from '@mui/icons-material/Stop';
 import { Box, DialogContent, IconButton, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
@@ -32,6 +32,18 @@ const AssistantDialog = () => {
   // Rehydrate the single rolling thread on open/reload (incl. a pending
   // confirmation) and reconnect an in-flight turn (US3 / FR-011).
   useAssistantRehydrate();
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Excalidraw aggressively reclaims focus when the panel opens over a whiteboard,
+  // so MUI's autoFocus alone doesn't stick. Nudge focus to the input once the
+  // dialog has mounted/animated so the user can type immediately.
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const id = window.setTimeout(() => inputRef.current?.focus(), 80);
+    return () => window.clearTimeout(id);
+  }, [isOpen]);
 
   if (!isEnabled) {
     return null;
@@ -105,6 +117,7 @@ const AssistantDialog = () => {
           <TextField
             // Move focus to the input when the panel opens (T031 focus mgmt).
             // MUI's Dialog focus trap restores focus to the trigger on close.
+            inputRef={inputRef}
             autoFocus={true}
             value={draft}
             onChange={event => setDraft(event.target.value)}

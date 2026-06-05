@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useContext, useReducer, useState } from 'react';
+import { createConversation } from './assistantApi';
 import type {
   AssistantConversation,
   AssistantErrorCode,
@@ -260,8 +261,19 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [panelContext, setPanelContext] = useState<AssistantPanelContext | null>(null);
 
-  const openForWhiteboard = (wb: AssistantPanelContext) => {
+  const openForWhiteboard = async (wb: AssistantPanelContext) => {
     setPanelContext(wb);
+    // Open the whiteboard-scoped assistant in its OWN fresh thread, separate from
+    // the user's general rolling conversation. Creating a new conversation makes it
+    // the newest, so the next turn routes there — not the prior global thread (the
+    // rehydrate-on-open then resolves this same newest thread, so it stays empty).
+    try {
+      const { id } = await createConversation();
+      dispatch({ type: 'reset' });
+      dispatch({ type: 'set-conversation', conversationId: id });
+    } catch {
+      // If creating the fresh thread fails, still open (falls back to the current thread).
+    }
     setIsOpen(true);
   };
   const clearPanelContext = () => setPanelContext(null);
