@@ -14,6 +14,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
 import LoginSuccessPage from '@/core/auth/authentication/pages/LoginSuccessPage';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -123,31 +124,40 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
 }
 
 /**
- * CRD login route — the un-gated replacement for the MUI `LoginRoute`.
+ * CRD login route — the replacement for the MUI `LoginRoute`.
  * Mirrors its structure: the login screen at `/` and the post-login
  * success handler at `/success`.
+ *
+ * A Kratos-initiated login arrives here with a `flow` id in the URL. This
+ * includes *refresh* (re-authentication) logins, which Kratos demands before
+ * privileged Settings changes — adding a passkey, changing the password —
+ * once the session is older than `privileged_session_max_age`. In that case
+ * the user already holds a (non-privileged) session, so the usual
+ * `NotAuthenticatedRoute` guard would bounce them to the dashboard and the
+ * re-auth form would never render, silently aborting the Settings change.
+ * Whenever a flow id is present we render the login page regardless of
+ * authentication state so the flow (incl. refresh / step-up) can complete.
  */
 export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  const { setReturnUrl } = useReturnUrl();
 
   useEffect(() => {
     if (returnUrl) {
+      // The cookie is what `LoginSuccessPage` reads back via `useGetReturnUrl()`;
+      // the sessionStorage write is retained for the guest-whiteboard return flow.
+      setReturnUrl(returnUrl);
       sessionStorage.setItem(STORAGE_KEY_RETURN_URL, returnUrl);
     }
   }, [returnUrl]);
 
+  const loginPage = <CrdLoginPage flow={flow} />;
+
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <NotAuthenticatedRoute>
-            <CrdLoginPage flow={flow} />
-          </NotAuthenticatedRoute>
-        }
-      />
+      <Route path="/" element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
       <Route path="success" element={<LoginSuccessPage />} />
     </Routes>
   );

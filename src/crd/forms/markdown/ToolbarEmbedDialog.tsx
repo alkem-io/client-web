@@ -77,20 +77,25 @@ export function ToolbarEmbedDialog({ editor, iframeAllowedUrls, onError, disable
           <MonitorPlay className="w-4 h-4" aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="z-[70] sm:max-w-lg" overlayClassName="z-[70]">
-        <DialogHeader>
+      <DialogContent
+        className="z-[70] sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
+        overlayClassName="z-[70]"
+      >
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('editor.embed.dialogTitle')}</DialogTitle>
         </DialogHeader>
-        <Textarea
-          value={code}
-          onChange={e => setCode(e.target.value)}
-          placeholder={t('editor.embed.placeholder')}
-          rows={7}
-          className="font-mono text-caption"
-          aria-label={t('editor.embed.codeLabel')}
-          autoFocus={true}
-        />
-        <DialogFooter>
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <Textarea
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            placeholder={t('editor.embed.placeholder')}
+            rows={7}
+            className="font-mono text-caption"
+            aria-label={t('editor.embed.codeLabel')}
+            autoFocus={true}
+          />
+        </div>
+        <DialogFooter className="shrink-0">
           <Button variant="ghost" onClick={() => handleOpenChange(false)}>
             {t('editor.cancel')}
           </Button>

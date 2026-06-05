@@ -76,11 +76,14 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
           <ImageIcon className="w-4 h-4" aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="z-[70] sm:max-w-md" overlayClassName="z-[70]">
-        <DialogHeader>
+      <DialogContent
+        className="z-[70] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden"
+        overlayClassName="z-[70]"
+      >
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('editor.image.dialogTitle')}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
+        <div className="space-y-3 flex-1 min-h-0 overflow-y-auto">
           <div className="space-y-1">
             <Label htmlFor={srcInputId}>{t('editor.image.url')}</Label>
             <Input
@@ -124,7 +127,7 @@ export function ToolbarImageDialog({ editor, onImageUpload, onError }: ToolbarIm
             />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button variant="ghost" onClick={() => handleOpenChange(false)} disabled={uploading}>
             {t('editor.cancel')}
           </Button>

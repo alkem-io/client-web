@@ -92,7 +92,7 @@ export default function CrdSpaceSubspacesPage() {
           variant="subspaces"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
         />
       </SpaceSidebarPortal>
 

@@ -55,14 +55,14 @@ export function AddCommunityMemberDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl md:max-w-2xl max-h-[80vh] overflow-y-auto [&>*]:min-w-0">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-xl md:max-w-2xl max-h-[80vh] flex flex-col overflow-hidden [&>*]:min-w-0">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 py-2">
-          <div className="relative">
+        <div className="flex flex-col gap-4 py-2 flex-1 min-h-0">
+          <div className="relative shrink-0">
             <Search
               aria-hidden="true"
               className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -76,7 +76,7 @@ export function AddCommunityMemberDialog({
             />
           </div>
 
-          <div className="rounded-lg border bg-card overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -112,6 +112,48 @@ export function CalloutMediaGalleryCarousel({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  // Dialog-wide arrow navigation. When the gallery lives inside a dialog, focus easily
+  // leaves it — clicking the dialog scrollbar or body drops focus onto the Radix
+  // DialogContent — and the focus-scoped handlers below stop receiving arrow keys. So we
+  // also listen on the nearest [role="dialog"] ancestor and let ←/→ navigate from anywhere
+  // in the dialog. Three guards keep this safe:
+  //   • Only when there IS a dialog ancestor. Inline (e.g. the feed) several galleries can
+  //     share a page, so we attach nothing and rely on the local focus-scoped handler.
+  //   • Skip when focus is inside the gallery itself — those keys are already handled by
+  //     handleRootKeyDown / the carousel primitive, so this avoids double-navigation.
+  //   • Skip while the user is typing (the comments <textarea>, any input/select/editable).
+  useEffect(() => {
+    if (!api) return;
+    const root = rootRef.current;
+    const dialog = root?.closest('[role="dialog"]') as HTMLElement | null;
+    if (!root || !dialog) return;
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const target = event.target as HTMLElement | null;
+      if (!target || root.contains(target)) return;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable ||
+        target.closest('[contenteditable="true"]')
+      ) {
+        return;
+      }
+      event.preventDefault();
+      if (event.key === 'ArrowLeft') {
+        api.scrollPrev();
+      } else {
+        api.scrollNext();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleDialogKeyDown);
+    return () => dialog.removeEventListener('keydown', handleDialogKeyDown);
+  }, [api]);
+
   const fullscreenSupported =
     typeof document !== 'undefined' &&
     (document.fullscreenEnabled ||
@@ -131,9 +173,18 @@ export function CalloutMediaGalleryCarousel({
     }
   };
 
-  // Keyboard handling scoped to the carousel root. The primitive already handles Arrow
-  // keys via onKeyDownCapture, so this only adds Home/End/F — preventDefault is explicit
-  // to avoid double-handling on Arrow keys if focus is inside the gallery.
+  // Keyboard handling for when focus is anywhere INSIDE the gallery. The Carousel primitive
+  // handles Arrow keys via onKeyDownCapture, but only while focus sits on a descendant of
+  // its inner region (e.g. a nav button). Focus can also land on a thumbnail button outside
+  // the carousel region, where the primitive's handler never fires. This wrapper contains
+  // the whole gallery, so re-handling Arrow keys here (bubble phase) makes back/forth work
+  // wherever focus sits within it. The defaultPrevented guard skips keys the primitive
+  // already consumed. (When focus has left the gallery entirely but is still in a host
+  // dialog, the dialog-wide effect above takes over — Home/End/F stay gallery-local.)
+  //
+  // We deliberately do NOT steal focus onto this wrapper on click: doing so stopped
+  // ArrowUp/ArrowDown from scrolling the host dialog. Left/right work without focusing the
+  // gallery because the dialog-wide listener catches them from anywhere in the dialog.
   const handleRootKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.defaultPrevented || !api) return;
     const target = event.target as HTMLElement | null;
@@ -146,7 +197,13 @@ export function CalloutMediaGalleryCarousel({
     ) {
       return;
     }
-    if (event.key === 'Home') {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      api.scrollPrev();
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      api.scrollNext();
+    } else if (event.key === 'Home') {
       event.preventDefault();
       api.scrollTo(0);
     } else if (event.key === 'End') {

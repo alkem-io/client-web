@@ -89,7 +89,7 @@ export default function CrdSpaceCommunityPage() {
         <SpaceSidebar
           variant="community"
           description={space.about.profile.description || ''}
-          onEditClick={() => navigate(`${space.about.profile.url}/settings/about`)}
+          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
           leads={sidebarLeads}
           canContactLeads={canContactLeads}
           onContactLead={handleContactLead}

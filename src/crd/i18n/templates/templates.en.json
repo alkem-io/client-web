@@ -39,6 +39,7 @@
   "card": {
     "actions": "Template actions",
     "preview": "Preview",
+    "use": "Use template",
     "edit": "Edit",
     "duplicate": "Duplicate",
     "delete": "Delete",
