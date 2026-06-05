@@ -35,6 +35,7 @@ import type {
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 type ExcalidrawUtils = {
@@ -255,6 +256,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
               options.canEdit ? <WhiteboardTemplatePickerButton onImport={handleImportTemplate} /> : undefined
             }
             headerActions={options.headerActions}
+            rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
             footer={
               <WhiteboardSaveFooter
                 onDelete={actions.onDelete ? () => actions.onDelete?.(whiteboard) : undefined}

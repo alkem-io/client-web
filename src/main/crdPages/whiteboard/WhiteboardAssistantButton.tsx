@@ -21,17 +21,31 @@ type WhiteboardAssistantButtonProps = {
 export function WhiteboardAssistantButton({ whiteboard }: WhiteboardAssistantButtonProps) {
   const { t } = useTranslation();
   const isEnabled = useAssistantEnabled();
-  const { openForWhiteboard } = useAssistantContext();
+  const { isOpen, setIsOpen, panelContext, openForWhiteboard, clearPanelContext } = useAssistantContext();
 
   if (!isEnabled) {
     return null;
   }
 
+  // The assistant is open AND scoped to THIS board → the sparkle collapses the
+  // rail; otherwise it (re)opens the assistant scoped to this board (a fresh
+  // thread, separate from the user's general rolling conversation).
+  const openHere = isOpen && panelContext?.whiteboardId === whiteboard.id;
+
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => openForWhiteboard({ whiteboardId: whiteboard.id, displayName: whiteboard.profile?.displayName })}
+      onClick={() => {
+        if (openHere) {
+          setIsOpen(false);
+          clearPanelContext();
+        } else {
+          openForWhiteboard({ whiteboardId: whiteboard.id, displayName: whiteboard.profile?.displayName });
+        }
+      }}
+      aria-pressed={openHere}
+      aria-expanded={openHere}
       aria-label={t('assistant.openInWhiteboard')}
       title={t('assistant.openInWhiteboard')}
     >

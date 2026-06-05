@@ -13,7 +13,7 @@ import { useAssistantEnabled } from './useAssistantEnabled';
 export const AssistantButton = () => {
   const { t } = useTranslation();
   const isEnabled = useAssistantEnabled();
-  const { setIsOpen } = useAssistantContext();
+  const { setIsOpen, clearPanelContext } = useAssistantContext();
 
   if (!isEnabled) {
     return null;
@@ -22,7 +22,13 @@ export const AssistantButton = () => {
   return (
     <Paper
       component={IconButton}
-      onClick={() => setIsOpen(true)}
+      // Drop any stale whiteboard scope so the global panel always opens as the
+      // dialog (its gate requires `panelContext === null`), never suppressed by a
+      // board that was closed without collapsing its rail.
+      onClick={() => {
+        clearPanelContext();
+        setIsOpen(true);
+      }}
       color="primary"
       aria-label={t('assistant.openButton')}
       sx={{
