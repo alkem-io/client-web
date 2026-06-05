@@ -1,4 +1,4 @@
-import { Ban, Search } from 'lucide-react';
+import { ArrowDown, Ban, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -24,7 +24,18 @@ function matchesSearch(card: TemplateCardData, query: string): boolean {
 
 export function TemplatePicker(props: TemplatePickerProps) {
   const { t } = useTranslation('crd-templates');
-  const { open, onClose, sources, search, onSearchChange, loading, onPreview, previewContent, previewLoading } = props;
+  const {
+    open,
+    onClose,
+    sources,
+    search,
+    onSearchChange,
+    loading,
+    onPreview,
+    previewId,
+    previewContent,
+    previewLoading,
+  } = props;
   const isImport = props.mode === 'import';
   const title = isImport ? t('picker.importTitle') : t('picker.title');
 
@@ -121,13 +132,31 @@ export function TemplatePicker(props: TemplatePickerProps) {
           </ScrollArea>
 
           {/* Preview pane */}
-          <aside className="border rounded-md p-3 bg-muted/20">
-            {previewLoading ? (
-              <TemplateContentPreview content={{ type: 'post', defaultDescription: '' }} loading={true} />
-            ) : previewContent ? (
-              <TemplateContentPreview content={previewContent} />
-            ) : (
-              <p className="text-body text-muted-foreground py-8 text-center">{t('picker.selectPreviewHint')}</p>
+          <aside className="border rounded-md p-3 bg-muted/20 flex flex-col max-h-[60vh]">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+              {previewLoading ? (
+                <TemplateContentPreview content={{ type: 'post', defaultDescription: '' }} loading={true} />
+              ) : previewContent ? (
+                <TemplateContentPreview content={previewContent} />
+              ) : (
+                <p className="text-body text-muted-foreground py-8 text-center">{t('picker.selectPreviewHint')}</p>
+              )}
+            </div>
+            {/* "Use this template" / "Import" action for the currently-previewed template. */}
+            {previewId && previewContent && !previewLoading && (
+              <div className="mt-3 pt-3 border-t">
+                {props.mode === 'select' ? (
+                  <Button className="w-full" onClick={() => props.onSelect(previewId)}>
+                    <ArrowDown aria-hidden="true" className="size-4 mr-1.5" />
+                    {t('picker.select')}
+                  </Button>
+                ) : props.alreadyInSet.has(previewId) ? null : (
+                  <Button variant="outline" className="w-full" onClick={() => props.onImport(previewId)}>
+                    <Plus aria-hidden="true" className="size-4 mr-1.5" />
+                    {t('picker.import')}
+                  </Button>
+                )}
+              </div>
             )}
           </aside>
         </div>

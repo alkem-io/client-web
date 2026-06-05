@@ -93,11 +93,11 @@ export function MemoContributionAddConnector({
           if (!open) handleCloseCreate();
         }}
       >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
             <DialogTitle>{t('callout.createMemo')}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
             <label htmlFor="crd-create-memo-name" className="text-caption text-muted-foreground">
               {t('callout.memoNameLabel')}
             </label>
@@ -109,7 +109,7 @@ export function MemoContributionAddConnector({
               disabled={creating}
             />
           </div>
-          <DialogFooter>
+          <DialogFooter className="shrink-0">
             <Button variant="outline" onClick={handleCloseCreate} disabled={creating}>
               {t('dialogs.cancel')}
             </Button>

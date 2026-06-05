@@ -88,8 +88,12 @@ export function ShareDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* z-[70] keeps the share dialog above whiteboard / memo editors (z-[60]) and below confirms (z-[90]). */}
-      <DialogContent className={cn('sm:max-w-md z-[70]', className)} overlayClassName="z-[70]" closeLabel={t('close')}>
-        <DialogHeader>
+      <DialogContent
+        className={cn('sm:max-w-md z-[70] max-h-[90vh] flex flex-col overflow-hidden', className)}
+        overlayClassName="z-[70]"
+        closeLabel={t('close')}
+      >
+        <DialogHeader className="shrink-0">
           <div className="flex items-center gap-2">
             {isAlkemioView && (
               <Button
@@ -108,9 +112,9 @@ export function ShareDialog({
         </DialogHeader>
 
         {isAlkemioView ? (
-          <div>{shareOnAlkemioSlot}</div>
+          <div className="flex-1 min-h-0 overflow-y-auto">{shareOnAlkemioSlot}</div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
             <div className="flex items-center gap-2">
               <Input
                 value={fullUrl}

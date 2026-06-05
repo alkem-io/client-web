@@ -89,28 +89,30 @@ export function CommunityGuidelinesBlock({
       </Button>
 
       <Dialog open={readMoreOpen} onOpenChange={setReadMoreOpen}>
-        <DialogContent className="w-full sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogTitle>{title}</DialogTitle>
-          {description && <MarkdownContent content={description} />}
-          {references && references.length > 0 && (
-            <div className="space-y-2 mt-4">
-              {references.map(ref => (
-                <a
-                  key={ref.uri}
-                  href={ref.uri}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
-                  <div>
-                    <p className="text-body-emphasis text-foreground">{ref.name}</p>
-                    {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
-                  </div>
-                </a>
-              ))}
-            </div>
-          )}
+        <DialogContent className="w-full sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+          <DialogTitle className="shrink-0">{title}</DialogTitle>
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            {description && <MarkdownContent content={description} />}
+            {references && references.length > 0 && (
+              <div className="space-y-2 mt-4">
+                {references.map(ref => (
+                  <a
+                    key={ref.uri}
+                    href={ref.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
+                    <div>
+                      <p className="text-body-emphasis text-foreground">{ref.name}</p>
+                      {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </section>

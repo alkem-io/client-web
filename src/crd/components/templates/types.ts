@@ -143,6 +143,8 @@ export type TemplateContent =
       defaultPostDescription?: string;
       /** Excalidraw JSON */
       defaultWhiteboardContent?: string;
+      /** The default title new whiteboard contributions are created with (`contributionDefaults.defaultDisplayName`). */
+      defaultWhiteboardName?: string;
     }
   | {
       type: 'whiteboard';
@@ -364,6 +366,8 @@ type TemplatePickerCommon = {
   loading?: boolean;
   /** Ask the consumer to lazy-load the full content of `templateId` for the preview pane. */
   onPreview: (templateId: string) => void;
+  /** Id of the template currently shown in the preview pane — drives the pane's action button. */
+  previewId?: string;
   /** The lazily-loaded preview content; `undefined` while loading. */
   previewContent?: TemplateContent;
   previewLoading: boolean;
