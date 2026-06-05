@@ -134,6 +134,7 @@ export const CrdUserProfilePage = () => {
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
+          emptyResourcesHosted: t('userProfile.empty.resourcesHosted'),
           emptyLeading: t('userProfile.empty.leading'),
           emptyMembership: t('userProfile.empty.membership'),
           spacePrivacy: {

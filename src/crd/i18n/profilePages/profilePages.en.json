@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} members"
     },
     "empty": {
+      "resourcesHosted": "No resources hosted yet.",
       "leading": "Not leading any spaces yet.",
       "membership": "No memberships yet."
     },
@@ -93,6 +94,7 @@
       "memberOf": "All Memberships"
     },
     "empty": {
+      "resourcesHosted": "No resources hosted yet.",
       "leading": "Not leading any spaces yet."
     },
     "vcType": "Virtual Contributor"
