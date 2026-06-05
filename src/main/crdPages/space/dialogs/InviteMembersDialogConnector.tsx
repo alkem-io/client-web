@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { useAvailableUsersForEntryRoleQuery, useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RoleName, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
@@ -34,6 +34,7 @@ export type InviteMembersDialogConnectorProps = {
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
+const INVITE_PAGE_SIZE = 20;
 
 // Match the regex used by the legacy validation layer (FormikContributorsSelectorField.validation).
 // Inlined here to avoid coupling the CRD connector to a Yup schema we don't otherwise use.
@@ -103,40 +104,88 @@ export function InviteMembersDialogConnector({
     return () => window.clearTimeout(handle);
   }, [searchQuery]);
 
-  // Search the platform for invitable users — matches the legacy invite WIZARD
-  // (not the "Add member" picker): `onlyUsersInRole` restricts to the parent
-  // community only at L2 (set by the caller via `onlyFromParentCommunity`); at
-  // L0/L1 it returns platform users, who become members of the Space on accepting.
+  // Candidate-list source depends on level:
+  //  - L0 / L1 (`!onlyFromParentCommunity`): the (sub)space's OWN role set via
+  //    `availableUsersForEntryRole`. The server returns the setting-aware,
+  //    privilege-aware invitable set — the full platform list, or only parent-space
+  //    members when the caller can't invite to the parent — and already excludes
+  //    current members. This replaces the old global `usersPaginated` directory,
+  //    which ignored the space/setting and surfaced non-parent-members at L1.
+  //  - L2 (`onlyFromParentCommunity`): unchanged legacy behaviour — only existing
+  //    parent-community members, via `useContributors` (usersInRoles based).
+  // Trim once: a pasted value with surrounding whitespace (e.g. an email with a
+  // trailing space) must not gate `skip` as non-empty while leaking the
+  // whitespace into the server-side filter — that yields zero matches. The same
+  // trimmed value drives the server filter, the skip gate, and the L2
+  // client-side match below.
+  const trimmedQuery = debouncedQuery.trim();
+  const searchFilter = trimmedQuery ? { displayName: trimmedQuery, email: trimmedQuery } : undefined;
+
   const {
-    data: contributors = [],
-    hasMore,
-    loading: contributorsLoading,
-    fetchMore,
+    data: entryRoleData,
+    loading: entryRoleLoading,
+    fetchMore: entryRoleFetchMore,
+  } = useAvailableUsersForEntryRoleQuery({
+    variables: { roleSetId: roleSetId ?? '', first: INVITE_PAGE_SIZE, filter: searchFilter },
+    skip: !open || onlyFromParentCommunity || !roleSetId || !trimmedQuery,
+  });
+  const entryRolePage = entryRoleData?.lookup.roleSet?.availableUsersForEntryRole;
+
+  const {
+    data: parentMembers = [],
+    hasMore: parentHasMore,
+    loading: parentLoading,
+    fetchMore: parentFetchMore,
   } = useContributors({
-    filter: debouncedQuery ? { displayName: debouncedQuery, email: debouncedQuery } : undefined,
-    parentSpaceId,
-    onlyUsersInRole: onlyFromParentCommunity,
-    pageSize: 20,
+    filter: searchFilter,
+    // Only the L2 path consults the parent community; pass undefined otherwise so
+    // the hook short-circuits instead of firing the global usersPaginated query.
+    parentSpaceId: onlyFromParentCommunity ? parentSpaceId : undefined,
+    onlyUsersInRole: true,
+    pageSize: INVITE_PAGE_SIZE,
   });
 
-  // Map raw contributor rows to the CRD prop shape and exclude self + already-selected.
+  const contributorsLoading = onlyFromParentCommunity ? parentLoading : entryRoleLoading;
+  const hasMore = onlyFromParentCommunity ? parentHasMore : (entryRolePage?.pageInfo.hasNextPage ?? false);
+  const fetchMore = onlyFromParentCommunity
+    ? parentFetchMore
+    : () => {
+        if (!roleSetId || !entryRolePage) return;
+        void entryRoleFetchMore({
+          variables: {
+            roleSetId,
+            first: INVITE_PAGE_SIZE,
+            after: entryRolePage.pageInfo.endCursor,
+            filter: searchFilter,
+          },
+        });
+      };
+
+  // Normalise both sources to a common row shape, then exclude self + already-selected.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
   );
-  const searchResults: ContributorSelectorUserResult[] = contributors
+  // The entry-role query (L0/L1) filters server-side. The parent-members (L2)
+  // source ignores the `filter` arg, so the search box would otherwise do
+  // nothing — apply a client-side displayName match for that path.
+  const query = trimmedQuery.toLowerCase();
+  const rawCandidates = (onlyFromParentCommunity ? parentMembers : (entryRolePage?.users ?? []))
+    .map(c => ({
+      id: c.id,
+      displayName: c.profile?.displayName ?? '',
+      avatarUrl: c.profile?.visual?.uri,
+      city: c.profile?.location?.city,
+      country: c.profile?.location?.country,
+    }))
+    .filter(c => !onlyFromParentCommunity || !query || c.displayName.toLowerCase().includes(query));
+  const searchResults: ContributorSelectorUserResult[] = rawCandidates
     .filter(c => c.id !== currentUser?.id)
     .filter(c => !selectedUserIds.has(c.id))
     .map(c => {
-      const profile = c.profile;
-      const city = profile?.location?.city?.trim() ?? '';
-      const country = profile?.location?.country?.trim() ?? '';
+      const city = c.city?.trim() ?? '';
+      const country = c.country?.trim() ?? '';
       const location = city && country ? `${city}, ${country}` : city ? city : country ? country : undefined;
-      return {
-        userId: c.id,
-        displayName: profile?.displayName ?? '',
-        avatarUrl: profile?.visual?.uri,
-        location,
-      };
+      return { userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl, location };
     });
 
   // ---------- handlers ----------
@@ -194,29 +243,54 @@ export function InviteMembersDialogConnector({
 
   const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
+  // Each outcome's label is a complete sentence. Shared by the result rows and
+  // the completion toast so the wording stays in one place.
+  const resultOutcomeLabels = {
+    sent: t('inviteMembers.results.sent'),
+    alreadyInvited: t('inviteMembers.results.alreadyInvited'),
+    alreadyMember: t('inviteMembers.results.alreadyMember'),
+    alreadyHasApplication: t('inviteMembers.results.alreadyHasApplication'),
+    parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
+    error: t('inviteMembers.results.error'),
+  } satisfies Record<InvitationResult['outcome'], string>;
+
   const buildResults = (
     submittedInvitees: ContributorSelectorInvitee[],
     legacyResults: Awaited<ReturnType<typeof inviteContributorsOnRoleSet>>
   ): InvitationResult[] => {
-    // The legacy mutation returns one InvitationResultModel per invitee; we
-    // re-correlate by display name (users) or email (platform invitees).
+    // The mutation returns one result per invitee. Successful results carry the
+    // created `invitation`/`platformInvitation`, so we correlate those by
+    // actor id / email. Failure results (e.g. INVITATION_TO_PARENT_NOT_AUTHORIZED)
+    // come back with BOTH null, so they can't be matched that way — consume each
+    // result once and fall back to the next id-less result for those invitees.
+    const remaining = [...legacyResults];
+    const take = (predicate: (r: (typeof legacyResults)[number]) => boolean) => {
+      const idx = remaining.findIndex(predicate);
+      return idx === -1 ? undefined : remaining.splice(idx, 1)[0];
+    };
     return submittedInvitees.map(invitee => {
-      const legacyResult = legacyResults.find(r => {
-        if (invitee.kind === 'user') {
-          return r.invitation?.actor?.id === invitee.userId;
-        }
-        return r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase();
-      });
+      const matched =
+        invitee.kind === 'user'
+          ? take(r => r.invitation?.actor?.id === invitee.userId)
+          : take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase());
+      const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
       if (!legacyResult) {
-        return { invitee, outcome: 'error' as const, errorMessage: 'No result returned' };
+        return { invitee, outcome: 'error' as const };
       }
       const outcome: InvitationResult['outcome'] =
-        legacyResult.type === 'INVITED_TO_ROLE_SET' || legacyResult.type === 'INVITED_TO_PLATFORM_AND_ROLE_SET'
+        legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet ||
+        legacyResult.type === RoleSetInvitationResultType.InvitedToPlatformAndRoleSet
           ? 'sent'
-          : legacyResult.type === 'ALREADY_INVITED_TO_ROLE_SET' ||
-              legacyResult.type === 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET'
-            ? 'alreadyMember'
-            : 'error';
+          : legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToRoleSet ||
+              legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToPlatformAndRoleSet
+            ? 'alreadyInvited'
+            : legacyResult.type === RoleSetInvitationResultType.AlreadyMemberOfRoleSet
+              ? 'alreadyMember'
+              : legacyResult.type === RoleSetInvitationResultType.AlreadyHasOpenApplication
+                ? 'alreadyHasApplication'
+                : legacyResult.type === RoleSetInvitationResultType.InvitationToParentNotAuthorized
+                  ? 'parentNotAuthorized'
+                  : 'error';
       return { invitee, outcome };
     });
   };
@@ -246,7 +320,23 @@ export function InviteMembersDialogConnector({
           welcomeMessage,
           extraRoles: extraRoles.map(role => ROLE_TO_NAME[role]),
         });
-        setResults(buildResults(validInvitees, legacyResults));
+        const built = buildResults(validInvitees, legacyResults);
+        setResults(built);
+        // The result rows show per-invitee detail, but a non-sent outcome is easy
+        // to miss inside the dialog — surface a toast too. A single outcome shows
+        // its specific reason; a batch shows a count. `alreadyInvited`,
+        // `alreadyMember` and `alreadyHasApplication` are informational (the invite
+        // wasn't needed/possible), not failures, so they keep an 'info' severity —
+        // only a genuine failure turns the toast into an error.
+        const notSent = built.filter(r => r.outcome !== 'sent');
+        if (notSent.length > 0) {
+          const hasFailure = notSent.some(r => r.outcome === 'error' || r.outcome === 'parentNotAuthorized');
+          const message =
+            notSent.length === 1
+              ? resultOutcomeLabels[notSent[0].outcome]
+              : t('inviteMembers.toast.someFailed', { count: notSent.length });
+          notify(message, hasFailure ? 'error' : 'info');
+        }
       } catch (_err) {
         notify(t('inviteMembers.errors.networkFailure'), 'error');
         // Stay on the form view with chips intact (per spec FR-007 edge case).
@@ -329,11 +419,7 @@ export function InviteMembersDialogConnector({
         backButtonLabel: t('inviteMembers.dialog.backButtonLabel'),
         closeButtonLabel: t('inviteMembers.dialog.closeButtonLabel'),
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
-        resultOutcomeLabels: {
-          sent: t('inviteMembers.results.sent'),
-          alreadyMember: t('inviteMembers.results.alreadyMember'),
-          error: t('inviteMembers.results.error', { message: '' }),
-        },
+        resultOutcomeLabels,
       }}
     />
   );

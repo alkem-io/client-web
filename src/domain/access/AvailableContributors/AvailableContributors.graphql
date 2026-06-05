@@ -3,6 +3,14 @@ fragment AvailableUserForRoleSet on User {
   profile {
     id
     displayName
+    location {
+      id
+      city
+      country
+    }
+    visual(type: AVATAR) {
+      ...VisualModel
+    }
   }
   email
 }
@@ -26,6 +34,7 @@ query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilter
 query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
     roleSet(ID: $roleSetId) {
+      id
       availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
         ...AvailableUsersForRoleSetPaginated
       }

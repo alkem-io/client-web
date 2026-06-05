@@ -20,7 +20,7 @@ type InvitationDetailConnectorProps = {
 
 export function InvitationDetailConnector({ open, onOpenChange, invitation }: InvitationDetailConnectorProps) {
   const { t } = useTranslation('crd-dashboard');
-  const { t: tMain } = useTranslation();
+  const { t: tMain, i18n } = useTranslation();
 
   const close = () => onOpenChange(false);
 
@@ -51,12 +51,12 @@ export function InvitationDetailConnector({ open, onOpenChange, invitation }: In
   const acceptLabel = isVC ? t('pendingMemberships.detail.accept') : t('pendingMemberships.detail.join');
   const rejectLabel = t('pendingMemberships.detail.reject');
 
-  const detailData = mapHydratedInvitationToDetailData(hydrated, tMain);
+  const detailData = mapHydratedInvitationToDetailData(hydrated, i18n.language);
 
   const descriptionSlot = (
     <Caption>
       <DetailedActivityDescription
-        i18nKey="community.pendingMembership.invitationTitle"
+        i18nKey="community.pendingMembership.invitationCardTitle"
         spaceDisplayName={hydrated.space.about.profile.displayName}
         spaceUrl={hydrated.space.about.profile.url}
         spaceLevel={hydrated.space.level}
