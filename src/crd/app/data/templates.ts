@@ -171,12 +171,15 @@ export const MOCK_TEMPLATE_CONTENT_BY_ID: Record<string, TemplateContent> = {
       { name: 'Test', description: 'Validate with five target users.' },
     ],
     starterCallouts: [
-      { name: 'Goal & success metrics', framingKind: 'memo' },
-      { name: 'Crazy 8s sketches', framingKind: 'whiteboard' },
-      { name: 'Vote on solutions', framingKind: 'poll' },
-      { name: 'Customer interview script', framingKind: 'document' },
+      { name: 'Goal & success metrics', framingKind: 'memo', flowStateName: 'Understand' },
+      { name: 'Crazy 8s sketches', framingKind: 'whiteboard', flowStateName: 'Sketch' },
+      { name: 'Vote on solutions', framingKind: 'poll', flowStateName: 'Decide' },
+      { name: 'Customer interview script', framingKind: 'document', flowStateName: 'Test' },
     ],
-    subspaceTemplates: [{ name: 'Test session' }, { name: 'Sprint retro' }],
+    subspaceTemplates: [
+      { id: 'sub-1', name: 'Test session', isPrivate: false },
+      { id: 'sub-2', name: 'Sprint retro', isPrivate: true },
+    ],
   },
   'tpl-space-2': {
     type: 'space',
@@ -186,8 +189,8 @@ export const MOCK_TEMPLATE_CONTENT_BY_ID: Record<string, TemplateContent> = {
       { name: 'Retro', description: 'What worked, what didn’t.' },
     ],
     starterCallouts: [
-      { name: 'Top-level objective', framingKind: 'none' },
-      { name: 'Weekly check-in', framingKind: 'memo' },
+      { name: 'Top-level objective', framingKind: 'none', flowStateName: 'Q-plan' },
+      { name: 'Weekly check-in', framingKind: 'memo', flowStateName: 'Mid-quarter' },
     ],
     subspaceTemplates: [],
   },
@@ -199,8 +202,8 @@ export const MOCK_TEMPLATE_CONTENT_BY_ID: Record<string, TemplateContent> = {
       { name: 'Demo', description: 'Showcase to stakeholders.' },
       { name: 'Retro', description: 'Improve the process.' },
     ],
-    starterCallouts: [{ name: 'Sprint backlog', framingKind: 'memo' }],
-    subspaceTemplates: [{ name: 'Team retro' }],
+    starterCallouts: [{ name: 'Sprint backlog', framingKind: 'memo', flowStateName: 'Plan' }],
+    subspaceTemplates: [{ id: 'sub-3', name: 'Team retro', isPrivate: false }],
   },
   'tpl-callout-1': {
     type: 'callout',
