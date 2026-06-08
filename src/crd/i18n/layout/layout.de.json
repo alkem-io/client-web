@@ -42,8 +42,8 @@
     "about": "Über uns"
   },
   "appVersion": {
-    "message": "A new version of the app is available.",
-    "recurringMessage": "Please close all Alkemio tabs and reload to update.",
+    "message": "Eine neue Version der App ist verfügbar.",
+    "recurringMessage": "Bitte schließen Sie alle Alkemio-Tabs und laden Sie neu, um zu aktualisieren.",
     "reload": "Erneut laden"
   },
   "cookieConsent": {
