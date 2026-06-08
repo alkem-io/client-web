@@ -89,6 +89,10 @@
       "phases": "Фази",
       "starterCallouts": "Стартови инструменти",
       "subspaceTemplates": "Шаблони за подпространства",
+      "includesSubspaces": "Този шаблон включва също тези подпространства:",
+      "noCallouts": "Няма инструменти в тази фаза.",
+      "noDescription": "Няма описание",
+      "privateSubspace": "Частно подпространство",
       "none": "Няма"
     },
     "communityGuidelines": {
@@ -136,6 +140,7 @@
       "name": "Име на шаблон",
       "namePlaceholder": "напр. Начало на проект",
       "nameRequired": "Изисква се име на шаблон.",
+      "descriptionRequired": "Изисква се описание.",
       "description": "Описание",
       "descriptionPlaceholder": "За какво е този шаблон?",
       "tags": "Етикети",
@@ -163,6 +168,7 @@
       "sourceRequired": "Първо постави URL на пространство и натисни \"Използвай това пространство\".",
       "recursive": "Включи вложените подпространства",
       "capturedStructure": "Заснета структура",
+      "alwaysIncluded": "Винаги се включва: информация Относно и Настройки",
       "urlLoader": {
         "description": "Постави URL на пространство или подпространство, чиято структура искаш да копираш.",
         "placeholder": "https://…",

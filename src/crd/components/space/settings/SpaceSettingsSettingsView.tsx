@@ -1,7 +1,23 @@
-import { Calendar, Edit3, Globe, Layout, Loader2, Lock, Mail, Share2, Shield, UserPlus, Video } from 'lucide-react';
+import {
+  AlertTriangle,
+  Bookmark,
+  Calendar,
+  Edit3,
+  Globe,
+  Layout,
+  Loader2,
+  Lock,
+  Mail,
+  Share2,
+  Shield,
+  Trash2,
+  UserPlus,
+  Video,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/crd/primitives/accordion';
+import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
 import { Separator } from '@/crd/primitives/separator';
@@ -77,6 +93,19 @@ export type SpaceSettingsSettingsViewProps = {
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
   onHostOrgTrustChange: (next: boolean) => void;
+  /**
+   * Subspace-only (L1/L2) "Save as a template" action. When provided, a section
+   * is rendered at the bottom of the tab; the consumer wires the create-template
+   * flow. Omitted at L0 (a top-level space templates its subspaces from the
+   * Subspaces tab, not itself).
+   */
+  onSaveAsTemplate?: () => void;
+  /**
+   * Subspace-only (L1/L2) delete danger zone. When provided, a destructive
+   * section is rendered at the bottom of the tab; the consumer confirms and
+   * fires the delete. Omitted at L0 (deletion lives in the Account tab).
+   */
+  onDeleteSpace?: () => void;
   className?: string;
 };
 
@@ -136,6 +165,8 @@ export function SpaceSettingsSettingsView({
   onMembershipPolicyChange,
   onToggleAllowedAction,
   onHostOrgTrustChange,
+  onSaveAsTemplate,
+  onDeleteSpace,
   className,
 }: SpaceSettingsSettingsViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -382,6 +413,36 @@ export function SpaceSettingsSettingsView({
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      {/* Save as a template — subspaces (L1/L2) only; the consumer omits the handler at L0. */}
+      {onSaveAsTemplate && (
+        <div className="rounded-xl border p-4">
+          <h3 className="text-card-title flex items-center gap-2">
+            <Bookmark aria-hidden="true" className="size-4 text-primary" />
+            {t('settings.saveAsTemplate.title')}
+          </h3>
+          <p className="text-body text-muted-foreground mt-1">{t('settings.saveAsTemplate.description')}</p>
+          <Button type="button" variant="default" size="sm" className="mt-3" onClick={onSaveAsTemplate}>
+            <Bookmark aria-hidden="true" className="mr-1.5 size-3.5" />
+            {t('settings.saveAsTemplate.button')}
+          </Button>
+        </div>
+      )}
+
+      {/* Danger zone (delete subspace) — subspaces (L1/L2) only; the consumer omits the handler at L0. */}
+      {onDeleteSpace && (
+        <div className="rounded-xl border border-destructive/50 p-4">
+          <h3 className="text-card-title text-destructive flex items-center gap-2">
+            <AlertTriangle aria-hidden="true" className="size-4" />
+            {t('settings.dangerZone.title')}
+          </h3>
+          <p className="text-body text-muted-foreground mt-1">{t('settings.dangerZone.description')}</p>
+          <Button type="button" variant="destructive" size="sm" className="mt-3" onClick={onDeleteSpace}>
+            <Trash2 aria-hidden="true" className="mr-1.5 size-3.5" />
+            {t('settings.dangerZone.delete')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
