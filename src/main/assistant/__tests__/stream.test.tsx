@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@/main/test/testUtils';
 import { AssistantProvider, useAssistantContext } from '../AssistantContext';
@@ -59,7 +60,11 @@ const StreamDriver = ({ events }: { events: AssistantStreamEvent[] }) => {
       dispatch({ type: 'stream-event', event });
     }
   }, [dispatch, events]);
-  return <AssistantConversationView />;
+  return (
+    <MemoryRouter>
+      <AssistantConversationView />
+    </MemoryRouter>
+  );
 };
 
 describe('assistant streamed rendering (T015)', () => {

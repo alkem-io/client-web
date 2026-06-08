@@ -1,6 +1,7 @@
 import { Alert, Box, Link, Typography } from '@mui/material';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { gutters } from '@/core/ui/grid/utils';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -27,11 +28,49 @@ import { useAssistantConversation } from './useAssistantConversation';
  */
 export const AssistantConversationView = () => {
   const { t } = useTranslation();
-  const { state } = useAssistantContext();
+  const { state, setIsOpen, clearPanelContext } = useAssistantContext();
   const { submitConfirmationDecision } = useAssistantConversation();
+  const navigate = useNavigate();
 
   const handleDecision = (proposedWriteSetId: string, decision: 'approve' | 'decline') => {
     void submitConfirmationDecision(proposedWriteSetId, decision);
+  };
+
+  // Clicking a link the assistant produced should TAKE the user to it and CLOSE
+  // the panel — never leave the assistant floating over the destination. We
+  // intercept in the capture phase (before RouterLink's own handler) so that, for
+  // a same-origin link, we navigate in-app once and dismiss the panel, instead of
+  // RouterLink popping a new tab (absolute URL) or client-side-navigating while
+  // the panel stays open behind it. External links keep their native behavior and
+  // leave the panel untouched.
+  const handleLinkClickCapture = (event: React.MouseEvent<HTMLElement>) => {
+    // Only plain left-clicks; let modified clicks (Cmd/Ctrl/middle = new tab) be.
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    const anchor = (event.target as HTMLElement).closest('a');
+    const href = anchor?.getAttribute('href');
+    if (!href || href.startsWith('#')) {
+      return; // not a link, or an in-page anchor — leave it alone
+    }
+
+    let internalPath: string | null = null;
+    try {
+      const url = new URL(href, window.location.origin);
+      if (url.origin === window.location.origin) {
+        internalPath = `${url.pathname}${url.search}${url.hash}`;
+      }
+    } catch {
+      // Unparseable href — let the browser handle it natively.
+    }
+
+    if (internalPath) {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsOpen(false);
+      clearPanelContext();
+      navigate(internalPath);
+    }
   };
 
   return (
@@ -41,6 +80,7 @@ export const AssistantConversationView = () => {
       gap={gutters(1)}
       padding={gutters(1)}
       sx={{ overflowY: 'auto', flexGrow: 1 }}
+      onClickCapture={handleLinkClickCapture}
       // A conversation log: announce only newly-added content (not the whole
       // growing buffer on every token), and flag busy while a turn streams (T031).
       role="log"

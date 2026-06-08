@@ -9,6 +9,7 @@
  * - The pure helpers (`findPendingConfirmationId` / `isTurnInFlight`) classify
  *   the rehydrated history correctly.
  */
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@/main/test/testUtils';
 import type { AssistantConversation, AssistantMessage } from '../types';
@@ -92,7 +93,9 @@ const RehydrateHarness = () => {
       <button type="button" onClick={() => setIsOpen(true)}>
         open
       </button>
-      <AssistantConversationView />
+      <MemoryRouter>
+        <AssistantConversationView />
+      </MemoryRouter>
     </>
   );
 };
