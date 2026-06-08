@@ -52,17 +52,22 @@ export function SpaceTemplatePreview({ content }: { content: SpaceContent }) {
     <div className="space-y-4">
       {content.phases.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {content.phases.map(phase => (
-            <Button
-              key={phase.name}
-              type="button"
-              size="sm"
-              variant={phase.name === activePhase ? 'default' : 'outline'}
-              onClick={() => setSelectedPhase(phase.name)}
-            >
-              {phase.name}
-            </Button>
-          ))}
+          {content.phases.map((phase, i) => {
+            // Phase names aren't guaranteed unique, so compose a stable key with the index
+            // (read-only list, never reordered).
+            const key = `${phase.name}-${i}`;
+            return (
+              <Button
+                key={key}
+                type="button"
+                size="sm"
+                variant={phase.name === activePhase ? 'default' : 'outline'}
+                onClick={() => setSelectedPhase(phase.name)}
+              >
+                {phase.name}
+              </Button>
+            );
+          })}
         </div>
       )}
 

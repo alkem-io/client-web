@@ -877,7 +877,10 @@ export function useTemplateForms({
           urlError={spaceSourceUrlError}
           sourceDisplayName={spaceSourceDisplayName}
           sourceAvatarUrl={spaceSourceAvatarUrl}
-          capturedStructure={spaceCapturedStructure}
+          // Only show the captured-structure preview when there's a source to preview: a selected
+          // source (create/URL flow) or an edit (seeded from the template's own content). Otherwise a
+          // stale preview could linger after the user clicks "Select another".
+          capturedStructure={intent === 'edit' || values.sourceSpaceId ? spaceCapturedStructure : undefined}
         />
       );
       break;

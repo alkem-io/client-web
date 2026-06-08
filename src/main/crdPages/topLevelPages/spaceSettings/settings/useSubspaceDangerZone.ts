@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDeleteSpaceMutation, useSpacePrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 
 export type UseSubspaceDangerZoneResult = {
   canDelete: boolean;
@@ -36,7 +37,9 @@ export function useSubspaceDangerZone(args: {
 
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {
-      window.location.replace(parentUrl);
+      // `parentUrl` can be '' if the L0 space context is still resolving — fall back to home so we
+      // never reload the just-deleted subspace route (which would 404).
+      window.location.replace(parentUrl || ROUTE_HOME);
     },
   });
 
