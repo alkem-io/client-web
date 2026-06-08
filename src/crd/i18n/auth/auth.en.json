@@ -6,7 +6,8 @@
     "title": "Sign in",
     "forgotPassword": "Forgot password?",
     "noAccount": "No account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "preparing": "Preparing secure sign-in…"
   },
   "signUp": {
     "title": "Sign up",

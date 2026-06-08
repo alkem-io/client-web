@@ -6,7 +6,8 @@
     "title": "Inloggen",
     "forgotPassword": "Wachtwoord vergeten?",
     "noAccount": "Geen account?",
-    "signUp": "Registreren"
+    "signUp": "Registreren",
+    "preparing": "Veilige aanmelding voorbereiden…"
   },
   "signUp": {
     "title": "Registreren",
