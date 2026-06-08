@@ -66,7 +66,14 @@ export function TemplateFormDialog({
                 onChange={e => onCommonChange({ ...commonValue, description: e.target.value })}
                 placeholder={t('form.common.descriptionPlaceholder')}
                 rows={3}
+                aria-invalid={Boolean(commonErrors.description)}
+                aria-describedby={commonErrors.description ? 'tpl-description-error' : undefined}
               />
+              {commonErrors.description && (
+                <p id="tpl-description-error" className="text-caption text-destructive">
+                  {commonErrors.description}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">

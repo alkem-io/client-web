@@ -11,6 +11,7 @@
 import {
   CalloutContributionType,
   CalloutFramingType,
+  type SpaceTemplateContentQuery,
   type TemplateContentQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import type {
@@ -128,18 +129,66 @@ function mapWhiteboardContent(whiteboard: WhiteboardContentGql): Extract<Templat
   };
 }
 
-function mapSpaceContent(contentSpace: SpaceContentGql): Extract<TemplateContent, { type: 'space' }> {
-  const states = [...contentSpace.collaboration.innovationFlow.states].sort((a, b) => a.sortOrder - b.sortOrder);
-  const callouts = [...contentSpace.collaboration.calloutsSet.callouts].sort((a, b) => a.sortOrder - b.sortOrder);
+/**
+ * Minimal structural shape shared by a template's `contentSpace` (`TemplateContentSpace`) and a live
+ * Space fetched via `SpaceTemplateContent` — both spread the same `SpaceTemplateContent_Collaboration`
+ * fragment, so the captured-structure mapping works off either. Keeping the param structural (no
+ * `__typename` literal) lets both generated query types flow in without a cast.
+ */
+type SpaceStructureSource = {
+  collaboration: {
+    innovationFlow: {
+      states: ReadonlyArray<{ displayName: string; description?: string | null; sortOrder: number }>;
+    };
+    calloutsSet: {
+      callouts: ReadonlyArray<{
+        classification?: { flowState?: { tags: ReadonlyArray<string> } | null } | null;
+        framing: { type: CalloutFramingType; profile: { displayName: string; description?: string | null } };
+        sortOrder: number;
+      }>;
+    };
+  };
+  subspaces: ReadonlyArray<{
+    id: string;
+    about: { isContentPublic: boolean; profile: { displayName: string; cardBanner?: { uri: string } | null } };
+  }>;
+};
+
+function mapSpaceStructure(source: SpaceStructureSource): Extract<TemplateContent, { type: 'space' }> {
+  const states = [...source.collaboration.innovationFlow.states].sort((a, b) => a.sortOrder - b.sortOrder);
+  const callouts = [...source.collaboration.calloutsSet.callouts].sort((a, b) => a.sortOrder - b.sortOrder);
   return {
     type: 'space',
     phases: states.map(s => ({ name: s.displayName, description: s.description || undefined })),
     starterCallouts: callouts.map(c => ({
       name: c.framing.profile.displayName,
       framingKind: mapGqlFramingType(c.framing.type),
+      // A callout's flow-state tagset carries the displayName(s) of the phase(s) it lives in — the
+      // legacy preview groups by membership; in practice a callout sits in exactly one phase.
+      flowStateName: c.classification?.flowState?.tags?.[0],
+      description: c.framing.profile.description || undefined,
     })),
-    subspaceTemplates: contentSpace.subspaces.map(sub => ({ name: sub.about.profile.displayName })),
+    subspaceTemplates: source.subspaces.map(sub => ({
+      id: sub.id,
+      name: sub.about.profile.displayName,
+      bannerUrl: sub.about.profile.cardBanner?.uri || undefined,
+      isPrivate: !sub.about.isContentPublic,
+    })),
   };
+}
+
+function mapSpaceContent(contentSpace: SpaceContentGql): Extract<TemplateContent, { type: 'space' }> {
+  return mapSpaceStructure(contentSpace);
+}
+
+/**
+ * Live-Space (`SpaceTemplateContent` query) → captured-structure preview. Used by the "save a
+ * subspace as a template" flow to preview what will be captured before the template is created.
+ */
+export function mapSpaceContentFromSpace(
+  space: NonNullable<SpaceTemplateContentQuery['lookup']['space']>
+): Extract<TemplateContent, { type: 'space' }> {
+  return mapSpaceStructure(space);
 }
 
 function mapCommunityGuidelinesContent(

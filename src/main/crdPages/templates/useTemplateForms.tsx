@@ -26,6 +26,7 @@ import { SpaceTemplateForm } from '@/crd/components/templates/forms/SpaceTemplat
 import type {
   ReferenceRow,
   TemplateCommonValues,
+  TemplateContent,
   TemplateFormErrors,
   TemplateFormValues,
   TemplateType,
@@ -47,6 +48,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
+import { mapSpaceContentFromSpace } from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -250,6 +252,13 @@ export function useTemplateForms({
   const [spaceSourceResolving, setSpaceSourceResolving] = useState(false);
   const [spaceSourceDisplayName, setSpaceSourceDisplayName] = useState<string | undefined>(undefined);
   const [spaceSourceAvatarUrl, setSpaceSourceAvatarUrl] = useState<string | undefined>(undefined);
+  // Read-only preview of the structure that will be captured from the resolved source space
+  // (innovation-flow phases, starter callouts, nested subspaces) — mirrors the legacy MUI
+  // `TemplateContentSpacePreview`. Populated alongside displayName/avatar whenever a source is
+  // resolved (URL paste) or pre-filled (save-a-subspace-as-template).
+  const [spaceCapturedStructure, setSpaceCapturedStructure] = useState<
+    Extract<TemplateContent, { type: 'space' }> | undefined
+  >(undefined);
   // The Space template's `sourceSpaceId` at edit-open time — used on submit to decide whether to
   // re-capture content from a new source (`updateTemplateFromSpace`) or just update the profile.
   const [spaceSourceInitialSpaceId, setSpaceSourceInitialSpaceId] = useState<string | undefined>(undefined);
@@ -309,6 +318,7 @@ export function useTemplateForms({
     setSpaceSourceResolving(false);
     setSpaceSourceDisplayName(undefined);
     setSpaceSourceAvatarUrl(undefined);
+    setSpaceCapturedStructure(undefined);
     setSpaceSourceInitialSpaceId(undefined);
   };
 
@@ -438,6 +448,7 @@ export function useTemplateForms({
       }
       setSpaceSourceDisplayName(space?.about?.profile?.displayName);
       setSpaceSourceAvatarUrl(space?.about?.profile?.avatar?.uri);
+      setSpaceCapturedStructure(space ? mapSpaceContentFromSpace(space) : undefined);
       setValues(prev => (prev.type === 'space' ? { ...prev, sourceSpaceId: resolvedSpaceId } : prev));
       setPristine(false);
       setSpaceSourceUrl('');
@@ -446,8 +457,9 @@ export function useTemplateForms({
     }
   };
 
-  // Back-fill the displayName / avatarUrl of an already-resolved source space on edit-open
-  // (the create flow sets these directly in `onUseSpaceUrl`; edit re-opens without them).
+  // Back-fill the displayName / avatarUrl / captured-structure preview of an already-resolved source
+  // space when the dialog opens with a pre-set source — both on edit-open and on the "save a subspace
+  // as a template" create flow (the URL-paste flow sets these directly in `onUseSpaceUrl`).
   const editingSpaceSourceSpaceId = values.type === 'space' ? values.sourceSpaceId : undefined;
   useEffect(() => {
     if (!open) return;
@@ -460,6 +472,7 @@ export function useTemplateForms({
       if (!space) return;
       setSpaceSourceDisplayName(space.about?.profile?.displayName);
       setSpaceSourceAvatarUrl(space.about?.profile?.avatar?.uri);
+      setSpaceCapturedStructure(mapSpaceContentFromSpace(space));
     });
     return () => {
       cancelled = true;
@@ -770,6 +783,9 @@ export function useTemplateForms({
     if (!templatesSetId) return;
     const errs: TemplateFormErrors = {};
     if (!values.name.trim()) errs.name = t('form.common.nameRequired');
+    // Description is mandatory for every template type — mirrors the legacy MUI `TemplateFormBase`,
+    // where `profile.description` is a required field across all template forms.
+    if (!values.description.trim()) errs.description = t('form.common.descriptionRequired');
     if (values.type === 'communityGuidelines' && !values.title.trim())
       errs.title = t('form.communityGuidelines.titleRequired');
     if (values.type === 'space' && !values.sourceSpaceId) errs.sourceSpaceId = t('form.space.sourceRequired');
@@ -845,6 +861,7 @@ export function useTemplateForms({
           urlError={spaceSourceUrlError}
           sourceDisplayName={spaceSourceDisplayName}
           sourceAvatarUrl={spaceSourceAvatarUrl}
+          capturedStructure={spaceCapturedStructure}
         />
       );
       break;
