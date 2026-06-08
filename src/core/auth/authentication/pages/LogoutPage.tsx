@@ -46,16 +46,17 @@ const LogoutPage = () => {
       return;
     }
     if (outcome.kind === 'redirect') {
-      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions
+      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions.
+      // The target is whichever logout leg useLogoutUrl picked next — the Hydra
+      // end_session URL or the Kratos SSO logout URL.
       cleanupPushSubscription(unsubscribeMutation).finally(() => {
         clearReturnUrl();
         window.location.replace(outcome.url);
       });
       return;
     }
-    // outcome.kind === 'cleared' — already logged out. Tidy up local state,
-    // then redirect to the public home page so the user lands on a real
-    // anonymous view instead of the bare "logged out" placeholder.
+    // outcome.kind === 'cleared' — nothing left to end (no BFF session, no Kratos
+    // session). Land on the public home page instead of the bare placeholder.
     cleanupPushSubscription(unsubscribeMutation).finally(() => {
       clearReturnUrl();
       window.location.replace('/home');
