@@ -181,7 +181,7 @@ A platform admin opens the **Layout** section and finds it behaving exactly as i
 - **Deep links & refresh**: Reloading on any admin sub-route (including detail/edit and history pages) re-renders the correct CRD section with the section active.
 - **Direct navigation while on MUI design version**: Visiting any `/admin/*` URL on the MUI design version always yields the MUI admin; the CRD admin is never shown to MUI users and vice versa.
 - **Markdown/rich text fields**: Any admin field that stores markdown (e.g. organization/profile descriptions) is rendered and edited the way the CRD design system handles rich text, not as raw markup.
-- **Unsaved edits**: Navigating away from an admin edit form with unsaved changes prompts to discard, consistent with the CRD unsaved-edits guard used elsewhere.
+- **Unsaved edits**: Navigating away from an admin **edit form (user / organization)** with unsaved changes prompts to discard via the CRD discard-changes dialog (page-level route guard, akin to the dirty-guard used in space settings — not the dialog-close guard).
 
 ## Requirements *(mandatory)*
 
@@ -242,7 +242,7 @@ A platform admin opens the **Layout** section and finds it behaving exactly as i
 
 - **FR-070**: The Transfer & Conversions section MUST present the same prominent destructive-operation warning as MUI.
 - **FR-071**: The section MUST support space conversion and virtual-contributor conversion with identical behavior to MUI, each requiring explicit confirmation before execution.
-- **FR-072**: The section MUST support transferring a space, innovation hub, innovation pack, virtual contributor, and callout between accounts using an account search/picker, with identical behavior to MUI, each gated by confirmation.
+- **FR-072**: The section MUST support transferring a space, innovation hub, innovation pack, virtual contributor, and callout between accounts, with identical inputs to MUI — **Innovation Hub / Pack / Virtual Contributor transfers use an account search/picker; Space and Callout transfers take a target URL** (account URL / target space URL) — each gated by confirmation.
 
 #### Layout (P3)
 

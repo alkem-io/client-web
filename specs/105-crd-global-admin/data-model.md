@@ -50,16 +50,24 @@ type AdminUserRow = AdminListRow & {
   canChangeEmail: boolean;   // global-admin only (FR-023)
 };
 
-type AdminUserDetail = {       // detail/edit view; fields mirror MUI UserForm
+type AdminUserDetail = {            // detail/edit view — mirrors MUI UserForm.tsx
   id: string;
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  avatarUrl?: string;
-  tags: string[];
-  // ...remaining UserForm fields, plain TS
+  profileId: string;               // internal, not user-editable
+  displayName: string;             // required — displayNameValidator
+  firstName: string;               // required — nameValidator
+  lastName: string;                // required — nameValidator
+  email: string;                   // required — emailValidator
+  phone?: string;                  // optional — phone regex
+  city?: string;                   // optional — length-validated
+  country?: string;                // optional — COUNTRIES enum (country code)
+  tagline?: string;                // optional — max 100 (ALT_TEXT_LENGTH)
+  bio?: string;                    // optional — MARKDOWN, max 2000 (MarkdownValidator)
+  linkedin?: string;               // optional — URL
+  bsky?: string;                   // optional — URL
+  github?: string;                 // optional — URL
+  tags: string[];                  // tagsets — tagsetsSegmentSchema
+  references: { id?: string; name: string; uri: string; description?: string }[]; // referenceSegmentWithSocialSchema
+  avatarUrl?: string;              // uploaded separately via VisualUpload, not a form field
 };
 
 type EmailChangeHistoryItem = {
@@ -71,6 +79,7 @@ type EmailChangeHistoryItem = {
 };
 ```
 - Sources: `usePlatformAdminUsersListQuery` (server pagination, search by first/last/email), `useUserQuery`, `useUpdateUserMutation`, `useDeleteUserMutation`, `useChangeUserEmailMutation`, `useResolveUserEmailDriftMutation`. License plans via shared view model.
+- **Validation/rendering parity**: `bio` renders through the CRD markdown editor (not a plain textarea); social links (`linkedin`/`bsky`/`github`) are URL-validated; `references` exclude social-network names (parity with MUI `referenceSegmentWithSocialSchema`).
 
 ## Organizations
 
@@ -79,18 +88,23 @@ type AdminOrganizationRow = AdminListRow & {
   verified: boolean;
 };
 
-type AdminOrganizationForm = {   // create + edit; mirrors MUI OrganizationForm
-  nameID?: string;               // identity (create only / read-only on edit per MUI)
-  displayName: string;
-  contactEmail?: string;
-  domain?: string;
-  legalEntityName?: string;
-  website?: string;
-  description?: string;          // markdown
-  tagline?: string;
-  references: { id?: string; name: string; uri: string; description?: string }[];
-  avatarUrl?: string;
-  tags: string[];
+type AdminOrganizationForm = {   // create + edit; mirrors MUI OrganizationForm.tsx
+  nameID?: string;               // required in CREATE mode only (read-only on edit) — nameSegmentSchema
+  displayName: string;           // required in CREATE mode only — displayNameValidator
+  contactEmail?: string;         // optional — emailValidator, max 50 (SMALL_TEXT_LENGTH)
+  domain?: string;               // optional — max 50
+  legalEntityName?: string;      // optional — max 50
+  website?: string;              // optional — urlValidator, max 50
+  description?: string;          // optional — MARKDOWN, max 2000 (FormikMarkdownField, rows=10)
+  tagline?: string;              // optional — max 100 (ALT_TEXT_LENGTH)
+  city?: string;                 // optional — LocationSegment
+  country?: string;              // optional — COUNTRIES enum (country code)
+  linkedin?: string;             // optional — URL
+  bsky?: string;                 // optional — URL
+  github?: string;               // optional — URL
+  references: { id?: string; name: string; uri: string; description?: string }[]; // referenceSegmentValidationObject
+  avatarUrl?: string;            // uploaded separately, not a form field
+  tags: string[];                // tagsets — tagsetsSegmentSchema
 };
 
 type OrganizationVerification = {
@@ -163,11 +177,15 @@ type UserPrivilegesLookup = { userId: string; privileges: string[] };
 ## Transfer & Conversions
 
 ```ts
-type AccountOption = { id: string; displayName: string; avatarUrl?: string };
 type TransferKind = 'space' | 'innovationHub' | 'innovationPack' | 'virtualContributor' | 'callout';
 type ConversionKind = 'space' | 'virtualContributor';
+// AccountPicker returns an account id (resolved from account.id), not an object:
+type OnAccountSelect = (accountId: string | undefined) => void;
 ```
-- Each transfer uses an account picker (`AccountSearchPicker` logic via `useAccountSearch`) + the corresponding `useTransfer*`/`use*Conversion` hook. Every operation is destructive → `ConfirmationDialog`.
+- Per-operation inputs and hooks are specified in `contracts/section-contracts.md` §Transfer & Conversions. Key parity notes:
+  - **Conversions have no target account.** Space conversion + VC conversion take a single source `url`.
+  - **Transfer target inputs are NOT uniform.** **Space and Callout transfers take a target *URL text field*** (account URL / target space URL), while **Innovation Hub / Pack / Virtual Contributor transfers use the account picker** (`AccountSearchPicker` via `useAccountSearch`, min 2 chars, searches Users + Organizations holding `TransferResourceAccept`).
+  - Every operation is destructive → `ConfirmationDialog` (Callout transfer shows the same 4 warnings as MUI).
 
 ## Validation rules (carried over from MUI, unchanged)
 

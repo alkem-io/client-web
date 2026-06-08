@@ -45,9 +45,29 @@ All CRD components below are **pure presentational** (no MUI, no Apollo, plain-T
 
 ## Transfer & Conversions (US8)
 
-- `TransferSectionLayout` props: `{ warning: string; children }` — renders the destructive warning banner.
-- `AccountPicker` props: `{ search; onSearchChange; options: AccountOption[]; loading; value?: AccountOption; onSelect(opt): void }` — reuses `ContributorSelector`.
-- Each transfer/conversion sub-form props: `{ ...inputs; onSubmit(): void; submitting; disabled }`. Every submit gated by `ConfirmationDialog` (destructive).
+- `TransferSectionLayout` props: `{ warning: string; children }` — destructive warning banner.
+- `AccountPicker` props: `{ label: string; disabled?: boolean; onSelect(accountId: string | undefined): void }`
+  — reuses `useAccountSearch` (min 2 chars; searches Users + Organizations holding
+  `TransferResourceAccept`; results labelled "<name> (User)" / "<name> (Organization)"; returns `account.id`).
+
+### Conversions (no target account)
+- **Space conversion** — input: `url` (space URL). Resolves a Space; offers L1→L0 / L1→L2 / L2→L1
+  via `useConvertSpaceL1ToL0Mutation` / `useConvertSpaceL1ToL2Mutation` (needs a parent space) /
+  `useConvertSpaceL2ToL1Mutation`. Confirm before execute.
+- **VC conversion** — input: `url` (VC URL). `useConvertVcToKnowledgeBaseMutation`. Confirm before execute.
+
+### Transfers (source by URL → target)
+| Flow | Source input | Target input | Hook |
+|---|---|---|---|
+| Space transfer | `url` (space, L0) | **`url` text field** (user/org account URL) | `useTransferSpaceToAccountMutation` |
+| Callout transfer | `url` (callout) | **`url` text field** (target space URL → calloutsSetId) | `useTransferCalloutMutation` |
+| Innovation Hub transfer | `url` (hub) | `AccountPicker` | `useTransferInnovationHubToAccountMutation` |
+| Innovation Pack transfer | `url` (pack) | `AccountPicker` | `useTransferInnovationPackToAccountMutation` |
+| Virtual Contributor transfer | `url` (VC) | `AccountPicker` | `useTransferVirtualContributorToAccountMutation` |
+
+Each transfer/conversion is destructive → consumer wraps submit in `ConfirmationDialog`
+(Callout transfer shows the same 4 warnings as MUI). Authorization parity: Space/Callout
+transfers check `TransferResourceOffer` (source) + `TransferResourceAccept` (target).
 
 ## Layout (US9)
 
