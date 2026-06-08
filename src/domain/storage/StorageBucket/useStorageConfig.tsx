@@ -198,7 +198,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     locationType === 'space'
       ? options.temporaryLocation
         ? spaceStorageConfigData?.lookup.space
-        : // For temporary location, we want to get the storage bucket from `space.profile.storageBucket` instead of `space.about.profile.storageBucket`.
+        : // Non-temporary location: use the ABOUT bucket (`space.about.profile.storageBucket`).
           spaceStorageConfigData?.lookup.space?.about
       : undefined;
 
