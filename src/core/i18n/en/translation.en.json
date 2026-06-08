@@ -225,6 +225,9 @@
     "designVersion": {
       "label": "New look (old design available for a limited time)",
       "errorSaving": "Could not save your design preference. Please try again."
+    },
+    "switchBanner": {
+      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
     }
   },
   "authentication": {
