@@ -90,6 +90,11 @@ export function SpaceTemplateForm({
         )}
       </div>
 
+      <div className="flex items-center gap-2 text-caption text-muted-foreground">
+        <Check aria-hidden="true" className="size-4 shrink-0 text-primary" />
+        {t('form.space.alwaysIncluded')}
+      </div>
+
       <div className="flex items-center justify-between gap-3">
         <Label htmlFor="space-recursive" className="cursor-pointer">
           {t('form.space.recursive')}
