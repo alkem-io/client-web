@@ -596,8 +596,8 @@
         "connecting": "Connecting to the collaboration service…",
         "notSynced": "Synchronizing… reopen the memo to resume editing.",
         "unauthenticated": "Sign in to edit this memo.",
-        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the share settings.",
-        "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the share settings.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings.",
+        "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the Share settings.",
         "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
       }
     },
