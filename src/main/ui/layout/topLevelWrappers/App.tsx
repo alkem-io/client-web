@@ -12,7 +12,7 @@ import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import SwitchToNewDesignBanner from './SwitchToNewDesignBanner';
 
-const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CookieConsent'));
+const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
