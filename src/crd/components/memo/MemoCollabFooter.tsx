@@ -12,6 +12,7 @@ export type ReadonlyReason =
   | 'notSynced'
   | 'unauthenticated'
   | 'contentUpdatePolicy'
+  | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
   | null;
 

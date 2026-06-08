@@ -153,6 +153,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     hasDeletePrivileges,
     onDelete: handleRequestDelete,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
+    hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
 
