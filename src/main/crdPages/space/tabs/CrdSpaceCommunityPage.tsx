@@ -14,7 +14,6 @@ import {
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -138,20 +137,13 @@ export default function CrdSpaceCommunityPage() {
       </div>
 
       {canCreateCallout && (
-        <StorageConfigContextProvider
-          locationType="space"
-          spaceId={space.id}
-          temporaryLocation={true}
-          skip={!createOpen}
-        >
-          <CalloutFormConnector
-            open={createOpen}
-            onOpenChange={setCreateOpen}
-            calloutsSetId={calloutsSetId}
-            activeFlowStateName={flowStateForNewCallouts?.displayName}
-            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
-          />
-        </StorageConfigContextProvider>
+        <CalloutFormConnector
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
+        />
       )}
 
       {canInvite && (

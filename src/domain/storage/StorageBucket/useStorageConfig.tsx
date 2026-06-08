@@ -116,6 +116,10 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const { data: spaceStorageConfigData } = useSpaceStorageConfigQuery({
     variables: {
       spaceId: spaceOptions.spaceId!,
+      // Only request the auth-gated SPACE bucket (`space.profile`) when we actually need it — i.e. the
+      // temporary-upload (callout-create) flow. Leaving it false keeps the shared space-page query safe
+      // for anonymous visitors / non-members on private spaces.
+      includeSpaceProfile: locationType === 'space' && Boolean(spaceOptions.temporaryLocation),
     },
     skip: skip || locationType !== 'space' || !spaceOptions.spaceId,
   });

@@ -16,7 +16,6 @@ import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
@@ -131,20 +130,13 @@ export default function CrdSpaceSubspacesPage() {
       </div>
 
       {canCreateCallout && (
-        <StorageConfigContextProvider
-          locationType="space"
-          spaceId={space.id}
-          temporaryLocation={true}
-          skip={!createCalloutOpen}
-        >
-          <CalloutFormConnector
-            open={createCalloutOpen}
-            onOpenChange={setCreateCalloutOpen}
-            calloutsSetId={calloutsSetId}
-            activeFlowStateName={flowStateForNewCallouts?.displayName}
-            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
-          />
-        </StorageConfigContextProvider>
+        <CalloutFormConnector
+          open={createCalloutOpen}
+          onOpenChange={setCreateCalloutOpen}
+          calloutsSetId={calloutsSetId}
+          activeFlowStateName={flowStateForNewCallouts?.displayName}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
+        />
       )}
 
       {canCreate && (

@@ -31181,6 +31181,7 @@ export type SpacePrivilegesQuery = {
 
 export type SpaceStorageConfigQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  includeSpaceProfile?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type SpaceStorageConfigQuery = {
