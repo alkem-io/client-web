@@ -171,7 +171,13 @@ export type UseTemplateFormsResult = {
     values: TemplateFormValues,
     subEntityId?: string,
     tagsetId?: string,
-    cgContext?: { profileId: string; originalReferenceIds: string[] }
+    cgContext?: { profileId: string; originalReferenceIds: string[] },
+    /**
+     * Space-template only: the captured-structure preview, pre-mapped from the template's own
+     * `contentSpace`. Seeded directly (no live-space fetch) because a `contentSpace` id is not a
+     * real `Space` and can't be resolved via the `SpaceTemplateContent` query.
+     */
+    spacePreview?: Extract<TemplateContent, { type: 'space' }>
   ) => void;
   /**
    * Fire the create mutation directly for an arbitrary values object (used by duplicate / import-from-library).
@@ -343,7 +349,8 @@ export function useTemplateForms({
     initial: TemplateFormValues,
     subEntityId?: string,
     tagsetId?: string,
-    cgContext?: { profileId: string; originalReferenceIds: string[] }
+    cgContext?: { profileId: string; originalReferenceIds: string[] },
+    spacePreview?: Extract<TemplateContent, { type: 'space' }>
   ) => {
     setIntent('edit');
     setEditTemplateId(templateId);
@@ -357,7 +364,13 @@ export function useTemplateForms({
     setPristine(true);
     setWhiteboardTemplatePreviewImages([]);
     resetSpaceSourceState();
-    if (initial.type === 'space') setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
+    if (initial.type === 'space') {
+      setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
+      // Seed the captured-structure preview from the template's own contentSpace — no live-space
+      // fetch (the back-fill effect only runs when `sourceSpaceId` is a real space, e.g. after the
+      // user re-selects a source via the URL picker).
+      if (spacePreview) setSpaceCapturedStructure(spacePreview);
+    }
     setOpen(true);
   };
   const openCreateCallout: UseTemplateFormsResult['openCreateCallout'] = prefill => {
@@ -788,7 +801,10 @@ export function useTemplateForms({
     if (!values.description.trim()) errs.description = t('form.common.descriptionRequired');
     if (values.type === 'communityGuidelines' && !values.title.trim())
       errs.title = t('form.communityGuidelines.titleRequired');
-    if (values.type === 'space' && !values.sourceSpaceId) errs.sourceSpaceId = t('form.space.sourceRequired');
+    // A source space is only required when CREATING a space template (the structure must be captured
+    // from somewhere). Editing is profile-only by default; re-capture is opt-in via the URL picker.
+    if (intent === 'create' && values.type === 'space' && !values.sourceSpaceId)
+      errs.sourceSpaceId = t('form.space.sourceRequired');
     setErrors(errs);
     const calloutErrors = values.type === 'callout' ? calloutForm.validate() : {};
     if (Object.keys(errs).length > 0 || Object.keys(calloutErrors).length > 0) return;
