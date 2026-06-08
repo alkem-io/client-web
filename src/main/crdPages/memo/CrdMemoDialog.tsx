@@ -6,6 +6,7 @@ import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
@@ -36,6 +37,7 @@ type CrdMemoDialogProps = {
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
+  useRegisterFullscreenEditor(open);
   const client = useApolloClient();
   const { memo, loading } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
@@ -52,7 +54,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       collaborationId: memoId,
     });
 
-  const markdownIntegration = useMarkdownEditorIntegration();
+  // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
+  // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
+  // bucket explicitly. The memo always exists when this dialog is open, so no temporary location.
+  const markdownIntegration = useMarkdownEditorIntegration({ storageBucketId: memo?.profile.storageBucket.id });
 
   // Fullscreen + share parity with the legacy MUI MemoDialog (which exposed both
   // in its header). `FullscreenButton` reads/toggles fullscreen via `useFullscreen`

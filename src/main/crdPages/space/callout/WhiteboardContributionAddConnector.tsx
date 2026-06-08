@@ -93,11 +93,11 @@ export function WhiteboardContributionAddConnector({
           if (!open) handleClose();
         }}
       >
-        <DialogContent className="sm:max-w-md" closeLabel={t('a11y.close')}>
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
+          <DialogHeader className="shrink-0">
             <DialogTitle>{t('callout.createWhiteboard')}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
             <label htmlFor="crd-create-whiteboard-name" className="text-caption text-muted-foreground">
               {t('callout.whiteboardNameLabel')}
             </label>
@@ -109,7 +109,7 @@ export function WhiteboardContributionAddConnector({
               disabled={creating}
             />
           </div>
-          <DialogFooter>
+          <DialogFooter className="shrink-0">
             <Button variant="outline" onClick={handleClose} disabled={creating}>
               {t('dialogs.cancel')}
             </Button>

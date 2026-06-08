@@ -54,17 +54,22 @@ export function SpaceAboutDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-full sm:max-w-4xl h-[95vh] p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl"
+        className="w-full sm:max-w-3xl max-h-[85vh] p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl"
         aria-describedby="space-about-dialog-description"
       >
-        {/* Sticky header */}
+        {/* Sticky header: space name + tagline, lock indicator, close. */}
         <div className="shrink-0 bg-background flex items-start justify-between gap-3 px-6 py-4 border-b border-border z-20">
           <div className="flex items-start gap-2 min-w-0">
             {lockTooltipSlot && <div className="mt-1 shrink-0">{lockTooltipSlot}</div>}
             <div className="min-w-0">
-              <DialogTitle className="leading-tight text-foreground truncate">{t('about.title')}</DialogTitle>
-              <DialogDescription id="space-about-dialog-description" className="sr-only">
+              <DialogTitle className="leading-tight text-foreground text-section-title truncate">
                 {data.name}
+              </DialogTitle>
+              {data.tagline && (
+                <p className="mt-1 text-body text-muted-foreground italic line-clamp-2">{data.tagline}</p>
+              )}
+              <DialogDescription id="space-about-dialog-description" className="sr-only">
+                {t('about.title')}
               </DialogDescription>
             </div>
           </div>
@@ -82,7 +87,7 @@ export function SpaceAboutDialog({
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto bg-background">
+        <div className="flex-1 min-h-0 overflow-y-auto bg-background">
           <SpaceAboutView
             data={data}
             className="px-6 py-6"

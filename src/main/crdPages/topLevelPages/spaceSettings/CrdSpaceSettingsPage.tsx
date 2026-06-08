@@ -422,7 +422,7 @@ export default function CrdSpaceSettingsPage() {
                 organizations={community.organizations}
                 virtualContributors={community.virtualContributors}
                 applicationFormSlot={
-                  settingsTab.roleSetId ? (
+                  roleSetId ? (
                     <ApplicationFormEditor
                       description={applicationForm.description}
                       questions={applicationForm.questions}

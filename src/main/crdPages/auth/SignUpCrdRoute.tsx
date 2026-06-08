@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
-import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH, PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -39,6 +40,17 @@ function CrdSignUpPage() {
   const flowId = params.get('flow') || undefined;
   const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flowId);
   const { locations } = useConfig();
+
+  // Persist the returnUrl to the cookie that `LoginSuccessPage` reads, so a user who
+  // arrives at `/sign_up?returnUrl=…` (or `/registration?returnUrl=…`) is sent back to
+  // that URL after registering + verifying (parity with MUI `SignUp`). The cookie
+  // survives the email-verification round-trip, even across a new tab.
+  const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  const { setReturnUrl } = useReturnUrl();
+  useEffect(() => {
+    setReturnUrl(returnUrl);
+  }, [returnUrl]);
+
   const translateDescriptor = useTranslateDescriptor();
   usePasskeyScript(registrationFlow?.ui?.nodes);
 

@@ -14,6 +14,7 @@ import {
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
@@ -139,6 +140,7 @@ const CrdWhiteboardDialog = ({
   const notify = useNotification();
   const { evictFromCache } = useApolloCache();
   const { whiteboard } = entities;
+  useRegisterFullscreenEditor(options.show);
   const { isAuthenticated } = useAuthenticationContext();
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
   const { space } = useSpace();

@@ -1,4 +1,4 @@
-import { Check, Plus, X } from 'lucide-react';
+import { ArrowDown, Check, Eye, Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
@@ -34,17 +34,11 @@ export function TemplatePickerCard(props: TemplatePickerCardProps) {
   return (
     <div
       className={cn(
-        'flex flex-col border rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-sm',
+        'flex flex-col h-full border rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-sm',
         selected && 'ring-2 ring-ring'
       )}
     >
-      <button
-        type="button"
-        onClick={() => onPreview(template.id)}
-        className="relative aspect-video w-full overflow-hidden text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        aria-label={`${t('card.preview')}: ${template.name}`}
-        aria-pressed={selected}
-      >
+      <div className="relative aspect-video w-full overflow-hidden">
         {template.bannerUrl ? (
           <img src={template.bannerUrl} alt="" className="size-full object-cover" />
         ) : (
@@ -52,10 +46,18 @@ export function TemplatePickerCard(props: TemplatePickerCardProps) {
             <TypeIcon aria-hidden="true" className="size-8 text-white/70" />
           </div>
         )}
-      </button>
+      </div>
       <div className="flex-1 p-3 flex flex-col gap-2">
         <div className="min-w-0">
-          <p className="text-card-title truncate">{template.name}</p>
+          {/* Only the title is the clickable preview affordance (pointer cursor + underline on hover). */}
+          <button
+            type="button"
+            onClick={() => onPreview(template.id)}
+            className="block w-full text-left text-card-title truncate cursor-pointer rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`${t('card.preview')}: ${template.name}`}
+          >
+            {template.name}
+          </button>
           {template.description && (
             <InlineMarkdown
               content={template.description}
@@ -64,36 +66,44 @@ export function TemplatePickerCard(props: TemplatePickerCardProps) {
             />
           )}
           {template.ownerLabel && <p className="text-caption text-muted-foreground truncate">{template.ownerLabel}</p>}
+          {props.mode === 'import' && props.alreadyInSet && (
+            <Badge variant="secondary" className="text-badge gap-1 mt-1">
+              <Check aria-hidden="true" className="size-3" />
+              {t('picker.inThisSet')}
+            </Badge>
+          )}
         </div>
-        <div className="mt-auto flex items-center gap-2">
+        <div className="mt-auto flex flex-wrap items-center gap-2">
+          <Button size="sm" variant="outline" className="flex-1" onClick={() => onPreview(template.id)}>
+            <Eye aria-hidden="true" className="size-4 mr-1.5" />
+            {t('card.preview')}
+          </Button>
           {props.mode === 'select' ? (
             <Button
               size="sm"
               variant={selected ? 'default' : 'outline'}
-              className="w-full"
+              className="flex-1"
               onClick={() => props.onSelect(template.id)}
             >
-              {selected && <Check aria-hidden="true" className="size-4 mr-1.5" />}
-              {t('picker.select')}
+              {selected ? (
+                <Check aria-hidden="true" className="size-4 mr-1.5" />
+              ) : (
+                <ArrowDown aria-hidden="true" className="size-4 mr-1.5" />
+              )}
+              {t('card.use')}
             </Button>
           ) : props.alreadyInSet ? (
-            <>
-              <Badge variant="secondary" className="text-badge gap-1">
-                <Check aria-hidden="true" className="size-3" />
-                {t('picker.inThisSet')}
-              </Badge>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="ml-auto text-destructive focus:text-destructive"
-                onClick={() => props.onRemove(template.id)}
-              >
-                <X aria-hidden="true" className="size-4 mr-1.5" />
-                {t('picker.remove')}
-              </Button>
-            </>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="flex-1 text-destructive focus:text-destructive"
+              onClick={() => props.onRemove(template.id)}
+            >
+              <X aria-hidden="true" className="size-4 mr-1.5" />
+              {t('picker.remove')}
+            </Button>
           ) : (
-            <Button size="sm" variant="outline" className="w-full" onClick={() => props.onImport(template.id)}>
+            <Button size="sm" variant="outline" className="flex-1" onClick={() => props.onImport(template.id)}>
               <Plus aria-hidden="true" className="size-4 mr-1.5" />
               {t('picker.import')}
             </Button>

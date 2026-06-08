@@ -79,7 +79,7 @@ export type SpaceSettingsCommunityViewProps = {
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
   permissions: {
-    canAddUsers: boolean;
+    canInvite: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
@@ -192,7 +192,7 @@ export function SpaceSettingsCommunityView({
                 className="h-9 w-[220px] pl-9 text-control"
               />
             </div>
-            {permissions.canAddUsers && (
+            {permissions.canInvite && (
               <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
                 <UserPlus aria-hidden="true" className="size-4" />
                 {t('community.members.invite')}

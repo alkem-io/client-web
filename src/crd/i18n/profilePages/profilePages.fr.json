@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} membres"
     },
     "empty": {
+      "resourcesHosted": "Aucune ressource hébergée pour le moment.",
       "leading": "N'anime aucun espace pour le moment.",
       "membership": "Pas encore d'adhésions."
     },
@@ -93,6 +94,7 @@
       "memberOf": "Toutes les adhésions"
     },
     "empty": {
+      "resourcesHosted": "Aucune ressource hébergée pour le moment.",
       "leading": "N'anime aucun espace pour le moment."
     },
     "vcType": "Contributeur virtuel"

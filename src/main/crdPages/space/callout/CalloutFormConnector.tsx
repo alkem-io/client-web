@@ -141,12 +141,25 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  const markdownIntegration = useMarkdownEditorIntegration();
-  // Memo framing only renders on create — the memo entity doesn't exist yet,
-  // so its pasted/inserted images upload to a temporary location (server GCs
-  // them if the callout-create is abandoned). Mirrors the MUI create rule.
-  const memoFramingUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
-  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
+  // Image (markdown toolbar + paste/drop) and reference-file upload both work in CREATE and EDIT, and
+  // both follow the same `temporaryLocation` rule, keyed off `mode`:
+  //   • CREATE → `temporaryLocation: true`. The callout doesn't exist yet, so uploads go to the ambient
+  //     SPACE bucket's temporary area; the server relocates the file into the callout's bucket on save.
+  //     Temporary uploads are also what lets a regular member (no permanent FileUpload on the space
+  //     bucket) attach files while creating.
+  //   • EDIT → `temporaryLocation: false`. The ambient bucket is the callout's own (scoped by
+  //     `CalloutEditConnector`, `locationType="callout"`) and the editor can write to it directly.
+  // This mirrors the legacy MUI callout form (`temporaryLocation={!callout?.id}`) and the sibling
+  // `CrdPostContributionDialog`, and satisfies spec 042 callout-dialog FR-31 / FR-50.
+  const temporaryUpload = mode === 'create';
+  const ambientStorageConfig = useStorageConfigContext();
+  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: temporaryUpload });
+  const editorMarkdownUpload = {
+    onImageUpload: markdownIntegration.onImageUpload,
+    iframeAllowedUrls: markdownIntegration.iframeAllowedUrls,
+    onError: markdownIntegration.onError,
+  };
+  const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
@@ -578,9 +591,9 @@ export function CalloutFormConnector({
             value={values.description}
             onChange={v => setField('description', v)}
             placeholder={t('forms.descriptionPlaceholder')}
-            onImageUpload={markdownIntegration.onImageUpload}
-            iframeAllowedUrls={markdownIntegration.iframeAllowedUrls}
-            onError={markdownIntegration.onError}
+            onImageUpload={editorMarkdownUpload.onImageUpload}
+            iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
+            onError={editorMarkdownUpload.onError}
           />
         }
         framingZoneSlot={
@@ -644,7 +657,7 @@ export function CalloutFormConnector({
               }}
               memoMarkdown={values.memoMarkdown}
               onMemoMarkdownChange={v => setField('memoMarkdown', v)}
-              memoUpload={memoFramingUpload}
+              memoUpload={editorMarkdownUpload}
               mediaGalleryVisuals={values.mediaGalleryVisuals}
               onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
               collaboraDocumentType={values.collaboraDocumentType}
@@ -737,7 +750,7 @@ export function CalloutFormConnector({
         type={values.responseType}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
-        markdownUpload={mode === 'edit' ? markdownIntegration : memoFramingUpload}
+        markdownUpload={editorMarkdownUpload}
       />
       {mode === 'create' && (
         <TemplateImportConnector

@@ -39,6 +39,7 @@
   "card": {
     "actions": "Acciones de plantilla",
     "preview": "Vista previa",
+    "use": "Usar plantilla",
     "edit": "Editar",
     "duplicate": "Duplicar",
     "delete": "Eliminar",

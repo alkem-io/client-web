@@ -34,8 +34,14 @@
     },
     "results": {
       "sent": "Einladung gesendet",
-      "alreadyMember": "Bereits Mitglied",
-      "error": "Fehlgeschlagen: {{message}}"
+      "alreadyInvited": "Bereits eingeladen",
+      "alreadyMember": "Bereits Mitglied dieses Spaces",
+      "alreadyHasApplication": "Hat bereits eine offene Bewerbung für diesen Space",
+      "parentNotAuthorized": "Einladung nicht möglich — die Person müsste auch dem übergeordneten Space beitreten, und Sie haben dort keine Einladungsberechtigung.",
+      "error": "Einladung fehlgeschlagen."
+    },
+    "toast": {
+      "someFailed": "{{count}} Einladungen konnten nicht gesendet werden — Details siehe Ergebnisse."
     }
   },
   "inviteVc": {

@@ -23,6 +23,7 @@ const SECTIONS_LABELS = {
   customHomepagesSubsection: 'Custom Homepages',
   spacesLeading: 'Lead Spaces',
   memberOf: 'All Memberships',
+  emptyResourcesHosted: 'No resources hosted yet.',
   emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
   spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },

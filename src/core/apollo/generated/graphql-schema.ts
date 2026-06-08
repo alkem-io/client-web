@@ -7449,14 +7449,18 @@ export type RoleSetVirtualContributorsInRolesArgs = {
 
 export type RoleSetInvitationResult = {
   __typename?: 'RoleSetInvitationResult';
+  /** The existing open application that blocks this invitation, when the result type is ALREADY_HAS_OPEN_APPLICATION. */
+  application?: Maybe<Application>;
   invitation?: Maybe<Invitation>;
   platformInvitation?: Maybe<PlatformInvitation>;
   type: RoleSetInvitationResultType;
 };
 
 export enum RoleSetInvitationResultType {
+  AlreadyHasOpenApplication = 'ALREADY_HAS_OPEN_APPLICATION',
   AlreadyInvitedToPlatformAndRoleSet = 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET',
   AlreadyInvitedToRoleSet = 'ALREADY_INVITED_TO_ROLE_SET',
+  AlreadyMemberOfRoleSet = 'ALREADY_MEMBER_OF_ROLE_SET',
   InvitationToParentNotAuthorized = 'INVITATION_TO_PARENT_NOT_AUTHORIZED',
   InvitedToPlatformAndRoleSet = 'INVITED_TO_PLATFORM_AND_ROLE_SET',
   InvitedToRoleSet = 'INVITED_TO_ROLE_SET',
@@ -10931,7 +10935,19 @@ export type AvailableUserForRoleSetFragment = {
   __typename?: 'User';
   id: string;
   email: string;
-  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        location?:
+          | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+          | undefined;
+        visual?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type AvailableUsersForRoleSetPaginatedFragment = {
@@ -10940,7 +10956,19 @@ export type AvailableUsersForRoleSetPaginatedFragment = {
     __typename?: 'User';
     id: string;
     email: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        }
+      | undefined;
   }>;
   pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
 };
@@ -10959,7 +10987,25 @@ export type PlatformRoleAvailableUsersQuery = {
       __typename?: 'User';
       id: string;
       email: string;
-      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
     }>;
     pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
   };
@@ -10979,13 +11025,32 @@ export type AvailableUsersForEntryRoleQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
+          id: string;
           availableUsersForEntryRole: {
             __typename?: 'PaginatedUsers';
             users: Array<{
               __typename?: 'User';
               id: string;
               email: string;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             }>;
             pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
           };
@@ -11015,7 +11080,25 @@ export type AvailableUsersForElevatedRoleQuery = {
               __typename?: 'User';
               id: string;
               email: string;
-              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
             }>;
             pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
           };
@@ -16538,7 +16621,10 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               visibility: CalloutVisibility;
               contribution: {
                 __typename?: 'CalloutSettingsContribution';
+                enabled: boolean;
                 allowedTypes: Array<CalloutContributionType>;
+                canAddContributions: CalloutAllowedActors;
+                commentsEnabled: boolean;
               };
             };
             classification?:
@@ -16587,7 +16673,13 @@ export type CalloutFragment = {
   settings: {
     __typename?: 'CalloutSettings';
     visibility: CalloutVisibility;
-    contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    contribution: {
+      __typename?: 'CalloutSettingsContribution';
+      enabled: boolean;
+      allowedTypes: Array<CalloutContributionType>;
+      canAddContributions: CalloutAllowedActors;
+      commentsEnabled: boolean;
+    };
   };
 };
 
@@ -20110,6 +20202,7 @@ export type CommentsWithMessagesFragment = {
 export type ForumMentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  types: Array<ActorType> | ActorType;
 }>;
 
 export type ForumMentionableContributorsQuery = {

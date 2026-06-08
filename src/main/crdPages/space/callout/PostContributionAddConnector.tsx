@@ -2,6 +2,7 @@ import { MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CrdPostContributionDialog } from '@/main/crdPages/post/CrdPostContributionDialog';
 
 // `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
@@ -42,17 +43,23 @@ export function PostContributionAddConnector({
         <ContributionAddCard label={t('callout.addPost')} icon={MessageSquare} onClick={() => setOpen(true)} />
       )}
       {open && (
-        <CrdPostContributionDialog
-          open={open}
-          onOpenChange={setOpen}
-          mode="create"
-          calloutId={calloutId}
-          defaultDisplayName={defaultDisplayName}
-          defaultDescription={defaultDescription}
-          onCreated={() => {
-            onCreated?.();
-          }}
-        />
+        // Scope uploads to the callout's framing bucket (where a contributing member has
+        // FileUpload) instead of the ambient space bucket. `CrdPostContributionDialog` passes
+        // `temporaryLocation: true` in create mode so the server relocates files to the new
+        // post on save. Mirrors `LinkContributionAddConnector`.
+        <StorageConfigContextProvider locationType="callout" calloutId={calloutId} skip={!open}>
+          <CrdPostContributionDialog
+            open={open}
+            onOpenChange={setOpen}
+            mode="create"
+            calloutId={calloutId}
+            defaultDisplayName={defaultDisplayName}
+            defaultDescription={defaultDescription}
+            onCreated={() => {
+              onCreated?.();
+            }}
+          />
+        </StorageConfigContextProvider>
       )}
     </>
   );

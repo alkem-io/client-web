@@ -1,7 +1,7 @@
 import { Pencil, Upload } from 'lucide-react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -32,7 +32,7 @@ export type InnovationHubAboutTabProps = {
   onSaveSection: (key: HubAboutSectionKey) => void;
   onBannerFileSelected: (file: File) => void;
   bannerUploading: boolean;
-};
+} & MarkdownUploadProps;
 
 const EditPencil = ({ className }: { className?: string }) => (
   <span
@@ -52,6 +52,9 @@ export const InnovationHubAboutTab = ({
   onSaveSection,
   onBannerFileSelected,
   bannerUploading,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
 }: InnovationHubAboutTabProps) => {
   const { t } = useTranslation('crd-innovationHub');
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -149,7 +152,13 @@ export const InnovationHubAboutTab = ({
       <section>
         <Label className="text-label uppercase text-muted-foreground">{t('settings.about.description.label')}</Label>
         <div className="mt-2 space-y-2">
-          <MarkdownEditor value={values.description} onChange={next => onChange({ description: next })} />
+          <MarkdownEditor
+            value={values.description}
+            onChange={next => onChange({ description: next })}
+            onImageUpload={onImageUpload}
+            iframeAllowedUrls={iframeAllowedUrls}
+            onError={onError}
+          />
           <div className="flex items-center justify-end gap-2">
             <InlineSectionSave
               dirty={!!dirty.description}

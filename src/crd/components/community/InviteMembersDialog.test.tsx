@@ -25,7 +25,14 @@ const labels: InviteMembersDialogLabels = {
   backButtonLabel: 'Back',
   closeButtonLabel: 'Close',
   closeAriaLabel: 'Close dialog',
-  resultOutcomeLabels: { sent: 'Sent', alreadyMember: 'Already a member', error: 'Failed' },
+  resultOutcomeLabels: {
+    sent: 'Sent',
+    alreadyInvited: 'Already invited',
+    alreadyMember: 'Already a member',
+    alreadyHasApplication: 'Already has an open application',
+    parentNotAuthorized: "Can't invite to parent",
+    error: 'Failed',
+  },
 };
 
 const baseProps = {
@@ -112,7 +119,7 @@ describe('InviteMembersDialog', () => {
   test('When `results` is provided, dialog auto-switches to result view', () => {
     const results: InvitationResult[] = [
       { invitee: { kind: 'user', userId: 'u1', displayName: 'Alice' }, outcome: 'sent' },
-      { invitee: { kind: 'email', email: 'bob@example.com' }, outcome: 'alreadyMember' },
+      { invitee: { kind: 'email', email: 'bob@example.com' }, outcome: 'alreadyInvited' },
     ];
     render(<InviteMembersDialog {...baseProps} extraRoles={['Member']} results={results} />);
     // Result view: Back + Close buttons appear, Send button does not.
@@ -123,7 +130,7 @@ describe('InviteMembersDialog', () => {
     expect(screen.getByText('Alice')).toBeInTheDocument();
     expect(screen.getByText('bob@example.com')).toBeInTheDocument();
     expect(screen.getByText('Sent')).toBeInTheDocument();
-    expect(screen.getByText('Already a member')).toBeInTheDocument();
+    expect(screen.getByText('Already invited')).toBeInTheDocument();
   });
 
   test('Back button calls onBack and does not call welcome/role change handlers (preserves them)', async () => {

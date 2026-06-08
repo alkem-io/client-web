@@ -40,5 +40,19 @@
     "security": "Sicherheit",
     "support": "Support",
     "about": "Über uns"
+  },
+  "appVersion": {
+    "message": "A new version of the app is available.",
+    "recurringMessage": "Please close all Alkemio tabs and reload to update.",
+    "reload": "Erneut laden"
+  },
+  "cookieConsent": {
+    "consent": "Wenn Sie auf \"Alle Cookies akzeptieren\" klicken, stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, um die Website-Navigation zu verbessern und die Nutzung der Website zu analysieren.",
+    "settingsIntro": "Beim Besuch einer Website können Informationen in Form von Cookies in Ihrem Browser gespeichert werden. Diese Informationen können sich über Sie, Ihre Einstellungen und Ihr Gerät beziehen. Meistens werden diese Informationen verwendet, um das Funktionieren der Website so gut wie möglich zu gestalten. Da Alkemio keine Werbung auf seiner Website zulässt, unterscheiden wir nur zwei Arten von Cookies.",
+    "technical": "Technisch notwendige Cookies: Sie können die Grundfunktionen navigieren und nutzen und Präferenzen speichern.",
+    "analysis": "Analyse-Cookies: Ermitteln Sie uns die Art und Weise, wie Besucher mit unseren Diensten interagieren, um die Benutzererfahrung zu verbessern.",
+    "settings": "einstellungen",
+    "acceptAll": "Alle Cookies akzeptieren",
+    "confirmChoice": "Auswahl bestätigen"
   }
 }
