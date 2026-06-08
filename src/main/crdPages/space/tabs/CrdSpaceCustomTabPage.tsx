@@ -10,6 +10,7 @@ import { SearchField } from '@/crd/forms/SearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { mapCalloutsToListItems } from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -147,13 +148,20 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </div>
 
       {canCreateCallout && (
-        <CalloutFormConnector
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          calloutsSetId={calloutsSetId}
-          activeFlowStateName={flowStateForNewCallouts?.displayName}
-          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
-        />
+        <StorageConfigContextProvider
+          locationType="space"
+          spaceId={space.id}
+          temporaryLocation={true}
+          skip={!createOpen}
+        >
+          <CalloutFormConnector
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            calloutsSetId={calloutsSetId}
+            activeFlowStateName={flowStateForNewCallouts?.displayName}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
+          />
+        </StorageConfigContextProvider>
       )}
     </>
   );

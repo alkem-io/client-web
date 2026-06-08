@@ -7,6 +7,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -126,13 +127,20 @@ export default function CrdSpaceDashboardPage() {
       />
 
       {canCreateCallout && (
-        <CalloutFormConnector
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          calloutsSetId={calloutsSetId}
-          activeFlowStateName={flowStateForNewCallouts?.displayName}
-          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
-        />
+        <StorageConfigContextProvider
+          locationType="space"
+          spaceId={space.id}
+          temporaryLocation={true}
+          skip={!createOpen}
+        >
+          <CalloutFormConnector
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            calloutsSetId={calloutsSetId}
+            activeFlowStateName={flowStateForNewCallouts?.displayName}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
+          />
+        </StorageConfigContextProvider>
       )}
 
       <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />

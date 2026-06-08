@@ -143,14 +143,13 @@ export function CalloutFormConnector({
 
   // Image (markdown toolbar + paste/drop) and reference-file upload both work in CREATE and EDIT, and
   // both follow the same `temporaryLocation` rule, keyed off `mode`:
-  //   • CREATE → `temporaryLocation: true`. The callout doesn't exist yet, so uploads go to the ambient
-  //     SPACE bucket's temporary area; the server relocates the file into the callout's bucket on save.
-  //     Temporary uploads are also what lets a regular member (no permanent FileUpload on the space
-  //     bucket) attach files while creating.
-  //   • EDIT → `temporaryLocation: false`. The ambient bucket is the callout's own (scoped by
-  //     `CalloutEditConnector`, `locationType="callout"`) and the editor can write to it directly.
-  // This mirrors the legacy MUI callout form (`temporaryLocation={!callout?.id}`) and the sibling
-  // `CrdPostContributionDialog`, and satisfies spec 042 callout-dialog FR-31 / FR-50.
+  //   • CREATE → `temporaryLocation: true`, targeting the SPACE bucket (`space.profile.storageBucket`).
+  //     The callout doesn't exist yet, so uploads go to the SPACE bucket's temporary area and the server
+  //     relocates them into the callout's bucket on save. A regular member has `FILE_UPLOAD` on the SPACE
+  //     bucket (but NOT on ABOUT, which is why we don't use the ambient `useStorageConfigContext()` here).
+  //   • EDIT → `temporaryLocation: false`, targeting the callout's own bucket (the ambient context scoped
+  //     by `CalloutEditConnector`, `locationType="callout"`) — the editor writes to it directly.
+  // satisfies spec 042 callout-dialog FR-31 / FR-50.
   const temporaryUpload = mode === 'create';
   const ambientStorageConfig = useStorageConfigContext();
   const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: temporaryUpload });

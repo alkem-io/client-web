@@ -2,6 +2,9 @@ query SpaceStorageConfig($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      profile {
+        ...ProfileStorageConfig
+      }
       about {
         id
         profile {

@@ -5,12 +5,15 @@ import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
+  const { space } = useSpace();
   const { data, mobileMenu } = useOutletContext<SubspaceOutletContext>();
   const { phases, currentPhaseId, calloutsSetId, canEditFlow, subspaceUrl } = data;
   const [createOpen, setCreateOpen] = useState(false);
@@ -82,13 +85,20 @@ export default function CrdSubspaceCalloutsPage() {
       {phases.length > 0 && <div className="h-36 sm:hidden" aria-hidden="true" />}
 
       {canCreateCallout && calloutsSetId && (
-        <CalloutFormConnector
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          calloutsSetId={calloutsSetId}
-          activeFlowStateName={activePhase?.label}
-          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
-        />
+        <StorageConfigContextProvider
+          locationType="space"
+          spaceId={space.id}
+          temporaryLocation={true}
+          skip={!createOpen}
+        >
+          <CalloutFormConnector
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            calloutsSetId={calloutsSetId}
+            activeFlowStateName={activePhase?.label}
+            defaultTemplateId={activePhase?.defaultCalloutTemplateId}
+          />
+        </StorageConfigContextProvider>
       )}
     </div>
   );

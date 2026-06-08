@@ -36,6 +36,7 @@ type StorageConfigLocation =
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
+  temporaryLocation?: boolean;
   skip?: boolean;
 }
 
@@ -189,12 +190,18 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'account' || !accountOptions.accountId,
   });
 
-  const space = spaceStorageConfigData?.lookup.space;
+  const space =
+    locationType === 'space'
+      ? options.temporaryLocation
+        ? spaceStorageConfigData?.lookup.space
+        : // For temporary location, we want to get the storage bucket from `space.profile.storageBucket` instead of `space.about.profile.storageBucket`.
+          spaceStorageConfigData?.lookup.space?.about
+      : undefined;
 
   const callout = calloutStorageConfigData?.lookup.callout;
 
   const { profile } =
-    space?.about ??
+    space ??
     callout?.framing ??
     postStorageConfigData?.lookup.post ??
     templateStorageConfigData?.lookup.template ??
@@ -217,7 +224,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
           allowedMimeTypes: storageConfig.allowedMimeTypes,
           maxFileSize: storageConfig.maxFileSize,
           canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
-          temporaryLocation: false, // Here should be false by default. Change it to true only on the components that need it.
+          temporaryLocation: options.temporaryLocation ?? false, // Here should be false by default. Change it to true only on the components that need it.
         }
       : undefined,
   };

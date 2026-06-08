@@ -26409,6 +26409,9 @@ export const SpaceStorageConfigDocument = gql`
   lookup {
     space(ID: $spaceId) {
       id
+      profile {
+        ...ProfileStorageConfig
+      }
       about {
         id
         profile {
