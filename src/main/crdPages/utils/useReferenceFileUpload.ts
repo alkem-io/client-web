@@ -45,6 +45,18 @@ type UseReferenceFileUploadResult = {
   canUpload: boolean;
 };
 
+type UseReferenceFileUploadOptions = {
+  /**
+   * When `true`, the file is uploaded to the *temporary* area of the bucket and the
+   * server relocates it into the entity's own bucket when the form is saved. Use this
+   * while **creating** an entity (its bucket doesn't exist yet, and a plain member has no
+   * permanent `FileUpload` on the parent/space bucket). When **editing** an existing
+   * entity the user can write to, pass `false` for a direct, permanent upload.
+   * Defaults to `true` (the safe create-flow value).
+   */
+  temporaryLocation?: boolean;
+};
+
 /**
  * Wires a CRD reference editor to the standard storage-bucket upload path.
  * Mirrors the MUI behaviour from `FormikFileInput` + `FileUploadButton` but
@@ -52,7 +64,10 @@ type UseReferenceFileUploadResult = {
  * layer (`src/crd/forms/references/ReferencesEditor`) stays free of Apollo /
  * domain imports.
  */
-export function useReferenceFileUpload(storageConfig: StorageConfig | undefined): UseReferenceFileUploadResult {
+export function useReferenceFileUpload(
+  storageConfig: StorageConfig | undefined,
+  { temporaryLocation = true }: UseReferenceFileUploadOptions = {}
+): UseReferenceFileUploadResult {
   const { t } = useTranslation();
   const notify = useNotification();
   const [uploadFile] = useUploadFileMutation();
@@ -79,7 +94,7 @@ export function useReferenceFileUpload(storageConfig: StorageConfig | undefined)
                 file,
                 uploadData: {
                   storageBucketId: storageConfig.storageBucketId,
-                  temporaryLocation: true,
+                  temporaryLocation,
                 },
               },
             });
