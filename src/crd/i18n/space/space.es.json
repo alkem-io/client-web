@@ -596,7 +596,7 @@
         "connecting": "Conectando al servicio de colaboración…",
         "notSynced": "Sincronizando… vuelve a abrir la nota para continuar editando.",
         "unauthenticated": "Inicia sesión para editar esta nota.",
-        "contentUpdatePolicy": "No tienes permiso para editar esta nota. Pide al propietario que cambie la configuración de uso compartido.",
+        "contentUpdatePolicy": "No tienes permiso para editar esta nota. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido.",
         "contentUpdatePolicyNoOwner": "No tienes permiso para editar esta nota. El propietario ya no está disponible: pide a un administrador del espacio que cambie la configuración de uso compartido.",
         "noMembership": "Solo los miembros de este espacio pueden editar esta nota. Únete al espacio para contribuir."
       }
