@@ -21,12 +21,10 @@ export const useOidcSessionStatus = () => {
         });
         if (!cancelled) {
           setActive(response.ok);
-          window.alert(`Success: OIDC session response ok: ${response.ok}`);
         }
       } catch {
         if (!cancelled) {
           setActive(false);
-          window.alert(`Catch: OIDC session response: ${false}`);
         }
       } finally {
         if (!cancelled) {
