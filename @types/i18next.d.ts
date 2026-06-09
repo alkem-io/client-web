@@ -21,6 +21,7 @@ import type crdContributorSettingsTranslation from '@/crd/i18n/contributorSettin
 import type crdCommunityTranslation from '@/crd/i18n/community/community.en.json';
 import type crdTemplatesTranslation from '@/crd/i18n/templates/templates.en.json';
 import type crdInnovationHubTranslation from '@/crd/i18n/innovationHub/innovationHub.en.json';
+import type crdAdminTranslation from '@/crd/i18n/admin/admin.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -47,6 +48,7 @@ declare module 'i18next' {
       'crd-community': typeof crdCommunityTranslation;
       'crd-templates': typeof crdTemplatesTranslation;
       'crd-innovationHub': typeof crdInnovationHubTranslation;
+      'crd-admin': typeof crdAdminTranslation;
     };
   }
 }

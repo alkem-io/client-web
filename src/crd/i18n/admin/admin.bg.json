@@ -1,0 +1,152 @@
+{
+  "pageTitle": "Администрация",
+  "sections": {
+    "spaces": "Пространства",
+    "users": "Потребители",
+    "organizations": "Организации",
+    "innovation-packs": "Иновационни пакети",
+    "innovation-hubs": "Иновационни центрове",
+    "virtual-contributors": "Виртуални сътрудници",
+    "authorization": "Оторизация",
+    "authorization-policies": "Политики за оторизация",
+    "transfer": "Преобразувания и трансфери"
+  },
+  "placeholder": {
+    "title": "Очаквайте скоро",
+    "description": "Този раздел на администрацията се мигрира към новия дизайн."
+  },
+  "organizations": {
+    "verifiedHeader": "Проверка",
+    "verified": "Проверена",
+    "notVerified": "Непроверена",
+    "toggleVerification": "Превключване на проверката"
+  },
+  "table": {
+    "searchPlaceholder": "Търсене…",
+    "name": "Име",
+    "actions": "Действия",
+    "showing": "Показани {{count}} от {{total}}",
+    "loadMore": "Покажи още",
+    "empty": "Няма намерени резултати.",
+    "delete": "Изтриване",
+    "deleteTitle": "Изтриване на {{name}}?",
+    "deleteDescription": "Това действие не може да бъде отменено."
+  },
+  "columns": {
+    "listed": "Включено",
+    "notListed": "Невключено",
+    "public": "Публично",
+    "internal": "Вътрешно",
+    "listedHeader": "Вписан в магазина",
+    "visibilityHeader": "Видимост при търсене",
+    "ownerHeader": "Собственик на акаунта",
+    "spaceVisibility": "Видимост"
+  },
+  "licensePlans": {
+    "active": "Активен",
+    "assign": "Присвояване",
+    "revoke": "Отнемане",
+    "manage": "Управление на лицензионни планове",
+    "empty": "Няма налични лицензионни планове.",
+    "revokeTitle": "Отнемане на {{name}}?",
+    "revokeDescription": "Това премахва плана от акаунта. Можете да го присвоите отново по-късно."
+  },
+  "spaces": {
+    "visibilityActive": "Активно",
+    "visibilityArchived": "Архивирано",
+    "visibilityDemo": "Демо",
+    "visibilityInactive": "Неактивно",
+    "settingsTitle": "Настройки на Space",
+    "settingsDescription": "Актуализирайте алиаса и видимостта на space.",
+    "aliasLabel": "Алиас (име-ID)",
+    "visibilityLabel": "Видимост",
+    "editSettings": "Редактиране на настройките на Space",
+    "save": "Запазване",
+    "cancel": "Отказ"
+  },
+  "roles": {
+    "GLOBAL_ADMIN": "Global Admin",
+    "GLOBAL_SUPPORT": "Global Support",
+    "GLOBAL_LICENSE_MANAGER": "Global License Manager",
+    "GLOBAL_COMMUNITY_READER": "Global Community Reader",
+    "GLOBAL_SPACES_READER": "Global Spaces Reader",
+    "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
+    "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
+    "PLATFORM_BETA_TESTER": "Platform Beta Tester",
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+  },
+  "roleMembers": {
+    "currentMembers": "Текущи членове",
+    "addMembers": "Добавяне на членове",
+    "searchPlaceholder": "Търсене на потребители…",
+    "add": "Добавяне",
+    "remove": "Премахване",
+    "noMembers": "Няма членове в тази роля.",
+    "noResults": "Не са намерени потребители.",
+    "loading": "Зареждане…",
+    "removeTitle": "Премахване на {{name}}?",
+    "removeDescription": "Това отнема ролята на този потребител.",
+    "roleLabel": "Роля"
+  },
+  "authPolicies": {
+    "idLabel": "ID на политика за оторизация",
+    "lookup": "Извличане на политика за оторизация",
+    "notFound": "Не е намерена политика за този ID.",
+    "type": "Тип",
+    "credentialRules": "Правила за идентификация",
+    "privilegeRules": "Правила за привилегии",
+    "cascade": "Каскада",
+    "grantedPrivileges": "Предоставени привилегии",
+    "criteria": "Критерии",
+    "sourcePrivilege": "Привилегия източник",
+    "true": "Вярно",
+    "false": "Невярно",
+    "userLookup": "Привилегии на потребител",
+    "userSearchPlaceholder": "Търсете потребител или поставете потребителски ID",
+    "privilegesForUser": "Привилегии за {{name}}"
+  },
+  "transfer": {
+    "warning": "Внимание: тези операции са необратими.",
+    "conversionsArea": "Преобразувания",
+    "transfersArea": "Трансфери",
+    "urlLabel": "Изходен URL",
+    "resolve": "Разрешаване",
+    "targetAccount": "Целеви акаунт",
+    "accountSearchPlaceholder": "Търсене на потребители или организации…",
+    "noAccounts": "Няма съвпадащи акаунти.",
+    "transfer": "Прехвърляне",
+    "currentAccount": "Текущ акаунт: {{name}}",
+    "confirmTitle": "Потвърждаване на прехвърлянето",
+    "confirmDescription": "Това премества обекта за постоянно в избрания акаунт.",
+    "comingSoon": "Тази операция се мигрира към новия дизайн.",
+    "hub": {
+      "title": "Прехвърляне на иновационен център",
+      "description": "Преместване на иновационен център в друг акаунт."
+    },
+    "pack": {
+      "title": "Прехвърляне на иновационен пакет",
+      "description": "Преместване на иновационен пакет в друг акаунт."
+    },
+    "vc": {
+      "title": "Прехвърляне на виртуален сътрудник",
+      "description": "Преместване на виртуален сътрудник в друг акаунт."
+    },
+    "vcConversion": {
+      "title": "Преобразуване на виртуален сътрудник",
+      "description": "Преобразуване на базиран на space виртуален сътрудник в база знания.",
+      "convert": "Преобразуване в база знания",
+      "confirmTitle": "Потвърждаване на преобразуването",
+      "confirmDescription": "Това преобразува виртуалния сътрудник и не може да бъде отменено.",
+      "notEligible": "Могат да се преобразуват само базирани на space виртуални сътрудници, които още не са преобразувани."
+    },
+    "spaceConversion": {
+      "title": "Преобразуване на Space"
+    },
+    "spaceTransfer": {
+      "title": "Прехвърляне на Space"
+    },
+    "calloutTransfer": {
+      "title": "Прехвърляне на публикация"
+    }
+  }
+}

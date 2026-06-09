@@ -1,0 +1,152 @@
+{
+  "pageTitle": "Beheer",
+  "sections": {
+    "spaces": "Spaces",
+    "users": "Gebruikers",
+    "organizations": "Organisaties",
+    "innovation-packs": "Innovation Packs",
+    "innovation-hubs": "Innovation Hubs",
+    "virtual-contributors": "Virtual Contributors",
+    "authorization": "Autorisatie",
+    "authorization-policies": "Autorisatiebeleid",
+    "transfer": "Conversies & Overdrachten"
+  },
+  "placeholder": {
+    "title": "Binnenkort beschikbaar",
+    "description": "Dit beheergedeelte wordt gemigreerd naar het nieuwe ontwerp."
+  },
+  "organizations": {
+    "verifiedHeader": "Verificatie",
+    "verified": "Geverifieerd",
+    "notVerified": "Niet geverifieerd",
+    "toggleVerification": "Verificatie wisselen"
+  },
+  "table": {
+    "searchPlaceholder": "Zoeken…",
+    "name": "Naam",
+    "actions": "Acties",
+    "showing": "{{count}} van {{total}} weergegeven",
+    "loadMore": "Meer tonen",
+    "empty": "Geen resultaten gevonden.",
+    "delete": "Verwijderen",
+    "deleteTitle": "{{name}} verwijderen?",
+    "deleteDescription": "Deze actie kan niet ongedaan worden gemaakt."
+  },
+  "columns": {
+    "listed": "Vermeld",
+    "notListed": "Niet vermeld",
+    "public": "Openbaar",
+    "internal": "Intern",
+    "listedHeader": "In winkel vermeld",
+    "visibilityHeader": "Zoekzichtbaarheid",
+    "ownerHeader": "Account-eigenaar",
+    "spaceVisibility": "Zichtbaarheid"
+  },
+  "licensePlans": {
+    "active": "Actief",
+    "assign": "Toewijzen",
+    "revoke": "Intrekken",
+    "manage": "Licentieplannen beheren",
+    "empty": "Geen licentieplannen beschikbaar.",
+    "revokeTitle": "{{name}} intrekken?",
+    "revokeDescription": "Hiermee wordt het plan van het account verwijderd. Je kunt het later opnieuw toewijzen."
+  },
+  "spaces": {
+    "visibilityActive": "Actief",
+    "visibilityArchived": "Gearchiveerd",
+    "visibilityDemo": "Demo",
+    "visibilityInactive": "Inactief",
+    "settingsTitle": "Space-instellingen",
+    "settingsDescription": "Werk de space-alias en zichtbaarheid bij.",
+    "aliasLabel": "Alias (naam-ID)",
+    "visibilityLabel": "Zichtbaarheid",
+    "editSettings": "Space-instellingen bewerken",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "roles": {
+    "GLOBAL_ADMIN": "Global Admin",
+    "GLOBAL_SUPPORT": "Global Support",
+    "GLOBAL_LICENSE_MANAGER": "Global License Manager",
+    "GLOBAL_COMMUNITY_READER": "Global Community Reader",
+    "GLOBAL_SPACES_READER": "Global Spaces Reader",
+    "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
+    "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
+    "PLATFORM_BETA_TESTER": "Platform Beta Tester",
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+  },
+  "roleMembers": {
+    "currentMembers": "Huidige leden",
+    "addMembers": "Leden toevoegen",
+    "searchPlaceholder": "Gebruikers zoeken…",
+    "add": "Toevoegen",
+    "remove": "Verwijderen",
+    "noMembers": "Geen leden in deze rol.",
+    "noResults": "Geen gebruikers gevonden.",
+    "loading": "Laden…",
+    "removeTitle": "{{name}} verwijderen?",
+    "removeDescription": "Hiermee wordt de rol bij deze gebruiker ingetrokken.",
+    "roleLabel": "Rol"
+  },
+  "authPolicies": {
+    "idLabel": "Autorisatiebeleid-ID",
+    "lookup": "Autorisatiebeleid ophalen",
+    "notFound": "Geen beleid gevonden voor dat ID.",
+    "type": "Type",
+    "credentialRules": "Credential-regels",
+    "privilegeRules": "Privilege-regels",
+    "cascade": "Cascade",
+    "grantedPrivileges": "Verleende rechten",
+    "criteria": "Criteria",
+    "sourcePrivilege": "Bronrecht",
+    "true": "Waar",
+    "false": "Onwaar",
+    "userLookup": "Gebruikersrechten",
+    "userSearchPlaceholder": "Zoek een gebruiker of plak een gebruikers-ID",
+    "privilegesForUser": "Rechten voor {{name}}"
+  },
+  "transfer": {
+    "warning": "Let op: deze bewerkingen zijn onomkeerbaar.",
+    "conversionsArea": "Conversies",
+    "transfersArea": "Overdrachten",
+    "urlLabel": "Bron-URL",
+    "resolve": "Oplossen",
+    "targetAccount": "Doelaccount",
+    "accountSearchPlaceholder": "Zoek gebruikers of organisaties…",
+    "noAccounts": "Geen overeenkomende accounts.",
+    "transfer": "Overdragen",
+    "currentAccount": "Huidig account: {{name}}",
+    "confirmTitle": "Overdracht bevestigen",
+    "confirmDescription": "Hiermee wordt de entiteit definitief naar het geselecteerde account verplaatst.",
+    "comingSoon": "Deze bewerking wordt gemigreerd naar het nieuwe ontwerp.",
+    "hub": {
+      "title": "Innovation Hub overdragen",
+      "description": "Verplaats een Innovation Hub naar een ander account."
+    },
+    "pack": {
+      "title": "Innovation Pack overdragen",
+      "description": "Verplaats een Innovation Pack naar een ander account."
+    },
+    "vc": {
+      "title": "Virtual Contributor overdragen",
+      "description": "Verplaats een Virtual Contributor naar een ander account."
+    },
+    "vcConversion": {
+      "title": "Virtual Contributor converteren",
+      "description": "Converteer een space-gebaseerde Virtual Contributor naar een kennisbank.",
+      "convert": "Converteren naar kennisbank",
+      "confirmTitle": "Conversie bevestigen",
+      "confirmDescription": "Hiermee wordt de Virtual Contributor geconverteerd en dit kan niet ongedaan worden gemaakt.",
+      "notEligible": "Alleen space-gebaseerde virtual contributors die nog niet zijn geconverteerd kunnen worden geconverteerd."
+    },
+    "spaceConversion": {
+      "title": "Space converteren"
+    },
+    "spaceTransfer": {
+      "title": "Space overdragen"
+    },
+    "calloutTransfer": {
+      "title": "Post overdragen"
+    }
+  }
+}

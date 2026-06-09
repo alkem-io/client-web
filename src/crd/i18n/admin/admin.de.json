@@ -1,0 +1,152 @@
+{
+  "pageTitle": "Verwaltung",
+  "sections": {
+    "spaces": "Spaces",
+    "users": "Benutzer",
+    "organizations": "Organisationen",
+    "innovation-packs": "Innovationspakete",
+    "innovation-hubs": "Innovations-Hubs",
+    "virtual-contributors": "Virtuelle Mitwirkende",
+    "authorization": "Autorisierung",
+    "authorization-policies": "Autorisierungsrichtlinien",
+    "transfer": "Konvertierungen & Übertragungen"
+  },
+  "placeholder": {
+    "title": "Demnächst verfügbar",
+    "description": "Dieser Verwaltungsbereich wird auf das neue Design umgestellt."
+  },
+  "organizations": {
+    "verifiedHeader": "Verifizierung",
+    "verified": "Verifiziert",
+    "notVerified": "Nicht verifiziert",
+    "toggleVerification": "Verifizierung umschalten"
+  },
+  "table": {
+    "searchPlaceholder": "Suchen…",
+    "name": "Name",
+    "actions": "Aktionen",
+    "showing": "{{count}} von {{total}} werden angezeigt",
+    "loadMore": "Mehr anzeigen",
+    "empty": "Keine Ergebnisse gefunden.",
+    "delete": "Löschen",
+    "deleteTitle": "{{name}} löschen?",
+    "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "columns": {
+    "listed": "Gelistet",
+    "notListed": "Nicht gelistet",
+    "public": "Öffentlich",
+    "internal": "Intern",
+    "listedHeader": "Im Store gelistet",
+    "visibilityHeader": "Suchsichtbarkeit",
+    "ownerHeader": "Kontoinhaber",
+    "spaceVisibility": "Sichtbarkeit"
+  },
+  "licensePlans": {
+    "active": "Aktiv",
+    "assign": "Zuweisen",
+    "revoke": "Entziehen",
+    "manage": "Lizenzpläne verwalten",
+    "empty": "Keine Lizenzpläne verfügbar.",
+    "revokeTitle": "{{name}} entziehen?",
+    "revokeDescription": "Dadurch wird der Plan vom Konto entfernt. Sie können ihn später erneut zuweisen."
+  },
+  "spaces": {
+    "visibilityActive": "Aktiv",
+    "visibilityArchived": "Archiviert",
+    "visibilityDemo": "Demo",
+    "visibilityInactive": "Inaktiv",
+    "settingsTitle": "Space-Einstellungen",
+    "settingsDescription": "Aktualisieren Sie Alias und Sichtbarkeit des Space.",
+    "aliasLabel": "Alias (Name-ID)",
+    "visibilityLabel": "Sichtbarkeit",
+    "editSettings": "Space-Einstellungen bearbeiten",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "roles": {
+    "GLOBAL_ADMIN": "Global Admin",
+    "GLOBAL_SUPPORT": "Global Support",
+    "GLOBAL_LICENSE_MANAGER": "Global License Manager",
+    "GLOBAL_COMMUNITY_READER": "Global Community Reader",
+    "GLOBAL_SPACES_READER": "Global Spaces Reader",
+    "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
+    "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
+    "PLATFORM_BETA_TESTER": "Platform Beta Tester",
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+  },
+  "roleMembers": {
+    "currentMembers": "Aktuelle Mitglieder",
+    "addMembers": "Mitglieder hinzufügen",
+    "searchPlaceholder": "Benutzer suchen…",
+    "add": "Hinzufügen",
+    "remove": "Entfernen",
+    "noMembers": "Keine Mitglieder in dieser Rolle.",
+    "noResults": "Keine Benutzer gefunden.",
+    "loading": "Wird geladen…",
+    "removeTitle": "{{name}} entfernen?",
+    "removeDescription": "Dadurch wird dem Benutzer die Rolle entzogen.",
+    "roleLabel": "Rolle"
+  },
+  "authPolicies": {
+    "idLabel": "Autorisierungsrichtlinien-ID",
+    "lookup": "Autorisierungsrichtlinie abrufen",
+    "notFound": "Keine Richtlinie für diese ID gefunden.",
+    "type": "Typ",
+    "credentialRules": "Anmeldedaten-Regeln",
+    "privilegeRules": "Berechtigungsregeln",
+    "cascade": "Kaskade",
+    "grantedPrivileges": "Gewährte Berechtigungen",
+    "criteria": "Kriterien",
+    "sourcePrivilege": "Quellberechtigung",
+    "true": "Wahr",
+    "false": "Falsch",
+    "userLookup": "Benutzerberechtigungen",
+    "userSearchPlaceholder": "Nach einem Benutzer suchen oder Benutzer-ID einfügen",
+    "privilegesForUser": "Berechtigungen für {{name}}"
+  },
+  "transfer": {
+    "warning": "Achtung: Diese Vorgänge sind unumkehrbar.",
+    "conversionsArea": "Konvertierungen",
+    "transfersArea": "Übertragungen",
+    "urlLabel": "Quell-URL",
+    "resolve": "Auflösen",
+    "targetAccount": "Zielkonto",
+    "accountSearchPlaceholder": "Benutzer oder Organisationen suchen…",
+    "noAccounts": "Keine passenden Konten.",
+    "transfer": "Übertragen",
+    "currentAccount": "Aktuelles Konto: {{name}}",
+    "confirmTitle": "Übertragung bestätigen",
+    "confirmDescription": "Dadurch wird die Entität dauerhaft in das ausgewählte Konto verschoben.",
+    "comingSoon": "Dieser Vorgang wird auf das neue Design umgestellt.",
+    "hub": {
+      "title": "Innovations-Hub übertragen",
+      "description": "Einen Innovations-Hub in ein anderes Konto verschieben."
+    },
+    "pack": {
+      "title": "Innovationspaket übertragen",
+      "description": "Ein Innovationspaket in ein anderes Konto verschieben."
+    },
+    "vc": {
+      "title": "Virtuellen Mitwirkenden übertragen",
+      "description": "Einen virtuellen Mitwirkenden in ein anderes Konto verschieben."
+    },
+    "vcConversion": {
+      "title": "Virtuellen Mitwirkenden konvertieren",
+      "description": "Einen space-basierten virtuellen Mitwirkenden in eine Wissensdatenbank konvertieren.",
+      "convert": "In Wissensdatenbank konvertieren",
+      "confirmTitle": "Konvertierung bestätigen",
+      "confirmDescription": "Dadurch wird der virtuelle Mitwirkende konvertiert und kann nicht rückgängig gemacht werden.",
+      "notEligible": "Nur space-basierte virtuelle Mitwirkende, die noch nicht konvertiert wurden, können konvertiert werden."
+    },
+    "spaceConversion": {
+      "title": "Space konvertieren"
+    },
+    "spaceTransfer": {
+      "title": "Space übertragen"
+    },
+    "calloutTransfer": {
+      "title": "Beitrag übertragen"
+    }
+  }
+}

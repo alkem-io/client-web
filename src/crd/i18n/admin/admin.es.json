@@ -1,0 +1,152 @@
+{
+  "pageTitle": "Administración",
+  "sections": {
+    "spaces": "Espacios",
+    "users": "Usuarios",
+    "organizations": "Organizaciones",
+    "innovation-packs": "Paquetes de innovación",
+    "innovation-hubs": "Centros de innovación",
+    "virtual-contributors": "Colaboradores virtuales",
+    "authorization": "Autorización",
+    "authorization-policies": "Políticas de autorización",
+    "transfer": "Conversiones y transferencias"
+  },
+  "placeholder": {
+    "title": "Próximamente",
+    "description": "Esta sección de administración se está migrando al nuevo diseño."
+  },
+  "organizations": {
+    "verifiedHeader": "Verificación",
+    "verified": "Verificada",
+    "notVerified": "No verificada",
+    "toggleVerification": "Alternar verificación"
+  },
+  "table": {
+    "searchPlaceholder": "Buscar…",
+    "name": "Nombre",
+    "actions": "Acciones",
+    "showing": "Mostrando {{count}} de {{total}}",
+    "loadMore": "Mostrar más",
+    "empty": "No se encontraron resultados.",
+    "delete": "Eliminar",
+    "deleteTitle": "¿Eliminar {{name}}?",
+    "deleteDescription": "Esta acción no se puede deshacer."
+  },
+  "columns": {
+    "listed": "Listado",
+    "notListed": "No listado",
+    "public": "Público",
+    "internal": "Interno",
+    "listedHeader": "Listado en tienda",
+    "visibilityHeader": "Visibilidad de búsqueda",
+    "ownerHeader": "Propietario de la cuenta",
+    "spaceVisibility": "Visibilidad"
+  },
+  "licensePlans": {
+    "active": "Activo",
+    "assign": "Asignar",
+    "revoke": "Revocar",
+    "manage": "Gestionar planes de licencia",
+    "empty": "No hay planes de licencia disponibles.",
+    "revokeTitle": "¿Revocar {{name}}?",
+    "revokeDescription": "Esto elimina el plan de la cuenta. Puedes volver a asignarlo más tarde."
+  },
+  "spaces": {
+    "visibilityActive": "Activo",
+    "visibilityArchived": "Archivado",
+    "visibilityDemo": "Demo",
+    "visibilityInactive": "Inactivo",
+    "settingsTitle": "Configuración del espacio",
+    "settingsDescription": "Actualiza el alias y la visibilidad del espacio.",
+    "aliasLabel": "Alias (ID de nombre)",
+    "visibilityLabel": "Visibilidad",
+    "editSettings": "Editar configuración del espacio",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "roles": {
+    "GLOBAL_ADMIN": "Global Admin",
+    "GLOBAL_SUPPORT": "Global Support",
+    "GLOBAL_LICENSE_MANAGER": "Global License Manager",
+    "GLOBAL_COMMUNITY_READER": "Global Community Reader",
+    "GLOBAL_SPACES_READER": "Global Spaces Reader",
+    "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
+    "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
+    "PLATFORM_BETA_TESTER": "Platform Beta Tester",
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+  },
+  "roleMembers": {
+    "currentMembers": "Miembros actuales",
+    "addMembers": "Añadir miembros",
+    "searchPlaceholder": "Buscar usuarios…",
+    "add": "Añadir",
+    "remove": "Eliminar",
+    "noMembers": "No hay miembros en este rol.",
+    "noResults": "No se encontraron usuarios.",
+    "loading": "Cargando…",
+    "removeTitle": "¿Eliminar a {{name}}?",
+    "removeDescription": "Esto revoca el rol de este usuario.",
+    "roleLabel": "Rol"
+  },
+  "authPolicies": {
+    "idLabel": "ID de política de autorización",
+    "lookup": "Obtener política de autorización",
+    "notFound": "No se encontró ninguna política para ese ID.",
+    "type": "Tipo",
+    "credentialRules": "Reglas de credencial",
+    "privilegeRules": "Reglas de privilegio",
+    "cascade": "Cascada",
+    "grantedPrivileges": "Privilegios concedidos",
+    "criteria": "Criterios",
+    "sourcePrivilege": "Privilegio de origen",
+    "true": "Verdadero",
+    "false": "Falso",
+    "userLookup": "Privilegios de usuario",
+    "userSearchPlaceholder": "Busca un usuario o pega un ID de usuario",
+    "privilegesForUser": "Privilegios de {{name}}"
+  },
+  "transfer": {
+    "warning": "Peligro: estas operaciones son irreversibles.",
+    "conversionsArea": "Conversiones",
+    "transfersArea": "Transferencias",
+    "urlLabel": "URL de origen",
+    "resolve": "Resolver",
+    "targetAccount": "Cuenta de destino",
+    "accountSearchPlaceholder": "Buscar usuarios u organizaciones…",
+    "noAccounts": "No hay cuentas coincidentes.",
+    "transfer": "Transferir",
+    "currentAccount": "Cuenta actual: {{name}}",
+    "confirmTitle": "Confirmar transferencia",
+    "confirmDescription": "Esto mueve la entidad de forma permanente a la cuenta seleccionada.",
+    "comingSoon": "Esta operación se está migrando al nuevo diseño.",
+    "hub": {
+      "title": "Transferir centro de innovación",
+      "description": "Mover un centro de innovación a otra cuenta."
+    },
+    "pack": {
+      "title": "Transferir paquete de innovación",
+      "description": "Mover un paquete de innovación a otra cuenta."
+    },
+    "vc": {
+      "title": "Transferir colaborador virtual",
+      "description": "Mover un colaborador virtual a otra cuenta."
+    },
+    "vcConversion": {
+      "title": "Convertir colaborador virtual",
+      "description": "Convertir un colaborador virtual basado en espacio a una base de conocimiento.",
+      "convert": "Convertir a base de conocimiento",
+      "confirmTitle": "Confirmar conversión",
+      "confirmDescription": "Esto convierte el colaborador virtual y no se puede deshacer.",
+      "notEligible": "Solo se pueden convertir los colaboradores virtuales basados en espacio que aún no se han convertido."
+    },
+    "spaceConversion": {
+      "title": "Convertir espacio"
+    },
+    "spaceTransfer": {
+      "title": "Transferir espacio"
+    },
+    "calloutTransfer": {
+      "title": "Transferir publicación"
+    }
+  }
+}

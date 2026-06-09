@@ -1,0 +1,152 @@
+{
+  "pageTitle": "Administration",
+  "sections": {
+    "spaces": "Spaces",
+    "users": "Users",
+    "organizations": "Organizations",
+    "innovation-packs": "Innovation Packs",
+    "innovation-hubs": "Innovation Hubs",
+    "virtual-contributors": "Virtual Contributors",
+    "authorization": "Authorization",
+    "authorization-policies": "Authorization Policies",
+    "transfer": "Conversions & Transfers"
+  },
+  "placeholder": {
+    "title": "Coming soon",
+    "description": "This administration section is being migrated to the new design."
+  },
+  "organizations": {
+    "verifiedHeader": "Verification",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "toggleVerification": "Toggle verification"
+  },
+  "table": {
+    "searchPlaceholder": "Search…",
+    "name": "Name",
+    "actions": "Actions",
+    "showing": "Showing {{count}} of {{total}}",
+    "loadMore": "Show more",
+    "empty": "No results found.",
+    "delete": "Delete",
+    "deleteTitle": "Delete {{name}}?",
+    "deleteDescription": "This action cannot be undone."
+  },
+  "columns": {
+    "listed": "Listed",
+    "notListed": "Not listed",
+    "public": "Public",
+    "internal": "Internal",
+    "listedHeader": "Listed in Store",
+    "visibilityHeader": "Search Visibility",
+    "ownerHeader": "Account Owner",
+    "spaceVisibility": "Visibility"
+  },
+  "licensePlans": {
+    "active": "Active",
+    "assign": "Assign",
+    "revoke": "Revoke",
+    "manage": "Manage license plans",
+    "empty": "No license plans available.",
+    "revokeTitle": "Revoke {{name}}?",
+    "revokeDescription": "This removes the plan from the account. You can re-assign it later."
+  },
+  "spaces": {
+    "visibilityActive": "Active",
+    "visibilityArchived": "Archived",
+    "visibilityDemo": "Demo",
+    "visibilityInactive": "Inactive",
+    "settingsTitle": "Space settings",
+    "settingsDescription": "Update the space alias and visibility.",
+    "aliasLabel": "Alias (name ID)",
+    "visibilityLabel": "Visibility",
+    "editSettings": "Edit space settings",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "roles": {
+    "GLOBAL_ADMIN": "Global Admin",
+    "GLOBAL_SUPPORT": "Global Support",
+    "GLOBAL_LICENSE_MANAGER": "Global License Manager",
+    "GLOBAL_COMMUNITY_READER": "Global Community Reader",
+    "GLOBAL_SPACES_READER": "Global Spaces Reader",
+    "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
+    "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
+    "PLATFORM_BETA_TESTER": "Platform Beta Tester",
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+  },
+  "roleMembers": {
+    "currentMembers": "Current members",
+    "addMembers": "Add members",
+    "searchPlaceholder": "Search users…",
+    "add": "Add",
+    "remove": "Remove",
+    "noMembers": "No members in this role.",
+    "noResults": "No users found.",
+    "loading": "Loading…",
+    "removeTitle": "Remove {{name}}?",
+    "removeDescription": "This revokes the role from this user.",
+    "roleLabel": "Role"
+  },
+  "authPolicies": {
+    "idLabel": "Authorization Policy ID",
+    "lookup": "Get Authorization Policy",
+    "notFound": "No policy found for that ID.",
+    "type": "Type",
+    "credentialRules": "Credential Rules",
+    "privilegeRules": "Privilege Rules",
+    "cascade": "Cascade",
+    "grantedPrivileges": "Granted Privileges",
+    "criteria": "Criteria",
+    "sourcePrivilege": "Source Privilege",
+    "true": "True",
+    "false": "False",
+    "userLookup": "User privileges",
+    "userSearchPlaceholder": "Search for a user or paste a user ID",
+    "privilegesForUser": "Privileges for {{name}}"
+  },
+  "transfer": {
+    "warning": "Danger: these operations are irreversible.",
+    "conversionsArea": "Conversions",
+    "transfersArea": "Transfers",
+    "urlLabel": "Source URL",
+    "resolve": "Resolve",
+    "targetAccount": "Target account",
+    "accountSearchPlaceholder": "Search users or organizations…",
+    "noAccounts": "No matching accounts.",
+    "transfer": "Transfer",
+    "currentAccount": "Current account: {{name}}",
+    "confirmTitle": "Confirm transfer",
+    "confirmDescription": "This permanently moves the entity to the selected account.",
+    "comingSoon": "This operation is being migrated to the new design.",
+    "hub": {
+      "title": "Transfer Innovation Hub",
+      "description": "Move an Innovation Hub to another account."
+    },
+    "pack": {
+      "title": "Transfer Innovation Pack",
+      "description": "Move an Innovation Pack to another account."
+    },
+    "vc": {
+      "title": "Transfer Virtual Contributor",
+      "description": "Move a Virtual Contributor to another account."
+    },
+    "vcConversion": {
+      "title": "Convert Virtual Contributor",
+      "description": "Convert a space-based Virtual Contributor to a knowledge base.",
+      "convert": "Convert to knowledge base",
+      "confirmTitle": "Confirm conversion",
+      "confirmDescription": "This converts the Virtual Contributor and cannot be undone.",
+      "notEligible": "Only space-based virtual contributors that are not already converted can be converted."
+    },
+    "spaceConversion": {
+      "title": "Convert Space"
+    },
+    "spaceTransfer": {
+      "title": "Transfer Space"
+    },
+    "calloutTransfer": {
+      "title": "Transfer Post"
+    }
+  }
+}

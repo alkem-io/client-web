@@ -26,10 +26,10 @@ description: "Task list for Global Administration in the CRD Design System"
 
 **Purpose**: Stand up the `crd-admin` i18n namespace and the section-descriptor config that everything references.
 
-- [ ] T001 [P] Create `crd-admin` i18n namespace files `src/crd/i18n/admin/admin.en.json` + `admin.nl.json` + `admin.es.json` + `admin.bg.json` + `admin.de.json` + `admin.fr.json` with initial shell/navigation keys (page title, 10 section labels, common table labels: search placeholder, "showing X of Y", empty-state, delete/confirm/cancel). Apply the do-not-translate glossary for `nl`.
-- [ ] T002 Register `'crd-admin'` in `crdNamespaceImports` in `src/core/i18n/config.ts` (all 6 languages, lazy-loaded).
-- [ ] T003 Register `'crd-admin'` resource types in `@types/i18next.d.ts`.
-- [ ] T004 [P] Create section descriptor list `src/main/crdPages/topLevelPages/admin/adminSections.ts` — the CRD twin of MUI `adminTabs` (`src/domain/platformAdmin/layout/toplevel/constants.ts`): same order and same URL paths (`/admin/spaces`, `/admin/users`, `/admin/organizations`, `/admin/innovation-packs`, `/admin/innovation-hubs`, `/admin/virtual-contributors`, `/admin/authorization`, `/admin/authorization-policies`, `/admin/transfer`, `/admin/layout`), with `lucide-react` icon equivalents and `crd-admin` label keys. **Use URL paths as source of truth** (enum values for VC/policies differ from segments).
+- [X] T001 [P] Create `crd-admin` i18n namespace files `src/crd/i18n/admin/admin.en.json` + `admin.nl.json` + `admin.es.json` + `admin.bg.json` + `admin.de.json` + `admin.fr.json` with initial shell/navigation keys (page title, 10 section labels, common table labels: search placeholder, "showing X of Y", empty-state, delete/confirm/cancel). Apply the do-not-translate glossary for `nl`.
+- [X] T002 Register `'crd-admin'` in `crdNamespaceImports` in `src/core/i18n/config.ts` (all 6 languages, lazy-loaded).
+- [X] T003 Register `'crd-admin'` resource types in `@types/i18next.d.ts`.
+- [X] T004 [P] Create section descriptor list `src/main/crdPages/topLevelPages/admin/adminSections.ts` — the CRD twin of MUI `adminTabs` (`src/domain/platformAdmin/layout/toplevel/constants.ts`): same order and same URL paths (`/admin/spaces`, `/admin/users`, `/admin/organizations`, `/admin/innovation-packs`, `/admin/innovation-hubs`, `/admin/virtual-contributors`, `/admin/authorization`, `/admin/authorization-policies`, `/admin/transfer`, `/admin/layout`), with `lucide-react` icon equivalents and `crd-admin` label keys. **Use URL paths as source of truth** (enum values for VC/policies differ from segments).
 
 **Checkpoint**: Namespace resolves and section descriptors compile.
 
@@ -43,20 +43,20 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Shell, gate, routing, toggle (blocks ALL stories)
 
-- [ ] T005 [P] Implement `AdminShell` in `src/crd/components/admin/AdminShell.tsx` per `contracts/admin-shell.contract.ts` — page-title header + horizontal section nav reusing `SettingsTabStrip` (`src/crd/components/contributor/settings/SettingsTabStrip.tsx`) + body slot. Pure, plain-TS props, WCAG 2.1 AA.
-- [ ] T006 [P] Implement `useAdminAccessGuard` in `src/main/crdPages/topLevelPages/admin/useAdminAccessGuard.ts` — reuse `usePlatformLevelAuthorizationQuery` + `AuthorizationPrivilege.PlatformAdmin`; deny → `/restricted` (parity with `src/main/admin/NonPlatformAdminRedirect.tsx`).
-- [ ] T007 Implement `CrdAdminShellPage` in `src/main/crdPages/topLevelPages/admin/CrdAdminShellPage.tsx` — apply access guard, derive `activeSection` from the URL, resolve translated section labels from `adminSections`, render `AdminShell` with an `<Outlet />` body; section change navigates via `@/main/routing/urlBuilders` (add an admin URL builder if none fits).
-- [ ] T008 Implement `CrdAdminRoutes` skeleton in `src/main/crdPages/topLevelPages/admin/CrdAdminRoutes.tsx` — nested route tree under `CrdAdminShellPage`, one route per section pointing (initially) at a placeholder, plus a default redirect to `/admin/spaces` matching MUI's index behavior.
-- [ ] T009 Wire the toggle in `src/main/routing/TopLevelRoutes.tsx` at the `/admin/*` route: `crdEnabled ? <CrdAdminRoutes/> : <PlatformAdminRoute/>`, CRD branch wrapped in `CrdLayoutWrapper` (CRD shell). Lazy-load `CrdAdminRoutes`. Leave the MUI `PlatformAdminRoute` branch untouched.
-- [ ] T010 [P] Add `lazyWithGlobalErrorHandler` import for `CrdAdminRoutes` alongside the existing `PlatformAdminRoute` import in `src/main/routing/TopLevelRoutes.tsx`.
-- [ ] T011 [P] Foundational tests in `src/crd/components/admin/__tests__/AdminShell.test.tsx` and `src/main/crdPages/topLevelPages/admin/__tests__/useAdminAccessGuard.test.ts` — shell renders all sections in MUI order, fires `onSectionChange`, a11y `role="tablist"`; guard denies non-admins, allows admins.
+- [X] T005 [P] Implement `AdminShell` in `src/crd/components/admin/AdminShell.tsx` per `contracts/admin-shell.contract.ts` — page-title header + horizontal section nav reusing `SettingsTabStrip` (`src/crd/components/contributor/settings/SettingsTabStrip.tsx`) + body slot. Pure, plain-TS props, WCAG 2.1 AA.
+- [X] T006 [P] Implement `useAdminAccessGuard` in `src/main/crdPages/topLevelPages/admin/useAdminAccessGuard.ts` — reuse `usePlatformLevelAuthorizationQuery` + `AuthorizationPrivilege.PlatformAdmin`; deny → `/restricted` (parity with `src/main/admin/NonPlatformAdminRedirect.tsx`).
+- [X] T007 Implement `CrdAdminShellPage` in `src/main/crdPages/topLevelPages/admin/CrdAdminShellPage.tsx` — apply access guard, derive `activeSection` from the URL, resolve translated section labels from `adminSections`, render `AdminShell` with an `<Outlet />` body; section change navigates via `@/main/routing/urlBuilders` (add an admin URL builder if none fits).
+- [X] T008 Implement `CrdAdminRoutes` skeleton in `src/main/crdPages/topLevelPages/admin/CrdAdminRoutes.tsx` — nested route tree under `CrdAdminShellPage`, one route per section pointing (initially) at a placeholder, plus a default redirect to `/admin/spaces` matching MUI's index behavior.
+- [X] T009 Wire the toggle in `src/main/routing/TopLevelRoutes.tsx` at the `/admin/*` route: `crdEnabled ? <CrdAdminRoutes/> : <PlatformAdminRoute/>`, CRD branch wrapped in `CrdLayoutWrapper` (CRD shell). Lazy-load `CrdAdminRoutes`. Leave the MUI `PlatformAdminRoute` branch untouched.
+- [X] T010 [P] Add `lazyWithGlobalErrorHandler` import for `CrdAdminRoutes` alongside the existing `PlatformAdminRoute` import in `src/main/routing/TopLevelRoutes.tsx`.
+- [X] T011 [P] Foundational tests in `src/crd/components/admin/__tests__/AdminShell.test.tsx` and `src/main/crdPages/topLevelPages/admin/__tests__/useAdminAccessGuard.test.ts` — shell renders all sections in MUI order, fires `onSectionChange`, a11y `role="tablist"`; guard denies non-admins, allows admins.
 
 ### Shared list/table/license-plan blocks (block US2–US6)
 
-- [ ] T012 [P] Implement generic `AdminSearchableTable` in `src/crd/components/admin/AdminSearchableTable.tsx` per `contracts/admin-searchable-table.contract.ts` — Name+link column, custom columns, row actions, `client`/`server` pagination modes, search field, empty state, and delete-via-`ConfirmationDialog` (`variant="destructive"`, `canDelete` gate). Pure CRD.
-- [ ] T013 [P] Implement reusable cell renderers in `src/crd/components/admin/columns/` (`ListedInStoreCell.tsx`, `SearchVisibilityCell.tsx`, `AccountOwnerCell.tsx`, `VisibilityChipCell.tsx`) using `Badge`/lucide icons — CRD twins of `AdminListItemLayout.tsx` columns.
-- [ ] T014 [P] Implement shared `ManageLicensePlans` view in `src/crd/components/admin/licensePlans/ManageLicensePlans.tsx` per `section-contracts.md` (available plans, active-plan table, assign/revoke callbacks, confirm on revoke). Pure CRD.
-- [ ] T015 [P] Tests for shared blocks: `src/crd/components/admin/__tests__/AdminSearchableTable.test.tsx` (search filters, client+server pagination boundaries, row action callbacks, delete shows confirm and only mutates on confirm, empty state) and `__tests__/ManageLicensePlans.test.tsx` (assign/revoke + confirm-on-revoke).
+- [X] T012 [P] Implement generic `AdminSearchableTable` in `src/crd/components/admin/AdminSearchableTable.tsx` per `contracts/admin-searchable-table.contract.ts` — Name+link column, custom columns, row actions, `client`/`server` pagination modes, search field, empty state, and delete-via-`ConfirmationDialog` (`variant="destructive"`, `canDelete` gate). Pure CRD.
+- [X] T013 [P] Implement reusable cell renderers in `src/crd/components/admin/columns/` (`ListedInStoreCell.tsx`, `SearchVisibilityCell.tsx`, `AccountOwnerCell.tsx`, `VisibilityChipCell.tsx`) using `Badge`/lucide icons — CRD twins of `AdminListItemLayout.tsx` columns.
+- [X] T014 [P] Implement shared `ManageLicensePlans` view in `src/crd/components/admin/licensePlans/ManageLicensePlans.tsx` per `section-contracts.md` (available plans, active-plan table, assign/revoke callbacks, confirm on revoke). Pure CRD.
+- [X] T015 [P] Tests for shared blocks: `src/crd/components/admin/__tests__/AdminSearchableTable.test.tsx` (search filters, client+server pagination boundaries, row action callbacks, delete shows confirm and only mutates on confirm, empty state) and `__tests__/ManageLicensePlans.test.tsx` (assign/revoke + confirm-on-revoke).
 
 **Checkpoint**: CRD admin loads behind the toggle with a working section nav and gate; shared table/license-plan blocks ready.
 
@@ -70,13 +70,13 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Create a reusable `AdminSectionPlaceholder` in `src/crd/components/admin/AdminSectionPlaceholder.tsx` (translated "coming soon" body) and wire it as the body for every not-yet-migrated section route in `CrdAdminRoutes.tsx`.
-- [ ] T017 [US1] Finalize section-change navigation + active-section derivation in `CrdAdminShellPage.tsx` so each `adminSections` entry maps URL ↔ active tab exactly (including the VC/policies path quirk), and the default `/admin` redirect matches MUI.
-- [ ] T018 [P] [US1] Add all US1 i18n keys (page title, 10 section labels, placeholder copy) to the 6 `src/crd/i18n/admin/admin.<lang>.json` files.
+- [X] T016 [P] [US1] Create a reusable `AdminSectionPlaceholder` in `src/crd/components/admin/AdminSectionPlaceholder.tsx` (translated "coming soon" body) and wire it as the body for every not-yet-migrated section route in `CrdAdminRoutes.tsx`.
+- [X] T017 [US1] Finalize section-change navigation + active-section derivation in `CrdAdminShellPage.tsx` so each `adminSections` entry maps URL ↔ active tab exactly (including the VC/policies path quirk), and the default `/admin` redirect matches MUI.
+- [X] T018 [P] [US1] Add all US1 i18n keys (page title, 10 section labels, placeholder copy) to the 6 `src/crd/i18n/admin/admin.<lang>.json` files.
 
 ### Tests for User Story 1
 
-- [ ] T019 [P] [US1] Navigation/gate parity tests in `src/main/crdPages/topLevelPages/admin/__tests__/CrdAdminShellPage.test.tsx` — renders inside CRD shell; section tabs list matches MUI order/paths; selecting a tab updates the URL; deep-link renders correct active section; non-admin redirected; (toggle-off path renders MUI admin, asserted at the `TopLevelRoutes` dispatch level).
+- [X] T019 [P] [US1] Navigation/gate parity tests in `src/main/crdPages/topLevelPages/admin/__tests__/CrdAdminShellPage.test.tsx` — renders inside CRD shell; section tabs list matches MUI order/paths; selecting a tab updates the URL; deep-link renders correct active section; non-admin redirected; (toggle-off path renders MUI admin, asserted at the `TopLevelRoutes` dispatch level).
 
 **Checkpoint**: US1 fully functional — CRD admin shell navigable and gated; MVP shippable behind the toggle.
 
@@ -90,11 +90,11 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create `users/userListMapper.ts` in `src/main/crdPages/topLevelPages/admin/users/` → `AdminUserRow[]` (incl. `canChangeEmail` from authorization), per data-model.md. No GraphQL types leak.
+- [X] T020 [P] [US2] Create `users/userListMapper.ts` in `src/main/crdPages/topLevelPages/admin/users/` → `AdminUserRow[]` (incl. `canChangeEmail` from authorization), per data-model.md. No GraphQL types leak.
 - [ ] T021 [P] [US2] Create `users/userDetailMapper.ts` + `users/emailHistoryMapper.ts` → `AdminUserDetail`, `EmailChangeHistoryItem[]`.
 - [ ] T022 [P] [US2] Build CRD presentational `UserEditForm` in `src/crd/components/admin/users/UserEditForm.tsx` (all fields per `data-model.md` `AdminUserDetail`: displayName/firstName/lastName/email, phone, city/country, tagline, linkedin/bsky/github, tags, references, avatar via FloatingField/tags-input/avatar), `ChangeEmailDialog` (`useDialogCloseGuard`), and `EmailChangeHistoryView` per `section-contracts.md`.
 - [ ] T022a [P] [US2] Render the user `bio` field via the CRD **markdown editor** in `UserEditForm.tsx` (markdown, 2000-char limit) — parity with MUI `FormikMarkdownField`; CRD CLAUDE.md rule #10.
-- [ ] T023 [US2] Implement `users/CrdAdminUsersPage.tsx` — reuse `usePlatformAdminUsersListQuery` (server mode), map, render `AdminSearchableTable<AdminUserRow>` with Email column + row actions (change-email when allowed, license-plans settings via `ManageLicensePlans`, open-detail link); delete via `useDeleteUserMutation` + `refetchPlatformAdminUsersListQuery`.
+- [X] T023 [US2] Implement `users/CrdAdminUsersPage.tsx` — reuse `usePlatformAdminUsersListQuery` (server mode), map, render `AdminSearchableTable<AdminUserRow>` with Email column + row actions (change-email when allowed, license-plans settings via `ManageLicensePlans`, open-detail link); delete via `useDeleteUserMutation` + `refetchPlatformAdminUsersListQuery`.
 - [ ] T024 [US2] Implement `users/CrdAdminUserPage.tsx` (detail/edit) — `useUserQuery` + `useUpdateUserMutation`, render `UserEditForm`; change-email via `useChangeUserEmailMutation`.
 - [ ] T024a [US2] Add a page-level unsaved-edits guard to `CrdAdminUserPage.tsx` (prompt on route navigation away with a dirty form) — reuse the dirty-guard pattern from space settings (`DirtyTabGuardContext`) or a React Router blocker; `DiscardChangesDialog` on confirm.
 - [ ] T025 [US2] Implement `users/CrdAdminUserEmailHistoryPage.tsx` — render `EmailChangeHistoryView`; resolve drift via `useResolveUserEmailDriftMutation`.
@@ -103,7 +103,7 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Tests for User Story 2
 
-- [ ] T028 [P] [US2] Page/parity tests in `users/__tests__/CrdAdminUsersPage.test.tsx` — list columns/search/server-pagination; delete confirm + refetch; change-email hidden for non-global-admin.
+- [X] T028 [P] [US2] Page/parity tests in `users/__tests__/CrdAdminUsersPage.test.tsx` — list columns/search/server-pagination; delete confirm + refetch; change-email hidden for non-global-admin.
 - [ ] T029 [P] [US2] Component tests in `src/crd/components/admin/users/__tests__/` — `UserEditForm` validation/submit; `ChangeEmailDialog` unsaved-guard; `EmailChangeHistoryView` outcome badges + resolve-drift callback.
 
 **Checkpoint**: Users section at full parity.
@@ -118,9 +118,9 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 3
 
-- [ ] T030 [P] [US3] Create `organizations/orgListMapper.ts` → `AdminOrganizationRow[]` and `organizations/orgFormMapper.ts` → `AdminOrganizationForm` / `OrganizationVerification`, per data-model.md.
+- [X] T030 [P] [US3] Create `organizations/orgListMapper.ts` → `AdminOrganizationRow[]` and `organizations/orgFormMapper.ts` → `AdminOrganizationForm` / `OrganizationVerification`, per data-model.md.
 - [ ] T031 [P] [US3] Build CRD `OrganizationForm` in `src/crd/components/admin/organizations/OrganizationForm.tsx` (all fields per `data-model.md` `AdminOrganizationForm`: nameID/displayName [create-only required], contactEmail/domain/legal/website, tagline, city/country, linkedin/bsky/github, references, tags; `mode: 'create' | 'edit'`) — render `description` through the CRD **markdown editor** (`MarkdownEditor`/`MarkdownContent`, per CRD CLAUDE.md rule #10 and `docs/crd/markdown-editor.md`), never a plain textarea — and `VerificationToggle.tsx` (exposes only `availableEvents`), per `section-contracts.md`.
-- [ ] T032 [US3] Implement `organizations/CrdAdminOrganizationsPage.tsx` — `usePlatformAdminOrganizationsListQuery` (server mode), `AdminSearchableTable<AdminOrganizationRow>` with row actions (license-plans settings, verification toggle via `useAdminOrganizationVerifyMutation`, open-edit link); delete via `useDeleteOrganizationMutation` + refetch.
+- [X] T032 [US3] Implement `organizations/CrdAdminOrganizationsPage.tsx` — `usePlatformAdminOrganizationsListQuery` (server mode), `AdminSearchableTable<AdminOrganizationRow>` with row actions (license-plans settings, verification toggle via `useAdminOrganizationVerifyMutation`, open-edit link); delete via `useDeleteOrganizationMutation` + refetch.
 - [ ] T033 [US3] Implement `organizations/CrdAdminOrganizationFormPage.tsx` (create + edit) — `useOrganizationProfileInfoQuery`, `useCreateOrganizationMutation` / `useUpdateOrganizationMutation`, `useCreateTagsetOnProfileMutation`; render `OrganizationForm`.
 - [ ] T033a [US3] Add the same page-level unsaved-edits guard (as T024a) to `CrdAdminOrganizationFormPage.tsx` — prompt on route navigation away with a dirty form; `DiscardChangesDialog` on confirm.
 - [ ] T034 [US3] Wire Organizations routes in `CrdAdminRoutes.tsx` (`/admin/organizations`, `/admin/organizations/new`, edit route), replacing the placeholder.
@@ -128,7 +128,7 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Tests for User Story 3
 
-- [ ] T036 [P] [US3] Page/parity tests in `organizations/__tests__/CrdAdminOrganizationsPage.test.tsx` — list/search/pagination; verification toggle transitions; delete confirm + refetch.
+- [X] T036 [P] [US3] Page/parity tests in `organizations/__tests__/CrdAdminOrganizationsPage.test.tsx` — list/search/pagination; verification toggle transitions; delete confirm + refetch.
 - [ ] T037 [P] [US3] Component tests in `src/crd/components/admin/organizations/__tests__/` — `OrganizationForm` create + edit validation/submit; `VerificationToggle` event gating.
 
 **Checkpoint**: Organizations section at full parity.
@@ -143,14 +143,14 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 4
 
-- [ ] T038 [P] [US4] Create `spaces/spaceListMapper.ts` → `AdminSpaceRow[]` (visibility, privacyMode, accountOwner, canUpdate), per data-model.md.
-- [ ] T039 [US4] Implement `spaces/CrdAdminSpacesPage.tsx` — `usePlatformAdminSpacesListQuery` (client "show more" mode), `AdminSearchableTable<AdminSpaceRow>` with `VisibilityChipCell` columns; Settings row action opens `ManageLicensePlans` (`usePlatformLicensingPlansQuery` + assign/revoke); delete via `useDeleteSpaceMutation` + `refetchPlatformAdminSpacesListQuery`, gated by `canDelete = row.canUpdate`.
-- [ ] T040 [US4] Wire Spaces route in `CrdAdminRoutes.tsx` (`/admin/spaces`), replacing the placeholder; confirm it is the default `/admin` index.
-- [ ] T041 [P] [US4] Add Spaces i18n keys to the 6 `admin.<lang>.json` files.
+- [X] T038 [P] [US4] Create `spaces/spaceListMapper.ts` → `AdminSpaceRow[]` (visibility, privacyMode, accountOwner, canUpdate), per data-model.md.
+- [X] T039 [US4] Implement `spaces/CrdAdminSpacesPage.tsx` — `usePlatformAdminSpacesListQuery` (client "show more" mode), `AdminSearchableTable<AdminSpaceRow>` with `VisibilityChipCell` columns; Settings row action opens `ManageLicensePlans` (`usePlatformLicensingPlansQuery` + assign/revoke); delete via `useDeleteSpaceMutation` + `refetchPlatformAdminSpacesListQuery`, gated by `canDelete = row.canUpdate`.
+- [X] T040 [US4] Wire Spaces route in `CrdAdminRoutes.tsx` (`/admin/spaces`), replacing the placeholder; confirm it is the default `/admin` index.
+- [X] T041 [P] [US4] Add Spaces i18n keys to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 4
 
-- [ ] T042 [P] [US4] Page/parity tests in `spaces/__tests__/CrdAdminSpacesPage.test.tsx` — columns/search/show-more pagination; license-plan assign/revoke; delete gated by `canUpdate` + confirm + refetch.
+- [X] T042 [P] [US4] Page/parity tests in `spaces/__tests__/CrdAdminSpacesPage.test.tsx` — columns/search/show-more pagination; license-plan assign/revoke; delete gated by `canUpdate` + confirm + refetch.
 
 **Checkpoint**: All P1 sections (Users, Organizations, Spaces) complete — primary admin value delivered.
 
@@ -164,15 +164,15 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 5
 
-- [ ] T043 [P] [US5] Create `authorization/roleMembersMapper.ts` → `RoleMembersViewModel` (members + available users), per data-model.md.
-- [ ] T044 [P] [US5] Build CRD `RoleMembersEditor` in `src/crd/components/admin/roles/RoleMembersEditor.tsx` (reuse `UserSelector`; remove via `ConfirmationDialog`) and `GlobalRolesNav.tsx` (role selector), per `section-contracts.md`.
-- [ ] T045 [US5] Implement `authorization/CrdAdminGlobalRolesPage.tsx` — `usePlatformRoleSetQuery` + `useRoleSetManager` + `useRoleSetAvailableUsers`; render `GlobalRolesNav` + `RoleMembersEditor`; add/remove via role-set manager.
-- [ ] T046 [US5] Wire Global Authorization routes in `CrdAdminRoutes.tsx` (`/admin/authorization`, `/admin/authorization/roles/:roleName`), replacing the placeholder.
-- [ ] T047 [P] [US5] Add Global Roles i18n keys (9 role labels + member-management copy) to the 6 `admin.<lang>.json` files.
+- [X] T043 [P] [US5] Create `authorization/roleMembersMapper.ts` → `RoleMembersViewModel` (members + available users), per data-model.md.
+- [X] T044 [P] [US5] Build CRD `RoleMembersEditor` in `src/crd/components/admin/roles/RoleMembersEditor.tsx` (reuse `UserSelector`; remove via `ConfirmationDialog`) and `GlobalRolesNav.tsx` (role selector), per `section-contracts.md`.
+- [X] T045 [US5] Implement `authorization/CrdAdminGlobalRolesPage.tsx` — `usePlatformRoleSetQuery` + `useRoleSetManager` + `useRoleSetAvailableUsers`; render `GlobalRolesNav` + `RoleMembersEditor`; add/remove via role-set manager.
+- [X] T046 [US5] Wire Global Authorization routes in `CrdAdminRoutes.tsx` (`/admin/authorization`, `/admin/authorization/roles/:roleName`), replacing the placeholder.
+- [X] T047 [P] [US5] Add Global Roles i18n keys (9 role labels + member-management copy) to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 5
 
-- [ ] T048 [P] [US5] Tests in `authorization/__tests__/CrdAdminGlobalRolesPage.test.tsx` + `src/crd/components/admin/roles/__tests__/RoleMembersEditor.test.tsx` — all 9 roles selectable; members listed; add/remove fires with confirm-on-remove.
+- [X] T048 [P] [US5] Tests in `authorization/__tests__/CrdAdminGlobalRolesPage.test.tsx` + `src/crd/components/admin/roles/__tests__/RoleMembersEditor.test.tsx` — all 9 roles selectable; members listed; add/remove fires with confirm-on-remove.
 
 **Checkpoint**: Global Roles section at full parity.
 
@@ -186,16 +186,16 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 6
 
-- [ ] T049 [P] [US6] Create shared `_shared/storeEntityMapper.ts` → `AdminStoreEntityRow[]` (listedInStore, searchVisibility, accountOwner) under `src/main/crdPages/topLevelPages/admin/`.
-- [ ] T050 [P] [US6] Implement `innovationPacks/CrdAdminInnovationPacksPage.tsx` — `usePlatformAdminInnovationPacksQuery` (client mode), `AdminSearchableTable<AdminStoreEntityRow>` with `ListedInStoreCell`/`SearchVisibilityCell`/`AccountOwnerCell`; delete via `useDeleteInnovationPackMutation` + refetch.
-- [ ] T051 [P] [US6] Implement `innovationHubs/CrdAdminInnovationHubsPage.tsx` — `usePlatformAdminInnovationHubsQuery`, same table; delete via `useDeleteInnovationHubMutation` + refetch.
-- [ ] T052 [P] [US6] Implement `virtualContributors/CrdAdminVirtualContributorsPage.tsx` — `usePlatformAdminVirtualContributorsListQuery`, same table, **no `onDelete`** (read-only).
-- [ ] T053 [US6] Wire the three routes in `CrdAdminRoutes.tsx` (`/admin/innovation-packs`, `/admin/innovation-hubs`, `/admin/virtual-contributors`), replacing placeholders.
-- [ ] T054 [P] [US6] Add Packs/Hubs/VCs i18n keys to the 6 `admin.<lang>.json` files.
+- [X] T049 [P] [US6] Create shared `_shared/storeEntityMapper.ts` → `AdminStoreEntityRow[]` (listedInStore, searchVisibility, accountOwner) under `src/main/crdPages/topLevelPages/admin/`.
+- [X] T050 [P] [US6] Implement `innovationPacks/CrdAdminInnovationPacksPage.tsx` — `usePlatformAdminInnovationPacksQuery` (client mode), `AdminSearchableTable<AdminStoreEntityRow>` with `ListedInStoreCell`/`SearchVisibilityCell`/`AccountOwnerCell`; delete via `useDeleteInnovationPackMutation` + refetch.
+- [X] T051 [P] [US6] Implement `innovationHubs/CrdAdminInnovationHubsPage.tsx` — `usePlatformAdminInnovationHubsQuery`, same table; delete via `useDeleteInnovationHubMutation` + refetch.
+- [X] T052 [P] [US6] Implement `virtualContributors/CrdAdminVirtualContributorsPage.tsx` — `usePlatformAdminVirtualContributorsListQuery`, same table, **no `onDelete`** (read-only).
+- [X] T053 [US6] Wire the three routes in `CrdAdminRoutes.tsx` (`/admin/innovation-packs`, `/admin/innovation-hubs`, `/admin/virtual-contributors`), replacing placeholders.
+- [X] T054 [P] [US6] Add Packs/Hubs/VCs i18n keys to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 6
 
-- [ ] T055 [P] [US6] Tests in `innovationPacks/__tests__/`, `innovationHubs/__tests__/`, `virtualContributors/__tests__/` — columns/search/show-more; row links; Packs/Hubs delete-with-confirm; VCs have no delete action.
+- [X] T055 [P] [US6] Tests in `innovationPacks/__tests__/`, `innovationHubs/__tests__/`, `virtualContributors/__tests__/` — columns/search/show-more; row links; Packs/Hubs delete-with-confirm; VCs have no delete action.
 
 **Checkpoint**: All P2 sections complete.
 
@@ -209,15 +209,15 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 7
 
-- [ ] T056 [P] [US7] Create `authorizationPolicies/policyMapper.ts` → `AuthorizationPolicyView` / `UserPrivilegesLookup`, per data-model.md.
-- [ ] T057 [P] [US7] Build CRD `AuthorizationPolicyLookup`, `AuthorizationPolicyRules`, `UserPrivilegesLookupView` in `src/crd/components/admin/authorizationPolicies/`, per `section-contracts.md`.
-- [ ] T058 [US7] Implement `authorizationPolicies/CrdAdminAuthorizationPoliciesPage.tsx` — `useAuthorizationPolicyQuery` (lookup by ID) + per-user privileges logic (parity with `AuthorizationPrivilegesForUser`); not-found feedback (FR-062).
-- [ ] T059 [US7] Wire route in `CrdAdminRoutes.tsx` (`/admin/authorization-policies`), replacing the placeholder.
-- [ ] T060 [P] [US7] Add Authorization Policies i18n keys to the 6 `admin.<lang>.json` files.
+- [X] T056 [P] [US7] Create `authorizationPolicies/policyMapper.ts` → `AuthorizationPolicyView` / `UserPrivilegesLookup`, per data-model.md.
+- [X] T057 [P] [US7] Build CRD `AuthorizationPolicyLookup`, `AuthorizationPolicyRules`, `UserPrivilegesLookupView` in `src/crd/components/admin/authorizationPolicies/`, per `section-contracts.md`.
+- [X] T058 [US7] Implement `authorizationPolicies/CrdAdminAuthorizationPoliciesPage.tsx` — `useAuthorizationPolicyQuery` (lookup by ID) + per-user privileges logic (parity with `AuthorizationPrivilegesForUser`); not-found feedback (FR-062).
+- [X] T059 [US7] Wire route in `CrdAdminRoutes.tsx` (`/admin/authorization-policies`), replacing the placeholder.
+- [X] T060 [P] [US7] Add Authorization Policies i18n keys to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 7
 
-- [ ] T061 [P] [US7] Tests in `authorizationPolicies/__tests__/CrdAdminAuthorizationPoliciesPage.test.tsx` — valid ID renders rules; user lookup shows privileges; invalid ID shows not-found.
+- [X] T061 [P] [US7] Tests in `authorizationPolicies/__tests__/CrdAdminAuthorizationPoliciesPage.test.tsx` — valid ID renders rules; user lookup shows privileges; invalid ID shows not-found.
 
 **Checkpoint**: Authorization Policies section at full parity.
 
@@ -231,17 +231,17 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 8
 
-- [ ] T062 [P] [US8] Build CRD `TransferSectionLayout` (warning banner) and `AccountPicker` (reuse `ContributorSelector`) in `src/crd/components/admin/transfer/`, per `section-contracts.md`.
+- [X] T062 [P] [US8] Build CRD `TransferSectionLayout` (warning banner) and `AccountPicker` (reuse `ContributorSelector`) in `src/crd/components/admin/transfer/`, per `section-contracts.md`.
 - [ ] T063 [P] [US8] Build CRD sub-form components for the 5 transfers + 2 conversions in `src/crd/components/admin/transfer/` per `section-contracts.md` §Transfer (conversions: single source `url`; Space/Callout transfers: source `url` + **target `url` text field**; Hub/Pack/VC transfers: source `url` + `AccountPicker`). Each: inputs + submit, all destructive → consumer wires `ConfirmationDialog`.
 - [ ] T064 [US8] Implement conversion connectors in `transfer/` — space conversion (`useSpaceConversion` → L1→L0 / L1→L2 [needs parent] / L2→L1) and VC conversion (`useVcConversion`), each behind `ConfirmationDialog`.
 - [ ] T065 [US8] Implement transfer connectors in `transfer/` — Hub/Pack/VC use `AccountPicker` + `useAccountSearch` + use{TransferInnovationHub,TransferInnovationPack,TransferVirtualContributor}ToAccountMutation; **Space and Callout use a target URL text field** (not the picker) + `useTransferSpaceToAccountMutation` / `useTransferCalloutMutation`. Each behind `ConfirmationDialog` (Callout shows the same 4 warnings as MUI).
-- [ ] T066 [US8] Implement `transfer/CrdAdminTransferPage.tsx` composing the warning banner + conversions area + transfers area (parity layout with MUI `TransferPage`).
-- [ ] T067 [US8] Wire route in `CrdAdminRoutes.tsx` (`/admin/transfer`), replacing the placeholder.
-- [ ] T068 [P] [US8] Add Transfer/Conversion i18n keys (incl. the warning copy) to the 6 `admin.<lang>.json` files.
+- [X] T066 [US8] Implement `transfer/CrdAdminTransferPage.tsx` composing the warning banner + conversions area + transfers area (parity layout with MUI `TransferPage`).
+- [X] T067 [US8] Wire route in `CrdAdminRoutes.tsx` (`/admin/transfer`), replacing the placeholder.
+- [X] T068 [P] [US8] Add Transfer/Conversion i18n keys (incl. the warning copy) to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 8
 
-- [ ] T069 [P] [US8] Tests in `transfer/__tests__/CrdAdminTransferPage.test.tsx` — warning present; each conversion + transfer requires confirm and only mutates on confirm; account picker behavior.
+- [X] T069 [P] [US8] Tests in `transfer/__tests__/CrdAdminTransferPage.test.tsx` — warning present; each conversion + transfer requires confirm and only mutates on confirm; account picker behavior.
 
 **Checkpoint**: Transfer & Conversions section at full parity.
 
@@ -255,12 +255,12 @@ description: "Task list for Global Administration in the CRD Design System"
 
 ### Implementation for User Story 9
 
-- [ ] T070 [P] [US9] Build CRD `AdminLayoutPlaceholder` in `src/crd/components/admin/AdminLayoutPlaceholder.tsx` (CRD twin of MUI `AdminLayoutPage` empty body).
-- [ ] T071 [US9] Implement `layout/CrdAdminLayoutPage.tsx` and wire the `/admin/layout` route in `CrdAdminRoutes.tsx`, replacing the generic placeholder; add any i18n key to the 6 `admin.<lang>.json` files.
+- [X] T070 [P] [US9] Build CRD `AdminLayoutPlaceholder` in `src/crd/components/admin/AdminLayoutPlaceholder.tsx` (CRD twin of MUI `AdminLayoutPage` empty body).
+- [X] T071 [US9] Implement `layout/CrdAdminLayoutPage.tsx` and wire the `/admin/layout` route in `CrdAdminRoutes.tsx`, replacing the generic placeholder; add any i18n key to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 9
 
-- [ ] T072 [P] [US9] Test in `layout/__tests__/CrdAdminLayoutPage.test.tsx` — renders without error; route resolves.
+- [X] T072 [P] [US9] Test in `layout/__tests__/CrdAdminLayoutPage.test.tsx` — renders without error; route resolves.
 
 **Checkpoint**: All 10 sections present — CRD admin is a one-to-one replacement of MUI admin.
 
@@ -270,12 +270,12 @@ description: "Task list for Global Administration in the CRD Design System"
 
 **Purpose**: Final parity verification, a11y, i18n completeness, and lint/test gates.
 
-- [ ] T073 [P] Audit all 6 `src/crd/i18n/admin/admin.<lang>.json` files for key parity (no missing keys, no hardcoded strings in any admin component) — SC-007.
-- [ ] T074 [P] Accessibility pass across all admin CRD components (icon-button `aria-label`, `focus-visible:ring`, semantic table/list markup, `role="tablist"`) — WCAG 2.1 AA.
-- [ ] T075 [P] Verify zero `@mui/*` / `@emotion/*` imports in `src/crd/components/admin/**` and `src/main/crdPages/topLevelPages/admin/**` — SC-008.
-- [ ] T076 Verify post-mutation refetch parity for every section (lists refresh after create/delete/assign/revoke/verify/transfer/convert) — FR-094 / SC-009.
-- [ ] T077 Confirm the MUI admin still renders unchanged for MUI-design-version users across all `/admin/*` routes (no regression) — SC-010.
-- [ ] T078 Run `pnpm lint` and `pnpm vitest run` (full suite green); then run `specs/105-crd-global-admin/quickstart.md` validation end-to-end on the CRD design version.
+- [X] T073 [P] Audit all 6 `src/crd/i18n/admin/admin.<lang>.json` files for key parity (no missing keys, no hardcoded strings in any admin component) — SC-007.
+- [X] T074 [P] Accessibility pass across all admin CRD components (icon-button `aria-label`, `focus-visible:ring`, semantic table/list markup, `role="tablist"`) — WCAG 2.1 AA.
+- [X] T075 [P] Verify zero `@mui/*` / `@emotion/*` imports in `src/crd/components/admin/**` and `src/main/crdPages/topLevelPages/admin/**` — SC-008.
+- [X] T076 Verify post-mutation refetch parity for every section (lists refresh after create/delete/assign/revoke/verify/transfer/convert) — FR-094 / SC-009.
+- [X] T077 Confirm the MUI admin still renders unchanged for MUI-design-version users across all `/admin/*` routes (no regression) — SC-010.
+- [X] T078 Run `pnpm lint` and `pnpm vitest run` (full suite green); then run `specs/105-crd-global-admin/quickstart.md` validation end-to-end on the CRD design version.
 
 ---
 

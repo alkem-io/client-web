@@ -39,6 +39,7 @@ export const usePlatformAdminOrganizationsList = () => {
 
   const pageInfo = data?.platformAdmin.organizations.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
+  const total = data?.platformAdmin.organizations.total;
 
   const fetchMore = async (itemsNumber = PAGE_SIZE) => {
     if (!data) {
@@ -189,6 +190,7 @@ export const usePlatformAdminOrganizationsList = () => {
     error,
     fetchMore,
     hasMore,
+    total,
     pageSize: PAGE_SIZE,
     firstPageSize: PAGE_SIZE,
   };
