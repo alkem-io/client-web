@@ -347,6 +347,7 @@ const CrdWhiteboardDialog = ({
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,
             isAuthenticated,
             contentUpdatePolicy: whiteboard.contentUpdatePolicy,
+            hasOwner: !!whiteboard.createdBy?.profile,
             myMembershipStatus: myMembershipStatus as CommunityMembershipStatus | undefined,
           });
 
