@@ -46,6 +46,11 @@
     "recurringMessage": "Sluit alle Alkemio tabbladen en laad opnieuw om bij te werken.",
     "reload": "Herlaad"
   },
+  "onlineStatus": {
+    "offline": "Je bent momenteel offline. Sla openstaand werk lokaal op, want niet-opgeslagen gegevens kunnen verloren gaan.",
+    "restored": "Je verbinding is hersteld.",
+    "close": "Sluiten"
+  },
   "cookieConsent": {
     "consent": "Door op \"Accepteer Alle Cookies\" te klikken, gaat u ermee akkoord dat er cookies op uw apparaat worden opgeslagen die bijdragen aan de website navigatie en het analyseren van website gebruik.",
     "settingsIntro": "Bij het bezoeken van een website kan informatie worden opgeslagen in uw browser in de vorm van cookies. Deze informatie kan over u, uw voorkeuren en uw apparaat gaan. Meestal wordt deze informatie gebruikt om de website zo goed mogelijk te laten werken. Sommige websites gebruiken de cookies ook voor marketingdoeleinden. Aangezien Alkemio geen advertenties toestaat op de website, maken wij slechts onderscheid tussen twee soorten cookies.",

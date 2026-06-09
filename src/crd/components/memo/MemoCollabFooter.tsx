@@ -1,6 +1,6 @@
 import { Globe, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { type ReactNode, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
@@ -12,6 +12,7 @@ export type ReadonlyReason =
   | 'notSynced'
   | 'unauthenticated'
   | 'contentUpdatePolicy'
+  | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
   | null;
 
@@ -31,6 +32,8 @@ type MemoCollabFooterProps = {
   connectedUsers?: ConnectedUser[];
   isGuest?: boolean;
   readonlyReason: ReadonlyReason;
+  /** The memo owner (`createdBy`), used to render an owner link in the policy-locked message. */
+  owner?: { name: string; url?: string };
   onDelete?: () => void;
   className?: string;
 };
@@ -45,6 +48,7 @@ export function MemoCollabFooter({
   connectedUsers = [],
   isGuest,
   readonlyReason,
+  owner,
   onDelete,
   className,
 }: MemoCollabFooterProps) {
@@ -72,7 +76,30 @@ export function MemoCollabFooter({
 
   const StatusIcon = connectionStatus === 'connected' ? Wifi : WifiOff;
 
-  const readonlyText = delayedReason ? t(`memo.footer.readonlyReason.${delayedReason}` as const) : undefined;
+  // The policy-locked message names the owner with a link to their profile (parity with the whiteboard
+  // footer). When the owner is gone the mapper returns `contentUpdatePolicyNoOwner` instead, so the
+  // owner link is never rendered empty. All other reasons are plain translated text.
+  const readonlyContent: ReactNode =
+    delayedReason === 'contentUpdatePolicy' ? (
+      // Always render through <Trans>: this key contains an <ownerlink> tag, so plain t() would print the
+      // raw markup. The owner is present whenever this reason is set (the mapper returns
+      // `contentUpdatePolicyNoOwner` otherwise), but the fields are guarded defensively.
+      <Trans
+        t={t}
+        i18nKey="memo.footer.readonlyReason.contentUpdatePolicy"
+        values={{ ownerName: owner?.name }}
+        components={{
+          ownerlink: owner?.url ? (
+            // biome-ignore lint/a11y/useAnchorContent: content is injected by <Trans /> at runtime
+            <a href={owner.url} className="underline text-primary hover:text-primary/80" />
+          ) : (
+            <span />
+          ),
+        }}
+      />
+    ) : delayedReason ? (
+      t(`memo.footer.readonlyReason.${delayedReason}` as const)
+    ) : undefined;
 
   return (
     <div
@@ -121,7 +148,7 @@ export function MemoCollabFooter({
             {t('memo.footer.delete')}
           </Button>
         )}
-        {readonlyText && <span className="text-caption text-muted-foreground">{readonlyText}</span>}
+        {readonlyContent && <span className="text-caption text-muted-foreground">{readonlyContent}</span>}
       </div>
 
       <div className="flex items-center gap-3">
