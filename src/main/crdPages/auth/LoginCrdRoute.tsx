@@ -21,6 +21,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
@@ -55,6 +56,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // render the form as normal (the flow id is opaque state Kratos owns).
   const returnUrlFromParam = params.get(PARAM_NAME_RETURN_URL) ?? undefined;
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const platformOrigin = usePlatformOrigin();
   const isOidcEntry = !flow;
 
   useLayoutEffect(() => {
@@ -72,8 +74,16 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         return raw.startsWith('/') ? raw : '/';
       }
     })();
-    window.location.replace(`${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
-  }, [isOidcEntry, returnUrlFromParam]);
+    // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
+    // This page also renders on the identity subdomain (its sign-up/recovery pages
+    // link back to /login); a relative replace there would land on
+    // identity.<domain>/api/auth/oidc/login, which is unrouted (Traefik sends it to
+    // the SPA catch-all → no OIDC flow). Always hand off to the apex origin
+    // absolutely. platformOrigin is the apex (`https://<locations.domain>`); falls
+    // back to relative when unknown (single-host dev). Mirrors `LoginPage`.
+    const base = platformOrigin ?? '';
+    window.location.replace(`${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+  }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
