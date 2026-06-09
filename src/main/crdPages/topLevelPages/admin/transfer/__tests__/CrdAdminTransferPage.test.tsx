@@ -60,6 +60,36 @@ vi.mock('@/domain/platformAdmin/management/transfer/transferVirtualContributor/u
 vi.mock('@/domain/platformAdmin/management/transfer/vcConversion/useVcConversion', () => ({
   default: () => vcConversionHook,
 }));
+const spaceTransferHook = {
+  space: undefined as unknown,
+  accountOwner: undefined as unknown,
+  spaceError: undefined,
+  ownerError: undefined,
+  spaceLoading: false,
+  ownerLoading: false,
+  transferLoading: false,
+  handleSpaceSubmit: vi.fn(),
+  handleAccountOwnerSubmit: vi.fn(),
+  handleTransfer: vi.fn(),
+};
+const calloutTransferHook = {
+  callout: undefined as unknown,
+  calloutsSetId: undefined as unknown,
+  calloutError: undefined,
+  spaceError: undefined,
+  calloutLoading: false,
+  spaceLoading: false,
+  transferLoading: false,
+  handleCalloutSubmit: vi.fn(),
+  handleSpaceSubmit: vi.fn(),
+  handleTransfer: vi.fn(),
+};
+vi.mock('@/domain/platformAdmin/management/transfer/transferSpace/useTransferSpace', () => ({
+  default: () => spaceTransferHook,
+}));
+vi.mock('@/domain/platformAdmin/management/transfer/transferCallout/useTransferCallout', () => ({
+  default: () => calloutTransferHook,
+}));
 vi.mock('@/domain/platformAdmin/management/transfer/shared/useAccountSearch', () => ({
   default: () => ({ searchTerm: '', results: [], loading: false, hasSearched: false, handleSearch: vi.fn() }),
 }));
@@ -70,6 +100,10 @@ beforeEach(() => {
   vcConversionHook.vc = undefined;
   vcConversionHook.isSpaceBased = false;
   vcConversionHook.isAlreadyConverted = false;
+  spaceTransferHook.space = undefined;
+  spaceTransferHook.accountOwner = undefined;
+  calloutTransferHook.callout = undefined;
+  calloutTransferHook.calloutsSetId = undefined;
 });
 
 describe('CrdAdminTransferPage', () => {
@@ -100,5 +134,25 @@ describe('CrdAdminTransferPage', () => {
     const dialog = screen.getByRole('alertdialog');
     await userEvent.click(within(dialog).getByRole('button', { name: 'transfer.vcConversion.convert' }));
     expect(vcConversionHook.handleConvert).toHaveBeenCalled();
+  });
+
+  test('space transfer resolves source + target and transfers after confirm', async () => {
+    spaceTransferHook.space = { id: 's1' };
+    spaceTransferHook.accountOwner = { name: 'Org A', accountId: 'a1' };
+    render(<CrdAdminTransferPage />);
+    const card = screen.getByText('transfer.spaceTransfer.title').closest('div')?.parentElement as HTMLElement;
+    const [sourceInput, targetInput] = within(card).getAllByRole('textbox');
+    await userEvent.type(sourceInput, 'https://x/space');
+    await userEvent.type(targetInput, 'https://x/org');
+    const resolveButtons = within(card).getAllByRole('button', { name: 'transfer.resolve' });
+    await userEvent.click(resolveButtons[0]);
+    await userEvent.click(resolveButtons[1]);
+    expect(spaceTransferHook.handleSpaceSubmit).toHaveBeenCalledWith('https://x/space');
+    expect(spaceTransferHook.handleAccountOwnerSubmit).toHaveBeenCalledWith('https://x/org');
+    // Both resolved → Transfer action enabled; confirm fires handleTransfer.
+    await userEvent.click(within(card).getByRole('button', { name: 'transfer.transfer' }));
+    const dialog = screen.getByRole('alertdialog');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'transfer.transfer' }));
+    expect(spaceTransferHook.handleTransfer).toHaveBeenCalled();
   });
 });

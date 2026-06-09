@@ -143,10 +143,59 @@
       "title": "Convertir l’espace"
     },
     "spaceTransfer": {
-      "title": "Transférer l’espace"
+      "title": "Transférer l’espace",
+      "sourceLabel": "URL de l’espace source (L0)",
+      "targetLabel": "URL du compte cible (utilisateur ou organisation)",
+      "description": "Déplacer un espace de premier niveau vers un autre compte.",
+      "confirmTitle": "Confirmer le transfert d’espace",
+      "confirmDescription": "Cela déplace définitivement l’espace et tout son contenu vers le compte cible."
     },
     "calloutTransfer": {
-      "title": "Transférer la publication"
+      "title": "Transférer la publication",
+      "sourceLabel": "URL de la publication source",
+      "targetLabel": "URL de l’espace cible",
+      "description": "Déplacer une publication vers un autre espace.",
+      "confirmTitle": "Confirmer le transfert de publication",
+      "confirmDescription": "Cela déplace la publication vers l’espace cible. Les contributeurs, liens et historique peuvent être affectés, et l’action est irréversible."
+    },
+    "resolved": "Résolu"
+  },
+  "users": {
+    "changeEmail": {
+      "action": "Changer l’e-mail",
+      "title": "Changer l’e-mail de connexion",
+      "currentEmail": "E-mail de connexion actuel",
+      "newEmail": "Nouvel e-mail de connexion",
+      "confirmEmail": "Confirmer le nouvel e-mail de connexion",
+      "approvalSection": "Motif et approbation",
+      "reason": "Motif du changement",
+      "reasonHelp": "Justification de ce changement, p. ex. une référence de ticket de support. Enregistrée dans la piste d’audit.",
+      "approverName": "Approuvé par",
+      "approverRole": "Rôle de l’approbateur",
+      "approverOrg": "Organisation de l’approbateur (facultatif)",
+      "mismatch": "Les adresses e-mail ne correspondent pas.",
+      "sessionWarning": "Il s’agit d’une modification administrative. Elle met fin aux sessions actives de l’utilisateur - il devra ensuite se connecter avec la nouvelle adresse e-mail.",
+      "submit": "Changer l’e-mail",
+      "cancel": "Annuler"
+    },
+    "history": {
+      "action": "Historique des changements d’e-mail",
+      "title": "Historique des changements d’e-mail — {{name}}",
+      "showing": "Affichage de {{count}} sur {{total}}",
+      "empty": "Aucun changement d’e-mail enregistré.",
+      "loadMore": "Afficher plus",
+      "initiator": "Initié par",
+      "reason": "Motif",
+      "approver": "Approbateur",
+      "failureReason": "Motif de l’échec",
+      "drift": {
+        "title": "Divergence d’e-mail détectée",
+        "description": "L’e-mail stocké et l’e-mail authentifié divergent. Choisissez l’adresse canonique à valider.",
+        "resolveAs": "Utiliser {{email}}",
+        "confirmTitle": "Résoudre la divergence d’e-mail",
+        "confirmDescription": "Valider {{email}} comme e-mail canonique pour cet utilisateur ?",
+        "resolve": "Résoudre"
+      }
     }
   }
 }

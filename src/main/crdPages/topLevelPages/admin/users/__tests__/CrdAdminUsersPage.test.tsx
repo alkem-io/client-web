@@ -29,6 +29,11 @@ vi.mock('@/domain/platformAdmin/domain/users/useAdminGlobalUserList', () => ({
   default: () => userListHookMock(),
 }));
 
+const changeEmailMock = vi.fn(() => Promise.resolve(true));
+vi.mock('@/domain/platformAdmin/domain/users/emailChange/useChangeUserEmail', () => ({
+  default: () => ({ changeEmail: changeEmailMock, loading: false, errorMessage: undefined, clearError: vi.fn() }),
+}));
+
 const baseHookReturn = {
   userList: [
     {
@@ -108,5 +113,26 @@ describe('CrdAdminUsersPage', () => {
     // Plus is inactive for Alice → the Assign button.
     await userEvent.click(within(dialog).getByRole('button', { name: 'licensePlans.assign' }));
     expect(assignLicensePlan).toHaveBeenCalledWith('a1', 'plus');
+  });
+
+  test('change-email action is shown for global admins and submits the mutation', async () => {
+    render(<CrdAdminUsersPage />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'users.changeEmail.action' })[0]); // Alice
+    const dialog = screen.getByRole('dialog');
+    await userEvent.type(within(dialog).getByLabelText('users.changeEmail.newEmail'), 'new@x.io');
+    await userEvent.type(within(dialog).getByLabelText('users.changeEmail.confirmEmail'), 'new@x.io');
+    await userEvent.type(within(dialog).getByLabelText('users.changeEmail.reason'), 'support request');
+    await userEvent.type(within(dialog).getByLabelText('users.changeEmail.approverName'), 'Admin');
+    await userEvent.type(within(dialog).getByLabelText('users.changeEmail.approverRole'), 'Ops');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'users.changeEmail.submit' }));
+    expect(changeEmailMock).toHaveBeenCalledWith(
+      expect.objectContaining({ newEmail: 'new@x.io', reason: 'support request' })
+    );
+  });
+
+  test('change-email action is hidden for non-global-admins', () => {
+    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: false });
+    render(<CrdAdminUsersPage />);
+    expect(screen.queryByRole('button', { name: 'users.changeEmail.action' })).toBeNull();
   });
 });

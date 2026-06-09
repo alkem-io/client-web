@@ -2,11 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { TransferOperationCard } from '@/crd/components/admin/transfer/TransferOperationCard';
 import { TransferGroup, TransferSectionLayout } from '@/crd/components/admin/transfer/TransferSectionLayout';
 import { UrlResolveField } from '@/crd/components/admin/transfer/UrlResolveField';
+import useTransferCallout from '@/domain/platformAdmin/management/transfer/transferCallout/useTransferCallout';
 import useTransferInnovationHub from '@/domain/platformAdmin/management/transfer/transferInnovationHub/useTransferInnovationHub';
 import useTransferInnovationPack from '@/domain/platformAdmin/management/transfer/transferInnovationPack/useTransferInnovationPack';
+import useTransferSpace from '@/domain/platformAdmin/management/transfer/transferSpace/useTransferSpace';
 import useTransferVirtualContributor from '@/domain/platformAdmin/management/transfer/transferVirtualContributor/useTransferVirtualContributor';
 import useVcConversion from '@/domain/platformAdmin/management/transfer/vcConversion/useVcConversion';
 import { AccountTargetTransfer } from './AccountTargetTransfer';
+import { TwoUrlTransfer } from './TwoUrlTransfer';
 
 const InnovationHubTransferPanel = () => {
   const { t } = useTranslation('crd-admin');
@@ -122,6 +125,97 @@ const VcConversionPanel = () => {
   );
 };
 
+const SpaceTransferPanel = () => {
+  const { t } = useTranslation('crd-admin');
+  const { t: tApp } = useTranslation();
+  const {
+    space,
+    accountOwner,
+    spaceError,
+    ownerError,
+    spaceLoading,
+    ownerLoading,
+    transferLoading,
+    handleSpaceSubmit,
+    handleAccountOwnerSubmit,
+    handleTransfer,
+  } = useTransferSpace();
+  return (
+    <TwoUrlTransfer
+      title={t('transfer.spaceTransfer.title')}
+      description={t('transfer.spaceTransfer.description')}
+      source={{
+        label: t('transfer.spaceTransfer.sourceLabel'),
+        error: spaceError ? tApp(spaceError) : undefined,
+        resolved: Boolean(space),
+        loading: spaceLoading,
+        onResolve: handleSpaceSubmit,
+      }}
+      target={{
+        label: t('transfer.spaceTransfer.targetLabel'),
+        error: ownerError ? tApp(ownerError) : undefined,
+        resolved: Boolean(accountOwner),
+        resolvedLabel: accountOwner?.name ?? undefined,
+        loading: ownerLoading,
+        onResolve: handleAccountOwnerSubmit,
+      }}
+      canTransfer={Boolean(space && accountOwner)}
+      transferLoading={transferLoading}
+      onTransfer={() => {
+        void handleTransfer();
+      }}
+      transferLabel={t('transfer.transfer')}
+      confirmTitle={t('transfer.spaceTransfer.confirmTitle')}
+      confirmDescription={t('transfer.spaceTransfer.confirmDescription')}
+    />
+  );
+};
+
+const CalloutTransferPanel = () => {
+  const { t } = useTranslation('crd-admin');
+  const { t: tApp } = useTranslation();
+  const {
+    callout,
+    calloutsSetId,
+    calloutError,
+    spaceError,
+    calloutLoading,
+    spaceLoading,
+    transferLoading,
+    handleCalloutSubmit,
+    handleSpaceSubmit,
+    handleTransfer,
+  } = useTransferCallout();
+  return (
+    <TwoUrlTransfer
+      title={t('transfer.calloutTransfer.title')}
+      description={t('transfer.calloutTransfer.description')}
+      source={{
+        label: t('transfer.calloutTransfer.sourceLabel'),
+        error: calloutError ? tApp(calloutError) : undefined,
+        resolved: Boolean(callout),
+        loading: calloutLoading,
+        onResolve: handleCalloutSubmit,
+      }}
+      target={{
+        label: t('transfer.calloutTransfer.targetLabel'),
+        error: spaceError ? tApp(spaceError) : undefined,
+        resolved: Boolean(calloutsSetId),
+        loading: spaceLoading,
+        onResolve: handleSpaceSubmit,
+      }}
+      canTransfer={Boolean(callout && calloutsSetId)}
+      transferLoading={transferLoading}
+      onTransfer={() => {
+        void handleTransfer();
+      }}
+      transferLabel={t('transfer.transfer')}
+      confirmTitle={t('transfer.calloutTransfer.confirmTitle')}
+      confirmDescription={t('transfer.calloutTransfer.confirmDescription')}
+    />
+  );
+};
+
 const ComingSoonPanel = ({ title }: { title: string }) => {
   const { t } = useTranslation('crd-admin');
   return <TransferOperationCard title={title} description={t('transfer.comingSoon')} />;
@@ -129,10 +223,10 @@ const ComingSoonPanel = ({ title }: { title: string }) => {
 
 /**
  * Transfer & Conversions admin section. Reuses the MUI-free transfer/conversion
- * hooks verbatim. Hub/Pack/Virtual-Contributor transfers and VC conversion are
- * live; Space conversion and Space/Callout transfers (the multi-step URL-pair
- * and level-conversion flows) are migrated in a follow-up and shown as
- * coming-soon panels so the section is complete and the warning is present.
+ * hooks verbatim. All transfers (Space, Innovation Hub/Pack, Virtual
+ * Contributor, Callout) and VC conversion are live; Space conversion (the
+ * multi-step level-conversion flow with move panels) is migrated in a follow-up
+ * and shown as a coming-soon panel.
  */
 const CrdAdminTransferPage = () => {
   const { t } = useTranslation('crd-admin');
@@ -144,11 +238,11 @@ const CrdAdminTransferPage = () => {
         <ComingSoonPanel title={t('transfer.spaceConversion.title')} />
       </TransferGroup>
       <TransferGroup title={t('transfer.transfersArea')}>
+        <SpaceTransferPanel />
         <InnovationHubTransferPanel />
         <InnovationPackTransferPanel />
         <VirtualContributorTransferPanel />
-        <ComingSoonPanel title={t('transfer.spaceTransfer.title')} />
-        <ComingSoonPanel title={t('transfer.calloutTransfer.title')} />
+        <CalloutTransferPanel />
       </TransferGroup>
     </TransferSectionLayout>
   );

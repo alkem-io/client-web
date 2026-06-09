@@ -143,10 +143,59 @@
       "title": "Space konvertieren"
     },
     "spaceTransfer": {
-      "title": "Space übertragen"
+      "title": "Space übertragen",
+      "sourceLabel": "Quell-Space-URL (L0)",
+      "targetLabel": "Zielkonto-URL (Benutzer oder Organisation)",
+      "description": "Einen Space der obersten Ebene in ein anderes Konto verschieben.",
+      "confirmTitle": "Space-Übertragung bestätigen",
+      "confirmDescription": "Dadurch werden der Space und alle seine Inhalte dauerhaft in das Zielkonto verschoben."
     },
     "calloutTransfer": {
-      "title": "Beitrag übertragen"
+      "title": "Beitrag übertragen",
+      "sourceLabel": "Quell-Beitrags-URL",
+      "targetLabel": "Ziel-Space-URL",
+      "description": "Einen Beitrag in einen anderen Space verschieben.",
+      "confirmTitle": "Beitragsübertragung bestätigen",
+      "confirmDescription": "Dadurch wird der Beitrag in den Ziel-Space verschoben. Mitwirkende, Links und Verlauf können betroffen sein, und die Aktion kann nicht rückgängig gemacht werden."
+    },
+    "resolved": "Aufgelöst"
+  },
+  "users": {
+    "changeEmail": {
+      "action": "E-Mail ändern",
+      "title": "Login-E-Mail ändern",
+      "currentEmail": "Aktuelle Login-E-Mail",
+      "newEmail": "Neue Login-E-Mail",
+      "confirmEmail": "Neue Login-E-Mail bestätigen",
+      "approvalSection": "Grund & Genehmigung",
+      "reason": "Grund für die Änderung",
+      "reasonHelp": "Begründung für diese Änderung, z. B. eine Support-Ticket-Referenz. Wird im Audit-Protokoll erfasst.",
+      "approverName": "Genehmigt von",
+      "approverRole": "Rolle des Genehmigers",
+      "approverOrg": "Organisation des Genehmigers (optional)",
+      "mismatch": "Die E-Mail-Adressen stimmen nicht überein.",
+      "sessionWarning": "Dies ist eine administrative Änderung. Sie beendet die aktiven Sitzungen des Benutzers - danach muss er sich mit der neuen E-Mail-Adresse anmelden.",
+      "submit": "E-Mail ändern",
+      "cancel": "Abbrechen"
+    },
+    "history": {
+      "action": "Verlauf der E-Mail-Änderungen",
+      "title": "Verlauf der E-Mail-Änderungen — {{name}}",
+      "showing": "{{count}} von {{total}} werden angezeigt",
+      "empty": "Keine E-Mail-Änderungen erfasst.",
+      "loadMore": "Mehr anzeigen",
+      "initiator": "Initiiert von",
+      "reason": "Grund",
+      "approver": "Genehmiger",
+      "failureReason": "Fehlergrund",
+      "drift": {
+        "title": "E-Mail-Abweichung erkannt",
+        "description": "Die gespeicherte und die authentifizierte E-Mail weichen voneinander ab. Wählen Sie die kanonische Adresse zum Festschreiben.",
+        "resolveAs": "{{email}} verwenden",
+        "confirmTitle": "E-Mail-Abweichung auflösen",
+        "confirmDescription": "{{email}} als kanonische E-Mail für diesen Benutzer festschreiben?",
+        "resolve": "Auflösen"
+      }
     }
   }
 }

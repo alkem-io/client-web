@@ -143,10 +143,59 @@
       "title": "Space converteren"
     },
     "spaceTransfer": {
-      "title": "Space overdragen"
+      "title": "Space overdragen",
+      "sourceLabel": "Bron-space-URL (L0)",
+      "targetLabel": "Doelaccount-URL (gebruiker of organisatie)",
+      "description": "Verplaats een space op het hoogste niveau naar een ander account.",
+      "confirmTitle": "Space-overdracht bevestigen",
+      "confirmDescription": "Hiermee worden de space en alle inhoud definitief naar het doelaccount verplaatst."
     },
     "calloutTransfer": {
-      "title": "Post overdragen"
+      "title": "Post overdragen",
+      "sourceLabel": "Bron-post-URL",
+      "targetLabel": "Doel-space-URL",
+      "description": "Verplaats een post naar een andere space.",
+      "confirmTitle": "Post-overdracht bevestigen",
+      "confirmDescription": "Hiermee wordt de post naar de doel-space verplaatst. Bijdragers, links en geschiedenis kunnen worden beïnvloed en deze actie kan niet ongedaan worden gemaakt."
+    },
+    "resolved": "Opgelost"
+  },
+  "users": {
+    "changeEmail": {
+      "action": "E-mail wijzigen",
+      "title": "Inlog-e-mail wijzigen",
+      "currentEmail": "Huidige inlog-e-mail",
+      "newEmail": "Nieuwe inlog-e-mail",
+      "confirmEmail": "Bevestig nieuwe inlog-e-mail",
+      "approvalSection": "Reden & goedkeuring",
+      "reason": "Reden voor wijziging",
+      "reasonHelp": "Onderbouwing voor deze wijziging, bijv. een referentie naar een supportticket. Vastgelegd in het auditspoor.",
+      "approverName": "Goedgekeurd door",
+      "approverRole": "Rol van goedkeurder",
+      "approverOrg": "Organisatie van goedkeurder (optioneel)",
+      "mismatch": "E-mailadressen komen niet overeen.",
+      "sessionWarning": "Dit is een administratieve wijziging. Hiermee worden de actieve sessies van de gebruiker beëindigd - daarna moeten ze inloggen met het nieuwe e-mailadres.",
+      "submit": "E-mail wijzigen",
+      "cancel": "Annuleren"
+    },
+    "history": {
+      "action": "Geschiedenis e-mailwijzigingen",
+      "title": "Geschiedenis e-mailwijzigingen — {{name}}",
+      "showing": "{{count}} van {{total}} weergegeven",
+      "empty": "Geen e-mailwijzigingen geregistreerd.",
+      "loadMore": "Meer tonen",
+      "initiator": "Gestart door",
+      "reason": "Reden",
+      "approver": "Goedkeurder",
+      "failureReason": "Reden van mislukking",
+      "drift": {
+        "title": "E-mailafwijking gedetecteerd",
+        "description": "Het opgeslagen e-mailadres en het geverifieerde e-mailadres lopen uiteen. Kies het canonieke adres om vast te leggen.",
+        "resolveAs": "Gebruik {{email}}",
+        "confirmTitle": "E-mailafwijking oplossen",
+        "confirmDescription": "{{email}} vastleggen als canoniek e-mailadres voor deze gebruiker?",
+        "resolve": "Oplossen"
+      }
     }
   }
 }

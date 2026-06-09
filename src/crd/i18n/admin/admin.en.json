@@ -143,10 +143,59 @@
       "title": "Convert Space"
     },
     "spaceTransfer": {
-      "title": "Transfer Space"
+      "title": "Transfer Space",
+      "sourceLabel": "Source space URL (L0)",
+      "targetLabel": "Target account URL (user or organization)",
+      "description": "Move a top-level space to another account.",
+      "confirmTitle": "Confirm space transfer",
+      "confirmDescription": "This permanently moves the space and all its content to the target account."
     },
     "calloutTransfer": {
-      "title": "Transfer Post"
+      "title": "Transfer Post",
+      "sourceLabel": "Source post URL",
+      "targetLabel": "Target space URL",
+      "description": "Move a post to another space.",
+      "confirmTitle": "Confirm post transfer",
+      "confirmDescription": "This moves the post to the target space. Contributors, links, and history may be affected, and the action cannot be undone."
+    },
+    "resolved": "Resolved"
+  },
+  "users": {
+    "changeEmail": {
+      "action": "Change email",
+      "title": "Change login email",
+      "currentEmail": "Current login email",
+      "newEmail": "New login email",
+      "confirmEmail": "Confirm new login email",
+      "approvalSection": "Reason & approval",
+      "reason": "Reason for change",
+      "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
+      "approverName": "Approved by",
+      "approverRole": "Approver's role",
+      "approverOrg": "Approver's organization (optional)",
+      "mismatch": "Email addresses do not match.",
+      "sessionWarning": "This is an administrative change. It ends the user's active sessions - they must sign in with the new email address afterwards.",
+      "submit": "Change email",
+      "cancel": "Cancel"
+    },
+    "history": {
+      "action": "Email change history",
+      "title": "Email change history — {{name}}",
+      "showing": "Showing {{count}} of {{total}}",
+      "empty": "No email changes recorded.",
+      "loadMore": "Show more",
+      "initiator": "Initiated by",
+      "reason": "Reason",
+      "approver": "Approver",
+      "failureReason": "Failure reason",
+      "drift": {
+        "title": "Email drift detected",
+        "description": "The stored email and the authenticated email diverge. Choose the canonical address to commit.",
+        "resolveAs": "Use {{email}}",
+        "confirmTitle": "Resolve email drift",
+        "confirmDescription": "Commit {{email}} as the canonical email for this user?",
+        "resolve": "Resolve"
+      }
     }
   }
 }

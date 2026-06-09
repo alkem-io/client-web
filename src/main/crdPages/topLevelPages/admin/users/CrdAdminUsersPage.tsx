@@ -1,4 +1,4 @@
-import { SlidersHorizontal } from 'lucide-react';
+import { History, Mail, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminSearchableTable } from '@/crd/components/admin/AdminSearchableTable';
@@ -6,15 +6,17 @@ import { AccountLicensePlansDialog } from '@/crd/components/admin/licensePlans/A
 import { Button } from '@/crd/primitives/button';
 import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import { useAdminAccessGuard } from '../useAdminAccessGuard';
+import { UserChangeEmailDialog } from './UserChangeEmailDialog';
+import { UserEmailHistoryDialog } from './UserEmailHistoryDialog';
 import { type AdminUserRow, mapUserToRow } from './userListMapper';
 
 /**
  * CRD global-admin Users list. Reuses the existing `useAdminGlobalUserList`
  * data hook verbatim (search, server pagination, delete, license-plan
  * assign/revoke) and renders it through the shared `AdminSearchableTable`.
- * The Name column mirrors MUI (`"<displayName> (<email>)"`); the only row
- * action wired here is license-plan management — change-email and the
- * detail/edit + history sub-pages are migrated in a follow-up.
+ * The Name column mirrors MUI (`"<displayName> (<email>)"`). Row actions:
+ * change-email (global-admin only) and license-plan management. The detail/edit
+ * + email-history sub-pages are migrated in a follow-up.
  */
 const CrdAdminUsersPage = () => {
   const { t } = useTranslation('crd-admin');
@@ -43,6 +45,12 @@ const CrdAdminUsersPage = () => {
   // current after an assign/revoke refetch.
   const licenseRow = licenseRowId ? (rows.find(row => row.id === licenseRowId) ?? null) : null;
 
+  const [emailRowId, setEmailRowId] = useState<string | null>(null);
+  const emailRow = emailRowId ? (rows.find(row => row.id === emailRowId) ?? null) : null;
+
+  const [historyRowId, setHistoryRowId] = useState<string | null>(null);
+  const historyRow = historyRowId ? (rows.find(row => row.id === historyRowId) ?? null) : null;
+
   return (
     <>
       <AdminSearchableTable<AdminUserRow>
@@ -60,16 +68,38 @@ const CrdAdminUsersPage = () => {
           void fetchMore();
         }}
         rowActions={row => (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={t('licensePlans.manage')}
-            disabled={!row.accountId}
-            onClick={() => setLicenseRowId(row.id)}
-          >
-            <SlidersHorizontal aria-hidden="true" className="size-4" />
-          </Button>
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t('users.history.action')}
+              onClick={() => setHistoryRowId(row.id)}
+            >
+              <History aria-hidden="true" className="size-4" />
+            </Button>
+            {row.canChangeEmail && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('users.changeEmail.action')}
+                onClick={() => setEmailRowId(row.id)}
+              >
+                <Mail aria-hidden="true" className="size-4" />
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t('licensePlans.manage')}
+              disabled={!row.accountId}
+              onClick={() => setLicenseRowId(row.id)}
+            >
+              <SlidersHorizontal aria-hidden="true" className="size-4" />
+            </Button>
+          </>
         )}
         onDelete={row => onDelete({ id: row.id, value: row.name, url: row.url })}
       />
@@ -89,6 +119,18 @@ const CrdAdminUsersPage = () => {
           if (licenseRow?.accountId) void revokeLicensePlan(licenseRow.accountId, planId);
         }}
       />
+
+      {emailRow && (
+        <UserChangeEmailDialog userId={emailRow.id} currentEmail={emailRow.email} onClose={() => setEmailRowId(null)} />
+      )}
+
+      {historyRow && (
+        <UserEmailHistoryDialog
+          userId={historyRow.id}
+          subjectName={historyRow.name}
+          onClose={() => setHistoryRowId(null)}
+        />
+      )}
     </>
   );
 };

@@ -143,10 +143,59 @@
       "title": "Convertir espacio"
     },
     "spaceTransfer": {
-      "title": "Transferir espacio"
+      "title": "Transferir espacio",
+      "sourceLabel": "URL del espacio de origen (L0)",
+      "targetLabel": "URL de la cuenta de destino (usuario u organización)",
+      "description": "Mover un espacio de nivel superior a otra cuenta.",
+      "confirmTitle": "Confirmar transferencia de espacio",
+      "confirmDescription": "Esto mueve permanentemente el espacio y todo su contenido a la cuenta de destino."
     },
     "calloutTransfer": {
-      "title": "Transferir publicación"
+      "title": "Transferir publicación",
+      "sourceLabel": "URL de la publicación de origen",
+      "targetLabel": "URL del espacio de destino",
+      "description": "Mover una publicación a otro espacio.",
+      "confirmTitle": "Confirmar transferencia de publicación",
+      "confirmDescription": "Esto mueve la publicación al espacio de destino. Los colaboradores, enlaces e historial pueden verse afectados y la acción no se puede deshacer."
+    },
+    "resolved": "Resuelto"
+  },
+  "users": {
+    "changeEmail": {
+      "action": "Cambiar correo",
+      "title": "Cambiar el correo de acceso",
+      "currentEmail": "Correo de acceso actual",
+      "newEmail": "Nuevo correo de acceso",
+      "confirmEmail": "Confirmar nuevo correo de acceso",
+      "approvalSection": "Motivo y aprobación",
+      "reason": "Motivo del cambio",
+      "reasonHelp": "Justificación de este cambio, p. ej. una referencia de ticket de soporte. Se registra en el historial de auditoría.",
+      "approverName": "Aprobado por",
+      "approverRole": "Rol del aprobador",
+      "approverOrg": "Organización del aprobador (opcional)",
+      "mismatch": "Los correos no coinciden.",
+      "sessionWarning": "Este es un cambio administrativo. Finaliza las sesiones activas del usuario; después deberá iniciar sesión con la nueva dirección de correo.",
+      "submit": "Cambiar correo",
+      "cancel": "Cancelar"
+    },
+    "history": {
+      "action": "Historial de cambios de correo",
+      "title": "Historial de cambios de correo — {{name}}",
+      "showing": "Mostrando {{count}} de {{total}}",
+      "empty": "No hay cambios de correo registrados.",
+      "loadMore": "Mostrar más",
+      "initiator": "Iniciado por",
+      "reason": "Motivo",
+      "approver": "Aprobador",
+      "failureReason": "Motivo del fallo",
+      "drift": {
+        "title": "Discrepancia de correo detectada",
+        "description": "El correo almacenado y el correo autenticado difieren. Elige la dirección canónica para confirmar.",
+        "resolveAs": "Usar {{email}}",
+        "confirmTitle": "Resolver discrepancia de correo",
+        "confirmDescription": "¿Confirmar {{email}} como el correo canónico de este usuario?",
+        "resolve": "Resolver"
+      }
     }
   }
 }
