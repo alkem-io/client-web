@@ -39,6 +39,7 @@ export function mapRoomToCommentData(
         name: message.sender?.profile?.displayName ?? 'Unknown',
         avatarUrl: message.sender?.profile?.avatar?.uri,
         profileUrl: message.sender?.profile?.url,
+        isVirtualContributor: message.sender?.__typename === 'VirtualContributor',
       },
       content: message.message,
       timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),

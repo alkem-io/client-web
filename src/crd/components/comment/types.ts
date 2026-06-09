@@ -3,6 +3,8 @@ export type CommentAuthor = {
   name: string;
   avatarUrl?: string;
   profileUrl?: string;
+  /** True when the author is a Virtual Contributor — drives the VC indicator badge. */
+  isVirtualContributor?: boolean;
 };
 
 export type CommentReactionSender = {

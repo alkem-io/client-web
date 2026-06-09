@@ -137,12 +137,12 @@
 
 **Independent test**: With CRD active, see the VC indicator on a comment authored by a VC, and confirm both VC notification types render in the CRD notifications panel.
 
-- [ ] T043 [US5] **(Constitution III — do first; confirmed needed)** The CRD comment author payload does **not** expose VC type (verified: `CommentItem`'s `comment.author` has only `name`/`avatarUrl`/`profileUrl`). Add a VC indicator field to the comment/message GraphQL fragment, run `pnpm codegen`, commit the generated outputs, and thread an `isVirtualContributor` flag onto the CRD comment author data shape and the mapper/connector that feeds `CommentItem`.
-- [ ] T044 [P] [US5] Add prop types `src/crd/components/common/VirtualContributorBadge.types.ts` from `contracts/vcBadge.ts`.
-- [ ] T045 [US5] Build `src/crd/components/common/VirtualContributorBadge.tsx` (shadcn Badge variant, VC `lucide-react` icon + localized label; "Virtual Contributor" stays English).
-- [ ] T046 [US5] Render `VirtualContributorBadge` in `src/crd/components/comment/CommentItem.tsx` next to the author name when `comment.author.isVirtualContributor` is true (the flag is supplied by T043). Add the prop to the `CommentItem` author type.
-- [ ] T047 [US5] Verify both VC in-app notification types (`VirtualAdminSpaceCommunityInvitation`, `SpaceAdminVirtualCommunityInvitationDeclined`) render correctly in the CRD `NotificationsPanel` via `src/main/ui/layout/notificationDataMapper.tsx` (interpolation values present); document the result. (No new per-type view needed.)
-- [ ] T048 [P] [US5] Add the badge label key to all 6 `src/crd/i18n/common/common.<lang>.json` (or `crd-community`) — English term preserved.
+- [X] T043 [US5] **(Constitution III)** ✅ No codegen needed after all — the sender `__typename` (`'VirtualContributor'`) is already present in `CommentsWithMessagesModel`. Added `isVirtualContributor?: boolean` to `CommentAuthor` (`src/crd/components/comment/types.ts`) and set it in `src/main/crdPages/space/dataMappers/commentDataMapper.ts` via `message.sender?.__typename === 'VirtualContributor'`.
+- [X] T044 [P] [US5] Add prop types `src/crd/components/common/VirtualContributorBadge.types.ts` from `contracts/vcBadge.ts`.
+- [X] T045 [US5] Build `src/crd/components/common/VirtualContributorBadge.tsx` (shadcn Badge variant, VC `lucide-react` icon + localized label; "Virtual Contributor" stays English).
+- [X] T046 [US5] Render `VirtualContributorBadge` in `src/crd/components/comment/CommentItem.tsx` next to the author name when `comment.author.isVirtualContributor` is true (the flag is supplied by T043). Add the prop to the `CommentItem` author type.
+- [X] T047 [US5] Verify both VC in-app notification types (`VirtualAdminSpaceCommunityInvitation`, `SpaceAdminVirtualCommunityInvitationDeclined`) render correctly in the CRD `NotificationsPanel` via `src/main/ui/layout/notificationDataMapper.tsx` (interpolation values present); document the result. (No new per-type view needed.)
+- [X] T048 [P] [US5] Add the badge label key to all 6 `src/crd/i18n/common/common.<lang>.json` (or `crd-community`) — English term preserved.
 
 **Checkpoint**: US5 independently shippable — VC indicator on CRD comments; notifications verified.
 
