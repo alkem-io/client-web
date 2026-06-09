@@ -70,6 +70,7 @@
 
 - [ ] T019 [P] [US1] Add `wizard.*` keys (steps, fields, paths, sub-dialogs, errors, success/cancel) to all 6 `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`.
 - [ ] T020 [P] [US1] Add `vcCreationWizardMapper.test.ts` next to the mapper (space/community/createdVc mapping + null safety).
+- [ ] T055 [US1] Add a behavioral test for the relocated wizard orchestration in `src/main/crdPages/topLevelPages/vcPages/creationWizard/__tests__/useVcCreationWizard.test.ts` (Constitution V — non-trivial logic): assert step transitions per path (written-knowledge / existing-space / external), cancel-discard leaves no partial VC, and the create payload is assembled correctly. Depends on T013. (Appended via analysis remediation — runs after T013, not parallel.)
 
 **Checkpoint**: US1 independently shippable — VC creation is fully CRD from all launch points.
 
@@ -136,10 +137,10 @@
 
 **Independent test**: With CRD active, see the VC indicator on a comment authored by a VC, and confirm both VC notification types render in the CRD notifications panel.
 
-- [ ] T043 [US5] **(Constitution III watch-item — do first)** Verify the CRD comment author payload exposes whether the author is a VC (`type`/`isVirtualContributor`). If missing, add the field to the comment/message GraphQL fragment, run `pnpm codegen`, and commit generated outputs.
+- [ ] T043 [US5] **(Constitution III — do first; confirmed needed)** The CRD comment author payload does **not** expose VC type (verified: `CommentItem`'s `comment.author` has only `name`/`avatarUrl`/`profileUrl`). Add a VC indicator field to the comment/message GraphQL fragment, run `pnpm codegen`, commit the generated outputs, and thread an `isVirtualContributor` flag onto the CRD comment author data shape and the mapper/connector that feeds `CommentItem`.
 - [ ] T044 [P] [US5] Add prop types `src/crd/components/common/VirtualContributorBadge.types.ts` from `contracts/vcBadge.ts`.
 - [ ] T045 [US5] Build `src/crd/components/common/VirtualContributorBadge.tsx` (shadcn Badge variant, VC `lucide-react` icon + localized label; "Virtual Contributor" stays English).
-- [ ] T046 [US5] Render the badge in `src/crd/components/comment/CommentItem.tsx` when the author is a VC; thread the `isVirtualContributor` flag through the comment data mapper/connector that feeds `CommentItem`.
+- [ ] T046 [US5] Render `VirtualContributorBadge` in `src/crd/components/comment/CommentItem.tsx` next to the author name when `comment.author.isVirtualContributor` is true (the flag is supplied by T043). Add the prop to the `CommentItem` author type.
 - [ ] T047 [US5] Verify both VC in-app notification types (`VirtualAdminSpaceCommunityInvitation`, `SpaceAdminVirtualCommunityInvitationDeclined`) render correctly in the CRD `NotificationsPanel` via `src/main/ui/layout/notificationDataMapper.tsx` (interpolation values present); document the result. (No new per-type view needed.)
 - [ ] T048 [P] [US5] Add the badge label key to all 6 `src/crd/i18n/common/common.<lang>.json` (or `crd-community`) — English term preserved.
 
@@ -168,7 +169,7 @@
 
 ### Within-story dependencies (typical)
 - `*.types.ts` (from contracts) → presentational component → mapper → data hook → integration page → routing wire. i18n + tests run parallel `[P]` once their sibling exists.
-- **US1**: T004→T005; T005 + steps/sub-dialogs T006–T011 → T013 (hook) → T014 (mapper) → T015 (page) → T016→T017→T018 (routing/launch). T012 is descoped.
+- **US1**: T004→T005; T005 + steps/sub-dialogs T006–T011 → T013 (hook) → T014 (mapper) → T015 (page) → T016→T017→T018 (routing/launch). T020 + T055 (tests) follow their targets (T014, T013). T012 is descoped.
 - **US2**: T021→T022; T024→T025→T026 (T026 repoints the route). 
 - **US3**: T029→T030→T031→T032→T033 (T034 retire check after wiring). 
 - **US4**: T036→T037; T038→T039→T040. 
