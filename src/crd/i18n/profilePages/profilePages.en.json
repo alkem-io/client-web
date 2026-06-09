@@ -174,5 +174,20 @@
       "heading": "Monitoring by Alkemio",
       "body": "Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a>Terms & Conditions</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "loading": "Loading knowledge base",
+    "refresh": "Refresh",
+    "lastUpdated": "Last updated:",
+    "never": "Never",
+    "empty": {
+      "title": "No knowledge yet",
+      "description": "This Virtual Contributor's knowledge base is empty."
+    },
+    "noAccess": {
+      "title": "No access",
+      "description": "You don't have access to this knowledge base."
+    }
   }
 }

@@ -174,5 +174,20 @@
       "heading": "Monitoring door Alkemio",
       "body": "Omdat Alkemio de interactie met de externe leverancier faciliteert, draagt Alkemio een operationele verantwoordelijkheid om de dienst te monitoren. Net als alle gegevens en interacties op het platform, vallen deze onder onze <a>Algemene voorwaarden</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Kennisbank",
+    "loading": "Kennisbank laden",
+    "refresh": "Vernieuwen",
+    "lastUpdated": "Laatst bijgewerkt:",
+    "never": "Nooit",
+    "empty": {
+      "title": "Nog geen kennis",
+      "description": "De kennisbank van deze Virtual Contributor is leeg."
+    },
+    "noAccess": {
+      "title": "Geen toegang",
+      "description": "Je hebt geen toegang tot deze kennisbank."
+    }
   }
 }

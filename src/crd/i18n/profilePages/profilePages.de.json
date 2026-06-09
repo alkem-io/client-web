@@ -174,5 +174,20 @@
       "heading": "Überwachung durch Alkemio",
       "body": "Da Alkemio die Interaktion mit dem externen Anbieter ermöglicht, trägt es eine operative Verantwortung für die Überwachung des Dienstes. Wie alle Daten und Interaktionen auf der Plattform unterliegen sie unseren <a>Allgemeinen Geschäftsbedingungen</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Wissensdatenbank",
+    "loading": "Wissensdatenbank wird geladen",
+    "refresh": "Aktualisieren",
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "never": "Nie",
+    "empty": {
+      "title": "Noch kein Wissen",
+      "description": "Die Wissensdatenbank dieses Virtual Contributors ist leer."
+    },
+    "noAccess": {
+      "title": "Kein Zugriff",
+      "description": "Du hast keinen Zugriff auf diese Wissensdatenbank."
+    }
   }
 }

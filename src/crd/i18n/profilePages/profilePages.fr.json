@@ -174,5 +174,20 @@
       "heading": "Supervision par Alkemio",
       "body": "Étant donné qu’Alkemio facilite l’interaction avec le fournisseur externe, elle assume une responsabilité opérationnelle de supervision du service. Comme toutes les données et interactions sur la plateforme, celles-ci sont régies par nos <a>Conditions générales</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Base de connaissances",
+    "loading": "Chargement de la base de connaissances",
+    "refresh": "Actualiser",
+    "lastUpdated": "Dernière mise à jour :",
+    "never": "Jamais",
+    "empty": {
+      "title": "Pas encore de connaissances",
+      "description": "La base de connaissances de ce Virtual Contributor est vide."
+    },
+    "noAccess": {
+      "title": "Aucun accès",
+      "description": "Vous n'avez pas accès à cette base de connaissances."
+    }
   }
 }
