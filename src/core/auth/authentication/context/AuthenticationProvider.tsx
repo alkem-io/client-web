@@ -24,6 +24,7 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
   // session agree. Kratos can survive an RP-side logout (multi-RP SSO is
   // intentional) so it cannot be the sole signal. The BFF OIDC session is the
   // authoritative gate for any call hitting /api/private/graphql.
+  window.alert(`kratosAuthenticated: ${kratosAuthenticated}, oidcActive: ${oidcActive}`);
   const isAuthenticated = kratosAuthenticated && oidcActive;
   const loading = kratosLoading || oidcLoading;
 
