@@ -1,4 +1,4 @@
-import { FileQuestion, MessagesSquare, Sparkles } from 'lucide-react';
+import { BookOpenText, MessagesSquare, Sparkles } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -29,7 +29,7 @@ function HelpDialog({
   const { t } = useTranslation('crd-help');
 
   const links = [
-    { href: docsHref, label: t('icons.exploreDocumentation'), Icon: FileQuestion },
+    { href: docsHref, label: t('icons.exploreDocumentation'), Icon: BookOpenText },
     { href: supportHref, label: t('icons.contactTheTeam'), Icon: MessagesSquare },
     { href: welcomeSpaceHref, label: t('icons.joinTheWelcomeSpace'), Icon: Sparkles },
   ];
