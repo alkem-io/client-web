@@ -47,6 +47,7 @@
     "readonlyReason": {
       "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
       "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
+      "contentUpdatePolicyNoOwner": "Je hebt geen rechten om dit whiteboard te bewerken. De eigenaar is niet meer beschikbaar — vraag een beheerder van de Space om de instellingen te wijzigen als je wilt bijdragen.",
       "noMembership": "Je moet lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
       "unauthenticated": "Je moet ingelogd en lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>"
     },
