@@ -10,7 +10,7 @@ import CrdAdminShellPage from './CrdAdminShellPage';
 
 const CrdAdminUsersPage = lazy(() => import('./users/CrdAdminUsersPage'));
 const CrdAdminSpacesPage = lazy(() => import('./spaces/CrdAdminSpacesPage'));
-const CrdAdminOrganizationsPage = lazy(() => import('./organizations/CrdAdminOrganizationsPage'));
+const CrdAdminOrganizationsRoutes = lazy(() => import('./organizations/CrdAdminOrganizationsRoutes'));
 const CrdAdminInnovationPacksPage = lazy(() => import('./innovationPacks/CrdAdminInnovationPacksPage'));
 const CrdAdminInnovationHubsPage = lazy(() => import('./innovationHubs/CrdAdminInnovationHubsPage'));
 const CrdAdminVirtualContributorsPage = lazy(() => import('./virtualContributors/CrdAdminVirtualContributorsPage'));
@@ -24,7 +24,7 @@ const CrdAdminTransferPage = lazy(() => import('./transfer/CrdAdminTransferPage'
 const SECTION_ELEMENTS: Partial<Record<AdminSectionId, ReactNode>> = {
   spaces: <CrdAdminSpacesPage />,
   users: <CrdAdminUsersPage />,
-  organizations: <CrdAdminOrganizationsPage />,
+  organizations: <CrdAdminOrganizationsRoutes />,
   'innovation-packs': <CrdAdminInnovationPacksPage />,
   'innovation-hubs': <CrdAdminInnovationHubsPage />,
   'virtual-contributors': <CrdAdminVirtualContributorsPage />,

@@ -119,17 +119,17 @@ description: "Task list for Global Administration in the CRD Design System"
 ### Implementation for User Story 3
 
 - [X] T030 [P] [US3] Create `organizations/orgListMapper.ts` → `AdminOrganizationRow[]` and `organizations/orgFormMapper.ts` → `AdminOrganizationForm` / `OrganizationVerification`, per data-model.md.
-- [ ] T031 [P] [US3] Build CRD `OrganizationForm` in `src/crd/components/admin/organizations/OrganizationForm.tsx` (all fields per `data-model.md` `AdminOrganizationForm`: nameID/displayName [create-only required], contactEmail/domain/legal/website, tagline, city/country, linkedin/bsky/github, references, tags; `mode: 'create' | 'edit'`) — render `description` through the CRD **markdown editor** (`MarkdownEditor`/`MarkdownContent`, per CRD CLAUDE.md rule #10 and `docs/crd/markdown-editor.md`), never a plain textarea — and `VerificationToggle.tsx` (exposes only `availableEvents`), per `section-contracts.md`.
+- [X] T031 [P] [US3] Build CRD `OrganizationForm` in `src/crd/components/admin/organizations/OrganizationForm.tsx` (all fields per `data-model.md` `AdminOrganizationForm`: nameID/displayName [create-only required], contactEmail/domain/legal/website, tagline, city/country, linkedin/bsky/github, references, tags; `mode: 'create' | 'edit'`) — render `description` through the CRD **markdown editor** (`MarkdownEditor`/`MarkdownContent`, per CRD CLAUDE.md rule #10 and `docs/crd/markdown-editor.md`), never a plain textarea — and `VerificationToggle.tsx` (exposes only `availableEvents`), per `section-contracts.md`.
 - [X] T032 [US3] Implement `organizations/CrdAdminOrganizationsPage.tsx` — `usePlatformAdminOrganizationsListQuery` (server mode), `AdminSearchableTable<AdminOrganizationRow>` with row actions (license-plans settings, verification toggle via `useAdminOrganizationVerifyMutation`, open-edit link); delete via `useDeleteOrganizationMutation` + refetch.
-- [ ] T033 [US3] Implement `organizations/CrdAdminOrganizationFormPage.tsx` (create + edit) — `useOrganizationProfileInfoQuery`, `useCreateOrganizationMutation` / `useUpdateOrganizationMutation`, `useCreateTagsetOnProfileMutation`; render `OrganizationForm`.
-- [ ] T033a [US3] Add the same page-level unsaved-edits guard (as T024a) to `CrdAdminOrganizationFormPage.tsx` — prompt on route navigation away with a dirty form; `DiscardChangesDialog` on confirm.
-- [ ] T034 [US3] Wire Organizations routes in `CrdAdminRoutes.tsx` (`/admin/organizations`, `/admin/organizations/new`, edit route), replacing the placeholder.
-- [ ] T035 [P] [US3] Add Organizations i18n keys to the 6 `admin.<lang>.json` files.
+- [X] T033 [US3] Implement `organizations/CrdAdminOrganizationFormPage.tsx` (create + edit) — `useOrganizationProfileInfoQuery`, `useCreateOrganizationMutation` / `useUpdateOrganizationMutation`, `useCreateTagsetOnProfileMutation`; render `OrganizationForm`.
+- [X] T033a [US3] Add the same page-level unsaved-edits guard (as T024a) to `CrdAdminOrganizationFormPage.tsx` — prompt on route navigation away with a dirty form; `DiscardChangesDialog` on confirm.
+- [X] T034 [US3] Wire Organizations routes in `CrdAdminRoutes.tsx` (`/admin/organizations`, `/admin/organizations/new`, edit route), replacing the placeholder.
+- [X] T035 [P] [US3] Add Organizations i18n keys to the 6 `admin.<lang>.json` files.
 
 ### Tests for User Story 3
 
 - [X] T036 [P] [US3] Page/parity tests in `organizations/__tests__/CrdAdminOrganizationsPage.test.tsx` — list/search/pagination; verification toggle transitions; delete confirm + refetch.
-- [ ] T037 [P] [US3] Component tests in `src/crd/components/admin/organizations/__tests__/` — `OrganizationForm` create + edit validation/submit; `VerificationToggle` event gating.
+- [X] T037 [P] [US3] Component tests in `src/crd/components/admin/organizations/__tests__/` — `OrganizationForm` create + edit validation/submit; `VerificationToggle` event gating.
 
 **Checkpoint**: Organizations section at full parity.
 

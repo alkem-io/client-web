@@ -19,7 +19,9 @@
     "verifiedHeader": "Verification",
     "verified": "Verified",
     "notVerified": "Not verified",
-    "toggleVerification": "Toggle verification"
+    "toggleVerification": "Toggle verification",
+    "new": "New organization",
+    "edit": "Edit organization"
   },
   "table": {
     "searchPlaceholder": "Search…",
@@ -197,5 +199,34 @@
         "resolve": "Resolve"
       }
     }
+  },
+  "orgForm": {
+    "createTitle": "New organization",
+    "editTitle": "Edit organization",
+    "identity": "Identity",
+    "nameID": "Alias (name ID)",
+    "displayName": "Display name",
+    "tagline": "Tagline",
+    "about": "About",
+    "description": "Description",
+    "location": "Location",
+    "city": "City",
+    "country": "Country",
+    "contactLegal": "Contact & legal",
+    "contactEmail": "Contact email",
+    "domain": "Domain",
+    "legalEntityName": "Legal entity name",
+    "website": "Website",
+    "references": "References",
+    "invalidEmail": "Enter a valid email address.",
+    "invalidUrl": "Enter a valid URL.",
+    "create": "Create organization",
+    "save": "Save",
+    "cancel": "Cancel",
+    "created": "Organization created.",
+    "updated": "Organization updated.",
+    "discardTitle": "Discard changes?",
+    "discardDescription": "You have unsaved changes. Leave without saving?",
+    "discard": "Discard"
   }
 }

@@ -80,7 +80,7 @@ export function ChangeUserEmailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg flex max-h-[90vh] flex-col overflow-hidden">
+        <DialogContent className="sm:max-w-lg flex max-h-[90vh] flex-col overflow-hidden" aria-describedby={undefined}>
           <DialogHeader className="shrink-0">
             <DialogTitle>{t('users.changeEmail.title')}</DialogTitle>
           </DialogHeader>

@@ -1,6 +1,7 @@
-import { BadgeCheck, SlidersHorizontal } from 'lucide-react';
+import { BadgeCheck, Pencil, Plus, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useNavigate from '@/core/routing/useNavigate';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { VisibilityChipCell } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { AccountLicensePlansDialog } from '@/crd/components/admin/licensePlans/AccountLicensePlansDialog';
@@ -11,10 +12,11 @@ import { type AdminOrganizationRow, mapOrganizationToRow } from './orgListMapper
 /**
  * CRD global-admin Organizations list. Reuses `usePlatformAdminOrganizationsList`
  * verbatim (search, server pagination, delete, verification toggle, license
- * assign/revoke). The organization create/edit form is migrated in a follow-up.
+ * assign/revoke). Create/edit open the dedicated organization form routes.
  */
 const CrdAdminOrganizationsPage = () => {
   const { t } = useTranslation('crd-admin');
+  const navigate = useNavigate();
   const {
     organizations,
     loading,
@@ -52,6 +54,13 @@ const CrdAdminOrganizationsPage = () => {
 
   return (
     <>
+      <div className="mb-4 flex justify-end">
+        <Button type="button" onClick={() => navigate('/admin/organizations/new')}>
+          <Plus aria-hidden="true" className="size-4" />
+          {t('organizations.new')}
+        </Button>
+      </div>
+
       <AdminSearchableTable<AdminOrganizationRow>
         rows={rows}
         columns={columns}
@@ -68,6 +77,15 @@ const CrdAdminOrganizationsPage = () => {
         }}
         rowActions={row => (
           <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t('organizations.edit')}
+              onClick={() => navigate(`/admin/organizations/${row.id}/edit`)}
+            >
+              <Pencil aria-hidden="true" className="size-4" />
+            </Button>
             <Button
               type="button"
               variant="ghost"

@@ -19,7 +19,9 @@
     "verifiedHeader": "Vérification",
     "verified": "Vérifiée",
     "notVerified": "Non vérifiée",
-    "toggleVerification": "Basculer la vérification"
+    "toggleVerification": "Basculer la vérification",
+    "new": "Nouvelle organisation",
+    "edit": "Modifier l’organisation"
   },
   "table": {
     "searchPlaceholder": "Rechercher…",
@@ -197,5 +199,34 @@
         "resolve": "Résoudre"
       }
     }
+  },
+  "orgForm": {
+    "createTitle": "Nouvelle organisation",
+    "editTitle": "Modifier l’organisation",
+    "identity": "Identité",
+    "nameID": "Alias (ID de nom)",
+    "displayName": "Nom d’affichage",
+    "tagline": "Slogan",
+    "about": "À propos",
+    "description": "Description",
+    "location": "Emplacement",
+    "city": "Ville",
+    "country": "Pays",
+    "contactLegal": "Contact et informations légales",
+    "contactEmail": "E-mail de contact",
+    "domain": "Domaine",
+    "legalEntityName": "Nom de l’entité juridique",
+    "website": "Site web",
+    "references": "Références",
+    "invalidEmail": "Saisissez une adresse e-mail valide.",
+    "invalidUrl": "Saisissez une URL valide.",
+    "create": "Créer l’organisation",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "created": "Organisation créée.",
+    "updated": "Organisation mise à jour.",
+    "discardTitle": "Abandonner les modifications ?",
+    "discardDescription": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?",
+    "discard": "Abandonner"
   }
 }

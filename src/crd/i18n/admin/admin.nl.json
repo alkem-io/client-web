@@ -19,7 +19,9 @@
     "verifiedHeader": "Verificatie",
     "verified": "Geverifieerd",
     "notVerified": "Niet geverifieerd",
-    "toggleVerification": "Verificatie wisselen"
+    "toggleVerification": "Verificatie wisselen",
+    "new": "Nieuwe organisatie",
+    "edit": "Organisatie bewerken"
   },
   "table": {
     "searchPlaceholder": "Zoeken…",
@@ -197,5 +199,34 @@
         "resolve": "Oplossen"
       }
     }
+  },
+  "orgForm": {
+    "createTitle": "Nieuwe organisatie",
+    "editTitle": "Organisatie bewerken",
+    "identity": "Identiteit",
+    "nameID": "Alias (naam-ID)",
+    "displayName": "Weergavenaam",
+    "tagline": "Slogan",
+    "about": "Over",
+    "description": "Beschrijving",
+    "location": "Locatie",
+    "city": "Plaats",
+    "country": "Land",
+    "contactLegal": "Contact & juridisch",
+    "contactEmail": "Contact-e-mail",
+    "domain": "Domein",
+    "legalEntityName": "Juridische entiteitsnaam",
+    "website": "Website",
+    "references": "Referenties",
+    "invalidEmail": "Voer een geldig e-mailadres in.",
+    "invalidUrl": "Voer een geldige URL in.",
+    "create": "Organisatie aanmaken",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "created": "Organisatie aangemaakt.",
+    "updated": "Organisatie bijgewerkt.",
+    "discardTitle": "Wijzigingen negeren?",
+    "discardDescription": "Je hebt niet-opgeslagen wijzigingen. Weggaan zonder op te slaan?",
+    "discard": "Negeren"
   }
 }

@@ -13,6 +13,9 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+const navigateMock = vi.fn();
+vi.mock('@/core/routing/useNavigate', () => ({ default: () => navigateMock }));
+
 const onDelete = vi.fn();
 const handleVerification = vi.fn();
 const fetchMore = vi.fn();
@@ -82,5 +85,17 @@ describe('CrdAdminOrganizationsPage', () => {
     const dialog = screen.getByRole('dialog');
     await userEvent.click(within(dialog).getByRole('button', { name: 'licensePlans.assign' }));
     expect(assignLicensePlan).toHaveBeenCalledWith('a1', 'plus');
+  });
+
+  test('"New organization" navigates to the create route', async () => {
+    render(<CrdAdminOrganizationsPage />);
+    await userEvent.click(screen.getByRole('button', { name: /organizations\.new/ }));
+    expect(navigateMock).toHaveBeenCalledWith('/admin/organizations/new');
+  });
+
+  test('edit row action navigates to the edit route', async () => {
+    render(<CrdAdminOrganizationsPage />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'organizations.edit' })[0]);
+    expect(navigateMock).toHaveBeenCalledWith('/admin/organizations/o1/edit');
   });
 });
