@@ -8,6 +8,7 @@ import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUr
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import Loading from '@/core/ui/loading/Loading';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import AuthenticationLayout from '../AuthenticationLayout';
@@ -50,6 +51,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
   const navigate = useNavigate();
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
+  const platformOrigin = usePlatformOrigin();
 
   const isOidcEntry = !flow;
 
@@ -71,8 +73,15 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         return raw.startsWith('/') ? raw : '/';
       }
     })();
-    window.location.replace(`${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
-  }, [isOidcEntry, returnUrlFromParam]);
+    // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
+    // This page also renders on the identity subdomain (where recovery/registration
+    // live and link back to /login via a relative path); a relative replace there
+    // would land on identity.<domain>/api/auth/oidc/login, which is unrouted (404).
+    // Always hand off to the apex origin absolutely. platformOrigin is the apex
+    // (`https://<locations.domain>`); falls back to relative when unknown (single-host dev).
+    const base = platformOrigin ?? '';
+    window.location.replace(`${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+  }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
 
   const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
 
