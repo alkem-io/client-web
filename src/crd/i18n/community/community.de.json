@@ -64,6 +64,12 @@
     "defaultWelcomeMessage": "Wir möchten Sie einladen, zu {{space}} beizutragen.",
     "addedNotice": "Virtueller Mitwirkender hinzugefügt.",
     "invitedNotice": "Einladung gesendet.",
-    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "previewAriaLabel": "Vorschau von {{name}}",
+    "preview": {
+      "tagsLabel": "Tags",
+      "hostedBy": "Bereitgestellt von {{name}}",
+      "noDescription": "Keine Beschreibung vorhanden."
+    }
   }
 }

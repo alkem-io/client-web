@@ -101,13 +101,13 @@
 
 **Independent test**: With CRD active, from a community surface open add-VC → search → preview → add/invite; confirm no legacy MUI VC dialog is reachable (SC-003).
 
-- [ ] T029 [P] [US3] Add preview prop types `src/crd/components/virtualContributor/community/VirtualContributorPreview.types.ts` from `contracts/addVcToCommunity.ts`.
-- [ ] T030 [US3] Build `src/crd/components/virtualContributor/community/VirtualContributorPreview.tsx` (avatar, tags, host card, description, Back + action button; loading state).
-- [ ] T031 [US3] Extend `src/crd/components/community/VirtualContributorInviteDialog.tsx` with the optional `previewSlot` + `onPreview` extension so selection routes through preview before add/invite (sticky-chrome on each view).
-- [ ] T032 [US3] Extend `src/main/crdPages/space/dialogs/VirtualContributorInviteConnector.tsx`: add preview data via `useVirtualContributorProviderLazyQuery`, map to `VcPreviewData`, manage preview view state (reuse `useCommunityAdmin`/`useVirtualContributorsAdmin`).
-- [ ] T033 [US3] Verify the add-VC flow is wired (it already is — `VirtualContributorInviteConnector` is mounted in `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` (`canInviteVc`/`handleInviteVc`, rendered ~L158) and `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`). Surface the new preview view at these existing trigger points; add other CRD community entry points only if found missing.
-- [ ] T034 [US3] Confirm the legacy MUI VC invite/browse dialogs (`InviteVCsDialog`, `InviteVirtualContributorDialog`, `PreviewContributorDialog`, browse-to-add `VirtualContributorsDialog`) are unreachable from CRD surfaces; document remaining MUI-only entry points (FR-004). (Display-only `VirtualContributorsBlock` is out of scope.)
-- [ ] T035 [P] [US3] Add add-VC/preview i18n keys to all 6 `src/crd/i18n/community/community.<lang>.json` (`crd-community`).
+- [X] T029 [P] [US3] Add preview prop types `src/crd/components/virtualContributor/community/VirtualContributorPreview.types.ts` from `contracts/addVcToCommunity.ts`.
+- [X] T030 [US3] Build `src/crd/components/virtualContributor/community/VirtualContributorPreview.tsx` (avatar, tags, host card, description, Back + action button; loading state).
+- [X] T031 [US3] Extend `src/crd/components/community/VirtualContributorInviteDialog.tsx` with the optional `previewSlot` + `onPreview` extension so selection routes through preview before add/invite (sticky-chrome on each view).
+- [X] T032 [US3] Extend `src/main/crdPages/space/dialogs/VirtualContributorInviteConnector.tsx`: add preview data via `useVirtualContributorProviderLazyQuery`, map to `VcPreviewData`, manage preview view state (reuse `useCommunityAdmin`/`useVirtualContributorsAdmin`).
+- [X] T033 [US3] Verify the add-VC flow is wired (it already is — `VirtualContributorInviteConnector` is mounted in `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` (`canInviteVc`/`handleInviteVc`, rendered ~L158) and `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`). Surface the new preview view at these existing trigger points; add other CRD community entry points only if found missing.
+- [X] T034 [US3] Confirm the legacy MUI VC invite/browse dialogs (`InviteVCsDialog`, `InviteVirtualContributorDialog`, `PreviewContributorDialog`, browse-to-add `VirtualContributorsDialog`) are unreachable from CRD surfaces; document remaining MUI-only entry points (FR-004). (Display-only `VirtualContributorsBlock` is out of scope.)
+- [X] T035 [P] [US3] Add add-VC/preview i18n keys to all 6 `src/crd/i18n/community/community.<lang>.json` (`crd-community`).
 
 **Checkpoint**: US3 independently shippable — add-VC is fully CRD with preview; legacy retired on CRD.
 
