@@ -16,6 +16,7 @@ export const useOidcSessionStatus = () => {
       try {
         const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
           credentials: 'include',
+          cache: 'no-store',
           headers: { Accept: 'application/json' },
         });
         if (!cancelled) {
@@ -30,7 +31,6 @@ export const useOidcSessionStatus = () => {
       } finally {
         if (!cancelled) {
           setLoading(false);
-          window.alert(`Finally: OIDC session response: ${false}`);
         }
       }
     })();

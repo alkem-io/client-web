@@ -23,6 +23,7 @@ export const useIdTokenHint = (): UseIdTokenHint => {
     try {
       const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
         credentials: 'include',
+        cache: 'no-store',
         headers: { Accept: 'application/json' },
       });
       if (!response.ok) {
