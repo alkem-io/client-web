@@ -26,7 +26,7 @@ import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingConte
 const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
 );
-const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
+const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/help/CrdHelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
 function CrdLayoutConnector({ children }: { children?: ReactNode }) {
