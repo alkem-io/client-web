@@ -1,5 +1,6 @@
 import type { Session } from '@ory/kratos-client';
 import React, { type PropsWithChildren } from 'react';
+import { useOidcSessionRecovery } from '../hooks/useOidcSessionRecovery';
 import { useOidcSessionStatus } from '../hooks/useOidcSessionStatus';
 import { useWhoami } from '../hooks/useWhoami';
 
@@ -26,6 +27,11 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
   // authoritative gate for any call hitting /api/private/graphql.
   const isAuthenticated = kratosAuthenticated && oidcActive;
   const loading = kratosLoading || oidcLoading;
+
+  // After a password change Kratos refreshes its SSO session but the BFF OIDC
+  // session is left stale, so the user looks logged out until they click "Log
+  // in" (which silently re-auths via Hydra). Do that handoff automatically.
+  useOidcSessionRecovery({ loading, kratosAuthenticated, oidcActive });
 
   return (
     <AuthenticationContext

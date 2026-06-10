@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { AUTH_LOGOUT_PATH, OIDC_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import {
+  AUTH_LOGOUT_PATH,
+  OIDC_LOGOUT_PATH,
+  OIDC_RECOVERY_ATTEMPTED_KEY,
+  OIDC_SESSION_SEEN_KEY,
+} from '@/core/auth/authentication/constants/authentication.constants';
 import { useIdTokenHint } from './useIdTokenHint';
 import { useKratosLogout } from './useKratosLogout';
 
@@ -26,6 +31,10 @@ export const useLogoutUrl = () => {
 
   const getLogoutUrl = async () => {
     setLoading(true);
+    // Disarm OIDC self-recovery so logging out is never silently undone by an
+    // automatic re-login; the next genuine login re-arms the "session seen" marker.
+    localStorage.removeItem(OIDC_SESSION_SEEN_KEY);
+    sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
     const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
     try {
       const idToken = await fetchIdTokenHint();

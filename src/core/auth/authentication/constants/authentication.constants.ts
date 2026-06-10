@@ -25,3 +25,15 @@ export const OIDC_BFF_BASE = '/api/auth/oidc';
 export const OIDC_LOGIN_PATH = `${OIDC_BFF_BASE}/login`;
 export const OIDC_LOGOUT_PATH = `${OIDC_BFF_BASE}/logout`;
 export const OIDC_ID_TOKEN_HINT_PATH = `${OIDC_BFF_BASE}/id-token-hint`;
+
+// Markers coordinating silent recovery of a dropped BFF OIDC session while the
+// Kratos SSO session is still alive (see useOidcSessionRecovery). Kept here
+// because both the recovery hook and the logout flow read/clear them.
+//
+// localStorage: a live BFF session has been observed in this browser at least
+// once — i.e. the user is a returning Alkemio user, not merely an anonymous
+// visitor carrying another RP's Kratos SSO cookie.
+export const OIDC_SESSION_SEEN_KEY = 'alkemio_oidc_session_seen';
+// sessionStorage: a silent recovery redirect has already been attempted in this
+// tab — loop guard so a BFF that refuses to mint a session can't trap the user.
+export const OIDC_RECOVERY_ATTEMPTED_KEY = 'alkemio_oidc_recovery_attempted';
