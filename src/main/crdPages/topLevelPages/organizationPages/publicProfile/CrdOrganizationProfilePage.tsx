@@ -148,6 +148,7 @@ export const CrdOrganizationProfilePage = () => {
           customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
           spacesLeading: t('orgProfile.sections.spacesLeading'),
           memberOf: t('orgProfile.sections.memberOf'),
+          emptyResourcesHosted: t('orgProfile.empty.resourcesHosted'),
           emptyLeading: t('orgProfile.empty.leading'),
           emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
           spacePrivacy: {

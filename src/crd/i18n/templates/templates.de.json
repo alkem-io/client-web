@@ -39,6 +39,7 @@
   "card": {
     "actions": "Vorlagen-Aktionen",
     "preview": "Vorschau",
+    "use": "Vorlage verwenden",
     "edit": "Bearbeiten",
     "duplicate": "Duplizieren",
     "delete": "Löschen",
@@ -88,6 +89,10 @@
       "phases": "Phasen",
       "starterCallouts": "Starter-Tools",
       "subspaceTemplates": "Vorlagen für Unterbereiche",
+      "includesSubspaces": "Diese Vorlage enthält auch diese Unterbereiche:",
+      "noCallouts": "Keine Tools in dieser Phase.",
+      "noDescription": "Keine Beschreibung",
+      "privateSubspace": "Privater Unterbereich",
       "none": "Keine"
     },
     "communityGuidelines": {
@@ -135,6 +140,7 @@
       "name": "Vorlagenname",
       "namePlaceholder": "z. B. Projekt-Kickoff",
       "nameRequired": "Ein Vorlagenname ist erforderlich.",
+      "descriptionRequired": "Eine Beschreibung ist erforderlich.",
       "description": "Beschreibung",
       "descriptionPlaceholder": "Wofür ist diese Vorlage?",
       "tags": "Tags",
@@ -162,6 +168,7 @@
       "sourceRequired": "Füge zuerst eine Bereichs-URL ein und klicke auf \"Diesen Bereich verwenden\".",
       "recursive": "Verschachtelte Unterbereiche einbeziehen",
       "capturedStructure": "Erfasste Struktur",
+      "alwaysIncluded": "Immer enthalten: Über-Informationen und Einstellungen",
       "urlLoader": {
         "description": "Füge die URL eines Bereichs oder Unterbereichs ein, dessen Struktur du kopieren möchtest.",
         "placeholder": "https://…",

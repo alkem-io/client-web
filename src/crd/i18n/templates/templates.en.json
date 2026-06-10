@@ -39,6 +39,7 @@
   "card": {
     "actions": "Template actions",
     "preview": "Preview",
+    "use": "Use template",
     "edit": "Edit",
     "duplicate": "Duplicate",
     "delete": "Delete",
@@ -88,6 +89,10 @@
       "phases": "Phases",
       "starterCallouts": "Starter tools",
       "subspaceTemplates": "Subspace templates",
+      "includesSubspaces": "This template also includes these subspaces:",
+      "noCallouts": "No tools in this phase.",
+      "noDescription": "No description",
+      "privateSubspace": "Private subspace",
       "none": "None"
     },
     "communityGuidelines": {
@@ -135,6 +140,7 @@
       "name": "Template name",
       "namePlaceholder": "e.g. Project kickoff",
       "nameRequired": "A template name is required.",
+      "descriptionRequired": "A description is required.",
       "description": "Description",
       "descriptionPlaceholder": "What is this template for?",
       "tags": "Tags",
@@ -162,6 +168,7 @@
       "sourceRequired": "Paste a space URL and click \"Use this space\" first.",
       "recursive": "Include nested subspaces",
       "capturedStructure": "Captured structure",
+      "alwaysIncluded": "Always included: About information & Settings",
       "urlLoader": {
         "description": "Paste the URL of a space or subspace whose structure you want to copy.",
         "placeholder": "https://…",

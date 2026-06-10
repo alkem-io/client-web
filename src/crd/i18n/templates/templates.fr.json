@@ -39,6 +39,7 @@
   "card": {
     "actions": "Actions du modèle",
     "preview": "Aperçu",
+    "use": "Utiliser le modèle",
     "edit": "Modifier",
     "duplicate": "Dupliquer",
     "delete": "Supprimer",
@@ -88,6 +89,10 @@
       "phases": "Phases",
       "starterCallouts": "Outils de démarrage",
       "subspaceTemplates": "Modèles de sous-espaces",
+      "includesSubspaces": "Ce modèle inclut également ces sous-espaces :",
+      "noCallouts": "Aucun outil dans cette phase.",
+      "noDescription": "Aucune description",
+      "privateSubspace": "Sous-espace privé",
       "none": "Aucun"
     },
     "communityGuidelines": {
@@ -135,6 +140,7 @@
       "name": "Nom du modèle",
       "namePlaceholder": "p. ex. Lancement de projet",
       "nameRequired": "Un nom de modèle est requis.",
+      "descriptionRequired": "Une description est requise.",
       "description": "Description",
       "descriptionPlaceholder": "À quoi sert ce modèle ?",
       "tags": "Étiquettes",
@@ -162,6 +168,7 @@
       "sourceRequired": "Collez d'abord une URL d'espace et cliquez sur \"Utiliser cet espace\".",
       "recursive": "Inclure les sous-espaces imbriqués",
       "capturedStructure": "Structure capturée",
+      "alwaysIncluded": "Toujours inclus : informations À propos et Paramètres",
       "urlLoader": {
         "description": "Collez l'URL d'un espace ou sous-espace dont vous voulez copier la structure.",
         "placeholder": "https://…",

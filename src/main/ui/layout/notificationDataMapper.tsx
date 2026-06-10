@@ -15,11 +15,16 @@
  */
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
-import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import {
+  type ForumDiscussionCategory,
+  NotificationEvent,
+  type NotificationEventInAppState,
+} from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 
@@ -91,11 +96,30 @@ function buildTranslationValues(
 }
 
 /**
+ * Notification types where the recipient is the invitee of a (sub)space community invitation.
+ * These must NOT link to the space's own page: an invited-but-not-yet-member can't open a subspace
+ * (the route falls back to the parent space with "Apply", which the user also isn't a member of).
+ * They link to the dashboard pending-invitations dialog instead, which accepts/declines from the
+ * user's own invitations query and needs no space access.
+ */
+const INVITATION_NOTIFICATION_TYPES = new Set<NotificationEvent>([
+  NotificationEvent.UserSpaceCommunityInvitation,
+  NotificationEvent.SpaceCommunityInvitationUserPlatform,
+]);
+
+/** Opens the pending-memberships dialog on the home page (`useDashboardDialogs` reads this param). */
+const INVITATIONS_DIALOG_URL = `${ROUTE_HOME}?dialog=invitations`;
+
+/**
  * Resolves the URL that clicking a notification should navigate to.
  * Returns a pathname (not an absolute URL) for React Router compatibility.
  */
 function resolveNotificationUrl(notification: InAppNotificationModel): string | undefined {
-  const { payload } = notification;
+  const { payload, type } = notification;
+
+  if (INVITATION_NOTIFICATION_TYPES.has(type)) {
+    return INVITATIONS_DIALOG_URL;
+  }
 
   return (
     payload.messageDetails?.parent?.url ??

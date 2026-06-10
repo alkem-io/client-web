@@ -47,6 +47,9 @@ export function CrdSpaceAbout({ open, onClose }: CrdSpaceAboutProps) {
     spaceId: space.id,
     spaceProfileUrl: profileUrl,
     communityName: space.about.profile.displayName,
+    // Joining from the About dialog closes it via the normal close path instead
+    // of letting the default navigate yank the open modal (which froze the page).
+    onJoined: onClose,
   });
 
   const guidelinesId = data?.lookup.space?.about.guidelines.id;

@@ -168,7 +168,11 @@ const WhiteboardDialogFooter = ({
           {readonlyReason && (
             <Caption>
               <Trans
-                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+                i18nKey={
+                  readonlyReason === ReadonlyReason.ContentUpdatePolicy && !createdBy?.profile
+                    ? 'pages.whiteboard.readonlyReason.contentUpdatePolicyNoOwner'
+                    : (`pages.whiteboard.readonlyReason.${readonlyReason}` as const)
+                }
                 values={{
                   spaceLevel: t(`common.space-level.${spaceLevel}`),
                   ownerName: createdBy?.profile?.displayName,

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -26,6 +26,7 @@ import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialo
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
@@ -43,6 +44,7 @@ import { useColumnMenu } from './layout/useColumnMenu';
 import { useLayoutTabData } from './layout/useLayoutTabData';
 import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
+import { useSubspaceDangerZone } from './settings/useSubspaceDangerZone';
 import { useStorageTabData } from './storage/useStorageTabData';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
@@ -116,12 +118,20 @@ export default function CrdSpaceSettingsPage() {
   // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
   // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache). Only needed on tabs whose
   // pickers / save-as flows consume `templatesSetId`.
-  const needsTemplatesSet = activeTab === 'community' || activeTab === 'layout' || activeTab === 'subspaces';
+  // The Settings tab needs the templates set too, but only on subspaces (L1/L2),
+  // where it drives the "Save as a template" section at the bottom of the tab.
+  const needsTemplatesSet =
+    activeTab === 'community' ||
+    activeTab === 'layout' ||
+    activeTab === 'subspaces' ||
+    (activeTab === 'settings' && level !== 'L0');
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId || !needsTemplatesSet,
   });
-  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const templatesSet = templatesManagerData?.lookup.space?.templatesManager?.templatesSet;
+  const templatesSetId = templatesSet?.id;
+  const canSaveAsTemplate = (templatesSet?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Create);
   const guidelinesTemplatePicker = useTemplatePicker({
     allowedTypes: ['communityGuidelines'],
     accountId,
@@ -178,7 +188,30 @@ export default function CrdSpaceSettingsPage() {
   const [vcExternalOpen, setVcExternalOpen] = useState(false);
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const { space: spaceContext } = useSpace();
+  const { subspace } = useSubSpace();
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
+
+  // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
+  // — these are not part of a top-level space's own settings (it templates / deletes its subspaces
+  // from the Subspaces and Account tabs instead). `useSpace()` always resolves the L0 space, so the
+  // delete redirects to the parent space's URL (matching the legacy MUI behaviour, incl. its known
+  // L2→L0 caveat).
+  const isSubspace = level !== 'L0';
+  const subspaceDanger = useSubspaceDangerZone({
+    spaceId,
+    parentUrl: spaceContext.about.profile.url ?? '',
+    enabled: activeTab === 'settings' && isSubspace,
+  });
+  const onSaveSubspaceAsTemplate =
+    isSubspace && canSaveAsTemplate
+      ? () =>
+          saveAs.openSaveAs({
+            kind: 'subspace',
+            subspaceId: spaceId,
+            name: subspace.about.profile.displayName,
+            description: subspace.about.profile.tagline,
+          })
+      : undefined;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
@@ -422,7 +455,7 @@ export default function CrdSpaceSettingsPage() {
                 organizations={community.organizations}
                 virtualContributors={community.virtualContributors}
                 applicationFormSlot={
-                  settingsTab.roleSetId ? (
+                  roleSetId ? (
                     <ApplicationFormEditor
                       description={applicationForm.description}
                       questions={applicationForm.questions}
@@ -545,6 +578,8 @@ export default function CrdSpaceSettingsPage() {
                 onMembershipPolicyChange={settingsTab.onMembershipPolicyChange}
                 onToggleAllowedAction={settingsTab.onToggleAllowedAction}
                 onHostOrgTrustChange={settingsTab.onHostOrgTrustChange}
+                onSaveAsTemplate={onSaveSubspaceAsTemplate}
+                onDeleteSpace={isSubspace && subspaceDanger.canDelete ? subspaceDanger.onDelete : undefined}
               />
             )}
             {activeTab === 'account' && isTabVisible('account') && (
@@ -853,6 +888,21 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('dirtyGuard.cancel')}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
+      />
+
+      {/* Subspace (L1/L2) delete confirmation — fired from the danger zone on the Settings tab. */}
+      <ConfirmationDialog
+        open={subspaceDanger.pendingDelete}
+        onOpenChange={open => {
+          if (!open) subspaceDanger.cancelDelete();
+        }}
+        variant="destructive"
+        title={t('settings.dangerZone.deleteDialog.title')}
+        description={t('settings.dangerZone.deleteDialog.description')}
+        confirmLabel={t('settings.dangerZone.deleteDialog.confirm')}
+        cancelLabel={t('dirtyGuard.cancel')}
+        onConfirm={subspaceDanger.confirmDelete}
+        onCancel={subspaceDanger.cancelDelete}
       />
 
       <ConfirmationDialog

@@ -1,5 +1,5 @@
 import { isBefore, startOfDay } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteEventConfirmation } from '@/crd/components/space/timeline/DeleteEventConfirmation';
 import { EventForm } from '@/crd/components/space/timeline/EventForm';
@@ -66,13 +66,16 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
 
   const [editingEventId, setEditingEventId] = useState<string | undefined>(undefined);
 
-  /** Force-open the dialog when the URL is anywhere in the calendar tree
-   *  (deep links). The page's local "open" state is the user-driven channel. */
-  useEffect(() => {
-    if (urlState.isAnyCalendarRoute && !open) {
-      onOpenChange(true);
-    }
-  }, [urlState.isAnyCalendarRoute, open, onOpenChange]);
+  // The dialog is open whenever the user opened it (local `open`) OR the URL is anywhere in
+  // the calendar tree (deep links + every in-dialog navigation, which always lands on a
+  // /calendar URL). Deriving it this way — rather than mirroring the URL into local state
+  // via an effect — is what makes a single close click work. On close we set `open` false
+  // AND navigate away; the three calendar URLs are separate routes whose elements remount
+  // the dashboard, so there are transient renders where `open` is already false but the URL
+  // hasn't left /calendar yet. An effect would re-open the dialog on those renders (the
+  // observed "back, back, close" bug); the OR keeps it open until the URL truly leaves the
+  // calendar, then closes it in one step.
+  const dialogOpen = open || urlState.isAnyCalendarRoute;
 
   const view: View = (() => {
     // Edit takes precedence over the URL-driven create/detail views; the
@@ -129,7 +132,7 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
 
   return (
     <TimelineDialog
-      open={open}
+      open={dialogOpen}
       onOpenChange={handleOpenChange}
       title={title}
       headerActions={headerActions}

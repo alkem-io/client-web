@@ -31,13 +31,13 @@ export function CreateInnovationPackDialog({
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && !creating && onClose()}>
-      <DialogContent className="w-full sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="w-full sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('createPack.title')}</DialogTitle>
         </DialogHeader>
 
         <form
-          className="space-y-4 py-2"
+          className="space-y-4 py-2 flex-1 min-h-0 overflow-y-auto"
           onSubmit={e => {
             e.preventDefault();
             if (!hasBlockingError) onCreate();
@@ -76,7 +76,7 @@ export function CreateInnovationPackDialog({
           <button type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />
         </form>
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button variant="outline" onClick={onClose} disabled={creating}>
             {t('createPack.cancel')}
           </Button>

@@ -19,6 +19,9 @@ import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import { FullscreenEditorProvider, useIsFullscreenEditorOpen } from '@/core/ui/fullscreen/FullscreenEditorContext';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
@@ -66,9 +69,16 @@ const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 function CrdGuidanceChatGate() {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
+  const { fullscreen } = useFullscreen();
+  const { isSmallScreen } = useScreenSize();
+  const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
   // MUI layouts already render PlatformHelpButton themselves; auth flows hide it entirely.
-  if (!crdEnabled || isAuthPage) return null;
+  // Also hide on mobile and in any immersive/fullscreen editor (whiteboard, memo, …) so the
+  // floating button never overlaps the editing surface.
+  if (!crdEnabled || isAuthPage || isSmallScreen || fullscreen || isFullscreenEditorOpen) {
+    return null;
+  }
   return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
 }
 
@@ -177,27 +187,29 @@ const Root: FC = () => {
                                   <InAppNotificationsProvider>
                                     <PushNotificationProvider>
                                       <UserMessagingProvider>
-                                        <NavigationHistoryTracker />
-                                        <ApmUserSetter />
-                                        <DesignVersionSyncMount />
-                                        <DesignVersionUpgradePromptMount />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <CrdGuidanceChatGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <Suspense fallback={null}>
-                                          <UserMessagingDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <Error40XBoundary
-                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                        >
-                                          <TopLevelRoutes />
+                                        <FullscreenEditorProvider>
+                                          <NavigationHistoryTracker />
+                                          <ApmUserSetter />
+                                          <DesignVersionSyncMount />
+                                          <DesignVersionUpgradePromptMount />
+                                          <ScrollToTop />
+                                          <NotificationsGate />
+                                          <CrdGuidanceChatGate />
+                                          <InAppNotificationCountSubscriber />
                                           <Suspense fallback={null}>
-                                            <GlobalErrorDialog />
+                                            <UserMessagingDialog />
                                           </Suspense>
-                                        </Error40XBoundary>
+                                          <VersionHandling />
+                                          <OnlineStatusNotification />
+                                          <Error40XBoundary
+                                            errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                          >
+                                            <TopLevelRoutes />
+                                            <Suspense fallback={null}>
+                                              <GlobalErrorDialog />
+                                            </Suspense>
+                                          </Error40XBoundary>
+                                        </FullscreenEditorProvider>
                                       </UserMessagingProvider>
                                     </PushNotificationProvider>
                                   </InAppNotificationsProvider>

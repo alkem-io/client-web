@@ -35,6 +35,7 @@ export type UserResourceSectionsProps = {
     customHomepagesSubsection: string;
     spacesLeading: string;
     memberOf: string;
+    emptyResourcesHosted: string;
     emptyLeading: string;
     emptyMembership: string;
     /** sr-only labels for the SpaceGridCard privacy chip (WCAG 2.1 AA). */
@@ -53,6 +54,20 @@ export function UserResourceSections({
   labels,
 }: UserResourceSectionsProps) {
   if (activeTab === 'resourcesHosted') {
+    const hasHostedResources =
+      hostedSpaces.length > 0 ||
+      hostedVirtualContributors.length > 0 ||
+      hostedInnovationPacks.length > 0 ||
+      hostedInnovationHubs.length > 0;
+
+    if (!hasHostedResources) {
+      return (
+        <section>
+          <p className="text-body text-muted-foreground">{labels.emptyResourcesHosted}</p>
+        </section>
+      );
+    }
+
     return (
       <div className="space-y-10">
         {hostedSpaces.length > 0 ? (

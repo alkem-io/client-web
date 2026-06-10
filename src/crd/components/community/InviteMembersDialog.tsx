@@ -1,4 +1,4 @@
-import { CheckCircle2, MailWarning, Send, UserMinus } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, MailWarning, Send, UserCheck, UserMinus } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import {
   ContributorSelector,
@@ -16,8 +16,17 @@ export type InviteRole = 'Member' | 'Lead' | 'Admin';
 
 export type InvitationResult = {
   invitee: ContributorSelectorInvitee;
-  outcome: 'sent' | 'alreadyMember' | 'error';
-  errorMessage?: string;
+  /**
+   * Each outcome's label is a complete, self-contained sentence (e.g.
+   * `parentNotAuthorized` explains the inviter lacks parent-invite rights), so
+   * the result row renders the label as-is — no extra message is appended.
+   *
+   * `alreadyInvited`, `alreadyMember` and `alreadyHasApplication` are
+   * informational (the invite simply wasn't needed/possible), not failures, so
+   * they render in a neutral tone. Only `parentNotAuthorized` and `error` are
+   * treated as failures.
+   */
+  outcome: 'sent' | 'alreadyInvited' | 'alreadyMember' | 'alreadyHasApplication' | 'parentNotAuthorized' | 'error';
 };
 
 export type InviteMembersDialogLabels = {
@@ -154,66 +163,71 @@ export function InviteMembersDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-2xl', className)} closeLabel={labels.closeAriaLabel}>
-        <DialogTitle>{labels.title}</DialogTitle>
+      <DialogContent
+        className={cn('sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden', className)}
+        closeLabel={labels.closeAriaLabel}
+      >
+        <DialogTitle className="shrink-0">{labels.title}</DialogTitle>
 
         {view === 'form' ? (
           <>
-            <DialogDescription>{labels.searchHint}</DialogDescription>
+            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+              <DialogDescription>{labels.searchHint}</DialogDescription>
 
-            <ContributorSelector
-              selectedContributors={selectedContributors}
-              searchResults={searchResults}
-              searchQuery={searchQuery}
-              onSearchChange={onSearchChange}
-              onSelectUser={onSelectUser}
-              onAddEmails={onAddEmails}
-              onRemoveContributor={onRemoveContributor}
-              loading={searchLoading}
-              hasMore={hasMoreSearchResults}
-              onLoadMore={onLoadMoreSearchResults}
-              allowEmailInvites={allowEmailInvites}
-              placeholder={labels.searchPlaceholder}
-              searchAriaLabel={labels.searchAriaLabel}
-              noResultsLabel={labels.noResultsLabel}
-              loadingLabel={labels.loadingLabel}
-              loadMoreLabel={labels.loadMoreLabel}
-              removeAriaLabel={labels.removeAriaLabel}
-              validationErrorLabel={labels.validationErrorLabel}
-            />
-
-            <div className="flex flex-col gap-2">
-              <label className="text-body-emphasis text-foreground" htmlFor="invite-members-welcome">
-                {labels.welcomeMessageLabel}
-              </label>
-              <Textarea
-                id="invite-members-welcome"
-                value={welcomeMessage}
-                onChange={e => onWelcomeMessageChange(e.target.value)}
-                placeholder={labels.welcomeMessagePlaceholder}
-                className="min-h-[6rem]"
-                aria-label={labels.welcomeMessageLabel}
-                disabled={sending}
+              <ContributorSelector
+                selectedContributors={selectedContributors}
+                searchResults={searchResults}
+                searchQuery={searchQuery}
+                onSearchChange={onSearchChange}
+                onSelectUser={onSelectUser}
+                onAddEmails={onAddEmails}
+                onRemoveContributor={onRemoveContributor}
+                loading={searchLoading}
+                hasMore={hasMoreSearchResults}
+                onLoadMore={onLoadMoreSearchResults}
+                allowEmailInvites={allowEmailInvites}
+                placeholder={labels.searchPlaceholder}
+                searchAriaLabel={labels.searchAriaLabel}
+                noResultsLabel={labels.noResultsLabel}
+                loadingLabel={labels.loadingLabel}
+                loadMoreLabel={labels.loadMoreLabel}
+                removeAriaLabel={labels.removeAriaLabel}
+                validationErrorLabel={labels.validationErrorLabel}
               />
+
+              <div className="flex flex-col gap-2">
+                <label className="text-body-emphasis text-foreground" htmlFor="invite-members-welcome">
+                  {labels.welcomeMessageLabel}
+                </label>
+                <Textarea
+                  id="invite-members-welcome"
+                  value={welcomeMessage}
+                  onChange={e => onWelcomeMessageChange(e.target.value)}
+                  placeholder={labels.welcomeMessagePlaceholder}
+                  className="min-h-[6rem]"
+                  aria-label={labels.welcomeMessageLabel}
+                  disabled={sending}
+                />
+              </div>
+
+              {errorSlot}
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
+                <RoleMultiSelect<InviteRole>
+                  value={extraRoles}
+                  onChange={onExtraRolesChange}
+                  lockedRoles={LOCKED_ROLES}
+                  optionalRoles={OPTIONAL_ROLES}
+                  roleLabels={labels.roleLabels}
+                  triggerLabel={labels.inviteToRoleLabel}
+                  triggerAriaLabel={labels.rolePopoverAriaLabel}
+                  helperText={labels.rolePopoverHelper}
+                />
+              </div>
             </div>
 
-            {errorSlot}
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-caption text-muted-foreground max-w-md">{labels.emailVisibilityNote}</p>
-              <RoleMultiSelect<InviteRole>
-                value={extraRoles}
-                onChange={onExtraRolesChange}
-                lockedRoles={LOCKED_ROLES}
-                optionalRoles={OPTIONAL_ROLES}
-                roleLabels={labels.roleLabels}
-                triggerLabel={labels.inviteToRoleLabel}
-                triggerAriaLabel={labels.rolePopoverAriaLabel}
-                helperText={labels.rolePopoverHelper}
-              />
-            </div>
-
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-2 shrink-0">
               <Button type="button" disabled={sendDisabled} aria-busy={sending} onClick={onSend} className="gap-2">
                 <Send className="size-4" aria-hidden="true" />
                 {sending ? labels.sendingButtonLabel : labels.sendButtonLabel}
@@ -255,10 +269,10 @@ function ResultView({
 }) {
   return (
     <>
-      <DialogDescription>
+      <DialogDescription className="shrink-0">
         {results.length} invitation{results.length === 1 ? '' : 's'} processed for {spaceName}.
       </DialogDescription>
-      <ul className="flex flex-col gap-2 max-h-[20rem] overflow-y-auto">
+      <ul className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
         {results.map((result, index) => (
           <ResultRow
             // biome-ignore lint/suspicious/noArrayIndexKey: results array is stable for the lifetime of the result view
@@ -268,7 +282,7 @@ function ResultView({
           />
         ))}
       </ul>
-      <div className="flex justify-end gap-2 pt-2">
+      <div className="flex justify-end gap-2 pt-2 shrink-0">
         <Button type="button" variant="outline" onClick={onBack}>
           {backLabel}
         </Button>
@@ -282,13 +296,21 @@ function ResultView({
 
 function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
   const labelText = result.invitee.kind === 'user' ? result.invitee.displayName : result.invitee.email;
-  const Icon = result.outcome === 'sent' ? CheckCircle2 : result.outcome === 'alreadyMember' ? UserMinus : MailWarning;
-  const tone =
+  const isNeutral =
+    result.outcome === 'alreadyInvited' ||
+    result.outcome === 'alreadyMember' ||
+    result.outcome === 'alreadyHasApplication';
+  const Icon =
     result.outcome === 'sent'
-      ? 'text-success'
+      ? CheckCircle2
       : result.outcome === 'alreadyMember'
-        ? 'text-muted-foreground'
-        : 'text-destructive';
+        ? UserCheck
+        : result.outcome === 'alreadyHasApplication'
+          ? ClipboardCheck
+          : result.outcome === 'alreadyInvited'
+            ? UserMinus
+            : MailWarning;
+  const tone = result.outcome === 'sent' ? 'text-success' : isNeutral ? 'text-muted-foreground' : 'text-destructive';
 
   return (
     <li className="flex items-center gap-3 p-3 rounded-md border border-border">
@@ -311,10 +333,7 @@ function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcome
         </p>
         <p className={cn('text-caption flex items-center gap-1', tone)}>
           <Icon className="size-3.5 shrink-0" aria-hidden="true" />
-          <span className="truncate">
-            {outcomeLabel}
-            {result.outcome === 'error' && result.errorMessage ? `: ${result.errorMessage}` : ''}
-          </span>
+          <span className="truncate">{outcomeLabel}</span>
         </p>
       </div>
     </li>

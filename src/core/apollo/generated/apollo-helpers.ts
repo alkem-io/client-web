@@ -4138,12 +4138,14 @@ export type RoleSetFieldPolicy = {
   virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoleSetInvitationResultKeySpecifier = (
+  | 'application'
   | 'invitation'
   | 'platformInvitation'
   | 'type'
   | RoleSetInvitationResultKeySpecifier
 )[];
 export type RoleSetInvitationResultFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

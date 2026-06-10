@@ -179,8 +179,6 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     }
     saveAs.openSaveAs({
       kind: 'callout',
-      name: callout.framing.profile.displayName,
-      description: callout.framing.profile.description ?? undefined,
       calloutBody: body,
     });
   };

@@ -10,8 +10,9 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
+import SwitchToNewDesignBanner from './SwitchToNewDesignBanner';
 
-const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CookieConsent'));
+const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
@@ -46,7 +47,12 @@ const App = () => {
         flexDirection="column"
         flexGrow={1}
       >
-        <Outlet />
+        {!crdEnabled && <SwitchToNewDesignBanner />}
+        {/* position: relative so the space layout's absolutely-positioned navigation bar
+            anchors below the banner instead of overlapping it at the viewport top. */}
+        <Box position="relative" display="flex" flexDirection="column" flexGrow={1}>
+          <Outlet />
+        </Box>
       </Box>
       {!cookies.accepted_cookies && (
         <Suspense fallback={null}>

@@ -26,12 +26,14 @@ import { SpaceTemplateForm } from '@/crd/components/templates/forms/SpaceTemplat
 import type {
   ReferenceRow,
   TemplateCommonValues,
+  TemplateContent,
   TemplateFormErrors,
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
@@ -46,6 +48,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
+import { mapSpaceContentFromSpace } from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -168,7 +171,13 @@ export type UseTemplateFormsResult = {
     values: TemplateFormValues,
     subEntityId?: string,
     tagsetId?: string,
-    cgContext?: { profileId: string; originalReferenceIds: string[] }
+    cgContext?: { profileId: string; originalReferenceIds: string[] },
+    /**
+     * Space-template only: the captured-structure preview, pre-mapped from the template's own
+     * `contentSpace`. Seeded directly (no live-space fetch) because a `contentSpace` id is not a
+     * real `Space` and can't be resolved via the `SpaceTemplateContent` query.
+     */
+    spacePreview?: Extract<TemplateContent, { type: 'space' }>
   ) => void;
   /**
    * Fire the create mutation directly for an arbitrary values object (used by duplicate / import-from-library).
@@ -249,6 +258,13 @@ export function useTemplateForms({
   const [spaceSourceResolving, setSpaceSourceResolving] = useState(false);
   const [spaceSourceDisplayName, setSpaceSourceDisplayName] = useState<string | undefined>(undefined);
   const [spaceSourceAvatarUrl, setSpaceSourceAvatarUrl] = useState<string | undefined>(undefined);
+  // Read-only preview of the structure that will be captured from the resolved source space
+  // (innovation-flow phases, starter callouts, nested subspaces) — mirrors the legacy MUI
+  // `TemplateContentSpacePreview`. Populated alongside displayName/avatar whenever a source is
+  // resolved (URL paste) or pre-filled (save-a-subspace-as-template).
+  const [spaceCapturedStructure, setSpaceCapturedStructure] = useState<
+    Extract<TemplateContent, { type: 'space' }> | undefined
+  >(undefined);
   // The Space template's `sourceSpaceId` at edit-open time — used on submit to decide whether to
   // re-capture content from a new source (`updateTemplateFromSpace`) or just update the profile.
   const [spaceSourceInitialSpaceId, setSpaceSourceInitialSpaceId] = useState<string | undefined>(undefined);
@@ -267,6 +283,11 @@ export function useTemplateForms({
   // Visual; without it the server stores updated content but the preview image stays stale.
   // Mirrors the live callout connector (`CalloutFormConnector` create/edit paths).
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
+  // Callout templates with media-gallery framing need a post-create upload step to re-store the
+  // source gallery's images against the freshly-created MediaGallery entity — the create mutation
+  // only stamps the framing type and returns the gallery id. Mirrors the live callout connector
+  // (`CalloutFormConnector` media-gallery post-create path).
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
@@ -303,6 +324,7 @@ export function useTemplateForms({
     setSpaceSourceResolving(false);
     setSpaceSourceDisplayName(undefined);
     setSpaceSourceAvatarUrl(undefined);
+    setSpaceCapturedStructure(undefined);
     setSpaceSourceInitialSpaceId(undefined);
   };
 
@@ -327,7 +349,8 @@ export function useTemplateForms({
     initial: TemplateFormValues,
     subEntityId?: string,
     tagsetId?: string,
-    cgContext?: { profileId: string; originalReferenceIds: string[] }
+    cgContext?: { profileId: string; originalReferenceIds: string[] },
+    spacePreview?: Extract<TemplateContent, { type: 'space' }>
   ) => {
     setIntent('edit');
     setEditTemplateId(templateId);
@@ -341,7 +364,13 @@ export function useTemplateForms({
     setPristine(true);
     setWhiteboardTemplatePreviewImages([]);
     resetSpaceSourceState();
-    if (initial.type === 'space') setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
+    if (initial.type === 'space') {
+      setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
+      // Seed the captured-structure preview from the template's own contentSpace — no live-space
+      // fetch (the back-fill effect only runs when `sourceSpaceId` is a real space, e.g. after the
+      // user re-selects a source via the URL picker).
+      if (spacePreview) setSpaceCapturedStructure(spacePreview);
+    }
     setOpen(true);
   };
   const openCreateCallout: UseTemplateFormsResult['openCreateCallout'] = prefill => {
@@ -432,6 +461,7 @@ export function useTemplateForms({
       }
       setSpaceSourceDisplayName(space?.about?.profile?.displayName);
       setSpaceSourceAvatarUrl(space?.about?.profile?.avatar?.uri);
+      setSpaceCapturedStructure(space ? mapSpaceContentFromSpace(space) : undefined);
       setValues(prev => (prev.type === 'space' ? { ...prev, sourceSpaceId: resolvedSpaceId } : prev));
       setPristine(false);
       setSpaceSourceUrl('');
@@ -440,8 +470,9 @@ export function useTemplateForms({
     }
   };
 
-  // Back-fill the displayName / avatarUrl of an already-resolved source space on edit-open
-  // (the create flow sets these directly in `onUseSpaceUrl`; edit re-opens without them).
+  // Back-fill the displayName / avatarUrl / captured-structure preview of an already-resolved source
+  // space when the dialog opens with a pre-set source — both on edit-open and on the "save a subspace
+  // as a template" create flow (the URL-paste flow sets these directly in `onUseSpaceUrl`).
   const editingSpaceSourceSpaceId = values.type === 'space' ? values.sourceSpaceId : undefined;
   useEffect(() => {
     if (!open) return;
@@ -454,6 +485,7 @@ export function useTemplateForms({
       if (!space) return;
       setSpaceSourceDisplayName(space.about?.profile?.displayName);
       setSpaceSourceAvatarUrl(space.about?.profile?.avatar?.uri);
+      setSpaceCapturedStructure(mapSpaceContentFromSpace(space));
     });
     return () => {
       cancelled = true;
@@ -481,6 +513,20 @@ export function useTemplateForms({
     const previewVisualId = whiteboard?.profile?.previewVisual?.id;
     if (!previewVisualId) return;
     await uploadWhiteboardVisuals(cv.whiteboardPreviewImages, { previewVisualId }, whiteboard?.nameID);
+  };
+
+  /**
+   * Post-create upload of a media-gallery callout's images onto the new template's MediaGallery.
+   * The create mutation only sets the framing type and returns the gallery id — the visuals must be
+   * re-stored separately. `reuploadVisuals` makes the helper fetch each source visual by `uri` and
+   * recreate it on the template gallery (the form values carry `id`/`uri` but no `File`). Mirrors the
+   * live callout connector. No-op when the framing isn't a media gallery, there are no visuals, or
+   * the response didn't surface a gallery id.
+   */
+  const uploadCalloutMediaGallery = async (cv: CalloutFormValues, mediaGalleryId: string | undefined) => {
+    if (cv.framingChip !== 'image') return;
+    if (!mediaGalleryId || cv.mediaGalleryVisuals.length === 0) return;
+    await uploadMediaGalleryVisuals({ mediaGalleryId, visuals: cv.mediaGalleryVisuals, reuploadVisuals: true });
   };
 
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
@@ -549,10 +595,25 @@ export function useTemplateForms({
         const result = await createTemplate({
           variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
         });
-        await uploadCalloutWhiteboardPreview(
-          calloutForm.values,
-          result.data?.createTemplate?.callout?.framing?.whiteboard
-        );
+        // Best-effort post-create uploads: the template already exists, so an upload failure must not
+        // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
+        // copy path; upload errors surface via the Apollo error link / global handler.
+        try {
+          await uploadCalloutWhiteboardPreview(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.whiteboard
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
+        try {
+          await uploadCalloutMediaGallery(
+            calloutForm.values,
+            result.data?.createTemplate?.callout?.framing?.mediaGallery?.id
+          );
+        } catch {
+          // Intentionally swallowed — see comment above.
+        }
         return;
       }
     }
@@ -574,7 +635,12 @@ export function useTemplateForms({
     });
     // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
     // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
-    await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
+    try {
+      await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
+      await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
+    } catch {
+      // Errors are surfaced by the Apollo error link / global handler; don't fail the copy after create.
+    }
   };
 
   const submitEdit = async (
@@ -730,9 +796,15 @@ export function useTemplateForms({
     if (!templatesSetId) return;
     const errs: TemplateFormErrors = {};
     if (!values.name.trim()) errs.name = t('form.common.nameRequired');
+    // Description is mandatory for every template type — mirrors the legacy MUI `TemplateFormBase`,
+    // where `profile.description` is a required field across all template forms.
+    if (!values.description.trim()) errs.description = t('form.common.descriptionRequired');
     if (values.type === 'communityGuidelines' && !values.title.trim())
       errs.title = t('form.communityGuidelines.titleRequired');
-    if (values.type === 'space' && !values.sourceSpaceId) errs.sourceSpaceId = t('form.space.sourceRequired');
+    // A source space is only required when CREATING a space template (the structure must be captured
+    // from somewhere). Editing is profile-only by default; re-capture is opt-in via the URL picker.
+    if (intent === 'create' && values.type === 'space' && !values.sourceSpaceId)
+      errs.sourceSpaceId = t('form.space.sourceRequired');
     setErrors(errs);
     const calloutErrors = values.type === 'callout' ? calloutForm.validate() : {};
     if (Object.keys(errs).length > 0 || Object.keys(calloutErrors).length > 0) return;
@@ -805,6 +877,10 @@ export function useTemplateForms({
           urlError={spaceSourceUrlError}
           sourceDisplayName={spaceSourceDisplayName}
           sourceAvatarUrl={spaceSourceAvatarUrl}
+          // Only show the captured-structure preview when there's a source to preview: a selected
+          // source (create/URL flow) or an edit (seeded from the template's own content). Otherwise a
+          // stale preview could linger after the user clicks "Select another".
+          capturedStructure={intent === 'edit' || values.sourceSpaceId ? spaceCapturedStructure : undefined}
         />
       );
       break;

@@ -106,15 +106,15 @@ export function ImageCropDialog({
         if (!nextOpen) onCancel();
       }}
     >
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+          {description && <DialogDescription>{description}</DialogDescription>}
           {imgSrc && (
-            <div className="flex justify-center overflow-hidden rounded-md bg-muted">
+            <div className="flex shrink-0 justify-center overflow-hidden rounded-md bg-muted">
               <ReactCrop
                 crop={crop}
                 onChange={c => setCrop(c)}
@@ -163,7 +163,7 @@ export function ImageCropDialog({
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {cancelLabel}
           </Button>

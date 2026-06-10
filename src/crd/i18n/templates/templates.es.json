@@ -39,6 +39,7 @@
   "card": {
     "actions": "Acciones de plantilla",
     "preview": "Vista previa",
+    "use": "Usar plantilla",
     "edit": "Editar",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
@@ -88,6 +89,10 @@
       "phases": "Fases",
       "starterCallouts": "Herramientas iniciales",
       "subspaceTemplates": "Plantillas de subespacio",
+      "includesSubspaces": "Esta plantilla también incluye estos subespacios:",
+      "noCallouts": "No hay herramientas en esta fase.",
+      "noDescription": "Sin descripción",
+      "privateSubspace": "Subespacio privado",
       "none": "Ninguno"
     },
     "communityGuidelines": {
@@ -135,6 +140,7 @@
       "name": "Nombre de plantilla",
       "namePlaceholder": "p. ej. Inicio del proyecto",
       "nameRequired": "Se requiere un nombre de plantilla.",
+      "descriptionRequired": "Se requiere una descripción.",
       "description": "Descripción",
       "descriptionPlaceholder": "¿Para qué sirve esta plantilla?",
       "tags": "Etiquetas",
@@ -162,6 +168,7 @@
       "sourceRequired": "Pega primero una URL de espacio y haz clic en \"Usar este espacio\".",
       "recursive": "Incluir subespacios anidados",
       "capturedStructure": "Estructura capturada",
+      "alwaysIncluded": "Siempre incluido: información Acerca de y Configuración",
       "urlLoader": {
         "description": "Pega la URL de un espacio o subespacio cuya estructura quieras copiar.",
         "placeholder": "https://…",

@@ -223,8 +223,11 @@
   "topBar": {
     "sign-in": "Вход | Регистрация",
     "designVersion": {
-      "label": "New design (preview)",
+      "label": "New look (old design available for a limited time)",
       "errorSaving": "Could not save your design preference. Please try again."
+    },
+    "switchBanner": {
+      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
     }
   },
   "authentication": {
@@ -752,8 +755,10 @@
           "invitationsSent": "{{count}} покани ще бъдат изпратени.",
           "invitationByEmailTooltip": "{{email}} ще бъде поканен да се регистрира в Alkemio и да се присъедини към това $t(common.space)",
           "results": {
+            "ALREADY_HAS_OPEN_APPLICATION": "Already has an open application to this $t(common.space)",
             "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Вече има отворена покана/заявка",
             "ALREADY_INVITED_TO_ROLE_SET": "Вече има отворена покана/заявка",
+            "ALREADY_MEMBER_OF_ROLE_SET": "Already a member of this $t(common.space)",
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Поканата към родителското $t(common.community) не беше разрешена",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Поканен да се присъедини към платформата",
             "INVITED_TO_ROLE_SET": "Поканен да се присъедини към $t(common.community)"
@@ -2270,6 +2275,10 @@
           "subject": "{{triggeredByName}} е поканил {{contributorName}} към {{spaceName}}, за което Вие сте $t(common.admin)",
           "description": ""
         },
+        "VIRTUAL_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)",
+          "description": ""
+        },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
           "subject": "{{triggeredByName}} започна нова дискусия във форума {{category}}",
           "description": "{{discussionName}}"
@@ -3154,6 +3163,88 @@
       "users": {
         "notifications": {
           "user-removed": "Потребителят е премахнат успешно."
+        },
+        "emailChange": {
+          "rowAction": {
+            "label": "Change login email",
+            "tooltip": "Change this user's login email",
+            "disabledTooltip": "Only platform administrators can change a user's login email."
+          },
+          "dialog": {
+            "title": "Change login email",
+            "currentEmailLabel": "Current login email",
+            "newEmailLabel": "New login email",
+            "confirmEmailLabel": "Confirm new login email",
+            "approvalSection": "Reason & approval",
+            "reasonLabel": "Reason for change",
+            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
+            "approverNameLabel": "Approved by",
+            "approverRoleLabel": "Approver's role",
+            "approverOrganizationLabel": "Approver's organization (optional)",
+            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
+            "submit": "Change email"
+          },
+          "validation": {
+            "unchanged": "The new email must be different from the current login email.",
+            "mismatch": "The email addresses do not match."
+          },
+          "success": "Login email changed to {{email}}. The user has been notified by email.",
+          "errors": {
+            "validation": "Enter a valid email address.",
+            "noChange": "The new email is the same as the current login email.",
+            "conflict": "This email address is already in use.",
+            "subjectNotFound": "This user has no login identity that can be changed.",
+            "kratosUnreachable": "The identity service is currently unavailable. Please try again shortly.",
+            "kratosWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "driftDetected": "The change was only partially applied. Use the Resolve action to reconcile this account.",
+            "driftResolutionFailed": "The account could not be reconciled. Please try again.",
+            "driftNotFound": "There is no outstanding drift to resolve for this user.",
+            "unauthorized": "You do not have permission to perform this action.",
+            "generic": "The change could not be completed. Please try again."
+          },
+          "outcomes": {
+            "committed": "Committed",
+            "driftResolved": "Drift resolved",
+            "securitySignalFailed": "Committed — security signal not sent",
+            "newAddressNotificationFailed": "Committed — new-address notification not sent",
+            "globalAdminNotificationFailed": "Committed — admin notification not sent",
+            "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
+            "sessionInvalidationFailed": "Committed — sessions not ended",
+            "rejectedValidation": "Rejected — invalid address",
+            "rejectedConflict": "Rejected — address in use",
+            "rolledBack": "Rolled back",
+            "driftDetected": "Drift detected",
+            "driftResolutionFailed": "Drift resolution failed",
+            "unknown": "Unknown outcome"
+          },
+          "history": {
+            "title": "Email-change history",
+            "linkLabel": "View change history",
+            "empty": "This user has no email-change history.",
+            "loadMore": "Load more",
+            "unknownInitiator": "—",
+            "fields": {
+              "timestamp": "When",
+              "outcome": "Outcome",
+              "initiator": "Initiated by",
+              "oldEmail": "Old email",
+              "newEmail": "New email",
+              "reason": "Reason for change",
+              "approver": "Approved by",
+              "failureReason": "Failure reason"
+            }
+          },
+          "drift": {
+            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
+            "resolveAction": "Resolve",
+            "resolveTitle": "Resolve email drift",
+            "resolveDescription": "Choose which address should be this user's canonical login email.",
+            "oldEmailChoice": "Previous address — {{email}}",
+            "newEmailChoice": "New address — {{email}}",
+            "resolveSubmit": "Resolve",
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
+          }
         }
       },
       "innovation-packs": {
@@ -3199,6 +3290,16 @@
           "header": {
             "title": "Текуща селекция",
             "subtitle": "Подредбата по-долу е редът, в който $t(common.spaces) ще бъдат видими на $t(common.customHomepage)"
+          },
+          "addByUrl": {
+            "dialogTitle": "Add $t(common.space) by URL",
+            "urlInputLabel": "$t(common.space) URL",
+            "urlInputPlaceholder": "{{origin}}/space-name",
+            "submit": "Add",
+            "cancel": "$t(buttons.cancel)",
+            "validating": "URL is being validated…",
+            "invalidSpaceUrl": "URL is not a valid top level $t(common.space)",
+            "alreadyAdded": "This $t(common.space) is already added to this $t(common.innovation-hub)"
           }
         },
         "notifications": {
@@ -3676,11 +3777,14 @@
         "title": "$t(common.Whiteboards) връзката е прекъсната",
         "message": "Съжаляваме за неудобството! $t(common.whiteboard) не е достъпен за редактиране в момента, вероятно поради проблем с мрежата или загуба на достъп. Моля, опитайте да затворите и отново отворите $t(common.whiteboard) или да презаредите страницата. Ако проблемът продължава, свържете се с вашия $t(common.space) $t(common.admin) за помощ.",
         "lastSaved": "Съдържанието на този $t(common.whiteboard) е запазено за последно {{lastSaved}}.",
-        "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн."
+        "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн.",
+        "reconnect": "Reconnect",
+        "reconnectCountdown": "({{seconds}}s)"
       },
       "readonlyReason": {
         "readonly": "<strong>Режим само за преглед</strong> <learnwhy>кликнете тук, за да научите защо</learnwhy>",
         "contentUpdatePolicy": "Нямате права да редактирате този $t(common.whiteboard). Помолете собственика, <ownerlink>{{ownerName}}</ownerlink>, да промени настройките за споделяне, ако искате да допринесете.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.whiteboard). The owner is not available anymore, but you can ask an administrator of the $t(common.space) to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "Трябва да сте $t(common.member) на {{spaceLevel}}, в който се намира този $t(common.whiteboard), за да можете да редактирате. Кликнете тук, за да <spacelink>се присъедините/кандидатствате</spacelink>",
         "unauthenticated": "Трябва да сте влезли в системата и да сте $t(common.member) на {{spaceLevel}}, в който се намира този $t(common.whiteboard), за да можете да редактирате. Кликнете тук, за да <signinlink>влезете</signinlink>"
       },
@@ -3771,6 +3875,7 @@
       "readonlyReason": {
         "readonly": "<strong>Режим само за преглед</strong> <learnwhy>кликнете тук, за да научите защо</learnwhy>",
         "contentUpdatePolicy": "Нямате права да редактирате тази $t(common.memo). Помолете собственика, <ownerlink>{{ownerName}}</ownerlink>, да промени настройките за споделяне, ако искате да допринесете.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.memo). The owner is not available anymore, but you can ask an administrator of the $t(common.space), to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "Трябва да сте $t(common.member) на {{spaceLevel}}, в който се намира тази $t(common.memo), за да можете да редактирате. Кликнете тук, за да <spacelink>се присъедините/кандидатствате</spacelink>",
         "unauthenticated": "Трябва да сте влезли в системата и да сте $t(common.member) на {{spaceLevel}}, в който се намира тази $t(common.memo), за да можете да редактирате. Кликнете тук, за да <signinlink>влезете</signinlink>",
         "connecting": "",
@@ -3858,7 +3963,8 @@
     },
     "verification": {
       "header": "Потвърждение на имейл",
-      "message": "За да получите нов имейл за потвърждение, моля въведете вашия имейл адрес по-долу."
+      "message": "За да получите нов имейл за потвърждение, моля въведете вашия имейл адрес по-долу.",
+      "resendEmail": "Resend verification email"
     },
     "verification-required": {
       "header": "Потвърждението на имейла ви е в процес.",
@@ -4087,7 +4193,8 @@
           "communityApplicationReceived": "Получаване на $t(common.notification), когато е получено ново кандидатстване",
           "communityNewMember": "Получаване на $t(common.notification), когато нов $t(common.member) се присъединява към $t(common.community)",
           "collaborationCalloutContributionCreated": "Получаване на $t(common.notification), когато е създаден нов $t(common.callout)",
-          "communicationMessageReceived": "Получаване на $t(common.notification), когато е получено ново съобщение"
+          "communicationMessageReceived": "Получаване на $t(common.notification), когато е получено ново съобщение",
+          "userEmailChanged": "Receive a $t(common.notification) when the login email of a $t(common.member) of a $t(common.space) you administer is changed"
         }
       },
       "organization": {
@@ -4122,7 +4229,8 @@
           "adminUserProfileCreated": "Получаване на $t(common.notification), когато нов потребител се регистрира",
           "adminUserProfileRemoved": "Получаване на $t(common.notification), когато потребителски $t(common.profile) е премахнат",
           "adminSpaceCreated": "Получаване на $t(common.notification), когато е създаден нов $t(common.space)",
-          "adminUserGlobalRoleChanged": "Получаване на $t(common.notification), когато ролята на потребител е променена глобално"
+          "adminUserGlobalRoleChanged": "Получаване на $t(common.notification), когато ролята на потребител е променена глобално",
+          "adminUserEmailChanged": "Receive a $t(common.notification) when a user's email address is changed"
         }
       },
       "forum": {
@@ -4216,6 +4324,7 @@
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
       "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
+      "property-missing": "{{field}} is required.",
       "pick-password": "Изберете парола за вашия $t(common.account)",
       "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
       "account-disabled": "This account is disabled."
@@ -4308,7 +4417,10 @@
           "userAlreadyRegistered": "User already registered.",
           "userNotRegistered": "User not registered.",
           "noAgentForUser": "No agent for user.",
-          "userIdentityDeletionFailed": "User identity deletion failed."
+          "userIdentityDeletionFailed": "User identity deletion failed.",
+          "roleSetOpenApplicationExists": "You already have a pending application to this space.",
+          "roleSetOpenInvitationExists": "You've already been invited to this space — accept the invitation instead of applying.",
+          "roleSetAlreadyMember": "You're already a member of this space."
         },
         "system": {
           "bootstrapFailed": "System initialization failed.",

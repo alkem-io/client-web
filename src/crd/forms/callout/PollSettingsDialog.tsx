@@ -34,14 +34,14 @@ export function PollSettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         {/* DialogContent already renders a top-right "X" close button — no extra
             "Close" button needed. */}
-        <DialogTitle className="text-subsection-title">{t('pollForm.settings.title')}</DialogTitle>
+        <DialogTitle className="text-subsection-title shrink-0">{t('pollForm.settings.title')}</DialogTitle>
 
-        <Separator />
+        <Separator className="shrink-0" />
 
-        <div className="space-y-5">
+        <div className="space-y-5 flex-1 min-h-0 overflow-y-auto">
           <div className="space-y-3">
             <h3 className="text-body-emphasis text-foreground">{t('pollForm.settings.votingOptions')}</h3>
             <SettingRow

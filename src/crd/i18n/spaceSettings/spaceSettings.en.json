@@ -696,6 +696,21 @@
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization",
       "subspaceAdminInvitationsDescription": "Allow admins of Subspaces to invite platform users to their Subspace. Users who were not yet a member of this Space will become so when they accept the Subspace invitation."
+    },
+    "saveAsTemplate": {
+      "title": "Save as a template",
+      "description": "Create a reusable template from this subspace, including its layout and content.",
+      "button": "Save as Template"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Permanently delete this subspace and all its content.",
+      "delete": "Delete this Subspace",
+      "deleteDialog": {
+        "title": "Delete Subspace",
+        "description": "This will permanently delete this subspace and all its content. This action cannot be undone.",
+        "confirm": "Delete Subspace"
+      }
     }
   },
   "storage": {

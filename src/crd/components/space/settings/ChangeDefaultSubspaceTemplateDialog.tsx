@@ -67,12 +67,12 @@ export function ChangeDefaultSubspaceTemplateDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md md:max-w-lg overflow-x-hidden [&>*]:min-w-0">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md md:max-w-lg max-h-[90vh] flex flex-col overflow-hidden [&>*]:min-w-0">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{t('subspaces.defaultTemplate.dialog.title')}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 py-2 text-body">
+        <div className="flex flex-col gap-4 py-2 text-body flex-1 min-h-0 overflow-y-auto">
           <p>{t('subspaces.defaultTemplate.dialog.intro')}</p>
           <p>
             <Trans
@@ -133,7 +133,7 @@ export function ChangeDefaultSubspaceTemplateDialog({
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={saving}>
             {t('subspaces.defaultTemplate.dialog.cancel')}
           </Button>
