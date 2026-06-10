@@ -2,7 +2,7 @@
 
 ## What is CRD?
 
-CRD (Client Re-Design) is the new design system replacing MUI. It's built on shadcn/ui + Tailwind CSS + Radix UI. The migration is incremental — MUI pages and CRD pages coexist, and the split happens at the route level.
+CRD (Client Re-Design) is the new design system replacing MUI. It's built on shadcn/ui + Tailwind CSS + Radix UI. **CRD is the only design system for new client-facing features** — every new feature is built in `src/crd/` with its integration glue in `src/main/crdPages/`. MUI is **frozen**: no new MUI view components are added; MUI is only ever removed as pages migrate. Migration of existing pages is incremental — MUI pages and CRD pages coexist, and the split happens at the route level.
 
 The prototype in `prototype/` (generated from Figma Make) is the design reference. CRD components are production-ready versions of prototype components, with i18n, accessibility, and real data instead of mocks.
 
@@ -184,10 +184,12 @@ The old MUI page files stay in `src/main/topLevelPages/` and are the default. Th
 
 See [translations.md](./translations.md) for the full guide. Short version:
 
-1. Create `src/crd/i18n/<feature>.en.json` (+ other languages)
+1. Create `src/crd/i18n/<feature>/<feature>.<lang>.json` for **all six languages** (en, nl, es, bg, de, fr) in the same PR
 2. Register namespace in `src/core/i18n/config.ts`
 3. Register types in `@types/i18next.d.ts`
 4. Use `useTranslation('crd-<feature>')` in components
+
+CRD translations are **not managed by Crowdin** — they are maintained manually (AI-assisted). Every key must exist in all six language files (key parity), and that parity is enforced in review. Do **not** add new keys to the legacy core file `src/core/i18n/en/translation.en.json`; it is frozen for new strings and serves the not-yet-migrated MUI app only.
 
 **Do-not-translate platform terms.** A set of brand terms — **Space, Subspace, Post (= Callout), template, Layout, Virtual Contributor** (and plurals) — must stay in **English**; only the surrounding sentence is translated and inflected around them (e.g. `Space-leden`, `subspace-template`). **For now this is enforced for Dutch (`nl`) only** — es/bg/de/fr still translate these terms and are expected to follow later. Watch the Dutch disambiguation traps: `Berichten` = "Messages" (not Post), `werkruimte` = "workspace", `Oproep voor whiteboards` = "Call for whiteboards" — these stay translated. The authoritative list, rationale, per-language localized forms, and validation approach live in **`specs/101-translation-glossary/`** (`glossary.md` / `glossary.json`). See also the "Do-not-translate platform terms (glossary)" section in `src/crd/CLAUDE.md`.
 
