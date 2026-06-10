@@ -502,6 +502,30 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Graphe de prompts",
+      "helper": "Modifiez la machine à états du prompt. Les nœuds système sont en lecture seule ; les nœuds utilisateur exposent un prompt modifiable et des propriétés de sortie.",
+      "disabled": "L'édition du graphe de prompts est désactivée pour ce Virtual Contributor.",
+      "empty": "Ce Virtual Contributor n'a pas de graphe de prompts.",
+      "editingEnabled": "Édition activée",
+      "inputVariables": "Variables d’entrée",
+      "prompt": "Prompt",
+      "reset": "Réinitialiser",
+      "resetConfirm": {
+        "title": "Réinitialiser le graphe de prompts ?",
+        "description": "Cela efface tout le graphe de prompts et est irréversible."
+      },
+      "properties": {
+        "title": "Propriétés de sortie",
+        "empty": "Aucune propriété de sortie.",
+        "name": "Nom",
+        "type": "Type",
+        "optional": "Facultatif",
+        "description": "Description",
+        "add": "Ajouter une propriété",
+        "remove": "Supprimer la propriété"
+      }
+    },
     "profile": {
       "pageTitle": "Paramètres",
       "identity": {

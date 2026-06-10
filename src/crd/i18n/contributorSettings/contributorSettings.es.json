@@ -502,6 +502,30 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Grafo de prompts",
+      "helper": "Edita la máquina de estados del prompt. Los nodos del sistema son de solo lectura; los nodos de usuario exponen un prompt editable y propiedades de salida.",
+      "disabled": "La edición del grafo de prompts está desactivada para este Virtual Contributor.",
+      "empty": "Este Virtual Contributor no tiene grafo de prompts.",
+      "editingEnabled": "Edición activada",
+      "inputVariables": "Variables de entrada",
+      "prompt": "Prompt",
+      "reset": "Restablecer",
+      "resetConfirm": {
+        "title": "¿Restablecer el grafo de prompts?",
+        "description": "Esto borra todo el grafo de prompts y no se puede deshacer."
+      },
+      "properties": {
+        "title": "Propiedades de salida",
+        "empty": "Sin propiedades de salida.",
+        "name": "Nombre",
+        "type": "Tipo",
+        "optional": "Opcional",
+        "description": "Descripción",
+        "add": "Añadir propiedad",
+        "remove": "Eliminar propiedad"
+      }
+    },
     "profile": {
       "pageTitle": "Ajustes",
       "identity": {

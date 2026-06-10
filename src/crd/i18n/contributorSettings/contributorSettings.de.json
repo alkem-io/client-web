@@ -501,6 +501,30 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Prompt-Graph",
+      "helper": "Bearbeite die Prompt-Zustandsmaschine. Systemknoten sind schreibgeschützt; Benutzerknoten bieten einen bearbeitbaren Prompt und Ausgabeeigenschaften.",
+      "disabled": "Die Bearbeitung des Prompt-Graphen ist für diesen Virtual Contributor deaktiviert.",
+      "empty": "Dieser Virtual Contributor hat keinen Prompt-Graphen.",
+      "editingEnabled": "Bearbeitung aktiviert",
+      "inputVariables": "Eingabevariablen",
+      "prompt": "Prompt",
+      "reset": "Zurücksetzen",
+      "resetConfirm": {
+        "title": "Prompt-Graph zurücksetzen?",
+        "description": "Dies löscht den gesamten Prompt-Graphen und kann nicht rückgängig gemacht werden."
+      },
+      "properties": {
+        "title": "Ausgabeeigenschaften",
+        "empty": "Keine Ausgabeeigenschaften.",
+        "name": "Name",
+        "type": "Typ",
+        "optional": "Optional",
+        "description": "Beschreibung",
+        "add": "Eigenschaft hinzufügen",
+        "remove": "Eigenschaft entfernen"
+      }
+    },
     "profile": {
       "pageTitle": "Einstellungen",
       "identity": {

@@ -1,14 +1,27 @@
 import {
   AiPersonaEngine,
   OpenAiModel,
+  type PromptGraph,
   SearchVisibility,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
+import type {
+  VcPromptGraphNode,
+  VcPromptGraphProperty,
+} from '@/crd/components/virtualContributor/settings/VCPromptGraphCard.types';
 import type {
   VcAiEngine,
   VcBodyOfKnowledgeType,
   VcSearchVisibility,
 } from '@/crd/components/virtualContributor/settings/VCSettingsTabView.types';
+import type {
+  FormNodeValue,
+  PromptGraphNode as LegacyPromptGraphNode,
+} from '@/domain/community/virtualContributorAdmin/components/promptGraph/types';
+import {
+  prepareGraph,
+  transformNodesMapToArray,
+} from '@/domain/community/virtualContributorAdmin/components/promptGraph/utils';
 
 /**
  * GraphQL → plain-string-union enum bridges for the VC Settings tab view.
@@ -96,3 +109,71 @@ export const computeEngineCardVisibility = (params: {
 
 /** Static model options sourced from the generated `OpenAiModel` enum. */
 export const OPENAI_MODEL_OPTIONS = Object.values(OpenAiModel).map(value => ({ value, label: value }));
+
+/**
+ * Maps the server `PromptGraph` to the CRD card's ordered node list. Uses the
+ * legacy `prepareGraph` traversal for START→END ordering, drops the terminal
+ * START/END markers, and exposes only the editable shape.
+ */
+export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefined): VcPromptGraphNode[] => {
+  if (!promptGraph?.nodes?.length) return [];
+
+  const byName = new Map<string, LegacyPromptGraphNode>();
+  for (const node of promptGraph.nodes) {
+    if (node.name) byName.set(node.name, node as unknown as LegacyPromptGraphNode);
+  }
+
+  const ordered = prepareGraph(promptGraph);
+  const seen = new Set<string>();
+  const result: VcPromptGraphNode[] = [];
+
+  const push = (name: string, real: LegacyPromptGraphNode) => {
+    if (!name || name === 'START' || name === 'END' || seen.has(name)) return;
+    seen.add(name);
+    result.push({
+      name,
+      system: real.system ?? false,
+      inputVariables: real.input_variables ?? [],
+      prompt: real.prompt ?? '',
+      outputProperties: (real.output?.properties ?? []).map(
+        (p): VcPromptGraphProperty => ({
+          name: p.name,
+          type: p.type,
+          optional: p.optional,
+          description: p.description,
+        })
+      ),
+    });
+  };
+
+  // Ordered path first, then any unreached nodes (fallback) in array order.
+  for (const pathNode of ordered) {
+    const real = pathNode.name ? byName.get(pathNode.name) : undefined;
+    if (real) push(pathNode.name, real);
+  }
+  for (const node of promptGraph.nodes) {
+    if (node.name) push(node.name, node as unknown as LegacyPromptGraphNode);
+  }
+
+  return result;
+};
+
+/**
+ * Rebuilds the server `promptGraph.nodes` array from the edited CRD nodes,
+ * preserving the rest of the original graph (edges / state / start / end).
+ */
+export const mapNodesToPromptGraph = (nodes: VcPromptGraphNode[], original: PromptGraph | null | undefined) => {
+  const nodesMap: Record<string, FormNodeValue> = {};
+  for (const node of nodes) {
+    nodesMap[node.name] = {
+      input_variables: node.inputVariables ?? [],
+      prompt: node.prompt ?? '',
+      output: { properties: node.outputProperties },
+      system: node.system,
+    };
+  }
+  return {
+    ...(original ?? { nodes: [], edges: [] }),
+    nodes: transformNodesMapToArray(nodesMap),
+  };
+};

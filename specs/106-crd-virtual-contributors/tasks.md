@@ -82,14 +82,14 @@
 
 **Independent test**: With CRD active, open a VC's Knowledge Base from the profile and via deep link; confirm listing, empty state, and (authorized) refresh/description controls render in CRD (SC-002).
 
-- [ ] T021 [P] [US2] Add prop types `src/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView.types.ts` from `contracts/knowledgeBase.ts`.
-- [ ] T022 [US2] Build `src/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView.tsx` (identity header, editable description, refresh control + last-updated, empty state, `calloutsSlot`).
-- [ ] T023 [US2] Research+confirm `CalloutsGroupView` renders acceptably under `.crd-root`; add a thin CRD adapter only if needed (record finding in PR). Reuse restrictions from `src/domain/community/virtualContributor/knowledgeBase/virtualContributorsCalloutRestrictions.ts`.
-- [ ] T024 [P] [US2] Create `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/vcKnowledgeBaseMapper.ts` (VC + KB GraphQL → `VcKnowledgeBaseViewProps`; `pickColorFromId`, last-updated ISO).
-- [ ] T025 [US2] Create data hook `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/useVcKnowledgeBaseData.ts` reusing `useKnowledgeBase` (`useVirtualContributorKnowledgeBaseQuery`, `useVirtualContributorKnowledgePrivilegesQuery`, `useVirtualContributorKnowledgeBaseLastUpdatedQuery`, `useUpdateVirtualContributorMutation`, `useRefreshBodyOfKnowledgeMutation`).
-- [ ] T026 [US2] Create integration page `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` and **repoint** the `/vc/:nameId/knowledge-base` route in `CrdVCRoutes.tsx` from the MUI `VCKnowledgeBaseRoute` to this CRD page.
-- [ ] T027 [P] [US2] Add `knowledgeBase.*` keys (title, description, refresh, last-updated, empty state) to all 6 `contributorSettings.<lang>.json`.
-- [ ] T028 [P] [US2] Add `vcKnowledgeBaseMapper.test.ts` (privilege-gated controls, empty vs populated, timestamp formatting).
+- [X] T021 [P] [US2] Add prop types `src/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView.types.ts` from `contracts/knowledgeBase.ts`.
+- [X] T022 [US2] Build `src/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView.tsx` (identity header, editable description, refresh control + last-updated, empty state, `calloutsSlot`).
+- [X] T023 [US2] RESOLVED: used the CRD `CalloutListConnector` for the body instead of the MUI `CalloutsGroupView`, so no MUI-in-crd-root adapter is needed. Research+confirm `CalloutsGroupView` renders acceptably under `.crd-root`; add a thin CRD adapter only if needed (record finding in PR). Reuse restrictions from `src/domain/community/virtualContributor/knowledgeBase/virtualContributorsCalloutRestrictions.ts`.
+- [X] T024 [P] [US2] Create `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/vcKnowledgeBaseMapper.ts` (VC + KB GraphQL → `VcKnowledgeBaseViewProps`; `pickColorFromId`, last-updated ISO).
+- [X] T025 [US2] Create data hook `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/useVcKnowledgeBaseData.ts` reusing `useKnowledgeBase` (`useVirtualContributorKnowledgeBaseQuery`, `useVirtualContributorKnowledgePrivilegesQuery`, `useVirtualContributorKnowledgeBaseLastUpdatedQuery`, `useUpdateVirtualContributorMutation`, `useRefreshBodyOfKnowledgeMutation`).
+- [X] T026 [US2] Create integration page `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` and **repoint** the `/vc/:nameId/knowledge-base` route in `CrdVCRoutes.tsx` from the MUI `VCKnowledgeBaseRoute` to this CRD page.
+- [X] T027 [P] [US2] Add `knowledgeBase.*` keys (title, description, refresh, last-updated, empty state) to all 6 `contributorSettings.<lang>.json`.
+- [X] T028 [P] [US2] Add `vcKnowledgeBaseMapper.test.ts` (privilege-gated controls, empty vs populated, timestamp formatting).
 
 **Checkpoint**: US2 independently shippable — KB is a CRD page reachable from profile + deep link.
 
@@ -119,13 +119,13 @@
 
 **Independent test**: With CRD active and `promptGraphEditingEnabled`, open `/vc/:nameId/settings/settings`; view system nodes (read-only) and edit user nodes (prompt + output properties), Save/Reset; confirm non-admins see no controls (SC-004).
 
-- [ ] T036 [P] [US4] Add prop types `src/crd/components/virtualContributor/settings/VCPromptGraphCard.types.ts` from `contracts/promptGraph.ts`.
-- [ ] T037 [US4] Build `src/crd/components/virtualContributor/settings/VCPromptGraphCard.tsx` using shadcn `Accordion` + a custom output-property-row editor (add/edit/delete); system nodes locked; Save/Reset; per-section save-status flash. **No graph library.**
-- [ ] T038 [US4] Extend `src/main/crdPages/topLevelPages/vcPages/settings/settings/vcSettingsMapper.ts` with prompt-graph mapping (mirror legacy `promptGraph/utils.ts` traversal: nodes ordered START→END, input-variable extraction, `null`-reset workaround).
-- [ ] T039 [US4] Extend `src/main/crdPages/topLevelPages/vcPages/settings/settings/useVcSettingsTabData.ts` to surface `VcPromptGraphCardProps` (reuse `useAiPersonaQuery`, `useUpdateAiPersonaMutation`, `useUpdateVirtualContributorPlatformSettingsMutation`; gate on `platformSettings.promptGraphEditingEnabled` + `Update` privilege).
-- [ ] T040 [US4] Render `VCPromptGraphCard` inside `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx` when present (engine-conditional, after the existing cards).
-- [ ] T041 [P] [US4] Add `promptGraph.*` keys (node labels, variables, property table, save/reset, platform toggle) to all 6 `contributorSettings.<lang>.json`.
-- [ ] T042 [P] [US4] Add prompt-graph mapping unit test in `src/main/crdPages/topLevelPages/vcPages/settings/settings/__tests__/` (traversal, reset payload, read-only system nodes).
+- [X] T036 [P] [US4] Add prop types `src/crd/components/virtualContributor/settings/VCPromptGraphCard.types.ts` from `contracts/promptGraph.ts`.
+- [X] T037 [US4] Build `src/crd/components/virtualContributor/settings/VCPromptGraphCard.tsx` using shadcn `Accordion` + a custom output-property-row editor (add/edit/delete); system nodes locked; Save/Reset; per-section save-status flash. **No graph library.**
+- [X] T038 [US4] Extend `src/main/crdPages/topLevelPages/vcPages/settings/settings/vcSettingsMapper.ts` with prompt-graph mapping (mirror legacy `promptGraph/utils.ts` traversal: nodes ordered START→END, input-variable extraction, `null`-reset workaround).
+- [X] T039 [US4] Extend `src/main/crdPages/topLevelPages/vcPages/settings/settings/useVcSettingsTabData.ts` to surface `VcPromptGraphCardProps` (reuse `useAiPersonaQuery`, `useUpdateAiPersonaMutation`, `useUpdateVirtualContributorPlatformSettingsMutation`; gate on `platformSettings.promptGraphEditingEnabled` + `Update` privilege).
+- [X] T040 [US4] Render `VCPromptGraphCard` inside `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx` when present (engine-conditional, after the existing cards).
+- [X] T041 [P] [US4] Add `promptGraph.*` keys (node labels, variables, property table, save/reset, platform toggle) to all 6 `contributorSettings.<lang>.json`.
+- [X] T042 [P] [US4] Add prompt-graph mapping unit test in `src/main/crdPages/topLevelPages/vcPages/settings/settings/__tests__/` (traversal, reset payload, read-only system nodes).
 
 **Checkpoint**: US4 independently shippable — full advanced-config parity (prompt graph completes it).
 

@@ -501,6 +501,30 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Promptgrafiek",
+      "helper": "Bewerk de prompt-toestandsmachine. Systeemknooppunten zijn alleen-lezen; gebruikersknooppunten bieden een bewerkbare prompt en uitvoereigenschappen.",
+      "disabled": "Bewerken van de promptgrafiek is uitgeschakeld voor deze Virtual Contributor.",
+      "empty": "Deze Virtual Contributor heeft geen promptgrafiek.",
+      "editingEnabled": "Bewerken ingeschakeld",
+      "inputVariables": "Invoervariabelen",
+      "prompt": "Prompt",
+      "reset": "Opnieuw instellen",
+      "resetConfirm": {
+        "title": "Promptgrafiek opnieuw instellen?",
+        "description": "Dit wist de volledige promptgrafiek en kan niet ongedaan worden gemaakt."
+      },
+      "properties": {
+        "title": "Uitvoereigenschappen",
+        "empty": "Geen uitvoereigenschappen.",
+        "name": "Naam",
+        "type": "Type",
+        "optional": "Optioneel",
+        "description": "Beschrijving",
+        "add": "Eigenschap toevoegen",
+        "remove": "Eigenschap verwijderen"
+      }
+    },
     "profile": {
       "pageTitle": "Instellingen",
       "identity": {
