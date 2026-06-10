@@ -15,6 +15,7 @@ import {
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
+import { ProfileHoverCard } from "@/app/components/user/ProfileHoverCard";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -263,14 +264,24 @@ export default function NotificationsPage() {
             >
               {/* Avatar + type badge */}
               <div className="relative shrink-0">
-                <Avatar className="w-10 h-10" style={{ border: "1px solid var(--border)" }}>
-                  <AvatarImage src={n.avatar} />
-                  <AvatarFallback
-                    className="bg-primary/10 text-primary text-body"
-                  >
-                    {n.author.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <ProfileHoverCard
+                  user={{
+                    name: n.author,
+                    avatarUrl: n.avatar,
+                    initials: n.author.substring(0, 2).toUpperCase(),
+                  }}
+                >
+                  <button type="button" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+                    <Avatar className="w-10 h-10" style={{ border: "1px solid var(--border)" }}>
+                      <AvatarImage src={n.avatar} />
+                      <AvatarFallback
+                        className="bg-primary/10 text-primary text-body"
+                      >
+                        {n.author.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </ProfileHoverCard>
                 <div
                   className="absolute -bottom-1 -right-1 rounded-full p-0.5"
                   style={{

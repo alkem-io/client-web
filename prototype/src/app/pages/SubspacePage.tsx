@@ -123,6 +123,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Lead",
       avatarUrl:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "Amsterdam, NL",
+      skills: ["Energy Systems", "Green Tech", "Data Analysis", "Renewable Energy", "Smart Grids", "Python", "Research"],
     },
     title: "Kickoff: Municipal Transition Strategy",
     snippet:
@@ -139,6 +141,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Member",
       avatarUrl:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "Seoul, KR",
+      skills: ["Software Development", "React", "TypeScript", "UX Design"],
     },
     title: "Renewable Grid Architecture — Visual Mapping",
     snippet:
@@ -156,6 +160,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Lead",
       avatarUrl:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "London, UK",
+      skills: ["Policy Design", "Tax Incentives", "Municipal Finance", "Economic Modeling", "Sustainability"],
     },
     title: "Draft: Incentive Framework for Early Adopters",
     snippet:
@@ -172,6 +178,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Member",
       avatarUrl:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "Lisbon, PT",
+      skills: ["Community Engagement", "Solar Energy", "Project Management", "Urban Design"],
     },
     title: "Call for Ideas: Community Solar Projects",
     snippet:
@@ -202,6 +210,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Lead",
       avatarUrl:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "Madrid, ES",
+      skills: ["Stakeholder Management", "NGO Relations", "Networking", "Strategic Planning"],
     },
     title: "Stakeholder Contact Directory",
     snippet:
@@ -225,6 +235,8 @@ const SUBSPACE_POSTS: CalloutPost[] = [
       role: "Member",
       avatarUrl:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      location: "Brussels, BE",
+      skills: ["EU Policy", "Renewable Directives", "Legal", "Research", "Comparative Analysis", "Climate Law"],
     },
     title: "Comparative Analysis: EU Renewable Directives",
     snippet:

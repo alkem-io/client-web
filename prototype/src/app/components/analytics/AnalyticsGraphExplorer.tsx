@@ -475,7 +475,7 @@ export function AnalyticsGraphExplorer({ selectedSpaceIds }: AnalyticsGraphExplo
                 const defs = SPACE_DEFS[id];
                 const name = defs ? defs[0].name : `Space ${id}`;
                 return (
-                  <Badge key={id} variant="secondary" className="text-xs font-medium cursor-pointer" onClick={() => toggleSpace(id)}>
+                  <Badge key={id} variant="secondary" className="cursor-pointer" onClick={() => toggleSpace(id)}>
                     {name} <X style={{ width: 10, height: 10, marginLeft: 4, cursor: 'pointer', opacity: 0.5 }} />
                   </Badge>
                 );

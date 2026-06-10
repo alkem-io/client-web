@@ -1,6 +1,7 @@
 import { RecentSpaces } from "@/app/components/dashboard/RecentSpaces";
 import { ActivityFeed } from "@/app/components/dashboard/ActivityFeed";
 import { DashboardSidebar } from "@/app/components/dashboard/DashboardSidebar";
+import { UpdateBanner } from "@/app/components/dashboard/UpdateBanner";
 
 export function Dashboard() {
   return (
@@ -14,6 +15,9 @@ export function Dashboard() {
         <div className="col-span-12 md:col-span-9 grid grid-cols-9 gap-6">
           <div className="col-span-9">
             <RecentSpaces />
+          </div>
+          <div className="col-span-9">
+            <UpdateBanner />
           </div>
           <div className="col-span-9 lg:col-span-5">
             <ActivityFeed title="Latest Activity in my Spaces" type="spaces" />

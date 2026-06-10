@@ -14,6 +14,8 @@ const COMMUNITY_POSTS: PostProps[] = [
       role: "Host",
       avatarUrl:
         "https://images.unsplash.com/photo-1623853589874-864b1dd4d922?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGdsYXNzZXMlMjBibGFjayUyMGFuZCUyMHdoaXRlJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY5NDQyNTM3fDA&ixlib=rb-4.1.0&q=80&w=256",
+      location: "Barcelona, ES",
+      skills: ["Urban Planning", "Sustainability", "Community Design", "Policy", "Innovation"],
     },
     title: "Welcome new members & organizations!",
     snippet:
@@ -29,6 +31,8 @@ const COMMUNITY_POSTS: PostProps[] = [
       role: "Lead",
       avatarUrl:
         "https://images.unsplash.com/photo-1589332911105-a6b59f2e4c4b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHNtaWxpbmclMjBkYXJrJTIwaGFpciUyMHBvcnRyYWl0fGVufDF8fHx8MTc2OTQ0MjUzN3ww&ixlib=rb-4.1.0&q=80&w=256",
+      location: "Berlin, DE",
+      skills: ["Community Engagement", "Facilitation", "Stakeholder Management", "Workshop Design"],
     },
     title: "Call for Volunteers: Community Engagement Working Group",
     snippet:

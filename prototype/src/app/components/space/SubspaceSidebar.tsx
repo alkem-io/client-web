@@ -28,6 +28,7 @@ import {
   Folder,
 } from "lucide-react";
 import { SubspaceCommunityDialog } from "@/app/components/space/SubspaceCommunityDialog";
+import { ProfileHoverCard } from "@/app/components/user/ProfileHoverCard";
 import { cn } from "@/lib/utils";
 
 interface SubspaceSidebarProps {
@@ -202,22 +203,33 @@ export function SubspaceSidebar({
               Lead
             </p>
             <div className="flex items-center gap-3">
-              <Avatar
-                className="w-8 h-8"
-                style={{ border: "2px solid rgba(255,255,255,0.25)" }}
+              <ProfileHoverCard
+                user={{
+                  name: SUBSPACE_LEAD.name,
+                  avatarUrl: SUBSPACE_LEAD.avatar,
+                  initials: SUBSPACE_LEAD.initials,
+                  location: SUBSPACE_LEAD.location,
+                }}
               >
-                <AvatarImage src={SUBSPACE_LEAD.avatar} alt={SUBSPACE_LEAD.name} />
-                <AvatarFallback
-                  style={{
-                    background: "rgba(255,255,255,0.15)",
-                    color: "white",
-                    fontSize: "9px",
-                    fontWeight: 700,
-                  }}
-                >
-                  {SUBSPACE_LEAD.initials}
-                </AvatarFallback>
-              </Avatar>
+                <button type="button" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+                  <Avatar
+                    className="w-8 h-8"
+                    style={{ border: "2px solid rgba(255,255,255,0.25)" }}
+                  >
+                    <AvatarImage src={SUBSPACE_LEAD.avatar} alt={SUBSPACE_LEAD.name} />
+                    <AvatarFallback
+                      style={{
+                        background: "rgba(255,255,255,0.15)",
+                        color: "white",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {SUBSPACE_LEAD.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </ProfileHoverCard>
               <div>
                 <p style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
                   {SUBSPACE_LEAD.name}
@@ -269,23 +281,33 @@ export function SubspaceSidebar({
               { name: "Marc Johnson", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=128", initials: "MJ" },
               { name: "Lisa Wang", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80", initials: "LW" },
             ].map((m) => (
-              <Avatar
+              <ProfileHoverCard
                 key={m.initials}
-                className="w-8 h-8 transition-transform hover:z-10 hover:scale-110"
-                style={{ border: "2px solid var(--card)" }}
+                user={{
+                  name: m.name,
+                  avatarUrl: m.avatar,
+                  initials: m.initials,
+                }}
               >
-                <AvatarImage src={m.avatar} alt={m.name} />
-                <AvatarFallback
-                  style={{
-                    background: "color-mix(in srgb, var(--primary) 15%, transparent)",
-                    color: "var(--primary)",
-                    fontSize: "10px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {m.initials}
-                </AvatarFallback>
-              </Avatar>
+                <button type="button" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+                  <Avatar
+                    className="w-8 h-8 transition-transform hover:z-10 hover:scale-110"
+                    style={{ border: "2px solid var(--card)" }}
+                  >
+                    <AvatarImage src={m.avatar} alt={m.name} />
+                    <AvatarFallback
+                      style={{
+                        background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+                        color: "var(--primary)",
+                        fontSize: "10px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {m.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </ProfileHoverCard>
             ))}
             <div
               className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer transition-colors"

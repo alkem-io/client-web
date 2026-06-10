@@ -5,10 +5,19 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/c
 import { Badge } from "@/app/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { CreateSpaceDialogV2 } from "@/app/components/dialogs/CreateSpaceDialogV2";
+import { CreateVCDialog } from "@/app/components/dialogs/CreateVCDialog";
+import { CreateTemplatePackDialog } from "@/app/components/dialogs/CreateTemplatePackDialog";
+import { CreateInnovationHubDialog } from "@/app/components/dialogs/CreateInnovationHubDialog";
 
 export default function UserAccountPage() {
   const { userSlug } = useParams<{ userSlug: string }>();
   const slug = userSlug || "user";
+  const [showCreateSpace, setShowCreateSpace] = useState(false);
+  const [showCreateVC, setShowCreateVC] = useState(false);
+  const [showCreateTemplatePack, setShowCreateTemplatePack] = useState(false);
+  const [showCreateHub, setShowCreateHub] = useState(false);
 
   // Navigation Tabs
   const tabs = [
@@ -128,7 +137,7 @@ export default function UserAccountPage() {
                 {hostedSpaces.length} Active
               </Badge>
             </h2>
-            <Button size="sm">
+            <Button size="sm" onClick={() => setShowCreateSpace(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Create Space
             </Button>
@@ -186,7 +195,7 @@ export default function UserAccountPage() {
                 {virtualContributors.length} Active
               </Badge>
             </h2>
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" onClick={() => setShowCreateVC(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Add Contributor
             </Button>
@@ -217,7 +226,7 @@ export default function UserAccountPage() {
             ))}
             
             {/* Create New Card (Inline option) */}
-             <button className="flex flex-col items-center justify-center h-full min-h-[160px] rounded-xl border border-dashed border-border hover:border-primary hover:bg-primary/5 transition-all group">
+             <button onClick={() => setShowCreateVC(true)} className="flex flex-col items-center justify-center h-full min-h-[160px] rounded-xl border border-dashed border-border hover:border-primary hover:bg-primary/5 transition-all group">
               <div className="h-10 w-10 rounded-full bg-muted group-hover:bg-background flex items-center justify-center mb-3 transition-colors">
                 <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
               </div>
@@ -231,7 +240,7 @@ export default function UserAccountPage() {
           <section className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-section-title font-bold">Template Packs</h2>
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={() => setShowCreateTemplatePack(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Pack
               </Button>
@@ -270,7 +279,7 @@ export default function UserAccountPage() {
             <div className="mt-8 pt-8 border-t border-border">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-section-title font-bold">Custom Homepages</h2>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" onClick={() => setShowCreateHub(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   New Page
                 </Button>
@@ -292,7 +301,7 @@ export default function UserAccountPage() {
                     <p className="text-caption text-muted-foreground max-w-[200px] mb-4">
                       Create a personalized landing page for your account.
                     </p>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => setShowCreateHub(true)}>
                       <Plus className="w-3.5 h-3.5 mr-2" />
                       Create Homepage
                     </Button>
@@ -308,6 +317,11 @@ export default function UserAccountPage() {
         </div>
         </div>
       </div>
+
+      <CreateSpaceDialogV2 open={showCreateSpace} onOpenChange={setShowCreateSpace} />
+      <CreateVCDialog open={showCreateVC} onOpenChange={setShowCreateVC} />
+      <CreateTemplatePackDialog open={showCreateTemplatePack} onOpenChange={setShowCreateTemplatePack} />
+      <CreateInnovationHubDialog open={showCreateHub} onOpenChange={setShowCreateHub} />
     </div>
   );
 }

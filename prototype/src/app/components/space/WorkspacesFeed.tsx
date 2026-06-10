@@ -4,11 +4,17 @@ import { Plus } from "lucide-react";
 import { PostCard, PostProps } from "./PostCard";
 import { AddPostModal } from "@/app/components/space/AddPostModal";
 import { PostDetailDialog } from "@/app/components/dialogs/PostDetailDialog";
+import { useSpaceFilters } from "@/app/components/space/FilterContext";
 
-const WORKSPACES_POSTS: PostProps[] = [
+interface PostWithTags extends PostProps {
+  tags: string[];
+}
+
+const WORKSPACES_POSTS: PostWithTags[] = [
   {
     id: "ws-1",
     type: "text",
+    tags: ["Active", "Planning"],
     author: {
       name: "David Kim",
       role: "Lead",
@@ -24,6 +30,7 @@ const WORKSPACES_POSTS: PostProps[] = [
   {
     id: "ws-2",
     type: "call-for-whiteboards",
+    tags: ["Planning", "Research"],
     author: {
       name: "Sophia Li",
       role: "Admin",
@@ -57,6 +64,19 @@ const WORKSPACES_POSTS: PostProps[] = [
 export function WorkspacesFeed() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PostProps | null>(null);
+  const { searchValue, activeTags } = useSpaceFilters();
+
+  // Filter posts based on search and tag filters
+  const filteredPosts = WORKSPACES_POSTS.filter((post) => {
+    const matchesSearch = !searchValue || 
+      post.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+      post.snippet.toLowerCase().includes(searchValue.toLowerCase()) ||
+      post.author.name.toLowerCase().includes(searchValue.toLowerCase());
+    
+    const matchesTags = activeTags.length === 0 || activeTags.every((tag) => post.tags.includes(tag));
+    
+    return matchesSearch && matchesTags;
+  });
 
   return (
     <div className="w-full">
@@ -83,7 +103,7 @@ export function WorkspacesFeed() {
 
       {/* Posts */}
       <div className="space-y-6">
-        {WORKSPACES_POSTS.map((post) => (
+        {filteredPosts.map((post) => (
           <PostCard
             key={post.id}
             post={{
