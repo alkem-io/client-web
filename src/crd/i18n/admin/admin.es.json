@@ -120,7 +120,6 @@
     "currentAccount": "Cuenta actual: {{name}}",
     "confirmTitle": "Confirmar transferencia",
     "confirmDescription": "Esto mueve la entidad de forma permanente a la cuenta seleccionada.",
-    "comingSoon": "Esta operación se está migrando al nuevo diseño.",
     "hub": {
       "title": "Transferir centro de innovación",
       "description": "Mover un centro de innovación a otra cuenta."
@@ -142,7 +141,17 @@
       "notEligible": "Solo se pueden convertir los colaboradores virtuales basados en espacio que aún no se han convertido."
     },
     "spaceConversion": {
-      "title": "Convertir espacio"
+      "title": "Convertir espacio",
+      "description": "Promueve o degrada un espacio entre niveles (L0 / L1 / L2).",
+      "resolvedLevel": "Nivel resuelto: {{level}}",
+      "noConversions": "No hay conversiones disponibles para este nivel de espacio.",
+      "promoteL1L0": "Promover a espacio de nivel superior (L1 → L0)",
+      "demoteL1L2": "Degradar a subespacio (L1 → L2)",
+      "promoteL2L1": "Promover a subespacio (L2 → L1)",
+      "parentLabel": "Espacio principal",
+      "parentPlaceholder": "Selecciona un espacio principal",
+      "confirmTitle": "Confirmar conversión",
+      "confirmDescription": "Esto cambia el nivel del espacio y puede afectar a su comunidad, subespacios y URLs. No se puede deshacer."
     },
     "spaceTransfer": {
       "title": "Transferir espacio",
@@ -198,7 +207,8 @@
         "confirmDescription": "¿Confirmar {{email}} como el correo canónico de este usuario?",
         "resolve": "Resolver"
       }
-    }
+    },
+    "edit": "Editar usuario"
   },
   "orgForm": {
     "createTitle": "Nueva organización",
@@ -225,6 +235,29 @@
     "cancel": "Cancelar",
     "created": "Organización creada.",
     "updated": "Organización actualizada.",
+    "discardTitle": "¿Descartar cambios?",
+    "discardDescription": "Tienes cambios sin guardar. ¿Salir sin guardar?",
+    "discard": "Descartar"
+  },
+  "userForm": {
+    "editTitle": "Editar a {{name}}",
+    "identity": "Identidad",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "displayName": "Nombre visible",
+    "contact": "Contacto",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "about": "Acerca de",
+    "tagline": "Eslogan",
+    "bio": "Biografía",
+    "location": "Ubicación",
+    "city": "Ciudad",
+    "country": "País",
+    "references": "Referencias",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "updated": "Usuario actualizado.",
     "discardTitle": "¿Descartar cambios?",
     "discardDescription": "Tienes cambios sin guardar. ¿Salir sin guardar?",
     "discard": "Descartar"

@@ -120,7 +120,6 @@
     "currentAccount": "Aktuelles Konto: {{name}}",
     "confirmTitle": "Übertragung bestätigen",
     "confirmDescription": "Dadurch wird die Entität dauerhaft in das ausgewählte Konto verschoben.",
-    "comingSoon": "Dieser Vorgang wird auf das neue Design umgestellt.",
     "hub": {
       "title": "Innovations-Hub übertragen",
       "description": "Einen Innovations-Hub in ein anderes Konto verschieben."
@@ -142,7 +141,17 @@
       "notEligible": "Nur space-basierte virtuelle Mitwirkende, die noch nicht konvertiert wurden, können konvertiert werden."
     },
     "spaceConversion": {
-      "title": "Space konvertieren"
+      "title": "Space konvertieren",
+      "description": "Einen Space zwischen Ebenen höher- oder herabstufen (L0 / L1 / L2).",
+      "resolvedLevel": "Aufgelöste Ebene: {{level}}",
+      "noConversions": "Für diese Space-Ebene sind keine Konvertierungen verfügbar.",
+      "promoteL1L0": "Zu Space der obersten Ebene hochstufen (L1 → L0)",
+      "demoteL1L2": "Zu Subspace herabstufen (L1 → L2)",
+      "promoteL2L1": "Zu Subspace hochstufen (L2 → L1)",
+      "parentLabel": "Übergeordneter Space",
+      "parentPlaceholder": "Übergeordneten Space auswählen",
+      "confirmTitle": "Konvertierung bestätigen",
+      "confirmDescription": "Dies ändert die Space-Ebene und kann die Community, Subspaces und URLs beeinflussen. Es kann nicht rückgängig gemacht werden."
     },
     "spaceTransfer": {
       "title": "Space übertragen",
@@ -198,7 +207,8 @@
         "confirmDescription": "{{email}} als kanonische E-Mail für diesen Benutzer festschreiben?",
         "resolve": "Auflösen"
       }
-    }
+    },
+    "edit": "Benutzer bearbeiten"
   },
   "orgForm": {
     "createTitle": "Neue Organisation",
@@ -225,6 +235,29 @@
     "cancel": "Abbrechen",
     "created": "Organisation erstellt.",
     "updated": "Organisation aktualisiert.",
+    "discardTitle": "Änderungen verwerfen?",
+    "discardDescription": "Sie haben ungespeicherte Änderungen. Ohne Speichern verlassen?",
+    "discard": "Verwerfen"
+  },
+  "userForm": {
+    "editTitle": "{{name}} bearbeiten",
+    "identity": "Identität",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "displayName": "Anzeigename",
+    "contact": "Kontakt",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "about": "Über",
+    "tagline": "Slogan",
+    "bio": "Biografie",
+    "location": "Standort",
+    "city": "Stadt",
+    "country": "Land",
+    "references": "Referenzen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "updated": "Benutzer aktualisiert.",
     "discardTitle": "Änderungen verwerfen?",
     "discardDescription": "Sie haben ungespeicherte Änderungen. Ohne Speichern verlassen?",
     "discard": "Verwerfen"

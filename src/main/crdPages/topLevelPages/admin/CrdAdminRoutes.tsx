@@ -8,7 +8,7 @@ import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
 import { ADMIN_SECTIONS, type AdminSectionId, DEFAULT_ADMIN_SECTION } from './adminSections';
 import CrdAdminShellPage from './CrdAdminShellPage';
 
-const CrdAdminUsersPage = lazy(() => import('./users/CrdAdminUsersPage'));
+const CrdAdminUsersRoutes = lazy(() => import('./users/CrdAdminUsersRoutes'));
 const CrdAdminSpacesPage = lazy(() => import('./spaces/CrdAdminSpacesPage'));
 const CrdAdminOrganizationsRoutes = lazy(() => import('./organizations/CrdAdminOrganizationsRoutes'));
 const CrdAdminInnovationPacksPage = lazy(() => import('./innovationPacks/CrdAdminInnovationPacksPage'));
@@ -23,7 +23,7 @@ const CrdAdminTransferPage = lazy(() => import('./transfer/CrdAdminTransferPage'
 /** Migrated section bodies. Sections not listed render the placeholder. */
 const SECTION_ELEMENTS: Partial<Record<AdminSectionId, ReactNode>> = {
   spaces: <CrdAdminSpacesPage />,
-  users: <CrdAdminUsersPage />,
+  users: <CrdAdminUsersRoutes />,
   organizations: <CrdAdminOrganizationsRoutes />,
   'innovation-packs': <CrdAdminInnovationPacksPage />,
   'innovation-hubs': <CrdAdminInnovationHubsPage />,

@@ -1,6 +1,7 @@
-import { History, Mail, SlidersHorizontal } from 'lucide-react';
+import { History, Mail, Pencil, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useNavigate from '@/core/routing/useNavigate';
 import { AdminSearchableTable } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountLicensePlansDialog } from '@/crd/components/admin/licensePlans/AccountLicensePlansDialog';
 import { Button } from '@/crd/primitives/button';
@@ -20,6 +21,7 @@ import { type AdminUserRow, mapUserToRow } from './userListMapper';
  */
 const CrdAdminUsersPage = () => {
   const { t } = useTranslation('crd-admin');
+  const navigate = useNavigate();
   const { isPlatformAdmin } = useAdminAccessGuard();
   const {
     userList,
@@ -69,6 +71,15 @@ const CrdAdminUsersPage = () => {
         }}
         rowActions={row => (
           <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t('users.edit')}
+              onClick={() => navigate(`/admin/users/${row.id}/edit`)}
+            >
+              <Pencil aria-hidden="true" className="size-4" />
+            </Button>
             <Button
               type="button"
               variant="ghost"

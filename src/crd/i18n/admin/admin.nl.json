@@ -120,7 +120,6 @@
     "currentAccount": "Huidig account: {{name}}",
     "confirmTitle": "Overdracht bevestigen",
     "confirmDescription": "Hiermee wordt de entiteit definitief naar het geselecteerde account verplaatst.",
-    "comingSoon": "Deze bewerking wordt gemigreerd naar het nieuwe ontwerp.",
     "hub": {
       "title": "Innovation Hub overdragen",
       "description": "Verplaats een Innovation Hub naar een ander account."
@@ -142,7 +141,17 @@
       "notEligible": "Alleen space-gebaseerde virtual contributors die nog niet zijn geconverteerd kunnen worden geconverteerd."
     },
     "spaceConversion": {
-      "title": "Space converteren"
+      "title": "Space converteren",
+      "description": "Promoveer of degradeer een space tussen niveaus (L0 / L1 / L2).",
+      "resolvedLevel": "Opgelost niveau: {{level}}",
+      "noConversions": "Er zijn geen conversies beschikbaar voor dit space-niveau.",
+      "promoteL1L0": "Promoveren naar top-level space (L1 → L0)",
+      "demoteL1L2": "Degraderen naar subspace (L1 → L2)",
+      "promoteL2L1": "Promoveren naar subspace (L2 → L1)",
+      "parentLabel": "Bovenliggende space",
+      "parentPlaceholder": "Selecteer een bovenliggende space",
+      "confirmTitle": "Conversie bevestigen",
+      "confirmDescription": "Hiermee verandert het space-niveau en dit kan de community, subspaces en URLs beïnvloeden. Dit kan niet ongedaan worden gemaakt."
     },
     "spaceTransfer": {
       "title": "Space overdragen",
@@ -198,7 +207,8 @@
         "confirmDescription": "{{email}} vastleggen als canoniek e-mailadres voor deze gebruiker?",
         "resolve": "Oplossen"
       }
-    }
+    },
+    "edit": "Gebruiker bewerken"
   },
   "orgForm": {
     "createTitle": "Nieuwe organisatie",
@@ -225,6 +235,29 @@
     "cancel": "Annuleren",
     "created": "Organisatie aangemaakt.",
     "updated": "Organisatie bijgewerkt.",
+    "discardTitle": "Wijzigingen negeren?",
+    "discardDescription": "Je hebt niet-opgeslagen wijzigingen. Weggaan zonder op te slaan?",
+    "discard": "Negeren"
+  },
+  "userForm": {
+    "editTitle": "{{name}} bewerken",
+    "identity": "Identiteit",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "displayName": "Weergavenaam",
+    "contact": "Contact",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "about": "Over",
+    "tagline": "Slogan",
+    "bio": "Bio",
+    "location": "Locatie",
+    "city": "Plaats",
+    "country": "Land",
+    "references": "Referenties",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "updated": "Gebruiker bijgewerkt.",
     "discardTitle": "Wijzigingen negeren?",
     "discardDescription": "Je hebt niet-opgeslagen wijzigingen. Weggaan zonder op te slaan?",
     "discard": "Negeren"

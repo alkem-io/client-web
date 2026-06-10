@@ -120,7 +120,6 @@
     "currentAccount": "Compte actuel : {{name}}",
     "confirmTitle": "Confirmer le transfert",
     "confirmDescription": "Cela déplace définitivement l’entité vers le compte sélectionné.",
-    "comingSoon": "Cette opération est en cours de migration vers le nouveau design.",
     "hub": {
       "title": "Transférer le hub d’innovation",
       "description": "Déplacer un hub d’innovation vers un autre compte."
@@ -142,7 +141,17 @@
       "notEligible": "Seuls les contributeurs virtuels basés sur un espace et non encore convertis peuvent être convertis."
     },
     "spaceConversion": {
-      "title": "Convertir l’espace"
+      "title": "Convertir l’espace",
+      "description": "Promouvoir ou rétrograder un espace entre les niveaux (L0 / L1 / L2).",
+      "resolvedLevel": "Niveau résolu : {{level}}",
+      "noConversions": "Aucune conversion n’est disponible pour ce niveau d’espace.",
+      "promoteL1L0": "Promouvoir en espace de premier niveau (L1 → L0)",
+      "demoteL1L2": "Rétrograder en sous-espace (L1 → L2)",
+      "promoteL2L1": "Promouvoir en sous-espace (L2 → L1)",
+      "parentLabel": "Espace parent",
+      "parentPlaceholder": "Sélectionner un espace parent",
+      "confirmTitle": "Confirmer la conversion",
+      "confirmDescription": "Cela change le niveau de l’espace et peut affecter sa communauté, ses sous-espaces et ses URL. Cette action est irréversible."
     },
     "spaceTransfer": {
       "title": "Transférer l’espace",
@@ -198,7 +207,8 @@
         "confirmDescription": "Valider {{email}} comme e-mail canonique pour cet utilisateur ?",
         "resolve": "Résoudre"
       }
-    }
+    },
+    "edit": "Modifier l’utilisateur"
   },
   "orgForm": {
     "createTitle": "Nouvelle organisation",
@@ -225,6 +235,29 @@
     "cancel": "Annuler",
     "created": "Organisation créée.",
     "updated": "Organisation mise à jour.",
+    "discardTitle": "Abandonner les modifications ?",
+    "discardDescription": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?",
+    "discard": "Abandonner"
+  },
+  "userForm": {
+    "editTitle": "Modifier {{name}}",
+    "identity": "Identité",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "displayName": "Nom d’affichage",
+    "contact": "Contact",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "about": "À propos",
+    "tagline": "Slogan",
+    "bio": "Biographie",
+    "location": "Emplacement",
+    "city": "Ville",
+    "country": "Pays",
+    "references": "Références",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "updated": "Utilisateur mis à jour.",
     "discardTitle": "Abandonner les modifications ?",
     "discardDescription": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?",
     "discard": "Abandonner"

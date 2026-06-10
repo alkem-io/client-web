@@ -84,6 +84,22 @@ const calloutTransferHook = {
   handleSpaceSubmit: vi.fn(),
   handleTransfer: vi.fn(),
 };
+const spaceConversionHook = {
+  space: undefined as unknown,
+  resolvedLevel: undefined as unknown,
+  accountOwnerName: undefined,
+  siblingSubspaces: [] as { id: string; name: string }[],
+  error: undefined,
+  loading: false,
+  mutationLoading: false,
+  handleResolve: vi.fn(),
+  handlePromoteL1ToL0: vi.fn(),
+  handleDemoteL1ToL2: vi.fn(),
+  handlePromoteL2ToL1: vi.fn(),
+};
+vi.mock('@/domain/platformAdmin/management/transfer/spaceConversion/useSpaceConversion', () => ({
+  default: () => spaceConversionHook,
+}));
 vi.mock('@/domain/platformAdmin/management/transfer/transferSpace/useTransferSpace', () => ({
   default: () => spaceTransferHook,
 }));
@@ -104,6 +120,8 @@ beforeEach(() => {
   spaceTransferHook.accountOwner = undefined;
   calloutTransferHook.callout = undefined;
   calloutTransferHook.calloutsSetId = undefined;
+  spaceConversionHook.space = undefined;
+  spaceConversionHook.resolvedLevel = undefined;
 });
 
 describe('CrdAdminTransferPage', () => {
@@ -134,6 +152,16 @@ describe('CrdAdminTransferPage', () => {
     const dialog = screen.getByRole('alertdialog');
     await userEvent.click(within(dialog).getByRole('button', { name: 'transfer.vcConversion.convert' }));
     expect(vcConversionHook.handleConvert).toHaveBeenCalled();
+  });
+
+  test('a resolved L1 space conversion promotes to L0 after confirm', async () => {
+    spaceConversionHook.space = { id: 's1' };
+    spaceConversionHook.resolvedLevel = 'L1';
+    render(<CrdAdminTransferPage />);
+    await userEvent.click(screen.getByRole('button', { name: 'transfer.spaceConversion.promoteL1L0' }));
+    const dialog = screen.getByRole('alertdialog');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'transfer.spaceConversion.title' }));
+    expect(spaceConversionHook.handlePromoteL1ToL0).toHaveBeenCalled();
   });
 
   test('space transfer resolves source + target and transfers after confirm', async () => {

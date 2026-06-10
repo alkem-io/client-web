@@ -9,6 +9,7 @@ import useTransferSpace from '@/domain/platformAdmin/management/transfer/transfe
 import useTransferVirtualContributor from '@/domain/platformAdmin/management/transfer/transferVirtualContributor/useTransferVirtualContributor';
 import useVcConversion from '@/domain/platformAdmin/management/transfer/vcConversion/useVcConversion';
 import { AccountTargetTransfer } from './AccountTargetTransfer';
+import { SpaceConversionPanel } from './SpaceConversionPanel';
 import { TwoUrlTransfer } from './TwoUrlTransfer';
 
 const InnovationHubTransferPanel = () => {
@@ -216,17 +217,10 @@ const CalloutTransferPanel = () => {
   );
 };
 
-const ComingSoonPanel = ({ title }: { title: string }) => {
-  const { t } = useTranslation('crd-admin');
-  return <TransferOperationCard title={title} description={t('transfer.comingSoon')} />;
-};
-
 /**
  * Transfer & Conversions admin section. Reuses the MUI-free transfer/conversion
- * hooks verbatim. All transfers (Space, Innovation Hub/Pack, Virtual
- * Contributor, Callout) and VC conversion are live; Space conversion (the
- * multi-step level-conversion flow with move panels) is migrated in a follow-up
- * and shown as a coming-soon panel.
+ * hooks verbatim. All operations are live: Space & VC conversion, and Space /
+ * Innovation Hub / Innovation Pack / Virtual Contributor / Callout transfers.
  */
 const CrdAdminTransferPage = () => {
   const { t } = useTranslation('crd-admin');
@@ -234,8 +228,8 @@ const CrdAdminTransferPage = () => {
   return (
     <TransferSectionLayout warning={t('transfer.warning')}>
       <TransferGroup title={t('transfer.conversionsArea')}>
+        <SpaceConversionPanel />
         <VcConversionPanel />
-        <ComingSoonPanel title={t('transfer.spaceConversion.title')} />
       </TransferGroup>
       <TransferGroup title={t('transfer.transfersArea')}>
         <SpaceTransferPanel />

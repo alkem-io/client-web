@@ -91,20 +91,20 @@ description: "Task list for Global Administration in the CRD Design System"
 ### Implementation for User Story 2
 
 - [X] T020 [P] [US2] Create `users/userListMapper.ts` in `src/main/crdPages/topLevelPages/admin/users/` → `AdminUserRow[]` (incl. `canChangeEmail` from authorization), per data-model.md. No GraphQL types leak.
-- [ ] T021 [P] [US2] Create `users/userDetailMapper.ts` + `users/emailHistoryMapper.ts` → `AdminUserDetail`, `EmailChangeHistoryItem[]`.
-- [ ] T022 [P] [US2] Build CRD presentational `UserEditForm` in `src/crd/components/admin/users/UserEditForm.tsx` (all fields per `data-model.md` `AdminUserDetail`: displayName/firstName/lastName/email, phone, city/country, tagline, linkedin/bsky/github, tags, references, avatar via FloatingField/tags-input/avatar), `ChangeEmailDialog` (`useDialogCloseGuard`), and `EmailChangeHistoryView` per `section-contracts.md`.
-- [ ] T022a [P] [US2] Render the user `bio` field via the CRD **markdown editor** in `UserEditForm.tsx` (markdown, 2000-char limit) — parity with MUI `FormikMarkdownField`; CRD CLAUDE.md rule #10.
+- [X] T021 [P] [US2] Create `users/userDetailMapper.ts` + `users/emailHistoryMapper.ts` → `AdminUserDetail`, `EmailChangeHistoryItem[]`.
+- [X] T022 [P] [US2] Build CRD presentational `UserEditForm` in `src/crd/components/admin/users/UserEditForm.tsx` (all fields per `data-model.md` `AdminUserDetail`: displayName/firstName/lastName/email, phone, city/country, tagline, linkedin/bsky/github, tags, references, avatar via FloatingField/tags-input/avatar), `ChangeEmailDialog` (`useDialogCloseGuard`), and `EmailChangeHistoryView` per `section-contracts.md`.
+- [X] T022a [P] [US2] Render the user `bio` field via the CRD **markdown editor** in `UserEditForm.tsx` (markdown, 2000-char limit) — parity with MUI `FormikMarkdownField`; CRD CLAUDE.md rule #10.
 - [X] T023 [US2] Implement `users/CrdAdminUsersPage.tsx` — reuse `usePlatformAdminUsersListQuery` (server mode), map, render `AdminSearchableTable<AdminUserRow>` with Email column + row actions (change-email when allowed, license-plans settings via `ManageLicensePlans`, open-detail link); delete via `useDeleteUserMutation` + `refetchPlatformAdminUsersListQuery`.
-- [ ] T024 [US2] Implement `users/CrdAdminUserPage.tsx` (detail/edit) — `useUserQuery` + `useUpdateUserMutation`, render `UserEditForm`; change-email via `useChangeUserEmailMutation`.
-- [ ] T024a [US2] Add a page-level unsaved-edits guard to `CrdAdminUserPage.tsx` (prompt on route navigation away with a dirty form) — reuse the dirty-guard pattern from space settings (`DirtyTabGuardContext`) or a React Router blocker; `DiscardChangesDialog` on confirm.
+- [X] T024 [US2] Implement `users/CrdAdminUserPage.tsx` (detail/edit) — `useUserQuery` + `useUpdateUserMutation`, render `UserEditForm`; change-email via `useChangeUserEmailMutation`.
+- [X] T024a [US2] Add a page-level unsaved-edits guard to `CrdAdminUserPage.tsx` (prompt on route navigation away with a dirty form) — reuse the dirty-guard pattern from space settings (`DirtyTabGuardContext`) or a React Router blocker; `DiscardChangesDialog` on confirm.
 - [X] T025 [US2] Implement `users/CrdAdminUserEmailHistoryPage.tsx` — render `EmailChangeHistoryView`; resolve drift via `useResolveUserEmailDriftMutation`.
-- [ ] T026 [US2] Wire Users routes in `CrdAdminRoutes.tsx` (`/admin/users`, `/admin/users/:userName`, `/admin/users/:userName/edit`, `/admin/users/:userId/email-history`), replacing the placeholder; confirm deep-link/refresh parity.
-- [ ] T027 [P] [US2] Add Users i18n keys to the 6 `admin.<lang>.json` files (columns, actions, dialogs, history).
+- [X] T026 [US2] Wire Users routes in `CrdAdminRoutes.tsx` (`/admin/users`, `/admin/users/:userName`, `/admin/users/:userName/edit`, `/admin/users/:userId/email-history`), replacing the placeholder; confirm deep-link/refresh parity.
+- [X] T027 [P] [US2] Add Users i18n keys to the 6 `admin.<lang>.json` files (columns, actions, dialogs, history).
 
 ### Tests for User Story 2
 
 - [X] T028 [P] [US2] Page/parity tests in `users/__tests__/CrdAdminUsersPage.test.tsx` — list columns/search/server-pagination; delete confirm + refetch; change-email hidden for non-global-admin.
-- [ ] T029 [P] [US2] Component tests in `src/crd/components/admin/users/__tests__/` — `UserEditForm` validation/submit; `ChangeEmailDialog` unsaved-guard; `EmailChangeHistoryView` outcome badges + resolve-drift callback.
+- [X] T029 [P] [US2] Component tests in `src/crd/components/admin/users/__tests__/` — `UserEditForm` validation/submit; `ChangeEmailDialog` unsaved-guard; `EmailChangeHistoryView` outcome badges + resolve-drift callback.
 
 **Checkpoint**: Users section at full parity.
 
@@ -232,8 +232,8 @@ description: "Task list for Global Administration in the CRD Design System"
 ### Implementation for User Story 8
 
 - [X] T062 [P] [US8] Build CRD `TransferSectionLayout` (warning banner) and `AccountPicker` (reuse `ContributorSelector`) in `src/crd/components/admin/transfer/`, per `section-contracts.md`.
-- [ ] T063 [P] [US8] Build CRD sub-form components for the 5 transfers + 2 conversions in `src/crd/components/admin/transfer/` per `section-contracts.md` §Transfer (conversions: single source `url`; Space/Callout transfers: source `url` + **target `url` text field**; Hub/Pack/VC transfers: source `url` + `AccountPicker`). Each: inputs + submit, all destructive → consumer wires `ConfirmationDialog`.
-- [ ] T064 [US8] Implement conversion connectors in `transfer/` — space conversion (`useSpaceConversion` → L1→L0 / L1→L2 [needs parent] / L2→L1) and VC conversion (`useVcConversion`), each behind `ConfirmationDialog`.
+- [X] T063 [P] [US8] Build CRD sub-form components for the 5 transfers + 2 conversions in `src/crd/components/admin/transfer/` per `section-contracts.md` §Transfer (conversions: single source `url`; Space/Callout transfers: source `url` + **target `url` text field**; Hub/Pack/VC transfers: source `url` + `AccountPicker`). Each: inputs + submit, all destructive → consumer wires `ConfirmationDialog`.
+- [X] T064 [US8] Implement conversion connectors in `transfer/` — space conversion (`useSpaceConversion` → L1→L0 / L1→L2 [needs parent] / L2→L1) and VC conversion (`useVcConversion`), each behind `ConfirmationDialog`.
 - [X] T065 [US8] Implement transfer connectors in `transfer/` — Hub/Pack/VC use `AccountPicker` + `useAccountSearch` + use{TransferInnovationHub,TransferInnovationPack,TransferVirtualContributor}ToAccountMutation; **Space and Callout use a target URL text field** (not the picker) + `useTransferSpaceToAccountMutation` / `useTransferCalloutMutation`. Each behind `ConfirmationDialog` (Callout shows the same 4 warnings as MUI).
 - [X] T066 [US8] Implement `transfer/CrdAdminTransferPage.tsx` composing the warning banner + conversions area + transfers area (parity layout with MUI `TransferPage`).
 - [X] T067 [US8] Wire route in `CrdAdminRoutes.tsx` (`/admin/transfer`), replacing the placeholder.

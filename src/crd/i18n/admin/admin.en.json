@@ -120,7 +120,6 @@
     "currentAccount": "Current account: {{name}}",
     "confirmTitle": "Confirm transfer",
     "confirmDescription": "This permanently moves the entity to the selected account.",
-    "comingSoon": "This operation is being migrated to the new design.",
     "hub": {
       "title": "Transfer Innovation Hub",
       "description": "Move an Innovation Hub to another account."
@@ -142,7 +141,17 @@
       "notEligible": "Only space-based virtual contributors that are not already converted can be converted."
     },
     "spaceConversion": {
-      "title": "Convert Space"
+      "title": "Convert Space",
+      "description": "Promote or demote a space between levels (L0 / L1 / L2).",
+      "resolvedLevel": "Resolved level: {{level}}",
+      "noConversions": "No conversions are available for this space level.",
+      "promoteL1L0": "Promote to top-level space (L1 → L0)",
+      "demoteL1L2": "Demote to subspace (L1 → L2)",
+      "promoteL2L1": "Promote to subspace (L2 → L1)",
+      "parentLabel": "Parent space",
+      "parentPlaceholder": "Select a parent space",
+      "confirmTitle": "Confirm conversion",
+      "confirmDescription": "This changes the space level and may affect its community, subspaces, and URLs. It cannot be undone."
     },
     "spaceTransfer": {
       "title": "Transfer Space",
@@ -198,7 +207,8 @@
         "confirmDescription": "Commit {{email}} as the canonical email for this user?",
         "resolve": "Resolve"
       }
-    }
+    },
+    "edit": "Edit user"
   },
   "orgForm": {
     "createTitle": "New organization",
@@ -225,6 +235,29 @@
     "cancel": "Cancel",
     "created": "Organization created.",
     "updated": "Organization updated.",
+    "discardTitle": "Discard changes?",
+    "discardDescription": "You have unsaved changes. Leave without saving?",
+    "discard": "Discard"
+  },
+  "userForm": {
+    "editTitle": "Edit {{name}}",
+    "identity": "Identity",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "displayName": "Display name",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "about": "About",
+    "tagline": "Tagline",
+    "bio": "Bio",
+    "location": "Location",
+    "city": "City",
+    "country": "Country",
+    "references": "References",
+    "save": "Save",
+    "cancel": "Cancel",
+    "updated": "User updated.",
     "discardTitle": "Discard changes?",
     "discardDescription": "You have unsaved changes. Leave without saving?",
     "discard": "Discard"

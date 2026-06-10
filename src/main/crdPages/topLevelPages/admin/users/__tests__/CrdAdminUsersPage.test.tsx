@@ -34,6 +34,9 @@ vi.mock('@/domain/platformAdmin/domain/users/emailChange/useChangeUserEmail', ()
   default: () => ({ changeEmail: changeEmailMock, loading: false, errorMessage: undefined, clearError: vi.fn() }),
 }));
 
+const navigateMock = vi.fn();
+vi.mock('@/core/routing/useNavigate', () => ({ default: () => navigateMock }));
+
 const baseHookReturn = {
   userList: [
     {
@@ -134,5 +137,11 @@ describe('CrdAdminUsersPage', () => {
     accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: false });
     render(<CrdAdminUsersPage />);
     expect(screen.queryByRole('button', { name: 'users.changeEmail.action' })).toBeNull();
+  });
+
+  test('edit row action navigates to the user edit route', async () => {
+    render(<CrdAdminUsersPage />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'users.edit' })[0]);
+    expect(navigateMock).toHaveBeenCalledWith('/admin/users/u1/edit');
   });
 });
