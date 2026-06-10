@@ -337,13 +337,23 @@ export function PostCard({
         {/* References + tags row — same component as the detail dialog (DRY). */}
         <ReferencesAndTagsStrip references={post.references} tags={post.tags} />
 
-        {/* Whiteboard framing preview — always render (even when empty), MUI parity. */}
+        {/* Whiteboard framing preview — always render (even when empty), MUI parity.
+            The whole preview is the click target (cursor-pointer everywhere), not just the centered
+            label — matching the contribution cards. The label is a non-interactive <span> (nesting a
+            <button> would be invalid). */}
         {post.type === 'whiteboard' && (
-          <div className="rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video">
+          <button
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              (onOpenFraming ?? onClick)?.();
+            }}
+            className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 aspect-video text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {post.framingImageUrl ? (
               <img
                 src={post.framingImageUrl}
-                alt={t('callout.whiteboard')}
+                alt=""
                 className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
               />
             ) : (
@@ -352,23 +362,25 @@ export function PostCard({
               </div>
             )}
             <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Button
-                variant="secondary"
-                className="shadow-sm"
-                onClick={event => {
-                  event.stopPropagation();
-                  (onOpenFraming ?? onClick)?.();
-                }}
-              >
+              <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
                 {t('callout.openWhiteboard')}
-              </Button>
+              </span>
             </div>
-          </div>
+          </button>
         )}
 
-        {/* Memo framing preview — fixed-height box; renders icon centred when empty. */}
+        {/* Memo framing preview — fixed-height box; renders icon centred when empty.
+            Whole box is the click target (cursor-pointer everywhere); the label is a non-interactive
+            <span>. Mirrors the contribution cards, which likewise nest CroppedMarkdown in a button. */}
         {post.type === 'memo' && (
-          <div className="relative rounded-lg overflow-hidden border border-border bg-muted/30 h-32">
+          <button
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              (onOpenFraming ?? onClick)?.();
+            }}
+            className="relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-muted/30 h-32 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {post.framingMemoMarkdown ? (
               <div className="p-3 h-full">
                 <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="100%" />
@@ -379,18 +391,11 @@ export function PostCard({
               </div>
             )}
             <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Button
-                variant="secondary"
-                className="shadow-sm"
-                onClick={event => {
-                  event.stopPropagation();
-                  (onOpenFraming ?? onClick)?.();
-                }}
-              >
+              <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm h-9 px-4 text-control">
                 {t('callout.openMemo')}
-              </Button>
+              </span>
             </div>
-          </div>
+          </button>
         )}
 
         {/* Media gallery framing preview — 4-tile grid; falls back to a placeholder

@@ -27,11 +27,16 @@ type MapWhiteboardFooterParams = {
   isAuthenticated: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
   myMembershipStatus?: CommunityMembershipStatus;
+  // Whether the whiteboard still has an owner (`createdBy.profile`). When the policy locks the board and
+  // the owner is gone, the footer points at a space admin instead of a (broken) owner link — mirrors the
+  // MUI `contentUpdatePolicyNoOwner` branch in `WhiteboardDialogFooter.tsx`.
+  hasOwner?: boolean;
 };
 
 export enum ReadonlyReason {
   Readonly = 'readonly',
   ContentUpdatePolicy = 'contentUpdatePolicy',
+  ContentUpdatePolicyNoOwner = 'contentUpdatePolicyNoOwner',
   NoMembership = 'noMembership',
   Unauthenticated = 'unauthenticated',
 }
@@ -42,8 +47,9 @@ export function getReadonlyReason(params: {
   contentUpdatePolicy?: ContentUpdatePolicy;
   myMembershipStatus?: CommunityMembershipStatus;
   collaboratorMode: CollaboratorMode | null;
+  hasOwner?: boolean;
 }): ReadonlyReason | null {
-  const { canEdit, isAuthenticated, contentUpdatePolicy, myMembershipStatus, collaboratorMode } = params;
+  const { canEdit, isAuthenticated, contentUpdatePolicy, myMembershipStatus, collaboratorMode, hasOwner } = params;
 
   if (canEdit) {
     return collaboratorMode === 'read' ? ReadonlyReason.Readonly : null;
@@ -57,7 +63,8 @@ export function getReadonlyReason(params: {
   ) {
     return ReadonlyReason.NoMembership;
   }
-  return ReadonlyReason.ContentUpdatePolicy;
+  // Policy-locked: point at the owner when there is one, otherwise at a space admin (no broken owner link).
+  return hasOwner ? ReadonlyReason.ContentUpdatePolicy : ReadonlyReason.ContentUpdatePolicyNoOwner;
 }
 
 export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): WhiteboardCollabFooterMappedProps {
@@ -69,6 +76,7 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
     contentUpdatePolicy: params.contentUpdatePolicy,
     myMembershipStatus: params.myMembershipStatus,
     collaboratorMode: params.collaboratorMode,
+    hasOwner: params.hasOwner,
   });
 
   const canRestart =

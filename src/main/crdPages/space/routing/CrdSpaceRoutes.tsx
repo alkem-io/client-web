@@ -90,19 +90,23 @@ export default function CrdSpaceRoutes() {
                 </Suspense>
               }
             />
-
-            {/* Subspace routes have their own layout */}
-            <Route
-              path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
-              element={
-                <SubspaceContextProvider>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <SubspaceRoutes />
-                  </Suspense>
-                </SubspaceContextProvider>
-              }
-            />
           </Route>
+
+          {/* Subspaces have their own protections (the subspace-level `canRead` guard in
+              CrdSubspaceProtectedRoutes), so they must sit OUTSIDE the parent space's read gate.
+              Otherwise a user invited to a private subspace — who has no access to the parent —
+              gets bounced to the parent's About ("Apply") and can never reach the subspace's own
+              About to accept the invitation. Mirrors the legacy MUI SpaceRoutes. */}
+          <Route
+            path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
+            element={
+              <SubspaceContextProvider>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SubspaceRoutes />
+                </Suspense>
+              </SubspaceContextProvider>
+            }
+          />
           {/* Legacy route redirects — old bookmarks/links use path-based sections */}
           <Route
             path={EntityPageSection.Dashboard}

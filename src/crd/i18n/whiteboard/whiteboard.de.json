@@ -47,6 +47,7 @@
     "readonlyReason": {
       "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",
       "contentUpdatePolicy": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Bitten Sie den Besitzer <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
+      "contentUpdatePolicyNoOwner": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Der Besitzer ist nicht mehr verfügbar – bitten Sie einen Administrator des Bereichs, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
       "noMembership": "Sie müssen Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um <spacelink>beizutreten/sich zu bewerben</spacelink>",
       "unauthenticated": "Sie müssen angemeldet und Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um sich <signinlink>anzumelden</signinlink>"
     },
