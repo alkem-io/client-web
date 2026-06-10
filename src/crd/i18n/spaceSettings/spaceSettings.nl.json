@@ -696,6 +696,21 @@
       "alkemioSupportAccess": "Alkemio-ondersteuning",
       "trustHostOrganization": "Vertrouw hostorganisatie",
       "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren."
+    },
+    "saveAsTemplate": {
+      "title": "Opslaan als template",
+      "description": "Maak een herbruikbaar template van deze subspace, inclusief de layout en inhoud.",
+      "button": "Opslaan als template"
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "description": "Verwijder deze subspace en alle inhoud ervan permanent.",
+      "delete": "Deze subspace verwijderen",
+      "deleteDialog": {
+        "title": "Subspace verwijderen",
+        "description": "Hierdoor wordt deze subspace en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "confirm": "Subspace verwijderen"
+      }
     }
   },
   "storage": {

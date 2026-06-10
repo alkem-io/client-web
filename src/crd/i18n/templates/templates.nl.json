@@ -89,6 +89,10 @@
       "phases": "Fasen",
       "starterCallouts": "Starttools",
       "subspaceTemplates": "Subspace-templates",
+      "includesSubspaces": "Dit template bevat ook deze subspaces:",
+      "noCallouts": "Geen tools in deze fase.",
+      "noDescription": "Geen beschrijving",
+      "privateSubspace": "Privé-subspace",
       "none": "Geen"
     },
     "communityGuidelines": {
@@ -136,6 +140,7 @@
       "name": "Template-naam",
       "namePlaceholder": "bijv. Project-kickoff",
       "nameRequired": "Een template-naam is verplicht.",
+      "descriptionRequired": "Een beschrijving is verplicht.",
       "description": "Beschrijving",
       "descriptionPlaceholder": "Waarvoor is dit template?",
       "tags": "Labels",
@@ -163,6 +168,7 @@
       "sourceRequired": "Plak eerst een Space-URL en klik op \"Gebruik deze Space\".",
       "recursive": "Geneste Subspaces meenemen",
       "capturedStructure": "Vastgelegde structuur",
+      "alwaysIncluded": "Altijd inbegrepen: Over-informatie en instellingen",
       "urlLoader": {
         "description": "Plak de URL van een Space of Subspace waarvan je de structuur wilt kopiëren.",
         "placeholder": "https://…",

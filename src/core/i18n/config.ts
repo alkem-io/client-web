@@ -219,6 +219,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/admin/admin.de.json'),
     fr: () => import('@/crd/i18n/admin/admin.fr.json'),
   },
+  'crd-help': {
+    en: () => import('@/crd/i18n/help/help.en.json'),
+    es: () => import('@/crd/i18n/help/help.es.json'),
+    nl: () => import('@/crd/i18n/help/help.nl.json'),
+    bg: () => import('@/crd/i18n/help/help.bg.json'),
+    de: () => import('@/crd/i18n/help/help.de.json'),
+    fr: () => import('@/crd/i18n/help/help.fr.json'),
+  },
 };
 
 // Cache for loaded translations

@@ -26407,10 +26407,13 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 export const SpaceStorageConfigDocument = gql`
-    query SpaceStorageConfig($spaceId: UUID!) {
+    query SpaceStorageConfig($spaceId: UUID!, $includeSpaceProfile: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id
+      profile @include(if: $includeSpaceProfile) {
+        ...ProfileStorageConfig
+      }
       about {
         id
         profile {
@@ -26435,6 +26438,7 @@ export const SpaceStorageConfigDocument = gql`
  * const { data, loading, error } = useSpaceStorageConfigQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeSpaceProfile: // value for 'includeSpaceProfile'
  *   },
  * });
  */

@@ -198,7 +198,12 @@ export function useTemplatesManager({
       return;
     }
     if (card.type === 'space') {
-      // Space template edit (profile-only — the source space is shown but re-capture isn't wired here).
+      // Space template edit is profile-only by default. The captured structure is previewed from the
+      // template's own `contentSpace` (a `TemplateContentSpace`, NOT a real `Space`), so we must NOT
+      // seed it as `sourceSpaceId` — that id can't be looked up via `SpaceTemplateContent`
+      // (`lookup.space`) and would 404. `sourceSpaceId` stays undefined; the URL picker lets the user
+      // optionally re-select a real source space to re-capture from on save.
+      const preview = mapTemplateContent(fetched, 'space');
       form.openEdit(
         card.id,
         {
@@ -207,10 +212,12 @@ export function useTemplatesManager({
           description: card.description,
           tags: card.tags,
           recursive: true,
-          sourceSpaceId: fetched.contentSpace?.id,
+          sourceSpaceId: undefined,
         },
         undefined,
-        tagsetId
+        tagsetId,
+        undefined,
+        preview.type === 'space' ? preview : undefined
       );
       return;
     }
