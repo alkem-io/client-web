@@ -44,7 +44,7 @@
 
 ### Layer 3 — presentational (pure)
 
-- [ ] T004 [P] [US1] Add prop types in `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.types.ts` from `contracts/creationWizard.ts` (step machine, values, view props, sub-dialog props).
+- [X] T004 [P] [US1] Add prop types in `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.types.ts` from `contracts/creationWizard.ts` (step machine, values, view props, sub-dialog props).
 - [ ] T005 [US1] Build the full-page shell `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx` (header, step switch, footer with Back/Next/Create — page scroll, not dialog).
 - [ ] T006 [P] [US1] Build initial step `src/crd/components/virtualContributor/creationWizard/steps/InitialStep.tsx` (name/tagline/description/avatar + 3 path cards).
 - [ ] T007 [P] [US1] Build add-knowledge step `.../steps/AddKnowledgeStep.tsx` with post rows (`PostItem`) and document rows (`DocumentItem`) — add/remove, validation display.
@@ -62,7 +62,7 @@
 
 ### Routing & launch points
 
-- [ ] T016 [US1] Add `buildCreateVirtualContributorUrl(accountId?, name?)` to `src/main/routing/urlBuilders.ts`.
+- [X] T016 [US1] Add `buildCreateVirtualContributorUrl(accountId?, name?)` to `src/main/routing/urlBuilders.ts`.
 - [ ] T017 [US1] Mount the full-page route (lazy + `Suspense` + `WithApmTransaction`, wrapped in `CrdLayoutWrapper`) in `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (or `TopLevelRoutes.tsx` if top-level), guarded so only account-privileged users reach it.
 - [ ] T018 [US1] Switch the four CRD launch points from inline `{virtualContributorWizard}` to `navigate(buildCreateVirtualContributorUrl(...))`: `src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx`, `.../DashboardWithMemberships.tsx`, `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`, `.../organizationPages/settings/account/CrdOrgAccountTab.tsx`.
 
