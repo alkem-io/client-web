@@ -162,8 +162,8 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
-- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
+- **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **Core is frozen** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its Crowdin-generated locales serve only the not-yet-migrated MUI app. Crowdin still applies ONLY to `src/core/i18n/`: there, only `translation.en.json` may be edited (for legacy upkeep of existing keys), and the non-English files are generated via Crowdin and must never be edited manually.
 
 ### Namespaces
 
@@ -318,7 +318,11 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
+`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`.
+
+**CRD is the only design system for new features.** All new client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI (`src/core/ui/`, `@mui/*`, `@emotion/*`) is **frozen** — no new MUI view/presentational components may be added; MUI is only ever *removed* as pages are migrated. `@mui/*`/`@emotion/*` imports are acceptable only inside already-existing MUI files until they are migrated.
+
+The critical rules:
 
 **Hard restrictions — every file in `src/crd/`:**
 - **NO MUI** — zero imports from `@mui/*` or `@emotion/*`
