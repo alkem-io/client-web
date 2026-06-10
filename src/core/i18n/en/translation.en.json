@@ -9,7 +9,7 @@
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its $t(common.profile)!"
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Centre. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its $t(common.profile)!"
     },
     "feedback": {
       "message": "Is the answer relevant?",
@@ -48,7 +48,7 @@
     "isClickable": "TRUE"
   },
   "cookie": {
-    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
+    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyse site usage.",
     "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
     "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
     "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
@@ -252,7 +252,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognised digital identities and secure authentication."
       }
     },
     "signUp": {
@@ -380,10 +380,10 @@
     "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
-    "Organization": "Organization",
-    "Organizations": "Organizations",
-    "organization": "organization",
-    "organizations": "organizations",
+    "Organization": "Organisation",
+    "Organizations": "Organisations",
+    "organization": "organisation",
+    "organizations": "organisations",
     "communications": "Updates from the $t(common.leads)",
     "applications": "Applications",
     "introduction": "Introduction",
@@ -481,7 +481,7 @@
     "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
-    "helpCenter": "Help Center",
+    "helpCenter": "Help Centre",
     "loading": "Loading...",
     "innovation-flow": "Innovation Flow",
     "innovation-flows": "Innovation Flows",
@@ -1004,7 +1004,7 @@
     },
     "accessForbidden": {
       "title": "Content not available",
-      "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
+      "description": "We apologise, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
     "contributions": {
       "contributionsCount_one": "{{count}} Contribution",
@@ -1121,7 +1121,7 @@
       "alkemio": {
         "name": "Alkemio",
         "title": "Share on Alkemio",
-        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
+        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalised message.",
         "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
       },
       "linkedin": {
@@ -1333,7 +1333,7 @@
         "use": "Use this $t(common.space)",
         "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a $t(common.template).",
         "noRights": "You need $t(common.admin) rights in the $t(common.space) you want to copy as a $t(common.template).",
-        "invalidUrl": "The url is not recognized as a $t(common.space) URL.",
+        "invalidUrl": "The url is not recognised as a $t(common.space) URL.",
         "spaceNotFoundError": "$t(common.space) not found",
         "selectAnother": "Update Collaboration from another $t(common.space)"
       },
@@ -1775,7 +1775,7 @@
       "visuals-step": {
         "title": "Visuals",
         "headline": "Congratulations, you have now successfully created a $t(common.post)!",
-        "explanation": "To further personalize your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
+        "explanation": "To further personalise your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
         "bottom-note": "You will still have the possibility to change these visuals under the $t(common.settings) tab as well as adding attachments and a Banner for the $t(common.dashboard) card."
       }
     },
@@ -2389,7 +2389,7 @@
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Your $t(common.space) is Ready!",
-      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customise your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
     },
     "spaceCard": {
@@ -2633,9 +2633,9 @@
         },
         "demoteL1ToL2": {
           "button": "Demote to Sub-subspace (L1 → L2)",
-          "hint": "All community members, leads, organizations, and virtual contributors will be removed. Only user admins are preserved. This is the most destructive conversion.",
+          "hint": "All community members, leads, organisations, and virtual contributors will be removed. Only user admins are preserved. This is the most destructive conversion.",
           "confirmTitle": "Demote Subspace to Sub-subspace?",
-          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organizations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
+          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organisations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
           "noTargets": "No other subspaces exist in this space to serve as a parent.",
           "targetLabel": "Move under subspace"
         },
@@ -2647,7 +2647,7 @@
         },
         "move": "Move",
         "moveL1ToL0": {
-          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organisations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
           "targetLabel": "Target Space",
           "button": "Move Space (L1 → L1 cross-Space)",
           "confirmTitle": "Move Subspace to another Space?",
@@ -2757,7 +2757,7 @@
         "typeToSearch": "Type at least 2 characters to search.",
         "noResults": "No accounts found with TransferResourceAccept privilege.",
         "typeUser": "User",
-        "typeOrganization": "Organization"
+        "typeOrganization": "Organisation"
       },
       "transferCallout": {
         "sectionTitle": "Transfer $t(common.post)",
@@ -2801,7 +2801,7 @@
         "spaceUrl": "Space URL",
         "spaceUrlPlaceholder": "Paste L0 space URL or path",
         "targetAccountUrl": "Target Account Owner URL",
-        "targetAccountUrlPlaceholder": "Paste user or organization URL",
+        "targetAccountUrlPlaceholder": "Paste user or organisation URL",
         "lookup": "Lookup",
         "spaceInfo": "Space Info",
         "targetAccountInfo": "Target Account Info",
@@ -2810,13 +2810,13 @@
         "accountId": "Account ID",
         "accountOwnerType": "Account Owner Type",
         "accountOwnerTypeUser": "User",
-        "accountOwnerTypeOrganization": "Organization",
+        "accountOwnerTypeOrganization": "Organisation",
         "transferButton": "Transfer Space",
         "transferring": "Transferring...",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "urlNotUserOrOrg": "URL does not resolve to a user or organisation",
         "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
         "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
         "successTitle": "Transfer Successful",
@@ -2825,7 +2825,7 @@
         "close": "Close",
         "urlRequired": "URL is required",
         "confirmTitle": "Are you sure?",
-        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
+        "confirmWarning1": "After the transfer, ensure the new owner (or organisation Admins) are added as admins in the community.",
         "confirmButton": "Transfer"
       },
       "generic": {
@@ -3076,7 +3076,7 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customise the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
             "reorderSubspaces": "Reorder $t(common.subspaces)",
@@ -3180,7 +3180,7 @@
             "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
             "approverNameLabel": "Approved by",
             "approverRoleLabel": "Approver's role",
-            "approverOrganizationLabel": "Approver's organization (optional)",
+            "approverOrganizationLabel": "Approver's organisation (optional)",
             "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
             "submit": "Change email"
           },
@@ -3935,7 +3935,7 @@
       "logo-subtitle": "Safe $t(common.spaces) for Collaboration"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio makes it easy to manage $t(common.subspaces) and have contributors, from anywhere, working together on solutions. $t(common.subspaces) take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Alkemio makes it easy to manage $t(common.subspaces) and have contributors, from anywhere, working together on solutions. $t(common.subspaces) take centre-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
       "next": "Next",
@@ -4093,7 +4093,7 @@
           "resetBtn": "Reset to Default",
           "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Prompt Graph",
-          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "infoText": "Define the behaviour of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customise the prompt graph to suit your specific use case and requirements.",
           "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
           "stepsTitle": "Steps",
           "systemNodeTooltip": "System Node - not editable",
@@ -4723,7 +4723,7 @@
     },
     "initial": {
       "title": "Create a $t(common.virtualContributor)",
-      "profileDescription": "Choose a name and avatar now, or personalize your $t(common.profile) later on the VC $t(common.Profile) page.",
+      "profileDescription": "Choose a name and avatar now, or personalise your $t(common.profile) later on the VC $t(common.Profile) page.",
       "description": "A $t(common.virtualContributor) allows you to interact with AI on Alkemio. What do you want to make available through your $t(common.virtualContributor)?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a $t(common.spaceSubspace) on Alkemio",
@@ -4746,7 +4746,7 @@
       "post": {
         "title": "$t(common.Post) title",
         "exampleTitle": "Example: About Alkemio",
-        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realise our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add $t(common.post)",
         "tooltip": "More $t(common.posts) can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial $t(common.posts)",
