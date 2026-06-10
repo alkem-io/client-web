@@ -63,7 +63,8 @@ export const toCreateInput = (values: OrgFormValues): CreateOrganizationInput =>
   website: trimmedOrUndefined(values.website),
   profileData: {
     displayName: values.displayName.trim(),
-    description: values.description || undefined,
+    // Send the raw value (incl. empty string) so clearing the description persists.
+    description: values.description,
     tagline: trimmedOrUndefined(values.tagline),
     referencesData: referencesWithContent(values).map(reference => ({
       name: reference.name,
@@ -82,7 +83,8 @@ export const toUpdateInput = (orgId: string, values: OrgFormValues): UpdateOrgan
   website: trimmedOrUndefined(values.website),
   profileData: {
     displayName: values.displayName.trim(),
-    description: values.description || undefined,
+    // Send the raw value (incl. empty string) so clearing the description persists.
+    description: values.description,
     tagline: trimmedOrUndefined(values.tagline),
     location: { city: trimmedOrUndefined(values.city), country: values.country || undefined },
     // Only existing references (with an id) can be updated; new rows added during

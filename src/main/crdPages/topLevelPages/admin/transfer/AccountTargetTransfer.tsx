@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountPicker } from '@/crd/components/admin/transfer/AccountPicker';
 import { TransferOperationCard } from '@/crd/components/admin/transfer/TransferOperationCard';
 import { UrlResolveField } from '@/crd/components/admin/transfer/UrlResolveField';
 import useAccountSearch from '@/domain/platformAdmin/management/transfer/shared/useAccountSearch';
+import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 type AccountTargetTransferProps = {
   title: string;
@@ -37,8 +38,17 @@ export function AccountTargetTransfer({
   onTransfer,
 }: AccountTargetTransferProps) {
   const { t } = useTranslation('crd-admin');
-  const { searchTerm, results, loading: searchLoading, handleSearch } = useAccountSearch();
+  const { results, loading: searchLoading, handleSearch } = useAccountSearch();
   const [targetAccountId, setTargetAccountId] = useState<string>();
+
+  // Debounce the account search so it fires queries on pause, not per keystroke.
+  const [searchInput, setSearchInput] = useState('');
+  const debouncedSearch = useDebouncedValue(searchInput);
+  const handleSearchRef = useRef(handleSearch);
+  handleSearchRef.current = handleSearch;
+  useEffect(() => {
+    handleSearchRef.current(debouncedSearch);
+  }, [debouncedSearch]);
 
   const options = results.map(result => ({ id: result.accountId, name: result.name }));
 
@@ -76,8 +86,8 @@ export function AccountTargetTransfer({
           ) : null}
           <AccountPicker
             label={t('transfer.targetAccount')}
-            searchTerm={searchTerm}
-            onSearch={handleSearch}
+            searchTerm={searchInput}
+            onSearch={setSearchInput}
             results={options}
             loading={searchLoading}
             selectedId={targetAccountId}

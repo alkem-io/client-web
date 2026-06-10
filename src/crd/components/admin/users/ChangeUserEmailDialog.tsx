@@ -1,7 +1,9 @@
 import { AlertTriangle } from 'lucide-react';
-import { type ReactNode, useId } from 'react';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
+import { AdminFormField } from '@/crd/forms/AdminFormField';
+import { isValidEmail } from '@/crd/lib/validators';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
@@ -28,8 +30,6 @@ type ChangeUserEmailDialogProps = {
   errorMessage?: string;
   isDirty: boolean;
 };
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Platform-admin change-user-email dialog (global-admin only). Mirrors the MUI
@@ -70,7 +70,7 @@ export function ChangeUserEmailDialog({
   const emailsMatch = values.confirmEmail === values.newEmail;
   const changed = values.newEmail.trim().toLowerCase() !== currentEmail.trim().toLowerCase();
   const canSubmit =
-    EMAIL_RE.test(values.newEmail) &&
+    isValidEmail(values.newEmail) &&
     emailsMatch &&
     changed &&
     Boolean(values.reason.trim()) &&
@@ -93,11 +93,11 @@ export function ChangeUserEmailDialog({
             }}
             id="change-email-form"
           >
-            <Field id={ids.currentEmail} label={t('users.changeEmail.currentEmail')}>
+            <AdminFormField id={ids.currentEmail} label={t('users.changeEmail.currentEmail')}>
               <Input id={ids.currentEmail} value={currentEmail} disabled={true} readOnly={true} />
-            </Field>
+            </AdminFormField>
 
-            <Field id={ids.newEmail} label={t('users.changeEmail.newEmail')} required={true}>
+            <AdminFormField id={ids.newEmail} label={t('users.changeEmail.newEmail')} required={true}>
               <Input
                 id={ids.newEmail}
                 type="email"
@@ -106,9 +106,9 @@ export function ChangeUserEmailDialog({
                 disabled={submitting}
                 required={true}
               />
-            </Field>
+            </AdminFormField>
 
-            <Field id={ids.confirmEmail} label={t('users.changeEmail.confirmEmail')} required={true}>
+            <AdminFormField id={ids.confirmEmail} label={t('users.changeEmail.confirmEmail')} required={true}>
               <Input
                 id={ids.confirmEmail}
                 type="email"
@@ -121,11 +121,11 @@ export function ChangeUserEmailDialog({
               {Boolean(values.confirmEmail) && !emailsMatch ? (
                 <p className="text-caption text-destructive">{t('users.changeEmail.mismatch')}</p>
               ) : null}
-            </Field>
+            </AdminFormField>
 
             <h3 className="text-subheader font-semibold">{t('users.changeEmail.approvalSection')}</h3>
 
-            <Field id={ids.reason} label={t('users.changeEmail.reason')} required={true}>
+            <AdminFormField id={ids.reason} label={t('users.changeEmail.reason')} required={true}>
               <Textarea
                 id={ids.reason}
                 rows={3}
@@ -138,9 +138,9 @@ export function ChangeUserEmailDialog({
               <p id={ids.reasonHelp} className="text-caption text-muted-foreground">
                 {t('users.changeEmail.reasonHelp')}
               </p>
-            </Field>
+            </AdminFormField>
 
-            <Field id={ids.name} label={t('users.changeEmail.approverName')} required={true}>
+            <AdminFormField id={ids.name} label={t('users.changeEmail.approverName')} required={true}>
               <Input
                 id={ids.name}
                 value={values.approverName}
@@ -148,9 +148,9 @@ export function ChangeUserEmailDialog({
                 disabled={submitting}
                 required={true}
               />
-            </Field>
+            </AdminFormField>
 
-            <Field id={ids.role} label={t('users.changeEmail.approverRole')} required={true}>
+            <AdminFormField id={ids.role} label={t('users.changeEmail.approverRole')} required={true}>
               <Input
                 id={ids.role}
                 value={values.approverRole}
@@ -158,16 +158,16 @@ export function ChangeUserEmailDialog({
                 disabled={submitting}
                 required={true}
               />
-            </Field>
+            </AdminFormField>
 
-            <Field id={ids.org} label={t('users.changeEmail.approverOrg')}>
+            <AdminFormField id={ids.org} label={t('users.changeEmail.approverOrg')}>
               <Input
                 id={ids.org}
                 value={values.approverOrg}
                 onChange={e => onChange('approverOrg', e.target.value)}
                 disabled={submitting}
               />
-            </Field>
+            </AdminFormField>
 
             <div
               role="note"
@@ -192,31 +192,5 @@ export function ChangeUserEmailDialog({
       </Dialog>
       {guardElement}
     </>
-  );
-}
-
-function Field({
-  id,
-  label,
-  required = false,
-  children,
-}: {
-  id: string;
-  label: string;
-  required?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-body-emphasis">
-        <label htmlFor={id}>{label}</label>
-        {required ? (
-          <span className="text-destructive" aria-hidden="true">
-            {' *'}
-          </span>
-        ) : null}
-      </span>
-      {children}
-    </div>
   );
 }

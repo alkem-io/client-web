@@ -1,8 +1,11 @@
-import { type ReactNode, useId } from 'react';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
+import { AdminFormField } from '@/crd/forms/AdminFormField';
+import { AdminFormSection } from '@/crd/forms/AdminFormSection';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
+import { isValidEmailOrEmpty, isValidUrlOrEmpty } from '@/crd/lib/validators';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 
@@ -33,18 +36,6 @@ type OrganizationFormProps = {
   errorMessage?: string;
   countries: ReadonlyArray<OrgCountryOption>;
 };
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isValidUrlOrEmpty = (value: string) => {
-  if (!value.trim()) return true;
-  try {
-    void new URL(value);
-    return true;
-  } catch {
-    return false;
-  }
-};
-const isValidEmailOrEmpty = (value: string) => !value.trim() || EMAIL_RE.test(value);
 
 /**
  * Platform-admin organization create/edit form — a single-submit form (unlike
@@ -90,8 +81,8 @@ export function OrganizationForm({
         if (canSubmit) onSubmit();
       }}
     >
-      <Section title={t('orgForm.identity')}>
-        <Field id={ids.nameID} label={t('orgForm.nameID')} required={mode === 'create'}>
+      <AdminFormSection title={t('orgForm.identity')}>
+        <AdminFormField id={ids.nameID} label={t('orgForm.nameID')} required={mode === 'create'}>
           <Input
             id={ids.nameID}
             value={values.nameID}
@@ -101,8 +92,8 @@ export function OrganizationForm({
             className={mode === 'edit' ? 'bg-muted/50 font-mono' : 'font-mono'}
             required={mode === 'create'}
           />
-        </Field>
-        <Field id={ids.displayName} label={t('orgForm.displayName')} required={true}>
+        </AdminFormField>
+        <AdminFormField id={ids.displayName} label={t('orgForm.displayName')} required={true}>
           <Input
             id={ids.displayName}
             value={values.displayName}
@@ -110,18 +101,18 @@ export function OrganizationForm({
             disabled={submitting}
             required={true}
           />
-        </Field>
-        <Field id={ids.tagline} label={t('orgForm.tagline')}>
+        </AdminFormField>
+        <AdminFormField id={ids.tagline} label={t('orgForm.tagline')}>
           <Input
             id={ids.tagline}
             value={values.tagline}
             onChange={e => onChange({ tagline: e.target.value })}
             disabled={submitting}
           />
-        </Field>
-      </Section>
+        </AdminFormField>
+      </AdminFormSection>
 
-      <Section title={t('orgForm.about')}>
+      <AdminFormSection title={t('orgForm.about')}>
         <div className="flex flex-col gap-1">
           <span className="text-body-emphasis">{t('orgForm.description')}</span>
           <MarkdownEditor
@@ -131,19 +122,19 @@ export function OrganizationForm({
             hideEmbedOption={true}
           />
         </div>
-      </Section>
+      </AdminFormSection>
 
       {mode === 'edit' && (
-        <Section title={t('orgForm.location')}>
+        <AdminFormSection title={t('orgForm.location')}>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field id={ids.city} label={t('orgForm.city')}>
+            <AdminFormField id={ids.city} label={t('orgForm.city')}>
               <Input
                 id={ids.city}
                 value={values.city}
                 onChange={e => onChange({ city: e.target.value })}
                 disabled={submitting}
               />
-            </Field>
+            </AdminFormField>
             <div className="flex flex-col gap-1">
               <span className="text-body-emphasis">{t('orgForm.country')}</span>
               <CountryCombobox
@@ -154,12 +145,12 @@ export function OrganizationForm({
               />
             </div>
           </div>
-        </Section>
+        </AdminFormSection>
       )}
 
-      <Section title={t('orgForm.contactLegal')}>
+      <AdminFormSection title={t('orgForm.contactLegal')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field
+          <AdminFormField
             id={ids.contactEmail}
             label={t('orgForm.contactEmail')}
             error={emailValid ? undefined : t('orgForm.invalidEmail')}
@@ -172,24 +163,24 @@ export function OrganizationForm({
               disabled={submitting}
               aria-invalid={!emailValid}
             />
-          </Field>
-          <Field id={ids.domain} label={t('orgForm.domain')}>
+          </AdminFormField>
+          <AdminFormField id={ids.domain} label={t('orgForm.domain')}>
             <Input
               id={ids.domain}
               value={values.domain}
               onChange={e => onChange({ domain: e.target.value })}
               disabled={submitting}
             />
-          </Field>
-          <Field id={ids.legalEntityName} label={t('orgForm.legalEntityName')}>
+          </AdminFormField>
+          <AdminFormField id={ids.legalEntityName} label={t('orgForm.legalEntityName')}>
             <Input
               id={ids.legalEntityName}
               value={values.legalEntityName}
               onChange={e => onChange({ legalEntityName: e.target.value })}
               disabled={submitting}
             />
-          </Field>
-          <Field
+          </AdminFormField>
+          <AdminFormField
             id={ids.website}
             label={t('orgForm.website')}
             error={websiteValid ? undefined : t('orgForm.invalidUrl')}
@@ -201,13 +192,13 @@ export function OrganizationForm({
               disabled={submitting}
               aria-invalid={!websiteValid}
             />
-          </Field>
+          </AdminFormField>
         </div>
-      </Section>
+      </AdminFormSection>
 
-      <Section title={t('orgForm.references')}>
+      <AdminFormSection title={t('orgForm.references')}>
         <ReferencesEditor rows={values.references} onChange={onReferencesChange} />
-      </Section>
+      </AdminFormSection>
 
       {errorMessage ? <p className="text-body text-destructive">{errorMessage}</p> : null}
 
@@ -220,43 +211,5 @@ export function OrganizationForm({
         </Button>
       </div>
     </form>
-  );
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="flex flex-col gap-3 rounded-lg border border-border p-4">
-      <h2 className="text-section-title">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({
-  id,
-  label,
-  required = false,
-  error,
-  children,
-}: {
-  id: string;
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-body-emphasis">
-        <label htmlFor={id}>{label}</label>
-        {required ? (
-          <span className="text-destructive" aria-hidden="true">
-            {' *'}
-          </span>
-        ) : null}
-      </span>
-      {children}
-      {error ? <p className="text-caption text-destructive">{error}</p> : null}
-    </div>
   );
 }

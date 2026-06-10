@@ -56,7 +56,8 @@ export const toUpdateUserInput = (userId: string, values: UserFormValues): Updat
   phone: trimmedOrUndefined(values.phone),
   profileData: {
     displayName: values.displayName.trim(),
-    description: values.bio || undefined,
+    // Send the raw value (incl. empty string) so clearing the bio persists.
+    description: values.bio,
     tagline: trimmedOrUndefined(values.tagline),
     location: { city: trimmedOrUndefined(values.city), country: values.country || undefined },
     // Only existing references (with an id) can be updated (parity with MUI).

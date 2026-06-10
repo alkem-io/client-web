@@ -90,11 +90,15 @@ export function AdminSearchableTable<Row extends AdminTableRow>({
   const { t } = useTranslation('crd-admin');
   const [pendingDelete, setPendingDelete] = useState<Row | null>(null);
 
-  // Client-side "show more" state — reset whenever the dataset or query changes.
+  // Client-side "show more" state — reset only when the query changes (search
+  // term / page size / mode), NOT on every render. Consumers pass a freshly
+  // mapped/filtered `rows` array each render, so depending on `rows` identity
+  // would collapse the expanded list back to the first page on any parent
+  // re-render (e.g. opening a row dialog).
   const [displayedCount, setDisplayedCount] = useState(firstPageSize);
   useEffect(() => {
     if (paginationMode === 'client') setDisplayedCount(firstPageSize);
-  }, [paginationMode, firstPageSize, searchTerm, rows]);
+  }, [paginationMode, firstPageSize, searchTerm]);
 
   const visibleRows = paginationMode === 'client' ? rows.slice(0, displayedCount) : rows;
   const canLoadMore = paginationMode === 'client' ? displayedCount < rows.length : hasMore;

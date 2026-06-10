@@ -1,6 +1,8 @@
-import { type ReactNode, useId } from 'react';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
+import { AdminFormField } from '@/crd/forms/AdminFormField';
+import { AdminFormSection } from '@/crd/forms/AdminFormSection';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { Button } from '@/crd/primitives/button';
@@ -72,9 +74,9 @@ export function UserEditForm({
         if (canSubmit) onSubmit();
       }}
     >
-      <Section title={t('userForm.identity')}>
+      <AdminFormSection title={t('userForm.identity')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field id={ids.firstName} label={t('userForm.firstName')} required={true}>
+          <AdminFormField id={ids.firstName} label={t('userForm.firstName')} required={true}>
             <Input
               id={ids.firstName}
               value={values.firstName}
@@ -82,8 +84,8 @@ export function UserEditForm({
               disabled={submitting}
               required={true}
             />
-          </Field>
-          <Field id={ids.lastName} label={t('userForm.lastName')} required={true}>
+          </AdminFormField>
+          <AdminFormField id={ids.lastName} label={t('userForm.lastName')} required={true}>
             <Input
               id={ids.lastName}
               value={values.lastName}
@@ -91,9 +93,9 @@ export function UserEditForm({
               disabled={submitting}
               required={true}
             />
-          </Field>
+          </AdminFormField>
         </div>
-        <Field id={ids.displayName} label={t('userForm.displayName')} required={true}>
+        <AdminFormField id={ids.displayName} label={t('userForm.displayName')} required={true}>
           <Input
             id={ids.displayName}
             value={values.displayName}
@@ -101,34 +103,34 @@ export function UserEditForm({
             disabled={submitting}
             required={true}
           />
-        </Field>
-      </Section>
+        </AdminFormField>
+      </AdminFormSection>
 
-      <Section title={t('userForm.contact')}>
+      <AdminFormSection title={t('userForm.contact')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field id={ids.email} label={t('userForm.email')}>
+          <AdminFormField id={ids.email} label={t('userForm.email')}>
             <Input id={ids.email} value={values.email} disabled={true} readOnly={true} className="bg-muted/50" />
-          </Field>
-          <Field id={ids.phone} label={t('userForm.phone')}>
+          </AdminFormField>
+          <AdminFormField id={ids.phone} label={t('userForm.phone')}>
             <Input
               id={ids.phone}
               value={values.phone}
               onChange={e => onChange({ phone: e.target.value })}
               disabled={submitting}
             />
-          </Field>
+          </AdminFormField>
         </div>
-      </Section>
+      </AdminFormSection>
 
-      <Section title={t('userForm.about')}>
-        <Field id={ids.tagline} label={t('userForm.tagline')}>
+      <AdminFormSection title={t('userForm.about')}>
+        <AdminFormField id={ids.tagline} label={t('userForm.tagline')}>
           <Input
             id={ids.tagline}
             value={values.tagline}
             onChange={e => onChange({ tagline: e.target.value })}
             disabled={submitting}
           />
-        </Field>
+        </AdminFormField>
         <div className="flex flex-col gap-1">
           <span className="text-body-emphasis">{t('userForm.bio')}</span>
           <MarkdownEditor
@@ -138,18 +140,18 @@ export function UserEditForm({
             hideEmbedOption={true}
           />
         </div>
-      </Section>
+      </AdminFormSection>
 
-      <Section title={t('userForm.location')}>
+      <AdminFormSection title={t('userForm.location')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field id={ids.city} label={t('userForm.city')}>
+          <AdminFormField id={ids.city} label={t('userForm.city')}>
             <Input
               id={ids.city}
               value={values.city}
               onChange={e => onChange({ city: e.target.value })}
               disabled={submitting}
             />
-          </Field>
+          </AdminFormField>
           <div className="flex flex-col gap-1">
             <span className="text-body-emphasis">{t('userForm.country')}</span>
             <CountryCombobox
@@ -160,11 +162,11 @@ export function UserEditForm({
             />
           </div>
         </div>
-      </Section>
+      </AdminFormSection>
 
-      <Section title={t('userForm.references')}>
+      <AdminFormSection title={t('userForm.references')}>
         <ReferencesEditor rows={values.references} onChange={onReferencesChange} />
-      </Section>
+      </AdminFormSection>
 
       {errorMessage ? <p className="text-body text-destructive">{errorMessage}</p> : null}
 
@@ -177,40 +179,5 @@ export function UserEditForm({
         </Button>
       </div>
     </form>
-  );
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="flex flex-col gap-3 rounded-lg border border-border p-4">
-      <h2 className="text-section-title">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({
-  id,
-  label,
-  required = false,
-  children,
-}: {
-  id: string;
-  label: string;
-  required?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-body-emphasis">
-        <label htmlFor={id}>{label}</label>
-        {required ? (
-          <span className="text-destructive" aria-hidden="true">
-            {' *'}
-          </span>
-        ) : null}
-      </span>
-      {children}
-    </div>
   );
 }

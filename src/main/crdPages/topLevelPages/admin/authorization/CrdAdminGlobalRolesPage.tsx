@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -8,6 +8,7 @@ import { type RoleMember, RoleMembersEditor } from '@/crd/components/admin/roles
 import { Button } from '@/crd/primitives/button';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 const PLATFORM_ROLES = RELEVANT_ROLES.Platform;
 
@@ -23,14 +24,9 @@ const CrdAdminGlobalRolesPage = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  // Debounced search (mirrors the MUI 500ms debounce) so we don't refetch on
-  // every keystroke.
+  // Debounced search so we don't refetch on every keystroke.
   const [searchInput, setSearchInput] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  useEffect(() => {
-    const handle = setTimeout(() => setSearchTerm(searchInput), 400);
-    return () => clearTimeout(handle);
-  }, [searchInput]);
+  const searchTerm = useDebouncedValue(searchInput);
 
   const segments = pathname.split('/').filter(Boolean);
   const rolesIdx = segments.indexOf('roles');
