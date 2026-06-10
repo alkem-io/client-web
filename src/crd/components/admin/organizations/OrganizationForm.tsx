@@ -78,7 +78,7 @@ export function OrganizationForm({
       className="flex max-w-3xl flex-col gap-6"
       onSubmit={event => {
         event.preventDefault();
-        if (canSubmit) onSubmit();
+        if (canSubmit && !submitting) onSubmit();
       }}
     >
       <AdminFormSection title={t('orgForm.identity')}>

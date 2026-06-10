@@ -184,7 +184,7 @@ type OnAccountSelect = (accountId: string | undefined) => void;
 ```
 - Per-operation inputs and hooks are specified in `contracts/section-contracts.md` §Transfer & Conversions. Key parity notes:
   - **Conversions have no target account.** Space conversion + VC conversion take a single source `url`.
-  - **Transfer target inputs are NOT uniform.** **Space and Callout transfers take a target *URL text field*** (account URL / target space URL), while **Innovation Hub / Pack / Virtual Contributor transfers use the account picker** (`AccountSearchPicker` via `useAccountSearch`, min 2 chars, searches Users + Organizations holding `TransferResourceAccept`).
+  - **Transfer target inputs are NOT uniform.** **Space and Callout transfers take a target *URL text field*** (account URL / target space URL), while **Innovation Hub / Pack / Virtual Contributor transfers use the account picker** (`AccountPicker` via `useAccountSearch`, min 2 chars, searches Users + Organizations holding `TransferResourceAccept`).
   - Every operation is destructive → `ConfirmationDialog` (Callout transfer shows the same 4 warnings as MUI).
 
 ## Validation rules (carried over from MUI, unchanged)

@@ -46,7 +46,7 @@ export type AdminSearchableTableProps<Row extends AdminTableRow> = {
   pageSize: number;
   firstPageSize?: number;
   hasMore?: boolean; // server mode
-  fetchMore?: () => Promise<void>; // server mode
+  fetchMore?: () => void; // server mode
 
   /** Per-row extra actions (settings, verify, change-email, …). */
   rowActions?: (row: Row) => ReactNode;
@@ -60,7 +60,7 @@ export type AdminSearchableTableProps<Row extends AdminTableRow> = {
   /** Per-row gate for the delete action (e.g. Space.canUpdate). */
   canDelete?: (row: Row) => boolean;
 
-  /** Translated empty-state message. */
-  emptyLabel: string;
+  /** Translated empty-state message. Falls back to `table.empty` when omitted. */
+  emptyLabel?: string;
   className?: string;
 };

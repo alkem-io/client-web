@@ -89,7 +89,7 @@ export function ChangeUserEmailDialog({
             className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto"
             onSubmit={event => {
               event.preventDefault();
-              if (canSubmit) onSubmit();
+              if (canSubmit && !submitting) onSubmit();
             }}
             id="change-email-form"
           >

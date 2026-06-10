@@ -56,18 +56,25 @@ const CrdAdminOrganizationFormPage = () => {
   const goToList = () => navigate('/admin/organizations');
 
   const handleSubmit = () => {
+    // Navigate/notify only on success; the global Apollo error handler surfaces
+    // failures. The empty catch keeps a rejected mutation from becoming an
+    // unhandled promise rejection.
     if (mode === 'create') {
-      void createOrg({ variables: { input: toCreateInput(values) } }).then(() => {
-        notify(t('orgForm.created'), 'success');
-        goToList();
-      });
+      void createOrg({ variables: { input: toCreateInput(values) } })
+        .then(() => {
+          notify(t('orgForm.created'), 'success');
+          goToList();
+        })
+        .catch(() => undefined);
       return;
     }
     if (orgId) {
-      void updateOrg({ variables: { input: toUpdateInput(orgId, values) } }).then(() => {
-        notify(t('orgForm.updated'), 'success');
-        goToList();
-      });
+      void updateOrg({ variables: { input: toUpdateInput(orgId, values) } })
+        .then(() => {
+          notify(t('orgForm.updated'), 'success');
+          goToList();
+        })
+        .catch(() => undefined);
     }
   };
 

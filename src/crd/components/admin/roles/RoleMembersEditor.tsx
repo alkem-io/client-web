@@ -121,7 +121,7 @@ export function RoleMembersEditor({
               ))}
             </ul>
           )}
-          {hasMore && (
+          {hasMore && onLoadMore && (
             <Button type="button" variant="outline" onClick={onLoadMore} disabled={loadingAvailable}>
               {t('table.loadMore')}
             </Button>

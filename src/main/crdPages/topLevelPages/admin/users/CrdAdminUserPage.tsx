@@ -48,10 +48,15 @@ const CrdAdminUserPage = () => {
 
   const handleSubmit = () => {
     if (!userId) return;
-    void updateUser({ variables: { input: toUpdateUserInput(userId, values) } }).then(() => {
-      notify(t('userForm.updated'), 'success');
-      goToList();
-    });
+    // Navigate/notify only on success; the global Apollo error handler surfaces
+    // failures. The empty catch keeps a rejected mutation from becoming an
+    // unhandled promise rejection.
+    void updateUser({ variables: { input: toUpdateUserInput(userId, values) } })
+      .then(() => {
+        notify(t('userForm.updated'), 'success');
+        goToList();
+      })
+      .catch(() => undefined);
   };
 
   const [discardOpen, setDiscardOpen] = useState(false);

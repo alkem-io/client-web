@@ -57,6 +57,7 @@ All CRD components below are **pure presentational** (no MUI, no Apollo, plain-T
 - **VC conversion** — input: `url` (VC URL). `useConvertVcToKnowledgeBaseMutation`. Confirm before execute.
 
 ### Transfers (source by URL → target)
+
 | Flow | Source input | Target input | Hook |
 |---|---|---|---|
 | Space transfer | `url` (space, L0) | **`url` text field** (user/org account URL) | `useTransferSpaceToAccountMutation` |

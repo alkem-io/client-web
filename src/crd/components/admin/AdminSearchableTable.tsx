@@ -151,7 +151,10 @@ export function AdminSearchableTable<Row extends AdminTableRow>({
               : visibleRows.map(row => (
                   <TableRow key={row.id}>
                     <TableCell className="font-medium">
-                      <a href={row.url} className="text-primary hover:underline break-words">
+                      <a
+                        href={row.url}
+                        className="text-primary hover:underline break-words rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
                         {row.name}
                       </a>
                     </TableCell>
