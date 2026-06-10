@@ -13,7 +13,7 @@ import { usePendingInvitationsCount } from '@/domain/community/pendingMembership
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import { buildCreateVirtualContributorUrl } from '@/main/routing/urlBuilders';
 import { mapInvitationsToCards } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -76,7 +76,6 @@ export default function DashboardWithoutMemberships({
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
-  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
   return (
     <>
@@ -103,7 +102,7 @@ export default function DashboardWithoutMemberships({
           />
         )}
 
-        {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
+        {showCampaign && <CampaignBanner onAction={() => navigate(buildCreateVirtualContributorUrl())} />}
 
         <SpaceExplorer
           spaces={cardData}
@@ -121,7 +120,6 @@ export default function DashboardWithoutMemberships({
           className="max-w-none mx-0 px-0 sm:px-0 py-0"
         />
       </DashboardLayout>
-      {virtualContributorWizard}
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}

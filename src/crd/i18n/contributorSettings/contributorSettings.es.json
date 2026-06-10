@@ -1,4 +1,70 @@
 {
+  "wizard": {
+    "title": "Crear Virtual Contributor",
+    "loading": "Trabajando…",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "create": "Crear",
+    "initial": {
+      "intro": "Dale un nombre a tu Virtual Contributor y elige de dónde proviene su conocimiento.",
+      "uploadAvatar": "Subir avatar",
+      "name": "Nombre",
+      "tagline": "Eslogan",
+      "description": "Descripción",
+      "pathTitle": "¿De dónde proviene su conocimiento?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Conocimiento escrito",
+          "subtitle": "Añade publicaciones y documentos"
+        },
+        "existingSpace": {
+          "title": "Space existente",
+          "subtitle": "Usa un Space al que tengas acceso"
+        },
+        "external": {
+          "title": "IA externa",
+          "subtitle": "Conecta un proveedor externo"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Añade el conocimiento inicial de tu Virtual Contributor.",
+      "postsTitle": "Publicaciones",
+      "postTitle": "Título",
+      "postDescription": "Contenido",
+      "removePost": "Eliminar publicación",
+      "addPost": "Añadir publicación",
+      "documentsTitle": "Documentos",
+      "documentName": "Nombre",
+      "documentUrl": "URL",
+      "removeDocument": "Eliminar documento",
+      "addDocument": "Añadir documento"
+    },
+    "existingSpace": {
+      "intro": "Elige un Space para usarlo como cuerpo de conocimiento.",
+      "empty": "No hay Spaces disponibles."
+    },
+    "external": {
+      "intro": "Conecta un proveedor de IA externo.",
+      "engine": "Proveedor",
+      "apiKey": "Clave API",
+      "assistantId": "ID del asistente",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Añade tu Virtual Contributor a una comunidad, u omítelo por ahora.",
+      "skip": "Omitir por ahora"
+    },
+    "tryVc": {
+      "title": "¡{{name}} está listo!",
+      "description": "Tu Virtual Contributor ha sido creado.",
+      "view": "Ver perfil",
+      "done": "Hecho"
+    }
+  },
   "breadcrumbs": {
     "settings": "Ajustes"
   },

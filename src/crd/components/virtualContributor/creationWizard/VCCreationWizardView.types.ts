@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 export type VcWizardStep =
   | 'initial'
   | 'loadingStep'
@@ -12,6 +10,8 @@ export type VcWizardStep =
 /** Body-of-knowledge path chosen on the initial step. */
 export type VcWizardPath = 'writtenKnowledge' | 'existingSpace' | 'external';
 
+export type VcWizardEngine = 'expert' | 'genericOpenai' | 'openaiAssistant';
+
 export type VcWizardIdentityValues = {
   name: string;
   tagline: string;
@@ -19,16 +19,12 @@ export type VcWizardIdentityValues = {
 };
 
 export type VcWizardPost = {
-  /** 3..SMALL_TEXT_LENGTH, required */
   title: string;
-  /** markdown */
   description: string;
 };
 
 export type VcWizardDocument = {
-  /** 3..SMALL_TEXT_LENGTH, required */
   name: string;
-  /** file-upload result URL or external URL, required */
   url: string;
 };
 
@@ -38,7 +34,6 @@ export type VcWizardSelectableSpace = {
   avatarUrl?: string;
   color: string;
   level: 'space' | 'subspace';
-  /** Subspaces selectable as a body-of-knowledge target (existing-space path). */
   subspaces?: VcWizardSelectableSpace[];
 };
 
@@ -48,46 +43,61 @@ export type VcWizardCreatedVc = {
   profileUrl?: string;
 };
 
+export type VcWizardExternalConfig = {
+  engine: VcWizardEngine;
+  apiKey: string;
+  assistantId: string;
+};
+
 /**
- * Props for the full-page CRD VC creation wizard shell. All data + behavior
- * arrive via props; the integration hook (`useVcCreationWizard`) owns the
- * state machine and GraphQL orchestration.
+ * Props for the full-page CRD VC creation wizard. All data + behavior arrive
+ * via props; the integration hook (`useVcCreationWizard`) owns the state
+ * machine and GraphQL orchestration. The view renders every step inline and
+ * owns only the transient cancel-confirm dialog (local open state).
  */
 export type VCCreationWizardViewProps = {
   step: VcWizardStep;
+  loading: boolean;
 
-  // initial step — identity form (value/onChange controlled by the integration layer)
+  // ── initial step — identity form ──
   identity: VcWizardIdentityValues;
   onChangeIdentity: (patch: Partial<VcWizardIdentityValues>) => void;
   onUploadAvatar: (file: File) => void;
   avatarPreviewUrl?: string;
   identityValid: boolean;
+  selectedPath?: VcWizardPath;
   onSelectPath: (path: VcWizardPath) => void;
+  /** Commit the initial step and advance along the selected path. */
+  onSubmitInitial: () => void;
 
-  // add-knowledge step
+  // ── add-knowledge step ──
   posts: VcWizardPost[];
   documents: VcWizardDocument[];
   onChangePosts: (posts: VcWizardPost[]) => void;
   onChangeDocuments: (documents: VcWizardDocument[]) => void;
   onSubmitKnowledge: () => void;
 
-  // existing-space step
+  // ── existing-space step ──
   availableSpaces: VcWizardSelectableSpace[];
   onSubmitExistingSpace: (spaceId: string) => void;
 
-  // choose-community step
+  // ── external-provider step ──
+  externalConfig: VcWizardExternalConfig;
+  onChangeExternalConfig: (patch: Partial<VcWizardExternalConfig>) => void;
+  externalValid: boolean;
+  onSubmitExternal: () => void;
+  /** Slot for the "request another AI provider" coming-soon form. */
+  comingSoonSlot?: import('react').ReactNode;
+
+  // ── choose-community step ──
   availableCommunities: VcWizardSelectableSpace[];
   onChooseCommunity: (spaceId: string | undefined) => void;
 
-  // try-vc info (final) step
+  // ── try-vc info (final) step ──
   createdVc?: VcWizardCreatedVc;
 
-  // navigation / chrome
+  // ── chrome ──
   onBack: () => void;
+  /** Called after the user confirms cancellation. */
   onCancel: () => void;
-  loading: boolean;
-
-  // transient sub-dialogs rendered by the integration layer (external-AI, cancel-confirm)
-  externalDialogSlot?: ReactNode;
-  cancelDialogSlot?: ReactNode;
 };

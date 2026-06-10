@@ -119,7 +119,11 @@ src/crd/i18n/contributorSettings/                  # EXISTING namespace 'crd-con
 └── contributorSettings.<lang>.json                # ADD keys: wizard.*, knowledgeBase.*, promptGraph.* (en+es+nl+bg+de+fr)
 # VC badge + add-VC strings: extend 'crd-community' / 'crd-common' namespaces as appropriate
 
-src/main/routing/TopLevelRoutes.tsx                # MODIFY only if creation wizard becomes a top-level route
+src/main/routing/urlBuilders.ts                    # ADD buildCreateVirtualContributorUrl(entityProfileUrl?) → <profileUrl>/settings/create-virtual-contributor
+src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.tsx          # MODIFY: mount wizard route → CrdVCCreationWizardPage
+src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.tsx   # MODIFY: mount wizard route → CrdOrgVCCreationWizardPage
+#   Both as a sibling of the settings-tab shell (full-page, inside CrdLayoutWrapper) — works for user (incl. another user as admin) + org.
+#   The wizard is NOT a top-level route — TopLevelRoutes.tsx is unchanged for US1.
 ```
 
 **Structure Decision**: Reuse the existing VC CRD taxonomy verbatim (validated against the live profile/settings implementation). Net-new code clusters under `creationWizard/`, `knowledgeBase/`, the single `VCPromptGraphCard`, the add-VC `VirtualContributorPreview`, and the `VirtualContributorBadge`. The legacy MUI files stay in place (toggle-gated default), per the migration guide.

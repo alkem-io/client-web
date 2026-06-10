@@ -82,7 +82,7 @@ export type VCCreationWizardViewProps = {
 
   onNext: () => void;
   onBack: () => void;
-  onCancel: () => void; // opens VCWizardCancelDialog
+  onCancel: () => void; // used by the final info step's "Done" button (no close/cancel button on the page)
   onSubmit: () => void; // triggers create mutation
 
   // data for the branch steps
@@ -104,6 +104,10 @@ export type VCCreationWizardViewProps = {
 };
 
 // Sub-dialogs (remain CRD dialogs; sticky header/footer rule applies)
+//
+// NOT BUILT — the cancel-confirm dialog was dropped during implementation: the wizard is a full
+// page nested under user settings (no close/cancel button), so the user exits via the breadcrumb
+// trail and in-progress input is discarded on navigation. Kept here for historical reference only.
 export type VCWizardCancelDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;

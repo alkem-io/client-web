@@ -21,7 +21,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import { buildCreateVirtualContributorUrl } from '@/main/routing/urlBuilders';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import {
@@ -48,11 +48,10 @@ const CrdUserAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const navigate = useNavigate();
   const notify = useNotification();
-  const { userId } = useUserPageRouteContext();
+  const { userId, profileUrl } = useUserPageRouteContext();
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
   const [noEntitlementResource, setNoEntitlementResource] = useState<AccountResourceGroupId | null>(null);
-  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createPackOpen, setCreatePackOpen] = useState(false);
   const [createHubOpen, setCreateHubOpen] = useState(false);
@@ -128,7 +127,9 @@ const CrdUserAccountTab = () => {
     // and `spaces[].authorization?.myPrivileges` at runtime — all present.
     onCreateVc: () =>
       tryCreate('virtualContributors', entitled.virtualContributors, () =>
-        startWizard(account as UserAccountProps | undefined, accountHostName)
+        navigate(buildCreateVirtualContributorUrl(profileUrl), {
+          state: { account: account as UserAccountProps | undefined, accountName: accountHostName },
+        })
       ),
     onCreateInnovationPack: () => tryCreate('innovationPacks', entitled.innovationPacks, () => setCreatePackOpen(true)),
     onCreateInnovationHub: () => tryCreate('innovationHubs', entitled.innovationHubs, () => setCreateHubOpen(true)),
@@ -225,7 +226,6 @@ const CrdUserAccountTab = () => {
           />
         </>
       )}
-      {virtualContributorWizard}
     </>
   );
 };

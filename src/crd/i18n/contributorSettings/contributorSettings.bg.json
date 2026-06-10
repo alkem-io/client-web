@@ -1,4 +1,70 @@
 {
+  "wizard": {
+    "title": "Създаване на Virtual Contributor",
+    "loading": "Обработка…",
+    "next": "Напред",
+    "back": "Назад",
+    "create": "Създай",
+    "initial": {
+      "intro": "Дайте име на вашия Virtual Contributor и изберете откъде идват знанията му.",
+      "uploadAvatar": "Качи аватар",
+      "name": "Име",
+      "tagline": "Слоган",
+      "description": "Описание",
+      "pathTitle": "Откъде идват знанията?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Писмени знания",
+          "subtitle": "Добавете публикации и документи"
+        },
+        "existingSpace": {
+          "title": "Съществуващ Space",
+          "subtitle": "Използвайте Space, до който имате достъп"
+        },
+        "external": {
+          "title": "Външен ИИ",
+          "subtitle": "Свържете външен доставчик"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Добавете началните знания за вашия Virtual Contributor.",
+      "postsTitle": "Публикации",
+      "postTitle": "Заглавие",
+      "postDescription": "Съдържание",
+      "removePost": "Премахни публикацията",
+      "addPost": "Добави публикация",
+      "documentsTitle": "Документи",
+      "documentName": "Име",
+      "documentUrl": "URL",
+      "removeDocument": "Премахни документа",
+      "addDocument": "Добави документ"
+    },
+    "existingSpace": {
+      "intro": "Изберете Space, който да използвате като база от знания.",
+      "empty": "Няма налични Spaces."
+    },
+    "external": {
+      "intro": "Свържете външен ИИ доставчик.",
+      "engine": "Доставчик",
+      "apiKey": "API ключ",
+      "assistantId": "ID на асистента",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Добавете вашия Virtual Contributor към общност или пропуснете засега.",
+      "skip": "Пропусни засега"
+    },
+    "tryVc": {
+      "title": "{{name}} е готов!",
+      "description": "Вашият Virtual Contributor е създаден.",
+      "view": "Виж профила",
+      "done": "Готово"
+    }
+  },
   "breadcrumbs": {
     "settings": "Настройки"
   },

@@ -26,16 +26,16 @@
 |---|---|
 | Presentational (pure) | `src/crd/components/virtualContributor/**`, `src/crd/components/common/VirtualContributorBadge.tsx` |
 | Integration (hooks/mappers/pages) | `src/main/crdPages/topLevelPages/vcPages/**`, `src/main/crdPages/space/dialogs/**` |
-| Routing | `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx`, `src/main/routing/TopLevelRoutes.tsx` |
+| Routing | `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); creation wizard mounted under **both** `CrdUserSettingsRoutes.tsx` + `CrdOrgSettingsRoutes.tsx`; `src/main/routing/urlBuilders.ts` |
 | i18n | `src/crd/i18n/contributorSettings/*` (+ `crd-community`/`crd-common` for badge/add-VC) |
 
 ## Build order (each is independently shippable)
 
 1. **Prompt-graph card (US4)** — add `VCPromptGraphCard` + extend `useVcSettingsTabData`/`vcSettingsMapper`. Verify it renders in `/vc/:nameId/settings/settings` only when `promptGraphEditingEnabled` and the user has `Update`. *The other four settings cards are already live — don't touch them.*
-2. **VC badge + notifications (US5)** — create `VirtualContributorBadge`; render in `CommentItem` when author is a VC (resolve the comment-author `type` field first; codegen if needed). Verify both VC notification types render in the CRD `NotificationsPanel`.
-3. **Add-to-community (US3)** — wire `VirtualContributorInviteConnector` into the CRD community surface; add `VirtualContributorPreview`; confirm legacy MUI invite/browse dialogs are unreachable when CRD is active.
-4. **Knowledge Base (US2)** — build `CrdVCKnowledgeBasePage`; repoint the `/vc/:nameId/knowledge-base` route from the MUI route to the CRD page; reuse `useKnowledgeBase` + `CalloutsGroupView`.
-5. **Creation wizard (US1)** — build `VCCreationWizardView` + step views + sub-dialogs; relocate `useVirtualContributorWizard` logic into `useVcCreationWizard`; add `buildCreateVirtualContributorUrl`; switch the four CRD launch points from inline dialog → `navigate(...)`.
+2. **VC badge + notifications (US5)** — create `VirtualContributorBadge`; render in `CommentItem` when author is a VC. *(As implemented: no codegen needed — the comment sender's `__typename === 'VirtualContributor'` is already in `CommentsWithMessagesModel`; the mapper just reads it.)* Verify both VC notification types render in the CRD `NotificationsPanel`.
+3. **Add-to-community (US3)** — the connector is already wired into `CrdSpaceCommunityPage` + `CrdSpaceSettingsPage`; just add `VirtualContributorPreview` + thread it through the dialog/connector; confirm legacy MUI invite/browse dialogs are unreachable when CRD is active.
+4. **Knowledge Base (US2)** — build `CrdVCKnowledgeBasePage`; repoint the `/vc/:nameId/knowledge-base` route from the MUI route to the CRD page; reuse `useKnowledgeBase`, and render the body via the **CRD** `CalloutListConnector` (not the MUI `CalloutsGroupView`).
+5. **Creation wizard (US1)** — build `VCCreationWizardView` (full-page shell + all steps inline) + `useVcCreationWizard` (relocated `useVirtualContributorWizard` logic, controlled state); add `buildCreateVirtualContributorUrl(entityProfileUrl?)`; mount `create-virtual-contributor` under **both** `CrdUserSettingsRoutes.tsx` (→ `CrdVCCreationWizardPage`) and `CrdOrgSettingsRoutes.tsx` (→ `CrdOrgVCCreationWizardPage`), each a sibling of the settings-tab shell → full-page; switch the four CRD launch points from inline dialog → `navigate(buildCreateVirtualContributorUrl(entityProfileUrl), { state: { account, accountName } })`.
 
 ## Verify
 

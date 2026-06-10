@@ -1,4 +1,70 @@
 {
+  "wizard": {
+    "title": "Virtual Contributor aanmaken",
+    "loading": "Bezig…",
+    "next": "Volgende",
+    "back": "Terug",
+    "create": "Aanmaken",
+    "initial": {
+      "intro": "Geef je Virtual Contributor een naam en kies waar de kennis vandaan komt.",
+      "uploadAvatar": "Avatar uploaden",
+      "name": "Naam",
+      "tagline": "Slogan",
+      "description": "Beschrijving",
+      "pathTitle": "Waar komt de kennis vandaan?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Geschreven kennis",
+          "subtitle": "Posts en documenten toevoegen"
+        },
+        "existingSpace": {
+          "title": "Bestaande Space",
+          "subtitle": "Gebruik een Space waartoe je toegang hebt"
+        },
+        "external": {
+          "title": "Externe AI",
+          "subtitle": "Verbind een externe aanbieder"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Voeg de eerste kennis voor je Virtual Contributor toe.",
+      "postsTitle": "Posts",
+      "postTitle": "Titel",
+      "postDescription": "Inhoud",
+      "removePost": "Post verwijderen",
+      "addPost": "Post toevoegen",
+      "documentsTitle": "Documenten",
+      "documentName": "Naam",
+      "documentUrl": "URL",
+      "removeDocument": "Document verwijderen",
+      "addDocument": "Document toevoegen"
+    },
+    "existingSpace": {
+      "intro": "Kies een Space om als kennisbron te gebruiken.",
+      "empty": "Geen Spaces beschikbaar."
+    },
+    "external": {
+      "intro": "Verbind een externe AI-aanbieder.",
+      "engine": "Aanbieder",
+      "apiKey": "API-sleutel",
+      "assistantId": "Assistent-ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Voeg je Virtual Contributor toe aan een community, of sla dit voorlopig over.",
+      "skip": "Voorlopig overslaan"
+    },
+    "tryVc": {
+      "title": "{{name}} is klaar!",
+      "description": "Je Virtual Contributor is aangemaakt.",
+      "view": "Profiel bekijken",
+      "done": "Klaar"
+    }
+  },
   "breadcrumbs": {
     "settings": "Instellingen"
   },

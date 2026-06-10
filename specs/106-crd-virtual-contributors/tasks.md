@@ -11,7 +11,7 @@
 
 - **Layer 3 (pure presentational)**: `src/crd/components/virtualContributor/**`, `src/crd/components/common/**` — no `@mui/*`, `@apollo/client`, `@/domain/*`, `react-router-dom`, `formik`; plain-TS props; `lucide-react` icons; `cn()` + Tailwind; `useTranslation('crd-…')`.
 - **Layer 2 (integration)**: `src/main/crdPages/topLevelPages/vcPages/**`, `src/main/crdPages/space/dialogs/**` — Apollo hooks + mappers; no `@mui/*`/`@emotion/*`.
-- **Routing**: `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx`, `src/main/routing/TopLevelRoutes.tsx`, `src/main/routing/urlBuilders.ts`.
+- **Routing**: `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); the creation wizard is mounted under **both** `CrdUserSettingsRoutes.tsx` and `CrdOrgSettingsRoutes.tsx` (nested under the owning entity's settings); `src/main/routing/urlBuilders.ts`. (`TopLevelRoutes.tsx` is unchanged — the wizard is NOT a top-level route.)
 - **i18n**: namespace `crd-contributorSettings` (`src/crd/i18n/contributorSettings/*.json`, 6 languages: en, es, nl, bg, de, fr); badge/add-VC strings extend `crd-community`/`crd-common`.
 - **No new runtime deps.** React Compiler on (no manual memoization). "Virtual Contributor" stays English (glossary).
 
@@ -21,8 +21,8 @@
 
 **Purpose**: Confirm the environment and the existing seams the migration plugs into.
 
-- [ ] T001 Confirm CRD is active for local testing and the VC area renders CRD: `localStorage.setItem('alkemio-design-version','2')`, then load `/vc/<id>` and `/vc/<id>/settings/settings`; confirm `crdEnabled ? <CrdVCRoutes/> : <VCRoute/>` dispatch in `src/main/routing/TopLevelRoutes.tsx` (~line 254).
-- [ ] T002 [P] Re-read the reference implementation to mirror conventions: `src/main/crdPages/topLevelPages/vcPages/settings/profile/{CrdVCProfileTab.tsx,useVcProfileTabData.ts,vcProfileMapper.ts}` and `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx`.
+- [X] T001 Confirm CRD is active for local testing and the VC area renders CRD: `localStorage.setItem('alkemio-design-version','2')`, then load `/vc/<id>` and `/vc/<id>/settings/settings`; confirm `crdEnabled ? <CrdVCRoutes/> : <VCRoute/>` dispatch in `src/main/routing/TopLevelRoutes.tsx` (~line 254).
+- [X] T002 [P] Re-read the reference implementation to mirror conventions: `src/main/crdPages/topLevelPages/vcPages/settings/profile/{CrdVCProfileTab.tsx,useVcProfileTabData.ts,vcProfileMapper.ts}` and `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx`.
 
 ---
 
@@ -30,7 +30,7 @@
 
 **Purpose**: The CRD foundation (route dispatch, 3-layer pattern, `crd-contributorSettings` namespace registration in `src/core/i18n/config.ts` + `@types/i18next.d.ts`, `pickColorFromId`, typography tokens, sticky-dialog rule) already exists. No new shared infrastructure is required before stories begin.
 
-- [ ] T003 Verify the `crd-contributorSettings` namespace is registered and editable in all 6 language files under `src/crd/i18n/contributorSettings/` (new keys for each story are added within that story's i18n task).
+- [X] T003 Verify the `crd-contributorSettings` namespace is registered and editable in all 6 language files under `src/crd/i18n/contributorSettings/` (new keys for each story are added within that story's i18n task).
 
 **Checkpoint**: Foundation confirmed — user stories can proceed in any order (they touch disjoint files).
 
@@ -45,31 +45,31 @@
 ### Layer 3 — presentational (pure)
 
 - [X] T004 [P] [US1] Add prop types in `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.types.ts` from `contracts/creationWizard.ts` (step machine, values, view props, sub-dialog props).
-- [ ] T005 [US1] Build the full-page shell `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx` (header, step switch, footer with Back/Next/Create — page scroll, not dialog).
-- [ ] T006 [P] [US1] Build initial step `src/crd/components/virtualContributor/creationWizard/steps/InitialStep.tsx` (name/tagline/description/avatar + 3 path cards).
-- [ ] T007 [P] [US1] Build add-knowledge step `.../steps/AddKnowledgeStep.tsx` with post rows (`PostItem`) and document rows (`DocumentItem`) — add/remove, validation display.
-- [ ] T008 [P] [US1] Build existing-space step `.../steps/ExistingSpaceStep.tsx` (select space/subspace as Body of Knowledge; `pickColorFromId` fallbacks).
-- [ ] T009 [P] [US1] Build choose-community + try-VC-info steps `.../steps/ChooseCommunityStep.tsx` and `.../steps/TryVcInfoStep.tsx` (+ `LoadingStep`).
-- [ ] T010 [P] [US1] Build sub-dialog `.../dialogs/VCWizardCancelDialog.tsx` (confirm discard; sticky-chrome).
-- [ ] T011 [P] [US1] Build sub-dialog `.../dialogs/VCExternalAIDialog.tsx` + nested coming-soon request form (sticky-chrome).
+- [X] T005 [US1] Build the full-page shell `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx` (header, step switch, footer with Back/Next/Create — page scroll, not dialog).
+- [X] T006 [P] [US1] Build initial step `src/crd/components/virtualContributor/creationWizard/steps/InitialStep.tsx` (name/tagline/description/avatar + 3 path cards).
+- [X] T007 [P] [US1] Build add-knowledge step `.../steps/AddKnowledgeStep.tsx` with post rows (`PostItem`) and document rows (`DocumentItem`) — add/remove, validation display.
+- [X] T008 [P] [US1] Build existing-space step `.../steps/ExistingSpaceStep.tsx` (select space/subspace as Body of Knowledge; `pickColorFromId` fallbacks).
+- [X] T009 [P] [US1] Build choose-community + try-VC-info steps `.../steps/ChooseCommunityStep.tsx` and `.../steps/TryVcInfoStep.tsx` (+ `LoadingStep`).
+- [X] T010 [US1] DESCOPED — the full-page wizard has **no close/cancel button** (the user exits via the user-settings breadcrumb trail; in-progress input is discarded on navigation). The cancel-confirm dialog was dropped, so no `VCWizardCancelDialog` is built.
+- [X] T011 [P] [US1] Build sub-dialog `.../dialogs/VCExternalAIDialog.tsx` + nested coming-soon request form (sticky-chrome).
 - [ ] T012 [US1] DESCOPED — the interactive "try the VC" demo (`TryVirtualContributorDialog`) is launched from the **space dashboard** (`src/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView.tsx`), **not** the creation wizard; it is out of scope for US1 (a space-page concern). The wizard's final step is the info step `TryVcInfoStep` (built in T009). No implementation in this task.
 
 ### Layer 2 — integration (reuse GraphQL hooks unchanged)
 
-- [ ] T013 [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/useVcCreationWizard.ts` by relocating the step machine + all data calls from `src/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard.tsx` (reuse `useCreateVirtualContributorOnAccountMutation`, `useNewVirtualContributorMySpacesQuery`, `useAllSpaceSubspacesLazyQuery`, `useUploadVisualMutation`, `useCreateSpaceMutation`, `useRefreshBodyOfKnowledgeMutation`, `useCreateLinkOnCalloutMutation`, `useAssignRoleToVirtualContributorMutation`, `useSubspaceCommunityAndRoleSetIdLazyQuery`, `useSpaceAboutBaseLazyQuery`, Formik/Yup schemas); swap `DialogWithGrid` shell for page rendering.
-- [ ] T014 [P] [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/vcCreationWizardMapper.ts` (GraphQL spaces/communities/createdVc → `VcWizardSelectableSpace[]`/`VcWizardCreatedVc`).
-- [ ] T015 [US1] Create integration page `src/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardPage.tsx` (reads target account from route state/query, scopes avatar upload via `StorageConfigContextProvider`, renders `VCCreationWizardView`).
+- [X] T013 [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/useVcCreationWizard.ts` by relocating the step machine + all data calls from `src/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard.tsx` (reuse `useCreateVirtualContributorOnAccountMutation`, `useNewVirtualContributorMySpacesQuery`, `useAllSpaceSubspacesLazyQuery`, `useUploadVisualMutation`, `useCreateSpaceMutation`, `useRefreshBodyOfKnowledgeMutation`, `useCreateLinkOnCalloutMutation`, `useAssignRoleToVirtualContributorMutation`, `useSubspaceCommunityAndRoleSetIdLazyQuery`, `useSpaceAboutBaseLazyQuery`, Formik/Yup schemas); swap `DialogWithGrid` shell for page rendering.
+- [X] T014 [P] [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/vcCreationWizardMapper.ts` (GraphQL spaces/communities/createdVc → `VcWizardSelectableSpace[]`/`VcWizardCreatedVc`).
+- [X] T015 [US1] Create the integration pages in `src/main/crdPages/topLevelPages/vcPages/creationWizard/`: a shared body `CrdVCCreationWizard.tsx` (reads target account from **router location state**, runs `useVcCreationWizard`, renders `VCCreationWizardView`) + **two per-context wrappers** that own the breadcrumb trail — `CrdVCCreationWizardPage.tsx` (user — `useUserPageRouteContext`, `User` icon) and `CrdOrgVCCreationWizardPage.tsx` (org — `useOrganizationContext`, `Building2` icon), each mirroring the entity's account-tab trail (*entity › Settings › Account › Create Virtual Contributor*). *(Avatar is uploaded post-creation directly via `useUploadVisualMutation` — no `StorageConfigContextProvider` needed since the description uses a plain Textarea.)*
 
 ### Routing & launch points
 
-- [X] T016 [US1] Add `buildCreateVirtualContributorUrl(accountId?, name?)` to `src/main/routing/urlBuilders.ts`.
-- [ ] T017 [US1] Mount the full-page route (lazy + `Suspense` + `WithApmTransaction`, wrapped in `CrdLayoutWrapper`) in `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (or `TopLevelRoutes.tsx` if top-level), guarded so only account-privileged users reach it.
-- [ ] T018 [US1] Switch the four CRD launch points from inline `{virtualContributorWizard}` to `navigate(buildCreateVirtualContributorUrl(...))`: `src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx`, `.../DashboardWithMemberships.tsx`, `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`, `.../organizationPages/settings/account/CrdOrgAccountTab.tsx`.
+- [X] T016 [US1] Add `buildCreateVirtualContributorUrl(entityProfileUrl?)` to `src/main/routing/urlBuilders.ts` — returns `<profileUrl>/settings/create-virtual-contributor` (segment const `CREATE_VIRTUAL_CONTRIBUTOR_SEGMENT`), defaulting to `/user/me`. Parameterized by the owning entity's `profile.url` so it works for the current user, another user (admin), and organizations. **No query params** (account carried via location state).
+- [X] T017 [US1] Mount the wizard route (lazy + `Suspense`) at `create-virtual-contributor` in **both** `CrdUserSettingsRoutes.tsx` (→ `CrdVCCreationWizardPage`) and `CrdOrgSettingsRoutes.tsx` (→ `CrdOrgVCCreationWizardPage`), each as a **sibling of the settings-tab shell** route → full-page (no settings tabs), inheriting `CrdLayoutWrapper` + auth (+ `OrganizationProvider` for org) from the surrounding `/user/:userNameId/*` and `/organization/:orgNameId/*` trees. (Not a top-level route; `TopLevelRoutes.tsx` unchanged.)
+- [X] T018 [US1] Switch the four CRD launch points from inline `{virtualContributorWizard}` to `navigate(buildCreateVirtualContributorUrl(entityProfileUrl), { state: { account, accountName } })` (dashboards pass nothing → `/user/me`; user tab passes `profileUrl`; org tab passes `organization.profile.url`): `src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx`, `.../DashboardWithMemberships.tsx`, `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`, `.../organizationPages/settings/account/CrdOrgAccountTab.tsx`.
 
 ### i18n & tests
 
-- [ ] T019 [P] [US1] Add `wizard.*` keys (steps, fields, paths, sub-dialogs, errors, success/cancel) to all 6 `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`.
-- [ ] T020 [P] [US1] Add `vcCreationWizardMapper.test.ts` next to the mapper (space/community/createdVc mapping + null safety).
+- [X] T019 [P] [US1] Add `wizard.*` keys (steps, fields, paths, sub-dialogs, errors, success/cancel) to all 6 `src/crd/i18n/contributorSettings/contributorSettings.<lang>.json`.
+- [X] T020 [P] [US1] Add `vcCreationWizardMapper.test.ts` next to the mapper (space/community/createdVc mapping + null safety).
 - [ ] T055 [US1] Add a behavioral test for the relocated wizard orchestration in `src/main/crdPages/topLevelPages/vcPages/creationWizard/__tests__/useVcCreationWizard.test.ts` (Constitution V — non-trivial logic): assert step transitions per path (written-knowledge / existing-space / external), cancel-discard leaves no partial VC, and the create payload is assembled correctly. Depends on T013. (Appended via analysis remediation — runs after T013, not parallel.)
 
 **Checkpoint**: US1 independently shippable — VC creation is fully CRD from all launch points.
@@ -152,12 +152,12 @@
 
 **Purpose**: Quality gates and acceptance verification across all stories.
 
-- [ ] T049 [P] Grep new CRD files for forbidden imports (`@mui/*`, `@emotion/*`, `@apollo/client`, `@/domain/*`, `react-router-dom`, `formik`) under `src/crd/components/virtualContributor/`, `src/crd/components/common/VirtualContributorBadge.tsx`; fix any leak (FR-013).
-- [ ] T050 [P] Confirm every navigational URL in new code comes from `src/main/routing/urlBuilders.ts` (no inline templates) (FR-015).
+- [X] T049 [P] Grep new CRD files for forbidden imports (`@mui/*`, `@emotion/*`, `@apollo/client`, `@/domain/*`, `react-router-dom`, `formik`) under `src/crd/components/virtualContributor/`, `src/crd/components/common/VirtualContributorBadge.tsx`; fix any leak (FR-013).
+- [X] T050 [P] Confirm every navigational URL in new code comes from `src/main/routing/urlBuilders.ts` (no inline templates) (FR-015).
 - [ ] T051 [P] Accessibility pass (WCAG 2.1 AA): keyboard nav + focus + `aria-label` on icon buttons across wizard, KB, prompt-graph rows, preview, badge.
-- [ ] T052 Run `pnpm lint` and `pnpm vitest run`; fix failures.
+- [X] T052 Run `pnpm lint` and `pnpm vitest run`; fix failures.
 - [ ] T053 Manual acceptance against Success Criteria with CRD on: SC-001 (wizard, all launch points), SC-002 (KB + deep link), SC-003 (no legacy VC dialog), SC-004 (non-admin gating), then SC-005 with legacy design on (VC screens unchanged).
-- [ ] T054 [P] Verify i18n completeness: every new key exists in all 6 languages; platform terms (incl. "Virtual Contributor") preserved per glossary (FR-014/SC-007).
+- [X] T054 [P] Verify i18n completeness: every new key exists in all 6 languages; platform terms (incl. "Virtual Contributor") preserved per glossary (FR-014/SC-007).
 
 ---
 

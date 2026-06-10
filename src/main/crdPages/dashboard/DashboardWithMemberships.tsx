@@ -24,8 +24,7 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
-import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import { buildCreateVirtualContributorUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import {
   mapActivityToFeedItems,
   mapMembershipsToPanelItems,
@@ -212,7 +211,6 @@ export default function DashboardWithMemberships({
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
-  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
   // Tips — from crd-dashboard namespace
   const tipsRaw = t('tips.items', { returnObjects: true });
@@ -250,7 +248,7 @@ export default function DashboardWithMemberships({
           onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
         />
 
-        {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
+        {showCampaign && <CampaignBanner onAction={() => navigate(buildCreateVirtualContributorUrl())} />}
 
         {activityEnabled && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -284,7 +282,6 @@ export default function DashboardWithMemberships({
           </div>
         )}
       </DashboardLayout>
-      {virtualContributorWizard}
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}

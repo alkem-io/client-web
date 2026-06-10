@@ -10,6 +10,9 @@ const CrdUserOrganizationsTab = lazy(() => import('./organizations/CrdUserOrgani
 const CrdUserNotificationsTab = lazy(() => import('./notifications/CrdUserNotificationsTab'));
 const CrdUserSettingsTab = lazy(() => import('./settings/CrdUserSettingsTab'));
 const CrdUserSecurityTab = lazy(() => import('./security/CrdUserSecurityTab'));
+const CrdVCCreationWizardPage = lazy(
+  () => import('@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardPage')
+);
 
 /**
  * Routes the User settings sub-tree (`/user/<slug>/settings/*`).
@@ -19,6 +22,15 @@ const CrdUserSecurityTab = lazy(() => import('./security/CrdUserSecurityTab'));
  */
 export const CrdUserSettingsRoutes = () => (
   <Routes>
+    {/* Full-page VC creation wizard — outside the settings-tab shell so the tab nav is hidden. */}
+    <Route
+      path="create-virtual-contributor"
+      element={
+        <Suspense fallback={<Loading />}>
+          <CrdVCCreationWizardPage />
+        </Suspense>
+      }
+    />
     <Route path="" element={<CrdUserSettingsPage />}>
       <Route index={true} element={<Navigate to="profile" replace={true} />} />
       <Route

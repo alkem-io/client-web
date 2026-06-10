@@ -1,4 +1,70 @@
 {
+  "wizard": {
+    "title": "Créer un Virtual Contributor",
+    "loading": "En cours…",
+    "next": "Suivant",
+    "back": "Retour",
+    "create": "Créer",
+    "initial": {
+      "intro": "Donnez un nom à votre Virtual Contributor et choisissez d’où viennent ses connaissances.",
+      "uploadAvatar": "Téléverser un avatar",
+      "name": "Nom",
+      "tagline": "Slogan",
+      "description": "Description",
+      "pathTitle": "D’où viennent ses connaissances ?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Connaissances écrites",
+          "subtitle": "Ajouter des publications et des documents"
+        },
+        "existingSpace": {
+          "title": "Space existant",
+          "subtitle": "Utiliser un Space auquel vous avez accès"
+        },
+        "external": {
+          "title": "IA externe",
+          "subtitle": "Connecter un fournisseur externe"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Ajoutez les connaissances initiales de votre Virtual Contributor.",
+      "postsTitle": "Publications",
+      "postTitle": "Titre",
+      "postDescription": "Contenu",
+      "removePost": "Supprimer la publication",
+      "addPost": "Ajouter une publication",
+      "documentsTitle": "Documents",
+      "documentName": "Nom",
+      "documentUrl": "URL",
+      "removeDocument": "Supprimer le document",
+      "addDocument": "Ajouter un document"
+    },
+    "existingSpace": {
+      "intro": "Choisissez un Space à utiliser comme base de connaissances.",
+      "empty": "Aucun Space disponible."
+    },
+    "external": {
+      "intro": "Connectez un fournisseur d’IA externe.",
+      "engine": "Fournisseur",
+      "apiKey": "Clé API",
+      "assistantId": "ID de l’assistant",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Ajoutez votre Virtual Contributor à une communauté, ou passez pour l’instant.",
+      "skip": "Passer pour l’instant"
+    },
+    "tryVc": {
+      "title": "{{name}} est prêt !",
+      "description": "Votre Virtual Contributor a été créé.",
+      "view": "Voir le profil",
+      "done": "Terminé"
+    }
+  },
   "breadcrumbs": {
     "settings": "Paramètres"
   },

@@ -8,6 +8,9 @@ const CrdOrgAccountTab = lazy(() => import('./account/CrdOrgAccountTab'));
 const CrdOrgCommunityTab = lazy(() => import('./community/CrdOrgCommunityTab'));
 const CrdOrgAuthorizationTab = lazy(() => import('./authorization/CrdOrgAuthorizationTab'));
 const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
+const CrdOrgVCCreationWizardPage = lazy(
+  () => import('@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdOrgVCCreationWizardPage')
+);
 
 /**
  * Routes the Org settings sub-tree (`/organization/<orgSlug>/settings/*`).
@@ -18,6 +21,15 @@ const CrdOrgSettingsTab = lazy(() => import('./settings/CrdOrgSettingsTab'));
  */
 export const CrdOrgSettingsRoutes = () => (
   <Routes>
+    {/* Full-page VC creation wizard — outside the settings-tab shell so the tab nav is hidden. */}
+    <Route
+      path="create-virtual-contributor"
+      element={
+        <Suspense fallback={<Loading />}>
+          <CrdOrgVCCreationWizardPage />
+        </Suspense>
+      }
+    />
     <Route path="" element={<CrdOrgSettingsPage />}>
       <Route index={true} element={<Navigate to="profile" replace={true} />} />
       <Route

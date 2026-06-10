@@ -1,4 +1,70 @@
 {
+  "wizard": {
+    "title": "Create Virtual Contributor",
+    "loading": "Working…",
+    "next": "Next",
+    "back": "Back",
+    "create": "Create",
+    "initial": {
+      "intro": "Give your Virtual Contributor a name and choose where its knowledge comes from.",
+      "uploadAvatar": "Upload avatar",
+      "name": "Name",
+      "tagline": "Tagline",
+      "description": "Description",
+      "pathTitle": "Where does its knowledge come from?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Written knowledge",
+          "subtitle": "Add posts and documents"
+        },
+        "existingSpace": {
+          "title": "Existing Space",
+          "subtitle": "Use a Space you can access"
+        },
+        "external": {
+          "title": "External AI",
+          "subtitle": "Connect an external provider"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Add the initial knowledge for your Virtual Contributor.",
+      "postsTitle": "Posts",
+      "postTitle": "Title",
+      "postDescription": "Content",
+      "removePost": "Remove post",
+      "addPost": "Add post",
+      "documentsTitle": "Documents",
+      "documentName": "Name",
+      "documentUrl": "URL",
+      "removeDocument": "Remove document",
+      "addDocument": "Add document"
+    },
+    "existingSpace": {
+      "intro": "Choose a Space to use as the body of knowledge.",
+      "empty": "No Spaces available."
+    },
+    "external": {
+      "intro": "Connect an external AI provider.",
+      "engine": "Provider",
+      "apiKey": "API key",
+      "assistantId": "Assistant ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Add your Virtual Contributor to a community, or skip for now.",
+      "skip": "Skip for now"
+    },
+    "tryVc": {
+      "title": "{{name}} is ready!",
+      "description": "Your Virtual Contributor has been created.",
+      "view": "View profile",
+      "done": "Done"
+    }
+  },
   "breadcrumbs": {
     "settings": "Settings"
   },

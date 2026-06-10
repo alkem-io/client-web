@@ -6,22 +6,23 @@ import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashb
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 export const URL_SPACE_EXPLORER = '/spaces';
 
-/** Top-level route for the full-page CRD "Create Virtual Contributor" wizard. */
-export const CREATE_VIRTUAL_CONTRIBUTOR_PATH = '/create-virtual-contributor';
+/** Route segment (nested under the owning entity's settings) for the full-page CRD VC creation wizard. */
+export const CREATE_VIRTUAL_CONTRIBUTOR_SEGMENT = 'create-virtual-contributor';
 
 /**
- * Builds the URL for the full-page VC creation wizard. The target account is
- * carried via query params so the route can be deep-linked / navigated to from
- * any CRD launch point (dashboard, user/org account tabs). When omitted, the
- * wizard defaults to the current user's own account.
+ * URL for the full-page VC creation wizard, nested under the **owning entity's**
+ * settings — a user (`/user/<slug>/settings/create-virtual-contributor`, incl.
+ * `/user/me/...` and another user's account for a platform admin) or an
+ * organization (`/organization/<slug>/settings/create-virtual-contributor`).
+ *
+ * Pass the entity's `profile.url` (e.g. `/user/me`, `/user/<slug>`,
+ * `/organization/<slug>`); defaults to the current user (`/user/me`) for the
+ * dashboard launch points. The target account is carried via router location
+ * state by the launch point (`navigate(url, { state: { account, accountName } })`),
+ * so this URL takes no query params.
  */
-export const buildCreateVirtualContributorUrl = (accountId?: string, accountName?: string): string => {
-  const params = new URLSearchParams();
-  if (accountId) params.set('accountId', accountId);
-  if (accountName) params.set('name', accountName);
-  const query = params.toString();
-  return query ? `${CREATE_VIRTUAL_CONTRIBUTOR_PATH}?${query}` : CREATE_VIRTUAL_CONTRIBUTOR_PATH;
-};
+export const buildCreateVirtualContributorUrl = (entityProfileUrl?: string): string =>
+  `${entityProfileUrl || '/user/me'}/settings/${CREATE_VIRTUAL_CONTRIBUTOR_SEGMENT}`;
 
 // Keep these in sync with the consts in TabbedLayoutPage.tsx and don't import,
 // tests fail to import because they are in different modules
