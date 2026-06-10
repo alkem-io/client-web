@@ -1,19 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { shouldRecoverOidcSession } from './useOidcSessionRecovery';
 
-// Baseline = the bug case: Kratos SSO alive, BFF session dropped (post password
-// change), returning user, on a normal route, not yet attempted → should recover.
+// Baseline = the bug case: Kratos SSO alive (whoami 200), BFF session dropped
+// (post password change), on a normal route, not yet attempted → should recover.
 const baseInput = {
   loading: false,
   kratosAuthenticated: true,
   oidcActive: false,
   pathname: '/home',
-  sessionPreviouslySeen: true,
   recoveryAlreadyAttempted: false,
 } as const;
 
 describe('shouldRecoverOidcSession', () => {
-  it('recovers when Kratos SSO is alive but the BFF session dropped for a returning user', () => {
+  it('recovers when Kratos SSO is alive but the BFF session dropped', () => {
     expect(shouldRecoverOidcSession(baseInput)).toBe(true);
   });
 
@@ -27,10 +26,6 @@ describe('shouldRecoverOidcSession', () => {
 
   it('does not attempt a silent login without a live Kratos SSO session', () => {
     expect(shouldRecoverOidcSession({ ...baseInput, kratosAuthenticated: false })).toBe(false);
-  });
-
-  it('does not force-login an anonymous visitor carrying another RP SSO cookie', () => {
-    expect(shouldRecoverOidcSession({ ...baseInput, sessionPreviouslySeen: false })).toBe(false);
   });
 
   it('attempts recovery at most once per tab (loop guard)', () => {

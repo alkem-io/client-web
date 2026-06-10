@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import {
   OIDC_LOGIN_PATH,
   OIDC_RECOVERY_ATTEMPTED_KEY,
-  OIDC_SESSION_SEEN_KEY,
 } from '@/core/auth/authentication/constants/authentication.constants';
 
 // Identity/auth screens (mirrors IdentityRoutes in IdentityRoute.tsx). On these
@@ -26,7 +25,6 @@ type OidcSessionRecoveryInput = {
   kratosAuthenticated: boolean;
   oidcActive: boolean;
   pathname: string;
-  sessionPreviouslySeen: boolean;
   recoveryAlreadyAttempted: boolean;
 };
 
@@ -35,22 +33,23 @@ type OidcSessionRecoveryInput = {
  *
  * Triggered by the post-password-change gap — Kratos refreshes its SSO session
  * but the BFF `alkemio_session` is left stale/absent, so `id-token-hint` 401s and
- * the app shows logged-out even though a silent Hydra login would succeed. Rather
- * than make the user click "Log in", re-enter the OIDC login route automatically.
+ * the app shows logged-out even though a silent Hydra login would succeed. The
+ * live Kratos SSO session (`kratosAuthenticated`, i.e. whoami === 200) is the
+ * signal that the silent, credential-less re-login is possible — it is exactly
+ * what makes the manual "Log in" click work without a password — so rather than
+ * make the user click, re-enter the OIDC login route automatically.
  */
 export function shouldRecoverOidcSession(input: OidcSessionRecoveryInput): boolean {
   // Both session probes must have resolved before we trust the mismatch.
   if (input.loading) return false;
   // Already have a live BFF session — nothing to recover.
   if (input.oidcActive) return false;
-  // No live Kratos SSO to ride — a silent (credential-less) login is impossible.
+  // No live Kratos SSO to ride — a silent (credential-less) login is impossible,
+  // and redirecting would just bounce an anonymous visitor to the login form.
   if (!input.kratosAuthenticated) return false;
   // Loop guard: one attempt per tab. If the BFF still won't mint a session after
   // a recovery redirect, fall back to the manual "Log in" button.
   if (input.recoveryAlreadyAttempted) return false;
-  // Only recover for returning Alkemio users. An anonymous visitor carrying
-  // another RP's Kratos SSO cookie must not be force-logged-in here.
-  if (!input.sessionPreviouslySeen) return false;
   // Never fire on the auth screens themselves — that mismatch is by design.
   // Split on `/`, `?` and `#` so a stray query/hash can't sneak a route past us.
   const segment = input.pathname.replace(/^\/+/, '').split(/[/?#]/)[0];
@@ -61,9 +60,9 @@ export function shouldRecoverOidcSession(input: OidcSessionRecoveryInput): boole
 /**
  * Closes the post-password-change gap where the Kratos SSO session is fresh but
  * the BFF OIDC session is gone, leaving the user apparently logged out until they
- * click "Log in". When the mismatch is detected on a non-auth route for a user who
- * had a BFF session here before, re-enter the apex OIDC login route — Hydra
- * completes it silently against the live Kratos SSO, with no credential prompt.
+ * click "Log in". When the mismatch is detected on a non-auth route with a live
+ * Kratos SSO session, re-enter the apex OIDC login route — Hydra completes it
+ * silently against that session, with no credential prompt.
  */
 export const useOidcSessionRecovery = ({
   loading,
@@ -78,9 +77,8 @@ export const useOidcSessionRecovery = ({
     if (loading) return;
 
     if (oidcActive) {
-      // Healthy BFF session: remember it for future recovery decisions and reset
-      // the per-tab loop guard so a later drop can be recovered again.
-      localStorage.setItem(OIDC_SESSION_SEEN_KEY, '1');
+      // Healthy BFF session: reset the per-tab loop guard so a later drop (e.g. a
+      // second password change in this tab) can be recovered again.
       sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
       return;
     }
@@ -90,7 +88,6 @@ export const useOidcSessionRecovery = ({
       kratosAuthenticated,
       oidcActive,
       pathname: window.location.pathname,
-      sessionPreviouslySeen: localStorage.getItem(OIDC_SESSION_SEEN_KEY) === '1',
       recoveryAlreadyAttempted: sessionStorage.getItem(OIDC_RECOVERY_ATTEMPTED_KEY) === '1',
     });
     if (!shouldRecover) return;
