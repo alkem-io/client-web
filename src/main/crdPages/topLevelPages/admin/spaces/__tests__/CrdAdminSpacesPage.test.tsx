@@ -61,6 +61,15 @@ describe('CrdAdminSpacesPage', () => {
     expect(screen.getByText('Org A')).toBeInTheDocument();
   });
 
+  test('a space whose provider field was dropped (auth error → null) still renders, with N/A owner', () => {
+    // Mirrors the partial-data the server returns when one space has a corrupt
+    // authorization policy on `about.provider`: that field comes back null while
+    // every other space resolves. The row must survive, not blank the list.
+    render(<CrdAdminSpacesPage />);
+    expect(screen.getByRole('link', { name: 'Beta [ARCHIVED]' })).toBeInTheDocument();
+    expect(screen.getByText('N/A')).toBeInTheDocument();
+  });
+
   test('search filters the list client-side', async () => {
     render(<CrdAdminSpacesPage />);
     await userEvent.type(screen.getByRole('searchbox'), 'alpha');

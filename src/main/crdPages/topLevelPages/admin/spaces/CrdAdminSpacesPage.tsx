@@ -29,7 +29,12 @@ const CrdAdminSpacesPage = () => {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
   const notify = useNotification();
-  const { data, loading } = usePlatformAdminSpacesListQuery();
+  // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
+  // policy on its nested `about.provider` (AUTHORIZATION_INVALID_POLICY) doesn't
+  // blank the whole list. GraphQL nulls just that field and returns partial
+  // data; the mapper falls back to 'N/A' for a missing provider. With the
+  // default 'none' policy Apollo discards all data when any field errors.
+  const { data, loading } = usePlatformAdminSpacesListQuery({ errorPolicy: 'all' });
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchPlatformAdminSpacesListQuery()],
