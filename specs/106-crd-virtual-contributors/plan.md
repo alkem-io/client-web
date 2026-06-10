@@ -12,6 +12,7 @@ Close the remaining gaps in the VirtualContributor (VC) MUI → CRD migration so
 3. **Add-to-community (P2)** — wire the already-built `VirtualContributorInviteConnector` into the CRD community entry points, add the missing **preview step**, and retire the legacy invite dialogs.
 4. **Admin config (P3)** — *scope reduced by discovery:* visibility, BoK management, prompt, and external-config cards are **already live** in the CRD settings tab. The only remaining surface is the **prompt graph (state-machine) editor** (FR-006).
 5. **Cross-cutting (P3)** — create a CRD **VC badge** and render it on CRD contributor surfaces (comments); **VC notifications already render** via the generic CRD notification mapper (verify only).
+6. **Standalone demo coverage (P3)** — add a demo page per migrated VC surface to the standalone CRD preview app (`src/crd/app/`) backed by **hardcoded mock Virtual Contributors**, mirroring the existing `VCProfileDemoPage` + `MOCK_VC_DATASYNTH` pattern, so each surface can be iterated on backend-free via `pnpm crd:dev`.
 
 **Technical approach:** Follow the established CRD 3-layer pattern exactly — pure presentational components in `src/crd/components/virtualContributor/`, integration pages + data hooks + mappers in `src/main/crdPages/topLevelPages/vcPages/`, route wiring in `CrdVCRoutes.tsx`/`TopLevelRoutes.tsx`. **No backend or GraphQL schema changes** — all data hooks are generated and reused (Constitution III).
 
@@ -119,6 +120,18 @@ src/crd/i18n/contributorSettings/                  # EXISTING namespace 'crd-con
 └── contributorSettings.<lang>.json                # ADD keys: wizard.*, knowledgeBase.*, promptGraph.* (en+es+nl+bg+de+fr)
 # VC badge + add-VC strings: extend 'crd-community' / 'crd-common' namespaces as appropriate
 
+src/crd/app/                                       # EXISTING — standalone preview app (mock data, no backend); the ONLY crd/ dir allowed to use react-router-dom
+├── data/
+│   └── virtualContributors.ts                     # NEW (US6) — hardcoded mock VCs: wizard selectable spaces + created VC, KB items, prompt-graph nodes, add-VC preview/available list, badge
+├── pages/
+│   ├── VCProfileDemoPage.tsx                       # EXISTING — reference pattern (uses MOCK_VC_DATASYNTH)
+│   ├── VCCreationWizardDemoPage.tsx                # NEW (US6) — full-page wizard shell, all 3 paths + sub-dialogs, local step state
+│   ├── VCKnowledgeBaseDemoPage.tsx                 # NEW (US6) — populated + empty + authorized-refresh variants
+│   ├── VCAddToCommunityDemoPage.tsx                # NEW (US6) — VirtualContributorInviteDialog + VirtualContributorPreview, search→preview→confirm
+│   └── VCAdminConfigDemoPage.tsx                   # NEW (US6) — VCPromptGraphCard (system read-only / user editable); + VC badge showcase
+├── CrdApp.tsx                                      # MODIFY (US6): register the 4 new demo routes + add "(preview)" nav entries
+└── main.tsx                                        # MODIFY (US6): eagerly load 'crd-contributorSettings' + 'crd-community' namespaces (EN) — not currently loaded
+
 src/main/routing/urlBuilders.ts                    # ADD buildCreateVirtualContributorUrl(entityProfileUrl?) → <profileUrl>/settings/create-virtual-contributor
 src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.tsx          # MODIFY: mount wizard route → CrdVCCreationWizardPage
 src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.tsx   # MODIFY: mount wizard route → CrdOrgVCCreationWizardPage
@@ -130,7 +143,7 @@ src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.
 
 ## Phasing & Dependencies (implementation order)
 
-The five user stories are independently shippable. Recommended sequence — **true warm-up first, the two heavy components last**:
+The user stories are independently shippable. US6 (standalone demo coverage) depends only on the **pure CRD components** of US1–US5 existing — not on their integration layers — so each surface's demo page can land alongside (or immediately after) that surface's Layer-3 component. Recommended sequence — **true warm-up first, the two heavy components last**:
 
 1. **US5 — VC badge + notification verification** (genuinely smallest, cross-cutting). Resolves the Constitution-III watch-item early (the comment-author VC-type field, which an audit confirmed is missing → needs a fragment field + `pnpm codegen`).
 2. **US3 — add-to-community**. The connector is **already wired** into `CrdSpaceCommunityPage` + `CrdSpaceSettingsPage`; the only real gap is the **preview step** (+ confirm legacy dialogs are unreachable on CRD).
@@ -143,3 +156,20 @@ The five user stories are independently shippable. Recommended sequence — **tr
 ## Complexity Tracking
 
 > No Constitution violations — section intentionally empty.
+
+## Addendum — Knowledge Base callout restrictions (US7)
+
+*Added 2026-06-10, after the KB "Add callout" capability landed (extends US2).*
+
+**Problem.** The KB page now opens the shared CRD `CalloutFormConnector` to create callouts, but that dialog exposes the full callout feature set (6 framing chips, 4 response types, framing + contribution comment toggles, rich-media upload). A VC's knowledge base supports none of: comments, whiteboard/memo/document/CTA/media-gallery framing, or memo/whiteboard responses. MUI already constrains this via `CalloutRestrictions` (`src/domain/collaboration/callout/CalloutRestrictionsTypes.ts` + `virtualContributorsCalloutRestrictions.ts`); CRD must reach parity (FR-021..FR-024 / SC-010).
+
+**Approach — copy the concept to CRD as an integration-layer descriptor + optional pure-component props.** Contract: `contracts/calloutRestrictions.ts`.
+
+- **Descriptor (integration layer):** `CrdCalloutRestrictions` (allow-lists + visibility flags) and a `VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS` preset, in `src/main/crdPages/space/callout/calloutRestrictions.ts`. Expressed in CRD chip vocabulary (clearer than MUI's partial flag bag, which does not actually force None-only framing). Absent descriptor ⇒ unchanged full feature set (no regression — FR-021).
+- **Pure CRD components gain optional props only (Constitution I / FR-024):** `FramingChipStrip` + `allowedChips?: FramingChipId[]`; `ResponseTypeChipStrip` + `allowedChips?: ResponseTypeChipId[]`; `ResponsePanel` + `showContributionComments?: boolean`. No business logic enters `src/crd/`.
+- **Form defaults:** `useCrdCalloutForm` accepts `initialOverrides?: Partial<CalloutFormValues>` (merged into initial state + `reset`), mirroring MUI `CalloutForm`'s `commentsEnabled` seeding — so the *hidden* comment toggles submit `false` (FR-023).
+- **Connector wiring (`CalloutFormConnector`):** new optional `restrictions?` prop → seed form overrides; hide the framing strip + editor when `allowedFramingChips` is `[]`; pass `allowedChips` to both strips; pass `showContributionComments` to `ResponsePanel`; render `AllowCommentsField` only when framing comments are allowed; apply `disableRichMedia` to the description editor. **Chip allow-lists apply in create mode only** (edit-mode strips stay locked + unfiltered so an existing callout's type is never hidden); comment toggles are hidden in both modes.
+- **Consumer:** `CrdVCKnowledgeBasePage` passes `restrictions={VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS}` to its `CalloutFormConnector`.
+- **Templates (FR-023):** hiding/filtering the UI controls is not enough — the "Find Template" picker and the active flow state's default template both `prefill()` arbitrary form values that could reintroduce a disallowed framing/response type or re-enable comments. A `clampFormValuesToRestrictions(values, restrictions)` helper sanitizes **create-mode** template prefills (disallowed framing/response → `'none'`, comment flags → `false`), mirroring the MUI seam `mapCalloutTemplateToCalloutForm(template, calloutRestrictions)`. Edit-mode prefill of an existing callout is **not** clamped (its stored settings are authoritative).
+
+**No backend/GraphQL changes** (Constitution III) — purely presentational gating of an existing create flow. **Tests:** extend `FramingChipStrip`/`ResponseTypeChipStrip` unit tests for `allowedChips`; assert a restricted submit yields framing None + comments off; confirm the unrestricted space-tab create dialog is unchanged.

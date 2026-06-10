@@ -121,6 +121,41 @@ Anywhere a VC appears as a small UI element — the "Virtual Contributor" label/
 
 ---
 
+### User Story 6 - Preview every migrated VC surface in the standalone demo app (Priority: P3)
+
+A designer or developer runs the standalone CRD preview app (`pnpm crd:dev`, `localhost:5200`) with no backend and reaches every migrated VC surface — the creation wizard, the Knowledge Base, the add-to-community invite/preview flow, the advanced admin prompt-graph config, and the VC badge — each rendered with hardcoded mock Virtual Contributors, so the visuals can be iterated on in isolation.
+
+**Why this priority**: The standalone app is the design-iteration harness for the whole CRD layer — every other migrated area (spaces, dashboard, templates, the VC public profile) already has a demo page with mock data. The new VC surfaces are the most complex builds in this feature (the wizard and prompt-graph editor especially), so backend-free preview is where their states are easiest to exercise. It is cross-cutting tooling, not part of the production user journey, so it is the lowest priority — but, like the existing VC profile demo, it is treated as part of "migrating a VC surface", not an afterthought.
+
+**Independent Test**: Run `pnpm crd:dev`, open each VC demo route from the platform-navigation menu, and confirm the wizard (all three creation paths + sub-dialogs), the Knowledge Base (populated + empty + authorized-refresh), the add-to-community dialog (search → preview → confirm), the prompt-graph card (system nodes read-only, user nodes editable), and the VC badge all render correctly against hardcoded data with no backend running.
+
+**Acceptance Scenarios**:
+
+1. **Given** the standalone demo app is running, **When** a designer opens the VC creation wizard demo route, **Then** the full-page wizard renders with hardcoded selectable spaces and lets them step through every path and sub-dialog against mock data.
+2. **Given** the demo app is running, **When** the Knowledge Base demo route is opened, **Then** it renders with hardcoded knowledge items, and a toggle/variant demonstrates both the populated and empty states plus the authorized refresh control.
+3. **Given** the demo app is running, **When** the add-to-community demo is opened, **Then** the CRD invite dialog opens with hardcoded available VCs and routes selection through the preview view before the (no-op) confirm.
+4. **Given** the demo app is running, **When** the advanced-config demo route is opened, **Then** the prompt-graph card renders with hardcoded system (read-only) and user (editable) nodes and exercises Save/Reset against mock data.
+5. **Given** the demo app is running, **Then** the VC badge is shown in at least one demo context and the platform-navigation menu exposes every VC demo route as a labelled "(preview)" entry.
+
+---
+
+### User Story 7 - Restrict Knowledge Base callout features for Virtual Contributors (Priority: P2)
+
+A user with create rights adds a callout to a Virtual Contributor's Knowledge Base in the new design, and the create-callout dialog only offers the features a VC's knowledge base supports — **no comments**, **no special framing (None only)**, and only **"Posts"** and **"Links & Files"** as response types — matching the long-standing MUI `calloutRestrictions` behavior.
+
+**Why this priority**: The Knowledge Base "Add callout" capability now exists in CRD (extends US2), but the shared CRD create-callout dialog exposes the full feature set (all framing types, all response types, framing- and contribution-level comment toggles, rich-media upload). A VC's knowledge base does not support comments, the whiteboard/memo/document/CTA/media-gallery framings, or the memo/whiteboard response types; offering them produces invalid or unsupported callouts. MUI already constrains this via `CalloutRestrictions` (`virtualContributorsCalloutRestrictions`); CRD must reach the same parity. Scoped P2 because it directly affects the correctness of the just-migrated KB create flow.
+
+**Independent Test**: With the new design active, open "Add" on a VC Knowledge Base; confirm the framing-type chooser is absent (None only), the response-type chooser offers only Posts and Links & Files, and no framing- or contribution-level comments toggles are shown; create a callout and confirm it is persisted with framing type None, comments disabled, and a Posts/Links response.
+
+**Acceptance Scenarios**:
+
+1. **Given** the new design is active and a user with create rights opens the KB "Add callout" dialog, **When** the dialog renders, **Then** no framing-type selection is offered (framing is None) and neither the framing- nor contribution-level comments toggle is present.
+2. **Given** the same dialog, **When** the user reaches the response-type chooser, **Then** only "Posts" and "Links & Files" are selectable (memo and whiteboard are not offered).
+3. **Given** the user completes the form, **When** the callout is created, **Then** it is persisted with framing type None, framing and contribution comments disabled, and the chosen Posts/Links response type.
+4. **Given** the same shared create-callout dialog used elsewhere (e.g. a normal space tab) **without** restrictions supplied, **Then** it continues to offer the full framing/response/comment/rich-media feature set unchanged (no regression).
+
+---
+
 ### Edge Cases
 
 - **Authorization differences**: a viewer without management/admin rights must never see refresh, prompt, or visibility controls — parity must preserve the legacy permission gating exactly.
@@ -152,6 +187,13 @@ Anywhere a VC appears as a small UI element — the "Virtual Contributor" label/
 - **FR-015**: Every navigational URL used by migrated VC surfaces MUST be produced through the central URL-building seam rather than inline path templates.
 - **FR-016**: Deep links to VC sub-routes MUST resolve to the new-design surface when the new design is active.
 - **FR-017**: Migrated surfaces MUST achieve **behavioral parity** with their legacy counterparts — identical data, actions, permission gating, and loading/empty/error states — while rendering in the **CRD visual language**. Pixel- or layout-identical reproduction of the legacy MUI appearance is NOT a requirement; acceptance is judged on behavior and on conformance to CRD design conventions, not on matching the old look.
+- **FR-018**: Every migrated VC presentational surface (creation wizard, Knowledge Base, add-to-community invite dialog + preview, prompt-graph card, VC badge) MUST be reachable as a demo page in the standalone CRD preview app (`src/crd/app/`), rendered against **hardcoded mock Virtual Contributors** with no backend, no Apollo, and no real GraphQL data — consistent with the existing VC public-profile demo (`VCProfileDemoPage`).
+- **FR-019**: The standalone demo pages MUST drive the CRD components purely through props and local React state (mock callbacks may `console.log` / no-op), reusing the same pure CRD components that the production integration layer uses; no demo page may import from `@/main/*`, `@/domain/*`, `@/core/apollo`, or otherwise duplicate business logic. Demo-only data lives under `src/crd/app/data/`.
+- **FR-020**: The standalone demo app MUST load the i18n namespaces the VC components depend on (`crd-contributorSettings`, `crd-community`, `crd-common`) so demo pages render fully-localized English text, and MUST expose each VC demo route from the demo platform-navigation menu as a labelled "(preview)" entry.
+- **FR-021**: The system MUST provide a CRD callout-restriction mechanism — a plain-TS restriction descriptor honored by the shared CRD create-callout dialog — that can hide or limit framing types, response/contribution types, framing- and contribution-level comments, and rich-media upload. When no restriction descriptor is supplied, the dialog MUST behave exactly as today (full feature set; no regression for existing space callout creation). This mirrors the MUI `CalloutRestrictions` concept.
+- **FR-022**: When the new design is active, the VC Knowledge Base "Add callout" flow MUST apply a VC preset achieving **behavioral parity** with MUI `virtualContributorsCalloutRestrictions`: framing limited to **None only**, response/contribution types limited to **Posts** and **Links & Files**, framing comments and contribution comments **disabled**, and rich-media upload **disabled** in the callout description.
+- **FR-023**: Restricted/hidden callout features MUST be enforced beyond the UI: a callout created through a restricted dialog MUST be persisted with framing type None and comments disabled, so a hidden control can never produce an unsupported callout. In particular, **template imports** (the "Find Template" picker and any flow-state default template) MUST be clamped to the active restrictions on prefill — a picked template MUST NOT reintroduce a disallowed framing type, response type, or re-enable comments.
+- **FR-024**: The restriction → presentational-prop derivation MUST live in the **integration layer**; the affected CRD presentational components (framing-type strip, response-type strip, response panel) MUST receive only plain optional props (allow-lists / visibility flags) and remain free of business logic, GraphQL types, and MUI dependencies (consistent with FR-013).
 
 ### Key Entities *(include if feature involves data)*
 
@@ -174,6 +216,8 @@ Anywhere a VC appears as a small UI element — the "Virtual Contributor" label/
 - **SC-006**: All VC data interactions (create, view, configure, add-to-community, refresh knowledge) succeed identically to the legacy implementation, with no GraphQL contract changes.
 - **SC-007**: All user-visible strings on migrated VC surfaces are translatable, with platform terms correctly preserved in English per the glossary.
 - **SC-008**: Each migrated surface reproduces its legacy counterpart's behavior, data, permissions, and states exactly, while presented in the CRD visual language — acceptance is measured on behavioral parity and CRD-convention conformance, not on matching the legacy MUI appearance.
+- **SC-009**: With `pnpm crd:dev` running and no backend, every migrated VC surface (wizard, Knowledge Base, add-to-community dialog + preview, prompt-graph card, VC badge) renders end-to-end from hardcoded mock data, reachable from the demo navigation menu, with no runtime errors and no missing-translation keys.
+- **SC-010**: With the new design active, the VC Knowledge Base "Add callout" dialog offers no framing-type selection, no comments toggles, and only "Posts" + "Links & Files" responses; a callout created from it is persisted with framing type None and comments disabled — and the same shared dialog used without restrictions elsewhere is verifiably unchanged.
 
 ## Assumptions
 
@@ -183,6 +227,7 @@ Anywhere a VC appears as a small UI element — the "Virtual Contributor" label/
 - The VC data layer (GraphQL queries/mutations/subscriptions) is stable and shared; no backend/schema changes are required for this migration.
 - The prompt graph / state-machine UI is the highest-complexity surface and is sequenced last within US4, but is fully migrated to CRD this round (no interim treatment — FR-006).
 - Already-migrated surfaces (public profile page, the three settings tabs) are treated as done and are not re-audited as part of this feature.
+- The standalone CRD preview app (`src/crd/app/`) is the established design-iteration harness for the CRD layer; adding demo coverage for the new VC surfaces follows the existing pattern (a `*DemoPage` per surface + mock data under `app/data/` + a route and nav entry in `CrdApp.tsx`), exactly as the VC public profile already does via `VCProfileDemoPage` + `MOCK_VC_DATASYNTH`.
 
 ## Dependencies
 

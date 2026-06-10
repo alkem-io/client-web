@@ -64,6 +64,20 @@ describe('FramingChipStrip', () => {
     expect(memo).toBeInTheDocument();
   });
 
+  test('allowedChips renders only the listed chips (in CHIPS order)', () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['poll', 'cta']} />);
+    const chips = screen.getAllByRole('radio');
+    expect(chips).toHaveLength(2);
+    expect(screen.getByRole('radio', { name: /callout.callToAction/i })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /callout.poll/i })).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: /callout.memo/i })).toBeNull();
+  });
+
+  test('allowedChips of [] renders no chips', () => {
+    render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={[]} />);
+    expect(screen.queryAllByRole('radio')).toHaveLength(0);
+  });
+
   test('disabledChips marks the listed chip as aria-disabled and ignores clicks', async () => {
     const onChange = vi.fn();
     render(

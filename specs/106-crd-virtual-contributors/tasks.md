@@ -198,24 +198,25 @@
 
 ### Restriction descriptor (integration layer)
 
-- [ ] T064 [US7] Create `src/main/crdPages/space/callout/calloutRestrictions.ts` from `contracts/calloutRestrictions.ts`: `CrdCalloutRestrictions` type (`allowedFramingChips?`, `allowedResponseChips?`, `disableFramingComments?`, `disableContributionComments?`, `disableRichMedia?`) + `VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS` preset.
+- [X] T064 [US7] Create `src/main/crdPages/space/callout/calloutRestrictions.ts` from `contracts/calloutRestrictions.ts`: `CrdCalloutRestrictions` type (`allowedFramingChips?`, `allowedResponseChips?`, `disableFramingComments?`, `disableContributionComments?`, `disableRichMedia?`) + `VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS` preset.
 
 ### Pure CRD components — optional props only (Constitution I / FR-024)
 
-- [ ] T065 [P] [US7] Extend `src/crd/forms/callout/FramingChipStrip.tsx` with `allowedChips?: FramingChipId[]` (filter `CHIPS`); update `FramingChipStrip.test.tsx`.
-- [ ] T066 [P] [US7] Extend `src/crd/forms/callout/ResponseTypeChipStrip.tsx` with `allowedChips?: ResponseTypeChipId[]` (filter `CHIPS`, preserve link/post order); update `ResponseTypeChipStrip.test.tsx`.
-- [ ] T067 [P] [US7] Extend `src/crd/forms/callout/ResponsePanel.tsx` with `showContributionComments?: boolean` (default `true`); when `false`, omit the Posts comments switch (`PostsCommentsField`).
+- [X] T065 [P] [US7] Extend `src/crd/forms/callout/FramingChipStrip.tsx` with `allowedChips?: FramingChipId[]` (filter `CHIPS`); update `FramingChipStrip.test.tsx`.
+- [X] T066 [P] [US7] Extend `src/crd/forms/callout/ResponseTypeChipStrip.tsx` with `allowedChips?: ResponseTypeChipId[]` (filter `CHIPS`, preserve link/post order); update `ResponseTypeChipStrip.test.tsx`.
+- [X] T067 [P] [US7] Extend `src/crd/forms/callout/ResponsePanel.tsx` with `showContributionComments?: boolean` (default `true`); when `false`, omit the Posts comments switch (`PostsCommentsField`).
 
 ### Form defaults + connector wiring (integration layer)
 
-- [ ] T068 [US7] Extend `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` to accept `initialOverrides?: Partial<CalloutFormValues>` merged into the two state initializers + `reset` (mirrors MUI `CalloutForm` `commentsEnabled` seeding) so hidden comment toggles submit `false` (FR-023).
-- [ ] T069 [US7] Thread `restrictions?: CrdCalloutRestrictions` through `src/main/crdPages/space/callout/CalloutFormConnector.tsx`: seed form overrides (`framingCommentsEnabled: false`/`contributionCommentsEnabled: false`); **create mode** — hide `FramingChipStrip` + `FramingEditorConnector` when `allowedFramingChips` is `[]`, else pass `allowedChips`; pass `allowedChips` to `ResponseTypeChipStrip`; pass `showContributionComments={!disableContributionComments}` to `ResponsePanel`; render `AllowCommentsField` only when framing comments are allowed; apply `disableRichMedia` (omit `onImageUpload`/set `hideImageOptions`) on the description editor. Edit-mode strips stay locked + unfiltered; comment toggles hidden in both modes.
-- [ ] T070 [US7] Pass `restrictions={VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS}` from `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` to its `CalloutFormConnector`.
+- [X] T068 [US7] Extend `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` to accept `initialOverrides?: Partial<CalloutFormValues>` merged into the two state initializers + `reset` (mirrors MUI `CalloutForm` `commentsEnabled` seeding) so hidden comment toggles submit `false` (FR-023).
+- [X] T069 [US7] Thread `restrictions?: CrdCalloutRestrictions` through `src/main/crdPages/space/callout/CalloutFormConnector.tsx`: seed form overrides (`framingCommentsEnabled: false`/`contributionCommentsEnabled: false`); **create mode** — hide `FramingChipStrip` + `FramingEditorConnector` when `allowedFramingChips` is `[]`, else pass `allowedChips`; pass `allowedChips` to `ResponseTypeChipStrip`; pass `showContributionComments={!disableContributionComments}` to `ResponsePanel`; render `AllowCommentsField` only when framing comments are allowed; apply `disableRichMedia` (omit `onImageUpload`/set `hideImageOptions`) on the description editor. Edit-mode strips stay locked + unfiltered; comment toggles hidden in both modes.
+- [X] T070 [US7] Pass `restrictions={VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS}` from `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` to its `CalloutFormConnector`.
 
 ### Verification
 
-- [ ] T071 [P] [US7] Assert restricted submission: a callout created through the restricted dialog sends framing type `None` + framing/contribution comments disabled + a Posts/Links response (mapper assertion or behavioral test) (FR-023/SC-010).
-- [ ] T072 [US7] Quality gates: `pnpm lint` + `pnpm vitest run` (touched callout tests); confirm the unrestricted create-callout dialog on space tabs is unchanged (no regression — FR-021).
+- [X] T071 [P] [US7] Assert restricted submission: a callout created through the restricted dialog sends framing type `None` + framing/contribution comments disabled + a Posts/Links response (mapper assertion or behavioral test) (FR-023/SC-010).
+- [X] T072 [US7] Quality gates: `pnpm lint` + `pnpm vitest run` (touched callout tests); confirm the unrestricted create-callout dialog on space tabs is unchanged (no regression — FR-021).
+- [X] T073 [US7] Clamp template prefills to the restrictions (FR-023): add `clampFormValuesToRestrictions(values, restrictions)` to `calloutRestrictions.ts` (disallowed framing/response → `none`, comment flags → `false`), and apply it to both **create-mode** prefill paths in `CalloutFormConnector` — the manual "Find Template" import (`TemplateImportConnector.onTemplateSelected`) and the `defaultTemplateId` auto-prefill. Edit-mode prefill is left unclamped. Mirrors MUI `mapCalloutTemplateToCalloutForm(template, calloutRestrictions)`. Unit test in `calloutRestrictions.test.ts`.
 
 **Checkpoint**: US7 independently shippable — VC Knowledge Base callouts can only use VC-supported features; the shared dialog is unchanged everywhere else.
 

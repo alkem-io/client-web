@@ -3,6 +3,7 @@ import { VCKnowledgeBaseView } from '@/crd/components/virtualContributor/knowled
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CalloutFormConnector } from '@/main/crdPages/space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '@/main/crdPages/space/callout/CalloutListConnector';
+import { VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS } from '@/main/crdPages/space/callout/calloutRestrictions';
 import { useVcKnowledgeBaseData } from './useVcKnowledgeBaseData';
 
 /**
@@ -46,7 +47,12 @@ export const CrdVCKnowledgeBasePage = () => {
           temporaryLocation={true}
           skip={!createOpen}
         >
-          <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+          <CalloutFormConnector
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            calloutsSetId={calloutsSetId}
+            restrictions={VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS}
+          />
         </StorageConfigContextProvider>
       )}
     </>
