@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   refetchUserAssistantSettingsQuery,
   useUpdateUserAssistantSettingsMutation,
@@ -42,50 +42,47 @@ export const useUserAssistantTabData = ({
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
   const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation();
 
-  const setOverride = useCallback((name: string, value: boolean) => {
+  const setOverride = (name: string, value: boolean) => {
     setOverrides(prev => {
       const next = new Map(prev);
       next.set(name, value);
       return next;
     });
-  }, []);
+  };
 
-  const clearOverride = useCallback((name: string) => {
+  const clearOverride = (name: string) => {
     setOverrides(prev => {
       if (!prev.has(name)) return prev;
       const next = new Map(prev);
       next.delete(name);
       return next;
     });
-  }, []);
+  };
 
-  const onToggle = useCallback(
-    async (capabilityName: string, next: boolean) => {
-      if (!userId) return;
-      // 1) Optimistic flip.
-      setOverride(capabilityName, next);
-      try {
-        const enabledCapabilities = buildAssistantUpdatePayload(capabilities, storedToggles, capabilityName, next);
-        await updateUserAssistantSettings({
-          variables: {
-            settingsData: {
-              userID: userId,
-              settings: { assistant: { enabledCapabilities } },
-            },
+  const onToggle = async (capabilityName: string, next: boolean) => {
+    if (!userId) return;
+    // 1) Optimistic flip.
+    setOverride(capabilityName, next);
+    try {
+      const enabledCapabilities = buildAssistantUpdatePayload(capabilities, storedToggles, capabilityName, next);
+      await updateUserAssistantSettings({
+        variables: {
+          settingsData: {
+            userID: userId,
+            settings: { assistant: { enabledCapabilities } },
           },
-          refetchQueries: [refetchUserAssistantSettingsQuery({ userId })],
-          awaitRefetchQueries: true,
-        });
-        // 2) Success → drop the override (server now matches what the user wanted).
-        clearOverride(capabilityName);
-      } catch (err) {
-        // 3) Hard failure → rollback + bubble for a toast.
-        clearOverride(capabilityName);
-        throw err;
-      }
-    },
-    [userId, capabilities, storedToggles, updateUserAssistantSettings, setOverride, clearOverride]
-  );
+        },
+        refetchQueries: [refetchUserAssistantSettingsQuery({ userId })],
+        awaitRefetchQueries: true,
+      });
+      // 2) Success → drop the override (server now matches what the user wanted).
+      clearOverride(capabilityName);
+    } catch (err) {
+      // 3) Hard failure → rollback + bubble for a toast.
+      clearOverride(capabilityName);
+      throw err;
+    }
+  };
 
   return { overrides, onToggle };
 };
