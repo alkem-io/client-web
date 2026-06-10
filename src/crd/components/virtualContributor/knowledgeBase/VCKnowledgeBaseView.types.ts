@@ -25,6 +25,11 @@ export type VcKnowledgeBaseViewProps = {
 
   refresh: VcKnowledgeBaseRefresh;
 
+  /** Whether the viewer may add a callout to the knowledge base (Create privilege). */
+  canAddCallout?: boolean;
+  /** Opens the create-callout dialog (wired by the integration layer). */
+  onAddCallout?: () => void;
+
   /** The callouts body — supplied by the integration layer (CRD CalloutListConnector). */
   calloutsSlot: ReactNode;
 

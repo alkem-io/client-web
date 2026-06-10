@@ -5,7 +5,7 @@
 
 **Tests**: The spec does not request TDD. Per the established VC CRD pattern, only **mapper unit tests** and **access-guard tests** are included (mirroring `vcProfileMapper.test.ts` / `useCanEditVcSettings.test.ts`). No broad test scaffolding.
 
-**Organization**: Tasks are grouped by user story. Stories are independent and individually shippable. Spec priority order is US1(P1) → US2(P2) → US3(P2) → US4(P3) → US5(P3); the **recommended execution order is warm-up-first, heavy-components-last** (US5 → US3 → US2 → US4 → US1) per plan.md — see Implementation Strategy. (US4's remaining prompt-graph card is complex, not a warm-up; the wizard is largest, so both go last.)
+**Organization**: Tasks are grouped by user story. Stories are independent and individually shippable. Spec priority order is US1(P1) → US2(P2) → US3(P2) → US4(P3) → US5(P3) → US6(P3); the **recommended execution order is warm-up-first, heavy-components-last** (US5 → US3 → US2 → US4 → US1) per plan.md — see Implementation Strategy. (US4's remaining prompt-graph card is complex, not a warm-up; the wizard is largest, so both go last.) US6 (standalone demo coverage) depends only on each surface's pure CRD component, so each demo page can land alongside that surface or all together at the end.
 
 ## Path & layer conventions (all stories)
 
@@ -148,7 +148,36 @@
 
 ---
 
-## Phase 8: Polish & Cross-Cutting Concerns
+## Phase 8: User Story 6 — Preview migrated VC surfaces in the standalone demo app (Priority: P3)
+
+**Goal**: Add a demo page per migrated VC surface to the standalone CRD preview app (`src/crd/app/`), backed by **hardcoded mock Virtual Contributors**, mirroring the existing `VCProfileDemoPage` + `MOCK_VC_DATASYNTH` pattern. Surfaces: creation wizard (US1), Knowledge Base (US2), add-to-community invite + preview (US3), prompt-graph card (US4), VC badge (US5). Contracts: `contracts/{creationWizard,knowledgeBase,addVcToCommunity,promptGraph,vcBadge}.ts`.
+
+**Independent test**: Run `pnpm crd:dev`; from the demo platform-nav menu open each VC "(preview)" route; confirm the wizard (all 3 paths + sub-dialogs), KB (populated/empty/authorized-refresh), add-to-community (search→preview→confirm), prompt-graph card (system read-only / user editable, Save/Reset), and the VC badge all render against mock data with no backend, no console errors, and no missing-translation keys (SC-009, FR-018/019/020).
+
+> Depends only on the **pure CRD components** from US1–US5 (all already built — T004–T009, T011, T022, T030–T031, T037, T044–T045); does NOT depend on their integration layers. Each demo page reuses the same Layer-3 component the production consumer uses, driven by props + local state.
+
+### Demo foundation
+
+- [X] T056 [US6] In `src/crd/app/main.tsx`, eagerly load the namespaces the VC components consume but the demo app currently lacks — `crd-contributorSettings` and `crd-community` (English) — adding the imports, the `resources.en` entries, and the `ns` array entries (alongside the existing `crd-common`). Without this the wizard/KB/prompt-graph render raw i18n keys.
+- [X] T057 [P] [US6] Create `src/crd/app/data/virtualContributors.ts` with hardcoded mock data (plain TS matching the CRD prop types, no GraphQL): `MOCK_WIZARD_SELECTABLE_SPACES` (`VcWizardSelectableSpace[]`) + `MOCK_WIZARD_CREATED_VC`; `MOCK_KB_VIEW` items + an empty variant; `MOCK_PROMPT_GRAPH_NODES` (`VcPromptGraphNode[]`, system + user); `MOCK_AVAILABLE_VCS` + `MOCK_VC_PREVIEW` (`VcPreviewData`); reuse/extend `MOCK_VC_DATASYNTH` from `data/profiles.ts` for identity/avatar. Use `pickColorFromId` for color fallbacks.
+
+### Demo pages (pure props + local state; reuse the production CRD components)
+
+- [X] T058 [P] [US6] Build `src/crd/app/pages/VCCreationWizardDemoPage.tsx` — render `VCCreationWizardView` full-page, hold step/values in local `useState`, wire Back/Next/Create + path selection against `MOCK_WIZARD_SELECTABLE_SPACES`, open `VCExternalAIDialog` and the final `TryVcInfoStep`/created state; all callbacks `console.log`/no-op. (Depends T057.)
+- [X] T059 [P] [US6] Build `src/crd/app/pages/VCKnowledgeBaseDemoPage.tsx` — render `VCKnowledgeBaseView` with `MOCK_KB_VIEW`; expose populated vs empty and authorized-refresh (canRefresh/lastUpdated) via a small local toggle; mock refresh callback. (Depends T057.)
+- [X] T060 [P] [US6] Build `src/crd/app/pages/VCAddToCommunityDemoPage.tsx` — a button that opens `VirtualContributorInviteDialog` (controlled `open` state) populated with `MOCK_AVAILABLE_VCS`, routing selection through `VirtualContributorPreview` (`previewSlot`/`onPreview`, `MOCK_VC_PREVIEW`) before the no-op confirm. (Depends T057.)
+- [X] T061 [P] [US6] Build `src/crd/app/pages/VCAdminConfigDemoPage.tsx` — render `VCPromptGraphCard` with `MOCK_PROMPT_GRAPH_NODES` (system nodes locked, user nodes editable, Save/Reset flashing per-section status against local state); include a small `VirtualContributorBadge` showcase row. (Depends T057.)
+
+### Wiring
+
+- [X] T062 [US6] In `src/crd/app/CrdApp.tsx` register the four demo routes (e.g. `/vc/create`, `/vc/datasynth-bot/knowledge-base`, `/vc/add-to-community`, `/vc/datasynth-bot/settings`) and add a labelled "(preview)" entry per route to `MOCK_PLATFORM_NAVIGATION_ITEMS` (Bot/`lucide-react` icon). (Depends T058–T061.)
+- [X] T063 [US6] Verify `pnpm crd:build` succeeds and `pnpm crd:dev` renders every VC demo route with no runtime/console errors and no missing-translation keys (SC-009). (Depends T062.)
+
+**Checkpoint**: US6 independently shippable — every migrated VC surface is previewable backend-free in the standalone demo app.
+
+---
+
+## Phase 9: Polish & Cross-Cutting Concerns
 
 **Purpose**: Quality gates and acceptance verification across all stories.
 
@@ -158,6 +187,37 @@
 - [X] T052 Run `pnpm lint` and `pnpm vitest run`; fix failures.
 - [ ] T053 Manual acceptance against Success Criteria with CRD on: SC-001 (wizard, all launch points), SC-002 (KB + deep link), SC-003 (no legacy VC dialog), SC-004 (non-admin gating), then SC-005 with legacy design on (VC screens unchanged).
 - [X] T054 [P] Verify i18n completeness: every new key exists in all 6 languages; platform terms (incl. "Virtual Contributor") preserved per glossary (FR-014/SC-007).
+
+---
+
+## Phase 10: User Story 7 — Restrict Knowledge Base callout features (Priority: P2)
+
+**Goal**: Give the shared CRD create-callout dialog a MUI-`calloutRestrictions`-equivalent mechanism, and apply a VC preset to the KB "Add callout" flow: framing None-only, responses Posts + Links & Files, comments disabled, rich media disabled. Contract: `contracts/calloutRestrictions.ts`.
+
+**Independent test**: With CRD active, open "Add" on a VC Knowledge Base; confirm no framing-type chooser (None only), response-type chooser offers only Posts + Links & Files, no comment toggles; create a callout and confirm it persists with framing None + comments disabled (SC-010). The same dialog on a normal space tab (no restrictions) is unchanged.
+
+### Restriction descriptor (integration layer)
+
+- [ ] T064 [US7] Create `src/main/crdPages/space/callout/calloutRestrictions.ts` from `contracts/calloutRestrictions.ts`: `CrdCalloutRestrictions` type (`allowedFramingChips?`, `allowedResponseChips?`, `disableFramingComments?`, `disableContributionComments?`, `disableRichMedia?`) + `VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS` preset.
+
+### Pure CRD components — optional props only (Constitution I / FR-024)
+
+- [ ] T065 [P] [US7] Extend `src/crd/forms/callout/FramingChipStrip.tsx` with `allowedChips?: FramingChipId[]` (filter `CHIPS`); update `FramingChipStrip.test.tsx`.
+- [ ] T066 [P] [US7] Extend `src/crd/forms/callout/ResponseTypeChipStrip.tsx` with `allowedChips?: ResponseTypeChipId[]` (filter `CHIPS`, preserve link/post order); update `ResponseTypeChipStrip.test.tsx`.
+- [ ] T067 [P] [US7] Extend `src/crd/forms/callout/ResponsePanel.tsx` with `showContributionComments?: boolean` (default `true`); when `false`, omit the Posts comments switch (`PostsCommentsField`).
+
+### Form defaults + connector wiring (integration layer)
+
+- [ ] T068 [US7] Extend `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` to accept `initialOverrides?: Partial<CalloutFormValues>` merged into the two state initializers + `reset` (mirrors MUI `CalloutForm` `commentsEnabled` seeding) so hidden comment toggles submit `false` (FR-023).
+- [ ] T069 [US7] Thread `restrictions?: CrdCalloutRestrictions` through `src/main/crdPages/space/callout/CalloutFormConnector.tsx`: seed form overrides (`framingCommentsEnabled: false`/`contributionCommentsEnabled: false`); **create mode** — hide `FramingChipStrip` + `FramingEditorConnector` when `allowedFramingChips` is `[]`, else pass `allowedChips`; pass `allowedChips` to `ResponseTypeChipStrip`; pass `showContributionComments={!disableContributionComments}` to `ResponsePanel`; render `AllowCommentsField` only when framing comments are allowed; apply `disableRichMedia` (omit `onImageUpload`/set `hideImageOptions`) on the description editor. Edit-mode strips stay locked + unfiltered; comment toggles hidden in both modes.
+- [ ] T070 [US7] Pass `restrictions={VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS}` from `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` to its `CalloutFormConnector`.
+
+### Verification
+
+- [ ] T071 [P] [US7] Assert restricted submission: a callout created through the restricted dialog sends framing type `None` + framing/contribution comments disabled + a Posts/Links response (mapper assertion or behavioral test) (FR-023/SC-010).
+- [ ] T072 [US7] Quality gates: `pnpm lint` + `pnpm vitest run` (touched callout tests); confirm the unrestricted create-callout dialog on space tabs is unchanged (no regression — FR-021).
+
+**Checkpoint**: US7 independently shippable — VC Knowledge Base callouts can only use VC-supported features; the shared dialog is unchanged everywhere else.
 
 ---
 
@@ -174,9 +234,11 @@
 - **US3**: T029→T030→T031→T032→T033 (T034 retire check after wiring). 
 - **US4**: T036→T037; T038→T039→T040. 
 - **US5**: **T043 first** (codegen gate) → T044→T045→T046; T047 independent.
+- **US6**: T056 (demo i18n) + T057 (mock data) first → T058–T061 (demo pages, parallel) → T062 (routes/nav) → T063 (build/run verify). Each demo page also needs its surface's Layer-3 component to exist (US1–US5).
+- **US7**: T064 (descriptor) + T065–T067 (component props, parallel) → T068 (form defaults) → T069 (connector wiring) → T070 (KB page passes preset); T071–T072 (verify) follow. Depends on the US2 KB "Add callout" flow already wired.
 
 ### Recommended execution order (warm-up-first, heavy-components-last, per plan.md)
-**US5 → US3 → US2 → US4 → US1**. US5 is the true small warm-up and resolves the confirmed codegen dependency (T043). US4's prompt-graph card and US1's wizard are the two most complex builds, so they go last. US3's add-VC flow is **already wired** into the CRD community surfaces — its only real gap is the preview step (T029–T032). (Spec MVP remains US1 = P1.)
+**US5 → US3 → US2 → US4 → US1**, then **US6** (demo coverage) last since it consumes the finished CRD components from every other story. US5 is the true small warm-up and resolves the confirmed codegen dependency (T043). US4's prompt-graph card and US1's wizard are the two most complex builds, so they go last. US3's add-VC flow is **already wired** into the CRD community surfaces — its only real gap is the preview step (T029–T032). (Spec MVP remains US1 = P1.) Alternatively, each US6 demo page can be folded into its own story's PR as that surface lands.
 
 ## Parallel execution examples
 - **Across stories**: assign US4, US5, US3 to three developers concurrently — no shared files.

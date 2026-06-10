@@ -60,6 +60,7 @@ export const useVcKnowledgeBaseData = () => {
     viewProps,
     callouts: (kb.callouts ?? []) as CalloutModelLightExtended[],
     calloutsSetId: kb.calloutsSetId,
+    canCreateCallout: kb.canCreateCallout,
     canReorder: kb.canCreateCallout,
     calloutsLoading: kb.calloutsSetLoading,
   };

@@ -28,7 +28,7 @@
       }
     },
     "addKnowledge": {
-      "intro": "Add the initial knowledge for your Virtual Contributor.",
+      "intro": "What knowledge do you want your Virtual Contributor to have? Write it down in posts or upload it in documents. You can update, add, and remove content later.",
       "postsTitle": "Posts",
       "postTitle": "Title",
       "postDescription": "Content",

@@ -1,4 +1,4 @@
-import { BookOpen, RefreshCw } from 'lucide-react';
+import { BookOpen, Plus, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
@@ -21,6 +21,8 @@ export function VCKnowledgeBaseView({
   avatarColor,
   description,
   refresh,
+  canAddCallout,
+  onAddCallout,
   calloutsSlot,
   isEmpty,
 }: VcKnowledgeBaseViewProps) {
@@ -64,25 +66,35 @@ export function VCKnowledgeBaseView({
           </div>
         </div>
 
-        {refresh.canRefresh && (
+        {(refresh.canRefresh || canAddCallout) && (
           <div className="flex items-center gap-3">
-            <span className="text-caption text-muted-foreground">
-              {t('knowledgeBase.lastUpdated')} {refresh.lastUpdatedValue ?? t('knowledgeBase.never')}
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={refresh.onRefresh}
-              disabled={refresh.refreshing}
-              aria-busy={refresh.refreshing}
-            >
-              <RefreshCw
-                aria-hidden="true"
-                className={refresh.refreshing ? 'mr-1.5 size-4 animate-spin' : 'mr-1.5 size-4'}
-              />
-              {t('knowledgeBase.refresh')}
-            </Button>
+            {refresh.canRefresh && (
+              <>
+                <span className="text-caption text-muted-foreground">
+                  {t('knowledgeBase.lastUpdated')} {refresh.lastUpdatedValue ?? t('knowledgeBase.never')}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={refresh.onRefresh}
+                  disabled={refresh.refreshing}
+                  aria-busy={refresh.refreshing}
+                >
+                  <RefreshCw
+                    aria-hidden="true"
+                    className={refresh.refreshing ? 'mr-1.5 size-4 animate-spin' : 'mr-1.5 size-4'}
+                  />
+                  {t('knowledgeBase.refresh')}
+                </Button>
+              </>
+            )}
+            {canAddCallout && (
+              <Button type="button" size="sm" onClick={onAddCallout}>
+                <Plus aria-hidden="true" className="mr-1.5 size-4" />
+                {t('knowledgeBase.addCallout')}
+              </Button>
+            )}
           </div>
         )}
       </header>
@@ -94,6 +106,12 @@ export function VCKnowledgeBaseView({
           <BookOpen aria-hidden="true" className="mx-auto mb-3 size-8 text-muted-foreground" />
           <h2 className="text-subheader">{t('knowledgeBase.empty.title')}</h2>
           <p className="mt-1 text-body text-muted-foreground">{t('knowledgeBase.empty.description')}</p>
+          {canAddCallout && (
+            <Button type="button" size="sm" className="mt-4" onClick={onAddCallout}>
+              <Plus aria-hidden="true" className="mr-1.5 size-4" />
+              {t('knowledgeBase.addCallout')}
+            </Button>
+          )}
         </div>
       ) : (
         calloutsSlot

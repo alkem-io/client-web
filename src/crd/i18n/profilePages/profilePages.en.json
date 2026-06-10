@@ -179,6 +179,7 @@
     "title": "Knowledge Base",
     "loading": "Loading knowledge base",
     "refresh": "Refresh",
+    "addCallout": "Add",
     "lastUpdated": "Last updated:",
     "never": "Never",
     "empty": {

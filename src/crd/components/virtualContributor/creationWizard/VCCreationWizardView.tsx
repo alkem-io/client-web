@@ -1,6 +1,8 @@
 import { BookOpen, Bot, CloudDownload, Library, Loader2, Plus, Trash2, Upload } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { type ImageCropConfig, ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
+import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -8,7 +10,6 @@ import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
-import { Textarea } from '@/crd/primitives/textarea';
 import type {
   VCCreationWizardViewProps,
   VcWizardDocument,
@@ -56,9 +57,21 @@ const PATHS: { key: VcWizardPath; icon: typeof Library }[] = [
   { key: 'external', icon: CloudDownload },
 ];
 
+/** Standard Alkemio avatar visual constraints (square, 190–410px). The VC's
+ *  avatar visual enforces this range server-side when the cropped file is
+ *  uploaded post-creation, so the crop output must already fit it. */
+const AVATAR_CROP_CONFIG: ImageCropConfig = {
+  aspectRatio: 1,
+  minWidth: 190,
+  minHeight: 190,
+  maxWidth: 410,
+  maxHeight: 410,
+};
+
 function InitialStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
   const fileRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | undefined>(undefined);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -79,7 +92,9 @@ function InitialStep(props: VCCreationWizardViewProps) {
             className="sr-only"
             onChange={e => {
               const file = e.target.files?.[0];
-              if (file) props.onUploadAvatar(file);
+              if (file) setCropFile(file);
+              // Reset so re-picking the same file fires onChange again.
+              e.target.value = '';
             }}
           />
           <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
@@ -107,11 +122,13 @@ function InitialStep(props: VCCreationWizardViewProps) {
       </div>
 
       <Field label={t('wizard.initial.description')}>
-        <Textarea
+        <MarkdownEditor
           value={props.identity.description}
-          onChange={e => props.onChangeIdentity({ description: e.target.value })}
-          rows={6}
-          aria-label={t('wizard.initial.description')}
+          onChange={next => props.onChangeIdentity({ description: next })}
+          placeholder={t('wizard.initial.description')}
+          onImageUpload={props.onImageUpload}
+          iframeAllowedUrls={props.iframeAllowedUrls}
+          onError={props.onError}
         />
       </Field>
 
@@ -142,6 +159,24 @@ function InitialStep(props: VCCreationWizardViewProps) {
           {t('wizard.next')}
         </Button>
       </StepFooter>
+
+      <ImageCropDialog
+        open={Boolean(cropFile)}
+        file={cropFile}
+        config={AVATAR_CROP_CONFIG}
+        onSave={({ file }) => {
+          props.onUploadAvatar(file);
+          setCropFile(undefined);
+        }}
+        onCancel={() => setCropFile(undefined)}
+        title={t('shared.avatarCropDialog.title')}
+        description={t('shared.avatarCropDialog.description')}
+        altTextLabel={t('shared.avatarCropDialog.altTextLabel')}
+        altTextPlaceholder={t('shared.avatarCropDialog.altTextPlaceholder')}
+        saveLabel={t('shared.save')}
+        savingLabel={t('shared.saving')}
+        cancelLabel={t('shared.cancel')}
+      />
     </div>
   );
 }
@@ -183,12 +218,13 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
                 <Trash2 aria-hidden="true" className="size-4" />
               </Button>
             </div>
-            <Textarea
+            <MarkdownEditor
               value={post.description}
-              onChange={e => updatePost(i, { description: e.target.value })}
+              onChange={next => updatePost(i, { description: next })}
               placeholder={t('wizard.addKnowledge.postDescription')}
-              aria-label={t('wizard.addKnowledge.postDescription')}
-              rows={3}
+              onImageUpload={props.onImageUpload}
+              iframeAllowedUrls={props.iframeAllowedUrls}
+              onError={props.onError}
             />
           </div>
         ))}

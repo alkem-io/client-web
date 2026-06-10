@@ -1,3 +1,5 @@
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+
 export type VcWizardStep =
   | 'initial'
   | 'loadingStep'
@@ -100,4 +102,4 @@ export type VCCreationWizardViewProps = {
   onBack: () => void;
   /** Called after the user confirms cancellation. */
   onCancel: () => void;
-};
+} & MarkdownUploadProps;

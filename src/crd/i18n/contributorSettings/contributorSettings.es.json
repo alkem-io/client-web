@@ -28,7 +28,7 @@
       }
     },
     "addKnowledge": {
-      "intro": "Añade el conocimiento inicial de tu Virtual Contributor.",
+      "intro": "¿Qué conocimiento quieres que tenga tu Virtual Contributor? Escríbelo en posts o súbelo en documentos. Podrás actualizar, añadir y eliminar contenido más adelante.",
       "postsTitle": "Publicaciones",
       "postTitle": "Título",
       "postDescription": "Contenido",

@@ -60,7 +60,12 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
   const [selectedPath, setSelectedPath] = useState<'writtenKnowledge' | 'existingSpace' | 'external'>();
   const [avatarFile, setAvatarFile] = useState<File>();
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string>();
-  const [posts, setPosts] = useState([{ title: '', description: '' }]);
+  const [posts, setPosts] = useState(() => [
+    {
+      title: t('createVirtualContributorWizard.addContent.post.exampleTitle'),
+      description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
+    },
+  ]);
   const [documents, setDocuments] = useState<{ name: string; url: string }[]>([]);
   const [externalConfig, setExternalConfig] = useState<{
     engine: VcWizardEngine;
@@ -268,6 +273,9 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
 
   return {
     loading,
+    /** Owning account id — used to scope Body-of-Knowledge image uploads to the
+     *  account storage bucket (temporary location, relocated to the VC on save). */
+    accountId: myAccountId,
     step,
     identity,
     onChangeIdentity,
