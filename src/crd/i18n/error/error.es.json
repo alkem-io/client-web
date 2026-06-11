@@ -1,4 +1,12 @@
 {
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o es posible que se haya movido.",
+    "actions": {
+      "goHome": "Ir al inicio",
+      "goBack": "Atrás"
+    }
+  },
   "forbidden": {
     "title": "Acceso restringido",
     "description": "La página a la que intentas acceder no está disponible para ti.",

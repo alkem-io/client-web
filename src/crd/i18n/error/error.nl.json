@@ -1,4 +1,12 @@
 {
+  "notFound": {
+    "title": "Pagina niet gevonden",
+    "description": "De pagina die je zoekt bestaat niet of is mogelijk verplaatst.",
+    "actions": {
+      "goHome": "Naar startpagina",
+      "goBack": "Terug"
+    }
+  },
   "forbidden": {
     "title": "Beperkte toegang",
     "description": "De pagina die je probeert te openen, is niet beschikbaar voor jou.",
