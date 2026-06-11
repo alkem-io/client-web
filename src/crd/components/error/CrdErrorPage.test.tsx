@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { CrdErrorPage } from './CrdErrorPage';
 
 const baseProps = {
-  title: 'Ooops!',
+  title: 'Oops!',
   description: 'Something went wrong.',
   reloadLabel: 'Reload',
   onReload: vi.fn(),
@@ -18,7 +18,7 @@ describe('CrdErrorPage', () => {
   test('renders the title and description', () => {
     render(<CrdErrorPage {...baseProps} />);
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ooops!');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Oops!');
     expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
   });
 

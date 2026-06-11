@@ -90,7 +90,7 @@ export type CrdErrorDialogProps = {
 
 ## i18n (`crd-error` namespace, six locales, full parity)
 
-```
+```text
 genericError.title | description {{message}} | serverHint {{graphQLEndpoint}} | contactSupport <contact> | code {{code}} | actions.reload
 chunkLoad.title | messages.lazyLoad | messages.unknown | actions.reload
 ```
