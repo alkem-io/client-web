@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -13,7 +14,7 @@ import { usePendingInvitationsCount } from '@/domain/community/pendingMembership
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
-import { buildCreateVirtualContributorUrl } from '@/main/routing/urlBuilders';
+import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { mapInvitationsToCards } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -37,6 +38,7 @@ export default function DashboardWithoutMemberships({
   const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
+  const [createVcOpen, setCreateVcOpen] = useState(false);
 
   const { acceptInvitation, rejectInvitation } = useInvitationActions({
     onAccept: spaceUrl => navigate(spaceUrl),
@@ -102,7 +104,7 @@ export default function DashboardWithoutMemberships({
           />
         )}
 
-        {showCampaign && <CampaignBanner onAction={() => navigate(buildCreateVirtualContributorUrl())} />}
+        {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
         <SpaceExplorer
           spaces={cardData}
@@ -140,6 +142,8 @@ export default function DashboardWithoutMemberships({
         findMoreHref={t('dialogs.findMoreUrl')}
         findMoreLabel={t('dialogs.findMore')}
       />
+
+      {createVcOpen && <CrdVCCreationWizardDialog open={true} onClose={() => setCreateVcOpen(false)} />}
     </>
   );
 }

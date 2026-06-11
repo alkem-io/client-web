@@ -21,7 +21,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
-import { buildCreateVirtualContributorUrl } from '@/main/routing/urlBuilders';
+import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import {
@@ -48,13 +48,14 @@ const CrdUserAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const navigate = useNavigate();
   const notify = useNotification();
-  const { userId, profileUrl } = useUserPageRouteContext();
+  const { userId } = useUserPageRouteContext();
   const [, startTransition] = useTransition();
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
   const [noEntitlementResource, setNoEntitlementResource] = useState<AccountResourceGroupId | null>(null);
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createPackOpen, setCreatePackOpen] = useState(false);
   const [createHubOpen, setCreateHubOpen] = useState(false);
+  const [createVcOpen, setCreateVcOpen] = useState(false);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId ?? '' },
@@ -121,16 +122,7 @@ const CrdUserAccountTab = () => {
 
   const callbacks: UserAccountMapperCallbacks = {
     onCreateSpace: () => tryCreate('spaces', entitled.spaces, () => setCreateSpaceOpen(true)),
-    // Cast: `AccountInformation` returns `about.membership.myPrivileges`,
-    // but `UserAccountProps` expects the full `SpaceAboutLightModel`
-    // membership shape. The wizard only reads `id`, `host`, `spaces[].id`,
-    // and `spaces[].authorization?.myPrivileges` at runtime — all present.
-    onCreateVc: () =>
-      tryCreate('virtualContributors', entitled.virtualContributors, () =>
-        navigate(buildCreateVirtualContributorUrl(profileUrl), {
-          state: { account: account as UserAccountProps | undefined, accountName: accountHostName },
-        })
-      ),
+    onCreateVc: () => tryCreate('virtualContributors', entitled.virtualContributors, () => setCreateVcOpen(true)),
     onCreateInnovationPack: () => tryCreate('innovationPacks', entitled.innovationPacks, () => setCreatePackOpen(true)),
     onCreateInnovationHub: () => tryCreate('innovationHubs', entitled.innovationHubs, () => setCreateHubOpen(true)),
     onManage: (_kind, _id, href) => {
@@ -225,6 +217,18 @@ const CrdUserAccountTab = () => {
             onClose={() => setCreateHubOpen(false)}
           />
         </>
+      )}
+      {/* Cast: `AccountInformation` returns `about.membership.myPrivileges`, but
+          `UserAccountProps` expects the full `SpaceAboutLightModel` membership
+          shape. The wizard only reads `id`, `host`, `spaces[].id`, and
+          `spaces[].authorization?.myPrivileges` at runtime — all present. */}
+      {createVcOpen && (
+        <CrdVCCreationWizardDialog
+          open={true}
+          onClose={() => setCreateVcOpen(false)}
+          account={account as UserAccountProps | undefined}
+          accountName={accountHostName}
+        />
       )}
     </>
   );

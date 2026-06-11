@@ -79,7 +79,13 @@ export function VirtualContributorPreview({
           <ArrowLeft aria-hidden="true" className="mr-1.5 size-4" />
           {t('inviteVc.back')}
         </Button>
-        <Button type="button" onClick={onAction} disabled={loading || !data || actionBusy} aria-busy={actionBusy}>
+        <Button
+          type="button"
+          onClick={onAction}
+          disabled={loading || !data || actionBusy}
+          aria-busy={actionBusy}
+          aria-label={actionLabel}
+        >
           {actionBusy ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : actionLabel}
         </Button>
       </div>

@@ -172,9 +172,11 @@ function CalloutFormConnectorInner({
   const framingAllowList = mode === 'create' ? restrictions?.allowedFramingChips : undefined;
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
-  const showFramingComments = !restrictions?.disableFramingComments;
-  const showContributionComments = !restrictions?.disableContributionComments;
-  const disableRichMedia = Boolean(restrictions?.disableRichMedia);
+  // Comment-visibility and rich-media restrictions are create-only too — in edit
+  // mode an existing callout keeps its full controls regardless of `restrictions`.
+  const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
+  const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
+  const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
   const { values, errors, setField, validate, reset, prefill, dirty } = form;
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);

@@ -1,6 +1,7 @@
 {
   "wizard": {
     "title": "Virtual Contributor erstellen",
+    "close": "Schließen",
     "loading": "Wird bearbeitet…",
     "next": "Weiter",
     "back": "Zurück",
@@ -38,7 +39,10 @@
       "documentName": "Name",
       "documentUrl": "URL",
       "removeDocument": "Dokument entfernen",
-      "addDocument": "Dokument hinzufügen"
+      "addDocument": "Dokument hinzufügen",
+      "exampleTitle": "Example: About Alkemio",
+      "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+      "initialDocuments": "Initial Links and Documents"
     },
     "existingSpace": {
       "intro": "Wähle einen Space als Wissensbasis.",
@@ -63,6 +67,9 @@
       "description": "Dein Virtual Contributor wurde erstellt.",
       "view": "Profil ansehen",
       "done": "Fertig"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
     }
   },
   "breadcrumbs": {

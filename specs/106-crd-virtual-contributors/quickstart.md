@@ -26,7 +26,7 @@
 |---|---|
 | Presentational (pure) | `src/crd/components/virtualContributor/**`, `src/crd/components/common/VirtualContributorBadge.tsx` |
 | Integration (hooks/mappers/pages) | `src/main/crdPages/topLevelPages/vcPages/**`, `src/main/crdPages/space/dialogs/**` |
-| Routing | `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); creation wizard mounted under **both** `CrdUserSettingsRoutes.tsx` + `CrdOrgSettingsRoutes.tsx`; `src/main/routing/urlBuilders.ts` |
+| Routing | `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); `src/main/routing/urlBuilders.ts`. The creation wizard is a **dialog**, not a route — opened in-place from each launch point. |
 | i18n | `src/crd/i18n/contributorSettings/*` (+ `crd-community`/`crd-common` for badge/add-VC) |
 
 ## Build order (each is independently shippable)
@@ -35,7 +35,7 @@
 2. **VC badge + notifications (US5)** — create `VirtualContributorBadge`; render in `CommentItem` when author is a VC. *(As implemented: no codegen needed — the comment sender's `__typename === 'VirtualContributor'` is already in `CommentsWithMessagesModel`; the mapper just reads it.)* Verify both VC notification types render in the CRD `NotificationsPanel`.
 3. **Add-to-community (US3)** — the connector is already wired into `CrdSpaceCommunityPage` + `CrdSpaceSettingsPage`; just add `VirtualContributorPreview` + thread it through the dialog/connector; confirm legacy MUI invite/browse dialogs are unreachable when CRD is active.
 4. **Knowledge Base (US2)** — build `CrdVCKnowledgeBasePage`; repoint the `/vc/:nameId/knowledge-base` route from the MUI route to the CRD page; reuse `useKnowledgeBase`, and render the body via the **CRD** `CalloutListConnector` (not the MUI `CalloutsGroupView`).
-5. **Creation wizard (US1)** — build `VCCreationWizardView` (full-page shell + all steps inline) + `useVcCreationWizard` (relocated `useVirtualContributorWizard` logic, controlled state); add `buildCreateVirtualContributorUrl(entityProfileUrl?)`; mount `create-virtual-contributor` under **both** `CrdUserSettingsRoutes.tsx` (→ `CrdVCCreationWizardPage`) and `CrdOrgSettingsRoutes.tsx` (→ `CrdOrgVCCreationWizardPage`), each a sibling of the settings-tab shell → full-page; switch the four CRD launch points from inline dialog → `navigate(buildCreateVirtualContributorUrl(entityProfileUrl), { state: { account, accountName } })`.
+5. **Creation wizard (US1)** — build `VCCreationWizardView` (CRD `Dialog` shell + all steps inline, sticky chrome) + `useVcCreationWizard` (relocated `useVirtualContributorWizard` logic, controlled state) + the controlled connector `CrdVCCreationWizardDialog` (`{ open, onClose, account?, accountName? }`); switch the four CRD launch points from the inline MUI wizard to a local `createVcOpen` state that conditionally renders `<CrdVCCreationWizardDialog open onClose=… account=… accountName=… />` (dashboards pass no account → current user; account tabs pass their account). No route, no URL builder.
 
 ## Verify
 
@@ -53,7 +53,7 @@ pnpm vitest run           # mappers + access guards (mirror vcProfileMapper.test
 
 ## Gotchas
 
-- **Sticky dialog chrome** for retained dialogs (wizard sub-dialogs, VC picker): `flex flex-col overflow-hidden` + `max-h-[..vh]` on `DialogContent`, `shrink-0` header/footer, `flex-1 min-h-0 overflow-y-auto` body. The wizard/KB are **pages**, not dialogs.
+- **Sticky dialog chrome** for the wizard dialog, its sub-dialogs, and the VC picker: `flex flex-col overflow-hidden` + `max-h-[..vh]` on `DialogContent`, `shrink-0` header/footer, `flex-1 min-h-0 overflow-y-auto` body. The **KB** is a **page**, not a dialog (page-scroll).
 - **Avatar/banner fallback**: use `pickColorFromId(vcId)`; leave `bannerUrl`/`avatarUrl` undefined when absent (deterministic gradient — never stock placeholders).
 - **Typography**: use semantic tokens (`text-hero`, `text-page-title`, …) per the migration guide, not raw Tailwind size combos.
 - **i18n**: add keys to all six languages (en, es, nl, bg, de, fr) in the same PR (CRD namespaces are hand-maintained, not Crowdin). Keep "Virtual Contributor" English per glossary.

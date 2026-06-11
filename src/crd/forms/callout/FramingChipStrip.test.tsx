@@ -68,6 +68,8 @@ describe('FramingChipStrip', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} allowedChips={['poll', 'cta']} />);
     const chips = screen.getAllByRole('radio');
     expect(chips).toHaveLength(2);
+    // Rendered in CHIPS order (cta precedes poll), not in `allowedChips` order.
+    expect(chips.map(chip => chip.getAttribute('aria-label'))).toEqual(['callout.callToAction', 'callout.poll']);
     expect(screen.getByRole('radio', { name: /callout.callToAction/i })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: /callout.poll/i })).toBeInTheDocument();
     expect(screen.queryByRole('radio', { name: /callout.memo/i })).toBeNull();

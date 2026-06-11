@@ -1,6 +1,7 @@
 {
   "wizard": {
     "title": "Crear Virtual Contributor",
+    "close": "Cerrar",
     "loading": "Trabajando…",
     "next": "Siguiente",
     "back": "Atrás",
@@ -38,7 +39,10 @@
       "documentName": "Nombre",
       "documentUrl": "URL",
       "removeDocument": "Eliminar documento",
-      "addDocument": "Añadir documento"
+      "addDocument": "Añadir documento",
+      "exampleTitle": "Ejemplo: Acerca de Alkemio",
+      "exampleDescription": "Consejo: Crea un texto estructurado y específico, por ejemplo:\n\n<strong>Antecedentes</strong>\n\nAlkemio, fundada en 2020, nació de la frustración por el lento progreso en los desafíos relacionados con el COVID y el reconocimiento de los numerosos desafíos de rápido movimiento a los que nos enfrentamos diariamente.\n\n<strong>Gobernanza</strong>\n\nPara mantener la confianza y realizar nuestra visión a largo plazo, hemos adoptado la Propiedad de Administradores como nuestra estructura de grupo central. La propiedad de administradores es...\n",
+      "initialDocuments": "Enlaces y documentos iniciales"
     },
     "existingSpace": {
       "intro": "Elige un Space para usarlo como cuerpo de conocimiento.",
@@ -63,6 +67,9 @@
       "description": "Tu Virtual Contributor ha sido creado.",
       "view": "Ver perfil",
       "done": "Hecho"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' creado correctamente"
     }
   },
   "breadcrumbs": {

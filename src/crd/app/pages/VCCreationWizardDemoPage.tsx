@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { VCCreationWizardView } from '@/crd/components/virtualContributor/creationWizard/VCCreationWizardView';
+import { Button } from '@/crd/primitives/button';
 import type {
   VcWizardCreatedVc,
   VcWizardDocument,
@@ -32,12 +33,14 @@ const EXAMPLE_POST: VcWizardPost = {
 };
 
 /**
- * Demo: full-page CRD VC creation wizard. Holds the step machine + form values
- * in local state, wires every path (written-knowledge / existing-space /
- * external) through to the choose-community step and the final "try the VC"
- * info step against mock data. All side-effecting callbacks console.log.
+ * Demo: CRD VC creation wizard dialog. A trigger button opens the dialog; it
+ * holds the step machine + form values in local state and wires every path
+ * (written-knowledge / existing-space / external) through to the choose-
+ * community step and the final "try the VC" info step against mock data. All
+ * side-effecting callbacks console.log.
  */
 export function VCCreationWizardDemoPage() {
+  const [open, setOpen] = useState(false);
   const [step, setStep] = useState<VcWizardStep>('initial');
   const [identity, setIdentity] = useState<VcWizardIdentityValues>({ name: '', tagline: '', description: '' });
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | undefined>(undefined);
@@ -75,10 +78,22 @@ export function VCCreationWizardDemoPage() {
     setCreatedVc(undefined);
   };
 
+  const close = () => {
+    setOpen(false);
+    reset();
+  };
+
   return (
-    <VCCreationWizardView
-      step={step}
-      loading={false}
+    <div className="p-6">
+      <Button type="button" onClick={() => setOpen(true)}>
+        Create Virtual Contributor
+      </Button>
+
+      <VCCreationWizardView
+        open={open}
+        onClose={close}
+        step={step}
+        loading={false}
       identity={identity}
       onChangeIdentity={patch => setIdentity(prev => ({ ...prev, ...patch }))}
       onUploadAvatar={file => {
@@ -108,7 +123,7 @@ export function VCCreationWizardDemoPage() {
       onChooseCommunity={finish}
       createdVc={createdVc}
       onBack={() => setStep('initial')}
-      onCancel={reset}
-    />
+      />
+    </div>
   );
 }

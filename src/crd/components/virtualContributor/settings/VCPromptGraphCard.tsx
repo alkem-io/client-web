@@ -122,7 +122,9 @@ function NodeItem({
         {node.inputVariables && node.inputVariables.length > 0 && (
           <div className="flex flex-col gap-1.5">
             <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.inputVariables')}</span>
-            <ul className="flex flex-wrap gap-1.5">
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+            <ul role="list" className="flex flex-wrap gap-1.5">
               {node.inputVariables.map(v => (
                 <li key={v}>
                   <Badge variant="secondary" className="text-badge">
@@ -176,7 +178,9 @@ function PropertyEditor({
       {properties.length === 0 ? (
         <p className="text-caption text-muted-foreground">{t('vc.promptGraph.properties.empty')}</p>
       ) : (
-        <ul className="flex flex-col gap-2">
+        // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+        // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+        <ul role="list" className="flex flex-col gap-2">
           {properties.map((prop, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: property rows have no stable id; index is the row identity
             <li key={index} className="rounded-lg border bg-card p-2">

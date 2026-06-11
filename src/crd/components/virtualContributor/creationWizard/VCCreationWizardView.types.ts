@@ -52,12 +52,17 @@ export type VcWizardExternalConfig = {
 };
 
 /**
- * Props for the full-page CRD VC creation wizard. All data + behavior arrive
- * via props; the integration hook (`useVcCreationWizard`) owns the state
- * machine and GraphQL orchestration. The view renders every step inline and
- * owns only the transient cancel-confirm dialog (local open state).
+ * Props for the CRD VC creation wizard dialog. All data + behavior arrive via
+ * props; the integration hook (`useVcCreationWizard`) owns the state machine and
+ * GraphQL orchestration. The view renders every step inside a single dialog
+ * (sticky header/footer, scrollable middle) and owns only the transient image-
+ * crop sub-dialog (local open state).
  */
 export type VCCreationWizardViewProps = {
+  /** Controls the dialog visibility (owned by the launch point). */
+  open: boolean;
+  /** Close the dialog (X button, Esc, overlay click, or the final step's Done). */
+  onClose: () => void;
   step: VcWizardStep;
   loading: boolean;
 
@@ -100,6 +105,4 @@ export type VCCreationWizardViewProps = {
 
   // ── chrome ──
   onBack: () => void;
-  /** Called after the user confirms cancellation. */
-  onCancel: () => void;
 } & MarkdownUploadProps;

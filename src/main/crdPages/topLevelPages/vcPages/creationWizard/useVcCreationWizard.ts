@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchMyResourcesQuery,
@@ -46,12 +46,13 @@ const toSelectable = (space: LegacySpace, level: 'space' | 'subspace') =>
 export type UseVcCreationWizardArgs = {
   initialAccount?: UserAccountProps;
   accountName?: string;
-  /** Leave the wizard (navigate away from the route). */
+  /** Close the wizard dialog (used as the external-path fallback when the
+   *  created VC has no profile URL to navigate to). */
   onExit: () => void;
 };
 
 export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWizardArgs) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
   const navigate = useNavigate();
 
@@ -62,8 +63,8 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string>();
   const [posts, setPosts] = useState(() => [
     {
-      title: t('createVirtualContributorWizard.addContent.post.exampleTitle'),
-      description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
+      title: t('wizard.addKnowledge.exampleTitle'),
+      description: t('wizard.addKnowledge.exampleDescription'),
     },
   ]);
   const [documents, setDocuments] = useState<{ name: string; url: string }[]>([]);
@@ -97,12 +98,15 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   const loadExistingSpaces = async () => {
     setSubspacesLoading(true);
-    const result: VcWizardSelectableSpace[] = [];
-    for (const space of availableSpaces) {
-      const sub = await allSpaceSubspaces({ variables: { spaceId: space.id } });
-      const subspaces = (sub?.data?.lookup.space?.subspaces ?? []).filter(hasReadPrivilege) as LegacySpace[];
-      result.push(toSelectable({ ...space, subspaces }, 'space'));
-    }
+    // Fetch each space's subspaces in parallel — sequential awaits would make this
+    // O(n) round-trips back-to-back for accounts with many spaces.
+    const result = await Promise.all(
+      availableSpaces.map(async space => {
+        const sub = await allSpaceSubspaces({ variables: { spaceId: space.id } });
+        const subspaces = (sub?.data?.lookup.space?.subspaces ?? []).filter(hasReadPrivilege) as LegacySpace[];
+        return toSelectable({ ...space, subspaces }, 'space');
+      })
+    );
     setSubspacesLoading(false);
     setExistingSpaces(result);
   };
@@ -137,10 +141,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       });
       const vc = created?.createVirtualContributor;
       if (vc?.id) {
-        notify(
-          t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: identity.name }),
-          'success'
-        );
+        notify(t('wizard.createdVirtualContributor.successMessage', { name: identity.name }), 'success');
       }
       return vc;
     } catch {
@@ -170,10 +171,23 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
 
   // ── handlers exposed to the view ──
   const onChangeIdentity = (patch: Partial<typeof identity>) => setIdentity(prev => ({ ...prev, ...patch }));
+  // Track the live object URL so each new pick revokes the previous one, and the
+  // last one is revoked on unmount — otherwise every re-pick leaks a blob URL for
+  // the lifetime of the SPA session.
+  const avatarUrlRef = useRef<string>(undefined);
   const onUploadAvatar = (file: File) => {
+    if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+    const url = URL.createObjectURL(file);
+    avatarUrlRef.current = url;
     setAvatarFile(file);
-    setAvatarPreviewUrl(URL.createObjectURL(file));
+    setAvatarPreviewUrl(url);
   };
+  useEffect(
+    () => () => {
+      if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+    },
+    []
+  );
   const identityValid = identity.name.trim().length >= 3;
 
   const onSubmitInitial = () => {
@@ -189,7 +203,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
     const validPosts = posts.filter(p => p.title.trim().length >= 3);
     for (const post of validPosts) callouts.push(getPostCalloutRequestData(post.title, post.description));
 
-    const docCollectionName = t('createVirtualContributorWizard.addContent.documents.initialDocuments');
+    const docCollectionName = t('wizard.addKnowledge.initialDocuments');
     const validDocs = documents.filter(d => d.name.trim() && d.url.trim());
     if (validDocs.length > 0) callouts.push(getDocumentCalloutRequestData(docCollectionName));
 
@@ -301,7 +315,6 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
     onChooseCommunity,
     createdVc,
     onBack,
-    onCancel: onExit,
     subspacesLoading,
   };
 };

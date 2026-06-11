@@ -1,6 +1,7 @@
 {
   "wizard": {
     "title": "Virtual Contributor aanmaken",
+    "close": "Sluiten",
     "loading": "Bezig…",
     "next": "Volgende",
     "back": "Terug",
@@ -38,7 +39,10 @@
       "documentName": "Naam",
       "documentUrl": "URL",
       "removeDocument": "Document verwijderen",
-      "addDocument": "Document toevoegen"
+      "addDocument": "Document toevoegen",
+      "exampleTitle": "Voorbeeld: Over Alkemio",
+      "exampleDescription": "Tip: Creëer een gestructureerde en specifieke tekst, bijvoorbeeld:\n\n<strong>Achtergrond</strong>\n\nAlkemio, opgericht in 2020, is ontstaan uit frustratie door langzame vooruitgang bij COVID-gerelateerde uitdagingen en een erkenning van de talrijke snel veranderende uitdagingen waar we dagelijks mee te maken hebben.\n\n<strong>Beleid</strong>\n\nOm het vertrouwen te behouden en onze langetermijnvisie te realiseren, hebben we Steward Ownership als kerngroepsstructuur aanvaard. Steward Ownership is...\n",
+      "initialDocuments": "Eerste Links en Documenten"
     },
     "existingSpace": {
       "intro": "Kies een Space om als kennisbron te gebruiken.",
@@ -63,6 +67,9 @@
       "description": "Je Virtual Contributor is aangemaakt.",
       "view": "Profiel bekijken",
       "done": "Klaar"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt"
     }
   },
   "breadcrumbs": {

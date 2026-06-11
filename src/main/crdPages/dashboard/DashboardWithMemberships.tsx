@@ -24,7 +24,8 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
-import { buildCreateVirtualContributorUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
+import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import {
   mapActivityToFeedItems,
   mapMembershipsToPanelItems,
@@ -57,6 +58,7 @@ export default function DashboardWithMemberships({
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
+  const [createVcOpen, setCreateVcOpen] = useState(false);
 
   // Activity view toggle — persisted in localStorage
   const [activityEnabled, setActivityEnabledState] = useState(() => {
@@ -248,7 +250,7 @@ export default function DashboardWithMemberships({
           onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
         />
 
-        {showCampaign && <CampaignBanner onAction={() => navigate(buildCreateVirtualContributorUrl())} />}
+        {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
         {activityEnabled && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -347,6 +349,8 @@ export default function DashboardWithMemberships({
         }}
         browseAllHref={URL_SPACE_EXPLORER}
       />
+
+      {createVcOpen && <CrdVCCreationWizardDialog open={true} onClose={() => setCreateVcOpen(false)} />}
     </>
   );
 }

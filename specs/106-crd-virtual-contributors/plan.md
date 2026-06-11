@@ -7,7 +7,7 @@
 
 Close the remaining gaps in the VirtualContributor (VC) MUI → CRD migration so the whole VC area is consistent on the new design (default design version). The public profile, the three settings tabs, and the core invite dialog are already migrated; this feature delivers the rest, in priority order:
 
-1. **Creation wizard (P1)** — rebuild the legacy modal `useVirtualContributorWizard` flow as a **full-page CRD experience**, reusing every existing GraphQL hook unchanged. *Dominant effort.*
+1. **Creation wizard (P1)** — rebuild the legacy modal `useVirtualContributorWizard` flow as a **CRD dialog** (the CRD equivalent of the legacy modal), reusing every existing GraphQL hook unchanged. *Dominant effort.*
 2. **Knowledge Base (P2)** — promote the legacy `KnowledgeBaseDialog` (`DialogWithGrid`) to a **full-page CRD route** at `/vc/:nameId/knowledge-base`.
 3. **Add-to-community (P2)** — wire the already-built `VirtualContributorInviteConnector` into the CRD community entry points, add the missing **preview step**, and retire the legacy invite dialogs.
 4. **Admin config (P3)** — *scope reduced by discovery:* visibility, BoK management, prompt, and external-config cards are **already live** in the CRD settings tab. The only remaining surface is the **prompt graph (state-machine) editor** (FR-006).
@@ -26,7 +26,7 @@ Close the remaining gaps in the VirtualContributor (VC) MUI → CRD migration so
 **Project Type**: web (single frontend repo)
 **Performance Goals**: Lazy-loaded routes (no bundle penalty for the unused MUI/CRD chunk); no added GraphQL round-trips beyond the legacy behavior.
 **Constraints**: CRD layer purity (no `@mui/*`, `@emotion/*`, `@apollo/client`, `@/domain/*`, `react-router-dom`, Formik **inside `src/crd/`**); i18n for all strings; URL building via `@/main/routing/urlBuilders`; behavioral parity in CRD visual language (FR-017/SC-008).
-**Scale/Scope**: ~5 work areas. Net-new CRD components: creation-wizard (full-page shell + step views + 3 sub-dialogs), KB page, prompt-graph card, add-VC preview, VC badge. Reused: ~15 generated GraphQL hooks, `useVirtualContributorWizard` orchestration logic, `VirtualContributorInviteConnector`, the generic notification mapper.
+**Scale/Scope**: ~5 work areas. Net-new CRD components: creation-wizard (dialog shell + step views + sub-dialogs), KB page, prompt-graph card, add-VC preview, VC badge. Reused: ~15 generated GraphQL hooks, `useVirtualContributorWizard` orchestration logic, `VirtualContributorInviteConnector`, the generic notification mapper.
 
 ### Key discoveries from Phase 0 research (reshape the spec's effort estimate)
 
@@ -34,7 +34,7 @@ Close the remaining gaps in the VirtualContributor (VC) MUI → CRD migration so
 - **US5 notifications already work.** The CRD notifications panel uses a single generic `notificationDataMapper` (not per-type views), so the two VC notification types already render. FR-008 work reduces to **verification** + an optional VC type badge.
 - **KB route is already dispatched** in `CrdVCRoutes` but points at the **MUI** `VCKnowledgeBaseRoute`. The migration swaps that target for a CRD page.
 - **Add-VC connector is already wired** into `CrdSpaceCommunityPage` + `CrdSpaceSettingsPage`; the **preview step has no CRD equivalent** — the preview is the real (and only) US3 gap.
-- **Wizard launch points** (`DashboardWith/WithoutMemberships`, `CrdUserAccountTab`, `CrdOrgAccountTab`) currently render the MUI dialog inline via `useVirtualContributorWizard()`; they must switch to **navigating to the full-page route**.
+- **Wizard launch points** (`DashboardWith/WithoutMemberships`, `CrdUserAccountTab`, `CrdOrgAccountTab`) currently render the MUI dialog inline via `useVirtualContributorWizard()`; they switch to **opening the CRD `CrdVCCreationWizardDialog`** (local open state; account passed directly).
 
 ## Constitution Check
 
@@ -99,9 +99,9 @@ src/crd/components/common/
 src/crd/components/community/VirtualContributorInviteDialog.tsx  # EXISTING — extend with optional preview slot
 
 src/main/crdPages/topLevelPages/vcPages/           # EXISTING — integration layer
-├── CrdVCRoutes.tsx                                # MODIFY: KB → CRD page; add creation route mount if route-based
+├── CrdVCRoutes.tsx                                # MODIFY: KB → CRD page (the wizard is a dialog, no route)
 ├── creationWizard/                                # NEW (US1)
-│   ├── CrdVCCreationWizardPage.tsx                # Integration page
+│   ├── CrdVCCreationWizardDialog.tsx              # Controlled dialog connector { open, onClose, account?, accountName? }
 │   ├── useVcCreationWizard.ts                     # Wraps/relocates legacy useVirtualContributorWizard logic
 │   └── vcCreationWizardMapper.ts
 ├── knowledgeBase/                                 # NEW (US2)
@@ -125,18 +125,19 @@ src/crd/app/                                       # EXISTING — standalone pre
 │   └── virtualContributors.ts                     # NEW (US6) — hardcoded mock VCs: wizard selectable spaces + created VC, KB items, prompt-graph nodes, add-VC preview/available list, badge
 ├── pages/
 │   ├── VCProfileDemoPage.tsx                       # EXISTING — reference pattern (uses MOCK_VC_DATASYNTH)
-│   ├── VCCreationWizardDemoPage.tsx                # NEW (US6) — full-page wizard shell, all 3 paths + sub-dialogs, local step state
+│   ├── VCCreationWizardDemoPage.tsx                # NEW (US6) — trigger button opens the wizard dialog, all 3 paths + sub-dialogs, local step state
 │   ├── VCKnowledgeBaseDemoPage.tsx                 # NEW (US6) — populated + empty + authorized-refresh variants
 │   ├── VCAddToCommunityDemoPage.tsx                # NEW (US6) — VirtualContributorInviteDialog + VirtualContributorPreview, search→preview→confirm
 │   └── VCAdminConfigDemoPage.tsx                   # NEW (US6) — VCPromptGraphCard (system read-only / user editable); + VC badge showcase
 ├── CrdApp.tsx                                      # MODIFY (US6): register the 4 new demo routes + add "(preview)" nav entries
 └── main.tsx                                        # MODIFY (US6): eagerly load 'crd-contributorSettings' + 'crd-community' namespaces (EN) — not currently loaded
 
-src/main/routing/urlBuilders.ts                    # ADD buildCreateVirtualContributorUrl(entityProfileUrl?) → <profileUrl>/settings/create-virtual-contributor
-src/main/crdPages/topLevelPages/userPages/settings/CrdUserSettingsRoutes.tsx          # MODIFY: mount wizard route → CrdVCCreationWizardPage
-src/main/crdPages/topLevelPages/organizationPages/settings/CrdOrgSettingsRoutes.tsx   # MODIFY: mount wizard route → CrdOrgVCCreationWizardPage
-#   Both as a sibling of the settings-tab shell (full-page, inside CrdLayoutWrapper) — works for user (incl. another user as admin) + org.
-#   The wizard is NOT a top-level route — TopLevelRoutes.tsx is unchanged for US1.
+src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx                           # MODIFY: open CrdVCCreationWizardDialog (current-user account)
+src/main/crdPages/dashboard/DashboardWithMemberships.tsx                              # MODIFY: open CrdVCCreationWizardDialog (current-user account)
+src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx       # MODIFY: open CrdVCCreationWizardDialog (pass user account)
+src/main/crdPages/topLevelPages/organizationPages/settings/account/CrdOrgAccountTab.tsx # MODIFY: open CrdVCCreationWizardDialog (pass org account)
+#   The wizard is a dialog opened in-place from each launch point — no route, no URL builder, no settings-route mount.
+#   urlBuilders.ts, the settings route trees, and TopLevelRoutes.tsx are unchanged for the wizard.
 ```
 
 **Structure Decision**: Reuse the existing VC CRD taxonomy verbatim (validated against the live profile/settings implementation). Net-new code clusters under `creationWizard/`, `knowledgeBase/`, the single `VCPromptGraphCard`, the add-VC `VirtualContributorPreview`, and the `VirtualContributorBadge`. The legacy MUI files stay in place (toggle-gated default), per the migration guide.
@@ -149,7 +150,7 @@ The user stories are independently shippable. US6 (standalone demo coverage) dep
 2. **US3 — add-to-community**. The connector is **already wired** into `CrdSpaceCommunityPage` + `CrdSpaceSettingsPage`; the only real gap is the **preview step** (+ confirm legacy dialogs are unreachable on CRD).
 3. **US2 — Knowledge Base page** (full-page route; reuses `CalloutsGroupView` until it is itself CRD).
 4. **US4 — prompt-graph card** (only 1 of 5 admin cards remains, but that card — the accordion node editor with editable property tables — is the **most complex single new component after the wizard**, *not* a warm-up). Sequenced just before the wizard.
-5. **US1 — creation wizard** (largest; full-page rebuild + relocate launch points). Last because it is the biggest and benefits from patterns settled in 1–4.
+5. **US1 — creation wizard** (largest; dialog rebuild + rewire launch points). Last because it is the biggest and benefits from patterns settled in 1–4.
 
 > The MVP remains **US1** (the P1 story). This is a *risk/effort* execution order, not a priority reordering.
 

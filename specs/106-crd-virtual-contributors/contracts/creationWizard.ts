@@ -73,6 +73,8 @@ export type VcWizardCreatedVc = {
 export type VcCreationWizardErrors = Partial<Record<keyof VcCreationWizardValues, string>>;
 
 export type VCCreationWizardViewProps = {
+  open: boolean; // dialog visibility, owned by the launch point
+  onClose: () => void; // X button, Esc, overlay click, and the final info step's "Done"
   step: VcWizardStep;
   values: VcCreationWizardValues;
   errorsByField: VcCreationWizardErrors;
@@ -82,7 +84,6 @@ export type VCCreationWizardViewProps = {
 
   onNext: () => void;
   onBack: () => void;
-  onCancel: () => void; // used by the final info step's "Done" button (no close/cancel button on the page)
   onSubmit: () => void; // triggers create mutation
 
   // data for the branch steps
@@ -103,16 +104,11 @@ export type VCCreationWizardViewProps = {
   onRemoveDocument: (index: number) => void;
 };
 
-// Sub-dialogs (remain CRD dialogs; sticky header/footer rule applies)
+// Sub-dialogs (CRD dialogs layered over the wizard dialog; sticky header/footer rule applies).
 //
-// NOT BUILT — the cancel-confirm dialog was dropped during implementation: the wizard is a full
-// page nested under user settings (no close/cancel button), so the user exits via the breadcrumb
-// trail and in-progress input is discarded on navigation. Kept here for historical reference only.
-export type VCWizardCancelDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-};
+// The wizard itself is a single CRD dialog (sticky header/footer, scrollable middle). Closing it
+// (X button, Esc, overlay click) discards any in-progress input — there is no separate cancel-
+// confirm dialog, matching the legacy MUI wizard's direct-close behaviour.
 
 export type VCExternalAIDialogProps = {
   open: boolean;

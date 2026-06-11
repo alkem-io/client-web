@@ -1,6 +1,7 @@
 {
   "wizard": {
     "title": "Създаване на Virtual Contributor",
+    "close": "Затвори",
     "loading": "Обработка…",
     "next": "Напред",
     "back": "Назад",
@@ -38,7 +39,10 @@
       "documentName": "Име",
       "documentUrl": "URL",
       "removeDocument": "Премахни документа",
-      "addDocument": "Добави документ"
+      "addDocument": "Добави документ",
+      "exampleTitle": "Пример: За Alkemio",
+      "exampleDescription": "Съвет: Създайте структуриран и специфичен текст, например:\n\n<strong>Предпоставки</strong>\n\nAlkemio, основана през 2020 г., се ражда от разочарованието от бавния прогрес по предизвикателства, свързани с COVID, и осъзнаването на множеството бързо променящи се предизвикателства, с които се сблъскваме ежедневно.\n\n<strong>Управление</strong>\n\nЗа да поддържаме доверието и да реализираме дългосрочната си визия, ние приехме Стюардство като основна структура на групата. Стюардството е...\n",
+      "initialDocuments": "Начални връзки и документи"
     },
     "existingSpace": {
       "intro": "Изберете Space, който да използвате като база от знания.",
@@ -63,6 +67,9 @@
       "description": "Вашият Virtual Contributor е създаден.",
       "view": "Виж профила",
       "done": "Готово"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' беше създаден успешно"
     }
   },
   "breadcrumbs": {

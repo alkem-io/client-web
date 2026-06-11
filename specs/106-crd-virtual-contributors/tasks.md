@@ -11,7 +11,7 @@
 
 - **Layer 3 (pure presentational)**: `src/crd/components/virtualContributor/**`, `src/crd/components/common/**` — no `@mui/*`, `@apollo/client`, `@/domain/*`, `react-router-dom`, `formik`; plain-TS props; `lucide-react` icons; `cn()` + Tailwind; `useTranslation('crd-…')`.
 - **Layer 2 (integration)**: `src/main/crdPages/topLevelPages/vcPages/**`, `src/main/crdPages/space/dialogs/**` — Apollo hooks + mappers; no `@mui/*`/`@emotion/*`.
-- **Routing**: `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); the creation wizard is mounted under **both** `CrdUserSettingsRoutes.tsx` and `CrdOrgSettingsRoutes.tsx` (nested under the owning entity's settings); `src/main/routing/urlBuilders.ts`. (`TopLevelRoutes.tsx` is unchanged — the wizard is NOT a top-level route.)
+- **Routing**: `src/main/crdPages/topLevelPages/vcPages/CrdVCRoutes.tsx` (profile/settings/KB); `src/main/routing/urlBuilders.ts`. The creation wizard is a **dialog**, not a route — it is opened in-place from each launch point (no route, no URL segment). (`TopLevelRoutes.tsx` and the settings route trees are unchanged for the wizard.)
 - **i18n**: namespace `crd-contributorSettings` (`src/crd/i18n/contributorSettings/*.json`, 6 languages: en, es, nl, bg, de, fr); badge/add-VC strings extend `crd-community`/`crd-common`.
 - **No new runtime deps.** React Compiler on (no manual memoization). "Virtual Contributor" stays English (glossary).
 
@@ -38,33 +38,33 @@
 
 ## Phase 3: User Story 1 — Create a Virtual Contributor (Priority: P1) 🎯 MVP
 
-**Goal**: Rebuild the legacy modal wizard as a full-page CRD experience launched from every CRD surface, reusing all GraphQL hooks. Contract: `contracts/creationWizard.ts`.
+**Goal**: Rebuild the legacy modal wizard as a CRD dialog launched from every CRD surface, reusing all GraphQL hooks. Contract: `contracts/creationWizard.ts`.
 
-**Independent test**: With CRD active, launch "Create Virtual Contributor" from the CRD dashboard and the user/org account tab; complete every path (written-knowledge, existing-space, external) end-to-end to a created VC, exercising cancel/external-AI/try-VC sub-dialogs — zero MUI styling (SC-001).
+**Independent test**: With CRD active, launch "Create Virtual Contributor" from the CRD dashboard and the user/org account tab; complete every path (written-knowledge, existing-space, external) end-to-end to a created VC, exercising close/external-AI sub-dialogs — zero MUI styling (SC-001).
 
 ### Layer 3 — presentational (pure)
 
-- [X] T004 [P] [US1] Add prop types in `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.types.ts` from `contracts/creationWizard.ts` (step machine, values, view props, sub-dialog props).
-- [X] T005 [US1] Build the full-page shell `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx` (header, step switch, footer with Back/Next/Create — page scroll, not dialog).
+- [X] T004 [P] [US1] Add prop types in `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.types.ts` from `contracts/creationWizard.ts` (step machine, values, view props incl. `open`/`onClose`, sub-dialog props).
+- [X] T005 [US1] Build the dialog shell `src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx` (sticky `DialogHeader` title, scrollable middle `flex-1 min-h-0 overflow-y-auto`, pinned `DialogFooter` with Back/Next/Create per step — sticky-chrome rule). Closing (X/Esc/overlay) calls `onClose`.
 - [X] T006 [P] [US1] Build initial step `src/crd/components/virtualContributor/creationWizard/steps/InitialStep.tsx` (name/tagline/description/avatar + 3 path cards).
 - [X] T007 [P] [US1] Build add-knowledge step `.../steps/AddKnowledgeStep.tsx` with post rows (`PostItem`) and document rows (`DocumentItem`) — add/remove, validation display.
 - [X] T008 [P] [US1] Build existing-space step `.../steps/ExistingSpaceStep.tsx` (select space/subspace as Body of Knowledge; `pickColorFromId` fallbacks).
 - [X] T009 [P] [US1] Build choose-community + try-VC-info steps `.../steps/ChooseCommunityStep.tsx` and `.../steps/TryVcInfoStep.tsx` (+ `LoadingStep`).
-- [X] T010 [US1] DESCOPED — the full-page wizard has **no close/cancel button** (the user exits via the user-settings breadcrumb trail; in-progress input is discarded on navigation). The cancel-confirm dialog was dropped, so no `VCWizardCancelDialog` is built.
+- [X] T010 [US1] DESCOPED — the wizard dialog closes directly via the `DialogContent` X button / Esc / overlay click (discarding in-progress input), matching the legacy MUI wizard's direct-close behaviour. No separate cancel-confirm dialog (`VCWizardCancelDialog`) is built.
 - [X] T011 [P] [US1] Build sub-dialog `.../dialogs/VCExternalAIDialog.tsx` + nested coming-soon request form (sticky-chrome).
 - [ ] T012 [US1] DESCOPED — the interactive "try the VC" demo (`TryVirtualContributorDialog`) is launched from the **space dashboard** (`src/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView.tsx`), **not** the creation wizard; it is out of scope for US1 (a space-page concern). The wizard's final step is the info step `TryVcInfoStep` (built in T009). No implementation in this task.
 
 ### Layer 2 — integration (reuse GraphQL hooks unchanged)
 
-- [X] T013 [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/useVcCreationWizard.ts` by relocating the step machine + all data calls from `src/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard.tsx` (reuse `useCreateVirtualContributorOnAccountMutation`, `useNewVirtualContributorMySpacesQuery`, `useAllSpaceSubspacesLazyQuery`, `useUploadVisualMutation`, `useCreateSpaceMutation`, `useRefreshBodyOfKnowledgeMutation`, `useCreateLinkOnCalloutMutation`, `useAssignRoleToVirtualContributorMutation`, `useSubspaceCommunityAndRoleSetIdLazyQuery`, `useSpaceAboutBaseLazyQuery`, Formik/Yup schemas); swap `DialogWithGrid` shell for page rendering.
+- [X] T013 [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/useVcCreationWizard.ts` by relocating the step machine + all data calls from `src/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard.tsx` (reuse `useCreateVirtualContributorOnAccountMutation`, `useNewVirtualContributorMySpacesQuery`, `useAllSpaceSubspacesLazyQuery`, `useUploadVisualMutation`, `useCreateSpaceMutation`, `useRefreshBodyOfKnowledgeMutation`, `useCreateLinkOnCalloutMutation`, `useAssignRoleToVirtualContributorMutation`, `useSubspaceCommunityAndRoleSetIdLazyQuery`, `useSpaceAboutBaseLazyQuery`, Formik/Yup schemas); the hook takes the target account directly (`initialAccount`) and an `onExit` close callback.
 - [X] T014 [P] [US1] Create `src/main/crdPages/topLevelPages/vcPages/creationWizard/vcCreationWizardMapper.ts` (GraphQL spaces/communities/createdVc → `VcWizardSelectableSpace[]`/`VcWizardCreatedVc`).
-- [X] T015 [US1] Create the integration pages in `src/main/crdPages/topLevelPages/vcPages/creationWizard/`: a shared body `CrdVCCreationWizard.tsx` (reads target account from **router location state**, runs `useVcCreationWizard`, renders `VCCreationWizardView`) + **two per-context wrappers** that own the breadcrumb trail — `CrdVCCreationWizardPage.tsx` (user — `useUserPageRouteContext`, `User` icon) and `CrdOrgVCCreationWizardPage.tsx` (org — `useOrganizationContext`, `Building2` icon), each mirroring the entity's account-tab trail (*entity › Settings › Account › Create Virtual Contributor*). *(Avatar is uploaded post-creation directly via `useUploadVisualMutation` — no `StorageConfigContextProvider` needed since the description uses a plain Textarea.)*
+- [X] T015 [US1] Create the controlled dialog connector `src/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog.tsx` — props `{ open, onClose, account?, accountName? }`; runs `useVcCreationWizard` (wired `onExit: onClose`), wraps the markdown image-upload scope in `StorageConfigContextProvider` (account bucket, temporary location) when an account id is resolved, and renders `VCCreationWizardView`. The account-tab launch points pass the account directly; the dashboard launch points omit it (defaults to the current user's account via `useNewVirtualContributorMySpacesQuery`). *(Avatar is uploaded post-creation directly via `useUploadVisualMutation`.)*
 
-### Routing & launch points
+### Launch points
 
-- [X] T016 [US1] Add `buildCreateVirtualContributorUrl(entityProfileUrl?)` to `src/main/routing/urlBuilders.ts` — returns `<profileUrl>/settings/create-virtual-contributor` (segment const `CREATE_VIRTUAL_CONTRIBUTOR_SEGMENT`), defaulting to `/user/me`. Parameterized by the owning entity's `profile.url` so it works for the current user, another user (admin), and organizations. **No query params** (account carried via location state).
-- [X] T017 [US1] Mount the wizard route (lazy + `Suspense`) at `create-virtual-contributor` in **both** `CrdUserSettingsRoutes.tsx` (→ `CrdVCCreationWizardPage`) and `CrdOrgSettingsRoutes.tsx` (→ `CrdOrgVCCreationWizardPage`), each as a **sibling of the settings-tab shell** route → full-page (no settings tabs), inheriting `CrdLayoutWrapper` + auth (+ `OrganizationProvider` for org) from the surrounding `/user/:userNameId/*` and `/organization/:orgNameId/*` trees. (Not a top-level route; `TopLevelRoutes.tsx` unchanged.)
-- [X] T018 [US1] Switch the four CRD launch points from inline `{virtualContributorWizard}` to `navigate(buildCreateVirtualContributorUrl(entityProfileUrl), { state: { account, accountName } })` (dashboards pass nothing → `/user/me`; user tab passes `profileUrl`; org tab passes `organization.profile.url`): `src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx`, `.../DashboardWithMemberships.tsx`, `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`, `.../organizationPages/settings/account/CrdOrgAccountTab.tsx`.
+- [X] T016 [US1] DESCOPED — the wizard is a dialog, not a route, so there is **no URL builder and no route segment**. (`src/main/routing/urlBuilders.ts` is unchanged for the wizard; no `create-virtual-contributor` path exists.)
+- [X] T017 [US1] DESCOPED — no route to mount. The settings route trees (`CrdUserSettingsRoutes.tsx`, `CrdOrgSettingsRoutes.tsx`) and `TopLevelRoutes.tsx` are unchanged for the wizard; it renders in-place as a dialog under whatever CRD shell the launch point already lives in.
+- [X] T018 [US1] Switch the four CRD launch points from inline MUI `{virtualContributorWizard}` to a local `createVcOpen` state + conditionally-rendered `<CrdVCCreationWizardDialog open onClose=… account=… accountName=… />`: dashboards open it with no account (→ current user); the user/org account tabs pass `account`/`accountName` directly: `src/main/crdPages/dashboard/DashboardWithoutMemberships.tsx`, `.../DashboardWithMemberships.tsx`, `src/main/crdPages/topLevelPages/userPages/settings/account/CrdUserAccountTab.tsx`, `.../organizationPages/settings/account/CrdOrgAccountTab.tsx`.
 
 ### i18n & tests
 
@@ -163,7 +163,7 @@
 
 ### Demo pages (pure props + local state; reuse the production CRD components)
 
-- [X] T058 [P] [US6] Build `src/crd/app/pages/VCCreationWizardDemoPage.tsx` — render `VCCreationWizardView` full-page, hold step/values in local `useState`, wire Back/Next/Create + path selection against `MOCK_WIZARD_SELECTABLE_SPACES`, open `VCExternalAIDialog` and the final `TryVcInfoStep`/created state; all callbacks `console.log`/no-op. (Depends T057.)
+- [X] T058 [P] [US6] Build `src/crd/app/pages/VCCreationWizardDemoPage.tsx` — a trigger button opens the `VCCreationWizardView` dialog (local `open` state), holding step/values in local `useState`, wiring Back/Next/Create + path selection against `MOCK_WIZARD_SELECTABLE_SPACES`, opening `VCExternalAIDialog` and the final `TryVcInfoStep`/created state; all callbacks `console.log`/no-op. (Depends T057.)
 - [X] T059 [P] [US6] Build `src/crd/app/pages/VCKnowledgeBaseDemoPage.tsx` — render `VCKnowledgeBaseView` with `MOCK_KB_VIEW`; expose populated vs empty and authorized-refresh (canRefresh/lastUpdated) via a small local toggle; mock refresh callback. (Depends T057.)
 - [X] T060 [P] [US6] Build `src/crd/app/pages/VCAddToCommunityDemoPage.tsx` — a button that opens `VirtualContributorInviteDialog` (controlled `open` state) populated with `MOCK_AVAILABLE_VCS`, routing selection through `VirtualContributorPreview` (`previewSlot`/`onPreview`, `MOCK_VC_PREVIEW`) before the no-op confirm. (Depends T057.)
 - [X] T061 [P] [US6] Build `src/crd/app/pages/VCAdminConfigDemoPage.tsx` — render `VCPromptGraphCard` with `MOCK_PROMPT_GRAPH_NODES` (system nodes locked, user nodes editable, Save/Reset flashing per-section status against local state); include a small `VirtualContributorBadge` showcase row. (Depends T057.)
@@ -230,7 +230,7 @@
 
 ### Within-story dependencies (typical)
 - `*.types.ts` (from contracts) → presentational component → mapper → data hook → integration page → routing wire. i18n + tests run parallel `[P]` once their sibling exists.
-- **US1**: T004→T005; T005 + steps/sub-dialogs T006–T011 → T013 (hook) → T014 (mapper) → T015 (page) → T016→T017→T018 (routing/launch). T020 + T055 (tests) follow their targets (T014, T013). T012 is descoped.
+- **US1**: T004→T005; T005 + steps/sub-dialogs T006–T011 → T013 (hook) → T014 (mapper) → T015 (dialog connector) → T018 (launch points open the dialog). T020 + T055 (tests) follow their targets (T014, T013). T012/T016/T017 are descoped (the wizard is a dialog — no route/URL builder).
 - **US2**: T021→T022; T024→T025→T026 (T026 repoints the route). 
 - **US3**: T029→T030→T031→T032→T033 (T034 retire check after wiring). 
 - **US4**: T036→T037; T038→T039→T040. 

@@ -7,6 +7,7 @@ import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
@@ -20,35 +21,107 @@ import type {
 
 export function VCCreationWizardView(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
+  const isLoading = props.step === 'loadingStep' || props.loading;
 
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-6 p-4 md:p-6">
-      <header>
-        <h1 className="flex items-center gap-2 text-page-title">
-          <Bot aria-hidden="true" className="size-5 text-primary" />
-          {t('wizard.title')}
-        </h1>
-      </header>
+    <Dialog
+      open={props.open}
+      onOpenChange={open => {
+        if (!open) props.onClose();
+      }}
+    >
+      <DialogContent
+        closeLabel={t('wizard.close')}
+        className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
+      >
+        <DialogHeader className="shrink-0 border-b px-6 py-4">
+          <DialogTitle className="flex items-center gap-2 text-section-title">
+            <Bot aria-hidden="true" className="size-5 text-primary" />
+            {t('wizard.title')}
+          </DialogTitle>
+        </DialogHeader>
 
-      {props.step === 'loadingStep' || props.loading ? (
-        <output className="flex flex-1 items-center justify-center py-16" aria-label={t('wizard.loading')}>
-          <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
-        </output>
-      ) : props.step === 'initial' ? (
-        <InitialStep {...props} />
-      ) : props.step === 'addKnowledge' ? (
-        <AddKnowledgeStep {...props} />
-      ) : props.step === 'existingKnowledge' ? (
-        <ExistingSpaceStep {...props} />
-      ) : props.step === 'externalProvider' ? (
-        <ExternalProviderStep {...props} />
-      ) : props.step === 'chooseCommunity' ? (
-        <ChooseCommunityStep {...props} />
-      ) : props.step === 'tryVcInfo' ? (
-        <TryVcInfoStep {...props} />
-      ) : null}
-    </div>
+        {isLoading ? (
+          <output className="flex flex-1 items-center justify-center px-6 py-16" aria-label={t('wizard.loading')}>
+            <Loader2 aria-hidden="true" className="size-6 animate-spin text-muted-foreground" />
+          </output>
+        ) : (
+          <div className="flex flex-1 flex-col overflow-y-auto px-6 py-5">
+            {props.step === 'initial' ? (
+              <InitialStep {...props} />
+            ) : props.step === 'addKnowledge' ? (
+              <AddKnowledgeStep {...props} />
+            ) : props.step === 'existingKnowledge' ? (
+              <ExistingSpaceStep {...props} />
+            ) : props.step === 'externalProvider' ? (
+              <ExternalProviderStep {...props} />
+            ) : props.step === 'chooseCommunity' ? (
+              <ChooseCommunityStep {...props} />
+            ) : props.step === 'tryVcInfo' ? (
+              <TryVcInfoStep {...props} />
+            ) : null}
+          </div>
+        )}
+
+        {!isLoading && props.step !== 'tryVcInfo' && (
+          <DialogFooter className="shrink-0 border-t px-6 py-4">
+            <WizardFooter {...props} />
+          </DialogFooter>
+        )}
+      </DialogContent>
+    </Dialog>
   );
+}
+
+function WizardFooter(props: VCCreationWizardViewProps) {
+  const { t } = useTranslation('crd-contributorSettings');
+
+  switch (props.step) {
+    case 'initial':
+      return (
+        <Button type="button" onClick={props.onSubmitInitial} disabled={!props.identityValid || !props.selectedPath}>
+          {t('wizard.next')}
+        </Button>
+      );
+    case 'addKnowledge': {
+      const postsValid = props.posts.length > 0 && props.posts.every(p => p.title.trim().length >= 3);
+      return (
+        <>
+          <Button type="button" variant="ghost" onClick={props.onBack}>
+            {t('wizard.back')}
+          </Button>
+          <Button type="button" onClick={props.onSubmitKnowledge} disabled={!postsValid}>
+            {t('wizard.create')}
+          </Button>
+        </>
+      );
+    }
+    case 'existingKnowledge':
+      return (
+        <Button type="button" variant="ghost" onClick={props.onBack}>
+          {t('wizard.back')}
+        </Button>
+      );
+    case 'externalProvider':
+      return (
+        <>
+          <Button type="button" variant="ghost" onClick={props.onBack}>
+            {t('wizard.back')}
+          </Button>
+          <Button type="button" onClick={props.onSubmitExternal} disabled={!props.externalValid}>
+            {t('wizard.create')}
+          </Button>
+        </>
+      );
+    case 'chooseCommunity':
+      return (
+        <Button type="button" variant="ghost" onClick={() => props.onChooseCommunity(undefined)}>
+          {t('wizard.chooseCommunity.skip')}
+        </Button>
+      );
+    default:
+      return null;
+  }
 }
 
 const PATHS: { key: VcWizardPath; icon: typeof Library }[] = [
@@ -74,7 +147,7 @@ function InitialStep(props: VCCreationWizardViewProps) {
   const [cropFile, setCropFile] = useState<File | undefined>(undefined);
 
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <p className="text-body text-muted-foreground">{t('wizard.initial.intro')}</p>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -154,12 +227,6 @@ function InitialStep(props: VCCreationWizardViewProps) {
         </div>
       </div>
 
-      <StepFooter>
-        <Button type="button" onClick={props.onSubmitInitial} disabled={!props.identityValid || !props.selectedPath}>
-          {t('wizard.next')}
-        </Button>
-      </StepFooter>
-
       <ImageCropDialog
         open={Boolean(cropFile)}
         file={cropFile}
@@ -189,10 +256,8 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
   const updateDoc = (i: number, patch: Partial<VcWizardDocument>) =>
     props.onChangeDocuments(props.documents.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
 
-  const postsValid = props.posts.length > 0 && props.posts.every(p => p.title.trim().length >= 3);
-
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <p className="text-body text-muted-foreground">{t('wizard.addKnowledge.intro')}</p>
 
       <section className="flex flex-col gap-2">
@@ -281,15 +346,6 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
           {t('wizard.addKnowledge.addDocument')}
         </Button>
       </section>
-
-      <StepFooter>
-        <Button type="button" variant="ghost" onClick={props.onBack}>
-          {t('wizard.back')}
-        </Button>
-        <Button type="button" onClick={props.onSubmitKnowledge} disabled={!postsValid}>
-          {t('wizard.create')}
-        </Button>
-      </StepFooter>
     </div>
   );
 }
@@ -336,18 +392,13 @@ function SpaceRow({ space, onSelect }: { space: VcWizardSelectableSpace; onSelec
 function ExistingSpaceStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <p className="text-body text-muted-foreground">{t('wizard.existingSpace.intro')}</p>
       {props.availableSpaces.length === 0 ? (
         <p className="text-body text-muted-foreground">{t('wizard.existingSpace.empty')}</p>
       ) : (
         <SpaceList spaces={props.availableSpaces} onSelect={props.onSubmitExistingSpace} />
       )}
-      <StepFooter>
-        <Button type="button" variant="ghost" onClick={props.onBack}>
-          {t('wizard.back')}
-        </Button>
-      </StepFooter>
     </div>
   );
 }
@@ -356,7 +407,7 @@ function ExternalProviderStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
   const { externalConfig } = props;
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <p className="text-body text-muted-foreground">{t('wizard.external.intro')}</p>
 
       <Field label={t('wizard.external.engine')}>
@@ -394,15 +445,6 @@ function ExternalProviderStep(props: VCCreationWizardViewProps) {
       )}
 
       {props.comingSoonSlot}
-
-      <StepFooter>
-        <Button type="button" variant="ghost" onClick={props.onBack}>
-          {t('wizard.back')}
-        </Button>
-        <Button type="button" onClick={props.onSubmitExternal} disabled={!props.externalValid}>
-          {t('wizard.create')}
-        </Button>
-      </StepFooter>
     </div>
   );
 }
@@ -410,16 +452,11 @@ function ExternalProviderStep(props: VCCreationWizardViewProps) {
 function ChooseCommunityStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <p className="text-body text-muted-foreground">{t('wizard.chooseCommunity.intro')}</p>
       {props.availableCommunities.length > 0 && (
         <SpaceList spaces={props.availableCommunities} onSelect={id => props.onChooseCommunity(id)} />
       )}
-      <StepFooter>
-        <Button type="button" variant="ghost" onClick={() => props.onChooseCommunity(undefined)}>
-          {t('wizard.chooseCommunity.skip')}
-        </Button>
-      </StepFooter>
     </div>
   );
 }
@@ -437,7 +474,7 @@ function TryVcInfoStep(props: VCCreationWizardViewProps) {
             <a href={props.createdVc.profileUrl}>{t('wizard.tryVc.view')}</a>
           </Button>
         )}
-        <Button type="button" variant="outline" onClick={props.onCancel}>
+        <Button type="button" variant="outline" onClick={props.onClose}>
           {t('wizard.tryVc.done')}
         </Button>
       </div>
@@ -455,8 +492,4 @@ function Field({ label, required, children }: { label: string; required?: boolea
       {children}
     </div>
   );
-}
-
-function StepFooter({ children }: { children: React.ReactNode }) {
-  return <div className="mt-auto flex items-center justify-end gap-2 border-t pt-4">{children}</div>;
 }
