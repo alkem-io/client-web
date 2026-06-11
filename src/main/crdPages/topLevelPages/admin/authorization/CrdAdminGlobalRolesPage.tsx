@@ -28,6 +28,9 @@ const CrdAdminGlobalRolesPage = () => {
   const [searchInput, setSearchInput] = useState('');
   const searchTerm = useDebouncedValue(searchInput);
 
+  // Client-side filter over the already-loaded current members (no refetch).
+  const [memberSearch, setMemberSearch] = useState('');
+
   const segments = pathname.split('/').filter(Boolean);
   const rolesIdx = segments.indexOf('roles');
   const roleFromUrl = rolesIdx >= 0 && rolesIdx < segments.length - 1 ? segments[rolesIdx + 1] : undefined;
@@ -49,6 +52,15 @@ const CrdAdminGlobalRolesPage = () => {
     displayName: user.profile?.displayName ?? '',
     email: user.email ?? undefined,
   }));
+
+  const memberFilter = memberSearch.trim().toLowerCase();
+  const filteredMembers = memberFilter
+    ? members.filter(
+        member =>
+          member.displayName.toLowerCase().includes(memberFilter) ||
+          (member.email?.toLowerCase().includes(memberFilter) ?? false)
+      )
+    : members;
 
   const {
     users: availableUsers = [],
@@ -101,8 +113,10 @@ const CrdAdminGlobalRolesPage = () => {
 
       <RoleMembersEditor
         roleLabel={roleLabels[selectedRole]}
-        members={members}
+        members={filteredMembers}
         availableUsers={available}
+        memberSearchTerm={memberSearch}
+        onMemberSearchTermChange={setMemberSearch}
         searchTerm={searchInput}
         onSearchTermChange={setSearchInput}
         onAdd={userId => {

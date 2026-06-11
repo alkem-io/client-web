@@ -79,6 +79,7 @@
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",
+    "filterMembersPlaceholder": "Leden filteren…",
     "addMembers": "Leden toevoegen",
     "searchPlaceholder": "Gebruikers zoeken…",
     "add": "Toevoegen",

@@ -79,6 +79,7 @@
   },
   "roleMembers": {
     "currentMembers": "Miembros actuales",
+    "filterMembersPlaceholder": "Filtrar miembros…",
     "addMembers": "Añadir miembros",
     "searchPlaceholder": "Buscar usuarios…",
     "add": "Añadir",
