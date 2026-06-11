@@ -14,8 +14,12 @@ export type RoleMember = {
 type RoleMembersEditorProps = {
   /** Translated name of the role being edited. */
   roleLabel: string;
+  /** Current members, already filtered by `memberSearchTerm` upstream. */
   members: RoleMember[];
   availableUsers: RoleMember[];
+  /** Client-side filter over the current members. */
+  memberSearchTerm: string;
+  onMemberSearchTermChange: (term: string) => void;
   searchTerm: string;
   onSearchTermChange: (term: string) => void;
   onAdd: (userId: string) => void;
@@ -40,6 +44,8 @@ export function RoleMembersEditor({
   roleLabel,
   members,
   availableUsers,
+  memberSearchTerm,
+  onMemberSearchTermChange,
   searchTerm,
   onSearchTermChange,
   onAdd,
@@ -53,6 +59,10 @@ export function RoleMembersEditor({
   const { t } = useTranslation('crd-admin');
   const [pendingRemove, setPendingRemove] = useState<RoleMember | null>(null);
 
+  // Show the members filter once there's something to search — or while a search
+  // is active even if it currently matches nothing (so the box doesn't vanish).
+  const showMemberSearch = members.length > 0 || Boolean(memberSearchTerm);
+
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-section-title">{roleLabel}</h2>
@@ -61,8 +71,17 @@ export function RoleMembersEditor({
         {/* Current members */}
         <section className="flex flex-col gap-3">
           <h3 className="text-subheader font-semibold">{t('roleMembers.currentMembers')}</h3>
+          {showMemberSearch && (
+            <SearchField
+              value={memberSearchTerm}
+              onValueChange={onMemberSearchTermChange}
+              placeholder={t('roleMembers.filterMembersPlaceholder')}
+            />
+          )}
           {members.length === 0 ? (
-            <p className="text-body text-muted-foreground">{t('roleMembers.noMembers')}</p>
+            <p className="text-body text-muted-foreground">
+              {memberSearchTerm ? t('roleMembers.noResults') : t('roleMembers.noMembers')}
+            </p>
           ) : (
             <ul className="flex flex-col gap-2">
               {members.map(member => (

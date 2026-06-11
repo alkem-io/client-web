@@ -79,6 +79,7 @@
   },
   "roleMembers": {
     "currentMembers": "Current members",
+    "filterMembersPlaceholder": "Filter members…",
     "addMembers": "Add members",
     "searchPlaceholder": "Search users…",
     "add": "Add",
