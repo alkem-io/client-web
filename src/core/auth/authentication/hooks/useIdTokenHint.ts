@@ -1,23 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
-interface IdTokenHintResponse {
+type IdTokenHintResponse = {
   id_token: string;
-}
+};
 
-interface UseIdTokenHint {
+type UseIdTokenHint = {
   idToken: string | undefined;
   error: Error | undefined;
   loading: boolean;
   fetchIdTokenHint: () => Promise<string>;
-}
+};
 
 export const useIdTokenHint = (): UseIdTokenHint => {
   const [idToken, setIdToken] = useState<string>();
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchIdTokenHint = useCallback(async () => {
+  const fetchIdTokenHint = async () => {
     setLoading(true);
     setError(undefined);
     try {
@@ -42,7 +42,7 @@ export const useIdTokenHint = (): UseIdTokenHint => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   return { idToken, error, loading, fetchIdTokenHint };
 };

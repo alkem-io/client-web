@@ -24,7 +24,6 @@ type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
 export const useLogoutUrl = () => {
   const { fetchIdTokenHint } = useIdTokenHint();
   const { getKratosLogoutUrl } = useKratosLogout();
-  const [error] = useState<Error>();
   const [loading, setLoading] = useState<boolean>();
   const [outcome, setOutcome] = useState<LogoutOutcome>();
 
@@ -66,7 +65,6 @@ export const useLogoutUrl = () => {
 
   return {
     outcome,
-    error,
     loading,
     getLogoutUrl: () => getLogoutUrl(),
   };

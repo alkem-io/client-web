@@ -1,8 +1,8 @@
 import type { Session } from '@ory/kratos-client';
 import React, { type PropsWithChildren } from 'react';
-import { useOidcSessionRecovery } from '../hooks/useOidcSessionRecovery';
-import { useOidcSessionStatus } from '../hooks/useOidcSessionStatus';
-import { useWhoami } from '../hooks/useWhoami';
+import { useOidcSessionRecovery } from '@/core/auth/authentication/hooks/useOidcSessionRecovery';
+import { useOidcSessionStatus } from '@/core/auth/authentication/hooks/useOidcSessionStatus';
+import { useWhoami } from '@/core/auth/authentication/hooks/useWhoami';
 
 export interface AuthContext {
   loading: boolean;

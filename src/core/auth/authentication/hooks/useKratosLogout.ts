@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useKratosClient } from './useKratosClient';
 
 /**
@@ -23,7 +22,7 @@ import { useKratosClient } from './useKratosClient';
 export const useKratosLogout = () => {
   const kratosClient = useKratosClient();
 
-  const getKratosLogoutUrl = useCallback(async (): Promise<string | undefined> => {
+  const getKratosLogoutUrl = async (): Promise<string | undefined> => {
     if (!kratosClient) {
       return undefined;
     }
@@ -34,7 +33,7 @@ export const useKratosLogout = () => {
       // 401 -> no live Kratos session (already logged out). Non-fatal: nothing to clear.
       return undefined;
     }
-  }, [kratosClient]);
+  };
 
   return { getKratosLogoutUrl };
 };

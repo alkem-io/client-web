@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -36,7 +35,7 @@ async function cleanupPushSubscription(
 const LogoutPage = () => {
   const { t } = useTranslation();
 
-  const { getLogoutUrl, outcome, error } = useLogoutUrl();
+  const { getLogoutUrl, outcome } = useLogoutUrl();
   const { clearReturnUrl } = useReturnUrl();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
 
@@ -63,7 +62,6 @@ const LogoutPage = () => {
     });
   }, [outcome]);
 
-  if (error) return <Typography>{String(error)}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;
 };
 

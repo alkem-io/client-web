@@ -5,7 +5,7 @@ import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
 
 export type LoginCardProps = {
-  /** The adapted login flow. While `undefined` (or `isLoading`), a skeleton renders. */
+  /** The adapted login flow. While `undefined` (or `isLoading`), a centered loading state renders. */
   descriptor?: KratosFlowDescriptor;
   signUpHref: string;
   forgotPasswordHref: string;
