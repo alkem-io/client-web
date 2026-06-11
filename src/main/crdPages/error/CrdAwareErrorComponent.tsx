@@ -4,6 +4,7 @@ import { Error40X } from '@/core/pages/Errors/Error40X';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { CrdForbiddenPage } from '@/crd/components/error/CrdForbiddenPage';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { hasInAppHistory } from '@/main/crdPages/error/hasInAppHistory';
 import { isCrdRoute } from '@/main/crdPages/error/isCrdRoute';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
@@ -25,6 +26,10 @@ export function CrdAwareErrorComponent(props: CrdAwareErrorComponentProps) {
 
   if (crdEnabled && isCrd && props.isNotAuthorized === true) {
     return <CrdForbiddenBranch />;
+  }
+
+  if (crdEnabled && isCrd && props.isNotFound === true) {
+    return <CrdNotFoundBranch />;
   }
 
   return (

@@ -70,6 +70,10 @@ vi.mock('@/crd/components/error/CrdForbiddenPage', () => ({
   ),
 }));
 
+vi.mock('@/main/crdPages/error/CrdNotFoundBranch', () => ({
+  CrdNotFoundBranch: () => <div data-testid="crd-not-found-branch">crd not found</div>,
+}));
+
 vi.mock('@/main/ui/layout/CrdLayoutWrapper', () => ({
   CrdLayoutWrapper: ({ children }: { children?: React.ReactNode }) => (
     <div data-testid="crd-layout-wrapper">{children}</div>
@@ -139,13 +143,46 @@ describe('CrdAwareErrorComponent', () => {
     expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
   });
 
-  test('renders MUI fallback for isNotFound (CRD 404 is out of scope)', () => {
+  test('renders CRD 404 when toggle is on, route is CRD, and isNotFound=true', () => {
     useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotFound={true} hasError={true} />);
 
+    expect(screen.getByTestId('crd-not-found-branch')).toBeInTheDocument();
+    expect(screen.queryByTestId('mui-layout')).not.toBeInTheDocument();
     expect(screen.queryByTestId('crd-forbidden-page')).not.toBeInTheDocument();
+  });
+
+  test('renders MUI fallback for isNotFound when current pathname is NOT a CRD route (e.g. /admin)', () => {
+    useCrdEnabledMock.mockReturnValue(true);
+    hasInAppHistoryMock.mockReturnValue(true);
+
+    render(<CrdAwareErrorComponent pathname="/admin" isNotFound={true} hasError={true} />);
+
+    expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
+  });
+
+  test('renders MUI fallback for isNotFound when CRD toggle is off, even on a CRD route', () => {
+    useCrdEnabledMock.mockReturnValue(false);
+    hasInAppHistoryMock.mockReturnValue(true);
+
+    render(<CrdAwareErrorComponent pathname="/welcome-space" isNotFound={true} hasError={true} />);
+
+    expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
+  });
+
+  test('renders MUI fallback for isNotFound when pathname is undefined', () => {
+    useCrdEnabledMock.mockReturnValue(true);
+    hasInAppHistoryMock.mockReturnValue(false);
+
+    render(<CrdAwareErrorComponent isNotFound={true} hasError={true} />);
+
+    expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
     expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
   });
