@@ -626,7 +626,7 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Every new user-facing string lives here: all six supported languages (en, nl, es, bg, de, fr) are added or removed in the **same PR**, and **key parity across all languages is required** — a key present in one locale file MUST exist in all of them. This parity is enforced in review (CodeRabbit), not by Crowdin.
 
-The legacy `translation` namespace (`src/core/i18n/en/translation.en.json`) is the only one that still uses Crowdin, and it is **frozen for new keys** — it serves the not-yet-migrated MUI app only. Do not add new strings there.
+The legacy `translation` namespace (`src/core/i18n/`) is **frozen for new keys** — it serves the not-yet-migrated MUI app only. Do not add new strings there. **Crowdin has been retired**, so its non-English locale files (`translation.<lang>.json`) are now edited directly in-repo for legacy upkeep — in the same PR, with key parity preserved — rather than generated.
 
 ### Do-not-translate platform terms (glossary)
 

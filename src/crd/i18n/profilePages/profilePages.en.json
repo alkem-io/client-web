@@ -18,7 +18,7 @@
     "loading": {
       "hero": "Loading profile header",
       "sidebar": "Loading profile details",
-      "organizations": "Loading organizations",
+      "organizations": "Loading organisations",
       "hostedResources": "Loading hosted resources",
       "memberships": "Loading memberships",
       "contentView": "Loading content",
@@ -48,10 +48,10 @@
     },
     "sidebar": {
       "aboutTitle": "About",
-      "organizationsTitle": "Organizations",
+      "organizationsTitle": "Organisations",
       "socialLinksTitle": "Social",
       "bioEmpty": "No bio yet.",
-      "organizationsEmpty": "Not part of any organization yet.",
+      "organizationsEmpty": "Not part of any organisation yet.",
       "memberCountLine_one": "{{count}} member",
       "memberCountLine_other": "{{count}} members"
     },
@@ -64,11 +64,11 @@
   },
   "orgProfile": {
     "hero": {
-      "settingsTooltip": "Organization settings",
-      "settingsAriaLabel": "Open organization settings",
+      "settingsTooltip": "Organisation settings",
+      "settingsAriaLabel": "Open organisation settings",
       "messageButton": "Message",
       "verifiedBadge": "Verified",
-      "verifiedTooltip": "This organization has been verified by Alkemio."
+      "verifiedTooltip": "This organisation has been verified by Alkemio."
     },
     "sidebar": {
       "bioTitle": "Bio",
