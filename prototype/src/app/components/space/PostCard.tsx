@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/card";
 import { cn } from "@/lib/utils";
 import { MessageSquare, MoreHorizontal, LayoutGrid, FileText, Presentation, Maximize2, FileSpreadsheet, FileImage } from "lucide-react";
+import { ProfileHoverCard } from "@/app/components/user/ProfileHoverCard";
 
 export type PostType = "text" | "whiteboard" | "collection" | "call-for-whiteboards" | "document";
 
@@ -16,6 +17,8 @@ export interface PostProps {
     name: string;
     avatarUrl?: string;
     role: string;
+    location?: string;
+    skills?: string[];
   };
   title: string;
   snippet: string;
@@ -77,10 +80,22 @@ export function PostCard({ post }: { post: PostProps }) {
     <Card className="group hover:shadow-md transition-all duration-300 border-border/60">
       <CardHeader className="flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
         <div className="flex gap-3">
-          <Avatar className="w-10 h-10 border border-border">
-            <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />
-            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <ProfileHoverCard
+            user={{
+              name: post.author.name,
+              avatarUrl: post.author.avatarUrl,
+              initials: post.author.name.charAt(0),
+              location: post.author.location,
+              tags: post.author.skills,
+            }}
+          >
+            <button type="button" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+              <Avatar className="w-10 h-10 border border-border">
+                <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />
+                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </button>
+          </ProfileHoverCard>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-card-title text-foreground">{post.author.name}</span>

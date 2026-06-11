@@ -14,6 +14,8 @@ import {
   Clock,
   Check,
   UserPlus,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
@@ -59,6 +61,12 @@ export function Header({
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
   const { openNotifications } = useNotifications();
   const { openMessages } = useMessages();
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle('dark');
+    setIsDark(document.documentElement.classList.contains('dark'));
+  };
 
   // Transparent header overlay on space/subspace pages (banner visible)
   const location = useLocation();
@@ -90,7 +98,7 @@ export function Header({
   // Frosted glass pill style for items over transparent header
   const frostedPill = headerTransparent
     ? {
-        background: "rgba(255,255,255,0.75)",
+        background: isDark ? "rgba(24,25,30,0.7)" : "rgba(255,255,255,0.75)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         borderRadius: "8px",
@@ -144,7 +152,7 @@ export function Header({
         </Button>
 
         {/* Messaging dropdown → full overlay on click */}
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -197,7 +205,7 @@ export function Header({
         </DropdownMenu>
 
         {/* Notifications dropdown → full overlay on click */}
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -293,7 +301,7 @@ export function Header({
         />
 
         {/* Profile avatar + dropdown */}
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger className="outline-none">
             <div className="relative p-1.5 rounded-full hover:bg-accent/50 transition-colors cursor-pointer">
               <Avatar
@@ -356,6 +364,17 @@ export function Header({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={toggleDarkMode}
+              className="cursor-pointer"
+            >
+              {isDark ? (
+                <Sun className="mr-2 h-4 w-4" />
+              ) : (
+                <Moon className="mr-2 h-4 w-4" />
+              )}
+              <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={toggleGrid}
               className="cursor-pointer"

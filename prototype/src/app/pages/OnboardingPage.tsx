@@ -300,7 +300,7 @@ export default function OnboardingPage() {
                 {selectedInterests.map((i) => (
                   <span
                     key={i}
-                    className="px-2.5 py-1 rounded-full text-caption"
+                    className="px-2.5 py-1 rounded-full text-badge"
                     style={{
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",
@@ -331,7 +331,7 @@ export default function OnboardingPage() {
                 {GOALS.filter((g) => selectedGoals.includes(g.id)).map((g) => (
                   <span
                     key={g.id}
-                    className="px-2.5 py-1 rounded-full text-caption"
+                    className="px-2.5 py-1 rounded-full text-badge"
                     style={{
                       background: "var(--primary)",
                       color: "var(--primary-foreground)",

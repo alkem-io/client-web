@@ -3,11 +3,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose,
   DialogDescription,
+  DialogFooter,
+  DialogClose,
 } from "@/app/components/ui/dialog";
 import { X } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 import { CreateSpaceForm } from "../create-space/CreateSpaceForm";
+import { useState } from "react";
 
 interface CreateSpaceDialogProps {
   open: boolean;
@@ -18,48 +21,44 @@ export function CreateSpaceDialog({
   open,
   onOpenChange,
 }: CreateSpaceDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleClose = () => {
     onOpenChange(false);
   };
 
+  const handleCreate = () => {
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      handleClose();
+    }, 1500);
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="p-0 gap-0 overflow-hidden border-0 shadow-2xl bg-background flex flex-col max-w-4xl h-[80vh] md:h-auto"
-        style={{ borderRadius: "var(--radius-xl)" }}
-      >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between px-6 py-4 shrink-0"
-          style={{
-            borderBottom: "1px solid var(--border)",
-            background: "color-mix(in srgb, var(--background) 95%, transparent)",
-          }}
-        >
-          <DialogTitle
-            className="text-section-title"
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              color: "var(--foreground)",
-            }}
-          >
-            Create a new Space
-          </DialogTitle>
-          <DialogClose
-            className="rounded-full p-2 transition-colors"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            <X className="w-5 h-5" />
-          </DialogClose>
-        </div>
-        <DialogDescription className="sr-only">
-          Fill out the form to create a new space.
-        </DialogDescription>
+      <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden [&>*]:min-w-0">
+        <DialogHeader className="px-6 pt-6 pb-4 pr-12 border-b">
+          <DialogTitle>Create new Space</DialogTitle>
+          <DialogDescription>Set up a new collaborative space on the platform.</DialogDescription>
+        </DialogHeader>
 
-        {/* Form */}
-        <div className="flex-1 overflow-hidden">
-          <CreateSpaceForm onCancel={handleClose} onSuccess={handleClose} />
-        </div>
+        <CreateSpaceForm />
+
+        <DialogFooter className="px-6 py-4 border-t">
+          <Button variant="ghost" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleCreate} disabled={isSubmitting}>
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Creating...
+              </span>
+            ) : (
+              "Create Space"
+            )}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

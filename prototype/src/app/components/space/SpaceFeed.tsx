@@ -5,6 +5,7 @@ import { PostCard, PostProps } from "./PostCard";
 import { AddPostModal } from "@/app/components/space/AddPostModal";
 import { PostDetailDialog } from "@/app/components/dialogs/PostDetailDialog";
 import { DocumentDetailDialog } from "@/app/components/dialogs/DocumentDetailDialog";
+import { useSpaceFilters } from "@/app/components/space/FilterContext";
 
 // Whiteboard Preview Images (using Unsplash to avoid module loading errors)
 const wb1 = "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1080";
@@ -12,20 +13,28 @@ const wb2 = "https://images.unsplash.com/photo-1574359219611-a3031f074b2c?auto=f
 const wb3 = "https://images.unsplash.com/photo-1578401058525-35aaec0b4658?auto=format&fit=crop&q=80&w=1080";
 const wb4 = "https://images.unsplash.com/photo-1596496050844-3613acf57a8e?auto=format&fit=crop&q=80&w=1080";
 
+interface PostWithTags extends PostProps {
+  tags: string[];
+}
+
 export function SpaceFeed() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PostProps | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<{ title: string; docType: 'word' | 'spreadsheet' | 'presentation'; size: string; lastEdited?: string } | null>(null);
   const [selectedDocAuthor, setSelectedDocAuthor] = useState<{ name: string; avatarUrl?: string; role: string } | undefined>(undefined);
+  const { searchValue, activeTags } = useSpaceFilters();
 
-  const posts: PostProps[] = [
+  const posts: PostWithTags[] = [
     {
       id: "1",
       type: "text",
+      tags: ["Updates", "Announcements"],
       author: {
         name: "Sarah Chen",
         role: "Lead",
-        avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Amsterdam, NL",
+        skills: ["Energy Systems", "Green Tech", "Data Analysis", "Renewable Energy", "Smart Grids"],
       },
       title: "Kickoff: Municipal Transition Strategy",
       snippet: "We are officially launching the strategy phase for the 2030 renewable transition. Our goal is to outline a clear path for municipalities to reach 100% renewable energy. Please review the initial policy draft in the 'Policy Drafts' channel.",
@@ -35,10 +44,13 @@ export function SpaceFeed() {
     {
       id: "4",
       type: "call-for-whiteboards",
+      tags: ["Ideas", "Updates"],
       author: {
         name: "Alex Contributor",
         role: "Member",
-        avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Lisbon, PT",
+        skills: ["Community Engagement", "Solar Energy", "Project Management"],
       },
       title: "Call for Ideas: Community Solar Projects",
       snippet: "We need innovative concepts for integrating solar into existing municipal infrastructure. Please sketch out your ideas for public buildings, parking lots, and open spaces.",
@@ -58,10 +70,13 @@ export function SpaceFeed() {
     {
       id: "2",
       type: "document",
+      tags: ["Updates", "Events"],
       author: {
         name: "David Miller",
         role: "Member",
-        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Seoul, KR",
+        skills: ["Software Development", "Grid Systems", "Infrastructure", "Smart Metering"],
       },
       title: "2030 Renewable Transition Policy Proposal",
       snippet: "The latest draft of our comprehensive policy proposal is ready for review. It covers the full strategic framework including grid modernization, community solar, building electrification, and fleet conversion — with updated budget projections and implementation timeline.",
@@ -77,10 +92,13 @@ export function SpaceFeed() {
     {
       id: "5",
       type: "whiteboard",
+      tags: ["Ideas", "Updates"],
       author: {
         name: "David Miller",
         role: "Member",
-        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Seoul, KR",
+        skills: ["Software Development", "Grid Systems", "Infrastructure", "Smart Metering"],
       },
       title: "Brainstorming: Municipal Infrastructure Upgrades",
       snippet: "Outputs from our session on grid modernization. Key clusters include smart metering, battery storage integration, and EV charging networks.",
@@ -93,10 +111,13 @@ export function SpaceFeed() {
     {
       id: "3",
       type: "document",
+      tags: ["Announcements", "Events"],
       author: {
         name: "Elena Rodriguez",
         role: "Lead",
-        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Valencia, ES",
+        skills: ["Strategy", "Stakeholder Relations", "Policy", "Budgeting", "Presentations"],
       },
       title: "2030 Renewable Transition — Working Documents",
       snippet: "Sharing the latest drafts for the transition strategy. The policy proposal has been updated with feedback from last week's stakeholder session, and the budget model now includes the revised subsidy figures.",
@@ -114,10 +135,13 @@ export function SpaceFeed() {
     {
       id: "6",
       type: "collection",
+      tags: ["Updates", "Ideas"],
       author: {
         name: "Elena Rodriguez",
         role: "Lead",
-        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        location: "Valencia, ES",
+        skills: ["Strategy", "Stakeholder Relations", "Policy", "Budgeting", "Presentations"],
       },
       title: "Transition Case Studies & Policy Docs",
       snippet: "A collection of successful case studies from similar sized municipalities reaching 100% renewables. Essential reading for the strategy team.",
@@ -134,10 +158,22 @@ export function SpaceFeed() {
     }
   ];
 
+  // Filter posts based on search and tag filters
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch = !searchValue || 
+      post.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+      post.snippet.toLowerCase().includes(searchValue.toLowerCase()) ||
+      post.author.name.toLowerCase().includes(searchValue.toLowerCase());
+    
+    const matchesTags = activeTags.length === 0 || activeTags.every((tag) => post.tags.includes(tag));
+    
+    return matchesSearch && matchesTags;
+  });
+
   return (
     <div className="w-full">
       <div className="space-y-6">
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <PostCard 
             key={post.id} 
             post={{

@@ -1,9 +1,11 @@
+import { useState, useCallback } from "react";
 import { useParams, useLocation, useSearchParams, Outlet, Link } from "react-router";
 import { SpaceHeader } from "./SpaceHeader";
 import { SpaceNavigationTabs } from "./SpaceNavigationTabs";
 import { SpaceSidebar } from "./SpaceSidebar";
-import { Button } from "@/app/components/ui/button";
-import { Plus, UserPlus, Activity, Video, FileText, Share2, Settings } from "lucide-react";
+import { FilterProvider } from "./FilterContext";
+import { Activity, Video, FileText, Share2, Settings } from "lucide-react";
+import { AboutThisSpaceDialog } from "./AboutThisSpaceDialog";
 
 /**
  * SpaceShell wraps the tab pages (Home, Community, Workspaces, Knowledge)
@@ -16,6 +18,12 @@ export function SpaceShell() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const variant = (parseInt(searchParams.get("v") || "1") || 1) as 1 | 2 | 3 | 4 | 5;
+  const [activeTabDescription, setActiveTabDescription] = useState("Activity and updates from members of this space.");
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  const handleActiveTabChange = useCallback((description: string) => {
+    setActiveTabDescription(description);
+  }, []);
 
   // Determine sidebar variant from current route
   const getSidebarVariant = () => {
@@ -34,9 +42,10 @@ export function SpaceShell() {
         { icon: Video, title: "Video Call" },
         { icon: FileText, title: "Documents" },
         { icon: Share2, title: "Share" },
-      ].map(({ icon: Icon, title }) => (
+      ].map(({ icon: Icon, title, onClick }) => (
         <button
           key={title}
+          onClick={onClick}
           className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
           style={{
             background: "color-mix(in srgb, var(--foreground) 8%, transparent)",
@@ -62,88 +71,51 @@ export function SpaceShell() {
     </div>
   );
 
-  // Route-aware action buttons for the sticky tab bar
-  const getActionButtons = () => {
-    const path = location.pathname;
-    if (path.includes("/community")) {
-      return (
-        <div className="flex items-center gap-2">
-          {actionIcons}
-          <Button variant="outline" size="sm" className="shrink-0 gap-2">
-            <UserPlus className="w-4 h-4" />
-            Invite
-          </Button>
-          <Button size="sm" className="shrink-0 gap-2">
-            <Plus className="w-4 h-4" />
-            Add Post
-          </Button>
-        </div>
-      );
-    }
-    if (path.includes("/subspaces")) {
-      return (
-        <div className="flex items-center gap-2">
-          {actionIcons}
-          <Button variant="outline" size="sm" className="shrink-0 gap-2">
-            <Plus className="w-4 h-4" />
-            Create Subspace
-          </Button>
-          <Button size="sm" className="shrink-0 gap-2">
-            <Plus className="w-4 h-4" />
-            Add Post
-          </Button>
-        </div>
-      );
-    }
-    // Home & Knowledge Base both use Add Post
-    return (
-      <div className="flex items-center gap-2">
-        {actionIcons}
-        <Button size="sm" className="shrink-0 gap-2">
-          <Plus className="w-4 h-4" />
-          Add Post
-        </Button>
-      </div>
-    );
-  };
+  // Action toolbar — icon buttons only; primary CTAs live in the left panel
+  const getActionButtons = () => actionIcons;
 
   // V2+ use a max-width container so content scales into margins on zoom
   const usesScaling = variant !== 1;
   const scaledContainer = { maxWidth: 1536, margin: "0 auto", width: "100%" };
 
   return (
-    <div className="flex flex-col bg-background">
-      <SpaceHeader spaceSlug={slug} variant={variant} />
+    <FilterProvider>
+      <div className="flex flex-col bg-background">
+        <SpaceHeader spaceSlug={slug} variant={variant} onInfoClick={() => setAboutOpen(true)} />
 
-      {/* Content area */}
-      <div className="w-full px-4 pt-0 pb-8" style={!usesScaling ? { paddingLeft: 32, paddingRight: 32 } : undefined}>
-        <div style={usesScaling ? scaledContainer : undefined}>
-          <div className="grid grid-cols-12 gap-6 items-start">
-            <div className={`hidden lg:block col-span-2 sticky top-24 self-start ${!usesScaling ? "lg:col-start-2" : ""}`}>
-              <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} />
-            </div>
-            <div className={`col-span-12 ${usesScaling ? "lg:col-span-10" : "lg:col-span-8"} min-w-0`}>
-              {/* Sticky tab bar */}
+        {/* Content area */}
+        <div className="w-full px-4 pt-0 pb-8" style={!usesScaling ? { paddingLeft: 32, paddingRight: 32 } : undefined}>
+          <div style={usesScaling ? scaledContainer : undefined}>
+            <div className="grid grid-cols-12 gap-6 items-start">
+              {/* Sticky tab bar — full-width across both panels, parent of the layout below */}
               <div
-                className="sticky top-16 z-10 pt-4 pb-3 mb-4"
+                className={`col-span-12 ${!usesScaling ? "lg:col-start-2 lg:col-span-10" : ""} sticky top-16 z-10 pt-4 pb-0`}
                 style={{
                   background:
                     "color-mix(in srgb, var(--background) 95%, transparent)",
                   backdropFilter: "blur(8px)",
                   WebkitBackdropFilter: "blur(8px)",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  marginLeft: -10,
-                  marginRight: -10,
                 }}
               >
-                <SpaceNavigationTabs spaceSlug={slug} actionButton={getActionButtons()} />
+                <SpaceNavigationTabs spaceSlug={slug} actionButton={getActionButtons()} onActiveTabChange={handleActiveTabChange} />
               </div>
-              <Outlet />
+
+              {/* Left panel — scoped to the active tab */}
+              <div className={`hidden lg:block col-span-2 sticky top-[8.5rem] self-start ${!usesScaling ? "lg:col-start-2" : ""}`}>
+                <aside className="p-3">
+                  <SpaceSidebar spaceSlug={slug} variant={getSidebarVariant()} activeTabDescription={activeTabDescription} />
+                </aside>
+              </div>
+
+              {/* Right panel — pure content */}
+              <div className={`col-span-12 ${usesScaling ? "lg:col-span-10" : "lg:col-span-8"} min-w-0`}>
+                <Outlet />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <AboutThisSpaceDialog open={aboutOpen} onOpenChange={setAboutOpen} spaceSlug={slug} />
+    </FilterProvider>
   );
 }

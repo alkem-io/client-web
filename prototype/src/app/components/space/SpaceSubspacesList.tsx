@@ -4,6 +4,7 @@ import { Plus, Folder } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { SpaceCard, type SpaceCardData } from "@/app/components/space/SpaceCard";
 import { cn } from "@/lib/utils";
+import { useSpaceFilters } from "@/app/components/space/FilterContext";
 
 // Subspace avatar colors
 const SUBSPACE_COLORS = [
@@ -19,7 +20,7 @@ const SUBSPACE_COLORS = [
 const PARENT_BANNER = "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400";
 
 // Mock Data — mapped to SpaceCardData format
-const SUBSPACES: (SpaceCardData & { status: string })[] = [
+const SUBSPACES: (SpaceCardData & { status: string; filterTags: string[] })[] = [
   {
     id: "sub-1",
     slug: "renewable-energy-transition",
@@ -33,6 +34,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Energy", "Strategy", "2030"],
     memberCount: 24,
     status: "Active",
+    filterTags: ["Active", "Completed"],
     leads: [
       { name: "Sarah Chen", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", type: "person" },
       { name: "Green Future Org", avatar: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80", type: "org" },
@@ -51,6 +53,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Transport", "Accessibility"],
     memberCount: 18,
     status: "Active",
+    filterTags: ["Active", "Planning"],
     leads: [
       { name: "David Kim", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", type: "person" },
     ],
@@ -68,6 +71,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Urban", "Green Spaces", "Drainage"],
     memberCount: 12,
     status: "Active",
+    filterTags: ["Active", "Research"],
     leads: [
       { name: "Emily Davis", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", type: "person" },
       { name: "City Planning Dept", avatar: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80", type: "org" },
@@ -87,6 +91,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Policy", "Regulation"],
     memberCount: 8,
     status: "Archived",
+    filterTags: ["Archived"],
     leads: [
       { name: "Policy Institute", avatar: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80", type: "org" },
     ],
@@ -104,6 +109,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Community", "Participation"],
     memberCount: 32,
     status: "Active",
+    filterTags: ["Active", "Completed"],
     leads: [
       { name: "Anna Martinez", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", type: "person" },
       { name: "Local Council", avatar: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80", type: "org" },
@@ -122,6 +128,7 @@ const SUBSPACES: (SpaceCardData & { status: string })[] = [
     tags: ["Digital", "Simulation"],
     memberCount: 15,
     status: "Active",
+    filterTags: ["Active", "Research"],
     leads: [
       { name: "Tech Innovations", avatar: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80", type: "org" },
       { name: "Robert Fox", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", type: "person" },
@@ -133,6 +140,7 @@ export function SpaceSubspacesList() {
   const { spaceSlug } = useParams<{ spaceSlug: string }>();
   const slug = spaceSlug || "default-space";
   const [filter, setFilter] = useState("All");
+  const { searchValue, activeTags } = useSpaceFilters();
 
   // Attach parent info so SpaceCard can build the correct subspace link
   const subspacesWithParent = SUBSPACES.map((s) => ({
@@ -148,34 +156,25 @@ export function SpaceSubspacesList() {
     },
   }));
 
-  const filteredSubspaces =
-    filter === "All"
-      ? subspacesWithParent
-      : subspacesWithParent.filter((s) => s.status === filter);
+  const filteredSubspaces = subspacesWithParent.filter((s) => {
+    // Status filter (local)
+    if (filter !== "All" && s.status !== filter) return false;
+    
+    // Search filter (from context)
+    const matchesSearch = !searchValue || 
+      s.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      s.description.toLowerCase().includes(searchValue.toLowerCase());
+    if (!matchesSearch) return false;
+    
+    // Tag filter (from context) — match against content tags on cards
+    const matchesTags = activeTags.length === 0 || activeTags.every((tag) => s.tags.includes(tag));
+    if (!matchesTags) return false;
+    
+    return true;
+  });
 
   return (
     <div className="space-y-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-      {/* Filters */}
-      <div className="flex items-center gap-2">
-        {["All", "Active", "Archived"].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={cn(
-              "px-3 py-1.5 rounded-full transition-colors text-control",
-              filter === status
-                ? "bg-primary text-primary-foreground"
-                : "bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-            style={{
-              border: `1px solid ${filter === status ? "var(--primary)" : "var(--border)"}`,
-            }}
-          >
-            {status}
-          </button>
-        ))}
-      </div>
-
       {/* Card Grid — uses the shared SpaceCard component */}
       {filteredSubspaces.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

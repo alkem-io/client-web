@@ -51,8 +51,8 @@
   --destructive-foreground: rgba(255, 255, 255, 1.00);
   /* The default border color for elements such as inputs, buttons, and other containers. */
   --border: rgba(226, 232, 240, 1.00);
-  /* The default background color for input fields once the text has been filled. Should be either transparent or match the input-background. */
-  --input: rgba(255, 255, 255, 1.00);
+  /* The border color for input fields, radio buttons, checkboxes, and other form controls. */
+  --input: rgba(203, 213, 225, 1.00);
   /* The default background color for input fields, text areas, and other input elements. */
   --input-background: rgba(255, 255, 255, 1.00);
   /* The default font weight for medium text. */
@@ -101,47 +101,47 @@
 }
 
 .dark {
-  --background: rgba(29, 56, 74, 1.00);
-  --foreground: rgba(255, 255, 255, 1.00);
-  --card: rgba(30, 41, 59, 1.00);
-  --card-foreground: rgba(255, 255, 255, 1.00);
-  --popover: rgba(30, 41, 59, 1.00);
-  --popover-foreground: rgba(255, 255, 255, 1.00);
-  --primary: rgba(255, 255, 255, 1.00);
-  --primary-foreground: rgba(29, 56, 74, 1.00);
-  --secondary: rgba(51, 65, 85, 1.00);
-  --secondary-foreground: rgba(255, 255, 255, 1.00);
-  --muted: rgba(51, 65, 85, 1.00);
-  --muted-foreground: rgba(148, 163, 184, 1.00);
-  --accent: rgba(51, 65, 85, 1.00);
-  --accent-foreground: rgba(255, 255, 255, 1.00);
-  --destructive: rgba(220, 38, 38, 1.00);
+  --background: rgba(24, 25, 30, 1.00);
+  --foreground: rgba(220, 222, 228, 1.00);
+  --card: rgba(30, 32, 38, 1.00);
+  --card-foreground: rgba(220, 222, 228, 1.00);
+  --popover: rgba(30, 32, 38, 1.00);
+  --popover-foreground: rgba(220, 222, 228, 1.00);
+  --primary: rgba(220, 222, 228, 1.00);
+  --primary-foreground: rgba(24, 25, 30, 1.00);
+  --secondary: rgba(40, 42, 50, 1.00);
+  --secondary-foreground: rgba(200, 203, 210, 1.00);
+  --muted: rgba(40, 42, 50, 1.00);
+  --muted-foreground: rgba(140, 145, 158, 1.00);
+  --accent: rgba(40, 42, 50, 1.00);
+  --accent-foreground: rgba(220, 222, 228, 1.00);
+  --destructive: rgba(200, 60, 60, 1.00);
   --destructive-foreground: rgba(255, 255, 255, 1.00);
-  --border: rgba(51, 65, 85, 1.00);
-  --input: rgba(30, 41, 59, 1.00);
-  --input-background: rgba(30, 41, 59, 1.00);
-  --ring: rgba(226, 232, 240, 0.5);
+  --border: rgba(45, 48, 58, 1.00);
+  --input: rgba(30, 32, 38, 1.00);
+  --input-background: rgba(30, 32, 38, 1.00);
+  --ring: rgba(140, 145, 158, 0.4);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: rgba(255, 255, 255, 1.00);
-  --chart-2: rgba(203, 213, 225, 1.00);
-  --chart-3: rgba(148, 163, 184, 1.00);
-  --chart-4: rgba(100, 116, 139, 1.00);
-  --chart-5: rgba(71, 85, 105, 1.00);
-  --sidebar: rgba(30, 41, 59, 1.00);
-  --sidebar-foreground: rgba(255, 255, 255, 1.00);
-  --sidebar-primary: rgba(255, 255, 255, 1.00);
-  --sidebar-primary-foreground: rgba(29, 56, 74, 1.00);
-  --sidebar-accent: rgba(51, 65, 85, 1.00);
-  --sidebar-accent-foreground: rgba(255, 255, 255, 1.00);
-  --sidebar-border: rgba(51, 65, 85, 1.00);
-  --sidebar-ring: rgba(226, 232, 240, 0.5);
+  --chart-1: rgba(220, 222, 228, 1.00);
+  --chart-2: rgba(170, 174, 184, 1.00);
+  --chart-3: rgba(140, 145, 158, 1.00);
+  --chart-4: rgba(100, 104, 116, 1.00);
+  --chart-5: rgba(65, 68, 80, 1.00);
+  --sidebar: rgba(26, 28, 34, 1.00);
+  --sidebar-foreground: rgba(220, 222, 228, 1.00);
+  --sidebar-primary: rgba(220, 222, 228, 1.00);
+  --sidebar-primary-foreground: rgba(24, 25, 30, 1.00);
+  --sidebar-accent: rgba(40, 42, 50, 1.00);
+  --sidebar-accent-foreground: rgba(220, 222, 228, 1.00);
+  --sidebar-border: rgba(45, 48, 58, 1.00);
+  --sidebar-ring: rgba(140, 145, 158, 0.4);
   /* Semantic status colors - dark */
-  --success: rgba(34, 197, 94, 1.00);
+  --success: rgba(52, 180, 96, 1.00);
   --success-foreground: rgba(255, 255, 255, 1.00);
-  --warning: rgba(245, 158, 11, 1.00);
+  --warning: rgba(220, 150, 30, 1.00);
   --warning-foreground: rgba(255, 255, 255, 1.00);
-  --info: rgba(96, 165, 250, 1.00);
+  --info: rgba(100, 155, 230, 1.00);
   --info-foreground: rgba(255, 255, 255, 1.00);
 }
 
