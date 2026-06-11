@@ -110,12 +110,16 @@ export const computeEngineCardVisibility = (params: {
 /** Static model options sourced from the generated `OpenAiModel` enum. */
 export const OPENAI_MODEL_OPTIONS = Object.values(OpenAiModel).map(value => ({ value, label: value }));
 
+/** Variables always available at the START of the graph (matches the legacy editor). */
+const BASE_INPUT_VARIABLES = ['conversation', 'display_name', 'description'];
+
 /**
- * Maps the server `PromptGraph` to the CRD card's ordered node list. Uses the
- * legacy `prepareGraph` traversal for START→END ordering, and keeps the terminal
- * START/END markers as read-only `system` nodes so the editor renders them as
- * fixed Start/End steps (parity with the legacy MUI editor). User nodes are the
- * only editable entries.
+ * Maps the server `PromptGraph` to the CRD card's ordered, editable node list.
+ * Uses the legacy `prepareGraph` traversal for START→END ordering. The terminal
+ * START/END markers are dropped (rendered as fixed Start/End bookends by the
+ * card and preserved verbatim on save), but their outputs still feed the
+ * accumulating `availableInputVariables` — the base START variables plus every
+ * upstream node's output properties, matching the legacy editor.
  */
 export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefined): VcPromptGraphNode[] => {
   if (!promptGraph?.nodes?.length) return [];
@@ -129,34 +133,43 @@ export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefine
   const seen = new Set<string>();
   const result: VcPromptGraphNode[] = [];
 
-  const push = (name: string, real: LegacyPromptGraphNode) => {
-    if (!name || seen.has(name)) return;
-    seen.add(name);
-    const isTerminal = name === 'START' || name === 'END';
-    result.push({
-      name,
-      // Terminals are always read-only regardless of their stored flag.
-      system: isTerminal || (real.system ?? false),
-      inputVariables: real.input_variables ?? [],
-      prompt: real.prompt ?? '',
-      outputProperties: (real.output?.properties ?? []).map(
-        (p): VcPromptGraphProperty => ({
-          name: p.name,
-          type: p.type,
-          optional: p.optional,
-          description: p.description,
-        })
-      ),
-    });
-  };
+  const toViewNode = (name: string, real: LegacyPromptGraphNode, available: string[]): VcPromptGraphNode => ({
+    name,
+    system: real.system ?? false,
+    inputVariables: real.input_variables ?? [],
+    availableInputVariables: available,
+    prompt: real.prompt ?? '',
+    outputProperties: (real.output?.properties ?? []).map(
+      (p): VcPromptGraphProperty => ({
+        name: p.name,
+        type: p.type,
+        optional: p.optional,
+        description: p.description,
+      })
+    ),
+  });
 
-  // Ordered path first, then any unreached nodes (fallback) in array order.
+  // Walk the START→END path, accumulating each node's available variables.
+  let available: string[] = [...BASE_INPUT_VARIABLES];
   for (const pathNode of ordered) {
-    const real = pathNode.name ? byName.get(pathNode.name) : undefined;
-    if (real) push(pathNode.name, real);
+    const name = pathNode.name;
+    if (!name || seen.has(name)) continue;
+    const real = byName.get(name);
+    if (!real) continue;
+    seen.add(name);
+    if (name !== 'START' && name !== 'END') {
+      result.push(toViewNode(name, real, [...available]));
+    }
+    const outputProps = (real.output?.properties ?? []).map(p => p.name).filter(Boolean);
+    available = available.concat(outputProps);
   }
+
+  // Fallback: nodes not reached by the path traversal (no upstream context).
   for (const node of promptGraph.nodes) {
-    if (node.name) push(node.name, node as unknown as LegacyPromptGraphNode);
+    const name = node.name;
+    if (!name || seen.has(name) || name === 'START' || name === 'END') continue;
+    seen.add(name);
+    result.push(toViewNode(name, node as unknown as LegacyPromptGraphNode, []));
   }
 
   return result;

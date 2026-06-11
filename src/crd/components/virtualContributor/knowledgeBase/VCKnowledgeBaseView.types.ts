@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
 export type VcKnowledgeBaseRefresh = {
   /** Whether the viewer may refresh the Body of Knowledge (admin/Create privilege). */
@@ -20,8 +21,18 @@ export type VcKnowledgeBaseViewProps = {
   avatarUrl?: string;
   avatarColor: string;
 
-  /** Knowledge-base description (may contain markdown — rendered read-only). */
+  /** Knowledge-base description (markdown). Rendered read-only for viewers; edited
+   *  in place (pencil → markdown editor) when `canEditDescription`. */
   description?: string;
+  /** Whether the viewer may edit the description (KB Create privilege). */
+  canEditDescription?: boolean;
+  /** Persists an edited description. Resolves true on success, false on failure
+   *  (wired by the integration layer). Required whenever `canEditDescription`. */
+  onSaveDescription?: (next: string) => Promise<boolean>;
+  /** Max length enforced by the description markdown editor. */
+  descriptionMaxLength?: number;
+  /** Image-upload wiring for the description editor (from the integration layer). */
+  descriptionUpload?: MarkdownUploadProps;
 
   refresh: VcKnowledgeBaseRefresh;
 

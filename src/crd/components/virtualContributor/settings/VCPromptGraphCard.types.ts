@@ -14,9 +14,13 @@ export type VcPromptGraphNode = {
   name: string;
   /** System nodes are locked (read-only output, no prompt editing). */
   system: boolean;
-  /** Variables available to this node (read-only). */
+  /** Variables referenced in the node's prompt (the in-use subset). */
   inputVariables?: string[];
-  /** Editable for user nodes. */
+  /** All variables available to this node — base START vars + every upstream
+   *  node's output properties (resolved by the integration layer). Rendered
+   *  under "Input variables", with the in-use ones highlighted. */
+  availableInputVariables?: string[];
+  /** Markdown. Editable for user nodes. */
   prompt?: string;
   outputProperties: VcPromptGraphProperty[];
 };

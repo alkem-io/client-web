@@ -1,10 +1,12 @@
-import { Lock, Plus, Trash2, Workflow } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowDown, Lock, Plus, Trash2, Workflow } from 'lucide-react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldFooter } from '@/crd/components/common/FieldFooter';
+import { Loading } from '@/crd/components/common/Loading';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { cn } from '@/crd/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/crd/primitives/accordion';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -49,53 +51,59 @@ export function VCPromptGraphCard({
       />
     </span>
   ) : undefined;
-
   return (
-    <SettingsCard
-      icon={Workflow}
-      title={t('vc.promptGraph.title')}
-      description={t('vc.promptGraph.helper')}
-      titleAccessory={toggle}
-    >
-      {!editingEnabled ? (
-        <p className="text-body text-muted-foreground">{t('vc.promptGraph.disabled')}</p>
-      ) : nodes.length === 0 ? (
-        <p className="text-body text-muted-foreground">{t('vc.promptGraph.empty')}</p>
-      ) : (
-        <>
-          <Accordion type="multiple" className="w-full">
-            {nodes.map(node => (
-              <NodeItem
-                key={node.name}
-                node={node}
-                onChangePrompt={prompt => onChangeNodePrompt(node.name, prompt)}
-                onChangeProperties={props => onChangeNodeProperties(node.name, props)}
-              />
-            ))}
-          </Accordion>
+    <Suspense fallback={<Loading />}>
+      <SettingsCard
+        icon={Workflow}
+        title={t('vc.promptGraph.title')}
+        description={t('vc.promptGraph.helper')}
+        titleAccessory={toggle}
+      >
+        {!editingEnabled ? (
+          <p className="text-body text-muted-foreground">{t('vc.promptGraph.disabled')}</p>
+        ) : nodes.length === 0 ? (
+          <p className="text-body text-muted-foreground">{t('vc.promptGraph.empty')}</p>
+        ) : (
+          <>
+            <p className="border py-4 px-2 rounded-lg bg-muted">{t('vc.promptGraph.start')}</p>
+            <ArrowDown aria-hidden="true" className="mx-4 my-2" />
 
-          <div className="mt-4 flex items-center justify-between gap-2">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setResetOpen(true)}>
-              {t('vc.promptGraph.reset')}
-            </Button>
-            <FieldFooter dirty={dirty} status={status} onSave={onSave} labels={labels} />
-          </div>
+            <Accordion type="multiple" className="w-full">
+              {nodes.map(node => (
+                <Suspense key={node.name} fallback={<Loading />}>
+                  <NodeItem
+                    node={node}
+                    onChangePrompt={prompt => onChangeNodePrompt(node.name, prompt)}
+                    onChangeProperties={props => onChangeNodeProperties(node.name, props)}
+                  />
+                </Suspense>
+              ))}
+            </Accordion>
+            <p className="border py-4 px-2 rounded-lg bg-muted">{t('vc.promptGraph.end')}</p>
 
-          <ConfirmationDialog
-            open={resetOpen}
-            onOpenChange={setResetOpen}
-            variant="destructive"
-            title={t('vc.promptGraph.resetConfirm.title')}
-            description={t('vc.promptGraph.resetConfirm.description')}
-            confirmLabel={t('vc.promptGraph.reset')}
-            onConfirm={() => {
-              setResetOpen(false);
-              onReset();
-            }}
-          />
-        </>
-      )}
-    </SettingsCard>
+            <div className="mt-4 flex items-center justify-between gap-2">
+              <Button type="button" variant="ghost" size="sm" onClick={() => setResetOpen(true)}>
+                {t('vc.promptGraph.reset')}
+              </Button>
+              <FieldFooter dirty={dirty} status={status} onSave={onSave} labels={labels} />
+            </div>
+
+            <ConfirmationDialog
+              open={resetOpen}
+              onOpenChange={setResetOpen}
+              variant="destructive"
+              title={t('vc.promptGraph.resetConfirm.title')}
+              description={t('vc.promptGraph.resetConfirm.description')}
+              confirmLabel={t('vc.promptGraph.reset')}
+              onConfirm={() => {
+                setResetOpen(false);
+                onReset();
+              }}
+            />
+          </>
+        )}
+      </SettingsCard>
+    </Suspense>
   );
 }
 
@@ -109,6 +117,16 @@ function humanizeNodeName(name: string) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
+/** Variable names referenced in a prompt (single-brace `{var}` placeholders), matching the legacy extractor. */
+function extractUsedVariables(text: string): string[] {
+  if (!text) return [];
+  const re = /\{\{.*?\}\}|\{([A-Za-z0-9_\\]+)\}/g;
+  const vars = Array.from(text.matchAll(re), m => m[1])
+    .filter((v): v is string => Boolean(v))
+    .map(v => v.replaceAll('\\', ''));
+  return Array.from(new Set(vars));
+}
+
 function NodeItem({
   node,
   onChangePrompt,
@@ -120,54 +138,58 @@ function NodeItem({
 }) {
   const { t } = useTranslation('crd-contributorSettings');
 
-  const label =
-    node.name === 'START'
-      ? t('vc.promptGraph.start')
-      : node.name === 'END'
-        ? t('vc.promptGraph.end')
-        : humanizeNodeName(node.name);
+  // Every variable available to this node; the ones referenced in the prompt
+  // (recomputed live as the user types) are highlighted green.
+  const used = new Set(extractUsedVariables(node.prompt ?? ''));
+  const variables = Array.from(new Set([...(node.availableInputVariables ?? node.inputVariables ?? []), ...used]));
 
   return (
-    <AccordionItem value={node.name}>
-      <AccordionTrigger className="text-body-emphasis">
-        <span className="flex items-center gap-2">
-          {node.system && <Lock aria-hidden="true" className="size-3.5 text-muted-foreground" />}
-          {label}
-        </span>
-      </AccordionTrigger>
-      <AccordionContent className="space-y-4">
-        {node.inputVariables && node.inputVariables.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.inputVariables')}</span>
-            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-            <ul role="list" className="flex flex-wrap gap-1.5">
-              {node.inputVariables.map(v => (
-                <li key={v}>
-                  <Badge variant="secondary" className="text-badge">
-                    {v}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+    <>
+      <AccordionItem value={node.name} className="border px-2 rounded-lg">
+        <AccordionTrigger className="text-body-emphasis">
+          <span className="flex items-center gap-2">
+            {node.system && <Lock aria-hidden="true" className="size-3.5 text-muted-foreground" />}
+            {humanizeNodeName(node.name)}
+          </span>
+        </AccordionTrigger>
+        <AccordionContent className="space-y-4">
+          {variables.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.inputVariables')}</span>
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+              {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+              <ul role="list" className="flex flex-wrap gap-1.5">
+                {variables.map(v => (
+                  <li key={v}>
+                    <Badge
+                      variant="secondary"
+                      className={cn('text-badge', used.has(v) && 'border-emerald-300 bg-emerald-100 text-emerald-700')}
+                    >
+                      {v}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-        {!node.system && (
-          <div className="flex flex-col gap-1.5">
-            <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.prompt')}</span>
-            <MarkdownEditor
-              value={node.prompt ?? ''}
-              onChange={onChangePrompt}
-              placeholder={t('vc.promptGraph.prompt')}
-              hideImageOptions={true}
-            />
-          </div>
-        )}
+          {!node.system && (
+            <div className="flex flex-col gap-1.5">
+              <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.prompt')}</span>
+              <MarkdownEditor
+                value={node.prompt ?? ''}
+                onChange={onChangePrompt}
+                placeholder={t('vc.promptGraph.prompt')}
+                hideImageOptions={true}
+              />
+            </div>
+          )}
 
-        <PropertyEditor properties={node.outputProperties} readOnly={node.system} onChange={onChangeProperties} />
-      </AccordionContent>
-    </AccordionItem>
+          <PropertyEditor properties={node.outputProperties} readOnly={node.system} onChange={onChangeProperties} />
+        </AccordionContent>
+      </AccordionItem>
+      <ArrowDown aria-hidden="true" className="mx-4 my-2" />
+    </>
   );
 }
 

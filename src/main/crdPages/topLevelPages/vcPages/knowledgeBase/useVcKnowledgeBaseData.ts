@@ -4,6 +4,7 @@ import {
   useVirtualContributorKnowledgeBaseLastUpdatedQuery,
   useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
@@ -17,10 +18,21 @@ import { mapVcKnowledgeBaseToViewProps } from './vcKnowledgeBaseMapper';
  * callouts list is returned raw for the page to feed into the CRD callouts feed.
  */
 export const useVcKnowledgeBaseData = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation('crd-profilePages');
+  const notify = useNotification();
   const { vcId } = useUrlResolver();
 
   const kb = useKnowledgeBase({ id: vcId });
+
+  const onSaveDescription = async (next: string): Promise<boolean> => {
+    try {
+      await kb.updateDescription({ description: next });
+      return true;
+    } catch {
+      notify(t('knowledgeBase.description.saveError'), 'error');
+      return false;
+    }
+  };
 
   const { data: identityData } = useVirtualContributorProfileWithModelCardQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
@@ -58,6 +70,8 @@ export const useVcKnowledgeBaseData = () => {
   return {
     vcId,
     viewProps,
+    canEditDescription: kb.canCreateCallout,
+    onSaveDescription,
     callouts: (kb.callouts ?? []) as CalloutModelLightExtended[],
     calloutsSetId: kb.calloutsSetId,
     canCreateCallout: kb.canCreateCallout,

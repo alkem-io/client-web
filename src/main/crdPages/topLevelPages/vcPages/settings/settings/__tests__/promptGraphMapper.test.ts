@@ -28,20 +28,52 @@ const graph = {
 } as unknown as PromptGraph;
 
 describe('mapPromptGraphToNodes', () => {
-  it('returns ordered nodes including the read-only START/END terminals', () => {
+  it('returns only the editable user nodes (terminals dropped) with computed available variables', () => {
     const nodes = mapPromptGraphToNodes(graph);
-    expect(nodes.map(n => n.name)).toEqual(['START', 'analyze', 'END']);
-    // Terminals are read-only (system); the user node is editable.
-    expect(nodes.find(n => n.name === 'START')?.system).toBe(true);
-    expect(nodes.find(n => n.name === 'END')?.system).toBe(true);
-    // biome-ignore lint/style/noNonNullAssertion: asserted present above
-    const analyze = nodes.find(n => n.name === 'analyze')!;
+    expect(nodes.map(n => n.name)).toEqual(['analyze']);
+    const analyze = nodes[0];
     expect(analyze.system).toBe(false);
     expect(analyze.inputVariables).toEqual(['topic']);
+    // First user node sees the base START variables (START has no output props here).
+    expect(analyze.availableInputVariables).toEqual(['conversation', 'display_name', 'description']);
     expect(analyze.prompt).toBe('Analyze {topic}');
     expect(analyze.outputProperties).toEqual([
       { name: 'summary', type: 'string', optional: false, description: 'A summary' },
     ]);
+  });
+
+  it('accumulates upstream output properties into availableInputVariables', () => {
+    const g = {
+      edges: [
+        { from: 'START', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'END' },
+      ],
+      nodes: [
+        {
+          name: 'START',
+          system: true,
+          input_variables: [],
+          prompt: '',
+          output: { properties: [{ name: 'seed', type: 'string', optional: false, description: '' }] },
+        },
+        {
+          name: 'a',
+          system: false,
+          input_variables: [],
+          prompt: '',
+          output: { properties: [{ name: 'fromA', type: 'string', optional: false, description: '' }] },
+        },
+        { name: 'b', system: false, input_variables: [], prompt: '', output: { properties: [] } },
+        { name: 'END', system: true, input_variables: [], prompt: '', output: null },
+      ],
+    } as unknown as PromptGraph;
+
+    const nodes = mapPromptGraphToNodes(g);
+    expect(nodes.map(n => n.name)).toEqual(['a', 'b']);
+    // `a` sees base + START's output; `b` additionally sees `a`'s output.
+    expect(nodes[0].availableInputVariables).toEqual(['conversation', 'display_name', 'description', 'seed']);
+    expect(nodes[1].availableInputVariables).toEqual(['conversation', 'display_name', 'description', 'seed', 'fromA']);
   });
 
   it('returns an empty list for a missing/empty graph', () => {

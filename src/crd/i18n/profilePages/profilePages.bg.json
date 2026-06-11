@@ -182,6 +182,15 @@
     "addCallout": "Добави",
     "lastUpdated": "Последна актуализация:",
     "never": "Никога",
+    "description": {
+      "edit": "Редактиране на описанието",
+      "empty": "Все още няма описание.",
+      "placeholder": "Опишете какво знае този Virtual Contributor…",
+      "save": "Запази",
+      "cancel": "Отказ",
+      "saving": "Запазване…",
+      "saveError": "Описанието не можа да бъде запазено — опитайте отново."
+    },
     "empty": {
       "title": "Все още няма знания",
       "description": "Базата знания на този Virtual Contributor е празна."

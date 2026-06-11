@@ -1,5 +1,6 @@
 import { BookOpen, Plus, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { InlineEditMarkdown } from '@/crd/components/common/InlineEditMarkdown';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -20,6 +21,10 @@ export function VCKnowledgeBaseView({
   avatarUrl,
   avatarColor,
   description,
+  canEditDescription,
+  onSaveDescription,
+  descriptionMaxLength,
+  descriptionUpload,
   refresh,
   canAddCallout,
   onAddCallout,
@@ -99,7 +104,26 @@ export function VCKnowledgeBaseView({
         )}
       </header>
 
-      {description ? <MarkdownContent content={description} className="text-body text-foreground" /> : null}
+      {canEditDescription && onSaveDescription ? (
+        <InlineEditMarkdown
+          value={description ?? ''}
+          onSave={onSaveDescription}
+          maxLength={descriptionMaxLength}
+          labels={{
+            edit: t('knowledgeBase.description.edit'),
+            empty: t('knowledgeBase.description.empty'),
+            placeholder: t('knowledgeBase.description.placeholder'),
+            save: t('knowledgeBase.description.save'),
+            cancel: t('knowledgeBase.description.cancel'),
+            saving: t('knowledgeBase.description.saving'),
+          }}
+          onImageUpload={descriptionUpload?.onImageUpload}
+          iframeAllowedUrls={descriptionUpload?.iframeAllowedUrls}
+          onError={descriptionUpload?.onError}
+        />
+      ) : description ? (
+        <MarkdownContent content={description} className="text-body text-foreground" />
+      ) : null}
 
       {isEmpty ? (
         <div className="rounded-lg border border-dashed p-10 text-center">

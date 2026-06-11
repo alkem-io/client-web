@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { VCKnowledgeBaseView } from '@/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import { CalloutFormConnector } from '@/main/crdPages/space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '@/main/crdPages/space/callout/CalloutListConnector';
 import { VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS } from '@/main/crdPages/space/callout/calloutRestrictions';
@@ -20,25 +22,44 @@ import { useVcKnowledgeBaseData } from './useVcKnowledgeBaseData';
  * relocates the files onto the new callout on save).
  */
 export const CrdVCKnowledgeBasePage = () => {
-  const { vcId, viewProps, callouts, calloutsSetId, canCreateCallout, canReorder, calloutsLoading } =
-    useVcKnowledgeBaseData();
+  const {
+    vcId,
+    viewProps,
+    canEditDescription,
+    onSaveDescription,
+    callouts,
+    calloutsSetId,
+    canCreateCallout,
+    canReorder,
+    calloutsLoading,
+  } = useVcKnowledgeBaseData();
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
     <>
-      <VCKnowledgeBaseView
-        {...viewProps}
-        canAddCallout={canCreateCallout}
-        onAddCallout={() => setCreateOpen(true)}
-        calloutsSlot={
-          <CalloutListConnector
-            callouts={callouts}
-            calloutsSetId={calloutsSetId}
-            canReorder={canReorder}
-            loading={calloutsLoading}
+      <MarkdownUploadScope
+        storage={vcId ? { locationType: 'virtualContributor', virtualContributorId: vcId } : undefined}
+      >
+        {markdownUpload => (
+          <VCKnowledgeBaseView
+            {...viewProps}
+            canEditDescription={canEditDescription}
+            onSaveDescription={onSaveDescription}
+            descriptionMaxLength={LONG_MARKDOWN_TEXT_LENGTH}
+            descriptionUpload={markdownUpload}
+            canAddCallout={canCreateCallout}
+            onAddCallout={() => setCreateOpen(true)}
+            calloutsSlot={
+              <CalloutListConnector
+                callouts={callouts}
+                calloutsSetId={calloutsSetId}
+                canReorder={canReorder}
+                loading={calloutsLoading}
+              />
+            }
           />
-        }
-      />
+        )}
+      </MarkdownUploadScope>
 
       {canCreateCallout && vcId && (
         <StorageConfigContextProvider

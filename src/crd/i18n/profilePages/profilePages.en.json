@@ -182,6 +182,15 @@
     "addCallout": "Add",
     "lastUpdated": "Last updated:",
     "never": "Never",
+    "description": {
+      "edit": "Edit description",
+      "empty": "No description yet.",
+      "placeholder": "Describe what this Virtual Contributor knows…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveError": "Couldn't save the description — try again."
+    },
     "empty": {
       "title": "No knowledge yet",
       "description": "This Virtual Contributor's knowledge base is empty."

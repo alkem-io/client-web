@@ -182,6 +182,15 @@
     "addCallout": "Ajouter",
     "lastUpdated": "Dernière mise à jour :",
     "never": "Jamais",
+    "description": {
+      "edit": "Modifier la description",
+      "empty": "Pas encore de description.",
+      "placeholder": "Décrivez ce que sait ce Virtual Contributor…",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement…",
+      "saveError": "Impossible d’enregistrer la description — réessayez."
+    },
     "empty": {
       "title": "Pas encore de connaissances",
       "description": "La base de connaissances de ce Virtual Contributor est vide."

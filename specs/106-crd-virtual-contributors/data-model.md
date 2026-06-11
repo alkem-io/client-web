@@ -55,14 +55,16 @@ The central entity. Relevant fields already consumed by the live CRD layer:
 
 ### 2.2 Knowledge Base page (US2) — see `contracts/knowledgeBase.ts`
 
-- `VcKnowledgeBaseViewProps` — `{ loading, displayName, avatarUrl?, avatarColor, description, canEditDescription, onSaveDescription, refresh: VcKnowledgeBaseRefresh, calloutsSlot: ReactNode, isEmpty, emptyStateLabel }`
-- `VcKnowledgeBaseRefresh` — `{ canRefresh: boolean; lastUpdatedIso?: string; onRefresh: () => void; refreshing: boolean }`
+- `VcKnowledgeBaseViewProps` — `{ loading, noAccess, displayName, avatarUrl?, avatarColor, description?, canEditDescription?, onSaveDescription?: (next: string) => Promise<boolean>, descriptionMaxLength?, descriptionUpload?: MarkdownUploadProps, refresh: VcKnowledgeBaseRefresh, canAddCallout?, onAddCallout?, calloutsSlot: ReactNode, isEmpty }`
+- `VcKnowledgeBaseRefresh` — `{ canRefresh: boolean; lastUpdatedValue?: string; onRefresh: () => void; refreshing: boolean }` (`lastUpdatedValue` is pre-formatted by the integration layer)
+- **Description is markdown.** Rendered read-only (`MarkdownContent`) for viewers; for users with KB Create privilege it is edited **in place** — a pencil reveals the CRD `MarkdownEditor` (Save/Cancel; `descriptionMaxLength = LONG_MARKDOWN_TEXT_LENGTH`; image upload via `descriptionUpload`). Saved through the existing `updateVirtualContributor` mutation as `knowledgeBaseData.profile.description`. Reusable component: `src/crd/components/common/InlineEditMarkdown.tsx`.
 
 ### 2.3 Prompt Graph card (US4) — see `contracts/promptGraph.ts`
 
-- `VcPromptGraphNode` — `{ name; system: boolean; inputVariables?: string[]; prompt?: string; outputProperties: VcPromptGraphProperty[] }`
+- `VcPromptGraphNode` — `{ name; system: boolean; inputVariables?: string[]; availableInputVariables?: string[]; prompt?: string (markdown); outputProperties: VcPromptGraphProperty[] }`. `inputVariables` is the in-use subset; `availableInputVariables` is every variable available to the node (base START vars + all upstream nodes' output properties), computed in the mapper.
 - `VcPromptGraphProperty` — `{ name; type: string; optional: boolean; description: string }`
-- `VcPromptGraphCardProps` — `{ nodes, onChangeNodePrompt, onChangeProperties, onSave, onReset, dirty, status, editingEnabled, onToggleEditingEnabled?, canTogglePlatformSetting }`
+- `VcPromptGraphCardProps` — `{ nodes, onChangeNodePrompt, onChangeNodeProperties, onSave, onReset, dirty, status, editingEnabled, onToggleEditingEnabled?, canTogglePlatformSetting, toggleSaving?, labels }`
+- **Rendering**: START and END are rendered as fixed read-only **bookends** framing the node accordion (they are dropped from the editable node list and preserved verbatim on save). The prompt is edited with the CRD `MarkdownEditor`. The "Input variables" section lists **all** `availableInputVariables`; those referenced in the prompt (recomputed live from the prompt text) are highlighted **green**.
 - **Transitions**: per-node edits set `dirty`; Save → `status: saving → saved → idle` (1800 ms flash, mirroring existing cards); Reset → clears graph (`promptGraph: null`) then re-initialises. System nodes are read-only.
 
 ### 2.4 Add-VC preview (US3) — see `contracts/addVcToCommunity.ts`

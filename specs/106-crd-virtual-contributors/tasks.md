@@ -90,6 +90,7 @@
 - [X] T026 [US2] Create integration page `src/main/crdPages/topLevelPages/vcPages/knowledgeBase/CrdVCKnowledgeBasePage.tsx` and **repoint** the `/vc/:nameId/knowledge-base` route in `CrdVCRoutes.tsx` from the MUI `VCKnowledgeBaseRoute` to this CRD page.
 - [X] T027 [P] [US2] Add `knowledgeBase.*` keys (title, description, refresh, last-updated, empty state) to all 6 `contributorSettings.<lang>.json`.
 - [X] T028 [P] [US2] Add `vcKnowledgeBaseMapper.test.ts` (privilege-gated controls, empty vs populated, timestamp formatting).
+- [X] T028a [US2] In-place **markdown** description editing (parity with the legacy KB dialog's description field): add reusable `src/crd/components/common/InlineEditMarkdown.tsx` (read-only `MarkdownContent` + pencil → CRD `MarkdownEditor` with Save/Cancel, `Suspense`-wrapped); render it in `VCKnowledgeBaseView` when `canEditDescription`; surface `onSaveDescription` from `useVcKnowledgeBaseData` (→ `useKnowledgeBase.updateDescription` → `updateVirtualContributor` `knowledgeBaseData.profile.description`, error-toasted) and wire `descriptionMaxLength = LONG_MARKDOWN_TEXT_LENGTH` + image upload via `MarkdownUploadScope` from `CrdVCKnowledgeBasePage`; add `knowledgeBase.description.*` keys to all 6 `profilePages.<lang>.json`. Edit gated on KB Create privilege (`canCreateCallout`), matching MUI.
 
 **Checkpoint**: US2 independently shippable — KB is a CRD page reachable from profile + deep link.
 
@@ -126,6 +127,7 @@
 - [X] T040 [US4] Render `VCPromptGraphCard` inside `src/crd/components/virtualContributor/settings/VCSettingsTabView.tsx` when present (engine-conditional, after the existing cards).
 - [X] T041 [P] [US4] Add `promptGraph.*` keys (node labels, variables, property table, save/reset, platform toggle) to all 6 `contributorSettings.<lang>.json`.
 - [X] T042 [P] [US4] Add prompt-graph mapping unit test in `src/main/crdPages/topLevelPages/vcPages/settings/settings/__tests__/` (traversal, reset payload, read-only system nodes).
+- [X] T042a [US4] Prompt-graph fidelity refinements (legacy parity): (a) render START/END as fixed read-only **bookends** framing the node accordion — terminals dropped from the editable node list in `mapPromptGraphToNodes`, preserved **verbatim** on save in `mapNodesToPromptGraph` (also the fix for the save-time START/END drop regression); (b) humanize node names for display (`check_input` → "Check Input"); (c) edit the per-node prompt with the CRD `MarkdownEditor` (`Suspense`-wrapped, no images); (d) compute `availableInputVariables` per node in `vcSettingsMapper` (base START vars + every upstream node's output properties) and render **all** of them under "Input variables", highlighting **green** the ones referenced in the prompt — recomputed **live** from the prompt text; add `vc.promptGraph.start`/`end` keys to all 6 `contributorSettings.<lang>.json`. Extend `promptGraphMapper.test.ts` (available-variable accumulation; START/END verbatim round-trip).
 
 **Checkpoint**: US4 independently shippable — full advanced-config parity (prompt graph completes it).
 
