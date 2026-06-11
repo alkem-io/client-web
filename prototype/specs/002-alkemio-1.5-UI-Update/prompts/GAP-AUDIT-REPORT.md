@@ -1,7 +1,7 @@
 # Gap Audit Report — Prototype vs. Platform
 
-> **Date**: 2026-02-19  
-> **Method**: Systematic comparison of ALL 31 page briefs (describing the real platform) against the prototype source code AND the mega-prompt instructions.  
+> **Date**: 2026-02-19
+> **Method**: Systematic comparison of ALL 31 page briefs (describing the real platform) against the prototype source code AND the mega-prompt instructions.
 > **Finding**: 16 gaps that were NOT captured in any prompt — ranging from critical architecture issues to missing content details.
 
 ---
@@ -60,7 +60,7 @@
 | **Missing** | "B.V." after Alkemio, "Security" link, centered Alkemio logo image, "About" link |
 | **Extra** | "Docs" link (not in the brief) |
 | **Prompt says** | No mention of footer fixes anywhere |
-| **Fix** | Update Footer.tsx to match: "© 2026 Alkemio B.V." · "Terms" · "Privacy" · "Security" · Alkemio logo · "Support" · "About" · Language selector |
+| **Fix** | Update Footer.tsx to match: "Platform © 2026 Alkemio B.V." · "Terms" · "Privacy" · "Security" · Alkemio logo · "Support" · "About" · Language selector |
 
 ### H2. Space banner missing Alkemio-branded badges
 
