@@ -90,4 +90,18 @@ describe('CrdAdminGlobalRolesPage', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
     expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u1', 'GLOBAL_ADMIN');
   });
+
+  test('filtering current members narrows the list client-side without refetching', async () => {
+    render(<CrdAdminGlobalRolesPage />);
+    expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
+
+    const filter = screen.getByPlaceholderText('roleMembers.filterMembersPlaceholder');
+    await userEvent.type(filter, 'ali');
+    expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument(); // matches name
+
+    await userEvent.clear(filter);
+    await userEvent.type(filter, 'zzz');
+    expect(screen.queryByText('Alice (alice@x.io)')).toBeNull(); // filtered out
+    expect(screen.getByText('roleMembers.noResults')).toBeInTheDocument();
+  });
 });

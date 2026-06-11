@@ -79,6 +79,7 @@
   },
   "roleMembers": {
     "currentMembers": "Текущи членове",
+    "filterMembersPlaceholder": "Филтриране на членове…",
     "addMembers": "Добавяне на членове",
     "searchPlaceholder": "Търсене на потребители…",
     "add": "Добавяне",
