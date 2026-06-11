@@ -18925,6 +18925,7 @@ export const PlatformAdminOrganizationsListDocument = gql`
     query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   platformAdmin {
     organizations(first: $first, after: $after, filter: $filter) {
+      total
       organization {
         id
         account {
@@ -19879,6 +19880,7 @@ export const PlatformAdminUsersListDocument = gql`
     query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   platformAdmin {
     users(first: $first, after: $after, filter: $filter) {
+      total
       users {
         id
         account {
