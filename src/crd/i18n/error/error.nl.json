@@ -24,5 +24,25 @@
       "or": "Of",
       "returnAsGuest": "Terug naar dashboard als gast"
     }
+  },
+  "genericError": {
+    "title": "Oeps!",
+    "description": "Er ging blijkbaar iets mis: <italic>{{message}}</italic>",
+    "serverHint": "Controleer of je server ({{graphQLEndpoint}}) beschikbaar is en herlaad de pagina.",
+    "contactSupport": "Als de fout zich blijft voordoen, neem dan <contact>contact op met support</contact>.",
+    "code": "Foutcode: {{code}}",
+    "actions": {
+      "reload": "Herladen"
+    }
+  },
+  "chunkLoad": {
+    "title": "Oeps!",
+    "messages": {
+      "lazyLoad": "Er is een netwerkfout opgetreden. Probeer de pagina opnieuw te laden.",
+      "unknown": "Er is een onbekende fout opgetreden. Probeer de pagina opnieuw te laden."
+    },
+    "actions": {
+      "reload": "Herladen"
+    }
   }
 }

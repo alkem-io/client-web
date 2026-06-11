@@ -24,5 +24,25 @@
       "or": "Or",
       "returnAsGuest": "Return to dashboard as guest"
     }
+  },
+  "genericError": {
+    "title": "Ooops!",
+    "description": "Looks like something went wrong: <italic>{{message}}</italic>",
+    "serverHint": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
+    "contactSupport": "If the error persists please <contact>contact support</contact>.",
+    "code": "Error code: {{code}}",
+    "actions": {
+      "reload": "Reload"
+    }
+  },
+  "chunkLoad": {
+    "title": "Ooops!",
+    "messages": {
+      "lazyLoad": "Network error occurred. Please try reloading the page.",
+      "unknown": "An unknown error occurred. Please try reloading the page."
+    },
+    "actions": {
+      "reload": "Reload"
+    }
   }
 }

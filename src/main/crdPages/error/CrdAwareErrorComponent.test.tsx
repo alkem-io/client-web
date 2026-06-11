@@ -4,9 +4,40 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 // ---- Mocks ----
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (_ns?: string) => ({
     t: (key: string) => key,
   }),
+  Trans: ({ i18nKey }: { i18nKey: string }) => <>{i18nKey}</>,
+}));
+
+const sentryErrorMock = vi.fn();
+vi.mock('@/core/logging/sentry/log', () => ({
+  error: (...args: unknown[]) => sentryErrorMock(...args),
+  TagCategoryValues: { UI: 'UI' },
+}));
+
+vi.mock('@/main/constants/endpoints', () => ({
+  privateGraphQLEndpoint: 'http://localhost/graphql',
+}));
+
+vi.mock('@/crd/components/error/CrdErrorPage', () => ({
+  CrdErrorPage: ({
+    title,
+    reloadLabel,
+    onReload,
+  }: {
+    title: string;
+    description: React.ReactNode;
+    reloadLabel: string;
+    onReload: () => void;
+  }) => (
+    <div data-testid="crd-error-page">
+      <h1>{title}</h1>
+      <button type="button" onClick={onReload} data-testid="reload">
+        {reloadLabel}
+      </button>
+    </div>
+  ),
 }));
 
 const navigateMock = vi.fn();
@@ -104,6 +135,7 @@ describe('CrdAwareErrorComponent', () => {
     usePageTitleMock.mockReset();
     useCrdEnabledMock.mockReset();
     hasInAppHistoryMock.mockReset();
+    sentryErrorMock.mockReset();
   });
 
   afterEach(() => {
@@ -243,5 +275,39 @@ describe('CrdAwareErrorComponent', () => {
     screen.getByTestId('go-back').click();
 
     expect(navigateMock).toHaveBeenCalledWith(-1);
+  });
+
+  test('renders CRD generic error page for a generic error on a CRD route when toggle is on', () => {
+    useCrdEnabledMock.mockReturnValue(true);
+    hasInAppHistoryMock.mockReturnValue(false);
+
+    render(<CrdAwareErrorComponent pathname="/welcome-space" error={new Error('boom')} hasError={true} />);
+
+    expect(screen.getByTestId('crd-layout-wrapper')).toBeInTheDocument();
+    expect(screen.getByTestId('crd-error-page')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('genericError.title');
+    expect(usePageTitleMock).toHaveBeenCalledWith('genericError.title');
+    expect(sentryErrorMock).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('mui-layout')).not.toBeInTheDocument();
+  });
+
+  test('renders MUI fallback for a generic error when current pathname is NOT a CRD route', () => {
+    useCrdEnabledMock.mockReturnValue(true);
+    hasInAppHistoryMock.mockReturnValue(false);
+
+    render(<CrdAwareErrorComponent pathname="/admin" error={new Error('boom')} hasError={true} />);
+
+    expect(screen.queryByTestId('crd-error-page')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+  });
+
+  test('renders MUI fallback for a generic error when CRD toggle is off', () => {
+    useCrdEnabledMock.mockReturnValue(false);
+    hasInAppHistoryMock.mockReturnValue(false);
+
+    render(<CrdAwareErrorComponent pathname="/welcome-space" error={new Error('boom')} hasError={true} />);
+
+    expect(screen.queryByTestId('crd-error-page')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
   });
 });

@@ -27,12 +27,27 @@ How error handling is wired today (shared infrastructure, no behavioural change 
 ## Scope of this delivery
 
 This specification captures the **full feature** (P1–P4). The PR that accompanies this
-spec delivers **P1 only** (the CRD 404 / Not Found page, its dispatcher branch, and the
-catch-all wiring) as a coherent, self-contained, fully-tested slice — the highest-value
-gap, where a CRD user hitting a bad URL drops into MUI chrome. P2 (generic 500 / unknown
-error), P3 (lazy chunk-load dialog), and P4 (cleanup of dead MUI auth pages) remain as
-follow-up work, documented here so the source-of-truth stays complete. See the
-**Assumptions** and **Clarifications** sections for the scoping rationale.
+spec delivers **P1, P2 and P3** — the complete set of error surfaces a CRD user can hit,
+so a CRD user never falls back into MUI chrome in any error flow:
+
+- **P1** — CRD 404 / Not Found page, its dispatcher branch, and the catch-all wiring.
+- **P1 follow-on (FR-018)** — the ancestor **redirect dialog** is now CRD whenever the
+  page beneath it is CRD. P1 made the 404 page CRD but the redirect dialog
+  (`AncestorRedirectDispatcher`) was still gated to the 403 case only, so opening a
+  private subspace (which resolves to `NotFoundError({ closestAncestor })`) showed a CRD
+  404 page with the **MUI** countdown dialog on top. The dialog gate is widened to
+  `crdEnabled && isCrdRoute(pathname)`.
+- **P2** — CRD generic / 500 / unknown error page, for **both** the in-router boundary
+  and the **top-level Sentry boundary** (the latter renders above the router/Apollo, so a
+  bare CRD page wrapped in `.crd-root`, deciding CRD-vs-MUI from `useCrdEnabled()`). The
+  `crd-error` English namespace is now eagerly loaded so a boot-time crash still renders
+  CRD copy.
+- **P3** — CRD lazy chunk-load dialog, gated CRD-vs-MUI in `root.tsx`.
+
+Only **P4** (cleanup of dead MUI auth pages) remains as follow-up work, documented here so
+the source-of-truth stays complete. Legacy (design version `1`) users keep the exact MUI
+experience on every surface — the MUI files stay and are only bypassed for CRD users. See
+the **Assumptions** and **Clarifications** sections for the scoping rationale.
 
 ## Clarifications
 
@@ -89,6 +104,7 @@ presentational page.
 5. **Given** a not-found condition occurs on a non-CRD route (e.g. `/admin`) while CRD is enabled, **When** the dispatcher resolves the branch, **Then** the MUI fallback is rendered (CRD chrome is only used for CRD routes), exactly as the existing 403 behaviour.
 6. **Given** any not-found surface is shown (CRD or MUI), **When** it renders, **Then** Sentry receives a 404 record equivalent to today's `log404NotFound()`, preserving observability parity.
 7. **Given** the CRD 404 page is shown, **When** it renders, **Then** the browser tab title is set to the localized "Page not found" title via `usePageTitle`.
+8. **Given** CRD is enabled and the user opens a private subspace they cannot access (resolving to `NotFoundError` with a `closestAncestor`), **When** the CRD 404 page renders, **Then** the ancestor redirect (countdown) dialog on top is the **CRD** dialog, not the MUI one — the page and the dialog are both CRD (FR-018).
 
 ---
 
@@ -190,9 +206,10 @@ unreferenced; build + tests pass after removal.
 - **FR-014**: i18n key parity for the `crd-error` namespace MUST be enforced by an automated parity test covering the new `notFound.*` keys across all six locales.
 - **FR-014a**: The CRD 404 presentational component MUST expose an optional `search` slot (rendered only when provided) so a future story can wire a CRD search affordance from the integration layer without altering the presentational contract; P1 does not wire it.
 - **FR-014b**: Both not-found entry points (the boundary `isNotFound` branch and the `path="*"` catch-all) MUST render through a single shared CRD integration wrapper that performs the Sentry `log404NotFound()` side effect exactly once, ensuring identical presentation and no double-logging.
-- **FR-015** *(P2, deferred)*: The system MUST render a CRD generic error page (reload action; dev-only stack behind a prop; optional numeric code) for non-404/non-403 errors when CRD is enabled, both for the in-router boundary and the top-level Sentry boundary, the latter deciding CRD-vs-MUI from `useCrdEnabled()` (localStorage, router-independent).
-- **FR-016** *(P3, deferred)*: The lazy chunk-load global dialog MUST render via a CRD dialog primitive when CRD is enabled, reusing `GlobalErrorContext` / `getGlobalErrorSetter` unchanged and swapping only the presentational dialog.
+- **FR-015** *(P2)*: The system MUST render a CRD generic error page (reload action; dev-only stack behind a prop; optional numeric code) for non-404/non-403 errors when CRD is enabled, both for the in-router boundary and the top-level Sentry boundary, the latter deciding CRD-vs-MUI from `useCrdEnabled()` (localStorage, router-independent). Because the top-level boundary renders above the router/Apollo/auth providers, its CRD fallback MUST be a bare presentational page wrapped in its own `.crd-root` (no `CrdLayoutWrapper`, no router/Apollo hooks) and offer reload only. The `crd-error` English namespace MUST be eagerly loaded so a crash at boot still renders CRD copy.
+- **FR-016** *(P3)*: The lazy chunk-load global dialog MUST render via a CRD dialog primitive when CRD is enabled, reusing `GlobalErrorContext` / `getGlobalErrorSetter` unchanged and swapping only the presentational dialog, gated CRD-vs-MUI in `root.tsx`.
 - **FR-017** *(P4, deferred)*: Confirmed-unreferenced legacy MUI auth/error pages (`LoginPage`, `VerificationPage`, `RecoveryPage`, `EmailVerificationRequiredPage`, `ErrorRoute`) MUST be removed only after verification; `ErrorDisplay` and `LinesFitterErrorBoundary` MUST be left in place to migrate with their hosts.
+- **FR-018** *(P1 follow-on)*: When a CRD error page is shown on a CRD route (404 via `CrdNotFoundPage` or 403 via `CrdForbiddenPage`) and the boundary carries a `closestAncestor`, the ancestor redirect (countdown) dialog MUST render the **CRD** dialog, never the MUI one — a CRD page MUST NOT carry a MUI dialog on top. The dispatcher (`AncestorRedirectDispatcher`) only mounts when a `closestAncestor` is present (exclusively `NotFoundError` / `NotAuthorizedError`), and both render a CRD page under `crdEnabled && isCrdRoute(pathname)`, so the dialog gate MUST be `crdEnabled && isCrdRoute(pathname)` (the prior `isNotAuthorized === true` gate is removed). When CRD is disabled or the route is non-CRD, the MUI dialog renders, unchanged.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -212,11 +229,12 @@ unreferenced; build + tests pass after removal.
 - **SC-003**: Sentry continues to receive a 404 record for every not-found surface shown, with no increase or decrease in 404-log volume attributable to this change (observability parity, no double-logging).
 - **SC-004**: 100% i18n key parity for the new `notFound.*` block across all six locales (en, nl, es, bg, de, fr), enforced by an automated parity test.
 - **SC-005**: The dispatcher's not-found behaviour is fully covered by unit tests (CRD route + CRD enabled → CRD page; non-CRD route or CRD disabled → MUI; undefined pathname → MUI; go-back gated on history), and the full repo gates (`pnpm lint`, `pnpm vitest run`) pass clean.
-- **SC-006**: The PR clearly states which roadmap phases it delivers (P1) versus defers (P2–P4), keeping the migration roadmap auditable.
+- **SC-006**: The PR clearly states which roadmap phases it delivers (P1 + redirect-dialog follow-on + P2 + P3) versus defers (P4 only), keeping the migration roadmap auditable.
+- **SC-007**: A CRD user encounters **zero** MUI chrome across **every** error surface — 404, 403, the ancestor redirect dialog, generic/500 (in-router and top-level Sentry boundary), and the lazy chunk-load dialog. Enforced by a grep gate (no `@mui/*` / `@emotion/*` imports in `src/crd/components/error/*` or `src/main/crdPages/error/*`) plus unit coverage on every dispatcher/gate.
 
 ## Assumptions
 
-- **A-001**: This delivery scopes to **P1 only** (CRD 404 / Not Found). The story explicitly permits delivering "the highest-value, self-contained slice (P1)" when shipping all of P1–P4 in one PR would be unreasonably large or risky; P1 is independently valuable and testable, and the harder router-less Sentry work (P2) is deliberately deferred to control risk.
+- **A-001**: This delivery covers **P1 + the redirect-dialog follow-on (FR-018) + P2 + P3** — every error surface a CRD user can hit. P1 originally shipped alone, but making the 404 page CRD surfaced a CRD-page-with-MUI-dialog regression (FR-018) and left the generic/chunk-load surfaces still in MUI; the full sweep closes all of them so the "a CRD user never falls back into MUI chrome" goal actually holds. Only **P4** (deleting confirmed-dead MUI auth pages) remains deferred, as it is pure cleanup gated on verification. The top-level Sentry boundary (P2b) is the highest-risk piece — it renders above the router — and is handled with a bare `.crd-root` page that reads only `useCrdEnabled()` (localStorage).
 - **A-002**: The default design version is `2` (CRD); anyone without an explicit preference lands on CRD. The P1 change therefore affects the majority of users immediately.
 - **A-003**: `CrdForbiddenPage` is the canonical pattern to mirror (Tailwind, `lucide-react`, props-only, `CrdLayoutWrapper` integration, `crd-error` namespace, `usePageTitle`, `hasInAppHistory`, `navigate`). The CRD 404 follows it for visual and structural consistency.
 - **A-004**: The optional "search" affordance from the MUI `Error404` (the search bar) is **not** ported in P1: the CRD search bar is a business-logic-bound component that cannot live in the props-only `src/crd/` layer, and the MUI `SearchBar` would reintroduce MUI chrome. P1 ships "Go to home" + conditional "Go back" (parity with `CrdForbiddenPage`); a future search affordance can be added as a prop wired from the integration layer if desired. Recorded as a clarification.

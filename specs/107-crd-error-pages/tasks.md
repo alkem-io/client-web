@@ -10,12 +10,12 @@ description: "Task list for 107-crd-error-pages (story #9852)"
 
 **Tests**: REQUIRED — the spec and the story Verification section mandate `pnpm lint` + `pnpm vitest run` and explicitly call for extending the dispatcher tests. Tests are written test-first where feasible.
 
-**Scope of this PR**: **P1 (US1) ships now.** US2 (P2), US3 (P3), US4 (P4) are captured below as **DEFERRED** phases (no tasks executed in this PR) so the task list stays a complete record of the feature.
+**Scope of this PR**: **P1 (US1) + redirect-dialog follow-on (FR-018) + P2 (US2) + P3 (US3) ship now.** Only **US4 (P4)** — deleting confirmed-dead MUI auth pages — remains deferred (gated on verification).
 
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: US1 = CRD 404 (this PR); US2/US3/US4 deferred
+- **[Story]**: US1 = CRD 404, FR-018 = redirect dialog, US2 = generic error, US3 = chunk dialog (all this PR); US4 deferred
 
 ---
 
@@ -73,21 +73,30 @@ description: "Task list for 107-crd-error-pages (story #9852)"
 
 ---
 
-## Phase 5: User Story 2 - CRD generic error page (Priority: P2) — DEFERRED
+## Phase 4b: Redirect dialog follow-on (FR-018)
 
-**Status**: Specified (FR-015), NOT implemented in this PR. Tracked as follow-up.
+**Status**: Implemented in this PR. Closes the CRD-page-with-MUI-dialog regression P1 introduced.
 
-- [ ] T016 [US2] *(deferred)* `CrdErrorPage` under `src/crd/components/error/` (message, optional numeric code, reload action, dev-only stack behind a prop) + `generic.*` i18n.
-- [ ] T017 [US2] *(deferred)* Wire the in-router generic branch via `CrdAwareErrorComponent` when CRD.
-- [ ] T018 [US2] *(deferred)* Top-level Sentry fallback (`SentryErrorBoundaryProvider`) picks CRD vs MUI from `useCrdEnabled()` (localStorage, router-independent).
+- [X] T015a [FR-018] Widen `AncestorRedirectDispatcher` gate to `crdEnabled && isCrdRoute(pathname)`; remove the obsolete `isNotAuthorized` prop + doc; stop passing it from `ErrorBoundary`.
+- [X] T015b [FR-018] Update `AncestorRedirectDispatcher.test.tsx`: assert CRD dialog for the NotFound+closestAncestor (private subspace) case; keep toggle-off / non-CRD-route → MUI.
 
 ---
 
-## Phase 6: User Story 3 - CRD lazy chunk-load dialog (Priority: P3) — DEFERRED
+## Phase 5: User Story 2 - CRD generic error page (Priority: P2)
 
-**Status**: Specified (FR-016), NOT implemented in this PR.
+**Status**: Implemented in this PR (FR-015).
 
-- [ ] T019 [US3] *(deferred)* Port `GlobalErrorDialog` to a CRD dialog primitive, gated on `useCrdEnabled()`, reusing `GlobalErrorContext`/`getGlobalErrorSetter` unchanged.
+- [X] T016 [US2] `CrdErrorPage` under `src/crd/components/error/` (props-only: message, optional `code`, reload action, dev-only `details` stack, optional `contactSlot`) + `genericError.*` i18n + test.
+- [X] T017 [US2] Shared `CrdGenericErrorContent` body; wire the in-router generic branch (`CrdGenericErrorBranch`) via `CrdAwareErrorComponent` when CRD (logs once to Sentry, sets page title); update `CrdAwareErrorComponent.test.tsx`.
+- [X] T018 [US2] Top-level Sentry fallback: `CrdTopLevelErrorPage` (bare `.crd-root`, no router/Apollo) selected by `SentryErrorBoundaryProvider`’s `TopLevelErrorFallback` from `useCrdEnabled()`; eager-load `crd-error` EN in `src/core/i18n/config.ts`.
+
+---
+
+## Phase 6: User Story 3 - CRD lazy chunk-load dialog (Priority: P3)
+
+**Status**: Implemented in this PR (FR-016).
+
+- [X] T019 [US3] `CrdErrorDialog` presentational (+test); `CrdGlobalErrorDialog` integration via `useGlobalError()`/`LazyLoadError`; `GlobalErrorDialogGate` in `root.tsx` picks CRD vs MUI; `chunkLoad.*` i18n.
 
 ---
 

@@ -24,5 +24,25 @@
       "or": "O",
       "returnAsGuest": "Volver al panel como invitado"
     }
+  },
+  "genericError": {
+    "title": "¡Vaya!",
+    "description": "Parece que algo salió mal: <italic>{{message}}</italic>",
+    "serverHint": "Comprueba que tu servidor ({{graphQLEndpoint}}) esté disponible y vuelve a cargar la página.",
+    "contactSupport": "Si el error persiste, <contact>contacta con soporte</contact>.",
+    "code": "Código de error: {{code}}",
+    "actions": {
+      "reload": "Recargar"
+    }
+  },
+  "chunkLoad": {
+    "title": "¡Vaya!",
+    "messages": {
+      "lazyLoad": "Se produjo un error de red. Intenta volver a cargar la página.",
+      "unknown": "Se produjo un error desconocido. Intenta volver a cargar la página."
+    },
+    "actions": {
+      "reload": "Recargar"
+    }
   }
 }

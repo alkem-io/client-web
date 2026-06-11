@@ -59,4 +59,20 @@ describe('crd-error i18n parity', () => {
     expect(enKeys.has('notFound.actions.goHome')).toBe(true);
     expect(enKeys.has('notFound.actions.goBack')).toBe(true);
   });
+
+  it('declares the genericError.* keys in en.json', () => {
+    expect(enKeys.has('genericError.title')).toBe(true);
+    expect(enKeys.has('genericError.description')).toBe(true);
+    expect(enKeys.has('genericError.serverHint')).toBe(true);
+    expect(enKeys.has('genericError.contactSupport')).toBe(true);
+    expect(enKeys.has('genericError.code')).toBe(true);
+    expect(enKeys.has('genericError.actions.reload')).toBe(true);
+  });
+
+  it('declares the chunkLoad.* keys in en.json', () => {
+    expect(enKeys.has('chunkLoad.title')).toBe(true);
+    expect(enKeys.has('chunkLoad.messages.lazyLoad')).toBe(true);
+    expect(enKeys.has('chunkLoad.messages.unknown')).toBe(true);
+    expect(enKeys.has('chunkLoad.actions.reload')).toBe(true);
+  });
 });
