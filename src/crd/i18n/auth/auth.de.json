@@ -6,7 +6,8 @@
     "title": "Anmelden",
     "forgotPassword": "Passwort vergessen?",
     "noAccount": "Kein Konto?",
-    "signUp": "Registrieren"
+    "signUp": "Registrieren",
+    "preparing": "Sichere Anmeldung wird vorbereitet…"
   },
   "signUp": {
     "title": "Registrieren",

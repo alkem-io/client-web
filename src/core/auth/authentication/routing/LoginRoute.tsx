@@ -9,7 +9,6 @@ import LoginSuccessPage from '../pages/LoginSuccessPage';
 export const LoginRoute: FC = () => {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
-
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
 
   useEffect(() => {

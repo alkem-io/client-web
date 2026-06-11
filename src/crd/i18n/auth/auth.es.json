@@ -6,7 +6,8 @@
     "title": "Iniciar sesión",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "noAccount": "¿No tienes cuenta?",
-    "signUp": "Regístrate"
+    "signUp": "Regístrate",
+    "preparing": "Preparando inicio de sesión seguro…"
   },
   "signUp": {
     "title": "Regístrate",
