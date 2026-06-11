@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { FieldFooter } from '@/crd/components/common/FieldFooter';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/crd/primitives/accordion';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Switch } from '@/crd/primitives/switch';
-import { Textarea } from '@/crd/primitives/textarea';
 import type { VcPromptGraphCardProps, VcPromptGraphNode, VcPromptGraphProperty } from './VCPromptGraphCard.types';
 
 /**
@@ -99,6 +99,16 @@ export function VCPromptGraphCard({
   );
 }
 
+/** snake_case / camelCase node identifier → human Title Case (e.g. `check_input` → "Check Input"). */
+function humanizeNodeName(name: string) {
+  return name
+    .replace(/_/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
 function NodeItem({
   node,
   onChangePrompt,
@@ -110,12 +120,19 @@ function NodeItem({
 }) {
   const { t } = useTranslation('crd-contributorSettings');
 
+  const label =
+    node.name === 'START'
+      ? t('vc.promptGraph.start')
+      : node.name === 'END'
+        ? t('vc.promptGraph.end')
+        : humanizeNodeName(node.name);
+
   return (
     <AccordionItem value={node.name}>
       <AccordionTrigger className="text-body-emphasis">
         <span className="flex items-center gap-2">
           {node.system && <Lock aria-hidden="true" className="size-3.5 text-muted-foreground" />}
-          {node.name}
+          {label}
         </span>
       </AccordionTrigger>
       <AccordionContent className="space-y-4">
@@ -139,11 +156,11 @@ function NodeItem({
         {!node.system && (
           <div className="flex flex-col gap-1.5">
             <span className="uppercase text-label text-muted-foreground">{t('vc.promptGraph.prompt')}</span>
-            <Textarea
+            <MarkdownEditor
               value={node.prompt ?? ''}
-              onChange={e => onChangePrompt(e.target.value)}
-              rows={8}
-              aria-label={t('vc.promptGraph.prompt')}
+              onChange={onChangePrompt}
+              placeholder={t('vc.promptGraph.prompt')}
+              hideImageOptions={true}
             />
           </div>
         )}

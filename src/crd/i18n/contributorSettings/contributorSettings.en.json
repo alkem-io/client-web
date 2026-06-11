@@ -60,7 +60,8 @@
     },
     "chooseCommunity": {
       "intro": "Add your Virtual Contributor to a community, or skip for now.",
-      "skip": "Skip for now"
+      "skip": "Skip for now",
+      "errorMessage": "Couldn't add to the community — try again."
     },
     "tryVc": {
       "title": "{{name}} is ready!",
@@ -69,7 +70,8 @@
       "done": "Done"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' created successfully"
+      "successMessage": "Virtual Contributor '{{name}}' created successfully",
+      "errorMessage": "Couldn't create the Virtual Contributor — try again."
     }
   },
   "breadcrumbs": {
@@ -601,6 +603,8 @@
       "empty": "This Virtual Contributor has no prompt graph.",
       "editingEnabled": "Editing enabled",
       "inputVariables": "Input variables",
+      "start": "Start",
+      "end": "End",
       "prompt": "Prompt",
       "reset": "Reset",
       "resetConfirm": {

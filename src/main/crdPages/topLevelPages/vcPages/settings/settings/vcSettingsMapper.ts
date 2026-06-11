@@ -20,7 +20,7 @@ import type {
 } from '@/domain/community/virtualContributorAdmin/components/promptGraph/types';
 import {
   prepareGraph,
-  transformNodesMapToArray,
+  transformNodeToPromptGraphNode,
 } from '@/domain/community/virtualContributorAdmin/components/promptGraph/utils';
 
 /**
@@ -112,8 +112,10 @@ export const OPENAI_MODEL_OPTIONS = Object.values(OpenAiModel).map(value => ({ v
 
 /**
  * Maps the server `PromptGraph` to the CRD card's ordered node list. Uses the
- * legacy `prepareGraph` traversal for START→END ordering, drops the terminal
- * START/END markers, and exposes only the editable shape.
+ * legacy `prepareGraph` traversal for START→END ordering, and keeps the terminal
+ * START/END markers as read-only `system` nodes so the editor renders them as
+ * fixed Start/End steps (parity with the legacy MUI editor). User nodes are the
+ * only editable entries.
  */
 export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefined): VcPromptGraphNode[] => {
   if (!promptGraph?.nodes?.length) return [];
@@ -128,11 +130,13 @@ export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefine
   const result: VcPromptGraphNode[] = [];
 
   const push = (name: string, real: LegacyPromptGraphNode) => {
-    if (!name || name === 'START' || name === 'END' || seen.has(name)) return;
+    if (!name || seen.has(name)) return;
     seen.add(name);
+    const isTerminal = name === 'START' || name === 'END';
     result.push({
       name,
-      system: real.system ?? false,
+      // Terminals are always read-only regardless of their stored flag.
+      system: isTerminal || (real.system ?? false),
       inputVariables: real.input_variables ?? [],
       prompt: real.prompt ?? '',
       outputProperties: (real.output?.properties ?? []).map(
@@ -160,20 +164,32 @@ export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefine
 
 /**
  * Rebuilds the server `promptGraph.nodes` array from the edited CRD nodes,
- * preserving the rest of the original graph (edges / state / start / end).
+ * merging edits back over the original array in place — mirroring the legacy MUI
+ * editor. Only editable user nodes are rebuilt; system nodes and the terminal
+ * START/END markers are preserved verbatim from the original graph (they are
+ * read-only in the editor and may carry fields the CRD shape doesn't model).
+ * Replacing the whole array (the previous behaviour) silently deleted START/END
+ * while the edges still referenced them, corrupting the graph topology.
  */
 export const mapNodesToPromptGraph = (nodes: VcPromptGraphNode[], original: PromptGraph | null | undefined) => {
-  const nodesMap: Record<string, FormNodeValue> = {};
+  const edited: Record<string, FormNodeValue> = {};
   for (const node of nodes) {
-    nodesMap[node.name] = {
+    edited[node.name] = {
       input_variables: node.inputVariables ?? [],
       prompt: node.prompt ?? '',
       output: { properties: node.outputProperties },
       system: node.system,
     };
   }
+
+  const mergedNodes = (original?.nodes ?? []).map(node => {
+    const name = node.name;
+    const editable = Boolean(name && edited[name] && !node.system && name !== 'START' && name !== 'END');
+    return editable ? transformNodeToPromptGraphNode(name as string, edited[name as string]) : node;
+  });
+
   return {
     ...(original ?? { nodes: [], edges: [] }),
-    nodes: transformNodesMapToArray(nodesMap),
+    nodes: mergedNodes,
   };
 };

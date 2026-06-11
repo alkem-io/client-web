@@ -60,7 +60,8 @@
     },
     "chooseCommunity": {
       "intro": "Добавете вашия Virtual Contributor към общност или пропуснете засега.",
-      "skip": "Пропусни засега"
+      "skip": "Пропусни засега",
+      "errorMessage": "Неуспешно добавяне към общността — опитайте отново."
     },
     "tryVc": {
       "title": "{{name}} е готов!",
@@ -69,7 +70,8 @@
       "done": "Готово"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' беше създаден успешно"
+      "successMessage": "Virtual Contributor '{{name}}' беше създаден успешно",
+      "errorMessage": "Virtual Contributor не можа да бъде създаден — опитайте отново."
     }
   },
   "breadcrumbs": {
@@ -582,6 +584,8 @@
       "empty": "Този Virtual Contributor няма граф на промптове.",
       "editingEnabled": "Редактирането е включено",
       "inputVariables": "Входни променливи",
+      "start": "Начало",
+      "end": "Край",
       "prompt": "Промпт",
       "reset": "Нулиране",
       "resetConfirm": {

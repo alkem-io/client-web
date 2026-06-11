@@ -145,6 +145,10 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       }
       return vc;
     } catch {
+      // Surface the failure instead of swallowing it — each caller is
+      // responsible for keeping the user on a recoverable, input-preserving
+      // step (never closing the dialog or stranding the spinner).
+      notify(t('wizard.createdVirtualContributor.errorMessage'), 'error');
       return undefined;
     }
   };
@@ -266,8 +270,14 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
         ...(externalConfig.assistantId ? { assistantId: externalConfig.assistantId } : {}),
       },
     });
-    await uploadAvatar(vc?.profile?.avatar?.id);
-    if (vc?.profile?.url) navigate(vc.profile.url);
+    if (!vc?.id) {
+      // Creation failed (error already surfaced by executeVcCreation). Stay on
+      // the provider step so the entered API key / assistant config is kept.
+      setStep('externalProvider');
+      return;
+    }
+    await uploadAvatar(vc.profile?.avatar?.id);
+    if (vc.profile?.url) navigate(vc.profile.url);
     else onExit();
   };
 
@@ -278,9 +288,17 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       return;
     }
     setStep('loadingStep');
-    const added = await addVcToCommunity(createdVc.id, spaceId);
-    if (added && createdVc.profileUrl) navigate(createdVc.profileUrl);
-    else setStep('tryVcInfo');
+    try {
+      const added = await addVcToCommunity(createdVc.id, spaceId);
+      if (added && createdVc.profileUrl) navigate(createdVc.profileUrl);
+      else setStep('tryVcInfo');
+    } catch {
+      // A failed role-set lookup / assignment must not strand the user on the
+      // loading spinner — surface the error and fall back to the success step
+      // (the VC was created; only the community add failed).
+      notify(t('wizard.chooseCommunity.errorMessage'), 'error');
+      setStep('tryVcInfo');
+    }
   };
 
   const onBack = () => setStep('initial');

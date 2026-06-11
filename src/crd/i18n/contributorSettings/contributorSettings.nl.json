@@ -60,7 +60,8 @@
     },
     "chooseCommunity": {
       "intro": "Voeg je Virtual Contributor toe aan een community, of sla dit voorlopig over.",
-      "skip": "Voorlopig overslaan"
+      "skip": "Voorlopig overslaan",
+      "errorMessage": "Kon niet aan de community worden toegevoegd — probeer het opnieuw."
     },
     "tryVc": {
       "title": "{{name}} is klaar!",
@@ -69,7 +70,8 @@
       "done": "Klaar"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt"
+      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt",
+      "errorMessage": "Kon de Virtual Contributor niet aanmaken — probeer het opnieuw."
     }
   },
   "breadcrumbs": {
@@ -581,6 +583,8 @@
       "empty": "Deze Virtual Contributor heeft geen promptgrafiek.",
       "editingEnabled": "Bewerken ingeschakeld",
       "inputVariables": "Invoervariabelen",
+      "start": "Start",
+      "end": "Einde",
       "prompt": "Prompt",
       "reset": "Opnieuw instellen",
       "resetConfirm": {
