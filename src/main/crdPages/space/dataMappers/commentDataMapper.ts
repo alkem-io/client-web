@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentData, CommentReaction } from '@/crd/components/comment/types';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -39,7 +39,7 @@ export function mapRoomToCommentData(
         name: message.sender?.profile?.displayName ?? 'Unknown',
         avatarUrl: message.sender?.profile?.avatar?.uri,
         profileUrl: message.sender?.profile?.url,
-        isVirtualContributor: message.sender?.__typename === 'VirtualContributor',
+        isVirtualContributor: message.sender?.type === ActorType.VirtualContributor,
       },
       content: message.message,
       timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),

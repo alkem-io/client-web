@@ -390,9 +390,13 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
 
   const onToggleEditingEnabled = async (next: boolean) => {
     if (!vcId) return;
-    await updatePlatformSettings({
-      variables: { settingsData: { virtualContributorID: vcId, settings: { promptGraphEditingEnabled: next } } },
-    });
+    try {
+      await updatePlatformSettings({
+        variables: { settingsData: { virtualContributorID: vcId, settings: { promptGraphEditingEnabled: next } } },
+      });
+    } catch {
+      onCommitError?.();
+    }
   };
 
   return {

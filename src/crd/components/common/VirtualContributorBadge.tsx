@@ -16,7 +16,7 @@ export function VirtualContributorBadge({ label, size = 'sm', className }: Virtu
 
   return (
     <Badge variant="secondary" className={cn('text-badge gap-1 px-1.5 py-0', size === 'sm' && 'h-[18px]', className)}>
-      <Bot aria-hidden="true" />
+      <Bot aria-hidden="true" className="size-3.5" />
       {text}
     </Badge>
   );

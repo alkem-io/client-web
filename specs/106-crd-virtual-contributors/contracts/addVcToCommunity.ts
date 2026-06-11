@@ -26,6 +26,7 @@ export type VirtualContributorPreviewProps = {
   onBack: () => void; // return to the list
   onAction: () => void; // add (account) or proceed to invite (library)
   actionLabel: string; // localized 'Add' | 'Invite'
+  actionBusy?: boolean; // true while the add/invite mutation is in flight (spinner + aria-busy)
 };
 
 // Additive extension to the EXISTING VirtualContributorInviteDialog props so selection

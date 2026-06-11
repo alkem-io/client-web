@@ -158,6 +158,14 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
 
+### No `__typename` discrimination
+
+Do **not** branch on `__typename` in CRD code (`src/crd/**`, `src/main/crdPages/**`) or in the data mappers/models that feed it. Prefer an explicit, schema-defined discriminator field instead — e.g. `actor.type === ActorType.VirtualContributor`, a `status` enum, a `kind` field.
+
+**Why:** `__typename` is the *runtime object type*, which is frequently NOT what you expect. A field typed as a concrete object type (e.g. `Message.sender: Actor`) always has `__typename === 'Actor'`, so a check like `sender.__typename === 'VirtualContributor'` is silently *always false* — it type-checks, passes review, and fails only at runtime. (This exact bug shipped once: the comment VC badge never rendered. The fix was to select `Actor.type` and compare against `ActorType`.) `__typename` is also fragile across schema refactors (object type → interface/union and back) in a way an explicit enum is not.
+
+If there is genuinely no schema field to discriminate on and `__typename` is the only option, it is allowed **only** with a comment that (a) states why no proper discriminator exists and (b) names the exact `__typename` values the code relies on, so a schema change that breaks them is caught in review.
+
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
