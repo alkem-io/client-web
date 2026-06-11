@@ -13,6 +13,8 @@ const baseProps = {
   roleLabel: 'Global Admin',
   members: [{ id: 'u1', displayName: 'Alice', email: 'alice@x.io' }],
   availableUsers: [{ id: 'u2', displayName: 'Bob', email: 'bob@x.io' }],
+  memberSearchTerm: '',
+  onMemberSearchTermChange: vi.fn(),
   searchTerm: '',
   onSearchTermChange: vi.fn(),
   onAdd: vi.fn(),
@@ -43,11 +45,30 @@ describe('RoleMembersEditor', () => {
     expect(onRemove).toHaveBeenCalledWith('u1');
   });
 
-  test('search input fires onSearchTermChange', async () => {
+  test('available-users search input fires onSearchTermChange', async () => {
     const onSearchTermChange = vi.fn();
     render(<RoleMembersEditor {...baseProps} onSearchTermChange={onSearchTermChange} />);
-    await userEvent.type(screen.getByRole('searchbox'), 'b');
+    await userEvent.type(screen.getByPlaceholderText('roleMembers.searchPlaceholder'), 'b');
     expect(onSearchTermChange).toHaveBeenCalledWith('b');
+  });
+
+  test('members filter input fires onMemberSearchTermChange', async () => {
+    const onMemberSearchTermChange = vi.fn();
+    render(<RoleMembersEditor {...baseProps} onMemberSearchTermChange={onMemberSearchTermChange} />);
+    await userEvent.type(screen.getByPlaceholderText('roleMembers.filterMembersPlaceholder'), 'a');
+    expect(onMemberSearchTermChange).toHaveBeenCalledWith('a');
+  });
+
+  test('hides the members filter when there are no members and no active search', () => {
+    render(<RoleMembersEditor {...baseProps} members={[]} />);
+    expect(screen.queryByPlaceholderText('roleMembers.filterMembersPlaceholder')).toBeNull();
+  });
+
+  test('keeps the members filter visible when a search matches nothing', () => {
+    render(<RoleMembersEditor {...baseProps} members={[]} memberSearchTerm="zzz" />);
+    expect(screen.getByPlaceholderText('roleMembers.filterMembersPlaceholder')).toBeInTheDocument();
+    // The members column shows "no results", not "no members".
+    expect(screen.getByText('roleMembers.noResults')).toBeInTheDocument();
   });
 
   test('shows empty states when there are no members / no results', () => {
