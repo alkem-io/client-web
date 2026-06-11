@@ -33,16 +33,24 @@ const cases: Array<[string, Json]> = [
 ];
 
 describe('crd-error i18n parity', () => {
-  it.each(cases)('%s has every key that en.json declares', (lang, langJson) => {
+  it.each(cases)('%s has exactly the keys that en.json declares', (lang, langJson) => {
     const langKeys = new Set(collectKeyPaths(langJson));
     const missing: string[] = [];
+    const extra: string[] = [];
     for (const k of enKeys) {
       if (!langKeys.has(k)) missing.push(k);
     }
-    if (missing.length > 0) {
-      throw new Error(`Missing keys in ${lang}: \n  - ${missing.join('\n  - ')}`);
+    for (const k of langKeys) {
+      if (!enKeys.has(k)) extra.push(k);
     }
-    expect(missing).toEqual([]);
+    if (missing.length > 0 || extra.length > 0) {
+      throw new Error(
+        `Parity mismatch in ${lang}:\n` +
+          (missing.length ? `  Missing:\n  - ${missing.join('\n  - ')}\n` : '') +
+          (extra.length ? `  Extra:\n  - ${extra.join('\n  - ')}` : '')
+      );
+    }
+    expect({ missing, extra }).toEqual({ missing: [], extra: [] });
   });
 
   it('declares the notFound.* keys in en.json', () => {
