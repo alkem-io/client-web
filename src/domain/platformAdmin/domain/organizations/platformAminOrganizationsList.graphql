@@ -1,6 +1,7 @@
 query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   platformAdmin {
     organizations(first: $first, after: $after, filter: $filter) {
+      total
       organization {
         id
         account {

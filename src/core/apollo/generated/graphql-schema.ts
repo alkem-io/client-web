@@ -25540,6 +25540,7 @@ export type PlatformAdminOrganizationsListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     organizations: {
       __typename?: 'PaginatedOrganization';
+      total: number;
       organization: Array<{
         __typename?: 'Organization';
         id: string;
@@ -25826,6 +25827,7 @@ export type PlatformAdminUsersListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     users: {
       __typename?: 'PaginatedUsers';
+      total: number;
       users: Array<{
         __typename?: 'User';
         id: string;
