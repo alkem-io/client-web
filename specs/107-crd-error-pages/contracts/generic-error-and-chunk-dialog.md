@@ -71,6 +71,22 @@ export type CrdErrorDialogProps = {
 - Gate: `const useCrd = crdEnabled && isCrdRoute(pathname);` → CRD dialog, else MUI dialog.
 - The previous `isNotAuthorized === true` gate (and the prop) are removed; `ErrorBoundary` no
   longer passes `isNotAuthorized`.
+- The CRD redirect dialog renders the ancestor space card only for `UrlType.Space` ancestors
+  (via `ancestorSlot`); for VC / innovation-pack / other non-Space ancestors it shows just the
+  message + countdown — exact parity with the MUI dialog.
+
+## Route classification (FR-019)
+
+**`isCrdRoute`** (`src/main/crdPages/error/isCrdRoute.ts`)
+- Returns `true` for the CRD shell: `home`, `spaces`, `restricted`, `/public/whiteboard/*`,
+  dynamic Space routes, **and** the reserved-but-migrated segments `vc`, `user`, `organization`,
+  `innovation-packs`, `innovation-library`, `docs`, `admin`, `hub`, `forum` (positive allowlist
+  `crdMigratedTopLevelSegments`).
+- Returns `false` for still-MUI reserved segments (`contributors`, `innovation-hubs`,
+  redirect/legacy-only) so their error chrome stays MUI.
+- The allowlist MUST track the `crdEnabled ? <Crd…> : <Mui…>` dispatch in `TopLevelRoutes.tsx`.
+- Consumed only by `CrdAwareErrorComponent` (error page) and `AncestorRedirectDispatcher`
+  (redirect dialog), so the blast radius is the error/redirect flow only.
 
 ## i18n (`crd-error` namespace, six locales, full parity)
 

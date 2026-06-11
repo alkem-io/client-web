@@ -79,6 +79,7 @@ description: "Task list for 107-crd-error-pages (story #9852)"
 
 - [X] T015a [FR-018] Widen `AncestorRedirectDispatcher` gate to `crdEnabled && isCrdRoute(pathname)`; remove the obsolete `isNotAuthorized` prop + doc; stop passing it from `ErrorBoundary`.
 - [X] T015b [FR-018] Update `AncestorRedirectDispatcher.test.tsx`: assert CRD dialog for the NotFound+closestAncestor (private subspace) case; keep toggle-off / non-CRD-route → MUI.
+- [X] T015c [FR-019] Replace the `reserved = MUI` heuristic in `isCrdRoute` with an explicit CRD-migrated-segment allowlist (`vc`, `user`, `organization`, `innovation-packs`, `innovation-library`, `docs`, `admin`, `hub`, `forum` + home/spaces/restricted), kept in sync with `TopLevelRoutes.tsx`; `contributors`/`innovation-hubs` stay MUI. Update `isCrdRoute.test.ts` (private VC / template pack / KB / org / user → CRD chrome).
 
 ---
 
