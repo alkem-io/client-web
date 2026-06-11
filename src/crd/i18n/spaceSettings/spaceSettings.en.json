@@ -84,6 +84,17 @@
           "confirm": "Delete phase",
           "cancel": "Cancel"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Hide from menu",
+        "showMenuLabel": "Show in menu",
+        "hiddenBadge": "Hidden",
+        "confirm": {
+          "title": "Hide this phase?",
+          "description": "This only hides the phase from the menu. It does not remove access to its content: anyone with a link to the phase, or to a post inside it, can still open it.",
+          "confirm": "Hide",
+          "cancel": "Cancel"
+        }
       }
     },
     "addPhase": {

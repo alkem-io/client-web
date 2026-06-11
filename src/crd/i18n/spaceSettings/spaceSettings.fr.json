@@ -84,6 +84,17 @@
           "confirm": "Supprimer la phase",
           "cancel": "Annuler"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Masquer du menu",
+        "showMenuLabel": "Afficher dans le menu",
+        "hiddenBadge": "Masqué",
+        "confirm": {
+          "title": "Masquer cette phase ?",
+          "description": "Cela masque uniquement la phase du menu. L'accès à son contenu n'est pas supprimé : toute personne disposant d'un lien vers la phase, ou vers une publication qu'elle contient, peut toujours l'ouvrir.",
+          "confirm": "Masquer",
+          "cancel": "Annuler"
+        }
       }
     },
     "addPhase": {

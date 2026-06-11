@@ -343,6 +343,7 @@ export const InnovationFlowStatesFragmentDoc = gql`
     sortOrder
     settings {
       allowNewCallouts
+      visible
     }
     defaultCalloutTemplate {
       id
@@ -7359,6 +7360,7 @@ export const UpdateInnovationFlowStateDocument = gql`
     description
     settings {
       allowNewCallouts
+      visible
     }
   }
 }
@@ -24996,6 +24998,7 @@ export const SpaceTabsDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              visible
             }
           }
         }
