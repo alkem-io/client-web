@@ -1,0 +1,89 @@
+{
+  "dialog": {
+    "title": "Neuen Space erstellen",
+    "subtitle": "Richten Sie einen neuen Space der obersten Ebene in Ihrem Konto ein.",
+    "subtitleForAccount": "Erstellen Sie einen neuen Top-Level-Space im Konto von {{account}}."
+  },
+  "template": {
+    "label": "Vorlage",
+    "hint": "Optional — wählen Sie eine Space-Vorlage aus, um Struktur und Inhalte vorab zu füllen.",
+    "choose": "Vorlage auswählen",
+    "change": "Ändern",
+    "clear": "Leer verwenden",
+    "selectedLabel": "Ausgewählte Vorlage",
+    "loadingPreview": "Vorlagenvorschau wird geladen…",
+    "overwriteConfirm": {
+      "title": "Formularinhalt ersetzen?",
+      "description": "Durch das Anwenden dieser Vorlage werden der Name, der Slogan, die Beschreibung und die Tags überschrieben, die Sie bereits eingegeben haben.",
+      "confirm": "Vorlage anwenden",
+      "cancel": "Meine Änderungen behalten"
+    },
+    "invalidFlow": "Diese Vorlage kann nicht zum Erstellen eines Space verwendet werden — sie benötigt einen Innovationsflow mit 4 Phasen."
+  },
+  "displayName": {
+    "label": "Name",
+    "hint": "Der Name Ihres Spaces, sichtbar für alle.",
+    "placeholder": "z. B. Climate Innovation Hub"
+  },
+  "slug": {
+    "label": "URL",
+    "prefix": "alkem.io/",
+    "placeholder": "space-url",
+    "hint": "Die Webadresse für Ihren Space. Automatisch aus dem Namen ausgefüllt — Sie können sie bearbeiten."
+  },
+  "tagline": {
+    "label": "Untertitel",
+    "hint": "Ein kurzer Untertitel, der den Space beschreibt.",
+    "placeholder": "Ein kurzer Untertitel…"
+  },
+  "description": {
+    "label": "Beschreibung",
+    "hint": "Erklären Sie, worum es in diesem Space geht. Markdown wird unterstützt.",
+    "placeholder": "Worum geht es in diesem Space?"
+  },
+  "tags": {
+    "label": "Tags",
+    "hint": "Tags helfen Personen, diesen Space zu finden.",
+    "placeholder": "Tag hinzufügen und Enter drücken"
+  },
+  "banner": {
+    "label": "Seiten-Banner",
+    "upload": "Seiten-Banner hochladen"
+  },
+  "cardBanner": {
+    "label": "Karten-Banner",
+    "upload": "Karten-Banner hochladen"
+  },
+  "visuals": {
+    "remove": "Bild entfernen",
+    "resolutionHint": "Empfohlen: {{width}} × {{height}} px",
+    "tooSmall": "Bild ist zu klein. Mindestens {{width}} × {{height}} px erforderlich.",
+    "loadFailed": "Bilddatei konnte nicht gelesen werden."
+  },
+  "addTutorials": {
+    "header": "Tutorials",
+    "label": "Füge Tutorials und Beispielbeiträge zu diesem Space hinzu"
+  },
+  "terms": {
+    "checkboxLabel": "Ich akzeptiere die <terms>Bedingungen</terms> für das Erstellen eines Space.",
+    "dialogTitle": "Allgemeine Geschäftsbedingungen für die Erstellung eines Spaces",
+    "dialogContent": "Ich verstehe, dass ich als Host für alle Inhalte innerhalb des Spaces verantwortlich bin.",
+    "fullTermsLink": "Klicken Sie hier, um mehr über die Allgemeinen Geschäftsbedingungen zu erfahren.",
+    "url": "https://welcome.alkem.io/terms"
+  },
+  "license": {
+    "noPlans": "Keine verfügbaren Tarife. Bitte wenden Sie sich an den Support."
+  },
+  "cancel": "Abbrechen",
+  "submit": "Space erstellen",
+  "creating": "Erstellen…",
+  "validation": {
+    "min3": "Muss mindestens 3 Zeichen lang sein",
+    "maxSmall": "Darf höchstens {{count}} Zeichen lang sein",
+    "maxMarkdown": "Darf höchstens {{count}} Zeichen lang sein",
+    "required": "Name ist erforderlich",
+    "slugRequired": "URL ist erforderlich",
+    "slugInvalid": "Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche",
+    "acceptedTerms": "Sie müssen die Bedingungen akzeptieren, um einen Space zu erstellen"
+  }
+}
