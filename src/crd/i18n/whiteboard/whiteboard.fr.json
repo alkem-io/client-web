@@ -47,6 +47,7 @@
     "readonlyReason": {
       "readonly": "<strong>Mode lecture seule</strong> <learnwhy>cliquez ici pour savoir pourquoi</learnwhy>",
       "contentUpdatePolicy": "Vous n'avez pas les droits pour modifier ce tableau blanc. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de changer les paramètres de partage si vous souhaitez contribuer.",
+      "contentUpdatePolicyNoOwner": "Vous n'avez pas les droits pour modifier ce tableau blanc. Le propriétaire n'est plus disponible — demandez à un administrateur de l'espace de changer les paramètres de partage si vous souhaitez contribuer.",
       "noMembership": "Vous devez être membre du {{spaceLevel}} dans lequel se trouve ce tableau blanc pour pouvoir le modifier. Cliquez ici pour <spacelink>rejoindre/postuler</spacelink>",
       "unauthenticated": "Vous devez être connecté et membre du {{spaceLevel}} dans lequel se trouve ce tableau blanc pour pouvoir le modifier. Cliquez ici pour vous <signinlink>connecter</signinlink>"
     },

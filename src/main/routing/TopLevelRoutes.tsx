@@ -44,6 +44,7 @@ const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/commu
 const PlatformAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/platformAdmin/routing/PlatformAdminRoute')
 );
+const CrdAdminRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/admin/CrdAdminRoutes'));
 const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/organization/routing/OrganizationRoute')
@@ -235,7 +236,16 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path="/admin/*">
                         <Suspense fallback={<Loading />}>
-                          <PlatformAdminRoute />
+                          {/* Global admin — toggleable between CRD (new) and MUI (old) via localStorage.
+                              The CRD branch renders inside CrdLayoutWrapper (CRD header/footer); the MUI
+                              branch keeps the legacy PlatformAdminRoute (its own TopLevelLayout). */}
+                          {crdEnabled ? (
+                            <CrdLayoutWrapper>
+                              <CrdAdminRoutes />
+                            </CrdLayoutWrapper>
+                          ) : (
+                            <PlatformAdminRoute />
+                          )}
                         </Suspense>
                       </WithApmTransaction>
                     }

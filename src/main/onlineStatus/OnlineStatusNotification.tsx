@@ -1,15 +1,9 @@
-import CloseIcon from '@mui/icons-material/Close';
-import WifiIcon from '@mui/icons-material/Wifi';
-import WifiOffIcon from '@mui/icons-material/WifiOff';
-import { IconButton, SnackbarContent } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { info as sentryInfo } from '@/core/logging/sentry/log';
-import NotificationView from '@/core/ui/notifications/NotificationView';
-import { rem } from '@/core/ui/typography/utils';
 import useOnlineStatus from '@/core/utils/onlineStatus';
+import { OnlineStatusBanner } from '@/crd/components/common/OnlineStatusBanner';
 
-const OFFLINE_DEBOUNCE_MS = 3000; // Only show offline toast after 3 s sustained disconnection
+const OFFLINE_DEBOUNCE_MS = 3000; // Only show offline banner after 3 s sustained disconnection
 const ONLINE_RESTORED_TIMEOUT = 6000;
 const SENTRY_ONLINE_RESTORED_LS_KEY = 'lastOnlineRestoredLog';
 const SENTRY_ONLINE_RESTORED_THROTTLE_MS = 30 * 1000; // 30 seconds
@@ -17,23 +11,23 @@ const SENTRY_ONLINE_RESTORED_THROTTLE_MS = 30 * 1000; // 30 seconds
 type NotificationState = 'idle' | 'offline' | 'restored';
 
 /**
- * Tracks browser online/offline events and shows a non-intrusive toast:
- * - Offline  → persistent white toast, grey text, top-center (debounced — only after 3 s sustained).
- *   Not user-dismissable (no close button, Escape ignored) — it clears only when connectivity returns.
- * - Restored → white toast, green text, auto-dismisses after 6 s (only if offline toast was shown)
+ * Tracks browser online/offline events and shows a non-intrusive CRD banner:
+ * - Offline  → persistent banner, grey text, top-center (debounced — only after 3 s sustained).
+ *   Not user-dismissable (no close button) — it clears only when connectivity returns.
+ * - Restored → banner, green text, auto-dismisses after 6 s (only if offline banner was shown).
  *
  * Logs a single Sentry info event per restored-session, throttled to avoid noise.
  */
 export const OnlineStatusNotification = () => {
-  const { t } = useTranslation();
   const isOnline = useOnlineStatus();
   const offlineShown = useRef(false);
   const offlineTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const restoredTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [state, setState] = useState<NotificationState>('idle');
 
   useEffect(() => {
     if (!isOnline) {
-      // Debounce: only show offline toast after sustained disconnection
+      // Debounce: only show offline banner after sustained disconnection
       offlineTimerRef.current = setTimeout(() => {
         offlineShown.current = true;
         setState('offline');
@@ -41,10 +35,10 @@ export const OnlineStatusNotification = () => {
       return () => clearTimeout(offlineTimerRef.current);
     }
 
-    // Came back online — cancel pending offline toast if it hasn't fired yet
+    // Came back online — cancel pending offline banner if it hasn't fired yet
     clearTimeout(offlineTimerRef.current);
 
-    // Only show "restored" if the offline toast was actually displayed
+    // Only show "restored" if the offline banner was actually displayed
     if (offlineShown.current) {
       offlineShown.current = false;
       setState('restored');
@@ -62,55 +56,19 @@ export const OnlineStatusNotification = () => {
     }
   }, [isOnline]);
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') return;
-    // The offline toast is a persistent connectivity indicator — it must not be dismissable by the
-    // user (no X, and Escape is ignored here). It clears on its own once the connection is restored,
-    // when the effect above transitions it to the 'restored' state.
-    if (state === 'offline') return;
-    setState('idle');
-  };
+  // Auto-dismiss the restored banner after the timeout (the offline banner is persistent).
+  useEffect(() => {
+    if (state !== 'restored') return;
+    restoredTimerRef.current = setTimeout(() => setState('idle'), ONLINE_RESTORED_TIMEOUT);
+    return () => clearTimeout(restoredTimerRef.current);
+  }, [state]);
 
   if (state === 'idle') return null;
 
-  const isOffline = state === 'offline';
-
   return (
-    <NotificationView
-      open={true}
-      onClose={handleClose}
-      autoHideDuration={isOffline ? null : ONLINE_RESTORED_TIMEOUT}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-    >
-      <SnackbarContent
-        message={
-          <>
-            {isOffline ? (
-              <WifiOffIcon fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
-            ) : (
-              <WifiIcon fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
-            )}
-            {t(isOffline ? 'snackbars.onlineStatus.offline' : 'snackbars.onlineStatus.restored')}
-          </>
-        }
-        sx={{
-          backgroundColor: 'white',
-          color: isOffline ? 'grey.600' : 'success.main',
-          fontSize: rem(15),
-          boxShadow: 3,
-          '& .MuiSnackbarContent-message': {
-            display: 'flex',
-            alignItems: 'center',
-          },
-        }}
-        action={
-          isOffline ? undefined : (
-            <IconButton size="small" aria-label={t('buttons.close')} onClick={handleClose} sx={{ color: 'inherit' }}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          )
-        }
-      />
-    </NotificationView>
+    <OnlineStatusBanner
+      variant={state === 'offline' ? 'offline' : 'restored'}
+      onClose={state === 'restored' ? () => setState('idle') : undefined}
+    />
   );
 };
