@@ -9,6 +9,7 @@ import type { Collapsible } from '@/core/ui/navigation/Collapsible';
 import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import NavigationBarSideContent from '@/core/ui/navigation/NavigationBarSideContent';
 import type { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
+import { AssistantButton } from '@/main/assistant/AssistantButton';
 import { UserMessagingButton } from '@/main/userMessaging/UserMessagingButton';
 import PlatformSearch from '../platformSearch/PlatformSearch';
 import PoweredBy from '../poweredBy/PoweredBy';
@@ -101,6 +102,7 @@ const PlatformNavigationBar = ({ breadcrumbs, staticPosition }: PlatformNavigati
           <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isSmallScreen}>
             <PlatformNavigationUncollapse ref={uncollapseButtonRef} visible={rightSideShift !== 0} />
           </PlatformSearch>
+          <AssistantButton />
           <UserMessagingButton />
           <PlatformNotificationsButton />
           {!isSmallScreen && <PlatformNavigationMenuButton />}

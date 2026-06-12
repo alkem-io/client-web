@@ -1,4 +1,44 @@
 {
+  "assistant": {
+    "title": "Assistant",
+    "openButton": "Open the assistant",
+    "openInWhiteboard": "Ask the assistant about this whiteboard",
+    "scopedTo": "Working on: {{name}}",
+    "closeButton": "Close the assistant",
+    "settings": "Assistant settings",
+    "settingsWhiteboardScope": "Whiteboard capabilities — manage all in Settings → Assistant",
+    "newConversation": "New Chat",
+    "intro": "Ask me about content on the platform. I can search and summarise what you have access to.",
+    "inputPlaceholder": "Ask the assistant…",
+    "send": "Send",
+    "stop": "Stop",
+    "thinking": "Thinking…",
+    "toolActivity": {
+      "started": "{{label}}",
+      "finished": "{{label}}",
+      "error": "{{label}} failed"
+    },
+    "confirmation": {
+      "title": "Confirm these actions",
+      "description": "Nothing changes until you approve. Review what the assistant will do:",
+      "destructiveItem": "This changes existing content.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "enableCapabilityLink": "Enable this capability in Settings → Assistant"
+    },
+    "a11y": {
+      "userTurn": "Your message",
+      "assistantTurn": "Assistant reply"
+    },
+    "errors": {
+      "capability_unavailable": "A required capability is temporarily unavailable. Please try again shortly.",
+      "permission_denied": "You don't have permission to do that, or the capability is disabled in your settings.",
+      "usage_limit_reached": "You've reached your assistant usage limit for now. Please try again later.",
+      "session_invalid": "Your session ended. Please sign in again and re-ask.",
+      "internal_error": "Something went wrong. Please try again.",
+      "transport": "The connection was interrupted. Please try again."
+    }
+  },
   "comments": {
     "expandAll_one": "{{count}} comment on this post, click here to see all",
     "expandAll_other": "{{count}} comments on this post, click here to see all",
@@ -495,6 +535,7 @@
     "license": "License",
     "virtualContributor": "Virtual Contributor",
     "virtualContributors": "Virtual Contributors",
+    "virtualAssistant": "Assistant",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
     "unknown": "Unknown",
@@ -600,6 +641,7 @@
         "USER": "User",
         "ORGANIZATION": "$t(common.Organization)",
         "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)",
+        "VIRTUAL_ASSISTANT": "$t(common.virtualAssistant)",
         "ACCOUNT": "Account",
         "SPACE": "$t(common.space)"
       }
@@ -737,6 +779,7 @@
         "ORGANIZATION": "Invite people to this $t(common.space)",
         "VIRTUAL": "Invite $t(common.virtualContributor)",
         "VIRTUAL_CONTRIBUTOR": "Invite $t(common.virtualContributor)",
+        "VIRTUAL_ASSISTANT": "Invite $t(common.virtualAssistant)",
         "ACCOUNT": "Invite to this $t(common.space)",
         "SPACE": "Invite to this $t(common.space)"
       },

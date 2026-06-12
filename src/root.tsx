@@ -35,6 +35,8 @@ import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAp
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
+import { AssistantProvider } from './main/assistant/AssistantContext';
+import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
@@ -48,6 +50,7 @@ const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
   () => import('./main/inAppNotifications/InAppNotificationsDialog')
 );
 const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
+const AssistantDialog = lazyWithGlobalErrorHandler(() => import('./main/assistant/AssistantDialog'));
 
 const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
   () => import('./main/ui/layout/CrdNotificationsPanelConnector')
@@ -73,20 +76,32 @@ function GlobalErrorDialogGate() {
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
 /** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
-function CrdGuidanceChatGate() {
+function CrdFloatingActionsGate() {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
   const { fullscreen } = useFullscreen();
   const { isSmallScreen } = useScreenSize();
   const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  // MUI layouts already render PlatformHelpButton themselves; auth flows hide it entirely.
+  // MUI layouts already render these themselves; auth flows hide them entirely.
   // Also hide on mobile and in any immersive/fullscreen editor (whiteboard, memo, …) so the
-  // floating button never overlaps the editing surface.
+  // floating buttons never overlap the editing surface (the whiteboard rail has
+  // its own assistant entry point).
   if (!crdEnabled || isAuthPage || isSmallScreen || fullscreen || isFullscreenEditorOpen) {
     return null;
   }
-  return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
+  // The assistant button shares the help/guidance button's floating stack so it
+  // sits right next to it (bottom-right) with matching styling. Each self-gates.
+  return (
+    <FloatingActionButtons
+      floatingActions={
+        <>
+          <CrdAssistantButtonGate />
+          <PlatformHelpButton />
+        </>
+      }
+    />
+  );
 }
 
 function DesignVersionSyncMount() {
@@ -195,16 +210,20 @@ const Root: FC = () => {
                                     <PushNotificationProvider>
                                       <UserMessagingProvider>
                                         <FullscreenEditorProvider>
+                                        <AssistantProvider>
                                           <NavigationHistoryTracker />
                                           <ApmUserSetter />
                                           <DesignVersionSyncMount />
                                           <DesignVersionUpgradePromptMount />
                                           <ScrollToTop />
                                           <NotificationsGate />
-                                          <CrdGuidanceChatGate />
+                                          <CrdFloatingActionsGate />
                                           <InAppNotificationCountSubscriber />
                                           <Suspense fallback={null}>
                                             <UserMessagingDialog />
+                                          </Suspense>
+                                          <Suspense fallback={null}>
+                                            <AssistantDialog />
                                           </Suspense>
                                           <VersionHandling />
                                           <OnlineStatusNotification />
@@ -214,6 +233,7 @@ const Root: FC = () => {
                                             <TopLevelRoutes />
                                             <GlobalErrorDialogGate />
                                           </Error40XBoundary>
+                                        </AssistantProvider>
                                         </FullscreenEditorProvider>
                                       </UserMessagingProvider>
                                     </PushNotificationProvider>

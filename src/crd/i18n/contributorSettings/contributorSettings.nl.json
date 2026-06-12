@@ -85,6 +85,7 @@
         "membership": "Lidmaatschap",
         "organizations": "Organisaties",
         "notifications": "Meldingen",
+        "assistant": "Assistant",
         "settings": "Instellingen",
         "security": "Beveiliging"
       },
@@ -421,6 +422,24 @@
         "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
         "confirm": "Verwijderen"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistant",
+      "helpBanner": "Kies wat de assistant namens jou mag doen. Leescapaciteiten staan standaard aan; capaciteiten die content wijzigen staan uit totdat je ze inschakelt. De assistant kan nooit meer dan jij zelf kunt.",
+      "empty": "Er zijn momenteel geen assistant-capaciteiten beschikbaar.",
+      "destructiveBadge": "Kan bestaande content wijzigen",
+      "toggleAria": "Schakel de capaciteit “{{capability}}” in of uit",
+      "toggleError": "We konden die wijziging niet opslaan. Probeer het opnieuw.",
+      "groups": {
+        "read": {
+          "title": "Lezen",
+          "description": "Laat de assistant content vinden en samenvatten waartoe je al toegang hebt."
+        },
+        "write": {
+          "title": "Content wijzigen",
+          "description": "Laat de assistant content voor je aanmaken of wijzigen. Je bevestigt altijd voordat er iets wordt gewijzigd."
+        }
+      }
     }
   },
   "org": {
@@ -433,13 +452,27 @@
           "hint": "Hoe je organisatie verschijnt op Alkemio.",
           "required": "Weergavenaam is verplicht"
         },
-        "nameID": { "label": "Name ID", "caption": "Kan niet worden gewijzigd na aanmaken." },
-        "tagline": { "label": "Slogan", "hint": "Een korte zin naast je organisatienaam." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Kan niet worden gewijzigd na aanmaken."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte zin naast je organisatienaam."
+        }
       },
       "about": {
         "title": "Over",
-        "description": { "label": "Beschrijving", "hint": "Markdown wordt ondersteund." },
-        "location": { "title": "Locatie", "city": "Plaats", "country": "Land", "countryPlaceholder": "Kies een land" },
+        "description": {
+          "label": "Beschrijving",
+          "hint": "Markdown wordt ondersteund."
+        },
+        "location": {
+          "title": "Locatie",
+          "city": "Plaats",
+          "country": "Land",
+          "countryPlaceholder": "Kies een land"
+        },
         "keywords": {
           "label": "Trefwoorden",
           "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
@@ -458,8 +491,14 @@
           "hint": "Openbaar contactadres voor de organisatie.",
           "invalidFormat": "Voer een geldig e-mailadres in"
         },
-        "domain": { "label": "Domein", "hint": "Het webdomein van je organisatie (zonder protocol)." },
-        "legalEntityName": { "label": "Juridische naam", "hint": "De officieel geregistreerde naam." },
+        "domain": {
+          "label": "Domein",
+          "hint": "Het webdomein van je organisatie (zonder protocol)."
+        },
+        "legalEntityName": {
+          "label": "Juridische naam",
+          "hint": "De officieel geregistreerde naam."
+        },
         "website": {
           "label": "Website",
           "hint": "Volledige URL inclusief https://",
@@ -497,11 +536,28 @@
     "account": {
       "pageTitle": "Account",
       "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
-      "spaces": { "title": "Gehoste Spaces", "createButton": "Space aanmaken" },
-      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Bijdrager toevoegen" },
-      "innovationPacks": { "title": "Template Packs", "createButton": "Nieuw pakket" },
-      "innovationHubs": { "title": "Aangepaste startpagina's", "createButton": "Nieuwe pagina" },
-      "actions": { "view": "Bekijken", "manage": "Beheren", "transfer": "Overdragen", "delete": "Verwijderen" },
+      "spaces": {
+        "title": "Gehoste Spaces",
+        "createButton": "Space aanmaken"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Bijdrager toevoegen"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "Nieuw pakket"
+      },
+      "innovationHubs": {
+        "title": "Aangepaste startpagina's",
+        "createButton": "Nieuwe pagina"
+      },
+      "actions": {
+        "view": "Bekijken",
+        "manage": "Beheren",
+        "transfer": "Overdragen",
+        "delete": "Verwijderen"
+      },
       "deleteDialog": {
         "title": "Deze resource verwijderen?",
         "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
