@@ -21,15 +21,18 @@ export function SubspaceCommunityDialog({
 }: SubspaceCommunityDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-none sm:max-w-3xl max-h-[85vh] overflow-y-auto" closeLabel={closeLabel}>
-        <DialogHeader>
+      <DialogContent
+        className="max-w-none sm:max-w-3xl max-h-[85vh] flex flex-col overflow-hidden"
+        closeLabel={closeLabel}
+      >
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" aria-hidden="true" />
             {title}
           </DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <div className="mt-2">{children}</div>
+        <div className="mt-2 flex-1 min-h-0 overflow-y-auto">{children}</div>
       </DialogContent>
     </Dialog>
   );

@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
@@ -84,6 +84,9 @@ export function LayoutPoolColumn({
     : undefined;
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
   const [pendingPhaseDelete, setPendingPhaseDelete] = useState(false);
+  // Hiding removes the phase from the member-facing menu, so it is confirmed; showing
+  // again is non-destructive and applies directly (no dialog).
+  const [pendingPhaseHide, setPendingPhaseHide] = useState(false);
 
   return (
     <>
@@ -124,15 +127,24 @@ export function LayoutPoolColumn({
               actions={columnMenuActions}
               onEditDetails={() => setEditDetailsOpen(true)}
               onRequestDeletePhase={() => setPendingPhaseDelete(true)}
+              onRequestHidePhase={() => setPendingPhaseHide(true)}
               t={t}
             />
           </div>
-          {column.isCurrentPhase && (
-            <Badge variant="default" className="mt-1.5">
-              <Check aria-hidden="true" />
-              {t('layout.column.activePhase.badge')}
-            </Badge>
-          )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {column.isCurrentPhase && (
+              <Badge variant="default">
+                <Check aria-hidden="true" />
+                {t('layout.column.activePhase.badge')}
+              </Badge>
+            )}
+            {column.isHidden && (
+              <Badge variant="secondary">
+                <EyeOff aria-hidden="true" />
+                {t('layout.column.hideShow.hiddenBadge')}
+              </Badge>
+            )}
+          </div>
           {column.description && (
             <InlineMarkdown
               content={column.description}
@@ -194,6 +206,24 @@ export function LayoutPoolColumn({
         }}
         onCancel={() => setPendingPhaseDelete(false)}
       />
+
+      {/* Hide confirmation — explains that hiding is UI-only and content stays reachable by URL.
+          Not `variant="destructive"`: hiding removes nothing and is fully reversible via Show. */}
+      <ConfirmationDialog
+        open={pendingPhaseHide}
+        onOpenChange={open => {
+          if (!open) setPendingPhaseHide(false);
+        }}
+        title={t('layout.column.hideShow.confirm.title')}
+        description={t('layout.column.hideShow.confirm.description')}
+        confirmLabel={t('layout.column.hideShow.confirm.confirm')}
+        cancelLabel={t('layout.column.hideShow.confirm.cancel')}
+        onConfirm={() => {
+          void columnMenuActions.onToggleVisibility?.(column.id, true);
+          setPendingPhaseHide(false);
+        }}
+        onCancel={() => setPendingPhaseHide(false)}
+      />
     </>
   );
 }
@@ -205,10 +235,21 @@ type ColumnOverflowMenuProps = {
   actions: ColumnMenuActions;
   onEditDetails: () => void;
   onRequestDeletePhase: () => void;
+  onRequestHidePhase: () => void;
   t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
 };
 
-function ColumnOverflowMenu({ column, actions, onEditDetails, onRequestDeletePhase, t }: ColumnOverflowMenuProps) {
+function ColumnOverflowMenu({
+  column,
+  actions,
+  onEditDetails,
+  onRequestDeletePhase,
+  onRequestHidePhase,
+  t,
+}: ColumnOverflowMenuProps) {
+  // Visibility capability is gated on the consumer providing `onToggleVisibility`
+  // AND the column carrying a known visibility (server exposes the `visible` flag).
+  const canToggleVisibility = !!actions.onToggleVisibility && typeof column.isHidden === 'boolean';
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild={true}>
@@ -239,6 +280,28 @@ function ColumnOverflowMenu({ column, actions, onEditDetails, onRequestDeletePha
         <DropdownMenuItem onClick={() => actions.onSetAsDefaultCalloutTemplate(column.id, null)}>
           {t('layout.column.defaultCalloutTemplate.clear')}
         </DropdownMenuItem>
+        {canToggleVisibility && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                // Show is non-destructive → apply directly. Hide → confirm first.
+                if (column.isHidden) {
+                  void actions.onToggleVisibility?.(column.id, false);
+                } else {
+                  onRequestHidePhase();
+                }
+              }}
+            >
+              {column.isHidden ? (
+                <Eye aria-hidden="true" className="mr-2 size-3.5" />
+              ) : (
+                <EyeOff aria-hidden="true" className="mr-2 size-3.5" />
+              )}
+              {column.isHidden ? t('layout.column.hideShow.showMenuLabel') : t('layout.column.hideShow.hideMenuLabel')}
+            </DropdownMenuItem>
+          </>
+        )}
         {actions.onDeletePhase && (
           <>
             <DropdownMenuSeparator />
@@ -295,15 +358,15 @@ function EditDetailsDialog({
         if (!nextOpen) onCancel();
       }}
     >
-      <DialogContent className="sm:max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Pencil aria-hidden="true" className="size-4" />
             {t('layout.column.editDetails.dialogTitle')}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
           <div className="flex flex-col gap-1">
             <span className="text-body-emphasis text-muted-foreground">
               {t('layout.column.editDetails.titleLabel')}
@@ -341,7 +404,7 @@ function EditDetailsDialog({
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {t('layout.column.editDetails.cancel')}
           </Button>

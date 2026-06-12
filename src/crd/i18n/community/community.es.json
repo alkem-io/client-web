@@ -34,8 +34,14 @@
     },
     "results": {
       "sent": "Invitación enviada",
-      "alreadyMember": "Ya es miembro",
-      "error": "Falló: {{message}}"
+      "alreadyInvited": "Ya invitado",
+      "alreadyMember": "Ya es miembro de este espacio",
+      "alreadyHasApplication": "Ya tiene una solicitud pendiente en este espacio",
+      "parentNotAuthorized": "No se puede invitar: también tendría que unirse al espacio principal y no tienes permiso para invitar allí.",
+      "error": "Error al enviar la invitación."
+    },
+    "toast": {
+      "someFailed": "No se pudieron enviar {{count}} invitaciones — consulta los resultados para más detalles."
     }
   },
   "inviteVc": {
@@ -58,6 +64,12 @@
     "defaultWelcomeMessage": "Nos gustaría invitarte a contribuir a {{space}}.",
     "addedNotice": "Colaborador virtual añadido.",
     "invitedNotice": "Invitación enviada.",
-    "error": "Algo salió mal. Inténtalo de nuevo."
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "previewAriaLabel": "Vista previa de {{name}}",
+    "preview": {
+      "tagsLabel": "Etiquetas",
+      "hostedBy": "Alojado por {{name}}",
+      "noDescription": "No se proporcionó descripción."
+    }
   }
 }

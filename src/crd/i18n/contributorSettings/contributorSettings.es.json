@@ -1,4 +1,79 @@
 {
+  "wizard": {
+    "title": "Crear Virtual Contributor",
+    "close": "Cerrar",
+    "loading": "Trabajando…",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "create": "Crear",
+    "initial": {
+      "intro": "Dale un nombre a tu Virtual Contributor y elige de dónde proviene su conocimiento.",
+      "uploadAvatar": "Subir avatar",
+      "name": "Nombre",
+      "tagline": "Eslogan",
+      "description": "Descripción",
+      "pathTitle": "¿De dónde proviene su conocimiento?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Conocimiento escrito",
+          "subtitle": "Añade publicaciones y documentos"
+        },
+        "existingSpace": {
+          "title": "Space existente",
+          "subtitle": "Usa un Space al que tengas acceso"
+        },
+        "external": {
+          "title": "IA externa",
+          "subtitle": "Conecta un proveedor externo"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "¿Qué conocimiento quieres que tenga tu Virtual Contributor? Escríbelo en posts o súbelo en documentos. Podrás actualizar, añadir y eliminar contenido más adelante.",
+      "postsTitle": "Publicaciones",
+      "postTitle": "Título",
+      "postDescription": "Contenido",
+      "removePost": "Eliminar publicación",
+      "addPost": "Añadir publicación",
+      "documentsTitle": "Documentos",
+      "documentName": "Nombre",
+      "documentUrl": "URL",
+      "removeDocument": "Eliminar documento",
+      "addDocument": "Añadir documento",
+      "exampleTitle": "Ejemplo: Acerca de Alkemio",
+      "exampleDescription": "Consejo: Crea un texto estructurado y específico, por ejemplo:\n\n<strong>Antecedentes</strong>\n\nAlkemio, fundada en 2020, nació de la frustración por el lento progreso en los desafíos relacionados con el COVID y el reconocimiento de los numerosos desafíos de rápido movimiento a los que nos enfrentamos diariamente.\n\n<strong>Gobernanza</strong>\n\nPara mantener la confianza y realizar nuestra visión a largo plazo, hemos adoptado la Propiedad de Administradores como nuestra estructura de grupo central. La propiedad de administradores es...\n",
+      "initialDocuments": "Enlaces y documentos iniciales"
+    },
+    "existingSpace": {
+      "intro": "Elige un Space para usarlo como cuerpo de conocimiento.",
+      "empty": "No hay Spaces disponibles."
+    },
+    "external": {
+      "intro": "Conecta un proveedor de IA externo.",
+      "engine": "Proveedor",
+      "apiKey": "Clave API",
+      "assistantId": "ID del asistente",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Añade tu Virtual Contributor a una comunidad, u omítelo por ahora.",
+      "skip": "Omitir por ahora",
+      "errorMessage": "No se pudo añadir a la comunidad — inténtalo de nuevo."
+    },
+    "tryVc": {
+      "title": "¡{{name}} está listo!",
+      "description": "Tu Virtual Contributor ha sido creado.",
+      "view": "Ver perfil",
+      "done": "Hecho"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' creado correctamente",
+      "errorMessage": "No se pudo crear el Virtual Contributor — inténtalo de nuevo."
+    }
+  },
   "breadcrumbs": {
     "settings": "Ajustes"
   },
@@ -557,6 +632,32 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Grafo de prompts",
+      "helper": "Edita la máquina de estados del prompt. Los nodos del sistema son de solo lectura; los nodos de usuario exponen un prompt editable y propiedades de salida.",
+      "disabled": "La edición del grafo de prompts está desactivada para este Virtual Contributor.",
+      "empty": "Este Virtual Contributor no tiene grafo de prompts.",
+      "editingEnabled": "Edición activada",
+      "inputVariables": "Variables de entrada",
+      "start": "Inicio",
+      "end": "Fin",
+      "prompt": "Prompt",
+      "reset": "Restablecer",
+      "resetConfirm": {
+        "title": "¿Restablecer el grafo de prompts?",
+        "description": "Esto borra todo el grafo de prompts y no se puede deshacer."
+      },
+      "properties": {
+        "title": "Propiedades de salida",
+        "empty": "Sin propiedades de salida.",
+        "name": "Nombre",
+        "type": "Tipo",
+        "optional": "Opcional",
+        "description": "Descripción",
+        "add": "Añadir propiedad",
+        "remove": "Eliminar propiedad"
+      }
+    },
     "profile": {
       "pageTitle": "Ajustes",
       "identity": {

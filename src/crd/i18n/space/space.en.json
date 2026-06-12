@@ -292,12 +292,12 @@
     "officeDocumentsNotEnabled": "Office documents are not enabled for this space."
   },
   "members": {
-    "subtitle": "{{users}} members and {{organizations}} organizations in this space.",
+    "subtitle": "{{users}} members and {{organizations}} organisations in this space.",
     "inviteMember": "Invite Member",
-    "search": "Search members or organizations...",
+    "search": "Search members or organisations...",
     "filterAll": "All",
     "filterLead": "Lead",
-    "filterOrganization": "Organization",
+    "filterOrganization": "Organisation",
     "noMembers": "No members found",
     "previousPage": "Previous",
     "nextPage": "Next",
@@ -310,7 +310,7 @@
     "role": {
       "lead": "Lead",
       "member": "Member",
-      "organization": "Organization"
+      "organization": "Organisation"
     }
   },
   "subspaces": {
@@ -341,9 +341,11 @@
     "hostedBy": "Hosted by",
     "members": "members",
     "editMembers": "Edit members",
+    "editProfile": "Edit space profile",
+    "manageCommunity": "Manage community",
     "leads": "Leads",
     "leadUsers": "Lead Users",
-    "leadOrganizations": "Lead Organizations",
+    "leadOrganizations": "Lead Organisations",
     "guidelines": "Community Guidelines",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
     "references": "References",
@@ -352,7 +354,7 @@
     "readMore": "Read more",
     "lockTooltip": "You don't have access to this space.",
     "learnWhy": "Learn how to apply",
-    "hostTooltip": "The host organization or person responsible for this space.",
+    "hostTooltip": "The host organisation or person responsible for this space.",
     "contactHost": "Contact host",
     "apply": "Apply",
     "join": "Join",
@@ -401,7 +403,7 @@
     "share": "Share",
     "settings": "Settings",
     "expandWidth": "Expand to full width",
-    "collapseWidth": "Collapse to centered layout"
+    "collapseWidth": "Collapse to centred layout"
   },
   "contextMenu": {
     "edit": "Edit",
@@ -592,9 +594,10 @@
       "delete": "Delete memo",
       "readonlyReason": {
         "connecting": "Connecting to the collaboration service…",
-        "notSynced": "Synchronizing… reopen the memo to resume editing.",
+        "notSynced": "Synchronising… reopen the memo to resume editing.",
         "unauthenticated": "Sign in to edit this memo.",
-        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner to change the share settings.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings.",
+        "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the Share settings.",
         "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
       }
     },

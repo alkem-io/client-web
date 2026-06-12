@@ -159,10 +159,18 @@ export type TemplateContent =
     }
   | {
       type: 'space';
-      /** innovation-flow states */
+      /** innovation-flow states (phases), in display order */
       phases: { name: string; description?: string }[];
-      starterCallouts: { name: string; framingKind: FramingKind }[];
-      subspaceTemplates: { name: string }[];
+      /** starter callouts, each tagged with the phase (flow state) it belongs to so the preview can group them */
+      starterCallouts: {
+        name: string;
+        framingKind: FramingKind;
+        /** displayName of the flow state this callout belongs to — drives per-phase grouping in the preview */
+        flowStateName?: string;
+        /** markdown framing description, shown when the callout row is expanded */
+        description?: string;
+      }[];
+      subspaceTemplates: { id: string; name: string; bannerUrl?: string; isPrivate: boolean }[];
     }
   | {
       type: 'communityGuidelines';

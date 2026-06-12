@@ -49,7 +49,7 @@
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its $t(common.profile)!"
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Centre. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its $t(common.profile)!"
     },
     "feedback": {
       "message": "Is the answer relevant?",
@@ -88,7 +88,7 @@
     "isClickable": "TRUE"
   },
   "cookie": {
-    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
+    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyse site usage.",
     "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
     "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
     "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
@@ -265,6 +265,9 @@
     "designVersion": {
       "label": "New look (old design available for a limited time)",
       "errorSaving": "Could not save your design preference. Please try again."
+    },
+    "switchBanner": {
+      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
     }
   },
   "authentication": {
@@ -289,7 +292,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognised digital identities and secure authentication."
       }
     },
     "signUp": {
@@ -326,7 +329,7 @@
     "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
-    "authorizationPolicies": "Authorization Policies",
+    "authorizationPolicies": "Authorisation Policies",
     "transfer": "Conversions & Transfers",
     "beta": "Beta",
     "inspiration": "Inspiration",
@@ -417,10 +420,10 @@
     "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
-    "Organization": "Organization",
-    "Organizations": "Organizations",
-    "organization": "organization",
-    "organizations": "organizations",
+    "Organization": "Organisation",
+    "Organizations": "Organisations",
+    "organization": "organisation",
+    "organizations": "organisations",
     "communications": "Updates from the $t(common.leads)",
     "applications": "Applications",
     "introduction": "Introduction",
@@ -505,7 +508,7 @@
     "location": "Location",
     "home": "Home",
     "visuals": "Visuals",
-    "authorization": "Authorization",
+    "authorization": "Authorisation",
     "question": "Question",
     "questions": "Questions",
     "show-more": "Show more",
@@ -518,7 +521,7 @@
     "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
-    "helpCenter": "Help Center",
+    "helpCenter": "Help Centre",
     "loading": "Loading...",
     "innovation-flow": "Innovation Flow",
     "innovation-flows": "Innovation Flows",
@@ -795,9 +798,11 @@
           "invitationsSent": "{{count}} invitations will be sent.",
           "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this $t(common.space)",
           "results": {
+            "ALREADY_HAS_OPEN_APPLICATION": "Already has an open application to this $t(common.space)",
             "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
             "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
-            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent $t(common.community) was not authorized",
+            "ALREADY_MEMBER_OF_ROLE_SET": "Already a member of this $t(common.space)",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent $t(common.community) was not authorised",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
             "INVITED_TO_ROLE_SET": "Invited to join the $t(common.community)"
           },
@@ -1042,7 +1047,7 @@
     },
     "accessForbidden": {
       "title": "Content not available",
-      "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
+      "description": "We apologise, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
     "contributions": {
       "contributionsCount_one": "{{count}} Contribution",
@@ -1142,7 +1147,7 @@
         "PERMISSION_DENIED": "You don't have permission to change guest access.",
         "NETWORK": "Check your connection and try again.",
         "UNKNOWN": "We couldn't update guest access. Please try again.",
-        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "NOT_AUTHORIZED": "You're not authorised to change guest access.",
         "SPACE_GUEST_DISABLED": "Guest access is disabled for this $t(common.space).",
         "WHITEBOARD_NOT_FOUND": "This $t(common.whiteboard) couldn't be found. Refresh and try again."
       }
@@ -1159,7 +1164,7 @@
       "alkemio": {
         "name": "Alkemio",
         "title": "Share on Alkemio",
-        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
+        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalised message.",
         "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
       },
       "linkedin": {
@@ -1371,7 +1376,7 @@
         "use": "Use this $t(common.space)",
         "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a $t(common.template).",
         "noRights": "You need $t(common.admin) rights in the $t(common.space) you want to copy as a $t(common.template).",
-        "invalidUrl": "The url is not recognized as a $t(common.space) URL.",
+        "invalidUrl": "The url is not recognised as a $t(common.space) URL.",
         "spaceNotFoundError": "$t(common.space) not found",
         "selectAnother": "Update Collaboration from another $t(common.space)"
       },
@@ -1699,7 +1704,7 @@
     "innovationFlow": {
       "currentState": "Current Phase:",
       "changeState": "Change Phase to:",
-      "error": "The definition was not able to be visualized"
+      "error": "The definition was not able to be visualised"
     },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
@@ -1813,7 +1818,7 @@
       "visuals-step": {
         "title": "Visuals",
         "headline": "Congratulations, you have now successfully created a $t(common.post)!",
-        "explanation": "To further personalize your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
+        "explanation": "To further personalise your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
         "bottom-note": "You will still have the possibility to change these visuals under the $t(common.settings) tab as well as adding attachments and a Banner for the $t(common.dashboard) card."
       }
     },
@@ -2135,7 +2140,7 @@
         "engines": {
           "external": "OpenAI Generic",
           "externalAssistant": "OpenAI Assistant",
-          "externalVCDescription": "This $t(common.virtualContributor) utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+          "externalVCDescription": "This $t(common.virtualContributor) utilises <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
         },
         "bodyOfKnowledge": {
           "title": "Body of Knowledge",
@@ -2427,7 +2432,7 @@
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Your $t(common.space) is Ready!",
-      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customise your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
     },
     "spaceCard": {
@@ -2671,9 +2676,9 @@
         },
         "demoteL1ToL2": {
           "button": "Demote to Sub-subspace (L1 → L2)",
-          "hint": "All community members, leads, organizations, and virtual contributors will be removed. Only user admins are preserved. This is the most destructive conversion.",
+          "hint": "All community members, leads, organisations, and virtual contributors will be removed. Only user admins are preserved. This is the most destructive conversion.",
           "confirmTitle": "Demote Subspace to Sub-subspace?",
-          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organizations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
+          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organisations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
           "noTargets": "No other subspaces exist in this space to serve as a parent.",
           "targetLabel": "Move under subspace"
         },
@@ -2685,7 +2690,7 @@
         },
         "move": "Move",
         "moveL1ToL0": {
-          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organisations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
           "targetLabel": "Target Space",
           "button": "Move Space (L1 → L1 cross-Space)",
           "confirmTitle": "Move Subspace to another Space?",
@@ -2795,7 +2800,7 @@
         "typeToSearch": "Type at least 2 characters to search.",
         "noResults": "No accounts found with TransferResourceAccept privilege.",
         "typeUser": "User",
-        "typeOrganization": "Organization"
+        "typeOrganization": "Organisation"
       },
       "transferCallout": {
         "sectionTitle": "Transfer $t(common.post)",
@@ -2839,7 +2844,7 @@
         "spaceUrl": "Space URL",
         "spaceUrlPlaceholder": "Paste L0 space URL or path",
         "targetAccountUrl": "Target Account Owner URL",
-        "targetAccountUrlPlaceholder": "Paste user or organization URL",
+        "targetAccountUrlPlaceholder": "Paste user or organisation URL",
         "lookup": "Lookup",
         "spaceInfo": "Space Info",
         "targetAccountInfo": "Target Account Info",
@@ -2848,13 +2853,13 @@
         "accountId": "Account ID",
         "accountOwnerType": "Account Owner Type",
         "accountOwnerTypeUser": "User",
-        "accountOwnerTypeOrganization": "Organization",
+        "accountOwnerTypeOrganization": "Organisation",
         "transferButton": "Transfer Space",
         "transferring": "Transferring...",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "urlNotUserOrOrg": "URL does not resolve to a user or organisation",
         "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
         "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
         "successTitle": "Transfer Successful",
@@ -2863,7 +2868,7 @@
         "close": "Close",
         "urlRequired": "URL is required",
         "confirmTitle": "Are you sure?",
-        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
+        "confirmWarning1": "After the transfer, ensure the new owner (or organisation Admins) are added as admins in the community.",
         "confirmButton": "Transfer"
       },
       "generic": {
@@ -2903,7 +2908,7 @@
             "description": ""
           },
           "authorization": {
-            "description": "Here you can tweak authorization $t(common.settings) for this {{entity}}."
+            "description": "Here you can tweak authorisation $t(common.settings) for this {{entity}}."
           },
           "security": {
             "description": "Here you can manage your security settings, including passkeys and security keys."
@@ -3033,8 +3038,8 @@
       "organization": {
         "create-organization": "Create $t(common.organization)",
         "authorization": {
-          "title": "Authorization",
-          "subtitle": "This section allows you to modify the $t(common.organization)'s authorization"
+          "title": "Authorisation",
+          "subtitle": "This section allows you to modify the $t(common.organization)'s authorisation"
         },
         "settings": {
           "title": "$t(common.Settings)",
@@ -3070,7 +3075,7 @@
       "subsubspace": {
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.subspace) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.subspace) authorisation preferences"
           }
         },
         "community": {
@@ -3088,7 +3093,7 @@
       "subspace": {
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.subspace) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.subspace) authorisation preferences"
           }
         },
         "community": {
@@ -3114,7 +3119,7 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customise the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
             "reorderSubspaces": "Reorder $t(common.subspaces)",
@@ -3129,7 +3134,7 @@
         },
         "authorization": {
           "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
+            "subtitle": "This section allows you to modify the $t(common.space) authorisation preferences"
           }
         },
         "aria": {
@@ -3186,7 +3191,7 @@
           },
           "copySpace": {
             "title": "Copy $t(common.subspace)",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
+            "description": "To utilise this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
             "createTemplate": "Create $t(common.template)",
             "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicate"
@@ -3218,7 +3223,7 @@
             "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
             "approverNameLabel": "Approved by",
             "approverRoleLabel": "Approver's role",
-            "approverOrganizationLabel": "Approver's organization (optional)",
+            "approverOrganizationLabel": "Approver's organisation (optional)",
             "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
             "submit": "Change email"
           },
@@ -3776,7 +3781,7 @@
     },
     "whiteboard": {
       "header": "$t(common.Whiteboards) in this {{blockName}}",
-      "subheader": "Create your custom visualization and share it with others.",
+      "subheader": "Create your custom visualisation and share it with others.",
       "createWhiteboard": "Create $t(common.whiteboard)",
       "defaultWhiteboardDisplayName": "$t(common.Whiteboard)",
       "editDisplayName": "Edit title",
@@ -3822,6 +3827,7 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this $t(common.whiteboard). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.whiteboard). The owner is not available anymore, but you can ask an administrator of the $t(common.space) to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
@@ -3912,10 +3918,11 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this $t(common.memo). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.memo). The owner is not available anymore, but you can ask an administrator of the $t(common.space), to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.memo) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.memo) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>",
         "connecting": "",
-        "notSynced": " Synchronizing... Reopen the $t(common.memo) to quickly enable it back. Backup your changes before closing."
+        "notSynced": " Synchronising... Reopen the $t(common.memo) to quickly enable it back. Backup your changes before closing."
       },
       "readonlyDialog": {
         "title": "View only mode",
@@ -3971,7 +3978,7 @@
       "logo-subtitle": "Safe $t(common.spaces) for Collaboration"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio makes it easy to manage $t(common.subspaces) and have contributors, from anywhere, working together on solutions. $t(common.subspaces) take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Alkemio makes it easy to manage $t(common.subspaces) and have contributors, from anywhere, working together on solutions. $t(common.subspaces) take centre-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
       "next": "Next",
@@ -4082,7 +4089,7 @@
         "privacy": {
           "title": "Privacy",
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
-          "bullets": "<ul><li>When interacting with a $t(common.virtualContributor), only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilized for training the $t(common.virtualContributor).</li><li>Additionally, please note that questions and answers exchanged with the $t(common.virtualContributor) may be visible to the Alkemio team.</li></ul>"
+          "bullets": "<ul><li>When interacting with a $t(common.virtualContributor), only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilised for training the $t(common.virtualContributor).</li><li>Additionally, please note that questions and answers exchanged with the $t(common.virtualContributor) may be visible to the Alkemio team.</li></ul>"
         },
         "external": {
           "personality": {
@@ -4129,7 +4136,7 @@
           "resetBtn": "Reset to Default",
           "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Prompt Graph",
-          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "infoText": "Define the behaviour of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customise the prompt graph to suit your specific use case and requirements.",
           "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
           "stepsTitle": "Steps",
           "systemNodeTooltip": "System Node - not editable",
@@ -4413,8 +4420,8 @@
           "forbidden": "Access denied.",
           "forbiddenPolicy": "You don't have the correct rights.",
           "forbiddenLicensePolicy": "License restriction.",
-          "invalidPolicy": "Invalid authorization policy.",
-          "authorizationReset": "Authorization reset in progress.",
+          "invalidPolicy": "Invalid authorisation policy.",
+          "authorizationReset": "Authorisation reset in progress.",
           "userNotVerified": "User is not verified.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
           "apiRestricted": "API access restricted.",
@@ -4423,7 +4430,7 @@
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "loginFlow": "Login flow error.",
-          "loginFlowInit": "Unable to initialize login flow."
+          "loginFlowInit": "Unable to initialise login flow."
         },
         "validation": {
           "badUserInput": "{{message}}",
@@ -4432,8 +4439,8 @@
           "formatNotSupported": "Format not supported.",
           "invalidStateTransition": "Invalid state transition.",
           "invalidTemplateType": "Invalid template type.",
-          "groupNotInitialized": "Group not initialized.",
-          "entityNotInitialized": "Entity not initialized.",
+          "groupNotInitialized": "Group not initialised.",
+          "entityNotInitialized": "Entity not initialised.",
           "relationNotLoaded": "Relation not loaded.",
           "paginationOutOfBound": "Pagination input out of bounds.",
           "paginationParamNotFound": "Pagination parameter not found.",
@@ -4453,10 +4460,13 @@
           "userAlreadyRegistered": "User already registered.",
           "userNotRegistered": "User not registered.",
           "noAgentForUser": "No agent for user.",
-          "userIdentityDeletionFailed": "User identity deletion failed."
+          "userIdentityDeletionFailed": "User identity deletion failed.",
+          "roleSetOpenApplicationExists": "You already have a pending application to this space.",
+          "roleSetOpenInvitationExists": "You've already been invited to this space — accept the invitation instead of applying.",
+          "roleSetAlreadyMember": "You're already a member of this space."
         },
         "system": {
-          "bootstrapFailed": "System initialization failed.",
+          "bootstrapFailed": "System initialisation failed.",
           "notificationPayloadBuilder": "Notification error.",
           "geoLocationError": "Geolocation error.",
           "geoServiceNotAvailable": "Geolocation service not available.",
@@ -4472,8 +4482,8 @@
           "documentDeleteFailed": "Document delete failed.",
           "urlResolverError": "URL resolver error.",
           "excalidrawAmqpResult": "Excalidraw service error.",
-          "excalidrawRedisAdapterInit": "Excalidraw initialization error.",
-          "excalidrawServerInit": "Excalidraw server initialization error."
+          "excalidrawRedisAdapterInit": "Excalidraw initialisation error.",
+          "excalidrawServerInit": "Excalidraw server initialisation error."
         },
         "fallback": "An unexpected error occurred. Reference: {{errorId}}"
       },
@@ -4699,7 +4709,7 @@
       {
         "name": "SPACE_LICENSE_ENTERPRISE",
         "displayName": "Enterprise",
-        "priceDescription": "Your Customized plan",
+        "priceDescription": "Your Customised plan",
         "features": [
           "Up to 250 $t(common.members)",
           "Realtime, multi-user $t(common.whiteboards)",
@@ -4756,7 +4766,7 @@
     },
     "initial": {
       "title": "Create a $t(common.virtualContributor)",
-      "profileDescription": "Choose a name and avatar now, or personalize your $t(common.profile) later on the VC $t(common.Profile) page.",
+      "profileDescription": "Choose a name and avatar now, or personalise your $t(common.profile) later on the VC $t(common.Profile) page.",
       "description": "A $t(common.virtualContributor) allows you to interact with AI on Alkemio. What do you want to make available through your $t(common.virtualContributor)?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a $t(common.spaceSubspace) on Alkemio",
@@ -4779,7 +4789,7 @@
       "post": {
         "title": "$t(common.Post) title",
         "exampleTitle": "Example: About Alkemio",
-        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realise our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add $t(common.post)",
         "tooltip": "More $t(common.posts) can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial $t(common.posts)",
@@ -4831,7 +4841,7 @@
       "title": "👍That’s it!",
       "subTitle": "To start interacting, simply type @{{vcName}} in a $t(common.comment). Give it a try in the preview below.",
       "postTitle": "Example $t(common.post)",
-      "postDescription": "At Alkemio, we utilize $t(common.posts) to facilitate collaborative interactions with AI. Unlike private chats, other $t(common.members) within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the $t(common.virtualContributor)’s name.",
+      "postDescription": "At Alkemio, we utilise $t(common.posts) to facilitate collaborative interactions with AI. Unlike private chats, other $t(common.members) within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the $t(common.virtualContributor)’s name.",
       "continueButton": "Visit $t(common.space)"
     },
     "tryInfoSection": {
@@ -4867,10 +4877,6 @@
     "appVersion": {
       "message": "A new version of the app is available.",
       "recurringMessage": "Please close all Alkemio tabs and reload to update."
-    },
-    "onlineStatus": {
-      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
-      "restored": "Your connection has been restored."
     }
   },
   "collaboraDocument": {

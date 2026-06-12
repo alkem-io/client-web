@@ -34,8 +34,14 @@
     },
     "results": {
       "sent": "Invitation envoyée",
-      "alreadyMember": "Déjà membre",
-      "error": "Échec : {{message}}"
+      "alreadyInvited": "Déjà invité",
+      "alreadyMember": "Déjà membre de cet espace",
+      "alreadyHasApplication": "A déjà une candidature en cours pour cet espace",
+      "parentNotAuthorized": "Invitation impossible — la personne devrait aussi rejoindre l'espace parent, et vous n'avez pas la permission d'y inviter.",
+      "error": "Échec de l'invitation."
+    },
+    "toast": {
+      "someFailed": "{{count}} invitations n'ont pas pu être envoyées — consultez les résultats pour plus de détails."
     }
   },
   "inviteVc": {
@@ -58,6 +64,12 @@
     "defaultWelcomeMessage": "Nous aimerions vous inviter à contribuer à {{space}}.",
     "addedNotice": "Contributeur virtuel ajouté.",
     "invitedNotice": "Invitation envoyée.",
-    "error": "Une erreur s'est produite. Veuillez réessayer."
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "previewAriaLabel": "Aperçu de {{name}}",
+    "preview": {
+      "tagsLabel": "Étiquettes",
+      "hostedBy": "Hébergé par {{name}}",
+      "noDescription": "Aucune description fournie."
+    }
   }
 }

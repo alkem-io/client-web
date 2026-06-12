@@ -158,12 +158,20 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
 
+### No `__typename` discrimination
+
+Do **not** branch on `__typename` in CRD code (`src/crd/**`, `src/main/crdPages/**`) or in the data mappers/models that feed it. Prefer an explicit, schema-defined discriminator field instead — e.g. `actor.type === ActorType.VirtualContributor`, a `status` enum, a `kind` field.
+
+**Why:** `__typename` is the *runtime object type*, which is frequently NOT what you expect. A field typed as a concrete object type (e.g. `Message.sender: Actor`) always has `__typename === 'Actor'`, so a check like `sender.__typename === 'VirtualContributor'` is silently *always false* — it type-checks, passes review, and fails only at runtime. (This exact bug shipped once: the comment VC badge never rendered. The fix was to select `Actor.type` and compare against `ActorType`.) `__typename` is also fragile across schema refactors (object type → interface/union and back) in a way an explicit enum is not.
+
+If there is genuinely no schema field to discriminate on and `__typename` is the only option, it is allowed **only** with a comment that (a) states why no proper discriminator exists and (b) names the exact `__typename` values the code relies on, so a schema change that breaks them is caught in review.
+
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
-- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
+- **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its sibling locale files serve only the not-yet-migrated MUI app. **Crowdin is no longer used.** Legacy core translations are now maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings still go to CRD, never here.
 
 ### Namespaces
 
@@ -318,7 +326,11 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
+`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`.
+
+**CRD is the only design system for new features.** All new client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI (`src/core/ui/`, `@mui/*`, `@emotion/*`) is **frozen** — no new MUI view/presentational components may be added; MUI is only ever *removed* as pages are migrated. `@mui/*`/`@emotion/*` imports are acceptable only inside already-existing MUI files until they are migrated.
+
+The critical rules:
 
 **Hard restrictions — every file in `src/crd/`:**
 - **NO MUI** — zero imports from `@mui/*` or `@emotion/*`
@@ -377,11 +389,15 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 106-hiding-tabs-phases: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (CRD layer, via `@/crd/components/space/settings/*`); Apollo Client (generated hooks only); `react-i18next` (`crd-spaceSettings` namespace); `lucide-react` (Eye/EyeOff). Per-phase Hide/Show built into the CRD Space-Settings Layout column kebab + CRD `ConfirmationDialog`; member-facing CRD nav filters hidden phases via the shared `filterVisibleStates` selector. Carries an optional `settings.visible` flag (graceful degradation until alkem-io/server#6138 ships); `pnpm codegen` NOT run. **All existing — no new runtime dependencies.**
+- 106-crd-virtual-contributors: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `class-variance-authority`; Formik + Yup (reused for wizard forms, decoupled from MUI); `date-fns` for any date formatting. **No new runtime dependencies** — the prompt-graph editor is built from existing CRD primitives (shadcn Accordion + custom property rows), no graph library.
+- 105-crd-global-admin: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (CRD layer, via `@/crd/primitives/*`); Apollo Client (generated hooks only); `react-i18next`; `lucide-react`; `react-router-dom` (route wiring only, in `src/main`); `date-fns` (CRD/crdPages date formatting). **All existing — no new runtime dependencies.**
 - 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
-- 102-crd-innovation-hub: Added TypeScript 5.x, React 19 with React Compiler enabled (no manual `useMemo`/`useCallback`/`React.memo`). + shadcn/ui + Tailwind CSS v4 + Radix UI (existing, via `@/crd/primitives/*`); `class-variance-authority`, `lucide-react`, `react-i18next` (all existing). Apollo Client + generated hooks (`useInnovationHubByIdQuery`, `useInnovationHubQuery`, `useInnovationHubSettingsQuery`, `useUpdateInnovationHubMutation`, `useUploadVisualMutation` — all already generated; the `InnovationHubHomeInnovationHub` fragment is extended with `spaceListFilter { id }` so `pnpm codegen` MUST be run once and the regenerated `apollo-hooks.ts` / `graphql-schema.ts` committed in this PR). `@dnd-kit/core` + `@dnd-kit/sortable` (existing, used by the legacy Spaces field — reused for CRD drag-reorder). `date-fns` only for any date formatting (no `dayjs` in CRD/crdPages layers). No new runtime dependencies.
-- 101-crd-auth-pages: Added TypeScript 5.x, React 19 (with React Compiler), Node 24.14.0 (Volta-pinned)
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**. (103-innovation-library-pagination)
-- N/A (frontend SPA). Client-side: Apollo InMemoryCache relay-style field merge for the two new `Library` paginated fields. (103-innovation-library-pagination)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (CRD layer); Apollo Client (generated hooks only); `react-i18next` (`crd-spaceSettings`); `lucide-react`; `@dnd-kit` (existing, layout columns). **All existing — no new runtime dependencies.** (106-hiding-tabs-phases)
+- Server-persisted via GraphQL (`InnovationFlowStateSettings.visible`, alkem-io/server#6138). Client cache is Apollo `InMemoryCache`; the CRD layout buffer holds the optimistic visibility flip. No local/device persistence (visibility is shared across all viewers). (106-hiding-tabs-phases)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `class-variance-authority`; Formik + Yup (reused for wizard forms, decoupled from MUI); `date-fns` for any date formatting. **No new runtime dependencies** — the prompt-graph editor is built from existing CRD primitives (shadcn Accordion + custom property rows), no graph library. (106-crd-virtual-contributors)
+- N/A (frontend SPA). Client-side state via Apollo cache + local React state; file uploads via existing `MarkdownUploadScope` / `StorageConfigContextProvider`. (106-crd-virtual-contributors)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (CRD layer, via `@/crd/primitives/*`); Apollo Client (generated hooks only); `react-i18next`; `lucide-react`; `react-router-dom` (route wiring only, in `src/main`); `date-fns` (CRD/crdPages date formatting). **All existing — no new runtime dependencies.** (105-crd-global-admin)

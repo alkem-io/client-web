@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} leden"
     },
     "empty": {
+      "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces.",
       "membership": "Nog geen lidmaatschappen."
     },
@@ -93,6 +94,7 @@
       "memberOf": "Alle lidmaatschappen"
     },
     "empty": {
+      "resourcesHosted": "Nog geen gehoste bronnen.",
       "leading": "Nog geen leiding over spaces."
     },
     "vcType": "Virtual Contributor"
@@ -115,7 +117,7 @@
         "title": "Functionele mogelijkheden",
         "tagging": "Vragen in opmerkingen beantwoorden",
         "createContent": "Nieuwe posts aanmaken",
-        "communityManagement": "Andere bijdragers uitnodigen"
+        "communityManagement": "Andere deelnemers uitnodigen"
       },
       "dataAccess": {
         "title": "Gegevenstoegang vanuit de Space waarvan deze lid is",
@@ -171,6 +173,31 @@
     "monitoring": {
       "heading": "Monitoring door Alkemio",
       "body": "Omdat Alkemio de interactie met de externe leverancier faciliteert, draagt Alkemio een operationele verantwoordelijkheid om de dienst te monitoren. Net als alle gegevens en interacties op het platform, vallen deze onder onze <a>Algemene voorwaarden</a>."
+    }
+  },
+  "knowledgeBase": {
+    "title": "Kennisbank",
+    "loading": "Kennisbank laden",
+    "refresh": "Vernieuwen",
+    "addCallout": "Toevoegen",
+    "lastUpdated": "Laatst bijgewerkt:",
+    "never": "Nooit",
+    "description": {
+      "edit": "Beschrijving bewerken",
+      "empty": "Deze Virtual Contributor is gebaseerd op zijn eigen samengestelde verzameling documenten, tekst en links.",
+      "placeholder": "Beschrijf wat deze Virtual Contributor weet…",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Opslaan…",
+      "saveError": "Kon de beschrijving niet opslaan — probeer het opnieuw."
+    },
+    "empty": {
+      "title": "Nog geen kennis",
+      "description": "De kennisbank van deze Virtual Contributor is leeg."
+    },
+    "noAccess": {
+      "title": "Geen toegang",
+      "description": "Je hebt geen toegang tot deze kennisbank."
     }
   }
 }

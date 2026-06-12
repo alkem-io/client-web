@@ -173,15 +173,15 @@ export function PreviewCropDialog({
       {/* `z-[70]` (content + overlay): opened on top of the whiteboard editor shell (`z-[60]`),
           so it must out-stack it — matching the TemplatePicker and readonly-reason dialogs. */}
       <DialogContent
-        className="z-[70] sm:max-w-2xl p-0"
+        className="z-[70] sm:max-w-2xl p-0 max-h-[90vh] flex flex-col overflow-hidden"
         overlayClassName="z-[70]"
         closeLabel={t('preview.crop.cancel')}
       >
-        <DialogHeader className="px-6 pt-6">
+        <DialogHeader className="px-6 pt-6 shrink-0">
           <DialogTitle>{title ?? t('preview.modes.CUSTOM.title')}</DialogTitle>
         </DialogHeader>
 
-        <div className="px-6">
+        <div className="px-6 flex-1 min-h-0 overflow-y-auto">
           <div
             className={cn(
               'overflow-hidden rounded-md border border-border',
@@ -240,7 +240,7 @@ export function PreviewCropDialog({
           </div>
         </div>
 
-        <DialogFooter className="px-6 pb-6">
+        <DialogFooter className="px-6 pb-6 shrink-0">
           <Button variant="outline" onClick={resetCrop} disabled={!ready}>
             <RotateCcw className="size-4 mr-1" aria-hidden="true" />
             {t('preview.crop.reset')}

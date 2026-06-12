@@ -43,8 +43,8 @@ export function PreApplicationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-md', className)}>
-        <DialogTitle>
+      <DialogContent className={cn('sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden', className)}>
+        <DialogTitle className="shrink-0">
           <Trans
             i18nKey={`components.application-button.${dialogVariant}.title` as const}
             values={{ parentCommunityName }}
@@ -52,7 +52,7 @@ export function PreApplicationDialog({
           />
         </DialogTitle>
         <DialogDescription asChild={true}>
-          <div>
+          <div className="flex-1 min-h-0 overflow-y-auto">
             <Trans
               i18nKey={`components.application-button.${dialogVariant}.body` as const}
               values={{ spaceName: parentCommunityName, subspaceName }}
@@ -60,7 +60,7 @@ export function PreApplicationDialog({
             />
           </div>
         </DialogDescription>
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           {ctaHref ? (
             <a
               href={ctaHref}

@@ -34,8 +34,14 @@
     },
     "results": {
       "sent": "Uitnodiging verstuurd",
-      "alreadyMember": "Is al lid",
-      "error": "Mislukt: {{message}}"
+      "alreadyInvited": "Al uitgenodigd",
+      "alreadyMember": "Al lid van deze Space",
+      "alreadyHasApplication": "Heeft al een openstaande aanvraag voor deze Space",
+      "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
+      "error": "Uitnodiging mislukt."
+    },
+    "toast": {
+      "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."
     }
   },
   "inviteVc": {
@@ -58,6 +64,12 @@
     "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
     "addedNotice": "Virtual Contributor toegevoegd.",
     "invitedNotice": "Uitnodiging verzonden.",
-    "error": "Er ging iets mis. Probeer het opnieuw."
+    "error": "Er ging iets mis. Probeer het opnieuw.",
+    "previewAriaLabel": "Voorbeeld van {{name}}",
+    "preview": {
+      "tagsLabel": "Tags",
+      "hostedBy": "Gehost door {{name}}",
+      "noDescription": "Geen beschrijving opgegeven."
+    }
   }
 }

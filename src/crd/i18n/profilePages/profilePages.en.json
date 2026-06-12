@@ -18,7 +18,7 @@
     "loading": {
       "hero": "Loading profile header",
       "sidebar": "Loading profile details",
-      "organizations": "Loading organizations",
+      "organizations": "Loading organisations",
       "hostedResources": "Loading hosted resources",
       "memberships": "Loading memberships",
       "contentView": "Loading content",
@@ -48,14 +48,15 @@
     },
     "sidebar": {
       "aboutTitle": "About",
-      "organizationsTitle": "Organizations",
+      "organizationsTitle": "Organisations",
       "socialLinksTitle": "Social",
       "bioEmpty": "No bio yet.",
-      "organizationsEmpty": "Not part of any organization yet.",
+      "organizationsEmpty": "Not part of any organisation yet.",
       "memberCountLine_one": "{{count}} member",
       "memberCountLine_other": "{{count}} members"
     },
     "empty": {
+      "resourcesHosted": "No resources hosted yet.",
       "leading": "Not leading any spaces yet.",
       "membership": "No memberships yet."
     },
@@ -63,11 +64,11 @@
   },
   "orgProfile": {
     "hero": {
-      "settingsTooltip": "Organization settings",
-      "settingsAriaLabel": "Open organization settings",
+      "settingsTooltip": "Organisation settings",
+      "settingsAriaLabel": "Open organisation settings",
       "messageButton": "Message",
       "verifiedBadge": "Verified",
-      "verifiedTooltip": "This organization has been verified by Alkemio."
+      "verifiedTooltip": "This organisation has been verified by Alkemio."
     },
     "sidebar": {
       "bioTitle": "Bio",
@@ -93,6 +94,7 @@
       "memberOf": "All Memberships"
     },
     "empty": {
+      "resourcesHosted": "No resources hosted yet.",
       "leading": "Not leading any spaces yet."
     },
     "vcType": "Virtual Contributor"
@@ -171,6 +173,31 @@
     "monitoring": {
       "heading": "Monitoring by Alkemio",
       "body": "Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a>Terms & Conditions</a>."
+    }
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "loading": "Loading knowledge base",
+    "refresh": "Refresh",
+    "addCallout": "Add",
+    "lastUpdated": "Last updated:",
+    "never": "Never",
+    "description": {
+      "edit": "Edit description",
+      "empty": "This Virtual Contributor is based on its own curated collection of documents, text, and links.",
+      "placeholder": "Describe what this Virtual Contributor knows…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveError": "Couldn't save the description — try again."
+    },
+    "empty": {
+      "title": "No knowledge yet",
+      "description": "This Virtual Contributor's knowledge base is empty."
+    },
+    "noAccess": {
+      "title": "No access",
+      "description": "You don't have access to this knowledge base."
     }
   }
 }

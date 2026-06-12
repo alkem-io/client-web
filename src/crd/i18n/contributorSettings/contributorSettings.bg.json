@@ -1,4 +1,79 @@
 {
+  "wizard": {
+    "title": "Създаване на Virtual Contributor",
+    "close": "Затвори",
+    "loading": "Обработка…",
+    "next": "Напред",
+    "back": "Назад",
+    "create": "Създай",
+    "initial": {
+      "intro": "Дайте име на вашия Virtual Contributor и изберете откъде идват знанията му.",
+      "uploadAvatar": "Качи аватар",
+      "name": "Име",
+      "tagline": "Слоган",
+      "description": "Описание",
+      "pathTitle": "Откъде идват знанията?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Писмени знания",
+          "subtitle": "Добавете публикации и документи"
+        },
+        "existingSpace": {
+          "title": "Съществуващ Space",
+          "subtitle": "Използвайте Space, до който имате достъп"
+        },
+        "external": {
+          "title": "Външен ИИ",
+          "subtitle": "Свържете външен доставчик"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Какви знания искате да има вашият Virtual Contributor? Запишете ги в posts или ги качете в документи. По-късно можете да актуализирате, добавяте и премахвате съдържание.",
+      "postsTitle": "Публикации",
+      "postTitle": "Заглавие",
+      "postDescription": "Съдържание",
+      "removePost": "Премахни публикацията",
+      "addPost": "Добави публикация",
+      "documentsTitle": "Документи",
+      "documentName": "Име",
+      "documentUrl": "URL",
+      "removeDocument": "Премахни документа",
+      "addDocument": "Добави документ",
+      "exampleTitle": "Пример: За Alkemio",
+      "exampleDescription": "Съвет: Създайте структуриран и специфичен текст, например:\n\n<strong>Предпоставки</strong>\n\nAlkemio, основана през 2020 г., се ражда от разочарованието от бавния прогрес по предизвикателства, свързани с COVID, и осъзнаването на множеството бързо променящи се предизвикателства, с които се сблъскваме ежедневно.\n\n<strong>Управление</strong>\n\nЗа да поддържаме доверието и да реализираме дългосрочната си визия, ние приехме Стюардство като основна структура на групата. Стюардството е...\n",
+      "initialDocuments": "Начални връзки и документи"
+    },
+    "existingSpace": {
+      "intro": "Изберете Space, който да използвате като база от знания.",
+      "empty": "Няма налични Spaces."
+    },
+    "external": {
+      "intro": "Свържете външен ИИ доставчик.",
+      "engine": "Доставчик",
+      "apiKey": "API ключ",
+      "assistantId": "ID на асистента",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Добавете вашия Virtual Contributor към общност или пропуснете засега.",
+      "skip": "Пропусни засега",
+      "errorMessage": "Неуспешно добавяне към общността — опитайте отново."
+    },
+    "tryVc": {
+      "title": "{{name}} е готов!",
+      "description": "Вашият Virtual Contributor е създаден.",
+      "view": "Виж профила",
+      "done": "Готово"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' беше създаден успешно",
+      "errorMessage": "Virtual Contributor не можа да бъде създаден — опитайте отново."
+    }
+  },
   "breadcrumbs": {
     "settings": "Настройки"
   },
@@ -557,6 +632,32 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Граф на промптове",
+      "helper": "Редактирайте машината на състоянията на промпта. Системните възли са само за четене; потребителските възли предоставят редактируем промпт и изходни свойства.",
+      "disabled": "Редактирането на графа на промптове е изключено за този Virtual Contributor.",
+      "empty": "Този Virtual Contributor няма граф на промптове.",
+      "editingEnabled": "Редактирането е включено",
+      "inputVariables": "Входни променливи",
+      "start": "Начало",
+      "end": "Край",
+      "prompt": "Промпт",
+      "reset": "Нулиране",
+      "resetConfirm": {
+        "title": "Нулиране на графа на промптове?",
+        "description": "Това изтрива целия граф на промптове и не може да бъде отменено."
+      },
+      "properties": {
+        "title": "Изходни свойства",
+        "empty": "Няма изходни свойства.",
+        "name": "Име",
+        "type": "Тип",
+        "optional": "Незадължително",
+        "description": "Описание",
+        "add": "Добави свойство",
+        "remove": "Премахни свойство"
+      }
+    },
     "profile": {
       "pageTitle": "Настройки",
       "identity": {

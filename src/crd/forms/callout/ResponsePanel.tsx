@@ -14,6 +14,12 @@ export type ResponsePanelProps = {
   /** Posts-only contribution-level comments switch (FR-32). */
   contributionCommentsEnabled: boolean;
   onContributionCommentsEnabledChange: (value: boolean) => void;
+  /**
+   * Whether the Posts contribution-comments switch is shown. Defaults to `true`.
+   * A consumer sets `false` to hide it (and keep comments off) — e.g. a Virtual
+   * Contributor's knowledge base, which does not support comments.
+   */
+  showContributionComments?: boolean;
   /** Pre-populate link rows (create-mode only). Pass `undefined` to hide. */
   prePopulateLinkRows?: LinkRow[];
   onPrePopulateLinkRowsChange?: (rows: LinkRow[]) => void;
@@ -92,6 +98,7 @@ function PostsPanel(props: ResponsePanelProps) {
     onAllowedActorsChange,
     contributionCommentsEnabled,
     onContributionCommentsEnabledChange,
+    showContributionComments = true,
     onSetDefaults,
     disabled,
   } = props;
@@ -99,11 +106,13 @@ function PostsPanel(props: ResponsePanelProps) {
   return (
     <PanelWrapper>
       <ActorSwitches value={allowedActors} onChange={onAllowedActorsChange} disabled={disabled} />
-      <PostsCommentsField
-        value={contributionCommentsEnabled}
-        onChange={onContributionCommentsEnabledChange}
-        disabled={disabled}
-      />
+      {showContributionComments && (
+        <PostsCommentsField
+          value={contributionCommentsEnabled}
+          onChange={onContributionCommentsEnabledChange}
+          disabled={disabled}
+        />
+      )}
       {onSetDefaults && <SetDefaultsButton onClick={onSetDefaults} disabled={disabled} />}
     </PanelWrapper>
   );

@@ -86,11 +86,12 @@ export function CrdPostContributionDialog({
   const { t } = useTranslation('crd-space');
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
-  // Create mode: the post (and its storage bucket) doesn't exist yet, so uploads must use the
-  // temporary location against the callout bucket (scoped by the connector) — the server
-  // relocates them to the post on save. Edit mode uploads straight to the post's own bucket.
+  // Create mode: the post (and its storage bucket) doesn't exist yet, so both markdown-image and
+  // reference-file uploads must use the temporary location against the callout bucket (scoped by the
+  // connector) — the server relocates them to the post on save. Edit mode uploads straight to the
+  // post's own bucket (`temporaryLocation: false`).
   const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: mode === 'create' });
-  const referenceUpload = useReferenceFileUpload(useStorageConfigContext());
+  const referenceUpload = useReferenceFileUpload(useStorageConfigContext(), { temporaryLocation: mode === 'create' });
   const titleFieldId = useId();
   const descriptionFieldId = useId();
   const tagsFieldId = useId();
@@ -397,13 +398,13 @@ export function CrdPostContributionDialog({
           else onOpenChange(true);
         }}
       >
-        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 min-w-0">
+          <div className="space-y-4 min-w-0 flex-1 min-h-0 overflow-y-auto">
             {mode === 'edit' && loadingPost && !post && <Loading />}
 
             {(mode === 'create' || post) && (
@@ -500,9 +501,19 @@ export function CrdPostContributionDialog({
                 )}
               </>
             )}
+
+            {showCommentsSection && commentsRoom && contributionId && (
+              <div className="mt-6 pt-6 border-t border-border space-y-4">
+                <CalloutCommentsConnector
+                  roomId={commentsRoom.id}
+                  contributionId={contributionId}
+                  roomData={commentsRoom}
+                />
+              </div>
+            )}
           </div>
 
-          <DialogFooter className="flex items-center justify-between gap-2 sm:justify-between">
+          <DialogFooter className="shrink-0 flex items-center justify-between gap-2 sm:justify-between">
             <div>
               {mode === 'edit' && canDelete && (
                 <Button
@@ -526,16 +537,6 @@ export function CrdPostContributionDialog({
               </Button>
             </div>
           </DialogFooter>
-
-          {showCommentsSection && commentsRoom && contributionId && (
-            <div className="mt-6 pt-6 border-t border-border space-y-4">
-              <CalloutCommentsConnector
-                roomId={commentsRoom.id}
-                contributionId={contributionId}
-                roomData={commentsRoom}
-              />
-            </div>
-          )}
         </DialogContent>
       </Dialog>
 

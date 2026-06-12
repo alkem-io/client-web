@@ -3,6 +3,7 @@ import { Globe, Info, Key, MessageSquare, RefreshCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { VCPromptGraphCard } from '@/crd/components/virtualContributor/settings/VCPromptGraphCard';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
@@ -66,6 +67,7 @@ export function VCSettingsTabView(props: VcSettingsViewProps) {
       {props.bodyOfKnowledge ? <VCBodyOfKnowledgeCard {...props.bodyOfKnowledge} /> : null}
       {props.prompt ? <VCPromptCard {...props.prompt} labels={labels} /> : null}
       {props.externalConfig ? <VCExternalConfigCard {...props.externalConfig} labels={labels} /> : null}
+      {props.promptGraph ? <VCPromptGraphCard {...props.promptGraph} labels={labels} /> : null}
     </div>
   );
 }

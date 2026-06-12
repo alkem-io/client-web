@@ -2,6 +2,10 @@ import i18n from 'i18next';
 import 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+// CRD error namespace — eagerly loaded so the top-level (above-router) error
+// boundary can render a CRD error page even when a crash happens at boot,
+// before the lazy backend has a chance to fetch it.
+import crdErrorEN from '@/crd/i18n/error/error.en.json';
 // CRD layout namespace — eagerly loaded (renders on every CRD page)
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import { env } from '@/main/env';
@@ -211,6 +215,22 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/innovationHub/innovationHub.de.json'),
     fr: () => import('@/crd/i18n/innovationHub/innovationHub.fr.json'),
   },
+  'crd-admin': {
+    en: () => import('@/crd/i18n/admin/admin.en.json'),
+    es: () => import('@/crd/i18n/admin/admin.es.json'),
+    nl: () => import('@/crd/i18n/admin/admin.nl.json'),
+    bg: () => import('@/crd/i18n/admin/admin.bg.json'),
+    de: () => import('@/crd/i18n/admin/admin.de.json'),
+    fr: () => import('@/crd/i18n/admin/admin.fr.json'),
+  },
+  'crd-help': {
+    en: () => import('@/crd/i18n/help/help.en.json'),
+    es: () => import('@/crd/i18n/help/help.es.json'),
+    nl: () => import('@/crd/i18n/help/help.nl.json'),
+    bg: () => import('@/crd/i18n/help/help.bg.json'),
+    de: () => import('@/crd/i18n/help/help.de.json'),
+    fr: () => import('@/crd/i18n/help/help.fr.json'),
+  },
 };
 
 // Cache for loaded translations
@@ -218,6 +238,7 @@ const translationCache = new Map<string, Record<string, unknown>>();
 // Pre-populate cache with eagerly loaded English translations
 translationCache.set(`${defaultLang}-${defaultNS}`, translationEN);
 translationCache.set(`${defaultLang}-crd-layout`, crdLayoutEN);
+translationCache.set(`${defaultLang}-crd-error`, crdErrorEN);
 
 // Custom backend for lazy loading
 const lazyBackend = {
@@ -267,7 +288,7 @@ i18n
   .init({
     fallbackLng: defaultLang,
     supportedLngs,
-    ns: [defaultNS, 'crd-layout'],
+    ns: [defaultNS, 'crd-layout', 'crd-error'],
     defaultNS,
     preload: [defaultLang], // English is preloaded
     // Required when mixing bundled resources with a backend for other languages
@@ -277,6 +298,7 @@ i18n
       en: {
         translation: translationEN,
         'crd-layout': crdLayoutEN,
+        'crd-error': crdErrorEN,
       },
     },
     interpolation: {

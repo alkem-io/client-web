@@ -6,6 +6,7 @@ import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Loading } from '@/crd/components/common/Loading';
@@ -21,6 +22,7 @@ import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManag
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapMemoFooterProps } from './memoFooterMapper';
 import { useCrdMemoProvider } from './useCrdMemoProvider';
@@ -36,6 +38,7 @@ type CrdMemoDialogProps = {
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
+  useRegisterFullscreenEditor(open);
   const client = useApolloClient();
   const { memo, loading } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
@@ -151,6 +154,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     hasDeletePrivileges,
     onDelete: handleRequestDelete,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
+    hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
 
@@ -179,7 +183,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const headerActions = (
     <>
-      <ShareButton url={memo?.profile.url} disabled={!memo?.profile.url} />
+      {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
+          control (Owner / Admins / Contributors) — parity with the CRD whiteboard and the legacy MUI
+          memo dialog, and what makes the footer's "ask the owner to change the share settings" message
+          actionable. The component is generic via `elementType="memo"`. */}
+      <ShareButton url={memo?.profile.url} disabled={!memo?.profile.url}>
+        {hasUpdatePrivileges && <CrdCollaborationSettings element={memo} elementType="memo" />}
+      </ShareButton>
       {!isSmallScreen && <FullscreenButton />}
     </>
   );
@@ -192,7 +202,16 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         onClose={handleClose}
         title={title}
         headerActions={headerActions}
-        footer={<MemoCollabFooter {...footerProps} />}
+        footer={
+          <MemoCollabFooter
+            {...footerProps}
+            owner={
+              memo?.createdBy?.profile
+                ? { name: memo.createdBy.profile.displayName, url: memo.createdBy.profile.url }
+                : undefined
+            }
+          />
+        }
       >
         {showLoadingState ? (
           <Loading text={t('memo.errors.loading')} />

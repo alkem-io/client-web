@@ -84,6 +84,17 @@
           "confirm": "Fase verwijderen",
           "cancel": "Annuleren"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Verbergen in menu",
+        "showMenuLabel": "Tonen in menu",
+        "hiddenBadge": "Verborgen",
+        "confirm": {
+          "title": "Deze fase verbergen?",
+          "description": "Dit verbergt de fase alleen in het menu. Het ontneemt geen toegang tot de inhoud: iedereen met een link naar de fase, of naar een Post erin, kan deze nog steeds openen.",
+          "confirm": "Verbergen",
+          "cancel": "Annuleren"
+        }
       }
     },
     "addPhase": {
@@ -209,7 +220,7 @@
     "memberSettings": {
       "title": "Lidinstellingen",
       "lead": "Dit lid is een <b>lead</b>: Leads worden weergegeven als de hosts van de community.",
-      "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en bijdragers ervan beheren.",
+      "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en deelnemers ervan beheren.",
       "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "section": {
         "role": "Rol",
@@ -696,6 +707,21 @@
       "alkemioSupportAccess": "Alkemio-ondersteuning",
       "trustHostOrganization": "Vertrouw hostorganisatie",
       "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren."
+    },
+    "saveAsTemplate": {
+      "title": "Opslaan als template",
+      "description": "Maak een herbruikbaar template van deze subspace, inclusief de layout en inhoud.",
+      "button": "Opslaan als template"
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "description": "Verwijder deze subspace en alle inhoud ervan permanent.",
+      "delete": "Deze subspace verwijderen",
+      "deleteDialog": {
+        "title": "Subspace verwijderen",
+        "description": "Hierdoor wordt deze subspace en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "confirm": "Subspace verwijderen"
+      }
     }
   },
   "storage": {

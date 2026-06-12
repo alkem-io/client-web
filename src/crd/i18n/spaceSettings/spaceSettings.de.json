@@ -84,6 +84,17 @@
           "confirm": "Phase löschen",
           "cancel": "Abbrechen"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Im Menü ausblenden",
+        "showMenuLabel": "Im Menü anzeigen",
+        "hiddenBadge": "Ausgeblendet",
+        "confirm": {
+          "title": "Diese Phase ausblenden?",
+          "description": "Dies blendet die Phase nur im Menü aus. Der Zugriff auf ihre Inhalte wird nicht entfernt: Wer einen Link zur Phase oder zu einem Beitrag darin hat, kann sie weiterhin öffnen.",
+          "confirm": "Ausblenden",
+          "cancel": "Abbrechen"
+        }
       }
     },
     "addPhase": {
@@ -696,6 +707,21 @@
       "alkemioSupportAccess": "Alkemio-Support",
       "trustHostOrganization": "Hostorganisation vertrauen",
       "subspaceAdminInvitationsDescription": "Ermöglicht Administratoren von Subspaces, Plattform-Benutzer in ihren Subspace einzuladen. Benutzer, die noch kein Mitglied dieses Space waren, werden es, sobald sie die Subspace-Einladung annehmen."
+    },
+    "saveAsTemplate": {
+      "title": "Als Vorlage speichern",
+      "description": "Erstellen Sie aus diesem Subspace eine wiederverwendbare Vorlage, einschließlich Layout und Inhalt.",
+      "button": "Als Vorlage speichern"
+    },
+    "dangerZone": {
+      "title": "Gefahrenzone",
+      "description": "Diesen Subspace und alle Inhalte dauerhaft löschen.",
+      "delete": "Diesen Subspace löschen",
+      "deleteDialog": {
+        "title": "Subspace löschen",
+        "description": "Dadurch werden dieser Subspace und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirm": "Subspace löschen"
+      }
     }
   },
   "storage": {

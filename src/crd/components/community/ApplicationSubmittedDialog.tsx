@@ -20,10 +20,12 @@ export function ApplicationSubmittedDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-md', className)}>
-        <DialogTitle>{t('apply.submitted.title')}</DialogTitle>
-        <DialogDescription>{t('apply.submitted.body', { communityName: communityName ?? '' })}</DialogDescription>
-        <DialogFooter>
+      <DialogContent className={cn('sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden', className)}>
+        <DialogTitle className="shrink-0">{t('apply.submitted.title')}</DialogTitle>
+        <DialogDescription className="flex-1 min-h-0 overflow-y-auto">
+          {t('apply.submitted.body', { communityName: communityName ?? '' })}
+        </DialogDescription>
+        <DialogFooter className="shrink-0">
           <Button type="button" variant="default" onClick={() => onOpenChange(false)}>
             {t('about.close')}
           </Button>

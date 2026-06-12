@@ -30,11 +30,26 @@ export type ResponseTypeChipStripProps = {
    * hidden. The old UI never allowed changing or removing a callout's type.
    */
   locked?: boolean;
+  /**
+   * When provided, only these chips are rendered (in `CHIPS` order). Used by the
+   * consumer to limit which response types a callout may offer — e.g. a Virtual
+   * Contributor's knowledge base allows only Posts and Links & Files.
+   * `undefined` renders all chips.
+   */
+  allowedChips?: ResponseTypeChipId[];
   className?: string;
 };
 
-export function ResponseTypeChipStrip({ value, onChange, locked = false, className }: ResponseTypeChipStripProps) {
+export function ResponseTypeChipStrip({
+  value,
+  onChange,
+  locked = false,
+  allowedChips,
+  className,
+}: ResponseTypeChipStripProps) {
   const { t } = useTranslation('crd-space');
+
+  const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
 
   const handleClick = (chip: Chip) => {
     if (chip.disabled) return;
@@ -56,7 +71,7 @@ export function ResponseTypeChipStrip({ value, onChange, locked = false, classNa
         aria-label={t('contributionSettings.heading')}
         className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
       >
-        {CHIPS.map(chip => {
+        {chips.map(chip => {
           const active = value === chip.id;
           const isInert = chip.disabled || (locked && !active);
           return (

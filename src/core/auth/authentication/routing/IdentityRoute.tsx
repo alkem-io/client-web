@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 
@@ -101,14 +100,21 @@ export const IdentityRoute = () => {
           </Suspense>
         }
       />
+      {/*
+        Un-gated like the other identity screens. Password recovery reaches
+        /settings carrying a Kratos settings flow (`?flow=`) but NO OIDC/BFF
+        session — the user is locked out, that is the whole point of recovery.
+        Wrapping this in NoIdentityRedirect (isAuthenticated = kratos && oidc)
+        bounces the recovery link to /required. SettingsCrdRoute already requires
+        the `?flow=` param, and Kratos validates that flow server-side against the
+        recovery session cookie, so that is the real authorization here.
+      */}
       <Route
         path={`${IdentityRoutes.Settings}`}
         element={
-          <NoIdentityRedirect>
-            <Suspense fallback={null}>
-              <SettingsCrdRoute />
-            </Suspense>
-          </NoIdentityRedirect>
+          <Suspense fallback={null}>
+            <SettingsCrdRoute />
+          </Suspense>
         }
       />
       <Route

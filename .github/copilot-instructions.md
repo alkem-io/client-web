@@ -4,7 +4,7 @@
 
 ## Overview
 
-- React + TypeScript single-page app served by Vite; design system built on MUI and Emotion, GraphQL data layer via Apollo Client.
+- React + TypeScript single-page app served by Vite; GraphQL data layer via Apollo Client. The design system is **CRD** (shadcn/ui + Tailwind CSS, `src/crd/`) — the only layer for new client-facing features. MUI + Emotion (`src/core/ui/`) are **legacy and frozen**: only removed as pages migrate, never extended; no new MUI view components.
 - Repository is large (≈18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`. GraphQL documents live alongside features and generate strongly-typed hooks in `src/core/apollo/generated`.
 - Requires Node ≥22.0.0 and pnpm ≥10.17.1 (workspace is pinned to Node 22.21.1 via Volta). Always use pnpm; the lockfile is authoritative.
 
@@ -90,7 +90,7 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
-- **Internationalization (i18n)**: Only edit `src/core/i18n/en/translation.en.json` directly. All other locale files (`translation.ach.json`, `translation.bg.json`, `translation.nl.json`, etc.) are **generated automatically via Crowdin** and must never be edited manually. Changes to the English source file will be synchronized to Crowdin, translated, and pulled back automatically via CI. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
+- **Internationalization (i18n)**: New user-facing strings go to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all six supported languages (en, nl, es, bg, de, fr) edited in the same PR (key parity required; managed manually, not Crowdin). The legacy core file `src/core/i18n/en/translation.en.json` is **frozen for new keys** — do not add new strings there; it serves the not-yet-migrated MUI app. For legacy upkeep, **Crowdin is no longer used** — all core locale files (`translation.en.json` and every non-English `translation.<lang>.json`) are now edited directly in-repo, in the same PR, preserving key parity across languages. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
 - New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
 - **Browser Compatibility**: Only use JavaScript/CSS features with **>90% global browser support** per [caniuse.com](https://caniuse.com). Avoid `Array.prototype.at()`, `Object.hasOwn()`, CSS `@container` queries, and `structuredClone()`. Use traditional alternatives (e.g., `arr[arr.length - 1]` instead of `arr.at(-1)`). When in doubt, check caniuse before introducing a newer API.

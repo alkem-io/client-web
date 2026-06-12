@@ -1,4 +1,79 @@
 {
+  "wizard": {
+    "title": "Virtual Contributor erstellen",
+    "close": "Schließen",
+    "loading": "Wird bearbeitet…",
+    "next": "Weiter",
+    "back": "Zurück",
+    "create": "Erstellen",
+    "initial": {
+      "intro": "Gib deinem Virtual Contributor einen Namen und wähle, woher sein Wissen stammt.",
+      "uploadAvatar": "Avatar hochladen",
+      "name": "Name",
+      "tagline": "Slogan",
+      "description": "Beschreibung",
+      "pathTitle": "Woher stammt das Wissen?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Geschriebenes Wissen",
+          "subtitle": "Posts und Dokumente hinzufügen"
+        },
+        "existingSpace": {
+          "title": "Bestehender Space",
+          "subtitle": "Verwende einen Space, auf den du Zugriff hast"
+        },
+        "external": {
+          "title": "Externe KI",
+          "subtitle": "Einen externen Anbieter verbinden"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Welches Wissen soll dein Virtual Contributor haben? Schreibe es in posts oder lade es in Dokumenten hoch. Du kannst Inhalte später aktualisieren, hinzufügen und entfernen.",
+      "postsTitle": "Posts",
+      "postTitle": "Titel",
+      "postDescription": "Inhalt",
+      "removePost": "Post entfernen",
+      "addPost": "Post hinzufügen",
+      "documentsTitle": "Dokumente",
+      "documentName": "Name",
+      "documentUrl": "URL",
+      "removeDocument": "Dokument entfernen",
+      "addDocument": "Dokument hinzufügen",
+      "exampleTitle": "Example: About Alkemio",
+      "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+      "initialDocuments": "Initial Links and Documents"
+    },
+    "existingSpace": {
+      "intro": "Wähle einen Space als Wissensbasis.",
+      "empty": "Keine Spaces verfügbar."
+    },
+    "external": {
+      "intro": "Verbinde einen externen KI-Anbieter.",
+      "engine": "Anbieter",
+      "apiKey": "API-Schlüssel",
+      "assistantId": "Assistenten-ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Füge deinen Virtual Contributor zu einer Community hinzu oder überspringe dies vorerst.",
+      "skip": "Vorerst überspringen",
+      "errorMessage": "Konnte nicht zur Community hinzugefügt werden — bitte erneut versuchen."
+    },
+    "tryVc": {
+      "title": "{{name}} ist bereit!",
+      "description": "Dein Virtual Contributor wurde erstellt.",
+      "view": "Profil ansehen",
+      "done": "Fertig"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' created successfully",
+      "errorMessage": "Virtual Contributor konnte nicht erstellt werden — bitte erneut versuchen."
+    }
+  },
   "breadcrumbs": {
     "settings": "Einstellungen"
   },
@@ -557,6 +632,32 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Prompt-Graph",
+      "helper": "Bearbeite die Prompt-Zustandsmaschine. Systemknoten sind schreibgeschützt; Benutzerknoten bieten einen bearbeitbaren Prompt und Ausgabeeigenschaften.",
+      "disabled": "Die Bearbeitung des Prompt-Graphen ist für diesen Virtual Contributor deaktiviert.",
+      "empty": "Dieser Virtual Contributor hat keinen Prompt-Graphen.",
+      "editingEnabled": "Bearbeitung aktiviert",
+      "inputVariables": "Eingabevariablen",
+      "start": "Start",
+      "end": "Ende",
+      "prompt": "Prompt",
+      "reset": "Zurücksetzen",
+      "resetConfirm": {
+        "title": "Prompt-Graph zurücksetzen?",
+        "description": "Dies löscht den gesamten Prompt-Graphen und kann nicht rückgängig gemacht werden."
+      },
+      "properties": {
+        "title": "Ausgabeeigenschaften",
+        "empty": "Keine Ausgabeeigenschaften.",
+        "name": "Name",
+        "type": "Typ",
+        "optional": "Optional",
+        "description": "Beschreibung",
+        "add": "Eigenschaft hinzufügen",
+        "remove": "Eigenschaft entfernen"
+      }
+    },
     "profile": {
       "pageTitle": "Einstellungen",
       "identity": {

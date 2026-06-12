@@ -31,8 +31,18 @@ const useApplicationButton = ({
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
   const { userModel, loadingMe: membershipLoading } = useCurrentUserContext();
-  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
+  // `cache-and-network` (not the default cache-first): this global list is the
+  // source of `userInvitation`/`userApplication`. When a fresh invitation arrives
+  // (e.g. the user deep-links here from its notification), a cache-first read
+  // returns the previously-cached list WITHOUT that invitation — so the button,
+  // which sees `InvitationPending` from the per-space status query, has no
+  // invitation to open and the click silently does nothing until a full refresh.
+  // Revalidating on mount keeps the list in sync with the per-space status; the
+  // in-flight network load feeds `loading` below so the button isn't actionable
+  // until the invitation is actually available.
+  const { data: pendingMembershipsData, loading: pendingMembershipsLoading } = useUserPendingMembershipsQuery({
     skip: !isAuthenticated || !userModel,
+    fetchPolicy: 'cache-and-network',
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
@@ -126,8 +136,19 @@ const useApplicationButton = ({
   const canJoinParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin);
   const canApplyToParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply);
 
+  // `pendingMembershipsLoading` MUST be included: `canAcceptInvitation` /
+  // `canApplyToCommunity` are derived from the membership-status query, but the
+  // actual `userInvitation` / `userApplication` items come from this separate
+  // pending-memberships query. Without it the button can render an enabled
+  // "Accept invitation" before the invitation item is available, so the click
+  // opens an empty invitation dialog (it has nothing to hydrate).
   const loading =
-    loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
+    loadingParams ||
+    membershipLoading ||
+    communityPrivilegesLoading ||
+    pendingMembershipsLoading ||
+    joiningCommunity ||
+    gettingUserProfile;
 
   const handleJoin = async () => {
     const roleSetId = space?.about.membership.roleSetID;

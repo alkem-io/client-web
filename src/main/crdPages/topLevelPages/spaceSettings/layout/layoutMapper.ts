@@ -63,6 +63,20 @@ function mapStateToColumn(state: RawState, callouts: LayoutCallout[], currentSta
     title: state.displayName,
     description: state.description ?? '',
     isCurrentPhase: state.id === currentStateId,
+    isHidden: readIsHidden(state),
     callouts,
   };
+}
+
+/**
+ * Derives the column's `isHidden` flag from the state's `settings.visible`.
+ *
+ * `visible` is not yet in the generated GraphQL types (it ships with server#6138 and the
+ * regenerated `apollo-hooks.ts`). Until then it is simply absent from responses, so we read
+ * it defensively: `undefined` when the field is absent → `isHidden` is `undefined`, which
+ * suppresses the Hide/Show affordance (graceful degradation). `visible === false` → hidden.
+ */
+function readIsHidden(state: RawState): boolean | undefined {
+  const visible = (state.settings as { visible?: boolean } | undefined)?.visible;
+  return typeof visible === 'boolean' ? !visible : undefined;
 }

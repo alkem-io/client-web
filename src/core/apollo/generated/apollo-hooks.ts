@@ -144,10 +144,18 @@ export const AvailableUserForRoleSetFragmentDoc = gql`
   profile {
     id
     displayName
+    location {
+      id
+      city
+      country
+    }
+    visual(type: AVATAR) {
+      ...VisualModel
+    }
   }
   email
 }
-    `;
+    ${VisualModelFragmentDoc}`;
 export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
     fragment AvailableUsersForRoleSetPaginated on PaginatedUsers {
   users {
@@ -335,6 +343,7 @@ export const InnovationFlowStatesFragmentDoc = gql`
     sortOrder
     settings {
       allowNewCallouts
+      visible
     }
     defaultCalloutTemplate {
       id
@@ -964,6 +973,7 @@ export const ReactionDetailsFragmentDoc = gql`
 export const ContributorDetailsFragmentDoc = gql`
     fragment ContributorDetails on Actor {
   id
+  type
   profile {
     id
     displayName
@@ -5545,6 +5555,7 @@ export const AvailableUsersForEntryRoleDocument = gql`
     query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
     roleSet(ID: $roleSetId) {
+      id
       availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
         ...AvailableUsersForRoleSetPaginated
       }
@@ -7358,6 +7369,7 @@ export const UpdateInnovationFlowStateDocument = gql`
     description
     settings {
       allowNewCallouts
+      visible
     }
   }
 }
@@ -18924,6 +18936,7 @@ export const PlatformAdminOrganizationsListDocument = gql`
     query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   platformAdmin {
     organizations(first: $first, after: $after, filter: $filter) {
+      total
       organization {
         id
         account {
@@ -19878,6 +19891,7 @@ export const PlatformAdminUsersListDocument = gql`
     query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   platformAdmin {
     users(first: $first, after: $after, filter: $filter) {
+      total
       users {
         id
         account {
@@ -24993,6 +25007,7 @@ export const SpaceTabsDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              visible
             }
           }
         }
@@ -26404,10 +26419,13 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 export const SpaceStorageConfigDocument = gql`
-    query SpaceStorageConfig($spaceId: UUID!) {
+    query SpaceStorageConfig($spaceId: UUID!, $includeSpaceProfile: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id
+      profile @include(if: $includeSpaceProfile) {
+        ...ProfileStorageConfig
+      }
       about {
         id
         profile {
@@ -26432,6 +26450,7 @@ export const SpaceStorageConfigDocument = gql`
  * const { data, loading, error } = useSpaceStorageConfigQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeSpaceProfile: // value for 'includeSpaceProfile'
  *   },
  * });
  */

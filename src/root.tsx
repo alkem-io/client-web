@@ -19,6 +19,9 @@ import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import { FullscreenEditorProvider, useIsFullscreenEditorOpen } from '@/core/ui/fullscreen/FullscreenEditorContext';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
@@ -42,6 +45,7 @@ import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext
 import { VersionHandling } from './main/versionHandling';
 
 const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
+const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
 const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
   () => import('./main/inAppNotifications/InAppNotificationsDialog')
 );
@@ -62,6 +66,12 @@ function NotificationsGate() {
   );
 }
 
+/** Renders either the CRD or MUI global (chunk-load) error dialog based on the design toggle. */
+function GlobalErrorDialogGate() {
+  const crdEnabled = useCrdEnabled();
+  return <Suspense fallback={null}>{crdEnabled ? <CrdGlobalErrorDialog /> : <GlobalErrorDialog />}</Suspense>;
+}
+
 /** Top-level path segments owned by the auth flow — the guidance chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
@@ -69,9 +79,17 @@ const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 function CrdFloatingActionsGate() {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
+  const { fullscreen } = useFullscreen();
+  const { isSmallScreen } = useScreenSize();
+  const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
   // MUI layouts already render these themselves; auth flows hide them entirely.
-  if (!crdEnabled || isAuthPage) return null;
+  // Also hide on mobile and in any immersive/fullscreen editor (whiteboard, memo, …) so the
+  // floating buttons never overlap the editing surface (the whiteboard rail has
+  // its own assistant entry point).
+  if (!crdEnabled || isAuthPage || isSmallScreen || fullscreen || isFullscreenEditorOpen) {
+    return null;
+  }
   // The assistant button shares the help/guidance button's floating stack so it
   // sits right next to it (bottom-right) with matching styling. Each self-gates.
   return (
@@ -191,6 +209,7 @@ const Root: FC = () => {
                                   <InAppNotificationsProvider>
                                     <PushNotificationProvider>
                                       <UserMessagingProvider>
+                                        <FullscreenEditorProvider>
                                         <AssistantProvider>
                                           <NavigationHistoryTracker />
                                           <ApmUserSetter />
@@ -212,11 +231,10 @@ const Root: FC = () => {
                                             errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                           >
                                             <TopLevelRoutes />
-                                            <Suspense fallback={null}>
-                                              <GlobalErrorDialog />
-                                            </Suspense>
+                                            <GlobalErrorDialogGate />
                                           </Error40XBoundary>
                                         </AssistantProvider>
+                                        </FullscreenEditorProvider>
                                       </UserMessagingProvider>
                                     </PushNotificationProvider>
                                   </InAppNotificationsProvider>

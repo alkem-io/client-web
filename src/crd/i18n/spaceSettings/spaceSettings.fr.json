@@ -84,6 +84,17 @@
           "confirm": "Supprimer la phase",
           "cancel": "Annuler"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Masquer du menu",
+        "showMenuLabel": "Afficher dans le menu",
+        "hiddenBadge": "Masqué",
+        "confirm": {
+          "title": "Masquer cette phase ?",
+          "description": "Cela masque uniquement la phase du menu. L'accès à son contenu n'est pas supprimé : toute personne disposant d'un lien vers la phase, ou vers une publication qu'elle contient, peut toujours l'ouvrir.",
+          "confirm": "Masquer",
+          "cancel": "Annuler"
+        }
       }
     },
     "addPhase": {
@@ -696,6 +707,21 @@
       "alkemioSupportAccess": "Support Alkemio",
       "trustHostOrganization": "Faire confiance à l'organisation hôte",
       "subspaceAdminInvitationsDescription": "Permet aux administrateurs des Subspaces d'inviter des utilisateurs de la plateforme dans leur Subspace. Les utilisateurs qui n'étaient pas encore membres de ce Space le deviendront lorsqu'ils accepteront l'invitation au Subspace."
+    },
+    "saveAsTemplate": {
+      "title": "Enregistrer comme modèle",
+      "description": "Créez un modèle réutilisable à partir de ce sous-espace, y compris sa disposition et son contenu.",
+      "button": "Enregistrer comme modèle"
+    },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "description": "Supprimer définitivement ce sous-espace et tout son contenu.",
+      "delete": "Supprimer ce sous-espace",
+      "deleteDialog": {
+        "title": "Supprimer le sous-espace",
+        "description": "Cela supprimera définitivement ce sous-espace et tout son contenu. Cette action ne peut pas être annulée.",
+        "confirm": "Supprimer le sous-espace"
+      }
     }
   },
   "storage": {

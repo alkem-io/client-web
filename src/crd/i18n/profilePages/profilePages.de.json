@@ -56,6 +56,7 @@
       "memberCountLine_other": "{{count}} Mitglieder"
     },
     "empty": {
+      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
       "leading": "Leitet noch keine Spaces.",
       "membership": "Noch keine Mitgliedschaften."
     },
@@ -93,6 +94,7 @@
       "memberOf": "Alle Mitgliedschaften"
     },
     "empty": {
+      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
       "leading": "Leitet noch keine Spaces."
     },
     "vcType": "Virtueller Mitwirkender"
@@ -171,6 +173,31 @@
     "monitoring": {
       "heading": "Überwachung durch Alkemio",
       "body": "Da Alkemio die Interaktion mit dem externen Anbieter ermöglicht, trägt es eine operative Verantwortung für die Überwachung des Dienstes. Wie alle Daten und Interaktionen auf der Plattform unterliegen sie unseren <a>Allgemeinen Geschäftsbedingungen</a>."
+    }
+  },
+  "knowledgeBase": {
+    "title": "Wissensdatenbank",
+    "loading": "Wissensdatenbank wird geladen",
+    "refresh": "Aktualisieren",
+    "addCallout": "Hinzufügen",
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "never": "Nie",
+    "description": {
+      "edit": "Beschreibung bearbeiten",
+      "empty": "Dieser Virtual Contributor basiert auf seiner eigenen kuratierten Sammlung von Dokumenten, Texten und Links.",
+      "placeholder": "Beschreibe, was dieser Virtual Contributor weiß…",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Speichern…",
+      "saveError": "Die Beschreibung konnte nicht gespeichert werden — bitte erneut versuchen."
+    },
+    "empty": {
+      "title": "Noch kein Wissen",
+      "description": "Die Wissensdatenbank dieses Virtual Contributors ist leer."
+    },
+    "noAccess": {
+      "title": "Kein Zugriff",
+      "description": "Du hast keinen Zugriff auf diese Wissensdatenbank."
     }
   }
 }

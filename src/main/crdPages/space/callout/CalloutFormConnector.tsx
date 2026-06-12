@@ -55,7 +55,10 @@ import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/us
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import {
+  StorageConfigContextProvider,
+  useStorageConfigContext,
+} from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import {
   diffPollOptions,
@@ -65,9 +68,11 @@ import {
 } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
+import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
@@ -102,9 +107,42 @@ type CalloutFormConnectorProps = {
    */
   defaultTemplateId?: string;
   onFindTemplate?: () => void;
+  /**
+   * Optional feature restrictions for the create flow (e.g. a Virtual
+   * Contributor's knowledge base: None-only framing, Posts/Links responses, no
+   * comments, no rich media). Omitted ⇒ full feature set (no change).
+   */
+  restrictions?: CrdCalloutRestrictions;
 };
 
-export function CalloutFormConnector({
+/**
+ * Outer wrapper: scopes CREATE-mode uploads to the SPACE bucket.
+ *
+ * In create mode the callout has no bucket yet, so markdown-image + reference uploads go to
+ * `space.profile.storageBucket` with `temporaryLocation: true` (the server relocates them onto the new
+ * callout on save). We mount the space-scoped `StorageConfigContextProvider` here — once — so the five
+ * callout-list call sites don't each repeat it. `skip={!open}` means the auth-gated `space.profile` query
+ * only fires when a create-capable member actually opens the dialog: it is never requested on a plain space
+ * page load (anonymous visitors / non-members on private spaces would fail that field — see
+ * `SpaceStorageConfig`'s `@include(if: $includeSpaceProfile)`).
+ *
+ * `useUrlResolver().spaceId` resolves the current Space *or* Subspace id (whichever the URL points at), so
+ * this is correct at every level. EDIT mode is already wrapped by `CalloutEditConnector`
+ * (`locationType="callout"`) and needs no space scope, so we render the inner connector directly.
+ */
+export function CalloutFormConnector(props: CalloutFormConnectorProps) {
+  const { spaceId } = useUrlResolver();
+  if (props.mode !== 'edit' && spaceId) {
+    return (
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId} temporaryLocation={true} skip={!props.open}>
+        <CalloutFormConnectorInner {...props} />
+      </StorageConfigContextProvider>
+    );
+  }
+  return <CalloutFormConnectorInner {...props} />;
+}
+
+function CalloutFormConnectorInner({
   open,
   onOpenChange,
   mode = 'create',
@@ -114,9 +152,31 @@ export function CalloutFormConnector({
   activeFlowStateName,
   defaultTemplateId,
   onFindTemplate,
+  restrictions,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const form = useCrdCalloutForm();
+
+  // Restriction-driven create-mode defaults: any comment toggle that is hidden
+  // must still submit `false`, so seed the empty form accordingly.
+  const restrictionOverrides =
+    mode === 'create'
+      ? {
+          ...(restrictions?.disableFramingComments ? { framingCommentsEnabled: false } : {}),
+          ...(restrictions?.disableContributionComments ? { contributionCommentsEnabled: false } : {}),
+        }
+      : undefined;
+  const form = useCrdCalloutForm(restrictionOverrides);
+
+  // Chip allow-lists apply on create only — in edit mode the strips are locked
+  // and must stay unfiltered so an existing callout's type is never hidden.
+  const framingAllowList = mode === 'create' ? restrictions?.allowedFramingChips : undefined;
+  const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
+  const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
+  // Comment-visibility and rich-media restrictions are create-only too — in edit
+  // mode an existing callout keeps its full controls regardless of `restrictions`.
+  const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
+  const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
+  const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
   const { values, errors, setField, validate, reset, prefill, dirty } = form;
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
@@ -141,20 +201,23 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  // Image upload (toolbar upload button + paste/drop) is offered only in EDIT mode, where it targets
-  // the callout's own bucket (scoped by `CalloutEditConnector`). During CREATE the callout (and its
-  // bucket) doesn't exist yet, so — matching the legacy MUI callout form — the markdown editors offer
-  // only "add image by link": omitting `onImageUpload` hides the upload button (the URL field stays)
-  // and disables paste-to-upload. Embeds and validation messages stay available either way.
+  // Image (markdown toolbar + paste/drop) and reference-file upload both read the ambient storage bucket,
+  // which differs by mode:
+  //   • CREATE → the SPACE bucket (`space.profile.storageBucket`), scoped by the outer wrapper above, with
+  //     `temporaryLocation: true`. The callout doesn't exist yet, so the server relocates the files onto its
+  //     bucket on save. A regular member has `FILE_UPLOAD` on the SPACE bucket (but not on ABOUT).
+  //   • EDIT → the callout's own bucket, scoped by `CalloutEditConnector` (`locationType="callout"`), with
+  //     `temporaryLocation: false` — the editor writes to it directly.
+  // satisfies spec 042 callout-dialog FR-31 / FR-50.
+  const temporaryUpload = mode === 'create';
   const ambientStorageConfig = useStorageConfigContext();
-  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: false });
+  const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: temporaryUpload });
   const editorMarkdownUpload = {
-    onImageUpload: mode === 'edit' ? markdownIntegration.onImageUpload : undefined,
+    onImageUpload: markdownIntegration.onImageUpload,
     iframeAllowedUrls: markdownIntegration.iframeAllowedUrls,
     onError: markdownIntegration.onError,
   };
-  // Reference (file) attachments follow the same rule — only offered on edit, where the bucket exists.
-  const referenceUpload = useReferenceFileUpload(mode === 'edit' ? ambientStorageConfig : undefined);
+  const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
@@ -216,9 +279,11 @@ export function CalloutFormConnector({
     void loadCalloutTemplateFormValues(getTemplateContent, defaultTemplateId).then(values => {
       // Bail if the dialog closed or the default changed while the content was loading.
       if (!values || prefilledDefaultTemplateIdRef.current !== defaultTemplateId) return;
-      prefill(values);
+      // Clamp the template to the active restrictions so a default template can't
+      // reintroduce a disallowed framing / response type or re-enable comments.
+      prefill(clampFormValuesToRestrictions(values, restrictions));
     });
-  }, [open, mode, defaultTemplateId, getTemplateContent, prefill]);
+  }, [open, mode, defaultTemplateId, getTemplateContent, prefill, restrictions]);
 
   // --- Collabora import staging -----------------------------------------
   const setCollaboraImportFile = (file: File | null) => {
@@ -586,101 +651,106 @@ export function CalloutFormConnector({
             value={values.description}
             onChange={v => setField('description', v)}
             placeholder={t('forms.descriptionPlaceholder')}
-            onImageUpload={editorMarkdownUpload.onImageUpload}
+            onImageUpload={disableRichMedia ? undefined : editorMarkdownUpload.onImageUpload}
             iframeAllowedUrls={editorMarkdownUpload.iframeAllowedUrls}
             onError={editorMarkdownUpload.onError}
+            hideImageOptions={disableRichMedia}
           />
         }
         framingZoneSlot={
-          <div className="space-y-4">
-            <FramingChipStrip
-              value={values.framingChip}
-              onChange={chip => {
-                // The strip is `locked` in edit mode, so this only fires while
-                // creating a callout — the framing type can't be changed or
-                // cleared once the callout exists (matches the old UI).
-                // When switching framing AWAY from 'document', clear any staged
-                // upload so the file does not persist invisibly under another
-                // framing type (Edge Case in spec.md).
-                if (chip !== 'document' && values.framingChip === 'document') {
-                  setField('collaboraUploadFile', null);
-                  setField('collaboraAutoPrefilledTitle', undefined);
-                  setCollaboraImportError(null);
+          hideFramingZone ? undefined : (
+            <div className="space-y-4">
+              <FramingChipStrip
+                value={values.framingChip}
+                allowedChips={framingAllowList}
+                onChange={chip => {
+                  // The strip is `locked` in edit mode, so this only fires while
+                  // creating a callout — the framing type can't be changed or
+                  // cleared once the callout exists (matches the old UI).
+                  // When switching framing AWAY from 'document', clear any staged
+                  // upload so the file does not persist invisibly under another
+                  // framing type (Edge Case in spec.md).
+                  if (chip !== 'document' && values.framingChip === 'document') {
+                    setField('collaboraUploadFile', null);
+                    setField('collaboraAutoPrefilledTitle', undefined);
+                    setCollaboraImportError(null);
+                  }
+                  setField('framingChip', chip);
+                }}
+                locked={mode === 'edit'}
+                disabledChips={disabledChips}
+              />
+              <FramingEditorConnector
+                mode={mode}
+                editMemoId={values.editMeta?.memoId}
+                editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
+                editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                framingType={values.framingChip}
+                linkUrl={values.linkUrl}
+                onLinkUrlChange={v => setField('linkUrl', v)}
+                linkUrlError={errors.linkUrl}
+                linkDisplayName={values.linkDisplayName}
+                onLinkDisplayNameChange={v => setField('linkDisplayName', v)}
+                linkDisplayNameError={errors.linkDisplayName}
+                pollQuestion={values.pollQuestion}
+                onPollQuestionChange={v => setField('pollQuestion', v)}
+                pollQuestionError={errors.pollQuestion}
+                pollOptions={values.pollOptions}
+                onPollOptionsChange={v => setField('pollOptions', v)}
+                pollOptionsError={errors.pollOptions}
+                pollAllowMultiple={values.pollAllowMultiple}
+                onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
+                pollAllowCustomOptions={values.pollAllowCustomOptions}
+                onPollAllowCustomOptionsChange={v => setField('pollAllowCustomOptions', v)}
+                pollHideResultsUntilVoted={values.pollHideResultsUntilVoted}
+                onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
+                pollShowVoterAvatars={values.pollShowVoterAvatars}
+                onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+                whiteboardContent={values.whiteboardContent}
+                whiteboardPreviewSettings={values.whiteboardPreviewSettings}
+                whiteboardConfigured={values.whiteboardConfigured}
+                whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+                whiteboardPreviewImages={values.whiteboardPreviewImages}
+                whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
+                onWhiteboardChange={(content, previewImages, previewSettings) => {
+                  setField('whiteboardContent', content);
+                  setField('whiteboardPreviewImages', previewImages ?? []);
+                  setField('whiteboardPreviewSettings', previewSettings);
+                  setField('whiteboardConfigured', true);
+                }}
+                memoMarkdown={values.memoMarkdown}
+                onMemoMarkdownChange={v => setField('memoMarkdown', v)}
+                memoUpload={editorMarkdownUpload}
+                mediaGalleryVisuals={values.mediaGalleryVisuals}
+                onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
+                collaboraDocumentType={values.collaboraDocumentType}
+                onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+                collaboraUpload={
+                  mode === 'create'
+                    ? {
+                        acceptAttr: COLLABORA_IMPORT_ACCEPT_ATTR,
+                        file: values.collaboraUploadFile,
+                        onFileChange: setCollaboraImportFile,
+                        error: collaboraImportError,
+                        onError: setCollaboraImportError,
+                        errorMessage: collaboraImportErrorMessage,
+                        busy: creating,
+                        labelHint: t('callout.documentImportHint'),
+                        labelMaxSize: t('callout.documentImportMaxSize', { cap: capMb }),
+                        labelRemoveFile: t('callout.documentImportRemoveFile'),
+                        labelOr: t('callout.documentImportOr'),
+                      }
+                    : undefined
                 }
-                setField('framingChip', chip);
-              }}
-              locked={mode === 'edit'}
-              disabledChips={disabledChips}
-            />
-            <FramingEditorConnector
-              mode={mode}
-              editMemoId={values.editMeta?.memoId}
-              editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
-              editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
-              framingType={values.framingChip}
-              linkUrl={values.linkUrl}
-              onLinkUrlChange={v => setField('linkUrl', v)}
-              linkUrlError={errors.linkUrl}
-              linkDisplayName={values.linkDisplayName}
-              onLinkDisplayNameChange={v => setField('linkDisplayName', v)}
-              linkDisplayNameError={errors.linkDisplayName}
-              pollQuestion={values.pollQuestion}
-              onPollQuestionChange={v => setField('pollQuestion', v)}
-              pollQuestionError={errors.pollQuestion}
-              pollOptions={values.pollOptions}
-              onPollOptionsChange={v => setField('pollOptions', v)}
-              pollOptionsError={errors.pollOptions}
-              pollAllowMultiple={values.pollAllowMultiple}
-              onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
-              pollAllowCustomOptions={values.pollAllowCustomOptions}
-              onPollAllowCustomOptionsChange={v => setField('pollAllowCustomOptions', v)}
-              pollHideResultsUntilVoted={values.pollHideResultsUntilVoted}
-              onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
-              pollShowVoterAvatars={values.pollShowVoterAvatars}
-              onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
-              whiteboardContent={values.whiteboardContent}
-              whiteboardPreviewSettings={values.whiteboardPreviewSettings}
-              whiteboardConfigured={values.whiteboardConfigured}
-              whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
-              whiteboardPreviewImages={values.whiteboardPreviewImages}
-              whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
-              onWhiteboardChange={(content, previewImages, previewSettings) => {
-                setField('whiteboardContent', content);
-                setField('whiteboardPreviewImages', previewImages ?? []);
-                setField('whiteboardPreviewSettings', previewSettings);
-                setField('whiteboardConfigured', true);
-              }}
-              memoMarkdown={values.memoMarkdown}
-              onMemoMarkdownChange={v => setField('memoMarkdown', v)}
-              memoUpload={editorMarkdownUpload}
-              mediaGalleryVisuals={values.mediaGalleryVisuals}
-              onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
-              collaboraDocumentType={values.collaboraDocumentType}
-              onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
-              collaboraUpload={
-                mode === 'create'
-                  ? {
-                      acceptAttr: COLLABORA_IMPORT_ACCEPT_ATTR,
-                      file: values.collaboraUploadFile,
-                      onFileChange: setCollaboraImportFile,
-                      error: collaboraImportError,
-                      onError: setCollaboraImportError,
-                      errorMessage: collaboraImportErrorMessage,
-                      busy: creating,
-                      labelHint: t('callout.documentImportHint'),
-                      labelMaxSize: t('callout.documentImportMaxSize', { cap: capMb }),
-                      labelRemoveFile: t('callout.documentImportRemoveFile'),
-                      labelOr: t('callout.documentImportOr'),
-                    }
-                  : undefined
-              }
-            />
-          </div>
+              />
+            </div>
+          )
         }
         responsesZoneSlot={
           <div className="space-y-4">
             <ResponseTypeChipStrip
               value={values.responseType}
+              allowedChips={responseAllowList}
               onChange={type => {
                 // Locked in edit mode (see framing strip) — only fires during
                 // create, so the response type can't be changed or cleared on
@@ -695,6 +765,7 @@ export function CalloutFormConnector({
               onAllowedActorsChange={v => setField('allowedActors', v)}
               contributionCommentsEnabled={values.contributionCommentsEnabled}
               onContributionCommentsEnabledChange={v => setField('contributionCommentsEnabled', v)}
+              showContributionComments={showContributionComments}
               prePopulateLinkRows={mode === 'create' ? values.prePopulateLinkRows : undefined}
               onPrePopulateLinkRowsChange={mode === 'create' ? v => setField('prePopulateLinkRows', v) : undefined}
               prePopulateLinkErrors={errors as Record<string, string | undefined>}
@@ -718,11 +789,13 @@ export function CalloutFormConnector({
                 icon={<Hash className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />}
               />
             </div>
-            <AllowCommentsField
-              value={values.framingCommentsEnabled}
-              onChange={v => setField('framingCommentsEnabled', v)}
-              disabled={submitting}
-            />
+            {showFramingComments && (
+              <AllowCommentsField
+                value={values.framingCommentsEnabled}
+                onChange={v => setField('framingCommentsEnabled', v)}
+                disabled={submitting}
+              />
+            )}
             <ReferencesEditor
               rows={values.referenceRows}
               onChange={rows => setField('referenceRows', rows)}
@@ -752,7 +825,7 @@ export function CalloutFormConnector({
           open={importTemplateOpen}
           onOpenChange={setImportTemplateOpen}
           isFormDirty={dirty}
-          onTemplateSelected={values => prefill(values)}
+          onTemplateSelected={values => prefill(clampFormValuesToRestrictions(values, restrictions))}
         />
       )}
     </>

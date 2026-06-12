@@ -2,7 +2,7 @@
 
 ## What is CRD?
 
-CRD (Client Re-Design) is the new design system replacing MUI. It's built on shadcn/ui + Tailwind CSS + Radix UI. The migration is incremental — MUI pages and CRD pages coexist, and the split happens at the route level.
+CRD (Client Re-Design) is the new design system replacing MUI. It's built on shadcn/ui + Tailwind CSS + Radix UI. **CRD is the only design system for new client-facing features** — every new feature is built in `src/crd/` with its integration glue in `src/main/crdPages/`. MUI is **frozen**: no new MUI view components are added; MUI is only ever removed as pages migrate. Migration of existing pages is incremental — MUI pages and CRD pages coexist, and the split happens at the route level.
 
 The prototype in `prototype/` (generated from Figma Make) is the design reference. CRD components are production-ready versions of prototype components, with i18n, accessibility, and real data instead of mocks.
 
@@ -184,10 +184,12 @@ The old MUI page files stay in `src/main/topLevelPages/` and are the default. Th
 
 See [translations.md](./translations.md) for the full guide. Short version:
 
-1. Create `src/crd/i18n/<feature>.en.json` (+ other languages)
+1. Create `src/crd/i18n/<feature>/<feature>.<lang>.json` for **all six languages** (en, nl, es, bg, de, fr) in the same PR
 2. Register namespace in `src/core/i18n/config.ts`
 3. Register types in `@types/i18next.d.ts`
 4. Use `useTranslation('crd-<feature>')` in components
+
+CRD translations are **not managed by Crowdin** — they are maintained manually (AI-assisted). Every key must exist in all six language files (key parity), and that parity is enforced in review. Do **not** add new keys to the legacy core file `src/core/i18n/en/translation.en.json`; it is frozen for new strings and serves the not-yet-migrated MUI app only.
 
 **Do-not-translate platform terms.** A set of brand terms — **Space, Subspace, Post (= Callout), template, Layout, Virtual Contributor** (and plurals) — must stay in **English**; only the surrounding sentence is translated and inflected around them (e.g. `Space-leden`, `subspace-template`). **For now this is enforced for Dutch (`nl`) only** — es/bg/de/fr still translate these terms and are expected to follow later. Watch the Dutch disambiguation traps: `Berichten` = "Messages" (not Post), `werkruimte` = "workspace", `Oproep voor whiteboards` = "Call for whiteboards" — these stay translated. The authoritative list, rationale, per-language localized forms, and validation approach live in **`specs/101-translation-glossary/`** (`glossary.md` / `glossary.json`). See also the "Do-not-translate platform terms (glossary)" section in `src/crd/CLAUDE.md`.
 
@@ -304,6 +306,66 @@ Tokens compose with Tailwind modifiers: `text-section-title md:text-page-title`,
 - 14px uppercase patterns (`text-sm uppercase tracking-wider`) — no matching token. Rare; leave inline.
 
 Full audit, decisions, and migration rulebook: `specs/042-crd-space-page/typography/fonts.md`
+
+### Dialog Layout: Sticky Header & Footer, Scrollable Middle
+
+Every CRD dialog must keep its **chrome** on screen no matter how tall the content is or how short the viewport is:
+
+- If the dialog has a **title bar** (and the built-in close button), it stays **pinned at the top** — it never scrolls away.
+- If the dialog has **action buttons at the bottom** (Save / Cancel / Send / Back, etc.), that footer stays **pinned at the bottom** — always reachable.
+- Only the **middle content** scrolls, and only when it doesn't fit.
+
+This guarantees the dialog is always usable: the user can always read the title, always dismiss it, and always reach the primary actions — even on a small laptop or a phone in landscape.
+
+#### The anti-pattern (do NOT do this)
+
+Putting the scroll on `DialogContent` itself makes the **whole** dialog — title and footer included — scroll as one block. The title slides off the top and the buttons slide off the bottom:
+
+```tsx
+// BAD — title and footer scroll away with the content
+<DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+  <DialogHeader>…</DialogHeader>
+  <div>…tall content…</div>
+  <DialogFooter>…</DialogFooter>
+</DialogContent>
+```
+
+A dialog with **no height cap at all** is just as broken — on a short screen the dialog grows past the viewport and the title/footer end up off-screen with no way to scroll to them.
+
+#### The pattern (do this)
+
+Make `DialogContent` a **flex column** with a height cap and `overflow-hidden`. Pin the header and footer with `shrink-0`, and give the scrollable middle `flex-1 min-h-0 overflow-y-auto`:
+
+```tsx
+// GOOD — header & footer pinned, only the middle scrolls
+<DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+  <DialogHeader className="shrink-0">
+    <DialogTitle>…</DialogTitle>
+  </DialogHeader>
+
+  <div className="flex-1 min-h-0 overflow-y-auto">
+    …tall content…
+  </div>
+
+  <DialogFooter className="shrink-0">…</DialogFooter>
+</DialogContent>
+```
+
+The three load-bearing pieces:
+
+- **`flex flex-col overflow-hidden` + `max-h-[xxvh]`** on `DialogContent` — establishes a bounded column and clips it to the viewport. Use a viewport-relative cap (`max-h-[85vh]`, `max-h-[90vh]`, `h-[95vh]` for full-height shells) so it adapts to the screen.
+- **`shrink-0`** on `DialogHeader` / `DialogFooter` — keeps the chrome at its natural size so it can't be squeezed or scrolled.
+- **`flex-1 min-h-0 overflow-y-auto`** on the body wrapper — fills the remaining space and scrolls. The `min-h-0` is essential: without it a flex item won't shrink below its content's intrinsic height, so the scroll never engages.
+
+#### Gotchas
+
+- **Children of the scrollable body shrink by default.** A flex column shrinks its children before it scrolls, which can collapse a tall, fixed-size element (an image cropper, a canvas, a chart) into a thin line. Mark such elements `shrink-0` so they keep their size and the body scrolls around them instead. (This is exactly the bug that hit `ImageCropDialog`.)
+- **Pinned search / sticky sub-headers.** If a dialog has a search field that filters a long list (member pickers, VC pickers), pin the search field too — put it outside the scroll container (as a `shrink-0` sibling above the `flex-1` list) so it stays usable while the results scroll. See `AddCommunityMemberDialog`, `VirtualContributorInviteDialog`.
+- **Content rendered after the footer.** If a feature appends content below the action bar (e.g. a comments thread under a form), it must move **into** the scrollable middle when the footer becomes sticky — the footer is now pinned to the bottom, so anything after it would be unreachable. See `CrdPostContributionDialog`.
+- **View-switching dialogs.** When one dialog swaps between views (form ↔ result, list ↔ message step), apply the pattern to **each** view: every view gets its own `flex-1 overflow-y-auto` body and its own pinned footer. See `InviteMembersDialog`, `VirtualContributorInviteDialog`.
+- **Short dialogs don't need it.** Confirmations, single-field forms, and other dialogs whose content can never exceed the viewport don't need the flex-column treatment — the default `DialogContent` is fine. Apply the pattern as soon as the body can grow unbounded (lists, feeds, long forms, rich-text, cropped images).
+
+**Reference implementations:** `TemplateFormDialog`, `CreateSubspaceDialog`, `ApplicationFormDialog`, `InvitationDetailDialog` (all sticky header + footer); `ActivityDialog`, `SpaceAboutDialog` (sticky header, no footer).
 
 ### Global Dialogs (Messages, Notifications)
 

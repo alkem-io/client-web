@@ -168,7 +168,11 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
         {delayedReadonlyReason && (
           <Caption>
             <Trans
-              i18nKey={`pages.memo.readonlyReason.${delayedReadonlyReason}` as const}
+              i18nKey={
+                delayedReadonlyReason === ReadonlyReason.ContentUpdatePolicy && !createdBy?.profile
+                  ? 'pages.memo.readonlyReason.contentUpdatePolicyNoOwner'
+                  : (`pages.memo.readonlyReason.${delayedReadonlyReason}` as const)
+              }
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile?.displayName,

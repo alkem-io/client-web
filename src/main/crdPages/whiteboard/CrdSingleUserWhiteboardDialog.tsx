@@ -9,6 +9,7 @@ import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
@@ -105,6 +106,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { t: tWb } = useTranslation('crd-whiteboard');
   const notify = useNotification();
   const { whiteboard } = entities;
+  useRegisterFullscreenEditor(options.show);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);

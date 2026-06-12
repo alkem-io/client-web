@@ -223,8 +223,11 @@
   "topBar": {
     "sign-in": "Inloggen | Aanmelden",
     "designVersion": {
-      "label": "New design (preview)",
+      "label": "New look (old design available for a limited time)",
       "errorSaving": "Could not save your design preference. Please try again."
+    },
+    "switchBanner": {
+      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
     }
   },
   "authentication": {
@@ -376,7 +379,7 @@
     "entities": "{{entityType}}",
     "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
-    "contributors": "Bijdragers",
+    "contributors": "Deelnemers",
     "Organization": "Organisatie",
     "Organizations": "Organisaties",
     "organization": "organisatie",
@@ -752,14 +755,16 @@
           "invitationsSent": "{{count}} uitnodigingen worden verstuurd.",
           "invitationByEmailTooltip": "{{email}} wordt uitgenodigd om aan te melden voor Alkemio en voor deze $t(common.space)",
           "results": {
+            "ALREADY_HAS_OPEN_APPLICATION": "Already has an open application to this $t(common.space)",
             "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Er is al een open uitnodiging/aanmelding",
             "ALREADY_INVITED_TO_ROLE_SET": "Heeft al een open uitnodiging/aanmelding",
+            "ALREADY_MEMBER_OF_ROLE_SET": "Already a member of this $t(common.space)",
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Uitnodiging tot de bovenliggende $t(common.community) was niet toegestaan",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Uitgenodigd voor het platform",
             "INVITED_TO_ROLE_SET": "Uitgenodigd om lid te worden van de $t(common.community)"
           },
           "validationErrors": {
-            "required": "Voeg ten minste één bijdrager toe om uit te nodigen",
+            "required": "Voeg ten minste één deelnemer toe om uit te nodigen",
             "invalidAddress": "Verwijder ongeldige invoer om verder te gaan"
           }
         },
@@ -2196,7 +2201,7 @@
         },
         "USER_SPACE_COMMUNITY_JOINED": {
           "subject": "{{spaceName}} - Welkom bij de $t(common.community)!",
-          "description": "Bedankt voor het deelnemen aan {{spaceName}}<br /> Je kunt nu beginnen bij te dragen aan de verschillende $t(common.posts) en $t(common.whiteboards), je kennis over dit onderwerp verder verdiepen en contact opnemen met andere Bijdragers."
+          "description": "Bedankt voor het deelnemen aan {{spaceName}}<br /> Je kunt nu beginnen bij te dragen aan de verschillende $t(common.posts) en $t(common.whiteboards), je kennis over dit onderwerp verder verdiepen en contact opnemen met andere Deelnemers."
         },
         "USER_COMMENT_REPLY": {
           "subject": "{{triggeredByName}} heeft gereageerd op je $t(common.comment) {{parentName}}",
@@ -2268,6 +2273,10 @@
         },
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent",
+          "description": ""
+        },
+        "VIRTUAL_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)",
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
@@ -2515,7 +2524,7 @@
       "separator": " | ",
       "forum": "Forum",
       "spaces": "Spaces",
-      "contributors": "Bijdragers",
+      "contributors": "Deelnemers",
       "templateLibrary": "Template Bibliotheek",
       "globalAdmin": "Globale Administratie",
       "admin": "Administratie",
@@ -2536,7 +2545,7 @@
           "description": "Hier kun je de context en $t(common.community) vinden van deze {{entity}}."
         },
         "community": {
-          "leading-contributors": "Leading bijdragers",
+          "leading-contributors": "Leidende deelnemers",
           "contributors": "Wie is erbij betrokken",
           "switchMode": "Verander Weergave"
         },
@@ -2960,7 +2969,7 @@
             "allowOtherUsersToSendMessages": "Andere gebruikers toestaan mij een bericht te sturen."
           },
           "privacy": {
-            "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
+            "contributorRolesVisible": "Toon deelnemerrollen aan alle geregistreerde gebruikers"
           },
           "designSystem": {
             "title": "Ontwerp",
@@ -2998,7 +3007,7 @@
           "privacy": {
             "title": "Privacy",
             "subtitle": "In deze sectie kun je de $t(common.organization) privacy $t(common.settings) wijzigen",
-            "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
+            "contributorRolesVisible": "Toon deelnemerrollen aan alle geregistreerde gebruikers"
           }
         },
         "notifications": {
@@ -3154,6 +3163,88 @@
       "users": {
         "notifications": {
           "user-removed": "Gebruiker succesvol verwijderd."
+        },
+        "emailChange": {
+          "rowAction": {
+            "label": "Change login email",
+            "tooltip": "Change this user's login email",
+            "disabledTooltip": "Only platform administrators can change a user's login email."
+          },
+          "dialog": {
+            "title": "Change login email",
+            "currentEmailLabel": "Current login email",
+            "newEmailLabel": "New login email",
+            "confirmEmailLabel": "Confirm new login email",
+            "approvalSection": "Reason & approval",
+            "reasonLabel": "Reason for change",
+            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
+            "approverNameLabel": "Approved by",
+            "approverRoleLabel": "Approver's role",
+            "approverOrganizationLabel": "Approver's organization (optional)",
+            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
+            "submit": "Change email"
+          },
+          "validation": {
+            "unchanged": "The new email must be different from the current login email.",
+            "mismatch": "The email addresses do not match."
+          },
+          "success": "Login email changed to {{email}}. The user has been notified by email.",
+          "errors": {
+            "validation": "Enter a valid email address.",
+            "noChange": "The new email is the same as the current login email.",
+            "conflict": "This email address is already in use.",
+            "subjectNotFound": "This user has no login identity that can be changed.",
+            "kratosUnreachable": "The identity service is currently unavailable. Please try again shortly.",
+            "kratosWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "driftDetected": "The change was only partially applied. Use the Resolve action to reconcile this account.",
+            "driftResolutionFailed": "The account could not be reconciled. Please try again.",
+            "driftNotFound": "There is no outstanding drift to resolve for this user.",
+            "unauthorized": "You do not have permission to perform this action.",
+            "generic": "The change could not be completed. Please try again."
+          },
+          "outcomes": {
+            "committed": "Committed",
+            "driftResolved": "Drift resolved",
+            "securitySignalFailed": "Committed — security signal not sent",
+            "newAddressNotificationFailed": "Committed — new-address notification not sent",
+            "globalAdminNotificationFailed": "Committed — admin notification not sent",
+            "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
+            "sessionInvalidationFailed": "Committed — sessions not ended",
+            "rejectedValidation": "Rejected — invalid address",
+            "rejectedConflict": "Rejected — address in use",
+            "rolledBack": "Rolled back",
+            "driftDetected": "Drift detected",
+            "driftResolutionFailed": "Drift resolution failed",
+            "unknown": "Unknown outcome"
+          },
+          "history": {
+            "title": "Email-change history",
+            "linkLabel": "View change history",
+            "empty": "This user has no email-change history.",
+            "loadMore": "Load more",
+            "unknownInitiator": "—",
+            "fields": {
+              "timestamp": "When",
+              "outcome": "Outcome",
+              "initiator": "Initiated by",
+              "oldEmail": "Old email",
+              "newEmail": "New email",
+              "reason": "Reason for change",
+              "approver": "Approved by",
+              "failureReason": "Failure reason"
+            }
+          },
+          "drift": {
+            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
+            "resolveAction": "Resolve",
+            "resolveTitle": "Resolve email drift",
+            "resolveDescription": "Choose which address should be this user's canonical login email.",
+            "oldEmailChoice": "Previous address — {{email}}",
+            "newEmailChoice": "New address — {{email}}",
+            "resolveSubmit": "Resolve",
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
+          }
         }
       },
       "innovation-packs": {
@@ -3199,6 +3290,16 @@
           "header": {
             "title": "Huidige Selectie",
             "subtitle": "De volgorde hieronder is de volgorde waarin de $t(common.spaces) zichtbaar zijn op de $t(common.customHomepage)"
+          },
+          "addByUrl": {
+            "dialogTitle": "Add $t(common.space) by URL",
+            "urlInputLabel": "$t(common.space) URL",
+            "urlInputPlaceholder": "{{origin}}/space-name",
+            "submit": "Add",
+            "cancel": "$t(buttons.cancel)",
+            "validating": "URL is being validated…",
+            "invalidSpaceUrl": "URL is not a valid top level $t(common.space)",
+            "alreadyAdded": "This $t(common.space) is already added to this $t(common.innovation-hub)"
           }
         },
         "notifications": {
@@ -3260,9 +3361,9 @@
       }
     },
     "contributors": {
-      "fullName": "Bijdragers vinden",
+      "fullName": "Deelnemers vinden",
       "shortName": "$t(common.contributors)",
-      "unauthorized": "Log in om de bijdragers van deze $t(common.space) te zien.",
+      "unauthorized": "Log in om de deelnemers van deze $t(common.space) te zien.",
       "search": {
         "title": "Vind talent en expertise!",
         "subtitle": "Zoek naar andere mensen en $t(common.organizations) die kunnen helpen met jouw $t(common.space), bijvoorbeeld vanwege hun vaardigheden of interesses.",
@@ -3281,7 +3382,7 @@
     },
     "search": {
       "title": "Zoek",
-      "subtitle": "Vind de $t(common.spaces), bijdragers, $t(common.subspaces), en inhoud van de openbare $t(common.spaces) hieronder",
+      "subtitle": "Vind de $t(common.spaces), deelnemers, $t(common.subspaces), en inhoud van de openbare $t(common.spaces) hieronder",
       "placeholder": "Zoek...",
       "results-disclaimer": "Hier zie je de eerste 8 resultaten. Als je je zoektermen verder specificeert zul je meer resultaten vinden.",
       "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
@@ -3291,7 +3392,7 @@
           "space": "$t(common.space) type",
           "framing": "$t(common.framing) type",
           "contribution": "Type bijdrage",
-          "contributor": "Type bijdrager"
+          "contributor": "Type deelnemer"
         },
         "key": {
           "all": "Alles",
@@ -3673,14 +3774,17 @@
         "templatesSubheader": "De $t(common.templates) gedefinieerd in deze $t(common.subspace)."
       },
       "whiteboardDisconnected": {
-        "title": "$t(common.Whiteboards) verbinding verloren",
+        "title": "Verbinding verloren",
         "message": "Excuses voor het ongemak! Je kunt het $t(common.whiteboard) nu niet bewerken, mogelijk door een netwerkfout of geen toegang. Sluit en open het $t(common.whiteboard) opnieuw of ververs de pagina. Blijft het fout gaan? Vraag dan de $t(common.admin) van deze $t(common.space) om hulp.",
         "lastSaved": "De inhoud van dit $t(common.whiteboard) is voor het laatst opgeslagen op {{lastSaved}}.",
-        "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent."
+        "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent.",
+        "reconnect": "Reconnect",
+        "reconnectCountdown": "({{seconds}}s)"
       },
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit $t(common.whiteboard) te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de $t(common.settings) te wijzigen als je wilt bijdragen.",
+        "contentUpdatePolicyNoOwner": "You don't have the rights to edit this $t(common.whiteboard). The owner is not available anymore, but you can ask an administrator of the $t(common.space) to change the Share $t(common.settings) if you want to contribute.",
         "noMembership": "Je moet $t(common.member) zijn van {{spaceLevel}} om dit $t(common.whiteboard) te kunnen bewerken. <spacelink>Klik hier om in te loggen</spacelink>",
         "unauthenticated": "Je moet ingelogd en $t(common.member) zijn van {{spaceLevel}} om dit $t(common.whiteboard) te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>"
       },
@@ -3771,6 +3875,7 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen lezen modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om deze $t(common.memo) te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de $t(common.settings) te wijzigen als je wilt bijdragen.",
+        "contentUpdatePolicyNoOwner": "Je hebt geen rechten om deze $t(common.memo) te bewerken. De eigenaar is niet langer beschikbaar, maar je kunt een beheerder van de $t(common.space) vragen om de $t(common.settings) voor delen aan te passen als je wilt bijdragen.",
         "noMembership": "Je moet $t(common.member) zijn van {{spaceLevel}} om deze $t(common.memo) te kunnen bewerken. <spacelink>Klik hier om in te loggen</spacelink>",
         "unauthenticated": "Je moet ingelogd en $t(common.member) zijn van {{spaceLevel}} om deze $t(common.memo) te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>",
         "connecting": "",
@@ -3822,7 +3927,7 @@
     },
     "registration": {
       "header": "Maak een $t(common.account) aan om Alkemio te gebruiken",
-      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "introduction-short": "<p>Alkemio is ontworpen ten goede van de samenleving. Lees en accepteer de <terms>gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> voordat u verder gaat.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een $t(common.account)?",
@@ -3830,7 +3935,7 @@
       "logo-subtitle": "$t(common.spaces) voor Samenwerking"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en bijdragers van van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en deelnemers van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom op Alkemio!",
       "continue": "Doorgaan naar het platform",
       "next": "Volgende",
@@ -3858,7 +3963,8 @@
     },
     "verification": {
       "header": "Email verificatie",
-      "message": "Vul hieronder je e-mailadres in om een nieuwe verificatielink te ontvangen."
+      "message": "Vul hieronder je e-mailadres in om een nieuwe verificatielink te ontvangen.",
+      "resendEmail": "Resend verification email"
     },
     "verification-required": {
       "header": "Email validatie is nog open.",
@@ -4087,7 +4193,8 @@
           "communityApplicationReceived": "Ontvang een $t(common.notification) wanneer een nieuw verzoek binnen is gekomen",
           "communityNewMember": "Ontvang een $t(common.notification) wanneer een nieuwe $t(common.member) lid wordt van de $t(common.community)",
           "collaborationCalloutContributionCreated": "Ontvang een $t(common.notification) wanneer een nieuwe $t(common.callout) is aangemaakt",
-          "communicationMessageReceived": "Ontvang een $t(common.notification) wanneer een nieuw bericht wordt ontvangen"
+          "communicationMessageReceived": "Ontvang een $t(common.notification) wanneer een nieuw bericht wordt ontvangen",
+          "userEmailChanged": "Receive a $t(common.notification) when the login email of a $t(common.member) of a $t(common.space) you administer is changed"
         }
       },
       "organization": {
@@ -4122,7 +4229,8 @@
           "adminUserProfileCreated": "Ontvang een $t(common.notification) wanneer een nieuwe gebruiker zich inschrijft",
           "adminUserProfileRemoved": "Ontvang een $t(common.notification) wanneer een gebruiker $t(common.profile) is verwijderd",
           "adminSpaceCreated": "Ontvang een $t(common.notification) wanneer een nieuwe $t(common.space) is aangemaakt",
-          "adminUserGlobalRoleChanged": "Ontvang een $t(common.notification) wanneer de globale rol van een gebruiker is gewijzigd"
+          "adminUserGlobalRoleChanged": "Ontvang een $t(common.notification) wanneer de globale rol van een gebruiker is gewijzigd",
+          "adminUserEmailChanged": "Receive a $t(common.notification) when a user's email address is changed"
         }
       },
       "forum": {
@@ -4216,6 +4324,7 @@
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
+      "property-missing": "{{field}} is vereist.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)",
       "oidc-account-linking-conflict": "U probeert in te loggen met {{provider}}, maar dat e-mailadres wordt al gebruikt door een ander account.",
       "account-disabled": "Dit account is uitgeschakeld."
@@ -4308,7 +4417,10 @@
           "userAlreadyRegistered": "Gebruiker al geregistreerd.",
           "userNotRegistered": "Gebruiker niet geregistreerd.",
           "noAgentForUser": "Geen agent voor gebruiker.",
-          "userIdentityDeletionFailed": "Gebruikersidentiteit verwijderen mislukt."
+          "userIdentityDeletionFailed": "Gebruikersidentiteit verwijderen mislukt.",
+          "roleSetOpenApplicationExists": "You already have a pending application to this space.",
+          "roleSetOpenInvitationExists": "You've already been invited to this space — accept the invitation instead of applying.",
+          "roleSetAlreadyMember": "You're already a member of this space."
         },
         "system": {
           "bootstrapFailed": "Systeem initialisatie mislukt.",
@@ -4387,7 +4499,7 @@
     "edit": "Bewerk $t(common.innovation-flow)"
   },
   "contributors-section": {
-    "title": "Bijdragers"
+    "title": "Deelnemers"
   },
   "contributions-view": {
     "no-data": "Geen $t(common.memberships) gevonden"
@@ -4399,7 +4511,7 @@
     "no-data": "Geen {{name, lowercase}} beschikbaar"
   },
   "dashboard-contributors-section": {
-    "dialog-title": "Bijdragers",
+    "dialog-title": "Deelnemers",
     "more": "...plus {{count}} meer"
   },
   "associates-view": {
@@ -4469,7 +4581,7 @@
     "outline": "Overzicht",
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
-    "contributors": "Bijdragers",
+    "contributors": "Deelnemers",
     "videoCall": "Video oproep",
     "activity": "Activiteit",
     "calendar": "Kalender",
@@ -4686,7 +4798,7 @@
       "title": "🎉 Probeer het uit!",
       "subTitle": "Om de interactie te starten, typ @{{vcName}} in een $t(common.comment). Probeer het in het voorbeeld hieronder.",
       "postTitle": "Voorbeeld $t(common.post)",
-      "postDescription": "Bij Alkemio gebruiken we $t(common.posts) om samenwerking met AI te vergemakkelijken. In tegenstelling tot privégesprekken kunnen andere $t(common.members) in een $t(common.space) van deze interactie leren en bijdragen aan deze interactie. Vergelijkbaar met het vermelden van een menselijke bijdrager, kun je het \"@\" symbool gebruiken, gevolgd door de naam van de $t(common.virtualContributor).",
+      "postDescription": "Bij Alkemio gebruiken we $t(common.posts) om samenwerking met AI te vergemakkelijken. In tegenstelling tot privégesprekken kunnen andere $t(common.members) in een $t(common.space) van deze interactie leren en bijdragen aan deze interactie. Vergelijkbaar met het vermelden van een menselijke deelnemer, kun je het \"@\" symbool gebruiken, gevolgd door de naam van de $t(common.virtualContributor).",
       "continueButton": "Bezoek $t(common.space)"
     },
     "tryInfoSection": {
