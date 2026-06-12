@@ -20,6 +20,13 @@ export type LayoutPoolColumn = {
   title: string;
   description: string;
   isCurrentPhase: boolean;
+  /**
+   * Whether this phase is hidden from the member-facing navigation. UI-only — never
+   * affects authorization or content access (anyone with a direct URL still reaches it).
+   * `undefined` when the platform does not yet expose the per-phase `visible` flag, in
+   * which case the Hide/Show affordance is suppressed (graceful degradation).
+   */
+  isHidden?: boolean;
   callouts: LayoutCallout[];
 };
 
@@ -48,6 +55,13 @@ export type ColumnMenuActions = {
    * limit. Consumers MUST hide the menu entry when undefined.
    */
   onDeletePhase?: (columnId: LayoutColumnId) => Promise<void>;
+  /**
+   * Toggle a phase's visibility in the member-facing menu (immediate-save). UI-only:
+   * never changes content access. `nextHidden = true` hides the phase, `false` shows it.
+   * Only present when the platform exposes the per-phase `visible` flag; consumers MUST
+   * hide the Hide/Show menu entry (and the "Hidden" badge) when undefined.
+   */
+  onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
 };
 
 export type LayoutPostDescriptionDisplay = 'collapsed' | 'expanded';

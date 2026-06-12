@@ -2,6 +2,8 @@ import i18n from 'i18next';
 import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
 import crdCommonEN from '@/crd/i18n/common/common.en.json';
+import crdCommunityEN from '@/crd/i18n/community/community.en.json';
+import crdContributorSettingsEN from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import crdDashboardEN from '@/crd/i18n/dashboard/dashboard.en.json';
 import crdExploreSpacesEN from '@/crd/i18n/exploreSpaces/exploreSpaces.en.json';
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
@@ -21,6 +23,8 @@ i18n.use(initReactI18next).init({
     en: {
       'crd-layout': crdLayoutEN,
       'crd-common': crdCommonEN,
+      'crd-community': crdCommunityEN,
+      'crd-contributorSettings': crdContributorSettingsEN,
       'crd-exploreSpaces': crdExploreSpacesEN,
       'crd-dashboard': crdDashboardEN,
       'crd-space': crdSpaceEN,
@@ -37,6 +41,8 @@ i18n.use(initReactI18next).init({
   ns: [
     'crd-layout',
     'crd-common',
+    'crd-community',
+    'crd-contributorSettings',
     'crd-exploreSpaces',
     'crd-dashboard',
     'crd-space',

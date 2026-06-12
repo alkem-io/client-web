@@ -158,12 +158,20 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
 
+### No `__typename` discrimination
+
+Do **not** branch on `__typename` in CRD code (`src/crd/**`, `src/main/crdPages/**`) or in the data mappers/models that feed it. Prefer an explicit, schema-defined discriminator field instead — e.g. `actor.type === ActorType.VirtualContributor`, a `status` enum, a `kind` field.
+
+**Why:** `__typename` is the *runtime object type*, which is frequently NOT what you expect. A field typed as a concrete object type (e.g. `Message.sender: Actor`) always has `__typename === 'Actor'`, so a check like `sender.__typename === 'VirtualContributor'` is silently *always false* — it type-checks, passes review, and fails only at runtime. (This exact bug shipped once: the comment VC badge never rendered. The fix was to select `Actor.type` and compare against `ActorType`.) `__typename` is also fragile across schema refactors (object type → interface/union and back) in a way an explicit enum is not.
+
+If there is genuinely no schema field to discriminate on and `__typename` is the only option, it is allowed **only** with a comment that (a) states why no proper discriminator exists and (b) names the exact `__typename` values the code relies on, so a schema change that breaks them is caught in review.
+
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
-- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
+- **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its sibling locale files serve only the not-yet-migrated MUI app. **Crowdin is no longer used.** Legacy core translations are now maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings still go to CRD, never here.
 
 ### Namespaces
 
@@ -318,7 +326,11 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
+`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`.
+
+**CRD is the only design system for new features.** All new client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI (`src/core/ui/`, `@mui/*`, `@emotion/*`) is **frozen** — no new MUI view/presentational components may be added; MUI is only ever *removed* as pages are migrated. `@mui/*`/`@emotion/*` imports are acceptable only inside already-existing MUI files until they are migrated.
+
+The critical rules:
 
 **Hard restrictions — every file in `src/crd/`:**
 - **NO MUI** — zero imports from `@mui/*` or `@emotion/*`

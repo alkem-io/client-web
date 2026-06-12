@@ -2,6 +2,8 @@
 
 This folder is a **client-agnostic, reusable design system** built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It replaces the MUI-based `src/core/ui/` layer.
 
+> **CRD is the default and only layer for new features.** Every new client-facing feature is built here (with integration glue in `src/main/crdPages/`). The MUI layer (`src/core/ui/`) is **frozen** — it is only ever removed as pages migrate, never extended. No new MUI view/presentational components.
+
 > **Planned rename**: `src/crd/` will be renamed to `src/design-system/` in a future phase. The `@/crd/` path alias will change to `@/design-system/`. All internal documentation and imports will be updated at that time. Until then, use `@/crd/` for all references.
 
 ## Design Philosophy
@@ -622,7 +624,9 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 ### Translation management
 
-CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Only the main `translation` namespace uses Crowdin.
+CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Every new user-facing string lives here: all six supported languages (en, nl, es, bg, de, fr) are added or removed in the **same PR**, and **key parity across all languages is required** — a key present in one locale file MUST exist in all of them. This parity is enforced in review (CodeRabbit), not by Crowdin.
+
+The legacy `translation` namespace (`src/core/i18n/`) is **frozen for new keys** — it serves the not-yet-migrated MUI app only. Do not add new strings there. **Crowdin has been retired**, so its non-English locale files (`translation.<lang>.json`) are now edited directly in-repo for legacy upkeep — in the same PR, with key parity preserved — rather than generated.
 
 ### Do-not-translate platform terms (glossary)
 

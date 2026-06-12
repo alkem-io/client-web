@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { CrdRestrictedRoute } from '@/main/crdPages/error/CrdRestrictedRoute';
 import { useCrdEnabled } from '../crdPages/useCrdEnabled';
 import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
@@ -44,6 +45,7 @@ const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/commu
 const PlatformAdminRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/platformAdmin/routing/PlatformAdminRoute')
 );
+const CrdAdminRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/topLevelPages/admin/CrdAdminRoutes'));
 const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/organization/routing/OrganizationRoute')
@@ -235,7 +237,16 @@ export const TopLevelRoutes = () => {
                     element={
                       <WithApmTransaction path="/admin/*">
                         <Suspense fallback={<Loading />}>
-                          <PlatformAdminRoute />
+                          {/* Global admin — toggleable between CRD (new) and MUI (old) via localStorage.
+                              The CRD branch renders inside CrdLayoutWrapper (CRD header/footer); the MUI
+                              branch keeps the legacy PlatformAdminRoute (its own TopLevelLayout). */}
+                          {crdEnabled ? (
+                            <CrdLayoutWrapper>
+                              <CrdAdminRoutes />
+                            </CrdLayoutWrapper>
+                          ) : (
+                            <PlatformAdminRoute />
+                          )}
                         </Suspense>
                       </WithApmTransaction>
                     }
@@ -404,9 +415,13 @@ export const TopLevelRoutes = () => {
                     path="*"
                     element={
                       <WithApmTransaction path="*">
-                        <TopLevelLayout>
-                          <Error404 />
-                        </TopLevelLayout>
+                        {crdEnabled ? (
+                          <CrdNotFoundBranch />
+                        ) : (
+                          <TopLevelLayout>
+                            <Error404 />
+                          </TopLevelLayout>
+                        )}
                       </WithApmTransaction>
                     }
                   />

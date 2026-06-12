@@ -66,4 +66,51 @@ describe('mapCollaborationToLayoutColumns', () => {
     const columns = mapCollaborationToLayoutColumns(buildCollaboration({ currentStateId: null }));
     expect(columns.every(c => !c.isCurrentPhase)).toBe(true);
   });
+
+  describe('isHidden mapping (settings.visible → isHidden)', () => {
+    const buildWithVisibility = (visibleByState: Record<string, boolean | undefined>): LayoutCollaboration =>
+      ({
+        id: 'collab-1',
+        authorization: { id: 'auth-1', myPrivileges: [] },
+        innovationFlow: {
+          id: 'flow-1',
+          currentState: { id: 'state-1' },
+          states: [
+            {
+              id: 'state-1',
+              displayName: 'Explore',
+              description: '',
+              sortOrder: 1,
+              settings: {
+                allowNewCallouts: true,
+                ...('state-1' in visibleByState && { visible: visibleByState['state-1'] }),
+              },
+            },
+            {
+              id: 'state-2',
+              displayName: 'Define',
+              description: '',
+              sortOrder: 2,
+              settings: {
+                allowNewCallouts: true,
+                ...('state-2' in visibleByState && { visible: visibleByState['state-2'] }),
+              },
+            },
+          ],
+        },
+        calloutsSet: { id: 'cset-1', callouts: [] },
+      }) as unknown as LayoutCollaboration;
+
+    test('visible:false → isHidden true; visible:true → isHidden false', () => {
+      const columns = mapCollaborationToLayoutColumns(buildWithVisibility({ 'state-1': false, 'state-2': true }));
+      expect(columns.find(c => c.id === 'state-1')?.isHidden).toBe(true);
+      expect(columns.find(c => c.id === 'state-2')?.isHidden).toBe(false);
+    });
+
+    test('absent visible flag → isHidden undefined (graceful degradation, affordance suppressed)', () => {
+      const columns = mapCollaborationToLayoutColumns(buildWithVisibility({}));
+      expect(columns.find(c => c.id === 'state-1')?.isHidden).toBeUndefined();
+      expect(columns.find(c => c.id === 'state-2')?.isHidden).toBeUndefined();
+    });
+  });
 });

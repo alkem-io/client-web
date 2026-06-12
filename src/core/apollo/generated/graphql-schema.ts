@@ -2132,11 +2132,15 @@ export type CreateInnovationFlowStateSettingsData = {
   __typename?: 'CreateInnovationFlowStateSettingsData';
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
+  visible?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type CreateInnovationFlowStateSettingsInput = {
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type CreateInnovationHubOnAccountInput = {
@@ -3378,6 +3382,8 @@ export type InnovationFlowStateSettings = {
   __typename?: 'InnovationFlowStateSettings';
   /** Whether new callouts can be added to this State. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content. */
+  visible: Scalars['Boolean']['output'];
 };
 
 export type InnovationHub = {
@@ -8856,6 +8862,8 @@ export type UpdateInnovationFlowStateInput = {
 export type UpdateInnovationFlowStateSettingsInput = {
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateInnovationFlowStatesSortOrderInput = {
@@ -11808,7 +11816,7 @@ export type InnovationFlowSettingsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -11926,7 +11934,7 @@ export type InnovationFlowDetailsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -12076,7 +12084,7 @@ export type InnovationFlowDetailsFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12120,7 +12128,7 @@ export type InnovationFlowStatesFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12240,7 +12248,7 @@ export type UpdateInnovationFlowStateMutation = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
   };
 };
 
@@ -14331,6 +14339,7 @@ export type UpdateCalloutContentMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -14767,6 +14776,7 @@ export type UpdateCalloutVisibilityMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15254,6 +15264,7 @@ export type CalloutContributionCommentsQuery = {
                       | {
                           __typename?: 'Actor';
                           id: string;
+                          type: ActorType;
                           profile?:
                             | {
                                 __typename?: 'Profile';
@@ -16487,6 +16498,7 @@ export type CreateCalloutMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -17071,6 +17083,7 @@ export type CalloutDetailsQuery = {
                     | {
                         __typename?: 'Actor';
                         id: string;
+                        type: ActorType;
                         profile?:
                           | {
                               __typename?: 'Profile';
@@ -17539,6 +17552,7 @@ export type CalloutDetailsFragment = {
             | {
                 __typename?: 'Actor';
                 id: string;
+                type: ActorType;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -19592,6 +19606,7 @@ export type CreateDiscussionMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -19676,6 +19691,7 @@ export type UpdateDiscussionMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -19763,6 +19779,7 @@ export type DiscussionDetailsFragment = {
         | {
             __typename?: 'Actor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -19947,6 +19964,7 @@ export type PlatformDiscussionQuery = {
                   | {
                       __typename?: 'Actor';
                       id: string;
+                      type: ActorType;
                       profile?:
                         | {
                             __typename?: 'Profile';
@@ -20083,6 +20101,7 @@ export type MessageDetailsFragment = {
     | {
         __typename?: 'Actor';
         id: string;
+        type: ActorType;
         profile?:
           | {
               __typename?: 'Profile';
@@ -20162,6 +20181,7 @@ export type CommentsWithMessagesFragment = {
       | {
           __typename?: 'Actor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -20672,6 +20692,7 @@ export type RoomEventsSubscription = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -20778,6 +20799,7 @@ export type CommunityUpdatesQuery = {
                   | {
                       __typename?: 'Actor';
                       id: string;
+                      type: ActorType;
                       profile?:
                         | {
                             __typename?: 'Profile';
@@ -21470,6 +21492,7 @@ export type ActorDetailsQuery = {
 export type ContributorDetailsFragment = {
   __typename?: 'Actor';
   id: string;
+  type: ActorType;
   profile?:
     | {
         __typename?: 'Profile';
@@ -25540,6 +25563,7 @@ export type PlatformAdminOrganizationsListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     organizations: {
       __typename?: 'PaginatedOrganization';
+      total: number;
       organization: Array<{
         __typename?: 'Organization';
         id: string;
@@ -25826,6 +25850,7 @@ export type PlatformAdminUsersListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     users: {
       __typename?: 'PaginatedUsers';
+      total: number;
       users: Array<{
         __typename?: 'User';
         id: string;
@@ -29467,6 +29492,7 @@ export type SpacePageQuery = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -29705,6 +29731,7 @@ export type SpacePageFragment = {
       | {
           __typename?: 'Actor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -29813,7 +29840,7 @@ export type SpaceTabsQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               }>;
             };
           };
@@ -31111,7 +31138,11 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     displayName: string;
                                     description?: string | undefined;
                                     sortOrder: number;
-                                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                                    settings: {
+                                      __typename?: 'InnovationFlowStateSettings';
+                                      allowNewCallouts: boolean;
+                                      visible: boolean;
+                                    };
                                     defaultCalloutTemplate?:
                                       | {
                                           __typename?: 'Template';
@@ -31181,6 +31212,7 @@ export type SpacePrivilegesQuery = {
 
 export type SpaceStorageConfigQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  includeSpaceProfile?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type SpaceStorageConfigQuery = {
@@ -31191,6 +31223,25 @@ export type SpaceStorageConfigQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -32566,7 +32617,11 @@ export type TemplateContentQuery = {
                       displayName: string;
                       description?: string | undefined;
                       sortOrder: number;
-                      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                      settings: {
+                        __typename?: 'InnovationFlowStateSettings';
+                        allowNewCallouts: boolean;
+                        visible: boolean;
+                      };
                       defaultCalloutTemplate?:
                         | {
                             __typename?: 'Template';
@@ -32780,7 +32835,7 @@ export type SpaceTemplateContentQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
                 defaultCalloutTemplate?:
                   | {
                       __typename?: 'Template';
@@ -33266,7 +33321,7 @@ export type SpaceTemplateContentFragment = {
         displayName: string;
         description?: string | undefined;
         sortOrder: number;
-        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
         defaultCalloutTemplate?:
           | {
               __typename?: 'Template';
@@ -33418,7 +33473,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
       displayName: string;
       description?: string | undefined;
       sortOrder: number;
-      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
       defaultCalloutTemplate?:
         | {
             __typename?: 'Template';
@@ -34503,6 +34558,7 @@ export type CalendarEventDetailsQuery = {
                 | {
                     __typename?: 'Actor';
                     id: string;
+                    type: ActorType;
                     profile?:
                       | {
                           __typename?: 'Profile';
@@ -34656,6 +34712,7 @@ export type CalendarEventDetailsFragment = {
         | {
             __typename?: 'Actor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -34824,6 +34881,7 @@ export type CreateCalendarEventMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -34971,6 +35029,7 @@ export type UpdateCalendarEventMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';

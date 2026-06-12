@@ -1,0 +1,132 @@
+// Contract: VC Creation Wizard (US1) — CRD presentational props (plain TS, no GraphQL types)
+// Layer 3 component: src/crd/components/virtualContributor/creationWizard/VCCreationWizardView.tsx
+// These are DESIGN CONTRACTS for /speckit.tasks — refine names during implementation.
+
+export type VcWizardStep =
+  | 'initial'
+  | 'loadingStep'
+  | 'addKnowledge'
+  | 'existingKnowledge'
+  | 'externalProvider'
+  | 'chooseCommunity'
+  | 'tryVcInfo';
+
+// Body-of-knowledge path chosen on the initial step.
+export type VcWizardPath = 'writtenKnowledge' | 'existingSpace' | 'external';
+
+export type VcWizardEngine = 'expert' | 'genericOpenai' | 'openaiAssistant';
+
+export type VcWizardPost = {
+  /** 3..SMALL_TEXT_LENGTH, required */
+  title: string;
+  /** markdown, up to LONG_MARKDOWN_TEXT_LENGTH */
+  description: string;
+};
+
+export type VcWizardDocument = {
+  /** 3..SMALL_TEXT_LENGTH, required */
+  name: string;
+  /** file-upload result URL or external URL, required */
+  url: string;
+};
+
+export type VcWizardExternalConfig = {
+  apiKey: string; // required for external path; never echoed from server
+  assistantId?: string; // required when engine === 'openaiAssistant'
+};
+
+export type VcWizardAvatar = {
+  previewUrl?: string;
+  uploading: boolean;
+};
+
+export type VcCreationWizardValues = {
+  name: string;
+  tagline: string;
+  description: string;
+  path?: VcWizardPath;
+  engine: VcWizardEngine;
+  externalConfig?: VcWizardExternalConfig;
+  avatar?: VcWizardAvatar;
+  posts: VcWizardPost[];
+  documents: VcWizardDocument[];
+  /** existing-space path: chosen space/subspace to use as Body of Knowledge */
+  selectedSpaceId?: string;
+  /** chooseCommunity step: space to add the created VC into */
+  selectedCommunitySpaceId?: string;
+};
+
+export type VcWizardSelectableSpace = {
+  id: string;
+  displayName: string;
+  avatarUrl?: string;
+  color: string; // pickColorFromId
+  level: 'space' | 'subspace';
+};
+
+export type VcWizardCreatedVc = {
+  id: string;
+  profileUrl?: string;
+  avatarId?: string;
+};
+
+export type VcCreationWizardErrors = Partial<Record<keyof VcCreationWizardValues, string>>;
+
+export type VCCreationWizardViewProps = {
+  open: boolean; // dialog visibility, owned by the launch point
+  onClose: () => void; // X button, Esc, overlay click, and the final info step's "Done"
+  step: VcWizardStep;
+  values: VcCreationWizardValues;
+  errorsByField: VcCreationWizardErrors;
+
+  onChange: (patch: Partial<VcCreationWizardValues>) => void;
+  onSelectPath: (path: VcWizardPath) => void;
+
+  onNext: () => void;
+  onBack: () => void;
+  onSubmit: () => void; // triggers create mutation
+
+  // data for the branch steps
+  availableSpaces: VcWizardSelectableSpace[]; // existing-space + add-content paths
+  availableCommunities: VcWizardSelectableSpace[]; // chooseCommunity step
+  createdVc?: VcWizardCreatedVc;
+
+  loading: boolean; // query loading (spaces, etc.)
+  creating: boolean; // create mutation in flight (loadingStep)
+
+  // upload
+  onUploadAvatar: (file: File) => void;
+
+  // post/document list management
+  onAddPost: () => void;
+  onRemovePost: (index: number) => void;
+  onAddDocument: () => void;
+  onRemoveDocument: (index: number) => void;
+};
+
+// Sub-dialogs (CRD dialogs layered over the wizard dialog; sticky header/footer rule applies).
+//
+// The wizard itself is a single CRD dialog (sticky header/footer, scrollable middle). Closing it
+// (X button, Esc, overlay click) discards any in-progress input — there is no separate cancel-
+// confirm dialog, matching the legacy MUI wizard's direct-close behaviour.
+
+export type VCExternalAIDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  values: VcWizardExternalConfig & { engine: VcWizardEngine };
+  onChange: (patch: Partial<VcWizardExternalConfig & { engine: VcWizardEngine }>) => void;
+  onCreate: () => void;
+  comingSoonSlot?: import('react').ReactNode; // nested "request a provider" form
+};
+
+// OUT OF SCOPE for US1 / this spec (kept for reference only).
+// The interactive "try the VC" demo dialog (`TryVirtualContributorDialog`) is launched from the
+// space dashboard (`SpaceDashboardView`), NOT the creation wizard. The wizard's final step is an
+// info/confirmation step (`TryVcInfoStep`). Do not build this as part of US1.
+export type VCTryContributorDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  vcId: string;
+  ready: boolean; // from useSubscribeOnVirtualContributorEvents
+  calloutSlot?: import('react').ReactNode;
+};

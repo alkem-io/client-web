@@ -1,5 +1,6 @@
 fragment ContributorDetails on Actor {
   id
+  type
   profile {
     id
     displayName

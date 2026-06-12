@@ -24,6 +24,7 @@ type Provided = {
   onDelete: (item: SearchableListItem) => void;
   fetchMore: (itemsNumber?: number) => Promise<void>;
   hasMore: boolean | undefined;
+  total: number | undefined;
   pageSize: number;
   firstPageSize: number;
   searchTerm: string;
@@ -67,6 +68,7 @@ const useAdminGlobalUserList = ({
 
   const pageInfo = data?.platformAdmin.users.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
+  const total = data?.platformAdmin.users.total;
 
   const fetchMore = async (itemsNumber = pageSize) => {
     if (!data) {
@@ -168,6 +170,7 @@ const useAdminGlobalUserList = ({
     onDelete,
     fetchMore,
     hasMore,
+    total,
     pageSize,
     firstPageSize: pageSize,
     searchTerm,

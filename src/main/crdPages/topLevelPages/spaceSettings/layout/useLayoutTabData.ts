@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import {
+  refetchInnovationFlowSettingsQuery,
   useInnovationFlowSettingsQuery,
   useSpaceSettingsQuery,
   useUpdateCalloutFlowStateMutation,
@@ -46,6 +47,13 @@ export type UseLayoutTabDataResult = {
    * waiting for the server refetch.
    */
   markCurrentPhaseChanged: (columnId: LayoutColumnId) => void;
+  /**
+   * Toggle a phase's member-facing visibility (immediate-save, UI-only — never touches
+   * content access). Optimistically flips `isHidden` on buffer + snapshot, then persists
+   * via the existing state-update mutation (carrying the unchanged displayName/description/
+   * allowNewCallouts plus the new `visible` flag) so the change is shared across all viewers.
+   */
+  onToggleVisibility: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
   /** Underlying ids — useful for the view's useColumnMenu consumer. */
   collaborationId: string;
   innovationFlowId: string;
@@ -314,6 +322,53 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     }
   };
 
+  /**
+   * Visibility toggle — immediate-save, NOT part of the Save Changes buffer (mirrors the
+   * active-phase + default-template actions). Optimistically flips `isHidden` on buffer and
+   * snapshot so the kebab + badge update instantly, then fires the persist mutation. The
+   * `visible` settings field is not yet in the generated input type (it ships with
+   * server#6138 + codegen); we attach it via a typed widening so the mutation carries it the
+   * moment the server accepts it. Until then the server ignores the unknown field and the
+   * capability stays inert (no state reports a boolean `visible`, so the menu entry is hidden).
+   */
+  const onToggleVisibility = async (columnId: LayoutColumnId, nextHidden: boolean): Promise<void> => {
+    const state = innovationFlowSettings.data.innovationFlow?.states?.find(s => s.id === columnId);
+    if (!state) return;
+
+    // Snapshot the pre-toggle state so a failed persist can roll the optimistic flip back —
+    // otherwise the kebab/badge stay toggled while the server is unchanged, and because the
+    // snapshot is mutated too, dirty-tracking would wrongly read as clean.
+    const previousColumns = columns;
+    const previousSnapshot = snapshotRef.current;
+
+    const applyHidden = (cols: LayoutPoolColumn[]) =>
+      cols.map(c => (c.id === columnId ? { ...c, isHidden: nextHidden } : c));
+    setColumns(prev => applyHidden(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = { ...snapshotRef.current, columns: applyHidden(snapshotRef.current.columns) };
+    }
+
+    try {
+      await updateInnovationFlowState({
+        variables: {
+          innovationFlowStateId: columnId,
+          displayName: state.displayName,
+          description: state.description ?? '',
+          settings: {
+            allowNewCallouts: state.settings.allowNewCallouts,
+            // `visible` is the inverse of `isHidden`. Widened cast until codegen regenerates the input type.
+            visible: !nextHidden,
+          } as typeof state.settings & { visible: boolean },
+        },
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
+      });
+    } catch (error) {
+      setColumns(previousColumns);
+      snapshotRef.current = previousSnapshot;
+      throw error;
+    }
+  };
+
   /** Update both buffer and snapshot for a column saved directly via the Edit Details dialog. */
   const markColumnSaved = (columnId: LayoutColumnId, title: string, description: string) => {
     const updateCol = (cols: LayoutPoolColumn[]) =>
@@ -513,6 +568,7 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     isDirty,
     markColumnSaved,
     markCurrentPhaseChanged,
+    onToggleVisibility,
     collaborationId,
     innovationFlowId: flowData?.lookup.collaboration?.innovationFlow.id ?? '',
     calloutsSetId: flowData?.lookup.collaboration?.calloutsSet.id ?? '',

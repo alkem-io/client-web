@@ -51,6 +51,7 @@ const CrdVCSettingsTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
       }
       prompt={data.prompt ? { ...data.prompt, helpText: t('vc.prompt.helpText'), ...markdownUpload } : undefined}
       externalConfig={data.externalConfig}
+      promptGraph={data.promptGraph}
     />
   );
 };

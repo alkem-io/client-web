@@ -226,6 +226,10 @@ export default function CrdSpaceSettingsPage() {
     onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
+    // Hide/Show is available at every level (incl. L0 home tabs) — it never changes the flow
+    // structure, only what members see in the menu. The CRD column menu self-gates the entry
+    // on the column carrying a known `isHidden` (capability present).
+    onToggleVisibility: layout.onToggleVisibility,
   });
   // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
