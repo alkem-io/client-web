@@ -123,7 +123,9 @@ export function VCKnowledgeBaseView({
         />
       ) : description ? (
         <MarkdownContent content={description} className="text-body text-foreground" />
-      ) : null}
+      ) : (
+        <p className="text-body text-muted-foreground italic">{t('knowledgeBase.description.empty')}</p>
+      )}
 
       {isEmpty ? (
         <div className="rounded-lg border border-dashed p-10 text-center">

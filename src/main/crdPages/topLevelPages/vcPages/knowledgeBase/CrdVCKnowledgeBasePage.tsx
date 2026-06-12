@@ -1,11 +1,15 @@
+import { Bot } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { VCKnowledgeBaseView } from '@/crd/components/virtualContributor/knowledgeBase/VCKnowledgeBaseView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
 import { CalloutFormConnector } from '@/main/crdPages/space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '@/main/crdPages/space/callout/CalloutListConnector';
 import { VC_KNOWLEDGE_BASE_CALLOUT_RESTRICTIONS } from '@/main/crdPages/space/callout/calloutRestrictions';
+import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useVcKnowledgeBaseData } from './useVcKnowledgeBaseData';
 
 /**
@@ -22,8 +26,11 @@ import { useVcKnowledgeBaseData } from './useVcKnowledgeBaseData';
  * relocates the files onto the new callout on save).
  */
 export const CrdVCKnowledgeBasePage = () => {
+  const { t } = useTranslation('crd-profilePages');
   const {
     vcId,
+    displayName,
+    profileUrl,
     viewProps,
     canEditDescription,
     onSaveDescription,
@@ -34,6 +41,13 @@ export const CrdVCKnowledgeBasePage = () => {
     calloutsLoading,
   } = useVcKnowledgeBaseData();
   const [createOpen, setCreateOpen] = useState(false);
+
+  // Top-nav breadcrumb trail: VC name (→ its public profile) › Knowledge Base.
+  const breadcrumbItems: BreadcrumbTrailItem[] =
+    displayName && profileUrl
+      ? [{ label: displayName, href: profileUrl, icon: Bot }, { label: t('knowledgeBase.title') }]
+      : [];
+  useSetBreadcrumbs(breadcrumbItems);
 
   return (
     <>

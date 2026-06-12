@@ -184,7 +184,7 @@
     "never": "Nunca",
     "description": {
       "edit": "Editar descripción",
-      "empty": "Aún no hay descripción.",
+      "empty": "Este Virtual Contributor se basa en su propia colección curada de documentos, texto y enlaces.",
       "placeholder": "Describe lo que sabe este Virtual Contributor…",
       "save": "Guardar",
       "cancel": "Cancelar",

@@ -69,6 +69,8 @@ export const useVcKnowledgeBaseData = () => {
 
   return {
     vcId,
+    displayName: profile?.displayName,
+    profileUrl: profile?.url,
     viewProps,
     canEditDescription: kb.canCreateCallout,
     onSaveDescription,
