@@ -168,7 +168,7 @@
       "targetLabel": "Doel-space-URL",
       "description": "Verplaats een post naar een andere space.",
       "confirmTitle": "Post-overdracht bevestigen",
-      "confirmDescription": "Hiermee wordt de post naar de doel-space verplaatst. Bijdragers, links en geschiedenis kunnen worden beïnvloed en deze actie kan niet ongedaan worden gemaakt."
+      "confirmDescription": "Hiermee wordt de post naar de doel-space verplaatst. Deelnemers, links en geschiedenis kunnen worden beïnvloed en deze actie kan niet ongedaan worden gemaakt."
     },
     "resolved": "Opgelost"
   },

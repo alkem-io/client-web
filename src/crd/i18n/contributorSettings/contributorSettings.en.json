@@ -83,7 +83,7 @@
         "profile": "Profile",
         "account": "Account",
         "membership": "Membership",
-        "organizations": "Organizations",
+        "organizations": "Organisations",
         "notifications": "Notifications",
         "settings": "Settings",
         "security": "Security"
@@ -92,7 +92,7 @@
         "profile": "Profile",
         "account": "Account",
         "community": "Community",
-        "authorization": "Authorization",
+        "authorization": "Authorisation",
         "settings": "Settings"
       },
       "vc": {
@@ -297,7 +297,7 @@
         },
         "user": {
           "title": "User Notifications",
-          "description": "Personalize alerts for interactions like replies, mentions, and invites."
+          "description": "Personalise alerts for interactions like replies, mentions, and invites."
         },
         "platform": {
           "title": "Platform Notifications",
@@ -308,8 +308,8 @@
           "description": "Notifications for platform administrators (user lifecycle, space creation)."
         },
         "organization": {
-          "title": "Organization Notifications",
-          "description": "Control alerts for organization mentions, messaging, and team updates."
+          "title": "Organisation Notifications",
+          "description": "Control alerts for organisation mentions, messaging, and team updates."
         },
         "virtualContributor": {
           "title": "Virtual Contributor Notifications",
@@ -355,8 +355,8 @@
           "spaceCreated": "Receive a notification when a new space is created"
         },
         "organization": {
-          "adminMentioned": "Receive a notification when my organization is mentioned",
-          "adminMessageReceived": "Receive direct messages to my organization"
+          "adminMentioned": "Receive a notification when my organisation is mentioned",
+          "adminMessageReceived": "Receive direct messages to my organisation"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
@@ -364,12 +364,12 @@
       }
     },
     "organizations": {
-      "pageTitle": "Organizations",
-      "searchPlaceholder": "Search organizations...",
-      "createButton": "Create Organization",
-      "summary": "Showing {{shown}} of {{total}} organizations",
-      "empty": "You're not associated with any organizations yet.",
-      "filteredEmptyTitle": "No organizations found",
+      "pageTitle": "Organisations",
+      "searchPlaceholder": "Search organisations...",
+      "createButton": "Create Organisation",
+      "summary": "Showing {{shown}} of {{total}} organisations",
+      "empty": "You're not associated with any organisations yet.",
+      "filteredEmptyTitle": "No organisations found",
       "filteredEmptyDescription": "Try searching for a different name or location.",
       "clearSearch": "Clear Search",
       "verified": "Verified",
@@ -384,7 +384,7 @@
         "disassociate": "Disassociate"
       },
       "disassociate": {
-        "dialogTitle": "Disassociate from this organization?",
+        "dialogTitle": "Disassociate from this organisation?",
         "dialogDescription": "You're about to leave \"{{name}}\". You'll lose your associate role and any related permissions.",
         "dialogConfirm": "Disassociate",
         "success": "Disassociated successfully",
@@ -430,7 +430,7 @@
         "title": "Identity",
         "displayName": {
           "label": "Display Name",
-          "hint": "How your organization appears across Alkemio.",
+          "hint": "How your organisation appears across Alkemio.",
           "required": "Display Name is required"
         },
         "nameID": {
@@ -439,7 +439,7 @@
         },
         "tagline": {
           "label": "Tagline",
-          "hint": "A short line shown next to your organization name."
+          "hint": "A short line shown next to your organisation name."
         }
       },
       "about": {
@@ -456,12 +456,12 @@
         },
         "keywords": {
           "label": "Keywords",
-          "hint": "Topics your organization works on. Press Enter to add.",
+          "hint": "Topics your organisation works on. Press Enter to add.",
           "placeholder": "e.g. climate, governance, open source"
         },
         "capabilities": {
           "label": "Capabilities",
-          "hint": "What your organization can do or offer. Press Enter to add.",
+          "hint": "What your organisation can do or offer. Press Enter to add.",
           "placeholder": "e.g. research, funding, training"
         }
       },
@@ -469,12 +469,12 @@
         "title": "Contact & Legal",
         "contactEmail": {
           "label": "Contact Email",
-          "hint": "Public contact email for the organization.",
+          "hint": "Public contact email for the organisation.",
           "invalidFormat": "Enter a valid email address"
         },
         "domain": {
           "label": "Domain",
-          "hint": "Your organization's web domain (without protocol)."
+          "hint": "Your organisation's web domain (without protocol)."
         },
         "legalEntityName": {
           "label": "Legal Entity Name",
@@ -516,7 +516,7 @@
     },
     "account": {
       "pageTitle": "Account",
-      "helpBanner": "Here you can view your organization's active resources and manage account allocation limits.",
+      "helpBanner": "Here you can view your organisation's active resources and manage account allocation limits.",
       "spaces": { "title": "Hosted Spaces", "createButton": "Create Space" },
       "virtualContributors": { "title": "Virtual Contributors", "createButton": "Add Contributor" },
       "innovationPacks": { "title": "Template Packs", "createButton": "New Pack" },
@@ -531,7 +531,7 @@
     "community": {
       "pageTitle": "Community",
       "title": "Associates",
-      "description": "Manage who is associated with this organization. Add new associates from the available users list; removing an associate revokes their organization role.",
+      "description": "Manage who is associated with this organisation. Add new associates from the available users list; removing an associate revokes their organisation role.",
       "currentAssociatesTitle": "Current Associates",
       "availableUsersTitle": "Available Users",
       "searchPlaceholder": "Search users by name…",
@@ -547,9 +547,9 @@
       "removeError": "Couldn't remove associate — try again"
     },
     "authorization": {
-      "pageTitle": "Authorization",
-      "title": "Authorization",
-      "description": "Assign Admin and Owner roles for this organization. Admins can manage day-to-day settings; Owners have full control over the organization.",
+      "pageTitle": "Authorisation",
+      "title": "Authorisation",
+      "description": "Assign Admin and Owner roles for this organisation. Admins can manage day-to-day settings; Owners have full control over the organisation.",
       "adminTabLabel": "Admin",
       "ownerTabLabel": "Owner",
       "loadMore": "Load more",
@@ -581,16 +581,16 @@
     },
     "settings": {
       "pageTitle": "Settings",
-      "title": "Organization Settings",
+      "title": "Organisation Settings",
       "membership": {
         "title": "Membership",
-        "allowDomainLabel": "Allow users matching the organization's domain to join",
-        "allowDomainCaption": "When enabled, users whose email domain matches this organization can self-join without an invitation."
+        "allowDomainLabel": "Allow users matching the organisation's domain to join",
+        "allowDomainCaption": "When enabled, users whose email domain matches this organisation can self-join without an invitation."
       },
       "privacy": {
         "title": "Privacy",
         "contributionRolesLabel": "Show contribution roles publicly",
-        "contributionRolesCaption": "When enabled, the organization's role assignments (Admin, Owner, Associate) are visible on its public profile."
+        "contributionRolesCaption": "When enabled, the organisation's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
       "errorToast": "Couldn't save preference — try again"
     }
