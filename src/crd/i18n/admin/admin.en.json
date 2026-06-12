@@ -3,12 +3,12 @@
   "sections": {
     "spaces": "Spaces",
     "users": "Users",
-    "organizations": "Organizations",
+    "organizations": "Organisations",
     "innovation-packs": "Innovation Packs",
     "innovation-hubs": "Innovation Hubs",
     "virtual-contributors": "Virtual Contributors",
-    "authorization": "Authorization",
-    "authorization-policies": "Authorization Policies",
+    "authorization": "Authorisation",
+    "authorization-policies": "Authorisation Policies",
     "transfer": "Conversions & Transfers"
   },
   "placeholder": {
@@ -20,8 +20,8 @@
     "verified": "Verified",
     "notVerified": "Not verified",
     "toggleVerification": "Toggle verification",
-    "new": "New organization",
-    "edit": "Edit organization"
+    "new": "New organisation",
+    "edit": "Edit organisation"
   },
   "table": {
     "searchPlaceholder": "Search…",
@@ -92,8 +92,8 @@
     "roleLabel": "Role"
   },
   "authPolicies": {
-    "idLabel": "Authorization Policy ID",
-    "lookup": "Get Authorization Policy",
+    "idLabel": "Authorisation Policy ID",
+    "lookup": "Get Authorisation Policy",
     "notFound": "No policy found for that ID.",
     "type": "Type",
     "credentialRules": "Credential Rules",
@@ -115,7 +115,7 @@
     "urlLabel": "Source URL",
     "resolve": "Resolve",
     "targetAccount": "Target account",
-    "accountSearchPlaceholder": "Search users or organizations…",
+    "accountSearchPlaceholder": "Search users or organisations…",
     "noAccounts": "No matching accounts.",
     "transfer": "Transfer",
     "currentAccount": "Current account: {{name}}",
@@ -157,7 +157,7 @@
     "spaceTransfer": {
       "title": "Transfer Space",
       "sourceLabel": "Source space URL (L0)",
-      "targetLabel": "Target account URL (user or organization)",
+      "targetLabel": "Target account URL (user or organisation)",
       "description": "Move a top-level space to another account.",
       "confirmTitle": "Confirm space transfer",
       "confirmDescription": "This permanently moves the space and all its content to the target account."
@@ -184,7 +184,7 @@
       "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
       "approverName": "Approved by",
       "approverRole": "Approver's role",
-      "approverOrg": "Approver's organization (optional)",
+      "approverOrg": "Approver's organisation (optional)",
       "mismatch": "Email addresses do not match.",
       "sessionWarning": "This is an administrative change. It ends the user's active sessions - they must sign in with the new email address afterwards.",
       "submit": "Change email",
@@ -212,8 +212,8 @@
     "edit": "Edit user"
   },
   "orgForm": {
-    "createTitle": "New organization",
-    "editTitle": "Edit organization",
+    "createTitle": "New organisation",
+    "editTitle": "Edit organisation",
     "identity": "Identity",
     "nameID": "Alias (name ID)",
     "displayName": "Display name",
@@ -231,11 +231,11 @@
     "references": "References",
     "invalidEmail": "Enter a valid email address.",
     "invalidUrl": "Enter a valid URL.",
-    "create": "Create organization",
+    "create": "Create organisation",
     "save": "Save",
     "cancel": "Cancel",
-    "created": "Organization created.",
-    "updated": "Organization updated.",
+    "created": "Organisation created.",
+    "updated": "Organisation updated.",
     "discardTitle": "Discard changes?",
     "discardDescription": "You have unsaved changes. Leave without saving?",
     "discard": "Discard"

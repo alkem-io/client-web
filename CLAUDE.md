@@ -163,7 +163,7 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
 - **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
-- **Core is frozen** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its Crowdin-generated locales serve only the not-yet-migrated MUI app. Crowdin still applies ONLY to `src/core/i18n/`: there, only `translation.en.json` may be edited (for legacy upkeep of existing keys), and the non-English files are generated via Crowdin and must never be edited manually.
+- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its sibling locale files serve only the not-yet-migrated MUI app. **Crowdin is no longer used.** Legacy core translations are now maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings still go to CRD, never here.
 
 ### Namespaces
 

@@ -24,7 +24,7 @@
   "pinned": "Pinned",
   "leadType": {
     "person": "Person",
-    "org": "Organization"
+    "org": "Organisation"
   },
   "tags": {
     "moreAria": "Show {{count}} more"

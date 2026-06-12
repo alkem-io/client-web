@@ -5,7 +5,7 @@
     "share": "Share",
     "settings": "Settings",
     "expandWidth": "Expand to full width",
-    "collapseWidth": "Collapse to centered layout"
+    "collapseWidth": "Collapse to centred layout"
   },
   "members": {
     "memberCount_one": "{{count}} member",
@@ -40,7 +40,7 @@
   },
   "community": {
     "dialogTitle": "Community",
-    "dialogDescription": "People and organizations participating in this subspace."
+    "dialogDescription": "People and organisations participating in this subspace."
   },
   "events": {
     "dialogTitle": "Events"
