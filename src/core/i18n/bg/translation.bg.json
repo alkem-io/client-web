@@ -2415,7 +2415,7 @@
     "feedback": "Обратна връзка",
     "support": "Поддръжка",
     "about": "За нас",
-    "copyright": "© 2026 Alkemio B.V."
+    "copyright": "Platform © 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
