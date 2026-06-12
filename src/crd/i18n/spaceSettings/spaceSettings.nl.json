@@ -84,6 +84,17 @@
           "confirm": "Fase verwijderen",
           "cancel": "Annuleren"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Verbergen in menu",
+        "showMenuLabel": "Tonen in menu",
+        "hiddenBadge": "Verborgen",
+        "confirm": {
+          "title": "Deze fase verbergen?",
+          "description": "Dit verbergt de fase alleen in het menu. Het ontneemt geen toegang tot de inhoud: iedereen met een link naar de fase, of naar een Post erin, kan deze nog steeds openen.",
+          "confirm": "Verbergen",
+          "cancel": "Annuleren"
+        }
       }
     },
     "addPhase": {

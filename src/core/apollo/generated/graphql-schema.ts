@@ -2132,11 +2132,15 @@ export type CreateInnovationFlowStateSettingsData = {
   __typename?: 'CreateInnovationFlowStateSettingsData';
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
+  visible?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type CreateInnovationFlowStateSettingsInput = {
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type CreateInnovationHubOnAccountInput = {
@@ -3378,6 +3382,8 @@ export type InnovationFlowStateSettings = {
   __typename?: 'InnovationFlowStateSettings';
   /** Whether new callouts can be added to this State. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content. */
+  visible: Scalars['Boolean']['output'];
 };
 
 export type InnovationHub = {
@@ -8856,6 +8862,8 @@ export type UpdateInnovationFlowStateInput = {
 export type UpdateInnovationFlowStateSettingsInput = {
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateInnovationFlowStatesSortOrderInput = {
@@ -11808,7 +11816,7 @@ export type InnovationFlowSettingsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -11926,7 +11934,7 @@ export type InnovationFlowDetailsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -12076,7 +12084,7 @@ export type InnovationFlowDetailsFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12120,7 +12128,7 @@ export type InnovationFlowStatesFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12240,7 +12248,7 @@ export type UpdateInnovationFlowStateMutation = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
   };
 };
 
@@ -29832,7 +29840,7 @@ export type SpaceTabsQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
               }>;
             };
           };
@@ -31130,7 +31138,11 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     displayName: string;
                                     description?: string | undefined;
                                     sortOrder: number;
-                                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                                    settings: {
+                                      __typename?: 'InnovationFlowStateSettings';
+                                      allowNewCallouts: boolean;
+                                      visible: boolean;
+                                    };
                                     defaultCalloutTemplate?:
                                       | {
                                           __typename?: 'Template';
@@ -32605,7 +32617,11 @@ export type TemplateContentQuery = {
                       displayName: string;
                       description?: string | undefined;
                       sortOrder: number;
-                      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                      settings: {
+                        __typename?: 'InnovationFlowStateSettings';
+                        allowNewCallouts: boolean;
+                        visible: boolean;
+                      };
                       defaultCalloutTemplate?:
                         | {
                             __typename?: 'Template';
@@ -32819,7 +32835,7 @@ export type SpaceTemplateContentQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
                 defaultCalloutTemplate?:
                   | {
                       __typename?: 'Template';
@@ -33305,7 +33321,7 @@ export type SpaceTemplateContentFragment = {
         displayName: string;
         description?: string | undefined;
         sortOrder: number;
-        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
         defaultCalloutTemplate?:
           | {
               __typename?: 'Template';
@@ -33457,7 +33473,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
       displayName: string;
       description?: string | undefined;
       sortOrder: number;
-      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
       defaultCalloutTemplate?:
         | {
             __typename?: 'Template';
