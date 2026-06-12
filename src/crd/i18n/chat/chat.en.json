@@ -1,0 +1,71 @@
+{
+  "launcher": {
+    "open": "Open chat",
+    "close": "Close chat",
+    "unreadLabel": "You have unread messages"
+  },
+  "panel": {
+    "title": "Chat"
+  },
+  "actions": {
+    "cancel": "Cancel"
+  },
+  "newChat": {
+    "title": "New message",
+    "searchPlaceholder": "Search people…",
+    "searchHint": "Start typing to search people",
+    "noResults": "No people found",
+    "create": "Start chat",
+    "removeAria": "Remove {{name}}"
+  },
+  "group": {
+    "settings": "Group settings",
+    "nameLabel": "Group name",
+    "members": "Members",
+    "addPlaceholder": "Add people…",
+    "noResults": "No people found",
+    "leave": "Leave group",
+    "save": "Save",
+    "you": "You",
+    "removeMemberAria": "Remove {{name}}",
+    "removeMemberConfirm": {
+      "title": "Remove member?",
+      "description": "Remove this person from the group?",
+      "confirm": "Remove"
+    },
+    "leaveConfirm": {
+      "title": "Leave group?",
+      "description": "You will no longer receive messages from this group.",
+      "confirm": "Leave"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Search conversations…",
+    "newMessage": "New message",
+    "empty": "No conversations yet",
+    "emptyHint": "Start a new message to begin chatting.",
+    "noResults": "No conversations match your search.",
+    "loading": "Loading conversations"
+  },
+  "guidance": {
+    "beta": "Beta",
+    "intro": "Hi! I'm here to help you find your way around Alkemio. Ask me anything about spaces, collaboration, or how things work.",
+    "infoButton": "About the assistant",
+    "clear": "Clear chat",
+    "thinking": "The assistant is thinking…",
+    "infoDialog": {
+      "title": "About the assistant",
+      "content": "This assistant is an AI guide for Alkemio, currently in beta. It can help you understand features and find your way around. Answers may be imperfect — please verify important information."
+    },
+    "clearConfirm": {
+      "title": "Clear this conversation?",
+      "description": "This starts a fresh conversation with the assistant. The current conversation will be cleared.",
+      "confirm": "Clear chat"
+    }
+  },
+  "thread": {
+    "back": "Back to conversations",
+    "loading": "Loading messages",
+    "addReaction": "Add reaction"
+  }
+}
