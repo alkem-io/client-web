@@ -43,6 +43,7 @@ import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext
 import { VersionHandling } from './main/versionHandling';
 
 const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
+const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
 const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
   () => import('./main/inAppNotifications/InAppNotificationsDialog')
 );
@@ -60,6 +61,12 @@ function NotificationsGate() {
       {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
     </Suspense>
   );
+}
+
+/** Renders either the CRD or MUI global (chunk-load) error dialog based on the design toggle. */
+function GlobalErrorDialogGate() {
+  const crdEnabled = useCrdEnabled();
+  return <Suspense fallback={null}>{crdEnabled ? <CrdGlobalErrorDialog /> : <GlobalErrorDialog />}</Suspense>;
 }
 
 /** Top-level path segments owned by the auth flow — the guidance chat is hidden on all of them. */
@@ -205,9 +212,7 @@ const Root: FC = () => {
                                             errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                           >
                                             <TopLevelRoutes />
-                                            <Suspense fallback={null}>
-                                              <GlobalErrorDialog />
-                                            </Suspense>
+                                            <GlobalErrorDialogGate />
                                           </Error40XBoundary>
                                         </FullscreenEditorProvider>
                                       </UserMessagingProvider>

@@ -220,7 +220,7 @@
     "memberSettings": {
       "title": "Lidinstellingen",
       "lead": "Dit lid is een <b>lead</b>: Leads worden weergegeven als de hosts van de community.",
-      "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en bijdragers ervan beheren.",
+      "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en deelnemers ervan beheren.",
       "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "section": {
         "role": "Rol",

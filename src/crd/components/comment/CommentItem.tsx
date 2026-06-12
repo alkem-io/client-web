@@ -2,6 +2,7 @@ import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { VirtualContributorBadge } from '@/crd/components/common/VirtualContributorBadge';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -87,8 +88,9 @@ export function CommentItem({
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className={cn(isLongComment ? 'w-full' : 'w-fit max-w-[min(460px,100%)]')}>
             <div className="rounded-lg bg-muted/50 px-3 py-2">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                 <span className="text-body-emphasis text-foreground">{comment.author.name}</span>
+                {comment.author.isVirtualContributor && <VirtualContributorBadge />}
                 <span className="text-caption text-muted-foreground">{comment.timestamp}</span>
               </div>
 

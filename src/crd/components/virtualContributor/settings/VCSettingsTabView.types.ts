@@ -12,6 +12,7 @@
 
 import type { SectionSaveStatus } from '@/crd/components/common/FieldFooter';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import type { VcPromptGraphCardProps } from './VCPromptGraphCard.types';
 
 export type { SectionSaveStatus };
 
@@ -76,4 +77,6 @@ export type VcSettingsViewProps = {
   prompt?: VcPromptCardProps;
   /** Absent when engine has no external config. */
   externalConfig?: VcExternalConfigCardProps;
+  /** Absent unless prompt-graph editing is enabled or the viewer is a platform admin. */
+  promptGraph?: Omit<VcPromptGraphCardProps, 'labels'>;
 };

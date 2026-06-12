@@ -11,12 +11,10 @@ import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdVCProfilePage from './publicProfile/CrdVCProfilePage';
 
 const CrdVCSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdVCSettingsRoutes'));
+const CrdVCKnowledgeBasePage = lazyWithGlobalErrorHandler(() => import('./knowledgeBase/CrdVCKnowledgeBasePage'));
 
 const MuiVCSettingsRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/virtualContributorAdmin/VCSettingsRoute')
-);
-const MuiVCKnowledgeBaseRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/virtualContributor/knowledgeBase/VCKnowledgeBaseRoute')
 );
 
 const VcSettingsDispatch = () => {
@@ -51,9 +49,11 @@ export const CrdVCRoutes = () => (
       <Route
         path={`${KNOWLEDGE_BASE_PATH}/*`}
         element={
-          <Suspense fallback={<Loading />}>
-            <MuiVCKnowledgeBaseRoute />
-          </Suspense>
+          <CrdLayoutWrapper>
+            <Suspense fallback={<Loading />}>
+              <CrdVCKnowledgeBasePage />
+            </Suspense>
+          </CrdLayoutWrapper>
         }
       />
       <Route

@@ -973,6 +973,7 @@ export const ReactionDetailsFragmentDoc = gql`
 export const ContributorDetailsFragmentDoc = gql`
     fragment ContributorDetails on Actor {
   id
+  type
   profile {
     id
     displayName

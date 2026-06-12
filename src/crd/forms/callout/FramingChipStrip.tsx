@@ -40,11 +40,26 @@ export type FramingChipStripProps = {
    * feature). The tooltip text is i18n'd by the consumer.
    */
   disabledChips?: DisabledChipMap;
+  /**
+   * When provided, only these chips are rendered (in `CHIPS` order). Used by the
+   * consumer to limit which framing types a callout may use — e.g. a Virtual
+   * Contributor's knowledge base offers none. `undefined` renders all chips.
+   */
+  allowedChips?: FramingChipId[];
   className?: string;
 };
 
-export function FramingChipStrip({ value, onChange, locked = false, disabledChips, className }: FramingChipStripProps) {
+export function FramingChipStrip({
+  value,
+  onChange,
+  locked = false,
+  disabledChips,
+  allowedChips,
+  className,
+}: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
+
+  const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
 
   const handleClick = (chip: Chip) => {
     if (disabledChips?.[chip.id]) return;
@@ -66,7 +81,7 @@ export function FramingChipStrip({ value, onChange, locked = false, disabledChip
         aria-label={t('forms.framingType')}
         className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
       >
-        {CHIPS.map(chip => {
+        {chips.map(chip => {
           const active = value === chip.id;
           const disabledInfo = disabledChips?.[chip.id];
           const isDisabled = Boolean(disabledInfo);
