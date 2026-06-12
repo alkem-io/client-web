@@ -1,4 +1,12 @@
 {
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o es posible que se haya movido.",
+    "actions": {
+      "goHome": "Ir al inicio",
+      "goBack": "Atrás"
+    }
+  },
   "forbidden": {
     "title": "Acceso restringido",
     "description": "La página a la que intentas acceder no está disponible para ti.",
@@ -15,6 +23,26 @@
       "signIn": "Iniciar sesión / Registrarse",
       "or": "O",
       "returnAsGuest": "Volver al panel como invitado"
+    }
+  },
+  "genericError": {
+    "title": "¡Vaya!",
+    "description": "Parece que algo salió mal: <italic>{{message}}</italic>",
+    "serverHint": "Comprueba que tu servidor ({{graphQLEndpoint}}) esté disponible y vuelve a cargar la página.",
+    "contactSupport": "Si el error persiste, <contact>contacta con soporte</contact>.",
+    "code": "Código de error: {{code}}",
+    "actions": {
+      "reload": "Recargar"
+    }
+  },
+  "chunkLoad": {
+    "title": "¡Vaya!",
+    "messages": {
+      "lazyLoad": "Se produjo un error de red. Intenta volver a cargar la página.",
+      "unknown": "Se produjo un error desconocido. Intenta volver a cargar la página."
+    },
+    "actions": {
+      "reload": "Recargar"
     }
   }
 }
