@@ -10,6 +10,7 @@ import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import crdSpaceEN from '@/crd/i18n/space/space.en.json';
 import crdSpaceSettingsEN from '@/crd/i18n/spaceSettings/spaceSettings.en.json';
 import crdSubspaceEN from '@/crd/i18n/subspace/subspace.en.json';
+import crdCreateSpaceEN from '@/crd/i18n/createSpace/createSpace.en.json';
 import crdMarkdownEN from '@/crd/i18n/markdown/markdown.en.json';
 import crdNotificationsEN from '@/crd/i18n/notifications/notifications.en.json';
 import crdProfilePagesEN from '@/crd/i18n/profilePages/profilePages.en.json';
@@ -29,6 +30,7 @@ i18n.use(initReactI18next).init({
       'crd-space': crdSpaceEN,
       'crd-spaceSettings': crdSpaceSettingsEN,
       'crd-subspace': crdSubspaceEN,
+      'crd-createSpace': crdCreateSpaceEN,
       'crd-markdown': crdMarkdownEN,
       'crd-notifications': crdNotificationsEN,
       'crd-profilePages': crdProfilePagesEN,
@@ -46,6 +48,7 @@ i18n.use(initReactI18next).init({
     'crd-space',
     'crd-spaceSettings',
     'crd-subspace',
+    'crd-createSpace',
     'crd-markdown',
     'crd-notifications',
     'crd-profilePages',

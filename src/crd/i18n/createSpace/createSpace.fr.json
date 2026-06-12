@@ -1,0 +1,98 @@
+{
+  "dialog": {
+    "title": "Créer un nouvel espace",
+    "subtitle": "Configurez un nouvel espace de premier niveau dans votre compte.",
+    "subtitleForAccount": "Créez un nouvel espace de premier niveau dans le compte de {{account}}."
+  },
+  "template": {
+    "label": "Modèle",
+    "hint": "Optionnel — choisissez un modèle d'espace pour pré-remplir la structure et le contenu.",
+    "choose": "Choisir un modèle",
+    "change": "Changer",
+    "clear": "Utiliser vierge",
+    "selectedLabel": "Modèle sélectionné",
+    "loadingPreview": "Chargement de l'aperçu du modèle…",
+    "overwriteConfirm": {
+      "title": "Remplacer le contenu du formulaire ?",
+      "description": "L'application de ce modèle écrasera le nom, l'accroche, la description et les étiquettes que vous avez déjà saisis.",
+      "confirm": "Appliquer le modèle",
+      "cancel": "Conserver mes modifications"
+    },
+    "invalidFlow": "Ce modèle ne peut pas être utilisé pour créer un espace — il nécessite un flux d'innovation à 4 phases."
+  },
+  "displayName": {
+    "label": "Nom",
+    "hint": "Le nom de votre espace, visible par tous.",
+    "placeholder": "p. ex. Hub d'innovation climatique"
+  },
+  "slug": {
+    "label": "URL",
+    "prefix": "alkem.io/",
+    "placeholder": "url-espace",
+    "hint": "L'adresse web de votre espace. Pré-remplie à partir du nom — vous pouvez la modifier."
+  },
+  "tagline": {
+    "label": "Accroche",
+    "hint": "Un court sous-titre décrivant l'espace.",
+    "placeholder": "Une courte accroche…"
+  },
+  "description": {
+    "label": "Description",
+    "hint": "Expliquez de quoi parle cet espace. Markdown est pris en charge.",
+    "placeholder": "De quoi parle cet espace ?"
+  },
+  "tags": {
+    "label": "Étiquettes",
+    "hint": "Les étiquettes aident les membres à trouver cet espace.",
+    "placeholder": "Ajoutez une étiquette et appuyez sur Entrée"
+  },
+  "banner": {
+    "label": "Bannière de page",
+    "upload": "Téléverser la bannière de page"
+  },
+  "cardBanner": {
+    "label": "Bannière de carte",
+    "upload": "Téléverser la bannière de carte"
+  },
+  "visuals": {
+    "remove": "Retirer l'image",
+    "resolutionHint": "Recommandé : {{width}} × {{height}} px",
+    "tooSmall": "L'image est trop petite. Minimum {{width}} × {{height}} px requis.",
+    "loadFailed": "Impossible de lire le fichier image."
+  },
+  "addTutorials": {
+    "header": "Tutoriels",
+    "label": "Ajoutez des tutoriels et des posts d'exemple à cet espace"
+  },
+  "terms": {
+    "checkboxLabel": "J'accepte les <terms>conditions générales</terms> pour créer un espace.",
+    "dialogTitle": "Conditions générales pour la création d'un espace",
+    "dialogContent": "Je comprends qu'en tant qu'hôte, je suis responsable de tout le contenu au sein de l'espace.",
+    "fullTermsLink": "Cliquez ici pour en savoir plus sur les conditions générales.",
+    "url": "https://welcome.alkem.io/terms"
+  },
+  "license": {
+    "noPlans": "Aucun forfait disponible. Veuillez contacter le support."
+  },
+  "cancel": "Annuler",
+  "submit": "Créer l'espace",
+  "creating": "Création…",
+  "validation": {
+    "min3": "Doit comporter au moins 3 caractères",
+    "maxSmall": "Doit comporter {{count}} caractères ou moins",
+    "maxMarkdown": "Doit comporter {{count}} caractères ou moins",
+    "required": "Le nom est obligatoire",
+    "slugRequired": "L'URL est obligatoire",
+    "slugInvalid": "Utilisez uniquement des lettres minuscules, des chiffres et des tirets",
+    "acceptedTerms": "Vous devez accepter les conditions pour créer un espace"
+  },
+  "crop": {
+    "title": "Recadrer l’image",
+    "description": "Ajustez le recadrage pour cadrer votre image.",
+    "save": "Appliquer",
+    "saving": "Application…",
+    "cancel": "Annuler",
+    "altLabel": "Texte alternatif",
+    "altPlaceholder": "Décrivez l’image (facultatif)"
+  }
+}

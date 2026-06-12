@@ -1,0 +1,98 @@
+{
+  "dialog": {
+    "title": "Nieuwe Space maken",
+    "subtitle": "Stel een nieuwe Space op het hoogste niveau in je account in.",
+    "subtitleForAccount": "Maak een nieuwe top-level Space aan in het account van {{account}}."
+  },
+  "template": {
+    "label": "Template",
+    "hint": "Optioneel — kies een Space-template om de structuur en inhoud vooraf in te vullen.",
+    "choose": "Kies een template",
+    "change": "Wijzigen",
+    "clear": "Leeg gebruiken",
+    "selectedLabel": "Geselecteerd template",
+    "loadingPreview": "Templatevoorbeeld laden…",
+    "overwriteConfirm": {
+      "title": "Formulierinhoud vervangen?",
+      "description": "Door dit template toe te passen worden de naam, tagline, beschrijving en tags die je al hebt ingevuld overschreven.",
+      "confirm": "Template toepassen",
+      "cancel": "Mijn wijzigingen behouden"
+    },
+    "invalidFlow": "Deze Template kan niet worden gebruikt om een Space te maken — er is een innovatieflow met 4 fasen nodig."
+  },
+  "displayName": {
+    "label": "Naam",
+    "hint": "De naam van je Space, zichtbaar voor iedereen.",
+    "placeholder": "bv. Climate Innovation Hub"
+  },
+  "slug": {
+    "label": "URL",
+    "prefix": "alkem.io/",
+    "placeholder": "space-url",
+    "hint": "Het webadres voor je Space. Automatisch ingevuld op basis van de naam — je kunt het bewerken."
+  },
+  "tagline": {
+    "label": "Tagline",
+    "hint": "Een korte ondertitel die de Space beschrijft.",
+    "placeholder": "Een korte tagline…"
+  },
+  "description": {
+    "label": "Beschrijving",
+    "hint": "Leg uit waarover deze Space gaat. Markdown wordt ondersteund.",
+    "placeholder": "Waarover gaat deze Space?"
+  },
+  "tags": {
+    "label": "Tags",
+    "hint": "Tags helpen mensen deze Space te vinden.",
+    "placeholder": "Voeg een tag toe en druk op Enter"
+  },
+  "banner": {
+    "label": "Paginabanner",
+    "upload": "Paginabanner uploaden"
+  },
+  "cardBanner": {
+    "label": "Kaartbanner",
+    "upload": "Kaartbanner uploaden"
+  },
+  "visuals": {
+    "remove": "Afbeelding verwijderen",
+    "resolutionHint": "Aanbevolen: {{width}} × {{height}} px",
+    "tooSmall": "Afbeelding is te klein. Minimaal {{width}} × {{height}} px vereist.",
+    "loadFailed": "Kon de afbeelding niet lezen."
+  },
+  "addTutorials": {
+    "header": "Tutorials",
+    "label": "Voeg Tutorials en voorbeeld-posts toe aan deze Space"
+  },
+  "terms": {
+    "checkboxLabel": "Ik accepteer de <terms>voorwaarden</terms> voor het maken van een Space.",
+    "dialogTitle": "Voorwaarden voor het maken van een Space",
+    "dialogContent": "Ik begrijp dat ik als Host verantwoordelijk ben voor alle inhoud binnen de Space.",
+    "fullTermsLink": "Klik hier om meer te lezen over de voorwaarden.",
+    "url": "https://welcome.alkem.io/terms"
+  },
+  "license": {
+    "noPlans": "Geen beschikbare abonnementen. Neem contact op met ondersteuning."
+  },
+  "cancel": "Annuleren",
+  "submit": "Space maken",
+  "creating": "Maken…",
+  "validation": {
+    "min3": "Moet minimaal 3 tekens zijn",
+    "maxSmall": "Mag maximaal {{count}} tekens zijn",
+    "maxMarkdown": "Mag maximaal {{count}} tekens zijn",
+    "required": "Naam is verplicht",
+    "slugRequired": "URL is verplicht",
+    "slugInvalid": "Gebruik alleen kleine letters, cijfers en koppeltekens",
+    "acceptedTerms": "Je moet de voorwaarden accepteren om een Space te maken"
+  },
+  "crop": {
+    "title": "Afbeelding bijsnijden",
+    "description": "Pas de uitsnede aan om je afbeelding te kadreren.",
+    "save": "Toepassen",
+    "saving": "Toepassen…",
+    "cancel": "Annuleren",
+    "altLabel": "Alt-tekst",
+    "altPlaceholder": "Beschrijf de afbeelding (optioneel)"
+  }
+}

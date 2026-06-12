@@ -159,6 +159,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/subspace/subspace.de.json'),
     fr: () => import('@/crd/i18n/subspace/subspace.fr.json'),
   },
+  'crd-createSpace': {
+    en: () => import('@/crd/i18n/createSpace/createSpace.en.json'),
+    es: () => import('@/crd/i18n/createSpace/createSpace.es.json'),
+    nl: () => import('@/crd/i18n/createSpace/createSpace.nl.json'),
+    bg: () => import('@/crd/i18n/createSpace/createSpace.bg.json'),
+    de: () => import('@/crd/i18n/createSpace/createSpace.de.json'),
+    fr: () => import('@/crd/i18n/createSpace/createSpace.fr.json'),
+  },
   'crd-whiteboard': {
     en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),
     es: () => import('@/crd/i18n/whiteboard/whiteboard.es.json'),

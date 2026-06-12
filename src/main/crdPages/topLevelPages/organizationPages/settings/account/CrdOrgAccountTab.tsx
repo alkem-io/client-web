@@ -16,12 +16,12 @@ import type { AccountResourceGroupId } from '@/crd/components/contributor/settin
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 // TEMP fallback: open existing MUI dialogs until CRD parity ports land
-// (spec 097-crd-user-settings, tasks T033a–T033f). Delete the four imports
-// below and the corresponding JSX at the bottom of this file once those
-// CRD dialogs are wired in.
+// (spec 097-crd-user-settings). Delete the remaining MUI imports below and the
+// corresponding JSX at the bottom of this file once those CRD dialogs are wired in.
+// Create Space is migrated — it uses the CRD dialog (spec 105-create-space-dialog).
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
+import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import { type AccountResourceKind, mapOrgAccountToViewProps, type OrgAccountMapperCallbacks } from './orgAccountMapper';
@@ -197,7 +197,12 @@ const CrdOrgAccountTab = () => {
       {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
       {account?.id && (
         <>
-          <CreateSpace accountId={account.id} open={createSpaceOpen} onClose={() => setCreateSpaceOpen(false)} />
+          <CrdCreateSpaceDialog
+            accountId={account.id}
+            accountName={accountHostName}
+            open={createSpaceOpen}
+            onClose={() => setCreateSpaceOpen(false)}
+          />
           <CreateInnovationPackDialog
             accountId={account.id}
             open={createPackOpen}
