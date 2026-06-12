@@ -47,6 +47,7 @@
     "readonlyReason": {
       "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",
       "contentUpdatePolicy": "No tienes derechos para editar esta pizarra. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido si deseas contribuir.",
+      "contentUpdatePolicyNoOwner": "No tienes derechos para editar esta pizarra. El propietario ya no está disponible: pide a un administrador del espacio que cambie la configuración de uso compartido si deseas contribuir.",
       "noMembership": "Debes ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <spacelink>unirte/solicitar</spacelink>",
       "unauthenticated": "Debes iniciar sesión y ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
     },

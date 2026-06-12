@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -36,24 +35,33 @@ async function cleanupPushSubscription(
 const LogoutPage = () => {
   const { t } = useTranslation();
 
-  const { getLogoutUrl, logoutUrl, error } = useLogoutUrl();
+  const { getLogoutUrl, outcome } = useLogoutUrl();
   const { clearReturnUrl } = useReturnUrl();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
 
   useEffect(() => {
-    if (logoutUrl) {
-      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions
+    if (!outcome) {
+      getLogoutUrl();
+      return;
+    }
+    if (outcome.kind === 'redirect') {
+      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions.
+      // The target is whichever logout leg useLogoutUrl picked next — the Hydra
+      // end_session URL or the Kratos SSO logout URL.
       cleanupPushSubscription(unsubscribeMutation).finally(() => {
         clearReturnUrl();
-        window.location.replace(logoutUrl);
+        window.location.replace(outcome.url);
       });
-    } else {
-      getLogoutUrl();
+      return;
     }
-    return () => {};
-  }, [logoutUrl]);
+    // outcome.kind === 'cleared' — nothing left to end (no BFF session, no Kratos
+    // session). Land on the public home page instead of the bare placeholder.
+    cleanupPushSubscription(unsubscribeMutation).finally(() => {
+      clearReturnUrl();
+      window.location.replace('/home');
+    });
+  }, [outcome]);
 
-  if (error) return <Typography>{String(error)}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;
 };
 

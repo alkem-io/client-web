@@ -25540,6 +25540,7 @@ export type PlatformAdminOrganizationsListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     organizations: {
       __typename?: 'PaginatedOrganization';
+      total: number;
       organization: Array<{
         __typename?: 'Organization';
         id: string;
@@ -25826,6 +25827,7 @@ export type PlatformAdminUsersListQuery = {
     __typename?: 'PlatformAdminQueryResults';
     users: {
       __typename?: 'PaginatedUsers';
+      total: number;
       users: Array<{
         __typename?: 'User';
         id: string;
@@ -31181,6 +31183,7 @@ export type SpacePrivilegesQuery = {
 
 export type SpaceStorageConfigQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  includeSpaceProfile?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type SpaceStorageConfigQuery = {
@@ -31191,6 +31194,25 @@ export type SpaceStorageConfigQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
           about: {
             __typename?: 'SpaceAbout';
             id: string;

@@ -46,6 +46,11 @@
     "recurringMessage": "Please close all Alkemio tabs and reload to update.",
     "reload": "Redémarrer"
   },
+  "onlineStatus": {
+    "offline": "Vous êtes actuellement hors ligne. Veuillez enregistrer localement tout travail en cours, car les données non enregistrées pourraient être perdues.",
+    "restored": "Votre connexion a été rétablie.",
+    "close": "Fermer"
+  },
   "cookieConsent": {
     "consent": "En cliquant sur \"Accepter tous les Cookies\", vous acceptez le stockage de cookies sur votre appareil pour améliorer la navigation sur le site, analyser l'utilisation du site et aider dans nos efforts marketing.",
     "settingsIntro": "Lorsque vous visitez un site Web, des renseignements peuvent être conservés dans votre navigateur sous la forme de cookies. Ces informations peuvent concerner vous, vos préférences et votre appareil. Ces informations sont principalement utilisées pour rendre le site aussi bon que possible et certains sites les utilisent à des fins de marketing. Comme Alkemio n'autorise aucune publicité sur son site web, nous ne distinguons que deux types de cookies.",

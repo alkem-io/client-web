@@ -262,9 +262,13 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 
 ### References section
 
-- **FR-50** References editor in "More options": starts with zero rows. An **Add another reference** button inserts a new empty row of (title, url, description). Each row has a delete affordance (via `ConfirmationDialog`) and a **paperclip** file-attach button that uploads to the space storage bucket (`useReferenceFileUpload(useStorageConfigContext())`), writing the resulting URL into the row's url and filling an empty title with the filename; deleting the last row returns the editor to the empty state. The Links & Files "Pre-populate collection" editor (FR-31) reuses this same per-row file-attach affordance.
+- **FR-50** References editor in "More options": starts with zero rows. An **Add another reference** button inserts a new empty row of (title, url, description). Each row has a delete affordance (via `ConfirmationDialog`) and a **paperclip** file-attach button that uploads via `useReferenceFileUpload(useStorageConfigContext())` to the bucket scoped per FR-53, writing the resulting URL into the row's url and filling an empty title with the filename; deleting the last row returns the editor to the empty state. The Links & Files "Pre-populate collection" editor (FR-31) reuses this same per-row file-attach affordance.
 - **FR-51** Empty rows are dropped on submit.
 - **FR-52** URL is not validated at form level — the server accepts arbitrary strings in the reference field.
+- **FR-53** **Upload storage scoping.** Both the description image upload (FR-04) and every file upload (references FR-50, pre-populate links FR-31) target a storage bucket chosen by mode:
+  - **Create** → the space's own **SPACE** bucket (`space.profile.storageBucket`), resolved via `useStorageConfig({ locationType: 'space', temporaryLocation: true })`, with `temporaryLocation: true`. The new callout has no bucket yet, so the server relocates the temporary files onto it on save. A regular member holds `FileUpload` on the SPACE bucket — **not** on the About bucket (`space.about.profile.storageBucket`), which is why create must not use the ambient About-scoped context. The space scope is mounted **once** by `CalloutFormConnector`'s outer wrapper using `useUrlResolver().spaceId` (correct at L0 and every subspace level), `skip`-ped until the dialog is open.
+  - **Edit** → the callout's own bucket (`locationType="callout"`, scoped by `CalloutEditConnector`) with `temporaryLocation: false`.
+  - The SPACE bucket field is **authorization-gated** — anonymous visitors and non-members on private spaces cannot read it. `SpaceStorageConfig` therefore requests `space.profile` only behind `@include(if: $includeSpaceProfile)`, set `true` solely by the temporary-upload (create) flow, so an ordinary space page load (which resolves the About bucket) never requests the gated field.
 
 ### Tags
 
