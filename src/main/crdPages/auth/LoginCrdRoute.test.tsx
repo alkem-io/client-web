@@ -1,13 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginCrdRoute } from './LoginCrdRoute';
 
 let mockSearch = '';
 const mockIsAuthenticated = vi.fn<() => boolean>();
+const replaceSpy = vi.fn<(url: string) => void>();
 
 vi.mock('@/core/routing/useQueryParams', () => ({
   useQueryParams: () => new URLSearchParams(mockSearch),
+}));
+
+// The OIDC BFF (/api/auth/oidc/*) is apex-only; the redirect must be prefixed
+// with the apex origin returned by this hook (mirrors `LoginPage`).
+vi.mock('@/domain/platform/routes/usePlatformOrigin', () => ({
+  default: () => 'https://sandbox-alkem.io',
 }));
 
 vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
@@ -59,6 +66,22 @@ describe('LoginCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
     mockIsAuthenticated.mockReset();
+    replaceSpy.mockReset();
+    // Simulate the page being served on the identity subdomain (where signup
+    // lives), so a same-origin-relative redirect would land on the unrouted
+    // identity host. `origin` feeds the returnTo same-origin check.
+    vi.stubGlobal('location', {
+      origin: 'https://identity.sandbox-alkem.io',
+      replace: replaceSpy,
+      assign: vi.fn(),
+      href: '',
+      pathname: '/login',
+      search: '',
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('renders the login page for an unauthenticated user with no flow', () => {
@@ -75,6 +98,20 @@ describe('LoginCrdRoute', () => {
     renderRoute();
 
     expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
+  it('OIDC entry hands off to the apex BFF absolutely, not the current (identity) subdomain', () => {
+    // Repro of the signup → "Sign in" → /login redirect bug. The signup form is
+    // served on identity.<domain>, so its sign-in link bakes that origin into
+    // returnUrl. On /login (no flow id → OIDC entry) the page must redirect to
+    // the apex BFF; a relative replace would hit identity.<domain>/api/auth/oidc/login
+    // which Traefik routes to the SPA catch-all (404 / no OIDC flow).
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://identity.sandbox-alkem.io/home';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome');
   });
 
   it('renders the login page for an authenticated user when a flow id is present (refresh / step-up re-auth)', () => {

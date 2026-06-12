@@ -13,6 +13,10 @@ type MapMemoFooterParams = {
   hasDeletePrivileges: boolean;
   onDelete?: () => void;
   contentUpdatePolicy?: ContentUpdatePolicy;
+  // Whether the memo still has an owner (`createdBy.profile`). When the policy locks the memo and the
+  // owner is gone, the footer points at a space admin instead of a (broken) owner link — mirrors the MUI
+  // `contentUpdatePolicyNoOwner` branch in `MemoFooter.tsx`.
+  hasOwner?: boolean;
   // The Space/Subspace context types this as plain `string`; keep the wider type to match.
   myMembershipStatus?: CommunityMembershipStatus | string;
 };
@@ -49,6 +53,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     hasDeletePrivileges,
     onDelete,
     contentUpdatePolicy,
+    hasOwner,
     myMembershipStatus,
   } = params;
 
@@ -65,6 +70,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
       isAuthenticated,
       isReadOnly,
       contentUpdatePolicy,
+      hasOwner,
       myMembershipStatus,
     }),
     onDelete: canDelete ? onDelete : undefined,
@@ -77,6 +83,7 @@ type ResolveReadonlyReasonParams = {
   isAuthenticated: boolean;
   isReadOnly: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
+  hasOwner?: boolean;
   myMembershipStatus?: CommunityMembershipStatus | string;
 };
 
@@ -86,6 +93,7 @@ function resolveReadonlyReason({
   isAuthenticated,
   isReadOnly,
   contentUpdatePolicy,
+  hasOwner,
   myMembershipStatus,
 }: ResolveReadonlyReasonParams): ReadonlyReason {
   if (connectionStatus !== 'connected') return 'connecting';
@@ -98,5 +106,6 @@ function resolveReadonlyReason({
   ) {
     return 'noMembership';
   }
-  return 'contentUpdatePolicy';
+  // Policy-locked: point at the owner when there is one, otherwise at a space admin (no broken owner link).
+  return hasOwner ? 'contentUpdatePolicy' : 'contentUpdatePolicyNoOwner';
 }
