@@ -3927,7 +3927,7 @@
     },
     "registration": {
       "header": "Maak een $t(common.account) aan om Alkemio te gebruiken",
-      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "introduction-short": "<p>Alkemio is ontworpen ten goede van de samenleving. Lees en accepteer de <terms>gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> voordat u verder gaat.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een $t(common.account)?",
@@ -3935,7 +3935,7 @@
       "logo-subtitle": "$t(common.spaces) voor Samenwerking"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en deelnemers van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en deelnemers van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom op Alkemio!",
       "continue": "Doorgaan naar het platform",
       "next": "Volgende",
