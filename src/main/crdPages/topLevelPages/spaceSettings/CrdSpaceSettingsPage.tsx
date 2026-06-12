@@ -654,6 +654,20 @@ export default function CrdSpaceSettingsPage() {
         onConfirm={createSubspace.onConfirmOverwriteTemplate}
         onCancel={createSubspace.onCancelOverwriteTemplate}
       />
+      <ImageCropDialog
+        open={Boolean(createSubspace.pendingCrop)}
+        file={createSubspace.pendingCrop?.file}
+        config={createSubspace.pendingCrop?.config ?? {}}
+        onSave={({ file }) => createSubspace.onCropComplete(file)}
+        onCancel={createSubspace.onCropCancel}
+        title={t('subspaces.createDialog.crop.title')}
+        description={t('subspaces.createDialog.crop.description')}
+        saveLabel={t('subspaces.createDialog.crop.save')}
+        savingLabel={t('subspaces.createDialog.crop.saving')}
+        cancelLabel={t('subspaces.createDialog.crop.cancel')}
+        altTextLabel={t('subspaces.createDialog.crop.altLabel')}
+        altTextPlaceholder={t('subspaces.createDialog.crop.altPlaceholder')}
+      />
 
       <ChangeDefaultSubspaceTemplateDialog
         open={subspacesTab.selectDefaultTemplateOpen}

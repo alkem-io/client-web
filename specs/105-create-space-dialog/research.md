@@ -114,6 +114,8 @@ The `<terms>` placeholder is rendered via `<Trans>` as the link that opens the t
 
 **Rationale**: The entitlement/privilege gating already lives on the account page and is out of scope; only the dialog component changes. This removes the MUI dependency these two `crdPages` files carry for Create Space (SC-006). The MUI `CreateSpace` stays in the repo for legacy-design callers (FR-019).
 
+**Dashboard launch (review round 3 — FR-021)**: The CRD dashboard sidebar's `create-space` item (`useDashboardSidebar.ts`) previously set `href: useCreateSpaceLink()` (→ the account page). It now uses `onClick: onCreateSpaceClick` instead (the `SidebarMenuItemData` type already supports `onClick`, rendered as a `<button>`), and both dashboard shells (`DashboardWithMemberships.tsx`, `DashboardWithoutMemberships.tsx`) own a `createSpaceOpen` state and mount `<CrdCreateSpaceDialog accountId={currentUserAccountId} ... />` (current user's account from `useCurrentUserContext()`). `useCreateSpaceLink` is dropped from `useDashboardSidebar`. Non-entitled users get the dialog's no-plan message rather than the old static-page redirect — an acceptable, more direct outcome.
+
 ## R12 — Standalone demo (P3, optional)
 
 **Decision**: Add `src/crd/app/pages/CreateSpacePage.tsx` rendering `CreateSpaceDialog` with mock props (mock template content, constraints, validation/submitting states), routed in `CrdApp.tsx` — mirroring the existing demo pages (e.g. `SubspacePage`, `TemplatesPage`).
@@ -141,6 +143,14 @@ The `<terms>` placeholder is rendered via `<Trans>` as the link that opens the t
 - **Terms link**: the `<terms>` link rendered at the browser-default button font-size (the CRD reset doesn't fully normalize it) — force `font: inherit` and `cursor: pointer` on the link so it matches the surrounding caption label and shows the pointer cursor like the rest of the (clickable) label.
 - **No hardcoded URLs**: the standalone demo must not hardcode strings. The slug **prefix** in the demo uses the **current domain** (`window.location.origin + '/'`); the **terms URL** moves into i18n (`terms.url`) and the component's "read more" link falls back to `t('terms.url')` when no `termsUrl` prop is supplied; the demo's markdown **image upload** mock returns `URL.createObjectURL(file)` instead of a hardcoded image URL.
 - **Deferred**: the hardcoded Unsplash banner URL (copied from the prototype's `CreateSpaceForm`) is to be studied later — tracked as a reminder, out of scope for this round.
+
+## R16 — Image crop dialog on visual selection (review round 4)
+
+**Decision**: Selecting a page-banner / card-banner image opens the shared **`ImageCropDialog`** (`src/crd/components/common/ImageCropDialog.tsx`) — the same component the about/profile tabs use — so the user crops to the visual's aspect ratio before it's applied. `ImageCropDialog` crops **and** resizes to the config's min/max, so it **replaces** the previous silent `resizeImageToConstraints` path. The hook holds a `pendingCrop = { key, file, config }` state (mirroring `useAboutTabData`'s `PendingCrop`): the FileField pick routes a `File` into `pendingCrop` (instead of straight into form state), the connector renders `ImageCropDialog` driven by it, and `onSave` puts the cropped+resized file into `bannerFile`/`cardBannerFile`. The crop `config` (`aspectRatio` + min/max) comes from the `useDefaultVisualTypeConstraintsQuery` data already fetched. New `crop.*` i18n keys (title/description/save/saving/cancel/altLabel/altPlaceholder).
+
+**Also applied to Create Subspace** (per the reviewer's request — it had no crop step): `useCreateSubspace` + its mount in `CrdSpaceSettingsPage` get the same `pendingCrop` + `ImageCropDialog` treatment, replacing its `applyImageResize`. Crop labels added under `spaceSettings`'s `subspaces.createDialog.crop.*`.
+
+**Rationale**: Reuses the established crop component + `PendingCrop` pattern; gives the user control over framing instead of a blind center-crop; the dialog's resizer handles the min/max bounds (including upscaling to the lower bound), so the separate `resizeImageToConstraints` call is no longer needed in these two flows.
 
 ## Reused assets (no new dependencies)
 

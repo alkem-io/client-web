@@ -522,6 +522,15 @@
         "maxSmall": "Must be {{count}} characters or fewer",
         "maxMarkdown": "Must be {{count}} characters or fewer",
         "required": "Name is required"
+      },
+      "crop": {
+        "title": "Crop image",
+        "description": "Adjust the crop to frame your image.",
+        "save": "Apply",
+        "saving": "Applying…",
+        "cancel": "Cancel",
+        "altLabel": "Alt text",
+        "altPlaceholder": "Describe the image (optional)"
       }
     }
   },

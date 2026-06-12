@@ -85,5 +85,14 @@
     "slugRequired": "URL is verplicht",
     "slugInvalid": "Gebruik alleen kleine letters, cijfers en koppeltekens",
     "acceptedTerms": "Je moet de voorwaarden accepteren om een Space te maken"
+  },
+  "crop": {
+    "title": "Afbeelding bijsnijden",
+    "description": "Pas de uitsnede aan om je afbeelding te kadreren.",
+    "save": "Toepassen",
+    "saving": "Toepassen…",
+    "cancel": "Annuleren",
+    "altLabel": "Alt-tekst",
+    "altPlaceholder": "Beschrijf de afbeelding (optioneel)"
   }
 }

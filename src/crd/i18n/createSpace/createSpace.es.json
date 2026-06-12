@@ -85,5 +85,14 @@
     "slugRequired": "La URL es obligatoria",
     "slugInvalid": "Usa solo letras minúsculas, números y guiones",
     "acceptedTerms": "Debes aceptar los términos para crear un Espacio"
+  },
+  "crop": {
+    "title": "Recortar imagen",
+    "description": "Ajusta el recorte para encuadrar tu imagen.",
+    "save": "Aplicar",
+    "saving": "Aplicando…",
+    "cancel": "Cancelar",
+    "altLabel": "Texto alternativo",
+    "altPlaceholder": "Describe la imagen (opcional)"
   }
 }

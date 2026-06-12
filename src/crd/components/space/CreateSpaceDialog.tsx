@@ -225,7 +225,7 @@ export function CreateSpaceDialog({
                   placeholder={t('slug.placeholder')}
                   disabled={submitting}
                   aria-invalid={!!errors.nameId}
-                  className="border-0 bg-transparent px-1 shadow-none focus-visible:ring-0"
+                  className="border-0 bg-transparent px-1 shadow-none focus-visible:ring-0 pl-0"
                 />
               </div>
             </FieldShell>
@@ -301,11 +301,12 @@ export function CreateSpaceDialog({
               <div className="flex items-start gap-2">
                 <Checkbox
                   id="space-addTutorials"
+                  className="mt-0.5"
                   checked={values.addTutorialCallouts}
                   onCheckedChange={checked => onChange({ addTutorialCallouts: checked === true })}
                   disabled={submitting}
                 />
-                <Label htmlFor="space-addTutorials" className="text-body font-normal cursor-pointer">
+                <Label htmlFor="space-addTutorials" className="text-body font-normal leading-snug cursor-pointer">
                   {t('addTutorials.label')}
                 </Label>
               </div>
@@ -462,8 +463,11 @@ function FileField({
         className={cn(
           'relative overflow-hidden rounded-md border border-dashed bg-muted/30',
           error && 'border-destructive',
-          aspectClassName
+          // Real aspect from the visual constraints (authoritative); the class is
+          // only a fallback until constraints load.
+          !constraints?.aspectRatio && aspectClassName
         )}
+        style={constraints?.aspectRatio ? { aspectRatio: constraints.aspectRatio } : undefined}
       >
         {previewUrl ? (
           <>

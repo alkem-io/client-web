@@ -85,5 +85,14 @@
     "slugRequired": "URL is required",
     "slugInvalid": "Use only lowercase letters, numbers and hyphens",
     "acceptedTerms": "You must accept the terms to create a Space"
+  },
+  "crop": {
+    "title": "Crop image",
+    "description": "Adjust the crop to frame your image.",
+    "save": "Apply",
+    "saving": "Applying…",
+    "cancel": "Cancel",
+    "altLabel": "Alt text",
+    "altPlaceholder": "Describe the image (optional)"
   }
 }

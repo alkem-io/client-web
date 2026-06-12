@@ -522,6 +522,15 @@
         "maxSmall": "Debe tener {{count}} caracteres o menos",
         "maxMarkdown": "Debe tener {{count}} caracteres o menos",
         "required": "El nombre es obligatorio"
+      },
+      "crop": {
+        "title": "Recortar imagen",
+        "description": "Ajusta el recorte para encuadrar tu imagen.",
+        "save": "Aplicar",
+        "saving": "Aplicando…",
+        "cancel": "Cancelar",
+        "altLabel": "Texto alternativo",
+        "altPlaceholder": "Describe la imagen (opcional)"
       }
     }
   },

@@ -12,6 +12,7 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import { NAMEID_MAX_LENGTH } from '@/core/ui/forms/validator/nameIdValidator';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import createNameId from '@/core/utils/nameId/createNameId';
+import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type { CreateSpaceFieldErrors, CreateSpaceFormValues } from '@/crd/components/space/CreateSpaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
@@ -19,10 +20,7 @@ import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/us
 import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import {
-  resizeImageToConstraints,
-  type VisualConstraints,
-} from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/resizeImageToConstraints';
+import type { VisualConstraints } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/resizeImageToConstraints';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 
 /** The number of innovation-flow states a Space template must have to seed an L0 Space (parity with the MUI selector). */
@@ -44,9 +42,20 @@ export type UseCreateSpaceOptions = {
   onSpaceCreated?: (space: CreatedSpaceResult) => void;
 };
 
+/** A banner/card image awaiting crop in the ImageCropDialog. */
+export type CreateSpacePendingCrop = {
+  key: 'bannerFile' | 'cardBannerFile';
+  file: File;
+  config: ImageCropConfig;
+};
+
 export type UseCreateSpaceResult = {
   values: CreateSpaceFormValues;
   errors: CreateSpaceFieldErrors;
+  /** Non-null while a picked banner/card image is being cropped — drives the ImageCropDialog. */
+  pendingCrop: CreateSpacePendingCrop | null;
+  onCropComplete: (file: File) => void;
+  onCropCancel: () => void;
   picker: TemplatePickerSelectProps;
   onOpenTemplatePicker: () => void;
   onClearTemplate: () => void;
@@ -104,6 +113,7 @@ export function useCreateSpace({
   const [appliedTemplateId, setAppliedTemplateId] = useState<string | null>(null);
   const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
+  const [pendingCrop, setPendingCrop] = useState<CreateSpacePendingCrop | null>(null);
 
   const { refetchSpaces } = useDashboardSpaces();
   const { createSpace, loading: submitting } = useSpaceCreation({
@@ -310,26 +320,38 @@ export function useCreateSpace({
     clearSelectedTemplate();
   };
 
-  const applyImageResize = async (
-    key: 'bannerFile' | 'cardBannerFile',
-    source: File,
-    constraints: VisualConstraints | null
-  ) => {
-    if (!constraints) return;
-    const result = await resizeImageToConstraints(source, constraints);
-    if (result.ok) {
-      setValues(prev => ({ ...prev, [key]: result.file }));
+  const toCropConfig = (c: VisualConstraints): ImageCropConfig => ({
+    aspectRatio: c.aspectRatio,
+    maxWidth: c.maxWidth,
+    maxHeight: c.maxHeight,
+    minWidth: c.minWidth,
+    minHeight: c.minHeight,
+  });
+
+  // A newly picked banner/card image opens the ImageCropDialog instead of going
+  // straight into form state; the dialog crops + resizes to the constraints.
+  const openCropFor = (key: 'bannerFile' | 'cardBannerFile', file: File) => {
+    const constraints = key === 'bannerFile' ? bannerConstraints : cardBannerConstraints;
+    if (constraints) {
+      setErrors(prev => ({ ...prev, [key]: undefined }));
+      setPendingCrop({ key, file, config: toCropConfig(constraints) });
     } else {
-      const message =
-        result.reason === 'tooSmall'
-          ? t('visuals.tooSmall', { width: constraints.minWidth, height: constraints.minHeight })
-          : t('visuals.loadFailed');
-      setValues(prev => ({ ...prev, [key]: null }));
-      setErrors(prev => ({ ...prev, [key]: message }));
+      // Constraints not loaded yet — apply the raw file as a fallback.
+      setValues(prev => ({ ...prev, [key]: file }));
     }
   };
 
   const onChange = (patch: Partial<CreateSpaceFormValues>) => {
+    // Image patches always carry only the image key — route a fresh pick to the crop dialog.
+    if (patch.bannerFile instanceof File) {
+      openCropFor('bannerFile', patch.bannerFile);
+      return;
+    }
+    if (patch.cardBannerFile instanceof File) {
+      openCropFor('cardBannerFile', patch.cardBannerFile);
+      return;
+    }
+
     setValues(prev => {
       const next = { ...prev, ...patch };
       if ('displayName' in patch && !isSlugEdited) {
@@ -347,14 +369,16 @@ export function useCreateSpace({
       }
       return next;
     });
-
-    if ('bannerFile' in patch && patch.bannerFile instanceof File) {
-      void applyImageResize('bannerFile', patch.bannerFile, bannerConstraints);
-    }
-    if ('cardBannerFile' in patch && patch.cardBannerFile instanceof File) {
-      void applyImageResize('cardBannerFile', patch.cardBannerFile, cardBannerConstraints);
-    }
   };
+
+  const onCropComplete = (file: File) => {
+    const crop = pendingCrop;
+    setPendingCrop(null);
+    if (!crop) return;
+    setValues(prev => ({ ...prev, [crop.key]: file }));
+  };
+
+  const onCropCancel = () => setPendingCrop(null);
 
   const reset = () => {
     setValues(EMPTY_VALUES);
@@ -365,6 +389,7 @@ export function useCreateSpace({
     setAppliedTemplateId(null);
     setPendingTemplateId(null);
     setOverwriteConfirmOpen(false);
+    setPendingCrop(null);
     templatePicker.clearSelection();
   };
 
@@ -437,6 +462,9 @@ export function useCreateSpace({
   return {
     values,
     errors,
+    pendingCrop,
+    onCropComplete,
+    onCropCancel,
     picker: templatePicker.pickerProps,
     onOpenTemplatePicker: templatePicker.openPicker,
     onClearTemplate,

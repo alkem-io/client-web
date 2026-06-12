@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { CreateSpaceDialog } from '@/crd/components/space/CreateSpaceDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
@@ -98,6 +99,20 @@ function CreateSpaceDialogConnector({
         cancelLabel={t('template.overwriteConfirm.cancel')}
         onConfirm={create.onConfirmOverwriteTemplate}
         onCancel={create.onCancelOverwriteTemplate}
+      />
+      <ImageCropDialog
+        open={Boolean(create.pendingCrop)}
+        file={create.pendingCrop?.file}
+        config={create.pendingCrop?.config ?? {}}
+        onSave={({ file }) => create.onCropComplete(file)}
+        onCancel={create.onCropCancel}
+        title={t('crop.title')}
+        description={t('crop.description')}
+        saveLabel={t('crop.save')}
+        savingLabel={t('crop.saving')}
+        cancelLabel={t('crop.cancel')}
+        altTextLabel={t('crop.altLabel')}
+        altTextPlaceholder={t('crop.altPlaceholder')}
       />
     </>
   );

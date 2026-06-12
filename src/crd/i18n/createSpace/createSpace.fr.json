@@ -85,5 +85,14 @@
     "slugRequired": "L'URL est obligatoire",
     "slugInvalid": "Utilisez uniquement des lettres minuscules, des chiffres et des tirets",
     "acceptedTerms": "Vous devez accepter les conditions pour créer un espace"
+  },
+  "crop": {
+    "title": "Recadrer l’image",
+    "description": "Ajustez le recadrage pour cadrer votre image.",
+    "save": "Appliquer",
+    "saving": "Application…",
+    "cancel": "Annuler",
+    "altLabel": "Texte alternatif",
+    "altPlaceholder": "Décrivez l’image (facultatif)"
   }
 }

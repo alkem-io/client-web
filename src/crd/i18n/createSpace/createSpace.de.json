@@ -85,5 +85,14 @@
     "slugRequired": "URL ist erforderlich",
     "slugInvalid": "Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche",
     "acceptedTerms": "Sie müssen die Bedingungen akzeptieren, um einen Space zu erstellen"
+  },
+  "crop": {
+    "title": "Bild zuschneiden",
+    "description": "Passe den Ausschnitt an, um dein Bild zu rahmen.",
+    "save": "Anwenden",
+    "saving": "Wird angewendet…",
+    "cancel": "Abbrechen",
+    "altLabel": "Alternativtext",
+    "altPlaceholder": "Beschreibe das Bild (optional)"
   }
 }

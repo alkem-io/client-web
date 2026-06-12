@@ -155,6 +155,44 @@
 
 ---
 
+## Phase 11: Dashboard direct-launch (review round 3 — FR-021)
+
+**Purpose**: Open the dialog directly from the dashboard "Create my own space" item instead of linking to the account page (research R11).
+
+- [X] T037 In `useDashboardSidebar.ts`: add `onCreateSpaceClick: () => void` to the options; change the `create-space` menu item from `href: createSpaceLink` to `onClick: onCreateSpaceClick`; drop the now-unused `useCreateSpaceLink` import.
+- [X] T038 In `DashboardWithMemberships.tsx` and `DashboardWithoutMemberships.tsx`: read `accountId` from `useCurrentUserContext()`, add a `createSpaceOpen` state, pass `onCreateSpaceClick: () => setCreateSpaceOpen(true)` to `useDashboardSidebar`, and mount `{accountId && <CrdCreateSpaceDialog open={createSpaceOpen} accountId={accountId} onClose={() => setCreateSpaceOpen(false)} />}` (defaults to navigating to the new Space on success).
+- [X] T039 Verify: `tsc` + Biome + ESLint + `pnpm vitest run`.
+
+---
+
+## Phase 12: Image crop dialog on visual selection (review round 4 — FR-004, R16)
+
+**Purpose**: Selecting a banner/card image opens `ImageCropDialog` so the user crops before it's applied — in Create Space AND Create Subspace.
+
+- [X] T040 [P] Create Space i18n: add `crop.{title,description,save,saving,cancel,altLabel,altPlaceholder}` to all 6 `createSpace.<lang>.json`.
+- [X] T041 `useCreateSpace.ts`: add `pendingCrop = { key:'bannerFile'|'cardBannerFile', file, config }` state; in `onChange`, route a picked `File` into `pendingCrop` (config from the banner/card constraints) instead of form state; add `onCropComplete(file)` (set the field to the cropped+resized file) + `onCropCancel`; expose them; remove `applyImageResize` + the `resizeImageToConstraints` import (the crop dialog resizes).
+- [X] T042 `CrdCreateSpaceDialog.tsx`: render `<ImageCropDialog open={!!pendingCrop} file config onSave onCancel ...crop labels />`.
+- [X] T043 Create Subspace parity: apply the same `pendingCrop` + `ImageCropDialog` to `useCreateSubspace.ts` (replace `applyImageResize`) and mount the dialog in `CrdSpaceSettingsPage.tsx`; add `subspaces.createDialog.crop.*` to all 6 `spaceSettings.<lang>.json`.
+- [X] T044 Verify: `tsc` + Biome + ESLint + `pnpm vitest run`.
+
+---
+
+## Phase 13: Polish fixes (review round 5)
+
+- [X] T045 Fix the **Tutorials checkbox** layout in `CreateSpaceDialog.tsx`: the `Label` primitive defaults to `leading-none` (cramps the wrapped label) and the checkbox lacks the `mt-0.5` nudge the terms checkbox has → add `mt-0.5` to the checkbox and `leading-snug` to the label so the checkbox aligns with the first line and wrapped text isn't jammed.
+- [X] T046 Fix the **banner/card form-field proportions**: the `FileField` preview box hardcodes `aspect-[3/1]`/`aspect-video`, which doesn't match the real visual aspect ratio (crop + upload are already correct — only the field box was wrong). Drive the box's aspect from `constraints.aspectRatio` (inline `style={{ aspectRatio }}`), falling back to the class only until constraints load. (Refines research R7/A1 — the real constraint aspect is authoritative.)
+- [X] T047 Verify: `tsc` + Biome + ESLint + `pnpm vitest run`.
+
+---
+
+## Phase 14: Fixes (review round 6)
+
+- [X] T048 Accordion **last-item bottom border** (R14b): in `src/crd/components/templates/preview/SpaceTemplatePreview.tsx`, add `last:border-b` to the `AccordionItem` className to override the primitive's default `last:border-b-0` (which strips the last card's bottom border). Shared fix.
+- [X] T049 Dashboard create-space — **only replace existing links** (R11 refined): make `onCreateSpaceClick` **optional** in `useDashboardSidebar.ts`; when omitted, fall back to the original `href: useCreateSpaceLink()` (restore that import). Keep the dialog in `DashboardWithMemberships.tsx`; revert `DashboardWithoutMemberships.tsx` to its original (no dialog) — it keeps the link fallback.
+- [X] T050 Verify: `tsc` + Biome + ESLint + `pnpm vitest run`.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase dependencies
