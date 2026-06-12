@@ -158,6 +158,14 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
 
+### No `__typename` discrimination
+
+Do **not** branch on `__typename` in CRD code (`src/crd/**`, `src/main/crdPages/**`) or in the data mappers/models that feed it. Prefer an explicit, schema-defined discriminator field instead — e.g. `actor.type === ActorType.VirtualContributor`, a `status` enum, a `kind` field.
+
+**Why:** `__typename` is the *runtime object type*, which is frequently NOT what you expect. A field typed as a concrete object type (e.g. `Message.sender: Actor`) always has `__typename === 'Actor'`, so a check like `sender.__typename === 'VirtualContributor'` is silently *always false* — it type-checks, passes review, and fails only at runtime. (This exact bug shipped once: the comment VC badge never rendered. The fix was to select `Actor.type` and compare against `ActorType`.) `__typename` is also fragile across schema refactors (object type → interface/union and back) in a way an explicit enum is not.
+
+If there is genuinely no schema field to discriminate on and `__typename` is the only option, it is allowed **only** with a comment that (a) states why no proper discriminator exists and (b) names the exact `__typename` values the code relies on, so a schema change that breaks them is caught in review.
+
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
@@ -381,11 +389,10 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 107-crd-error-pages: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + CRD layer (`@/crd/primitives/*`, `@/crd/lib/utils` `cn()`), `lucide-react`, `react-i18next`, `react-router-dom` (route wiring only, in `src/main`). All existing — **no new runtime dependencies**.
-- 105-crd-global-admin: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (CRD layer, via `@/crd/primitives/*`); Apollo Client (generated hooks only); `react-i18next`; `lucide-react`; `react-router-dom` (route wiring only, in `src/main`); `date-fns` (CRD/crdPages date formatting). **All existing — no new runtime dependencies.**
+- 106-crd-virtual-contributors: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `class-variance-authority`; Formik + Yup (reused for wizard forms, decoupled from MUI); `date-fns` for any date formatting. **No new runtime dependencies** — the prompt-graph editor is built from existing CRD primitives (shadcn Accordion + custom property rows), no graph library.
 - 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + CRD layer (`@/crd/primitives/*`, `@/crd/lib/utils` `cn()`), `lucide-react`, `react-i18next`, `react-router-dom` (route wiring only, in `src/main`). All existing — **no new runtime dependencies**. (107-crd-error-pages)
-- N/A (frontend SPA). The only persistent signal read is `localStorage('alkemio-design-version')` via `useCrdEnabled()`. (107-crd-error-pages)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `class-variance-authority`; Formik + Yup (reused for wizard forms, decoupled from MUI); `date-fns` for any date formatting. **No new runtime dependencies** — the prompt-graph editor is built from existing CRD primitives (shadcn Accordion + custom property rows), no graph library. (106-crd-virtual-contributors)
+- N/A (frontend SPA). Client-side state via Apollo cache + local React state; file uploads via existing `MarkdownUploadScope` / `StorageConfigContextProvider`. (106-crd-virtual-contributors)

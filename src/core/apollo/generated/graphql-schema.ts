@@ -14331,6 +14331,7 @@ export type UpdateCalloutContentMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -14767,6 +14768,7 @@ export type UpdateCalloutVisibilityMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15254,6 +15256,7 @@ export type CalloutContributionCommentsQuery = {
                       | {
                           __typename?: 'Actor';
                           id: string;
+                          type: ActorType;
                           profile?:
                             | {
                                 __typename?: 'Profile';
@@ -16487,6 +16490,7 @@ export type CreateCalloutMutation = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -17071,6 +17075,7 @@ export type CalloutDetailsQuery = {
                     | {
                         __typename?: 'Actor';
                         id: string;
+                        type: ActorType;
                         profile?:
                           | {
                               __typename?: 'Profile';
@@ -17539,6 +17544,7 @@ export type CalloutDetailsFragment = {
             | {
                 __typename?: 'Actor';
                 id: string;
+                type: ActorType;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -19592,6 +19598,7 @@ export type CreateDiscussionMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -19676,6 +19683,7 @@ export type UpdateDiscussionMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -19763,6 +19771,7 @@ export type DiscussionDetailsFragment = {
         | {
             __typename?: 'Actor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -19947,6 +19956,7 @@ export type PlatformDiscussionQuery = {
                   | {
                       __typename?: 'Actor';
                       id: string;
+                      type: ActorType;
                       profile?:
                         | {
                             __typename?: 'Profile';
@@ -20083,6 +20093,7 @@ export type MessageDetailsFragment = {
     | {
         __typename?: 'Actor';
         id: string;
+        type: ActorType;
         profile?:
           | {
               __typename?: 'Profile';
@@ -20162,6 +20173,7 @@ export type CommentsWithMessagesFragment = {
       | {
           __typename?: 'Actor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -20672,6 +20684,7 @@ export type RoomEventsSubscription = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -20778,6 +20791,7 @@ export type CommunityUpdatesQuery = {
                   | {
                       __typename?: 'Actor';
                       id: string;
+                      type: ActorType;
                       profile?:
                         | {
                             __typename?: 'Profile';
@@ -21470,6 +21484,7 @@ export type ActorDetailsQuery = {
 export type ContributorDetailsFragment = {
   __typename?: 'Actor';
   id: string;
+  type: ActorType;
   profile?:
     | {
         __typename?: 'Profile';
@@ -29469,6 +29484,7 @@ export type SpacePageQuery = {
               | {
                   __typename?: 'Actor';
                   id: string;
+                  type: ActorType;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -29707,6 +29723,7 @@ export type SpacePageFragment = {
       | {
           __typename?: 'Actor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -34525,6 +34542,7 @@ export type CalendarEventDetailsQuery = {
                 | {
                     __typename?: 'Actor';
                     id: string;
+                    type: ActorType;
                     profile?:
                       | {
                           __typename?: 'Profile';
@@ -34678,6 +34696,7 @@ export type CalendarEventDetailsFragment = {
         | {
             __typename?: 'Actor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -34846,6 +34865,7 @@ export type CreateCalendarEventMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';
@@ -34993,6 +35013,7 @@ export type UpdateCalendarEventMutation = {
           | {
               __typename?: 'Actor';
               id: string;
+              type: ActorType;
               profile?:
                 | {
                     __typename?: 'Profile';

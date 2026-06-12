@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceLevel, VirtualContributorFullFragment } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type VcInviteItem,
   VirtualContributorInviteDialog,
 } from '@/crd/components/community/VirtualContributorInviteDialog';
+import type { VcPreviewData } from '@/crd/components/virtualContributor/community/VirtualContributorPreview.types';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
 
@@ -25,6 +26,14 @@ const SEARCH_DEBOUNCE_MS = 300;
 const toItem = (vc: { id: string; profile?: { displayName: string } }): VcInviteItem => ({
   id: vc.id,
   displayName: vc.profile?.displayName ?? '',
+});
+
+const toPreviewData = (vc: VirtualContributorFullFragment): VcPreviewData => ({
+  id: vc.id,
+  displayName: vc.profile?.displayName ?? '',
+  avatarUrl: vc.profile?.avatar?.uri,
+  tags: (vc.profile?.tagsets ?? []).flatMap(tagset => tagset.tags),
+  description: vc.profile?.description ?? '',
 });
 
 /**
@@ -57,6 +66,11 @@ export function VirtualContributorInviteConnector({
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [accountVcs, setAccountVcs] = useState<VcInviteItem[]>([]);
   const [libraryVcs, setLibraryVcs] = useState<VcInviteItem[]>([]);
+  // Full fetched objects retained so the detail preview can read description /
+  // tags / avatar without an extra round-trip (the available-VC query already
+  // fetches them via the VirtualContributorFull fragment).
+  const [fetchedVcs, setFetchedVcs] = useState<VirtualContributorFullFragment[]>([]);
+  const [previewData, setPreviewData] = useState<VcPreviewData | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -81,6 +95,7 @@ export function VirtualContributorInviteConnector({
         if (cancelled) return;
         setAccountVcs(account.map(toItem));
         setLibraryVcs(library.map(toItem));
+        setFetchedVcs([...account, ...library]);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -101,6 +116,11 @@ export function VirtualContributorInviteConnector({
     } finally {
       setBusyId(null);
     }
+  };
+
+  const handlePreview = (id: string) => {
+    const vc = fetchedVcs.find(v => v.id === id);
+    setPreviewData(vc ? toPreviewData(vc) : undefined);
   };
 
   const handleInviteLibraryVc = async (id: string, welcomeMessage: string) => {
@@ -127,6 +147,7 @@ export function VirtualContributorInviteConnector({
         if (!next) {
           setSearch('');
           setDebouncedQuery('');
+          setPreviewData(undefined);
           onClose();
         }
       }}
@@ -136,6 +157,9 @@ export function VirtualContributorInviteConnector({
       libraryVcs={libraryVcs}
       onAddAccountVc={handleAddAccountVc}
       onInviteLibraryVc={handleInviteLibraryVc}
+      previewData={previewData}
+      onPreview={handlePreview}
+      onClosePreview={() => setPreviewData(undefined)}
       loading={loading}
       busyId={busyId}
       defaultWelcomeMessage={t('inviteVc.defaultWelcomeMessage', { space: spaceName })}

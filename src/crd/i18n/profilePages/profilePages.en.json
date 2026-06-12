@@ -174,5 +174,30 @@
       "heading": "Monitoring by Alkemio",
       "body": "Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a>Terms & Conditions</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "loading": "Loading knowledge base",
+    "refresh": "Refresh",
+    "addCallout": "Add",
+    "lastUpdated": "Last updated:",
+    "never": "Never",
+    "description": {
+      "edit": "Edit description",
+      "empty": "This Virtual Contributor is based on its own curated collection of documents, text, and links.",
+      "placeholder": "Describe what this Virtual Contributor knows…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveError": "Couldn't save the description — try again."
+    },
+    "empty": {
+      "title": "No knowledge yet",
+      "description": "This Virtual Contributor's knowledge base is empty."
+    },
+    "noAccess": {
+      "title": "No access",
+      "description": "You don't have access to this knowledge base."
+    }
   }
 }

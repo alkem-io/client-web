@@ -1,4 +1,79 @@
 {
+  "wizard": {
+    "title": "Create Virtual Contributor",
+    "close": "Close",
+    "loading": "Working…",
+    "next": "Next",
+    "back": "Back",
+    "create": "Create",
+    "initial": {
+      "intro": "Give your Virtual Contributor a name and choose where its knowledge comes from.",
+      "uploadAvatar": "Upload avatar",
+      "name": "Name",
+      "tagline": "Tagline",
+      "description": "Description",
+      "pathTitle": "Where does its knowledge come from?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Written knowledge",
+          "subtitle": "Add posts and documents"
+        },
+        "existingSpace": {
+          "title": "Existing Space",
+          "subtitle": "Use a Space you can access"
+        },
+        "external": {
+          "title": "External AI",
+          "subtitle": "Connect an external provider"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "What knowledge do you want your Virtual Contributor to have? Write it down in posts or upload it in documents. You can update, add, and remove content later.",
+      "postsTitle": "Posts",
+      "postTitle": "Title",
+      "postDescription": "Content",
+      "removePost": "Remove post",
+      "addPost": "Add post",
+      "documentsTitle": "Documents",
+      "documentName": "Name",
+      "documentUrl": "URL",
+      "removeDocument": "Remove document",
+      "addDocument": "Add document",
+      "exampleTitle": "Example: About Alkemio",
+      "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+      "initialDocuments": "Initial Links and Documents"
+    },
+    "existingSpace": {
+      "intro": "Choose a Space to use as the body of knowledge.",
+      "empty": "No Spaces available."
+    },
+    "external": {
+      "intro": "Connect an external AI provider.",
+      "engine": "Provider",
+      "apiKey": "API key",
+      "assistantId": "Assistant ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Add your Virtual Contributor to a community, or skip for now.",
+      "skip": "Skip for now",
+      "errorMessage": "Couldn't add to the community — try again."
+    },
+    "tryVc": {
+      "title": "{{name}} is ready!",
+      "description": "Your Virtual Contributor has been created.",
+      "view": "View profile",
+      "done": "Done"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' created successfully",
+      "errorMessage": "Couldn't create the Virtual Contributor — try again."
+    }
+  },
   "breadcrumbs": {
     "settings": "Settings"
   },
@@ -521,6 +596,32 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Prompt Graph",
+      "helper": "Edit the prompt state machine. System nodes are read-only; user nodes expose an editable prompt and output properties.",
+      "disabled": "Prompt-graph editing is disabled for this Virtual Contributor.",
+      "empty": "This Virtual Contributor has no prompt graph.",
+      "editingEnabled": "Editing enabled",
+      "inputVariables": "Input variables",
+      "start": "Start",
+      "end": "End",
+      "prompt": "Prompt",
+      "reset": "Reset",
+      "resetConfirm": {
+        "title": "Reset prompt graph?",
+        "description": "This clears the entire prompt graph and cannot be undone."
+      },
+      "properties": {
+        "title": "Output properties",
+        "empty": "No output properties.",
+        "name": "Name",
+        "type": "Type",
+        "optional": "Optional",
+        "description": "Description",
+        "add": "Add property",
+        "remove": "Remove property"
+      }
+    },
     "profile": {
       "pageTitle": "Settings",
       "identity": {

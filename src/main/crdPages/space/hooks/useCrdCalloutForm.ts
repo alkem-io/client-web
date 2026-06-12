@@ -191,10 +191,21 @@ export type UseCrdCalloutFormResult = {
   prefill: (data: Partial<CalloutFormValues>) => void;
 };
 
-export function useCrdCalloutForm(): UseCrdCalloutFormResult {
+/**
+ * @param initialOverrides Create-mode seed merged over `EMPTY_CALLOUT_FORM_VALUES`
+ *   (e.g. restriction-driven `framingCommentsEnabled: false`). Edit/template
+ *   `prefill` always wins over these — the overrides only seed the empty form.
+ */
+export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>): UseCrdCalloutFormResult {
   const { t } = useTranslation('crd-space');
-  const [initialValues, setInitialValues] = useState<CalloutFormValues>(EMPTY_CALLOUT_FORM_VALUES);
-  const [values, setValuesState] = useState<CalloutFormValues>(EMPTY_CALLOUT_FORM_VALUES);
+  const [initialValues, setInitialValues] = useState<CalloutFormValues>(() => ({
+    ...EMPTY_CALLOUT_FORM_VALUES,
+    ...initialOverrides,
+  }));
+  const [values, setValuesState] = useState<CalloutFormValues>(() => ({
+    ...EMPTY_CALLOUT_FORM_VALUES,
+    ...initialOverrides,
+  }));
   const [errors, setErrors] = useState<CalloutFormErrors>({});
 
   const translateValidationMessage = (code: string, params?: Record<string, unknown>): string => {
@@ -351,8 +362,9 @@ export function useCrdCalloutForm(): UseCrdCalloutFormResult {
   };
 
   const reset = () => {
-    setInitialValues(EMPTY_CALLOUT_FORM_VALUES);
-    setValuesState(EMPTY_CALLOUT_FORM_VALUES);
+    const seeded = { ...EMPTY_CALLOUT_FORM_VALUES, ...initialOverrides };
+    setInitialValues(seeded);
+    setValuesState(seeded);
     setErrors({});
   };
 
