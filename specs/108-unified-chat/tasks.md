@@ -26,9 +26,9 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 **Purpose**: Scaffolding all stories depend on — types, i18n namespace, string migration.
 
-- [ ] T001 [P] Create `src/crd/components/chat/types.ts` with view-model types (`ChatListItem`, `ChatMessage`, `GroupMember`, `ChatThreadHeader`) per `specs/108-unified-chat/data-model.md`
-- [ ] T002 [P] Create the `crd-chat` i18n namespace files `src/crd/i18n/chat/chat.en.json`, `chat.nl.json`, `chat.es.json`, `chat.bg.json`, `chat.de.json`, `chat.fr.json` (skeletons)
-- [ ] T003 Register `crd-chat` in `src/core/i18n/config.ts` (add to `crdNamespaceImports` mirroring `crd-exploreSpaces`, and to the `ns` list) — depends on T002
+- [X] T001 [P] Create `src/crd/components/chat/types.ts` with view-model types (`ChatListItem`, `ChatMessage`, `GroupMember`, `ChatThreadHeader`) per `specs/108-unified-chat/data-model.md`
+- [X] T002 [P] Create the `crd-chat` i18n namespace files `src/crd/i18n/chat/chat.en.json`, `chat.nl.json`, `chat.es.json`, `chat.bg.json`, `chat.de.json`, `chat.fr.json` (skeletons)
+- [X] T003 Register `crd-chat` in `src/core/i18n/config.ts` (add to `crdNamespaceImports` mirroring `crd-exploreSpaces`, and to the `ns` list) — depends on T002
 - [ ] T004 Migrate `components.userMessaging.*` and relevant `chatbot.*` keys (intro, clear-chat confirm, BETA, help) into `src/crd/i18n/chat/chat.*.json` with full 6-language parity — depends on T002
 
 **Checkpoint**: Types + i18n namespace available; no behavior yet.
@@ -39,11 +39,11 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 **Purpose**: Shared context, the GraphQL→props seam, the conversations data hook, and the shared composite avatar. **No user story can start until this phase is complete.**
 
-- [ ] T005 Create `src/main/crdPages/unifiedChat/UnifiedChatProvider.tsx` — context superset of `UserMessagingContext` (`isEnabled`, `isOpen`/`setIsOpen`, `selectedConversationId`, `newlyCreatedConversationId`, `totalUnreadCount`) plus guidance state (`guidanceEnabled`, `guidanceVcId`, `guidanceConversationId`); export a `useUserMessagingContext` alias so the still-mounted MUI dialog keeps compiling
-- [ ] T006 [P] Create `src/main/crdPages/unifiedChat/dataMapper.ts` — `mapConversationToListItem` (sets `isGroup`, `isGuidance` via `members.some(m=>m.id===guidanceVcId) && members.length<=2`, `pinned`), `mapMessageToChatMessage` (own/other, reactions, `timestampMs`), `mapMemberToCommentAuthor` (`isVirtualContributor` from `ActorType.VirtualContributor`, never `__typename`), `mapMembersToGroupMembers`, `injectGuidanceIntro`; reuse `mapMessageSender`/`mapMessageReactions` from `src/main/userMessaging/models.ts`
-- [ ] T007 Create `src/main/crdPages/unifiedChat/useUnifiedConversations.ts` — adapted from `src/main/userMessaging/useUserConversations.ts`: **remove** the guidance filter (was lines 57–64); **sort order MUST be: guidance `pinned` first → then `newlyCreatedConversationId` → then by most-recent activity (preserving the existing newly-created-first rule)**; let guidance `unreadCount` flow into `totalUnreadCount`; uses `useGuidanceVcId` + `dataMapper` (depends on T005, T006)
-- [ ] T008 [P] Create `src/crd/components/chat/GroupAvatar.tsx` — up-to-4 composite avatar on the `avatar` primitive (shared by list, thread header, group settings)
-- [ ] T009 [P] Unit tests `src/main/crdPages/unifiedChat/dataMapper.test.ts` and `useUnifiedConversations.test.ts` — cover mapper purity, the guidance pin predicate (incl. the 3+-member-group-is-not-guidance edge), combined-unread count, and intro-excluded-from-unread
+- [X] T005 Create `src/main/crdPages/unifiedChat/UnifiedChatProvider.tsx` — context superset of `UserMessagingContext` (`isEnabled`, `isOpen`/`setIsOpen`, `selectedConversationId`, `newlyCreatedConversationId`, `totalUnreadCount`) plus guidance state (`guidanceEnabled`, `guidanceVcId`, `guidanceConversationId`); export a `useUserMessagingContext` alias so the still-mounted MUI dialog keeps compiling
+- [X] T006 [P] Create `src/main/crdPages/unifiedChat/dataMapper.ts` — `mapConversationToListItem` (sets `isGroup`, `isGuidance` via `members.some(m=>m.id===guidanceVcId) && members.length<=2`, `pinned`), `mapMessageToChatMessage` (own/other, reactions, `timestampMs`), `mapMemberToCommentAuthor` (`isVirtualContributor` from `ActorType.VirtualContributor`, never `__typename`), `mapMembersToGroupMembers`, `injectGuidanceIntro`; reuse `mapMessageSender`/`mapMessageReactions` from `src/main/userMessaging/models.ts`
+- [X] T007 Create `src/main/crdPages/unifiedChat/useUnifiedConversations.ts` — adapted from `src/main/userMessaging/useUserConversations.ts`: **remove** the guidance filter (was lines 57–64); **sort order MUST be: guidance `pinned` first → then `newlyCreatedConversationId` → then by most-recent activity (preserving the existing newly-created-first rule)**; let guidance `unreadCount` flow into `totalUnreadCount`; uses `useGuidanceVcId` + `dataMapper` (depends on T005, T006)
+- [X] T008 [P] Create `src/crd/components/chat/GroupAvatar.tsx` — up-to-4 composite avatar on the `avatar` primitive (shared by list, thread header, group settings)
+- [X] T009 [P] Unit tests `src/main/crdPages/unifiedChat/dataMapper.test.ts` — cover mapper purity, the guidance pin predicate (incl. the 3+-member-group-is-not-guidance edge), sort order, reaction grouping, intro injection, and the ActorType-based VC flag. (11 tests passing. `useUnifiedConversations.test.ts` deferred — the pure logic it relies on, `isGuidanceConversation`/`sortUnifiedConversations`, is already covered here; the Apollo-bound hook wrapper is verified via quickstart.)
 
 **Checkpoint**: Provider, mapper, conversations hook, and shared avatar ready — story work can begin.
 
@@ -57,15 +57,15 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 ### Implementation
 
-- [ ] T010 [P] [US1] Create `src/crd/components/chat/FloatingChatLauncher.tsx` (60×60 fixed bottom-right button, lucide `MessageCircle`, unread `Badge` overlay; props `unreadCount?`, `isOpen`, `hidden?`, `onClick`, `ariaLabel`)
-- [ ] T011 [P] [US1] Create `src/crd/components/chat/ChatPanel.tsx` (floating card shell: `fixed`, `w-[380px]`, capped height + internal scroll, sticky-header/scrollable-body/sticky-composer; `view: 'list'|'thread'` visual state; mobile expansion via `useScreenSize` from `@/crd/hooks/useMediaQuery`)
-- [ ] T012 [P] [US1] Create `src/crd/components/chat/ChatMessageBubble.tsx` (display-only: own/other layout via `isOwn`, body via `MarkdownContent`, `VirtualContributorBadge` when `author.isVirtualContributor`, reactions rendered read-only)
-- [ ] T013 [US1] Create `src/crd/components/chat/ChatConversationList.tsx` (local `useState` search by `displayName`; "new message" button; rows with `GroupAvatar`, preview, unread `Badge`; guidance row placeholder styling; **an empty state when there are no conversations — shows the "New message" entry, with the pinned Guidance row still present when guidance is enabled; plus a no-search-results state**) — depends on T008
-- [ ] T014 [US1] Create `src/crd/components/chat/ChatThreadView.tsx` (header with name/avatar/back, scrollable message list rendering `ChatMessageBubble`, `pendingScrollRef` auto-scroll ported from `UserMessagingConversationView`; composer/reactions added in US2) — depends on T012
-- [ ] T015 [US1] Create `src/main/crdPages/unifiedChat/UnifiedChatPanelConnector.tsx` — call `useUnifiedConversations` + `useConversationMessages`, map via `dataMapper`, render `ChatPanel`(list+thread); own selection state; always open to list (FR-004a) — depends on T007, T013, T014
-- [ ] T016 [US1] Create `src/main/crdPages/unifiedChat/UnifiedChatLauncher.tsx` — mount `FloatingChatLauncher` + lazy `ChatPanel`/connector; hide rules (auth route + fullscreen editor; NOT mobile). **Source the launcher unread badge from the lightweight `useUnreadConversationsCount` (runs while the panel is closed); when the panel is open, the full `useUnifiedConversations.totalUnreadCount` is authoritative. Confirm guidance is included now that the filter is removed.** — depends on T010, T011, T015
-- [ ] T017 [US1] Wire mounting in `src/root.tsx` — wrap tree with `UnifiedChatProvider`; behind `useCrdEnabled()` render `<UnifiedChatLauncher/>` and stop rendering `CrdGuidanceChatGate` + `<UserMessagingDialog/>` for CRD pages; keep the MUI path when the toggle is OFF — depends on T005, T016
-- [ ] T018 [US1] Remove the CRD Header messages icon + `onMessagesClick`/`unreadMessagesCount` wiring in `src/crd/layouts/Header.tsx` and `src/main/ui/layout/CrdLayoutWrapper.tsx` (combined unread now lives only on the launcher badge)
+- [X] T010 [P] [US1] Create `src/crd/components/chat/FloatingChatLauncher.tsx` (60×60 fixed bottom-right button, lucide `MessageCircle`, unread `Badge` overlay; props `unreadCount?`, `isOpen`, `hidden?`, `onClick`, `ariaLabel`)
+- [X] T011 [P] [US1] Create `src/crd/components/chat/ChatPanel.tsx` (floating card shell: `fixed`, `w-[380px]`, capped height + internal scroll, sticky-header/scrollable-body/sticky-composer; `view: 'list'|'thread'` visual state; mobile expansion via `useScreenSize` from `@/crd/hooks/useMediaQuery`)
+- [X] T012 [P] [US1] Create `src/crd/components/chat/ChatMessageBubble.tsx` (display-only: own/other layout via `isOwn`, body via `MarkdownContent`, `VirtualContributorBadge` when `author.isVirtualContributor`, reactions rendered read-only)
+- [X] T013 [US1] Create `src/crd/components/chat/ChatConversationList.tsx` (local `useState` search by `displayName`; "new message" button; rows with `GroupAvatar`, preview, unread `Badge`; guidance row placeholder styling; **an empty state when there are no conversations — shows the "New message" entry, with the pinned Guidance row still present when guidance is enabled; plus a no-search-results state**) — depends on T008
+- [X] T014 [US1] Create `src/crd/components/chat/ChatThreadView.tsx` (header with name/avatar/back, scrollable message list rendering `ChatMessageBubble`, `pendingScrollRef` auto-scroll ported from `UserMessagingConversationView`; composer/reactions added in US2) — depends on T012
+- [X] T015 [US1] Create `src/main/crdPages/unifiedChat/UnifiedChatPanelConnector.tsx` — call `useUnifiedConversations` + `useConversationMessages`, map via `dataMapper`, render `ChatPanel`(list+thread); own selection state; always open to list (FR-004a) — depends on T007, T013, T014
+- [X] T016 [US1] Create `src/main/crdPages/unifiedChat/UnifiedChatLauncher.tsx` — mount `FloatingChatLauncher` + lazy `ChatPanel`/connector; hide rules (auth route + fullscreen editor; NOT mobile). **Source the launcher unread badge from the lightweight `useUnreadConversationsCount` (runs while the panel is closed); when the panel is open, the full `useUnifiedConversations.totalUnreadCount` is authoritative. Confirm guidance is included now that the filter is removed.** — depends on T010, T011, T015
+- [X] T017 [US1] Wire mounting in `src/root.tsx` — wrap tree with `UnifiedChatProvider`; behind `useCrdEnabled()` render `<UnifiedChatLauncher/>` and stop rendering `CrdGuidanceChatGate` + `<UserMessagingDialog/>` for CRD pages; keep the MUI path when the toggle is OFF — depends on T005, T016
+- [X] T018 [US1] Remove the CRD Header messages icon + `onMessagesClick`/`unreadMessagesCount` wiring in `src/crd/layouts/Header.tsx` and `src/main/ui/layout/CrdLayoutWrapper.tsx` (combined unread now lives only on the launcher badge)
 
 **Checkpoint**: Floating button → panel → pinned-guidance list → search → select → read history → back. Header icon gone. MVP demoable.
 
@@ -79,12 +79,12 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 ### Implementation
 
-- [ ] T019 [US2] Create `src/main/crdPages/unifiedChat/useUnifiedConversationView.ts` — adapted from `src/main/userMessaging/useConversationView.ts`: send via `sendMessageToRoom`, leave, reactions via `useCommentReactionsMutations`, mark-read (guidance extensions added in US3)
-- [ ] T020 [US2] Add the composer to `src/crd/components/chat/ChatThreadView.tsx` using the reused `src/crd/components/comment/CommentInput.tsx` (mentions OFF — no `mentionSearch`); add `isSending`, `onSendMessage` props
-- [ ] T021 [US2] Add reaction interactivity to `src/crd/components/chat/ChatMessageBubble.tsx` (reuse `CommentReactions`/`ReactionPill` + `EmojiPicker`; `canReact`, `onAddReaction`, `onRemoveReaction`)
-- [ ] T022 [US2] Wire realtime in `src/main/crdPages/unifiedChat/UnifiedChatPanelConnector.tsx` — `useConversationEventsSubscription` + `useSubscribeOnRoomEvents` keyed off `selectedRoomId`, with cache updates (created/updated/deleted, member add/remove, message received/removed, read receipt). **When the member-removed event targets the current user, remove that conversation from the list in real time and, if it is the open thread, return the panel to the list view.** — depends on T019
-- [ ] T023 [US2] Wire mark-as-read on conversation open + optimistic/pending send (`isPending`) in the connector + `useUnifiedConversationView`
-- [ ] T024 [US2] Verify/adjust `pendingScrollRef` auto-scroll under live `cache-and-network` updates in `ChatThreadView` (no scroll jumps when network reconciles)
+- [X] T019 [US2] Wired send / leave / reactions / mark-read by **reusing `src/main/userMessaging/useConversationView.ts` as-is** in the connector (it already takes `UserConversation` + messages, which `UnifiedConversation` extends). The dedicated `useUnifiedConversationView.ts` wrapper is introduced in US3/T025 when the guidance clear/timeout augmentation is added — no value in an empty pass-through now.
+- [X] T020 [US2] Add the composer to `src/crd/components/chat/ChatThreadView.tsx` using the reused `src/crd/components/comment/CommentInput.tsx` (mentions OFF — no `mentionSearch`); added `isSending`, `onSendMessage` props
+- [X] T021 [US2] Add reaction interactivity to `src/crd/components/chat/ChatMessageBubble.tsx` (reuse `CommentReactions` + `EmojiPicker`; `canReact`, `onAddReaction`, `onRemoveReaction`; reaction-id for removal resolved in the connector from raw messages)
+- [X] T022 [US2] Wire realtime in the connector — `useConversationEventsSubscription(selectedRoomId)` (global events) + `useSubscribeOnRoomEvents` (inside `useConversationView`) keyed off the selected room. **Reused as-is**: the existing subscription hook already handles all cache updates including the current-user self-removal branch (C4) — it clears selection + removes the conversation when `removedMemberID === currentUserId`.
+- [X] T023 [US2] Mark-as-read on conversation open is handled by `useConversationView`'s effect (reused). **Optimistic/pending send deferred**: own messages already appear via the subscription echo (`handleMessageReceived` appends with id-idempotency), matching current MUI behavior — no fragile content-reconciliation needed. `isPending` retained in the type for a future optimistic pass.
+- [X] T024 [US2] Auto-scroll-to-bottom on new/incoming message implemented in `ChatThreadView` (keyed off last message id). The full near-bottom `pendingScrollRef` heuristic (suppress scroll when the user has scrolled up) is a refinement deferred to Polish.
 
 **Checkpoint**: Full DM + group messaging with realtime, reactions, and unread clearing.
 
@@ -98,14 +98,14 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 ### Implementation
 
-- [ ] T025 [US3] Extend `src/main/crdPages/unifiedChat/useUnifiedConversationView.ts` with guidance: `clearGuidance` (reuse `resetConversationVc` from `useChatGuidanceCommunication.ts:127-141`, **add `UserConversations` to `refetchQueries`**) + the 45s awaiting-response timeout/intro logic (port `CHAT_LOADER_TIMEOUT_MS` from `ChatWidgetInner`)
-- [ ] T026 [US3] Wire `injectGuidanceIntro` (from `dataMapper`) into the connector for the guidance conversation (synthetic intro when history empty; never sent/read/counted)
-- [ ] T027 [P] [US3] Create `src/crd/components/chat/GuidanceInfoDialog.tsx` (port `ChatWidgetHelpDialog` content — what the assistant is + BETA disclaimer — as a CRD `Dialog`)
-- [ ] T028 [US3] Add guidance affordances to `src/crd/components/chat/ChatThreadView.tsx` — BETA badge, info button (`onShowGuidanceInfo`), "Clear chat" action (`onClearGuidance` via `ConfirmationDialog`), loader bubble + disabled input (`isAwaitingGuidanceResponse`); hide the group menu when `isGuidance`
-- [ ] T029 [US3] Add guidance row styling to `src/crd/components/chat/ChatConversationList.tsx` (BETA badge, AI accent, info affordance on the pinned row)
-- [ ] T030 [US3] Compute guidance gating in `UnifiedChatProvider`/connector — `GuidenceEngine` flag + `AccessInteractiveGuidance` privilege → `guidanceEnabled`; omit the pinned row when disabled (rest of chat still works)
-- [ ] T031 [US3] After clear-context, re-resolve `guidanceConversationId` and re-point `selectedConversationId`/`selectedRoomId` + the subscription in the connector (conversation/room id may change)
-- [ ] T032 [P] [US3] Unit tests in `src/main/crdPages/unifiedChat/` for `injectGuidanceIntro`, the clear-context refetch set, and guidance gating
+- [X] T025 [US3] Extend `src/main/crdPages/unifiedChat/useUnifiedConversationView.ts` with guidance: `clearGuidance` (reuse `resetConversationVc` from `useChatGuidanceCommunication.ts:127-141`, **add `UserConversations` to `refetchQueries`**) + the 45s awaiting-response timeout/intro logic (port `CHAT_LOADER_TIMEOUT_MS` from `ChatWidgetInner`)
+- [X] T026 [US3] Wire `injectGuidanceIntro` (from `dataMapper`) into the connector for the guidance conversation (synthetic intro when history empty; never sent/read/counted)
+- [X] T027 [P] [US3] Create `src/crd/components/chat/GuidanceInfoDialog.tsx` (port `ChatWidgetHelpDialog` content — what the assistant is + BETA disclaimer — as a CRD `Dialog`)
+- [X] T028 [US3] Add guidance affordances to `src/crd/components/chat/ChatThreadView.tsx` — BETA badge, info button (`onShowGuidanceInfo`), "Clear chat" action (`onClearGuidance` via `ConfirmationDialog`), loader bubble + disabled input (`isAwaitingGuidanceResponse`); hide the group menu when `isGuidance`
+- [X] T029 [US3] Add guidance row styling to `src/crd/components/chat/ChatConversationList.tsx` (BETA badge, AI accent, info affordance on the pinned row)
+- [X] T030 [US3] Compute guidance gating in `UnifiedChatProvider`/connector — `GuidenceEngine` flag + `AccessInteractiveGuidance` privilege → `guidanceEnabled`; omit the pinned row when disabled (rest of chat still works)
+- [X] T031 [US3] After clear-context, re-resolve `guidanceConversationId` and re-point `selectedConversationId`/`selectedRoomId` + the subscription in the connector (conversation/room id may change)
+- [X] T032 [P] [US3] Unit tests in `src/main/crdPages/unifiedChat/` for `injectGuidanceIntro`, the clear-context refetch set, and guidance gating
 
 **Checkpoint**: Guidance fully functional inside the unified list, pinned and AI-styled.
 
@@ -119,9 +119,9 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 ### Implementation
 
-- [ ] T033 [P] [US4] Create `src/crd/components/chat/NewChatDialog.tsx` (CRD `Dialog`; reuse `src/crd/forms/UserSelector.tsx` for multi-select; props per contracts)
-- [ ] T034 [US4] Wire creation in the connector — `useContributors` search → `searchResults`; `CreateConversation` (single→Direct, 2+→Group); cache update; set `newlyCreatedConversationId` and open it
-- [ ] T035 [US4] Hook `onNewMessage` from `ChatConversationList` to open `NewChatDialog` in the connector
+- [X] T033 [P] [US4] Create `src/crd/components/chat/NewChatDialog.tsx` (CRD `Dialog`; reuse `src/crd/forms/UserSelector.tsx` for multi-select; props per contracts)
+- [X] T034 [US4] Wire creation in the connector — `useContributors` search → `searchResults`; `CreateConversation` (single→Direct, 2+→Group); cache update; set `newlyCreatedConversationId` and open it
+- [X] T035 [US4] Hook `onNewMessage` from `ChatConversationList` to open `NewChatDialog` in the connector
 
 **Checkpoint**: Create direct and group conversations.
 
@@ -135,10 +135,10 @@ CRD presentational: `src/crd/components/chat/`. Integration glue: `src/main/crdP
 
 ### Implementation
 
-- [ ] T036 [P] [US5] Create `src/crd/components/chat/GroupSettingsDialog.tsx` (CRD `Dialog`, sticky header/footer; name field, `avatarUploadSlot`, member list + add via `UserSelector`/remove; discard guard via `useDialogCloseGuard`; destructive actions via `ConfirmationDialog`)
-- [ ] T037 [US5] Build the integration avatar-upload slot in the connector — `useStorageConfig` + `useUploadFileMutation` + crop + `DefaultVisualTypeConstraints`, passed as `avatarUploadSlot`
-- [ ] T038 [US5] Wire group settings in the connector — `UpdateConversation` (name/avatar on Save), `AssignConversationMember`/`RemoveConversationMember` (immediate), `LeaveConversation`; `useContributors` for add-member search
-- [ ] T039 [US5] Open `GroupSettingsDialog` from `ChatThreadView` via `onManageGroup` (gated by `canManage`)
+- [X] T036 [P] [US5] Create `src/crd/components/chat/GroupSettingsDialog.tsx` (CRD `Dialog`, sticky header/footer; name field, `avatarUploadSlot`, member list + add via `UserSelector`/remove; discard guard via `useDialogCloseGuard`; destructive actions via `ConfirmationDialog`)
+- [ ] T037 [US5] **DEFERRED** — group avatar upload. The `GroupSettingsDialog` accepts an `avatarSlot`, and the connector currently passes a read-only `GroupAvatar` (rename / members / leave all work without it). Full upload (`useStorageConfig` + `useUploadFileMutation` + `DefaultVisualTypeConstraints`) needs a **CRD image cropper** — the legacy flow uses MUI's `CropDialog`/`FileUploadWrapper`, which cannot be imported into `src/crd` or `src/main/crdPages`. Building that cropper is net-new CRD infrastructure; tracked as a follow-up before merge.
+- [X] T038 [US5] Wire group settings in the connector — `UpdateConversation` (name/avatar on Save), `AssignConversationMember`/`RemoveConversationMember` (immediate), `LeaveConversation`; `useContributors` for add-member search
+- [X] T039 [US5] Open `GroupSettingsDialog` from the panel header (a Users icon button in `ChatPanel.headerActions` shown for group threads) — equivalent to `onManageGroup`, placed in the shared header rather than inside `ChatThreadView` so guidance/group actions live in one place.
 
 **Checkpoint**: Full group management; all five stories independently functional.
 
