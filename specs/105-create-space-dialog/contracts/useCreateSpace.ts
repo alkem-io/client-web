@@ -27,8 +27,12 @@ export type CreatedSpaceResult = {
 };
 
 export type UseCreateSpaceOptions = {
+  /** Controlled open state — owned by the account tab and passed through the connector. */
+  open: boolean;
   /** Target account the Space is created in (user's own, or an organization's). */
   accountId: string | undefined;
+  /** Closes the dialog (resets the owner's open state). Called on cancel and on success. */
+  onClose: () => void;
   /**
    * Optional override of the success behavior. When omitted, the hook navigates
    * to the new Space's url. When provided, the caller handles the result.
@@ -36,17 +40,30 @@ export type UseCreateSpaceOptions = {
   onSpaceCreated?: (space: CreatedSpaceResult) => void;
 };
 
-export type UseCreateSpaceResult = {
-  open: boolean;
-  openDialog: () => void;
-  closeDialog: () => void;
+/** A banner/card image awaiting crop in the ImageCropDialog (research R16). */
+export type CreateSpacePendingCrop = {
+  key: 'bannerFile' | 'cardBannerFile';
+  file: File;
+  config: unknown; // impl: ImageCropConfig from @/crd/components/common/ImageCropDialog
+};
 
+export type UseCreateSpaceResult = {
   values: CreateSpaceFormValues;
   errors: CreateSpaceFieldErrors;
 
+  // --- Image crop dialog (research R16) ---
+  // Non-null while a picked banner/card image is being cropped. The connector
+  // renders <ImageCropDialog ... /> off this and feeds back the cropped file +
+  // alt text via onCropComplete.
+  pendingCrop: CreateSpacePendingCrop | null;
+  onCropComplete: (file: File, altText: string) => void;
+  onCropCancel: () => void;
+
   // --- Template picker (consumer renders <TemplatePicker {...picker} />) ---
-  // Sources are pre-filtered to selectable L0 templates only — those whose
-  // captured space has a complete 4-state innovation flow (research R6).
+  // Sources are NOT pre-filtered: the picker's card rows carry no innovation-flow
+  // data, so L0 selectability (a complete 4-state flow) is enforced on selection
+  // — a non-conforming pick is rejected with a notification and not applied
+  // (research R6).
   picker: unknown; // impl: TemplatePickerSelectProps from @/crd/components/templates/types
   onOpenTemplatePicker: () => void;
   onClearTemplate: () => void;

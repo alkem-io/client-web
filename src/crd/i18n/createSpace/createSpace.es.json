@@ -74,6 +74,7 @@
   "license": {
     "noPlans": "No hay planes disponibles. Por favor, contacta con el soporte."
   },
+  "createError": "Algo salió mal al crear el Space. Inténtalo de nuevo.",
   "cancel": "Cancelar",
   "submit": "Crear Espacio",
   "creating": "Creando…",

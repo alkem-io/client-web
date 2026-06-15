@@ -54,7 +54,7 @@ export type UseCreateSpaceResult = {
   errors: CreateSpaceFieldErrors;
   /** Non-null while a picked banner/card image is being cropped — drives the ImageCropDialog. */
   pendingCrop: CreateSpacePendingCrop | null;
-  onCropComplete: (file: File) => void;
+  onCropComplete: (file: File, altText: string) => void;
   onCropCancel: () => void;
   picker: TemplatePickerSelectProps;
   onOpenTemplatePicker: () => void;
@@ -102,6 +102,9 @@ export function useCreateSpace({
   const { t } = useTranslation('crd-createSpace');
   const notify = useNotification();
   const navigate = useNavigate();
+  // Monotonic counter guarding against out-of-order template fetches: only the
+  // most recent applyTemplate() call is allowed to write selection state.
+  const templateRequestSeqRef = useRef(0);
 
   const [values, setValues] = useState<CreateSpaceFormValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<CreateSpaceFieldErrors>({});
@@ -114,6 +117,12 @@ export function useCreateSpace({
   const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
   const [pendingCrop, setPendingCrop] = useState<CreateSpacePendingCrop | null>(null);
+  // Alt text entered in the crop dialog, kept per visual until submit (the
+  // presentational dialog never edits it, so it lives here, not in form values).
+  const [visualAltText, setVisualAltText] = useState<Record<'bannerFile' | 'cardBannerFile', string>>({
+    bannerFile: '',
+    cardBannerFile: '',
+  });
 
   const { refetchSpaces } = useDashboardSpaces();
   const { createSpace, loading: submitting } = useSpaceCreation({
@@ -157,7 +166,7 @@ export function useCreateSpace({
       .string()
       .trim()
       .min(3, 'min3')
-      .max(NAMEID_MAX_LENGTH, 'maxSmall')
+      .max(NAMEID_MAX_LENGTH, 'maxNameId')
       .matches(/^[a-z0-9-]*$/, 'slugInvalid')
       .required('slugRequired'),
     tagline: yup.string().max(SMALL_TEXT_LENGTH, 'maxSmall').notRequired(),
@@ -173,6 +182,8 @@ export function useCreateSpace({
         return t('validation.min3');
       case 'maxSmall':
         return t('validation.maxSmall', { count: SMALL_TEXT_LENGTH });
+      case 'maxNameId':
+        return t('validation.maxSmall', { count: NAMEID_MAX_LENGTH });
       case 'maxMarkdown':
         return t('validation.maxMarkdown', { count: MARKDOWN_TEXT_LENGTH });
       case 'required':
@@ -236,9 +247,12 @@ export function useCreateSpace({
    * Otherwise: render the preview and pre-fill the form's text fields.
    */
   const applyTemplate = async (templateId: string) => {
+    const requestSeq = ++templateRequestSeqRef.current;
     setSelectedTemplateLoading(true);
     try {
       const { data } = await getTemplateContent({ variables: { templateId, includeSpace: true } });
+      // A newer selection has superseded this fetch — drop the stale response.
+      if (requestSeq !== templateRequestSeqRef.current) return;
       const template = data?.lookup.template;
       if (!template) return;
       const mapped = mapTemplateContent(template, 'space');
@@ -282,7 +296,9 @@ export function useCreateSpace({
       });
       setErrors({});
     } finally {
-      setSelectedTemplateLoading(false);
+      if (requestSeq === templateRequestSeqRef.current) {
+        setSelectedTemplateLoading(false);
+      }
     }
   };
 
@@ -371,16 +387,19 @@ export function useCreateSpace({
     });
   };
 
-  const onCropComplete = (file: File) => {
+  const onCropComplete = (file: File, altText: string) => {
     const crop = pendingCrop;
     setPendingCrop(null);
     if (!crop) return;
     setValues(prev => ({ ...prev, [crop.key]: file }));
+    setVisualAltText(prev => ({ ...prev, [crop.key]: altText }));
   };
 
   const onCropCancel = () => setPendingCrop(null);
 
   const reset = () => {
+    // Invalidate any in-flight template fetch so its response can't write into the reset form.
+    templateRequestSeqRef.current += 1;
     setValues(EMPTY_VALUES);
     setErrors({});
     setIsSlugEdited(false);
@@ -390,6 +409,7 @@ export function useCreateSpace({
     setPendingTemplateId(null);
     setOverwriteConfirmOpen(false);
     setPendingCrop(null);
+    setVisualAltText({ bannerFile: '', cardBannerFile: '' });
     templatePicker.clearSelection();
   };
 
@@ -424,8 +444,10 @@ export function useCreateSpace({
             description: values.description.trim() || undefined,
             tags: values.tags,
             visuals: {
-              banner: values.bannerFile ? { file: values.bannerFile, altText: '' } : undefined,
-              cardBanner: values.cardBannerFile ? { file: values.cardBannerFile, altText: '' } : undefined,
+              banner: values.bannerFile ? { file: values.bannerFile, altText: visualAltText.bannerFile } : undefined,
+              cardBanner: values.cardBannerFile
+                ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+                : undefined,
             },
           },
         },
@@ -437,7 +459,7 @@ export function useCreateSpace({
       const spaceId = result?.id;
       const spaceUrl = result?.about?.profile?.url;
       if (!spaceId || !spaceUrl) {
-        notify(t('license.noPlans'), 'error');
+        notify(t('createError'), 'error');
         return;
       }
 

@@ -662,7 +662,7 @@ export default function CrdSpaceSettingsPage() {
         open={Boolean(createSubspace.pendingCrop)}
         file={createSubspace.pendingCrop?.file}
         config={createSubspace.pendingCrop?.config ?? {}}
-        onSave={({ file }) => createSubspace.onCropComplete(file)}
+        onSave={({ file, altText }) => createSubspace.onCropComplete(file, altText)}
         onCancel={createSubspace.onCropCancel}
         title={t('subspaces.createDialog.crop.title')}
         description={t('subspaces.createDialog.crop.description')}

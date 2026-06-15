@@ -74,6 +74,7 @@
   "license": {
     "noPlans": "Keine verfügbaren Tarife. Bitte wenden Sie sich an den Support."
   },
+  "createError": "Beim Erstellen des Space ist ein Fehler aufgetreten. Bitte versuche es erneut.",
   "cancel": "Abbrechen",
   "submit": "Space erstellen",
   "creating": "Erstellen…",

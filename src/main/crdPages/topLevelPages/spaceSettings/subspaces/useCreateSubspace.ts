@@ -43,7 +43,7 @@ export type UseCreateSubspaceResult = {
   errors: CreateSubspaceFieldErrors;
   /** Non-null while a picked avatar/card image is being cropped — drives the ImageCropDialog. */
   pendingCrop: CreateSubspacePendingCrop | null;
-  onCropComplete: (file: File) => void;
+  onCropComplete: (file: File, altText: string) => void;
   onCropCancel: () => void;
   /** Props for the shared `TemplatePicker` (`mode: 'select'`) — the consumer renders `<TemplatePicker {...picker} />`. */
   picker: TemplatePickerSelectProps;
@@ -99,6 +99,11 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
   const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
   const [pendingCrop, setPendingCrop] = useState<CreateSubspacePendingCrop | null>(null);
+  // Alt text entered in the crop dialog, kept per visual until submit.
+  const [visualAltText, setVisualAltText] = useState<Record<'avatarFile' | 'cardBannerFile', string>>({
+    avatarFile: '',
+    cardBannerFile: '',
+  });
 
   const { createSubspace, loading: submitting } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
@@ -311,11 +316,12 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     });
   };
 
-  const onCropComplete = (file: File) => {
+  const onCropComplete = (file: File, altText: string) => {
     const crop = pendingCrop;
     setPendingCrop(null);
     if (!crop) return;
     setValues(prev => ({ ...prev, [crop.key]: file }));
+    setVisualAltText(prev => ({ ...prev, [crop.key]: altText }));
   };
 
   const onCropCancel = () => setPendingCrop(null);
@@ -328,6 +334,7 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     setPendingTemplateId(null);
     setOverwriteConfirmOpen(false);
     setPendingCrop(null);
+    setVisualAltText({ avatarFile: '', cardBannerFile: '' });
     templatePicker.clearSelection();
   };
 
@@ -363,8 +370,10 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
           description: values.description.trim() || undefined,
           tags: values.tags,
           visuals: {
-            avatar: values.avatarFile ? { file: values.avatarFile, altText: '' } : undefined,
-            cardBanner: values.cardBannerFile ? { file: values.cardBannerFile, altText: '' } : undefined,
+            avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
+            cardBanner: values.cardBannerFile
+              ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+              : undefined,
           },
         },
       },

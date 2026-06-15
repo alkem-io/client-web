@@ -74,6 +74,7 @@
   "license": {
     "noPlans": "Geen beschikbare abonnementen. Neem contact op met ondersteuning."
   },
+  "createError": "Er ging iets mis bij het aanmaken van de Space. Probeer het opnieuw.",
   "cancel": "Annuleren",
   "submit": "Space maken",
   "creating": "Maken…",

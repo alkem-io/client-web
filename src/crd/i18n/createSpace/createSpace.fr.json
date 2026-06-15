@@ -74,6 +74,7 @@
   "license": {
     "noPlans": "Aucun forfait disponible. Veuillez contacter le support."
   },
+  "createError": "Une erreur s'est produite lors de la création du Space. Veuillez réessayer.",
   "cancel": "Annuler",
   "submit": "Créer l'espace",
   "creating": "Création…",

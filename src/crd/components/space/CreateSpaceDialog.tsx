@@ -1,5 +1,5 @@
 import { ImageIcon, LayoutTemplate, Loader2, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { TemplateContentPreview } from '@/crd/components/templates/TemplateContentPreview';
@@ -450,7 +450,18 @@ function FileField({
 }) {
   const { t } = useTranslation('crd-createSpace');
   const inputRef = useRef<HTMLInputElement>(null);
-  const previewUrl = file ? URL.createObjectURL(file) : null;
+  // Create the object URL once per file and revoke it on change/unmount so blob
+  // URLs don't leak across re-renders or repeated image picks.
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   // `allowedTypes` are MIME types (e.g. "image/png") — use them verbatim, matching
   // the legacy FileUploadWrapper / CreateSubspaceDialog.

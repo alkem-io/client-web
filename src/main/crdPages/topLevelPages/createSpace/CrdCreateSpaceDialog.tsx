@@ -104,7 +104,7 @@ function CreateSpaceDialogConnector({
         open={Boolean(create.pendingCrop)}
         file={create.pendingCrop?.file}
         config={create.pendingCrop?.config ?? {}}
-        onSave={({ file }) => create.onCropComplete(file)}
+        onSave={({ file, altText }) => create.onCropComplete(file, altText)}
         onCancel={create.onCropCancel}
         title={t('crop.title')}
         description={t('crop.description')}
