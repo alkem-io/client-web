@@ -24,6 +24,7 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
+import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import {
@@ -57,7 +58,8 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements } = useCurrentUserContext();
+  const { platformRoles, accountEntitlements, accountId } = useCurrentUserContext();
+  const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
 
   // Activity view toggle — persisted in localStorage
@@ -108,6 +110,7 @@ export default function DashboardWithMemberships({
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
+    onCreateSpaceClick: () => setCreateSpaceOpen(true),
     onMyActivityClick: activityEnabled ? undefined : dialogState.openMyActivity,
     onMySpaceActivityClick: activityEnabled ? undefined : dialogState.openMySpaceActivity,
   });
@@ -284,6 +287,9 @@ export default function DashboardWithMemberships({
           </div>
         )}
       </DashboardLayout>
+      {accountId && (
+        <CrdCreateSpaceDialog open={createSpaceOpen} accountId={accountId} onClose={() => setCreateSpaceOpen(false)} />
+      )}
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}

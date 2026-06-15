@@ -533,6 +533,15 @@
         "maxSmall": "Mag maximaal {{count}} tekens zijn",
         "maxMarkdown": "Mag maximaal {{count}} tekens zijn",
         "required": "Naam is verplicht"
+      },
+      "crop": {
+        "title": "Afbeelding bijsnijden",
+        "description": "Pas de uitsnede aan om je afbeelding te kadreren.",
+        "save": "Toepassen",
+        "saving": "Toepassen…",
+        "cancel": "Annuleren",
+        "altLabel": "Alt-tekst",
+        "altPlaceholder": "Beschrijf de afbeelding (optioneel)"
       }
     }
   },

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { ScrollArea } from '@/crd/primitives/scroll-area';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { CalloutTemplatePreview } from './preview/CalloutTemplatePreview';
 import { CommunityGuidelinesTemplatePreview } from './preview/CommunityGuidelinesTemplatePreview';
@@ -39,8 +38,12 @@ export function TemplateContentPreview({ content, loading, className }: Template
   }
 
   return (
-    <ScrollArea className={cn('max-h-[60vh] pr-3', className)}>
+    // Plain max-height + overflow-y-auto (NOT Radix ScrollArea): the ScrollArea
+    // Root only had a max-height (not a definite height) + no overflow clip, so
+    // its height:100% Viewport resolved to auto and tall content (subspace cards)
+    // spilled out of the box instead of scrolling. Native scroll contains it.
+    <div className={cn('max-h-[60vh] overflow-y-auto pr-3', className)}>
       <PreviewBody content={content} />
-    </ScrollArea>
+    </div>
   );
 }
