@@ -28,6 +28,7 @@ import {
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
 import { useGroupSettings } from './useGroupSettings';
+import { useGuidanceResponseState } from './useGuidanceResponseState';
 import { useNewChat } from './useNewChat';
 import { useUnifiedConversations } from './useUnifiedConversations';
 import { useUnifiedConversationView } from './useUnifiedConversationView';
@@ -66,15 +67,8 @@ export const UnifiedChatPanelConnector = () => {
 
   // Realtime: global conversation events + the selected room's stream (inside the view hook).
   useConversationEventsSubscription(selectedRoomId);
-  const {
-    isSending,
-    handleSendMessage,
-    handleAddReaction,
-    handleRemoveReaction,
-    handleLeaveGroup,
-    isAwaitingGuidanceResponse,
-    clearGuidance,
-  } = useUnifiedConversationView(selectedConversation ?? null, rawMessages, currentUserId);
+  const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
+    useUnifiedConversationView(selectedConversation ?? null, rawMessages);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -90,6 +84,7 @@ export const UnifiedChatPanelConnector = () => {
   // The guidance conversation id can change after a clear; re-point the open
   // thread to the (possibly new) guidance conversation once the refetch lands.
   const guidanceConversation = conversations.find(conversation => conversation.isGuidance);
+  const guidanceResponse = useGuidanceResponseState(guidanceConversation, currentUserId);
   useEffect(() => {
     if (justClearedRef.current && guidanceConversation && guidanceConversation.id !== selectedConversationId) {
       justClearedRef.current = false;
@@ -278,8 +273,12 @@ export const UnifiedChatPanelConnector = () => {
             isSending={isSending}
             // No reactions on the AI assistant thread (incl. the synthetic intro) — FR-016a.
             canReact={Boolean(selectedConversation) && !isGuidanceThread}
-            isAwaitingGuidanceResponse={isAwaitingGuidanceResponse}
+            // Background-tracked, but only shown while the guidance thread is open.
+            isAwaitingGuidanceResponse={isGuidanceThread && guidanceResponse.awaiting}
             onSendMessage={message => {
+              if (isGuidanceThread) {
+                guidanceResponse.markSent();
+              }
               handleSendMessage(message);
             }}
             onAddReaction={onAddReaction}
