@@ -21,7 +21,6 @@ import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/Banner
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
-import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
@@ -44,7 +43,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
-  const { setIsOpen: setMessagingOpen, totalUnreadCount: messagesUnreadCount } = useUserMessagingContext();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -94,7 +92,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
-        unreadMessagesCount={messagesUnreadCount}
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
         currentLanguage={currentLanguage}
@@ -103,7 +100,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
-        onMessagesClick={() => setMessagingOpen(true)}
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
