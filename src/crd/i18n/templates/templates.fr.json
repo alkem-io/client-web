@@ -290,7 +290,6 @@
     "cancel": "Annuler",
     "subtitleUser": "Créez un nouveau Innovation Pack dans votre compte.",
     "subtitleAccount": "Créez un nouveau Innovation Pack dans le compte de {{account}}.",
-    "descriptionRequired": "Une description est obligatoire.",
     "saveForMoreDetails": "Vous pourrez ajouter un avatar, des tags, des références et la visibilité dans la boutique après la création du pack.",
     "creating": "Création…",
     "validation": {

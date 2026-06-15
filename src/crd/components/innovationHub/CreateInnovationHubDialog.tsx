@@ -124,9 +124,11 @@ export function CreateInnovationHubDialog({
               error={errors.description}
             >
               <MarkdownEditor
+                id="create-hub-description"
                 value={value.description}
                 onChange={next => onChange({ ...value, description: next })}
                 placeholder={t('createHub.descriptionPlaceholder')}
+                disabled={creating}
                 onImageUpload={onImageUpload}
                 iframeAllowedUrls={iframeAllowedUrls}
                 onError={onError}

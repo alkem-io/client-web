@@ -290,7 +290,6 @@
     "cancel": "Abbrechen",
     "subtitleUser": "Erstelle ein neues Innovation Pack in deinem Konto.",
     "subtitleAccount": "Erstelle ein neues Innovation Pack im Konto von {{account}}.",
-    "descriptionRequired": "Eine Beschreibung ist erforderlich.",
     "saveForMoreDetails": "Avatar, Tags, Referenzen und Store-Sichtbarkeit kannst du nach dem Erstellen des Packs hinzufügen.",
     "creating": "Wird erstellt…",
     "validation": {

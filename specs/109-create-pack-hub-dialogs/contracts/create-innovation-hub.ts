@@ -39,6 +39,8 @@ export type CreateInnovationHubDialogProps = {
   onCreate: () => void;
   /** in-flight: disable inputs/Create, spinner, block close. */
   creating: boolean;
+  /** live validity (drives the Create button's disabled state independent of the touched-gated `errors`). */
+  canSubmit?: boolean;
   /** account display name for the subtitle. */
   accountName?: string;
 } & MarkdownUploadProps; // markdown editor wiring for the description

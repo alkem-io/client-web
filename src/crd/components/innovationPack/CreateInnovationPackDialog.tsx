@@ -100,9 +100,11 @@ export function CreateInnovationPackDialog({
                 <span className="ml-0.5 text-destructive">*</span>
               </Label>
               <MarkdownEditor
+                id="create-pack-description"
                 value={value.description}
                 onChange={next => onChange({ ...value, description: next })}
                 placeholder={t('createPack.descriptionPlaceholder')}
+                disabled={creating}
                 onImageUpload={onImageUpload}
                 iframeAllowedUrls={iframeAllowedUrls}
                 onError={onError}

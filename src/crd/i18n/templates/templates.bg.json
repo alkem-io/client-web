@@ -290,7 +290,6 @@
     "cancel": "Отказ",
     "subtitleUser": "Създайте нов Innovation Pack във вашия акаунт.",
     "subtitleAccount": "Създайте нов Innovation Pack в акаунта на {{account}}.",
-    "descriptionRequired": "Описанието е задължително.",
     "saveForMoreDetails": "Можете да добавите аватар, етикети, препратки и видимост в магазина след създаването на пакета.",
     "creating": "Създаване…",
     "validation": {

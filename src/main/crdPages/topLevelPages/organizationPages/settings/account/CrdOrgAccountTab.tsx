@@ -193,7 +193,6 @@ const CrdOrgAccountTab = () => {
         }}
         onCancel={() => setNoEntitlementResource(null)}
       />
-      {/* CRD create dialogs (specs 105 + 109); VC wizard below is the remaining fallback (spec 097). */}
       {account?.id && (
         <>
           <CrdCreateSpaceDialog
@@ -214,19 +213,17 @@ const CrdOrgAccountTab = () => {
             open={createHubOpen}
             onClose={() => setCreateHubOpen(false)}
           />
+          {/* Cast: `AccountInformation` returns `about.membership.myPrivileges`, but
+            `UserAccountProps` expects the full `SpaceAboutLightModel` membership
+            shape. The wizard only reads `id`, `host`, `spaces[].id`, and
+            `spaces[].authorization?.myPrivileges` at runtime — all present. */}
+          <CrdVCCreationWizardDialog
+            open={createVcOpen}
+            onClose={() => setCreateVcOpen(false)}
+            account={account as UserAccountProps | undefined}
+            accountName={accountHostName}
+          />
         </>
-      )}
-      {/* Cast: `AccountInformation` returns `about.membership.myPrivileges`, but
-          `UserAccountProps` expects the full `SpaceAboutLightModel` membership
-          shape. The wizard only reads `id`, `host`, `spaces[].id`, and
-          `spaces[].authorization?.myPrivileges` at runtime — all present. */}
-      {createVcOpen && (
-        <CrdVCCreationWizardDialog
-          open={true}
-          onClose={() => setCreateVcOpen(false)}
-          account={account as UserAccountProps | undefined}
-          accountName={accountHostName}
-        />
       )}
     </>
   );
