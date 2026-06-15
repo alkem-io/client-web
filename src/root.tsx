@@ -18,10 +18,8 @@ import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesign
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import { FullscreenEditorProvider, useIsFullscreenEditorOpen } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
@@ -30,16 +28,16 @@ import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
 import { DesignVersionUpgradePromptMount } from '@/main/crdPages/DesignVersionUpgradePromptMount';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
+import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLauncher';
+import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
 import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
-import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
 
 const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
@@ -69,24 +67,38 @@ function GlobalErrorDialogGate() {
   return <Suspense fallback={null}>{crdEnabled ? <CrdGlobalErrorDialog /> : <GlobalErrorDialog />}</Suspense>;
 }
 
-/** Top-level path segments owned by the auth flow — the guidance chat is hidden on all of them. */
+/** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
-/** Mounts the guidance-chat floating button on CRD pages. MUI shells mount it per-layout. */
-function CrdGuidanceChatGate() {
+/**
+ * Mounts the unified chat floating launcher on CRD pages. The unified surface is
+ * the only messaging entry point on CRD, so (unlike the legacy guidance FAB) it is
+ * NOT hidden on mobile — only on auth flows and immersive/fullscreen editors.
+ * MUI shells continue to mount PlatformHelpButton + UserMessagingDialog per-layout.
+ */
+function UnifiedChatGate() {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
   const { fullscreen } = useFullscreen();
-  const { isSmallScreen } = useScreenSize();
   const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  // MUI layouts already render PlatformHelpButton themselves; auth flows hide it entirely.
-  // Also hide on mobile and in any immersive/fullscreen editor (whiteboard, memo, …) so the
-  // floating button never overlaps the editing surface.
-  if (!crdEnabled || isAuthPage || isSmallScreen || fullscreen || isFullscreenEditorOpen) {
+  if (!crdEnabled) {
     return null;
   }
-  return <FloatingActionButtons floatingActions={<PlatformHelpButton />} />;
+  return <UnifiedChatLauncher hidden={isAuthPage || fullscreen || isFullscreenEditorOpen} />;
+}
+
+/** The legacy MUI messaging dialog — only for MUI pages; CRD pages use the unified panel. */
+function LegacyMessagingDialogGate() {
+  const crdEnabled = useCrdEnabled();
+  if (crdEnabled) {
+    return null;
+  }
+  return (
+    <Suspense fallback={null}>
+      <UserMessagingDialog />
+    </Suspense>
+  );
 }
 
 function DesignVersionSyncMount() {
@@ -193,7 +205,7 @@ const Root: FC = () => {
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
                                     <PushNotificationProvider>
-                                      <UserMessagingProvider>
+                                      <UnifiedChatProvider>
                                         <FullscreenEditorProvider>
                                           <NavigationHistoryTracker />
                                           <ApmUserSetter />
@@ -201,11 +213,9 @@ const Root: FC = () => {
                                           <DesignVersionUpgradePromptMount />
                                           <ScrollToTop />
                                           <NotificationsGate />
-                                          <CrdGuidanceChatGate />
+                                          <UnifiedChatGate />
                                           <InAppNotificationCountSubscriber />
-                                          <Suspense fallback={null}>
-                                            <UserMessagingDialog />
-                                          </Suspense>
+                                          <LegacyMessagingDialogGate />
                                           <VersionHandling />
                                           <OnlineStatusNotification />
                                           <Error40XBoundary
@@ -215,7 +225,7 @@ const Root: FC = () => {
                                             <GlobalErrorDialogGate />
                                           </Error40XBoundary>
                                         </FullscreenEditorProvider>
-                                      </UserMessagingProvider>
+                                      </UnifiedChatProvider>
                                     </PushNotificationProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
