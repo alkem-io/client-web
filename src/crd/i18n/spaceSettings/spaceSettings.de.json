@@ -243,9 +243,8 @@
       "actions": "Aktionen",
       "empty": "Keine Organisationen.",
       "remove": "Organisation entfernen",
-      "description": "Erlauben Sie Mitgliedern bestimmter Organisationen, automatisch beizutreten.",
+      "description": "Übersicht aller Mitglieds- und Lead-Organisationen. Um eine Organisation hinzuzufügen, wenden Sie sich an das Alkemio-Team unter support@alkem.io.",
       "add": "Organisation hinzufügen",
-      "hint": "Benutzer dieser Organisationen können ohne Admin-Genehmigung beitreten.",
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",

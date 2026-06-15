@@ -243,9 +243,8 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Permite que los miembros de organizaciones específicas se unan automáticamente.",
+      "description": "Resumen de todas las organizaciones miembro y lead. Para añadir una organización, contacta al equipo de Alkemio en support@alkem.io.",
       "add": "Añadir organización",
-      "hint": "Los usuarios de estas organizaciones pueden unirse sin aprobación del administrador.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",

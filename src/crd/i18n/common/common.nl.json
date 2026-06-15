@@ -20,7 +20,8 @@
     "inactive": "Inactief",
     "archived": "Gearchiveerd"
   },
-  "leads": "Leiders",
+  "lead": "Lead",
+  "leads": "Leads",
   "loadMore": "Meer laden",
   "pinned": "Vastgezet",
   "leadType": {

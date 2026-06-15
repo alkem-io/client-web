@@ -31,8 +31,8 @@
         "subtitle": "Gestandaardiseerde documenten voor projecten en beslissingen."
       },
       "communityGuidelines": {
-        "title": "Templates voor gemeenschapsrichtlijnen",
-        "subtitle": "Regels en verwachtingen voor een gemeenschap."
+        "title": "Templates voor community richtlijnen",
+        "subtitle": "Regels en verwachtingen voor een community."
       }
     }
   },
@@ -127,14 +127,14 @@
       "callout": "Samenwerkingstool-template maken",
       "whiteboard": "Whiteboard-template maken",
       "post": "Post-template maken",
-      "communityGuidelines": "Template voor gemeenschapsrichtlijnen maken"
+      "communityGuidelines": "Template voor community richtlijnen maken"
     },
     "editTitle": {
       "space": "Space-template bewerken",
       "callout": "Samenwerkingstool-template bewerken",
       "whiteboard": "Whiteboard-template bewerken",
       "post": "Post-template bewerken",
-      "communityGuidelines": "Template voor gemeenschapsrichtlijnen bewerken"
+      "communityGuidelines": "Template voor community richtlijnen bewerken"
     },
     "common": {
       "name": "Template-naam",
@@ -185,10 +185,10 @@
     },
     "communityGuidelines": {
       "title": "Titel richtlijnen",
-      "titlePlaceholder": "bijv. Onze gemeenschapswaarden",
+      "titlePlaceholder": "bijv. Onze community waarden",
       "titleRequired": "Een titel voor de richtlijnen is verplicht.",
       "body": "Richtlijnen",
-      "bodyPlaceholder": "Schrijf de richtlijnen voor deze gemeenschap…",
+      "bodyPlaceholder": "Schrijf de richtlijnen voor deze community…",
       "references": "Referenties"
     }
   },
