@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -34,13 +35,23 @@ export function CrdCreateSpaceDialog({
 }: CrdCreateSpaceDialogProps) {
   return (
     <StorageConfigContextProvider locationType="account" accountId={accountId} skip={!open}>
-      <CreateSpaceDialogConnector
-        open={open}
-        onClose={onClose}
-        accountId={accountId}
-        accountName={accountName}
-        onSpaceCreated={onSpaceCreated}
-      />
+      {/*
+       * Local Suspense boundary. The connector calls useTranslation('crd-createSpace')
+       * — a lazily-loaded i18n namespace — and hosts the lazy markdown editor. Without
+       * this boundary their first-load suspension bubbles up to the page-level Suspense
+       * and remounts the entire host page (a full flash the first time the dialog is
+       * used). `null` fallback: the dialog is a modal, so nothing should show until it
+       * is ready. Mirrors the self-contained pattern in MarkdownEditor.
+       */}
+      <Suspense fallback={null}>
+        <CreateSpaceDialogConnector
+          open={open}
+          onClose={onClose}
+          accountId={accountId}
+          accountName={accountName}
+          onSpaceCreated={onSpaceCreated}
+        />
+      </Suspense>
     </StorageConfigContextProvider>
   );
 }
