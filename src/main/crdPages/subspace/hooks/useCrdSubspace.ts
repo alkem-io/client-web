@@ -174,6 +174,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const sidebar = mapSubspaceSidebar({
     description: subspaceProfile.description,
     leadUsers: subspace.about.membership?.leadUsers,
+    leadOrganizations: subspace.about.membership?.leadOrganizations,
     // Virtual contributor data isn't part of SubspaceContext today.
     // Plan D13: hide section when none — keep undefined here, surface follow-up.
     virtualContributor: undefined,
