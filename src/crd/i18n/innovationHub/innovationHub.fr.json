@@ -137,5 +137,37 @@
         "submitError": "Une erreur est survenue lors de l'ajout de l'espace. Réessayez."
       }
     }
+  },
+  "createHub": {
+    "title": "Créer un Innovation Hub",
+    "subtitleUser": "Créez un nouveau Innovation Hub dans votre compte.",
+    "subtitleAccount": "Créez un nouveau Innovation Hub dans le compte de {{account}}.",
+    "subdomain": "Sous-domaine",
+    "subdomainPlaceholder": "ex. mon-hub",
+    "subdomainHint": "Uniquement des lettres minuscules, des chiffres et des traits d’union.",
+    "name": "Nom",
+    "namePlaceholder": "ex. Mon Innovation Hub",
+    "tagline": "Slogan",
+    "taglinePlaceholder": "Un slogan court et accrocheur",
+    "description": "Description",
+    "descriptionPlaceholder": "De quoi parle cet Innovation Hub ?",
+    "descriptionRequired": "Une description est obligatoire.",
+    "saveForMoreDetails": "Vous pourrez ajouter des tags et une bannière après la création du hub.",
+    "create": "Créer",
+    "cancel": "Annuler",
+    "creating": "Création…",
+    "validation": {
+      "min3": "Doit comporter au moins 3 caractères.",
+      "maxSmall": "Doit comporter au maximum {{count}} caractères.",
+      "maxMid": "Doit comporter au maximum {{count}} caractères.",
+      "maxMarkdown": "Doit comporter au maximum {{count}} caractères.",
+      "required": "Ce champ est obligatoire.",
+      "subdomainRequired": "Un sous-domaine est obligatoire.",
+      "subdomainFormat": "Seuls les lettres minuscules, les chiffres et les traits d’union sont autorisés.",
+      "subdomainMin": "Doit comporter au moins 3 caractères.",
+      "subdomainMax": "Doit comporter au maximum 25 caractères."
+    },
+    "createError": "Une erreur s’est produite lors de la création de l’Innovation Hub.",
+    "createSuccess": "L’Innovation Hub a été créé avec succès !"
   }
 }

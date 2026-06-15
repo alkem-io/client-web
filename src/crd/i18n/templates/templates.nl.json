@@ -287,7 +287,18 @@
     "description": "Beschrijving",
     "descriptionPlaceholder": "Waar gaat dit Innovation Pack over?",
     "create": "Maken",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "subtitleUser": "Maak een nieuwe Innovation Pack aan in je account.",
+    "subtitleAccount": "Maak een nieuwe Innovation Pack aan in het account van {{account}}.",
+    "descriptionRequired": "Een beschrijving is verplicht.",
+    "saveForMoreDetails": "Je kunt een avatar, tags, referenties en zichtbaarheid in de store toevoegen nadat de pack is aangemaakt.",
+    "creating": "Aanmaken…",
+    "validation": {
+      "min3": "Moet minimaal 3 tekens bevatten.",
+      "maxSmall": "Mag maximaal {{count}} tekens bevatten.",
+      "maxMarkdown": "Mag maximaal {{count}} tekens bevatten.",
+      "required": "Dit veld is verplicht."
+    }
   },
   "deletePack": {
     "title": "Innovation Pack verwijderen?",

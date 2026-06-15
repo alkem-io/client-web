@@ -137,5 +137,37 @@
         "submitError": "Er ging iets mis bij het toevoegen van de Space. Probeer het opnieuw."
       }
     }
+  },
+  "createHub": {
+    "title": "Innovation Hub aanmaken",
+    "subtitleUser": "Maak een nieuwe Innovation Hub aan in je account.",
+    "subtitleAccount": "Maak een nieuwe Innovation Hub aan in het account van {{account}}.",
+    "subdomain": "Subdomein",
+    "subdomainPlaceholder": "bijv. mijn-hub",
+    "subdomainHint": "Alleen kleine letters, cijfers en koppeltekens.",
+    "name": "Naam",
+    "namePlaceholder": "bijv. Mijn Innovation Hub",
+    "tagline": "Slogan",
+    "taglinePlaceholder": "Een korte, pakkende slogan",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat deze Innovation Hub over?",
+    "descriptionRequired": "Een beschrijving is verplicht.",
+    "saveForMoreDetails": "Je kunt tags en een banner toevoegen nadat de hub is aangemaakt.",
+    "create": "Aanmaken",
+    "cancel": "Annuleren",
+    "creating": "Aanmaken…",
+    "validation": {
+      "min3": "Moet minimaal 3 tekens bevatten.",
+      "maxSmall": "Mag maximaal {{count}} tekens bevatten.",
+      "maxMid": "Mag maximaal {{count}} tekens bevatten.",
+      "maxMarkdown": "Mag maximaal {{count}} tekens bevatten.",
+      "required": "Dit veld is verplicht.",
+      "subdomainRequired": "Een subdomein is verplicht.",
+      "subdomainFormat": "Alleen kleine letters, cijfers en koppeltekens zijn toegestaan.",
+      "subdomainMin": "Moet minimaal 3 tekens bevatten.",
+      "subdomainMax": "Mag maximaal 25 tekens bevatten."
+    },
+    "createError": "Er is een fout opgetreden bij het aanmaken van de Innovation Hub.",
+    "createSuccess": "De Innovation Hub is succesvol aangemaakt!"
   }
 }

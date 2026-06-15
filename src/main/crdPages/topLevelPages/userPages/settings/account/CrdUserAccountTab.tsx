@@ -14,12 +14,11 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributorAccountView } from '@/crd/components/contributor/settings/ContributorAccountView';
 import type { AccountResourceGroupId } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
-// TEMP fallback: open existing MUI dialogs until CRD parity ports land
-// (spec 097-crd-user-settings). Delete the remaining MUI imports below and the
-// corresponding JSX at the bottom of this file once those CRD dialogs are wired in.
-// Create Space is migrated — it uses the CRD dialog (spec 105-create-space-dialog).
-import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
-import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import { CrdCreateInnovationHubDialog } from '@/main/crdPages/innovationHub/CrdCreateInnovationHubDialog';
+import { CrdCreateInnovationPackDialog } from '@/main/crdPages/innovationPack/CrdCreateInnovationPackDialog';
+// TEMP fallback: the VC creation wizard still opens the existing flow until its
+// CRD port lands (spec 097-crd-user-settings). Create Space / Innovation Pack /
+// Innovation Hub are migrated to CRD dialogs (specs 105 + 109).
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
@@ -39,10 +38,9 @@ const CONTACT_URL = 'https://welcome.alkem.io/contact/';
  * `ContributorAccountView`. Owns the `pendingDelete` state and renders
  * the destructive `ConfirmationDialog` at the page level (Rule #9).
  *
- * Create flows currently use a TEMP fallback that mounts the existing MUI
- * dialogs (`CreateSpace`, `useVirtualContributorWizard`,
- * `CreateInnovationPackDialog`, `CreateInnovationHubDialog`) until the CRD
- * parity ports land (spec 097-crd-user-settings, tasks T033a–T033f).
+ * Create flows use CRD dialogs (Create Space — spec 105; Create Innovation
+ * Pack / Hub — spec 109). The Virtual Contributor creation wizard still uses the
+ * existing flow until its CRD port lands (spec 097-crd-user-settings).
  */
 const CrdUserAccountTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
@@ -202,7 +200,7 @@ const CrdUserAccountTab = () => {
         }}
         onCancel={() => setNoEntitlementResource(null)}
       />
-      {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
+      {/* CRD create dialogs (specs 105 + 109); VC wizard below is the remaining fallback (spec 097). */}
       {account?.id && (
         <>
           <CrdCreateSpaceDialog
@@ -210,12 +208,13 @@ const CrdUserAccountTab = () => {
             open={createSpaceOpen}
             onClose={() => setCreateSpaceOpen(false)}
           />
-          <CreateInnovationPackDialog
+          {/* No accountName on the user's own account → "…in your account" subtitle (matches Create Space). */}
+          <CrdCreateInnovationPackDialog
             accountId={account.id}
             open={createPackOpen}
             onClose={() => setCreatePackOpen(false)}
           />
-          <CreateInnovationHubDialog
+          <CrdCreateInnovationHubDialog
             accountId={account.id}
             open={createHubOpen}
             onClose={() => setCreateHubOpen(false)}

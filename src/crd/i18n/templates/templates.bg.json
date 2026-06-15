@@ -287,7 +287,18 @@
     "description": "Описание",
     "descriptionPlaceholder": "За какво е този Innovation Pack?",
     "create": "Създай",
-    "cancel": "Отказ"
+    "cancel": "Отказ",
+    "subtitleUser": "Създайте нов Innovation Pack във вашия акаунт.",
+    "subtitleAccount": "Създайте нов Innovation Pack в акаунта на {{account}}.",
+    "descriptionRequired": "Описанието е задължително.",
+    "saveForMoreDetails": "Можете да добавите аватар, етикети, препратки и видимост в магазина след създаването на пакета.",
+    "creating": "Създаване…",
+    "validation": {
+      "min3": "Трябва да е поне 3 знака.",
+      "maxSmall": "Трябва да е най-много {{count}} знака.",
+      "maxMarkdown": "Трябва да е най-много {{count}} знака.",
+      "required": "Това поле е задължително."
+    }
   },
   "deletePack": {
     "title": "Изтриване на Innovation Pack?",

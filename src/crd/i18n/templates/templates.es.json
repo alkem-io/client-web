@@ -287,7 +287,18 @@
     "description": "Descripción",
     "descriptionPlaceholder": "¿De qué trata este Innovation Pack?",
     "create": "Crear",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "subtitleUser": "Crea un nuevo Innovation Pack en tu cuenta.",
+    "subtitleAccount": "Crea un nuevo Innovation Pack en la cuenta de {{account}}.",
+    "descriptionRequired": "La descripción es obligatoria.",
+    "saveForMoreDetails": "Podrás añadir un avatar, etiquetas, referencias y la visibilidad en la tienda después de crear el pack.",
+    "creating": "Creando…",
+    "validation": {
+      "min3": "Debe tener al menos 3 caracteres.",
+      "maxSmall": "Debe tener como máximo {{count}} caracteres.",
+      "maxMarkdown": "Debe tener como máximo {{count}} caracteres.",
+      "required": "Este campo es obligatorio."
+    }
   },
   "deletePack": {
     "title": "¿Eliminar Innovation Pack?",

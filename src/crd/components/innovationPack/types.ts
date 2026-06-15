@@ -9,6 +9,7 @@ import type {
   TemplatesManagerViewProps,
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+// MarkdownUploadProps is also spread into CreateInnovationPackDialogProps (markdown description editor).
 
 export type InnovationPackCardData = {
   id: string;
@@ -94,7 +95,16 @@ export type CreateInnovationPackDialogProps = {
   onChange: (next: CreateInnovationPackValues) => void;
   onCreate: () => void;
   creating: boolean;
-};
+  /**
+   * Whether the form is currently valid enough to submit. When provided, it (not the displayed
+   * `errors`) drives the Create button's disabled state — so the button can be disabled while the
+   * dialog shows no errors yet (errors are surfaced only once fields are touched). Falls back to
+   * `errors`-derived blocking when omitted (legacy MUI caller).
+   */
+  canSubmit?: boolean;
+  /** Account display name for the subtitle ("…in {accountName}" / "your account"). Omitted ⇒ user's own account. */
+  accountName?: string;
+} & MarkdownUploadProps;
 
 export type InnovationPackAdminViewProps = {
   /** Pack-details EDIT form props (incl. `providerName` read-only). */
